@@ -9,22 +9,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   A new option in the Global Settings allows to enable/disable experimental features #1318
+    -   Click on the settings button in the upper right corner to open the Global Settings dialog.
+    -   Activate/Deactivate the new option "Enable Experimental Features"
+    -   The features will be shown/hidden accordingly
+-   "CustomViews", the first experimental feature has been added #1318
+    -   It must be enabled by activating the new option in the Global Settings dialog as mentioned before.
+    -   You can save your current map configurations to replay/restore them later.
+    -   A saved CustomView can only be applied for it's original map.
+    -   This will enable you to be more efficient in analizing projects by switching between different CustomViews.
+
+-   NodeContextMenu now contains option to keep buildings highlighted #1323
+
 ### Changed
 
-- Improved search
-  1. Not providing any star in the search bar from now on expects the input to
-     be a wildcard search. Thus, files are going to match paths that have
-     leading or following characters. E.g., `oo` is going to match
-     `/root/foobar`.
-  1. To use the explicit former search mode, wrap the search entry in quotes as
-      in: `"oo"`. This would only match filenames that are exactly `oo`.
-  1. The search field accepts multiple search entries at once, separated by
-      commata. `foo,bar` is going to search for both `*foo*` and `*bar*` and
-      marks all matched files accordingly.
-  1. It is possible to invert the search with a leading exclamation mark as in
-      `!foobar`. That will match any file that does not match `*foobar*`. It is
-      only possible to invert the complete input, not individual search entries.
-  1. Whitespace handling changed to ignore leading whitespace.
+-   Improved search
+    1. Not providing any star in the search bar from now on expects the input to
+       be a wildcard search. Thus, files are going to match paths that have
+       leading or following characters. E.g., `oo` is going to match
+       `/root/foobar`.
+    1. To use the explicit former search mode, wrap the search entry in quotes as
+       in: `"oo"`. This would only match filenames that are exactly `oo`.
+    1. The search field accepts multiple search entries at once, separated by
+       commata. `foo,bar` is going to search for both `*foo*` and `*bar*` and
+       marks all matched files accordingly.
+    1. It is possible to invert the search with a leading exclamation mark as in
+       `!foobar`. That will match any file that does not match `*foobar*`. It is
+       only possible to invert the complete input, not individual search entries.
+    1. Whitespace handling changed to ignore leading whitespace.
+
+-   Distribution metric #1188
+    1. set rloc to default distribution metric, showing language percentages for real lines of code, if available. Else set to unary to show language distribution over files
+
+-   Improved file sorting in the file overview of the search bar
+    -   Numbers are sorted naturally
+    -   Characters are compared with their base character (e.g., `a` is now next to `á`).
 
 ### Removed 🗑
 

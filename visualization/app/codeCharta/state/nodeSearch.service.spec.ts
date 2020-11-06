@@ -77,17 +77,17 @@ describe("NodeSearchService", () => {
 
 		it("node(s) should be retrieved using the explicit search mode", () => {
 			// exactly matching node path
-			nodeSearchService.onSearchPatternChanged("\"/root/big leaf\"")
+			nodeSearchService.onSearchPatternChanged('"/root/big leaf"')
 
 			expect(nodeSearchService["searchedNodes"].length).toBe(1)
 			expect(nodeSearchService["searchedNodes"][0].path).toBe("/root/big leaf")
 
 			// exactly matching node path with whitespace at the beginning will find nothing
-			nodeSearchService.onSearchPatternChanged("\" /root/big leaf\"")
+			nodeSearchService.onSearchPatternChanged('" /root/big leaf"')
 			expect(nodeSearchService["searchedNodes"].length).toBe(0)
 
 			/// partially matching node path
-			nodeSearchService.onSearchPatternChanged("\"/root/Parent Leaf\"")
+			nodeSearchService.onSearchPatternChanged('"/root/Parent Leaf"')
 
 			expect(nodeSearchService["searchedNodes"].length).toBe(4)
 			expect(nodeSearchService["searchedNodes"][0].path).toBe("/root/Parent Leaf")
@@ -132,7 +132,6 @@ describe("NodeSearchService", () => {
 			expect(nodeSearchService["searchedNodes"][1].path).toBe("/root/Parent Leaf")
 			expect(nodeSearchService["searchedNodes"][2].path).toBe("/root/Parent Leaf/empty folder")
 		})
-
 
 		it("no node should be found for empty query", () => {
 			nodeSearchService.onSearchPatternChanged("")

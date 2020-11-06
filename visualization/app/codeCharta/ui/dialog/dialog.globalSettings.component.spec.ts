@@ -10,6 +10,8 @@ import { setResetCameraIfNewFileIsLoaded } from "../../state/store/appSettings/r
 import { HideFlatBuildingsService } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { IsWhiteBackgroundService } from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { ResetCameraIfNewFileIsLoadedService } from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
+import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
+import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 
 describe("DialogGlobalSettingsController", () => {
 	let dialogGlobalSettingsController: DialogGlobalSettingsController
@@ -59,6 +61,14 @@ describe("DialogGlobalSettingsController", () => {
 			expect(ResetCameraIfNewFileIsLoadedService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
+		it("should subscribe to ExperimentalFeaturesEnabledService", () => {
+			ExperimentalFeaturesEnabledService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ExperimentalFeaturesEnabledService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
+		})
+
 		it("should call initDialogOnClick", () => {
 			jest.spyOn(DialogGlobalSettingsController.prototype as any, "initDialogOnClick")
 
@@ -92,6 +102,14 @@ describe("DialogGlobalSettingsController", () => {
 
 			expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBeFalsy()
 		})
+
+		it("should update viewModel.experimentalFeaturesEnabled", () => {
+			storeService.dispatch(setExperimentalFeaturesEnabled(false))
+
+			dialogGlobalSettingsController["initDialogOnClick"]()
+
+			expect(dialogGlobalSettingsController["_viewModel"].experimentalFeaturesEnabled).toBeFalsy()
+		})
 	})
 
 	describe("onHideFlatBuildingsChanged", () => {
@@ -115,6 +133,14 @@ describe("DialogGlobalSettingsController", () => {
 			dialogGlobalSettingsController.onResetCameraIfNewFileIsLoadedChanged(false)
 
 			expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBeFalsy()
+		})
+	})
+
+	describe("onExperimentalFeaturesEnabledChanged", () => {
+		it("should update viewModel.experimentalFeaturesEnabled", () => {
+			dialogGlobalSettingsController.onExperimentalFeaturesEnabledChanged(true)
+
+			expect(dialogGlobalSettingsController["_viewModel"].experimentalFeaturesEnabled).toBe(true)
 		})
 	})
 
@@ -145,6 +171,16 @@ describe("DialogGlobalSettingsController", () => {
 			dialogGlobalSettingsController.applySettingsIsWhiteBackground()
 
 			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
+		})
+	})
+
+	describe("applyExperimentalFeaturesEnabled", () => {
+		it("should update experimentalFeaturesEnabled in store", () => {
+			dialogGlobalSettingsController["_viewModel"].experimentalFeaturesEnabled = false
+
+			dialogGlobalSettingsController.applySettingsEnableExperimentalFeatures()
+
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBe(false)
 		})
 	})
 

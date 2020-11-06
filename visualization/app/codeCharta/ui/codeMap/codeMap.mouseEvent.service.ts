@@ -117,6 +117,7 @@ export class CodeMapMouseEventService
 
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
+		this.threeSceneService.clearConstantHighlight()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
@@ -215,8 +216,11 @@ export class CodeMapMouseEventService
 	private onLeftClick() {
 		this.threeSceneService.clearSelection()
 		this.isGrabbing = false
-		if (this.intersectedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
-			this.threeSceneService.selectBuilding(this.intersectedBuilding)
+		if (!this.hasMouseMoved(this.mouseOnLastClick)) {
+			this.threeSceneService.clearConstantHighlight()
+			if (this.intersectedBuilding) {
+				this.threeSceneService.selectBuilding(this.intersectedBuilding)
+			}
 		}
 	}
 
@@ -258,7 +262,13 @@ export class CodeMapMouseEventService
 		if (!this.isMoving && !this.isGrabbing) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 		}
-		this.threeSceneService.clearHighlight()
+
+		if (this.threeSceneService.getConstantHighlight().size > 0) {
+			this.threeSceneService.clearHoverHighlight()
+		} else {
+			this.threeSceneService.clearHighlight()
+		}
+
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}
 
