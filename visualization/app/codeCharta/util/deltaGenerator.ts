@@ -97,6 +97,7 @@ export class DeltaGenerator {
 			fileName: `delta_between_${FileNameHelper.withoutCCJsonExtension(
 				referenceFile.fileMeta.fileName
 			)}_and_${FileNameHelper.withoutCCJsonExtension(comparisonFile.fileMeta.fileName)}`,
+			fileChecksum: `${referenceFile.fileMeta.fileChecksum};${comparisonFile.fileMeta.fileChecksum}`,
 			apiVersion: packageJson.codecharta.apiVersion,
 			projectName: `delta_between_${referenceFile.fileMeta.projectName}_and_${comparisonFile.fileMeta.projectName}`
 		}
