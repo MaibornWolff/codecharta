@@ -37,9 +37,9 @@ describe("CustomConfigHelper", () => {
 				CustomConfigHelper["CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT"],
 				"customConfigStub_asJson"
 			)
-			expect(CustomConfigHelper.hasCustomConfig(customConfigStub.mapSelectionMode, customConfigStub.assignedMaps, customConfigStub.name)).toBe(
-				true
-			)
+			expect(
+				CustomConfigHelper.hasCustomConfig(customConfigStub.mapSelectionMode, customConfigStub.assignedMaps, customConfigStub.name)
+			).toBe(true)
 
 			const receivedCustomConfig = CustomConfigHelper.getCustomConfigSettings(customConfigStub.id)
 			expect(receivedCustomConfig).toStrictEqual(customConfigStub)
@@ -128,16 +128,28 @@ describe("CustomConfigHelper", () => {
 			CustomConfigHelper.addCustomConfig(customConfigStub4)
 
 			expect(
-				CustomConfigHelper.getCustomConfigsAmountByMapAndMode(customConfigStub1.assignedMaps.join(" "), CustomConfigMapSelectionMode.SINGLE)
+				CustomConfigHelper.getCustomConfigsAmountByMapAndMode(
+					customConfigStub1.assignedMaps.join(" "),
+					CustomConfigMapSelectionMode.SINGLE
+				)
 			).toBe(2)
 			expect(
-				CustomConfigHelper.getCustomConfigsAmountByMapAndMode(customConfigStub3.assignedMaps.join(" "), CustomConfigMapSelectionMode.SINGLE)
+				CustomConfigHelper.getCustomConfigsAmountByMapAndMode(
+					customConfigStub3.assignedMaps.join(" "),
+					CustomConfigMapSelectionMode.SINGLE
+				)
 			).toBe(1)
 			expect(
-				CustomConfigHelper.getCustomConfigsAmountByMapAndMode(customConfigStub4.assignedMaps.join(" "), CustomConfigMapSelectionMode.SINGLE)
+				CustomConfigHelper.getCustomConfigsAmountByMapAndMode(
+					customConfigStub4.assignedMaps.join(" "),
+					CustomConfigMapSelectionMode.SINGLE
+				)
 			).toBe(1)
 			expect(
-				CustomConfigHelper.getCustomConfigsAmountByMapAndMode(customConfigStub4.assignedMaps.join(" "), CustomConfigMapSelectionMode.DELTA)
+				CustomConfigHelper.getCustomConfigsAmountByMapAndMode(
+					customConfigStub4.assignedMaps.join(" "),
+					CustomConfigMapSelectionMode.DELTA
+				)
 			).toBe(1)
 		})
 	})
@@ -266,12 +278,20 @@ describe("CustomConfigHelper", () => {
 
 			CustomConfigHelper.addCustomConfig(customConfigStub1)
 			expect(
-				CustomConfigHelper.hasCustomConfig(customConfigStub1.mapSelectionMode, customConfigStub1.assignedMaps, customConfigStub1.name)
+				CustomConfigHelper.hasCustomConfig(
+					customConfigStub1.mapSelectionMode,
+					customConfigStub1.assignedMaps,
+					customConfigStub1.name
+				)
 			).toBe(true)
 
 			CustomConfigHelper.deleteCustomConfig(customConfigStub1.id)
 			expect(
-				CustomConfigHelper.hasCustomConfig(customConfigStub1.mapSelectionMode, customConfigStub1.assignedMaps, customConfigStub1.name)
+				CustomConfigHelper.hasCustomConfig(
+					customConfigStub1.mapSelectionMode,
+					customConfigStub1.assignedMaps,
+					customConfigStub1.name
+				)
 			).toBe(false)
 
 			// One call for the add and another one for the delete
@@ -373,7 +393,9 @@ describe("CustomConfigHelper", () => {
 				.mockReturnValueOnce(customConfigStub2.assignedMaps.join(" "))
 
 			const getChecksumOfAssignedMapsMock = jest.fn()
-			getChecksumOfAssignedMapsMock.mockReturnValueOnce(customConfigStub1.mapChecksum).mockReturnValueOnce(customConfigStub2.mapChecksum)
+			getChecksumOfAssignedMapsMock
+				.mockReturnValueOnce(customConfigStub1.mapChecksum)
+				.mockReturnValueOnce(customConfigStub2.mapChecksum)
 
 			const getMapSelectionModeMock = jest.fn()
 			getMapSelectionModeMock
