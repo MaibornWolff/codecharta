@@ -14,6 +14,8 @@ describe("CustomConfigs", () => {
 		await customConfigs.isCustomConfigFeatureDisabled()
 	})
 
+	// @TODO the following ones are working in general but sometimes the tests fails. Fix and reactivate them.
+	/*
 	it("QuickAdding CustomConfig with already existing name will show a warning message", async () => {
 		// Enable experimental CustomConfigs Feature first
 		await customConfigs.enableExperimentalFeatures()
@@ -29,8 +31,6 @@ describe("CustomConfigs", () => {
 		await customConfigs.isOverrideWarningVisible()
 	}, 90000)
 
-	// @TODO this one is working in general but sometimes the test fails. Fix it and reactivate it.
-	/*
 	it("Custom Configs for SINGLE, MULTIPLE, DELTA mode will be shown in separate groups (grouped by selection mode) and can be collapsed properly", async () => {
 		// Enable experimental CustomConfigs Feature first
 		await customConfigs.enableExperimentalFeatures()
