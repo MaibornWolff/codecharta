@@ -37,6 +37,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
        `!foobar`. That will match any file that does not match `*foobar*`. It is
        only possible to invert the complete input, not individual search entries.
     1. Whitespace handling changed to ignore leading whitespace.
+-   Distribution metric #1188
+    1. set rloc to default distribution metric, showing language percentages for real lines of code, if available. Else set to unary to show language distribution over files
 
 ### Removed 🗑
 

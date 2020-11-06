@@ -20,3 +20,7 @@ export function getMetricNameFromIndexOrLast(metricData: NodeMetricData[], index
 	}
 	return lastMetric.name
 }
+
+export function resetToDefaultDistribution(metricData: NodeMetricData[]) {
+	return metricData.filter(element => element.name === "rloc").length > 0 ? "rloc" : "unary"
+}
