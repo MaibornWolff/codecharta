@@ -9,8 +9,8 @@ import {
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED,
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME,
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY,
-	VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME,
-	VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME_SORTED
+	VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS,
+	VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED
 } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { SortingOrderAscendingService } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
@@ -100,11 +100,11 @@ describe("MapTreeViewController", () => {
 
 		it("should sort folder structure according to name accounting for numbers", () => {
 			const sortingOption = SortingOption.NAME
-			mapTreeViewController["_viewModel"].rootNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME
+			mapTreeViewController["_viewModel"].rootNode = VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS
 
 			mapTreeViewController.onSortingOptionChanged(sortingOption)
 
-			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME_SORTED)
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED)
 		})
 	})
 
