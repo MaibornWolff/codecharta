@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   A saved CustomView can only be applied for it's original map.
     -   This will enable you to be more efficient in analizing projects by switching between different CustomViews.
 
+-   NodeContextMenu now contains option to keep buildings highlighted #1323
+
 ### Changed
 
 -   Improved search

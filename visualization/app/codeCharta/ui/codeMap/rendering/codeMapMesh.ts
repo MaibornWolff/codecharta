@@ -34,16 +34,6 @@ export class CodeMapMesh {
 		this.initDeltaColorsOnMesh(state)
 	}
 
-	private initDeltaColorsOnMesh(state: State) {
-		if (this.mapGeomDesc.buildings[0].node.deltas) {
-			for (const building of this.mapGeomDesc.buildings) {
-				this.setNewDeltaColor(building, state)
-				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
-			}
-			this.updateVertices()
-		}
-	}
-
 	getThreeMesh() {
 		return this.threeMesh
 	}
@@ -77,16 +67,34 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State) {
+	highlightBuilding(
+		highlightedBuildings: CodeMapBuilding[],
+		selected: CodeMapBuilding,
+		state: State,
+		constantHighlight: Map<number, CodeMapBuilding>
+	) {
 		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
 		for (const building of this.mapGeomDesc.buildings) {
 			if (!this.isBuildingSelected(selected, building)) {
-				if (highlightBuildingMap.get(building.id)) {
+				if (highlightBuildingMap.get(building.id) || constantHighlight.get(building.id)) {
 					building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
 				} else {
 					this.adjustSurroundingBuildingColors(highlightedBuildings, building, state)
 				}
 				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
+			}
+		}
+		this.updateVertices()
+	}
+
+	clearHighlight(selected: CodeMapBuilding) {
+		for (const currentBuilding of this.mapGeomDesc.buildings) {
+			if (!this.isBuildingSelected(selected, currentBuilding)) {
+				this.setVertexColor(
+					currentBuilding.id,
+					currentBuilding.getDefaultColorVector(),
+					currentBuilding.getDefaultDeltaColorVector()
+				)
 			}
 		}
 		this.updateVertices()
@@ -102,17 +110,14 @@ export class CodeMapMesh {
 		}
 	}
 
-	clearHighlight(selected: CodeMapBuilding) {
-		for (const currentBuilding of this.mapGeomDesc.buildings) {
-			if (!this.isBuildingSelected(selected, currentBuilding)) {
-				this.setVertexColor(
-					currentBuilding.id,
-					currentBuilding.getDefaultColorVector(),
-					currentBuilding.getDefaultDeltaColorVector()
-				)
+	private initDeltaColorsOnMesh(state: State) {
+		if (this.mapGeomDesc.buildings[0].node.deltas) {
+			for (const building of this.mapGeomDesc.buildings) {
+				this.setNewDeltaColor(building, state)
+				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
 			}
+			this.updateVertices()
 		}
-		this.updateVertices()
 	}
 
 	private setNewDeltaColor(building: CodeMapBuilding, state: State) {
