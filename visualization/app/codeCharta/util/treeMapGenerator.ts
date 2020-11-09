@@ -13,11 +13,17 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 
 	if (hasFixedFolders(map)) {
 		const hierarchyNode = hierarchy(map)
-		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(map, heightScale, state, isDeltaState)]
-		const scale = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) 
-						/ nodes[0].length
-		scaleRoot(nodes[0], scale)
-		return nodes.concat(buildSquarifiedTreeMapsForFixedFolders(map, state, scale, scale, 0, 0, heightScale, maxHeight, isDeltaState))
+
+		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(hierarchyNode.data, heightScale, state, isDeltaState)]
+
+		// Multiply mapSize of (default) 250px by 2 = 500px
+		// and add the total margin
+		const scaleLength = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / nodes[0].length
+		const scaleWidth = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / nodes[0].width
+		scaleRoot(nodes[0], scaleLength, scaleWidth)
+
+		buildSquarifiedTreeMapsForFixedFolders(nodes, hierarchyNode, state, scaleLength, scaleWidth, 0, 0, heightScale, maxHeight, isDeltaState)
+		return nodes
 	}
 
 	const squarifiedTreeMap = getSquarifiedTreeMap(map, state)
@@ -30,80 +36,69 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 }
 
 function buildSquarifiedTreeMapsForFixedFolders(
-	map: CodeMapNode,
+	nodes: Node[],
+	hierarchyNode: HierarchyNode<CodeMapNode>,
 	state: State,
-	scaleX: number,
-	scaleY: number,
-	squarifiedX0: number,
-	squarifiedY0: number,
+	scaleLength: number,
+	scaleWidth: number,
+	offsetX0: number,
+	offsetY0: number,
 	heightScale: number,
 	maxHeight: number,
 	isDeltaState: boolean
 ) {
-	
-	const nodes = []
-	for (const fixedFolder of map.children) {
-		const squarified = getSquarifiedTreeMap(fixedFolder, state)
+	for (const fixedFolder of hierarchyNode.children) {
+
+		const squarified = getSquarifiedTreeMap(fixedFolder.data, state)
+
 		for (const squarifiedNode of squarified.treeMap.descendants()) {
-			scaleAndTranslateSquarifiedNode(squarifiedNode, squarifiedX0, squarifiedY0, fixedFolder, squarified, scaleX, scaleY)
+			// Transform coordinates from local folder space to parent folder space (between 0 and 100).
+			// It calculates the space in the parent folder that the fixed folder takes in (in percentage).
+			// Example: Parent Folder 200px width, (child) fixed folder width = 20 = 20% => 20 / 200 = 	0.1
+			const scaleX = fixedFolder.data.fixedPosition.width / squarified.width
+			const scaleY = fixedFolder.data.fixedPosition.height / squarified.height
+
+			// Scales to usual map-size of 500 matching the three-scene-size
+			squarifiedNode.x0 = (squarifiedNode.x0 * scaleX + fixedFolder.data.fixedPosition.left) * scaleLength
+			squarifiedNode.x1 = (squarifiedNode.x1 * scaleX + fixedFolder.data.fixedPosition.left) * scaleLength
+			squarifiedNode.y0 = (squarifiedNode.y0 * scaleY + fixedFolder.data.fixedPosition.top) * scaleWidth
+			squarifiedNode.y1 = (squarifiedNode.y1 * scaleY + fixedFolder.data.fixedPosition.top) * scaleWidth
+
+			// Add x and y offsets from parent fixed folder, if any.
+			squarifiedNode.x0 += offsetX0
+			squarifiedNode.x1 += offsetX0
+			squarifiedNode.y0 += offsetY0
+			squarifiedNode.y1 += offsetY0
+
 			const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState)
 			nodes.push(node)
-			if (hasFixedFolders(fixedFolder)){
-				// here fixedFolder represents nodes[0] since it always comes first in squarified.treeMap.descendants()
-				// change scale to match a current fixed folder
-				const hierarchyNode = hierarchy(fixedFolder)
-				scaleX = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode)) 
-						/ node.length
-				scaleY = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode)) 
-						/ node.width
-				// save fixed folder's (squarified) x0 and y0 to use while translating child nodes
-				let x0 = squarifiedNode.x0
-				let y0 = squarifiedNode.y0
-				Array.prototype.push.apply(
-					nodes, 
-					buildSquarifiedTreeMapsForFixedFolders(fixedFolder, state, scaleX, scaleY, x0, y0, heightScale, maxHeight, isDeltaState)
-				)
+
+			if (hasFixedFolders(fixedFolder.data)) {
+				scaleLength = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / node.length
+				scaleWidth = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / node.width
+
+				buildSquarifiedTreeMapsForFixedFolders(nodes, fixedFolder, state, scaleLength, scaleWidth, squarifiedNode.x0, squarifiedNode.y0, heightScale, maxHeight, isDeltaState)
+
+				// the break is actually needed!
+				//TODO can we break the loop at an earlier point?
+				// and check that really all fixed folder children will be processed.
 				break
 			}
 		}
 	}
-	return nodes
 }
 
 function hasFixedFolders(map: CodeMapNode) {
+	// What if the second child of root is the first fixed folder?
+	// Assumption: all children of the root folder require the fixedPosition attribute.
 	return Boolean(map.children[0]?.fixedPosition)
 }
 
-function scaleAndTranslateSquarifiedNode(
-	squarifiedNode: HierarchyRectangularNode<CodeMapNode>,
-	squarifiedX0: number,
-	squarifiedY0: number,
-	fixedFolder: CodeMapNode,
-	squarified: SquarifiedTreeMap,
-	scaleX: number,
-	scaleY: number
-) {
-	// Transform coordinates from local folder space to world space (between 0 and 100).
-	const scale_x = fixedFolder.fixedPosition.width / squarified.width
-	const scale_y = fixedFolder.fixedPosition.height / squarified.height
-
-	// Scales to usual map-size of 500 matching the three-scene-size
-	squarifiedNode.x0 = (squarifiedNode.x0 * scale_x + fixedFolder.fixedPosition.left) * scaleX
-	squarifiedNode.x1 = (squarifiedNode.x1 * scale_x + fixedFolder.fixedPosition.left) * scaleX
-	squarifiedNode.y0 = (squarifiedNode.y0 * scale_y + fixedFolder.fixedPosition.top) * scaleY
-	squarifiedNode.y1 = (squarifiedNode.y1 * scale_y + fixedFolder.fixedPosition.top) * scaleY
-
-	squarifiedNode.x0 += squarifiedX0
-	squarifiedNode.x1 += squarifiedX0
-	squarifiedNode.y0 += squarifiedY0
-	squarifiedNode.y1 += squarifiedY0
-}
-
-function scaleRoot(root: Node, scale: number) {
-	root.x0 *= scale
-	root.y0 *= scale
-	root.width *= scale
-	root.length *= scale
+function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
+	root.x0 *= scaleLength
+	root.y0 *= scaleWidth
+	root.width *= scaleWidth
+	root.length *= scaleLength
 }
 
 function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
@@ -121,6 +116,10 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 		mapHeight = state.treeMap.mapSize * 2
 	}
 
+	// nodesPerSide is just an estimation.
+	// We do not know the exact amount,
+	// because the treemap algorithm is/must be executed with an initial width and height afterwards.
+	// TODO If it is wrong some buildings might be cut off.
 	const width = mapWidth + nodesPerSide * state.dynamicSettings.margin
 	const height = mapHeight + nodesPerSide * state.dynamicSettings.margin
 
@@ -139,6 +138,10 @@ function getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {
 		totalNodes++
 	})
 
+	// What does this line do?
+	// Imagine a 3x3 grid of 9 nodes
+	// 3 nodes are placed on the x-axis and 3 on the y-axis = 6
+	// The calculated value is probably used to calculate the total margin which extends length and width of the map.
 	return 2 * Math.sqrt(totalNodes - blacklistedNodes)
 }
 
