@@ -10,6 +10,7 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 export enum ClickType {
 	RightClick = 2
@@ -46,7 +47,8 @@ export class NodeContextMenuController
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
-		private codeMapPreRenderService: CodeMapPreRenderService
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private threeSceneService: ThreeSceneService
 	) {
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
@@ -142,6 +144,16 @@ export class NodeContextMenuController
 		)
 	}
 
+	addNodeToConstantHighlight() {
+		this.threeSceneService.addNodeAndChildrenToConstantHighlight(this._viewModel.codeMapNode)
+		this.onHideNodeContextMenu()
+	}
+
+	removeNodeFromConstantHighlight() {
+		this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(this._viewModel.codeMapNode)
+		this.onHideNodeContextMenu()
+	}
+
 	clickColor(color: string) {
 		if (this.isNodeOrParentMarked(color)) {
 			this.unmarkFolder()
@@ -199,6 +211,17 @@ export class NodeContextMenuController
 			return false
 		}
 		return this.storeService.getState().fileSettings.markedPackages[index].color === color
+	}
+
+	isNodeConstantlyHighlighted() {
+		if (this._viewModel.codeMapNode) {
+			const { lookUp } = this.storeService.getState()
+			const codeMapBuilding: CodeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
+			if (codeMapBuilding) {
+				return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
+			}
+		}
+		return false
 	}
 
 	isNodeOrParentFocused() {
