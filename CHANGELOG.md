@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   NodeContextMenu now contains option to keep buildings highlighted #1323
 
+-   Fixed Folder algorithm supports nested (parent-child) Fixed Folders #1431
+    1. Define children of a Fixed Folder also as Fixed Folders by adding the `fixedPosition` attribute manually in `.cc.json`.
+    1. All children of a parent Fixed Folder must be fixed.
+    1. Read the how-to guide for further information: https://maibornwolff.github.io/codecharta/how-to/fixate_folders_with_a_custom_cc_json/
+
 ### Changed
 
 -   Improved search

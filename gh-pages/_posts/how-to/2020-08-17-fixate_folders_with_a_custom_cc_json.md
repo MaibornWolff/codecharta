@@ -116,6 +116,12 @@ to e.g., `left: 10` and `top: 10`. The margin between the border of the map and 
 In order to define the coordinates of adjacent folders, apply any margin between `folder_1` and `folder_2`.
 The example uses a margin of `10`, so that the coordinates of `folder_2` must be `left: 50` and `top: 10`.
 
+## Define nested (parent-child) Fixed Folders
+
+It is possible to fixate a folder and define its children to be fixed as well.
+All children of a parent Fixed Folder must be defined as fixed by adding the `fixedPosition` attribute in the `.cc.json` file.
+A fixed child will be positioned relatively to its parent.
+
 ## Restrictions
 
 The following rules apply in order to build a valid custom `.cc.json`:
