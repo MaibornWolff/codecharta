@@ -53,8 +53,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Label showing node name and metric values (2 lines) have incorrect width
-
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.61.0] - 2020-10-30
