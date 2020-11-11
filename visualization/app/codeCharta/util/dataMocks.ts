@@ -740,6 +740,315 @@ export const TEST_FILE_DATA: CCFile = {
 			markedPackages: []
 		}
 	}
+
+}
+
+export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
+	fileMeta: FILE_META,
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		path: "/root",
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "src",
+				path: "/root/src",
+				type: NodeType.FOLDER,
+				attributes:{},
+				children: [
+					{
+						name: "main",
+						path: "/root/src/main",
+						type: NodeType.FOLDER,
+						attributes:{},
+						children: [
+							{
+								name: "file1.java",
+								path: "/root/src/main/file1.java",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 80
+								}
+							},
+							{
+								name: "file2.java",
+								path: "/root/src/main/file2.java",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 80
+								}
+							}
+						]
+					},
+					{
+						name: "test",
+						path: "/root/src/test",
+						type: NodeType.FOLDER,
+						attributes:{},
+						children: [
+							{
+								name: "otherFile.java",
+								path: "/root/src/test/otherFile.java",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 65
+								}
+							}
+						]
+					}
+				],
+				fixedPosition: {
+					left: 34,
+					top: 2,
+					width: 35,
+					height: 55
+				}
+			},
+			{
+				name: "resources",
+				path: "/root/resources",
+				type: NodeType.FOLDER,
+				attributes:{},
+				children: [
+					{
+						name: "textFiles",
+						path: "/root/resources/textFiles",
+						type: NodeType.FOLDER,
+						attributes:{},
+						children: [
+							{
+								name: "file.txt",
+								path: "/root/resources/textFiles/file.txt",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 5
+								}
+							}
+						],
+						fixedPosition: {
+							left: 2,
+							top: 2,
+							width: 20,
+							height: 20
+						}
+					},
+					{
+						name: "tables",
+						path: "/root/resources/tables",
+						type: NodeType.FOLDER,
+						attributes:{},
+						children: [
+							{
+								name: "table1.xlsx",
+								path: "/root/resources/tables/table1.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table2.xlsx",
+								path: "/root/resources/tables/table2.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table3.xlsx",
+								path: "/root/resources/tables/table3.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table4.xlsx",
+								path: "/root/resources/tables/table4.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table5.xlsx",
+								path: "/root/resources/tables/table5.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table6.xlsx",
+								path: "/root/resources/tables/table6.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table7.xlsx",
+								path: "/root/resources/tables/table7.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table8.xlsx",
+								path: "/root/resources/tables/table8.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table9.xlsx",
+								path: "/root/resources/tables/table9.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							},
+							{
+								name: "table10.xlsx",
+								path: "/root/resources/tables/table10.xlsx",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							}
+						],
+						fixedPosition: {
+							left: 52,
+							top: 52,
+							width: 48,
+							height: 48
+						}
+					}
+				],
+				fixedPosition: {
+					left: 20,
+					top: 60,
+					width: 50,
+					height: 30
+				}
+			}
+		]
+	},
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: [],
+			markedPackages: []
+		}
+	}
+}
+
+export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
+	fileMeta: FILE_META,
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		path: "/root",
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "folder_1_red",
+				path: "/root/folder_1_red",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "folder_1.1_red",
+						path: "/root/folder_1_red/folder_1.1_red",
+						type: NodeType.FOLDER,
+						attributes:{},
+						children: [
+							{
+								name: "red_child_1.1.file",
+								path: "/root/folder_1_red/folder_1.1_red/red_child_1.1.file",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 12
+								}
+							}
+						],
+						fixedPosition: {
+							left: 10,
+							top: 10,
+							width: 80,
+							height: 50
+						}
+					},
+					{
+						name: "folder_1.2_red",
+						path: "/root/folder_1_red/folder_1.2_red",
+						type: NodeType.FOLDER,
+						attributes:{},
+						children: [
+							{
+								name: "red_child_1.2.file",
+								path: "/root/folder_1_red/folder_1.2_red/red_child_1.2.file",
+								type: NodeType.FILE,
+								attributes:{
+									rloc: 6
+								}
+							}
+						],
+						fixedPosition: {
+							left: 80,
+							top: 70,
+							width: 10,
+							height: 10
+						}
+					}
+				],
+				fixedPosition: {
+					left: 10,
+					top: 10,
+					width: 40,
+					height: 60
+				}
+			},
+			{
+				name: "folder_2_orange",
+				path: "/root/folder_2_orange",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "orange.file",
+						path: "/root/folder_2_orange7orange.file",
+						type: NodeType.FILE,
+						attributes:{
+							rloc: 10
+						}
+					}
+				],
+				fixedPosition: {
+					left: 10,
+					top: 80,
+					width: 50,
+					height: 10
+				}
+			}
+		]
+	},
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: [],
+			markedPackages: []
+		}
+	}
 }
 
 export const TEST_FILE_WITH_PATHS: CCFile = {

@@ -1,6 +1,14 @@
 import { NodeMetricData, State, CodeMapNode, Node } from "../codeCharta.model"
 import { createTreemapNodes, calculateAreaValue } from "./treeMapGenerator"
-import { METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES, STATE } from "./dataMocks"
+import {
+	METRIC_DATA,
+	TEST_FILE_WITH_PATHS,
+	VALID_NODE_WITH_PATH,
+	VALID_EDGES,
+	STATE,
+	FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE,
+	FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE
+} from "./dataMocks"
 import { klona } from "klona"
 import { NodeDecorator } from "./nodeDecorator"
 import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
@@ -28,6 +36,34 @@ describe("treeMapGenerator", () => {
 	}
 
 	describe("create Treemap nodes", () => {
+		it("create map with fixed root children which include dynamic folders on the one hand and fixed ones at the other", () => {
+			map = klona(FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE.map)
+
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+
+			const fixedResourcesFolder = {
+				x0: nodes[7].x0,
+				y0: nodes[7].y0,
+				width: nodes[7].width,
+				length: nodes[7].length,
+				textFiles: {
+					x0: nodes[8].x0
+				}
+			}
+
+			expect(fixedResourcesFolder.textFiles.x0).toBeGreaterThan(fixedResourcesFolder.x0)
+
+			expect(nodes).toMatchSnapshot()
+		})
+
+		it("create map with fixed root children which include fixed folders on the one hand and a file at the other", () => {
+			map = klona(FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE.map)
+
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+
+			expect(nodes).toMatchSnapshot()
+		})
+
 		it("only root node", () => {
 			map.children = []
 
