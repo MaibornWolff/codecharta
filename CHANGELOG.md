@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Improved file sorting in the file overview of the search bar
     -   Numbers are sorted naturally
     -   Characters are compared with their base character (e.g., `a` is now next to `á`).
--   Label metric not shown by default
+-   Label metric not shown by default anymore
 
 ### Removed 🗑
 
