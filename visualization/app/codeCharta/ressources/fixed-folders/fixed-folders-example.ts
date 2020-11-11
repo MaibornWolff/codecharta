@@ -1,6 +1,143 @@
 import { NodeType } from "../../codeCharta.model"
 import { ExportCCFile } from "../../codeCharta.api.model"
 
+export const fileWithFixedOverlappingSubFolders: ExportCCFile = {
+	projectName: "example-project",
+	apiVersion: "1.2",
+	fileChecksum: "invalid-md5-sample",
+	nodes: [
+		{
+			name: "root",
+			type: NodeType.FOLDER,
+			attributes: {},
+			children: [
+				{
+					name: "folder_1",
+					type: NodeType.FOLDER,
+					attributes: {},
+					children: [
+						{
+							name: "folder_1_1",
+							type: NodeType.FOLDER,
+							attributes: {},
+							children: [
+								{
+									name: "file_1_1_1",
+									type: NodeType.FILE,
+									attributes: {
+										custom_metric: 2
+									},
+									children: []
+								},
+								{
+									name: "file_1_1_2",
+									type: NodeType.FILE,
+									attributes: {
+										custom_metric: 2
+									},
+									children: []
+								}
+							],
+							fixedPosition: {
+								left: 10,
+								top: 5,
+								width: 25,
+								height: 25
+							}
+						},
+						{
+							name: "folder_1_2",
+							type: NodeType.FOLDER,
+							attributes: {},
+							children: [
+								{
+									name: "file_1_2_1",
+									type: NodeType.FILE,
+									attributes: {
+										custom_metric: 2
+									},
+									children: []
+								},
+								{
+									name: "file_1_2_2",
+									type: NodeType.FILE,
+									attributes: {
+										custom_metric: 2
+									},
+									children: []
+								}
+							],
+							fixedPosition: {
+								left: 15,
+								top: 5,
+								width: 25,
+								height: 25
+							}
+						}
+					],
+					fixedPosition: {
+						left: 5,
+						top: 5,
+						width: 30,
+						height: 30
+					}
+				},
+				{
+					name: "folder_2",
+					type: NodeType.FOLDER,
+					attributes: {},
+					children: [
+						{
+							name: "folder_2_1",
+							type: NodeType.FOLDER,
+							attributes: {},
+							children: [
+								{
+									name: "file_2_1_1",
+									type: NodeType.FILE,
+									attributes: {
+										custom_metric: 2
+									},
+									children: []
+								},
+								{
+									name: "file_2_1_2",
+									type: NodeType.FILE,
+									attributes: {
+										custom_metric: 2
+									},
+									children: []
+								}
+							]
+						},
+						{
+							name: "folder_2_2",
+							type: NodeType.FOLDER,
+							attributes: {},
+							children: [
+								{
+									name: "file_2_2_1",
+									type: NodeType.FILE,
+									attributes: {
+										custom_metric: 2
+									},
+									children: []
+								}
+							]
+						}
+					],
+					fixedPosition: {
+						left: 40,
+						top: 5,
+						width: 30,
+						height: 30
+					}
+				}
+			]
+		}
+	]
+}
+
 export const fileWithFixedFolders: ExportCCFile = {
 	projectName: "example-project",
 	apiVersion: "1.2",
