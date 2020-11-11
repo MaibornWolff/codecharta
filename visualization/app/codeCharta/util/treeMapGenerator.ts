@@ -63,18 +63,11 @@ function buildSquarifiedTreeMapsForFixedFolders(
 			const scaleY = fixedFolder.data.fixedPosition.height / squarified.height
 
 			// Scale the fixed (percentage) positions of a node by the right scale factor, so that it will be placed properly.
+			// The squarifiedNode coordinates x0, x1, y0, y1 are already assigned with positions from the treemap algorithm.
 			squarifiedNode.x0 = (squarifiedNode.x0 * scaleX + fixedFolder.data.fixedPosition.left) * scaleWidth
 			squarifiedNode.x1 = (squarifiedNode.x1 * scaleX + fixedFolder.data.fixedPosition.left) * scaleWidth
 			squarifiedNode.y0 = (squarifiedNode.y0 * scaleY + fixedFolder.data.fixedPosition.top) * scaleLength
 			squarifiedNode.y1 = (squarifiedNode.y1 * scaleY + fixedFolder.data.fixedPosition.top) * scaleLength
-
-			// TODO: remove outcommented code. It is more intuitive but not working though.
-			/*
-			squarifiedNode.x0 = (0 + fixedFolder.data.fixedPosition.left) * scaleWidth
-			squarifiedNode.x1 = squarifiedNode.x0 + (fixedFolder.data.fixedPosition.width * scaleWidth)
-			squarifiedNode.y0 = (0 + fixedFolder.data.fixedPosition.top) * scaleLength
-			squarifiedNode.y1 = squarifiedNode.y0 + (fixedFolder.data.fixedPosition.height * scaleLength)
-			*/
 
 			// Add x and y (absolute px) offsets from parent fixed folder, if any.
 			squarifiedNode.x0 += offsetX0
@@ -86,16 +79,17 @@ function buildSquarifiedTreeMapsForFixedFolders(
 			nodes.push(node)
 
 			if (hasFixedFolders(fixedFolder.data)) {
-				// Imagine the parent Folder has absoulte px-width of 341px
-				// We need to calculate a scale factor to transform a relative percentage fixed width/height to px.
+				// Imagine the parent Folder has absolute px-width of 341px
+				// We need to calculate a scale factor for the fixed child to transform a relative percentage fixed width/height to px.
 				// Example: 20% of 341px:
 				//  fixedWidth=20, parent Fixed Folder width: 341px => 20 * (scaleLength=341/100)
-				scaleLength = node.length / 100
-				scaleWidth = node.width / 100
+				// The original scaleWidth/scaleLength must be retained for the case that you have more than one fixedFolder on the same level.
+				const childRelativeLengthScale = node.length / 100
+				const childRelativeWidthScale = node.width / 100
 
 				Array.prototype.push.apply(
 					nodes,
-					buildSquarifiedTreeMapsForFixedFolders(fixedFolder, state, scaleLength, scaleWidth, squarifiedNode.x0, squarifiedNode.y0, heightScale, maxHeight, isDeltaState)
+					buildSquarifiedTreeMapsForFixedFolders(fixedFolder, state, childRelativeLengthScale, childRelativeWidthScale, squarifiedNode.x0, squarifiedNode.y0, heightScale, maxHeight, isDeltaState)
 				)
 
 				// the break is actually needed!
