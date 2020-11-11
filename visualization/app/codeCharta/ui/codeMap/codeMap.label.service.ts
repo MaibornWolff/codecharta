@@ -22,6 +22,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
 	private LABEL_CORNER_RADIUS = 35 //empirically gathered
+	private LABEL_HEIGHT_POSITION = 60
 
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
@@ -37,17 +38,19 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
+	//labels need to be scaled according to map or it will clip + looks bad
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, hightestNode: number) {
 		const state = this.storeService.getState()
+		const x = node.x0 - state.treeMap.mapSize
+		const y = node.z0
+		const z = node.y0 - state.treeMap.mapSize
+
+		const labelX = x + node.width / 2
+		const labelY = y + hightestNode
+		const labelYOrigin = y + node.height
+		const labelZ = z + node.length / 2
+
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
-			const x = node.x0 - state.treeMap.mapSize
-			const y = node.z0
-			const z = node.y0 - state.treeMap.mapSize
-
-			const labelX = x + node.width / 2
-			const labelY = y + node.height
-			const labelZ = z + node.length / 2
-
 			let labelText = ""
 
 			if (options.showNodeName) {
@@ -62,8 +65,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			const label = this.makeText(labelText, 30)
 
-			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
-			label.line = this.makeLine(labelX, labelY, labelZ)
+			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_POSITION + label.heightValue / 2, labelZ) //label_height
+			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
 
 			this.threeSceneService.labels.add(label.sprite)
 			this.threeSceneService.labels.add(label.line)
@@ -87,7 +90,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 
 		for (const label of this.labels) {
-			const labelHeightDifference = new Vector3(0, 60, 0)
+			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_POSITION, 0)
 			label.sprite.position
 				.sub(labelHeightDifference.clone())
 				.divide(this.currentScale.clone())
@@ -185,14 +188,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	private makeLine(x: number, y: number, z: number) {
+	private makeLine(x: number, y: number, yOrigin: number, z: number) {
 		const material = new LineBasicMaterial({
 			color: this.LABEL_COLOR_RGB,
 			linewidth: 2
 		})
 
 		const geometry = new Geometry()
-		geometry.vertices.push(new Vector3(x, y, z), new Vector3(x, y + 60, z))
+		geometry.vertices.push(new Vector3(x, yOrigin, z), new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z))
 
 		return new Line(geometry, material)
 	}

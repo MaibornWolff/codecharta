@@ -50,20 +50,32 @@ export class CodeMapRenderService {
 		const appSettings = this.storeService.getState().appSettings
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
+		const hightestNode = this.getHighestNode(sortedNodes)
 
 		this.codeMapLabelService.clearLabels()
 		if (showLabelNodeName || showLabelNodeMetric) {
 			let { amountOfTopLabels } = appSettings
 			for (let index = 0; index < sortedNodes.length && amountOfTopLabels !== 0; index++) {
 				if (sortedNodes[index].isLeaf) {
-					this.codeMapLabelService.addLabel(sortedNodes[index], {
-						showNodeName: showLabelNodeName,
-						showNodeMetric: showLabelNodeMetric
-					})
+					//get neighbors with label
+					//neighbor ==> width + margin + 1
+					this.codeMapLabelService.addLabel(
+						sortedNodes[index],
+						{
+							showNodeName: showLabelNodeName,
+							showNodeMetric: showLabelNodeMetric
+						},
+						hightestNode
+					)
 					amountOfTopLabels -= 1
 				}
 			}
 		}
+	}
+
+	private getHighestNode(sortedNodes: Node[]) {
+		const sortedNodeValues = sortedNodes.map(node => node.height)
+		return Math.max(...sortedNodeValues)
 	}
 
 	private setArrows(sortedNodes: Node[]) {
