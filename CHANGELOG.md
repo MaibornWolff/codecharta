@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   Activate/Deactivate the new option "Enable Experimental Features"
     -   The features will be shown/hidden accordingly
 -   "CustomViews", the first experimental feature has been added #1318
+
     -   It must be enabled by activating the new option in the Global Settings dialog as mentioned before.
     -   You can save your current map configurations to replay/restore them later.
     -   A saved CustomView can only be applied for it's original map.
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Improved search
+
     1. Not providing any star in the search bar from now on expects the input to
        be a wildcard search. Thus, files are going to match paths that have
        leading or following characters. E.g., `oo` is going to match
@@ -39,11 +41,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     1. Whitespace handling changed to ignore leading whitespace.
 
 -   Distribution metric #1188
+
     1. set rloc to default distribution metric, showing language percentages for real lines of code, if available. Else set to unary to show language distribution over files
 
 -   Improved file sorting in the file overview of the search bar
     -   Numbers are sorted naturally
     -   Characters are compared with their base character (e.g., `a` is now next to `á`).
+-   Label metric not shown by default anymore
 
 ### Removed 🗑
 
