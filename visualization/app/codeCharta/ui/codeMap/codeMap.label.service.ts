@@ -118,10 +118,12 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const multiLineContext = message.split("\n")
 
 		// setting canvas width/height before ctx draw, else canvas is empty
+		const firstMultiLineContextWidth = context.measureText(multiLineContext[0]).width
+		const secondMultiLineContextWidth = context.measureText(multiLineContext[1]).width
 		canvas.width =
-			context.measureText(multiLineContext[0]).width > context.measureText(multiLineContext[1]).width
-				? context.measureText(multiLineContext[0]).width + margin
-				: context.measureText(multiLineContext[1]).width + margin
+			firstMultiLineContextWidth > secondMultiLineContextWidth
+				? firstMultiLineContextWidth + margin
+				: secondMultiLineContextWidth + margin
 		canvas.height = margin + fontsize * multiLineContext.length
 
 		// bg
