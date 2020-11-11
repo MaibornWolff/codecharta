@@ -47,11 +47,28 @@ describe("treeMapGenerator", () => {
 				width: nodes[7].width,
 				length: nodes[7].length,
 				textFiles: {
-					x0: nodes[8].x0
+					x0: nodes[8].x0,
+					y0: nodes[8].y0,
+					width: nodes[8].width,
+					length: nodes[8].length
+				},
+				tables: {
+					x0: nodes[10].x0,
+					y0: nodes[10].y0,
+					width: nodes[10].width,
+					length: nodes[10].length
 				}
 			}
 
-			expect(fixedResourcesFolder.textFiles.x0).toBeGreaterThan(fixedResourcesFolder.x0)
+			expect(fixedResourcesFolder.textFiles.x0).toBeGreaterThanOrEqual(fixedResourcesFolder.x0)
+			expect(fixedResourcesFolder.textFiles.y0).toBeGreaterThanOrEqual(fixedResourcesFolder.y0)
+			expect(fixedResourcesFolder.tables.x0).toBeGreaterThanOrEqual(fixedResourcesFolder.x0)
+			expect(fixedResourcesFolder.tables.y0).toBeGreaterThanOrEqual(fixedResourcesFolder.y0)
+
+			expect(fixedResourcesFolder.textFiles.width).toBeLessThanOrEqual(fixedResourcesFolder.width)
+			expect(fixedResourcesFolder.textFiles.length).toBeLessThanOrEqual(fixedResourcesFolder.length)
+			expect(fixedResourcesFolder.tables.width).toBeLessThanOrEqual(fixedResourcesFolder.width)
+			expect(fixedResourcesFolder.tables.length).toBeLessThanOrEqual(fixedResourcesFolder.length)
 
 			expect(nodes).toMatchSnapshot()
 		})
