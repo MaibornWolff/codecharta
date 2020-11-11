@@ -122,6 +122,95 @@ It is possible to fixate a folder and define its children to be fixed as well.
 All children of a parent Fixed Folder must be defined as fixed by adding the `fixedPosition` attribute in the `.cc.json` file.
 A fixed child will be positioned relatively to its parent.
 
+```json
+{
+  "projectName": "Sample Fix",
+  "apiVersion": "1.2",
+  "nodes": [
+    {
+		"name": "root",
+		"type": "Folder",
+		"attributes": {},
+		"children": [
+			{
+				"name": "folder_1_red",
+				"type": "Folder",
+				"attributes": {},
+				"children": [
+					{
+						"name": "folder_1.1_red",
+						"type": "Folder",
+						"attributes":{},
+						"children": [
+							{
+							  "name": "red_child_1.1.file",
+							  "type": "File",
+							  "attributes":{
+								"rloc": 12.0
+							  }
+							}
+						],
+						"fixedPosition": {
+							"left": 10,
+							"top": 10,
+							"width": 80,
+							"height": 50
+						}
+					},
+					{
+						"name": "folder_1.2_red",
+						"type": "Folder",
+						"attributes":{},
+						"children": [
+							{
+							  "name": "red_child_1.2.file",
+							  "type": "File",
+							  "attributes":{
+								"rloc": 6.0
+							  }
+							}
+						],
+						"fixedPosition": {
+							"left": 80,
+							"top": 70,
+							"width": 10,
+							"height": 10
+						}
+					}
+				],
+				"fixedPosition": {
+					"left": 10,
+					"top": 10,
+					"width": 40,
+					"height": 60
+				}
+			},
+			{
+				"name": "folder_2_orange",
+				"type": "Folder",
+				"attributes": {},
+				"children": [
+					{
+					  "name": "orange.file",
+					  "type": "File",
+					  "attributes":{
+						"rloc": 10.0
+					  }
+					}
+				],
+				"fixedPosition": {
+					"left": 10,
+					"top": 80,
+					"width": 50,
+					"height": 10
+				}
+			}
+		]
+	}
+  ]
+}
+```
+
 ## Restrictions
 
 The following rules apply in order to build a valid custom `.cc.json`:
