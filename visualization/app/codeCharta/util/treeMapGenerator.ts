@@ -117,6 +117,10 @@ function buildSquarifiedTreeMapsForFixedFolders(
 				)
 
 				// the break is actually needed!
+				// the inner for-loop loops over the (parent) fixedFolder and its descendants.
+				// if a direct child is a fixedFolder as well it will be handled by the recursive function call.
+				// In this case, we must break the inner loop after handling the fixedFolder child recursively
+				// and therefore prevent that the fixed child will be added as a node twice.
 				break
 			}
 		}
