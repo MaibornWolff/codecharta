@@ -18,9 +18,11 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(hierarchyNode.data, heightScale, state, isDeltaState)]
 
 		// Multiply mapSize of (default) 250px by 2 = 500px and add the total margin
+		const totalMapSize = state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin
+
 		// than divide through the root folder width and length to get a scale factor for calculation for all following nodes.
-		const scaleLength = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / nodes[0].width
-		const scaleWidth = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / nodes[0].length
+		const scaleLength = totalMapSize / nodes[0].width
+		const scaleWidth = totalMapSize / nodes[0].length
 
 		// Scale the 100x100 root folder to a bigger map
 		scaleRoot(nodes[0], scaleLength, scaleWidth)
@@ -52,6 +54,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 
 	for (const fixedFolder of hierarchyNode.children) {
 
+		const fixedPosition = fixedFolder.data.fixedPosition
 		const squarified = getSquarifiedTreeMap(fixedFolder.data, state)
 
 		for (const squarifiedNode of squarified.treeMap.descendants()) {
@@ -59,15 +62,15 @@ function buildSquarifiedTreeMapsForFixedFolders(
 			// The following scaling factors are used later to calculate out the original percentage fixed width/height.
 			// Example: Width and Height fixed at 20. Added margins 42px (absolute value) for each = 62px
 			//  20/62 = 0.322...       62 x 0.322... = 20 :)
-			const scaleX = fixedFolder.data.fixedPosition.width / squarified.width
-			const scaleY = fixedFolder.data.fixedPosition.height / squarified.height
+			const scaleX = fixedPosition.width / squarified.width
+			const scaleY = fixedPosition.height / squarified.height
 
 			// Scale the fixed (percentage) positions of a node by the right scale factor, so that it will be placed properly.
 			// The squarifiedNode coordinates x0, x1, y0, y1 are already assigned with positions from the treemap algorithm.
-			squarifiedNode.x0 = (squarifiedNode.x0 * scaleX + fixedFolder.data.fixedPosition.left) * scaleWidth
-			squarifiedNode.x1 = (squarifiedNode.x1 * scaleX + fixedFolder.data.fixedPosition.left) * scaleWidth
-			squarifiedNode.y0 = (squarifiedNode.y0 * scaleY + fixedFolder.data.fixedPosition.top) * scaleLength
-			squarifiedNode.y1 = (squarifiedNode.y1 * scaleY + fixedFolder.data.fixedPosition.top) * scaleLength
+			squarifiedNode.x0 = (squarifiedNode.x0 * scaleX + fixedPosition.left) * scaleWidth
+			squarifiedNode.x1 = (squarifiedNode.x1 * scaleX + fixedPosition.left) * scaleWidth
+			squarifiedNode.y0 = (squarifiedNode.y0 * scaleY + fixedPosition.top) * scaleLength
+			squarifiedNode.y1 = (squarifiedNode.y1 * scaleY + fixedPosition.top) * scaleLength
 
 			// Add x and y (absolute px) offsets from parent fixed folder, if any.
 			squarifiedNode.x0 += offsetX0

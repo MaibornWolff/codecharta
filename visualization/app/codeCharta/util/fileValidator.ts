@@ -169,7 +169,7 @@ function validateFixedFolders(
 	}
 
 	for (const node of childNodes){
-		if (Boolean(node.children)){
+		if (node.children){
 			validateFixedFolders(file, result, node.children)
 		}
 	}
