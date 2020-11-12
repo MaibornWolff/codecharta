@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.62.0] - 2020-11-12
+
+### Added 🚀
+
 -   A new option in the Global Settings allows to enable/disable experimental features #1318
     -   Click on the settings button in the upper right corner to open the Global Settings dialog.
     -   Activate/Deactivate the new option "Enable Experimental Features"
