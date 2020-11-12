@@ -120,11 +120,7 @@ function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidat
 	}
 }
 
-function validateFixedFolders(
-	file: ExportCCFile, 
-	result: CCValidationResult, 
-	childNodes: CodeMapNode[] = file.nodes[0].children
-) {
+function validateFixedFolders(file: ExportCCFile, result: CCValidationResult, childNodes: CodeMapNode[] = file.nodes[0].children) {
 	const notFixed: string[] = []
 	const outOfBounds: string[] = []
 	const intersections: Set<string> = new Set()
@@ -168,8 +164,8 @@ function validateFixedFolders(
 		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: ${[...intersections].join(", ")}`)
 	}
 
-	for (const node of childNodes){
-		if (node.children){
+	for (const node of childNodes) {
+		if (node.children) {
 			validateFixedFolders(file, result, node.children)
 		}
 	}

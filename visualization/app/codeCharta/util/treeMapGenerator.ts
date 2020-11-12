@@ -27,7 +27,19 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 		// Scale the 100x100 root folder to a bigger map
 		scaleRoot(nodes[0], scaleLength, scaleWidth)
 
-		return nodes.concat(buildSquarifiedTreeMapsForFixedFolders(hierarchyNode, state, scaleLength, scaleWidth, 0, 0, heightScale, maxHeight, isDeltaState))
+		return nodes.concat(
+			buildSquarifiedTreeMapsForFixedFolders(
+				hierarchyNode,
+				state,
+				scaleLength,
+				scaleWidth,
+				0,
+				0,
+				heightScale,
+				maxHeight,
+				isDeltaState
+			)
+		)
 	}
 
 	const squarifiedTreeMap = getSquarifiedTreeMap(map, state)
@@ -53,7 +65,6 @@ function buildSquarifiedTreeMapsForFixedFolders(
 	const nodes = []
 
 	for (const fixedFolder of hierarchyNode.children) {
-
 		const fixedPosition = fixedFolder.data.fixedPosition
 		const squarified = getSquarifiedTreeMap(fixedFolder.data, state)
 
@@ -92,7 +103,17 @@ function buildSquarifiedTreeMapsForFixedFolders(
 
 				Array.prototype.push.apply(
 					nodes,
-					buildSquarifiedTreeMapsForFixedFolders(fixedFolder, state, childRelativeLengthScale, childRelativeWidthScale, squarifiedNode.x0, squarifiedNode.y0, heightScale, maxHeight, isDeltaState)
+					buildSquarifiedTreeMapsForFixedFolders(
+						fixedFolder,
+						state,
+						childRelativeLengthScale,
+						childRelativeWidthScale,
+						squarifiedNode.x0,
+						squarifiedNode.y0,
+						heightScale,
+						maxHeight,
+						isDeltaState
+					)
 				)
 
 				// the break is actually needed!

@@ -740,7 +740,6 @@ export const TEST_FILE_DATA: CCFile = {
 			markedPackages: []
 		}
 	}
-
 }
 
 export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
@@ -757,13 +756,13 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 				name: "src",
 				path: "/root/src",
 				type: NodeType.FOLDER,
-				attributes:{},
+				attributes: {},
 				children: [
 					{
 						name: "main",
 						path: "/root/src/main",
 						type: NodeType.FOLDER,
-						attributes:{},
+						attributes: {},
 						children: [
 							{
 								name: "file1.java",
@@ -787,7 +786,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 						name: "test",
 						path: "/root/src/test",
 						type: NodeType.FOLDER,
-						attributes:{},
+						attributes: {},
 						children: [
 							{
 								name: "otherFile.java",
@@ -811,19 +810,19 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 				name: "resources",
 				path: "/root/resources",
 				type: NodeType.FOLDER,
-				attributes:{},
+				attributes: {},
 				children: [
 					{
 						name: "textFiles",
 						path: "/root/resources/textFiles",
 						type: NodeType.FOLDER,
-						attributes:{},
+						attributes: {},
 						children: [
 							{
 								name: "file.txt",
 								path: "/root/resources/textFiles/file.txt",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 5
 								}
 							}
@@ -839,13 +838,13 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 						name: "tables",
 						path: "/root/resources/tables",
 						type: NodeType.FOLDER,
-						attributes:{},
+						attributes: {},
 						children: [
 							{
 								name: "table1.xlsx",
 								path: "/root/resources/tables/table1.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -853,7 +852,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table2.xlsx",
 								path: "/root/resources/tables/table2.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -861,7 +860,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table3.xlsx",
 								path: "/root/resources/tables/table3.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -869,7 +868,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table4.xlsx",
 								path: "/root/resources/tables/table4.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -877,7 +876,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table5.xlsx",
 								path: "/root/resources/tables/table5.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -885,7 +884,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table6.xlsx",
 								path: "/root/resources/tables/table6.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -893,7 +892,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table7.xlsx",
 								path: "/root/resources/tables/table7.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -901,7 +900,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table8.xlsx",
 								path: "/root/resources/tables/table8.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -909,7 +908,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table9.xlsx",
 								path: "/root/resources/tables/table9.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							},
@@ -917,7 +916,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 								name: "table10.xlsx",
 								path: "/root/resources/tables/table10.xlsx",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							}
@@ -969,13 +968,13 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 						name: "folder_1.1_red",
 						path: "/root/folder_1_red/folder_1.1_red",
 						type: NodeType.FOLDER,
-						attributes:{},
+						attributes: {},
 						children: [
 							{
 								name: "red_child_1.1.file",
 								path: "/root/folder_1_red/folder_1.1_red/red_child_1.1.file",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 12
 								}
 							}
@@ -991,13 +990,13 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 						name: "folder_1.2_red",
 						path: "/root/folder_1_red/folder_1.2_red",
 						type: NodeType.FOLDER,
-						attributes:{},
+						attributes: {},
 						children: [
 							{
 								name: "red_child_1.2.file",
 								path: "/root/folder_1_red/folder_1.2_red/red_child_1.2.file",
 								type: NodeType.FILE,
-								attributes:{
+								attributes: {
 									rloc: 6
 								}
 							}
@@ -1027,7 +1026,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 						name: "orange.file",
 						path: "/root/folder_2_orange7orange.file",
 						type: NodeType.FILE,
-						attributes:{
+						attributes: {
 							rloc: 10
 						}
 					}

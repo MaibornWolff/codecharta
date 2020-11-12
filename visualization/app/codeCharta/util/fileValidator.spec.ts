@@ -174,11 +174,10 @@ describe("FileValidator", () => {
 	})
 
 	describe("fixed sub folders validation", () => {
-		
 		it("should throw an error, if two sub folders horizontally overlap", () => {
 			file = clone(fileWithFixedOverlappingSubFolders)
 			const folder1: CodeMapNode = file.nodes[0].children[0].children[0]
-			const folder2: CodeMapNode= file.nodes[0].children[0].children[1]
+			const folder2: CodeMapNode = file.nodes[0].children[0].children[1]
 
 			const expectedError: CCValidationResult = {
 				error: [
