@@ -1711,7 +1711,7 @@ export const DEFAULT_STATE: State = {
 		searchPanelMode: SearchPanelMode.minimized,
 		isAttributeSideBarVisible: false,
 		panelSelection: PanelSelection.NONE,
-		showMetricLabelNameValue: true,
+		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false
 	},
