@@ -21,7 +21,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_COLOR_RGBA = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb, this.mapLabelColors.alpha)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
-	private LABEL_CORNER_RADIUS = 35 //empirically gathered
+	private LABEL_CORNER_RADIUS = 40 //empirically gathered
 
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
@@ -118,7 +118,12 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const multiLineContext = message.split("\n")
 
 		// setting canvas width/height before ctx draw, else canvas is empty
-		canvas.width = context.measureText(message).width + margin
+		const firstMultiLineContextWidth = context.measureText(multiLineContext[0]).width
+		const secondMultiLineContextWidth = context.measureText(multiLineContext[1]).width
+		canvas.width =
+			firstMultiLineContextWidth > secondMultiLineContextWidth
+				? firstMultiLineContextWidth + margin
+				: secondMultiLineContextWidth + margin
 		canvas.height = margin + fontsize * multiLineContext.length
 
 		// bg

@@ -6,7 +6,7 @@ describe("showMetricLabelNameValue", () => {
 		it("should initialize the default state", () => {
 			const result = showMetricLabelNameValue(undefined, {} as ShowMetricLabelNameValueAction)
 
-			expect(result).toEqual(true)
+			expect(result).toEqual(false)
 		})
 	})
 
@@ -20,7 +20,7 @@ describe("showMetricLabelNameValue", () => {
 		it("should set default showMetricLabelNameValue", () => {
 			const result = showMetricLabelNameValue(false, setShowMetricLabelNameValue())
 
-			expect(result).toEqual(true)
+			expect(result).toEqual(false)
 		})
 	})
 })
