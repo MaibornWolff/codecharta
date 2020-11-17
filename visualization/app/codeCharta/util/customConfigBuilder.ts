@@ -3,24 +3,25 @@ import { State } from "../codeCharta.model"
 import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 
-const CC_CUSTOM_VIEW_API_VERSION = "1.0.0"
+const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
-export function buildCustomConfigFromState(viewName: string, state: State): CustomConfig {
+export function buildCustomConfigFromState(configName: string, state: State): CustomConfig {
 	const customConfigFileStateConnector = new CustomConfigFileStateConnector(state.files)
 
 	const uniqueIdentifier = createCustomConfigIdentifier(
 		customConfigFileStateConnector.getMapSelectionMode(),
 		customConfigFileStateConnector.getSelectedMaps(),
-		viewName
+		configName
 	)
 
 	const customConfig: CustomConfig = {
 		id: uniqueIdentifier,
-		name: viewName,
+		name: configName,
 		mapSelectionMode: customConfigFileStateConnector.getMapSelectionMode(),
 		assignedMaps: customConfigFileStateConnector.getSelectedMaps(),
 		mapChecksum: customConfigFileStateConnector.getChecksumOfAssignedMaps(),
-		customConfigVersion: CC_CUSTOM_VIEW_API_VERSION,
+		customConfigVersion: CUSTOM_CONFIG_API_VERSION,
+		creationTime: Date.now(),
 		stateSettings: {
 			appSettings: undefined,
 			dynamicSettings: undefined,
@@ -43,8 +44,8 @@ export function buildCustomConfigFromState(viewName: string, state: State): Cust
 	return customConfig
 }
 
-export function createCustomConfigIdentifier(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], viewName: string) {
-	return mapSelectionMode + selectedMaps.join("") + viewName
+export function createCustomConfigIdentifier(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], configName: string) {
+	return mapSelectionMode + selectedMaps.join("") + configName
 }
 
 function initializeAppSettings(target: CustomConfig) {

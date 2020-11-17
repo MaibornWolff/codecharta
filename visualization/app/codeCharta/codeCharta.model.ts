@@ -213,7 +213,7 @@ export interface MetricData {
 
 export interface LocalStorageCustomConfigs {
 	version: string
-	customConfigs: [string, RecursivePartial<CustomConfig>][]
+	customConfigs: [string, CustomConfig][]
 }
 
 export interface LocalStorageScenarios {
@@ -309,16 +309,13 @@ export function stateObjectReplacer(this, key) {
 
 export function stateObjectReviver(this, key) {
 	const valueToRevive = this[key]
-	if (typeof valueToRevive !== "object" || valueToRevive === null) {
-		return valueToRevive
-	}
 
 	// our state has not got a Map so far
 	// Nevertheless, we keep this logic
-	if (valueToRevive.dataType === "Map") {
+	if (valueToRevive?.dataType === "Map") {
 		return new Map(valueToRevive.value)
 	}
-	if (valueToRevive.dataType === "Set") {
+	if (valueToRevive?.dataType === "Set") {
 		return new Set(valueToRevive.value)
 	}
 

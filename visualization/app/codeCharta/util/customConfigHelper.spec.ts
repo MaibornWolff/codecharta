@@ -3,14 +3,14 @@ import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfi
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 import * as CustomConfigBuilder from "./customConfigBuilder"
-import { LocalStorageCustomConfigs, RecursivePartial, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
+import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 
 describe("CustomConfigHelper", () => {
 	describe("addCustomConfig", () => {
 		it("should add custom config and store them to localStorage", () => {
 			const customConfigStub = {
 				id: "",
-				name: "stubbedView1",
+				name: "stubbedConfig1",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["test.cc.json"],
 				stateSettings: {}
@@ -34,7 +34,7 @@ describe("CustomConfigHelper", () => {
 			expect(JSON.stringify).toHaveBeenCalledWith(expect.anything(), stateObjectReplacer)
 
 			expect(localStorage.setItem).toHaveBeenCalledWith(
-				CustomConfigHelper["CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT"],
+				CustomConfigHelper["CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT"],
 				"customConfigStub_asJson"
 			)
 			expect(
@@ -48,13 +48,13 @@ describe("CustomConfigHelper", () => {
 
 	describe("loadCustomConfigs", () => {
 		it("should load CustomConfigs from localStorage", () => {
-			const customConfigStub: RecursivePartial<CustomConfig> = {
+			const customConfigStub = {
 				id: "",
-				name: "stubbedView1",
+				name: "stubbedConfig1",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["test.cc.json"],
 				stateSettings: {}
-			}
+			} as CustomConfig
 
 			const customConfigId = CustomConfigBuilder.createCustomConfigIdentifier(
 				customConfigStub.mapSelectionMode,
@@ -78,7 +78,7 @@ describe("CustomConfigHelper", () => {
 			const loadedCustomConfigs = CustomConfigHelper["loadCustomConfigs"]()
 			expect(loadedCustomConfigs.size).toBe(1)
 
-			expect(localStorage.getItem).toHaveBeenCalledWith(CustomConfigHelper["CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT"])
+			expect(localStorage.getItem).toHaveBeenCalledWith(CustomConfigHelper["CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT"])
 			expect(JSON.parse).toHaveBeenCalledWith(undefined, stateObjectReviver)
 		})
 	})
@@ -87,7 +87,7 @@ describe("CustomConfigHelper", () => {
 		it("should count CustomConfigs for a specific map name", () => {
 			const customConfigStub1 = {
 				id: "1",
-				name: "stubbedView1",
+				name: "stubbedConfig1",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["testy.cc.json"],
 				mapChecksum: "123",
@@ -96,7 +96,7 @@ describe("CustomConfigHelper", () => {
 			} as CustomConfig
 			const customConfigStub2 = {
 				id: "2",
-				name: "stubbedView2",
+				name: "stubbedConfig2",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["testy.cc.json"],
 				mapChecksum: "123",
@@ -105,7 +105,7 @@ describe("CustomConfigHelper", () => {
 			} as CustomConfig
 			const customConfigStub3 = {
 				id: "3",
-				name: "stubbedView3",
+				name: "stubbedConfig3",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["another.cc.json"],
 				mapChecksum: "123",
@@ -114,7 +114,7 @@ describe("CustomConfigHelper", () => {
 			} as CustomConfig
 			const customConfigStub4 = {
 				id: "4",
-				name: "stubbedView4",
+				name: "stubbedConfig4",
 				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 				assignedMaps: ["another.cc.json"],
 				mapChecksum: "123",
@@ -154,11 +154,11 @@ describe("CustomConfigHelper", () => {
 		})
 	})
 
-	describe("getViewNameSuggestion", () => {
+	describe("getConfigNameSuggestion", () => {
 		it("should return the right CustomConfig name suggestion for SINGLE mode", () => {
 			const customConfigStub1 = {
 				id: "1",
-				name: "stubbedView1",
+				name: "stubbedConfig1",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["testy.cc.json"],
 				mapChecksum: "123",
@@ -176,16 +176,16 @@ describe("CustomConfigHelper", () => {
 
 			// Reset customConfigs in CustomConfigHelper
 			CustomConfigHelper["customConfigs"].clear()
-			expect(CustomConfigHelper.getViewNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe("testy.cc.json #1")
+			expect(CustomConfigHelper.getConfigNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe("testy.cc.json #1")
 
 			CustomConfigHelper["customConfigs"].set(customConfigStub1.id, customConfigStub1)
-			expect(CustomConfigHelper.getViewNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe("testy.cc.json #2")
+			expect(CustomConfigHelper.getConfigNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe("testy.cc.json #2")
 		})
 
 		it("should return the right CustomConfig name suggestion for MULTIPLE mode", () => {
 			const customConfigStub1 = {
 				id: "1",
-				name: "stubbedView1",
+				name: "stubbedConfig1",
 				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 				assignedMaps: ["testy1.cc.json", "testy2.cc.json"],
 				mapChecksum: "123;1234",
@@ -203,12 +203,12 @@ describe("CustomConfigHelper", () => {
 
 			// Reset customConfigs in CustomConfigHelper
 			CustomConfigHelper["customConfigs"].clear()
-			expect(CustomConfigHelper.getViewNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe(
+			expect(CustomConfigHelper.getConfigNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe(
 				"testy1.cc.json testy2.cc.json #1"
 			)
 
 			CustomConfigHelper["customConfigs"].set(customConfigStub1.name, customConfigStub1)
-			expect(CustomConfigHelper.getViewNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe(
+			expect(CustomConfigHelper.getConfigNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe(
 				"testy1.cc.json testy2.cc.json #2"
 			)
 		})
@@ -216,7 +216,7 @@ describe("CustomConfigHelper", () => {
 		it("should return the right CustomConfig name suggestion for DELTA mode", () => {
 			const customConfigStub1 = {
 				id: "1",
-				name: "stubbedView1",
+				name: "stubbedConfig1",
 				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 				assignedMaps: ["testy1.cc.json", "testy2.cc.json"],
 				mapChecksum: "123;1234",
@@ -234,12 +234,12 @@ describe("CustomConfigHelper", () => {
 
 			// Reset customConfigs in CustomConfigHelper
 			CustomConfigHelper["customConfigs"].clear()
-			expect(CustomConfigHelper.getViewNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe(
+			expect(CustomConfigHelper.getConfigNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe(
 				"testy1.cc.json testy2.cc.json #1"
 			)
 
 			CustomConfigHelper["customConfigs"].set(customConfigStub1.name, customConfigStub1)
-			expect(CustomConfigHelper.getViewNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe(
+			expect(CustomConfigHelper.getConfigNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe(
 				"testy1.cc.json testy2.cc.json #2"
 			)
 		})
@@ -251,7 +251,7 @@ describe("CustomConfigHelper", () => {
 			getJointMapNameMock.mockReturnValueOnce("")
 			CustomConfigFileStateConnector.prototype.getJointMapName = getJointMapNameMock
 
-			expect(CustomConfigHelper.getViewNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe("")
+			expect(CustomConfigHelper.getConfigNameSuggestionByFileState(CustomConfigFileStateConnector.prototype)).toBe("")
 		})
 	})
 
@@ -261,7 +261,7 @@ describe("CustomConfigHelper", () => {
 
 			const customConfigStub1 = {
 				id: "",
-				name: "stubbedView1",
+				name: "stubbedConfig1",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["testy.cc.json"],
 				mapChecksum: "123",
@@ -364,7 +364,7 @@ describe("CustomConfigHelper", () => {
 		it("should set applicable-flags to true, if assignedMap name and checksums are matching", () => {
 			const customConfigStub1 = {
 				id: "1",
-				name: "view1",
+				name: "config1",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["mocky.cc.json"],
 				mapChecksum: "123",
@@ -373,7 +373,7 @@ describe("CustomConfigHelper", () => {
 			} as CustomConfig
 			const customConfigStub2 = {
 				id: "2",
-				name: "view2",
+				name: "config2",
 				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 				assignedMaps: ["another.cc.json", "delta.cc.json"],
 				mapChecksum: "1234",
@@ -410,18 +410,18 @@ describe("CustomConfigHelper", () => {
 
 			const singleGroup = customConfigItemGroups.get("mocky.cc.json_SINGLE")
 			expect(singleGroup.hasApplicableItems).toBe(true)
-			expect(singleGroup.customConfigItems[0].name).toBe("view1")
+			expect(singleGroup.customConfigItems[0].name).toBe("config1")
 			expect(singleGroup.customConfigItems[0].isApplicable).toBe(true)
 
 			const deltaGroup = customConfigItemGroups.get("another.cc.json_delta.cc.json_DELTA")
-			expect(deltaGroup.customConfigItems[0].name).toBe("view2")
+			expect(deltaGroup.customConfigItems[0].name).toBe("config2")
 			expect(deltaGroup.customConfigItems[0].isApplicable).toBe(true)
 		})
 
 		it("should set applicable-flags to false, if assignedMap name or checksums are not matching", () => {
 			const customConfigStub1 = {
 				id: "1",
-				name: "view1",
+				name: "config1",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["mocky.cc.json"],
 				mapChecksum: "123",
@@ -430,7 +430,7 @@ describe("CustomConfigHelper", () => {
 			} as CustomConfig
 			const customConfigStub2 = {
 				id: "2",
-				name: "view2",
+				name: "config2",
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["another.mocky.cc.json"],
 				mapChecksum: "1234",
@@ -439,7 +439,7 @@ describe("CustomConfigHelper", () => {
 			} as CustomConfig
 			const customConfigStub3 = {
 				id: "3",
-				name: "view3",
+				name: "config3",
 				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 				assignedMaps: ["another.cc.json", "delta.cc.json"],
 				mapChecksum: "1234;5678",
@@ -479,15 +479,15 @@ describe("CustomConfigHelper", () => {
 			const customConfigItemGroups = CustomConfigHelper.getCustomConfigItemGroups(CustomConfigFileStateConnector.prototype)
 
 			const singleGroup = customConfigItemGroups.get("mocky.cc.json_SINGLE")
-			expect(singleGroup.customConfigItems[0].name).toBe("view1")
+			expect(singleGroup.customConfigItems[0].name).toBe("config1")
 			expect(singleGroup.customConfigItems[0].isApplicable).toBe(false)
 
 			const anotherSingleGroup = customConfigItemGroups.get("another.mocky.cc.json_SINGLE")
-			expect(anotherSingleGroup.customConfigItems[0].name).toBe("view2")
+			expect(anotherSingleGroup.customConfigItems[0].name).toBe("config2")
 			expect(anotherSingleGroup.customConfigItems[0].isApplicable).toBe(false)
 
 			const deltaGroup = customConfigItemGroups.get("another.cc.json_delta.cc.json_DELTA")
-			expect(deltaGroup.customConfigItems[0].name).toBe("view3")
+			expect(deltaGroup.customConfigItems[0].name).toBe("config3")
 			expect(deltaGroup.customConfigItems[0].isApplicable).toBe(false)
 		})
 	})

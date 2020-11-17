@@ -70,29 +70,32 @@
 			height: 48px;
 			width: 12%;
 			text-align: center;
+			line-height: 48px;
+			background-color: #00a091;
+			color: #ffffff;
 
 			i.fa {
-				font-size: x-small;
+				font-size: 12px;
 				margin-left: 0;
-			}
-
-			&.add {
-				display: inline-block;
-				text-align: center;
-				line-height: 48px;
-				background-color: #00a091;
 			}
 
 			&.remove {
 				display: inline-flex;
 				justify-content: center;
 				color: #b30000;
+				background-color: transparent;
 			}
+		}
+
+		.action-button:disabled,
+		.action-button[disabled] {
+			background-color: #e6e6e6;
+			color: #949494;
 		}
 
 		.custom-configs-dialog-name {
 			display: inline-block;
-			width: 86%;
+			width: 60%;
 			min-height: 48px;
 		}
 

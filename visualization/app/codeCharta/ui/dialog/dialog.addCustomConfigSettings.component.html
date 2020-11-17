@@ -17,13 +17,23 @@
 					ng-on-keyup="$ctrl.validateCustomConfigName()"
 				/>
 			</md-input-container>
-			<div class="md-block">
-				<div class="warning" ng-bind-html="$ctrl._viewModel.addWarningMessage"></div>
+			<div class="md-block" ng-show="$ctrl._viewModel.addErrorMessage.length > 0">
+				<div class="error">
+					<i class="fa fa-warning"></i>
+					<span>{{ $ctrl._viewModel.addErrorMessage }}</span>
+				</div>
 			</div>
 		</div>
 	</md-dialog-content>
 
 	<md-dialog-actions>
+		<span class="warning" ng-show="$ctrl._viewModel.localStorageSizeWarningMessage.length > 0">
+			<span>{{ $ctrl._viewModel.localStorageSizeWarningMessage }}</span>
+		</span>
+		<span ng-show="$ctrl._viewModel.localStorageSizeWarningMessage.length > 0">
+			<md-button ng-click="$ctrl.showConfirmDialog()" class="md-warn" title="Download old unused Configs as a backup file and then delete them in the browser.">Download & Purge ...</md-button>
+		</span>
+
 		<md-button ng-click="$ctrl.addCustomConfig()" ng-disabled="!$ctrl.isNewCustomConfigValid()" class="md-primary">Add</md-button>
 	</md-dialog-actions>
 </md-dialog>

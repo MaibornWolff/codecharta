@@ -6,21 +6,34 @@ import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
 import { CustomConfigFileStateConnector } from "../customConfigs/customConfigFileStateConnector"
 import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
+import {
+	CustomConfig,
+	CustomConfigsDownloadFile,
+	ExportCustomConfig
+} from "../../model/customConfig/customConfig.api.model";
+import { FileNameHelper } from "../../util/fileNameHelper";
+import { FileDownloader } from "../../util/fileDownloader";
+import { stateObjectReplacer } from "../../codeCharta.model";
 
 export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSubscriber {
+
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
+	private purgeableConfigs: Set<CustomConfig> = new Set()
 
 	private _viewModel: {
 		customConfigName: string
-		addWarningMessage: string
+		addErrorMessage: string
+		localStorageSizeWarningMessage: string
 	} = {
 		customConfigName: "",
-		addWarningMessage: ""
+		addErrorMessage: "",
+		localStorageSizeWarningMessage: ""
 	}
 
 	constructor(private $rootScope: IRootScopeService, private $mdDialog, private storeService: StoreService) {
 		FilesService.subscribe(this.$rootScope, this)
 		this.onFilesSelectionChanged(this.storeService.getState().files)
+		this.validateLocalStorageSize()
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
@@ -28,7 +41,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 
 		// Provide a new suggestion for the CustomConfig name, if the selected map (name) has changed
 		// And validate it, in case the name is already given to an existing CustomConfig.
-		this._viewModel.customConfigName = CustomConfigHelper.getViewNameSuggestionByFileState(this.customConfigFileStateConnector)
+		this._viewModel.customConfigName = CustomConfigHelper.getConfigNameSuggestionByFileState(this.customConfigFileStateConnector)
 		this.validateCustomConfigName()
 	}
 
@@ -44,6 +57,63 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		this.hide()
 	}
 
+	downloadAndCollectPurgeableOldConfigs() {
+		const customConfigs = CustomConfigHelper.getCustomConfigs()
+
+		const downloadableConfigs: Map<string, ExportCustomConfig> = new Map()
+		const daysPerMonth = 30
+
+		for (const [key, value] of customConfigs.entries()) {
+			let creationTime = value?.creationTime
+			if (creationTime === undefined) {
+				// Fallback, if creationTime property is not present. This can happen because it was released later.
+				creationTime = Date.now()
+			}
+
+			// Download 6 month old or older Configs.
+			// TODO: Replace mocked timestamp with value.creationTime, remove log
+			const ageInMonth = ((Date.now() - 1577836800000) / (1000 * 60 * 60 * 24 * daysPerMonth))
+
+			console.log(Date.now(), 1577836800000, Date.now() - 1577836800000, ageInMonth)
+
+			if (ageInMonth <= 6) {
+				continue
+			}
+
+			const exportCustomConfig: ExportCustomConfig = {
+				assignedMaps: value.assignedMaps,
+				customConfigVersion: value.customConfigVersion,
+				id: value.id,
+				mapChecksum: value.mapChecksum,
+				mapSelectionMode: value.mapSelectionMode,
+				name: value.name,
+				stateSettings: value.stateSettings
+			}
+
+			downloadableConfigs.set(key, exportCustomConfig)
+			this.purgeableConfigs.add(value)
+		}
+
+		const customConfigsDownloadFile: CustomConfigsDownloadFile = {
+			downloadApiVersion: "1.0.0",
+			timestamp: Date.now(),
+			customConfigs: downloadableConfigs,
+		}
+
+		let fileName = `${FileNameHelper.getNewTimestamp()}.cc.config.json`
+
+		if (
+			!this.customConfigFileStateConnector.isDeltaMode() &&
+			this.customConfigFileStateConnector.getAmountOfUploadedFiles() === 1 &&
+			this.customConfigFileStateConnector.isEachFileSelected()
+		) {
+			// If only one map is uploaded/present in SINGLE mode, prefix the .cc.config.json file with its name.
+			fileName = `${FileNameHelper.withoutCCJsonExtension(this.customConfigFileStateConnector.getJointMapName())}_${fileName}`
+		}
+
+		FileDownloader.downloadData(JSON.stringify(customConfigsDownloadFile, stateObjectReplacer), fileName)
+	}
+
 	validateCustomConfigName() {
 		if (
 			CustomConfigHelper.hasCustomConfig(
@@ -52,14 +122,63 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 				this._viewModel.customConfigName
 			)
 		) {
-			this._viewModel.addWarningMessage = '<i class="fa fa-warning"></i> A Custom Config with this name already exists.'
+			this._viewModel.addErrorMessage = "A Custom Config with this name already exists."
 		} else {
-			this._viewModel.addWarningMessage = ""
+			this._viewModel.addErrorMessage = ""
+		}
+	}
+
+	validateLocalStorageSize() {
+		const customLocalStorageLimitInKB = 5
+
+		let allStringsConcatenated = ""
+		for (const [key, value] of Object.entries(localStorage)) {
+			allStringsConcatenated += key + value
+		}
+
+		// It does not exist a limit for the total localStorage size that applies to all browsers.
+		// Usually 2MB - 10MB are available (5MB seems to be very common).
+		// The localStorage size (e.g. 5MB) is assigned per origin.
+		// Multiply localStorage characters by 16 (bits( because they are stored in UTF-16.
+		// Add 3KB as it seems there is some default overhead.
+		const localStorageSizeInKB = 3 + (allStringsConcatenated.length * 16 / 8 / 1024)
+
+		if (localStorageSizeInKB >= customLocalStorageLimitInKB) {
+			this._viewModel.localStorageSizeWarningMessage = "Do you want to download and then purge old unused Configs to make space for new ones?"
+		} else {
+			this._viewModel.localStorageSizeWarningMessage = ""
 		}
 	}
 
 	isNewCustomConfigValid() {
-		return this._viewModel.customConfigName !== "" && !this._viewModel.addWarningMessage
+		return this._viewModel.customConfigName !== "" && !this._viewModel.addErrorMessage
+	}
+
+	async showConfirmDialog() {
+		this.downloadAndCollectPurgeableOldConfigs()
+
+		const confirmDialog = this.$mdDialog.confirm()
+			.clickOutsideToClose(true)
+			.title("Confirm to purge old Configs")
+			.htmlContent("Are you sure to delete old Configs now?")
+			.ok("Purge Configs now!")
+			.cancel("Cancel")
+
+		try {
+			await this.$mdDialog.show(confirmDialog)
+			// The user has confirmed to purge old Configs.
+			this.purgeOldConfigs()
+		} catch {
+			// The user has cancelled the purge - do nothing.
+		}
+	}
+
+	purgeOldConfigs() {
+		if (!this.purgeableConfigs.size) {
+			return
+		}
+
+		CustomConfigHelper.deleteCustomConfigs([...this.purgeableConfigs])
 	}
 }
 

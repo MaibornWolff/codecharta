@@ -68,47 +68,47 @@ describe("DialogAddScenarioSettingsComponent", () => {
 			CustomConfigHelper.addCustomConfig = jest.fn()
 			$mdDialog.hide = jest.fn()
 
-			dialogAddCustomConfigSettings["_viewModel"].customConfigName = "mockedViewName"
+			dialogAddCustomConfigSettings["_viewModel"].customConfigName = "mockedConfigName"
 			dialogAddCustomConfigSettings.addCustomConfig()
 
-			expect(CustomConfigBuilder.buildCustomConfigFromState).toHaveBeenCalledWith("mockedViewName", storeService.getState())
+			expect(CustomConfigBuilder.buildCustomConfigFromState).toHaveBeenCalledWith("mockedConfigName", storeService.getState())
 			expect($mdDialog.hide).toHaveBeenCalled()
 		})
 	})
 
 	describe("validateCustomConfigName", () => {
-		it("should clear info message, if view is valid to be added", () => {
+		it("should clear info message, if config is valid to be added", () => {
 			CustomConfigHelper.hasCustomConfig = jest.fn().mockReturnValue(false)
 
-			dialogAddCustomConfigSettings["_viewModel"].addWarningMessage = "to_be_cleared"
+			dialogAddCustomConfigSettings["_viewModel"].addErrorMessage = "to_be_cleared"
 			dialogAddCustomConfigSettings.validateCustomConfigName()
 
-			expect(dialogAddCustomConfigSettings["_viewModel"].addWarningMessage).toBe("")
+			expect(dialogAddCustomConfigSettings["_viewModel"].addErrorMessage).toBe("")
 		})
 
-		it("should set warning message, if a view with the same name already exists", () => {
+		it("should set warning message, if a config with the same name already exists", () => {
 			CustomConfigHelper.hasCustomConfig = jest.fn().mockReturnValue(true)
 
 			dialogAddCustomConfigSettings.validateCustomConfigName()
 
-			expect(dialogAddCustomConfigSettings["_viewModel"].addWarningMessage).toContain("warning")
+			expect(dialogAddCustomConfigSettings["_viewModel"].addErrorMessage).toContain("warning")
 		})
 	})
 
 	describe("isNewCustomConfigValid", () => {
-		it("should return true for not empty view names and empty warning message", () => {
-			dialogAddCustomConfigSettings["_viewModel"].addWarningMessage = ""
+		it("should return true for not empty config names and empty warning message", () => {
+			dialogAddCustomConfigSettings["_viewModel"].addErrorMessage = ""
 			dialogAddCustomConfigSettings["_viewModel"].customConfigName = "some valid name here"
 
 			expect(dialogAddCustomConfigSettings.isNewCustomConfigValid()).toBe(true)
 		})
 
-		it("should return false for empty view names or given warning message", () => {
+		it("should return false for empty config names or given warning message", () => {
 			dialogAddCustomConfigSettings["_viewModel"].customConfigName = ""
 			expect(dialogAddCustomConfigSettings.isNewCustomConfigValid()).toBe(false)
 
 			dialogAddCustomConfigSettings["_viewModel"].customConfigName = "Valid custom config name."
-			dialogAddCustomConfigSettings["_viewModel"].addWarningMessage = "warning message is set"
+			dialogAddCustomConfigSettings["_viewModel"].addErrorMessage = "warning message is set"
 			expect(dialogAddCustomConfigSettings.isNewCustomConfigValid()).toBe(false)
 		})
 	})

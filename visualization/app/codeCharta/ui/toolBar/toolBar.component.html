@@ -1,6 +1,6 @@
 <div class="tool-bar" ng-mouseup="$ctrl.onClick()">
 	<file-chooser-directive></file-chooser-directive>
-	<download-button-component></download-button-component>
+	<download-button-component ng-show="!$ctrl._viewModel.experimentalFeaturesEnabled"></download-button-component>
 
 	<file-panel-component ng-class="{ hidden: $ctrl._viewModel.isNodeHovered }"></file-panel-component>
 	<node-path-panel-component ng-class="{ hidden: !$ctrl._viewModel.isNodeHovered }"></node-path-panel-component>

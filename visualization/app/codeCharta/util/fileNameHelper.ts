@@ -6,12 +6,12 @@ export class FileNameHelper {
 	private static JSON_EXTENSION = ".json"
 
 	static getNewFileName(fileName: string, isDeltaState: boolean) {
-		return this.getFileNameWithoutTimestamp(fileName, isDeltaState) + this.getNewTimestamp()
+		return `${this.getFileNameWithoutTimestamp(fileName, isDeltaState)}_${  this.getNewTimestamp()}`
 	}
 
-	private static getNewTimestamp() {
+	static getNewTimestamp() {
 		const date = new Date()
-		return `_${date.toISOString().slice(0, 16).replace("T", "_").replace(":", "-")}`
+		return date.toISOString().slice(0, 16).replace("T", "_").replace(":", "-")
 	}
 
 	private static getFileNameWithoutTimestamp(fileName: string, isDeltaState: boolean) {

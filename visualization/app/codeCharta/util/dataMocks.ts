@@ -32,7 +32,7 @@ import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
-import { CustomConfigItem, CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
+import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
 export const VALID_NODE: CodeMapNode = {
@@ -1888,31 +1888,7 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 	}
 ]
 
-export const CUSTOM_VIEW_ITEMS: CustomConfigItem[] = [
-	{
-		id: "SINGLEfileASampleMap View #1",
-		name: "SampleMap View #1",
-		mapNames: "fileA",
-		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-		isApplicable: true
-	},
-	{
-		id: "SINGLEfileAAnotherMap View #1",
-		name: "AnotherMap View #1",
-		mapNames: "fileB",
-		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-		isApplicable: false
-	},
-	{
-		id: "SINGLEfileASampleMap View #2",
-		name: "SampleMap View #2",
-		mapNames: "fileA",
-		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-		isApplicable: true
-	}
-]
-
-export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
+export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
 	[
 		"fileAfileBSINGLE",
 		{

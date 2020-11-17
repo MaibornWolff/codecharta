@@ -77,6 +77,17 @@
 
 .custom-config-dialog {
 	.warning {
-		color: darkorange;
+		color: #ff6161;
+	}
+	.md-warn {
+		color: #ffffff;
+		background: #ff6161;
+	}
+	.md-warn:hover,
+	.md-warn:focus {
+		background: red;
+	}
+	.error {
+		color: red;
 	}
 }

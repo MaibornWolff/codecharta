@@ -46,7 +46,19 @@ export class CustomConfigFileStateConnector {
 		return this.mapSelectionMode
 	}
 
+	isDeltaMode(): boolean {
+		return this.mapSelectionMode === CustomConfigMapSelectionMode.DELTA
+	}
+
 	getChecksumOfAssignedMaps(): string {
 		return this.mapChecksums.join(";")
+	}
+
+	getAmountOfUploadedFiles(): number {
+		return this.files.length
+	}
+
+	isEachFileSelected(): boolean {
+		return this.files.length === this.getSelectedMaps().length
 	}
 }

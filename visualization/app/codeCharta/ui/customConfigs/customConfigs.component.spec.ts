@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { DialogService } from "../dialog/dialog.service"
-import { CUSTOM_VIEW_ITEM_GROUPS, FILE_STATES } from "../../util/dataMocks"
+import { CUSTOM_CONFIG_ITEM_GROUPS, FILE_STATES } from "../../util/dataMocks"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { CustomConfigsController } from "./customConfigs.component"
 import { FilesService } from "../../state/store/files/files.service"
@@ -71,7 +71,7 @@ describe("CustomConfigsController", () => {
 
 	describe("loadCustomConfigs", () => {
 		it("should load CustomConfigs, sort them by applicable-state and mode name ASC and set the dropDownCustomConfigItemGroups ", () => {
-			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_VIEW_ITEM_GROUPS)
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
 
 			customConfigsController.loadCustomConfigs()
 
@@ -80,9 +80,9 @@ describe("CustomConfigsController", () => {
 			const customConfigItemGroup2 = customConfigItemGroups.next().value
 			const customConfigItemGroup3 = customConfigItemGroups.next().value
 
-			expect(customConfigItemGroup1).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBMultiple"))
-			expect(customConfigItemGroup2).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBDELTA"))
-			expect(customConfigItemGroup3).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBSINGLE"))
+			expect(customConfigItemGroup1).toEqual(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBMultiple"))
+			expect(customConfigItemGroup2).toEqual(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBDELTA"))
+			expect(customConfigItemGroup3).toEqual(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBSINGLE"))
 		})
 	})
 
@@ -121,12 +121,12 @@ describe("CustomConfigsController", () => {
 			CustomConfigHelper.deleteCustomConfig = jest.fn()
 			dialogService.showInfoDialog = jest.fn()
 
-			const viewNameToRemove = "CustomConfigName1"
-			const viewIdToRemove = 1
-			customConfigsController.removeCustomConfig(viewIdToRemove, viewNameToRemove)
+			const configNameToRemove = "CustomConfigName1"
+			const configIdToRemove = 1
+			customConfigsController.removeCustomConfig(configIdToRemove, configNameToRemove)
 
-			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(viewIdToRemove)
-			expect(dialogService.showInfoDialog).toHaveBeenCalledWith(expect.stringContaining(`${viewNameToRemove} deleted`))
+			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(configIdToRemove)
+			expect(dialogService.showInfoDialog).toHaveBeenCalledWith(expect.stringContaining(`${configNameToRemove} deleted`))
 		})
 	})
 })
