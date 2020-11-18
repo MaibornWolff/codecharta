@@ -18,7 +18,8 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(hierarchyNode.data, heightScale, state, isDeltaState)]
 
 		// Multiply mapSize of (default) 250px by 2 = 500px and add the total margin
-		const totalMapSize = state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin
+		const totalMapSize =
+			state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * (state.dynamicSettings.margin / PADDING_SCALING_FACTOR)
 
 		// than divide through the root folder width and length to get a scale factor for calculation for all following nodes.
 		const scaleLength = totalMapSize / nodes[0].width
@@ -145,7 +146,7 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
 	const hierarchyNode = hierarchy(map)
 	const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR
+	const padding = state.dynamicSettings.margin
 	let mapWidth
 	let mapHeight
 
@@ -161,8 +162,8 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	// We do not know the exact amount,
 	// because the treemap algorithm is/must be executed with an initial width and height afterwards.
 	// TODO If it is wrong some buildings might be cut off.
-	const width = mapWidth + nodesPerSide * state.dynamicSettings.margin
-	const height = mapHeight + nodesPerSide * state.dynamicSettings.margin
+	const width = mapWidth + nodesPerSide * (state.dynamicSettings.margin / PADDING_SCALING_FACTOR)
+	const height = mapHeight + nodesPerSide * (state.dynamicSettings.margin / PADDING_SCALING_FACTOR)
 
 	const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding)
 
