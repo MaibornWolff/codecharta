@@ -30,6 +30,7 @@ export interface ExportCustomConfig {
 	assignedMaps: string[]
 	mapChecksum: string
 	customConfigVersion: string
+	creationTime: number
 
 	stateSettings: {
 		appSettings: AppSettings

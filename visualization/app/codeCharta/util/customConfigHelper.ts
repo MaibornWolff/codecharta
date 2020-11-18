@@ -4,15 +4,18 @@ import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.compone
 import {
 	CustomConfig,
 	CustomConfigMapSelectionMode,
-	CustomConfigsDownloadFile
+	CustomConfigsDownloadFile, ExportCustomConfig
 } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 import { createCustomConfigIdentifier } from "./customConfigBuilder"
+import {FileNameHelper} from "./fileNameHelper";
+import {FileDownloader} from "./fileDownloader";
+
+const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
+const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.0"
+const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
-	private static readonly CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.0"
-	private static readonly CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
-
 	private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigs()
 
 	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): Map<string, CustomConfigItemGroup> {
@@ -60,15 +63,15 @@ export class CustomConfigHelper {
 
 	private static setCustomConfigsToLocalStorage() {
 		const newLocalStorageElement: LocalStorageCustomConfigs = {
-			version: this.CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION,
+			version: CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION,
 			customConfigs: [...this.customConfigs]
 		}
-		localStorage.setItem(this.CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement, stateObjectReplacer))
+		localStorage.setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement, stateObjectReplacer))
 	}
 
 	private static loadCustomConfigs() {
 		const ccLocalStorage: LocalStorageCustomConfigs = JSON.parse(
-			localStorage.getItem(this.CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT),
+			localStorage.getItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT),
 			stateObjectReviver
 		)
 		return new Map(ccLocalStorage?.customConfigs)
@@ -98,21 +101,58 @@ export class CustomConfigHelper {
 
 		// TODO: we might add an input validation
 		// TODO: we must handle duplicates
+		// TODO: should we override existing Configs or rather skip the import for those?
 
-		for (const value of importedCustomConfigsFile.customConfigs.values()) {
+		for (const exportedConfig of importedCustomConfigsFile.customConfigs.values()) {
 			const importedCustomConfig: CustomConfig = {
-				assignedMaps: value.assignedMaps,
-				customConfigVersion: value.customConfigVersion,
-				id: value.id,
-				mapChecksum: value.mapChecksum,
-				mapSelectionMode: value.mapSelectionMode,
-				name: value.name,
-				stateSettings: value.stateSettings,
-				creationTime: Date.now()
+				assignedMaps: exportedConfig.assignedMaps,
+				customConfigVersion: exportedConfig.customConfigVersion,
+				id: exportedConfig.id,
+				mapChecksum: exportedConfig.mapChecksum,
+				mapSelectionMode: exportedConfig.mapSelectionMode,
+				name: exportedConfig.name,
+				stateSettings: exportedConfig.stateSettings,
+				creationTime: exportedConfig.creationTime
 			}
 
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)
 		}
+	}
+
+	static downloadCustomConfigs(customConfigs: Map<string, ExportCustomConfig>, customConfigFileStateConnector: CustomConfigFileStateConnector) {
+		const customConfigsDownloadFile: CustomConfigsDownloadFile = {
+			downloadApiVersion: "1.0.0",
+			timestamp: Date.now(),
+			customConfigs
+		}
+
+		let fileName = FileNameHelper.getNewTimestamp() + CUSTOM_CONFIG_FILE_EXTENSION
+
+		if (
+			!customConfigFileStateConnector.isDeltaMode() &&
+			customConfigFileStateConnector.getAmountOfUploadedFiles() === 1 &&
+			customConfigFileStateConnector.isEachFileSelected()
+		) {
+			// If only one map is uploaded/present in SINGLE mode, prefix the .cc.config.json file with its name.
+			fileName = `${FileNameHelper.withoutCCJsonExtension(customConfigFileStateConnector.getJointMapName())}_${fileName}`
+		}
+
+		FileDownloader.downloadData(JSON.stringify(customConfigsDownloadFile, stateObjectReplacer), fileName)
+	}
+
+	static createExportCustomConfigFromConfig(customConfig: CustomConfig): ExportCustomConfig {
+		const exportCustomConfig: ExportCustomConfig = {
+			assignedMaps: customConfig.assignedMaps,
+			customConfigVersion: customConfig.customConfigVersion,
+			id: customConfig.id,
+			mapChecksum: customConfig.mapChecksum,
+			mapSelectionMode: customConfig.mapSelectionMode,
+			name: customConfig.name,
+			stateSettings: customConfig.stateSettings,
+			creationTime: customConfig.creationTime
+		}
+
+		return exportCustomConfig
 	}
 
 	static getCustomConfigsAmountByMapAndMode(mapNames: string, mapSelectionMode: CustomConfigMapSelectionMode): number {

@@ -8,12 +8,8 @@ import { CustomConfigFileStateConnector } from "../customConfigs/customConfigFil
 import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
 import {
 	CustomConfig,
-	CustomConfigsDownloadFile,
 	ExportCustomConfig
 } from "../../model/customConfig/customConfig.api.model";
-import { FileNameHelper } from "../../util/fileNameHelper";
-import { FileDownloader } from "../../util/fileDownloader";
-import { stateObjectReplacer } from "../../codeCharta.model";
 
 export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSubscriber {
 
@@ -57,7 +53,35 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		this.hide()
 	}
 
+	async showConfirmDialog() {
+		this.downloadAndCollectPurgeableOldConfigs()
+
+		const confirmDialog = this.$mdDialog.confirm()
+			.clickOutsideToClose(true)
+			.title("Confirm to purge old Configs")
+			.htmlContent("Are you sure to delete old Configs now?")
+			.ok("Purge Configs now!")
+			.cancel("Cancel")
+
+		try {
+			await this.$mdDialog.show(confirmDialog)
+			// The user has confirmed to purge old Configs.
+			this.purgeOldConfigs()
+		} catch {
+			// The user has cancelled the purge - do nothing.
+		}
+	}
+
+	purgeOldConfigs() {
+		if (!this.purgeableConfigs.size) {
+			return
+		}
+
+		CustomConfigHelper.deleteCustomConfigs([...this.purgeableConfigs])
+	}
+
 	downloadAndCollectPurgeableOldConfigs() {
+		this.purgeableConfigs.clear()
 		const customConfigs = CustomConfigHelper.getCustomConfigs()
 
 		const downloadableConfigs: Map<string, ExportCustomConfig> = new Map()
@@ -73,45 +97,17 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 			// Download 6 month old or older Configs.
 			// TODO: Replace mocked timestamp with value.creationTime, remove log
 			const ageInMonth = ((Date.now() - 1577836800000) / (1000 * 60 * 60 * 24 * daysPerMonth))
-
 			console.log(Date.now(), 1577836800000, Date.now() - 1577836800000, ageInMonth)
 
 			if (ageInMonth <= 6) {
 				continue
 			}
 
-			const exportCustomConfig: ExportCustomConfig = {
-				assignedMaps: value.assignedMaps,
-				customConfigVersion: value.customConfigVersion,
-				id: value.id,
-				mapChecksum: value.mapChecksum,
-				mapSelectionMode: value.mapSelectionMode,
-				name: value.name,
-				stateSettings: value.stateSettings
-			}
-
-			downloadableConfigs.set(key, exportCustomConfig)
+			downloadableConfigs.set(key, CustomConfigHelper.createExportCustomConfigFromConfig(value))
 			this.purgeableConfigs.add(value)
 		}
 
-		const customConfigsDownloadFile: CustomConfigsDownloadFile = {
-			downloadApiVersion: "1.0.0",
-			timestamp: Date.now(),
-			customConfigs: downloadableConfigs,
-		}
-
-		let fileName = `${FileNameHelper.getNewTimestamp()}.cc.config.json`
-
-		if (
-			!this.customConfigFileStateConnector.isDeltaMode() &&
-			this.customConfigFileStateConnector.getAmountOfUploadedFiles() === 1 &&
-			this.customConfigFileStateConnector.isEachFileSelected()
-		) {
-			// If only one map is uploaded/present in SINGLE mode, prefix the .cc.config.json file with its name.
-			fileName = `${FileNameHelper.withoutCCJsonExtension(this.customConfigFileStateConnector.getJointMapName())}_${fileName}`
-		}
-
-		FileDownloader.downloadData(JSON.stringify(customConfigsDownloadFile, stateObjectReplacer), fileName)
+		CustomConfigHelper.downloadCustomConfigs(downloadableConfigs, this.customConfigFileStateConnector)
 	}
 
 	validateCustomConfigName() {
@@ -152,33 +148,6 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 
 	isNewCustomConfigValid() {
 		return this._viewModel.customConfigName !== "" && !this._viewModel.addErrorMessage
-	}
-
-	async showConfirmDialog() {
-		this.downloadAndCollectPurgeableOldConfigs()
-
-		const confirmDialog = this.$mdDialog.confirm()
-			.clickOutsideToClose(true)
-			.title("Confirm to purge old Configs")
-			.htmlContent("Are you sure to delete old Configs now?")
-			.ok("Purge Configs now!")
-			.cancel("Cancel")
-
-		try {
-			await this.$mdDialog.show(confirmDialog)
-			// The user has confirmed to purge old Configs.
-			this.purgeOldConfigs()
-		} catch {
-			// The user has cancelled the purge - do nothing.
-		}
-	}
-
-	purgeOldConfigs() {
-		if (!this.purgeableConfigs.size) {
-			return
-		}
-
-		CustomConfigHelper.deleteCustomConfigs([...this.purgeableConfigs])
 	}
 }
 

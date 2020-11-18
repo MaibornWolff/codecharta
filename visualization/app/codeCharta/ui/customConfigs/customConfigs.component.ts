@@ -4,7 +4,7 @@ import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { ColorRange, stateObjectReplacer } from "../../codeCharta.model"
+import { ColorRange } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import { FileState } from "../../model/files/files"
@@ -13,15 +13,12 @@ import { IRootScopeService } from "angular"
 import { CustomConfigFileStateConnector } from "./customConfigFileStateConnector"
 import {
 	CustomConfigMapSelectionMode,
-	CustomConfigsDownloadFile,
 	ExportCustomConfig
 } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { setCamera } from "../../state/store/appSettings/camera/camera.actions"
 import { setCameraTarget } from "../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { Vector3 } from "three"
-import { FileDownloader } from "../../util/fileDownloader";
-import { FileNameHelper } from "../../util/fileNameHelper";
 
 export interface CustomConfigItem {
 	id: string
@@ -37,8 +34,6 @@ export interface CustomConfigItemGroup {
 	hasApplicableItems: boolean
 	customConfigItems: CustomConfigItem[]
 }
-
-const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 
 export class CustomConfigsController implements FilesSelectionSubscriber {
 	private _viewModel: {
@@ -118,33 +113,18 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	downloadPrefetchedCustomConfigs() {
-		// TODO: Find duplicates on import
+		// TODO: hide loading gif on upload
+		// TODO: #684 adapt storing Configs and Scenarios for standalone version
 		// TODO: Write tests
 		// TODO: we might add an input validation
 		// TODO: we must handle duplicates
+		// TODO: refactor and unify code
 
 		if (!this.downloadableConfigs.size) {
 			return
 		}
 
-		const customConfigsDownloadFile: CustomConfigsDownloadFile = {
-			downloadApiVersion: "1.0.0",
-			timestamp: Date.now(),
-			customConfigs: this.downloadableConfigs,
-		}
-
-		let fileName = FileNameHelper.getNewTimestamp() + CUSTOM_CONFIG_FILE_EXTENSION
-
-		if (
-			!this.customConfigFileStateConnector.isDeltaMode() &&
-			this.customConfigFileStateConnector.getAmountOfUploadedFiles() === 1 &&
-			this.customConfigFileStateConnector.isEachFileSelected()
-		) {
-			// If only one map is uploaded/present in SINGLE mode, prefix the .cc.config.json file with its name.
-			fileName = `${FileNameHelper.withoutCCJsonExtension(this.customConfigFileStateConnector.getJointMapName())}_${fileName}`
-		}
-
-		FileDownloader.downloadData(JSON.stringify(customConfigsDownloadFile, stateObjectReplacer), fileName)
+		CustomConfigHelper.downloadCustomConfigs(this.downloadableConfigs, this.customConfigFileStateConnector)
 	}
 
 	private prefetchDownloadableConfigsForUploadedMaps() {
@@ -156,17 +136,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 				continue
 			}
 
-			const exportCustomConfig: ExportCustomConfig = {
-				assignedMaps: value.assignedMaps,
-				customConfigVersion: value.customConfigVersion,
-				id: value.id,
-				mapChecksum: value.mapChecksum,
-				mapSelectionMode: value.mapSelectionMode,
-				name: value.name,
-				stateSettings: value.stateSettings
-			}
-
-			this.downloadableConfigs.set(key, exportCustomConfig)
+			this.downloadableConfigs.set(key, CustomConfigHelper.createExportCustomConfigFromConfig(value))
 		}
 
 		return this._viewModel.hasDownloadableConfigs = this.downloadableConfigs.size > 0
