@@ -20,4 +20,4 @@ export function setShowMetricLabelNameValue(
 	}
 }
 
-export const defaultShowMetricLabelNameValue = true
+export const defaultShowMetricLabelNameValue = false
