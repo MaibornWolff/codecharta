@@ -10,7 +10,7 @@ import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfig
 import {FileNameHelper} from "./fileNameHelper";
 import {FileDownloader} from "./fileDownloader";
 
-const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
+export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.0"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 

@@ -7,7 +7,7 @@ import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/is
 import { ExportCCFile } from "./../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
-import { CustomConfigHelper } from "../../util/customConfigHelper";
+import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper";
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
@@ -30,7 +30,9 @@ export class FileChooserController {
 				}
 
 				reader.onloadstart = () => {
-					this.storeService.dispatch(setIsLoadingFile(true))
+					if (file.name.includes(CodeChartaService.CC_FILE_EXTENSION)) {
+						this.storeService.dispatch(setIsLoadingFile(true))
+					}
 				}
 
 				reader.onload = event => {
@@ -39,7 +41,7 @@ export class FileChooserController {
 
 				reader.onloadend = () => {
 					readFiles++
-					if (file.name.includes(".cc.config")) {
+					if (file.name.includes(CUSTOM_CONFIG_FILE_EXTENSION)) {
 						try {
 							CustomConfigHelper.importCustomConfigs(content)
 						} catch {
