@@ -32,11 +32,6 @@ Change working directory `cd <projectpath>/codecharta/visualization/`
 
 Once you have installed the project, you can use all grunt tasks described in the next section.
 
-#### Install web application on server
-
--   Download or build latest web version.
--   Copy all files (dist/app or the downloaded directory) to a served directory which is accessible from the internet.
-
 ## Tasks
 
 #### Build
