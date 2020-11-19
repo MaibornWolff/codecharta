@@ -30,14 +30,13 @@ Change working directory `cd <projectpath>/codecharta/visualization/`
 -   Install node >= 8
 -   Install dependencies `npm install`.
 
-Once you have installed the project, you can use all grunt tasks described in the next section.
+Once you have installed the project, you can use all tasks described in the next section.
 
 ## Tasks
 
 #### Build
 
 `npm run build` builds the project in dist/app. This artifact is ready to be served as a web application.
-`npm run doc` generates the esdoc documentation in dist/doc/
 
 #### Test
 
@@ -49,7 +48,7 @@ adding ":auto" to run target will run the tests in watch mode
 
 #### Run
 
-`npm run serve` starts a simple web server and serves the project on localhost:9000.
+`npm run dev` starts a simple web server and serves the project on localhost:3000.
 `npm run start` starts the nwjs app
 
 #### Package
