@@ -12,7 +12,7 @@ import {FileDownloader} from "./fileDownloader";
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.0"
-const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
+export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
 	private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigs()

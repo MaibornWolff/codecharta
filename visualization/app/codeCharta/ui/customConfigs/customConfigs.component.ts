@@ -113,7 +113,6 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	downloadPrefetchedCustomConfigs() {
-		// TODO: hide loading gif on upload
 		// TODO: #684 adapt storing Configs and Scenarios for standalone version
 		// TODO: Write tests
 

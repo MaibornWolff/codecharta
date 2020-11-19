@@ -91,7 +91,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 			dialogAddCustomConfigSettings.validateCustomConfigName()
 
-			expect(dialogAddCustomConfigSettings["_viewModel"].addErrorMessage).toContain("warning")
+			expect(dialogAddCustomConfigSettings["_viewModel"].addErrorMessage).toContain("already exists")
 		})
 	})
 
