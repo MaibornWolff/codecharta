@@ -214,9 +214,9 @@ export class CodeMapMouseEventService
 	}
 
 	private onLeftClick() {
-		this.threeSceneService.clearSelection()
 		this.isGrabbing = false
 		if (!this.hasMouseMoved(this.mouseOnLastClick)) {
+			this.threeSceneService.clearSelection()
 			this.threeSceneService.clearConstantHighlight()
 			if (this.intersectedBuilding) {
 				this.threeSceneService.selectBuilding(this.intersectedBuilding)

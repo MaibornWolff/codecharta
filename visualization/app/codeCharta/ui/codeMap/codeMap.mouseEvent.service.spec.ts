@@ -397,12 +397,20 @@ describe("codeMapMouseEventService", () => {
 				expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 			})
 
-			it("should deselect building, when nothing is highlighted and something is selected", () => {
-				threeSceneService.getHighlightedBuilding = jest.fn()
+			it("should call clearselection, when the mouse has not moved while left button was pressed", () => {
+				threeSceneService["selected"] = codeMapBuilding
+				codeMapMouseEventService["hasMouseMoved"] = jest.fn().mockReturnValue(false)
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
 				expect(threeSceneService.clearSelection).toHaveBeenCalled()
+			})
+			it("should not call clear selection, whe mouse has moved while left button was pressed", () => {
+				codeMapMouseEventService["hasMouseMoved"] = jest.fn().mockReturnValue(true)
+
+				codeMapMouseEventService.onDocumentMouseUp(event)
+
+				expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
 			})
 		})
 
