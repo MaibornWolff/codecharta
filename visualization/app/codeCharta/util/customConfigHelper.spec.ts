@@ -38,7 +38,7 @@ describe("CustomConfigHelper", () => {
 				"customConfigStub_asJson"
 			)
 			expect(
-				CustomConfigHelper.hasCustomConfig(customConfigStub.mapSelectionMode, customConfigStub.assignedMaps, customConfigStub.name)
+				CustomConfigHelper.hasCustomConfigByName(customConfigStub.mapSelectionMode, customConfigStub.assignedMaps, customConfigStub.name)
 			).toBe(true)
 
 			const receivedCustomConfig = CustomConfigHelper.getCustomConfigSettings(customConfigStub.id)
@@ -278,7 +278,7 @@ describe("CustomConfigHelper", () => {
 
 			CustomConfigHelper.addCustomConfig(customConfigStub1)
 			expect(
-				CustomConfigHelper.hasCustomConfig(
+				CustomConfigHelper.hasCustomConfigByName(
 					customConfigStub1.mapSelectionMode,
 					customConfigStub1.assignedMaps,
 					customConfigStub1.name
@@ -287,7 +287,7 @@ describe("CustomConfigHelper", () => {
 
 			CustomConfigHelper.deleteCustomConfig(customConfigStub1.id)
 			expect(
-				CustomConfigHelper.hasCustomConfig(
+				CustomConfigHelper.hasCustomConfigByName(
 					customConfigStub1.mapSelectionMode,
 					customConfigStub1.assignedMaps,
 					customConfigStub1.name

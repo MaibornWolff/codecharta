@@ -111,13 +111,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 	}
 
 	validateCustomConfigName() {
-		if (
-			CustomConfigHelper.hasCustomConfig(
-				this.customConfigFileStateConnector.getMapSelectionMode(),
-				this.customConfigFileStateConnector.getSelectedMaps(),
-				this._viewModel.customConfigName
-			)
-		) {
+		if (CustomConfigHelper.hasCustomConfigByName(this._viewModel.customConfigName)) {
 			this._viewModel.addErrorMessage = "A Custom Config with this name already exists."
 		} else {
 			this._viewModel.addErrorMessage = ""

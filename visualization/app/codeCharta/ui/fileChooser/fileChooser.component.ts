@@ -36,10 +36,15 @@ export class FileChooserController {
 				reader.onload = event => {
 					content = isCompressed ? zlib.unzipSync(Buffer.from(event.target.result)) : event.target.result
 				}
+
 				reader.onloadend = () => {
 					readFiles++
 					if (file.name.includes(".cc.config")) {
-						CustomConfigHelper.importCustomConfigs(content)
+						try {
+							CustomConfigHelper.importCustomConfigs(content)
+						} catch {
+							// Explicitly ignored
+						}
 					} else {
 						this.addNameDataPair(file.name, content)
 					}

@@ -7,7 +7,6 @@ import {
 	CustomConfigsDownloadFile, ExportCustomConfig
 } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
-import { createCustomConfigIdentifier } from "./customConfigBuilder"
 import {FileNameHelper} from "./fileNameHelper";
 import {FileDownloader} from "./fileDownloader";
 
@@ -54,7 +53,7 @@ export class CustomConfigHelper {
 		customConfigFileStateConnector: CustomConfigFileStateConnector,
 		customConfig: CustomConfig
 	) {
-		// Configs are applicable if their checksums (and mode) are matching, therefore, map names must not be checked.
+		// Configs are applicable if their mapChecksums (and mode) are matching, therefore, map names must not be checked.
 		return (
 			customConfigFileStateConnector.getChecksumOfAssignedMaps() === customConfig.mapChecksum &&
 			customConfigFileStateConnector.getMapSelectionMode() === customConfig.mapSelectionMode
@@ -86,10 +85,14 @@ export class CustomConfigHelper {
 		return this.customConfigs.get(configId)
 	}
 
-	static hasCustomConfig(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], configName: string): boolean {
-		const customConfigIdentifier = createCustomConfigIdentifier(mapSelectionMode, selectedMaps, configName)
+	static hasCustomConfigByName(configName): boolean {
+		for (const customConfig of this.customConfigs.values()) {
+			if (customConfig.name === configName) {
+				return true
+			}
+		}
 
-		return this.customConfigs.has(customConfigIdentifier)
+		return false
 	}
 
 	static getCustomConfigs(): Map<string, CustomConfig> {
@@ -99,20 +102,29 @@ export class CustomConfigHelper {
 	static importCustomConfigs(content: string) {
 		const importedCustomConfigsFile: CustomConfigsDownloadFile = JSON.parse(content, stateObjectReviver)
 
-		// TODO: we might add an input validation
-		// TODO: we must handle duplicates
-		// TODO: should we override existing Configs or rather skip the import for those?
-
 		for (const exportedConfig of importedCustomConfigsFile.customConfigs.values()) {
+
+			const alreadyExistingConfig = CustomConfigHelper.getCustomConfigSettings(exportedConfig.id)
+
+			// Check for a duplicate Config name in the same mode and with equal assigned maps
+			if (alreadyExistingConfig) {
+					continue
+			}
+
+			// Prevent different Configs with the same name
+			if (CustomConfigHelper.hasCustomConfigByName(exportedConfig.name)) {
+				exportedConfig.name += ` (${FileNameHelper.getFormattedTimestamp(new Date(exportedConfig.creationTime))})`
+			}
+
 			const importedCustomConfig: CustomConfig = {
+				id: exportedConfig.id,
+				name: exportedConfig.name,
+				creationTime: exportedConfig.creationTime,
 				assignedMaps: exportedConfig.assignedMaps,
 				customConfigVersion: exportedConfig.customConfigVersion,
-				id: exportedConfig.id,
 				mapChecksum: exportedConfig.mapChecksum,
 				mapSelectionMode: exportedConfig.mapSelectionMode,
-				name: exportedConfig.name,
 				stateSettings: exportedConfig.stateSettings,
-				creationTime: exportedConfig.creationTime
 			}
 
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)
@@ -142,14 +154,14 @@ export class CustomConfigHelper {
 
 	static createExportCustomConfigFromConfig(customConfig: CustomConfig): ExportCustomConfig {
 		const exportCustomConfig: ExportCustomConfig = {
+			id: customConfig.id,
+			name: customConfig.name,
+			creationTime: customConfig.creationTime,
 			assignedMaps: customConfig.assignedMaps,
 			customConfigVersion: customConfig.customConfigVersion,
-			id: customConfig.id,
 			mapChecksum: customConfig.mapChecksum,
 			mapSelectionMode: customConfig.mapSelectionMode,
-			name: customConfig.name,
-			stateSettings: customConfig.stateSettings,
-			creationTime: customConfig.creationTime
+			stateSettings: customConfig.stateSettings
 		}
 
 		return exportCustomConfig

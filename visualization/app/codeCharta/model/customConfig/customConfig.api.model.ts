@@ -9,11 +9,11 @@ export enum CustomConfigMapSelectionMode {
 export interface CustomConfig {
 	id: string
 	name: string
+	creationTime: number
 	mapSelectionMode: CustomConfigMapSelectionMode
 	assignedMaps: string[]
 	mapChecksum: string
 	customConfigVersion: string
-	creationTime: number
 
 	stateSettings: {
 		appSettings: AppSettings
@@ -26,11 +26,11 @@ export interface CustomConfig {
 export interface ExportCustomConfig {
 	id: string
 	name: string
+	creationTime: number
 	mapSelectionMode: CustomConfigMapSelectionMode
 	assignedMaps: string[]
 	mapChecksum: string
 	customConfigVersion: string
-	creationTime: number
 
 	stateSettings: {
 		appSettings: AppSettings

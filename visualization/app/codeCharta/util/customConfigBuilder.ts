@@ -1,27 +1,22 @@
 "use strict"
-import { State } from "../codeCharta.model"
-import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+import {State, stateObjectReplacer} from "../codeCharta.model"
+import { CustomConfig } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
+import md5 from "md5"
 
 const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
 export function buildCustomConfigFromState(configName: string, state: State): CustomConfig {
 	const customConfigFileStateConnector = new CustomConfigFileStateConnector(state.files)
 
-	const uniqueIdentifier = createCustomConfigIdentifier(
-		customConfigFileStateConnector.getMapSelectionMode(),
-		customConfigFileStateConnector.getSelectedMaps(),
-		configName
-	)
-
 	const customConfig: CustomConfig = {
-		id: uniqueIdentifier,
+		id: "",
 		name: configName,
+		creationTime: Date.now(),
 		mapSelectionMode: customConfigFileStateConnector.getMapSelectionMode(),
 		assignedMaps: customConfigFileStateConnector.getSelectedMaps(),
 		mapChecksum: customConfigFileStateConnector.getChecksumOfAssignedMaps(),
 		customConfigVersion: CUSTOM_CONFIG_API_VERSION,
-		creationTime: Date.now(),
 		stateSettings: {
 			appSettings: undefined,
 			dynamicSettings: undefined,
@@ -41,11 +36,8 @@ export function buildCustomConfigFromState(configName: string, state: State): Cu
 	// Override the default state settings with the stored CustomConfig values
 	deepMapOneToOther(state, customConfig.stateSettings)
 
+	customConfig.id = md5(JSON.stringify(customConfig, stateObjectReplacer))
 	return customConfig
-}
-
-export function createCustomConfigIdentifier(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], configName: string) {
-	return mapSelectionMode + selectedMaps.join("") + configName
 }
 
 function initializeAppSettings(target: CustomConfig) {

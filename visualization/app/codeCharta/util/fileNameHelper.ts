@@ -11,6 +11,10 @@ export class FileNameHelper {
 
 	static getNewTimestamp() {
 		const date = new Date()
+		return FileNameHelper.getFormattedTimestamp(date)
+	}
+
+	static getFormattedTimestamp(date: Date) {
 		return date.toISOString().slice(0, 16).replace("T", "_").replace(":", "-")
 	}
 

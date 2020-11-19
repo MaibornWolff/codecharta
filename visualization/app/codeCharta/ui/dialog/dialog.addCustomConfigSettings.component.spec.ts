@@ -78,7 +78,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 	describe("validateCustomConfigName", () => {
 		it("should clear info message, if config is valid to be added", () => {
-			CustomConfigHelper.hasCustomConfig = jest.fn().mockReturnValue(false)
+			CustomConfigHelper.hasCustomConfigByName = jest.fn().mockReturnValue(false)
 
 			dialogAddCustomConfigSettings["_viewModel"].addErrorMessage = "to_be_cleared"
 			dialogAddCustomConfigSettings.validateCustomConfigName()
@@ -87,7 +87,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 		})
 
 		it("should set warning message, if a config with the same name already exists", () => {
-			CustomConfigHelper.hasCustomConfig = jest.fn().mockReturnValue(true)
+			CustomConfigHelper.hasCustomConfigByName = jest.fn().mockReturnValue(true)
 
 			dialogAddCustomConfigSettings.validateCustomConfigName()
 

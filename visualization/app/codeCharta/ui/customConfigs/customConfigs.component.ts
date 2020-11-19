@@ -116,9 +116,6 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		// TODO: hide loading gif on upload
 		// TODO: #684 adapt storing Configs and Scenarios for standalone version
 		// TODO: Write tests
-		// TODO: we might add an input validation
-		// TODO: we must handle duplicates
-		// TODO: refactor and unify code
 
 		if (!this.downloadableConfigs.size) {
 			return
@@ -128,6 +125,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	private prefetchDownloadableConfigsForUploadedMaps() {
+		this.downloadableConfigs.clear()
 		const customConfigs = CustomConfigHelper.getCustomConfigs()
 
 		for (const [key, value] of customConfigs.entries()) {
