@@ -11,7 +11,7 @@ import { FilesService } from "../../state/store/files/files.service"
 import { setFiles } from "../../state/store/files/files.actions"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { setState } from "../../state/store/state.actions"
-import { CustomConfig } from "../../model/customConfig/customConfig.api.model"
+import { CustomConfig, ExportCustomConfig } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 
 describe("CustomConfigsController", () => {
@@ -69,11 +69,13 @@ describe("CustomConfigsController", () => {
 		})
 	})
 
-	describe("loadCustomConfigs", () => {
-		it("should load CustomConfigs, sort them by applicable-state and mode name ASC and set the dropDownCustomConfigItemGroups ", () => {
+	describe("initView", () => {
+		it("Load CustomConfigs, sort them by applicable-state and mode name ASC and set the dropDownCustomConfigItemGroups ", () => {
 			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
 
-			customConfigsController.loadCustomConfigs()
+			customConfigsController["_viewModel"].hasDownloadableConfigs = true
+			customConfigsController.initView()
 
 			const customConfigItemGroups = customConfigsController["_viewModel"].dropDownCustomConfigItemGroups.values()
 			const customConfigItemGroup1 = customConfigItemGroups.next().value
@@ -83,6 +85,18 @@ describe("CustomConfigsController", () => {
 			expect(customConfigItemGroup1).toEqual(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBMultiple"))
 			expect(customConfigItemGroup2).toEqual(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBDELTA"))
 			expect(customConfigItemGroup3).toEqual(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBSINGLE"))
+		})
+
+		it("should not found downloadable Configs", () => {
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(new Map())
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+
+			// should be set to false
+			customConfigsController["_viewModel"].hasDownloadableConfigs = true
+
+			customConfigsController.initView()
+
+			expect(customConfigsController["_viewModel"].hasDownloadableConfigs).toBe(false)
 		})
 	})
 
@@ -106,6 +120,7 @@ describe("CustomConfigsController", () => {
 					}
 				}
 			} as CustomConfig
+
 			CustomConfigHelper.getCustomConfigSettings = jest.fn().mockReturnValue(customConfigStub)
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
@@ -127,6 +142,65 @@ describe("CustomConfigsController", () => {
 
 			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(configIdToRemove)
 			expect(dialogService.showInfoDialog).toHaveBeenCalledWith(expect.stringContaining(`${configNameToRemove} deleted`))
+		})
+	})
+
+	describe("downloadPrefetchedCustomConfigs", () => {
+		it("should trigger the download if downloadable Configs are available otherwise not", () => {
+			CustomConfigHelper.downloadCustomConfigs = jest.fn()
+
+			customConfigsController.downloadPrefetchedCustomConfigs()
+			expect(CustomConfigHelper.downloadCustomConfigs).not.toHaveBeenCalled()
+
+			const exportConfig1 = {
+				id: "1-invalid-md5-checksum",
+				name: "config-to-be-exported-1",
+			} as ExportCustomConfig
+
+			customConfigsController["downloadableConfigs"].set(exportConfig1.id, exportConfig1)
+			customConfigsController.downloadPrefetchedCustomConfigs()
+
+			expect(CustomConfigHelper.downloadCustomConfigs).toHaveBeenCalled()
+		})
+	})
+
+	describe("prefetchDownloadableConfigsForUploadedMaps", () => {
+		it("should clear downloadableConfigs and then collect them again", () => {
+			const previouslyPrefetchedExportConfig = {
+				id: "0-invalid-md5-checksum",
+				name: "config-should-be-cleared-1",
+			} as ExportCustomConfig
+
+			customConfigsController["downloadableConfigs"].set(previouslyPrefetchedExportConfig.id, previouslyPrefetchedExportConfig)
+
+			const customConfig1 = {
+				id: "1-invalid-md5-checksum",
+				name: "downloadable-config-1",
+				mapChecksum: "md5-fileA"
+			} as CustomConfig
+
+			const customConfig2 = {
+				id: "2-invalid-md5-checksum",
+				name: "downloadable-config-2",
+				mapChecksum: "md5-fileA"
+			} as CustomConfig
+
+			const customConfig3NotApplicable = {
+				id: "3-invalid-md5-checksum",
+				name: "not-downloadable-config-3",
+				mapChecksum: "not-applicable-map"
+			} as CustomConfig
+
+			const customConfigs = new Map([[customConfig1.id, customConfig1], [customConfig2.id, customConfig2], [customConfig3NotApplicable.id, customConfig3NotApplicable]])
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(customConfigs)
+
+			customConfigsController.onFilesSelectionChanged(FILE_STATES)
+
+			expect(customConfigsController["downloadableConfigs"].size).toBe(2)
+			expect(customConfigsController["downloadableConfigs"].get("1-invalid-md5-checksum").name).toBe("downloadable-config-1")
+			expect(customConfigsController["downloadableConfigs"].get("2-invalid-md5-checksum").name).toBe("downloadable-config-2")
+
+			expect(customConfigsController["_viewModel"].hasDownloadableConfigs).toBe(true)
 		})
 	})
 })

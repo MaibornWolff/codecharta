@@ -1482,84 +1482,84 @@ export const TEST_DELTA_MAP_B: CCFile = {
 }
 
 export const TEST_FILE_DATA_DOWNLOADED = {
+	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
-	attributeTypes: {},
-	blacklist: [
-		{ path: "/root/bigLeaf.ts", type: "hide" },
-		{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
-	],
-	edges: [
-		{
-			attributes: {
-				avgCommits: 34,
-				pairingRate: 89
-			},
-			fromNodeName: "/root/big leaf",
-			toNodeName: "/root/Parent Leaf/small leaf"
-		},
-		{
-			attributes: {
-				avgCommits: 34,
-				pairingRate: 89
-			},
-			fromNodeName: "/root/Parent Leaf/small leaf",
-			toNodeName: "/root/different leaf"
-		},
-		{
-			attributes: {
-				otherMetric: 34,
-				pairingRate: 89
-			},
-			fromNodeName: "/root/Parent Leaf/other small leaf",
-			toNodeName: "/root/Parent Leaf/small leaf"
-		}
-	],
-	markedPackages: [],
 	nodes: [
 		{
+			name: "root",
 			attributes: {},
+			type: NodeType.FOLDER,
 			children: [
 				{
-					attributes: {
-						functions: 10,
-						mcc: 1,
-						rloc: 100
-					},
-					link: "http://www.google.de",
 					name: "big leaf",
-					type: NodeType.FILE
+					type: NodeType.FILE,
+					attributes: {
+						rloc: 100,
+						functions: 10,
+						mcc: 1
+					},
+					link: "http://www.google.de"
 				},
 				{
+					name: "Parent Leaf",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
-							attributes: {
-								functions: 100,
-								mcc: 100,
-								rloc: 30
-							},
 							name: "small leaf",
-							type: NodeType.FILE
+							type: NodeType.FILE,
+							attributes: {
+								rloc: 30,
+								functions: 100,
+								mcc: 100
+							}
 						},
 						{
-							attributes: {
-								functions: 1000,
-								mcc: 10,
-								rloc: 70
-							},
 							name: "other small leaf",
-							type: NodeType.FILE
+							type: NodeType.FILE,
+							attributes: {
+								rloc: 70,
+								functions: 1000,
+								mcc: 10
+							}
 						}
-					],
-					name: "Parent Leaf",
-					type: NodeType.FOLDER
+					]
 				}
-			],
-			name: "root",
-			type: NodeType.FOLDER
+			]
 		}
 	],
-	projectName: "Sample Project"
+	attributeTypes: {},
+	edges: [
+		{
+			fromNodeName: "/root/big leaf",
+			toNodeName: "/root/Parent Leaf/small leaf",
+			attributes: {
+				pairingRate: 89,
+				avgCommits: 34
+			}
+		},
+		{
+			fromNodeName: "/root/Parent Leaf/small leaf",
+			toNodeName: "/root/different leaf",
+			attributes: {
+				pairingRate: 89,
+				avgCommits: 34
+			}
+		},
+		{
+			fromNodeName: "/root/Parent Leaf/other small leaf",
+			toNodeName: "/root/Parent Leaf/small leaf",
+			attributes: {
+				pairingRate: 89,
+				otherMetric: 34
+			}
+		}
+	],
+	markedPackages: [],
+	blacklist: [
+		{ path: "/root/bigLeaf.ts", type: "hide" },
+		{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
+	]
 }
 
 export const FILE_STATES: FileState[] = [
