@@ -13,6 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3-hierarchy"
+import { Raycaster } from "three"
 
 interface Coordinates {
 	x: number
@@ -57,6 +58,7 @@ export class CodeMapMouseEventService
 	private mouseOnLastClick: Coordinates = { x: 0, y: 0 }
 	private isGrabbing = false
 	private isMoving = false
+	private raycaster = new Raycaster()
 
 	/* @ngInject */
 	constructor(
@@ -140,9 +142,27 @@ export class CodeMapMouseEventService
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
 			if (this.threeSceneService.getMapMesh()) {
-				this.intersectedBuilding = this.threeSceneService
-					.getMapMesh()
-					.checkMouseRayMeshIntersection(this.transformHTMLToSceneCoordinates(), this.threeCameraService.camera)
+				const labels = this.threeSceneService.labels.children
+				let nodeNameHoveredLabel = ""
+
+				this.raycaster.setFromCamera(this.transformHTMLToSceneCoordinates(), this.threeCameraService.camera)
+
+				for (let counter = 0; counter < labels.length; counter += 2) {
+					const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
+
+					if (intersect.length > 0) {
+						nodeNameHoveredLabel = intersect[0]["object"]["userData"]["node"]["path"]
+						break
+					}
+				}
+
+				this.intersectedBuilding =
+					nodeNameHoveredLabel !== ""
+						? this.threeSceneService.getMapMesh().getBuildingByPath(nodeNameHoveredLabel)
+						: this.threeSceneService
+								.getMapMesh()
+								.checkMouseRayMeshIntersection(this.transformHTMLToSceneCoordinates(), this.threeCameraService.camera)
+
 				const from = this.threeSceneService.getHighlightedBuilding()
 				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
@@ -155,6 +175,16 @@ export class CodeMapMouseEventService
 			}
 		}
 	}
+
+	/*
+	private calculatePickingRay(mouse: MousePos, camera: Camera) {
+		const ray = new Ray()
+		ray.origin.setFromMatrixPosition(camera.matrixWorld)
+		ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize()
+
+		return ray
+	}
+*/
 
 	onDocumentMouseMove(event: MouseEvent) {
 		this.mouse.x = event.clientX

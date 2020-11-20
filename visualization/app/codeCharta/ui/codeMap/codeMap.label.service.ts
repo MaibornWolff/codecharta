@@ -67,6 +67,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_POSITION + label.heightValue / 2, labelZ) //label_height
 			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
+			label.sprite.userData = { node }
 
 			this.threeSceneService.labels.add(label.sprite)
 			this.threeSceneService.labels.add(label.line)
