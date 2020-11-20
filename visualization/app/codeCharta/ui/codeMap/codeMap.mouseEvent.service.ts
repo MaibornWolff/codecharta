@@ -59,6 +59,8 @@ export class CodeMapMouseEventService
 	private isGrabbing = false
 	private isMoving = false
 	private raycaster = new Raycaster()
+	private modifiedLabel = new Object3D()
+	private rayPoint = { x: 0, y: 0, z: 0 }
 
 	/* @ngInject */
 	constructor(
@@ -82,6 +84,7 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
+		this.modifiedLabel = null
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -139,6 +142,13 @@ export class CodeMapMouseEventService
 			this.oldMouse.x = this.mouse.x
 			this.oldMouse.y = this.mouse.y
 
+			if (this.modifiedLabel !== null) {
+				this.modifiedLabel["object"]["position"]["x"] = this.modifiedLabel["object"]["position"]["x"] - this.rayPoint["x"] / 10
+				this.modifiedLabel["object"]["position"]["y"] = this.modifiedLabel["object"]["position"]["y"] - this.rayPoint["y"] / 10
+				this.modifiedLabel["object"]["position"]["z"] = this.modifiedLabel["object"]["position"]["z"] - this.rayPoint["z"] / 10
+				this.modifiedLabel = null
+			}
+
 			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
 			const camera = this.threeCameraService.camera
 			const labels = this.threeSceneService.labels.children
@@ -152,7 +162,24 @@ export class CodeMapMouseEventService
 
 				const labelClosestToViewPoint = this.calculateLabelIntersection(labels)
 
-				nodeNameHoveredLabel = labelClosestToViewPoint !== null ? labelClosestToViewPoint["object"]["userData"]["node"]["path"] : ""
+				if (labelClosestToViewPoint !== null) {
+					nodeNameHoveredLabel = labelClosestToViewPoint["object"]["userData"]["node"]["path"]
+
+					this.rayPoint = {
+						x: this.raycaster["ray"]["origin"]["x"] - labelClosestToViewPoint["object"]["position"]["x"],
+						y: this.raycaster["ray"]["origin"]["y"] - labelClosestToViewPoint["object"]["position"]["y"],
+						z: this.raycaster["ray"]["origin"]["z"] - labelClosestToViewPoint["object"]["position"]["z"]
+					}
+					labelClosestToViewPoint["object"]["position"]["x"] =
+						labelClosestToViewPoint["object"]["position"]["x"] + this.rayPoint["x"] / 10
+					labelClosestToViewPoint["object"]["position"]["y"] =
+						labelClosestToViewPoint["object"]["position"]["y"] + this.rayPoint["y"] / 10
+					labelClosestToViewPoint["object"]["position"]["z"] =
+						labelClosestToViewPoint["object"]["position"]["z"] + this.rayPoint["z"] / 10
+
+					this.modifiedLabel = labelClosestToViewPoint
+				}
+				//nodeNameHoveredLabel = labelClosestToViewPoint !== null ? labelClosestToViewPoint["object"]["userData"]["node"]["path"] : ""
 
 				this.intersectedBuilding =
 					nodeNameHoveredLabel !== ""
