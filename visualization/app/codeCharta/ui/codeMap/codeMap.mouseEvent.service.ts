@@ -13,7 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3-hierarchy"
-import { Raycaster } from "three"
+import { Object3D, Raycaster } from "three"
 
 interface Coordinates {
 	x: number
@@ -139,29 +139,25 @@ export class CodeMapMouseEventService
 			this.oldMouse.x = this.mouse.x
 			this.oldMouse.y = this.mouse.y
 
+			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
+			const camera = this.threeCameraService.camera
+			const labels = this.threeSceneService.labels.children
+			const mapMesh = this.threeSceneService.getMapMesh()
+			let nodeNameHoveredLabel = ""
+
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
-			if (this.threeSceneService.getMapMesh()) {
-				const labels = this.threeSceneService.labels.children
-				let nodeNameHoveredLabel = ""
+			if (mapMesh) {
+				this.raycaster.setFromCamera(mouseCoordinates, camera)
 
-				this.raycaster.setFromCamera(this.transformHTMLToSceneCoordinates(), this.threeCameraService.camera)
+				const labelClosestToViewPoint = this.calculateLabelIntersection(labels)
 
-				for (let counter = 0; counter < labels.length; counter += 2) {
-					const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
-
-					if (intersect.length > 0) {
-						nodeNameHoveredLabel = intersect[0]["object"]["userData"]["node"]["path"]
-						break
-					}
-				}
+				nodeNameHoveredLabel = labelClosestToViewPoint !== null ? labelClosestToViewPoint["object"]["userData"]["node"]["path"] : ""
 
 				this.intersectedBuilding =
 					nodeNameHoveredLabel !== ""
-						? this.threeSceneService.getMapMesh().getBuildingByPath(nodeNameHoveredLabel)
-						: this.threeSceneService
-								.getMapMesh()
-								.checkMouseRayMeshIntersection(this.transformHTMLToSceneCoordinates(), this.threeCameraService.camera)
+						? mapMesh.getBuildingByPath(nodeNameHoveredLabel)
+						: mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
 
 				const from = this.threeSceneService.getHighlightedBuilding()
 				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
@@ -176,15 +172,22 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	/*
-	private calculatePickingRay(mouse: MousePos, camera: Camera) {
-		const ray = new Ray()
-		ray.origin.setFromMatrixPosition(camera.matrixWorld)
-		ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize()
+	private calculateLabelIntersection(labels: Object3D[]) {
+		let labelClosestToViewPoint = null
 
-		return ray
+		for (let counter = 0; counter < labels.length; counter += 2) {
+			const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
+			if (intersect.length > 0) {
+				if (labelClosestToViewPoint === null) {
+					labelClosestToViewPoint = intersect[0]
+				} else {
+					labelClosestToViewPoint =
+						labelClosestToViewPoint["distance"] < intersect[0]["distance"] ? labelClosestToViewPoint : intersect[0]
+				}
+			}
+		}
+		return labelClosestToViewPoint
 	}
-*/
 
 	onDocumentMouseMove(event: MouseEvent) {
 		this.mouse.x = event.clientX
