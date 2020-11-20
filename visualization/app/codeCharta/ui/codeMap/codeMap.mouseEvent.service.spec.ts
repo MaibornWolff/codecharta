@@ -405,7 +405,8 @@ describe("codeMapMouseEventService", () => {
 
 				expect(threeSceneService.clearSelection).toHaveBeenCalled()
 			})
-			it("should not call clear selection, whe mouse has moved while left button was pressed", () => {
+
+			it("should not call clear selection, when mouse has moved while left button was pressed", () => {
 				codeMapMouseEventService["hasMouseMoved"] = jest.fn().mockReturnValue(true)
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
