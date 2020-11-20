@@ -1,8 +1,14 @@
-import {CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, CustomConfigHelper} from "./customConfigHelper"
-import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+import { CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, CustomConfigHelper } from "./customConfigHelper"
+import {
+	CustomConfig,
+	CustomConfigMapSelectionMode,
+	CustomConfigsDownloadFile,
+	ExportCustomConfig
+} from "../model/customConfig/customConfig.api.model"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
+import { klona } from "klona";
 
 describe("CustomConfigHelper", () => {
 	describe("addCustomConfig", () => {
@@ -30,8 +36,9 @@ describe("CustomConfigHelper", () => {
 				CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT,
 				"customConfigStub_asJson"
 			)
+
 			expect(
-				CustomConfigHelper.hasCustomConfigByName(customConfigStub.name)
+				CustomConfigHelper.hasCustomConfigByName(customConfigStub.mapSelectionMode, customConfigStub.assignedMaps, customConfigStub.name)
 			).toBe(true)
 
 			const receivedCustomConfig = CustomConfigHelper.getCustomConfigSettings(customConfigStub.id)
@@ -256,10 +263,12 @@ describe("CustomConfigHelper", () => {
 			} as CustomConfig
 
 			CustomConfigHelper.addCustomConfig(customConfigStub1)
-			expect(CustomConfigHelper.hasCustomConfigByName(customConfigStub1.name)).toBe(true)
+			expect(CustomConfigHelper.getCustomConfigSettings(customConfigStub1.id)).not.toBeUndefined()
+			expect(CustomConfigHelper.hasCustomConfigByName(customConfigStub1.mapSelectionMode, customConfigStub1.assignedMaps, customConfigStub1.name)).toBe(true)
 
 			CustomConfigHelper.deleteCustomConfig(customConfigStub1.id)
-			expect(CustomConfigHelper.hasCustomConfigByName(customConfigStub1.name)).toBe(false)
+			expect(CustomConfigHelper.getCustomConfigSettings(customConfigStub1.id)).toBeUndefined()
+			expect(CustomConfigHelper.hasCustomConfigByName(customConfigStub1.mapSelectionMode, customConfigStub1.assignedMaps, customConfigStub1.name)).toBe(false)
 
 			// One call for the add and another one for the delete
 			expect(CustomConfigHelper["setCustomConfigsToLocalStorage"]).toHaveBeenCalledTimes(2)
@@ -456,6 +465,57 @@ describe("CustomConfigHelper", () => {
 			const deltaGroup = customConfigItemGroups.get("another.cc.json_delta.cc.json_DELTA")
 			expect(deltaGroup.customConfigItems[0].name).toBe("config3")
 			expect(deltaGroup.customConfigItems[0].isApplicable).toBe(false)
+		})
+	})
+
+	describe("importCustomConfigs", () => {
+		it("should import not existing Configs and prevent duplicate names, if any", () => {
+			const alreadyExistingConfigStub = {
+				id: "1-invalid-md5-checksum",
+				name: "already-existing-exported-config",
+				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+				assignedMaps: ["exampleMap1.cc.json", "exampleMap2cc.json"]
+			} as ExportCustomConfig
+
+			const exportCustomConfigStub = {
+				id: "2-invalid-md5-checksum-imported",
+				name: "to-be-imported"
+			} as ExportCustomConfig
+
+			const exportCustomConfigDuplicateName = {
+				id: "3-invalid-md5-checksum-imported",
+				name: "already-existing-exported-config",
+				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+				assignedMaps: ["exampleMap1.cc.json", "exampleMap2cc.json"],
+				// Timestamp of 2020-11-20_13-19
+				creationTime: 1605878386493
+			} as ExportCustomConfig
+
+			const exportedCustomConfigs: Map<string, ExportCustomConfig> = new Map()
+			exportedCustomConfigs.set(alreadyExistingConfigStub.id, alreadyExistingConfigStub)
+			exportedCustomConfigs.set(exportCustomConfigStub.id, exportCustomConfigStub)
+			exportedCustomConfigs.set(exportCustomConfigDuplicateName.id, klona(exportCustomConfigDuplicateName))
+
+			const mockedDownloadFile: CustomConfigsDownloadFile = {
+				downloadApiVersion: "",
+				timestamp: 0,
+				customConfigs: exportedCustomConfigs
+			}
+
+			spyOn(JSON, "parse")
+			JSON["parse"] = jest.fn().mockReturnValue(mockedDownloadFile)
+
+			// Mock first config to be already existent
+			CustomConfigHelper["customConfigs"].clear()
+			CustomConfigHelper.addCustomConfig(CustomConfigHelper.createExportCustomConfigFromConfig(alreadyExistingConfigStub))
+
+			CustomConfigHelper.importCustomConfigs("not-relevant-json-string-due-to-mocking")
+
+			const customConfigs = CustomConfigHelper.getCustomConfigs()
+			expect(customConfigs.size).toBe(3)
+			expect(customConfigs.get(alreadyExistingConfigStub.id).name).toBe(alreadyExistingConfigStub.name)
+			expect(customConfigs.get(exportCustomConfigStub.id).name).toBe(exportCustomConfigStub.name)
+			expect(customConfigs.get(exportCustomConfigDuplicateName.id).name).toBe(`${exportCustomConfigDuplicateName.name} (2020-11-20_13-19)`)
 		})
 	})
 })

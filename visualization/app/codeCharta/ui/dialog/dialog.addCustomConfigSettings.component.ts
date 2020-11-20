@@ -15,6 +15,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private purgeableConfigs: Set<CustomConfig> = new Set()
+	private customLocalStorageLimitInKB = 5
 
 	private _viewModel: {
 		customConfigName: string
@@ -53,7 +54,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		this.hide()
 	}
 
-	async showConfirmDialog() {
+	async showPurgeConfirmDialog() {
 		this.downloadAndCollectPurgeableOldConfigs()
 
 		const confirmDialog = this.$mdDialog.confirm()
@@ -88,16 +89,14 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		const daysPerMonth = 30
 
 		for (const [key, value] of customConfigs.entries()) {
-			let creationTime = value?.creationTime
-			if (creationTime === undefined) {
+			if (value?.creationTime === undefined) {
 				// Fallback, if creationTime property is not present. This can happen because it was released later.
-				creationTime = Date.now()
+				value.creationTime = Date.now()
 			}
 
 			// Download 6 month old or older Configs.
 			// TODO: Replace mocked timestamp with value.creationTime, remove log
-			const ageInMonth = ((Date.now() - 1577836800000) / (1000 * 60 * 60 * 24 * daysPerMonth))
-			console.log(Date.now(), 1577836800000, Date.now() - 1577836800000, ageInMonth)
+			const ageInMonth = ((Date.now() - value.creationTime) / (1000 * 60 * 60 * 24 * daysPerMonth))
 
 			if (ageInMonth <= 6) {
 				continue
@@ -111,7 +110,13 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 	}
 
 	validateCustomConfigName() {
-		if (CustomConfigHelper.hasCustomConfigByName(this._viewModel.customConfigName)) {
+		if (
+			CustomConfigHelper.hasCustomConfigByName(
+				this.customConfigFileStateConnector.getMapSelectionMode(),
+				this.customConfigFileStateConnector.getSelectedMaps(),
+				this._viewModel.customConfigName
+			)
+		) {
 			this._viewModel.addErrorMessage = "A Custom Config with this name already exists."
 		} else {
 			this._viewModel.addErrorMessage = ""
@@ -119,8 +124,6 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 	}
 
 	validateLocalStorageSize() {
-		const customLocalStorageLimitInKB = 5
-
 		let allStringsConcatenated = ""
 		for (const [key, value] of Object.entries(localStorage)) {
 			allStringsConcatenated += key + value
@@ -133,7 +136,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		// Add 3KB as it seems there is some default overhead.
 		const localStorageSizeInKB = 3 + (allStringsConcatenated.length * 16 / 8 / 1024)
 
-		if (localStorageSizeInKB >= customLocalStorageLimitInKB) {
+		if (localStorageSizeInKB > this.customLocalStorageLimitInKB) {
 			this._viewModel.localStorageSizeWarningMessage = "Do you want to download and then purge old unused Configs to make space for new ones?"
 		} else {
 			this._viewModel.localStorageSizeWarningMessage = ""

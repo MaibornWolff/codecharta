@@ -8,6 +8,8 @@ import { setFiles } from "../../state/store/files/files.actions"
 import { FILE_STATES } from "../../util/dataMocks"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import * as CustomConfigBuilder from "../../util/customConfigBuilder"
+import { CustomConfig } from "../../model/customConfig/customConfig.api.model";
+import { CustomConfigFileStateConnector } from "../customConfigs/customConfigFileStateConnector";
 
 describe("DialogAddScenarioSettingsComponent", () => {
 	let dialogAddCustomConfigSettings: DialogAddCustomConfigSettingsComponent
@@ -95,6 +97,71 @@ describe("DialogAddScenarioSettingsComponent", () => {
 		})
 	})
 
+	describe("purgeOldConfigs", () => {
+		it("should trigger deletion if purgeableConfigs are available otherwise not", () => {
+			CustomConfigHelper.deleteCustomConfigs = jest.fn()
+
+			dialogAddCustomConfigSettings["purgeableConfigs"].clear()
+
+			dialogAddCustomConfigSettings.purgeOldConfigs()
+			expect(CustomConfigHelper.deleteCustomConfigs).not.toHaveBeenCalled()
+
+			const purgableConfig = {
+				id: "invalid-md5-checksum-id",
+				name: "this-one-should-be-purged"
+			} as CustomConfig
+
+			dialogAddCustomConfigSettings["purgeableConfigs"].add(purgableConfig)
+
+			dialogAddCustomConfigSettings.purgeOldConfigs()
+			expect(CustomConfigHelper.deleteCustomConfigs).toHaveBeenCalled()
+		})
+	})
+
+	describe("downloadAndCollectPurgeableOldConfigs", () => {
+		it("should download even if no customConfigs could be found to be downloaded", () => {
+			CustomConfigHelper.downloadCustomConfigs = jest.fn()
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+
+			const clearedConfig = {
+				id: "invalid-md5-checksum-id",
+				name: "this-one-should-be-cleared"
+			} as CustomConfig
+
+			dialogAddCustomConfigSettings["purgeableConfigs"].add(clearedConfig)
+			dialogAddCustomConfigSettings.downloadAndCollectPurgeableOldConfigs()
+
+			expect(CustomConfigHelper.downloadCustomConfigs).toHaveBeenCalledWith(new Map(), expect.any(CustomConfigFileStateConnector))
+		})
+
+		it("should download 6 month old configs", () => {
+			CustomConfigHelper.downloadCustomConfigs = jest.fn()
+
+			const sevenMonthOldConfig = {
+				id: "invalid-md5-checksum-id-7-month",
+				name: "this-one-should-be-cleared",
+				creationTime: (Date.now() - (7 * 30 * 24 * 60 * 60 * 1000))
+			} as CustomConfig
+
+			const newlyCreatedConfig = {
+				id: "invalid-md5-checksum-id-newly",
+				name: "creationTimePropertyWillBeAddedInRuntime"
+			} as CustomConfig
+
+			const configsToDownload: Map<string, CustomConfig> = new Map()
+			configsToDownload.set(sevenMonthOldConfig.id, sevenMonthOldConfig)
+			configsToDownload.set(newlyCreatedConfig.id, newlyCreatedConfig)
+
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(configsToDownload)
+
+			dialogAddCustomConfigSettings.downloadAndCollectPurgeableOldConfigs()
+
+			expect(CustomConfigHelper.downloadCustomConfigs).toHaveBeenCalled()
+			expect(dialogAddCustomConfigSettings["purgeableConfigs"].size).toBe(1)
+			expect(dialogAddCustomConfigSettings["purgeableConfigs"].values().next().value.id).toBe("invalid-md5-checksum-id-7-month")
+		})
+	})
+
 	describe("isNewCustomConfigValid", () => {
 		it("should return true for not empty config names and empty warning message", () => {
 			dialogAddCustomConfigSettings["_viewModel"].addErrorMessage = ""
@@ -110,6 +177,26 @@ describe("DialogAddScenarioSettingsComponent", () => {
 			dialogAddCustomConfigSettings["_viewModel"].customConfigName = "Valid custom config name."
 			dialogAddCustomConfigSettings["_viewModel"].addErrorMessage = "warning message is set"
 			expect(dialogAddCustomConfigSettings.isNewCustomConfigValid()).toBe(false)
+		})
+	})
+
+	describe("validateLocalStorageSize", () => {
+		it("should return true for not empty config names and empty warning message", () => {
+			localStorage.clear()
+			dialogAddCustomConfigSettings["_viewModel"].localStorageSizeWarningMessage = ""
+
+			// Per default the localStorage has an overhead of 3KB
+			dialogAddCustomConfigSettings["customLocalStorageLimitInKB"] = 3
+
+			// local Storage limit is not exceeded yet
+			dialogAddCustomConfigSettings.validateLocalStorageSize()
+			expect(dialogAddCustomConfigSettings["_viewModel"].localStorageSizeWarningMessage.length).toBe(0)
+
+			// Add some more bytes to be bigger than the limit of 3KB
+			localStorage.setItem("4444", "2222")
+
+			dialogAddCustomConfigSettings.validateLocalStorageSize()
+			expect(dialogAddCustomConfigSettings["_viewModel"].localStorageSizeWarningMessage).toContain("purge old unused Configs")
 		})
 	})
 })

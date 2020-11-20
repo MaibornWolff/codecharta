@@ -85,9 +85,13 @@ export class CustomConfigHelper {
 		return this.customConfigs.get(configId)
 	}
 
-	static hasCustomConfigByName(configName): boolean {
+	static hasCustomConfigByName(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], configName: string): boolean {
 		for (const customConfig of this.customConfigs.values()) {
-			if (customConfig.name === configName) {
+			if (
+				customConfig.name === configName &&
+				customConfig.mapSelectionMode === mapSelectionMode &&
+				customConfig.assignedMaps.join("") === selectedMaps.join("")
+			) {
 				return true
 			}
 		}
@@ -106,13 +110,13 @@ export class CustomConfigHelper {
 
 			const alreadyExistingConfig = CustomConfigHelper.getCustomConfigSettings(exportedConfig.id)
 
-			// Check for a duplicate Config name in the same mode and with equal assigned maps
+			// Check for a duplicate Config by matching checksums
 			if (alreadyExistingConfig) {
-					continue
+				continue
 			}
 
 			// Prevent different Configs with the same name
-			if (CustomConfigHelper.hasCustomConfigByName(exportedConfig.name)) {
+			if (CustomConfigHelper.hasCustomConfigByName(exportedConfig.mapSelectionMode, exportedConfig.assignedMaps, exportedConfig.name)) {
 				exportedConfig.name += ` (${FileNameHelper.getFormattedTimestamp(new Date(exportedConfig.creationTime))})`
 			}
 
