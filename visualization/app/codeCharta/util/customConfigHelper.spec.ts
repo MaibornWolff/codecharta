@@ -9,8 +9,14 @@ import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.compone
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 import { klona } from "klona";
+import { FileDownloader } from "./fileDownloader";
 
 describe("CustomConfigHelper", () => {
+
+	beforeEach(() => {
+		CustomConfigHelper["customConfigs"].clear()
+	})
+
 	describe("addCustomConfig", () => {
 		it("should add custom config and store them to localStorage", () => {
 			const customConfigStub = {
@@ -249,7 +255,7 @@ describe("CustomConfigHelper", () => {
 	})
 
 	describe("deleteCustomConfig", () => {
-		it("should delete CustomConfig from Local Storage", () => {
+		it("should delete CustomConfig(s) from Local Storage", () => {
 			CustomConfigHelper["setCustomConfigsToLocalStorage"] = jest.fn()
 
 			const customConfigStub1 = {
@@ -272,6 +278,18 @@ describe("CustomConfigHelper", () => {
 
 			// One call for the add and another one for the delete
 			expect(CustomConfigHelper["setCustomConfigsToLocalStorage"]).toHaveBeenCalledTimes(2)
+
+			const customConfigStub2 = {
+				id: "invalid-md5-checksum-2",
+				name: "stubbedConfig11",
+			} as CustomConfig
+
+			// Batch delete Configs
+			CustomConfigHelper["customConfigs"].clear()
+			CustomConfigHelper.addCustomConfig(customConfigStub1)
+			CustomConfigHelper.addCustomConfig(customConfigStub2)
+			CustomConfigHelper.deleteCustomConfigs([customConfigStub1, customConfigStub2])
+			expect(CustomConfigHelper.getCustomConfigs().size).toBe(0)
 		})
 	})
 
@@ -516,6 +534,45 @@ describe("CustomConfigHelper", () => {
 			expect(customConfigs.get(alreadyExistingConfigStub.id).name).toBe(alreadyExistingConfigStub.name)
 			expect(customConfigs.get(exportCustomConfigStub.id).name).toBe(exportCustomConfigStub.name)
 			expect(customConfigs.get(exportCustomConfigDuplicateName.id).name).toBe(`${exportCustomConfigDuplicateName.name} (2020-11-20_13-19)`)
+		})
+	})
+
+	describe("downloadCustomConfigs", () => {
+		it("should trigger download and append the download-file-name with the one and only selected map name", () => {
+			const exportCustomConfig1 = {
+				id: "1-invalid-md5-checksum",
+				name: "config1"
+			} as ExportCustomConfig
+
+			const exportCustomConfig2 = {
+				id: "2-invalid-md5-checksum",
+				name: "config2"
+			} as ExportCustomConfig
+
+
+			const exportedCustomConfigs: Map<string, ExportCustomConfig> = new Map()
+			exportedCustomConfigs.set(exportCustomConfig1.id, exportCustomConfig1)
+			exportedCustomConfigs.set(exportCustomConfig2.id, exportCustomConfig2)
+
+			jest.mock("../ui/customConfigs/customConfigFileStateConnector")
+
+			CustomConfigFileStateConnector.prototype.isDeltaMode = jest.fn().mockReturnValue(false)
+			CustomConfigFileStateConnector.prototype.getAmountOfUploadedFiles = jest.fn().mockReturnValue(1)
+			CustomConfigFileStateConnector.prototype.isEachFileSelected = jest.fn().mockReturnValue(true)
+			CustomConfigFileStateConnector.prototype.getJointMapName = jest.fn().mockReturnValue("mocked_currently_uploaded_map.cc.json")
+
+			spyOn(JSON, "stringify")
+			JSON["stringify"] = jest.fn(() => {
+				return "mock_serialized_config_to_be_downloaded"
+			})
+
+			FileDownloader.downloadData = jest.fn()
+
+			CustomConfigHelper.downloadCustomConfigs(exportedCustomConfigs, CustomConfigFileStateConnector.prototype)
+			expect(FileDownloader.downloadData).toHaveBeenCalledWith(
+				"mock_serialized_config_to_be_downloaded",
+				expect.stringContaining("mocked_currently_uploaded_map_2020")
+			)
 		})
 	})
 })
