@@ -360,7 +360,7 @@ describe("codeMapMouseEventService", () => {
 
 		describe("on left click", () => {
 			beforeEach(() => {
-				event = { button: ClickType.LeftClick }
+				event = { button: ClickType.LeftClick, clientX: 10, clientY: 20 }
 			})
 			it("should change the cursor to default when the left click is triggered", () => {
 				document.body.style.cursor = CursorType.Pointer
@@ -397,17 +397,20 @@ describe("codeMapMouseEventService", () => {
 				expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 			})
 
-			it("should call clearselection, when the mouse has not moved while left button was pressed", () => {
-				threeSceneService["selected"] = codeMapBuilding
-				codeMapMouseEventService["hasMouseMoved"] = jest.fn().mockReturnValue(false)
+			it("should call clearselection, when the mouse has moved less or exact 3 pixels while left button was pressed", () => {
+				codeMapMouseEventService.onDocumentMouseMove(event)
+				codeMapMouseEventService.onDocumentMouseDown(event)
+				codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 17 } as MouseEvent)
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
 				expect(threeSceneService.clearSelection).toHaveBeenCalled()
 			})
 
-			it("should not call clear selection, when mouse has moved while left button was pressed", () => {
-				codeMapMouseEventService["hasMouseMoved"] = jest.fn().mockReturnValue(true)
+			it("should not call clear selection, when mouse has moved more than 3 pixels while left button was pressed", () => {
+				codeMapMouseEventService.onDocumentMouseMove(event)
+				codeMapMouseEventService.onDocumentMouseDown(event)
+				codeMapMouseEventService.onDocumentMouseMove({ clientX: 6, clientY: 20 } as MouseEvent)
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
@@ -440,7 +443,7 @@ describe("codeMapMouseEventService", () => {
 				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
 			})
 
-			it("should not $broadcast a building-right-clicked event when the mouse has moved since last click", () => {
+			it("should not $broadcast a building-right-clicked event when the mouse has moved more than 3 Pixels since last click", () => {
 				codeMapMouseEventService.onDocumentMouseMove(event)
 				codeMapMouseEventService.onDocumentMouseDown(event)
 				codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 20 } as MouseEvent)
