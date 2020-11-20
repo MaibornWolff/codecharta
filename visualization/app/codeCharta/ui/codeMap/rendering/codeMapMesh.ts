@@ -121,15 +121,20 @@ export class CodeMapMesh {
 	}
 
 	private setNewDeltaColor(building: CodeMapBuilding, state: State) {
-		if (building.node.deltas) {
-			const deltaValue = building.node.deltas[state.dynamicSettings.heightMetric]
+		const { appSettings : {mapColors}, dynamicSettings : {heightMetric} } = state;
+		const { node } = building;
+		
+		if (node.flat)
+			building.setDeltaColor(mapColors.flat)
+		else if (node.deltas) {
+			const deltaValue = node.deltas[heightMetric]
 
 			if (deltaValue > 0) {
-				building.setDeltaColor(state.appSettings.mapColors.positiveDelta)
+				building.setDeltaColor(mapColors.positiveDelta)
 			}
 
 			if (deltaValue < 0) {
-				building.setDeltaColor(state.appSettings.mapColors.negativeDelta)
+				building.setDeltaColor(mapColors.negativeDelta)
 			}
 		}
 	}
