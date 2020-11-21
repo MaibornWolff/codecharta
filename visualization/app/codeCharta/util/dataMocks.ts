@@ -177,56 +177,6 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
-	children: [
-		{
-			name: "Folder3",
-			type: NodeType.FOLDER,
-			attributes: {},
-			isExcluded: false,
-			isFlattened: false,
-			children: [
-				{
-					name: "small leaf",
-					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100 },
-					isExcluded: false,
-					isFlattened: false
-				}
-			]
-		},
-		{
-			name: "Folder1",
-			type: NodeType.FOLDER,
-			attributes: {},
-			isExcluded: false,
-			isFlattened: false,
-			children: []
-		},
-		{
-			name: "Folder2",
-			type: NodeType.FOLDER,
-			attributes: {},
-			isExcluded: false,
-			isFlattened: false,
-			children: []
-		},
-		{
-			name: "big leaf",
-			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1 },
-			link: "http://www.google.de",
-			isExcluded: false,
-			isFlattened: false
-		}
-	]
-}
-
 export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 	name: "root",
 	attributes: {},
@@ -434,33 +384,6 @@ export const VALID_NODES_WITH_ID: CodeMapNode = {
 	children: [VALID_FILE_NODE_WITH_ID]
 }
 
-export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	path: "/root",
-	isExcluded: false,
-	isFlattened: false,
-	children: [
-		{
-			name: "first leaf",
-			type: NodeType.FILE,
-			path: "/root/first leaf",
-			attributes: { functions: 10, mcc: 1 },
-			isExcluded: false,
-			isFlattened: false
-		},
-		{
-			name: "second leaf",
-			type: NodeType.FILE,
-			path: "/root/second leaf",
-			attributes: { functions: 5, mcc: 1 },
-			isExcluded: false,
-			isFlattened: false
-		}
-	]
-}
-
 export const VALID_NODE_DECORATED: CodeMapNode = {
 	name: "root",
 	attributes: { rloc: 100, functions: 10, mcc: 1 },
@@ -506,14 +429,6 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 			]
 		}
 	]
-}
-
-export const VALID_NODE_WITH_METRICS: CodeMapNode = {
-	name: "root",
-	type: NodeType.FOLDER,
-	attributes: { rloc: 100, functions: 10, mcc: 1 },
-	isExcluded: false,
-	isFlattened: false
 }
 
 export const VALID_EDGES: Edge[] = [

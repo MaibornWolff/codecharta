@@ -7,7 +7,6 @@ import { CodeMapNode, SortingOption } from "../../codeCharta.model"
 import {
 	decorateFiles,
 	VALID_NODE_WITH_MULTIPLE_FOLDERS,
-	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY,
 	VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS,
 	VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED
 } from "../../util/dataMocks"
@@ -133,7 +132,7 @@ describe("MapTreeViewController", () => {
 
 			// And now check that the sort function has changed the local map copy
 			// and the new order has been applied correctly.
-			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY)
+			expect(mapTreeViewController["_viewModel"].rootNode).toMatchSnapshot()
 		})
 	})
 })

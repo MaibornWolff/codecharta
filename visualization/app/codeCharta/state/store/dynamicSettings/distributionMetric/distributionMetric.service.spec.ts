@@ -72,7 +72,6 @@ describe("DistributionMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update distributionMetric if current distributionMetric is not available", () => {
 			const metricData = [
-				{ name: "unary", maxValue: 1 },
 				{ name: "loc", maxValue: 2 },
 				{ name: "comment_lines", maxValue: 2 },
 				{ name: "blank_lines", maxValue: 2 }
@@ -80,7 +79,7 @@ describe("DistributionMetricService", () => {
 
 			distributionMetricService.onNodeMetricDataChanged(metricData)
 
-			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("unary")
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("loc")
 		})
 
 		it("should not reset to default if current metric is available", () => {
@@ -111,7 +110,6 @@ describe("DistributionMetricService", () => {
 			const metricData = [
 				{ name: "loc", maxValue: 11 },
 				{ name: "rloc", maxValue: 4 },
-				{ name: "unary", maxValue: 1 },
 				{ name: "comment_lines", maxValue: 7 }
 			]
 
@@ -120,17 +118,16 @@ describe("DistributionMetricService", () => {
 			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("rloc")
 		})
 
-		it("should reset to unary if rloc unavailable", () => {
+		it("should reset to the first metric if rloc unavailable", () => {
 			const metricData = [
 				{ name: "loc", maxValue: 21 },
 				{ name: "empty_lines", maxValue: 11 },
-				{ name: "unary", maxValue: 1 },
 				{ name: "comment_lines", maxValue: 7 }
 			]
 
 			distributionMetricService.reset(metricData)
 
-			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("unary")
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("loc")
 		})
 	})
 })

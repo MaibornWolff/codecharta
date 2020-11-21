@@ -1,5 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`MapTreeViewController onRenderMapChanged should clone new map before updating viewModel.rootNode to prevent unwanted changes in original map 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [
+    Object {
+      "attributes": Object {},
+      "children": Array [],
+      "isExcluded": false,
+      "isFlattened": false,
+      "name": "Folder1",
+      "type": "Folder",
+    },
+    Object {
+      "attributes": Object {},
+      "children": Array [],
+      "isExcluded": false,
+      "isFlattened": false,
+      "name": "Folder2",
+      "type": "Folder",
+    },
+    Object {
+      "attributes": Object {},
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "functions": 100,
+            "mcc": 100,
+            "rloc": 30,
+          },
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "small leaf",
+          "type": "File",
+        },
+      ],
+      "isExcluded": false,
+      "isFlattened": false,
+      "name": "Folder3",
+      "type": "Folder",
+    },
+    Object {
+      "attributes": Object {
+        "functions": 10,
+        "mcc": 1,
+        "rloc": 100,
+      },
+      "isExcluded": false,
+      "isFlattened": false,
+      "link": "http://www.google.de",
+      "name": "big leaf",
+      "type": "File",
+    },
+  ],
+  "isExcluded": false,
+  "isFlattened": false,
+  "name": "root",
+  "type": "Folder",
+}
+`;
+
 exports[`MapTreeViewController onRenderMapChanged should update viewModel.rootNode after timeout and sort 1`] = `
 Object {
   "attributes": Object {
