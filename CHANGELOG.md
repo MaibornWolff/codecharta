@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Buildings are flattened when delta is active. 
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.62.0] - 2020-11-12
