@@ -42,12 +42,12 @@ export class NodeDecorator {
 			data.id = id
 			id++
 
-			if (!isLeaf(data)) {
-				data.descendants = 0
-			}
-
 			if (data.attributes === undefined) {
 				data.attributes = {}
+			}
+
+			if (!isLeaf(data)) {
+				data.descendants = 0
 			}
 
 			for (const metric of nodeMetricData) {
