@@ -23,5 +23,6 @@ export function setTreeMapSettings(treeMapSettings: RecursivePartial<TreeMapSett
 
 export const defaultTreeMapSettings: TreeMapSettings = {
 	// Plop: Append default property here
+	// TODO check fix map size. map size should be set dynamically (consider screen resolution).
 	mapSize: defaultMapSize
 }

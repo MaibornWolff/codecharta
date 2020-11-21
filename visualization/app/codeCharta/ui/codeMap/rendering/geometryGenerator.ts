@@ -35,11 +35,11 @@ export class GeometryGenerator {
 		// performance by preventing intermediate transformations such as arrays
 		// that are later on converted to typed arrays. Thus, no
 		// `IntermediateVertexData` should be created.
-		for (const [i, n] of nodes.entries()) {
-			if (!n.isLeaf) {
-				this.addFloor(data, n, i, desc)
+		for (const [index, node] of nodes.entries()) {
+			if (!node.isLeaf) {
+				this.addFloor(data, node, index, desc)
 			} else {
-				this.addBuilding(data, n, i, desc, state, isDeltaState)
+				this.addBuilding(data, node, index, desc, state, isDeltaState)
 			}
 		}
 
@@ -57,14 +57,14 @@ export class GeometryGenerator {
 		return max
 	}
 
-	private mapNodeToLocalBox(n: Node): BoxMeasures {
+	private mapNodeToLocalBox(node: Node): BoxMeasures {
 		return {
-			x: n.x0,
-			y: n.z0,
-			z: n.y0,
-			width: n.width,
-			height: n.height,
-			depth: n.length
+			x: node.x0,
+			y: node.z0,
+			z: node.y0,
+			width: node.width,
+			height: node.height,
+			depth: node.length
 		}
 	}
 
@@ -72,49 +72,49 @@ export class GeometryGenerator {
 		return delta <= 0 ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT)
 	}
 
-	private addFloor(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription) {
-		const color = this.getMarkingColorWithGradient(n)
-		const measures = this.mapNodeToLocalBox(n)
+	private addFloor(data: IntermediateVertexData, node: Node, index: number, desc: CodeMapGeometricDescription) {
+		const color = this.getMarkingColorWithGradient(node)
+		const measures = this.mapNodeToLocalBox(node)
 
 		desc.add(
 			new CodeMapBuilding(
-				idx,
+				index,
 				new Box3(
 					new Vector3(measures.x, measures.y, measures.z),
 					new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 				),
-				n,
+				node,
 				color
 			)
 		)
 
-		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, 0)
+		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, index, 0)
 	}
 
-	private getMarkingColorWithGradient(n: Node) {
-		if (n.markingColor) {
-			const markingColorAsNumber = ColorConverter.getNumber(n.markingColor)
-			const markingColorWithGradient = markingColorAsNumber & (n.depth % 2 === 0 ? 0xdddddd : 0xffffff)
+	private getMarkingColorWithGradient(node: Node) {
+		if (node.markingColor) {
+			const markingColorAsNumber = ColorConverter.getNumber(node.markingColor)
+			const markingColorWithGradient = markingColorAsNumber & (node.depth % 2 === 0 ? 0xdddddd : 0xffffff)
 			return ColorConverter.convertNumberToHex(markingColorWithGradient)
 		}
-		return this.floorGradient[n.depth]
+		return this.floorGradient[node.depth]
 	}
 
 	private addBuilding(
 		data: IntermediateVertexData,
-		n: Node,
-		idx: number,
+		node: Node,
+		index: number,
 		desc: CodeMapGeometricDescription,
 		state: State,
 		isDeltaState: boolean
 	) {
-		const measures = this.mapNodeToLocalBox(n)
-		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
+		const measures = this.mapNodeToLocalBox(node)
+		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(node.height, node.heightDelta)
 
 		let renderDelta = 0
 
-		if (isDeltaState && n.deltas && n.deltas[state.dynamicSettings.heightMetric] && n.heightDelta) {
-			renderDelta = n.heightDelta //set the transformed render delta
+		if (isDeltaState && node.deltas && node.deltas[state.dynamicSettings.heightMetric] && node.heightDelta) {
+			renderDelta = node.heightDelta //set the transformed render delta
 
 			if (renderDelta < 0) {
 				measures.height += Math.abs(renderDelta)
@@ -123,17 +123,17 @@ export class GeometryGenerator {
 
 		desc.add(
 			new CodeMapBuilding(
-				idx,
+				index,
 				new Box3(
 					new Vector3(measures.x, measures.y, measures.z),
 					new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 				),
-				n,
-				n.color
+				node,
+				node.color
 			)
 		)
 
-		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, n.color, idx, renderDelta)
+		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, node.color, index, renderDelta)
 	}
 
 	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: Material) {
@@ -147,26 +147,26 @@ export class GeometryGenerator {
 		const uvs = new Float32Array(numberVertices * uvDimension)
 		const colors = new Float32Array(size)
 
-		for (let i = 0; i < numberVertices; ++i) {
-			const pos = i * dimension
+		for (let index = 0; index < numberVertices; ++index) {
+			const pos = index * dimension
 			const pos1 = pos + 1
 			const pos2 = pos1 + 1
 
-			const dataPosition = data.positions[i]
+			const dataPosition = data.positions[index]
 			positions[pos] = dataPosition.x
 			positions[pos1] = dataPosition.y
 			positions[pos2] = dataPosition.z
 
-			const dataNormal = data.normals[i]
+			const dataNormal = data.normals[index]
 			normals[pos] = dataNormal.x
 			normals[pos1] = dataNormal.y
 			normals[pos2] = dataNormal.z
 
-			const uvPos = i * uvDimension
-			uvs[uvPos] = data.uvs[i].x
-			uvs[uvPos + 1] = data.uvs[i].y
+			const uvPos = index * uvDimension
+			uvs[uvPos] = data.uvs[index].x
+			uvs[uvPos + 1] = data.uvs[index].y
 
-			const color: Vector3 = ColorConverter.getVector3(data.colors[i])
+			const color: Vector3 = ColorConverter.getVector3(data.colors[index])
 			colors[pos] = color.x
 			colors[pos1] = color.y
 			colors[pos2] = color.z

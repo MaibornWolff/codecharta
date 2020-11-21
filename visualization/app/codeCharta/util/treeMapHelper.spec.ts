@@ -1,7 +1,7 @@
 import { TreeMapHelper } from "./treeMapHelper"
 import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
-import { HierarchyRectangularNode } from "d3"
+import { HierarchyRectangularNode } from "d3-hierarchy"
 
 describe("TreeMapHelper", () => {
 	describe("build node", () => {
@@ -294,17 +294,32 @@ describe("TreeMapHelper", () => {
 		})
 
 		it("root plus child should be 2", () => {
-			const root = { children: [{}] }
+			const root: CodeMapNode = {
+				children: [{ name: "Foo", type: NodeType.FILE }],
+				name: "root",
+				type: NodeType.FOLDER
+			}
 			expect(TreeMapHelper.countNodes(root)).toBe(2)
 		})
 
 		it("root plus child in child should be 3", () => {
-			const root = { children: [{ children: [{}] }] }
+			const root: CodeMapNode = {
+				children: [{ children: [{ name: "Foo", type: NodeType.FILE }], name: "Foo", type: NodeType.FILE }],
+				name: "root",
+				type: NodeType.FOLDER
+			}
 			expect(TreeMapHelper.countNodes(root)).toBe(3)
 		})
 
 		it("root plus two children should be 3", () => {
-			const root = { children: [{}, {}] }
+			const root: CodeMapNode = {
+				children: [
+					{ name: "Foo", type: NodeType.FILE },
+					{ name: "Bar", type: NodeType.FILE }
+				],
+				name: "root",
+				type: NodeType.FOLDER
+			}
 			expect(TreeMapHelper.countNodes(root)).toBe(3)
 		})
 	})

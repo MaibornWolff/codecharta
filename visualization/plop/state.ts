@@ -11,7 +11,7 @@ export const PLOP_STATE_FILE_ACTIONS = [
 	modifyFileAction({
 		path: "state/state.module.ts",
 		pattern: /(\/\/ Plop: Append service name here)/gi,
-		template: "$1\r\n\t.service(_.camelCase({{properCase name}}Service.name), {{properCase name}}Service)"
+		template: "$1\r\n\t.service(camelCase({{properCase name}}Service.name), {{properCase name}}Service)"
 	}),
 	modifyFileAction({
 		path: "state/state.module.ts",

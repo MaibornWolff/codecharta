@@ -6,11 +6,10 @@ export class SearchPanelPageObject {
 
 		await expect(page).toClick("search-panel-component md-card .section .section-title", { timeout: 3000 })
 
-		if (wasOpen) {
-			await page.waitForSelector("#search-panel-card", { visible: false })
-		} else {
-			await page.waitForSelector(`#search-panel-card.${this.EXPANDED}`)
-		}
+		await (wasOpen
+			? page.waitForSelector("#search-panel-card", { visible: false })
+			: page.waitForSelector(`#search-panel-card.${this.EXPANDED}`))
+
 		return !wasOpen
 	}
 

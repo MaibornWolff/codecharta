@@ -7,6 +7,7 @@ import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
+import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 
 export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber {
 	private _viewModel: {
@@ -23,7 +24,8 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		private $timeout: ITimeoutService,
 		private $element: Element,
 		private threeViewerService: ThreeViewerService,
-		private codeMapMouseEventService: CodeMapMouseEventService
+		private codeMapMouseEventService: CodeMapMouseEventService,
+		private codeChartaMouseEventService: CodeChartaMouseEventService
 	) {
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
@@ -42,6 +44,10 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 	onIsLoadingFileChanged(isLoadingFile: boolean) {
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
+	}
+
+	onClick() {
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 
 	private synchronizeAngularTwoWayBinding() {

@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.e2e
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import org.assertj.core.api.Assertions
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ExcludeFilesAndFolders {
     private val resource = "src/test/resources"

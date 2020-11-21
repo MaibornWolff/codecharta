@@ -6,7 +6,7 @@ import { calculateNewEdgeMetricData, EdgeMetricDataAction, EdgeMetricDataActions
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { EDGE_METRIC_DATA, FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../../../util/dataMocks"
 import { CodeMapNode } from "../../../../codeCharta.model"
-import { HierarchyNode } from "d3"
+import { HierarchyNode } from "d3-hierarchy"
 import { FilesService } from "../../files/files.service"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
@@ -131,15 +131,22 @@ describe("EdgeMetricDataService", () => {
 
 			expect(nodePaths).toEqual(["/root/big leaf", "/root/Parent Leaf/small leaf"])
 		})
+
+		it("should return an empty set if amount of edges is 0", () => {
+			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("pairingRate", 0)
+
+			expect(nodePaths).toEqual([])
+		})
 	})
 
 	describe("getMetricValuesForNode", () => {
 		it("should return Edge Metric counts for node", () => {
+			const metricNames = ["pairingRate"]
 			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
 
-			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node)
+			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node, metricNames)
 
-			expect(metricsForNode.get("pairingRate")).toEqual({ incoming: 0, outgoing: 1 })
+			expect(metricsForNode.get(metricNames[0])).toEqual({ incoming: 0, outgoing: 1 })
 		})
 	})
 })

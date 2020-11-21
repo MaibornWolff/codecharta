@@ -19,6 +19,203 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Chore 👨‍💻 👩‍💻
+
+## [1.62.0] - 2020-11-12
+
+### Added 🚀
+
+-   A new option in the Global Settings allows to enable/disable experimental features #1318
+    -   Click on the settings button in the upper right corner to open the Global Settings dialog.
+    -   Activate/Deactivate the new option "Enable Experimental Features"
+    -   The features will be shown/hidden accordingly
+-   "CustomViews", the first experimental feature has been added #1318
+
+    -   It must be enabled by activating the new option in the Global Settings dialog as mentioned before.
+    -   You can save your current map configurations to replay/restore them later.
+    -   A saved CustomView can only be applied for it's original map.
+    -   This will enable you to be more efficient in analizing projects by switching between different CustomViews.
+
+-   NodeContextMenu now contains option to keep buildings highlighted #1323
+
+-   Fixed Folder algorithm supports nested (parent-child) Fixed Folders #1431
+    1. Define children of a Fixed Folder also as Fixed Folders by adding the `fixedPosition` attribute manually in `.cc.json`.
+    1. All children of a parent Fixed Folder must be fixed.
+    1. Read the how-to guide for further information: https://maibornwolff.github.io/codecharta/how-to/fixate_folders_with_a_custom_cc_json/
+
+### Changed
+
+-   Improved search
+
+    1. Not providing any star in the search bar from now on expects the input to
+       be a wildcard search. Thus, files are going to match paths that have
+       leading or following characters. E.g., `oo` is going to match
+       `/root/foobar`.
+    1. To use the explicit former search mode, wrap the search entry in quotes as
+       in: `"oo"`. This would only match filenames that are exactly `oo`.
+    1. The search field accepts multiple search entries at once, separated by
+       commata. `foo,bar` is going to search for both `*foo*` and `*bar*` and
+       marks all matched files accordingly.
+    1. It is possible to invert the search with a leading exclamation mark as in
+       `!foobar`. That will match any file that does not match `*foobar*`. It is
+       only possible to invert the complete input, not individual search entries.
+    1. Whitespace handling changed to ignore leading whitespace.
+
+-   Distribution metric #1188
+
+    1. set rloc to default distribution metric, showing language percentages for real lines of code, if available. Else set to unary to show language distribution over files
+
+-   Improved file sorting in the file overview of the search bar
+    -   Numbers are sorted naturally
+    -   Characters are compared with their base character (e.g., `a` is now next to `á`).
+-   Label metric not shown by default anymore
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.61.0] - 2020-10-30
+
+### Added 🚀
+
+### Changed
+
+-   Disable highlighting buildings during map movement #1432
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   File tree/flattened/excluded overlay visualization is buggy #1269
+-   EdgePreview on Map broken when selecting zero #1276
+
+### Chore 👨‍💻 👩‍💻
+
+-   Schedules and merge retries of dependabot dependency updates changed
+
+## [1.60.2] - 2020-10-24
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Mouse cursor flickering #1170
+-   Fix flipping map when clicking any option in the toolbar #1410
+-   Fix edge metric not working correctly
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.60.1] - 2020-10-20
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Issue with first start without an internet connection not working#1266
+-   Issue with ribbon bar sizes for opened cards #1035
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.60.0] - 2020-10-16
+
+### Added 🚀
+
+-   Parsing feedback with progressbar and probable ETA for parsers and SonarImporter #847
+-   Mark node names and make the names clickable for nodes that have a link to them #1313
+-   Indicate the metric name next to a shown value in a new line on labels #1035
+-   Checkboxes to display metric names and values and to display node names on labels #1035
+-   Mark node names and make the names clickable for nodes that have a link to them #1313
+
+### Changed
+
+-   Label design #1035
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   First start without an internet connection of standalone not working #1266
+-   Comparing a map in delta mode shows the correct differences
+-   This mainly applies to maps compared with itself while it also fixes some other minor miscalculations
+-   File extensions detection is improved
+-   Zooming in and out the map will now close the node context menu #1324
+    -   Improved and simplified event handling in NodeContextMenu component
+
+### Chore 👨‍💻 👩‍💻
+
+-   Improved performance of multiple operations (e.g., delta mode).
+
+## [1.59.0] - 2020-10-09
+
+### Added 🚀
+
+-   New EXPERIMENTAL SCMLogParser version
+-   Improved performance around 300% when parsing CodeCharta
+-   Improved memory usage
+-   Fixed issue with old parser creating incorrect nodes in CodeCharta #871
+-   ATTENTION: the parser is experimental, therefore some potential issues might remain, e.g. potentially an unhandled edge case when parsing node
+-   To use the new parser a reversed git log is needed, as well as a git file list, refer to `ccsh scmlogparserv2 -h` for additional information
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Color-Metric slider is set and activated in the map accordingly to the released sliderbutton #1319
+-   Deselcting a building will instantly dehighlight the buildings which were connected through edges #890
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.58.1] - 2020-10-02
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Showing wrong edges when hovering a building after selecting one #1137
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.58.0] - 2020-10-02
+
+### Added 🚀
+
+-   Add active color metric to the top of the legend panel #1278
+-   SourceCodeParser: Java 14 Support #1277
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.57.4] - 2020-09-25
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
 -   Metric-Settings-Panels closed when clicking an option inside the panel #1258
 -   Improve loading and rendering maps performance
 

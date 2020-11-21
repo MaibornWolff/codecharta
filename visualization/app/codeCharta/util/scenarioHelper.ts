@@ -1,5 +1,5 @@
 "use strict"
-import { AppSettings, CCLocalStorage, DynamicSettings, RecursivePartial, Scenario, Settings, MetricData } from "../codeCharta.model"
+import { AppSettings, LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, Settings, MetricData } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
@@ -7,14 +7,15 @@ import scenarios from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
 
 export class ScenarioHelper {
-	private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"
+	private static readonly SCENARIOS_LOCAL_STORAGE_VERSION = "1.0.0"
+	private static readonly SCENARIOS_LOCAL_STORAGE_ELEMENT = "scenarios"
 	//TODO: Move Scenarios to Redux Store
 	private static scenarios: Map<string, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
 	static getScenarioItems(metricData: MetricData) {
 		const scenarioItems: ScenarioItem[] = []
 
-		this.scenarios.forEach(scenario => {
+		for (const scenario of this.scenarios.values()) {
 			scenarioItems.push({
 				scenarioName: scenario.name,
 				isScenarioApplicable: this.isScenarioApplicable(scenario, metricData),
@@ -46,7 +47,7 @@ export class ScenarioHelper {
 					}
 				]
 			})
-		})
+		}
 		return scenarioItems
 	}
 
@@ -71,9 +72,9 @@ export class ScenarioHelper {
 	private static getPreLoadScenarios() {
 		const scenariosAsSettings = this.importScenarios(scenarios)
 		const scenario: Map<string, RecursivePartial<Scenario>> = new Map()
-		scenariosAsSettings.forEach(scenarioSettings => {
-			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))
-		})
+		for (const setting of scenariosAsSettings) {
+			scenario.set(setting.name, this.transformScenarioAsSettingsToScenario(setting))
+		}
 		return scenario
 	}
 
@@ -81,44 +82,36 @@ export class ScenarioHelper {
 		const scenario: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
 		const { dynamicSettings, appSettings } = scenarioAsSettings.settings
 
-		for (const scenarioKey in dynamicSettings) {
-			switch (scenarioKey) {
-				case "areaMetric": {
-					scenario.area = {
-						areaMetric: dynamicSettings.areaMetric,
-						margin: dynamicSettings.margin
-					}
-					break
-				}
-				case "heightMetric": {
-					scenario.height = {
-						heightMetric: dynamicSettings.heightMetric,
-						labelSlider: appSettings.amountOfTopLabels,
-						heightSlider: appSettings.scaling
-					}
-					break
-				}
-				case "colorMetric": {
-					scenario.color = {
-						colorMetric: dynamicSettings.colorMetric,
-						colorRange: dynamicSettings.colorRange
-					}
-					break
-				}
-				case "edgeMetric": {
-					scenario.edge = {
-						edgeMetric: dynamicSettings.edgeMetric,
-						edgeHeight: appSettings.edgeHeight,
-						edgePreview: appSettings.amountOfEdgePreviews
-					}
-					break
-				}
+		if (dynamicSettings.areaMetric !== undefined) {
+			scenario.area = {
+				areaMetric: dynamicSettings.areaMetric,
+				margin: dynamicSettings.margin
 			}
-			if (appSettings.camera) {
-				scenario.camera = {
-					camera: appSettings.camera,
-					cameraTarget: appSettings.cameraTarget
-				}
+		}
+		if (dynamicSettings.heightMetric !== undefined) {
+			scenario.height = {
+				heightMetric: dynamicSettings.heightMetric,
+				labelSlider: appSettings.amountOfTopLabels,
+				heightSlider: appSettings.scaling
+			}
+		}
+		if (dynamicSettings.colorMetric !== undefined) {
+			scenario.color = {
+				colorMetric: dynamicSettings.colorMetric,
+				colorRange: dynamicSettings.colorRange
+			}
+		}
+		if (dynamicSettings.edgeMetric !== undefined) {
+			scenario.edge = {
+				edgeMetric: dynamicSettings.edgeMetric,
+				edgeHeight: appSettings.edgeHeight,
+				edgePreview: appSettings.amountOfEdgePreviews
+			}
+		}
+		if (appSettings.camera) {
+			scenario.camera = {
+				camera: appSettings.camera,
+				cameraTarget: appSettings.cameraTarget
 			}
 		}
 
@@ -126,20 +119,21 @@ export class ScenarioHelper {
 	}
 
 	private static setScenariosToLocalStorage(scenarios: Map<string, RecursivePartial<Scenario>>) {
-		const newLocalStorageElement: CCLocalStorage = {
-			version: this.CC_LOCAL_STORAGE_VERSION,
+		const newLocalStorageElement: LocalStorageScenarios = {
+			version: this.SCENARIOS_LOCAL_STORAGE_VERSION,
 			scenarios: [...scenarios]
 		}
-		localStorage.setItem("scenarios", JSON.stringify(newLocalStorageElement))
+		localStorage.setItem(this.SCENARIOS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement))
 	}
 
 	private static loadScenarios() {
-		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarios"))
+		const ccLocalStorage: LocalStorageScenarios = JSON.parse(localStorage.getItem(this.SCENARIOS_LOCAL_STORAGE_ELEMENT))
 		if (ccLocalStorage) {
 			return new Map(ccLocalStorage.scenarios)
 		}
-		this.setScenariosToLocalStorage(this.getPreLoadScenarios())
-		return this.getPreLoadScenarios()
+		const scenarios = this.getPreLoadScenarios()
+		this.setScenariosToLocalStorage(scenarios)
+		return scenarios
 	}
 
 	static addScenario(newScenario: RecursivePartial<Scenario>) {
@@ -150,7 +144,7 @@ export class ScenarioHelper {
 	static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
 		const newScenario: RecursivePartial<Scenario> = { name: scenarioName }
 
-		scenarioAttributes.forEach(attribute => {
+		for (const attribute of scenarioAttributes) {
 			switch (attribute.metricType) {
 				case ScenarioMetricType.CAMERA_POSITION: {
 					newScenario.camera = {
@@ -189,8 +183,10 @@ export class ScenarioHelper {
 					}
 					break
 				}
+				default:
+					throw new Error(`Unknown metric type "${attribute.metricType}" detected`)
 			}
-		})
+		}
 
 		return newScenario
 	}
@@ -205,37 +201,32 @@ export class ScenarioHelper {
 	}
 
 	static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
-		const scenario: RecursivePartial<Scenario> = this.scenarios.get(name)
+		const scenario = this.scenarios.get(name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
-		for (const scenarioKey in scenario) {
-			switch (scenarioKey) {
-				case "area": {
-					partialDynamicSettings.areaMetric = scenario.area.areaMetric
-					partialDynamicSettings.margin = scenario.area.margin
-					break
-				}
-				case "height": {
-					partialDynamicSettings.heightMetric = scenario.height.heightMetric
-					partialAppSettings.amountOfTopLabels = scenario.height.labelSlider
-					partialAppSettings.scaling = scenario.height.heightSlider
-					break
-				}
-				case "color": {
-					partialDynamicSettings.colorMetric = scenario.color.colorMetric
-					partialDynamicSettings.colorRange = scenario.color.colorRange
-					break
-				}
-				case "edge": {
-					partialDynamicSettings.edgeMetric = scenario.edge.edgeMetric
-					partialAppSettings.edgeHeight = scenario.edge.edgeHeight
-					partialAppSettings.amountOfEdgePreviews = scenario.edge.edgePreview
-					break
-				}
-				case "camera": {
-					partialAppSettings.camera = scenario.camera.camera
-					partialAppSettings.cameraTarget = scenario.camera.cameraTarget
-				}
+
+		if (scenario) {
+			if (scenario.area) {
+				partialDynamicSettings.areaMetric = scenario.area.areaMetric
+				partialDynamicSettings.margin = scenario.area.margin
+			}
+			if (scenario.height) {
+				partialDynamicSettings.heightMetric = scenario.height.heightMetric
+				partialAppSettings.amountOfTopLabels = scenario.height.labelSlider
+				partialAppSettings.scaling = scenario.height.heightSlider
+			}
+			if (scenario.color) {
+				partialDynamicSettings.colorMetric = scenario.color.colorMetric
+				partialDynamicSettings.colorRange = scenario.color.colorRange
+			}
+			if (scenario.edge) {
+				partialDynamicSettings.edgeMetric = scenario.edge.edgeMetric
+				partialAppSettings.edgeHeight = scenario.edge.edgeHeight
+				partialAppSettings.amountOfEdgePreviews = scenario.edge.edgePreview
+			}
+			if (scenario.camera) {
+				partialAppSettings.camera = scenario.camera.camera
+				partialAppSettings.cameraTarget = scenario.camera.cameraTarget
 			}
 		}
 
@@ -243,9 +234,9 @@ export class ScenarioHelper {
 	}
 
 	static importScenarios(scenarios: ExportScenario[]) {
-		scenarios.forEach(scenario => {
+		for (const scenario of scenarios) {
 			convertToVectors(scenario.settings)
-		})
+		}
 		return scenarios
 	}
 

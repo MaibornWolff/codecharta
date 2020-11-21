@@ -1,5 +1,5 @@
 import { BuildingDeselectedEventSubscriber, BuildingSelectedEventSubscriber, ThreeSceneService } from "./threeViewer/threeSceneService"
-import { Node, EdgeVisibility, Edge } from "../../codeCharta.model"
+import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
@@ -22,27 +22,23 @@ export class CodeMapArrowService
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None" && !selectedBuilding.node.flat) {
+		if (this.isEdgeApplicableForBuilding(selectedBuilding)) {
 			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
+			this.showEdgesOfBuildings()
 		}
 		this.scale()
 	}
 
 	onBuildingDeselected() {
 		this.clearArrows()
-		this.addEdgePreview(
-			null,
-			this.storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
-		)
+		this.threeSceneService.clearHighlight()
+		this.addEdgePreview()
 	}
 
 	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None" && !hoveredBuilding.node.flat) {
+		if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
 			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
+			this.showEdgesOfBuildings(hoveredBuilding)
 		}
 		this.scale()
 	}
@@ -51,49 +47,43 @@ export class CodeMapArrowService
 		const state = this.storeService.getState()
 		if (state.dynamicSettings.edgeMetric !== "None") {
 			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
+			this.showEdgesOfBuildings()
 		}
 		this.scale()
 	}
 
 	clearArrows() {
 		this.arrows = []
-		while (this.threeSceneService.edgeArrows.children.length > 0) {
-			this.threeSceneService.edgeArrows.children.pop()
-		}
+		// Remove all children
+		this.threeSceneService.edgeArrows.children.length = 0
 	}
 
 	addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
-		const state = this.storeService.getState()
-		const curveScale = 100 * state.appSettings.edgeHeight
+		const { appSettings, dynamicSettings } = this.storeService.getState()
+		const curveScale = 100 * appSettings.edgeHeight
 
-		if (
-			arrowTargetNode.attributes?.[state.dynamicSettings.heightMetric] &&
-			arrowOriginNode.attributes?.[state.dynamicSettings.heightMetric]
-		) {
+		if (arrowTargetNode.attributes?.[dynamicSettings.heightMetric] && arrowOriginNode.attributes?.[dynamicSettings.heightMetric]) {
 			const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
-
-			if (buildingIsOriginNode) {
-				this.highlightBuilding(arrowTargetNode)
-				const color = ColorConverter.getNumber(state.appSettings.mapColors.outgoingEdge)
-				this.setCurveColor(curve, color)
-			} else {
-				this.highlightBuilding(arrowOriginNode)
-				const color = ColorConverter.getNumber(state.appSettings.mapColors.incomingEdge)
-				this.setCurveColor(curve, color)
-			}
+			const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
+			this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
+			this.setCurveColor(curve, color)
 		}
 	}
 
-	addEdgePreview(nodes: Node[], edges: Edge[]) {
+	addEdgePreview(nodes?: Node[]) {
 		if (nodes) {
 			this.map = this.getNodesAsMap(nodes)
 		}
+
+		const { edges } = this.storeService.getState().fileSettings
 
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
 			const targetNode = this.map.get(edge.toNodeName)
 			if (originNode && targetNode && edge.visible !== EdgeVisibility.none && edge.visible) {
+				//TODO It seems originNode or targetNode might be undefined here,
+				// I think it results from the method being called multiple times when it might not be available yet
+				// I changed that back to avoid console errors and re-enable the edge-metric, however we should investigate why this is happening
 				const curveScale = 100 * this.storeService.getState().appSettings.edgeHeight
 				const curve = this.createCurve(originNode, targetNode, curveScale)
 				this.previewMode(curve, edge.visible)
@@ -110,30 +100,50 @@ export class CodeMapArrowService
 		}
 	}
 
-	private showEdgesOfBuildings(edges: Edge[]) {
-		const node = this.threeSceneService.getHighlightedNode()
-		if (this.threeSceneService.getSelectedBuilding() && node) {
-			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
-			this.buildPairingEdges(node, edges)
-		} else if (node) {
-			this.buildPairingEdges(node, edges)
-		} else if (this.threeSceneService.getSelectedBuilding()) {
-			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
+	private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
+		return this.storeService.getState().dynamicSettings.edgeMetric !== "None" && !codeMapBuilding.node.flat
+	}
+
+	private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {
+		const buildings: Map<string, Node> = new Map()
+		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+
+		if (selectedBuilding) {
+			const { node } = selectedBuilding
+			buildings.set(node.path, node)
+		}
+		if (hoveredbuilding) {
+			const { node } = hoveredbuilding
+			buildings.set(node.path, node)
+		}
+		if (buildings.size > 0) {
+			this.buildPairingEdges(buildings)
 		} else {
-			this.addEdgePreview(
-				null,
-				edges.filter(x => x.visible !== EdgeVisibility.none)
-			)
+			this.addEdgePreview()
 		}
 	}
 
-	private buildPairingEdges(node: Node, edges: Edge[]) {
+	private buildPairingEdges(node: Map<string, Node>) {
+		const { edges } = this.storeService.getState().fileSettings
+
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
+			// TODO: Maps should only have valid edges. If that's not the case, the
+			// internal decoration is likely faulty. Check if only test data is not
+			// correct or what the root cause of these checks actually is.
+			if (originNode === undefined) {
+				continue
+			}
 			const targetNode = this.map.get(edge.toNodeName)
-			if (originNode && targetNode && originNode.path === node.path) {
+			if (targetNode === undefined) {
+				continue
+			}
+			if (node.has(originNode.path)) {
 				this.addArrow(targetNode, originNode, true)
-			} else if (originNode && targetNode && targetNode.path === node.path) {
+				// TODO: Check if the second if case is actually necessary. Edges should
+				// always have valid origin and target paths. The test data is likely
+				// faulty and should be improved.
+			} else if (node.has(targetNode.path)) {
 				this.addArrow(targetNode, originNode, false)
 			}
 		}
@@ -177,26 +187,18 @@ export class CodeMapArrowService
 	}
 
 	private getNodesAsMap(nodes: Node[]) {
-		const map = new Map<string, Node>()
+		const map: Map<string, Node> = new Map()
 		nodes.forEach(node => map.set(node.path, node))
 		return map
 	}
 
 	private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints = 50) {
 		const points = bezier.getPoints(bezierPoints)
-		let pointsPreviews: Vector3[]
-		let arrowColor: string
-
-		if (incoming) {
-			pointsPreviews = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
-			arrowColor = this.storeService.getState().appSettings.mapColors.incomingEdge
-		} else {
-			pointsPreviews = points
-				.reverse()
-				.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
-				.reverse()
-			arrowColor = this.storeService.getState().appSettings.mapColors.outgoingEdge
-		}
+		const { incomingEdge, outgoingEdge } = this.storeService.getState().appSettings.mapColors
+		const arrowColor = incoming ? incomingEdge : outgoingEdge
+		const pointsPreviews = incoming
+			? points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
+			: points.slice(0, points.length - (bezierPoints + 1 - this.VERTICES_PER_LINE))
 
 		return this.buildEdge(pointsPreviews, ColorConverter.getNumber(arrowColor))
 	}

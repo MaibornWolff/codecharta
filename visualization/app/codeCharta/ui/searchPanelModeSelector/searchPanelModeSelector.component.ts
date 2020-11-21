@@ -32,8 +32,14 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this._viewModel.flattenListLength = blacklist.filter(x => x.type === BlacklistType.flatten).length
-		this._viewModel.excludeListLength = blacklist.filter(x => x.type === BlacklistType.exclude).length
+		const flattened = blacklist.reduce((count, { type }) => {
+			if (type === BlacklistType.flatten) {
+				count++
+			}
+			return count
+		}, 0)
+		this._viewModel.flattenListLength = flattened
+		this._viewModel.excludeListLength = blacklist.length - flattened
 	}
 
 	onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {

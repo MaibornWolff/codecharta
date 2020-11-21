@@ -23,14 +23,37 @@ describe("NodeContextMenu", () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.hasColorButtons()).toBeTruthy()
+		const result = await contextMenu.hasColorButtons()
+		expect(await result.isIntersectingViewport()).toBe(true)
 	})
 
-	it("right clicking the map should close open node options menu", async () => {
+	it("clicking the map should close open node context menu", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
-		await codeMap.rightClickMap()
 
-		expect(await contextMenu.isClosed()).toBeTruthy()
+		await contextMenu.isOpened()
+
+		await codeMap.clickMap()
+		await contextMenu.isClosed()
+	})
+
+	it("right clicking the map should close open node context menu already on mousedown", async () => {
+		await searchPanelModeSelector.toggleTreeView()
+		await mapTreeViewLevel.openContextMenu("/root")
+
+		await contextMenu.isOpened()
+
+		await codeMap.rightClickMouseDownOnMap()
+		await contextMenu.isClosed()
+	}, 60000)
+
+	it("zoom in and out or using mouse wheel on the map should close open node context menu", async () => {
+		await searchPanelModeSelector.toggleTreeView()
+		await mapTreeViewLevel.openContextMenu("/root")
+
+		await contextMenu.isOpened()
+
+		await codeMap.mouseWheelWithinMap()
+		await contextMenu.isClosed()
 	})
 })

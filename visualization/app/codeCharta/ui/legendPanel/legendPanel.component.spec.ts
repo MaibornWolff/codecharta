@@ -11,6 +11,7 @@ import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDe
 import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { MarkedPackagesService } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
 import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 describe("LegendPanelController", () => {
 	let legendPanelController: LegendPanelController
@@ -34,6 +35,14 @@ describe("LegendPanelController", () => {
 	}
 
 	describe("constructor", () => {
+		it("should subscribe to colorMetric", () => {
+			ColorMetricService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
+		})
+
 		it("should subscribe to colorRange", () => {
 			ColorRangeService.subscribe = jest.fn()
 
@@ -96,6 +105,14 @@ describe("LegendPanelController", () => {
 			legendPanelController.onMarkedPackagesChanged(markedPackages)
 
 			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
+		})
+
+		it("should update the color metric when it is changed", () => {
+			const newColorMetric = "new_color_metric"
+
+			legendPanelController.onColorMetricChanged(newColorMetric)
+
+			expect(legendPanelController["_viewModel"].colorMetric).toEqual(newColorMetric)
 		})
 
 		it("should update the ColorRange when it is changed", () => {

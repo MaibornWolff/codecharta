@@ -1,5 +1,5 @@
 ribbon-bar-component {
-	$heightExpanded: 185;
+	$heightExpanded: 195;
 	$heightCollapsed: 38;
 	$border: 1px solid #cdcdcd;
 
@@ -13,6 +13,7 @@ ribbon-bar-component {
 			.section-body {
 				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
 				max-height: 500px;
+				overflow-y: auto;
 			}
 		}
 	}
@@ -32,7 +33,7 @@ ribbon-bar-component {
 			width: 380px;
 		}
 
-		&:not(#scenario-card) {
+		&:not(#scenario-card):not(#custom-configs-card) {
 			min-width: 240px;
 		}
 
@@ -154,5 +155,13 @@ ribbon-bar-component {
 	md-input-container {
 		padding: 0;
 		margin: 0;
+	}
+
+	#height-metric-card.expanded {
+		height: 295px;
+	}
+
+	#area-metric-card.expanded {
+		height: 155px;
 	}
 }

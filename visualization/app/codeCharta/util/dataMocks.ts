@@ -24,12 +24,15 @@ import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import packageJson from "../../../package.json"
+import { isLeaf } from "./codeMapHelper"
+import { CustomConfigItem, CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
+import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { clone } from "./clone"
 
@@ -66,6 +69,284 @@ export const VALID_NODE: CodeMapNode = {
 					name: "other small leaf",
 					type: NodeType.FILE,
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder3",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Folder3",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Folder3",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		}
+	]
+}
+
+export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "File2a",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2á",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2b",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		},
+		{
+			name: "Folder10",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		}
+	]
+}
+
+export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder10",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "File2a",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2b",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2á",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -129,7 +410,31 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
+export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
+	name: "big leaf",
+	id: 1,
+	type: NodeType.FILE,
+	path: "/root/big leaf",
+	attributes: { rloc: 100, functions: 10, mcc: 1 },
+	link: "http://www.google.de",
+	isExcluded: false,
+	isFlattened: false
+}
+
+export const VALID_NODES_WITH_ID: CodeMapNode = {
+	name: "root",
+	type: NodeType.FOLDER,
+	id: 0,
+	attributes: { a: 20, b: 15 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	path: "/root",
+	link: "NO_LINK",
+	isExcluded: false,
+	isFlattened: false,
+	children: [VALID_FILE_NODE_WITH_ID]
+}
+
+export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
 	attributes: {},
 	type: NodeType.FOLDER,
@@ -138,48 +443,20 @@ export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
 	isFlattened: false,
 	children: [
 		{
-			name: "big leaf",
+			name: "first leaf",
 			type: NodeType.FILE,
-			path: "/root/in/between/big leaf",
-			attributes: { rloc: 100, functions: 10, mcc: 1 },
-			link: "http://www.google.de",
+			path: "/root/first leaf",
+			attributes: { functions: 10, mcc: 1 },
 			isExcluded: false,
 			isFlattened: false
 		},
 		{
-			name: "Parent Leaf",
-			type: NodeType.FOLDER,
-			attributes: {},
-			path: "/root/in/between/Parent Leaf",
+			name: "second leaf",
+			type: NodeType.FILE,
+			path: "/root/second leaf",
+			attributes: { functions: 5, mcc: 1 },
 			isExcluded: false,
-			isFlattened: false,
-			children: [
-				{
-					name: "small leaf",
-					type: NodeType.FILE,
-					path: "/root/in/between/Parent Leaf/small leaf",
-					attributes: { rloc: 30, functions: 100, mcc: 100 },
-					isExcluded: false,
-					isFlattened: false
-				},
-				{
-					name: "other small leaf",
-					type: NodeType.FILE,
-					path: "/root/in/between/Parent Leaf/other small leaf",
-					attributes: { rloc: 70, functions: 1000, mcc: 10 },
-					isExcluded: false,
-					isFlattened: false
-				},
-				{
-					name: "empty folder",
-					type: NodeType.FOLDER,
-					path: "/root/in/between/Parent Leaf/empty folder",
-					attributes: {},
-					isExcluded: false,
-					isFlattened: false,
-					children: []
-				}
-			]
+			isFlattened: false
 		}
 	]
 }
@@ -277,6 +554,16 @@ export const VALID_EDGES_DECORATED: Edge[] = [
 		visible: EdgeVisibility.from
 	},
 	{
+		fromNodeName: "/root/Parent Leaf/small leaf",
+		toNodeName: "/root/different leaf",
+		attributes: {
+			pairingRate: 89,
+			avgCommits: 34
+		},
+		visible: EdgeVisibility.from
+	},
+
+	{
 		fromNodeName: "/root/Parent Leaf/other small leaf",
 		toNodeName: "/root/Parent Leaf/small leaf",
 		attributes: {
@@ -298,6 +585,7 @@ export const VALID_EDGE: Edge = {
 
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
+	fileChecksum: "invalid-md5-sample",
 	apiVersion: APIVersions.ONE_POINT_TWO,
 	nodes: [VALID_NODE]
 }
@@ -311,6 +599,7 @@ export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
 
 export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
 	fileName: "noFileName",
+	fileChecksum: "invalid-md5-sample",
 	projectName: "Valid Sample Map Minor API High",
 	apiVersion: "1.3",
 	nodes: [VALID_NODE]
@@ -331,6 +620,7 @@ export const TEST_FILE_CONTENT_NO_API = {
 
 export const FILE_META: FileMeta = {
 	fileName: "fileA",
+	fileChecksum: "md5-fileA",
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion
 }
@@ -343,6 +633,314 @@ export const TEST_FILE_DATA: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
+			markedPackages: []
+		}
+	}
+}
+
+export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
+	fileMeta: FILE_META,
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		path: "/root",
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "src",
+				path: "/root/src",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "main",
+						path: "/root/src/main",
+						type: NodeType.FOLDER,
+						attributes: {},
+						children: [
+							{
+								name: "file1.java",
+								path: "/root/src/main/file1.java",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 80
+								}
+							},
+							{
+								name: "file2.java",
+								path: "/root/src/main/file2.java",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 80
+								}
+							}
+						]
+					},
+					{
+						name: "test",
+						path: "/root/src/test",
+						type: NodeType.FOLDER,
+						attributes: {},
+						children: [
+							{
+								name: "otherFile.java",
+								path: "/root/src/test/otherFile.java",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 65
+								}
+							}
+						]
+					}
+				],
+				fixedPosition: {
+					left: 34,
+					top: 2,
+					width: 35,
+					height: 55
+				}
+			},
+			{
+				name: "resources",
+				path: "/root/resources",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "textFiles",
+						path: "/root/resources/textFiles",
+						type: NodeType.FOLDER,
+						attributes: {},
+						children: [
+							{
+								name: "file.txt",
+								path: "/root/resources/textFiles/file.txt",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 5
+								}
+							}
+						],
+						fixedPosition: {
+							left: 2,
+							top: 2,
+							width: 20,
+							height: 20
+						}
+					},
+					{
+						name: "tables",
+						path: "/root/resources/tables",
+						type: NodeType.FOLDER,
+						attributes: {},
+						children: [
+							{
+								name: "table1.xlsx",
+								path: "/root/resources/tables/table1.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table2.xlsx",
+								path: "/root/resources/tables/table2.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table3.xlsx",
+								path: "/root/resources/tables/table3.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table4.xlsx",
+								path: "/root/resources/tables/table4.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table5.xlsx",
+								path: "/root/resources/tables/table5.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table6.xlsx",
+								path: "/root/resources/tables/table6.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table7.xlsx",
+								path: "/root/resources/tables/table7.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table8.xlsx",
+								path: "/root/resources/tables/table8.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table9.xlsx",
+								path: "/root/resources/tables/table9.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							},
+							{
+								name: "table10.xlsx",
+								path: "/root/resources/tables/table10.xlsx",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							}
+						],
+						fixedPosition: {
+							left: 52,
+							top: 52,
+							width: 48,
+							height: 48
+						}
+					}
+				],
+				fixedPosition: {
+					left: 20,
+					top: 60,
+					width: 50,
+					height: 30
+				}
+			}
+		]
+	},
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: [],
+			markedPackages: []
+		}
+	}
+}
+
+export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
+	fileMeta: FILE_META,
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		path: "/root",
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "folder_1_red",
+				path: "/root/folder_1_red",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "folder_1.1_red",
+						path: "/root/folder_1_red/folder_1.1_red",
+						type: NodeType.FOLDER,
+						attributes: {},
+						children: [
+							{
+								name: "red_child_1.1.file",
+								path: "/root/folder_1_red/folder_1.1_red/red_child_1.1.file",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 12
+								}
+							}
+						],
+						fixedPosition: {
+							left: 10,
+							top: 10,
+							width: 80,
+							height: 50
+						}
+					},
+					{
+						name: "folder_1.2_red",
+						path: "/root/folder_1_red/folder_1.2_red",
+						type: NodeType.FOLDER,
+						attributes: {},
+						children: [
+							{
+								name: "red_child_1.2.file",
+								path: "/root/folder_1_red/folder_1.2_red/red_child_1.2.file",
+								type: NodeType.FILE,
+								attributes: {
+									rloc: 6
+								}
+							}
+						],
+						fixedPosition: {
+							left: 80,
+							top: 70,
+							width: 10,
+							height: 10
+						}
+					}
+				],
+				fixedPosition: {
+					left: 10,
+					top: 10,
+					width: 40,
+					height: 60
+				}
+			},
+			{
+				name: "folder_2_orange",
+				path: "/root/folder_2_orange",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "orange.file",
+						path: "/root/folder_2_orange7orange.file",
+						type: NodeType.FILE,
+						attributes: {
+							rloc: 10
+						}
+					}
+				],
+				fixedPosition: {
+					left: 10,
+					top: 80,
+					width: 50,
+					height: 10
+				}
+			}
+		]
+	},
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: [],
 			markedPackages: []
 		}
 	}
@@ -652,6 +1250,7 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
+		fileChecksum: "md5-delta-fileA",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion
 	},
@@ -708,6 +1307,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 export const TEST_DELTA_MAP_B: CCFile = {
 	fileMeta: {
 		fileName: "fileB",
+		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion
 	},
@@ -792,6 +1392,14 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			},
 			fromNodeName: "/root/big leaf",
 			toNodeName: "/root/Parent Leaf/small leaf"
+		},
+		{
+			attributes: {
+				avgCommits: 34,
+				pairingRate: 89
+			},
+			fromNodeName: "/root/Parent Leaf/small leaf",
+			toNodeName: "/root/different leaf"
 		},
 		{
 			attributes: {
@@ -926,7 +1534,8 @@ export const STATE: State = {
 			angularGreen: "#00BFA5",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
 			incomingEdge: "#00ffff",
-			outgoingEdge: "#ff00ff"
+			outgoingEdge: "#ff00ff",
+			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
 		},
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
@@ -936,7 +1545,10 @@ export const STATE: State = {
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.treeView,
 		isAttributeSideBarVisible: true,
-		panelSelection: PanelSelection.AREA_PANEL_OPEN
+		panelSelection: PanelSelection.AREA_PANEL_OPEN,
+		showMetricLabelNameValue: true,
+		showMetricLabelNodeName: true,
+		experimentalFeaturesEnabled: false
 	},
 	treeMap: {
 		mapSize: 250
@@ -979,7 +1591,8 @@ export const DEFAULT_STATE: State = {
 			positiveDelta: "#69FF40",
 			selected: "#EB8319",
 			incomingEdge: "#00ffff",
-			outgoingEdge: "#ff00ff"
+			outgoingEdge: "#ff00ff",
+			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
 		},
 		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
@@ -991,7 +1604,10 @@ export const DEFAULT_STATE: State = {
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.minimized,
 		isAttributeSideBarVisible: false,
-		panelSelection: PanelSelection.NONE
+		panelSelection: PanelSelection.NONE,
+		showMetricLabelNameValue: false,
+		showMetricLabelNodeName: true,
+		experimentalFeaturesEnabled: false
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -1167,6 +1783,98 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 	}
 ]
 
+export const CUSTOM_VIEW_ITEMS: CustomConfigItem[] = [
+	{
+		id: "SINGLEfileASampleMap View #1",
+		name: "SampleMap View #1",
+		mapNames: "fileA",
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+		isApplicable: true
+	},
+	{
+		id: "SINGLEfileAAnotherMap View #1",
+		name: "AnotherMap View #1",
+		mapNames: "fileB",
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+		isApplicable: false
+	},
+	{
+		id: "SINGLEfileASampleMap View #2",
+		name: "SampleMap View #2",
+		mapNames: "fileA",
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+		isApplicable: true
+	}
+]
+
+export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
+	[
+		"fileAfileBSINGLE",
+		{
+			mapNames: "fileA fileB",
+			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+			hasApplicableItems: false,
+			customConfigItems: [
+				{
+					id: "SINGLEfileASampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileA",
+					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					isApplicable: false
+				},
+				{
+					id: "SINGLEfileBSampleMap View #2",
+					name: "SampleMap View #2",
+					mapNames: "fileB",
+					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					isApplicable: false
+				}
+			]
+		}
+	],
+	[
+		"fileAfileBMultiple",
+		{
+			mapNames: "fileC fileD",
+			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+			hasApplicableItems: true,
+			customConfigItems: [
+				{
+					id: "MULTIPLEfileCSampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileB",
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					isApplicable: true
+				},
+				{
+					id: "MULTIPLEfileDSampleMap View #2",
+					name: "SampleMap View #2",
+					mapNames: "fileD",
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					isApplicable: true
+				}
+			]
+		}
+	],
+	[
+		"fileAfileBDELTA",
+		{
+			mapNames: "fileE",
+			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+			hasApplicableItems: false,
+			customConfigItems: [
+				{
+					id: "MULTIPLEfileESampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileD",
+					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+					isApplicable: false
+				}
+			]
+		}
+	]
+])
+
 export const SCENARIO_ITEM_WITH_EVERYTHING_SAVED: ScenarioItem[] = [
 	{
 		scenarioName: "Scenario1",
@@ -1244,7 +1952,7 @@ export const INCOMING_NODE: Node = {
 	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
 	heightDelta: 20,
 	visible: true,
-	path: "/root/big leaf",
+	path: "/root/Parent Leaf/small leaf",
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
@@ -1278,8 +1986,33 @@ export const OUTGOING_NODE: Node = {
 	outgoingEdgePoint: new Vector3(1, 2, 3)
 }
 
+export const DIFFERENT_NODE: Node = {
+	name: "root/different leaf",
+	id: 3,
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: true,
+	deltas: { a: 1, b: 2 },
+	attributes: { a: 20, b: 15, mcc: 14 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root/different leaf",
+	link: "NO_LINK",
+	markingColor: "0xFFFFFF",
+	flat: false,
+	color: "#AABBCC",
+	incomingEdgePoint: new Vector3(1, 2, 3),
+	outgoingEdgePoint: new Vector3(1, 2, 3)
+}
+
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
-	1,
+	0,
 	new Box3(),
 	TEST_NODE_ROOT,
 	DEFAULT_STATE.appSettings.mapColors.neutral
@@ -1289,6 +2022,20 @@ export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
 	1,
 	new Box3(),
 	TEST_NODE_LEAF,
+	DEFAULT_STATE.appSettings.mapColors.neutral
+)
+
+export const CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE: CodeMapBuilding = new CodeMapBuilding(
+	1,
+	new Box3(),
+	OUTGOING_NODE,
+	DEFAULT_STATE.appSettings.mapColors.neutral
+)
+
+export const CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE: CodeMapBuilding = new CodeMapBuilding(
+	2,
+	new Box3(),
+	INCOMING_NODE,
 	DEFAULT_STATE.appSettings.mapColors.neutral
 )
 
@@ -1326,6 +2073,11 @@ export const MARKED_PACKAGES: MarkedPackage[] = [
 	}
 ]
 
+export const CONSTANT_HIGHLIGHT: Map<number, CodeMapBuilding> = new Map([
+	[CODE_MAP_BUILDING.id, CODE_MAP_BUILDING],
+	[CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
+])
+
 export function withMockedEventMethods($rootScope: IRootScopeService) {
 	$rootScope.$broadcast = jest.fn()
 	$rootScope.$on = jest.fn()
@@ -1334,13 +2086,12 @@ export function withMockedEventMethods($rootScope: IRootScopeService) {
 }
 
 export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
-	hierarchy(map)
-		.leaves()
-		.forEach(node => {
-			if (paths.includes(node.data.path)) {
-				setBlacklistFlagByType(node.data, type, true)
-			}
-		})
+	const pathsSet = new Set(paths)
+	for (const node of hierarchy(map)) {
+		if (isLeaf(node) && pathsSet.has(node.data.path)) {
+			setBlacklistFlagByType(node.data, type, true)
+		}
+	}
 }
 
 function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {

@@ -102,7 +102,10 @@ class SCMLogParser(
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         if (outputFile.isNotEmpty()) {
-            if (compress) ProjectSerializer.serializeAsCompressedFile(project, outputFile) else ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
+            if (compress) ProjectSerializer.serializeAsCompressedFile(
+                project,
+                outputFile
+            ) else ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
         } else {
             ProjectSerializer.serializeProject(project, OutputStreamWriter(output))
         }
@@ -131,7 +134,8 @@ class SCMLogParser(
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
-        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
+        val logSizeInByte = file!!.length()
+        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(lines)
     }
 
     // not implemented yet.

@@ -1,6 +1,8 @@
 import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append default property import here
+import { defaultShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { defaultShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { defaultPanelSelection } from "./panelSelection/panelSelection.actions"
 import { defaultIsAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
@@ -24,6 +26,7 @@ import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
 import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
 import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
+import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -45,6 +48,8 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 
 export const defaultAppSettings: AppSettings = {
 	// Plop: Append default property here
+	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
+	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
 	panelSelection: defaultPanelSelection,
 	isAttributeSideBarVisible: defaultIsAttributeSideBarVisible,
 	amountOfTopLabels: defaultAmountOfTopLabels,
@@ -67,5 +72,6 @@ export const defaultAppSettings: AppSettings = {
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
 	searchPanelMode: defaultSearchPanelMode,
-	sortingOrderAscending: defaultSortingOrderAscending
+	sortingOrderAscending: defaultSortingOrderAscending,
+	experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled
 }

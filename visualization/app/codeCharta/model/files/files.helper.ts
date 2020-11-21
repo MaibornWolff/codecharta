@@ -5,7 +5,7 @@ export function getCCFiles(fileStates: FileState[]) {
 }
 
 export function fileStatesAvailable(fileStates: FileState[]) {
-	return getVisibleFileStates(fileStates).length > 0
+	return fileStates.some(x => x.selectedAs !== FileSelectionState.None)
 }
 
 export function getFileByFileName(fileStates: FileState[], fileName: string) {

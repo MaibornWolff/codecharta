@@ -15,7 +15,8 @@ class PipedInputStream {
     private val output = getResultString()
 
     private fun getResultString(): String {
-        val input = File("src/test/resources/cc_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
+        val input = File("src/test/resources/cc_project.cc.json").bufferedReader().readLines()
+            .joinToString(separator = "\n") { it }
         return executeForOutput(input, arrayOf(resource, "--input-format=GIT_LOG_NUMSTAT"))
     }
 
@@ -40,7 +41,10 @@ class PipedInputStream {
             mainWithInOut(inputStream, outputStream, errorStream, args)
         }
 
-    private fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+    private fun outputAsString(
+        input: String,
+        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+    ) =
         outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
     private fun outputAsString(

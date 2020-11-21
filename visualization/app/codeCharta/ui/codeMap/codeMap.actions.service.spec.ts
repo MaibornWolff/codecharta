@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode } from "../../codeCharta.model"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
-import { markPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { clone } from "../../util/clone"
 
@@ -70,9 +70,9 @@ describe("CodeMapActionService", () => {
 
 		it("should not mark with a new color if sub-nodes are already marked", () => {
 			const expected = [
+				{ color: "0x000003", path: "/root" },
 				{ color: "0x000001", path: "/root/big leaf" },
-				{ color: "0x000002", path: "/root/Parent Leaf" },
-				{ color: "0x000003", path: "/root" }
+				{ color: "0x000002", path: "/root/Parent Leaf" }
 			]
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
@@ -112,39 +112,36 @@ describe("CodeMapActionService", () => {
 		})
 	})
 
-	describe("getParentMP", () => {
+	describe("getParentMarkedPackageIndex", () => {
 		it("should return null if there are no marked packages", () => {
-			const result = codeMapActionsService.getParentMP(nodeA.path)
+			const result = codeMapActionsService.getParentMarkedPackageIndex(nodeA.path)
 
-			expect(result).toBeNull()
+			expect(result).toEqual(-1)
 		})
 
 		it("should return null if node is a marked package", () => {
-			storeService.dispatch(markPackage({ color: "0x000000", path: "/root" }))
+			codeMapActionsService.markFolder(nodeA, "0x000000")
 
-			const result = codeMapActionsService.getParentMP(nodeA.path)
+			const result = codeMapActionsService.getParentMarkedPackageIndex(nodeA.path)
 
-			expect(result).toBeNull()
+			expect(result).toEqual(-1)
 		})
 
 		it("should return marked package of root", () => {
-			const expected = { color: "0x000000", path: "/root" }
-			storeService.dispatch(markPackage(expected))
+			codeMapActionsService.markFolder(nodeA, "0x000000")
 
-			const result = codeMapActionsService.getParentMP(nodeA.children[0].path)
+			const result = codeMapActionsService.getParentMarkedPackageIndex(nodeA.children[0].path)
 
-			expect(result).toEqual(expected)
+			expect(result).toEqual(0)
 		})
 
-		it("should return the first marked package found in sorted list", () => {
-			const mp1 = { color: "0x000000", path: "/root" }
-			const mp2 = { color: "0x000000", path: "/root/Parent Leaf" }
-			storeService.dispatch(markPackage(mp1))
-			storeService.dispatch(markPackage(mp2))
+		it("should return the correct parent marked package", () => {
+			codeMapActionsService.markFolder(nodeA, "0x000000")
+			codeMapActionsService.markFolder(nodeA.children[1], "0x000001")
 
-			const result = codeMapActionsService.getParentMP(nodeA.children[1].children[0].path)
+			const result = codeMapActionsService.getParentMarkedPackageIndex(nodeA.children[1].children[0].path)
 
-			expect(result).toEqual({ color: "0x000000", path: "/root/Parent Leaf" })
+			expect(result).toEqual(1)
 		})
 	})
 })

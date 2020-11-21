@@ -22,6 +22,7 @@ import {
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { isDeltaState } from "../../model/files/files.helper"
+import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 export interface PackageList {
 	colorPixel: string
@@ -31,6 +32,7 @@ export interface PackageList {
 export class LegendPanelController
 	implements
 		IsAttributeSideBarVisibleSubscriber,
+		ColorMetricSubscriber,
 		ColorRangeSubscriber,
 		InvertColorRangeSubscriber,
 		MarkedPackagesSubscriber,
@@ -40,6 +42,7 @@ export class LegendPanelController
 		isLegendVisible: boolean
 		isSideBarVisible: boolean
 		isDeltaState: boolean
+		colorMetric: string
 		colorRange: ColorRange
 		invertColorRange: boolean
 		packageLists: PackageList[]
@@ -48,6 +51,7 @@ export class LegendPanelController
 		isLegendVisible: false,
 		isSideBarVisible: null,
 		isDeltaState: null,
+		colorMetric: null,
 		colorRange: null,
 		invertColorRange: null,
 		packageLists: null,
@@ -56,12 +60,17 @@ export class LegendPanelController
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		MarkedPackagesService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
+	}
+
+	onColorMetricChanged(colorMetric: string) {
+		this._viewModel.colorMetric = colorMetric
 	}
 
 	onColorRangeChanged(colorRange: ColorRange) {
@@ -129,18 +138,16 @@ export class LegendPanelController
 	private setMarkedPackageLists(markedPackages: MarkedPackage[]) {
 		if (markedPackages) {
 			this._viewModel.packageLists = []
-			markedPackages.forEach(mp => this.handleMarkedPackage(mp))
-		}
-	}
+			for (const markedPackage of markedPackages) {
+				const colorPixel = ColorConverter.getImageDataUri(markedPackage.color)
 
-	private handleMarkedPackage(mp: MarkedPackage) {
-		const colorPixel = ColorConverter.getImageDataUri(mp.color)
-
-		if (this.isColorPixelInPackageLists(colorPixel)) {
-			this.insertMPIntoPackageList(mp, colorPixel)
-		} else {
-			const packageList: PackageList = { colorPixel, markedPackages: [mp] }
-			this.addNewPackageList(packageList)
+				if (this.isColorPixelInPackageLists(colorPixel)) {
+					this.insertMPIntoPackageList(markedPackage, colorPixel)
+				} else {
+					const packageList: PackageList = { colorPixel, markedPackages: [markedPackage] }
+					this.addNewPackageList(packageList)
+				}
+			}
 		}
 	}
 
@@ -153,7 +160,7 @@ export class LegendPanelController
 	}
 
 	private isColorPixelInPackageLists(colorPixel: string) {
-		return this._viewModel.packageLists.filter(mpList => mpList.colorPixel === colorPixel).length > 0
+		return this._viewModel.packageLists.some(mpList => mpList.colorPixel === colorPixel)
 	}
 }
 

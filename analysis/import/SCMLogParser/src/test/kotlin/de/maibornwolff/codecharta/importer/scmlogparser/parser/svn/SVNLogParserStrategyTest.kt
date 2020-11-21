@@ -72,7 +72,8 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
 
     @Test
     fun acceptsSVNLogWithoutEndingDashes() {
-        val logLinesWithoutEndingDashes = Stream.of("------------------------------------------------------------------------", "commit data")
+        val logLinesWithoutEndingDashes =
+            Stream.of("------------------------------------------------------------------------", "commit data")
         val commits = logLinesWithoutEndingDashes.collect(parserStrategy.createLogLineCollector())
         assertThat(commits).hasSize(1)
     }

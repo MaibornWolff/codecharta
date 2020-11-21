@@ -1,5 +1,5 @@
-import rfdc from "rfdc"
+import { klona } from "klona/json"
 
 export function clone<T>(content: T): T {
-	return rfdc()(content)
+	return klona(content)
 }

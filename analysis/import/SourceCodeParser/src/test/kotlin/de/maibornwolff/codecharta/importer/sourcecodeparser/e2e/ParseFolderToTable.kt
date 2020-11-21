@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.e2e
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.e2e.StreamHelper.Companion.retrieveStreamAsString
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ParseFolderToTable {
 
@@ -20,7 +20,7 @@ class ParseFolderToTable {
 
     @Test
     fun `tabular output has header, one line for each file`() {
-        assertThat(output.lines().size).describedAs(output).isEqualTo(1 + 3 + 1) // header+javacode+eof
+        assertThat(output.lines().size).describedAs(output).isEqualTo(1 + 4 + 1) // header + java files + eof
     }
 
     @Test

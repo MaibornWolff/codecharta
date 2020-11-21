@@ -4,7 +4,7 @@ import { calculateNewEdgeMetricData, EdgeMetricDataActions } from "./edgeMetricD
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { BlacklistItem, CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
-import { HierarchyNode } from "d3"
+import { HierarchyNode } from "d3-hierarchy"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
 import { EdgeMetricCountMap, nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
@@ -55,8 +55,13 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 	}
 
 	getNodesWithHighestValue(metricName: string, amountOfEdgePreviews: number) {
-		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
 		const keys: string[] = []
+
+		if (amountOfEdgePreviews === 0) {
+			return keys
+		}
+
+		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
 
 		if (nodeEdgeMetrics === undefined) {
 			return keys
@@ -71,10 +76,10 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		return keys
 	}
 
-	getMetricValuesForNode(node: HierarchyNode<CodeMapNode>) {
+	getMetricValuesForNode(node: HierarchyNode<CodeMapNode>, metricNames: string[]) {
 		const nodeEdgeMetrics: EdgeMetricCountMap = new Map()
 
-		for (const metricName of this.getMetricNames()) {
+		for (const metricName of metricNames) {
 			const edgeMetricCount = nodeEdgeMetricsMap.get(metricName)
 			if (edgeMetricCount) {
 				nodeEdgeMetrics.set(metricName, edgeMetricCount.get(node.data.path))

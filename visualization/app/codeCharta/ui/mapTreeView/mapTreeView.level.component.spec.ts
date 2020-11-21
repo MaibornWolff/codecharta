@@ -10,8 +10,7 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { clone } from "../../util/clone"
-import _ from "lodash"
+import { klona } from "klona"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -58,10 +57,10 @@ describe("MapTreeViewLevelController", () => {
 		let codeMapNode: CodeMapNode
 
 		beforeEach(() => {
-			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			codeMapBuilding = klona(CODE_MAP_BUILDING)
 			codeMapBuilding.node.path = "somePath"
 
-			codeMapNode = clone(VALID_NODE_WITH_PATH)
+			codeMapNode = klona(VALID_NODE_WITH_PATH)
 			codeMapNode.path = "somePath"
 		})
 
@@ -74,7 +73,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("should set _isHoveredInCodeMap to false if hovered node path from the event is not the same as the node path assigned to this controller", () => {
-			const differentCodeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			const differentCodeMapBuilding = klona(CODE_MAP_BUILDING)
 			differentCodeMapBuilding.node.path = "someOtherPath"
 			mapTreeViewLevelController["node"] = codeMapNode
 

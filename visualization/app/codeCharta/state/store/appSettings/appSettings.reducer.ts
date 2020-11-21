@@ -1,4 +1,6 @@
 // Plop: Append reducer import here
+import { showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
+import { showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
 import { panelSelection } from "./panelSelection/panelSelection.reducer"
 import { cameraTarget } from "./cameraTarget/cameraTarget.reducer"
 import { isAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.reducer"
@@ -23,9 +25,12 @@ import { amountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreview
 import { amountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.reducer"
 import { isPresentationMode } from "./isPresentationMode/isPresentationMode.reducer"
 import { combineReducers } from "redux"
+import { experimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
+	showMetricLabelNodeName,
+	showMetricLabelNameValue,
 	panelSelection,
 	cameraTarget,
 	isAttributeSideBarVisible,
@@ -48,7 +53,8 @@ const appSettings = combineReducers({
 	edgeHeight,
 	amountOfEdgePreviews,
 	amountOfTopLabels,
-	isPresentationMode
+	isPresentationMode,
+	experimentalFeaturesEnabled
 })
 
 export default appSettings

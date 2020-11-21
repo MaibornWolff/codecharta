@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.e2e
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain.Companion.mainWithInOut
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File

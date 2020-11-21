@@ -3,6 +3,7 @@ import Ajv from "ajv"
 import packageJson from "../../../package.json"
 import { ExportCCFile } from "../codeCharta.api.model"
 import jsonSchema from "./generatedSchema.json"
+import { isLeaf } from "./codeMapHelper"
 
 const latestApiVersion = packageJson.codecharta.apiVersion
 
@@ -105,7 +106,7 @@ function validateAllNodesAreUnique(node: CodeMapNode, result: CCValidationResult
 }
 
 function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidationResult, names: Set<string>, subPath: string) {
-	if (!node.children || node.children.length === 0) {
+	if (isLeaf(node)) {
 		return
 	}
 
@@ -120,12 +121,12 @@ function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidat
 	}
 }
 
-function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
+function validateFixedFolders(file: ExportCCFile, result: CCValidationResult, childNodes: CodeMapNode[] = file.nodes[0].children) {
 	const notFixed: string[] = []
 	const outOfBounds: string[] = []
 	const intersections: Set<string> = new Set()
 
-	for (const node of file.nodes[0].children) {
+	for (const node of childNodes) {
 		if (node.fixedPosition === undefined) {
 			notFixed.push(`${node.name}`)
 		} else {
@@ -139,7 +140,7 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 				outOfBounds.push(getFoundFolderMessage(node))
 			}
 
-			for (const node2 of file.nodes[0].children) {
+			for (const node2 of childNodes) {
 				if (
 					node2.fixedPosition !== undefined &&
 					node !== node2 &&
@@ -152,7 +153,7 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 		}
 	}
 
-	if (notFixed.length > 0 && notFixed.length !== file.nodes[0].children.length) {
+	if (notFixed.length > 0 && notFixed.length !== childNodes.length) {
 		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
 	}
 
@@ -162,6 +163,12 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 
 	if (intersections.size > 0) {
 		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: ${[...intersections].join(", ")}`)
+	}
+
+	for (const node of childNodes) {
+		if (node.children) {
+			validateFixedFolders(file, result, node.children)
+		}
 	}
 }
 

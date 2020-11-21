@@ -31,7 +31,10 @@ class RawTextParserTest {
     fun `should process project and pass on parameters`() {
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--tab-width=2", "--max-indentation-level=2", "-e=tabs*."))
+        val result = executeForOutput(
+            "",
+            arrayOf("src/test/resources/sampleproject/", "--tab-width=2", "--max-indentation-level=2", "-e=tabs*.")
+        )
 
         val resultJSON = JsonParser().parse(result)
         val expectedJson = JsonParser().parse(expectedResultFile.reader())
@@ -47,30 +50,33 @@ class RawTextParserTest {
         val partialProject1 = ProjectDeserializer.deserializeProject(File(partialResult).inputStream())!!
         val partialProject2 = ProjectDeserializer.deserializeProject(File(pipedProject).inputStream())!!
         val expected = ByteArrayOutputStream()
-        ProjectSerializer.serializeProject(MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1), OutputStreamWriter(PrintStream(expected)))
+        ProjectSerializer.serializeProject(
+            MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
+            OutputStreamWriter(PrintStream(expected))
+        )
 
         val result = executeForOutput(input, arrayOf(fileToParse))
 
         val resultJSON = JsonParser().parse(result)
         Assertions.assertThat(resultJSON).isEqualTo(JsonParser().parse(expected.toString()))
     }
-}
 
-fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
-    outputAsString(input) { inputStream, outputStream, errorStream ->
-        mainWithInOut(outputStream, inputStream, errorStream, args)
-    }
-
-fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-    outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
-
-fun outputAsString(
-    inputStream: InputStream = System.`in`,
-    aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
-) =
-    ByteArrayOutputStream().use { baOutputStream ->
-        PrintStream(baOutputStream).use { outputStream ->
-            aMethod(inputStream, outputStream, System.err)
+    fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
+        outputAsString(input) { inputStream, outputStream, errorStream ->
+            mainWithInOut(outputStream, inputStream, errorStream, args)
         }
-        baOutputStream.toString()
-    }
+
+    fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+        outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
+
+    fun outputAsString(
+        inputStream: InputStream = System.`in`,
+        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+    ) =
+        ByteArrayOutputStream().use { baOutputStream ->
+            PrintStream(baOutputStream).use { outputStream ->
+                aMethod(inputStream, outputStream, System.err)
+            }
+            baOutputStream.toString()
+        }
+}

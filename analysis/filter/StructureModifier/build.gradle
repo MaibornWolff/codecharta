@@ -6,8 +6,7 @@ dependencies {
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation project(path: ':model', configuration: 'testOutput')
-
-    testImplementation group: 'junit', name: 'junit', version: junit4_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
 }
 

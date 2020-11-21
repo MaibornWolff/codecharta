@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.sourcecodeparser
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaSonarAnalyzer
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.File
 
 class JavaSonarAnalyzerTest {
@@ -116,5 +116,17 @@ class JavaSonarAnalyzerTest {
                 "commented_out_code_blocks"
             )
         ).isEqualTo(3)
+    }
+
+    @Test
+    fun `java 14 code should be parsable`() {
+        val fileList = ArrayList<String>()
+        fileList.add("Java14.java")
+
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
+
+        assertThat(metrics.projectMetrics).containsKey("Java14.java")
+        assertThat(metrics.getFileMetricMap("Java14.java")?.getMetricValue("statements")).isEqualTo(1)
     }
 }

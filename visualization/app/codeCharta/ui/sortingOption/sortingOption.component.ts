@@ -3,7 +3,6 @@ import { SortingOption } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setSortingOption } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
-import _ from "lodash"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 
 export class SortingOptionController implements SortingOptionSubscriber {
@@ -18,7 +17,7 @@ export class SortingOptionController implements SortingOptionSubscriber {
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		SortingOptionService.subscribe(this.$rootScope, this)
-		this._viewModel.sortingOptions = _.values(SortingOption)
+		this._viewModel.sortingOptions = Object.values(SortingOption)
 	}
 
 	onSortingOptionChanged(sortingOption: SortingOption) {

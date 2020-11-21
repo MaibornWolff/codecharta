@@ -23,7 +23,8 @@ class AttributeTypesFactoryTest {
         val attributeTypes = AttributeTypesFactory.createNodeAttributeTypes(metrics)
 
         Assertions.assertThat(attributeTypes.attributeTypes).containsKeys("added_lines", "age_in_weeks")
-        Assertions.assertThat(attributeTypes.attributeTypes).isEqualTo(mapOf("added_lines" to AttributeType.absolute, "age_in_weeks" to AttributeType.relative))
+        Assertions.assertThat(attributeTypes.attributeTypes)
+            .isEqualTo(mapOf("added_lines" to AttributeType.absolute, "age_in_weeks" to AttributeType.relative))
     }
 
     @Test
@@ -41,7 +42,8 @@ class AttributeTypesFactoryTest {
 
         val attributeTypes = AttributeTypesFactory.createEdgeAttributeTypes(metrics)
 
-        Assertions.assertThat(attributeTypes.attributeTypes).isEqualTo(mapOf("temporal_coupling" to AttributeType.absolute))
+        Assertions.assertThat(attributeTypes.attributeTypes)
+            .isEqualTo(mapOf("temporal_coupling" to AttributeType.absolute))
     }
 
     @Test

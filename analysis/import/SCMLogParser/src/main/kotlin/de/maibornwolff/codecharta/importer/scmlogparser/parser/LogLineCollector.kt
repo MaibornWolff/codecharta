@@ -1,10 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
-import java.util.function.BiConsumer
-import java.util.function.BinaryOperator
-import java.util.function.Function
 import java.util.function.Predicate
-import java.util.function.Supplier
 import java.util.stream.Collector
 import java.util.stream.Stream
 
@@ -52,14 +48,14 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
         fun create(commitSeparatorTest: Predicate<String>): Collector<String, *, Stream<List<String>>> {
             val collector = LogLineCollector(commitSeparatorTest)
             return Collector.of<String, MutableList<MutableList<String>>, Stream<List<String>>>(
-                Supplier<MutableList<MutableList<String>>> { ArrayList() },
-                BiConsumer<MutableList<MutableList<String>>, String> { commits, logLine ->
+                { ArrayList() },
+                { commits, logLine ->
                     collector.collectLogLine(commits, logLine)
                 },
-                BinaryOperator<MutableList<MutableList<String>>> { _, _ ->
-                    throw UnsupportedOperationException("parallel collection of log lines not supported")
+                { _, _ ->
+                    throw UnsupportedOperationException("parallel collection of commits not supported")
                 },
-                Function<MutableList<MutableList<String>>, Stream<List<String>>> {
+                {
                     collector.removeIncompleteCommits(it).map { it.toList() }
                 }
             )

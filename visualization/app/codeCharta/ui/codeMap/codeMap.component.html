@@ -1,4 +1,4 @@
-<div id="codeMap" ng-hide="$ctrl._viewModel.isLoadingFile">
+<div id="codeMap" ng-hide="$ctrl._viewModel.isLoadingFile" ng-mouseup="$ctrl.onClick()">
 	<view-cube-component ng-class="{ sideBarVisible: $ctrl._viewModel.isSideBarVisible }"></view-cube-component>
 	<attribute-side-bar-component></attribute-side-bar-component>
 </div>

@@ -11,7 +11,6 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import packageJson from "../../package.json"
 import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
-import { CodeChartaMouseEventService } from "./codeCharta.mouseEvent.service"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
 import { ExportCCFile } from "./codeCharta.api.model"
@@ -32,7 +31,6 @@ export class CodeChartaController {
 		private storeService: StoreService,
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
-		private codeChartaMouseEventService: CodeChartaMouseEventService,
 		// @ts-ignore
 		private injectorService: InjectorService // We have to inject it somewhere
 	) {
@@ -67,10 +65,6 @@ export class CodeChartaController {
 			{ fileName: "sample1.cc.json", content: sample1 as ExportCCFile },
 			{ fileName: "sample2.cc.json", content: sample2 as ExportCCFile }
 		])
-	}
-
-	onClick() {
-		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {

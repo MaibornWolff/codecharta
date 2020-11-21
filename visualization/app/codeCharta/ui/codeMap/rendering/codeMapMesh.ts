@@ -34,16 +34,6 @@ export class CodeMapMesh {
 		this.initDeltaColorsOnMesh(state)
 	}
 
-	private initDeltaColorsOnMesh(state: State) {
-		if (this.mapGeomDesc.buildings[0].node.deltas) {
-			this.mapGeomDesc.buildings.forEach(building => {
-				this.setNewDeltaColor(building, state)
-				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
-			})
-			this.updateVertices()
-		}
-	}
-
 	getThreeMesh() {
 		return this.threeMesh
 	}
@@ -77,18 +67,36 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State) {
+	highlightBuilding(
+		highlightedBuildings: CodeMapBuilding[],
+		selected: CodeMapBuilding,
+		state: State,
+		constantHighlight: Map<number, CodeMapBuilding>
+	) {
 		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
-		this.mapGeomDesc.buildings.forEach(building => {
+		for (const building of this.mapGeomDesc.buildings) {
 			if (!this.isBuildingSelected(selected, building)) {
-				if (highlightBuildingMap.get(building.id)) {
+				if (highlightBuildingMap.get(building.id) || constantHighlight.get(building.id)) {
 					building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
 				} else {
 					this.adjustSurroundingBuildingColors(highlightedBuildings, building, state)
 				}
 				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
 			}
-		})
+		}
+		this.updateVertices()
+	}
+
+	clearHighlight(selected: CodeMapBuilding) {
+		for (const currentBuilding of this.mapGeomDesc.buildings) {
+			if (!this.isBuildingSelected(selected, currentBuilding)) {
+				this.setVertexColor(
+					currentBuilding.id,
+					currentBuilding.getDefaultColorVector(),
+					currentBuilding.getDefaultDeltaColorVector()
+				)
+			}
+		}
 		this.updateVertices()
 	}
 
@@ -102,18 +110,14 @@ export class CodeMapMesh {
 		}
 	}
 
-	clearHighlight(selected: CodeMapBuilding) {
-		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
-			const currentBuilding = this.mapGeomDesc.buildings[i]
-			if (!this.isBuildingSelected(selected, currentBuilding)) {
-				this.setVertexColor(
-					currentBuilding.id,
-					currentBuilding.getDefaultColorVector(),
-					currentBuilding.getDefaultDeltaColorVector()
-				)
+	private initDeltaColorsOnMesh(state: State) {
+		if (this.mapGeomDesc.buildings[0].node.deltas) {
+			for (const building of this.mapGeomDesc.buildings) {
+				this.setNewDeltaColor(building, state)
+				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
 			}
+			this.updateVertices()
 		}
-		this.updateVertices()
 	}
 
 	private setNewDeltaColor(building: CodeMapBuilding, state: State) {
@@ -152,17 +156,17 @@ export class CodeMapMesh {
 		const numberOfColorFieldsPerBuilding = CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES
 		const positionOfFirstColorEntry = id * numberOfColorFieldsPerBuilding
 		for (
-			let j = positionOfFirstColorEntry;
-			j < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding;
-			j += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
+			let index = positionOfFirstColorEntry;
+			index < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding;
+			index += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
 		) {
-			this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
-			this.threeMesh.geometry["attributes"].color.array[j + 1] = newColorVector.y
-			this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
+			this.threeMesh.geometry["attributes"].color.array[index] = newColorVector.x
+			this.threeMesh.geometry["attributes"].color.array[index + 1] = newColorVector.y
+			this.threeMesh.geometry["attributes"].color.array[index + 2] = newColorVector.z
 
-			this.threeMesh.geometry["attributes"].deltaColor.array[j] = newDeltaColorVector.x
-			this.threeMesh.geometry["attributes"].deltaColor.array[j + 1] = newDeltaColorVector.y
-			this.threeMesh.geometry["attributes"].deltaColor.array[j + 2] = newDeltaColorVector.z
+			this.threeMesh.geometry["attributes"].deltaColor.array[index] = newDeltaColorVector.x
+			this.threeMesh.geometry["attributes"].deltaColor.array[index + 1] = newDeltaColorVector.y
+			this.threeMesh.geometry["attributes"].deltaColor.array[index + 2] = newDeltaColorVector.z
 		}
 	}
 
@@ -174,7 +178,7 @@ export class CodeMapMesh {
 	private initMaterial() {
 		const uniforms = UniformsUtils.merge([UniformsLib["lights"]])
 
-		const shaderCode: CodeMapShaderStrings = new CodeMapShaderStrings()
+		const shaderCode = new CodeMapShaderStrings()
 
 		this.material = new ShaderMaterial({
 			vertexShader: shaderCode.vertexShaderCode,

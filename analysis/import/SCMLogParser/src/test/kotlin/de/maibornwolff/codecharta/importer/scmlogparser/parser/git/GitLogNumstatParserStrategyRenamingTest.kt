@@ -21,11 +21,7 @@ class GitLogNumstatParserStrategyRenamingTest(
         @Parameterized.Parameters(name = "{index}: {0}")
         fun data(): Collection<Array<Any>> {
             return Arrays.asList(
-                arrayOf<Any>(
-                    "1 2 src/{RenameOld.java => RenameNew.java}",
-                    "src/RenameOld.java",
-                    "src/RenameNew.java"
-                ),
+                arrayOf<Any>("1 2 src/{RenameOld.java => RenameNew.java}", "src/RenameOld.java", "src/RenameNew.java"),
                 arrayOf<Any>("1 2 {old => new}/Rename.java", "old/Rename.java", "new/Rename.java"),
                 arrayOf<Any>("1 2 src/{ => new}/Rename.java", "src/Rename.java", "src/new/Rename.java"),
                 arrayOf<Any>("1 2 src/{old => }/Rename.java", "src/old/Rename.java", "src/Rename.java"),

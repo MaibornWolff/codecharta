@@ -28,5 +28,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_LABELS: dependencies
           MERGE_METHOD: rebase
-          MERGE_RETRIES: 10
+          MERGE_RETRIES: 100
           MERGE_RETRY_SLEEP: 300000

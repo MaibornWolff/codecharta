@@ -5,7 +5,7 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jackson_version
     implementation group: 'io.fastjson', name: 'boon', version: boon_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
-
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 }
 

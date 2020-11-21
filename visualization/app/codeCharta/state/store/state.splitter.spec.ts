@@ -4,7 +4,6 @@ import { BlacklistType, CCAction, DynamicSettings, FileSettings, RecursivePartia
 import { AreaMetricActions } from "./dynamicSettings/areaMetric/areaMetric.actions"
 import { HeightMetricActions } from "./dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "./dynamicSettings/colorMetric/colorMetric.actions"
-import _ from "lodash"
 import { FocusedNodePathActions } from "./dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { Vector3 } from "three"
 import { EdgeHeightActions } from "./appSettings/edgeHeight/edgeHeight.actions"
@@ -33,9 +32,9 @@ describe("state.splitter", () => {
 			const result: CCAction[] = splitStateActions(setState(partialState))
 
 			expect(result.length).toEqual(3)
-			expect(getItemsOfType(result, _.values(AreaMetricActions))).toHaveLength(1)
-			expect(getItemsOfType(result, _.values(HeightMetricActions))).toHaveLength(1)
-			expect(getItemsOfType(result, _.values(ColorMetricActions))).toHaveLength(1)
+			expect(getItemsOfType(result, Object.values(AreaMetricActions))).toHaveLength(1)
+			expect(getItemsOfType(result, Object.values(HeightMetricActions))).toHaveLength(1)
+			expect(getItemsOfType(result, Object.values(ColorMetricActions))).toHaveLength(1)
 		})
 
 		it("should return 1 FOCUS_NODE action", () => {
@@ -70,11 +69,11 @@ describe("state.splitter", () => {
 			const result: CCAction[] = splitStateActions(setState(partialState))
 
 			expect(result.length).toEqual(5)
-			expect(getItemsOfType(result, _.values(AreaMetricActions))).toHaveLength(1)
-			expect(getItemsOfType(result, _.values(HeightMetricActions))).toHaveLength(1)
-			expect(getItemsOfType(result, _.values(EdgeHeightActions))).toHaveLength(1)
-			expect(getItemsOfType(result, _.values(CameraActions))).toHaveLength(1)
-			expect(getItemsOfType(result, _.values(BlacklistActions))).toHaveLength(1)
+			expect(getItemsOfType(result, Object.values(AreaMetricActions))).toHaveLength(1)
+			expect(getItemsOfType(result, Object.values(HeightMetricActions))).toHaveLength(1)
+			expect(getItemsOfType(result, Object.values(EdgeHeightActions))).toHaveLength(1)
+			expect(getItemsOfType(result, Object.values(CameraActions))).toHaveLength(1)
+			expect(getItemsOfType(result, Object.values(BlacklistActions))).toHaveLength(1)
 		})
 	})
 

@@ -24,7 +24,8 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataSubscri
 	}
 
 	onEdgeMetricDataChanged(edgeMetrics: EdgeMetricData[]) {
-		if (!edgeMetrics.map(x => x.name).includes(this.storeService.getState().dynamicSettings.edgeMetric)) {
+		const { edgeMetric } = this.storeService.getState().dynamicSettings
+		if (!edgeMetrics.find(metric => metric.name === edgeMetric)) {
 			this.reset()
 		}
 	}

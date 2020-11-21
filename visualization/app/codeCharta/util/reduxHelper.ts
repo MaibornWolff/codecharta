@@ -1,10 +1,12 @@
 import { clone } from "./clone"
-import _ from "lodash"
+import isEqual from "lodash.isequal"
 
-export function removeItemFromArray<T>(array: T[], item: T) {
-	return array.filter(x => {
-		return !_.isEqual(x, item)
-	})
+export function removeItemFromArray<T>(array: T[], searchItem: T) {
+	return array.filter(entry => !isEqual(entry, searchItem))
+}
+
+export function removeEntryAtIndexFromArray<T>(array: T[], index: number) {
+	return [...array.slice(0, index), ...array.slice(index + 1)]
 }
 
 export function addItemToArray<T>(array: T[], item: T) {
@@ -19,5 +21,5 @@ export function isActionOfType(actionType: string, actions) {
 }
 
 function arrayContainsItem<T>(array: T[], item: T) {
-	return array.some(x => _.isEqual(x, item))
+	return array.some(x => isEqual(x, item))
 }

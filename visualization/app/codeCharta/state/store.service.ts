@@ -12,6 +12,7 @@ import { SortingOptionActions } from "./store/dynamicSettings/sortingOption/sort
 import { IsAttributeSideBarVisibleActions } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { PanelSelectionActions } from "./store/appSettings/panelSelection/panelSelection.actions"
 import { PresentationModeActions } from "./store/appSettings/isPresentationMode/isPresentationMode.actions"
+import { ExperimentalFeaturesEnabledActions } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -41,18 +42,19 @@ export class StoreService {
 				isActionOfType(action.type, IsAttributeSideBarVisibleActions) ||
 				isActionOfType(action.type, PanelSelectionActions) ||
 				isActionOfType(action.type, PresentationModeActions) ||
+				isActionOfType(action.type, ExperimentalFeaturesEnabledActions) ||
 				options.silent
 			)
 		) {
 			this.dispatch(setIsLoadingMap(true))
 		}
 
-		splitStateActions(action).forEach(atomicAction => {
+		for (const atomicAction of splitStateActions(action)) {
 			this.store.dispatch(atomicAction)
 			if (!options.silent) {
 				this.notify(atomicAction.type)
 			}
-		})
+		}
 	}
 
 	getState(): State {

@@ -3,6 +3,7 @@ import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
+import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 
 export interface NameDataPair {
 	fileName: string
@@ -63,6 +64,7 @@ export enum SortingOption {
 
 export interface FileMeta {
 	fileName: string
+	fileChecksum: string
 	apiVersion: string
 	projectName: string
 }
@@ -119,6 +121,9 @@ export interface AppSettings {
 	searchPanelMode: SearchPanelMode
 	isAttributeSideBarVisible: boolean
 	panelSelection: PanelSelection
+	showMetricLabelNameValue: boolean
+	showMetricLabelNodeName: boolean
+	experimentalFeaturesEnabled: boolean
 }
 
 export interface TreeMapSettings {
@@ -140,6 +145,7 @@ export interface MapColors {
 	markingColors: string[]
 	outgoingEdge: string
 	incomingEdge: string
+	labelColorAndAlpha: { rgb: string; alpha: number }
 }
 
 export interface ColorRange {
@@ -206,7 +212,12 @@ export interface MetricData {
 	edgeMetricData: EdgeMetricData[]
 }
 
-export interface CCLocalStorage {
+export interface LocalStorageCustomConfigs {
+	version: string
+	customConfigs: [string, RecursivePartial<CustomConfig>][]
+}
+
+export interface LocalStorageScenarios {
 	version: string
 	scenarios: [string, RecursivePartial<Scenario>][]
 }
@@ -278,6 +289,41 @@ export interface State {
 	files: FileState[]
 	lookUp: LookUp
 	metricData: MetricData
+}
+
+export function stateObjectReplacer(this, key) {
+	const originalObject = this[key]
+	if (originalObject instanceof Map) {
+		return {
+			dataType: "Map",
+			value: [...originalObject.entries()]
+		}
+	}
+	if (originalObject instanceof Set) {
+		return {
+			dataType: "Set",
+			value: [...originalObject]
+		}
+	}
+	return originalObject
+}
+
+export function stateObjectReviver(this, key) {
+	const valueToRevive = this[key]
+	if (typeof valueToRevive !== "object" || valueToRevive === null) {
+		return valueToRevive
+	}
+
+	// our state has not got a Map so far
+	// Nevertheless, we keep this logic
+	if (valueToRevive.dataType === "Map") {
+		return new Map(valueToRevive.value)
+	}
+	if (valueToRevive.dataType === "Set") {
+		return new Set(valueToRevive.value)
+	}
+
+	return valueToRevive
 }
 
 export interface CCAction extends Action {

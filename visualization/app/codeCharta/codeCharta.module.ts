@@ -1,7 +1,7 @@
 "use strict"
 
 import angular from "angular"
-import _ from "lodash"
+import camelCase from "lodash.camelcase"
 
 import "./ui/ui"
 import "./state/state.module"
@@ -15,5 +15,5 @@ angular.module("app.codeCharta", ["app.codeCharta.state", "app.codeCharta.ui"])
 angular
 	.module("app.codeCharta")
 	.component(codeChartaComponent.selector, codeChartaComponent)
-	.service(_.camelCase(CodeChartaService.name), CodeChartaService)
-	.service(_.camelCase(CodeChartaMouseEventService.name), CodeChartaMouseEventService)
+	.service(camelCase(CodeChartaService.name), CodeChartaService)
+	.service(camelCase(CodeChartaMouseEventService.name), CodeChartaMouseEventService)

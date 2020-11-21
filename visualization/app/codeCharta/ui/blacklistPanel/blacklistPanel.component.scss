@@ -29,4 +29,9 @@ blacklist-panel-exclude-component {
 		width: 100%;
 		padding-right: 10px;
 	}
+
+	p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }

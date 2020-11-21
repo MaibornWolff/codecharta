@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
 import java.io.PrintStream

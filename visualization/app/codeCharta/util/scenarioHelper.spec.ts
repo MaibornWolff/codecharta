@@ -52,7 +52,7 @@ describe("scenarioHelper", () => {
 
 			expect(result).toEqual(expected)
 		})
-		it("should return an settingsobject with empty dynamic- and appSettings if the list don't contain the scenario", () => {
+		it("should return an settingsobject with empty dynamic- and appSettings if the list does not contain the scenario", () => {
 			const result = ScenarioHelper.getScenarioSettingsByName("someScenario")
 			const expected: RecursivePartial<Settings> = { dynamicSettings: {}, appSettings: {} }
 

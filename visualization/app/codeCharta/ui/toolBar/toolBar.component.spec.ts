@@ -2,10 +2,12 @@ import "./toolBar.module"
 import { ToolBarController } from "./toolBar.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
+import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 
 describe("ToolBarController", () => {
 	let $rootScope: IRootScopeService
 	let toolBarController: ToolBarController
+	let codeChartaMouseEventService: CodeChartaMouseEventService
 
 	beforeEach(() => {
 		restartSystem()
@@ -19,7 +21,7 @@ describe("ToolBarController", () => {
 	}
 
 	function rebuildController() {
-		toolBarController = new ToolBarController($rootScope)
+		toolBarController = new ToolBarController($rootScope, codeChartaMouseEventService)
 	}
 
 	describe("onBuildingHovered", () => {

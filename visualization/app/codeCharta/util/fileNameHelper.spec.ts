@@ -60,12 +60,12 @@ describe("FileNameHelper", () => {
 			expect(actual).toBe("prefix.name.suffix")
 		})
 
-		it("should remove .cc", () => {
-			const fileName = "prefix.name.suffix.cc"
+		it("should not remove .cc.json as part of a filename", () => {
+			const fileName = "prefix.name.cc.json.suffix.cc.json"
 
 			const actual = FileNameHelper.withoutCCJsonExtension(fileName)
 
-			expect(actual).toBe("prefix.name.suffix")
+			expect(actual).toBe("prefix.name.cc.json.suffix")
 		})
 	})
 })

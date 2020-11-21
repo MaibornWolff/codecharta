@@ -8,7 +8,7 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { setInvertDeltaColors } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.actions"
-import _ from "lodash"
+import { klona } from "klona"
 
 describe("MetricDeltaSelectedController", () => {
 	let metricDeltaSelectedController: MetricDeltaSelectedController
@@ -32,7 +32,7 @@ describe("MetricDeltaSelectedController", () => {
 		storeService = getService<StoreService>("storeService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 
-		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+		codeMapBuilding = klona(CODE_MAP_BUILDING)
 	}
 
 	function rebuildController() {

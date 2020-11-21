@@ -9,7 +9,7 @@ import { CodeMapNode, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
 import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
 import assert from "assert"
-import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
+import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../ressources/fixed-folders/fixed-folders-example"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { clone } from "./clone"
 
@@ -171,6 +171,27 @@ describe("FileValidator", () => {
 		assert.throws(() => {
 			validate(file)
 		}, expectedError)
+	})
+
+	describe("fixed sub folders validation", () => {
+		it("should throw an error, if two sub folders horizontally overlap", () => {
+			file = clone(fileWithFixedOverlappingSubFolders)
+			const folder1: CodeMapNode = file.nodes[0].children[0].children[0]
+			const folder2: CodeMapNode = file.nodes[0].children[0].children[1]
+
+			const expectedError: CCValidationResult = {
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1_1 ${JSON.stringify(
+						folder1.fixedPosition
+					)} and folder_1_2 ${JSON.stringify(folder2.fixedPosition)}`
+				],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 	})
 
 	describe("fixed folders validation", () => {

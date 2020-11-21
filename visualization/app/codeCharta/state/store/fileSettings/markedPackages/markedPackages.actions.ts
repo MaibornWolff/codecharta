@@ -11,17 +11,12 @@ export interface SetMarkedPackagesAction extends CCAction {
 	payload: MarkedPackage[]
 }
 
-export interface MarkPackageAction extends CCAction {
-	type: MarkedPackagesActions.MARK_PACKAGE
-	payload: MarkedPackage
-}
-
 export interface UnmarkPackageAction extends CCAction {
 	type: MarkedPackagesActions.UNMARK_PACKAGE
-	payload: MarkedPackage
+	payload: number
 }
 
-export type MarkedPackagesAction = SetMarkedPackagesAction | MarkPackageAction | UnmarkPackageAction
+export type MarkedPackagesAction = SetMarkedPackagesAction | UnmarkPackageAction
 
 export function setMarkedPackages(markedPackages: MarkedPackage[] = defaultMarkedPackages): SetMarkedPackagesAction {
 	return {
@@ -30,17 +25,10 @@ export function setMarkedPackages(markedPackages: MarkedPackage[] = defaultMarke
 	}
 }
 
-export function markPackage(markedPackage: MarkedPackage): MarkPackageAction {
-	return {
-		type: MarkedPackagesActions.MARK_PACKAGE,
-		payload: markedPackage
-	}
-}
-
-export function unmarkPackage(markedPackage: MarkedPackage): UnmarkPackageAction {
+export function unmarkPackage(index: number): UnmarkPackageAction {
 	return {
 		type: MarkedPackagesActions.UNMARK_PACKAGE,
-		payload: markedPackage
+		payload: index
 	}
 }
 

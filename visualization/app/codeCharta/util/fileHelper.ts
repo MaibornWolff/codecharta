@@ -5,6 +5,7 @@ export function getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
 	return {
 		fileMeta: {
 			fileName,
+			fileChecksum: fileContent.fileChecksum,
 			projectName: fileContent.projectName,
 			apiVersion: fileContent.apiVersion
 		},
@@ -35,10 +36,10 @@ function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): 
 }
 
 function potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
-	blacklist.forEach(x => {
-		if (x.type === ExportBlacklistType.hide) {
-			x.type = BlacklistType.flatten
+	for (const entry of blacklist) {
+		if (entry.type === ExportBlacklistType.hide) {
+			entry.type = BlacklistType.flatten
 		}
-	})
+	}
 	return blacklist
 }

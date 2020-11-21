@@ -31,7 +31,7 @@ const numberSides = 6
 const verticesPerSide = 4
 
 export class BoxGeometryGenerationHelper {
-	static addBoxToVertexData(data: IntermediateVertexData, measures: BoxMeasures, color: string, subGeomIdx: number, delta: number) {
+	static addBoxToVertexData(data: IntermediateVertexData, measures: BoxMeasures, color: string, subGeomIndex: number, delta: number) {
 		const minPos: Vector3 = new Vector3(measures.x, measures.y, measures.z)
 		const maxPos: Vector3 = new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 
@@ -39,7 +39,7 @@ export class BoxGeometryGenerationHelper {
 		const positions: Vector3[] = new Array<Vector3>()
 
 		BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs)
-		BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIdx, positions, uvs, data)
+		BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIndex, positions, uvs, data)
 	}
 	private static createPositionsUVs(minPos: Vector3, maxPos: Vector3, positions: Vector3[], uvs: Vector2[]) {
 		//Left Vertices
@@ -79,40 +79,40 @@ export class BoxGeometryGenerationHelper {
 	}
 
 	private static createFrontFacingPositionsUVsFromBackFacingData(minPos: Vector3, maxPos: Vector3, positions: Vector3[], uvs: Vector2[]) {
-		for (let i = 0; i < verticesPerSide; ++i) {
-			positions[sides.right * verticesPerSide + i] = new Vector3(
+		for (let index = 0; index < verticesPerSide; ++index) {
+			positions[sides.right * verticesPerSide + index] = new Vector3(
 				maxPos.x,
-				positions[sides.left * verticesPerSide + i].y,
-				positions[sides.left * verticesPerSide + i].z
+				positions[sides.left * verticesPerSide + index].y,
+				positions[sides.left * verticesPerSide + index].z
 			)
 
-			positions[sides.top * verticesPerSide + i] = new Vector3(
-				positions[sides.bottom * verticesPerSide + i].x,
+			positions[sides.top * verticesPerSide + index] = new Vector3(
+				positions[sides.bottom * verticesPerSide + index].x,
 				maxPos.y,
-				positions[sides.bottom * verticesPerSide + i].z
+				positions[sides.bottom * verticesPerSide + index].z
 			)
 
-			positions[sides.front * verticesPerSide + i] = new Vector3(
-				positions[sides.back * verticesPerSide + i].x,
-				positions[sides.back * verticesPerSide + i].y,
+			positions[sides.front * verticesPerSide + index] = new Vector3(
+				positions[sides.back * verticesPerSide + index].x,
+				positions[sides.back * verticesPerSide + index].y,
 				minPos.z
 			)
 
 			const epsilon = 0.01
 
-			uvs[sides.right * verticesPerSide + i] = new Vector2(
-				uvs[sides.left * verticesPerSide + i].x > epsilon ? 0 : 1,
-				uvs[sides.left * verticesPerSide + i].y
+			uvs[sides.right * verticesPerSide + index] = new Vector2(
+				uvs[sides.left * verticesPerSide + index].x > epsilon ? 0 : 1,
+				uvs[sides.left * verticesPerSide + index].y
 			)
 
-			uvs[sides.top * verticesPerSide + i] = new Vector2(
-				uvs[sides.bottom * verticesPerSide + i].x,
-				uvs[sides.bottom * verticesPerSide + i].y
+			uvs[sides.top * verticesPerSide + index] = new Vector2(
+				uvs[sides.bottom * verticesPerSide + index].x,
+				uvs[sides.bottom * verticesPerSide + index].y
 			)
 
-			uvs[sides.front * verticesPerSide + i] = new Vector2(
-				uvs[sides.back * verticesPerSide + i].x > epsilon ? 0 : 1,
-				uvs[sides.back * verticesPerSide + i].y
+			uvs[sides.front * verticesPerSide + index] = new Vector2(
+				uvs[sides.back * verticesPerSide + index].x > epsilon ? 0 : 1,
+				uvs[sides.back * verticesPerSide + index].y
 			)
 		}
 	}
@@ -122,7 +122,7 @@ export class BoxGeometryGenerationHelper {
 		maxPos: Vector3,
 		color: string,
 		delta: number,
-		subGeomIdx: number,
+		subGeomIndex: number,
 		positions: Vector3[],
 		uvs: Vector2[],
 		data: IntermediateVertexData
@@ -130,40 +130,40 @@ export class BoxGeometryGenerationHelper {
 		const deltaRelativeToHeight = delta / (maxPos.y - minPos.y)
 
 		for (let side = 0; side < numberSides; ++side) {
-			const intermediateIdxBL = side * verticesPerSide + vertexLocation.bottomLeft
-			const intermediateIdxTL = side * verticesPerSide + vertexLocation.topLeft
-			const intermediateIdxTR = side * verticesPerSide + vertexLocation.topRight
-			const intermediateIdxBR = side * verticesPerSide + vertexLocation.bottomRight
+			const intermediateIndexBL = side * verticesPerSide + vertexLocation.bottomLeft
+			const intermediateIndexTL = side * verticesPerSide + vertexLocation.topLeft
+			const intermediateIndexTR = side * verticesPerSide + vertexLocation.topRight
+			const intermediateIndexBR = side * verticesPerSide + vertexLocation.bottomRight
 			const indexBottomLeft = data.addVertex(
-				positions[intermediateIdxBL],
+				positions[intermediateIndexBL],
 				normals[side],
-				uvs[intermediateIdxBL],
+				uvs[intermediateIndexBL],
 				color,
-				subGeomIdx,
+				subGeomIndex,
 				deltaRelativeToHeight
 			)
 			const indexTopLeft = data.addVertex(
-				positions[intermediateIdxTL],
+				positions[intermediateIndexTL],
 				normals[side],
-				uvs[intermediateIdxTL],
+				uvs[intermediateIndexTL],
 				color,
-				subGeomIdx,
+				subGeomIndex,
 				deltaRelativeToHeight
 			)
 			const indexTopRight = data.addVertex(
-				positions[intermediateIdxTR],
+				positions[intermediateIndexTR],
 				normals[side],
-				uvs[intermediateIdxTR],
+				uvs[intermediateIndexTR],
 				color,
-				subGeomIdx,
+				subGeomIndex,
 				deltaRelativeToHeight
 			)
 			const indexBottomRight = data.addVertex(
-				positions[intermediateIdxBR],
+				positions[intermediateIndexBR],
 				normals[side],
-				uvs[intermediateIdxBR],
+				uvs[intermediateIndexBR],
 				color,
-				subGeomIdx,
+				subGeomIndex,
 				deltaRelativeToHeight
 			)
 			const dimension = Math.floor(side / 2)

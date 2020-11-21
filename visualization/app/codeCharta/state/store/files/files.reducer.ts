@@ -45,10 +45,11 @@ function addFile(state: FileState[], file: CCFile) {
 
 function setSingleByName(state: FileState[], fileName: string): FileState[] {
 	return state.map(x => {
+		let selectedAs = FileSelectionState.None
 		if (x.file.fileMeta.fileName === fileName) {
-			return { ...x, selectedAs: FileSelectionState.Single }
+			selectedAs = FileSelectionState.Single
 		}
-		return { ...x, selectedAs: FileSelectionState.None }
+		return { ...x, selectedAs }
 	})
 }
 
@@ -58,13 +59,13 @@ function setSingle(state: FileState[], file: CCFile) {
 
 function setDeltaByNames(state: FileState[], referenceFileName: string, comparisonFileName: string): FileState[] {
 	return state.map(x => {
+		let selectedAs = FileSelectionState.None
 		if (x.file.fileMeta.fileName === referenceFileName) {
-			return { ...x, selectedAs: FileSelectionState.Reference }
+			selectedAs = FileSelectionState.Reference
+		} else if (x.file.fileMeta.fileName === comparisonFileName) {
+			selectedAs = FileSelectionState.Comparison
 		}
-		if (x.file.fileMeta.fileName === comparisonFileName) {
-			return { ...x, selectedAs: FileSelectionState.Comparison }
-		}
-		return { ...x, selectedAs: FileSelectionState.None }
+		return { ...x, selectedAs }
 	})
 }
 
@@ -74,14 +75,15 @@ function setDelta(state: FileState[], reference: CCFile, comparison: CCFile) {
 
 function setMultipleByNames(state: FileState[], partialFileNames: string[]): FileState[] {
 	return state.map(x => {
+		let selectedAs = FileSelectionState.None
 		if (partialFileNames.includes(x.file.fileMeta.fileName)) {
-			return { ...x, selectedAs: FileSelectionState.Partial }
+			selectedAs = FileSelectionState.Partial
 		}
-		return { ...x, selectedAs: FileSelectionState.None }
+		return { ...x, selectedAs }
 	})
 }
 
-function setMultiple(state: FileState[], multipleFiles: CCFile[]): FileState[] {
+function setMultiple(state: FileState[], multipleFiles: CCFile[]) {
 	return setMultipleByNames(
 		state,
 		multipleFiles.map(x => x.fileMeta.fileName)

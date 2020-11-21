@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
-import _ from "lodash"
+import debounce from "lodash.debounce"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
@@ -26,7 +26,7 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		MarginService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 
-		this.applyDebouncedMargin = _.debounce(() => {
+		this.applyDebouncedMargin = debounce(() => {
 			this.storeService.dispatch(setMargin(this._viewModel.margin))
 		}, AreaSettingsPanelController.DEBOUNCE_TIME)
 	}

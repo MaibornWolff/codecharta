@@ -11,10 +11,11 @@ export class IdToBuildingService implements CodeMapMeshChangedSubscriber {
 	}
 
 	onCodeMapMeshChanged(mapMesh: CodeMapMesh) {
-		const idToBuilding = new Map<number, CodeMapBuilding>()
-		mapMesh.getMeshDescription().buildings.forEach(x => {
-			idToBuilding.set(x.node.id, x)
-		})
+		const idToBuilding: Map<number, CodeMapBuilding> = new Map()
+
+		for (const building of mapMesh.getMeshDescription().buildings) {
+			idToBuilding.set(building.node.id, building)
+		}
 
 		this.storeService.dispatch(setIdToBuilding(idToBuilding), { silent: true })
 	}

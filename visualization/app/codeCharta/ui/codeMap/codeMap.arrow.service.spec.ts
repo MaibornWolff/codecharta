@@ -4,13 +4,24 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Object3D, Vector3 } from "three"
-import { CODE_MAP_BUILDING, OUTGOING_NODE, INCOMING_NODE } from "../../util/dataMocks"
-import { Edge, EdgeVisibility, Node } from "../../codeCharta.model"
+import {
+	CODE_MAP_BUILDING,
+	OUTGOING_NODE,
+	DIFFERENT_NODE,
+	INCOMING_NODE,
+	VALID_EDGES_DECORATED,
+	CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,
+	CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE
+} from "../../util/dataMocks"
+import { Node } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
+import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { CodeMapMesh } from "./rendering/codeMapMesh"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
@@ -21,7 +32,6 @@ describe("CodeMapArrowService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedThreeSceneService()
 	})
 
 	function restartSystem() {
@@ -50,6 +60,7 @@ describe("CodeMapArrowService", () => {
 				clearSelection: jest.fn(),
 				selectBuilding: jest.fn()
 			}),
+			highlightBuildings: jest.fn(),
 			addBuildingToHighlightingList: jest.fn(),
 			getSelectedBuilding: jest.fn().mockReturnValue({
 				value: "value"
@@ -79,7 +90,6 @@ describe("CodeMapArrowService", () => {
 
 			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, codeMapArrowService)
 		})
-
 		it("should subscribe to Building-Unhovered-Events", () => {
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 
@@ -88,12 +98,33 @@ describe("CodeMapArrowService", () => {
 			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, codeMapArrowService)
 		})
 	})
+	describe("Arrow Behaviour when selecting and hovering a building", () => {
+		it("should only highlight small leaf when big leaf is selected", () => {
+			storeService.dispatch(setEdges(VALID_EDGES_DECORATED))
+			const nodes: Node[] = [
+				CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node,
+				CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node,
+				DIFFERENT_NODE
+			]
+			threeSceneService["mapMesh"] = new CodeMapMesh(nodes, storeService.getState(), false)
+			codeMapArrowService.addEdgePreview(nodes)
+			storeService.dispatch(setHeightMetric("mcc"))
+
+			threeSceneService.selectBuilding(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
+			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
+
+			expect(threeSceneService["highlighted"]).toMatchSnapshot()
+			expect(threeSceneService["selected"]).toMatchSnapshot()
+		})
+	})
 
 	describe("SelectionMethods", () => {
 		beforeEach(() => {
 			codeMapArrowService.clearArrows = jest.fn()
 			codeMapArrowService["showEdgesOfBuildings"] = jest.fn()
 			codeMapArrowService.addEdgePreview = jest.fn()
+			threeSceneService.clearHighlight = jest.fn()
+			codeMapArrowService["buildPairingEdges"] = jest.fn()
 		})
 		it("should call clearArrows and showEdgesOfBuildings through BuildingSelected", () => {
 			codeMapArrowService.onBuildingSelected(CODE_MAP_BUILDING)
@@ -123,12 +154,17 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService.onBuildingDeselected()
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
 			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalled()
 		})
 	})
 
 	describe("clearArrows", () => {
+		beforeEach(() => {
+			withMockedThreeSceneService()
+		})
+
 		it("should remove all array entries of field arrows", () => {
 			setupEdgeArrowsWithChildren()
 
@@ -154,20 +190,37 @@ describe("CodeMapArrowService", () => {
 			})
 			codeMapArrowService["previewMode"] = jest.fn()
 		})
-		it("should create and edge Preview of one", () => {
+		it("should create an edge Preview of one", () => {
 			const nodes: Node[] = [OUTGOING_NODE]
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
 
-			codeMapArrowService.addEdgePreview(nodes, edges)
+			codeMapArrowService.addEdgePreview(nodes)
 
 			expect(codeMapArrowService["map"].size).toEqual(1)
 		})
-		it("should create and no edge Preview at all", () => {
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
-
-			codeMapArrowService.addEdgePreview(null, edges)
+		it("should create no edge Preview at all", () => {
+			codeMapArrowService.addEdgePreview()
 
 			expect(codeMapArrowService["map"].size).toEqual(0)
+		})
+		it("when targetNode is invalid then it should not call preview mode", () => {
+			const invalidEdge = VALID_EDGES_DECORATED
+			invalidEdge[0].toNodeName = "invalid"
+			storeService.dispatch(setEdges(invalidEdge))
+			const nodes: Node[] = [CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node]
+
+			codeMapArrowService.addEdgePreview(nodes)
+
+			expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
+		})
+		it("when originNodeName is invalid then it should not call preview mode", () => {
+			const invalidEdge = VALID_EDGES_DECORATED
+			invalidEdge[0].fromNodeName = "invalid"
+			storeService.dispatch(setEdges(invalidEdge))
+			const nodes: Node[] = [CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node]
+
+			codeMapArrowService.addEdgePreview(nodes)
+
+			expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
 		})
 	})
 
@@ -185,7 +238,10 @@ describe("CodeMapArrowService", () => {
 
 	describe("highlightBuilding", () => {
 		it("should highlight certain buildings", () => {
+			withMockedThreeSceneService()
+
 			codeMapArrowService["highlightBuilding"](OUTGOING_NODE)
+
 			expect(threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath).toHaveBeenCalled()
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 		})

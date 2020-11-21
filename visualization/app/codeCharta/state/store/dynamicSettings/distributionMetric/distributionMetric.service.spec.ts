@@ -72,18 +72,18 @@ describe("DistributionMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update distributionMetric if current distributionMetric is not available", () => {
 			const metricData = [
-				{ name: "a", maxValue: 1 },
-				{ name: "b", maxValue: 2 },
-				{ name: "c", maxValue: 2 },
-				{ name: "d", maxValue: 2 }
+				{ name: "unary", maxValue: 1 },
+				{ name: "loc", maxValue: 2 },
+				{ name: "comment_lines", maxValue: 2 },
+				{ name: "blank_lines", maxValue: 2 }
 			]
 
 			distributionMetricService.onNodeMetricDataChanged(metricData)
 
-			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("a")
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("unary")
 		})
 
-		it("should not update if current distributionMetric is available", () => {
+		it("should not reset to default if current metric is available", () => {
 			storeService.dispatch(setDistributionMetric("mcc"))
 			storeService.dispatch = jest.fn()
 			const metricData = [
@@ -93,7 +93,7 @@ describe("DistributionMetricService", () => {
 
 			distributionMetricService.onNodeMetricDataChanged(metricData)
 
-			expect(storeService.dispatch).not.toHaveBeenCalled()
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("mcc")
 		})
 
 		it("should not update distributionMetric, if no metric is available", () => {
@@ -103,6 +103,34 @@ describe("DistributionMetricService", () => {
 			distributionMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("reset", () => {
+		it("should reset to rloc if available", () => {
+			const metricData = [
+				{ name: "loc", maxValue: 11 },
+				{ name: "rloc", maxValue: 4 },
+				{ name: "unary", maxValue: 1 },
+				{ name: "comment_lines", maxValue: 7 }
+			]
+
+			distributionMetricService.reset(metricData)
+
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("rloc")
+		})
+
+		it("should reset to unary if rloc unavailable", () => {
+			const metricData = [
+				{ name: "loc", maxValue: 21 },
+				{ name: "empty_lines", maxValue: 11 },
+				{ name: "unary", maxValue: 1 },
+				{ name: "comment_lines", maxValue: 7 }
+			]
+
+			distributionMetricService.reset(metricData)
+
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("unary")
 		})
 	})
 })
