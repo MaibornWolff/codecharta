@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, CanvasTexture, MeshBasicMaterial, PlaneGeometry, Mesh } from "three"
 import { Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -37,7 +37,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) { // todo: tk rename to addLeafLabel
 		const state = this.storeService.getState()
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
 			const x = node.x0 - state.treeMap.mapSize
@@ -68,10 +68,44 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			this.threeSceneService.labels.add(label.sprite)
 			this.threeSceneService.labels.add(label.line)
 
-			this.labels.push(label)
+			this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
 		}
 		this.resetScale = true
 	}
+
+	addPackageLabel(packageNode: Node) {
+		console.log(packageNode)
+		const canvas = document.createElement("canvas")
+		canvas.width = packageNode.width
+		canvas.height = packageNode.height + 200
+		const context = canvas.getContext("2d")
+
+		context.font = `100px Helvetica Neue`
+		// canvas.style = "background: transparent"
+		context.fillStyle = packageNode.name === "root" ? "red" :"blue" //"rgba(0, 0, 0, 0)"
+		context.fillRect(0, 0, canvas.width, canvas.height)
+		context.fillStyle = "white"
+		// context.textAlign = "center"
+		context.textBaseline = "middle"
+		context.fillText("hello worlddddddddddddddddddddddddddddddddddddddddddddd", 0, 0)
+
+		const texture = new CanvasTexture(canvas)
+
+		const material = new MeshBasicMaterial({ map : texture });
+		material.transparent = true;
+
+		const mesh = new Mesh(new PlaneGeometry(canvas.width, canvas.height, 10, 10), material);
+		mesh.position.x = packageNode.x0
+		mesh.position.y = packageNode.z0
+		mesh.position.z = packageNode.y0;
+		// mesh.scale.set(packageNode.width, packageNode.height, 1)
+		// mesh.scale.set(50, 25, 1)
+
+		// this.threeSceneService.labels := three.js group which gets rendered
+		this.threeSceneService.labels.add(mesh);
+	
+		// this.labels.add ? check why that needed in addLabel()
+	} 
 
 	clearLabels() {
 		this.labels = []

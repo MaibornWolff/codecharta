@@ -107,7 +107,8 @@ export class GeometryGenerator {
 		desc: CodeMapGeometricDescription,
 		state: State,
 		isDeltaState: boolean
-	) {
+	)  {
+		return; // hide buildings for debugging package label
 		const measures = this.mapNodeToLocalBox(node)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(node.height, node.heightDelta)
 
