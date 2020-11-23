@@ -13,7 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3-hierarchy"
-import { Object3D, Raycaster } from "three"
+import { Box3, Object3D, Raycaster, Vector3 } from "three"
 
 interface Coordinates {
 	x: number
@@ -59,6 +59,7 @@ export class CodeMapMouseEventService
 	private isGrabbing = false
 	private isMoving = false
 	private raycaster = new Raycaster()
+	private normedTransformVector = new Vector3(0, 0, 0)
 	private modifiedLabel = new Object3D()
 	private rayPoint = { x: 0, y: 0, z: 0 }
 
@@ -76,6 +77,28 @@ export class CodeMapMouseEventService
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
+	}
+
+	static changeCursorIndicator(cursorIcon: CursorType) {
+		document.body.style.cursor = cursorIcon
+	}
+
+	static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
+		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (_event, data) => {
+			subscriber.onBuildingHovered(data.hoveredBuilding)
+		})
+	}
+
+	static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
+		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, () => {
+			subscriber.onBuildingUnhovered()
+		})
+	}
+
+	static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
+		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (_event, data) => {
+			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
+		})
 	}
 
 	start() {
@@ -142,10 +165,11 @@ export class CodeMapMouseEventService
 			this.oldMouse.x = this.mouse.x
 			this.oldMouse.y = this.mouse.y
 
+			// reset label to original position
 			if (this.modifiedLabel !== null) {
-				this.modifiedLabel["object"]["position"]["x"] = this.modifiedLabel["object"]["position"]["x"] - this.rayPoint["x"] / 10
-				this.modifiedLabel["object"]["position"]["y"] = this.modifiedLabel["object"]["position"]["y"] - this.rayPoint["y"] / 10
-				this.modifiedLabel["object"]["position"]["z"] = this.modifiedLabel["object"]["position"]["z"] - this.rayPoint["z"] / 10
+				this.modifiedLabel["object"]["position"]["x"] = this.modifiedLabel["object"]["position"]["x"] - this.normedTransformVector.x
+				this.modifiedLabel["object"]["position"]["y"] = this.modifiedLabel["object"]["position"]["y"] - this.normedTransformVector.y
+				this.modifiedLabel["object"]["position"]["z"] = this.modifiedLabel["object"]["position"]["z"] - this.normedTransformVector.z
 				this.modifiedLabel = null
 			}
 
@@ -160,24 +184,67 @@ export class CodeMapMouseEventService
 			if (mapMesh) {
 				this.raycaster.setFromCamera(mouseCoordinates, camera)
 
-				const labelClosestToViewPoint = this.calculateLabelIntersection(labels)
+				const hoveredLabel = this.calculateLabelIntersection(labels)
 
-				if (labelClosestToViewPoint !== null) {
-					nodeNameHoveredLabel = labelClosestToViewPoint["object"]["userData"]["node"]["path"]
+				if (hoveredLabel !== null) {
+					nodeNameHoveredLabel = hoveredLabel["object"]["userData"]["node"]["path"]
 
 					this.rayPoint = {
-						x: this.raycaster["ray"]["origin"]["x"] - labelClosestToViewPoint["object"]["position"]["x"],
-						y: this.raycaster["ray"]["origin"]["y"] - labelClosestToViewPoint["object"]["position"]["y"],
-						z: this.raycaster["ray"]["origin"]["z"] - labelClosestToViewPoint["object"]["position"]["z"]
+						x: this.raycaster["ray"]["origin"]["x"] - hoveredLabel["object"]["position"]["x"],
+						y: this.raycaster["ray"]["origin"]["y"] - hoveredLabel["object"]["position"]["y"],
+						z: this.raycaster["ray"]["origin"]["z"] - hoveredLabel["object"]["position"]["z"]
 					}
-					labelClosestToViewPoint["object"]["position"]["x"] =
-						labelClosestToViewPoint["object"]["position"]["x"] + this.rayPoint["x"] / 10
-					labelClosestToViewPoint["object"]["position"]["y"] =
-						labelClosestToViewPoint["object"]["position"]["y"] + this.rayPoint["y"] / 10
-					labelClosestToViewPoint["object"]["position"]["z"] =
-						labelClosestToViewPoint["object"]["position"]["z"] + this.rayPoint["z"] / 10
 
-					this.modifiedLabel = labelClosestToViewPoint
+					const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
+					let maxDistance = 0
+
+					for (let counter = 0; counter < labels.length; counter += 2) {
+						const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel.object)
+
+						if (labels[counter] !== hoveredLabel.object) {
+							const bboxObstructingLabel = new Box3().setFromObject(labels[counter])
+							const centerPoint = new Vector3()
+							const centerPoint2 = new Vector3()
+							bboxHoveredLabel.getCenter(centerPoint)
+
+							const distance = Math.max(
+								bboxObstructingLabel.getCenter(centerPoint2).distanceTo(centerPoint),
+								bboxObstructingLabel.max.distanceTo(bboxHoveredLabel.max),
+								bboxObstructingLabel.min.distanceTo(bboxHoveredLabel.min)
+							)
+							if (maxDistance < distance) {
+								const normedVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
+								normedVector.multiplyScalar(distance)
+								bboxHoveredLabel.translate(normedVector)
+
+								if (
+									this.isOverlapping1D(
+										bboxObstructingLabel.min.x,
+										bboxObstructingLabel.max.x,
+										bboxHoveredLabel.min.x,
+										bboxHoveredLabel.max.x
+									) &&
+									this.isOverlapping1D(
+										bboxObstructingLabel.min.y,
+										bboxObstructingLabel.max.y,
+										bboxHoveredLabel.min.y,
+										bboxHoveredLabel.max.y
+									)
+								) {
+									maxDistance = distance
+								}
+							}
+						}
+					}
+
+					this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
+					this.normedTransformVector.multiplyScalar(maxDistance + 50)
+
+					hoveredLabel["object"]["position"]["x"] = hoveredLabel["object"]["position"]["x"] + this.normedTransformVector.x
+					hoveredLabel["object"]["position"]["y"] = hoveredLabel["object"]["position"]["y"] + this.normedTransformVector.y
+					hoveredLabel["object"]["position"]["z"] = hoveredLabel["object"]["position"]["z"] + this.normedTransformVector.z
+
+					this.modifiedLabel = hoveredLabel
 				}
 				//nodeNameHoveredLabel = labelClosestToViewPoint !== null ? labelClosestToViewPoint["object"]["userData"]["node"]["path"] : ""
 
@@ -199,21 +266,8 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	private calculateLabelIntersection(labels: Object3D[]) {
-		let labelClosestToViewPoint = null
-
-		for (let counter = 0; counter < labels.length; counter += 2) {
-			const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
-			if (intersect.length > 0) {
-				if (labelClosestToViewPoint === null) {
-					labelClosestToViewPoint = intersect[0]
-				} else {
-					labelClosestToViewPoint =
-						labelClosestToViewPoint["distance"] < intersect[0]["distance"] ? labelClosestToViewPoint : intersect[0]
-				}
-			}
-		}
-		return labelClosestToViewPoint
+	private isOverlapping1D(minBox1: number, maxBox1: number, minBox2: number, maxBox2: number) {
+		return maxBox1 >= minBox2 && maxBox2 >= minBox1
 	}
 
 	onDocumentMouseMove(event: MouseEvent) {
@@ -257,6 +311,23 @@ export class CodeMapMouseEventService
 		} else {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 		}
+	}
+
+	private calculateLabelIntersection(labels: Object3D[]) {
+		let labelClosestToViewPoint = null
+
+		for (let counter = 0; counter < labels.length; counter += 2) {
+			const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
+			if (intersect.length > 0) {
+				if (labelClosestToViewPoint === null) {
+					labelClosestToViewPoint = intersect[0]
+				} else {
+					labelClosestToViewPoint =
+						labelClosestToViewPoint["distance"] < intersect[0]["distance"] ? labelClosestToViewPoint : intersect[0]
+				}
+			}
+		}
+		return labelClosestToViewPoint
 	}
 
 	private onRightClick() {
@@ -330,27 +401,5 @@ export class CodeMapMouseEventService
 		}
 
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
-	}
-
-	static changeCursorIndicator(cursorIcon: CursorType) {
-		document.body.style.cursor = cursorIcon
-	}
-
-	static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
-		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (_event, data) => {
-			subscriber.onBuildingHovered(data.hoveredBuilding)
-		})
-	}
-
-	static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
-		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, () => {
-			subscriber.onBuildingUnhovered()
-		})
-	}
-
-	static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (_event, data) => {
-			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
-		})
 	}
 }
