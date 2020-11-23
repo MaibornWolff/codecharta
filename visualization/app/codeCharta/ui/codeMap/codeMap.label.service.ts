@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, CanvasTexture, MeshBasicMaterial, PlaneGeometry, Mesh } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, CanvasTexture, MeshBasicMaterial, Mesh, BoxGeometry } from "three"
 import { Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -77,29 +77,31 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		console.log(packageNode)
 		const canvas = document.createElement("canvas")
 		canvas.width = packageNode.width
-		canvas.height = packageNode.height + 200
+		canvas.height = packageNode.length
 		const context = canvas.getContext("2d")
-
-		context.font = `100px Helvetica Neue`
+		
+		context.font = `24px Helvetica Neue`
 		// canvas.style = "background: transparent"
 		context.fillStyle = packageNode.name === "root" ? "red" :"blue" //"rgba(0, 0, 0, 0)"
 		context.fillRect(0, 0, canvas.width, canvas.height)
 		context.fillStyle = "white"
 		// context.textAlign = "center"
 		context.textBaseline = "middle"
-		context.fillText("hello worlddddddddddddddddddddddddddddddddddddddddddddd", 0, 0)
-
+		// context.rotate(Math.PI / -2)
+		context.fillText("hello world", 0, 12)
+		
+		
 		const texture = new CanvasTexture(canvas)
 
 		const material = new MeshBasicMaterial({ map : texture });
 		material.transparent = true;
 
-		const mesh = new Mesh(new PlaneGeometry(canvas.width, canvas.height, 10, 10), material);
+		const mesh = new Mesh(new BoxGeometry(canvas.width, canvas.height, 2), material);
 		mesh.position.x = packageNode.x0
 		mesh.position.y = packageNode.z0
 		mesh.position.z = packageNode.y0;
-		// mesh.scale.set(packageNode.width, packageNode.height, 1)
-		// mesh.scale.set(50, 25, 1)
+
+		mesh.rotation.x = Math.PI / 2
 
 		// this.threeSceneService.labels := three.js group which gets rendered
 		this.threeSceneService.labels.add(mesh);
