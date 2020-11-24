@@ -197,8 +197,8 @@ export class CodeMapMouseEventService
 
 					const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
 					let maxDistance = 0
-
 					for (let counter = 0; counter < labels.length; counter += 2) {
+						let maxDistanceForLabel = 0
 						const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel.object)
 
 						if (labels[counter] !== hoveredLabel.object) {
@@ -206,39 +206,36 @@ export class CodeMapMouseEventService
 							const centerPoint = new Vector3()
 							const centerPoint2 = new Vector3()
 							bboxHoveredLabel.getCenter(centerPoint)
+							bboxObstructingLabel.getCenter(centerPoint2)
 
-							const distance = Math.max(
-								bboxObstructingLabel.getCenter(centerPoint2).distanceTo(centerPoint),
-								bboxObstructingLabel.max.distanceTo(bboxHoveredLabel.max),
-								bboxObstructingLabel.min.distanceTo(bboxHoveredLabel.min)
+							maxDistanceForLabel = Math.max(
+								this.getIntersectionDistance(
+									bboxHoveredLabel,
+									bboxObstructingLabel,
+									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm),
+									this.raycaster.ray.origin.distanceTo(centerPoint) - this.raycaster.ray.origin.distanceTo(centerPoint2)
+								),
+								this.getIntersectionDistance(
+									bboxHoveredLabel,
+									bboxObstructingLabel,
+									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm),
+									this.raycaster.ray.origin.distanceTo(centerPoint) -
+										this.raycaster.ray.origin.distanceTo(bboxObstructingLabel.max)
+								),
+								this.getIntersectionDistance(
+									bboxHoveredLabel,
+									bboxObstructingLabel,
+									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm),
+									this.raycaster.ray.origin.distanceTo(centerPoint) -
+										this.raycaster.ray.origin.distanceTo(bboxObstructingLabel.min)
+								)
 							)
-							if (maxDistance < distance) {
-								const normedVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
-								normedVector.multiplyScalar(distance)
-								bboxHoveredLabel.translate(normedVector)
-
-								if (
-									this.isOverlapping1D(
-										bboxObstructingLabel.min.x,
-										bboxObstructingLabel.max.x,
-										bboxHoveredLabel.min.x,
-										bboxHoveredLabel.max.x
-									) &&
-									this.isOverlapping1D(
-										bboxObstructingLabel.min.y,
-										bboxObstructingLabel.max.y,
-										bboxHoveredLabel.min.y,
-										bboxHoveredLabel.max.y
-									)
-								) {
-									maxDistance = distance
-								}
-							}
 						}
+						maxDistance = Math.max(maxDistance, maxDistanceForLabel)
 					}
 
 					this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
-					this.normedTransformVector.multiplyScalar(maxDistance + 50)
+					this.normedTransformVector.multiplyScalar(maxDistance)
 
 					hoveredLabel["object"]["position"]["x"] = hoveredLabel["object"]["position"]["x"] + this.normedTransformVector.x
 					hoveredLabel["object"]["position"]["y"] = hoveredLabel["object"]["position"]["y"] + this.normedTransformVector.y
@@ -246,7 +243,6 @@ export class CodeMapMouseEventService
 
 					this.modifiedLabel = hoveredLabel
 				}
-				//nodeNameHoveredLabel = labelClosestToViewPoint !== null ? labelClosestToViewPoint["object"]["userData"]["node"]["path"] : ""
 
 				this.intersectedBuilding =
 					nodeNameHoveredLabel !== ""
@@ -268,6 +264,19 @@ export class CodeMapMouseEventService
 
 	private isOverlapping1D(minBox1: number, maxBox1: number, minBox2: number, maxBox2: number) {
 		return maxBox1 >= minBox2 && maxBox2 >= minBox1
+	}
+
+	private getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
+		normedVector.multiplyScalar(distance)
+		bboxHoveredLabel.translate(normedVector)
+
+		if (
+			this.isOverlapping1D(bboxObstructingLabel.min.x, bboxObstructingLabel.max.x, bboxHoveredLabel.min.x, bboxHoveredLabel.max.x) &&
+			this.isOverlapping1D(bboxObstructingLabel.min.y, bboxObstructingLabel.max.y, bboxHoveredLabel.min.y, bboxHoveredLabel.max.y)
+		) {
+			return distance
+		}
+		return 0
 	}
 
 	onDocumentMouseMove(event: MouseEvent) {
