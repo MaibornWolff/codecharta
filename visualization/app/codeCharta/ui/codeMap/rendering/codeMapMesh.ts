@@ -124,8 +124,9 @@ export class CodeMapMesh {
 		const { appSettings : {mapColors}, dynamicSettings : {heightMetric} } = state;
 		const { node } = building;
 		
-		if (node.flat)
+		if (node.flat) {
 			building.setDeltaColor(mapColors.flat)
+		}
 		else if (node.deltas) {
 			const deltaValue = node.deltas[heightMetric]
 
