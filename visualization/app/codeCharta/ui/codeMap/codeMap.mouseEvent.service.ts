@@ -177,7 +177,8 @@ export class CodeMapMouseEventService
 
 			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
 			const camera = this.threeCameraService.camera
-			const labels = this.threeSceneService.labels.children
+			const labels = this.threeSceneService.labels ? this.threeSceneService.labels.children : null
+
 			const mapMesh = this.threeSceneService.getMapMesh()
 			let nodeNameHoveredLabel = ""
 
@@ -188,7 +189,7 @@ export class CodeMapMouseEventService
 
 				const hoveredLabel = this.calculateHoveredLabel(labels)
 
-				if (hoveredLabel !== null) {
+				if (hoveredLabel) {
 					nodeNameHoveredLabel = hoveredLabel.object.userData.node.path
 					hoveredLabel.object.material.opacity = 1
 
@@ -330,18 +331,20 @@ export class CodeMapMouseEventService
 	private calculateHoveredLabel(labels: Object3D[]) {
 		let labelClosestToViewPoint = null
 
-		for (let counter = 0; counter < labels.length; counter += 2) {
-			const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
-			if (intersect.length > 0) {
-				if (labelClosestToViewPoint === null) {
-					labelClosestToViewPoint = intersect[0]
-				} else {
-					labelClosestToViewPoint =
-						labelClosestToViewPoint["distance"] < intersect[0]["distance"] ? labelClosestToViewPoint : intersect[0]
+		if (labels !== null) {
+			for (let counter = 0; counter < labels.length; counter += 2) {
+				const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
+				if (intersect.length > 0) {
+					if (labelClosestToViewPoint === null) {
+						labelClosestToViewPoint = intersect[0]
+					} else {
+						labelClosestToViewPoint =
+							labelClosestToViewPoint["distance"] < intersect[0]["distance"] ? labelClosestToViewPoint : intersect[0]
+					}
 				}
 			}
+			return labelClosestToViewPoint
 		}
-		return labelClosestToViewPoint
 	}
 
 	private onRightClick() {

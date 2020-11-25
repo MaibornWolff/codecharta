@@ -272,12 +272,15 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call updateMatrixWorld", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
+
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeCameraService.camera.updateMatrixWorld).toHaveBeenCalledWith(false)
 		})
 
 		it("should un-highlight the building, when no intersection was found and a  building is hovered", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
 			codeMapMouseEventService["highlightedInTreeView"] = null
 
 			codeMapMouseEventService.updateHovering()
@@ -286,6 +289,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should hover a node when an intersection was found and the cursor is set to pointing", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
@@ -299,6 +303,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not highlight node when an intersection was found and the cursor is set to grabbing", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
@@ -314,6 +319,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not highlight a node when an intersection was found and the cursor is set to moving", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
@@ -329,6 +335,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not highlight a node again when the intersection building is the same", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
