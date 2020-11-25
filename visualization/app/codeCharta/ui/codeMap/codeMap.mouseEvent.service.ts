@@ -212,20 +212,20 @@ export class CodeMapMouseEventService
 								this.getIntersectionDistance(
 									bboxHoveredLabel,
 									bboxObstructingLabel,
-									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm),
+									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
 									this.raycaster.ray.origin.distanceTo(centerPoint) - this.raycaster.ray.origin.distanceTo(centerPoint2)
 								),
 								this.getIntersectionDistance(
 									bboxHoveredLabel,
 									bboxObstructingLabel,
-									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm),
+									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
 									this.raycaster.ray.origin.distanceTo(centerPoint) -
 										this.raycaster.ray.origin.distanceTo(bboxObstructingLabel.max)
 								),
 								this.getIntersectionDistance(
 									bboxHoveredLabel,
 									bboxObstructingLabel,
-									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm),
+									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
 									this.raycaster.ray.origin.distanceTo(centerPoint) -
 										this.raycaster.ray.origin.distanceTo(bboxObstructingLabel.min)
 								)
