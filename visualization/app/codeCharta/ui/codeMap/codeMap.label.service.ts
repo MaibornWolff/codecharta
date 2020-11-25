@@ -74,6 +74,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	addPackageLabel(packageNode: Node) {
+		// TODO keep it for development but remove before release
 		console.log(packageNode)
 		const canvas = document.createElement("canvas")
 		canvas.width = packageNode.width
@@ -89,8 +90,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.textBaseline = "middle"
 		// context.rotate(Math.PI / -2)
 		context.fillText("hello world", 0, 12)
-		
-		
+
 		const texture = new CanvasTexture(canvas)
 
 		const material = new MeshBasicMaterial({ map : texture });

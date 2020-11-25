@@ -62,7 +62,8 @@ export class CodeMapRenderService {
 						showNodeMetric: showLabelNodeMetric
 					})
 				} else {
-					this.codeMapLabelService.addPackageLabel(sortedNode)
+					// TODO remove before releasing it
+					//this.codeMapLabelService.addPackageLabel(sortedNode)
 				}
 			}
 		}
