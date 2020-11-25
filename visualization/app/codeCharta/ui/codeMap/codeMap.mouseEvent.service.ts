@@ -197,15 +197,19 @@ export class CodeMapMouseEventService
 
 					const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
 					let maxDistance = 0
+					const cameraPoint = this.raycaster.ray.origin
+
 					for (let counter = 0; counter < labels.length; counter += 2) {
-						let maxDistanceForLabel = 0
 						const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel.object)
+						const centerPoint = new Vector3()
+						bboxHoveredLabel.getCenter(centerPoint)
+						const distanceLabelCenterToCamera = cameraPoint.distanceTo(centerPoint)
+						let maxDistanceForLabel = distanceLabelCenterToCamera / 20 //creates a nice small highlighting for hovered, unobstructed labels, empirically gathered value
 
 						if (labels[counter] !== hoveredLabel.object) {
 							const bboxObstructingLabel = new Box3().setFromObject(labels[counter])
-							const centerPoint = new Vector3()
 							const centerPoint2 = new Vector3()
-							bboxHoveredLabel.getCenter(centerPoint)
+
 							bboxObstructingLabel.getCenter(centerPoint2)
 
 							maxDistanceForLabel = Math.max(
@@ -213,21 +217,19 @@ export class CodeMapMouseEventService
 									bboxHoveredLabel,
 									bboxObstructingLabel,
 									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-									this.raycaster.ray.origin.distanceTo(centerPoint) - this.raycaster.ray.origin.distanceTo(centerPoint2)
+									distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)
 								),
 								this.getIntersectionDistance(
 									bboxHoveredLabel,
 									bboxObstructingLabel,
 									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-									this.raycaster.ray.origin.distanceTo(centerPoint) -
-										this.raycaster.ray.origin.distanceTo(bboxObstructingLabel.max)
+									distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)
 								),
 								this.getIntersectionDistance(
 									bboxHoveredLabel,
 									bboxObstructingLabel,
 									new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-									this.raycaster.ray.origin.distanceTo(centerPoint) -
-										this.raycaster.ray.origin.distanceTo(bboxObstructingLabel.min)
+									distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)
 								)
 							)
 						}
