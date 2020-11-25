@@ -49,6 +49,7 @@ export class CodeMapMouseEventService
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
+	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
 	private highlightedInTreeView: CodeMapBuilding
 	private intersectedBuilding: CodeMapBuilding
@@ -60,8 +61,8 @@ export class CodeMapMouseEventService
 	private isMoving = false
 	private raycaster = new Raycaster()
 	private normedTransformVector = new Vector3(0, 0, 0)
-	private modifiedLabel = new Object3D()
-	private rayPoint = { x: 0, y: 0, z: 0 }
+	private modifiedLabel = null
+	private rayPoint = new Vector3(0, 0, 0)
 
 	/* @ngInject */
 	constructor(
@@ -170,6 +171,7 @@ export class CodeMapMouseEventService
 				this.modifiedLabel["object"]["position"]["x"] = this.modifiedLabel["object"]["position"]["x"] - this.normedTransformVector.x
 				this.modifiedLabel["object"]["position"]["y"] = this.modifiedLabel["object"]["position"]["y"] - this.normedTransformVector.y
 				this.modifiedLabel["object"]["position"]["z"] = this.modifiedLabel["object"]["position"]["z"] - this.normedTransformVector.z
+				this.modifiedLabel["object"]["material"]["opacity"] = this.mapLabelColors.alpha
 				this.modifiedLabel = null
 			}
 
@@ -184,16 +186,17 @@ export class CodeMapMouseEventService
 			if (mapMesh) {
 				this.raycaster.setFromCamera(mouseCoordinates, camera)
 
-				const hoveredLabel = this.calculateLabelIntersection(labels)
+				const hoveredLabel = this.calculateHoveredLabel(labels)
 
 				if (hoveredLabel !== null) {
-					nodeNameHoveredLabel = hoveredLabel["object"]["userData"]["node"]["path"]
+					nodeNameHoveredLabel = hoveredLabel.object.userData.node.path
+					hoveredLabel.object.material.opacity = 1
 
-					this.rayPoint = {
-						x: this.raycaster["ray"]["origin"]["x"] - hoveredLabel["object"]["position"]["x"],
-						y: this.raycaster["ray"]["origin"]["y"] - hoveredLabel["object"]["position"]["y"],
-						z: this.raycaster["ray"]["origin"]["z"] - hoveredLabel["object"]["position"]["z"]
-					}
+					this.rayPoint = new Vector3(
+						this.raycaster["ray"]["origin"]["x"] - hoveredLabel["object"]["position"]["x"],
+						this.raycaster["ray"]["origin"]["y"] - hoveredLabel["object"]["position"]["y"],
+						this.raycaster["ray"]["origin"]["z"] - hoveredLabel["object"]["position"]["z"]
+					)
 
 					const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
 					let maxDistance = 0
@@ -324,7 +327,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	private calculateLabelIntersection(labels: Object3D[]) {
+	private calculateHoveredLabel(labels: Object3D[]) {
 		let labelClosestToViewPoint = null
 
 		for (let counter = 0; counter < labels.length; counter += 2) {

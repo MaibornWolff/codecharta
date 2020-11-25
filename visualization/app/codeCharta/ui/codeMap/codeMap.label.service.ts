@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -18,7 +18,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
-	private LABEL_COLOR_RGBA = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb, this.mapLabelColors.alpha)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
 	private LABEL_CORNER_RADIUS = 35 //empirically gathered
@@ -67,6 +66,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_POSITION + label.heightValue / 2, labelZ) //label_height
 			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
+			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
+			label.sprite.material.opacity = this.mapLabelColors.alpha
 			label.sprite.userData = { node }
 
 			this.threeSceneService.labels.add(label.sprite)
@@ -132,7 +133,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		// bg
 		context.font = `${fontsize}px Helvetica Neue`
-		context.fillStyle = this.LABEL_COLOR_RGBA
+		context.fillStyle = "rgba(255,255,255,1)"
 		context.lineJoin = "round"
 		context.lineCap = "round"
 		context.lineWidth = 5
