@@ -163,8 +163,12 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	// TODO If it is wrong some buildings might be cut off.
 	const width = mapWidth + nodesPerSide * state.dynamicSettings.margin
 	const height = mapHeight + nodesPerSide * state.dynamicSettings.margin
-
-	const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding)
+	const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding).paddingRight((node) => {
+		if (node.depth < 3) {
+			return 100
+		}
+		return padding
+	})
 
 	return { treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state))), height, width }
 }

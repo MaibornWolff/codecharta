@@ -1,7 +1,7 @@
 import { Node, State } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import {IntermediateVertexData, SurfaceInformation} from "./intermediateVertexData"
+import { IntermediateVertexData, SurfaceInformation } from "./intermediateVertexData"
 import { BoxGeometryGenerationHelper } from "./boxGeometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import {
@@ -119,7 +119,7 @@ export class GeometryGenerator {
 		state: State,
 		isDeltaState: boolean
 	)  {
-		return // hide buildings for debugging package label
+		// return // hide buildings for debugging package label
 		const measures = this.mapNodeToLocalBox(node)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(node.height, node.heightDelta)
 
@@ -286,7 +286,7 @@ export class GeometryGenerator {
 		textCanvas.width = surfaceInfo.maxPos.z - surfaceInfo.minPos.z
 
 		const context = textCanvas.getContext("2d")
-		context.font = "12px Arial"
+		context.font = "36px Arial"
 		context.fillStyle = surfaceIndex % 2 === 1 ? "orange" : "blue"
 		context.fillRect(0, 0, textCanvas.width, textCanvas.height)
 		context.fillStyle = "white"
@@ -294,7 +294,8 @@ export class GeometryGenerator {
 		context.textBaseline = "middle"
 
 		const textPositionX = (textCanvas.width) / 2
-		const textPositionY = textCanvas.height - 12
+		// consider font size for y position
+		const textPositionY = textCanvas.height - 36
 
 		context.fillText(surfaceInfo.node.name, textPositionX, textPositionY)
 
