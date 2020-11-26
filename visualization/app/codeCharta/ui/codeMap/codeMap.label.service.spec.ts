@@ -128,21 +128,21 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(93)
+			expect(positionWithoutDelta.y).toBe(33)
 		})
 
 		it("should calculate correct height without delta with metric values only", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(93)
+			expect(positionWithoutDelta.y).toBe(33)
 		})
 
 		it("should calculate correct height without delta for two line label: node name and metric value", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(108)
+			expect(positionWithoutDelta.y).toBe(48)
 		})
 
 		it("should set the text correctly, creating a two line label", () => {

@@ -22,6 +22,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
 	private LABEL_CORNER_RADIUS = 40 //empirically gathered
+	private LABEL_HEIGHT_COEFFICIENT = 25 / 4
 
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
@@ -62,7 +63,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			const label = this.makeText(labelText, 30)
 
-			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
+			const { margin } = this.storeService.getState().dynamicSettings
+
+			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_COEFFICIENT * margin + label.heightValue / 2, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelZ)
 
 			this.threeSceneService.labels.add(label.sprite)
