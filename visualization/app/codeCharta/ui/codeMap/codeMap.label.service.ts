@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, CanvasTexture, MeshBasicMaterial, Mesh, BoxGeometry } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial } from "three"
 import { Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -72,42 +72,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 		this.resetScale = true
 	}
-
-	addPackageLabel(packageNode: Node) {
-		// TODO keep it for development but remove before release
-		console.log(packageNode)
-		const canvas = document.createElement("canvas")
-		canvas.width = packageNode.width
-		canvas.height = packageNode.length
-		const context = canvas.getContext("2d")
-		
-		context.font = `24px Helvetica Neue`
-		// canvas.style = "background: transparent"
-		context.fillStyle = packageNode.name === "root" ? "red" :"blue" //"rgba(0, 0, 0, 0)"
-		context.fillRect(0, 0, canvas.width, canvas.height)
-		context.fillStyle = "white"
-		// context.textAlign = "center"
-		context.textBaseline = "middle"
-		// context.rotate(Math.PI / -2)
-		context.fillText("hello world", 0, 12)
-
-		const texture = new CanvasTexture(canvas)
-
-		const material = new MeshBasicMaterial({ map : texture });
-		material.transparent = true;
-
-		const mesh = new Mesh(new BoxGeometry(canvas.width, canvas.height, 2), material);
-		mesh.position.x = packageNode.x0
-		mesh.position.y = packageNode.z0
-		mesh.position.z = packageNode.y0;
-
-		mesh.rotation.x = Math.PI / 2
-
-		// this.threeSceneService.labels := three.js group which gets rendered
-		this.threeSceneService.labels.add(mesh);
-	
-		// this.labels.add ? check why that needed in addLabel()
-	} 
 
 	clearLabels() {
 		this.labels = []
