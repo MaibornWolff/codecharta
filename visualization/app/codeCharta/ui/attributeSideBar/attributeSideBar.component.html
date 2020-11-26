@@ -20,7 +20,7 @@
 			{{ $ctrl._viewModel.node.path }}
 			<span ng-if="!$ctrl._viewModel.node.isLeaf" class="file-count">
 				<ng-pluralize
-					count="$ctrl._viewModel.fileCount"
+					count="$ctrl._viewModel.packageFileCount"
 					when="{
 						'0': '(empty)',
 						'1': '(1 file)',

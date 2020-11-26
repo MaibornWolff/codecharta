@@ -121,11 +121,11 @@ describe("AttributeSideBarController", () => {
 			expect(attributeSideBarController["_viewModel"].fileName).toEqual("my_fileName")
 		})
 
-		it("should has fileCount in it's _viewModel", () => {
+		it("should have packageFileCount in it's _viewModel", () => {
 			codeMapBuilding.node.attributes[NodeMetricDataService.UNARY_METRIC] = 1
 			attributeSideBarController.onBuildingSelected(codeMapBuilding)
 
-			expect(attributeSideBarController["_viewModel"].fileCount).toEqual(1)
+			expect(attributeSideBarController["_viewModel"].packageFileCount).toEqual(1)
 		})
 	})
 
