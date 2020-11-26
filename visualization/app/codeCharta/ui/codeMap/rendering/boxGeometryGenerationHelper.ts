@@ -180,8 +180,12 @@ export class BoxGeometryGenerationHelper {
 				data.addFace(indexBottomLeft, indexTopRight, indexTopLeft)
 				data.addFace(indexBottomLeft, indexBottomRight, indexTopRight)
 			} else {
-				if (addingFloor && node.depth < 3 && side === sides.top) {
-					// Collect floors until a depth of 3
+				if (
+					addingFloor &&
+					side === sides.top &&
+					node.depth > 0 && node.depth < 4
+				) {
+					// Collect floors from a depth of 1 until a depth of 3
 					data.saveFloorSurfaceInformation(node, minPos, maxPos)
 				}
 

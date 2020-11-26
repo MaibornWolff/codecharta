@@ -34,6 +34,7 @@ export class GeometryGenerator {
 
 	private floorGradient: string[]
 	private materials: Material[]
+	private floorSurfaceLabelFontSizes = [144, 98, 98]
 
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const data = new IntermediateVertexData()
@@ -264,7 +265,7 @@ export class GeometryGenerator {
 			const currentSurfaceInfo = topSurfaceInfos[surfaceIndex]
 			geometry.addGroup(currentSurfaceInfo.surfaceStartIndex, verticesPerPlane, surfaceIndex + 1)
 
-			this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo, surfaceIndex)
+			this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
 
 			let verticesCountUntilNextFloorLabelRenderer = Infinity
 			const startOfNextDefaultRenderer = currentSurfaceInfo.surfaceStartIndex + verticesPerPlane
@@ -280,14 +281,18 @@ export class GeometryGenerator {
 		return new Mesh(geometry, this.materials)
 	}
 
-	private createAndAssignFloorLabelTextureMaterial(surfaceInfo: SurfaceInformation, surfaceIndex: number) {
+	private createAndAssignFloorLabelTextureMaterial(surfaceInfo: SurfaceInformation) {
 		const textCanvas = document.createElement("canvas");
 		textCanvas.height = surfaceInfo.maxPos.x - surfaceInfo.minPos.x
 		textCanvas.width = surfaceInfo.maxPos.z - surfaceInfo.minPos.z
 
 		const context = textCanvas.getContext("2d")
-		context.font = "36px Arial"
-		context.fillStyle = surfaceIndex % 2 === 1 ? "orange" : "blue"
+
+		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.depth - 1]
+		context.font = `${fontSizeForDepth}px Arial`
+
+		//context.fillStyle = surfaceIndex % 2 === 1 ? "orange" : "blue"
+		context.fillStyle = this.getMarkingColorWithGradient(surfaceInfo.node)
 		context.fillRect(0, 0, textCanvas.width, textCanvas.height)
 		context.fillStyle = "white"
 		context.textAlign = "center"
@@ -295,7 +300,7 @@ export class GeometryGenerator {
 
 		const textPositionX = (textCanvas.width) / 2
 		// consider font size for y position
-		const textPositionY = textCanvas.height - 36
+		const textPositionY = textCanvas.height - fontSizeForDepth / 2
 
 		context.fillText(surfaceInfo.node.name, textPositionX, textPositionY)
 
@@ -310,6 +315,7 @@ export class GeometryGenerator {
 		const floorSurfaceLabelMaterial = new MeshBasicMaterial({ map: labelTexture });
 		floorSurfaceLabelMaterial.needsUpdate = true
 		floorSurfaceLabelMaterial.side = DoubleSide
+		floorSurfaceLabelMaterial.transparent = true
 
 		this.materials.push(floorSurfaceLabelMaterial)
 	}
