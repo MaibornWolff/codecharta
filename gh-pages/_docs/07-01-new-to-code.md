@@ -150,7 +150,7 @@ There are 3 possible ways to build and run the application. You can run it as a 
 ### Testing
 
 -   Unit-Tests: `npm test`
--   E2E-Tests: `npm run build && npm run e2e`
+-   E2E-Tests: `npm run build:web && npm run e2e`
 -   For IntelliJ: Run -> Edit Configurations -> Templates -> Jest -> Add configuration file -> Select `jest.config.json` -> Add CLI argument `--env=jsdom`
 
 For more test options check the `package.json`
