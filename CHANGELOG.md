@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Show file count of folders in Attribute-Side-Bar
+
 ### Changed
 
 ### Removed 🗑
