@@ -16,9 +16,11 @@
 
 		<p class="node-origin">{{ $ctrl._viewModel.fileName }}</p>
 
-		<p class="node-path">{{ $ctrl._viewModel.node.path }}
-			<span ng-if="!$ctrl._viewModel.node.isLeaf" style="font-style: italic;">
-				<ng-pluralize count="$ctrl._viewModel.node.attributes.unary"
+		<p class="node-path">
+			{{ $ctrl._viewModel.node.path }}
+			<span ng-if="!$ctrl._viewModel.node.isLeaf" style="font-style: italic">
+				<ng-pluralize
+					count="$ctrl._viewModel.fileCount"
 					when="{
 						'0': '(empty)',
 						'1': '(1 file)',
