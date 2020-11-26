@@ -32,7 +32,6 @@ gradle-app.setting
 
 # IDEs and editors
 /.idea
-/.vscode
 *.iml
 
 # misc
