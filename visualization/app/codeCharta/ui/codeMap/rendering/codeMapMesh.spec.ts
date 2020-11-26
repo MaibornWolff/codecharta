@@ -1,10 +1,12 @@
-import { STATE, TEST_NODE_ROOT } from "../../../util/dataMocks"
+import { Node } from "../../../codeCharta.model"
 import { CodeMapMesh } from "./codeMapMesh"
-import { StoreService } from "../../../state/store.service"
 import { CodeMapBuilding } from "./codeMapBuilding"
+import { StoreService } from "../../../state/store.service"
+import { STATE, TEST_NODE_ROOT } from "../../../util/dataMocks"
 
 describe("codeMapMesh", () => {
 	let storeService: StoreService
+	const testNodes: Node[] = [TEST_NODE_ROOT] // no need for 2 files
 
 	beforeEach(() => {
 		mockStoreService()
@@ -21,9 +23,9 @@ describe("codeMapMesh", () => {
 		const { appSettings : {mapColors} } = STATE;
 
 		const setFlattened = (isFlat : boolean) => {
-			[TEST_NODE_ROOT].map(item => item.flat = isFlat)
+			testNodes.forEach(node => node.flat = isFlat)
 		}
-
+		
 		const rebuildMesh = () => {
 			const codedMapMesh = new CodeMapMesh([TEST_NODE_ROOT], storeService.getState(), true)
 			codeMapBuilding = codedMapMesh.getBuildingByPath(TEST_NODE_ROOT.path)
@@ -33,7 +35,7 @@ describe("codeMapMesh", () => {
 			setFlattened(false)
 			rebuildMesh()
 
-			expect(TEST_NODE_ROOT.flat).toBeFalsy()
+			expect(testNodes[0].flat).toBeFalsy()
 			expect(codeMapBuilding.deltaColor).not.toEqual(mapColors.flat)
 		})
 		
@@ -41,7 +43,7 @@ describe("codeMapMesh", () => {
 			setFlattened(true)
 			rebuildMesh()
 
-			expect(TEST_NODE_ROOT.flat).toBeTruthy()
+			expect(testNodes[0].flat).toBeTruthy()
 			expect(codeMapBuilding.deltaColor).toEqual(mapColors.flat)
 		})
 	})
