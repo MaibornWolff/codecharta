@@ -18,7 +18,7 @@
 
 		<p class="node-path">
 			{{ $ctrl._viewModel.node.path }}
-			<span ng-if="!$ctrl._viewModel.node.isLeaf" style="font-style: italic">
+			<span ng-if="!$ctrl._viewModel.node.isLeaf" class="file-count">
 				<ng-pluralize
 					count="$ctrl._viewModel.fileCount"
 					when="{
