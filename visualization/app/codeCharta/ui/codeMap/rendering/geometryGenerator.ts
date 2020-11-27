@@ -16,7 +16,7 @@ import {
 	RepeatWrapping,
 	DoubleSide
 } from "three"
-import { MAP_SIZE_RESOLUTION_SCALE } from "../codeMap.render.service";
+import { MAP_SIZE_RESOLUTION_SCALE } from "../codeMap.render.service"
 
 export interface BoxMeasures {
 	x: number
@@ -276,6 +276,7 @@ export class GeometryGenerator {
 		floorSurfaceLabelMaterial.needsUpdate = true
 		floorSurfaceLabelMaterial.side = DoubleSide
 		floorSurfaceLabelMaterial.transparent = true
+		floorSurfaceLabelMaterial.userData = surfaceInfo.node
 
 		this.materials.push(floorSurfaceLabelMaterial)
 	}

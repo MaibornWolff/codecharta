@@ -21,6 +21,7 @@ export class CodeMapMesh {
 	private material: ShaderMaterial
 	private geomGen: GeometryGenerator
 	private mapGeomDesc: CodeMapGeometricDescription
+	private nodes: Node[]
 
 	constructor(nodes: Node[], state: State, isDeltaState: boolean) {
 		this.initMaterial()
@@ -30,12 +31,17 @@ export class CodeMapMesh {
 
 		this.threeMesh = buildResult.mesh
 		this.mapGeomDesc = buildResult.desc
+		this.nodes = nodes
 
 		this.initDeltaColorsOnMesh(state)
 	}
 
 	getThreeMesh() {
 		return this.threeMesh
+	}
+
+	getNodes() {
+		return this.nodes
 	}
 
 	selectBuilding(building: CodeMapBuilding, color: string) {
