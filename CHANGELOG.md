@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Buildings are flattened when delta is active #824. 
 -   Selected Building now stays highlighted when map is rotated #1498
 
 ### Chore 👨‍💻 👩‍💻
