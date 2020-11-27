@@ -3,7 +3,7 @@
 exports[`ThreeOrbitControlsService rotateCameraInVectorDirection  1`] = `
 Vector3 {
   "x": 0,
-  "y": -7.720974585385768,
-  "z": 0.0007720974585381485,
+  "y": -1.2989340778585695e-15,
+  "z": 1.298934077857849e-19,
 }
 `;
