@@ -48,7 +48,7 @@ export class GeometryGenerator {
 		// that are later on converted to typed arrays. Thus, no
 		// `IntermediateVertexData` should be created.
 		for (const [index, node] of nodes.entries()) {
-			if (!node.isLeaf && node.mapNodeDepth < 4) {
+			if (!node.isLeaf) {
 				this.addFloor(data, node, index, desc)
 			} else {
 				this.addBuilding(data, node, index, desc, state, isDeltaState)
