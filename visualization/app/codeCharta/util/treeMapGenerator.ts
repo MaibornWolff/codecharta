@@ -178,7 +178,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	const height = mapHeight + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace
 
 	const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding).paddingRight((node) => {
-		// Start the labels at level 1 not 0 because the root folder should not be labeld
+		// Start the labels at level 1 not 0 because the root folder should not be labeled
 		if (node.depth === 1) {
 			// Add a big padding for the first folder level (the font is bigger than in deeper levels)
 			return 150

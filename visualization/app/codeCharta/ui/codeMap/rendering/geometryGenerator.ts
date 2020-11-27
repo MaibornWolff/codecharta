@@ -203,6 +203,19 @@ export class GeometryGenerator {
 		geometry.setIndex(new BufferAttribute(indices, 1))
 
 		const topSurfaceInfos = data.floorSurfaceInformation
+		if (topSurfaceInfos[0] === undefined) {
+			// Add default group
+			geometry.addGroup(0, Infinity, 0)
+		} else {
+			this.addMaterialGroups(data, geometry)
+		}
+
+		return new Mesh(geometry, this.materials)
+	}
+
+	private addMaterialGroups(data: IntermediateVertexData, geometry: BufferGeometry) {
+		const topSurfaceInfos = data.floorSurfaceInformation
+
 		// Render with default material until first floor surface
 		geometry.addGroup(0, topSurfaceInfos[0].surfaceStartIndex, 0)
 
@@ -227,8 +240,6 @@ export class GeometryGenerator {
 			// Render the remaining planes (sides, bottom) with the default material
 			geometry.addGroup(startOfNextDefaultRenderer, verticesCountUntilNextFloorLabelRenderer, 0)
 		}
-
-		return new Mesh(geometry, this.materials)
 	}
 
 	private createAndAssignFloorLabelTextureMaterial(surfaceInfo: SurfaceInformation) {
@@ -253,8 +264,6 @@ export class GeometryGenerator {
 		context.fillText(surfaceInfo.node.name, textPositionX, textPositionY)
 
 		const labelTexture = new CanvasTexture(textCanvas);
-		labelTexture.image = textCanvas
-
 		// Texture is mirrored (spiegelverkehrt)
 		// Mirror it horizontally to fix that
 		labelTexture.wrapS = RepeatWrapping
