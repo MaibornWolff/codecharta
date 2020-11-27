@@ -107,14 +107,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	private resetHighlightMaterial(materials: Material[]) {
-		const allNodes = this.mapMesh.getNodes()
-		for (const node of allNodes) {
-			for (const material of materials) {
-				if (material.userData.id === node.id) {
-					material["color"].setHex(ColorConverter.convertHexToNumber("#FFFFFF"))
-				}
-			}
-		}
+		this.resetMaterial(materials)
 		this.updateCorrectMaterial(this.mapGeometry.children[0]["material"], [this.selected], true)
 	}
 
