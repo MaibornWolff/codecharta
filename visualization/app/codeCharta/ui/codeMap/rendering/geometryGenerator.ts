@@ -129,7 +129,7 @@ export class GeometryGenerator {
 		if (isDeltaState && node.deltas && node.deltas[state.dynamicSettings.heightMetric] && node.heightDelta) {
 			renderDelta = node.heightDelta //set the transformed render delta
 
-			if (renderDelta < 0) {
+			if (!node.flat && renderDelta < 0) {
 				measures.height += Math.abs(renderDelta)
 			}
 		}
