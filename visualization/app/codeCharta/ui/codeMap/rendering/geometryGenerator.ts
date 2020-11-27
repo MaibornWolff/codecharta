@@ -37,7 +37,7 @@ export class GeometryGenerator {
 
 	private floorGradient: string[]
 	private materials: Material[]
-	private floorSurfaceLabelFontSizes = [144, 98, 98]
+	private floorSurfaceLabelFontSizes = [144, 98, 98, 98]
 
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const data = new IntermediateVertexData()
@@ -251,7 +251,7 @@ export class GeometryGenerator {
 
 		const context = textCanvas.getContext("2d")
 
-		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth - 1] * MAP_SIZE_RESOLUTION_SCALE
+		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth] * MAP_SIZE_RESOLUTION_SCALE
 		context.font = `${fontSizeForDepth}px Arial`
 
 		context.fillStyle = this.getMarkingColorWithGradient(surfaceInfo.node)

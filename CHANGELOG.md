@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Added regression test
+-   Add the folder name onto the floor on the first 3 layers to get a better overview of the map [#1491](https://github.com/MaibornWolff/codecharta/issues/1491)
 
 ### Changed
 

@@ -162,10 +162,10 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	hierarchyNode.eachAfter(node => {
 		// Precalculate the needed paddings for the floor folder labels to be able to expand the default map size
 		if (!isLeaf(node)) {
-			if (node.depth === 1) {
+			if (node.depth === 0) {
 				addedLabelSpace += 150
 			}
-			if (node.depth > 1 && node.depth < 4) {
+			if (node.depth > 0 && node.depth < 4) {
 				addedLabelSpace += 120
 			}
 		}
@@ -181,15 +181,16 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 
 	const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding).paddingRight((node) => {
 		// Start the labels at level 1 not 0 because the root folder should not be labeled
-		if (node.depth === 1) {
+		if (node.depth === 0) {
 			// Add a big padding for the first folder level (the font is bigger than in deeper levels)
 			//console.log(width, width * 0.1)
-			return width * 0.1 * MAP_SIZE_RESOLUTION_SCALE
-			return 150
+			//return width * 0.1 * MAP_SIZE_RESOLUTION_SCALE
+			return 150 * MAP_SIZE_RESOLUTION_SCALE
 		}
-		if (node.depth > 1 && node.depth < 4) {
+		if (node.depth > 0 && node.depth < 4) {
 			//console.log(width, width * 0.1)
-			return width * 0.1 * MAP_SIZE_RESOLUTION_SCALE
+			//return width * 0.1 * MAP_SIZE_RESOLUTION_SCALE
+			return 120 * MAP_SIZE_RESOLUTION_SCALE
 		}
 		// add default padding otherwise
 		return padding

@@ -200,7 +200,7 @@ export class BoxGeometryGenerationHelper {
 			} else {
 				// Collect floors from a depth of 1 until a depth of 3 to be stamped with the folder name as a label
 				// We skip the root folder because it makes no sense to label it.
-				if (addingFloor && side === sides.top && node.mapNodeDepth > 0 && node.mapNodeDepth < 4) {
+				if (addingFloor && side === sides.top && node.mapNodeDepth >= 0 && node.mapNodeDepth < 4) {
 					data.saveFloorSurfaceInformation(node, minPos, maxPos)
 				}
 
