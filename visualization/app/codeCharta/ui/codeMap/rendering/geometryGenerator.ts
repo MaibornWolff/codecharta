@@ -286,12 +286,12 @@ export class GeometryGenerator {
 			return text
 		}
 
-		let textSplitIndex = Math.floor(text.length * canvasWidth / widthOfText)
-		let abbreviatedText = text.substr(0, textSplitIndex) + "..."
+		let textSplitIndex = Math.floor((text.length * canvasWidth) / widthOfText)
+		let abbreviatedText = `${text.slice(0, textSplitIndex)}...`
 		while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
 			// textSplitIndex > 1 to ensure it contains at least one char
 			textSplitIndex -= 1
-			abbreviatedText = text.substr(0, textSplitIndex) + "..."
+			abbreviatedText = `${text.slice(0, textSplitIndex)}...`
 		}
 
 		return abbreviatedText
