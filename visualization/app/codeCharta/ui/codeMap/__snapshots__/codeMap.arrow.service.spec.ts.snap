@@ -50,6 +50,7 @@ Array [
       "isLeaf": true,
       "length": 3,
       "link": "NO_LINK",
+      "mapNodeDepth": 2,
       "markingColor": "0xFFFFFF",
       "name": "root/small leaf",
       "outgoingEdgePoint": Vector3 {
@@ -113,6 +114,7 @@ Array [
       "isLeaf": true,
       "length": 3,
       "link": "NO_LINK",
+      "mapNodeDepth": 2,
       "markingColor": "0xFFFFFF",
       "name": "root/small leaf",
       "outgoingEdgePoint": Vector3 {
@@ -180,6 +182,7 @@ CodeMapBuilding {
     "isLeaf": true,
     "length": 3,
     "link": "NO_LINK",
+    "mapNodeDepth": 2,
     "markingColor": "0xFFFFFF",
     "name": "root/big leaf",
     "outgoingEdgePoint": Vector3 {

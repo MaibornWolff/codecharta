@@ -16,7 +16,7 @@ import {
 	RepeatWrapping,
 	DoubleSide
 } from "three"
-import { MAP_SIZE_RESOLUTION_SCALE } from "../codeMap.render.service"
+import { getMapResolutionScaleFactor } from "../codeMap.render.service"
 
 export interface BoxMeasures {
 	x: number
@@ -38,10 +38,12 @@ export class GeometryGenerator {
 	private floorGradient: string[]
 	private materials: Material[]
 	private floorSurfaceLabelFontSizes = [144, 98, 98, 98]
+	private mapSizeResolutionScaling = 1
 
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const data = new IntermediateVertexData()
 		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
+		this.mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 		this.materials = [material]
@@ -251,7 +253,7 @@ export class GeometryGenerator {
 
 		const context = textCanvas.getContext("2d")
 
-		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth] * MAP_SIZE_RESOLUTION_SCALE
+		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth] * this.mapSizeResolutionScaling
 		context.font = `${fontSizeForDepth}px Arial`
 
 		context.fillStyle = this.getMarkingColorWithGradient(surfaceInfo.node)

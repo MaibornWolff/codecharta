@@ -16,7 +16,19 @@
 
 		<p class="node-origin">{{ $ctrl._viewModel.fileName }}</p>
 
-		<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
+		<p class="node-path">
+			{{ $ctrl._viewModel.node.path }}
+			<span ng-if="!$ctrl._viewModel.node.isLeaf" class="file-count">
+				<ng-pluralize
+					count="$ctrl._viewModel.packageFileCount"
+					when="{
+						'0': '(empty)',
+						'1': '(1 file)',
+						'other': '({} files)'
+					}"
+				></ng-pluralize>
+			</span>
+		</p>
 
 		<div class="metric-box">
 			<table class="primary-metrics" aria-hidden="true">

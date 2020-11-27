@@ -130,8 +130,8 @@ describe("codeChartaController", () => {
 
 		it("should call loadFiles with sample files", () => {
 			const expected = [
-				{ fileName: "sample1.cc.json", content: sample1 },
-				{ fileName: "sample2.cc.json", content: sample2 }
+				{ fileName: "sample1.cc.json", content: sample1, fileSize: 3072 },
+				{ fileName: "sample2.cc.json", content: sample2, fileSize: 2048 }
 			]
 
 			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
