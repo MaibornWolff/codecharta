@@ -50,6 +50,7 @@ export class CodeMapMouseEventService
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
+	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
 
 	private highlightedInTreeView: CodeMapBuilding
 	private intersectedBuilding: CodeMapBuilding
@@ -351,7 +352,7 @@ export class CodeMapMouseEventService
 		this.isMoving = false
 		const building = this.intersectedBuilding
 		// check if mouse moved to prevent the node context menu to show up after moving the map, when the cursor ends on a building
-		if (building && !this.hasMouseMoved(this.mouseOnLastClick)) {
+		if (building && !this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
 				building,
 				x: this.mouse.x,
@@ -362,14 +363,21 @@ export class CodeMapMouseEventService
 	}
 
 	private onLeftClick() {
-		this.threeSceneService.clearSelection()
 		this.isGrabbing = false
-		if (!this.hasMouseMoved(this.mouseOnLastClick)) {
+		if (!this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
+			this.threeSceneService.clearSelection()
 			this.threeSceneService.clearConstantHighlight()
 			if (this.intersectedBuilding) {
 				this.threeSceneService.selectBuilding(this.intersectedBuilding)
 			}
 		}
+	}
+
+	private hasMouseMovedMoreThanThreePixels({ x, y }: Coordinates) {
+		return (
+			Math.abs(this.mouse.x - x) > this.THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING ||
+			Math.abs(this.mouse.y - y) > this.THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING
+		)
 	}
 
 	private hasMouseMoved({ x, y }: Coordinates) {
