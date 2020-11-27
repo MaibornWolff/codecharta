@@ -203,12 +203,15 @@ export class GeometryGenerator {
 		geometry.setIndex(new BufferAttribute(indices, 1))
 
 		const topSurfaceInfos = data.floorSurfaceInformation
-
+		// Render with default material until first floor surface
 		geometry.addGroup(0, topSurfaceInfos[0].surfaceStartIndex, 0)
 
+		// In general, a plane is rendered by 2 triangles, each with 3 vertices.
 		const verticesPerPlane = 6
+
 		for (let surfaceIndex = 0; surfaceIndex < topSurfaceInfos.length; surfaceIndex++) {
 			const currentSurfaceInfo = topSurfaceInfos[surfaceIndex]
+			// Render the floors surface with the text label texture
 			geometry.addGroup(currentSurfaceInfo.surfaceStartIndex, verticesPerPlane, surfaceIndex + 1)
 
 			this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
@@ -217,10 +220,11 @@ export class GeometryGenerator {
 			const startOfNextDefaultRenderer = currentSurfaceInfo.surfaceStartIndex + verticesPerPlane
 			const nextSurfaceInfo = topSurfaceInfos[surfaceIndex + 1]
 
-
 			if (nextSurfaceInfo) {
 				verticesCountUntilNextFloorLabelRenderer = nextSurfaceInfo.surfaceStartIndex - startOfNextDefaultRenderer
 			}
+
+			// Render the remaining planes (sides, bottom) with the default material
 			geometry.addGroup(startOfNextDefaultRenderer, verticesCountUntilNextFloorLabelRenderer, 0)
 		}
 
@@ -234,18 +238,18 @@ export class GeometryGenerator {
 
 		const context = textCanvas.getContext("2d")
 
-		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth - 1] //* state.dynamicSettings.margin / 100
+		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth - 1]
 		context.font = `${fontSizeForDepth}px Arial`
+
 		context.fillStyle = this.getMarkingColorWithGradient(surfaceInfo.node)
 		context.fillRect(0, 0, textCanvas.width, textCanvas.height)
 		context.fillStyle = "white"
 		context.textAlign = "center"
 		context.textBaseline = "middle"
 
-		const textPositionX = (textCanvas.width) / 2
 		// consider font size for y position
 		const textPositionY = textCanvas.height - fontSizeForDepth / 2
-
+		const textPositionX = (textCanvas.width) / 2
 		context.fillText(surfaceInfo.node.name, textPositionX, textPositionY)
 
 		const labelTexture = new CanvasTexture(textCanvas);
