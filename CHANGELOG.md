@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   UX Improvements related to labels allowing for user interaction #1404
+    -   Labels can be hovered, hovering their corresponding node
+    -   Selecting a label will select the corresponding node
+    -   Hovering a label will remove its transparency and move towards the user:
+        -   If other labels obstruct the hovered label it will move to the front
+    -   Increased the transparency of other labels; this makes it easier to distinguish the hovered label
+    -   Increase the amount of labels to 250.
 -   Show file count of folders in Attribute-Side-Bar ([#1255](https://github.com/MaibornWolff/codecharta/issues/1255)):
     ![img showing file count of folder](https://user-images.githubusercontent.com/3596742/100371884-be915800-3008-11eb-89f5-ed57c62680cc.png)
 
@@ -18,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Buildings are flattened when delta is active #824. 
+-   Buildings are flattened when delta is active #824.
 -   Selected Building now stays highlighted when map is rotated #1498
 
 ### Chore 👨‍💻 👩‍💻
