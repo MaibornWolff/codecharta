@@ -19,6 +19,7 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
+import { Box3, Vector3 } from "three"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -343,6 +344,38 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.highlightSingleBuilding).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("getIntersectionDistance", () => {
+		let bboxOverlap = null
+		let bboxHovered = null
+		let bboxMiss = null
+		let normedVector = null
+		let bboxContain = null
+		const overlapDistance = 2
+
+		beforeEach(() => {
+			bboxOverlap = new Box3(new Vector3(2, 2, 2), new Vector3(4, 4, 4))
+			bboxHovered = new Box3(new Vector3(1, 1, 1), new Vector3(2, 2, 2))
+			bboxMiss = new Box3(new Vector3(5, 5, 5), new Vector3(6, 6, 6))
+			bboxContain = new Box3(new Vector3(3, 3, 3), new Vector3(4, 4, 4))
+			normedVector = new Vector3(1, 1, 1)
+		})
+
+		it("should calculate distance if labels partially overlap", () => {
+			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxOverlap, normedVector, overlapDistance)
+			expect(distance).toEqual(overlapDistance)
+		})
+
+		it("should calculate distance if labels fully overlap", () => {
+			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxContain, normedVector, overlapDistance)
+			expect(distance).toEqual(overlapDistance)
+		})
+
+		it("should return 0 if labels dont overlap", () => {
+			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxMiss, normedVector, overlapDistance)
+			expect(distance).toEqual(0)
 		})
 	})
 
