@@ -12,7 +12,9 @@ import {
 	Vector3,
 	BufferAttribute,
 	MeshBasicMaterial,
-	CanvasTexture, RepeatWrapping, DoubleSide
+	CanvasTexture,
+	RepeatWrapping,
+	DoubleSide
 } from "three"
 
 export interface BoxMeasures {
@@ -119,7 +121,7 @@ export class GeometryGenerator {
 		desc: CodeMapGeometricDescription,
 		state: State,
 		isDeltaState: boolean
-	)  {
+	) {
 		// return // hide buildings for debugging package label
 		const measures = this.mapNodeToLocalBox(node)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(node.height, node.heightDelta)
@@ -217,7 +219,6 @@ export class GeometryGenerator {
 			const startOfNextDefaultRenderer = currentSurfaceInfo.surfaceStartIndex + verticesPerPlane
 			const nextSurfaceInfo = topSurfaceInfos[surfaceIndex + 1]
 
-
 			if (nextSurfaceInfo) {
 				verticesCountUntilNextFloorLabelRenderer = nextSurfaceInfo.surfaceStartIndex - startOfNextDefaultRenderer
 			}
@@ -228,7 +229,7 @@ export class GeometryGenerator {
 	}
 
 	private createAndAssignFloorLabelTextureMaterial(surfaceInfo: SurfaceInformation) {
-		const textCanvas = document.createElement("canvas");
+		const textCanvas = document.createElement("canvas")
 		textCanvas.height = surfaceInfo.maxPos.x - surfaceInfo.minPos.x
 		textCanvas.width = surfaceInfo.maxPos.z - surfaceInfo.minPos.z
 
@@ -242,25 +243,43 @@ export class GeometryGenerator {
 		context.textAlign = "center"
 		context.textBaseline = "middle"
 
-		const textPositionX = (textCanvas.width) / 2
+		const textPositionX = textCanvas.width / 2
 		// consider font size for y position
 		const textPositionY = textCanvas.height - fontSizeForDepth / 2
 
-		context.fillText(surfaceInfo.node.name, textPositionX, textPositionY)
+		const fittingLabel = this.getFittingLabel(context, textCanvas.width, surfaceInfo.node.name)
+		context.fillText(fittingLabel, textPositionX, textPositionY)
 
-		const labelTexture = new CanvasTexture(textCanvas);
+		const labelTexture = new CanvasTexture(textCanvas)
 		labelTexture.image = textCanvas
 
 		// Texture is mirrored (spiegelverkehrt)
 		// Mirror it horizontally to fix that
 		labelTexture.wrapS = RepeatWrapping
-		labelTexture.repeat.x = - 1
+		labelTexture.repeat.x = -1
 
-		const floorSurfaceLabelMaterial = new MeshBasicMaterial({ map: labelTexture });
+		const floorSurfaceLabelMaterial = new MeshBasicMaterial({ map: labelTexture })
 		floorSurfaceLabelMaterial.needsUpdate = true
 		floorSurfaceLabelMaterial.side = DoubleSide
 		floorSurfaceLabelMaterial.transparent = true
 
 		this.materials.push(floorSurfaceLabelMaterial)
+	}
+
+	private getFittingLabel(context: CanvasRenderingContext2D, canvasWidth: number, text: string) {
+		const widthOfText = context.measureText(text).width
+		if (widthOfText < canvasWidth) {
+			return text
+		}
+
+		let textSplitIndex = Math.floor(text.length * canvasWidth / widthOfText)
+		let abbreviatedText = text.substr(0, textSplitIndex) + "..."
+		while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
+			// textSplitIndex > 1 to ensure it contains at least one char
+			textSplitIndex -= 1
+			abbreviatedText = text.substr(0, textSplitIndex) + "..."
+		}
+
+		return abbreviatedText
 	}
 }
