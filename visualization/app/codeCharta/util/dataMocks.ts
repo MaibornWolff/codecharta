@@ -1700,7 +1700,7 @@ export const DEFAULT_STATE: State = {
 			selected: "#EB8319",
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",
-			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
+			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
 		},
 		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
