@@ -3,6 +3,7 @@ import { Node, CodeMapNode, State } from "../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
+import { MAP_SIZE_RESOLUTION_SCALE } from "../ui/codeMap/codeMap.render.service";
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
@@ -72,7 +73,7 @@ function buildNodeFrom(
 	const flattened = isNodeFlat(data, state)
 	const heightValue = getHeightValue(state, squaredNode, maxHeight, flattened)
 	const depth = data.path.split("/").length - 2
-	const height = Math.abs(isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) : FOLDER_HEIGHT)
+	const height = Math.abs(isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) * MAP_SIZE_RESOLUTION_SCALE : FOLDER_HEIGHT)
 	const width = x1 - x0
 	const length = y1 - y0
 	const z0 = depth * FOLDER_HEIGHT
@@ -92,7 +93,7 @@ function buildNodeFrom(
 		attributes: data.attributes,
 		edgeAttributes: data.edgeAttributes,
 		deltas: data.deltas,
-		heightDelta: (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale,
+		heightDelta: (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * MAP_SIZE_RESOLUTION_SCALE,
 		visible: isVisible(data, isNodeLeaf, state, flattened),
 		path: data.path,
 		link: data.link,
@@ -109,7 +110,8 @@ function getHeightValue(state: State, squaredNode: HierarchyRectangularNode<Code
 		return MIN_BUILDING_HEIGHT
 	}
 
-	const heightValue = squaredNode.data.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+	let heightValue = squaredNode.data.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+	heightValue *= MAP_SIZE_RESOLUTION_SCALE
 
 	if (state.appSettings.invertHeight) {
 		return maxHeight - heightValue

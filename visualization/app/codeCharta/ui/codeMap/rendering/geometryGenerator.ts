@@ -16,6 +16,7 @@ import {
 	RepeatWrapping,
 	DoubleSide
 } from "three"
+import { MAP_SIZE_RESOLUTION_SCALE } from "../codeMap.render.service";
 
 export interface BoxMeasures {
 	x: number
@@ -122,7 +123,6 @@ export class GeometryGenerator {
 		state: State,
 		isDeltaState: boolean
 	) {
-		// return // hide buildings for debugging package label
 		const measures = this.mapNodeToLocalBox(node)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(node.height, node.heightDelta)
 
@@ -251,7 +251,7 @@ export class GeometryGenerator {
 
 		const context = textCanvas.getContext("2d")
 
-		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth - 1]
+		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth - 1] * MAP_SIZE_RESOLUTION_SCALE
 		context.font = `${fontSizeForDepth}px Arial`
 
 		context.fillStyle = this.getMarkingColorWithGradient(surfaceInfo.node)

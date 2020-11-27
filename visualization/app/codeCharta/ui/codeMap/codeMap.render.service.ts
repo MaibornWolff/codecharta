@@ -9,6 +9,8 @@ import { CodeMapNode, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
 
+export const MAP_SIZE_RESOLUTION_SCALE = 0.25
+
 export class CodeMapRenderService {
 	constructor(
 		private storeService: StoreService,
