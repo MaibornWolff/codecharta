@@ -160,6 +160,7 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("scaling existing labels should scale their position correctly", () => {
+			const { margin } = storeService.getState().dynamicSettings
 			const SX = 1
 			const SY = 2
 			const SZ = 3
@@ -180,11 +181,11 @@ describe("CodeMapLabelService", () => {
 			const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position
 
 			expect(scaleAfterA.x).toBe(scaleBeforeA.x * SX)
-			expect(scaleAfterA.y).toBe((scaleBeforeA.y - 60) * SY + 60)
+			expect(scaleAfterA.y).toBe((scaleBeforeA.y - (25 / 4) * margin) * SY + (25 / 4) * margin)
 			expect(scaleAfterA.z).toBe(scaleBeforeA.z * SZ)
 
 			expect(scaleAfterB.x).toBe(scaleBeforeA.x * SX)
-			expect(scaleAfterB.y).toBe((scaleBeforeA.y - 60) * SY + 60)
+			expect(scaleAfterB.y).toBe((scaleBeforeA.y - (25 / 4) * margin) * SY + (25 / 4) * margin)
 			expect(scaleAfterB.z).toBe(scaleBeforeA.z * SZ)
 		})
 	})

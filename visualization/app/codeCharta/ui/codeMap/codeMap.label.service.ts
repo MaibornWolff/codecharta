@@ -84,13 +84,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	scale() {
 		const { scaling } = this.storeService.getState().appSettings
+		const { margin } = this.storeService.getState().dynamicSettings
 		if (this.resetScale) {
 			this.resetScale = false
 			this.currentScale = new Vector3(1, 1, 1)
 		}
 
 		for (const label of this.labels) {
-			const labelHeightDifference = new Vector3(0, 60, 0)
+			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin, 0)
 			label.sprite.position
 				.sub(labelHeightDifference.clone())
 				.divide(this.currentScale.clone())
