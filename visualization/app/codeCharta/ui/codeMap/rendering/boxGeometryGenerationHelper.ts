@@ -32,8 +32,15 @@ const numberSides = 6
 const verticesPerSide = 4
 
 export class BoxGeometryGenerationHelper {
-
-	static addBoxToVertexData(data: IntermediateVertexData, node: Node, measures: BoxMeasures, color: string, subGeomIndex: number, delta: number, addingFloor = false) {
+	static addBoxToVertexData(
+		data: IntermediateVertexData,
+		node: Node,
+		measures: BoxMeasures,
+		color: string,
+		subGeomIndex: number,
+		delta: number,
+		addingFloor = false
+	) {
 		const minPos: Vector3 = new Vector3(measures.x, measures.y, measures.z)
 		const maxPos: Vector3 = new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 
@@ -41,7 +48,18 @@ export class BoxGeometryGenerationHelper {
 		const positions: Vector3[] = new Array<Vector3>()
 
 		BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs)
-		BoxGeometryGenerationHelper.createVerticesAndFaces(node, minPos, maxPos, color, delta, subGeomIndex, positions, uvs, data, addingFloor)
+		BoxGeometryGenerationHelper.createVerticesAndFaces(
+			node,
+			minPos,
+			maxPos,
+			color,
+			delta,
+			subGeomIndex,
+			positions,
+			uvs,
+			data,
+			addingFloor
+		)
 	}
 
 	private static createPositionsUVs(minPos: Vector3, maxPos: Vector3, positions: Vector3[], uvs: Vector2[]) {
@@ -180,12 +198,9 @@ export class BoxGeometryGenerationHelper {
 				data.addFace(indexBottomLeft, indexTopRight, indexTopLeft)
 				data.addFace(indexBottomLeft, indexBottomRight, indexTopRight)
 			} else {
-				if (
-					addingFloor &&
-					side === sides.top &&
-					node.mapNodeDepth > 0 && node.mapNodeDepth < 4
-				) {
-					// Collect floors from a depth of 1 until a depth of 3
+				// Collect floors from a depth of 1 until a depth of 3 to be stamped with the folder name as a label
+				// We skip the root folder because it makes no sense to label it.
+				if (addingFloor && side === sides.top && node.mapNodeDepth > 0 && node.mapNodeDepth < 4) {
 					data.saveFloorSurfaceInformation(node, minPos, maxPos)
 				}
 

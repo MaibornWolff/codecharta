@@ -50,7 +50,7 @@ export class GeometryGenerator {
 		// that are later on converted to typed arrays. Thus, no
 		// `IntermediateVertexData` should be created.
 		for (const [index, node] of nodes.entries()) {
-			if (!node.isLeaf && node.mapNodeDepth < 4) {
+			if (!node.isLeaf) {
 				this.addFloor(data, node, index, desc)
 			} else {
 				this.addBuilding(data, node, index, desc, state, isDeltaState)
@@ -131,7 +131,7 @@ export class GeometryGenerator {
 		if (isDeltaState && node.deltas && node.deltas[state.dynamicSettings.heightMetric] && node.heightDelta) {
 			renderDelta = node.heightDelta //set the transformed render delta
 
-			if (renderDelta < 0) {
+			if (!node.flat && renderDelta < 0) {
 				measures.height += Math.abs(renderDelta)
 			}
 		}
@@ -205,12 +205,28 @@ export class GeometryGenerator {
 		geometry.setIndex(new BufferAttribute(indices, 1))
 
 		const topSurfaceInfos = data.floorSurfaceInformation
+		if (topSurfaceInfos[0] === undefined) {
+			// Add default group
+			geometry.addGroup(0, Infinity, 0)
+		} else {
+			this.addMaterialGroups(data, geometry)
+		}
 
+		return new Mesh(geometry, this.materials)
+	}
+
+	private addMaterialGroups(data: IntermediateVertexData, geometry: BufferGeometry) {
+		const topSurfaceInfos = data.floorSurfaceInformation
+
+		// Render with default material until first floor surface
 		geometry.addGroup(0, topSurfaceInfos[0].surfaceStartIndex, 0)
 
+		// In general, a plane is rendered by 2 triangles, each with 3 vertices.
 		const verticesPerPlane = 6
+
 		for (let surfaceIndex = 0; surfaceIndex < topSurfaceInfos.length; surfaceIndex++) {
 			const currentSurfaceInfo = topSurfaceInfos[surfaceIndex]
+			// Render the floors surface with the text label texture
 			geometry.addGroup(currentSurfaceInfo.surfaceStartIndex, verticesPerPlane, surfaceIndex + 1)
 
 			this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
@@ -222,10 +238,10 @@ export class GeometryGenerator {
 			if (nextSurfaceInfo) {
 				verticesCountUntilNextFloorLabelRenderer = nextSurfaceInfo.surfaceStartIndex - startOfNextDefaultRenderer
 			}
+
+			// Render the remaining planes (sides, bottom) with the default material
 			geometry.addGroup(startOfNextDefaultRenderer, verticesCountUntilNextFloorLabelRenderer, 0)
 		}
-
-		return new Mesh(geometry, this.materials)
 	}
 
 	private createAndAssignFloorLabelTextureMaterial(surfaceInfo: SurfaceInformation) {
@@ -235,24 +251,22 @@ export class GeometryGenerator {
 
 		const context = textCanvas.getContext("2d")
 
-		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth - 1] //* state.dynamicSettings.margin / 100
+		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth - 1]
 		context.font = `${fontSizeForDepth}px Arial`
+
 		context.fillStyle = this.getMarkingColorWithGradient(surfaceInfo.node)
 		context.fillRect(0, 0, textCanvas.width, textCanvas.height)
 		context.fillStyle = "white"
 		context.textAlign = "center"
 		context.textBaseline = "middle"
 
-		const textPositionX = textCanvas.width / 2
 		// consider font size for y position
 		const textPositionY = textCanvas.height - fontSizeForDepth / 2
-
+		const textPositionX = textCanvas.width / 2
 		const fittingLabel = this.getFittingLabel(context, textCanvas.width, surfaceInfo.node.name)
 		context.fillText(fittingLabel, textPositionX, textPositionY)
 
 		const labelTexture = new CanvasTexture(textCanvas)
-		labelTexture.image = textCanvas
-
 		// Texture is mirrored (spiegelverkehrt)
 		// Mirror it horizontally to fix that
 		labelTexture.wrapS = RepeatWrapping

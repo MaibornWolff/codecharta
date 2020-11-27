@@ -49,11 +49,12 @@ export class IntermediateVertexData {
 	saveFloorSurfaceInformation(node: Node, minPos: Vector3, maxPos: Vector3) {
 		const surfaceInformation: SurfaceInformation = {
 			node,
+			// The starting index of the vertices of the floors top surface must be known.
+			// It is used to render the floor surface with a different (label) texture
 			surfaceStartIndex: this.indices.length,
 			minPos,
 			maxPos
 		}
 		this.floorSurfaceInformation.push(surfaceInformation)
 	}
-
 }
