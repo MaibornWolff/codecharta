@@ -64,8 +64,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	highlightBuildings() {
 		const state = this.storeService.getState()
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
-		this.updateCorrectMaterial(this.mapGeometry.children[0]["material"], this.highlighted, false)
-		if (this.selected) this.updateCorrectMaterial(this.mapGeometry.children[0]["material"], [this.selected], true)
+		if (this.mapGeometry.children[0]) {
+			this.updateCorrectMaterial(this.mapGeometry.children[0]["material"], this.highlighted, false)
+			if (this.selected) this.updateCorrectMaterial(this.mapGeometry.children[0]["material"], [this.selected], true)
+		}
 	}
 
 	highlightBuildingsAfterSelect() {
@@ -129,7 +131,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	clearHighlight() {
 		if (this.getMapMesh()) {
 			this.getMapMesh().clearHighlight(this.selected)
-			this.resetHighlightMaterial(this.mapGeometry.children[0]["material"])
+			if (this.mapGeometry.children[0]) {
+				this.resetHighlightMaterial(this.mapGeometry.children[0]["material"])
+			}
 			this.highlighted = []
 			this.constantHighlight.clear()
 		}
