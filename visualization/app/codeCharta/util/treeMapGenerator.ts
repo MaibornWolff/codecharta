@@ -149,6 +149,18 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	let mapWidth
 	let mapHeight
 
+	let addedLabelSpace = 0
+	hierarchyNode.eachAfter((node) => {
+		if (!isLeaf(node)) {
+			if (node.depth === 1) {
+				addedLabelSpace += 150
+			}
+			if (node.depth > 1 && node.depth < 4) {
+				addedLabelSpace += 120
+			}
+		}
+	})
+
 	if (map.fixedPosition !== undefined) {
 		mapWidth = map.fixedPosition.width
 		mapHeight = map.fixedPosition.height
@@ -161,8 +173,8 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	// We do not know the exact amount,
 	// because the treemap algorithm is/must be executed with an initial width and height afterwards.
 	// TODO If it is wrong some buildings might be cut off.
-	const width = mapWidth + nodesPerSide * state.dynamicSettings.margin + nodesPerSide * 120
-	const height = mapHeight + nodesPerSide * state.dynamicSettings.margin + nodesPerSide * 120
+	const width = mapWidth + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace
+	const height = mapHeight + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace
 
 	const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding).paddingRight((node) => {
 		if (node.depth === 1) {

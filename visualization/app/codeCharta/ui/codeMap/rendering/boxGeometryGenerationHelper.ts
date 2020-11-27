@@ -183,7 +183,7 @@ export class BoxGeometryGenerationHelper {
 				if (
 					addingFloor &&
 					side === sides.top &&
-					node.depth > 0 && node.depth < 4
+					node.mapNodeDepth > 0 && node.mapNodeDepth < 4
 				) {
 					// Collect floors from a depth of 1 until a depth of 3
 					data.saveFloorSurfaceInformation(node, minPos, maxPos)

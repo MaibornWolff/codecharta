@@ -260,6 +260,7 @@ export interface Node {
 	height: number
 	length: number
 	depth: number
+	mapNodeDepth: number
 	x0: number
 	z0: number
 	y0: number

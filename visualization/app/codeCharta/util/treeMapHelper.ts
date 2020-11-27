@@ -84,6 +84,7 @@ function buildNodeFrom(
 		height,
 		length,
 		depth,
+		mapNodeDepth: squaredNode.depth,
 		x0,
 		z0,
 		y0,
