@@ -8,8 +8,25 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
+import { FileState } from "../../model/files/files";
 
-export const MAP_SIZE_RESOLUTION_SCALE = 0.25
+const ONE_MB = 1024 * 1024
+
+export function getMapResolutionScaleFactor(files: FileState[]) {
+	let totalFileSize = 0
+	for (const file of files) {
+		totalFileSize += file.file.fileMeta.exportedFileSize
+	}
+
+	switch (true) {
+		case totalFileSize >= 5 * ONE_MB:
+			return 0.25
+		case totalFileSize >= ONE_MB:
+			return 0.5
+		default:
+			return 1
+	}
+}
 
 export class CodeMapRenderService {
 	constructor(

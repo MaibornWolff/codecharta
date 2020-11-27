@@ -2,14 +2,15 @@ import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../codeCharta.model"
 import { isLeaf } from "./codeMapHelper"
-import { MAP_SIZE_RESOLUTION_SCALE } from "../ui/codeMap/codeMap.render.service";
+import { getMapResolutionScaleFactor } from "../ui/codeMap/codeMap.render.service";
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
 const PADDING_SCALING_FACTOR = 0.4
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean) {
-	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * MAP_SIZE_RESOLUTION_SCALE
+	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
+	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
 	const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 
 	if (hasFixedFolders(map)) {
@@ -38,12 +39,13 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 				0,
 				heightScale,
 				maxHeight,
-				isDeltaState
+				isDeltaState,
+				mapSizeResolutionScaling
 			)
 		)
 	}
 
-	const squarifiedTreeMap = getSquarifiedTreeMap(map, state)
+	const squarifiedTreeMap = getSquarifiedTreeMap(map, state, mapSizeResolutionScaling)
 
 	const nodes = []
 	for (const squarifiedNode of squarifiedTreeMap.treeMap) {
@@ -61,13 +63,14 @@ function buildSquarifiedTreeMapsForFixedFolders(
 	offsetY0: number,
 	heightScale: number,
 	maxHeight: number,
-	isDeltaState: boolean
+	isDeltaState: boolean,
+	mapSizeResolutionScaling: number
 ) {
 	const nodes = []
 
 	for (const fixedFolder of hierarchyNode.children) {
 		const fixedPosition = fixedFolder.data.fixedPosition
-		const squarified = getSquarifiedTreeMap(fixedFolder.data, state)
+		const squarified = getSquarifiedTreeMap(fixedFolder.data, state, mapSizeResolutionScaling)
 
 		for (const squarifiedNode of squarified.treeMap.descendants()) {
 			// squarified.width/height is a sum of the fixedPosition.width/height and applied margins
@@ -113,7 +116,8 @@ function buildSquarifiedTreeMapsForFixedFolders(
 						squarifiedNode.y0,
 						heightScale,
 						maxHeight,
-						isDeltaState
+						isDeltaState,
+						mapSizeResolutionScaling
 					)
 				)
 
@@ -143,10 +147,10 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 	root.length *= scaleLength
 }
 
-function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
+function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionScaling: number): SquarifiedTreeMap {
 	const hierarchyNode = hierarchy(map)
 	const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR  * MAP_SIZE_RESOLUTION_SCALE
+	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR  * mapSizeResolutionScaling
 	let mapWidth
 	let mapHeight
 
@@ -175,29 +179,29 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	// We do not know the exact amount,
 	// because the treemap algorithm is/must be executed with an initial width and height afterwards.
 	// TODO If it is wrong some buildings might be cut off.
-	// Use MAP_SIZE_RESOLUTION_SCALE to scale down the pixels need for rendering of the map (width and height size)
-	const width = (mapWidth + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace) * MAP_SIZE_RESOLUTION_SCALE
-	const height = (mapHeight + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace)  * MAP_SIZE_RESOLUTION_SCALE
+	// Use mapSizeResolutionScaling to scale down the pixels need for rendering of the map (width and height size)
+	const width = (mapWidth + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace) * mapSizeResolutionScaling
+	const height = (mapHeight + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace)  * mapSizeResolutionScaling
 
 	const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding).paddingRight((node) => {
 		// Start the labels at level 1 not 0 because the root folder should not be labeled
 		if (node.depth === 0) {
 			// Add a big padding for the first folder level (the font is bigger than in deeper levels)
 			//console.log(width, width * 0.1)
-			//return width * 0.1 * MAP_SIZE_RESOLUTION_SCALE
-			return 150 * MAP_SIZE_RESOLUTION_SCALE
+			//return width * 0.1 * mapSizeResolutionScaling
+			return 150 * mapSizeResolutionScaling
 		}
 		if (node.depth > 0 && node.depth < 4) {
 			//console.log(width, width * 0.1)
-			//return width * 0.1 * MAP_SIZE_RESOLUTION_SCALE
-			return 120 * MAP_SIZE_RESOLUTION_SCALE
+			//return width * 0.1 * mapSizeResolutionScaling
+			return 120 * mapSizeResolutionScaling
 		}
 		// add default padding otherwise
 		return padding
 	})
 
 	//console.log(treeMap.size())
-	return { treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state) * MAP_SIZE_RESOLUTION_SCALE)), height, width }
+	return { treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state) * mapSizeResolutionScaling)), height, width }
 }
 
 function getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {
