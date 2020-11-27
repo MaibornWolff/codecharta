@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Added regression test
+-   UX Improvements related to labels allowing for user interaction #1404
+    -   Labels can be hovered, hovering their corresponding node
+    -   Selecting a label will select the corresponding node
+    -   Hovering a label will remove its transparency and move towards the user:
+        -   If other labels obstruct the hovered label it will move to the front
+    -   Increased the transparency of other labels; this makes it easier to distinguish the hovered label
 
 ### Changed
 
@@ -17,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Buildings are flattened when delta is active #824. 
+-   Buildings are flattened when delta is active #824.
 -   Selected Building now stays highlighted when map is rotated #1498
 
 ### Chore 👨‍💻 👩‍💻
