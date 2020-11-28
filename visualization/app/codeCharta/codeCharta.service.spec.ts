@@ -57,7 +57,8 @@ describe("codeChartaService", () => {
 				apiVersion: packageJson.codecharta.apiVersion,
 				fileName,
 				projectName: "Sample Map",
-				fileChecksum: "invalid-md5-sample"
+				fileChecksum: "invalid-md5-sample",
+				exportedFileSize: 42
 			},
 			map: {
 				attributes: {},
@@ -120,7 +121,8 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([
 				{
 					fileName,
-					content: validFileContent
+					content: validFileContent,
+					fileSize: 42
 				}
 			])
 
@@ -132,7 +134,8 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([
 				{
 					fileName,
-					content: validFileContent
+					content: validFileContent,
+					fileSize: 42
 				}
 			])
 
@@ -148,7 +151,8 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([
 				{
 					fileName,
-					content: validFileContent
+					content: validFileContent,
+					fileSize: 42
 				}
 			])
 
@@ -164,7 +168,8 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([
 				{
 					fileName,
-					content: validFileContent
+					content: validFileContent,
+					fileSize: 42
 				}
 			])
 
@@ -191,7 +196,7 @@ describe("codeChartaService", () => {
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, content: ("string" as unknown) as ExportCCFile }])
+			codeChartaService.loadFiles([{ fileName, fileSize: 42, content: ("string" as unknown) as ExportCCFile }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
@@ -205,7 +210,7 @@ describe("codeChartaService", () => {
 
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
-			codeChartaService.loadFiles([{ fileName, content: invalidFileContent }])
+			codeChartaService.loadFiles([{ fileName, fileSize: 42, content: invalidFileContent }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
@@ -217,7 +222,8 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([
 				{
 					fileName,
-					content: validFileContent
+					content: validFileContent,
+					fileSize: 42
 				}
 			])
 
@@ -235,8 +241,8 @@ describe("codeChartaService", () => {
 			delete invalidFileContent.projectName
 
 			codeChartaService.loadFiles([
-				{ fileName, content: invalidFileContent },
-				{ fileName, content: invalidFileContent }
+				{ fileName, content: invalidFileContent, fileSize: 42 },
+				{ fileName, content: invalidFileContent, fileSize: 42 }
 			])
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
@@ -247,7 +253,7 @@ describe("codeChartaService", () => {
 			validFileContent.nodes[0].children[0].name = "duplicate"
 			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
 
-			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+			codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
 			expect(storeService.getState().files).toHaveLength(1)
@@ -261,7 +267,7 @@ describe("codeChartaService", () => {
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+			codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
@@ -273,7 +279,7 @@ describe("codeChartaService", () => {
 			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
 			validFileContent.nodes[0].children[1].children[1].type = NodeType.FOLDER
 
-			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+			codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
 			expect(storeService.getState().files).toHaveLength(1)
