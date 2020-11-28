@@ -71,6 +71,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	highlightBuildingsAfterSelect() {
+		// TODO dead code? Remove it please.
 		const state = this.storeService.getState()
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 	}
@@ -101,6 +102,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	private resetMaterial(materials: Material[]) {
+		// TODO activate the function when the performance issue in updateCorrectMaterial() has been fixed.
+		return
 		const allNodes = this.mapMesh.getNodes()
 		for (const node of allNodes) {
 			for (const material of materials) {

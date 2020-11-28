@@ -198,8 +198,8 @@ export class BoxGeometryGenerationHelper {
 				data.addFace(indexBottomLeft, indexTopRight, indexTopLeft)
 				data.addFace(indexBottomLeft, indexBottomRight, indexTopRight)
 			} else {
-				// Collect floors from a depth of 1 until a depth of 3 to be stamped with the folder name as a label
-				// We skip the root folder because it makes no sense to label it.
+				// Collect floors from a depth of 0 until a depth of 3 to be stamped with the folder name as a label
+				// TODO provide conditions centrally for checking if a floor has to be labeled.
 				if (addingFloor && side === sides.top && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
 					data.saveFloorSurfaceInformation(node, minPos, maxPos)
 				}

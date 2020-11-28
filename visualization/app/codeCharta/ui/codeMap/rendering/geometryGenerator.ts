@@ -280,6 +280,8 @@ export class GeometryGenerator {
 		context.textBaseline = "middle"
 
 		// consider font size for y position
+		// TODO fontSizeForNodeDepth is the wrong font size to consider
+		//  we must use the scaled font size instead.
 		const textPositionY = textCanvas.height - fontSizeForNodeDepth / 2
 		const textPositionX = textCanvas.width / 2
 
