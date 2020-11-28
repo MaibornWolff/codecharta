@@ -184,7 +184,7 @@ describe("codeChartaService", () => {
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, content: null }])
+			codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
