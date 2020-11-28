@@ -12,6 +12,11 @@ import { FileState } from "../../model/files/files"
 
 const ONE_MB = 1024 * 1024
 
+export enum MAP_RESOLUTION_SCALE {
+	SMALL_MAP = 1,
+	MEDIUM_MAP = 0.5,
+	BIG_MAP = 0.25
+}
 export function getMapResolutionScaleFactor(files: FileState[]) {
 	let totalFileSize = 0
 	for (const file of files) {
@@ -19,9 +24,9 @@ export function getMapResolutionScaleFactor(files: FileState[]) {
 	}
 
 	switch (true) {
-		case totalFileSize >= 5 * ONE_MB:
+		case totalFileSize >= 7 * ONE_MB:
 			return 0.25
-		case totalFileSize >= ONE_MB:
+		case totalFileSize >= 2 * ONE_MB:
 			return 0.5
 		default:
 			return 1

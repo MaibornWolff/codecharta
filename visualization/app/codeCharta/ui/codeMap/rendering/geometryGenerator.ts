@@ -16,7 +16,7 @@ import {
 	RepeatWrapping,
 	DoubleSide
 } from "three"
-import { getMapResolutionScaleFactor } from "../codeMap.render.service"
+import { getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "../codeMap.render.service"
 
 export interface BoxMeasures {
 	x: number
@@ -37,8 +37,12 @@ export class GeometryGenerator {
 
 	private floorGradient: string[]
 	private materials: Material[]
-	private floorSurfaceLabelFontSizes = [144, 98, 98, 98]
-	private mapSizeResolutionScaling = 1
+	private floorSurfaceLabelFontSizes = new Map([
+		[MAP_RESOLUTION_SCALE.SMALL_MAP, [54, 54, 54]],
+		[MAP_RESOLUTION_SCALE.MEDIUM_MAP, [72, 54, 54]],
+		[MAP_RESOLUTION_SCALE.BIG_MAP, [108, 72, 72]]
+	])
+	private mapSizeResolutionScaling = MAP_RESOLUTION_SCALE.SMALL_MAP
 
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const data = new IntermediateVertexData()
@@ -252,21 +256,34 @@ export class GeometryGenerator {
 		textCanvas.width = surfaceInfo.maxPos.z - surfaceInfo.minPos.z
 
 		const context = textCanvas.getContext("2d")
-
-		const fontSizeForDepth = this.floorSurfaceLabelFontSizes[surfaceInfo.node.mapNodeDepth] * this.mapSizeResolutionScaling
-		context.font = `${fontSizeForDepth}px Arial`
-
 		context.fillStyle = this.getMarkingColorWithGradient(surfaceInfo.node)
 		context.fillRect(0, 0, textCanvas.width, textCanvas.height)
+
+		let labelText = surfaceInfo.node.name
+		const fonSizesForMapSize = this.floorSurfaceLabelFontSizes.get(this.mapSizeResolutionScaling)
+		const fontSizeForNodeDepth = fonSizesForMapSize[surfaceInfo.node.mapNodeDepth]
+		context.font = `${fontSizeForNodeDepth}px Arial`
+
+		const widthOfText = context.measureText(labelText)
+		const fontScaleFactor = this.getFontScaleFactor(textCanvas.width, widthOfText.width)
+		if (fontScaleFactor <= 0.5) {
+			// Font will be to small.
+			// So scale text not smaller than 0.5 and shorten it as well
+			context.font = `${fontSizeForNodeDepth * 0.5}px Arial`
+			labelText = this.getFittingLabelText(context, textCanvas.width, labelText, context.measureText(labelText).width)
+		} else {
+			context.font = `${fontSizeForNodeDepth * fontScaleFactor}px Arial`
+		}
+
 		context.fillStyle = "white"
 		context.textAlign = "center"
 		context.textBaseline = "middle"
 
 		// consider font size for y position
-		const textPositionY = textCanvas.height - fontSizeForDepth / 2
+		const textPositionY = textCanvas.height - fontSizeForNodeDepth / 2
 		const textPositionX = textCanvas.width / 2
-		const fittingLabel = this.getFittingLabel(context, textCanvas.width, surfaceInfo.node.name)
-		context.fillText(fittingLabel, textPositionX, textPositionY)
+
+		context.fillText(labelText, textPositionX, textPositionY)
 
 		const labelTexture = new CanvasTexture(textCanvas)
 		// Texture is mirrored (spiegelverkehrt)
@@ -283,18 +300,18 @@ export class GeometryGenerator {
 		this.materials.push(floorSurfaceLabelMaterial)
 	}
 
-	private getFittingLabel(context: CanvasRenderingContext2D, canvasWidth: number, text: string) {
-		const widthOfText = context.measureText(text).width
-		if (widthOfText < canvasWidth) {
-			return text
-		}
+	private getFontScaleFactor(canvasWidth: number, widthOfText: number) {
+		return widthOfText < canvasWidth ? 1 : canvasWidth / widthOfText
+	}
 
-		let textSplitIndex = Math.floor((text.length * canvasWidth) / widthOfText)
-		let abbreviatedText = `${text.slice(0, textSplitIndex)}...`
+	private getFittingLabelText(context: CanvasRenderingContext2D, canvasWidth: number, labelText: string, widthOfText: number) {
+		let textSplitIndex = Math.floor((labelText.length * canvasWidth) / widthOfText)
+		let abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
+
 		while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
 			// textSplitIndex > 1 to ensure it contains at least one char
 			textSplitIndex -= 1
-			abbreviatedText = `${text.slice(0, textSplitIndex)}...`
+			abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
 		}
 
 		return abbreviatedText

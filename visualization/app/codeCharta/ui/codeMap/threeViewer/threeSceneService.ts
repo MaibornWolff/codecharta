@@ -76,6 +76,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	private updateCorrectMaterial(materials: Material[], nodes: CodeMapBuilding[], select: boolean) {
+		// TODO This loops introduce performance issues
+		//  refactor it please
+		return
 		const allNodes = this.mapMesh.getNodes()
 
 		for (const node of allNodes) {

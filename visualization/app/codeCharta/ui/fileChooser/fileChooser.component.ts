@@ -37,7 +37,7 @@ export class FileChooserController {
 				}
 				reader.onloadend = () => {
 					readFiles++
-					this.addNameDataPair(file.name, content)
+					this.addNameDataPair(file, content)
 
 					if (readFiles === element.files.length) {
 						this.setNewData()

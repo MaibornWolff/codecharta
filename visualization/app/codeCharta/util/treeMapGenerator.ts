@@ -7,6 +7,8 @@ import { getMapResolutionScaleFactor } from "../ui/codeMap/codeMap.render.servic
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
 const PADDING_SCALING_FACTOR = 0.4
+const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1  = 120
+const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2  = 95
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean) {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -167,10 +169,10 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 		// Precalculate the needed paddings for the floor folder labels to be able to expand the default map size
 		if (!isLeaf(node)) {
 			if (node.depth === 0) {
-				addedLabelSpace += 150
+				addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
 			}
-			if (node.depth > 0 && node.depth < 4) {
-				addedLabelSpace += 120
+			if (node.depth > 0 && node.depth < 3) {
+				addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2
 			}
 		}
 	})
@@ -191,20 +193,15 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 			// Start the labels at level 1 not 0 because the root folder should not be labeled
 			if (node.depth === 0) {
 				// Add a big padding for the first folder level (the font is bigger than in deeper levels)
-				//console.log(width, width * 0.1)
-				//return width * 0.1 * mapSizeResolutionScaling
-				return 150 * mapSizeResolutionScaling
+				return DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
 			}
-			if (node.depth > 0 && node.depth < 4) {
-				//console.log(width, width * 0.1)
-				//return width * 0.1 * mapSizeResolutionScaling
-				return 120 * mapSizeResolutionScaling
+			if (node.depth > 0 && node.depth < 3) {
+				return DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2
 			}
-			// add default padding otherwise
+			// add treemap algorithm default padding otherwise
 			return padding
 		})
 
-	//console.log(treeMap.size())
 	return { treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state) * mapSizeResolutionScaling)), height, width }
 }
 
