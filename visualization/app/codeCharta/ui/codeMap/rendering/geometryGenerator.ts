@@ -1,10 +1,22 @@
 import { Node, State } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { IntermediateVertexData } from "./intermediateVertexData"
+import { IntermediateVertexData, SurfaceInformation } from "./intermediateVertexData"
 import { BoxGeometryGenerationHelper } from "./boxGeometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { Mesh, BufferGeometry, Material, Box3, Vector3, BufferAttribute } from "three"
+import {
+	Mesh,
+	BufferGeometry,
+	Material,
+	Box3,
+	Vector3,
+	BufferAttribute,
+	MeshBasicMaterial,
+	CanvasTexture,
+	RepeatWrapping,
+	DoubleSide
+} from "three"
+import { getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "../codeMap.render.service"
 
 export interface BoxMeasures {
 	x: number
@@ -24,12 +36,21 @@ export class GeometryGenerator {
 	private static MINIMAL_BUILDING_HEIGHT = 1
 
 	private floorGradient: string[]
+	private materials: Material[]
+	private floorSurfaceLabelFontSizes = new Map([
+		[MAP_RESOLUTION_SCALE.SMALL_MAP, [54, 54, 54]],
+		[MAP_RESOLUTION_SCALE.MEDIUM_MAP, [72, 54, 54]],
+		[MAP_RESOLUTION_SCALE.BIG_MAP, [108, 72, 72]]
+	])
+	private mapSizeResolutionScaling = MAP_RESOLUTION_SCALE.SMALL_MAP
 
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const data = new IntermediateVertexData()
 		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
+		this.mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
+		this.materials = [material]
 
 		// TODO: It is possible to significantly improve the overall drawing
 		// performance by preventing intermediate transformations such as arrays
@@ -44,7 +65,7 @@ export class GeometryGenerator {
 		}
 
 		return {
-			mesh: this.buildMeshFromIntermediateVertexData(data, material),
+			mesh: this.buildMeshFromIntermediateVertexData(data),
 			desc
 		}
 	}
@@ -88,7 +109,7 @@ export class GeometryGenerator {
 			)
 		)
 
-		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, index, 0)
+		BoxGeometryGenerationHelper.addBoxToVertexData(data, node, measures, color, index, 0, true)
 	}
 
 	private getMarkingColorWithGradient(node: Node) {
@@ -133,10 +154,10 @@ export class GeometryGenerator {
 			)
 		)
 
-		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, node.color, index, renderDelta)
+		BoxGeometryGenerationHelper.addBoxToVertexData(data, node, measures, node.color, index, renderDelta)
 	}
 
-	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: Material) {
+	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData) {
 		const numberVertices = data.positions.length
 		const dimension = 3
 		const uvDimension = 2
@@ -189,6 +210,112 @@ export class GeometryGenerator {
 
 		geometry.setIndex(new BufferAttribute(indices, 1))
 
-		return new Mesh(geometry, material)
+		const topSurfaceInfos = data.floorSurfaceInformation
+		if (topSurfaceInfos[0] === undefined) {
+			// Add default group
+			geometry.addGroup(0, Infinity, 0)
+		} else {
+			this.addMaterialGroups(data, geometry)
+		}
+
+		return new Mesh(geometry, this.materials)
+	}
+
+	private addMaterialGroups(data: IntermediateVertexData, geometry: BufferGeometry) {
+		const topSurfaceInfos = data.floorSurfaceInformation
+
+		// Render with default material until first floor surface
+		geometry.addGroup(0, topSurfaceInfos[0].surfaceStartIndex, 0)
+
+		// In general, a plane is rendered by 2 triangles, each with 3 vertices.
+		const verticesPerPlane = 6
+
+		for (let surfaceIndex = 0; surfaceIndex < topSurfaceInfos.length; surfaceIndex++) {
+			const currentSurfaceInfo = topSurfaceInfos[surfaceIndex]
+			// Render the floors surface with the text label texture
+			geometry.addGroup(currentSurfaceInfo.surfaceStartIndex, verticesPerPlane, surfaceIndex + 1)
+
+			this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
+
+			let verticesCountUntilNextFloorLabelRenderer = Infinity
+			const startOfNextDefaultRenderer = currentSurfaceInfo.surfaceStartIndex + verticesPerPlane
+			const nextSurfaceInfo = topSurfaceInfos[surfaceIndex + 1]
+
+			if (nextSurfaceInfo) {
+				verticesCountUntilNextFloorLabelRenderer = nextSurfaceInfo.surfaceStartIndex - startOfNextDefaultRenderer
+			}
+
+			// Render the remaining planes (sides, bottom) with the default material
+			geometry.addGroup(startOfNextDefaultRenderer, verticesCountUntilNextFloorLabelRenderer, 0)
+		}
+	}
+
+	private createAndAssignFloorLabelTextureMaterial(surfaceInfo: SurfaceInformation) {
+		const textCanvas = document.createElement("canvas")
+		textCanvas.height = surfaceInfo.maxPos.x - surfaceInfo.minPos.x
+		textCanvas.width = surfaceInfo.maxPos.z - surfaceInfo.minPos.z
+
+		const context = textCanvas.getContext("2d")
+		context.fillStyle = this.getMarkingColorWithGradient(surfaceInfo.node)
+		context.fillRect(0, 0, textCanvas.width, textCanvas.height)
+
+		let labelText = surfaceInfo.node.name
+		const fonSizesForMapSize = this.floorSurfaceLabelFontSizes.get(this.mapSizeResolutionScaling)
+		const fontSizeForNodeDepth = fonSizesForMapSize[surfaceInfo.node.mapNodeDepth]
+		context.font = `${fontSizeForNodeDepth}px Arial`
+
+		const widthOfText = context.measureText(labelText)
+		const fontScaleFactor = this.getFontScaleFactor(textCanvas.width, widthOfText.width)
+		if (fontScaleFactor <= 0.5) {
+			// Font will be to small.
+			// So scale text not smaller than 0.5 and shorten it as well
+			context.font = `${fontSizeForNodeDepth * 0.5}px Arial`
+			labelText = this.getFittingLabelText(context, textCanvas.width, labelText, context.measureText(labelText).width)
+		} else {
+			context.font = `${fontSizeForNodeDepth * fontScaleFactor}px Arial`
+		}
+
+		context.fillStyle = "white"
+		context.textAlign = "center"
+		context.textBaseline = "middle"
+
+		// consider font size for y position
+		// TODO fontSizeForNodeDepth is the wrong font size to consider
+		//  we must use the scaled font size instead.
+		const textPositionY = textCanvas.height - fontSizeForNodeDepth / 2
+		const textPositionX = textCanvas.width / 2
+
+		context.fillText(labelText, textPositionX, textPositionY)
+
+		const labelTexture = new CanvasTexture(textCanvas)
+		// Texture is mirrored (spiegelverkehrt)
+		// Mirror it horizontally to fix that
+		labelTexture.wrapS = RepeatWrapping
+		labelTexture.repeat.x = -1
+
+		const floorSurfaceLabelMaterial = new MeshBasicMaterial({ map: labelTexture })
+		floorSurfaceLabelMaterial.needsUpdate = true
+		floorSurfaceLabelMaterial.side = DoubleSide
+		floorSurfaceLabelMaterial.transparent = true
+		floorSurfaceLabelMaterial.userData = surfaceInfo.node
+
+		this.materials.push(floorSurfaceLabelMaterial)
+	}
+
+	private getFontScaleFactor(canvasWidth: number, widthOfText: number) {
+		return widthOfText < canvasWidth ? 1 : canvasWidth / widthOfText
+	}
+
+	private getFittingLabelText(context: CanvasRenderingContext2D, canvasWidth: number, labelText: string, widthOfText: number) {
+		let textSplitIndex = Math.floor((labelText.length * canvasWidth) / widthOfText)
+		let abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
+
+		while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
+			// textSplitIndex > 1 to ensure it contains at least one char
+			textSplitIndex -= 1
+			abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
+		}
+
+		return abbreviatedText
 	}
 }

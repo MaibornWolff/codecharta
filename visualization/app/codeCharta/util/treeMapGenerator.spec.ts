@@ -1,4 +1,4 @@
-import { NodeMetricData, State, CodeMapNode, Node } from "../codeCharta.model"
+import { NodeMetricData, State, CodeMapNode, Node, NameDataPair } from "../codeCharta.model"
 import { createTreemapNodes, calculateAreaValue } from "./treeMapGenerator"
 import {
 	METRIC_DATA,
@@ -27,7 +27,8 @@ describe("treeMapGenerator", () => {
 
 	function restartSystem() {
 		map = klona(TEST_FILE_WITH_PATHS.map)
-		NodeDecorator.decorateMapWithPathAttribute(getCCFile("someFile", fileWithFixedFolders))
+		const file: NameDataPair = { fileName: "someFile", fileSize: 42, content: fileWithFixedFolders }
+		NodeDecorator.decorateMapWithPathAttribute(getCCFile(file))
 		state = klona(STATE)
 		codeMapNode = klona(VALID_NODE_WITH_PATH)
 		metricData = klona(METRIC_DATA)

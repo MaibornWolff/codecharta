@@ -39,6 +39,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	//labels need to be scaled according to map or it will clip + looks bad
 	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, hightestNode: number) {
+		// todo: tk rename to addLeafLabel
 		const state = this.storeService.getState()
 		const x = node.x0 - state.treeMap.mapSize
 		const y = node.z0
@@ -73,7 +74,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			this.threeSceneService.labels.add(label.sprite)
 			this.threeSceneService.labels.add(label.line)
 
-			this.labels.push(label)
+			this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
 		}
 		this.resetScale = true
 	}

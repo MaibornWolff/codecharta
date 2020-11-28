@@ -726,7 +726,8 @@ export const FILE_META: FileMeta = {
 	fileName: "fileA",
 	fileChecksum: "md5-fileA",
 	projectName: "Sample Project",
-	apiVersion: packageJson.codecharta.apiVersion
+	apiVersion: packageJson.codecharta.apiVersion,
+	exportedFileSize: 300000
 }
 
 export const TEST_FILE_DATA: CCFile = {
@@ -1356,7 +1357,8 @@ export const TEST_DELTA_MAP_A: CCFile = {
 		fileName: "fileA",
 		fileChecksum: "md5-delta-fileA",
 		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion
+		apiVersion: packageJson.codecharta.apiVersion,
+		exportedFileSize: 300000
 	},
 	map: {
 		name: "root",
@@ -1413,7 +1415,8 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		fileName: "fileB",
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion
+		apiVersion: packageJson.codecharta.apiVersion,
+		exportedFileSize: 300000
 	},
 	map: {
 		name: "root",
@@ -1750,6 +1753,7 @@ export const TEST_NODE_ROOT: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,
@@ -2021,6 +2025,7 @@ export const TEST_NODE_LEAF: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,
@@ -2048,6 +2053,7 @@ export const INCOMING_NODE: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,
@@ -2073,6 +2079,7 @@ export const OUTGOING_NODE: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,
@@ -2098,6 +2105,7 @@ export const DIFFERENT_NODE: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,

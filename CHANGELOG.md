@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add the folder name onto the floor on the first 3 layers to get a better overview of the map ([#1491](https://github.com/MaibornWolff/codecharta/issues/1491))
 -   UX Improvements related to labels allowing for user interaction #1404
     -   Labels can be hovered, hovering their corresponding node
     -   Selecting a label will select the corresponding node

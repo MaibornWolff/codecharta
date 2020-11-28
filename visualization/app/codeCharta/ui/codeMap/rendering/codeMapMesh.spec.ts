@@ -13,19 +13,21 @@ describe("codeMapMesh", () => {
 	})
 
 	const mockStoreService = () => {
-		storeService = jest.fn().mockReturnValue( {
-			getState : jest.fn().mockReturnValue(STATE)
+		storeService = jest.fn().mockReturnValue({
+			getState: jest.fn().mockReturnValue(STATE)
 		})()
 	}
-	
-	describe("setNewDeltaColor", () => {
-		let codeMapBuilding : CodeMapBuilding
-		const { appSettings : {mapColors} } = STATE;
 
-		const setFlattened = (isFlat : boolean) => {
-			testNodes.forEach(node => node.flat = isFlat)
+	describe("setNewDeltaColor", () => {
+		let codeMapBuilding: CodeMapBuilding
+		const {
+			appSettings: { mapColors }
+		} = STATE
+
+		const setFlattened = (isFlat: boolean) => {
+			testNodes.forEach(node => (node.flat = isFlat))
 		}
-		
+
 		const rebuildMesh = () => {
 			const codedMapMesh = new CodeMapMesh([TEST_NODE_ROOT], storeService.getState(), true)
 			codeMapBuilding = codedMapMesh.getBuildingByPath(TEST_NODE_ROOT.path)
@@ -38,7 +40,7 @@ describe("codeMapMesh", () => {
 			expect(testNodes[0].flat).toBeFalsy()
 			expect(codeMapBuilding.deltaColor).not.toEqual(mapColors.flat)
 		})
-		
+
 		it("should set flat color when flat", () => {
 			setFlattened(true)
 			rebuildMesh()

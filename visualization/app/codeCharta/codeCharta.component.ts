@@ -62,8 +62,8 @@ export class CodeChartaController {
 			this.dialogService.showErrorDialog(message, title)
 		}
 		this.tryLoadingFiles([
-			{ fileName: "sample1.cc.json", content: sample1 as ExportCCFile },
-			{ fileName: "sample2.cc.json", content: sample2 as ExportCCFile }
+			{ fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile },
+			{ fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
 		])
 	}
 
