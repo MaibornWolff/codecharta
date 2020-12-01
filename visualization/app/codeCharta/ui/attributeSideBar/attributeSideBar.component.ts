@@ -40,14 +40,12 @@ export class AttributeSideBarController
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
 		isSideBarVisible: boolean
-		packageFileCount: number
 	} = {
 		node: null,
 		fileName: null,
 		primaryMetricKeys: { node: {}, edge: {} } as PrimaryMetrics,
 		secondaryMetricKeys: null,
-		isSideBarVisible: null,
-		packageFileCount: 0
+		isSideBarVisible: null
 	}
 
 	/* @ngInject */
@@ -66,7 +64,6 @@ export class AttributeSideBarController
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
-		this._viewModel.packageFileCount = selectedBuilding.node.attributes.unary ?? 0
 		this._viewModel.fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
