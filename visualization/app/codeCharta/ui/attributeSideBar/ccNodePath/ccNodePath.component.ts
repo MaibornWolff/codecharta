@@ -22,13 +22,13 @@ class CcNodePathController implements BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
 		this._viewModel.packageFileCount = selectedBuilding.node?.attributes?.unary ?? 0
-		this._viewModel.fileCountDescription = this.getFileCountDescription()
+		this._viewModel.fileCountDescription = CcNodePathController.getFileCountDescription(this._viewModel.packageFileCount)
 	}
 
-	private getFileCountDescription() {
-		if (this._viewModel.packageFileCount === 0) return "empty"
-		if (this._viewModel.packageFileCount === 1) return "1 file"
-		return `${this._viewModel.packageFileCount} files`
+	static getFileCountDescription(fileCount: number) {
+		if (fileCount === 0) return "empty"
+		if (fileCount === 1) return "1 file"
+		return `${fileCount} files`
 	}
 }
 

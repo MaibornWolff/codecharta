@@ -2,6 +2,7 @@ import angular from "angular"
 import "angular-mocks"
 
 import "../attributeSideBar.module"
+import { ccNodePathComponent } from "./ccNodePath.component"
 
 describe("CcNodePathComponent", () => {
 	let $compile
@@ -17,16 +18,25 @@ describe("CcNodePathComponent", () => {
 	})
 
 	afterEach(() => {
-		jest.resetAllMocks()
+		jest.clearAllMocks()
 	})
 
-	it("should not throw initially", () => {
+	it("should update its `_viewModel` when a `building-selected`-event is fired", () => {
 		const component = $compile("<cc-node-path-component></cc-node-path-component>")($rootScope)
+		$rootScope.$emit("building-selected", {
+			node: {
+				isLeaf: false,
+				path: "some/file.ts",
+				attributes: { unary: 1 }
+			}
+		})
+		$rootScope.$digest()
 
-		expect(() => {
-			$rootScope.$digest()
-			component.html()
-		}).not.toThrow()
+		const viewModel = component.controller("ccNodePathComponent")._viewModel
+		expect(viewModel.node.isLeaf).toBe(false)
+		expect(viewModel.node.path).toBe("some/file.ts")
+		expect(viewModel.packageFileCount).toBe(1)
+		expect(viewModel.fileCountDescription).toBe("1 file")
 	})
 
 	it("should display path of selected building", () => {
@@ -39,7 +49,7 @@ describe("CcNodePathComponent", () => {
 		expect(component.text()).toContain("some/file.ts")
 	})
 
-	it("should display no file count information if selected building is a leaf / i.e. a folder", () => {
+	it("should display no file count information if selected building is a leaf / i.e. a file", () => {
 		const component = $compile("<cc-node-path-component></cc-node-path-component>")($rootScope)
 		$rootScope.$emit("building-selected", {
 			node: { isLeaf: true, path: "some/file.ts" }
@@ -49,59 +59,28 @@ describe("CcNodePathComponent", () => {
 		expect(component[0].getElementsByClassName("cc-node-file-count").length).toBe(0)
 	})
 
-	it("should display 'empty' description for empty folder", () => {
+	it("should insert section for file count if selected building is not a leaf / i.e. a folder", () => {
+		const getFileCountDescriptionSpy = jest.spyOn(ccNodePathComponent.controller, "getFileCountDescription")
 		const component = $compile("<cc-node-path-component></cc-node-path-component>")($rootScope)
 		$rootScope.$emit("building-selected", {
 			node: { isLeaf: false, path: "some/file.ts" }
 		})
 		$rootScope.$digest()
 
-		const fileCountDescriptionElement = component[0].getElementsByClassName("cc-node-file-count")[0]
-		expect(fileCountDescriptionElement).not.toBe(undefined)
-		expect(fileCountDescriptionElement.textContent).toContain("empty")
+		const fileCountDescriptionElems = component[0].getElementsByClassName("cc-node-file-count")
+		expect(fileCountDescriptionElems.length).toBe(1)
+		expect(getFileCountDescriptionSpy).toHaveBeenCalledTimes(1)
 	})
 
-	it("should display 'empty' description for empty folder", () => {
-		const component = $compile("<cc-node-path-component></cc-node-path-component>")($rootScope)
-		$rootScope.$emit("building-selected", {
-			node: { isLeaf: false, path: "some/file.ts" }
-		})
-		$rootScope.$digest()
-
-		const fileCountDescriptionElement = component[0].getElementsByClassName("cc-node-file-count")[0]
-		expect(fileCountDescriptionElement).not.toBe(undefined)
-		expect(fileCountDescriptionElement.textContent).toContain("empty")
+	it("should calculate nice description for empty folders", () => {
+		expect(ccNodePathComponent.controller.getFileCountDescription(0)).toBe("empty")
 	})
 
-	it("should display '1 file' description for folder with one file", () => {
-		const component = $compile("<cc-node-path-component></cc-node-path-component>")($rootScope)
-		$rootScope.$emit("building-selected", {
-			node: {
-				isLeaf: false,
-				path: "some/file.ts",
-				attributes: { unary: 1 }
-			}
-		})
-		$rootScope.$digest()
-
-		const fileCountDescriptionElement = component[0].getElementsByClassName("cc-node-file-count")[0]
-		expect(fileCountDescriptionElement).not.toBe(undefined)
-		expect(fileCountDescriptionElement.textContent).toContain("1 file")
+	it("should calculate nice description for folders with one file", () => {
+		expect(ccNodePathComponent.controller.getFileCountDescription(1)).toBe("1 file")
 	})
 
-	it("should display 'x files' description for folder with x", () => {
-		const component = $compile("<cc-node-path-component></cc-node-path-component>")($rootScope)
-		$rootScope.$emit("building-selected", {
-			node: {
-				isLeaf: false,
-				path: "some/file.ts",
-				attributes: { unary: 4 }
-			}
-		})
-		$rootScope.$digest()
-
-		const fileCountDescriptionElement = component[0].getElementsByClassName("cc-node-file-count")[0]
-		expect(fileCountDescriptionElement).not.toBe(undefined)
-		expect(fileCountDescriptionElement.textContent).toContain("4 files")
+	it("should calculate nice description for folders with many file", () => {
+		expect(ccNodePathComponent.controller.getFileCountDescription(4)).toBe("4 files")
 	})
 })
