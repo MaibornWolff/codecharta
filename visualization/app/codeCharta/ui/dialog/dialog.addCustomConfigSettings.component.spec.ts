@@ -8,14 +8,15 @@ import { setFiles } from "../../state/store/files/files.actions"
 import { FILE_STATES } from "../../util/dataMocks"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import * as CustomConfigBuilder from "../../util/customConfigBuilder"
-import { CustomConfig } from "../../model/customConfig/customConfig.api.model";
-import { CustomConfigFileStateConnector } from "../customConfigs/customConfigFileStateConnector";
+import { CustomConfig } from "../../model/customConfig/customConfig.api.model"
+import { DialogService } from "./dialog.service"
 
 describe("DialogAddScenarioSettingsComponent", () => {
 	let dialogAddCustomConfigSettings: DialogAddCustomConfigSettingsComponent
 	let $mdDialog
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
+	let dialogService: DialogService
 
 	beforeEach(() => {
 		restartSystem()
@@ -23,7 +24,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 	})
 
 	function rebuildController() {
-		dialogAddCustomConfigSettings = new DialogAddCustomConfigSettingsComponent($rootScope, $mdDialog, storeService)
+		dialogAddCustomConfigSettings = new DialogAddCustomConfigSettingsComponent($rootScope, $mdDialog, storeService, dialogService)
 	}
 
 	function restartSystem() {
@@ -32,6 +33,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 		$mdDialog = getService("$mdDialog")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		dialogService = getService<DialogService>("dialogService")
 
 		storeService.dispatch(setFiles(FILE_STATES))
 	}
@@ -119,19 +121,19 @@ describe("DialogAddScenarioSettingsComponent", () => {
 	})
 
 	describe("downloadAndCollectPurgeableOldConfigs", () => {
-		it("should download even if no customConfigs could be found to be downloaded", () => {
+		it("should not trigger the download if no customConfigs could be found to be downloaded", () => {
 			CustomConfigHelper.downloadCustomConfigs = jest.fn()
 			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
 
 			const clearedConfig = {
 				id: "invalid-md5-checksum-id",
-				name: "this-one-should-be-cleared"
+				name: "this-one-should-be-cleared-before-starting-the-collect"
 			} as CustomConfig
 
 			dialogAddCustomConfigSettings["purgeableConfigs"].add(clearedConfig)
 			dialogAddCustomConfigSettings.downloadAndCollectPurgeableOldConfigs()
 
-			expect(CustomConfigHelper.downloadCustomConfigs).toHaveBeenCalledWith(new Map(), expect.any(CustomConfigFileStateConnector))
+			expect(CustomConfigHelper.downloadCustomConfigs).not.toHaveBeenCalledWith()
 		})
 
 		it("should download 6 month old configs", () => {
@@ -140,16 +142,23 @@ describe("DialogAddScenarioSettingsComponent", () => {
 			const sevenMonthOldConfig = {
 				id: "invalid-md5-checksum-id-7-month",
 				name: "this-one-should-be-cleared",
-				creationTime: (Date.now() - (7 * 30 * 24 * 60 * 60 * 1000))
+				creationTime: Date.now() - 7 * 30 * 24 * 60 * 60 * 1000
+			} as CustomConfig
+
+			const fourMonthOldConfig = {
+				id: "invalid-md5-checksum-id-four-month",
+				name: "this-one-should-NOT-be-cleared",
+				creationTime: Date.now() - 4 * 30 * 24 * 60 * 60 * 1000
 			} as CustomConfig
 
 			const newlyCreatedConfig = {
 				id: "invalid-md5-checksum-id-newly",
-				name: "creationTimePropertyWillBeAddedInRuntime"
+				name: "missingCreationTimePropertyWillBeAddedInRuntime"
 			} as CustomConfig
 
 			const configsToDownload: Map<string, CustomConfig> = new Map()
 			configsToDownload.set(sevenMonthOldConfig.id, sevenMonthOldConfig)
+			configsToDownload.set(fourMonthOldConfig.id, fourMonthOldConfig)
 			configsToDownload.set(newlyCreatedConfig.id, newlyCreatedConfig)
 
 			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(configsToDownload)

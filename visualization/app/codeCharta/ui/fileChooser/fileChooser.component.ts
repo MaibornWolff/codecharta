@@ -7,7 +7,7 @@ import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/is
 import { ExportCCFile } from "./../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
-import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper";
+import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []

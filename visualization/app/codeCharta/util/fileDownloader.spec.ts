@@ -3,7 +3,7 @@ import { FileDownloader } from "./fileDownloader"
 import { FileMeta, CodeMapNode, FileSettings, BlacklistType } from "../codeCharta.model"
 import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED, VALID_NODE_DECORATED, VALID_EDGES_DECORATED } from "./dataMocks"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
-import {klona} from "klona";
+import { klona } from "klona"
 
 describe("fileDownloader", () => {
 	let map: CodeMapNode

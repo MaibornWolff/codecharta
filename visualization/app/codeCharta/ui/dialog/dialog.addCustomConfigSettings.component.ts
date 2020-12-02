@@ -6,16 +6,14 @@ import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
 import { CustomConfigFileStateConnector } from "../customConfigs/customConfigFileStateConnector"
 import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
-import {
-	CustomConfig,
-	ExportCustomConfig
-} from "../../model/customConfig/customConfig.api.model";
+import { CustomConfig, ExportCustomConfig } from "../../model/customConfig/customConfig.api.model"
+import { DialogService } from "./dialog.service"
 
 export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSubscriber {
-
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private purgeableConfigs: Set<CustomConfig> = new Set()
-	private customLocalStorageLimitInKB = 6
+	private customLocalStorageLimitInKB = 768
+	private customConfigAgeLimitInMonths = 6
 
 	private _viewModel: {
 		customConfigName: string
@@ -27,7 +25,12 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		localStorageSizeWarningMessage: ""
 	}
 
-	constructor(private $rootScope: IRootScopeService, private $mdDialog, private storeService: StoreService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $mdDialog,
+		private storeService: StoreService,
+		private dialogService: DialogService
+	) {
 		FilesService.subscribe(this.$rootScope, this)
 		this.onFilesSelectionChanged(this.storeService.getState().files)
 		this.validateLocalStorageSize()
@@ -57,7 +60,13 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 	async showPurgeConfirmDialog() {
 		this.downloadAndCollectPurgeableOldConfigs()
 
-		const confirmDialog = this.$mdDialog.confirm()
+		if (this.purgeableConfigs.size === 0) {
+			this.dialogService.showErrorDialog("Could not download and purge old configs automatically! Please try it by yourself.")
+			return
+		}
+
+		const confirmDialog = this.$mdDialog
+			.confirm()
 			.clickOutsideToClose(true)
 			.title("Confirm to purge old Configs")
 			.htmlContent("Are you sure to delete old Configs now?")
@@ -94,10 +103,9 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 				value.creationTime = Date.now()
 			}
 
-			// Download 6 month old or older Configs.
-			const ageInMonth = ((Date.now() - value.creationTime) / (1000 * 60 * 60 * 24 * daysPerMonth))
-
-			if (ageInMonth <= 6) {
+			// Download e.g. 6 month old or older Configs.
+			const ageInMonth = (Date.now() - value.creationTime) / (1000 * 60 * 60 * 24 * daysPerMonth)
+			if (ageInMonth < this.customConfigAgeLimitInMonths) {
 				continue
 			}
 
@@ -105,7 +113,9 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 			this.purgeableConfigs.add(value)
 		}
 
-		CustomConfigHelper.downloadCustomConfigs(downloadableConfigs, this.customConfigFileStateConnector)
+		if (downloadableConfigs.size > 0) {
+			CustomConfigHelper.downloadCustomConfigs(downloadableConfigs, this.customConfigFileStateConnector)
+		}
 	}
 
 	validateCustomConfigName() {
@@ -133,10 +143,11 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		// The localStorage size (e.g. 5MB) is assigned per origin.
 		// Multiply localStorage characters by 16 (bits( because they are stored in UTF-16.
 		// Add 3KB as it seems there is some default overhead.
-		const localStorageSizeInKB = 3 + (allStringsConcatenated.length * 16 / 8 / 1024)
+		const localStorageSizeInKB = 3 + (allStringsConcatenated.length * 16) / 8 / 1024
 
 		if (localStorageSizeInKB > this.customLocalStorageLimitInKB) {
-			this._viewModel.localStorageSizeWarningMessage = "Do you want to download and then purge old unused Configs to make space for new ones?"
+			this._viewModel.localStorageSizeWarningMessage =
+				"Do you want to download and then purge old unused Configs to make space for new ones?"
 		} else {
 			this._viewModel.localStorageSizeWarningMessage = ""
 		}

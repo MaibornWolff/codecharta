@@ -5,7 +5,7 @@ import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service
 import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
-} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service";
+} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 
 export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, ExperimentalFeaturesEnabledSubscriber {
 	private _viewModel: {

@@ -6,7 +6,7 @@ export class FileNameHelper {
 	private static JSON_EXTENSION = ".json"
 
 	static getNewFileName(fileName: string, isDeltaState: boolean) {
-		return `${this.getFileNameWithoutTimestamp(fileName, isDeltaState)}_${  this.getNewTimestamp()}`
+		return `${this.getFileNameWithoutTimestamp(fileName, isDeltaState)}_${this.getNewTimestamp()}`
 	}
 
 	static getNewTimestamp() {

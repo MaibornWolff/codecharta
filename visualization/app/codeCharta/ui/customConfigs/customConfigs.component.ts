@@ -11,11 +11,7 @@ import { FileState } from "../../model/files/files"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { IRootScopeService } from "angular"
 import { CustomConfigFileStateConnector } from "./customConfigFileStateConnector"
-import {
-	CustomConfig,
-	CustomConfigMapSelectionMode,
-	ExportCustomConfig
-} from "../../model/customConfig/customConfig.api.model"
+import { CustomConfig, CustomConfigMapSelectionMode, ExportCustomConfig } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { setCamera } from "../../state/store/appSettings/camera/camera.actions"
 import { setCameraTarget } from "../../state/store/appSettings/cameraTarget/cameraTarget.actions"
@@ -38,7 +34,7 @@ export interface CustomConfigItemGroup {
 
 export class CustomConfigsController implements FilesSelectionSubscriber {
 	private _viewModel: {
-		dropDownCustomConfigItemGroups: CustomConfigItemGroup[],
+		dropDownCustomConfigItemGroups: CustomConfigItemGroup[]
 		hasDownloadableConfigs: boolean
 	} = {
 		dropDownCustomConfigItemGroups: [],
@@ -47,7 +43,6 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private downloadableConfigs: Map<string, ExportCustomConfig> = new Map()
-
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -132,7 +127,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 			}
 		}
 
-		return this._viewModel.hasDownloadableConfigs = this.downloadableConfigs.size > 0
+		return (this._viewModel.hasDownloadableConfigs = this.downloadableConfigs.size > 0)
 	}
 
 	private isConfigApplicableForUploadedMaps(customConfig: CustomConfig) {

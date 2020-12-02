@@ -154,7 +154,7 @@ describe("CustomConfigsController", () => {
 
 			const exportConfig1 = {
 				id: "1-invalid-md5-checksum",
-				name: "config-to-be-exported-1",
+				name: "config-to-be-exported-1"
 			} as ExportCustomConfig
 
 			customConfigsController["downloadableConfigs"].set(exportConfig1.id, exportConfig1)
@@ -168,7 +168,7 @@ describe("CustomConfigsController", () => {
 		it("should clear downloadableConfigs and then collect them again", () => {
 			const previouslyPrefetchedExportConfig = {
 				id: "0-invalid-md5-checksum",
-				name: "config-should-be-cleared-1",
+				name: "config-should-be-cleared-1"
 			} as ExportCustomConfig
 
 			customConfigsController["downloadableConfigs"].set(previouslyPrefetchedExportConfig.id, previouslyPrefetchedExportConfig)
@@ -197,7 +197,12 @@ describe("CustomConfigsController", () => {
 				mapChecksum: "not-applicable-map"
 			} as CustomConfig
 
-			const customConfigs = new Map([[customConfig1.id, customConfig1], [customConfig2.id, customConfig2], [customConfig3.id, customConfig3], [customConfig4NotApplicable.id, customConfig4NotApplicable]])
+			const customConfigs = new Map([
+				[customConfig1.id, customConfig1],
+				[customConfig2.id, customConfig2],
+				[customConfig3.id, customConfig3],
+				[customConfig4NotApplicable.id, customConfig4NotApplicable]
+			])
 			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(customConfigs)
 
 			customConfigsController.onFilesSelectionChanged(FILE_STATES)
@@ -205,7 +210,9 @@ describe("CustomConfigsController", () => {
 			expect(customConfigsController["downloadableConfigs"].size).toBe(3)
 			expect(customConfigsController["downloadableConfigs"].get("1-invalid-md5-checksum").name).toBe("downloadable-config-1")
 			expect(customConfigsController["downloadableConfigs"].get("2-invalid-md5-checksum").name).toBe("downloadable-config-2")
-			expect(customConfigsController["downloadableConfigs"].get("3-invalid-md5-checksum").name).toBe("downloadable-config-3-partially-matching")
+			expect(customConfigsController["downloadableConfigs"].get("3-invalid-md5-checksum").name).toBe(
+				"downloadable-config-3-partially-matching"
+			)
 
 			expect(customConfigsController["_viewModel"].hasDownloadableConfigs).toBe(true)
 		})

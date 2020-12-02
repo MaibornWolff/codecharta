@@ -4,11 +4,12 @@ import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.compone
 import {
 	CustomConfig,
 	CustomConfigMapSelectionMode,
-	CustomConfigsDownloadFile, ExportCustomConfig
+	CustomConfigsDownloadFile,
+	ExportCustomConfig
 } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
-import {FileNameHelper} from "./fileNameHelper";
-import {FileDownloader} from "./fileDownloader";
+import { FileNameHelper } from "./fileNameHelper"
+import { FileDownloader } from "./fileDownloader"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -50,10 +51,7 @@ export class CustomConfigHelper {
 		return customConfigItemGroups
 	}
 
-	private static isCustomConfigApplicable(
-		customConfigFileStateConnector: CustomConfigFileStateConnector,
-		customConfig: CustomConfig
-	) {
+	private static isCustomConfigApplicable(customConfigFileStateConnector: CustomConfigFileStateConnector, customConfig: CustomConfig) {
 		// Configs are applicable if their mapChecksums (and mode) are matching, therefore, map names must not be checked.
 		return (
 			customConfigFileStateConnector.getChecksumOfAssignedMaps() === customConfig.mapChecksum &&
@@ -109,7 +107,6 @@ export class CustomConfigHelper {
 		const importedCustomConfigsFile: CustomConfigsDownloadFile = JSON.parse(content, stateObjectReviver)
 
 		for (const exportedConfig of importedCustomConfigsFile.customConfigs.values()) {
-
 			const alreadyExistingConfig = CustomConfigHelper.getCustomConfigSettings(exportedConfig.id)
 
 			// Check for a duplicate Config by matching checksums
@@ -118,7 +115,9 @@ export class CustomConfigHelper {
 			}
 
 			// Prevent different Configs with the same name
-			if (CustomConfigHelper.hasCustomConfigByName(exportedConfig.mapSelectionMode, exportedConfig.assignedMaps, exportedConfig.name)) {
+			if (
+				CustomConfigHelper.hasCustomConfigByName(exportedConfig.mapSelectionMode, exportedConfig.assignedMaps, exportedConfig.name)
+			) {
 				exportedConfig.name += ` (${FileNameHelper.getFormattedTimestamp(new Date(exportedConfig.creationTime))})`
 			}
 
@@ -130,14 +129,17 @@ export class CustomConfigHelper {
 				customConfigVersion: exportedConfig.customConfigVersion,
 				mapChecksum: exportedConfig.mapChecksum,
 				mapSelectionMode: exportedConfig.mapSelectionMode,
-				stateSettings: exportedConfig.stateSettings,
+				stateSettings: exportedConfig.stateSettings
 			}
 
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)
 		}
 	}
 
-	static downloadCustomConfigs(customConfigs: Map<string, ExportCustomConfig>, customConfigFileStateConnector: CustomConfigFileStateConnector) {
+	static downloadCustomConfigs(
+		customConfigs: Map<string, ExportCustomConfig>,
+		customConfigFileStateConnector: CustomConfigFileStateConnector
+	) {
 		const customConfigsDownloadFile: CustomConfigsDownloadFile = {
 			downloadApiVersion: CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION,
 			timestamp: Date.now(),

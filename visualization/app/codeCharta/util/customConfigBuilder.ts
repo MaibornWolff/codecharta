@@ -1,5 +1,5 @@
 "use strict"
-import {State, stateObjectReplacer} from "../codeCharta.model"
+import { State, stateObjectReplacer } from "../codeCharta.model"
 import { CustomConfig } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 import md5 from "md5"

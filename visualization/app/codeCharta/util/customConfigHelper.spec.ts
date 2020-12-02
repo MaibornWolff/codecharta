@@ -8,11 +8,10 @@ import {
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
-import { klona } from "klona";
-import { FileDownloader } from "./fileDownloader";
+import { klona } from "klona"
+import { FileDownloader } from "./fileDownloader"
 
 describe("CustomConfigHelper", () => {
-
 	beforeEach(() => {
 		CustomConfigHelper["customConfigs"].clear()
 	})
@@ -38,13 +37,14 @@ describe("CustomConfigHelper", () => {
 
 			expect(JSON.stringify).toHaveBeenCalledWith(expect.anything(), stateObjectReplacer)
 
-			expect(localStorage.setItem).toHaveBeenCalledWith(
-				CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT,
-				"customConfigStub_asJson"
-			)
+			expect(localStorage.setItem).toHaveBeenCalledWith(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, "customConfigStub_asJson")
 
 			expect(
-				CustomConfigHelper.hasCustomConfigByName(customConfigStub.mapSelectionMode, customConfigStub.assignedMaps, customConfigStub.name)
+				CustomConfigHelper.hasCustomConfigByName(
+					customConfigStub.mapSelectionMode,
+					customConfigStub.assignedMaps,
+					customConfigStub.name
+				)
 			).toBe(true)
 
 			const receivedCustomConfig = CustomConfigHelper.getCustomConfigSettings(customConfigStub.id)
@@ -270,18 +270,30 @@ describe("CustomConfigHelper", () => {
 
 			CustomConfigHelper.addCustomConfig(customConfigStub1)
 			expect(CustomConfigHelper.getCustomConfigSettings(customConfigStub1.id)).not.toBeUndefined()
-			expect(CustomConfigHelper.hasCustomConfigByName(customConfigStub1.mapSelectionMode, customConfigStub1.assignedMaps, customConfigStub1.name)).toBe(true)
+			expect(
+				CustomConfigHelper.hasCustomConfigByName(
+					customConfigStub1.mapSelectionMode,
+					customConfigStub1.assignedMaps,
+					customConfigStub1.name
+				)
+			).toBe(true)
 
 			CustomConfigHelper.deleteCustomConfig(customConfigStub1.id)
 			expect(CustomConfigHelper.getCustomConfigSettings(customConfigStub1.id)).toBeUndefined()
-			expect(CustomConfigHelper.hasCustomConfigByName(customConfigStub1.mapSelectionMode, customConfigStub1.assignedMaps, customConfigStub1.name)).toBe(false)
+			expect(
+				CustomConfigHelper.hasCustomConfigByName(
+					customConfigStub1.mapSelectionMode,
+					customConfigStub1.assignedMaps,
+					customConfigStub1.name
+				)
+			).toBe(false)
 
 			// One call for the add and another one for the delete
 			expect(CustomConfigHelper["setCustomConfigsToLocalStorage"]).toHaveBeenCalledTimes(2)
 
 			const customConfigStub2 = {
 				id: "invalid-md5-checksum-2",
-				name: "stubbedConfig11",
+				name: "stubbedConfig11"
 			} as CustomConfig
 
 			// Batch delete Configs
@@ -533,7 +545,9 @@ describe("CustomConfigHelper", () => {
 			expect(customConfigs.size).toBe(3)
 			expect(customConfigs.get(alreadyExistingConfigStub.id).name).toBe(alreadyExistingConfigStub.name)
 			expect(customConfigs.get(exportCustomConfigStub.id).name).toBe(exportCustomConfigStub.name)
-			expect(customConfigs.get(exportCustomConfigDuplicateName.id).name).toBe(`${exportCustomConfigDuplicateName.name} (2020-11-20_13-19)`)
+			expect(customConfigs.get(exportCustomConfigDuplicateName.id).name).toBe(
+				`${exportCustomConfigDuplicateName.name} (2020-11-20_13-19)`
+			)
 		})
 	})
 
@@ -548,7 +562,6 @@ describe("CustomConfigHelper", () => {
 				id: "2-invalid-md5-checksum",
 				name: "config2"
 			} as ExportCustomConfig
-
 
 			const exportedCustomConfigs: Map<string, ExportCustomConfig> = new Map()
 			exportedCustomConfigs.set(exportCustomConfig1.id, exportCustomConfig1)
