@@ -185,20 +185,27 @@ describe("CustomConfigsController", () => {
 				mapChecksum: "md5-fileA"
 			} as CustomConfig
 
-			const customConfig3NotApplicable = {
+			const customConfig3 = {
 				id: "3-invalid-md5-checksum",
-				name: "not-downloadable-config-3",
+				name: "downloadable-config-3-partially-matching",
+				mapChecksum: "md5-fileA;invalid-md5-of-another-uploaded-map"
+			} as CustomConfig
+
+			const customConfig4NotApplicable = {
+				id: "4-invalid-md5-checksum",
+				name: "not-downloadable-config-4",
 				mapChecksum: "not-applicable-map"
 			} as CustomConfig
 
-			const customConfigs = new Map([[customConfig1.id, customConfig1], [customConfig2.id, customConfig2], [customConfig3NotApplicable.id, customConfig3NotApplicable]])
+			const customConfigs = new Map([[customConfig1.id, customConfig1], [customConfig2.id, customConfig2], [customConfig3.id, customConfig3], [customConfig4NotApplicable.id, customConfig4NotApplicable]])
 			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(customConfigs)
 
 			customConfigsController.onFilesSelectionChanged(FILE_STATES)
 
-			expect(customConfigsController["downloadableConfigs"].size).toBe(2)
+			expect(customConfigsController["downloadableConfigs"].size).toBe(3)
 			expect(customConfigsController["downloadableConfigs"].get("1-invalid-md5-checksum").name).toBe("downloadable-config-1")
 			expect(customConfigsController["downloadableConfigs"].get("2-invalid-md5-checksum").name).toBe("downloadable-config-2")
+			expect(customConfigsController["downloadableConfigs"].get("3-invalid-md5-checksum").name).toBe("downloadable-config-3-partially-matching")
 
 			expect(customConfigsController["_viewModel"].hasDownloadableConfigs).toBe(true)
 		})

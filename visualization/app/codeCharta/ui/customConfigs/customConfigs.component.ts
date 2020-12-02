@@ -12,6 +12,7 @@ import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/
 import { IRootScopeService } from "angular"
 import { CustomConfigFileStateConnector } from "./customConfigFileStateConnector"
 import {
+	CustomConfig,
 	CustomConfigMapSelectionMode,
 	ExportCustomConfig
 } from "../../model/customConfig/customConfig.api.model"
@@ -113,9 +114,6 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	downloadPrefetchedCustomConfigs() {
-		// TODO: #684 adapt storing Configs and Scenarios for standalone version
-		// TODO: Write tests
-
 		if (!this.downloadableConfigs.size) {
 			return
 		}
@@ -129,14 +127,22 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 
 		for (const [key, value] of customConfigs.entries()) {
 			// Only Configs which are applicable for at least one of the uploaded maps should be downloaded.
-			if (!this.customConfigFileStateConnector.getChecksumOfAssignedMaps().includes(value.mapChecksum)) {
-				continue
+			if (this.isConfigApplicableForUploadedMaps(value)) {
+				this.downloadableConfigs.set(key, CustomConfigHelper.createExportCustomConfigFromConfig(value))
 			}
-
-			this.downloadableConfigs.set(key, CustomConfigHelper.createExportCustomConfigFromConfig(value))
 		}
 
 		return this._viewModel.hasDownloadableConfigs = this.downloadableConfigs.size > 0
+	}
+
+	private isConfigApplicableForUploadedMaps(customConfig: CustomConfig) {
+		const mapChecksumsOfConfig = customConfig.mapChecksum.split(";")
+		for (const checksumOfConfig of mapChecksumsOfConfig) {
+			if (this.customConfigFileStateConnector.getChecksumOfAssignedMaps().includes(checksumOfConfig)) {
+				return true
+			}
+		}
+		return false
 	}
 }
 

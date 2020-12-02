@@ -12,6 +12,7 @@ import {FileDownloader} from "./fileDownloader";
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.0"
+const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.0"
 export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
@@ -61,6 +62,7 @@ export class CustomConfigHelper {
 	}
 
 	private static setCustomConfigsToLocalStorage() {
+		// TODO: #684 adapt storing Configs and Scenarios for standalone version
 		const newLocalStorageElement: LocalStorageCustomConfigs = {
 			version: CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION,
 			customConfigs: [...this.customConfigs]
@@ -137,7 +139,7 @@ export class CustomConfigHelper {
 
 	static downloadCustomConfigs(customConfigs: Map<string, ExportCustomConfig>, customConfigFileStateConnector: CustomConfigFileStateConnector) {
 		const customConfigsDownloadFile: CustomConfigsDownloadFile = {
-			downloadApiVersion: "1.0.0",
+			downloadApiVersion: CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION,
 			timestamp: Date.now(),
 			customConfigs
 		}

@@ -15,7 +15,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private purgeableConfigs: Set<CustomConfig> = new Set()
-	private customLocalStorageLimitInKB = 5
+	private customLocalStorageLimitInKB = 6
 
 	private _viewModel: {
 		customConfigName: string
@@ -95,7 +95,6 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 			}
 
 			// Download 6 month old or older Configs.
-			// TODO: Replace mocked timestamp with value.creationTime, remove log
 			const ageInMonth = ((Date.now() - value.creationTime) / (1000 * 60 * 60 * 24 * daysPerMonth))
 
 			if (ageInMonth <= 6) {
