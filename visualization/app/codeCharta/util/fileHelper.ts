@@ -1,13 +1,15 @@
-import { ExportBlacklistType, ExportCCFile, OldAttributeTypes } from "../codeCharta.api.model"
-import { AttributeTypes, BlacklistItem, BlacklistType, CCFile } from "../codeCharta.model"
+import { ExportBlacklistType, OldAttributeTypes } from "../codeCharta.api.model"
+import { AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
 
-export function getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
+export function getCCFile(file: NameDataPair): CCFile {
+	const fileContent = file.content
 	return {
 		fileMeta: {
-			fileName,
+			fileName: file.fileName,
 			fileChecksum: fileContent.fileChecksum,
 			projectName: fileContent.projectName,
-			apiVersion: fileContent.apiVersion
+			apiVersion: fileContent.apiVersion,
+			exportedFileSize: file.fileSize
 		},
 		settings: {
 			fileSettings: {

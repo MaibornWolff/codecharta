@@ -48,7 +48,7 @@ export class FileChooserController {
 							// Explicitly ignored
 						}
 					} else {
-						this.addNameDataPair(file.name, content)
+						this.addNameDataPair(file, content)
 					}
 
 					if (readFiles === element.files.length) {
@@ -64,7 +64,7 @@ export class FileChooserController {
 		this.files = []
 	}
 
-	private addNameDataPair(fileName: string, jsonString: string) {
+	private addNameDataPair(file: File, jsonString: string) {
 		let content: ExportCCFile
 
 		try {
@@ -78,7 +78,8 @@ export class FileChooserController {
 		}
 
 		this.files.push({
-			fileName,
+			fileName: file.name,
+			fileSize: file.size,
 			content
 		})
 	}

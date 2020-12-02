@@ -2,7 +2,7 @@ import { CodeMapBuilding } from "./codeMapBuilding"
 import { Vector3, Ray, Box3 } from "three"
 
 export class CodeMapGeometricDescription {
-	private _buildings: CodeMapBuilding[]
+	private _buildings: CodeMapBuilding[] // todo tk: depending on how many buildings, refactor this to { [node.path]: node } might give `this.getBuildingByPath` a performance boost
 	private mapSize: number
 	private scales: Vector3
 

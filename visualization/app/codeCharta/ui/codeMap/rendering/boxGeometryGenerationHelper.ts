@@ -1,3 +1,4 @@
+import { Node } from "../../../codeCharta.model"
 import { IntermediateVertexData } from "./intermediateVertexData"
 import { BoxMeasures } from "./geometryGenerator"
 import { Vector2, Vector3 } from "three"
@@ -31,7 +32,15 @@ const numberSides = 6
 const verticesPerSide = 4
 
 export class BoxGeometryGenerationHelper {
-	static addBoxToVertexData(data: IntermediateVertexData, measures: BoxMeasures, color: string, subGeomIndex: number, delta: number) {
+	static addBoxToVertexData(
+		data: IntermediateVertexData,
+		node: Node,
+		measures: BoxMeasures,
+		color: string,
+		subGeomIndex: number,
+		delta: number,
+		addingFloor = false
+	) {
 		const minPos: Vector3 = new Vector3(measures.x, measures.y, measures.z)
 		const maxPos: Vector3 = new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 
@@ -39,8 +48,20 @@ export class BoxGeometryGenerationHelper {
 		const positions: Vector3[] = new Array<Vector3>()
 
 		BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs)
-		BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIndex, positions, uvs, data)
+		BoxGeometryGenerationHelper.createVerticesAndFaces(
+			node,
+			minPos,
+			maxPos,
+			color,
+			delta,
+			subGeomIndex,
+			positions,
+			uvs,
+			data,
+			addingFloor
+		)
 	}
+
 	private static createPositionsUVs(minPos: Vector3, maxPos: Vector3, positions: Vector3[], uvs: Vector2[]) {
 		//Left Vertices
 		const left = sides.left * verticesPerSide
@@ -118,6 +139,7 @@ export class BoxGeometryGenerationHelper {
 	}
 
 	private static createVerticesAndFaces(
+		node: Node,
 		minPos: Vector3,
 		maxPos: Vector3,
 		color: string,
@@ -125,7 +147,8 @@ export class BoxGeometryGenerationHelper {
 		subGeomIndex: number,
 		positions: Vector3[],
 		uvs: Vector2[],
-		data: IntermediateVertexData
+		data: IntermediateVertexData,
+		addingFloor: boolean
 	) {
 		const deltaRelativeToHeight = delta / (maxPos.y - minPos.y)
 
@@ -134,6 +157,7 @@ export class BoxGeometryGenerationHelper {
 			const intermediateIndexTL = side * verticesPerSide + vertexLocation.topLeft
 			const intermediateIndexTR = side * verticesPerSide + vertexLocation.topRight
 			const intermediateIndexBR = side * verticesPerSide + vertexLocation.bottomRight
+
 			const indexBottomLeft = data.addVertex(
 				positions[intermediateIndexBL],
 				normals[side],
@@ -166,12 +190,20 @@ export class BoxGeometryGenerationHelper {
 				subGeomIndex,
 				deltaRelativeToHeight
 			)
+
 			const dimension = Math.floor(side / 2)
 			const positiveFacing = normals[side].getComponent(dimension) > 0
+
 			if (!positiveFacing) {
 				data.addFace(indexBottomLeft, indexTopRight, indexTopLeft)
 				data.addFace(indexBottomLeft, indexBottomRight, indexTopRight)
 			} else {
+				// Collect floors from a depth of 0 until a depth of 3 to be stamped with the folder name as a label
+				// TODO provide conditions centrally for checking if a floor has to be labeled.
+				if (addingFloor && side === sides.top && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
+					data.saveFloorSurfaceInformation(node, minPos, maxPos)
+				}
+
 				data.addFace(indexBottomLeft, indexTopLeft, indexTopRight)
 				data.addFace(indexBottomLeft, indexTopRight, indexBottomRight)
 			}
