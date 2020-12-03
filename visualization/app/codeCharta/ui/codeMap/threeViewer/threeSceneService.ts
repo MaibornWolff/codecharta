@@ -36,6 +36,12 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private highlighted: CodeMapBuilding[] = []
 	private constantHighlight: Map<number, CodeMapBuilding> = new Map()
 
+	private folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
+	private folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
+	private folderLabelColorSelected = this.storeService.getState().appSettings.mapColors.selected
+	private numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+	private allNodesIds = null
+
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
@@ -55,6 +61,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	onRenderMapChanged() {
 		this.reselectBuilding()
+		this.allNodesIds = new Set(this.mapMesh.getNodes().map(({ id }) => id))
 	}
 
 	getConstantHighlight() {
@@ -64,7 +71,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	highlightBuildings() {
 		const state = this.storeService.getState()
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
-		if (this.mapGeometry.children[0]) this.highlightMaterial(this.mapGeometry.children[0]["material"])
+		if (this.mapGeometry.children[0]) {
+			this.highlightMaterial(this.mapGeometry.children[0]["material"])
+		}
 	}
 
 	highlightBuildingsAfterSelect() {
@@ -76,24 +85,23 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private selectMaterial(materials: Material[]) {
 		for (const material of materials) {
 			if (material.userData.id === this.selected.node.id) {
-				material["color"].setHex(ColorConverter.convertHexToNumber(this.selected.color))
+				material["color"].setHex(this.numberOrangeColor)
 			}
 		}
 	}
 
 	private resetMaterial(materials: Material[]) {
 		const selectedID = this.selected ? this.selected.node.id : -1
-		const allNodesIds = new Set(this.mapMesh.getNodes().map(({ id }) => id))
 		for (const material of materials) {
-			if (allNodesIds.has(material.userData.id) && material.userData.id !== selectedID) {
-				material["color"].setHex(ColorConverter.convertHexToNumber("#FFFFFF"))
+			const materialNodeId = material.userData.id
+			if (this.allNodesIds.has(materialNodeId) && materialNodeId !== selectedID) {
+				material["color"].setHex(this.folderLabelColorHighlighted)
 			}
 		}
 	}
 
 	private highlightMaterial(materials: Material[]) {
-		const allNodesIds = new Set(this.mapMesh.getNodes().map(({ id }) => id))
-		const highlightedNodes = new Set(this.highlighted.map(({ node }) => node.id))
+		const highlightedNodeIds = new Set(this.highlighted.map(({ node }) => node.id))
 		const constantHighlightedNodes = new Set<number>()
 
 		for (const highlightedNode of this.constantHighlight.values()) {
@@ -101,15 +109,14 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		}
 
 		for (const material of materials) {
-			const materialID = material.userData.id
-			//if current material is selected
-			if (this.selected && materialID === this.selected.node.id)
-				material["color"].setHex(ColorConverter.convertHexToNumber(this.selected.color))
-			//else if current material is highlighted
-			else if (highlightedNodes.has(materialID) || constantHighlightedNodes.has(materialID))
-				material["color"].setHex(ColorConverter.convertHexToNumber("#FFFFFF"))
-			//else if current material is not highlighted
-			else if (allNodesIds.has(materialID)) material["color"].setHex(ColorConverter.convertHexToNumber("#7A7777"))
+			const materialNodeId = material.userData.id
+			if (this.selected && materialNodeId === this.selected.node.id) {
+				material["color"].setHex(this.numberOrangeColor)
+			} else if (highlightedNodeIds.has(materialNodeId) || constantHighlightedNodes.has(materialNodeId)) {
+				material["color"].setHex(this.folderLabelColorHighlighted)
+			} else if (this.allNodesIds.has(materialNodeId)) {
+				material["color"].setHex(this.folderLabelColorNotHighlighted)
+			}
 		}
 	}
 
@@ -133,17 +140,20 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.getMapMesh().clearHighlight(this.selected)
 			this.highlighted = []
 			this.constantHighlight.clear()
-			if (this.mapGeometry.children[0]) this.resetMaterial(this.mapGeometry.children[0]["material"])
+			if (this.mapGeometry.children[0]) {
+				this.resetMaterial(this.mapGeometry.children[0]["material"])
+			}
 		}
 	}
 
 	selectBuilding(building: CodeMapBuilding) {
-		const color = this.storeService.getState().appSettings.mapColors.selected
-		this.getMapMesh().selectBuilding(building, color)
+		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
 		this.selected = building
 		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
-		if (this.mapGeometry.children[0]) this.selectMaterial(this.mapGeometry.children[0]["material"])
+		if (this.mapGeometry.children[0]) {
+			this.selectMaterial(this.mapGeometry.children[0]["material"])
+		}
 	}
 
 	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode) {
@@ -183,7 +193,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.highlightBuildings()
 		}
 		this.selected = null
-		if (this.mapGeometry.children[0]) this.resetMaterial(this.mapGeometry.children[0]["material"])
+		if (this.mapGeometry.children[0]) {
+			this.resetMaterial(this.mapGeometry.children[0]["material"])
+		}
 	}
 
 	initLights() {
