@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix highlight, constant highlight and select color for foloder labels
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.63.0] - 2020-11-30
