@@ -14,7 +14,7 @@ import {
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { StoreService } from "../../state/store.service"
 import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import {openFolderDialog} from "../../util/lazyLoader";
+import {LazyLoader} from "../../util/lazyLoader";
 
 export interface PrimaryMetrics {
 	node: {
@@ -101,7 +101,7 @@ export class AttributeSideBarController
 		if (!this._viewModel.node.isLeaf){
 			return
 		}
-		openFolderDialog(this._viewModel.fileName)
+		LazyLoader.openFolderDialog(this._viewModel.fileName)
 	}
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
