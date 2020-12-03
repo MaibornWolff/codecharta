@@ -79,7 +79,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
 	}
 
-	private cameraPerspectiveLengthCalculation(boundingSphere) {
+	private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {
 		const cameraReference = this.threeCameraService.camera
 
 		const scale = 1.4 // object size / display size
@@ -88,7 +88,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		return Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
 	}
 
-	private focusCameraViewToCenter(boundingSphere) {
+	private focusCameraViewToCenter(boundingSphere: Sphere) {
 		const boundingSphereCenter: Vector3 = boundingSphere.center.clone()
 
 		boundingSphereCenter.setY(0)
@@ -129,7 +129,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
-	init(domElement) {
+	init(domElement: HTMLCanvasElement) {
 		const orbitControls = oc(Three)
 		this.controls = new orbitControls(this.threeCameraService.camera, domElement)
 		this.controls.addEventListener("change", () => {

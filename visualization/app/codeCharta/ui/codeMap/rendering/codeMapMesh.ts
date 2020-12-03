@@ -27,6 +27,7 @@ export class CodeMapMesh {
 		this.initMaterial()
 
 		this.geomGen = new GeometryGenerator()
+		this.material.precision = "lowp" // no need for high precision in our shaders 
 		const buildResult = this.geomGen.build(nodes, this.material, state, isDeltaState)
 
 		this.threeMesh = buildResult.mesh

@@ -5,6 +5,7 @@ import {
 	IsWhiteBackgroundService,
 	IsWhiteBackgroundSubscriber
 } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
+import { CustomComposer } from "./postprocessing/customComposer";
 
 export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	static BACKGROUND_COLOR = {
@@ -17,16 +18,20 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	static CLEAR_ALPHA = 1
 
 	static RENDER_OPTIONS = {
-		antialias: true,
+		antialias: false,			// deactivated for map, pixel ratio improves quality better, 
+									// performance hit is huge especially on fill rate limited gpus 
+									// better to use fxaa and composing
 		preserveDrawingBuffer: true
 	}
 
+	composer: CustomComposer
 	renderer: WebGLRenderer
 
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {}
 
 	init(containerWidth: number, containerHeight: number) {
 		this.renderer = new WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
+		this.composer = new CustomComposer( this.renderer );
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		this.renderer.setSize(containerWidth, containerHeight)
 		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)

@@ -168,29 +168,27 @@ export class GeometryGenerator {
 		const uvs = new Float32Array(numberVertices * uvDimension)
 		const colors = new Float32Array(size)
 
+		let pos = 0;
+		let uvPos = 0;
 		for (let index = 0; index < numberVertices; ++index) {
-			const pos = index * dimension
-			const pos1 = pos + 1
-			const pos2 = pos1 + 1
-
 			const dataPosition = data.positions[index]
-			positions[pos] = dataPosition.x
-			positions[pos1] = dataPosition.y
-			positions[pos2] = dataPosition.z
-
 			const dataNormal = data.normals[index]
-			normals[pos] = dataNormal.x
-			normals[pos1] = dataNormal.y
-			normals[pos2] = dataNormal.z
-
-			const uvPos = index * uvDimension
-			uvs[uvPos] = data.uvs[index].x
-			uvs[uvPos + 1] = data.uvs[index].y
-
 			const color: Vector3 = ColorConverter.getVector3(data.colors[index])
-			colors[pos] = color.x
-			colors[pos1] = color.y
-			colors[pos2] = color.z
+			positions[pos] = dataPosition.x
+			normals[pos] = dataNormal.x
+			colors[pos++] = color.x
+
+			positions[pos] = dataPosition.y
+			normals[pos] = dataNormal.y
+			colors[pos++] = color.y
+
+
+			positions[pos] = dataPosition.z
+			normals[pos] = dataNormal.z
+			colors[pos++] = color.z
+
+			uvs[uvPos++] = data.uvs[index].x
+			uvs[uvPos++] = data.uvs[index].y
 		}
 
 		const deltaColors = new Float32Array(colors)
@@ -296,7 +294,7 @@ export class GeometryGenerator {
 		const floorSurfaceLabelMaterial = new MeshBasicMaterial({ map: labelTexture })
 		floorSurfaceLabelMaterial.needsUpdate = true
 		floorSurfaceLabelMaterial.side = DoubleSide
-		floorSurfaceLabelMaterial.transparent = true
+		floorSurfaceLabelMaterial.transparent = false // perfromance killer, why do we need it ?, if necessary try out with shader ?
 		floorSurfaceLabelMaterial.userData = surfaceInfo.node
 
 		this.materials.push(floorSurfaceLabelMaterial)
