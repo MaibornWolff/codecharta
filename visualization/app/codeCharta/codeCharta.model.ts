@@ -7,6 +7,7 @@ import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 
 export interface NameDataPair {
 	fileName: string
+	fileSize: number
 	content: ExportCCFile
 }
 
@@ -66,6 +67,7 @@ export interface FileMeta {
 	fileChecksum: string
 	apiVersion: string
 	projectName: string
+	exportedFileSize: number
 }
 
 export interface Settings {
@@ -260,6 +262,7 @@ export interface Node {
 	height: number
 	length: number
 	depth: number
+	mapNodeDepth: number
 	x0: number
 	z0: number
 	y0: number

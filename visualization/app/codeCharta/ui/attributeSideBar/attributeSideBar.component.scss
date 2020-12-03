@@ -54,6 +54,13 @@ attribute-side-bar-component {
 			.node-origin,
 			.node-path {
 				color: grey;
+
+				.file-count {
+					background: #f0f0f0;
+					border-radius: 3px;
+					padding: 1px 3px;
+					color: black;
+				}
 			}
 
 			.node-name,

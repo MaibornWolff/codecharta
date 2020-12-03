@@ -40,7 +40,7 @@ export class UrlExtractor {
 		}
 		const response = await this.$http.get(fileName)
 		if (response.status >= 200 && response.status < 300) {
-			return { fileName, content: response.data as ExportCCFile }
+			return { fileName, fileSize: response.data.toString().length, content: response.data as ExportCCFile }
 		}
 		throw new Error(`Could not load file "${fileName}"`)
 	}

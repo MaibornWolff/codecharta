@@ -1,5 +1,5 @@
 import { ExportBlacklistType, ExportCCFile } from "../codeCharta.api.model"
-import { AttributeTypeValue, BlacklistType } from "../codeCharta.model"
+import { AttributeTypeValue, BlacklistType, NameDataPair } from "../codeCharta.model"
 import { getCCFile } from "./fileHelper"
 import { TEST_FILE_CONTENT } from "./dataMocks"
 import { clone } from "./clone"
@@ -13,7 +13,8 @@ describe("FileHelper", () => {
 
 	describe("getCCFile", () => {
 		it("should build a CCFile", () => {
-			const result = getCCFile("fileName", fileContent)
+			const nameDataPair: NameDataPair = { content: fileContent, fileName: "fileName", fileSize: 30 }
+			const result = getCCFile(nameDataPair)
 
 			expect(result).toMatchSnapshot()
 		})
@@ -21,7 +22,8 @@ describe("FileHelper", () => {
 		it("should convert old blacklist type", () => {
 			fileContent.blacklist = [{ path: "foo", type: ExportBlacklistType.hide }]
 
-			const result = getCCFile("fileName", fileContent)
+			const nameDataPair: NameDataPair = { content: fileContent, fileName: "fileName", fileSize: 30 }
+			const result = getCCFile(nameDataPair)
 
 			expect(result.settings.fileSettings.blacklist).toEqual([{ path: "foo", type: BlacklistType.flatten }])
 		})
@@ -32,7 +34,8 @@ describe("FileHelper", () => {
 				edges: [{ pairingRate: AttributeTypeValue.relative }]
 			}
 
-			const result = getCCFile("fileName", fileContent)
+			const nameDataPair: NameDataPair = { content: fileContent, fileName: "fileName", fileSize: 30 }
+			const result = getCCFile(nameDataPair)
 
 			expect(result.settings.fileSettings.attributeTypes).toEqual({ nodes: {}, edges: {} })
 		})
@@ -40,7 +43,8 @@ describe("FileHelper", () => {
 		it("should return empty attributeTypes", () => {
 			fileContent.attributeTypes = {}
 
-			const result = getCCFile("fileName", fileContent)
+			const nameDataPair: NameDataPair = { content: fileContent, fileName: "fileName", fileSize: 30 }
+			const result = getCCFile(nameDataPair)
 
 			expect(result.settings.fileSettings.attributeTypes).toEqual({ nodes: {}, edges: {} })
 		})
@@ -48,7 +52,8 @@ describe("FileHelper", () => {
 		it("should return empty attributeTypes if the property doesn't exist", () => {
 			fileContent.attributeTypes = undefined
 
-			const result = getCCFile("fileName", fileContent)
+			const nameDataPair: NameDataPair = { content: fileContent, fileName: "fileName", fileSize: 30 }
+			const result = getCCFile(nameDataPair)
 
 			expect(result.settings.fileSettings.attributeTypes).toEqual({ nodes: {}, edges: {} })
 		})
