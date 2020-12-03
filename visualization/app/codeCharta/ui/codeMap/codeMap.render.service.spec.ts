@@ -150,7 +150,7 @@ describe("codeMapRenderService", () => {
 		it("should call codeMapLabelService.addLabels for each shown leaf label", () => {
 			codeMapRenderService["setLabels"](sortedNodes)
 
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(2)
+			expect(codeMapLabelService.addLabelLeaf).toHaveBeenCalledTimes(2)
 		})
 
 		it("should not generate labels when showMetricLabelNodeName and showMetricLabelNameValue are both false", () => {
@@ -159,7 +159,7 @@ describe("codeMapRenderService", () => {
 
 			codeMapRenderService["setLabels"](sortedNodes)
 
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(0)
+			expect(codeMapLabelService.addLabelLeaf).toHaveBeenCalledTimes(0)
 		})
 	})
 
