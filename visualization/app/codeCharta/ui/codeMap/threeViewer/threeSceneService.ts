@@ -83,11 +83,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	private selectMaterial(materials: Material[]) {
-		for (const material of materials) {
-			if (material.userData.id === this.selected.node.id) {
-				material["color"].setHex(this.numberOrangeColor)
-			}
-		}
+		const selectedMaterial = materials.find(({ userData }) => userData.id === this.selected.node.id)
+		selectedMaterial?.["color"].setHex(this.numberOrangeColor)
 	}
 
 	private resetMaterial(materials: Material[]) {
