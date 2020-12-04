@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix highlighting/ constant highlighting and selection colors for folder labels
+-   last update disabled highlighting/ selection colors for labeled folders due to performance issues:
+    -   the feature has been improved once again enabling the selection color for folders and providing highlighting on hover/ when adding the folder to constant highlight
 
 ### Chore 👨‍💻 👩‍💻
 
