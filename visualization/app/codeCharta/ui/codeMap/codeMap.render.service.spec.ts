@@ -172,15 +172,11 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should take delta into account for height calculation when in delta mode", () => {
-			expect(codeMapRenderService["getHighestNodeDelta"]([TEST_NODE_ROOT])).toEqual(12)
+			expect(codeMapRenderService["getHighestNode"]([TEST_NODE_ROOT])).toEqual(12)
 		})
 
 		it("should correctly calculate heights node accounting for delta", () => {
-			expect(codeMapRenderService["getHighestNodeDelta"]([TEST_NODE_ROOT, TEST_NODE_LEAF])).toEqual(22)
-		})
-
-		it("should not account for delta height when not in delta mode", () => {
-			expect(codeMapRenderService["getHighestNode"]([TEST_NODE_ROOT, TEST_NODE_LEAF])).toEqual(2)
+			expect(codeMapRenderService["getHighestNode"]([TEST_NODE_ROOT, TEST_NODE_LEAF])).toEqual(22)
 		})
 	})
 

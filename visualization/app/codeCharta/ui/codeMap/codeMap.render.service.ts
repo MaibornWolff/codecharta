@@ -74,9 +74,7 @@ export class CodeMapRenderService {
 		const appSettings = this.storeService.getState().appSettings
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
-		const highestNode = isDeltaState(this.storeService.getState().files)
-			? this.getHighestNodeDelta(sortedNodes)
-			: this.getHighestNode(sortedNodes)
+		const highestNode = this.getHighestNode(sortedNodes)
 
 		this.codeMapLabelService.clearLabels()
 		if (showLabelNodeName || showLabelNodeMetric) {
@@ -99,13 +97,8 @@ export class CodeMapRenderService {
 		}
 	}
 
-	private getHighestNodeDelta(sortedNodes: Node[]) {
-		const sortedNodeValues = sortedNodes.map(node => node.height + Math.abs(node.heightDelta))
-		return Math.max(...sortedNodeValues)
-	}
-
 	private getHighestNode(sortedNodes: Node[]) {
-		const sortedNodeValues = sortedNodes.map(node => node.height)
+		const sortedNodeValues = sortedNodes.map(({ height, heightDelta }) => height + Math.abs(heightDelta ?? 0))
 		return Math.max(...sortedNodeValues)
 	}
 
