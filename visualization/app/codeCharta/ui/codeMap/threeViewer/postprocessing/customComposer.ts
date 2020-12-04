@@ -7,10 +7,18 @@ export class CustomComposer extends EffectComposer {
 
     constructor( renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget ) {
         super(renderer,renderTarget)
-    }
+	}
 
-    getInfo(pass :number) : WebGLInfo["render"]{
-        return  this.info[pass]
+    getInfo() : WebGLInfo["render"]{
+		let result : WebGLInfo["render"] = { calls : 0,lines : 0, triangles : 0, points : 0, frame: 0}
+
+		for (var info of this.info) {
+			result.calls += info.calls;
+			result.lines += info.lines;
+			result.triangles += info.triangles;
+			result.points += info.points;
+	   	}
+        return result;
     }
 
     render( deltaTime?: number ): void {

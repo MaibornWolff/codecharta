@@ -52,7 +52,7 @@ vec3 getBaseOutgoingLight(const vec3 lightFront) {
     return (reflectedLight.directDiffuse + reflectedLight.indirectDiffuse);
 }
 
-// better to calc the colors in vertex as not interpolation is used, performance improvements will be noticeable 
+// better to calc the colors in vertex as no color interpolation is used, performance improvements will be noticeable 
 // once frustum or occlusion culling is properly used
 
 void main() 

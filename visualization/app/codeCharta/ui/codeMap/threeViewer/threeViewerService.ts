@@ -67,11 +67,11 @@ export class ThreeViewerService {
 	}
 
 	private updateStats = () => {
-		let webGLInfo : WebGLInfo["render"];
+		let webGLInfo : WebGLInfo["render"]
 		if (this.enableFXAA) {
-			webGLInfo = this.threeRendererService.composer.getInfo(1)
+			webGLInfo = this.threeRendererService.composer.getInfo()
 		} else {
-			webGLInfo = this.threeRendererService.renderer.info.render;
+			webGLInfo = this.threeRendererService.renderer.info.render
 		}
 		
 		const triangles : number = webGLInfo.triangles
