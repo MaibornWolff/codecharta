@@ -1,6 +1,7 @@
 import { WebGLInfo, WebGLRenderer, WebGLRenderTarget } from 'three'
 import { MaskPass,ClearMaskPass } from "three/examples/jsm/postprocessing/MaskPass.js"
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { Pass } from 'three/examples/jsm/postprocessing/Pass'
 
 export class CustomComposer extends EffectComposer {
     private info: WebGLInfo["render"][] = []
@@ -28,7 +29,7 @@ export class CustomComposer extends EffectComposer {
 
 		let currentRenderTarget = this.renderer.getRenderTarget()
 		let maskActive : boolean = false
-        let pass;
+        let pass : Pass;
 
 		for (let i = 0; i < this.passes.length; i ++ ) {
 			pass = this.passes[ i ]
@@ -61,5 +62,14 @@ export class CustomComposer extends EffectComposer {
 			}
 		}
 		this.renderer.setRenderTarget( currentRenderTarget )
-    }
+	}
+	
+	dispose() {
+		let pass : Pass.FullScreenQuad
+		for (let i = 0; i < this.passes.length; i ++ ) {
+			if (this.passes[ i ] instanceof Pass.FullScreenQuad) {
+				pass.dispose()
+			}
+		}
+	}
 }

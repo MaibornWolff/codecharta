@@ -18,9 +18,11 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	static CLEAR_ALPHA = 1
 
 	static RENDER_OPTIONS = {
-		antialias: false,			// deactivated for map, pixel ratio improves quality better, 
+		antialias: window.devicePixelRatio > 1.7 ? false : true,
+									// 1.7 is just a guess number			
+									// on deactivated pixel ratio>1.7 improves quality, 
 									// performance hit is huge especially on fill rate limited gpus 
-									// better to use fxaa and composing
+									// better to use fxaa and composing when device ratio is high
 		preserveDrawingBuffer: true
 	}
 

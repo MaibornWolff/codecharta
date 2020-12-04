@@ -190,6 +190,23 @@ export class CodeMapMesh {
 		this.threeMesh.geometry["attributes"].deltaColor.needsUpdate = true
 	}
 
+	dispose() { // TODO more needs to be disposed (textures, render targets, passes , ...)
+		this.disposeMesh()
+		this.disposeMaterial()
+	}
+
+	private disposeMesh() {
+		if (this.threeMesh!==undefined && this.threeMesh.geometry!==undefined) {
+			this.threeMesh.geometry.dispose()
+		}
+	}
+
+	private disposeMaterial() {
+		if (this.material!==undefined) {
+			this.material.dispose()
+		}
+	}
+
 	private initMaterial() {
 		const uniforms = UniformsUtils.merge([UniformsLib["lights"]])
 

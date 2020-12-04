@@ -17,7 +17,7 @@ export class ThreeViewerService {
 	private yPanel: any
 	private maxXPanel : number = 0
 	private maxYPanel : number = 0
-	private enableFXAA : boolean // TODO can be selective
+	private enableFXAA : boolean = false // TODO can be selective
 
 	/* ngInject */
 	constructor(
@@ -28,8 +28,12 @@ export class ThreeViewerService {
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
 		this.stats = new Stats()	// TODO needs to be injected only for test purpose 
-		this.enableFXAA = true		/* 	NOTE FXAA instead of aliasing shader set to medium quality,
+		
+		if (!ThreeRendererService.RENDER_OPTIONS.antialias) {
+			this.enableFXAA = true
+		}								/* 	NOTE FXAA instead of aliasing shader set to medium quality,
 										could try out different filtering techniques */
+		console.log(ThreeRendererService.RENDER_OPTIONS.antialias,this.enableFXAA)
 	}
 
 	init(canvasElement: Element) {
@@ -124,6 +128,13 @@ export class ThreeViewerService {
 			this.threeRendererService.composer.render()
 		} else {
 			this.threeRendererService.renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
+		}
+	}
+
+	dispose() {
+		// TODO needs to bind it
+		if (this.threeRendererService !==undefined && this.threeRendererService.composer!==undefined) {
+			this.threeRendererService.composer.dispose()
 		}
 	}
 

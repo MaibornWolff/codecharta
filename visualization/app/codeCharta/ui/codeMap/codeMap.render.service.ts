@@ -9,6 +9,8 @@ import { CodeMapNode, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
+import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import { IRootScopeService } from "angular"
 
 const ONE_MB = 1024 * 1024
 
@@ -33,13 +35,21 @@ export function getMapResolutionScaleFactor(files: FileState[]) {
 	}
 }
 
-export class CodeMapRenderService {
+export class CodeMapRenderService implements IsLoadingFileSubscriber{
 	constructor(
+		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
-	) {}
+	) {
+		IsLoadingFileService.subscribe(this.$rootScope, this)
+	}
+	onIsLoadingFileChanged(isLoadingFile: boolean) {
+		if (isLoadingFile && this.threeSceneService!==undefined) {
+			this.threeSceneService.dispose()
+		}
+	}
 
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
