@@ -104,8 +104,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		const highlightedNodeIds = new Set(this.highlighted.map(({ node }) => node.id))
 		const constantHighlightedNodes = new Set<number>()
 
-		for (const highlightedNode of this.constantHighlight.values()) {
-			constantHighlightedNodes.add(highlightedNode.node.id)
+		for (const { node } of this.constantHighlight.values()) {
+			constantHighlightedNodes.add(node.id)
 		}
 
 		for (const material of materials) {
