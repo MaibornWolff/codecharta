@@ -1,9 +1,9 @@
 import "../../state/state.module"
 import angular from "angular"
 import { attributeSideBarComponent } from "./attributeSideBar.component"
-import { ccNodePathComponent } from "./ccNodePath/ccNodePath.component"
+import { nodePathComponent } from "./nodePath/nodePath.component"
 
 angular
 	.module("app.codeCharta.ui.attributeSideBar", ["app.codeCharta.state"])
-	.component(ccNodePathComponent.selector, ccNodePathComponent)
+	.component(nodePathComponent.selector, nodePathComponent)
 	.component(attributeSideBarComponent.selector, attributeSideBarComponent)

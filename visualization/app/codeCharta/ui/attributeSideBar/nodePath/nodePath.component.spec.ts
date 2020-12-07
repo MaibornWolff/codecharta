@@ -2,9 +2,9 @@ import angular from "angular"
 import "angular-mocks"
 
 import "../attributeSideBar.module"
-import { ccNodePathComponent } from "./ccNodePath.component"
+import { nodePathComponent } from "./nodePath.component"
 
-describe("CcNodePathComponent", () => {
+describe("nodePathComponent", () => {
 	let $compile
 	let $rootScope
 
@@ -60,7 +60,7 @@ describe("CcNodePathComponent", () => {
 	})
 
 	it("should insert section for file count if selected building is not a leaf / i.e. a folder", () => {
-		const getFileCountDescriptionSpy = jest.spyOn(ccNodePathComponent.controller, "getFileCountDescription")
+		const getFileCountDescriptionSpy = jest.spyOn(nodePathComponent.controller, "getFileCountDescription")
 		const component = $compile("<cc-node-path-component></cc-node-path-component>")($rootScope)
 		$rootScope.$emit("building-selected", {
 			node: { isLeaf: false, path: "some/file.ts" }
@@ -73,14 +73,14 @@ describe("CcNodePathComponent", () => {
 	})
 
 	it("should calculate nice description for empty folders", () => {
-		expect(ccNodePathComponent.controller.getFileCountDescription(0)).toBe("empty")
+		expect(nodePathComponent.controller.getFileCountDescription(0)).toBe("empty")
 	})
 
 	it("should calculate nice description for folders with one file", () => {
-		expect(ccNodePathComponent.controller.getFileCountDescription(1)).toBe("1 file")
+		expect(nodePathComponent.controller.getFileCountDescription(1)).toBe("1 file")
 	})
 
 	it("should calculate nice description for folders with many file", () => {
-		expect(ccNodePathComponent.controller.getFileCountDescription(4)).toBe("4 files")
+		expect(nodePathComponent.controller.getFileCountDescription(4)).toBe("4 files")
 	})
 })

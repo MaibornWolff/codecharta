@@ -4,7 +4,7 @@ import { CodeMapBuilding } from "../../codeMap/rendering/codeMapBuilding"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { Node } from "../../../codeCharta.model"
 
-class CcNodePathController implements BuildingSelectedEventSubscriber {
+class NodePathController implements BuildingSelectedEventSubscriber {
 	private _viewModel: {
 		node: Node
 		packageFileCount: number
@@ -22,7 +22,7 @@ class CcNodePathController implements BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
 		this._viewModel.packageFileCount = selectedBuilding.node?.attributes?.unary ?? 0
-		this._viewModel.fileCountDescription = CcNodePathController.getFileCountDescription(this._viewModel.packageFileCount)
+		this._viewModel.fileCountDescription = NodePathController.getFileCountDescription(this._viewModel.packageFileCount)
 	}
 
 	static getFileCountDescription(fileCount: number) {
@@ -32,8 +32,8 @@ class CcNodePathController implements BuildingSelectedEventSubscriber {
 	}
 }
 
-export const ccNodePathComponent = {
+export const nodePathComponent = {
 	selector: "ccNodePathComponent",
-	template: require("./ccNodePath.component.html"),
-	controller: CcNodePathController
+	template: require("./nodePath.component.html"),
+	controller: NodePathController
 }
