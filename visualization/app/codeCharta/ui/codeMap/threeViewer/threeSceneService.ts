@@ -40,7 +40,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
 	private folderLabelColorSelected = this.storeService.getState().appSettings.mapColors.selected
 	private numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
-	private allNodesIds = null
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
@@ -61,7 +60,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	onRenderMapChanged() {
 		this.reselectBuilding()
-		this.allNodesIds = new Set(this.mapMesh.getNodes().map(({ id }) => id))
 	}
 
 	getConstantHighlight() {
@@ -91,8 +89,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		const selectedID = this.selected ? this.selected.node.id : -1
 		for (const material of materials) {
 			const materialNodeId = material.userData.id
-			if (this.allNodesIds.has(materialNodeId) && materialNodeId !== selectedID) {
-				material["color"].setHex(this.folderLabelColorHighlighted)
+			if (materialNodeId !== selectedID) {
+				material["color"]?.setHex(this.folderLabelColorHighlighted)
 			}
 		}
 	}
@@ -111,8 +109,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 				material["color"].setHex(this.numberOrangeColor)
 			} else if (highlightedNodeIds.has(materialNodeId) || constantHighlightedNodes.has(materialNodeId)) {
 				material["color"].setHex(this.folderLabelColorHighlighted)
-			} else if (this.allNodesIds.has(materialNodeId)) {
-				material["color"].setHex(this.folderLabelColorNotHighlighted)
+			} else {
+				material["color"]?.setHex(this.folderLabelColorNotHighlighted)
 			}
 		}
 	}
