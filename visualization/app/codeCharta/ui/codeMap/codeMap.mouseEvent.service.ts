@@ -181,33 +181,35 @@ export class CodeMapMouseEventService
 
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
-			if (mapMesh) {
-				this.raycaster.setFromCamera(mouseCoordinates, camera)
+			if (mapMesh && camera) {
+				if (camera.isPerspectiveCamera) {
+					this.raycaster.setFromCamera(mouseCoordinates, camera)
 
-				const hoveredLabel = this.calculateHoveredLabel(labels)
+					const hoveredLabel = this.calculateHoveredLabel(labels)
 
-				if (hoveredLabel) {
-					nodeNameHoveredLabel = hoveredLabel.object.userData.node.path
-					hoveredLabel.object.material.opacity = 1
+					if (hoveredLabel) {
+						nodeNameHoveredLabel = hoveredLabel.object.userData.node.path
+						hoveredLabel.object.material.opacity = 1
 
-					this.rayPoint = new Vector3(
-						this.raycaster["ray"]["origin"]["x"] - hoveredLabel["object"]["position"]["x"],
-						this.raycaster["ray"]["origin"]["y"] - hoveredLabel["object"]["position"]["y"],
-						this.raycaster["ray"]["origin"]["z"] - hoveredLabel["object"]["position"]["z"]
-					)
+						this.rayPoint = new Vector3(
+							this.raycaster["ray"]["origin"]["x"] - hoveredLabel["object"]["position"]["x"],
+							this.raycaster["ray"]["origin"]["y"] - hoveredLabel["object"]["position"]["y"],
+							this.raycaster["ray"]["origin"]["z"] - hoveredLabel["object"]["position"]["z"]
+						)
 
-					const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
-					const cameraPoint = this.raycaster.ray.origin
-					const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
+						const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
+						const cameraPoint = this.raycaster.ray.origin
+						const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
 
-					this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
-					this.normedTransformVector.multiplyScalar(maxDistance)
+						this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
+						this.normedTransformVector.multiplyScalar(maxDistance)
 
-					hoveredLabel["object"]["position"]["x"] = hoveredLabel["object"]["position"]["x"] + this.normedTransformVector.x
-					hoveredLabel["object"]["position"]["y"] = hoveredLabel["object"]["position"]["y"] + this.normedTransformVector.y
-					hoveredLabel["object"]["position"]["z"] = hoveredLabel["object"]["position"]["z"] + this.normedTransformVector.z
+						hoveredLabel["object"]["position"]["x"] = hoveredLabel["object"]["position"]["x"] + this.normedTransformVector.x
+						hoveredLabel["object"]["position"]["y"] = hoveredLabel["object"]["position"]["y"] + this.normedTransformVector.y
+						hoveredLabel["object"]["position"]["z"] = hoveredLabel["object"]["position"]["z"] + this.normedTransformVector.z
 
-					this.modifiedLabel = hoveredLabel
+						this.modifiedLabel = hoveredLabel
+					}
 				}
 
 				this.intersectedBuilding =

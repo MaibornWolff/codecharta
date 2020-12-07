@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Re-enabled color selection for folders and on hover ([#1544](https://github.com/MaibornWolff/codecharta/pull/1544))
+-   Labels do not take delta height into account ([#1523](https://github.com/MaibornWolff/codecharta/issues/1523))
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.63.0] - 2020-11-30
