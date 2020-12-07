@@ -21,6 +21,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
 	private LABEL_CORNER_RADIUS = 40 //empirically gathered
+	private LABEL_SCALE_FACTOR = 0.7 //empirically gathered
 	private LABEL_HEIGHT_COEFFICIENT = 25 / 4
 	private LABEL_HEIGHT_POSITION = 60
 
@@ -67,7 +68,11 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const label = this.makeText(labelText, 30)
 			const { margin } = this.storeService.getState().dynamicSettings
 
-			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_COEFFICIENT * margin + label.heightValue / 2, labelZ) //label_height
+			label.sprite.position.set(
+				labelX,
+				labelY + this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR + label.heightValue / 2,
+				labelZ
+			) //label_height
 			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
 			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
 			label.sprite.material.opacity = this.mapLabelColors.alpha
@@ -96,7 +101,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 
 		for (const label of this.labels) {
-			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin, 0)
+			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 			label.sprite.position
 				.sub(labelHeightDifference.clone())
 				.divide(this.currentScale.clone())

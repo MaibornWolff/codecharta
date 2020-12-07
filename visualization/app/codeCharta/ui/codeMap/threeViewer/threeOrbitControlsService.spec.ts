@@ -39,7 +39,7 @@ describe("ThreeOrbitControlsService", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 
-		vector = new Vector3(7.499399432609231e-16, 7.499399432609231e-16, 7.499399432609231e-16)
+		vector = new Vector3(1.0715129195828004, 1.0715129195828004, 1.0715129195828004)
 	}
 
 	function withMockedThreeCameraService() {

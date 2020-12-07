@@ -83,7 +83,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		const cameraReference = this.threeCameraService.camera
 
 		//TODO: Scale Factor for object to camera ratio
-		const scale = 1.8 // object size / display size
+		const scale = 1.7 // object size / display size
 		const objectAngularSize = ((cameraReference.fov * Math.PI) / 180) * scale
 		const distanceToCamera = boundingSphere.radius / Math.tan(objectAngularSize / 2)
 		return Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
