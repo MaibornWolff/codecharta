@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   last update disabled highlighting/ selection colors for labeled folders due to performance issues:
     -   the feature has been improved once again enabling the selection color for folders and providing highlighting on hover/ when adding the folder to constant highlight
+-   Labels do not take delta height into account ([#1523](https://github.com/MaibornWolff/codecharta/issues/1523))
 
 ### Chore 👨‍💻 👩‍💻
 
