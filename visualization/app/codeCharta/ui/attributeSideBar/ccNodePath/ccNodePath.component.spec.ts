@@ -67,8 +67,8 @@ describe("CcNodePathComponent", () => {
 		})
 		$rootScope.$digest()
 
-		const fileCountDescriptionElems = component[0].getElementsByClassName("cc-node-file-count")
-		expect(fileCountDescriptionElems.length).toBe(1)
+		const fileCountDescriptionElements = component[0].getElementsByClassName("cc-node-file-count")
+		expect(fileCountDescriptionElements.length).toBe(1)
 		expect(getFileCountDescriptionSpy).toHaveBeenCalledTimes(1)
 	})
 
