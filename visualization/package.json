@@ -128,6 +128,7 @@
 		"@types/puppeteer": "^5.4.0",
 		"@typescript-eslint/eslint-plugin": "^4.0.1",
 		"@typescript-eslint/parser": "^4.0.1",
+		"angularjs-color-picker": "^3.4.8",
 		"babel-loader": "^8.1.0",
 		"bestzip": "^2.1.5",
 		"clean-webpack-plugin": "^3.0.0",
