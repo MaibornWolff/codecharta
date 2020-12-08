@@ -21,6 +21,7 @@ export class CodeMapMesh {
 	private material: ShaderMaterial
 	private geomGen: GeometryGenerator
 	private mapGeomDesc: CodeMapGeometricDescription
+	private nodes: Node[]
 
 	constructor(nodes: Node[], state: State, isDeltaState: boolean) {
 		this.initMaterial()
@@ -30,12 +31,17 @@ export class CodeMapMesh {
 
 		this.threeMesh = buildResult.mesh
 		this.mapGeomDesc = buildResult.desc
+		this.nodes = nodes
 
 		this.initDeltaColorsOnMesh(state)
 	}
 
 	getThreeMesh() {
 		return this.threeMesh
+	}
+
+	getNodes() {
+		return this.nodes
 	}
 
 	selectBuilding(building: CodeMapBuilding, color: string) {
@@ -121,13 +127,15 @@ export class CodeMapMesh {
 	}
 
 	private setNewDeltaColor(building: CodeMapBuilding, state: State) {
-		const { appSettings : {mapColors}, dynamicSettings : {heightMetric} } = state;
-		const { node } = building;
-		
+		const {
+			appSettings: { mapColors },
+			dynamicSettings: { heightMetric }
+		} = state
+		const { node } = building
+
 		if (node.flat) {
 			building.setDeltaColor(mapColors.flat)
-		}
-		else if (node.deltas) {
+		} else if (node.deltas) {
 			const deltaValue = node.deltas[heightMetric]
 
 			if (deltaValue > 0) {

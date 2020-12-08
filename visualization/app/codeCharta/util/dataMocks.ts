@@ -459,61 +459,6 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	path: "/root",
-	isExcluded: false,
-	isFlattened: false,
-	children: [
-		{
-			name: "big leaf",
-			type: NodeType.FILE,
-			path: "/root/in/between/big leaf",
-			attributes: { rloc: 100, functions: 10, mcc: 1 },
-			link: "http://www.google.de",
-			isExcluded: false,
-			isFlattened: false
-		},
-		{
-			name: "Parent Leaf",
-			type: NodeType.FOLDER,
-			attributes: {},
-			path: "/root/in/between/Parent Leaf",
-			isExcluded: false,
-			isFlattened: false,
-			children: [
-				{
-					name: "small leaf",
-					type: NodeType.FILE,
-					path: "/root/in/between/Parent Leaf/small leaf",
-					attributes: { rloc: 30, functions: 100, mcc: 100 },
-					isExcluded: false,
-					isFlattened: false
-				},
-				{
-					name: "other small leaf",
-					type: NodeType.FILE,
-					path: "/root/in/between/Parent Leaf/other small leaf",
-					attributes: { rloc: 70, functions: 1000, mcc: 10 },
-					isExcluded: false,
-					isFlattened: false
-				},
-				{
-					name: "empty folder",
-					type: NodeType.FOLDER,
-					path: "/root/in/between/Parent Leaf/empty folder",
-					attributes: {},
-					isExcluded: false,
-					isFlattened: false,
-					children: []
-				}
-			]
-		}
-	]
-}
-
 export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
 	name: "big leaf",
 	id: 1,
@@ -726,7 +671,8 @@ export const FILE_META: FileMeta = {
 	fileName: "fileA",
 	fileChecksum: "md5-fileA",
 	projectName: "Sample Project",
-	apiVersion: packageJson.codecharta.apiVersion
+	apiVersion: packageJson.codecharta.apiVersion,
+	exportedFileSize: 300000
 }
 
 export const TEST_FILE_DATA: CCFile = {
@@ -1356,7 +1302,8 @@ export const TEST_DELTA_MAP_A: CCFile = {
 		fileName: "fileA",
 		fileChecksum: "md5-delta-fileA",
 		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion
+		apiVersion: packageJson.codecharta.apiVersion,
+		exportedFileSize: 300000
 	},
 	map: {
 		name: "root",
@@ -1413,7 +1360,8 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		fileName: "fileB",
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion
+		apiVersion: packageJson.codecharta.apiVersion,
+		exportedFileSize: 300000
 	},
 	map: {
 		name: "root",
@@ -1697,7 +1645,7 @@ export const DEFAULT_STATE: State = {
 			selected: "#EB8319",
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",
-			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
+			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
 		},
 		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
@@ -1750,6 +1698,7 @@ export const TEST_NODE_ROOT: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,
@@ -2021,6 +1970,7 @@ export const TEST_NODE_LEAF: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,
@@ -2048,6 +1998,7 @@ export const INCOMING_NODE: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,
@@ -2073,6 +2024,7 @@ export const OUTGOING_NODE: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,
@@ -2098,6 +2050,7 @@ export const DIFFERENT_NODE: Node = {
 	height: 2,
 	length: 3,
 	depth: 4,
+	mapNodeDepth: 2,
 	x0: 5,
 	z0: 6,
 	y0: 7,

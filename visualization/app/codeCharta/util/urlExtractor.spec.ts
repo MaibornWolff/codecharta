@@ -106,7 +106,7 @@ describe("urlExtractor", () => {
 		})
 
 		it("should resolve data and return an object with content and fileName", async () => {
-			const expected = { content: "some data", fileName: "test.json" }
+			const expected = { content: "some data", fileName: "test.json", fileSize: 9 }
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 

@@ -8,6 +8,7 @@ export class AggregationGenerator {
 	private static projectNameArray: string[] = []
 	private static fileNameArray: string[] = []
 	private static fileChecksumArray: string[] = []
+	private static fileSizesSum = 0
 
 	static getAggregationFile(inputFiles: CCFile[]) {
 		if (inputFiles.length === 1) {
@@ -20,6 +21,7 @@ export class AggregationGenerator {
 			this.projectNameArray.push(inputFile.fileMeta.projectName.replace(" ", "_"))
 			this.fileNameArray.push(FileNameHelper.withoutCCJsonExtension(inputFile.fileMeta.fileName).replace(" ", "_"))
 			this.fileChecksumArray.push(inputFile.fileMeta.fileChecksum)
+			this.fileSizesSum += inputFile.fileMeta.exportedFileSize
 		}
 		return this.getNewAggregatedMap(inputFiles)
 	}
@@ -30,7 +32,8 @@ export class AggregationGenerator {
 				projectName: `project_aggregation_of_${this.projectNameArray.join("_and_")}`,
 				fileName: `file_aggregation_of_${this.fileNameArray.join("_and_")}`,
 				fileChecksum: this.fileChecksumArray.join(";"),
-				apiVersion: packageJson.codecharta.apiVersion
+				apiVersion: packageJson.codecharta.apiVersion,
+				exportedFileSize: this.fileSizesSum
 			},
 			map: {
 				name: CodeChartaService.ROOT_NAME,

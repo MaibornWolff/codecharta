@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -18,10 +18,10 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
-	private LABEL_COLOR_RGBA = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb, this.mapLabelColors.alpha)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
-	private LABEL_CORNER_RADIUS = 40 //empirically gathered
+	private LABEL_CORNER_RADIUS = 35 //empirically gathered
+	private LABEL_HEIGHT_POSITION = 60
 
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
@@ -37,17 +37,21 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
+	//labels need to be scaled according to map or it will clip + looks bad
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNode: number) {
+		// todo: tk rename to addLeafLabel
+
 		const state = this.storeService.getState()
+		const x = node.x0 - state.treeMap.mapSize
+		const y = node.z0
+		const z = node.y0 - state.treeMap.mapSize
+
+		const labelX = x + node.width / 2
+		const labelY = y + highestNode
+		const labelYOrigin = y + node.height
+		const labelZ = z + node.length / 2
+
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
-			const x = node.x0 - state.treeMap.mapSize
-			const y = node.z0
-			const z = node.y0 - state.treeMap.mapSize
-
-			const labelX = x + node.width / 2
-			const labelY = y + node.height
-			const labelZ = z + node.length / 2
-
 			let labelText = ""
 
 			if (options.showNodeName) {
@@ -62,13 +66,16 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			const label = this.makeText(labelText, 30)
 
-			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
-			label.line = this.makeLine(labelX, labelY, labelZ)
+			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_POSITION + label.heightValue / 2, labelZ) //label_height
+			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
+			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
+			label.sprite.material.opacity = this.mapLabelColors.alpha
+			label.sprite.userData = { node }
 
 			this.threeSceneService.labels.add(label.sprite)
 			this.threeSceneService.labels.add(label.line)
 
-			this.labels.push(label)
+			this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
 		}
 		this.resetScale = true
 	}
@@ -87,7 +94,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 
 		for (const label of this.labels) {
-			const labelHeightDifference = new Vector3(0, 60, 0)
+			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_POSITION, 0)
 			label.sprite.position
 				.sub(labelHeightDifference.clone())
 				.divide(this.currentScale.clone())
@@ -128,7 +135,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		// bg
 		context.font = `${fontsize}px Helvetica Neue`
-		context.fillStyle = this.LABEL_COLOR_RGBA
+		context.fillStyle = "rgba(255,255,255,1)"
 		context.lineJoin = "round"
 		context.lineCap = "round"
 		context.lineWidth = 5
@@ -190,14 +197,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	private makeLine(x: number, y: number, z: number) {
+	private makeLine(x: number, y: number, yOrigin: number, z: number) {
 		const material = new LineBasicMaterial({
 			color: this.LABEL_COLOR_RGB,
 			linewidth: 2
 		})
 
 		const geometry = new Geometry()
-		geometry.vertices.push(new Vector3(x, y, z), new Vector3(x, y + 60, z))
+		geometry.vertices.push(new Vector3(x, yOrigin, z), new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z))
 
 		return new Line(geometry, material)
 	}

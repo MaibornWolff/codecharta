@@ -1,7 +1,6 @@
 import { validate } from "./util/fileValidator"
 import { NameDataPair } from "./codeCharta.model"
 import { NodeDecorator } from "./util/nodeDecorator"
-import { ExportCCFile } from "./codeCharta.api.model"
 import { StoreService } from "./state/store.service"
 import { resetFiles, setFiles, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
@@ -24,7 +23,7 @@ export class CodeChartaService {
 		for (const nameDataPair of nameDataPairs) {
 			try {
 				validate(nameDataPair.content)
-				this.addFile(nameDataPair.fileName, nameDataPair.content)
+				this.addFile(nameDataPair)
 			} catch (error) {
 				if (error.error.length > 0) {
 					this.fileStates = []
@@ -34,7 +33,7 @@ export class CodeChartaService {
 				}
 
 				if (error.warning.length > 0) {
-					this.addFile(nameDataPair.fileName, nameDataPair.content)
+					this.addFile(nameDataPair)
 					this.dialogService.showValidationWarningDialog(error)
 				}
 			}
@@ -49,8 +48,8 @@ export class CodeChartaService {
 		}
 	}
 
-	private addFile(fileName: string, migratedFile: ExportCCFile) {
-		const ccFile = getCCFile(fileName, migratedFile)
+	private addFile(file: NameDataPair) {
+		const ccFile = getCCFile(file)
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
 	}
