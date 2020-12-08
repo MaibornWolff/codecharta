@@ -293,26 +293,23 @@ export interface State {
 	metricData: MetricData
 }
 
-export function stateObjectReplacer(this, key) {
-	const originalObject = this[key]
-	if (originalObject instanceof Map) {
+export function stateObjectReplacer(_, valueToReplace) {
+	if (valueToReplace instanceof Map) {
 		return {
 			dataType: "Map",
-			value: [...originalObject.entries()]
+			value: [...valueToReplace.entries()]
 		}
 	}
-	if (originalObject instanceof Set) {
+	if (valueToReplace instanceof Set) {
 		return {
 			dataType: "Set",
-			value: [...originalObject]
+			value: [...valueToReplace]
 		}
 	}
-	return originalObject
+	return valueToReplace
 }
 
-export function stateObjectReviver(this, key) {
-	const valueToRevive = this[key]
-
+export function stateObjectReviver(_, valueToRevive) {
 	if (valueToRevive?.dataType === "Map") {
 		return new Map(valueToRevive.value)
 	}
