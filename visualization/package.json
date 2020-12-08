@@ -109,7 +109,7 @@
 		"shelljs": "^0.8.1",
 		"three": "^0.123.0",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "^0.44.0"
+		"typescript-json-schema": "^0.45.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.4",
@@ -118,7 +118,7 @@
 		"@babel/preset-typescript": "^7.10.4",
 		"@types/angular": "^1.7.2",
 		"@types/angular-mocks": "^1.5.11",
-		"@types/color-convert": "^1.9.0",
+		"@types/color-convert": "^2.0.0",
 		"@types/d3-hierarchy": "^2.0.0",
 		"@types/expect-puppeteer": "^4.4.3",
 		"@types/jest": "^26.0.4",

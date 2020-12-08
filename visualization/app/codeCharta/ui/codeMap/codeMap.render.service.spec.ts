@@ -6,7 +6,16 @@ import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { Node, CodeMapNode, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_STATE, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
+import {
+	DEFAULT_STATE,
+	METRIC_DATA,
+	STATE,
+	TEST_FILE_WITH_PATHS,
+	TEST_NODE_LEAF,
+	TEST_NODE_ROOT,
+	TEST_NODES,
+	VALID_EDGES
+} from "../../util/dataMocks"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { StoreService } from "../../state/store.service"
@@ -160,6 +169,14 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService["setLabels"](sortedNodes)
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(0)
+		})
+
+		it("should take delta into account for height calculation when in delta mode", () => {
+			expect(codeMapRenderService["getHighestNode"]([TEST_NODE_ROOT])).toEqual(12)
+		})
+
+		it("should correctly calculate heights node accounting for delta", () => {
+			expect(codeMapRenderService["getHighestNode"]([TEST_NODE_ROOT, TEST_NODE_LEAF])).toEqual(22)
 		})
 	})
 
