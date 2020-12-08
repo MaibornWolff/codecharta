@@ -13,11 +13,11 @@
 		"format": "prettier --write \"./**/*\"",
 		"format:quick": "pretty-quick --staged",
 		"lint:visualization": "cd visualization && npm run lint:fix",
-		"precommit:visualization": "cd visualization && npm run precommit"
+		"lint:visualization:quick": "cd visualization && npm run precommit"
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "npm run precommit:visualization && npm run format:quick",
+			"pre-commit": "npm run lint:visualization:quick && npm run format:quick",
 			"pre-push": "sh ./script/pre-push.sh"
 		}
 	},
