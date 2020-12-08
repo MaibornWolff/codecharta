@@ -133,22 +133,24 @@ describe("DialogAddScenarioSettingsComponent", () => {
 			dialogAddCustomConfigSettings["purgeableConfigs"].add(clearedConfig)
 			dialogAddCustomConfigSettings.downloadAndCollectPurgeableOldConfigs()
 
-			expect(CustomConfigHelper.downloadCustomConfigs).not.toHaveBeenCalledWith()
+			expect(CustomConfigHelper.downloadCustomConfigs).not.toHaveBeenCalled()
 		})
 
 		it("should download 6 month old configs", () => {
 			CustomConfigHelper.downloadCustomConfigs = jest.fn()
 
+			const monthInMs = 30 * 24 * 60 * 60 * 1000
+
 			const sevenMonthOldConfig = {
 				id: "invalid-md5-checksum-id-7-month",
 				name: "this-one-should-be-cleared",
-				creationTime: Date.now() - 7 * 30 * 24 * 60 * 60 * 1000
+				creationTime: Date.now() - 7 * monthInMs
 			} as CustomConfig
 
 			const fourMonthOldConfig = {
 				id: "invalid-md5-checksum-id-four-month",
 				name: "this-one-should-NOT-be-cleared",
-				creationTime: Date.now() - 4 * 30 * 24 * 60 * 60 * 1000
+				creationTime: Date.now() - 4 * monthInMs
 			} as CustomConfig
 
 			const newlyCreatedConfig = {

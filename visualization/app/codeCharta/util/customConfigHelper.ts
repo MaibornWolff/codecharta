@@ -22,7 +22,7 @@ export class CustomConfigHelper {
 	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): Map<string, CustomConfigItemGroup> {
 		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
 
-		this.customConfigs.forEach(customConfig => {
+		CustomConfigHelper.customConfigs.forEach(customConfig => {
 			const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
 
 			if (!customConfigItemGroups.has(groupKey)) {
@@ -34,7 +34,7 @@ export class CustomConfigHelper {
 				})
 			}
 
-			const customConfigItemApplicable = this.isCustomConfigApplicable(customConfigFileStateConnector, customConfig)
+			const customConfigItemApplicable = CustomConfigHelper.isCustomConfigApplicable(customConfigFileStateConnector, customConfig)
 			customConfigItemGroups.get(groupKey).customConfigItems.push({
 				id: customConfig.id,
 				name: customConfig.name,
@@ -63,7 +63,7 @@ export class CustomConfigHelper {
 		// TODO: #684 adapt storing Configs and Scenarios for standalone version
 		const newLocalStorageElement: LocalStorageCustomConfigs = {
 			version: CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION,
-			customConfigs: [...this.customConfigs]
+			customConfigs: [...CustomConfigHelper.customConfigs]
 		}
 		localStorage.setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement, stateObjectReplacer))
 	}
@@ -77,16 +77,16 @@ export class CustomConfigHelper {
 	}
 
 	static addCustomConfig(newCustomConfig: CustomConfig) {
-		this.customConfigs.set(newCustomConfig.id, newCustomConfig)
-		this.setCustomConfigsToLocalStorage()
+		CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
+		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
 	static getCustomConfigSettings(configId: string): CustomConfig | undefined {
-		return this.customConfigs.get(configId)
+		return CustomConfigHelper.customConfigs.get(configId)
 	}
 
 	static hasCustomConfigByName(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], configName: string): boolean {
-		for (const customConfig of this.customConfigs.values()) {
+		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
 			if (
 				customConfig.name === configName &&
 				customConfig.mapSelectionMode === mapSelectionMode &&
@@ -100,7 +100,7 @@ export class CustomConfigHelper {
 	}
 
 	static getCustomConfigs(): Map<string, CustomConfig> {
-		return this.customConfigs
+		return CustomConfigHelper.customConfigs
 	}
 
 	static importCustomConfigs(content: string) {
@@ -161,24 +161,13 @@ export class CustomConfigHelper {
 	}
 
 	static createExportCustomConfigFromConfig(customConfig: CustomConfig): ExportCustomConfig {
-		const exportCustomConfig: ExportCustomConfig = {
-			id: customConfig.id,
-			name: customConfig.name,
-			creationTime: customConfig.creationTime,
-			assignedMaps: customConfig.assignedMaps,
-			customConfigVersion: customConfig.customConfigVersion,
-			mapChecksum: customConfig.mapChecksum,
-			mapSelectionMode: customConfig.mapSelectionMode,
-			stateSettings: customConfig.stateSettings
-		}
-
-		return exportCustomConfig
+		return { ...customConfig }
 	}
 
 	static getCustomConfigsAmountByMapAndMode(mapNames: string, mapSelectionMode: CustomConfigMapSelectionMode): number {
 		let count = 0
 
-		this.customConfigs.forEach(config => {
+		CustomConfigHelper.customConfigs.forEach(config => {
 			if (config.assignedMaps.join(" ") === mapNames && config.mapSelectionMode === mapSelectionMode) {
 				count++
 			}
@@ -205,15 +194,15 @@ export class CustomConfigHelper {
 
 	static deleteCustomConfigs(customConfigs: CustomConfig[]) {
 		for (const customConfig of customConfigs) {
-			this.customConfigs.delete(customConfig.id)
+			CustomConfigHelper.customConfigs.delete(customConfig.id)
 		}
 
-		this.setCustomConfigsToLocalStorage()
+		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
 	static deleteCustomConfig(configId: string) {
-		this.customConfigs.delete(configId)
-		this.setCustomConfigsToLocalStorage()
+		CustomConfigHelper.customConfigs.delete(configId)
+		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
 	static sortCustomConfigDropDownGroupList(a: CustomConfigItemGroup, b: CustomConfigItemGroup) {

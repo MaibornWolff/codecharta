@@ -70,7 +70,7 @@ describe("CustomConfigsController", () => {
 	})
 
 	describe("initView", () => {
-		it("Load CustomConfigs, sort them by applicable-state and mode name ASC and set the dropDownCustomConfigItemGroups ", () => {
+		it("should load CustomConfigs sorted by applicable-state and mode name", () => {
 			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
 			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
 
@@ -87,7 +87,7 @@ describe("CustomConfigsController", () => {
 			expect(customConfigItemGroup3).toEqual(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBSINGLE"))
 		})
 
-		it("should not found downloadable Configs", () => {
+		it("should not find downloadable Configs", () => {
 			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(new Map())
 			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
 
@@ -145,11 +145,11 @@ describe("CustomConfigsController", () => {
 		})
 	})
 
-	describe("downloadPrefetchedCustomConfigs", () => {
+	describe("downloadPreloadedCustomConfigs", () => {
 		it("should trigger the download if downloadable Configs are available otherwise not", () => {
 			CustomConfigHelper.downloadCustomConfigs = jest.fn()
 
-			customConfigsController.downloadPrefetchedCustomConfigs()
+			customConfigsController.downloadPreloadedCustomConfigs()
 			expect(CustomConfigHelper.downloadCustomConfigs).not.toHaveBeenCalled()
 
 			const exportConfig1 = {
@@ -158,7 +158,7 @@ describe("CustomConfigsController", () => {
 			} as ExportCustomConfig
 
 			customConfigsController["downloadableConfigs"].set(exportConfig1.id, exportConfig1)
-			customConfigsController.downloadPrefetchedCustomConfigs()
+			customConfigsController.downloadPreloadedCustomConfigs()
 
 			expect(CustomConfigHelper.downloadCustomConfigs).toHaveBeenCalled()
 		})

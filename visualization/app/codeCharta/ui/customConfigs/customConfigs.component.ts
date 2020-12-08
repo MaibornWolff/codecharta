@@ -57,12 +57,12 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	onFilesSelectionChanged(files: FileState[]) {
 		this.customConfigFileStateConnector = new CustomConfigFileStateConnector(files)
 
-		this.prefetchDownloadableConfigsForUploadedMaps()
+		this.preloadDownloadableConfigs()
 	}
 
 	initView() {
 		this.loadCustomConfigs()
-		this.prefetchDownloadableConfigsForUploadedMaps()
+		this.preloadDownloadableConfigs()
 	}
 
 	loadCustomConfigs() {
@@ -108,7 +108,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		this.dialogService.showInfoDialog(`${configName} deleted.`)
 	}
 
-	downloadPrefetchedCustomConfigs() {
+	downloadPreloadedCustomConfigs() {
 		if (!this.downloadableConfigs.size) {
 			return
 		}
@@ -116,7 +116,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		CustomConfigHelper.downloadCustomConfigs(this.downloadableConfigs, this.customConfigFileStateConnector)
 	}
 
-	private prefetchDownloadableConfigsForUploadedMaps() {
+	private preloadDownloadableConfigs() {
 		this.downloadableConfigs.clear()
 		const customConfigs = CustomConfigHelper.getCustomConfigs()
 
@@ -127,13 +127,13 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 			}
 		}
 
-		return (this._viewModel.hasDownloadableConfigs = this.downloadableConfigs.size > 0)
+		this._viewModel.hasDownloadableConfigs = this.downloadableConfigs.size > 0
 	}
 
 	private isConfigApplicableForUploadedMaps(customConfig: CustomConfig) {
 		const mapChecksumsOfConfig = customConfig.mapChecksum.split(";")
 		for (const checksumOfConfig of mapChecksumsOfConfig) {
-			if (this.customConfigFileStateConnector.getChecksumOfAssignedMaps().includes(checksumOfConfig)) {
+			if (this.customConfigFileStateConnector.isMapAssigned(checksumOfConfig)) {
 				return true
 			}
 		}

@@ -54,6 +54,10 @@ export class CustomConfigFileStateConnector {
 		return this.mapChecksums.join(";")
 	}
 
+	isMapAssigned(checksum: string) {
+		return this.mapChecksums.includes(checksum)
+	}
+
 	getAmountOfUploadedFiles(): number {
 		return this.files.length
 	}

@@ -313,8 +313,6 @@ export function stateObjectReplacer(this, key) {
 export function stateObjectReviver(this, key) {
 	const valueToRevive = this[key]
 
-	// our state has not got a Map so far
-	// Nevertheless, we keep this logic
 	if (valueToRevive?.dataType === "Map") {
 		return new Map(valueToRevive.value)
 	}
