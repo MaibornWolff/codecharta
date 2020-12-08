@@ -14,7 +14,6 @@ import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/
 import { StoreService } from "../../state/store.service"
 import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { klona } from "klona"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
@@ -119,13 +118,6 @@ describe("AttributeSideBarController", () => {
 			attributeSideBarController.onBuildingSelected(codeMapBuilding)
 
 			expect(attributeSideBarController["_viewModel"].fileName).toEqual("my_fileName")
-		})
-
-		it("should have packageFileCount in it's _viewModel", () => {
-			codeMapBuilding.node.attributes[NodeMetricDataService.UNARY_METRIC] = 1
-			attributeSideBarController.onBuildingSelected(codeMapBuilding)
-
-			expect(attributeSideBarController["_viewModel"].packageFileCount).toEqual(1)
 		})
 	})
 
