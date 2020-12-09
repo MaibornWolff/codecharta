@@ -1,4 +1,3 @@
-import angular from "angular"
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
@@ -17,7 +16,7 @@ export class FileDownloader {
 	) {
 		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
 		const newFileNameWithExtension = fileName + CodeChartaService.CC_FILE_EXTENSION
-		this.downloadData(exportCCFile, newFileNameWithExtension)
+		this.downloadData(JSON.stringify(exportCCFile), newFileNameWithExtension)
 	}
 
 	private static getProjectDataAsCCJsonFormat(
@@ -90,13 +89,8 @@ export class FileDownloader {
 		return copy
 	}
 
-	private static downloadData(data: ExportCCFile, fileName: string) {
-		let dataJson = JSON.stringify(data)
-		if (typeof data === "object") {
-			dataJson = angular.toJson(data)
-		}
-
-		const blob = new Blob([dataJson], { type: "text/json" })
+	static downloadData(data: string, fileName: string) {
+		const blob = new Blob([data], { type: "text/json" })
 		const mouseEvent = document.createEvent("MouseEvents")
 		const link = document.createElement("a")
 
