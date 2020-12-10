@@ -1,20 +1,15 @@
-// import { StoreService } from "../../state/store.service"
+import { StoreService } from "../../state/store.service"
 // import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 
 export class MapColorPickerController {
-	// @ts-ignore todo is there maybe a @bindings to be more clear why we need this?
 	private mapColorFor: string
-	// @ts-ignore todo is there maybe a @bindings to be more clear why we need this?
-	private label: string
 	private open: string
 
-	constructor(/* private storeService: StoreService, */ private $element: JQLite, private $scope) {}
+	constructor(private storeService: StoreService, private $element: JQLite, private $scope) {}
 
 	$onInit() {
-		// console.log( this.mapColorFor, this.label)
-		// console.log(this.storeService.getState())
-		this.$scope.color = "#f542ec"
-		this.$scope.colorPickerOptions = { pos: this.open }
+		this.$scope.color = this.getCurrentColor()
+		this.$scope.colorPickerOptions = { pos: this.open } // sets direction in which color-picker will open
 
 		// this.storeService.dispatch(
 		//   setMapColors({
@@ -25,8 +20,16 @@ export class MapColorPickerController {
 	}
 
 	$postLink() {
-		this.getColorPickerPanel().then(this.addColorInbox)
+		this.getColorPickerPanel().then(colorPickerPanel => {
+			colorPickerPanel.appendChild(this.createColorInput())
+		})
 	}
+
+	private getCurrentColor() {
+		return this.storeService.getState().appSettings.mapColors[this.mapColorFor]
+	}
+
+	// todo onStateChange update color
 
 	private async getColorPickerPanel() {
 		return new Promise<ChildNode>(resolve => {
@@ -42,11 +45,22 @@ export class MapColorPickerController {
 		})
 	}
 
-	private addColorInbox(colorPickerPanel: ChildNode) {
-		const node = document.createElement("div")
-		node.innerHTML = "yolo"
-		node.addEventListener("click", () => alert("yolo yolo"))
-		colorPickerPanel.appendChild(node)
+	private createColorInput() {
+		const input = document.createElement("input")
+
+		input.value = this.$scope.color
+		this.$scope.$watch("color", () => {
+			if (input.value !== this.$scope.color) {
+				input.value = this.$scope.color
+			}
+		})
+
+		input.addEventListener("input", () => {
+			this.$scope.color = input.value
+			this.$scope.$apply()
+		})
+
+		return input
 	}
 }
 
