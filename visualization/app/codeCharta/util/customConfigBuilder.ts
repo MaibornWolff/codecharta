@@ -74,6 +74,7 @@ function initializeAppSettings(target: CustomConfig) {
 		sortingOrderAscending: false,
 		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: undefined,
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
 			angularGreen: "",

@@ -43,6 +43,7 @@ import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
 import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
+import "./layoutSelection/layoutSelection.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
@@ -86,5 +87,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.ribbonBar",
 	"app.codeCharta.ui.scenarioDropDown",
 	"app.codeCharta.ui.toolBar",
-	"app.codeCharta.ui.viewCube"
+	"app.codeCharta.ui.viewCube",
+	"app.codeCharta.ui.layoutSelection",
 ])

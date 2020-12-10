@@ -1,8 +1,8 @@
 import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
 import { TreeMapHelper } from "./treeMapHelper"
-import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../codeCharta.model"
-import { isLeaf } from "./codeMapHelper"
-import { getMapResolutionScaleFactor } from "../ui/codeMap/codeMap.render.service"
+import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../../../codeCharta.model"
+import { isLeaf } from "../../codeMapHelper"
+import { getMapResolutionScaleFactor } from "../../../ui/codeMap/codeMap.render.service"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
@@ -10,7 +10,7 @@ const PADDING_SCALING_FACTOR = 0.4
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 
-export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean) {
+export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean) : Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
 	const heightScale = (state.treeMap.mapSize * 2) / maxHeight
@@ -49,7 +49,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 
 	const squarifiedTreeMap = getSquarifiedTreeMap(map, state, mapSizeResolutionScaling)
 
-	const nodes = []
+	const nodes : Node [] = []
 	for (const squarifiedNode of squarifiedTreeMap.treeMap) {
 		nodes.push(TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState))
 	}
@@ -149,7 +149,7 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 	root.length *= scaleLength
 }
 
-function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionScaling: number): SquarifiedTreeMap {
+export function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionScaling: number): SquarifiedTreeMap {
 	const hierarchyNode = hierarchy(map)
 	const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
 	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling

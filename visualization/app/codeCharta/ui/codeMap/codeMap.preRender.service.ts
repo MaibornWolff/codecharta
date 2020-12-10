@@ -1,6 +1,6 @@
 "use strict"
 
-import { CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CodeMapNode, FileMeta, LayoutAlgorithm } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -28,12 +28,13 @@ import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricDa
 import { hierarchy } from "d3-hierarchy"
 import { isLeaf } from "../../util/codeMapHelper"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber {
+export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber,LayoutAlgorithmSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -52,6 +53,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
+		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
@@ -81,6 +83,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		) {
 			this.debounceRendering()
 		}
+	}
+
+	// TODO check how to improve it
+	public onLayoutAlgorithmChanged(_layoutAlgorithm: LayoutAlgorithm) {
+		this.debounceRendering()
 	}
 
 	onScalingChanged() {

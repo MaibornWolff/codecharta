@@ -1,9 +1,9 @@
-import { getMarkingColor, isLeaf } from "./codeMapHelper"
-import { Node, CodeMapNode, State } from "../codeCharta.model"
+import { getMarkingColor, isLeaf } from "../../codeMapHelper"
+import { Node, CodeMapNode, State } from "../../../codeCharta.model"
 import { Vector3 } from "three"
-import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
+import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
-import { getMapResolutionScaleFactor } from "../ui/codeMap/codeMap.render.service"
+import { getMapResolutionScaleFactor } from "../../../ui/codeMap/codeMap.render.service"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
@@ -108,7 +108,7 @@ function buildNodeFrom(
 	}
 }
 
-function getHeightValue(state: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {
+export function getHeightValue(state: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
 	if (flattened) {
@@ -124,7 +124,7 @@ function getHeightValue(state: State, squaredNode: HierarchyRectangularNode<Code
 	return heightValue
 }
 
-function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: State, flattened: boolean) {
+export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: State, flattened: boolean) {
 	if (squaredNode.isExcluded || (isNodeLeaf && state.appSettings.hideFlatBuildings && flattened)) {
 		return false
 	}
@@ -136,21 +136,21 @@ function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: State, 
 	return true
 }
 
-function getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+export function getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
 	if (width > length) {
 		return new Vector3(vector.x - mapSize + width / 4, vector.y + height, vector.z - mapSize + length / 2)
 	}
 	return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + length / 4)
 }
 
-function getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+export function getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
 	if (width > length) {
 		return new Vector3(vector.x - mapSize + 0.75 * width, vector.y + height, vector.z - mapSize + length / 2)
 	}
 	return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + 0.75 * length)
 }
 
-function isNodeFlat(codeMapNode: CodeMapNode, state: State) {
+export function isNodeFlat(codeMapNode: CodeMapNode, state: State) {
 	if (codeMapNode.isFlattened) {
 		return true
 	}
@@ -177,7 +177,7 @@ function isNodeNonSearched(squaredNode: CodeMapNode, state: State) {
 	return !state.dynamicSettings.searchedNodePaths.has(squaredNode.path)
 }
 
-function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettings }: State, isDeltaState: boolean, flattened: boolean) {
+export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettings }: State, isDeltaState: boolean, flattened: boolean) {
 	const { mapColors, invertColorRange, whiteColorBuildings } = appSettings
 
 	if (isDeltaState) {
@@ -205,5 +205,9 @@ export const TreeMapHelper = {
 	countNodes,
 	buildingArrayToMap,
 	buildRootFolderForFixedFolders,
-	buildNodeFrom
+	buildNodeFrom,
+	isNodeFlat,
+	FOLDER_HEIGHT,
+	MIN_BUILDING_HEIGHT,
+	HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 }

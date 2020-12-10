@@ -1,14 +1,15 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { createTreemapNodes } from "../../util/treeMapGenerator"
+import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, Node } from "../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
+import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 
 const ONE_MB = 1024 * 1024
 
@@ -63,7 +64,23 @@ export class CodeMapRenderService {
 
 	private getSortedNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
-		const nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+		const {appSettings : {layoutAlgorithm}, metricData } = state
+		let nodes : Node[] = []
+		switch (layoutAlgorithm) {
+			case LayoutAlgorithm.StreetMap:
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricData.nodeMetricData, isDeltaState(state.files))
+				break
+			case LayoutAlgorithm.TMStreet:
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricData.nodeMetricData, isDeltaState(state.files))
+				break
+			case LayoutAlgorithm.SquarifiedTreeMap:
+			default:
+				// TODO needs refactoring
+				nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+				break
+		}
+		//const nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+		//const nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
 		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
 		// prevent multiple steps if the visibility is checked first.
 		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)

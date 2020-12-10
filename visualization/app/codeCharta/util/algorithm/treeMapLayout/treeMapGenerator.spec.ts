@@ -1,4 +1,4 @@
-import { NodeMetricData, State, CodeMapNode, Node, NameDataPair } from "../codeCharta.model"
+import { NodeMetricData, State, CodeMapNode, Node, NameDataPair } from "../../../codeCharta.model"
 import { createTreemapNodes, calculateAreaValue } from "./treeMapGenerator"
 import {
 	METRIC_DATA,
@@ -8,11 +8,11 @@ import {
 	STATE,
 	FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE,
 	FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE
-} from "./dataMocks"
+} from "../../dataMocks"
 import { klona } from "klona"
-import { NodeDecorator } from "./nodeDecorator"
-import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
-import { getCCFile } from "./fileHelper"
+import { NodeDecorator } from "../../nodeDecorator"
+import { fileWithFixedFolders } from "../../../ressources/fixed-folders/fixed-folders-example"
+import { getCCFile } from "../../fileHelper"
 
 describe("treeMapGenerator", () => {
 	let map: CodeMapNode

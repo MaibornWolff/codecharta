@@ -18,6 +18,12 @@ export enum SearchPanelMode {
 	minimized = "minimized"
 }
 
+export enum LayoutAlgorithm {
+	SquarifiedTreeMap = "Squarified TreeMap",
+	StreetMap = "StreetMap",
+	TMStreet = "TMStreet"
+}
+
 export interface CCFile {
 	map: CodeMapNode
 	settings: {
@@ -124,6 +130,7 @@ export interface AppSettings {
 	panelSelection: PanelSelection
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
+	layoutAlgorithm: LayoutAlgorithm
 	experimentalFeaturesEnabled: boolean
 }
 

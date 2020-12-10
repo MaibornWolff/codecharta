@@ -50,7 +50,7 @@ import { NodeSearchService } from "./nodeSearch.service"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-
+import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 export class InjectorService {
 	/* @ngInject */
 	constructor(
@@ -104,6 +104,7 @@ export class InjectorService {
 		private blacklistService: BlacklistService,
 		private nodeSearchService: NodeSearchService,
 		private isPresentationModeService: IsPresentationModeService,
+		private layoutAlgorithmService: LayoutAlgorithmService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService
 	) {}
 }

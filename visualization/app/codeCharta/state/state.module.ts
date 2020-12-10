@@ -53,6 +53,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
+import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
@@ -107,4 +108,5 @@ angular
 	.service(camelCase(InjectorService.name), InjectorService)
 	.service(camelCase(StoreService.name), StoreService)
 	.service(camelCase(NodeSearchService.name), NodeSearchService)
+	.service(camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)
 	.service(camelCase(ExperimentalFeaturesEnabledService.name), ExperimentalFeaturesEnabledService)
