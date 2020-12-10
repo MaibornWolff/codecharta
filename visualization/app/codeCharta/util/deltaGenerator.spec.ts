@@ -89,6 +89,15 @@ describe("deltaGenerator", () => {
 		expect(result.map).toMatchSnapshot()
 	})
 
+	it("should sum the size of the comparison and reference File", () => {
+		NodeDecorator.decorateMapWithPathAttribute(fileA)
+		NodeDecorator.decorateMapWithPathAttribute(fileB)
+
+		const result = DeltaGenerator.getDeltaFile(fileA, fileB)
+
+		expect(result.fileMeta.exportedFileSize).toBe(fileA.fileMeta.exportedFileSize + fileB.fileMeta.exportedFileSize)
+	})
+
 	it("checking delta calculation between two attribute lists", () => {
 		const a = { a: 100, b: 10, c: 1 }
 		const b = { a: 110, b: 11, c: 0 }

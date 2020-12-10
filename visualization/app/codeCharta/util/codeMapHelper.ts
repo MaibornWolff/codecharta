@@ -1,6 +1,8 @@
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../codeCharta.model"
 import ignore from "ignore"
+import { FileState } from "../model/files/files"
+import { getSelectedFilesSize } from "./fileHelper"
 
 export function getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
 	const matchingNode = hierarchy(root).find(({ data }) => data.path === path)
@@ -109,4 +111,24 @@ export function isBlacklisted(node: CodeMapNode) {
 
 export function isLeaf(node: CodeMapNode | HierarchyNode<unknown>) {
 	return node.children === undefined || node.children.length === 0
+}
+
+export enum MAP_RESOLUTION_SCALE {
+	SMALL_MAP = 1,
+	MEDIUM_MAP = 0.5,
+	BIG_MAP = 0.25
+}
+
+export function getMapResolutionScaleFactor(files: FileState[]) {
+	const oneMB = 1024 * 1024
+	const totalFilesSizeKB = getSelectedFilesSize(files)
+
+	switch (true) {
+		case totalFilesSizeKB >= 7 * oneMB:
+			return MAP_RESOLUTION_SCALE.BIG_MAP
+		case totalFilesSizeKB >= 2 * oneMB:
+			return MAP_RESOLUTION_SCALE.MEDIUM_MAP
+		default:
+			return MAP_RESOLUTION_SCALE.SMALL_MAP
+	}
 }
