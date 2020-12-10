@@ -13,7 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3-hierarchy"
-import { Box3, Intersection, Object3D, Raycaster, Vector3 } from "three"
+import { Object3D, Raycaster } from "three"
 
 interface Coordinates {
 	x: number
@@ -49,7 +49,6 @@ export class CodeMapMouseEventService
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
-	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
 
 	private highlightedInTreeView: CodeMapBuilding
@@ -61,9 +60,6 @@ export class CodeMapMouseEventService
 	private isGrabbing = false
 	private isMoving = false
 	private raycaster = new Raycaster()
-	private normedTransformVector = new Vector3(0, 0, 0)
-	private modifiedLabel = null
-	private rayPoint = new Vector3(0, 0, 0)
 
 	/* @ngInject */
 	constructor(
@@ -109,7 +105,6 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
-		this.modifiedLabel = null
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -167,11 +162,6 @@ export class CodeMapMouseEventService
 			this.oldMouse.x = this.mouse.x
 			this.oldMouse.y = this.mouse.y
 
-			// reset label to original position
-			if (this.modifiedLabel !== null) {
-				this.resetLabel()
-			}
-
 			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
 			const camera = this.threeCameraService.camera
 			const labels = this.threeSceneService.labels ? this.threeSceneService.labels.children : null
@@ -181,35 +171,14 @@ export class CodeMapMouseEventService
 
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
-			if (mapMesh && camera) {
-				if (camera.isPerspectiveCamera) {
-					this.raycaster.setFromCamera(mouseCoordinates, camera)
+			if (mapMesh && camera.isPerspectiveCamera) {
+				this.raycaster.setFromCamera(mouseCoordinates, camera)
 
-					const hoveredLabel = this.calculateHoveredLabel(labels)
+				const hoveredLabel = this.calculateHoveredLabel(labels)
 
-					if (hoveredLabel) {
-						nodeNameHoveredLabel = hoveredLabel.object.userData.node.path
-						hoveredLabel.object.material.opacity = 1
-
-						this.rayPoint = new Vector3(
-							this.raycaster["ray"]["origin"]["x"] - hoveredLabel["object"]["position"]["x"],
-							this.raycaster["ray"]["origin"]["y"] - hoveredLabel["object"]["position"]["y"],
-							this.raycaster["ray"]["origin"]["z"] - hoveredLabel["object"]["position"]["z"]
-						)
-
-						const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
-						const cameraPoint = this.raycaster.ray.origin
-						const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
-
-						this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
-						this.normedTransformVector.multiplyScalar(maxDistance)
-
-						hoveredLabel["object"]["position"]["x"] = hoveredLabel["object"]["position"]["x"] + this.normedTransformVector.x
-						hoveredLabel["object"]["position"]["y"] = hoveredLabel["object"]["position"]["y"] + this.normedTransformVector.y
-						hoveredLabel["object"]["position"]["z"] = hoveredLabel["object"]["position"]["z"] + this.normedTransformVector.z
-
-						this.modifiedLabel = hoveredLabel
-					}
+				if (hoveredLabel) {
+					this.threeSceneService.hoverLabel(hoveredLabel.object, this.raycaster, labels)
+					nodeNameHoveredLabel = hoveredLabel.object.userData.node.path
 				}
 
 				this.intersectedBuilding =
@@ -221,98 +190,18 @@ export class CodeMapMouseEventService
 				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
 				if (from !== to) {
+					this.threeSceneService.resetLabel()
 					this.unhoverBuilding()
 					if (to) {
+						const labelForBuilding = this.threeSceneService.checkLabelIsDrawnForHoveredNode(to, labels)
+						if (labelForBuilding !== null) {
+							this.threeSceneService.hoverLabel(labelForBuilding, this.raycaster, labels)
+						}
 						this.hoverBuilding(to)
 					}
 				}
 			}
 		}
-	}
-
-	private isOverlapping1D(minBox1: number, maxBox1: number, minBox2: number, maxBox2: number) {
-		return maxBox1 >= minBox2 && maxBox2 >= minBox1
-	}
-
-	getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
-		normedVector.multiplyScalar(distance)
-		bboxHoveredLabel.translate(normedVector)
-
-		if (
-			(this.isOverlapping1D(bboxObstructingLabel.min.x, bboxObstructingLabel.max.x, bboxHoveredLabel.min.x, bboxHoveredLabel.max.x) &&
-				this.isOverlapping1D(
-					bboxObstructingLabel.min.y,
-					bboxObstructingLabel.max.y,
-					bboxHoveredLabel.min.y,
-					bboxHoveredLabel.max.y
-				)) ||
-			(this.isOverlapping1D(bboxObstructingLabel.min.x, bboxObstructingLabel.max.x, bboxHoveredLabel.min.x, bboxHoveredLabel.max.x) &&
-				this.isOverlapping1D(
-					bboxObstructingLabel.min.z,
-					bboxObstructingLabel.max.z,
-					bboxHoveredLabel.min.z,
-					bboxHoveredLabel.max.z
-				)) ||
-			(this.isOverlapping1D(bboxObstructingLabel.min.y, bboxObstructingLabel.max.y, bboxHoveredLabel.min.y, bboxHoveredLabel.max.y) &&
-				this.isOverlapping1D(
-					bboxObstructingLabel.min.z,
-					bboxObstructingLabel.max.z,
-					bboxHoveredLabel.min.z,
-					bboxHoveredLabel.max.z
-				))
-		) {
-			return distance
-		}
-		return 0
-	}
-
-	private calculateMaxDistance(hoveredLabel: Intersection, labels: Object3D[], cameraPoint: Vector3, norm: number) {
-		let maxDistance = 0
-		for (let counter = 0; counter < labels.length; counter += 2) {
-			const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel.object)
-			const centerPoint = new Vector3()
-			bboxHoveredLabel.getCenter(centerPoint)
-			const distanceLabelCenterToCamera = cameraPoint.distanceTo(centerPoint)
-			let maxDistanceForLabel = distanceLabelCenterToCamera / 20 //creates a nice small highlighting for hovered, unobstructed labels, empirically gathered value
-
-			if (labels[counter] !== hoveredLabel.object) {
-				const bboxObstructingLabel = new Box3().setFromObject(labels[counter])
-				const centerPoint2 = new Vector3()
-
-				bboxObstructingLabel.getCenter(centerPoint2)
-
-				maxDistanceForLabel = Math.max(
-					this.getIntersectionDistance(
-						bboxHoveredLabel,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)
-					),
-					this.getIntersectionDistance(
-						bboxHoveredLabel,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)
-					),
-					this.getIntersectionDistance(
-						bboxHoveredLabel,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)
-					)
-				)
-			}
-			maxDistance = Math.max(maxDistance, maxDistanceForLabel)
-		}
-		return maxDistance
-	}
-
-	private resetLabel() {
-		this.modifiedLabel["object"]["position"]["x"] = this.modifiedLabel["object"]["position"]["x"] - this.normedTransformVector.x
-		this.modifiedLabel["object"]["position"]["y"] = this.modifiedLabel["object"]["position"]["y"] - this.normedTransformVector.y
-		this.modifiedLabel["object"]["position"]["z"] = this.modifiedLabel["object"]["position"]["z"] - this.normedTransformVector.z
-		this.modifiedLabel["object"]["material"]["opacity"] = this.mapLabelColors.alpha
-		this.modifiedLabel = null
 	}
 
 	onDocumentMouseMove(event: MouseEvent) {
@@ -369,7 +258,7 @@ export class CodeMapMouseEventService
 						labelClosestToViewPoint = intersect[0]
 					} else {
 						labelClosestToViewPoint =
-							labelClosestToViewPoint["distance"] < intersect[0]["distance"] ? labelClosestToViewPoint : intersect[0]
+							labelClosestToViewPoint.distance < intersect[0].distance ? labelClosestToViewPoint : intersect[0]
 					}
 				}
 			}

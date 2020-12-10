@@ -1,4 +1,4 @@
-import { AmbientLight, DirectionalLight, Scene, Group, Material } from "three"
+import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
@@ -40,6 +40,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
 	private folderLabelColorSelected = this.storeService.getState().appSettings.mapColors.selected
 	private numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+	private rayPoint = new Vector3(0, 0, 0)
+	private normedTransformVector = new Vector3(0, 0, 0)
+	private modifiedLabel = null
+	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
@@ -149,6 +153,122 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		if (this.mapGeometry.children[0]) {
 			this.selectMaterial(this.mapGeometry.children[0]["material"])
 		}
+	}
+
+	hoverLabel(hoveredLabel: Object3D, raycaster: Raycaster, labels: Object3D[]) {
+		this.resetLabel()
+
+		hoveredLabel["material"].opacity = 1
+
+		this.rayPoint = new Vector3()
+		this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
+
+		const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
+		const cameraPoint = raycaster.ray.origin
+		const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
+
+		this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
+		this.normedTransformVector.multiplyScalar(maxDistance)
+
+		hoveredLabel.position.add(this.normedTransformVector)
+
+		this.modifiedLabel = hoveredLabel
+	}
+
+	resetLabel() {
+		if (this.modifiedLabel !== null) {
+			this.modifiedLabel.position.sub(this.normedTransformVector)
+			this.modifiedLabel["material"].opacity = this.mapLabelColors.alpha
+			this.modifiedLabel = null
+		}
+	}
+	checkLabelIsDrawnForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
+		if (labels === null) {
+			return null
+		}
+		for (let counter = 0; counter < labels.length; counter += 2) {
+			if (labels[counter].userData.node === hoveredBuilding.node) {
+				return labels[counter]
+			}
+		}
+		return null
+	}
+
+	private isOverlapping1D(minBox1: number, maxBox1: number, minBox2: number, maxBox2: number) {
+		return maxBox1 >= minBox2 && maxBox2 >= minBox1
+	}
+
+	private getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
+		normedVector.multiplyScalar(distance)
+		bboxHoveredLabel.translate(normedVector)
+
+		if (
+			(this.isOverlapping1D(bboxObstructingLabel.min.x, bboxObstructingLabel.max.x, bboxHoveredLabel.min.x, bboxHoveredLabel.max.x) &&
+				this.isOverlapping1D(
+					bboxObstructingLabel.min.y,
+					bboxObstructingLabel.max.y,
+					bboxHoveredLabel.min.y,
+					bboxHoveredLabel.max.y
+				)) ||
+			(this.isOverlapping1D(bboxObstructingLabel.min.x, bboxObstructingLabel.max.x, bboxHoveredLabel.min.x, bboxHoveredLabel.max.x) &&
+				this.isOverlapping1D(
+					bboxObstructingLabel.min.z,
+					bboxObstructingLabel.max.z,
+					bboxHoveredLabel.min.z,
+					bboxHoveredLabel.max.z
+				)) ||
+			(this.isOverlapping1D(bboxObstructingLabel.min.y, bboxObstructingLabel.max.y, bboxHoveredLabel.min.y, bboxHoveredLabel.max.y) &&
+				this.isOverlapping1D(
+					bboxObstructingLabel.min.z,
+					bboxObstructingLabel.max.z,
+					bboxHoveredLabel.min.z,
+					bboxHoveredLabel.max.z
+				))
+		) {
+			return distance
+		}
+		return 0
+	}
+
+	private calculateMaxDistance(hoveredLabel: Object3D, labels: Object3D[], cameraPoint: Vector3, norm: number) {
+		let maxDistance = 0
+		for (let counter = 0; counter < labels.length; counter += 2) {
+			const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel)
+			const centerPoint = new Vector3()
+			bboxHoveredLabel.getCenter(centerPoint)
+			const distanceLabelCenterToCamera = cameraPoint.distanceTo(centerPoint)
+			let maxDistanceForLabel = distanceLabelCenterToCamera / 20 //creates a nice small highlighting for hovered, unobstructed labels, empirically gathered value
+
+			if (labels[counter] !== hoveredLabel) {
+				const bboxObstructingLabel = new Box3().setFromObject(labels[counter])
+				const centerPoint2 = new Vector3()
+
+				bboxObstructingLabel.getCenter(centerPoint2)
+
+				maxDistanceForLabel = Math.max(
+					this.getIntersectionDistance(
+						bboxHoveredLabel,
+						bboxObstructingLabel,
+						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
+						distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)
+					),
+					this.getIntersectionDistance(
+						bboxHoveredLabel,
+						bboxObstructingLabel,
+						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
+						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)
+					),
+					this.getIntersectionDistance(
+						bboxHoveredLabel,
+						bboxObstructingLabel,
+						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
+						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)
+					)
+				)
+			}
+			maxDistance = Math.max(maxDistance, maxDistanceForLabel)
+		}
+		return maxDistance
 	}
 
 	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode) {

@@ -17,6 +17,8 @@ export class CodeMapRenderService {
 		private codeMapArrowService: CodeMapArrowService
 	) {}
 
+	private highestNode = 0
+
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
 		this.setNewMapMesh(sortedNodes)
@@ -50,7 +52,7 @@ export class CodeMapRenderService {
 		const appSettings = this.storeService.getState().appSettings
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
-		const highestNode = this.getHighestNode(sortedNodes)
+		this.highestNode = this.getHighestNode(sortedNodes)
 
 		this.codeMapLabelService.clearLabels()
 		if (showLabelNodeName || showLabelNodeMetric) {
@@ -65,7 +67,7 @@ export class CodeMapRenderService {
 							showNodeName: showLabelNodeName,
 							showNodeMetric: showLabelNodeMetric
 						},
-						highestNode
+						this.highestNode
 					)
 					amountOfTopLabels -= 1
 				}
