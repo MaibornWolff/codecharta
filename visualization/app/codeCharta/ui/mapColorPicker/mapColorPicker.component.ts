@@ -11,6 +11,14 @@ export class MapColorPickerController {
 	$onInit() {
 		this.$scope.color = this.getCurrentColor()
 		this.$scope.colorPickerOptions = { pos: this.open } // sets direction in which color-picker will open
+		this.$scope.colorPickerEventApi = {
+			onOpen: () => {
+				this.$element[0].querySelector(".color-picker-swatch").classList.add("fa", "fa-paint-brush")
+			},
+			onClose: () => {
+				this.$element[0].querySelector(".color-picker-swatch").classList.remove("fa", "fa-paint-brush")
+			}
+		}
 
 		// this.storeService.dispatch(
 		//   setMapColors({
