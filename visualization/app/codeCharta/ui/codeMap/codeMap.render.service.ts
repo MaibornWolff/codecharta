@@ -1,7 +1,7 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
+import { SquarifiedLayoutGenerator } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
@@ -51,8 +51,7 @@ export class CodeMapRenderService {
 				break
 			case LayoutAlgorithm.SquarifiedTreeMap:
 			default:
-				// TODO needs refactoring
-				nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+				nodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
 				break
 		}
 		//const nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))

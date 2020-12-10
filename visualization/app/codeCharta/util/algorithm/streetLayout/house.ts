@@ -1,4 +1,4 @@
-import BoundingBox, { StreetLayoutValuedCodeMapNode } from "./boundingBox"
+import BoundingBox from "./boundingBox"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { Vector2 } from "three"
 import { StreetViewHelper } from "./streetViewHelper"
@@ -14,9 +14,9 @@ export default class House extends BoundingBox {
 		this.height = Math.sqrt(this.metricValue)
 	}
 
-	public layout(origin: Vector2): StreetLayoutValuedCodeMapNode[] {
-		const layoutNode: StreetLayoutValuedCodeMapNode = {
-			data: this.node,
+	public layout(origin: Vector2): CodeMapNode[] {
+		const layoutNode: CodeMapNode = {
+			...this.node,
 			value: this.metricValue,
 			rect: this.createMarginatedRectangle(origin),
 			zOffset: 0

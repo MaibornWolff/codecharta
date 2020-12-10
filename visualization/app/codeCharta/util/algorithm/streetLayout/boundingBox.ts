@@ -1,14 +1,6 @@
 import { Vector2 } from "three"
 import { CodeMapNode } from "../../../codeCharta.model"
 import Rectangle from "./rectangle"
-
-export interface StreetLayoutValuedCodeMapNode {
-	data: CodeMapNode
-	value: number
-	rect: Rectangle
-	zOffset: number
-}
-
 export default abstract class BoundingBox {
 	public height: number = 0
 	public width: number = 0
@@ -21,7 +13,7 @@ export default abstract class BoundingBox {
 	}
 
 	public abstract calculateDimension(metricName: string): void
-	public abstract layout(origin: Vector2, margin: number): StreetLayoutValuedCodeMapNode[]
+	public abstract layout(origin: Vector2, margin: number): CodeMapNode[]
 
 	protected createMarginatedRectangle(origin: Vector2) {
 		const newOrigin = new Vector2(origin.x + this.FIXED_MARGIN, origin.y + this.FIXED_MARGIN)

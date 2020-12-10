@@ -1,21 +1,12 @@
-import { CodeMapNode, Node, State, NodeMetricData } from "../../../codeCharta.model"
-import BoundingBox, { StreetLayoutValuedCodeMapNode } from "./boundingBox"
+import { CodeMapNode, Node, State, NodeMetricData, BlacklistType } from "../../../codeCharta.model"
+import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
 import House from "./house"
 import { Vector2 } from "three"
 import { StreetOrientation } from "./street"
-import { getMapResolutionScaleFactor } from "../../../ui/codeMap/codeMap.render.service"
-import { isBlacklisted, isLeaf } from "../../codeMapHelper"
-import Rectangle from "./rectangle"
+import { getMapResolutionScaleFactor, isPathBlacklisted, isLeaf } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
-
-export interface LayoutNode {
-	data: CodeMapNode
-	value: number
-	rect: Rectangle
-	zOffset: number
-}
 
 export class StreetLayoutGenerator {
 	private static MARGIN_SCALING_FACTOR = 0.02
@@ -33,11 +24,11 @@ export class StreetLayoutGenerator {
 		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
-		const layoutNodes: StreetLayoutValuedCodeMapNode[] = rootStreet.layout(new Vector2(0, 0), margin)
+		const layoutNodes: CodeMapNode[] = rootStreet.layout(new Vector2(0, 0), margin)
 		
 		
 		return layoutNodes.map(streetLayoutNode => {
-			return StreetViewHelper.buildNodeFrom(streetLayoutNode as LayoutNode, heightScale, maxHeight, state, isDeltaState)
+			return StreetViewHelper.buildNodeFrom(streetLayoutNode as CodeMapNode, heightScale, maxHeight, state, isDeltaState)
 		})
 	}
 
@@ -52,7 +43,7 @@ export class StreetLayoutGenerator {
 		const children: BoundingBox[] = []
 		const areaMetric = state.dynamicSettings.areaMetric
 		for (let child of node.children) {
-			if (isBlacklisted(child)) {
+			if (isPathBlacklisted(child.path, state.fileSettings.blacklist, BlacklistType.exclude)) {
 				continue
 			}
 			if (isLeaf(child)) {

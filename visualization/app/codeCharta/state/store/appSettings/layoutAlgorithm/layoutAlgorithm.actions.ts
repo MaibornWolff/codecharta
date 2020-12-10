@@ -1,11 +1,11 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 import { LayoutAlgorithm } from "../../../../codeCharta.model"
 
 export enum LayoutAlgorithmActions {
 	SET_LAYOUT_ALGORITHM = "SET_LAYOUT_ALGORITHM"
 }
 
-export interface SetLayoutAlgorithmAction extends Action {
+export interface SetLayoutAlgorithmAction extends CCAction {
 	type: LayoutAlgorithmActions.SET_LAYOUT_ALGORITHM
 	payload: LayoutAlgorithm
 }

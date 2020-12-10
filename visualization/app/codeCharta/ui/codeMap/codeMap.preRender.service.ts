@@ -54,6 +54,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
@@ -85,7 +86,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}
 	}
 
-	// TODO check how to improve it
 	public onLayoutAlgorithmChanged(_layoutAlgorithm: LayoutAlgorithm) {
 		this.debounceRendering()
 	}
@@ -184,7 +184,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			fileStatesAvailable(this.storeService.getState().files) &&
 			this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {
-				return x !== null && Object.values(x).every(x => x !== null)
+				return x !== null && Object.values(x).every(v => v !== null)
 			})
 		)
 	}

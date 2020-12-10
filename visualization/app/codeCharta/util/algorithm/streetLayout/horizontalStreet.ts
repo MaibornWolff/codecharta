@@ -3,7 +3,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { Vector2 } from "three"
 import Rectangle from "./rectangle"
 import VerticalStreet, { VerticalOrientation } from "./verticalStreet"
-import BoundingBox, { StreetLayoutValuedCodeMapNode } from "./boundingBox"
+import BoundingBox from "./boundingBox"
 import { StreetViewHelper } from "./streetViewHelper"
 
 export enum HorizontalOrientation {
@@ -43,7 +43,7 @@ export default class HorizontalStreet extends Street {
 		this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + 2 * this.spacer
 	}
 
-	public layout(origin: Vector2, margin: number): StreetLayoutValuedCodeMapNode[] {
+	public layout(origin: Vector2, margin: number): CodeMapNode[] {
 		const maxTopHeight = this.getMaxHeight(this.topRow)
 		const topRowNodes = this.layoutTopRow(origin, maxTopHeight, margin)
 		const bottomRowNodes = this.layoutBottomRow(origin, maxTopHeight, margin)
@@ -52,9 +52,9 @@ export default class HorizontalStreet extends Street {
 		return [...topRowNodes, streetNode, ...bottomRowNodes]
 	}
 
-	private layoutTopRow(origin: Vector2, maxTopHeight: number, margin: number): StreetLayoutValuedCodeMapNode[] {
+	private layoutTopRow(origin: Vector2, maxTopHeight: number, margin: number): CodeMapNode[] {
 		const rowOrigin = new Vector2(origin.x, origin.y)
-		const nodes: StreetLayoutValuedCodeMapNode[] = []
+		const nodes: CodeMapNode[] = []
 
 		if (this.orientation === HorizontalOrientation.LEFT) {
 			const rowWidth = this.getLength(this.topRow)
@@ -74,7 +74,7 @@ export default class HorizontalStreet extends Street {
 	 * @param origin origin of local coordinate system
 	 * @param maxTopHeight highest node in top row
 	 */
-	protected layoutStreet(origin: Vector2, maxTopHeight: number): StreetLayoutValuedCodeMapNode {
+	protected layoutStreet(origin: Vector2, maxTopHeight: number): CodeMapNode {
 		const streetOffsetY = this.calculateStreetOffsetY(origin, maxTopHeight)
 		const streetOrigin = new Vector2(origin.x, streetOffsetY)
 		const streetOverhang = this.calculateStreetOverhang(streetOrigin)
@@ -84,11 +84,11 @@ export default class HorizontalStreet extends Street {
 		this.streetRect = new Rectangle(streetOrigin, streetWidth, this.getStreetThickness())
 
 		return {
-			data: this.node,
+			...this.node,
 			value: this.metricValue,
 			rect: this.streetRect,
 			zOffset: 0
-		} as StreetLayoutValuedCodeMapNode
+		} as CodeMapNode
 	}
 
 	/**
@@ -96,9 +96,9 @@ export default class HorizontalStreet extends Street {
 	 * @param origin origin of local coordinate system
 	 * @param maxTopHeight highest node in top row
 	 */
-	private layoutBottomRow(origin: Vector2, maxTopHeight: number, margin: number): StreetLayoutValuedCodeMapNode[] {
+	private layoutBottomRow(origin: Vector2, maxTopHeight: number, margin: number): CodeMapNode[] {
 		const rowOrigin = new Vector2(origin.x, origin.y)
-		const nodes: StreetLayoutValuedCodeMapNode[] = []
+		const nodes: CodeMapNode[] = []
 
 		if (this.orientation === HorizontalOrientation.LEFT) {
 			const rowWidth = this.getLength(this.bottomRow)
@@ -180,9 +180,9 @@ export default class HorizontalStreet extends Street {
 	 */
 	protected rearrangeRows(): void {
 		if (this.orientation === HorizontalOrientation.RIGHT) {
-			this.bottomRow = this.bottomRow.reverse()
+			this.bottomRow = [...this.bottomRow].reverse()
 		} else {
-			this.topRow = this.topRow.reverse()
+			this.topRow = [...this.topRow].reverse()
 		}
 	}
 
