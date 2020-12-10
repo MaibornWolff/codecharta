@@ -29,8 +29,9 @@ export class MapColorPickerController {
 	}
 
 	$postLink() {
-		this.getColorPickerPanel().then(colorPickerPanel => {
-			colorPickerPanel.appendChild(this.createColorInput())
+		this.waitForColorPickersDom().then(colorPicker => {
+			colorPicker.querySelector(".color-picker-panel").appendChild(this.createColorInput())
+			colorPicker.querySelector(".color-picker-grid").insertAdjacentHTML("afterend", this.createDivForColorPickerMargin().outerHTML)
 		})
 	}
 
@@ -40,13 +41,12 @@ export class MapColorPickerController {
 
 	// todo onStateChange update color
 
-	private async getColorPickerPanel() {
-		return new Promise<ChildNode>(resolve => {
-			const mutationObserver = new MutationObserver((mutations, observer) => {
+	private async waitForColorPickersDom() {
+		return new Promise<HTMLElement>(resolve => {
+			const mutationObserver = new MutationObserver((_, observer) => {
+				// color-picker element is sole mutator and adds everything in one flow within its $compile
 				observer.disconnect()
-
-				const colorPickerPanel = mutations[0].addedNodes[0].childNodes[1]
-				resolve(colorPickerPanel)
+				resolve(colorPicker)
 			})
 
 			const colorPicker = this.$element.find("color-picker")[0]
@@ -56,6 +56,8 @@ export class MapColorPickerController {
 
 	private createColorInput() {
 		const input = document.createElement("input")
+
+		input.classList.add("cc-color-picker-input")
 
 		input.value = this.$scope.color
 		this.$scope.$watch("color", () => {
@@ -70,6 +72,12 @@ export class MapColorPickerController {
 		})
 
 		return input
+	}
+
+	private createDivForColorPickerMargin() {
+		const div = document.createElement("div")
+		div.classList.add("cc-color-picker-grid-margin")
+		return div
 	}
 }
 
