@@ -1,3 +1,4 @@
+import "./mapColorPicker.component.scss"
 import { StoreService } from "../../state/store.service"
 // import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 
@@ -65,7 +66,7 @@ export class MapColorPickerController {
 }
 
 export const mapColorPickerComponent = {
-	selector: "mapColorPicker",
+	selector: "ccMapColorPicker",
 	template: require("./mapColorPicker.component.html"),
 	controller: MapColorPickerController,
 	bindings: {

@@ -1,0 +1,18 @@
+@import "~angularjs-color-picker/dist/angularjs-color-picker.min.css";
+
+cc-map-color-picker {
+	color-picker {
+		display: inline-block;
+		vertical-align: middle;
+
+		.color-picker-wrapper.color-picker-swatch-only .input-group .input-group-addon {
+			width: 17px;
+			height: 14px;
+		}
+	}
+
+	.cc-color-picker-label {
+		display: inline-block;
+		vertical-align: middle;
+	}
+}

@@ -1,7 +1,5 @@
 import angular from "angular"
 import "angularjs-color-picker"
-import "angularjs-color-picker/dist/angularjs-color-picker.min.css"
-import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css"
 
 import { mapColorPickerComponent } from "./mapColorPicker.component"
 
