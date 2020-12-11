@@ -1,15 +1,16 @@
-import { CodeMapNode, Node, State, NodeMetricData, BlacklistType } from "../../../codeCharta.model"
+import { CodeMapNode, Node, State, NodeMetricData, BlacklistType, LayoutAlgorithm } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
 import House from "./house"
+import TreeMap from "./treeMap"
 import { Vector2 } from "three"
 import { StreetOrientation } from "./street"
 import { getMapResolutionScaleFactor, isPathBlacklisted, isLeaf } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
-
+import SquarifiedTreeMap from "./squarifiedTreeMap"
 export class StreetLayoutGenerator {
-	private static MARGIN_SCALING_FACTOR = 0.02
+	private static MARGIN_SCALING_FACTOR = 0.02	// !NOTE why is that hardcoded, the strip calc might need a change ?
 
 	public static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -25,7 +26,6 @@ export class StreetLayoutGenerator {
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
 		const layoutNodes: CodeMapNode[] = rootStreet.layout(new Vector2(0, 0), margin)
-		
 		
 		return layoutNodes.map(streetLayoutNode => {
 			return StreetViewHelper.buildNodeFrom(streetLayoutNode as CodeMapNode, heightScale, maxHeight, state, isDeltaState)
@@ -49,13 +49,12 @@ export class StreetLayoutGenerator {
 			if (isLeaf(child)) {
 				children.push(new House(child))
 			} else {
-				// TODO add layoualgorithm chooser
-				//const layoutAlgorithm = state.appSettings.layoutAlgorithm
-				//const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
-				/*if (layoutAlgorithm === LayoutAlgorithm.TMStreet && fileDescendants <= maxTreeMapFiles) {
-					const treeMap = StreetLayoutGenerator.createTreeMap(child, TreeMapAlgorithm.Squarified)
+				const layoutAlgorithm = state.appSettings.layoutAlgorithm
+				const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
+				if (layoutAlgorithm === LayoutAlgorithm.TMStreet && fileDescendants <= maxTreeMapFiles) {
+					const treeMap = StreetLayoutGenerator.createTreeMap(child)
 					children.push(treeMap)
-				} else*/ {
+				} else {
 					child = StreetViewHelper.mergeDirectories(child, areaMetric)
 					const streetChildren = StreetLayoutGenerator.createBoxes(
 						child,
@@ -80,16 +79,10 @@ export class StreetLayoutGenerator {
 			return new VerticalStreet(node, children, depth)
 		}
 	}
-
-	// TODO createTreeMap 
-	/*private static createTreeMap(node: CodeMapNode, treeMapAlgorithm: TreeMapAlgorithm): TreeMap {
-		switch (treeMapAlgorithm) {
-			case TreeMapAlgorithm.Squarified:
-				return new SquarifiedTreeMap(node)
-			default:
-				throw new Error("TreeMap Algorithm not specified.")
-		}
-	}*/
+ 
+	private static createTreeMap(node: CodeMapNode): TreeMap {
+		return new SquarifiedTreeMap(node)
+	}
 
 	private static countFileDescendants(folderNode: CodeMapNode): number {
 		let totalFileNodes = 0

@@ -1,6 +1,7 @@
 import { Vector2 } from "three"
 import { CodeMapNode } from "../../../codeCharta.model"
 import Rectangle from "./rectangle"
+
 export default abstract class BoundingBox {
 	public height: number = 0
 	public width: number = 0

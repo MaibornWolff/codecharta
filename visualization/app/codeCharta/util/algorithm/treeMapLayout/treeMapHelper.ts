@@ -18,6 +18,17 @@ function countNodes(node: { children?: CodeMapNode[] }) {
 	return count
 }
 
+function calculateSize(node: CodeMapNode, metricName: string) {
+	let totalSize = node.attributes[metricName] || 0
+
+	if (totalSize === 0 && node.children && node.children.length > 0) {
+		for (const child of node.children) {
+			totalSize += calculateSize(child, metricName)
+		}
+	}
+	return totalSize
+}
+
 function buildingArrayToMap(highlighted: CodeMapBuilding[]) {
 	const geomMap: Map<number, CodeMapBuilding> = new Map()
 
@@ -204,6 +215,7 @@ export const TreeMapHelper = {
 	countNodes,
 	buildingArrayToMap,
 	buildRootFolderForFixedFolders,
+	calculateSize,
 	buildNodeFrom,
 	isNodeFlat,
 	FOLDER_HEIGHT,
