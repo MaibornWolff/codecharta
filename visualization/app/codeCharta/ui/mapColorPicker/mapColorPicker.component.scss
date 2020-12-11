@@ -1,8 +1,13 @@
 @import "~angularjs-color-picker/dist/angularjs-color-picker.min.css";
 
 cc-map-color-picker {
+	.cc-map-color-picker-wrapper {
+		margin: 4px 0;
+	}
+
 	.cc-color-picker-label {
 		display: inline-block;
+		margin: 0;
 		vertical-align: middle;
 	}
 

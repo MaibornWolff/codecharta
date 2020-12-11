@@ -43,14 +43,19 @@ export class MapColorPickerController {
 
 	private async waitForColorPickersDom() {
 		return new Promise<HTMLElement>(resolve => {
-			const mutationObserver = new MutationObserver((_, observer) => {
+			// console.log(this.mapColorFor)
+			const colorPicker = this.$element.find("color-picker")[0]
+			// console.log(colorPicker)
+			// console.log(colorPicker.innerHTML)
+			//console.log(this.mapColorFor, colorPicker.querySelector(".color-picker-panel"), colorPicker.innerHTML)
+			const mutationObserver = new MutationObserver(() => {
+				//console.log("MutationObserver triggered for", this.mapColorFor)
 				// color-picker element is sole mutator and adds everything in one flow within its $compile
-				observer.disconnect()
+				mutationObserver.disconnect()
 				resolve(colorPicker)
 			})
 
-			const colorPicker = this.$element.find("color-picker")[0]
-			mutationObserver.observe(colorPicker, { childList: true })
+			mutationObserver.observe(colorPicker, { childList: true, subtree: true, characterData: true })
 		})
 	}
 
