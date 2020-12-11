@@ -12,6 +12,7 @@ interface InternalLabel {
 	line: Line | null
 	heightValue: number
 	lineCount: number
+	node: Node
 }
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
@@ -26,6 +27,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
 	private lineCount = 1
+	private nodeHeight = 0
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -39,6 +41,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	//labels need to be scaled according to map or it will clip + looks bad
 	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNode: number) {
+		this.nodeHeight = this.nodeHeight > highestNode ? this.nodeHeight : highestNode
 		// todo: tk rename to addLeafLabel
 
 		const state = this.storeService.getState()
@@ -47,7 +50,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const z = node.y0 - state.treeMap.mapSize
 
 		const labelX = x + node.width / 2
-		const labelY = y + highestNode
+		const labelY = y + this.nodeHeight
 		const labelYOrigin = y + node.height
 		const labelZ = z + node.length / 2
 
@@ -64,7 +67,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 				labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
 			}
 
-			const label = this.makeText(labelText, 30)
+			const label = this.makeText(labelText, 30, node)
 
 			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_POSITION + label.heightValue / 2, labelZ) //label_height
 			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
@@ -84,6 +87,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.labels = []
 		// Reset the children
 		this.threeSceneService.labels.children.length = 0
+	}
+
+	clearTemporaryLabel(hoveredNode: Node) {
+		const index = this.labels.map(({ node }) => node).indexOf(hoveredNode)
+		if (index > -1) {
+			this.labels.splice(index, 1)
+			this.threeSceneService.labels.children.length -= 2
+		}
 	}
 
 	scale() {
@@ -115,7 +126,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	private makeText(message: string, fontsize: number): InternalLabel {
+	private makeText(message: string, fontsize: number, node: Node): InternalLabel {
 		const canvas = document.createElement("canvas")
 		const context = canvas.getContext("2d")
 
@@ -165,7 +176,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			sprite,
 			heightValue: canvas.height,
 			line: null,
-			lineCount: multiLineContext.length
+			lineCount: multiLineContext.length,
+			node
 		}
 	}
 

@@ -156,23 +156,25 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	hoverLabel(hoveredLabel: Object3D, raycaster: Raycaster, labels: Object3D[]) {
-		this.resetLabel()
+		if (hoveredLabel !== null) {
+			this.resetLabel()
 
-		hoveredLabel["material"].opacity = 1
+			hoveredLabel["material"].opacity = 1
 
-		this.rayPoint = new Vector3()
-		this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
+			this.rayPoint = new Vector3()
+			this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
 
-		const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
-		const cameraPoint = raycaster.ray.origin
-		const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
+			const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
+			const cameraPoint = raycaster.ray.origin
+			const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
 
-		this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
-		this.normedTransformVector.multiplyScalar(maxDistance)
+			this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
+			this.normedTransformVector.multiplyScalar(maxDistance)
 
-		hoveredLabel.position.add(this.normedTransformVector)
+			hoveredLabel.position.add(this.normedTransformVector)
 
-		this.modifiedLabel = hoveredLabel
+			this.modifiedLabel = hoveredLabel
+		}
 	}
 
 	resetLabel() {
@@ -182,7 +184,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.modifiedLabel = null
 		}
 	}
-	checkLabelIsDrawnForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
+	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
 		if (labels === null) {
 			return null
 		}

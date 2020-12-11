@@ -14,6 +14,7 @@ import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3-hierarchy"
 import { Object3D, Raycaster } from "three"
+import { CodeMapLabelService } from "./codeMap.label.service"
 
 interface Coordinates {
 	x: number
@@ -60,6 +61,7 @@ export class CodeMapMouseEventService
 	private isGrabbing = false
 	private isMoving = false
 	private raycaster = new Raycaster()
+	private temporaryLabelForBuilding = null
 
 	/* @ngInject */
 	constructor(
@@ -69,7 +71,8 @@ export class CodeMapMouseEventService
 		private threeRendererService: ThreeRendererService,
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService,
-		private storeService: StoreService
+		private storeService: StoreService,
+		private codeMapLabelService: CodeMapLabelService
 	) {
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
@@ -190,11 +193,17 @@ export class CodeMapMouseEventService
 				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
 				if (from !== to) {
+					if (this.temporaryLabelForBuilding !== null) {
+						this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForBuilding)
+						this.temporaryLabelForBuilding = null
+					}
+
 					this.threeSceneService.resetLabel()
 					this.unhoverBuilding()
 					if (to) {
-						const labelForBuilding = this.threeSceneService.checkLabelIsDrawnForHoveredNode(to, labels)
-						if (labelForBuilding !== null) {
+						if (to.node.isLeaf) {
+							let labelForBuilding = this.threeSceneService.getLabelForHoveredNode(to, labels)
+							labelForBuilding = labelForBuilding !== null ? labelForBuilding : this.drawTemporaryLabel(to, labels)
 							this.threeSceneService.hoverLabel(labelForBuilding, this.raycaster, labels)
 						}
 						this.hoverBuilding(to)
@@ -202,6 +211,27 @@ export class CodeMapMouseEventService
 				}
 			}
 		}
+	}
+
+	private drawTemporaryLabel(to: CodeMapBuilding, labels: Object3D[]) {
+		const appSettings = this.storeService.getState().appSettings
+		const showLabelNodeName = appSettings.showMetricLabelNodeName
+		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
+
+		this.codeMapLabelService.addLabel(
+			to.node,
+			{
+				showNodeName: showLabelNodeName,
+				showNodeMetric: showLabelNodeMetric
+			},
+			0
+		)
+
+		labels = this.threeSceneService.labels ? this.threeSceneService.labels.children : null
+		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(to, labels)
+		this.temporaryLabelForBuilding = to.node
+
+		return labelForBuilding
 	}
 
 	onDocumentMouseMove(event: MouseEvent) {
