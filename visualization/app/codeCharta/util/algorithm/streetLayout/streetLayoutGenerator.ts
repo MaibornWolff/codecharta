@@ -9,22 +9,22 @@ import { StreetOrientation } from "./street"
 import { getMapResolutionScaleFactor, isPathBlacklisted, isLeaf } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
-export class StreetLayoutGenerator {
-	private static MARGIN_SCALING_FACTOR = 0.02	// !NOTE why is that hardcoded, the strip calc might need a change ?
 
+const MARGIN_SCALING_FACTOR = 0.02
+const HEIGHT_SCALING_FACTOR = 0.10
+export class StreetLayoutGenerator {
 	public static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-		const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
+		const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling / HEIGHT_SCALING_FACTOR
 		const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 		
 		const metricName = state.dynamicSettings.areaMetric
 		const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
-		// TODO add from store value
-		const maxTreeMapFiles = 100 // state.appSettings.maxTreeMapFiles
+		const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
 		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
 		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
-		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
+		const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
 		const layoutNodes: CodeMapNode[] = rootStreet.layout(new Vector2(0, 0), margin)
 		
 		return layoutNodes.map(streetLayoutNode => {

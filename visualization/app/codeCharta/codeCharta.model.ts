@@ -141,6 +141,7 @@ export interface AppSettings {
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
 	layoutAlgorithm: LayoutAlgorithm
+	maxTreeMapFiles: number
 	experimentalFeaturesEnabled: boolean
 }
 

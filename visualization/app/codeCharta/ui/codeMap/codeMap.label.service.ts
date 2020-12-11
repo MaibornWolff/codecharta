@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { Node } from "../../codeCharta.model"
+import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -38,16 +38,15 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	//labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNode: number) {
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, hightestNode: number) {
 		// todo: tk rename to addLeafLabel
-
 		const state = this.storeService.getState()
 		const x = node.x0 - state.treeMap.mapSize
 		const y = node.z0
 		const z = node.y0 - state.treeMap.mapSize
 
 		const labelX = x + node.width / 2
-		const labelY = y + highestNode
+		const labelY = y + hightestNode
 		const labelYOrigin = y + node.height
 		const labelZ = z + node.length / 2
 
@@ -65,8 +64,21 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			}
 
 			const label = this.makeText(labelText, 30)
+			
 
-			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_POSITION + label.heightValue / 2, labelZ) //label_height
+			const {appSettings : {layoutAlgorithm} } = state
+
+			let labelOffset =this.LABEL_HEIGHT_POSITION + label.heightValue / 2;
+			switch (layoutAlgorithm) {
+				case LayoutAlgorithm.StreetMap:
+				case LayoutAlgorithm.TMStreet:
+					labelOffset/=10;
+					break;
+			}
+
+			const labelHeightPos = labelY + labelOffset;
+
+			label.sprite.position.set(labelX, labelHeightPos, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
 			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
 			label.sprite.material.opacity = this.mapLabelColors.alpha

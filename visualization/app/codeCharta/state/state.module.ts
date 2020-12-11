@@ -54,6 +54,7 @@ import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMet
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
+import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
@@ -109,4 +110,5 @@ angular
 	.service(camelCase(StoreService.name), StoreService)
 	.service(camelCase(NodeSearchService.name), NodeSearchService)
 	.service(camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)
+	.service(camelCase(MaxTreeMapFilesService.name), MaxTreeMapFilesService)
 	.service(camelCase(ExperimentalFeaturesEnabledService.name), ExperimentalFeaturesEnabledService)

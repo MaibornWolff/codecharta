@@ -51,6 +51,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
+import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 export class InjectorService {
 	/* @ngInject */
 	constructor(
@@ -105,6 +106,7 @@ export class InjectorService {
 		private nodeSearchService: NodeSearchService,
 		private isPresentationModeService: IsPresentationModeService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
+		private maxTreeMapFilesService: MaxTreeMapFilesService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService
 	) {}
 }

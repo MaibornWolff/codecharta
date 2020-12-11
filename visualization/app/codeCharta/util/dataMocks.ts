@@ -1603,7 +1603,8 @@ export const STATE: State = {
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
-		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		maxTreeMapFiles: 200
 	},
 	treeMap: {
 		mapSize: 250
@@ -1663,7 +1664,8 @@ export const DEFAULT_STATE: State = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
-		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		maxTreeMapFiles: 100
 	},
 	dynamicSettings: {
 		areaMetric: null,

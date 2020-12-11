@@ -68,6 +68,7 @@ function initializeAppSettings(target: CustomConfig) {
 		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
 		layoutAlgorithm: undefined,
+		maxTreeMapFiles: 0,
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
 			angularGreen: "",
