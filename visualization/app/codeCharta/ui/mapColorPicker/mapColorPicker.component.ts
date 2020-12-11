@@ -20,7 +20,7 @@ export class MapColorPickerController {
 			}
 		}
 
-		// this.storeService.dispatch(
+		// this.storeService.dispatch( // probably should be debounced
 		//   setMapColors({
 		//     ...defaultMapColors,
 		//     negative: "#f542ec"
