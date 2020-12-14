@@ -24,11 +24,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
         -   You can click the displayed "download and purge" button to download/backup at least 6 months old Configs and then purge them from the local storage to make space for new ones.
         -   If we cannot purge any Configs, you might have to do that by your own by deleting specific Configs manually.
 
+### Changed
+
 -   Increase possible margin size ([#1490](https://github.com/MaibornWolff/codecharta/pull/1490))
     -   change displayed margin value from % to pixel
     -   change dynamic margin value to a default margin value that should fit the map
-
-### Changed
 
 ### Removed 🗑
 
