@@ -4,7 +4,7 @@ import { CodeMapNode } from "../../../../codeCharta.model"
 import { TreeMapHelper } from "../../treeMapLayout/treeMapHelper"
 
 export default abstract class Strip {
-	public nodes: CodeMapNode[] = []
+	nodes: CodeMapNode[] = []
 
 	constructor(nodes: CodeMapNode[]) {
 		this.nodes = nodes
@@ -21,11 +21,11 @@ export default abstract class Strip {
 
 	public abstract worstAspectRatio(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string): number
 
-	public totalScaledSize(nodes: CodeMapNode[], metricName: string, rootSize: number, rootArea: number): number {
+	totalScaledSize(nodes: CodeMapNode[], metricName: string, rootSize: number, rootArea: number): number {
 		return nodes.reduce((total, n) => total + this.scaledSize(n, rootSize, rootArea, metricName), 0)
 	}
 
-	public totalSize(metricName: string) {
+	totalSize(metricName: string) {
 		return this.nodes.reduce((total, n) => total + TreeMapHelper.calculateSize(n, metricName), 0)
 	}
 
@@ -37,8 +37,8 @@ export default abstract class Strip {
 		return nodes.reduce((max, n) => Math.max(max, this.scaledSize(n, rootSize, rootArea, metricName)), Number.MIN_VALUE)
 	}
 
-	public populate(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string) {
-		for (let node of nodes) {
+	populate(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string) {
+		for (const node of nodes) {
 			const score = this.worstAspectRatio(this.nodes, rect, rootSize, metricName)
 			const newScore = this.worstAspectRatio(this.nodes.concat(node), rect, rootSize, metricName)
 

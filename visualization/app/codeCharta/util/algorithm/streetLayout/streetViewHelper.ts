@@ -23,7 +23,7 @@ function mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
 			if (nodeSize === childSize) {
 				const nodeName = mergedNode.name
 				mergedNode = child
-				mergedNode.name = nodeName + "/" + child.name
+				mergedNode.name = `${nodeName}/${child.name}`
 				break
 			}
 		}
@@ -32,19 +32,19 @@ function mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
 }
 
 function getHeightValue(s: State, squaredNode: CodeMapNode, maxHeight: number, flattened: boolean): number {
-	let heightValue = squaredNode.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+	const heightValue = squaredNode.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 
 	if (flattened) {
 		return TreeMapHelper.MIN_BUILDING_HEIGHT
-	} else if (s.appSettings.invertHeight) {
+	} 
+	if (s.appSettings.invertHeight) {
 		return maxHeight - heightValue
-	} else {
-		return heightValue
-	}
+	} 
+	return heightValue
 }
 
 function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
-	const isNodeLeaf: boolean = !(layoutNode.children && layoutNode.children.length > 0)
+	const isNodeLeaf  = !(layoutNode.children && layoutNode.children.length > 0)
 	const flattened: boolean = isNodeFlat(layoutNode, s)
 	const heightValue: number = getHeightValue(s, layoutNode, maxHeight, flattened)
 	const height = Math.abs(
@@ -72,7 +72,7 @@ function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: 
 		edgeAttributes: layoutNode.edgeAttributes,
 		deltas: layoutNode.deltas,
 		heightDelta:
-			layoutNode.deltas && layoutNode.deltas[s.dynamicSettings.heightMetric]
+			layoutNode.deltas?.[s.dynamicSettings.heightMetric]
 				? heightScale * layoutNode.deltas[s.dynamicSettings.heightMetric]
 				: 0,
 		visible: isVisible(layoutNode, isNodeLeaf, s, flattened),

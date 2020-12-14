@@ -1,10 +1,10 @@
 import { Vector2 } from "three"
 
 export default class Rectangle {
-	public topLeft: Vector2
-	public width: number
-	public height: number
-	public bottomRight : Vector2
+	topLeft: Vector2
+	width: number
+	height: number
+	private bottomRight : Vector2
 
 	constructor(topLeft: Vector2, width: number, height: number) {
 		this.topLeft = topLeft
@@ -14,19 +14,19 @@ export default class Rectangle {
 	}
 
 	// TODO rename
-	public shorterSide(): number {
+	shorterSide(): number {
 		return this.width > this.height ? this.height : this.width
 	}
 
-	public isVertical(): boolean {
+	isVertical(): boolean {
 		return this.height > this.width
 	}
 
-	public area(): number {
+	area(): number {
 		return this.width * this.height
 	}
 
-	public getBottomRight(): Vector2 {
+	getBottomRight(): Vector2 {
 		return this.bottomRight
 	}
 }

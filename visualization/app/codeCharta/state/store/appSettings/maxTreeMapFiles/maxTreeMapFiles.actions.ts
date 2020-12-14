@@ -18,4 +18,4 @@ export function setMaxTreeMapFiles(maxTreeMapFiles: number = defaultMaxTreeMapFi
 	}
 }
 
-export const defaultMaxTreeMapFiles: number = 100
+export const defaultMaxTreeMapFiles = 100

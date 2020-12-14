@@ -1,6 +1,6 @@
 "use strict"
 
-import { CodeMapNode, FileMeta, LayoutAlgorithm } from "../../codeCharta.model"
+import { CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -86,7 +86,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}
 	}
 
-	public onLayoutAlgorithmChanged(_layoutAlgorithm: LayoutAlgorithm) {
+	onLayoutAlgorithmChanged() {
 		this.debounceRendering()
 	}
 

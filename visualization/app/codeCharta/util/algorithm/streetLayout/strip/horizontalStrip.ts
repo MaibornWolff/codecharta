@@ -13,7 +13,7 @@ export default class HorizontalStrip extends Strip {
 		super(nodes)
 	}
 
-	public layout(
+	layout(
 		rect: Rectangle,
 		rootSize: number,
 		metricName: string,
@@ -23,7 +23,7 @@ export default class HorizontalStrip extends Strip {
 	): CodeMapNode[] {
 		let offsetX = rect.topLeft.x
 
-		const nodes = order === HorizontalOrder.leftToRight ? this.nodes : this.nodes.reverse()
+		const nodes = order === HorizontalOrder.leftToRight ? this.nodes : [...this.nodes].reverse()
 		const rootArea = rect.area()
 		const width = rect.width
 		const height = this.totalScaledSize(nodes, metricName, rootSize, rootArea) / width
@@ -44,7 +44,7 @@ export default class HorizontalStrip extends Strip {
 		return stripNodes
 	}
 
-	public worstAspectRatio(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string): number {
+	worstAspectRatio(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string): number {
 		const width = rect.width
 		const rootArea = rect.area()
 		const totalSize = this.totalScaledSize(nodes, metricName, rootSize, rootArea)

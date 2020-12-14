@@ -13,7 +13,7 @@ export default abstract class Treemap extends BoundingBox {
 
 	public abstract layout(origin: Vector2, margin: number): CodeMapNode[]
 
-	public calculateDimension(metricName: string): void {
+	calculateDimension(metricName: string): void {
 		this.metricName = metricName
 		this.metricValue = TreeMapHelper.calculateSize(this.node, metricName)
 		this.width = Math.sqrt(this.metricValue)

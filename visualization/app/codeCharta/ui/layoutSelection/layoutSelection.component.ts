@@ -21,11 +21,11 @@ export class LayoutSelectionController implements LayoutAlgorithmSubscriber {
 		this._viewModel.layoutAlgorithms = _.values(LayoutAlgorithm)
 	}
 
-	public onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
+	onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
 		this._viewModel.layoutAlgorithm = layoutAlgorithm
 	}
 
-	public applyLayoutAlgorithm() {
+	applyLayoutAlgorithm() {
 		this.storeService.dispatch(setLayoutAlgorithm(this._viewModel.layoutAlgorithm))
 	}
 }

@@ -12,7 +12,7 @@ export default class SquarifiedTreeMap extends Treemap {
 		super(rootNode)
 	}
 
-	public layout(origin: Vector2 = new Vector2(0, 0), margin: number): CodeMapNode[] {
+	layout(origin: Vector2 = new Vector2(0, 0), margin: number): CodeMapNode[] {
 		const rectangle = this.createMarginatedRectangle(origin)
 		const rootNode: CodeMapNode = {
 			...this.node,
@@ -36,7 +36,7 @@ export default class SquarifiedTreeMap extends Treemap {
 		let processedNodesCount = 0
 		let currentRect = new Rectangle(new Vector2(rect.topLeft.x, rect.topLeft.y), rect.width, rect.height)
 		let currentRootSize = rootSize
-		let orderedNodes = this.orderBySizeDescending(nodes)
+		const orderedNodes = this.orderBySizeDescending(nodes)
 
 		do {
 			const currentStrip = this.createStrip(currentRect, orderedNodes.slice(processedNodesCount), currentRootSize)
@@ -94,7 +94,7 @@ export default class SquarifiedTreeMap extends Treemap {
 	}
 
 	protected createChildrenNodes(stripNodes: CodeMapNode[], currentTreemapDepth: number, margin: number): void {
-		for (let node of stripNodes) {
+		for (const node of stripNodes) {
 			if (node.children && node.children.length > 0) {
 				const children = node.children.filter(child => TreeMapHelper.calculateSize(child, this.metricName) > 0)
 				if (children.length > 0) {

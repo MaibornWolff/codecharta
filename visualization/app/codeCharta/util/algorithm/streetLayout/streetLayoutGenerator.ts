@@ -11,9 +11,9 @@ import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
 
 const MARGIN_SCALING_FACTOR = 0.02
-const HEIGHT_SCALING_FACTOR = 0.10
+const HEIGHT_SCALING_FACTOR = 0.1
 export class StreetLayoutGenerator {
-	public static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
+	static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 		const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling / HEIGHT_SCALING_FACTOR
 		const heightScale = (state.treeMap.mapSize * 2) / maxHeight
@@ -73,11 +73,8 @@ export class StreetLayoutGenerator {
 	}
 
 	private static createStreet(node: CodeMapNode, orientation: StreetOrientation, children: BoundingBox[], depth: number) {
-		if (orientation === StreetOrientation.Horizontal) {
-			return new HorizontalStreet(node, children, depth)
-		} else {
-			return new VerticalStreet(node, children, depth)
-		}
+		return orientation === StreetOrientation.Horizontal ?
+			new HorizontalStreet(node, children, depth) : new VerticalStreet(node, children, depth)
 	}
  
 	private static createTreeMap(node: CodeMapNode): TreeMap {

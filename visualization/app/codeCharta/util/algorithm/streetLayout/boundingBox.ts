@@ -3,8 +3,8 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import Rectangle from "./rectangle"
 
 export default abstract class BoundingBox {
-	public height: number = 0
-	public width: number = 0
+	height = 0
+	width = 0
 	protected node: CodeMapNode
 	protected metricValue: number
 	protected FIXED_MARGIN = 0.5

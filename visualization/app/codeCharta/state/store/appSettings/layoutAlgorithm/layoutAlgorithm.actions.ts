@@ -1,5 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
-import { LayoutAlgorithm } from "../../../../codeCharta.model"
+import { CCAction,LayoutAlgorithm } from "../../../../codeCharta.model"
 
 export enum LayoutAlgorithmActions {
 	SET_LAYOUT_ALGORITHM = "SET_LAYOUT_ALGORITHM"

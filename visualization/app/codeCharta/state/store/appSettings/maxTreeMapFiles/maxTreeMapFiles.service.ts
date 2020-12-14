@@ -14,7 +14,7 @@ export class MaxTreeMapFilesService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, MaxTreeMapFilesActions)) {
 			this.notify(this.select())
 		}
@@ -28,7 +28,7 @@ export class MaxTreeMapFilesService implements StoreSubscriber {
 		this.$rootScope.$broadcast(MaxTreeMapFilesService.MAX_TREE_MAP_FILES_CHANGED_EVENT, { maxTreeMapFiles: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: MaxTreeMapFilesSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: MaxTreeMapFilesSubscriber) {
 		$rootScope.$on(MaxTreeMapFilesService.MAX_TREE_MAP_FILES_CHANGED_EVENT, (_event, data) => {
 			subscriber.onMaxTreeMapFilesChanged(data.maxTreeMapFiles)
 		})

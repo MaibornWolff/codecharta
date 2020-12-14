@@ -1,7 +1,7 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { SquarifiedLayoutGenerator } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
+import * as SquarifiedLayoutGenerator from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"

@@ -18,11 +18,11 @@ export class MaxTreeMapFilesController implements MaxTreeMapFilesSubscriber {
 		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
 	}
 
-	public onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
+	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
 		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
 	}
 
-	public onChangeMaxTreeMapFilesSlider() {
+	onChangeMaxTreeMapFilesSlider() {
 		this.storeService.dispatch(setMaxTreeMapFiles(this._viewModel.maxTreeMapFiles))
 	}
 }

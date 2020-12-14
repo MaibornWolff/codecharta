@@ -4,8 +4,6 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { MaxTreeMapFilesService } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
-import { maxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.reducer"
-import _ from "lodash"
 
 describe("MaxTreeMapFilesController", () => {
 	let maxTreeMapFilesController: MaxTreeMapFilesController

@@ -15,7 +15,7 @@ export class LayoutAlgorithmService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, LayoutAlgorithmActions)) {
 			this.notify(this.select())
 		}
@@ -29,7 +29,7 @@ export class LayoutAlgorithmService implements StoreSubscriber {
 		this.$rootScope.$broadcast(LayoutAlgorithmService.LAYOUT_ALGORITHM_CHANGED_EVENT, { layoutAlgorithm: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: LayoutAlgorithmSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: LayoutAlgorithmSubscriber) {
 		$rootScope.$on(LayoutAlgorithmService.LAYOUT_ALGORITHM_CHANGED_EVENT, (_event, data) => {
 			subscriber.onLayoutAlgorithmChanged(data.layoutAlgorithm)
 		})

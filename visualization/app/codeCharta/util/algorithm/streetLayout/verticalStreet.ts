@@ -15,7 +15,7 @@ export default class VerticalStreet extends Street {
 	private children: BoundingBox[] = []
 	protected leftRow: BoundingBox[] = []
 	protected rightRow: BoundingBox[] = []
-	public orientation: VerticalOrientation
+	orientation: VerticalOrientation
 	protected depth: number
 
 	constructor(node: CodeMapNode, children: BoundingBox[], depth: number, orientation: VerticalOrientation = VerticalOrientation.UP) {
@@ -25,7 +25,7 @@ export default class VerticalStreet extends Street {
 		this.orientation = orientation
 	}
 
-	public calculateDimension(metricName: string): void {
+	calculateDimension(metricName: string): void {
 		for (const child of this.children) {
 			child.calculateDimension(metricName)
 		}
@@ -37,7 +37,7 @@ export default class VerticalStreet extends Street {
 		this.height = Math.max(this.getLength(this.leftRow), this.getLength(this.rightRow))
 	}
 
-	public layout(origin: Vector2, margin: number): CodeMapNode[] {
+	layout(origin: Vector2, margin: number): CodeMapNode[] {
 		const maxLeftWidth = this.getMaxWidth(this.leftRow)
 		const leftRowNodes = this.layoutLeftRow(origin, maxLeftWidth, margin)
 		const rightRowNodes = this.layoutRightRow(origin, maxLeftWidth, margin)
@@ -54,11 +54,11 @@ export default class VerticalStreet extends Street {
 			const rowHeight = this.getLength(this.leftRow)
 			rowOrigin.y += this.height - rowHeight
 		}
-		for (let i = 0; i < this.leftRow.length; i++) {
-			const childOriginX = this.calculateStreetOffsetX(rowOrigin, maxLeftWidth) - this.leftRow[i].width
-			const childOriginY = this.calculateChildOriginY(rowOrigin, i, this.leftRow)
+		for (let index = 0; index < this.leftRow.length; index++) {
+			const childOriginX = this.calculateStreetOffsetX(rowOrigin, maxLeftWidth) - this.leftRow[index].width
+			const childOriginY = this.calculateChildOriginY(rowOrigin, index, this.leftRow)
 			const childOrigin = new Vector2(childOriginX, childOriginY)
-			nodes.push(...this.leftRow[i].layout(childOrigin, margin))
+			nodes.push(...this.leftRow[index].layout(childOrigin, margin))
 		}
 		return nodes
 	}
@@ -89,11 +89,11 @@ export default class VerticalStreet extends Street {
 			const rowHeight = this.getLength(this.rightRow)
 			rowOrigin.y += this.height - rowHeight
 		}
-		for (let i = 0; i < this.rightRow.length; i++) {
+		for (let index = 0; index < this.rightRow.length; index++) {
 			const childOriginX = this.calculateStreetOffsetX(rowOrigin, maxLeftWidth) + this.getStreetThickness()
-			const childOriginY = this.calculateChildOriginY(rowOrigin, i, this.rightRow)
+			const childOriginY = this.calculateChildOriginY(rowOrigin, index, this.rightRow)
 			const childOrigin = new Vector2(childOriginX, childOriginY)
-			nodes.push(...this.rightRow[i].layout(childOrigin, margin))
+			nodes.push(...this.rightRow[index].layout(childOrigin, margin))
 		}
 		return nodes
 	}
@@ -111,10 +111,10 @@ export default class VerticalStreet extends Street {
 	}
 
 	private getLengthUntil(boxes: BoundingBox[], end: number): number {
-		let sum: number = 0
+		let sum = 0
 
-		for (let i = 0; i < end; i++) {
-			sum += boxes[i].height
+		for (let index = 0; index < end; index++) {
+			sum += boxes[index].height
 		}
 		return sum
 	}
@@ -123,15 +123,15 @@ export default class VerticalStreet extends Street {
 		const totalLength = this.getLength(children)
 		let sum = 0
 
-		for (let i = 0; i < children.length; i++) {
+		for ( const child of children ) {
 			if (sum < totalLength / 2) {
-				if (children[i] instanceof HorizontalStreet) {
-					(<HorizontalStreet>children[i]).orientation = HorizontalOrientation.LEFT
+				if (child instanceof HorizontalStreet) {
+					(<HorizontalStreet>child).orientation = HorizontalOrientation.LEFT
 				}
-				this.leftRow.push(children[i])
-				sum += children[i].height
+				this.leftRow.push(child)
+				sum += child.height
 			} else {
-				this.rightRow.push(children[i])
+				this.rightRow.push(child)
 			}
 		}
 	}
@@ -159,12 +159,12 @@ export default class VerticalStreet extends Street {
 		const firstLeftNode = this.leftRow[0]
 		const firstRightNode = this.rightRow[0]
 		const leftOverhang =
-			firstLeftNode instanceof HorizontalStreet
-				? firstLeftNode.streetRect!.topLeft.y - streetOrigin.y
+			firstLeftNode instanceof HorizontalStreet && firstLeftNode.streetRect
+				? firstLeftNode.streetRect.topLeft.y - streetOrigin.y
 				: this.height - this.getLength(this.leftRow)
 		const rightOverhang =
-			firstRightNode instanceof HorizontalStreet
-				? firstRightNode.streetRect!.topLeft.y - streetOrigin.y
+			firstRightNode instanceof HorizontalStreet && firstRightNode.streetRect
+				? firstRightNode.streetRect.topLeft.y - streetOrigin.y
 				: this.height - this.getLength(this.rightRow)
 
 		return leftOverhang > 0 && rightOverhang > 0 ? Math.min(leftOverhang, rightOverhang) : 0
@@ -175,12 +175,12 @@ export default class VerticalStreet extends Street {
 		const lastRightNode = this.rightRow[this.rightRow.length - 1]
 		const streetBottomY = streetOrigin.y + this.height
 		const leftOverhang =
-			lastLeftNode instanceof HorizontalStreet
-				? streetBottomY - lastLeftNode.streetRect!.getBottomRight().y
+			lastLeftNode instanceof HorizontalStreet && lastLeftNode.streetRect
+				? streetBottomY - lastLeftNode.streetRect.getBottomRight().y
 				: this.height - this.getLength(this.leftRow)
 		const rightOverhang =
-			lastRightNode instanceof HorizontalStreet
-				? streetBottomY - lastRightNode.streetRect!.getBottomRight().y
+			lastRightNode instanceof HorizontalStreet && lastRightNode.streetRect
+				? streetBottomY - lastRightNode.streetRect.getBottomRight().y
 				: this.height - this.getLength(this.rightRow)
 
 		return leftOverhang > 0 && rightOverhang > 0 ? Math.min(leftOverhang, rightOverhang) : 0
