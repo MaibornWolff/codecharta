@@ -4,31 +4,26 @@
 >
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="legend-block bold">{{ $ctrl._viewModel.colorMetric }}:</div>
-		<cc-map-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}" open="top right">
+		<cc-map-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
 		</cc-map-color-picker>
 		<cc-map-color-picker
 			map-color-for="neutral"
 			label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
-			open="top right"
 		>
 		</cc-map-color-picker>
-		<cc-map-color-picker
-			map-color-for="negative"
-			label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite"
-			open="top right"
-		>
+		<cc-map-color-picker map-color-for="negative" label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite">
 		</cc-map-color-picker>
 	</div>
 
 	<div ng-if="$ctrl._viewModel.isDeltaState">
-		<cc-map-color-picker map-color-for="positiveDelta" label="+&Delta;" open="top right"> </cc-map-color-picker>
-		<cc-map-color-picker map-color-for="negativeDelta" label="-&Delta;" open="top right"> </cc-map-color-picker>
+		<cc-map-color-picker map-color-for="positiveDelta" label="+&Delta;"> </cc-map-color-picker>
+		<cc-map-color-picker map-color-for="negativeDelta" label="-&Delta;"> </cc-map-color-picker>
 	</div>
 
-	<cc-map-color-picker map-color-for="selected" label="selected" open="top right"> </cc-map-color-picker>
+	<cc-map-color-picker map-color-for="selected" label="selected"> </cc-map-color-picker>
 	<hr />
-	<cc-map-color-picker map-color-for="outgoingEdge" label="Outgoing Edge" open="top right"> </cc-map-color-picker>
-	<cc-map-color-picker map-color-for="incomingEdge" label="Incoming Edge" open="top right"> </cc-map-color-picker>
+	<cc-map-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-map-color-picker>
+	<cc-map-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-map-color-picker>
 
 	<hr ng-show="$ctrl._viewModel.packageLists[0]" />
 	<div
