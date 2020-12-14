@@ -13,11 +13,11 @@ import { WebGLInfo } from "three"
 
 export class ThreeViewerService {
 	private stats : Stats
-	private xPanel: any
-	private yPanel: any
-	private maxXPanel : number = 0
-	private maxYPanel : number = 0
-	private enableFXAA : boolean = false // TODO can be selective
+	private xPanel
+	private yPanel
+	private maxXPanel = 0
+	private maxYPanel = 0
+	private enableFXAA = false // TODO can be selective
 
 	/* ngInject */
 	constructor(
@@ -29,11 +29,11 @@ export class ThreeViewerService {
 	) {
 		this.stats = new Stats()	// TODO needs to be injected only for test purpose 
 		
+		/* 	NOTE FXAA instead of aliasing shader set to medium quality,
+			could try out different filtering techniques */
 		if (!ThreeRendererService.RENDER_OPTIONS.antialias) {
 			this.enableFXAA = true
-		}								/* 	NOTE FXAA instead of aliasing shader set to medium quality,
-										could try out different filtering techniques */
-		console.log(ThreeRendererService.RENDER_OPTIONS.antialias,this.enableFXAA)
+		}							
 	}
 
 	init(canvasElement: Element) {
@@ -44,7 +44,6 @@ export class ThreeViewerService {
 		this.threeRendererService.init(window.innerWidth, window.innerHeight)
 		this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
 		this.threeRendererService.renderer.setPixelRatio(window.devicePixelRatio)  // TODO needs ui progressbar (from 1 to window.devicePixelRatio)
-		console.log("pixel ratio is : ", window.devicePixelRatio) // TODO just logging the ratio to the console, has to be removed.
 		
 		if (this.enableFXAA) {
 			this.initComposer()
@@ -71,12 +70,9 @@ export class ThreeViewerService {
 	}
 
 	private updateStats = () => {
-		let webGLInfo : WebGLInfo["render"]
-		if (this.enableFXAA) {
-			webGLInfo = this.threeRendererService.composer.getInfo()
-		} else {
-			webGLInfo = this.threeRendererService.renderer.info.render
-		}
+		const webGLInfo : WebGLInfo["render"]= this.enableFXAA ? 
+			this.threeRendererService.composer.getInfo() : 
+			this.threeRendererService.renderer.info.render
 		
 		const triangles : number = webGLInfo.triangles
 		this.maxXPanel = Math.max(this.maxXPanel,triangles)
@@ -94,7 +90,7 @@ export class ThreeViewerService {
 		const pixelRatio = this.threeRendererService.renderer.getPixelRatio()
 
 		this.threeRendererService.composer.setSize( window.innerWidth* pixelRatio, window.innerHeight* pixelRatio)
-		var renderPass = new RenderPass( this.threeSceneService.scene, this.threeCameraService.camera )
+		const renderPass = new RenderPass( this.threeSceneService.scene, this.threeCameraService.camera )
 		this.threeRendererService.composer.addPass( renderPass )
 
 		const effectFXAA = new ShaderPass( FXAAShader )
@@ -132,10 +128,7 @@ export class ThreeViewerService {
 	}
 
 	dispose() {
-		// TODO needs to bind it
-		if (this.threeRendererService !==undefined && this.threeRendererService.composer!==undefined) {
-			this.threeRendererService.composer.dispose()
-		}
+		this.threeRendererService?.composer?.dispose()
 	}
 
 	animate() {

@@ -11,9 +11,9 @@ export class CustomComposer extends EffectComposer {
 	}
 
     getInfo() : WebGLInfo["render"]{
-		let result : WebGLInfo["render"] = { calls : 0,lines : 0, triangles : 0, points : 0, frame: 0}
+		const result : WebGLInfo["render"] = { calls : 0,lines : 0, triangles : 0, points : 0, frame: 0}
 
-		for (var info of this.info) {
+		for (const info of this.info) {
 			result.calls += info.calls;
 			result.lines += info.lines;
 			result.triangles += info.triangles;
@@ -27,24 +27,24 @@ export class CustomComposer extends EffectComposer {
 			deltaTime = this.clock.getDelta()
 		}
 
-		let currentRenderTarget = this.renderer.getRenderTarget()
-		let maskActive : boolean = false
+		const currentRenderTarget = this.renderer.getRenderTarget()
+		let maskActive = false
         let pass : Pass;
 
-		for (let i = 0; i < this.passes.length; i ++ ) {
-			pass = this.passes[ i ]
+		for (let index = 0; index < this.passes.length; index ++ ) {
+			pass = this.passes[ index ]
 
             if ( pass.enabled === false ) 
                 continue
 
-            pass.renderToScreen = ( this.renderToScreen && this.isLastEnabledPass( i ) ) // nosonar
-            this.info[i] = {...this.renderer.info.render}
+            pass.renderToScreen = ( this.renderToScreen && this.isLastEnabledPass( index ) ) // nosonar
+            this.info[index] = {...this.renderer.info.render}
 			pass.render( this.renderer, this.writeBuffer, this.readBuffer, deltaTime, maskActive )
 
 			if ( pass.needsSwap ) {
 				if ( maskActive ) {
-					var context = this.renderer.getContext()
-					var stencil = this.renderer.state.buffers.stencil
+					const context = this.renderer.getContext()
+					const stencil = this.renderer.state.buffers.stencil
                     
 					stencil.setFunc( context.NOTEQUAL, 1, 0xffffffff )
 					this.copyPass.render( this.renderer, this.writeBuffer, this.readBuffer, deltaTime, false)
@@ -66,8 +66,8 @@ export class CustomComposer extends EffectComposer {
 	
 	dispose() {
 		let pass : Pass.FullScreenQuad
-		for (let i = 0; i < this.passes.length; i ++ ) {
-			if (this.passes[ i ] instanceof Pass.FullScreenQuad) {
+		for (let index = 0; index < this.passes.length; index ++ ) {
+			if (this.passes[ index ] instanceof Pass.FullScreenQuad) {
 				pass.dispose()
 			}
 		}

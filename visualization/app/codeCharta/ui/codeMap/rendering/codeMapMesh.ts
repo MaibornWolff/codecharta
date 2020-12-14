@@ -196,9 +196,7 @@ export class CodeMapMesh {
 	}
 
 	private disposeMesh() {
-		if (this.threeMesh!==undefined && this.threeMesh.geometry!==undefined) {
-			this.threeMesh.geometry.dispose()
-		}
+		this.threeMesh?.geometry?.dispose()
 	}
 
 	private disposeMaterial() {
