@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Download and upload Custom Configurations is now possible ([#1472](https://github.com/MaibornWolff/codecharta/issues/1472))
+
     -   Open the Custom Configs menu in the toolbar on top of the map
     -   Next to the `plus` Button you can see two new buttons: Upload and download.
         -   Download: If you already have added Custom Configs you can download them by clicking the download button.
@@ -24,6 +25,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
         -   If we cannot purge any Configs, you might have to do that by your own by deleting specific Configs manually.
 
 ### Changed
+
+-   Increase possible margin size ([#1490](https://github.com/MaibornWolff/codecharta/pull/1490))
+    -   change displayed margin value from % to pixel
+    -   change dynamic margin value to a default margin value that should fit the map
 
 ### Removed 🗑
 

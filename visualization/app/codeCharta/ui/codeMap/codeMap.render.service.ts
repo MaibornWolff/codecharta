@@ -32,7 +32,6 @@ export class CodeMapRenderService {
 	}
 
 	scaleMap() {
-		this.threeSceneService.scale()
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
 	}

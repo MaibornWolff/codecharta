@@ -82,7 +82,8 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	private cameraPerspectiveLengthCalculation(boundingSphere) {
 		const cameraReference = this.threeCameraService.camera
 
-		const scale = 1.4 // object size / display size
+		//TODO: Scale Factor for object to camera ratio
+		const scale = 1.7 // object size / display size
 		const objectAngularSize = ((cameraReference.fov * Math.PI) / 180) * scale
 		const distanceToCamera = boundingSphere.radius / Math.tan(objectAngularSize / 2)
 		return Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
