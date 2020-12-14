@@ -164,7 +164,7 @@ describe("CodeMapLabelService", () => {
 			const SX = 1
 			const SY = 2
 			const SZ = 3
-			const SCALE_CONSTANT_LABEL = 15 / 4
+			const SCALE_CONSTANT_LABEL = codeMapLabelService["LABEL_HEIGHT_COEFFICIENT"]
 
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
