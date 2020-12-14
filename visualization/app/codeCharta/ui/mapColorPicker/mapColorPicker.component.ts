@@ -14,49 +14,36 @@ export class MapColorPickerController {
 		this.$scope.colorPickerEventApi = {
 			onOpen: () => {
 				this.$element[0].querySelector(".color-picker-swatch").classList.add("fa", "fa-paint-brush")
+				if (!this.hasColorInputField()) {
+					// check this each time `onOpen`, instead of using a MutationObserver in `$postLink`,
+					// as e.g. angularjs' `ng-if` re-creates the innerNode (e.g. in the legend component)
+					const colorPicker = this.$element[0].querySelector("color-picker")
+					colorPicker.querySelector(".color-picker-panel").appendChild(this.createColorInput())
+					colorPicker
+						.querySelector(".color-picker-grid")
+						.insertAdjacentHTML("afterend", this.createDivForColorPickerMargin().outerHTML)
+				}
 			},
 			onClose: () => {
 				this.$element[0].querySelector(".color-picker-swatch").classList.remove("fa", "fa-paint-brush")
 			}
 		}
-
-		// this.storeService.dispatch( // probably should be debounced
-		//   setMapColors({
-		//     ...defaultMapColors,
-		//     negative: "#f542ec"
-		//   })
-		// )
 	}
 
-	$postLink() {
-		this.waitForColorPickersDom().then(colorPicker => {
-			colorPicker.querySelector(".color-picker-panel").appendChild(this.createColorInput())
-			colorPicker.querySelector(".color-picker-grid").insertAdjacentHTML("afterend", this.createDivForColorPickerMargin().outerHTML)
-		})
-	}
+	// this.storeService.dispatch( // probably should be debounced
+	//   setMapColors({
+	//     ...defaultMapColors,
+	//     negative: "#f542ec"
+	//   })
+	// )
+	// todo onStateChange update color
 
 	private getCurrentColor() {
 		return this.storeService.getState().appSettings.mapColors[this.mapColorFor]
 	}
 
-	// todo onStateChange update color
-
-	private async waitForColorPickersDom() {
-		return new Promise<HTMLElement>(resolve => {
-			// console.log(this.mapColorFor)
-			const colorPicker = this.$element.find("color-picker")[0]
-			// console.log(colorPicker)
-			// console.log(colorPicker.innerHTML)
-			//console.log(this.mapColorFor, colorPicker.querySelector(".color-picker-panel"), colorPicker.innerHTML)
-			const mutationObserver = new MutationObserver(() => {
-				//console.log("MutationObserver triggered for", this.mapColorFor)
-				// color-picker element is sole mutator and adds everything in one flow within its $compile
-				mutationObserver.disconnect()
-				resolve(colorPicker)
-			})
-
-			mutationObserver.observe(colorPicker, { childList: true, subtree: true, characterData: true })
-		})
+	private hasColorInputField() {
+		return this.$element[0].querySelector("color-picker .cc-color-picker-input") !== null
 	}
 
 	private createColorInput() {
