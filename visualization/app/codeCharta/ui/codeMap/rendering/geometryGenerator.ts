@@ -16,7 +16,7 @@ import {
 	RepeatWrapping,
 	DoubleSide
 } from "three"
-import { getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "../codeMap.render.service"
+import { getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "../../../util/codeMapHelper"
 
 export interface BoxMeasures {
 	x: number

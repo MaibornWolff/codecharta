@@ -7,6 +7,7 @@ import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/is
 import { ExportCCFile } from "./../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
+import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
@@ -29,15 +30,26 @@ export class FileChooserController {
 				}
 
 				reader.onloadstart = () => {
-					this.storeService.dispatch(setIsLoadingFile(true))
+					if (file.name.includes(CodeChartaService.CC_FILE_EXTENSION)) {
+						this.storeService.dispatch(setIsLoadingFile(true))
+					}
 				}
 
 				reader.onload = event => {
 					content = isCompressed ? zlib.unzipSync(Buffer.from(event.target.result)) : event.target.result
 				}
+
 				reader.onloadend = () => {
 					readFiles++
-					this.addNameDataPair(file, content)
+					if (file.name.includes(CUSTOM_CONFIG_FILE_EXTENSION)) {
+						try {
+							CustomConfigHelper.importCustomConfigs(content)
+						} catch {
+							// Explicitly ignored
+						}
+					} else {
+						this.addNameDataPair(file, content)
+					}
 
 					if (readFiles === element.files.length) {
 						this.setNewData()

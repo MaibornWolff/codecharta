@@ -1,9 +1,8 @@
-import { getMarkingColor, isLeaf } from "./codeMapHelper"
+import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "./codeMapHelper"
 import { Node, CodeMapNode, State } from "../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
-import { getMapResolutionScaleFactor } from "../ui/codeMap/codeMap.render.service"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2

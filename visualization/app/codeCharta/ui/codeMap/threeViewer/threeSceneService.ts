@@ -36,6 +36,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private highlighted: CodeMapBuilding[] = []
 	private constantHighlight: Map<number, CodeMapBuilding> = new Map()
 
+	private folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
+	private folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
+	private folderLabelColorSelected = this.storeService.getState().appSettings.mapColors.selected
+	private numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
@@ -65,8 +70,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		const state = this.storeService.getState()
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 		if (this.mapGeometry.children[0]) {
-			this.updateCorrectMaterial(this.mapGeometry.children[0]["material"], this.highlighted, false)
-			if (this.selected) this.updateCorrectMaterial(this.mapGeometry.children[0]["material"], [this.selected], true)
+			this.highlightMaterial(this.mapGeometry.children[0]["material"])
 		}
 	}
 
@@ -76,47 +80,39 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 	}
 
-	private updateCorrectMaterial(materials: Material[], nodes: CodeMapBuilding[], select: boolean) {
-		// TODO This loops introduce performance issues
-		//  refactor it please
-		return
-		const allNodes = this.mapMesh.getNodes()
-
-		for (const node of allNodes) {
-			for (const material of materials) {
-				for (const hoveredNode of nodes) {
-					if (hoveredNode !== null) {
-						if (select) {
-							if (material.userData.id === hoveredNode.node.id) {
-								material["color"].setHex(ColorConverter.convertHexToNumber(hoveredNode.color))
-							}
-						} else if (material.userData.id === hoveredNode.node.id) {
-							material["color"].setHex(ColorConverter.convertHexToNumber("#FFFFFF"))
-						} else if (material.userData.id === node.id) {
-							material["color"].setHex(ColorConverter.convertHexToNumber("#7A7777"))
-						}
-					}
-				}
-			}
-		}
+	private selectMaterial(materials: Material[]) {
+		const selectedMaterial = materials.find(({ userData }) => userData.id === this.selected.node.id)
+		selectedMaterial?.["color"].setHex(this.numberOrangeColor)
 	}
 
 	private resetMaterial(materials: Material[]) {
-		// TODO activate the function when the performance issue in updateCorrectMaterial() has been fixed.
-		return
-		const allNodes = this.mapMesh.getNodes()
-		for (const node of allNodes) {
-			for (const material of materials) {
-				if (material.userData.id === node.id) {
-					material["color"].setHex(ColorConverter.convertHexToNumber("#FFFFFF"))
-				}
+		const selectedID = this.selected ? this.selected.node.id : -1
+		for (const material of materials) {
+			const materialNodeId = material.userData.id
+			if (materialNodeId !== selectedID) {
+				material["color"]?.setHex(this.folderLabelColorHighlighted)
 			}
 		}
 	}
 
-	private resetHighlightMaterial(materials: Material[]) {
-		this.resetMaterial(materials)
-		this.updateCorrectMaterial(this.mapGeometry.children[0]["material"], [this.selected], true)
+	private highlightMaterial(materials: Material[]) {
+		const highlightedNodeIds = new Set(this.highlighted.map(({ node }) => node.id))
+		const constantHighlightedNodes = new Set<number>()
+
+		for (const { node } of this.constantHighlight.values()) {
+			constantHighlightedNodes.add(node.id)
+		}
+
+		for (const material of materials) {
+			const materialNodeId = material.userData.id
+			if (this.selected && materialNodeId === this.selected.node.id) {
+				material["color"].setHex(this.numberOrangeColor)
+			} else if (highlightedNodeIds.has(materialNodeId) || constantHighlightedNodes.has(materialNodeId)) {
+				material["color"].setHex(this.folderLabelColorHighlighted)
+			} else {
+				material["color"]?.setHex(this.folderLabelColorNotHighlighted)
+			}
+		}
 	}
 
 	highlightSingleBuilding(building: CodeMapBuilding) {
@@ -137,20 +133,22 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	clearHighlight() {
 		if (this.getMapMesh()) {
 			this.getMapMesh().clearHighlight(this.selected)
-			if (this.mapGeometry.children[0]) {
-				this.resetHighlightMaterial(this.mapGeometry.children[0]["material"])
-			}
 			this.highlighted = []
 			this.constantHighlight.clear()
+			if (this.mapGeometry.children[0]) {
+				this.resetMaterial(this.mapGeometry.children[0]["material"])
+			}
 		}
 	}
 
 	selectBuilding(building: CodeMapBuilding) {
-		const color = this.storeService.getState().appSettings.mapColors.selected
-		this.getMapMesh().selectBuilding(building, color)
+		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
 		this.selected = building
 		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
+		if (this.mapGeometry.children[0]) {
+			this.selectMaterial(this.mapGeometry.children[0]["material"])
+		}
 	}
 
 	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode) {
@@ -184,13 +182,15 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
-			this.resetMaterial(this.mapGeometry.children[0]["material"])
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
 		if (this.highlighted.length > 0) {
 			this.highlightBuildings()
 		}
 		this.selected = null
+		if (this.mapGeometry.children[0]) {
+			this.resetMaterial(this.mapGeometry.children[0]["material"])
+		}
 	}
 
 	initLights() {

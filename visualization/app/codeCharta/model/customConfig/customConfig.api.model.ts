@@ -5,9 +5,11 @@ export enum CustomConfigMapSelectionMode {
 	MULTIPLE = "MULTIPLE",
 	DELTA = "DELTA"
 }
+
 export interface CustomConfig {
 	id: string
 	name: string
+	creationTime: number
 	mapSelectionMode: CustomConfigMapSelectionMode
 	assignedMaps: string[]
 	mapChecksum: string
@@ -19,4 +21,12 @@ export interface CustomConfig {
 		fileSettings: FileSettings
 		treeMap: TreeMapSettings
 	}
+}
+
+export type ExportCustomConfig = CustomConfig
+
+export interface CustomConfigsDownloadFile {
+	downloadApiVersion: string
+	timestamp: number
+	customConfigs: Map<string, ExportCustomConfig>
 }
