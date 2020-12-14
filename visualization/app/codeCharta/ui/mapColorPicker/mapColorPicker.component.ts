@@ -1,15 +1,25 @@
 import "./mapColorPicker.component.scss"
-import { StoreService } from "../../state/store.service"
-// import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { StoreService, StoreSubscriber } from "../../state/store.service"
+import { IRootScopeService } from "angular"
+import { isActionOfType } from "../../util/reduxHelper"
+import { MapColorsActions, defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 
-export class MapColorPickerController {
-	private mapColorFor: string
+export class MapColorPickerController implements StoreSubscriber {
+	private mapColorFor: string // todo key of defaultMapColor
 	private open: string
 
-	constructor(private storeService: StoreService, private $element: JQLite, private $scope) {}
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private $element: JQLite, private $scope) {
+		StoreService.subscribe(this.$rootScope, this)
+	}
+
+	onStoreChanged(actionType: string) {
+		if (isActionOfType(actionType, MapColorsActions)) {
+			this.$scope.color = this.getColorFromStore()
+		}
+	}
 
 	$onInit() {
-		this.$scope.color = this.getCurrentColor()
+		this.$scope.color = this.getColorFromStore()
 		this.$scope.colorPickerOptions = { pos: this.open } // sets direction in which color-picker will open
 		this.$scope.colorPickerEventApi = {
 			onOpen: () => {
@@ -26,19 +36,25 @@ export class MapColorPickerController {
 			},
 			onClose: () => {
 				this.$element[0].querySelector(".color-picker-swatch").classList.remove("fa", "fa-paint-brush")
+			},
+			onChange: (_, color) => {
+				this.updateMapColor(color)
 			}
 		}
 	}
 
-	// this.storeService.dispatch( // probably should be debounced
-	//   setMapColors({
-	//     ...defaultMapColors,
-	//     negative: "#f542ec"
-	//   })
-	// )
-	// todo onStateChange update color
+	private updateMapColor(color: string) {
+		if (color !== this.getColorFromStore()) {
+			this.storeService.dispatch(
+				setMapColors({
+					...defaultMapColors,
+					[this.mapColorFor]: color
+				})
+			)
+		}
+	}
 
-	private getCurrentColor() {
+	private getColorFromStore() {
 		return this.storeService.getState().appSettings.mapColors[this.mapColorFor]
 	}
 
@@ -59,8 +75,7 @@ export class MapColorPickerController {
 		})
 
 		input.addEventListener("input", () => {
-			this.$scope.color = input.value
-			this.$scope.$apply()
+			this.updateMapColor(input.value)
 		})
 
 		return input
