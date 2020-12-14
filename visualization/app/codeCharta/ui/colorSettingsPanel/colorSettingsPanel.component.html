@@ -1,5 +1,16 @@
 <range-slider-component></range-slider-component>
 
+<cc-map-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}"> </cc-map-color-picker>
+<cc-map-color-picker
+	map-color-for="neutral"
+	label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
+>
+</cc-map-color-picker>
+<cc-map-color-picker map-color-for="negative" label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite">
+</cc-map-color-picker>
+
+<cc-map-color-picker map-color-for="selected" label="selected"> </cc-map-color-picker>
+
 <md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
 	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertColorRange" ng-change="$ctrl.invertColorRange()">
 		Invert Colors
@@ -9,12 +20,6 @@
 <md-input-container class="md-block" ng-if="$ctrl._viewModel.isDeltaState">
 	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertDeltaColors" ng-change="$ctrl.invertDeltaColors()">
 		Invert Colors
-	</md-checkbox>
-</md-input-container>
-
-<md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
-	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.whiteColorBuildings" ng-change="$ctrl.applyWhiteColorBuildings()">
-		White Positive Buildings
 	</md-checkbox>
 </md-input-container>
 

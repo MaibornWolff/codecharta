@@ -29,6 +29,10 @@ ribbon-bar-component {
 		position: relative;
 		overflow: hidden;
 
+		&.expanded {
+			overflow: visible;
+		}
+
 		&.search {
 			width: 380px;
 		}
@@ -163,5 +167,17 @@ ribbon-bar-component {
 
 	#area-metric-card.expanded {
 		height: 155px;
+	}
+
+	#color-metric-card.expanded {
+		height: 250px;
+
+		reset-settings-button-component .md-button {
+			top: 205px;
+		}
+	}
+
+	cc-map-color-picker .cc-map-color-picker-wrapper {
+		margin-left: 5px;
 	}
 }
