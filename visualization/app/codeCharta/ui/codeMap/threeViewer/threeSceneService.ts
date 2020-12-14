@@ -225,15 +225,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		return this.mapMesh
 	}
 
-	scale() {
-		const { mapSize } = this.storeService.getState().treeMap
-		const scale = this.storeService.getState().appSettings.scaling
-
-		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
-		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z) // TODO: Change position of map, so that it is more central
-		this.mapMesh.setScale(scale)
-	}
-
 	getSelectedBuilding() {
 		return this.selected
 	}

@@ -113,7 +113,7 @@ describe("MarginService", () => {
 
 			marginService.reset()
 
-			expect(storeService.getState().dynamicSettings.margin).toEqual(40)
+			expect(storeService.getState().dynamicSettings.margin).toEqual(50)
 		})
 
 		it("should call dispatch after setting new margin", () => {
@@ -127,7 +127,7 @@ describe("MarginService", () => {
 		})
 
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
-			storeService.dispatch(setMargin(40))
+			storeService.dispatch(setMargin(50))
 			storeService.dispatch(setDynamicMargin(true))
 			storeService.dispatch(setAreaMetric("rloc"))
 			storeService.dispatch = jest.fn()

@@ -164,6 +164,7 @@ describe("CodeMapLabelService", () => {
 			const SX = 1
 			const SY = 2
 			const SZ = 3
+			const SCALE_CONSTANT_LABEL = 15 / 4
 
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
@@ -181,11 +182,11 @@ describe("CodeMapLabelService", () => {
 			const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position
 
 			expect(scaleAfterA.x).toBe(scaleBeforeA.x * SX)
-			expect(scaleAfterA.y).toBe((scaleBeforeA.y - (25 / 4) * margin) * SY + (25 / 4) * margin)
+			expect(scaleAfterA.y).toBe((scaleBeforeA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin)
 			expect(scaleAfterA.z).toBe(scaleBeforeA.z * SZ)
 
 			expect(scaleAfterB.x).toBe(scaleBeforeA.x * SX)
-			expect(scaleAfterB.y).toBe((scaleBeforeA.y - (25 / 4) * margin) * SY + (25 / 4) * margin)
+			expect(scaleAfterB.y).toBe((scaleBeforeA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin)
 			expect(scaleAfterB.z).toBe(scaleBeforeA.z * SZ)
 		})
 	})

@@ -22,7 +22,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
 	private LABEL_CORNER_RADIUS = 40 //empirically gathered
 	private LABEL_SCALE_FACTOR = 0.7 //empirically gathered
-	private LABEL_HEIGHT_COEFFICIENT = 25 / 4
+	private LABEL_HEIGHT_COEFFICIENT = 15 / 4
 	private LABEL_HEIGHT_POSITION = 60
 
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
