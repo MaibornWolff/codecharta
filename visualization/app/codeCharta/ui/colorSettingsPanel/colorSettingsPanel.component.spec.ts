@@ -154,14 +154,4 @@ describe("ColorSettingsPanelController", () => {
 			expect(storeService.getState().appSettings.mapColors.negativeDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.positiveDelta)
 		})
 	})
-
-	describe("applyWhiteColorBuildings", () => {
-		it("should call update settings correctly", () => {
-			colorSettingsPanelController["_viewModel"].whiteColorBuildings = false
-
-			colorSettingsPanelController.applyWhiteColorBuildings()
-
-			expect(storeService.getState().appSettings.whiteColorBuildings).toBeFalsy()
-		})
-	})
 })
