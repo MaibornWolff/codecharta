@@ -10,6 +10,7 @@
 ### Start the automatic release process
 
 -   Call `pipenv run make_release`.
+-   Note, on Windows it is recommended to run the command in `cmd.exe` rather than in a git bash
 
 ## Manual
 
