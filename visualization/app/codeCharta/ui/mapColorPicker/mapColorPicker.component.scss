@@ -3,6 +3,10 @@
 cc-map-color-picker {
 	.cc-map-color-picker-wrapper {
 		margin: 4px 0;
+
+		&:hover {
+			cursor: pointer;
+		}
 	}
 
 	.cc-color-picker-label {
