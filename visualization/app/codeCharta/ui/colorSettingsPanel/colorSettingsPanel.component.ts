@@ -1,7 +1,6 @@
 import "./colorSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
-import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { setInvertDeltaColors } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.actions"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import {
@@ -57,12 +56,18 @@ export class ColorSettingsPanelController
 	}
 
 	invertColorRange() {
-		this.storeService.dispatch(setInvertColorRange(this._viewModel.invertColorRange))
+		const mapColors = this.storeService.getState().appSettings.mapColors
+		this.storeService.dispatch(
+			setMapColors({
+				...mapColors,
+				positive: mapColors.negative,
+				negative: mapColors.positive
+			})
+		)
 	}
 
 	invertDeltaColors() {
-		const { positiveDelta } = this.storeService.getState().appSettings.mapColors
-		const { negativeDelta } = this.storeService.getState().appSettings.mapColors
+		const { positiveDelta, negativeDelta } = this.storeService.getState().appSettings.mapColors
 
 		this.storeService.dispatch(setInvertDeltaColors(this._viewModel.invertDeltaColors))
 		this.storeService.dispatch(

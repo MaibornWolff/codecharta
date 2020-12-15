@@ -19,6 +19,7 @@ import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/
 import { isDeltaState } from "../../model/files/files.helper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 
 export class RangeSliderController
 	implements
@@ -27,7 +28,8 @@ export class RangeSliderController
 		InvertColorRangeSubscriber,
 		WhiteColorBuildingsSubscriber,
 		FilesSelectionSubscriber,
-		BlacklistSubscriber {
+		BlacklistSubscriber,
+		MapColorsSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
@@ -60,10 +62,15 @@ export class RangeSliderController
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
+		MapColorsService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedColorRange = debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
 		}, RangeSliderController.DEBOUNCE_TIME)
+	}
+
+	onMapColorsChanged() {
+		this.updateSliderColors()
 	}
 
 	onBlacklistChanged() {
@@ -182,13 +189,12 @@ export class RangeSliderController
 	}
 
 	private getColoredRangeColors() {
-		const { appSettings } = this.storeService.getState()
-		const mapColorPositive = appSettings.whiteColorBuildings ? appSettings.mapColors.lightGrey : appSettings.mapColors.positive
+		const mapColors = this.storeService.getState().appSettings.mapColors
 
 		return {
-			left: appSettings.invertColorRange ? appSettings.mapColors.negative : mapColorPositive,
-			middle: appSettings.mapColors.neutral,
-			right: appSettings.invertColorRange ? mapColorPositive : appSettings.mapColors.negative
+			left: mapColors.positive,
+			middle: mapColors.neutral,
+			right: mapColors.negative
 		}
 	}
 
