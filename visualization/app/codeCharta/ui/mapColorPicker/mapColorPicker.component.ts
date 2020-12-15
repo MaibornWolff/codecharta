@@ -7,7 +7,6 @@ import { MapColorsSubscriber, MapColorsService } from "../../state/store/appSett
 
 export class MapColorPickerController implements MapColorsSubscriber {
 	private mapColorFor: keyof MapColors
-	private open: string
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private $element: JQLite, private $scope) {
 		MapColorsService.subscribe(this.$rootScope, this)
@@ -19,7 +18,7 @@ export class MapColorPickerController implements MapColorsSubscriber {
 
 	$onInit() {
 		this.$scope.color = this.getColorFromStore()
-		this.$scope.colorPickerOptions = { pos: this.open } // sets direction in which color-picker will open
+		this.$scope.colorPickerOptions = { pos: undefined } // reset unwanted default positioning
 		this.$scope.colorPickerEventApi = {
 			onOpen: () => {
 				this.$element[0].querySelector(".color-picker-swatch").classList.add("fa", "fa-paint-brush")
