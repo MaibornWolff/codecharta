@@ -9,7 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.64.0] - 2020-12-15
+
+### Added 🚀
+
 -   Download and upload Custom Configurations is now possible ([#1472](https://github.com/MaibornWolff/codecharta/issues/1472))
+
     -   Open the Custom Configs menu in the toolbar on top of the map
     -   Next to the `plus` Button you can see two new buttons: Upload and download.
         -   Download: If you already have added Custom Configs you can download them by clicking the download button.
@@ -23,8 +36,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
         -   You can click the displayed "download and purge" button to download/backup at least 6 months old Configs and then purge them from the local storage to make space for new ones.
         -   If we cannot purge any Configs, you might have to do that by your own by deleting specific Configs manually.
 
-### Changed
-
 -   Integrated streetlayout ([#904](https://github.com/MaibornWolff/codecharta/issues/904))
 ![cc_street_ccv](https://user-images.githubusercontent.com/63230711/78872405-87eed900-7a49-11ea-984a-c0ef738779b9.png)
     
@@ -32,6 +43,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     two different Street layout are integrated :
     -    StreetLayout : as described above.
     -    TMStreet : a combination of street layout and squarified layout.
+### Changed
+
+-   Increase possible margin size ([#1490](https://github.com/MaibornWolff/codecharta/pull/1490))
+    -   change displayed margin value from % to pixel
+    -   change dynamic margin value to a default margin value that should fit the map
+
 ### Removed 🗑
 
 ### Fixed 🐞

@@ -95,27 +95,11 @@ describe("codeMapRenderService", () => {
 		})()
 	}
 
-	describe("setNewMapMesh", () => {
-		it("should call threeSceneService.scale", () => {
-			codeMapRenderService["setNewMapMesh"](TEST_NODES)
-
-			expect(threeSceneService.setMapMesh).toHaveBeenCalled()
-		})
-	})
-
 	describe("scaleMap", () => {
 		let scaling: Vector3
 
 		beforeEach(() => {
 			scaling = new Vector3(1, 2, 3)
-		})
-
-		it("should call threeSceneService.scale", () => {
-			storeService.dispatch(setScaling(scaling))
-
-			codeMapRenderService["scaleMap"]()
-
-			expect(threeSceneService.scale).toHaveBeenCalled()
 		})
 
 		it("should call codeMapLabelService.scale", () => {

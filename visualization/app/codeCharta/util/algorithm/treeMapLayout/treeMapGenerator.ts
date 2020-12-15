@@ -22,7 +22,8 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(hierarchyNode.data, heightScale, state, isDeltaState)] // nosonar
 
 		// Multiply mapSize of (default) 250px by 2 = 500px and add the total margin
-		const totalMapSize = state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin
+		const totalMapSize =
+			state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * (state.dynamicSettings.margin / PADDING_SCALING_FACTOR)
 
 		// than divide through the root folder width and length to get a scale factor for calculation for all following nodes.
 		const scaleLength = totalMapSize / nodes[0].width
