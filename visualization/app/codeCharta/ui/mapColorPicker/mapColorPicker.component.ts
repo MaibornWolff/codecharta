@@ -3,9 +3,10 @@ import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { IRootScopeService } from "angular"
 import { isActionOfType } from "../../util/reduxHelper"
 import { MapColorsActions, defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { MapColors } from "../../codeCharta.model"
 
 export class MapColorPickerController implements StoreSubscriber {
-	private mapColorFor: string // todo key of defaultMapColor
+	private mapColorFor: keyof MapColors
 	private open: string
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private $element: JQLite, private $scope) {
