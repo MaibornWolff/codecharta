@@ -74,41 +74,45 @@ describe("fileChooserController", () => {
 
 			const file1 = {
 				name: "invalid.and.missing.md5.checksum.cc.json",
-				size: 42
+				size: 43
 			} as File
 
 			const file2 = {
 				name: "invalid.and.empty.md5.checksum.cc.json",
-				size: 42
+				size: 44
 			} as File
 
 			const file3 = {
 				name: "invalid.and.nulled.md5.checksum.cc.json",
-				size: 42
+				size: 45
 			} as File
 
 			fileChooserController["addNameDataPair"](file0, '{"fileChecksum":"invalid-but-present-md5-checksum"}')
 
 			expect(fileChooserController["files"].length).toBe(1)
 			expect(fileChooserController["files"][0].fileName).toBe("invalid.with.md5.checksum.cc.json")
+			expect(fileChooserController["files"][0].fileSize).toBe(42)
 			expect(fileChooserController["files"][0].content.fileChecksum).toBe("invalid-but-present-md5-checksum")
 
 			fileChooserController["addNameDataPair"](file1, "{}")
 
 			expect(fileChooserController["files"].length).toBe(2)
 			expect(fileChooserController["files"][1].fileName).toBe("invalid.and.missing.md5.checksum.cc.json")
+			expect(fileChooserController["files"][1].fileSize).toBe(43)
 			expect(fileChooserController["files"][1].content.fileChecksum).toBe("99914b932bd37a50b983c5e7c90ae93b")
 
 			fileChooserController["addNameDataPair"](file2, '{"fileChecksum":""}')
 
 			expect(fileChooserController["files"].length).toBe(3)
 			expect(fileChooserController["files"][2].fileName).toBe("invalid.and.empty.md5.checksum.cc.json")
+			expect(fileChooserController["files"][2].fileSize).toBe(44)
 			expect(fileChooserController["files"][2].content.fileChecksum).toBe("21a6f66227ae28300d656b8107765e7f")
 
 			fileChooserController["addNameDataPair"](file3, '{"fileChecksum":null}')
 
 			expect(fileChooserController["files"].length).toBe(4)
 			expect(fileChooserController["files"][3].fileName).toBe("invalid.and.nulled.md5.checksum.cc.json")
+			expect(fileChooserController["files"][3].fileSize).toBe(45)
 			expect(fileChooserController["files"][3].content.fileChecksum).toBe("44f0fdb79d97053b25dce38611c117f0")
 		})
 	})

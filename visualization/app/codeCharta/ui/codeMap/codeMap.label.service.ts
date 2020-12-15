@@ -20,7 +20,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
-	private LABEL_CORNER_RADIUS = 35 //empirically gathered
+	private LABEL_CORNER_RADIUS = 40 //empirically gathered
+	private LABEL_SCALE_FACTOR = 0.7 //empirically gathered
+	private LABEL_HEIGHT_COEFFICIENT = 15 / 4 //empirically gathered, needed to prevent label collision with building with higher margin, TODO scale with margin factor once its avalible
 	private LABEL_HEIGHT_POSITION = 60
 
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
@@ -65,8 +67,13 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			}
 
 			const label = this.makeText(labelText, 30)
+			const { margin } = this.storeService.getState().dynamicSettings
 
-			label.sprite.position.set(labelX, labelY + this.LABEL_HEIGHT_POSITION + label.heightValue / 2, labelZ) //label_height
+			label.sprite.position.set(
+				labelX,
+				labelY + this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR + label.heightValue / 2,
+				labelZ
+			) //label_height
 			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
 			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
 			label.sprite.material.opacity = this.mapLabelColors.alpha
@@ -88,13 +95,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	scale() {
 		const { scaling } = this.storeService.getState().appSettings
+		const { margin } = this.storeService.getState().dynamicSettings
 		if (this.resetScale) {
 			this.resetScale = false
 			this.currentScale = new Vector3(1, 1, 1)
 		}
 
 		for (const label of this.labels) {
-			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_POSITION, 0)
+			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 			label.sprite.position
 				.sub(labelHeightDifference.clone())
 				.divide(this.currentScale.clone())

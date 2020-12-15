@@ -40,10 +40,10 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 
 	reset() {
 		const map = this.codeMapPreRenderService.getRenderMap()
-		const { areaMetric, margin } = this.storeService.getState().dynamicSettings
+		const { margin } = this.storeService.getState().dynamicSettings
 		const { dynamicMargin } = this.storeService.getState().appSettings
 
-		const newMargin = getResetMargin(dynamicMargin, areaMetric, map)
+		const newMargin = getResetMargin(dynamicMargin, map)
 
 		if (newMargin && newMargin !== margin) {
 			this.storeService.dispatch(setMargin(newMargin))

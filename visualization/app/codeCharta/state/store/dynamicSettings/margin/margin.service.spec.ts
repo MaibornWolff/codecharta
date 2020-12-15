@@ -77,13 +77,13 @@ describe("MarginService", () => {
 		it("should notify all subscribers with the new margin value", () => {
 			const action: MarginAction = {
 				type: MarginActions.SET_MARGIN,
-				payload: 42
+				payload: 1.6
 			}
 			storeService["store"].dispatch(action)
 
 			marginService.onStoreChanged(MarginActions.SET_MARGIN)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("margin-changed", { margin: 42 })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("margin-changed", { margin: 1.6 })
 		})
 
 		it("should not notify anything on non-margin-events", () => {
@@ -113,7 +113,7 @@ describe("MarginService", () => {
 
 			marginService.reset()
 
-			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+			expect(storeService.getState().dynamicSettings.margin).toEqual(50)
 		})
 
 		it("should call dispatch after setting new margin", () => {
@@ -127,7 +127,7 @@ describe("MarginService", () => {
 		})
 
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
-			storeService.dispatch(setMargin(28))
+			storeService.dispatch(setMargin(50))
 			storeService.dispatch(setDynamicMargin(true))
 			storeService.dispatch(setAreaMetric("rloc"))
 			storeService.dispatch = jest.fn()
