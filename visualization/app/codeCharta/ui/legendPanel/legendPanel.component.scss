@@ -80,5 +80,10 @@ legend-panel-component {
 		.bold {
 			font-weight: 600;
 		}
+
+		cc-map-color-picker .color-picker-panel {
+			/* prevent panel to be below browser bottom */
+			bottom: -50px;
+		}
 	}
 }
