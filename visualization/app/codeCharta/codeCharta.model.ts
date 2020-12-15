@@ -22,7 +22,7 @@ export enum SearchPanelMode {
 export enum LayoutAlgorithm {
 	SquarifiedTreeMap = "Squarified TreeMap",
 	StreetMap = "StreetMap",
-	TMStreet = "TMStreet"
+	TreeMapStreet = "TreeMapStreet"
 }
 
 export interface CCFile {

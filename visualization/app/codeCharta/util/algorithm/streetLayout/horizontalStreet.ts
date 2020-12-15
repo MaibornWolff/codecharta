@@ -32,10 +32,15 @@ export default class HorizontalStreet extends Street {
 	}
 
 	calculateDimension(metricName: string): void {
+		// calculates street width and height
 		for (const child of this.children) {
 			child.calculateDimension(metricName)
 		}
+
+		// splits the children in top and bottom side of the street
 		this.splitChildrenToRows(this.children)
+
+		// note : longest street will be last in the row
 		this.rearrangeRows()
 
 		this.metricValue = StreetViewHelper.calculateSize(this.node, metricName)
@@ -43,7 +48,7 @@ export default class HorizontalStreet extends Street {
 		this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + 2 * this.spacer
 	}
 
-	layout(origin: Vector2, margin: number): CodeMapNode[] {
+	layout(margin: number,origin: Vector2): CodeMapNode[] {
 		const maxTopHeight = this.getMaxHeight(this.topRow)
 		const topRowNodes = this.layoutTopRow(origin, maxTopHeight, margin)
 		const bottomRowNodes = this.layoutBottomRow(origin, maxTopHeight, margin)
@@ -64,7 +69,7 @@ export default class HorizontalStreet extends Street {
 			const childOriginX = this.calculateChildOriginX(rowOrigin, index, this.topRow)
 			const childOriginY = this.calculateStreetOffsetY(rowOrigin, maxTopHeight) - this.topRow[index].height
 			const childOrigin = new Vector2(childOriginX, childOriginY)
-			nodes.push(...this.topRow[index].layout(childOrigin, margin))
+			nodes.push(...this.topRow[index].layout(margin,childOrigin))
 		}
 		return nodes
 	}
@@ -108,7 +113,7 @@ export default class HorizontalStreet extends Street {
 			const childOriginX = this.calculateChildOriginX(rowOrigin, index, this.bottomRow)
 			const childOriginY = this.calculateStreetOffsetY(rowOrigin, maxTopHeight) + this.getStreetThickness()
 			const childOrigin = new Vector2(childOriginX, childOriginY)
-			nodes.push(...this.bottomRow[index].layout(childOrigin, margin))
+			nodes.push(...this.bottomRow[index].layout(margin,childOrigin))
 		}
 		return nodes
 	}
@@ -180,9 +185,9 @@ export default class HorizontalStreet extends Street {
 	 */
 	protected rearrangeRows(): void {
 		if (this.orientation === HorizontalOrientation.RIGHT) {
-			this.bottomRow = [...this.bottomRow].reverse()
+			this.bottomRow.reverse()
 		} else {
-			this.topRow = [...this.topRow].reverse()
+			this.topRow.reverse()
 		}
 	}
 

@@ -1,7 +1,7 @@
 ## refactoring
 
 -    refactoring of algorithm needs more work, maybe abstract the layout Generator for both street and squared layout.
--    unit tests not implemented yet. 
+-    needs more unit tests. 
 
 ## bugs
 

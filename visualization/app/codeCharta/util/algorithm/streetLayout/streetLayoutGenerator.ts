@@ -25,7 +25,7 @@ export class StreetLayoutGenerator {
 		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
-		const layoutNodes: CodeMapNode[] = rootStreet.layout(new Vector2(0, 0), margin)
+		const layoutNodes = rootStreet.layout(margin,new Vector2(0, 0))
 		
 		return layoutNodes.map(streetLayoutNode => {
 			return StreetViewHelper.buildNodeFrom(streetLayoutNode as CodeMapNode, heightScale, maxHeight, state, isDeltaState)
@@ -51,7 +51,7 @@ export class StreetLayoutGenerator {
 			} else {
 				const layoutAlgorithm = state.appSettings.layoutAlgorithm
 				const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
-				if (layoutAlgorithm === LayoutAlgorithm.TMStreet && fileDescendants <= maxTreeMapFiles) {
+				if (layoutAlgorithm === LayoutAlgorithm.TreeMapStreet && fileDescendants <= maxTreeMapFiles) {
 					const treeMap = StreetLayoutGenerator.createTreeMap(child)
 					children.push(treeMap)
 				} else {

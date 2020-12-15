@@ -37,7 +37,7 @@ export default class VerticalStreet extends Street {
 		this.height = Math.max(this.getLength(this.leftRow), this.getLength(this.rightRow))
 	}
 
-	layout(origin: Vector2, margin: number): CodeMapNode[] {
+	layout(margin: number,origin: Vector2): CodeMapNode[] {
 		const maxLeftWidth = this.getMaxWidth(this.leftRow)
 		const leftRowNodes = this.layoutLeftRow(origin, maxLeftWidth, margin)
 		const rightRowNodes = this.layoutRightRow(origin, maxLeftWidth, margin)
@@ -58,7 +58,7 @@ export default class VerticalStreet extends Street {
 			const childOriginX = this.calculateStreetOffsetX(rowOrigin, maxLeftWidth) - this.leftRow[index].width
 			const childOriginY = this.calculateChildOriginY(rowOrigin, index, this.leftRow)
 			const childOrigin = new Vector2(childOriginX, childOriginY)
-			nodes.push(...this.leftRow[index].layout(childOrigin, margin))
+			nodes.push(...this.leftRow[index].layout(margin,childOrigin))
 		}
 		return nodes
 	}
@@ -93,7 +93,7 @@ export default class VerticalStreet extends Street {
 			const childOriginX = this.calculateStreetOffsetX(rowOrigin, maxLeftWidth) + this.getStreetThickness()
 			const childOriginY = this.calculateChildOriginY(rowOrigin, index, this.rightRow)
 			const childOrigin = new Vector2(childOriginX, childOriginY)
-			nodes.push(...this.rightRow[index].layout(childOrigin, margin))
+			nodes.push(...this.rightRow[index].layout(margin,childOrigin))
 		}
 		return nodes
 	}
@@ -138,9 +138,9 @@ export default class VerticalStreet extends Street {
 
 	protected rearrangeRows(): void {
 		if (this.orientation === VerticalOrientation.UP) {
-			this.leftRow = [...this.leftRow].reverse()
+			this.leftRow.reverse()
 		} else {
-			this.rightRow = [...this.rightRow].reverse()
+			this.rightRow.reverse()
 		}
 	}
 

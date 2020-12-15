@@ -70,8 +70,11 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			let labelOffset =this.LABEL_HEIGHT_POSITION + label.heightValue / 2;
 			switch (layoutAlgorithm) {
+				// !remark : algorithm scaling is not same as the squarified layout, 
+				// !layout offset needs to be scaled down,the divided by value is just empirical, 
+				// !needs further investigation
 				case LayoutAlgorithm.StreetMap:
-				case LayoutAlgorithm.TMStreet:
+				case LayoutAlgorithm.TreeMapStreet:
 					labelOffset/=10;
 					break;
 			}

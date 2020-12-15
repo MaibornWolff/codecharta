@@ -23,7 +23,9 @@ export default class VerticalStrip extends Strip {
 	): CodeMapNode[] {
 		let offsetY = rect.topLeft.y
 
-		const nodes = order === VerticalOrder.topToBottom ? this.nodes : [...this.nodes].reverse()
+		if (order !== VerticalOrder.topToBottom)
+			this.nodes.reverse()
+		const nodes = this.nodes;
 		const rootArea = rect.area()
 		const height = rect.height
 		const width = this.totalScaledSize(nodes, metricName, rootSize, rootArea) / height
@@ -50,8 +52,9 @@ export default class VerticalStrip extends Strip {
 		const totalSize = this.totalScaledSize(nodes, metricName, rootSize, rootArea)
 		const stripMin = this.min(nodes, metricName, rootSize, rootArea)
 		const stripMax = this.max(nodes, metricName, rootSize, rootArea)
-		const heightSquared = Math.pow(height, 2)
-		const totalSizeSquared = Math.pow(totalSize, 2)
+
+		const heightSquared = height ** 2
+        const totalSizeSquared = totalSize ** 2
 
 		return Math.max((heightSquared * stripMax) / totalSizeSquared, totalSizeSquared / (heightSquared * stripMin))
 	}

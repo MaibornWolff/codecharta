@@ -12,7 +12,7 @@ export default class SquarifiedTreeMap extends Treemap {
 		super(rootNode)
 	}
 
-	layout(origin: Vector2 = new Vector2(0, 0), margin: number): CodeMapNode[] {
+	layout(margin: number,origin: Vector2 = new Vector2(0, 0)): CodeMapNode[] {
 		const rectangle = this.createMarginatedRectangle(origin)
 		const rootNode: CodeMapNode = {
 			...this.node,
@@ -24,10 +24,9 @@ export default class SquarifiedTreeMap extends Treemap {
 
 		this.treeMapNodes.push(rootNode)
 
-		if (children.length === 0) {
-			return this.treeMapNodes
+		if (children.length>0) {
+			this.createNodes(children, rectangle, this.metricValue, 1, margin)
 		}
-		this.createNodes(children, rectangle, this.metricValue, 1, margin)
 
 		return this.treeMapNodes
 	}

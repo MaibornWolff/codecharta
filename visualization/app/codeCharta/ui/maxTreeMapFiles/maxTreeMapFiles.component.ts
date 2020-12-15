@@ -15,7 +15,6 @@ export class MaxTreeMapFilesController implements MaxTreeMapFilesSubscriber {
 		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
 		const maxTreeMapFiles = this.storeService.getState().appSettings.maxTreeMapFiles
 		this.onMaxTreeMapFilesChanged(maxTreeMapFiles)
-		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
 	}
 
 	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {

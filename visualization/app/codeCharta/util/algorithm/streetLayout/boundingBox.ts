@@ -13,8 +13,8 @@ export default abstract class BoundingBox {
 		this.node = node
 	}
 
-	public abstract calculateDimension(metricName: string): void
-	public abstract layout(origin: Vector2, margin: number): CodeMapNode[]
+	abstract calculateDimension(metricName: string): void
+	abstract layout(margin: number,origin: Vector2): CodeMapNode[]
 
 	protected createMarginatedRectangle(origin: Vector2) {
 		const newOrigin = new Vector2(origin.x + this.FIXED_MARGIN, origin.y + this.FIXED_MARGIN)

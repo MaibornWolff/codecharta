@@ -16,9 +16,9 @@ function calculateSize(node: CodeMapNode, metricName: string) { // TODO if it is
 
 function mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
 	let mergedNode = node
+	const nodeSize = calculateSize(node, metricName)
 	for (const child of node.children) {
 		if (!isLeaf(child)) {
-			const nodeSize = calculateSize(node, metricName)
 			const childSize = calculateSize(child, metricName)
 			if (nodeSize === childSize) {
 				const nodeName = mergedNode.name

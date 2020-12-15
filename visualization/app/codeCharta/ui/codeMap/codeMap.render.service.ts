@@ -44,13 +44,10 @@ export class CodeMapRenderService {
 		let nodes : Node[] = []
 		switch (layoutAlgorithm) {
 			case LayoutAlgorithm.StreetMap:
-				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricData.nodeMetricData, isDeltaState(state.files))
-				break
-			case LayoutAlgorithm.TMStreet:
+			case LayoutAlgorithm.TreeMapStreet:
 				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricData.nodeMetricData, isDeltaState(state.files))
 				break
 			case LayoutAlgorithm.SquarifiedTreeMap:
-			default:
 				nodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
 				break
 		}
