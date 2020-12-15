@@ -1,22 +1,20 @@
 import "./mapColorPicker.component.scss"
-import { StoreService, StoreSubscriber } from "../../state/store.service"
+import { StoreService } from "../../state/store.service"
 import { IRootScopeService } from "angular"
-import { isActionOfType } from "../../util/reduxHelper"
-import { MapColorsActions, defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { MapColors } from "../../codeCharta.model"
+import { MapColorsSubscriber, MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
 
-export class MapColorPickerController implements StoreSubscriber {
+export class MapColorPickerController implements MapColorsSubscriber {
 	private mapColorFor: keyof MapColors
 	private open: string
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private $element: JQLite, private $scope) {
-		StoreService.subscribe(this.$rootScope, this)
+		MapColorsService.subscribe(this.$rootScope, this)
 	}
 
-	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, MapColorsActions)) {
-			this.$scope.color = this.getColorFromStore()
-		}
+	onMapColorsChanged(mapColors: MapColors) {
+		this.$scope.color = mapColors[this.mapColorFor]
 	}
 
 	$onInit() {
