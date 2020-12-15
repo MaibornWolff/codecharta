@@ -177,6 +177,14 @@ ribbon-bar-component {
 		}
 	}
 
+	#edge-metric-card.expanded {
+		height: 250px;
+
+		reset-settings-button-component .md-button {
+			top: 202px;
+		}
+	}
+
 	cc-map-color-picker .cc-map-color-picker-wrapper {
 		margin-left: 5px;
 	}
