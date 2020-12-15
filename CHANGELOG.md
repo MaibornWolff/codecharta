@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.64.0] - 2020-12-15
+
+### Added 🚀
+
 -   Download and upload Custom Configurations is now possible ([#1472](https://github.com/MaibornWolff/codecharta/issues/1472))
 
     -   Open the Custom Configs menu in the toolbar on top of the map
