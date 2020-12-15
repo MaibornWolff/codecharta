@@ -4,9 +4,10 @@ import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode, MapColors } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
+import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -20,7 +21,7 @@ export interface CodeMapMeshChangedSubscriber {
 	onCodeMapMeshChanged(mapMesh: CodeMapMesh)
 }
 
-export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
+export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, MapColorsSubscriber {
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
 	private static readonly CODE_MAP_MESH_CHANGED_EVENT = "code-map-mesh-changed"
@@ -42,6 +43,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
 		this.scene = new Scene()
@@ -56,6 +58,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+	}
+
+	onMapColorsChanged(mapColors: MapColors) {
+		this.folderLabelColorSelected = mapColors.selected
+		this.numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
 	}
 
 	onRenderMapChanged() {
