@@ -2,7 +2,14 @@
 
 ## Automatic
 
-Call `script/make_release.py`.
+### Prerequisites
+
+-   `pip` command must be installed (it is probably already installed, if you have installed Python).
+-   The python packaging tool must be installed. If not run `pip install pipenv` and then `pipenv install`.
+
+### Start the automatic release process
+
+-   Call `pipenv run make_release`.
 
 ## Manual
 
