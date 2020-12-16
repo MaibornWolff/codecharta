@@ -2,7 +2,7 @@ import {isStandalone} from "./envDetector";
 
 export class LazyLoader {
 
-    static openFolderDialog(fileName: string){
+    static openFolderDialog(fileName: string, nodePath: string){
 
         if (!isStandalone()){
             return
@@ -19,16 +19,21 @@ export class LazyLoader {
                 // @ts-ignore
                 const directoryName = input.files[0]?.webkitRelativePath?.split("/")[0]
                 localStorage.setItem(fileName, directoryName)
-                LazyLoader.openFile(input.files[0])
             }
-            input.click()
         }
+        const path = nodePath.replace("root", localStorage.getItem(fileName))
+        LazyLoader.openFile(path)
     }
 
-    private static openFile(file: File) {
-        const link = document.createElement('a')
-        link.setAttribute("target", "_blank")
-        link.href = window.URL.createObjectURL(file)
-        link.click()
+    private static openFile(fileOrPath) {
+        if (fileOrPath instanceof File){
+            const link = document.createElement('a')
+            link.setAttribute("target", "_blank")
+            link.href = window.URL.createObjectURL(fileOrPath)
+            link.click()
+        }
+        else if (typeof fileOrPath === "string"){
+            window.open(fileOrPath)
+        }
     }
 }
