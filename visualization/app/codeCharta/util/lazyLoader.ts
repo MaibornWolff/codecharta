@@ -1,8 +1,12 @@
+import {isStandalone} from "./envDetector";
 
 export class LazyLoader {
 
     static openFolderDialog(fileName: string){
 
+        if (!isStandalone()){
+            return
+        }
         if (localStorage.getItem(fileName) === null && confirm("Directory not chosen. Choose now?")){
             const input = document.createElement("input")
             const qualifiedNames = ['type', 'webkitdirectory', 'directory', 'mozdirectory', 'msdirectory', 'odirectory']
