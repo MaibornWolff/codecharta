@@ -311,7 +311,39 @@ describe("codeMapMouseEventService", () => {
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
 
-		it("should hover a node when an intersection was found and the cursor is set to pointing", () => {
+		it("should not call resetLabel if no change has happened ", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
+			codeMapMouseEventService["highlightedInTreeView"] = null
+
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService.getLabelForHoveredNode).not.toHaveBeenCalled()
+		})
+
+		it("should call resetLabel when a new building is hovered", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			})
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService.resetLabel).toHaveBeenCalled()
+		})
+
+		it("should call clearTemporaryLabel and remove temporary label when a new building is hovered", () => {
+			codeMapMouseEventService["temporaryLabelForBuilding"] = CODE_MAP_BUILDING.node
+
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			})
+			codeMapLabelService.clearTemporaryLabel = jest.fn()
+			codeMapMouseEventService.updateHovering()
+
+			expect(codeMapLabelService.clearTemporaryLabel).toHaveBeenCalled()
+			expect(codeMapLabelService["temporaryLabelForBuilding"]).not.toEqual(CODE_MAP_BUILDING.node)
+		})
+
+		it("should hover a node when an intersection was found and the cursor is set to pointing and call getLabelForHoveredNode", () => {
 			codeMapMouseEventService["modifiedLabel"] = null
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
@@ -320,6 +352,7 @@ describe("codeMapMouseEventService", () => {
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
 			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
 		})
 

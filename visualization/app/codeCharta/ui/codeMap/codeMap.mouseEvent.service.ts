@@ -175,7 +175,9 @@ export class CodeMapMouseEventService
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
 			if (mapMesh) {
-				this.raycaster.setFromCamera(mouseCoordinates, camera)
+				if (camera.isPerspectiveCamera) {
+					this.raycaster.setFromCamera(mouseCoordinates, camera)
+				}
 
 				const hoveredLabel = this.calculateHoveredLabel(labels)
 
