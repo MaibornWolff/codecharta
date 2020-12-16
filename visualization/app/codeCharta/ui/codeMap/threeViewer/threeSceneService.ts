@@ -156,7 +156,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	hoverLabel(hoveredLabel: Object3D, raycaster: Raycaster, labels: Object3D[]) {
-		if (hoveredLabel !== null) {
+		if (hoveredLabel !== null && raycaster !== null) {
 			this.resetLabel()
 
 			hoveredLabel["material"].opacity = 1
