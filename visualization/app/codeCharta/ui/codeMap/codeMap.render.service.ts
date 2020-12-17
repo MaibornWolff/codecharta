@@ -34,6 +34,7 @@ export class CodeMapRenderService {
 	scaleMap() {
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
+		this.threeSceneService.scaleHeight()
 	}
 
 	private getSortedNodes(map: CodeMapNode) {

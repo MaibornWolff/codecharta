@@ -70,7 +70,7 @@ describe("codeMapRenderService", () => {
 
 	function withMockedThreeSceneService() {
 		threeSceneService = codeMapRenderService["threeSceneService"] = jest.fn().mockReturnValue({
-			scale: jest.fn(),
+			scaleHeight: jest.fn(),
 			mapGeometry: jest.fn().mockReturnValue({
 				scale: new Vector3(1, 2, 3)
 			}),
@@ -116,6 +116,22 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService["scaleMap"]()
 
 			expect(codeMapArrowService.scale).toHaveBeenCalledWith()
+		})
+
+		it("should call threeSceneService.scaleHeight", () => {
+			storeService.dispatch(setScaling(scaling))
+
+			codeMapRenderService["scaleMap"]()
+
+			expect(threeSceneService.scaleHeight).toHaveBeenCalled()
+		})
+	})
+
+	describe("setNewMapMesh", () => {
+		it("should call threeSceneService.setMapMesh", () => {
+			codeMapRenderService["setNewMapMesh"](TEST_NODES)
+
+			expect(threeSceneService.setMapMesh).toHaveBeenCalled()
 		})
 	})
 

@@ -18,6 +18,8 @@ import { klona } from "klona"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
+import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
+import { Vector3 } from "three"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -187,6 +189,28 @@ describe("ThreeSceneService", () => {
 			threeSceneService.clearHighlight()
 
 			expect(threeSceneService["highlighted"]).toHaveLength(0)
+		})
+	})
+
+	describe("scaleHeight", () => {
+		it("should update mapGeometry scaling to new vector", () => {
+			const scaling = new Vector3(1, 2, 3)
+			storeService.dispatch(setScaling(scaling))
+			threeSceneService.scaleHeight()
+
+			const mapGeometry = threeSceneService.mapGeometry
+
+			expect(mapGeometry.scale).toEqual(scaling)
+		})
+
+		it("should call mapMesh.scale and apply the correct scaling to the mesh", () => {
+			const scaling = new Vector3(1, 2, 3)
+			storeService.dispatch(setScaling(scaling))
+			threeSceneService["mapMesh"].setScale = jest.fn()
+
+			threeSceneService.scaleHeight()
+
+			expect(threeSceneService["mapMesh"].setScale).toHaveBeenCalledWith(scaling)
 		})
 	})
 })
