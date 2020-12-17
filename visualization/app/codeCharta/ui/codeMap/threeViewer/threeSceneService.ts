@@ -99,6 +99,15 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		}
 	}
 
+	scaleHeight() {
+		const { mapSize } = this.storeService.getState().treeMap
+		const scale = this.storeService.getState().appSettings.scaling
+
+		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
+		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
+		this.mapMesh.setScale(scale)
+	}
+
 	private highlightMaterial(materials: Material[]) {
 		const highlightedNodeIds = new Set(this.highlighted.map(({ node }) => node.id))
 		const constantHighlightedNodes = new Set<number>()
