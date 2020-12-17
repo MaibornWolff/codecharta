@@ -1,5 +1,6 @@
-import {isStandalone} from "./envDetector";
-import * as fs from "fs";
+import {isStandalone} from "./envDetector"
+import * as fs from "fs"
+import * as open from 'open'
 
 export class LazyLoader {
 
@@ -16,7 +17,7 @@ export class LazyLoader {
             this.setDirectory(fileName)
         }
         const path = nodePath.replace("root", localStorage.getItem(fileName))
-        window.open(`file:///${path}`)
+        open(`file:///${path}`)
     }
 
     private static setDirectory(fileName: string){
