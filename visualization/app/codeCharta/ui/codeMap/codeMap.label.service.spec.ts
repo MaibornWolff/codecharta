@@ -144,21 +144,21 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(91)
+			expect(positionWithoutDelta.y).toBe(31)
 		})
 
 		it("should calculate correct height without delta with metric values only", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(91)
+			expect(positionWithoutDelta.y).toBe(31)
 		})
 
 		it("should calculate correct height without delta for two line label: node name and metric value", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(106)
+			expect(positionWithoutDelta.y).toBe(46)
 		})
 
 		it("should set the text correctly, creating a two line label", () => {
@@ -176,9 +176,11 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("scaling existing labels should scale their position correctly", () => {
+			const { margin } = storeService.getState().dynamicSettings
 			const SX = 1
 			const SY = 2
 			const SZ = 3
+			const SCALE_CONSTANT_LABEL = codeMapLabelService["LABEL_HEIGHT_COEFFICIENT"]
 
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
@@ -196,11 +198,11 @@ describe("CodeMapLabelService", () => {
 			const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position
 
 			expect(scaleAfterA.x).toBe(scaleBeforeA.x * SX)
-			expect(scaleAfterA.y).toBe((scaleBeforeA.y - 60) * SY + 60)
+			expect(scaleAfterA.y).toBe((scaleBeforeA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin)
 			expect(scaleAfterA.z).toBe(scaleBeforeA.z * SZ)
 
 			expect(scaleAfterB.x).toBe(scaleBeforeA.x * SX)
-			expect(scaleAfterB.y).toBe((scaleBeforeA.y - 60) * SY + 60)
+			expect(scaleAfterB.y).toBe((scaleBeforeA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin)
 			expect(scaleAfterB.z).toBe(scaleBeforeA.z * SZ)
 		})
 	})
