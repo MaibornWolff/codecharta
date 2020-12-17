@@ -101,7 +101,7 @@ export class AttributeSideBarController
 		if (!this._viewModel.node.isLeaf){
 			return
 		}
-		LazyLoader.openFolderDialog(this._viewModel.fileName, this._viewModel.node.path)
+		LazyLoader.openFile(this._viewModel.fileName, this._viewModel.node.path)
 	}
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
