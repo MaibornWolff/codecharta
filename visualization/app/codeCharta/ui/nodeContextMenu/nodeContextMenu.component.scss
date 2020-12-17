@@ -8,6 +8,13 @@ node-context-menu-component {
 		display: inline-grid;
 	}
 
+	.png-icon{
+		margin: 5px auto auto;
+		padding: 0;
+		display: inline-block;
+		background-repeat: no-repeat no-repeat;
+		pointer-events: none;
+	}
 	.md-button:not(.colorButton) {
 		text-align: left;
 		margin-top: 0;
@@ -31,7 +38,7 @@ node-context-menu-component {
 
 		i {
 			font-size: 25px;
-			margin-left: 0px;
+			margin-left: 0;
 			margin-top: 3px;
 			color: red;
 			text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
