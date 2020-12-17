@@ -348,11 +348,14 @@ describe("codeMapMouseEventService", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
+			threeSceneService.hoverLabel = jest.fn()
+
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(threeSceneService.hoverLabel).toHaveBeenCalled()
 			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
 		})
 
@@ -618,6 +621,18 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onShouldUnhoverNode()
 
 			expect(codeMapMouseEventService["unhoverBuilding"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("drawTemporaryLabel", () => {
+		it("should call addLabel on codeMapLabelService with given node and set temporaryLabel", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			codeMapLabelService.addLabel = jest.fn()
+
+			codeMapMouseEventService["drawTemporaryLabel"](codeMapBuilding, null)
+
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(codeMapLabelService.addLabel).toHaveBeenCalled()
 		})
 	})
 })
