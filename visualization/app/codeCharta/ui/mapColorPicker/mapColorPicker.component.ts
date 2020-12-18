@@ -1,7 +1,7 @@
 import "./mapColorPicker.component.scss"
 import { StoreService } from "../../state/store.service"
 import { IRootScopeService } from "angular"
-import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { MapColors } from "../../codeCharta.model"
 import { MapColorsSubscriber, MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
 
@@ -46,7 +46,7 @@ export class MapColorPickerController implements MapColorsSubscriber {
 		if (color !== this.getColorFromStore()) {
 			this.storeService.dispatch(
 				setMapColors({
-					...defaultMapColors,
+					...this.storeService.getState().appSettings.mapColors,
 					[this.mapColorFor]: color
 				})
 			)
