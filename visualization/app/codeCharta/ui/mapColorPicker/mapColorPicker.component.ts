@@ -21,8 +21,9 @@ export class MapColorPickerController implements MapColorsSubscriber {
 		this.$scope.colorPickerOptions = { pos: undefined } // reset unwanted default positioning
 		this.$scope.colorPickerEventApi = {
 			onOpen: () => {
-				;(this.$element[0].querySelector(".cc-map-color-picker-wrapper") as HTMLElement).focus()
-				this.$element[0].querySelector(".color-picker-swatch").classList.add("fa", "fa-paint-brush")
+				const ownDomElement = this.$element[0] as HTMLElement
+				;(ownDomElement.querySelector(".cc-map-color-picker-wrapper") as HTMLElement).focus()
+				ownDomElement.querySelector(".color-picker-swatch").classList.add("fa", "fa-paint-brush")
 				if (!this.hasColorInputField()) {
 					// check this each time `onOpen`, instead of using a MutationObserver in `$postLink`,
 					// as e.g. angularjs' `ng-if` re-creates the innerNode (e.g. in the legend component)
