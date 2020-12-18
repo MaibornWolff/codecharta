@@ -288,7 +288,7 @@ describe("ThreeSceneService", () => {
 		it("should animate the label by moving it 20% on the viewRay if the intersection distance is smaller", () => {
 			otherNode.applyMatrix4(new Matrix4().makeTranslation(0.5, 0.5, 0))
 
-			const resultPosition = new Vector3(0.5, 0.5, 0)
+			const resultPosition = new Vector3(0.3, 0.3, 0)
 
 			labels.push(label, labelLine, otherNode, labelLine)
 
