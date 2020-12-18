@@ -168,7 +168,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		if (hoveredLabel !== null && raycaster !== null) {
 			this.resetLabel()
 
-			hoveredLabel["material"].opacity = 1
+			if (hoveredLabel["material"]) {
+				hoveredLabel["material"].opacity = 1
+			}
 
 			this.rayPoint = new Vector3()
 			this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)

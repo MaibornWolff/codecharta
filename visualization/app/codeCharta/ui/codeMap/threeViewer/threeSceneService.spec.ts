@@ -19,7 +19,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
-import { Box3, Vector3 } from "three"
+import { Box3, Matrix4, Object3D, Raycaster, Vector3 } from "three"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -216,11 +216,98 @@ describe("ThreeSceneService", () => {
 		})
 	})
 
+	describe("getLabelForHoveredNode", () => {
+		it("should return null if list empty", () => {
+			const labelForHoveredNode = threeSceneService.getLabelForHoveredNode(CODE_MAP_BUILDING_TS_NODE, null)
+
+			expect(labelForHoveredNode).toBe(null)
+		})
+
+		it("should return null if label.node is not in list", () => {
+			const node = new Object3D()
+			const labels = []
+			node.userData = CODE_MAP_BUILDING
+			labels.push(node)
+
+			const labelForHoveredNode = threeSceneService.getLabelForHoveredNode(CODE_MAP_BUILDING_TS_NODE, labels)
+
+			expect(labelForHoveredNode).toBe(null)
+		})
+
+		it("should return label object for a given label.node", () => {
+			const labels = []
+			const otherNode = new Object3D()
+			const labelLine = new Object3D()
+			const labeledNode = new Object3D()
+
+			labeledNode.userData = CODE_MAP_BUILDING_TS_NODE
+			otherNode.userData = CODE_MAP_BUILDING
+			labels.push(otherNode, labelLine, labeledNode, labelLine)
+
+			const labelForHoveredNode = threeSceneService.getLabelForHoveredNode(CODE_MAP_BUILDING_TS_NODE, labels)
+
+			expect(labelForHoveredNode).toBe(labeledNode)
+		})
+	})
+
 	describe("clearHighlight", () => {
 		it("should clear the highlighting list", () => {
 			threeSceneService.clearHighlight()
 
 			expect(threeSceneService["highlighted"]).toHaveLength(0)
+		})
+	})
+
+	describe("animateLabel", () => {
+		let labels = null
+		let labelLine = null
+		let otherNode = null
+		let label = null
+		let rayCaster = null
+
+		beforeEach(() => {
+			labels = []
+			labelLine = new Object3D()
+			otherNode = new Object3D()
+			label = new Object3D()
+			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
+		})
+
+		it("should animate the label by moving it 20% on the viewRay if it has no intersection", () => {
+			otherNode.translateX(-4)
+			otherNode.translateY(5)
+			const resultPosition = new Vector3(0.5, 0.5, 0)
+
+			labels.push(label, labelLine, otherNode, labelLine)
+
+			threeSceneService.animateLabel(label, rayCaster, labels)
+			expect(threeSceneService["highlightedLabel"]).toEqual(label)
+			expect(label.position).toEqual(resultPosition)
+		})
+
+		it("should animate the label by moving it 20% on the viewRay if the intersection distance is smaller", () => {
+			otherNode.applyMatrix4(new Matrix4().makeTranslation(0.5, 0.5, 0))
+
+			const resultPosition = new Vector3(0.5, 0.5, 0)
+
+			labels.push(label, labelLine, otherNode, labelLine)
+
+			threeSceneService.animateLabel(label, rayCaster, labels)
+			expect(threeSceneService["highlightedLabel"]).toEqual(label)
+			expect(label.position).toEqual(resultPosition)
+		})
+
+		it("should animate the label by moving it on top of intersecting node", () => {
+			const unObstructingNode = new Object3D()
+			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(0, 0, 0))
+			unObstructingNode.applyMatrix4(new Matrix4().makeTranslation(0.5, 0.5, 0))
+
+			label.userData = CODE_MAP_BUILDING
+			labels.push(label, labelLine, otherNode, labelLine, unObstructingNode, labelLine)
+
+			threeSceneService.animateLabel(label, rayCaster, labels)
+			expect(threeSceneService["highlightedLabel"]).toEqual(label)
+			expect(label.position).toEqual(unObstructingNode.position)
 		})
 	})
 
