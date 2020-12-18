@@ -1,16 +1,28 @@
 <md-menu class="custom-configs-component">
-	<md-button
-		class="custom-configs-button"
-		ng-click="$ctrl.loadCustomConfigs(); $mdMenu.open($event); "
-		title="Open your saved custom configs"
-	>
-		<i class="fa fa-eye"></i>
+	<md-button class="custom-configs-button" ng-click="$ctrl.initView(); $mdMenu.open($event);" title="Open your saved Custom Configs">
+		<i class="fa fa-cogs"></i>
 	</md-button>
 
 	<md-menu-content class="custom-configs-drop-down" width="7">
 		<md-menu-item class="custom-configs-item">
-			<md-button class="custom-configs-dialog-name" ng-disabled="true">Custom Configs applicable to current map and mode</md-button>
-			<md-button ng-click="$ctrl.showAddCustomConfigSettings()" class="action-button add" title="Create new custom config">
+			<md-button class="custom-configs-dialog-name" ng-disabled="true">Custom Configs</md-button>
+
+			<md-button
+				class="action-button"
+				onclick="document.getElementById('input-file-id').click()"
+				title="Upload Custom Configs (.cc.config.json file)."
+			>
+				<i class="fa fa-folder-open" aria-hidden="true"></i>
+			</md-button>
+			<md-button
+				ng-click="$ctrl.downloadPreloadedCustomConfigs()"
+				ng-disabled="!$ctrl._viewModel.hasDownloadableConfigs"
+				class="action-button"
+				title="Download Custom Configs related to currently uploaded maps, if any."
+			>
+				<i class="fa fa-download" aria-hidden="true"></i>
+			</md-button>
+			<md-button ng-click="$ctrl.showAddCustomConfigSettings()" class="action-button" title="Create new Custom Config">
 				<i class="fa fa-plus" aria-hidden="true"></i>
 			</md-button>
 		</md-menu-item>
@@ -24,7 +36,7 @@
 		<md-menu-item class="custom-configs-item" ng-repeat="customConfigItemGroup in $ctrl._viewModel.dropDownCustomConfigItemGroups">
 			<md-button class="button-hovering" ng-click="collapsed=!collapsed" md-prevent-menu-close="md-prevent-menu-close">
 				<span class="collapse-trigger">
-					Custom configs in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
+					Custom Configs in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
 					<strong>{{ customConfigItemGroup.mapNames }}</strong>
 				</span>
 				<i ng-show="!collapsed" class="collapse-icon fa fa-arrow-down"></i>
@@ -39,7 +51,7 @@
 						ng-disabled="!customConfig.isApplicable"
 						title="{{
 							customConfig.isApplicable
-								? 'Apply custom config'
+								? 'Apply Custom Config'
 								: 'This one is applicable for map(s) ' +
 								  customConfig.mapNames +
 								  ' in ' +
@@ -53,7 +65,7 @@
 					<md-button
 						ng-click="$ctrl.removeCustomConfig(customConfig.id, customConfig.name)"
 						class="action-button remove button-hovering"
-						title="Remove custom config"
+						title="Remove Custom Config"
 					>
 						<i class="fa fa-minus-square"></i>
 					</md-button>
@@ -64,7 +76,11 @@
 </md-menu>
 
 <md-menu class="custom-configs-component">
-	<md-button class="custom-configs-button plus" ng-click="$ctrl.showAddCustomConfigSettings();" title="Quick save current view">
+	<md-button
+		class="custom-configs-button plus"
+		ng-click="$ctrl.showAddCustomConfigSettings();"
+		title="Quick save current view as a Custom Config"
+	>
 		<i class="fa fa-plus"></i>
 	</md-button>
 	<md-menu-content></md-menu-content>

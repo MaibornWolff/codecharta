@@ -1,5 +1,6 @@
 import { ExportBlacklistType, OldAttributeTypes } from "../codeCharta.api.model"
 import { AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
+import { FileSelectionState, FileState } from "../model/files/files"
 
 export function getCCFile(file: NameDataPair): CCFile {
 	const fileContent = file.content
@@ -44,4 +45,15 @@ function potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
 		}
 	}
 	return blacklist
+}
+
+export function getSelectedFilesSize(files: FileState[]) {
+	let totalFileSize = 0
+	for (const file of files) {
+		if (file.selectedAs !== FileSelectionState.None) {
+			totalFileSize += file.file.fileMeta.exportedFileSize
+		}
+	}
+
+	return totalFileSize
 }

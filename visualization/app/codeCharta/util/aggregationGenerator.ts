@@ -106,5 +106,6 @@ export class AggregationGenerator {
 	private static resetVariables() {
 		this.projectNameArray = []
 		this.fileNameArray = []
+		this.fileSizesSum = 0
 	}
 }
