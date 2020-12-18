@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533))
+
 ### Changed
 
 ### Removed 🗑
