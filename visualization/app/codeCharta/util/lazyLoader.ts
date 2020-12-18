@@ -6,25 +6,25 @@ export class LazyLoader {
     private static _nodePath: string
 
     static openFile(fileName:string = LazyLoader._fileName, nodePath:string = LazyLoader._nodePath){
-
         if (!isStandalone()){
             return
         }
         LazyLoader._fileName = fileName
         LazyLoader._nodePath = nodePath
-        if (localStorage.getItem(fileName) === null){
+        const directory = localStorage.getItem(LazyLoader._fileName)
+        if (directory === null){
             LazyLoader.setDirectory()
             return
         }
         LazyLoader.checkDirExists().then((exists) =>{
             if (!exists){
-                const message = `Unknown or non-existent directory: ${localStorage.getItem(LazyLoader._fileName)}`
+                const message = `Unknown or non-existent directory: ${directory}`
                 alert(message)
                 LazyLoader.setDirectory()
                 return
             }
         })
-        const path: string = nodePath.replace("root", localStorage.getItem(LazyLoader._fileName))
+        const path: string = nodePath.replace("root", directory)
         import("open").then(open => {
             open.default(`file:///${path}`).then(_ => _, error => alert(error))
         })
