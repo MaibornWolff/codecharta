@@ -229,7 +229,7 @@ export class CodeMapMouseEventService
 			0
 		)
 
-		labels = this.threeSceneService.labels ? this.threeSceneService.labels.children : null
+		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
 		this.temporaryLabelForBuilding = codeMapBuilding.node
 

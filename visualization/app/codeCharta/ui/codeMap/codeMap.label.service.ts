@@ -94,7 +94,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	clearTemporaryLabel(hoveredNode: Node) {
-		const index = this.labels.map(({ node }) => node).indexOf(hoveredNode)
+		const index = this.labels.findIndex(({ node }) => node === hoveredNode)
 		if (index > -1) {
 			this.labels.splice(index, 1)
 			this.threeSceneService.labels.children.length -= 2
