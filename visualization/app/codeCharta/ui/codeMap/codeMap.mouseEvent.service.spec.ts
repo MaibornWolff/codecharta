@@ -291,7 +291,7 @@ describe("codeMapMouseEventService", () => {
 			storeService.dispatch(setIdToNode(idToNode))
 			threeSceneService.resetLabel = jest.fn()
 			threeSceneService.getLabelForHoveredNode = jest.fn()
-			threeSceneService.hoverLabel = jest.fn()
+			threeSceneService.animateLabel = jest.fn()
 			threeSceneService.getHighlightedBuilding = jest.fn()
 		})
 
@@ -348,14 +348,14 @@ describe("codeMapMouseEventService", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
-			threeSceneService.hoverLabel = jest.fn()
+			threeSceneService.animateLabel = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(threeSceneService.hoverLabel).toHaveBeenCalled()
+			expect(threeSceneService.animateLabel).toHaveBeenCalled()
 			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
 		})
 

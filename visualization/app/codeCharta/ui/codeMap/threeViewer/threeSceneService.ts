@@ -42,7 +42,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
 	private rayPoint = new Vector3(0, 0, 0)
 	private normedTransformVector = new Vector3(0, 0, 0)
-	private modifiedLabel = null
+	private highlightedLabel = null
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -164,7 +164,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		}
 	}
 
-	hoverLabel(hoveredLabel: Object3D, raycaster: Raycaster, labels: Object3D[]) {
+	animateLabel(hoveredLabel: Object3D, raycaster: Raycaster, labels: Object3D[]) {
 		if (hoveredLabel !== null && raycaster !== null) {
 			this.resetLabel()
 
@@ -182,21 +182,23 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 			hoveredLabel.position.add(this.normedTransformVector)
 
-			this.modifiedLabel = hoveredLabel
+			this.highlightedLabel = hoveredLabel
 		}
 	}
 
 	resetLabel() {
-		if (this.modifiedLabel !== null) {
-			this.modifiedLabel.position.sub(this.normedTransformVector)
-			this.modifiedLabel["material"].opacity = this.mapLabelColors.alpha
-			this.modifiedLabel = null
+		if (this.highlightedLabel !== null) {
+			this.highlightedLabel.position.sub(this.normedTransformVector)
+			this.highlightedLabel["material"].opacity = this.mapLabelColors.alpha
+			this.highlightedLabel = null
 		}
 	}
+
 	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
 		if (labels === null) {
 			return null
 		}
+		// 2-step: the labels array consists of alternating label and the corresponding label antennae
 		for (let counter = 0; counter < labels.length; counter += 2) {
 			if (labels[counter].userData.node === hoveredBuilding.node) {
 				return labels[counter]
@@ -243,12 +245,17 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	private calculateMaxDistance(hoveredLabel: Object3D, labels: Object3D[], cameraPoint: Vector3, norm: number) {
 		let maxDistance = 0
+
+		const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel)
+		const centerPoint = new Vector3()
+		bboxHoveredLabel.getCenter(centerPoint)
+		const distanceLabelCenterToCamera = cameraPoint.distanceTo(centerPoint)
+		let maxDistanceForLabel = distanceLabelCenterToCamera / 20
+
 		for (let counter = 0; counter < labels.length; counter += 2) {
-			const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel)
-			const centerPoint = new Vector3()
-			bboxHoveredLabel.getCenter(centerPoint)
-			const distanceLabelCenterToCamera = cameraPoint.distanceTo(centerPoint)
-			let maxDistanceForLabel = distanceLabelCenterToCamera / 20 //creates a nice small highlighting for hovered, unobstructed labels, empirically gathered value
+			//creates a nice small highlighting for hovered, unobstructed labels, empirically gathered value
+
+			const bboxHoveredLabelWorkingCopy = bboxHoveredLabel.clone()
 
 			if (labels[counter] !== hoveredLabel) {
 				const bboxObstructingLabel = new Box3().setFromObject(labels[counter])
@@ -258,19 +265,19 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 				maxDistanceForLabel = Math.max(
 					this.getIntersectionDistance(
-						bboxHoveredLabel,
+						bboxHoveredLabelWorkingCopy,
 						bboxObstructingLabel,
 						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
 						distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)
 					),
 					this.getIntersectionDistance(
-						bboxHoveredLabel,
+						bboxHoveredLabelWorkingCopy,
 						bboxObstructingLabel,
 						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
 						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)
 					),
 					this.getIntersectionDistance(
-						bboxHoveredLabel,
+						bboxHoveredLabelWorkingCopy,
 						bboxObstructingLabel,
 						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
 						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)

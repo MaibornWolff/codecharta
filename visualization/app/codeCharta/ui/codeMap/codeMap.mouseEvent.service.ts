@@ -182,7 +182,7 @@ export class CodeMapMouseEventService
 				const hoveredLabel = this.calculateHoveredLabel(labels)
 
 				if (hoveredLabel) {
-					this.threeSceneService.hoverLabel(hoveredLabel.object, this.raycaster, labels)
+					this.threeSceneService.animateLabel(hoveredLabel.object, this.raycaster, labels)
 					nodeNameHoveredLabel = hoveredLabel.object.userData.node.path
 				}
 
@@ -205,8 +205,8 @@ export class CodeMapMouseEventService
 					if (to) {
 						if (to.node.isLeaf) {
 							let labelForBuilding = this.threeSceneService.getLabelForHoveredNode(to, labels)
-							labelForBuilding = labelForBuilding !== null ? labelForBuilding : this.drawTemporaryLabel(to, labels)
-							this.threeSceneService.hoverLabel(labelForBuilding, this.raycaster, labels)
+							labelForBuilding = labelForBuilding !== null ? labelForBuilding : this.drawTemporaryLabelFor(to, labels)
+							this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
 						}
 						this.hoverBuilding(to)
 					}
@@ -215,13 +215,13 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	private drawTemporaryLabel(to: CodeMapBuilding, labels: Object3D[]) {
+	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
 		const appSettings = this.storeService.getState().appSettings
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 
 		this.codeMapLabelService.addLabel(
-			to.node,
+			codeMapBuilding.node,
 			{
 				showNodeName: showLabelNodeName,
 				showNodeMetric: showLabelNodeMetric
@@ -230,8 +230,8 @@ export class CodeMapMouseEventService
 		)
 
 		labels = this.threeSceneService.labels ? this.threeSceneService.labels.children : null
-		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(to, labels)
-		this.temporaryLabelForBuilding = to.node
+		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
+		this.temporaryLabelForBuilding = codeMapBuilding.node
 
 		return labelForBuilding
 	}

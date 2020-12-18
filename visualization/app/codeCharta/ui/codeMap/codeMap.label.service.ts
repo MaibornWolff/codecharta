@@ -71,13 +71,10 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			const label = this.makeText(labelText, 30, node)
 			const { margin } = this.storeService.getState().dynamicSettings
+			const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 
-			label.sprite.position.set(
-				labelX,
-				labelY + this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR + label.heightValue / 2,
-				labelZ
-			) //label_height
-			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
+			label.sprite.position.set(labelX, labelY + labelHeightScaled + label.heightValue / 2, labelZ) //label_height
+			label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
 			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
 			label.sprite.material.opacity = this.mapLabelColors.alpha
 			label.sprite.userData = { node }
