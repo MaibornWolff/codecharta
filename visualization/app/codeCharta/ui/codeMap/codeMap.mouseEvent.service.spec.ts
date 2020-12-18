@@ -624,12 +624,12 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
-	describe("drawTemporaryLabel", () => {
+	describe("drawTemporaryLabelFor", () => {
 		it("should call addLabel on codeMapLabelService with given node and set temporaryLabel", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
 			codeMapLabelService.addLabel = jest.fn()
 
-			codeMapMouseEventService["drawTemporaryLabel"](codeMapBuilding, null)
+			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
 			expect(codeMapLabelService.addLabel).toHaveBeenCalled()
