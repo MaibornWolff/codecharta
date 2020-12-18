@@ -93,7 +93,6 @@ export const mapColorPickerComponent = {
 	controller: MapColorPickerController,
 	bindings: {
 		label: "@",
-		mapColorFor: "@",
-		open: "@" // ['bottom left', 'bottom right', 'top left', 'top right'] - passed to angularjs-color-picker
+		mapColorFor: "@"
 	}
 }
