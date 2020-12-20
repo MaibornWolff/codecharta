@@ -209,37 +209,16 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		return null
 	}
 
-	private isOverlapping1D(minBox1: number, maxBox1: number, minBox2: number, maxBox2: number) {
-		return maxBox1 >= minBox2 && maxBox2 >= minBox1
+	private isOverlapping(a: Box3, b: Box3, dimension: string) {
+		return Number(a.max[dimension] >= b.min[dimension] && b.max[dimension] >= a.min[dimension])
 	}
-
 	private getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
 		normedVector.multiplyScalar(distance)
 		bboxHoveredLabel.translate(normedVector)
-
-		if (
-			(this.isOverlapping1D(bboxObstructingLabel.min.x, bboxObstructingLabel.max.x, bboxHoveredLabel.min.x, bboxHoveredLabel.max.x) &&
-				this.isOverlapping1D(
-					bboxObstructingLabel.min.y,
-					bboxObstructingLabel.max.y,
-					bboxHoveredLabel.min.y,
-					bboxHoveredLabel.max.y
-				)) ||
-			(this.isOverlapping1D(bboxObstructingLabel.min.x, bboxObstructingLabel.max.x, bboxHoveredLabel.min.x, bboxHoveredLabel.max.x) &&
-				this.isOverlapping1D(
-					bboxObstructingLabel.min.z,
-					bboxObstructingLabel.max.z,
-					bboxHoveredLabel.min.z,
-					bboxHoveredLabel.max.z
-				)) ||
-			(this.isOverlapping1D(bboxObstructingLabel.min.y, bboxObstructingLabel.max.y, bboxHoveredLabel.min.y, bboxHoveredLabel.max.y) &&
-				this.isOverlapping1D(
-					bboxObstructingLabel.min.z,
-					bboxObstructingLabel.max.z,
-					bboxHoveredLabel.min.z,
-					bboxHoveredLabel.max.z
-				))
-		) {
+		const count =
+			this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "x") +
+			this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "y")
+		if (count === 2 || (count === 1 && this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "z"))) {
 			return distance
 		}
 		return 0

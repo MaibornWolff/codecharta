@@ -204,8 +204,8 @@ export class CodeMapMouseEventService
 					this.unhoverBuilding()
 					if (to) {
 						if (to.node.isLeaf) {
-							let labelForBuilding = this.threeSceneService.getLabelForHoveredNode(to, labels)
-							labelForBuilding = labelForBuilding !== null ? labelForBuilding : this.drawTemporaryLabelFor(to, labels)
+							const labelForBuilding =
+								this.threeSceneService.getLabelForHoveredNode(to, labels) ?? this.drawTemporaryLabelFor(to, labels)
 							this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
 						}
 						this.hoverBuilding(to)
