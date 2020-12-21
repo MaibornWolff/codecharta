@@ -43,6 +43,7 @@ export default class HorizontalStreet extends Street {
 		// note : longest street will be last in the row
 		this.rearrangeRows()
 
+		// TODO Add a comment what the following calculations are doing.
 		this.metricValue = StreetViewHelper.calculateSize(this.node, metricName)
 		this.width = Math.max(this.getLength(this.topRow), this.getLength(this.bottomRow))
 		this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + 2 * this.spacer
