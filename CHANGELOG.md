@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   The button to see excluded buildings is now merged into the flattened button. Excluded and flattened buildings can now be seen by opening the building with the eye slash icon ([#1543](https://github.com/MaibornWolff/codecharta/issues/1543))
+
 ### Removed 🗑
 
 ### Fixed 🐞
