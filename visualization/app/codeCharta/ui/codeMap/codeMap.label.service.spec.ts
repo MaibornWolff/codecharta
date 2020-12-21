@@ -21,6 +21,7 @@ describe("CodeMapLabelService", () => {
 	let codeMapLabelService: CodeMapLabelService
 	let createElementOrigin
 	let sampleLeaf: Node
+	let otherSampleLeaf: Node
 	let canvasContextMock
 
 	beforeEach(() => {
@@ -63,6 +64,21 @@ describe("CodeMapLabelService", () => {
 			height: 2,
 			length: 3,
 			depth: 4,
+			x0: 5,
+			z0: 6,
+			y0: 7,
+			isLeaf: true,
+			deltas: { a: 1, b: 2 },
+			attributes: { a: 20, b: 15, mcc: 99 },
+			children: []
+		} as undefined) as Node
+
+		otherSampleLeaf = ({
+			name: "otherSampleLeaf",
+			width: 4,
+			height: 3,
+			length: 2,
+			depth: 1,
 			x0: 5,
 			z0: 6,
 			y0: 7,
@@ -188,6 +204,35 @@ describe("CodeMapLabelService", () => {
 			expect(scaleAfterB.x).toBe(scaleBeforeA.x * SX)
 			expect(scaleAfterB.y).toBe((scaleBeforeA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin)
 			expect(scaleAfterB.z).toBe(scaleBeforeA.z * SZ)
+		})
+	})
+
+	describe("clearTemporaryLabel", () => {
+		it("should clear label for the correct node only", () => {
+			storeService.dispatch(setAmountOfTopLabels(2))
+			storeService.dispatch(setHeightMetric("mcc"))
+
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(otherSampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			threeSceneService.labels.children.length = 4
+
+			codeMapLabelService.clearTemporaryLabel(sampleLeaf)
+
+			expect(threeSceneService.labels.children.length).toEqual(2)
+			expect(codeMapLabelService["labels"][0].node).toEqual(otherSampleLeaf)
+		})
+
+		it("should not clear if no label exists for a given node", () => {
+			storeService.dispatch(setAmountOfTopLabels(2))
+			storeService.dispatch(setHeightMetric("mcc"))
+
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			threeSceneService.labels.children.length = 2
+
+			codeMapLabelService.clearTemporaryLabel(otherSampleLeaf)
+
+			expect(threeSceneService.labels.children.length).toEqual(2)
+			expect(codeMapLabelService["labels"][0].node).toEqual(sampleLeaf)
 		})
 	})
 
