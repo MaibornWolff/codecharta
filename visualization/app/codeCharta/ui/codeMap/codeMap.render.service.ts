@@ -90,7 +90,7 @@ export class CodeMapRenderService {
 	}
 
 	private getHighestNode(sortedNodes: Node[]) {
-		const sortedNodeValues = sortedNodes.map(node => node.height)
+		const sortedNodeValues = sortedNodes.map(({ height, heightDelta }) => height + Math.abs(heightDelta ?? 0))
 		return Math.max(...sortedNodeValues)
 	}
 
