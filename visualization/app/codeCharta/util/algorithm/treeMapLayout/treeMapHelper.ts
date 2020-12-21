@@ -18,6 +18,7 @@ function countNodes(node: { children?: CodeMapNode[] }) {
 	return count
 }
 
+// TODO this function exists twice in the code - please refactore it.
 function calculateSize(node: CodeMapNode, metricName: string) {
 	let totalSize = node.attributes[metricName] || 0
 
