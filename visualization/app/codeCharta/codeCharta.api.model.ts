@@ -1,4 +1,13 @@
-import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage, RecursivePartial, Settings } from "./codeCharta.model"
+import {
+	AttributeTypes,
+	AttributeTypeValue,
+	CodeMapNode,
+	Edge,
+	MarkedPackage,
+	MetricStatisticsItem,
+	RecursivePartial,
+	Settings
+} from "./codeCharta.model"
 
 export interface ExportCCFile {
 	projectName: string
@@ -9,12 +18,15 @@ export interface ExportCCFile {
 	edges?: Edge[]
 	markedPackages?: MarkedPackage[]
 	blacklist?: ExportBlacklistItem[]
+	metricStatistics?: ExportMetricStatisticsItem[]
 }
 
 export interface ExportBlacklistItem {
 	path: string
 	type: ExportBlacklistType
 }
+
+export type ExportMetricStatisticsItem = MetricStatisticsItem
 
 export enum ExportBlacklistType {
 	hide = "hide",

@@ -68,6 +68,16 @@ export interface FileMeta {
 	apiVersion: string
 	projectName: string
 	exportedFileSize: number
+	metricStatistics?: MetricStatisticsItem[]
+}
+
+export interface MetricStatisticsItem {
+	min: number
+	max: number
+	totalSum: number
+	numberOfFiles: number
+	//median: number
+	average: number
 }
 
 export interface Settings {

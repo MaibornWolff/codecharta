@@ -33,7 +33,8 @@ export class AggregationGenerator {
 				fileName: `file_aggregation_of_${this.fileNameArray.join("_and_")}`,
 				fileChecksum: this.fileChecksumArray.join(";"),
 				apiVersion: packageJson.codecharta.apiVersion,
-				exportedFileSize: this.fileSizesSum
+				exportedFileSize: this.fileSizesSum,
+				metricStatistics: []
 			},
 			map: {
 				name: CodeChartaService.ROOT_NAME,
