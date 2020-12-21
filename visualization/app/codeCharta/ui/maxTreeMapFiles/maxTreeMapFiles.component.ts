@@ -22,6 +22,7 @@ export class MaxTreeMapFilesController implements MaxTreeMapFilesSubscriber {
 	}
 
 	onChangeMaxTreeMapFilesSlider() {
+		// TODO: debounce dispatching the events
 		this.storeService.dispatch(setMaxTreeMapFiles(this._viewModel.maxTreeMapFiles))
 	}
 }
