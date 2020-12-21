@@ -5,6 +5,9 @@ import { getBuildingColor, getIncomingEdgePoint, isNodeFlat, isVisible, TreeMapH
 
 function calculateSize(node: CodeMapNode, metricName: string) {
 	// TODO if it is same as countNodes in treeMapHelper.ts
+	// TODO from Ruben: This function is frequently used (even during sorting).
+	//  As such, it's best to use memoization to reduce the computational overhead.
+	//  That way there's no need to change the calling places of this function and it's still fast.
 	let totalSize = node.attributes[metricName] || 0
 
 	if (totalSize === 0 && node.children && node.children.length > 0) {
