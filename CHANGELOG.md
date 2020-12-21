@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Highlight label while hovering over building, draw a temporary label for hovered buildings that have none ([#1529](https://github.com/MaibornWolff/codecharta/issues/1529))
+
 ### Changed
 
 ### Removed 🗑

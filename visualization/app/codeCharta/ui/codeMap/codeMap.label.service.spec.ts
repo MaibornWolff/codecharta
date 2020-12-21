@@ -290,6 +290,35 @@ describe("CodeMapLabelService", () => {
 		})
 	})
 
+	describe("clearTemporaryLabel", () => {
+		it("should clear label for the correct node only", () => {
+			storeService.dispatch(setAmountOfTopLabels(2))
+			storeService.dispatch(setHeightMetric("mcc"))
+
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(otherSampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			threeSceneService.labels.children.length = 4
+
+			codeMapLabelService.clearTemporaryLabel(sampleLeaf)
+
+			expect(threeSceneService.labels.children.length).toEqual(2)
+			expect(codeMapLabelService["labels"][0].node).toEqual(otherSampleLeaf)
+		})
+
+		it("should not clear if no label exists for a given node", () => {
+			storeService.dispatch(setAmountOfTopLabels(2))
+			storeService.dispatch(setHeightMetric("mcc"))
+
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			threeSceneService.labels.children.length = 2
+
+			codeMapLabelService.clearTemporaryLabel(otherSampleLeaf)
+
+			expect(threeSceneService.labels.children.length).toEqual(2)
+			expect(codeMapLabelService["labels"][0].node).toEqual(sampleLeaf)
+		})
+	})
+
 	describe("clearLabels", () => {
 		it("should clear parent in scene and internal labels", () => {
 			codeMapLabelService.clearLabels()
