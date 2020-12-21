@@ -13,7 +13,7 @@ export interface NameDataPair {
 
 export enum SearchPanelMode {
 	treeView = "treeView",
-	blacklist= "blacklist",
+	blacklist = "blacklist",
 	minimized = "minimized"
 }
 
