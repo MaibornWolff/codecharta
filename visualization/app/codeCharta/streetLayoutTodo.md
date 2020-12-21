@@ -2,6 +2,7 @@
 
 -   refactoring of algorithm needs more work, maybe abstract the layout Generator for both street and squared layout.
 -   needs more unit tests.
+-   refactore horizontalStreet.ts (layoutTopRow, layoutBottomRow are very similar)
 
 ## bugs
 
