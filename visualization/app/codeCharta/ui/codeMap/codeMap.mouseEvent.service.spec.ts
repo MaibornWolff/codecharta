@@ -19,7 +19,7 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
-import { Box3, Vector3 } from "three"
+import { CodeMapLabelService } from "./codeMap.label.service"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -31,6 +31,7 @@ describe("codeMapMouseEventService", () => {
 	let threeSceneService: ThreeSceneService
 	let threeUpdateCycleService: ThreeUpdateCycleService
 	let storeService: StoreService
+	let codeMapLabelService: CodeMapLabelService
 
 	let codeMapBuilding: CodeMapBuilding
 	let file: CCFile
@@ -58,6 +59,7 @@ describe("codeMapMouseEventService", () => {
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		storeService = getService<StoreService>("storeService")
+		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		file = klona(TEST_FILE_WITH_PATHS)
@@ -72,7 +74,8 @@ describe("codeMapMouseEventService", () => {
 			threeRendererService,
 			threeSceneService,
 			threeUpdateCycleService,
-			storeService
+			storeService,
+			codeMapLabelService
 		)
 
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
@@ -257,6 +260,22 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
+	describe("changeCursorIndicator", () => {
+		it("should set the mouseIcon to grabbing", () => {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
+		})
+
+		it("should set the mouseIcon to default", () => {
+			document.body.style.cursor = CursorType.Pointer
+
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Default)
+		})
+	})
+
 	describe("updateHovering", () => {
 		beforeEach(() => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
@@ -270,6 +289,10 @@ describe("codeMapMouseEventService", () => {
 			idToNode.set(file.map.id, file.map)
 			storeService.dispatch(setIdToBuilding(idToBuilding))
 			storeService.dispatch(setIdToNode(idToNode))
+			threeSceneService.resetLabel = jest.fn()
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			threeSceneService.animateLabel = jest.fn()
+			threeSceneService.getHighlightedBuilding = jest.fn()
 		})
 
 		it("should call updateMatrixWorld", () => {
@@ -280,26 +303,59 @@ describe("codeMapMouseEventService", () => {
 			expect(threeCameraService.camera.updateMatrixWorld).toHaveBeenCalledWith(false)
 		})
 
-		it("should un-highlight the building, when no intersection was found and a  building is hovered", () => {
+		it("should un-highlight the building, when no intersection was found and a building is hovered", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
+			codeMapMouseEventService["highlightedInTreeView"] = null
+
+			codeMapMouseEventService.updateHovering()
+			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
+		})
+
+		it("should not call resetLabel if no change has happened ", () => {
 			codeMapMouseEventService["modifiedLabel"] = null
 			codeMapMouseEventService["highlightedInTreeView"] = null
 
 			codeMapMouseEventService.updateHovering()
 
-			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
+			expect(threeSceneService.getLabelForHoveredNode).not.toHaveBeenCalled()
 		})
 
-		it("should hover a node when an intersection was found and the cursor is set to pointing", () => {
+		it("should call resetLabel when a new building is hovered", () => {
 			codeMapMouseEventService["modifiedLabel"] = null
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
-			threeSceneService.getHighlightedBuilding = jest.fn()
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService.resetLabel).toHaveBeenCalled()
+		})
+
+		it("should call clearTemporaryLabel and remove temporary label when a new building is hovered", () => {
+			codeMapMouseEventService["temporaryLabelForBuilding"] = CODE_MAP_BUILDING.node
+
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			})
+			codeMapLabelService.clearTemporaryLabel = jest.fn()
+			codeMapMouseEventService.updateHovering()
+
+			expect(codeMapLabelService.clearTemporaryLabel).toHaveBeenCalled()
+			expect(codeMapLabelService["temporaryLabelForBuilding"]).not.toEqual(CODE_MAP_BUILDING.node)
+		})
+
+		it("should hover a node when an intersection was found and the cursor is set to pointing and call getLabelForHoveredNode", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			})
+			threeSceneService.animateLabel = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(threeSceneService.animateLabel).toHaveBeenCalled()
 			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
 		})
 
@@ -310,7 +366,6 @@ describe("codeMapMouseEventService", () => {
 			})
 			codeMapMouseEventService["isGrabbing"] = true
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
-			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
@@ -326,7 +381,6 @@ describe("codeMapMouseEventService", () => {
 			})
 			codeMapMouseEventService["isMoving"] = true
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
-			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
@@ -344,54 +398,6 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.highlightSingleBuilding).not.toHaveBeenCalled()
-		})
-	})
-
-	describe("getIntersectionDistance", () => {
-		let bboxOverlap = null
-		let bboxHovered = null
-		let bboxMiss = null
-		let normedVector = null
-		let bboxContain = null
-		const overlapDistance = 2
-
-		beforeEach(() => {
-			bboxOverlap = new Box3(new Vector3(2, 2, 2), new Vector3(4, 4, 4))
-			bboxHovered = new Box3(new Vector3(1, 1, 1), new Vector3(2, 2, 2))
-			bboxMiss = new Box3(new Vector3(5, 5, 5), new Vector3(6, 6, 6))
-			bboxContain = new Box3(new Vector3(3, 3, 3), new Vector3(4, 4, 4))
-			normedVector = new Vector3(1, 1, 1)
-		})
-
-		it("should calculate distance if labels partially overlap", () => {
-			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxOverlap, normedVector, overlapDistance)
-			expect(distance).toEqual(overlapDistance)
-		})
-
-		it("should calculate distance if labels fully overlap", () => {
-			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxContain, normedVector, overlapDistance)
-			expect(distance).toEqual(overlapDistance)
-		})
-
-		it("should return 0 if labels dont overlap", () => {
-			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxMiss, normedVector, overlapDistance)
-			expect(distance).toEqual(0)
-		})
-	})
-
-	describe("changeCursorIndicator", () => {
-		it("should set the mouseIcon to grabbing", () => {
-			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
-
-			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
-		})
-
-		it("should set the mouseIcon to default", () => {
-			document.body.style.cursor = CursorType.Pointer
-
-			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
-
-			expect(document.body.style.cursor).toEqual(CursorType.Default)
 		})
 	})
 
@@ -615,6 +621,18 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onShouldUnhoverNode()
 
 			expect(codeMapMouseEventService["unhoverBuilding"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("drawTemporaryLabelFor", () => {
+		it("should call addLabel on codeMapLabelService with given node and set temporaryLabel", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			codeMapLabelService.addLabel = jest.fn()
+
+			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
+
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(codeMapLabelService.addLabel).toHaveBeenCalled()
 		})
 	})
 })
