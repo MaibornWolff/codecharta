@@ -4,11 +4,11 @@ export default class Rectangle {
 	topLeft: Vector2
 	width: number
 	height: number
-	private bottomRight : Vector2
+	private bottomRight: Vector2
 
 	constructor(topLeft: Vector2, width: number, height: number) {
 		this.topLeft = topLeft
-		this.bottomRight = topLeft.clone().add(new Vector2(width,height))
+		this.bottomRight = topLeft.clone().add(new Vector2(width, height))
 		this.width = width
 		this.height = height
 	}

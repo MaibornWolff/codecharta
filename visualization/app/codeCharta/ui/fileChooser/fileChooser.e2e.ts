@@ -52,7 +52,7 @@ describe("FileChooser", () => {
 	})
 
 	it("should open an valid and an invalid file, close the dialog and open a valid file", async () => {
-		// !note : openFiles is done in parallel @check Promise.all , first loaded is first served, 
+		// !note : openFiles is done in parallel @check Promise.all , first loaded is first served,
 		// !an empty png file insure that the first loaded file is empty.png
 		// !fixes bug https://github.com/MaibornWolff/codecharta/issues/1322
 		await fileChooser.openFiles(["./app/codeCharta/assets/empty.png", "./app/codeCharta/assets/sample3.cc.json"])

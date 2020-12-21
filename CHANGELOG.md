@@ -39,12 +39,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
         -   If we cannot purge any Configs, you might have to do that by your own by deleting specific Configs manually.
 
 -   Integrated streetlayout ([#904](https://github.com/MaibornWolff/codecharta/issues/904))
-![cc_street_ccv](https://user-images.githubusercontent.com/63230711/78872405-87eed900-7a49-11ea-984a-c0ef738779b9.png)
-    
-    In street layout file nodes are displayed as buildings and directories are displayed as streets. A street layout has the advantage of a more apparent directory structure and stable positioning of nodes after metric changes. 
-    two different Street layout are integrated :
-    -    StreetLayout : as described above.
-    -    TMStreet : a combination of street layout and squarified layout.
+    ![cc_street_ccv](https://user-images.githubusercontent.com/63230711/78872405-87eed900-7a49-11ea-984a-c0ef738779b9.png)
+        In street layout file nodes are displayed as buildings and directories are displayed as streets. A street layout has the advantage of a more apparent directory structure and stable positioning of nodes after metric changes.
+        two different Street layout are integrated :
+        -    StreetLayout : as described above.
+        -    TMStreet : a combination of street layout and squarified layout.
+
 ### Changed
 
 -   Increase possible margin size ([#1490](https://github.com/MaibornWolff/codecharta/pull/1490))
@@ -64,6 +64,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   e2e flaky test ([#1322](https://github.com/MaibornWolff/codecharta/issues/1322))
+
 ## [1.63.0] - 2020-11-30
 
 ### Added 🚀

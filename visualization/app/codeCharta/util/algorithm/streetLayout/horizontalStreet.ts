@@ -48,7 +48,7 @@ export default class HorizontalStreet extends Street {
 		this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + 2 * this.spacer
 	}
 
-	layout(margin: number,origin: Vector2): CodeMapNode[] {
+	layout(margin: number, origin: Vector2): CodeMapNode[] {
 		const maxTopHeight = this.getMaxHeight(this.topRow)
 		const topRowNodes = this.layoutTopRow(origin, maxTopHeight, margin)
 		const bottomRowNodes = this.layoutBottomRow(origin, maxTopHeight, margin)
@@ -69,7 +69,7 @@ export default class HorizontalStreet extends Street {
 			const childOriginX = this.calculateChildOriginX(rowOrigin, index, this.topRow)
 			const childOriginY = this.calculateStreetOffsetY(rowOrigin, maxTopHeight) - this.topRow[index].height
 			const childOrigin = new Vector2(childOriginX, childOriginY)
-			nodes.push(...this.topRow[index].layout(margin,childOrigin))
+			nodes.push(...this.topRow[index].layout(margin, childOrigin))
 		}
 		return nodes
 	}
@@ -113,7 +113,7 @@ export default class HorizontalStreet extends Street {
 			const childOriginX = this.calculateChildOriginX(rowOrigin, index, this.bottomRow)
 			const childOriginY = this.calculateStreetOffsetY(rowOrigin, maxTopHeight) + this.getStreetThickness()
 			const childOrigin = new Vector2(childOriginX, childOriginY)
-			nodes.push(...this.bottomRow[index].layout(margin,childOrigin))
+			nodes.push(...this.bottomRow[index].layout(margin, childOrigin))
 		}
 		return nodes
 	}

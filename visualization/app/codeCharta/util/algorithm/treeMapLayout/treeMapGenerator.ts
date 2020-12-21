@@ -10,7 +10,7 @@ const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 
 // TODO move to class based
-export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean) : Node[] {
+export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
 	const heightScale = (state.treeMap.mapSize * 2) / maxHeight
@@ -50,7 +50,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 
 	const squarifiedTreeMap = getSquarifiedTreeMap(map, state, mapSizeResolutionScaling)
 
-	const nodes : Node [] = []
+	const nodes: Node[] = []
 	for (const squarifiedNode of squarifiedTreeMap.treeMap) {
 		nodes.push(TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState))
 	}
@@ -242,4 +242,3 @@ export function calculateAreaValue(node: CodeMapNode, { dynamicSettings }: State
 	}
 	return 0
 }
-

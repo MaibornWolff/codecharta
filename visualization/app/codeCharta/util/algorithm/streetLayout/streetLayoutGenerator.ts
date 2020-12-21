@@ -15,9 +15,11 @@ const HEIGHT_SCALING_FACTOR = 0.1
 export class StreetLayoutGenerator {
 	static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-		const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling / HEIGHT_SCALING_FACTOR
+		const maxHeight =
+			(metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling) /
+			HEIGHT_SCALING_FACTOR
 		const heightScale = (state.treeMap.mapSize * 2) / maxHeight
-		
+
 		const metricName = state.dynamicSettings.areaMetric
 		const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
 		const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
@@ -25,8 +27,8 @@ export class StreetLayoutGenerator {
 		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
-		const layoutNodes = rootStreet.layout(margin,new Vector2(0, 0))
-		
+		const layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
+
 		return layoutNodes.map(streetLayoutNode => {
 			return StreetViewHelper.buildNodeFrom(streetLayoutNode as CodeMapNode, heightScale, maxHeight, state, isDeltaState)
 		})
@@ -73,10 +75,11 @@ export class StreetLayoutGenerator {
 	}
 
 	private static createStreet(node: CodeMapNode, orientation: StreetOrientation, children: BoundingBox[], depth: number) {
-		return orientation === StreetOrientation.Horizontal ?
-			new HorizontalStreet(node, children, depth) : new VerticalStreet(node, children, depth)
+		return orientation === StreetOrientation.Horizontal
+			? new HorizontalStreet(node, children, depth)
+			: new VerticalStreet(node, children, depth)
 	}
- 
+
 	private static createTreeMap(node: CodeMapNode): TreeMap {
 		return new SquarifiedTreeMap(node)
 	}

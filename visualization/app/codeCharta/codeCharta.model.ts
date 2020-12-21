@@ -33,7 +33,6 @@ export interface CCFile {
 	fileMeta: FileMeta
 }
 
-
 interface squarifiedNode {
 	name: string
 	id?: number
@@ -58,8 +57,7 @@ interface streetNode {
 	rect?: Rectangle
 	zOffset?: number
 }
-export interface CodeMapNode extends squarifiedNode, streetNode{
-}
+export interface CodeMapNode extends squarifiedNode, streetNode {}
 
 export interface FixedPosition {
 	left: number

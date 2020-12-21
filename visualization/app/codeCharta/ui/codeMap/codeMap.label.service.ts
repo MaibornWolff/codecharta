@@ -67,24 +67,22 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			const label = this.makeText(labelText, 30)
 			const { margin } = this.storeService.getState().dynamicSettings
-			const {appSettings : {layoutAlgorithm} } = state
-			let labelOffset = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR + label.heightValue / 2;
+			const {
+				appSettings: { layoutAlgorithm }
+			} = state
+			let labelOffset = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR + label.heightValue / 2
 
 			switch (layoutAlgorithm) {
-				// !remark : algorithm scaling is not same as the squarified layout, 
-				// !layout offset needs to be scaled down,the divided by value is just empirical, 
+				// !remark : algorithm scaling is not same as the squarified layout,
+				// !layout offset needs to be scaled down,the divided by value is just empirical,
 				// !needs further investigation
 				case LayoutAlgorithm.StreetMap:
 				case LayoutAlgorithm.TreeMapStreet:
-					labelOffset/=10;
-					break;
+					labelOffset /= 10
+					break
 			}
 
-			label.sprite.position.set(
-				labelX,
-				labelY + labelOffset,
-				labelZ
-			) //label_height
+			label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
 			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
 			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
 			label.sprite.material.opacity = this.mapLabelColors.alpha

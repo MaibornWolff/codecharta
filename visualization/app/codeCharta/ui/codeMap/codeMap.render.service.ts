@@ -40,8 +40,11 @@ export class CodeMapRenderService {
 
 	private getSortedNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
-		const {appSettings : {layoutAlgorithm}, metricData } = state
-		let nodes : Node[] = []
+		const {
+			appSettings: { layoutAlgorithm },
+			metricData
+		} = state
+		let nodes: Node[] = []
 		switch (layoutAlgorithm) {
 			case LayoutAlgorithm.StreetMap:
 			case LayoutAlgorithm.TreeMapStreet:

@@ -3,7 +3,8 @@ import { CodeMapNode, Node, State } from "../../../codeCharta.model"
 import { getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { getBuildingColor, getIncomingEdgePoint, isNodeFlat, isVisible, TreeMapHelper } from "../treeMapLayout/treeMapHelper"
 
-function calculateSize(node: CodeMapNode, metricName: string) { // TODO if it is same as countNodes in treeMapHelper.ts
+function calculateSize(node: CodeMapNode, metricName: string) {
+	// TODO if it is same as countNodes in treeMapHelper.ts
 	let totalSize = node.attributes[metricName] || 0
 
 	if (totalSize === 0 && node.children && node.children.length > 0) {
@@ -36,15 +37,15 @@ function getHeightValue(s: State, squaredNode: CodeMapNode, maxHeight: number, f
 
 	if (flattened) {
 		return TreeMapHelper.MIN_BUILDING_HEIGHT
-	} 
+	}
 	if (s.appSettings.invertHeight) {
 		return maxHeight - heightValue
-	} 
+	}
 	return heightValue
 }
 
 function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
-	const isNodeLeaf  = !(layoutNode.children && layoutNode.children.length > 0)
+	const isNodeLeaf = !(layoutNode.children && layoutNode.children.length > 0)
 	const flattened: boolean = isNodeFlat(layoutNode, s)
 	const heightValue: number = getHeightValue(s, layoutNode, maxHeight, flattened)
 	const height = Math.abs(
@@ -63,7 +64,7 @@ function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: 
 		height,
 		length,
 		depth: layoutNode.zOffset,
-		mapNodeDepth : 100,
+		mapNodeDepth: 100,
 		x0,
 		z0,
 		y0,
@@ -71,10 +72,9 @@ function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: 
 		attributes: layoutNode.attributes,
 		edgeAttributes: layoutNode.edgeAttributes,
 		deltas: layoutNode.deltas,
-		heightDelta:
-			layoutNode.deltas?.[s.dynamicSettings.heightMetric]
-				? heightScale * layoutNode.deltas[s.dynamicSettings.heightMetric]
-				: 0,
+		heightDelta: layoutNode.deltas?.[s.dynamicSettings.heightMetric]
+			? heightScale * layoutNode.deltas[s.dynamicSettings.heightMetric]
+			: 0,
 		visible: isVisible(layoutNode, isNodeLeaf, s, flattened),
 		path: layoutNode.path,
 		link: layoutNode.link,

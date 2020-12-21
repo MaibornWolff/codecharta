@@ -14,7 +14,7 @@ export default class House extends BoundingBox {
 		this.width = this.height = size
 	}
 
-	layout(_,origin: Vector2): CodeMapNode[] {
+	layout(_, origin: Vector2): CodeMapNode[] {
 		const layoutNode: CodeMapNode = {
 			...this.node,
 			value: this.metricValue,
