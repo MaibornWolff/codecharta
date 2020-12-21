@@ -32,6 +32,8 @@ export default class VerticalStreet extends Street {
 		this.splitChildrenToRows(this.children)
 		this.rearrangeRows()
 
+		// TODO refactor it - seems to be very similar to horizontalStreet.ts
+		// TODO add a comment what the calculations are doing and why
 		this.metricValue = StreetViewHelper.calculateSize(this.node, metricName)
 		this.width = this.getMaxWidth(this.leftRow) + this.getStreetThickness() + this.getMaxWidth(this.rightRow) + 2 * this.spacer
 		this.height = Math.max(this.getLength(this.leftRow), this.getLength(this.rightRow))
