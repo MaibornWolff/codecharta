@@ -117,6 +117,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
+	// TODO Add a test to ensure that scaling is not additive
 	scale() {
 		const { scaling } = this.storeService.getState().appSettings
 		const { margin } = this.storeService.getState().dynamicSettings
