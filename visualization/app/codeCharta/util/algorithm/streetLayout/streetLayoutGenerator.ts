@@ -50,25 +50,26 @@ export class StreetLayoutGenerator {
 			}
 			if (isLeaf(child)) {
 				children.push(new House(child))
+				continue
+			}
+
+			const layoutAlgorithm = state.appSettings.layoutAlgorithm
+			const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
+			if (layoutAlgorithm === LayoutAlgorithm.TreeMapStreet && fileDescendants <= maxTreeMapFiles) {
+				const treeMap = StreetLayoutGenerator.createTreeMap(child)
+				children.push(treeMap)
 			} else {
-				const layoutAlgorithm = state.appSettings.layoutAlgorithm
-				const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
-				if (layoutAlgorithm === LayoutAlgorithm.TreeMapStreet && fileDescendants <= maxTreeMapFiles) {
-					const treeMap = StreetLayoutGenerator.createTreeMap(child)
-					children.push(treeMap)
-				} else {
-					child = StreetViewHelper.mergeDirectories(child, areaMetric)
-					const streetChildren = StreetLayoutGenerator.createBoxes(
-						child,
-						metricName,
-						state,
-						1 - orientation,
-						depth + 1,
-						maxTreeMapFiles
-					)
-					const street = StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth)
-					children.push(street)
-				}
+				child = StreetViewHelper.mergeDirectories(child, areaMetric)
+				const streetChildren = StreetLayoutGenerator.createBoxes(
+					child,
+					metricName,
+					state,
+					1 - orientation,
+					depth + 1,
+					maxTreeMapFiles
+				)
+				const street = StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth)
+				children.push(street)
 			}
 		}
 		return children
