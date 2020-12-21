@@ -12,6 +12,7 @@ interface InternalLabel {
 	line: Line | null
 	heightValue: number
 	lineCount: number
+	node: Node
 }
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
@@ -28,6 +29,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
 	private lineCount = 1
+	private nodeHeight = 0
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -40,7 +42,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	//labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, hightestNode: number) {
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNode: number) {
+		this.nodeHeight = this.nodeHeight > highestNode ? this.nodeHeight : highestNode
 		// todo: tk rename to addLeafLabel
 		const state = this.storeService.getState()
 		const x = node.x0 - state.treeMap.mapSize
@@ -48,7 +51,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const z = node.y0 - state.treeMap.mapSize
 
 		const labelX = x + node.width / 2
-		const labelY = y + hightestNode
+		const labelY = y + this.nodeHeight
 		const labelYOrigin = y + node.height
 		const labelZ = z + node.length / 2
 
@@ -65,25 +68,29 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 				labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
 			}
 
-			const label = this.makeText(labelText, 30)
+			const label = this.makeText(labelText, 30, node)
 			const { margin } = this.storeService.getState().dynamicSettings
 			const {
 				appSettings: { layoutAlgorithm }
 			} = state
-			let labelOffset = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR + label.heightValue / 2
+			const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
+			let labelOffset = labelHeightScaled + label.heightValue / 2
 
 			switch (layoutAlgorithm) {
 				// !remark : algorithm scaling is not same as the squarified layout,
 				// !layout offset needs to be scaled down,the divided by value is just empirical,
-				// !needs further investigation
+				// TODO !needs further investigation
 				case LayoutAlgorithm.StreetMap:
 				case LayoutAlgorithm.TreeMapStreet:
 					labelOffset /= 10
+					this.LABEL_HEIGHT_POSITION = 0
+					label.line = this.makeLine(labelX, labelY + labelOffset, labelYOrigin, labelZ)
 					break
+				default:
+					label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
 			}
 
 			label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
-			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
 			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
 			label.sprite.material.opacity = this.mapLabelColors.alpha
 			label.sprite.userData = { node }
@@ -98,8 +105,18 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	clearLabels() {
 		this.labels = []
+		this.nodeHeight = 0
+		this.LABEL_HEIGHT_POSITION = 60
 		// Reset the children
 		this.threeSceneService.labels.children.length = 0
+	}
+
+	clearTemporaryLabel(hoveredNode: Node) {
+		const index = this.labels.findIndex(({ node }) => node === hoveredNode)
+		if (index > -1) {
+			this.labels.splice(index, 1)
+			this.threeSceneService.labels.children.length -= 2
+		}
 	}
 
 	scale() {
@@ -132,7 +149,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	private makeText(message: string, fontsize: number): InternalLabel {
+	private makeText(message: string, fontsize: number, node: Node): InternalLabel {
 		const canvas = document.createElement("canvas")
 		const context = canvas.getContext("2d")
 
@@ -182,7 +199,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			sprite,
 			heightValue: canvas.height,
 			line: null,
-			lineCount: multiLineContext.length
+			lineCount: multiLineContext.length,
+			node
 		}
 	}
 
