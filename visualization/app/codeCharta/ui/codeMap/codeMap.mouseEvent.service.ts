@@ -162,12 +162,17 @@ export class CodeMapMouseEventService
 
 	updateHovering() {
 		if (this.hasMouseMoved(this.oldMouse)) {
+			if (this.isGrabbing || this.isMoving) {
+				this.threeSceneService.resetLabel()
+				return
+			}
+
 			this.oldMouse.x = this.mouse.x
 			this.oldMouse.y = this.mouse.y
 
 			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
 			const camera = this.threeCameraService.camera
-			const labels = this.threeSceneService.labels ? this.threeSceneService.labels.children : null
+			const labels = this.threeSceneService.labels?.children
 
 			const mapMesh = this.threeSceneService.getMapMesh()
 			let nodeNameHoveredLabel = ""
@@ -192,7 +197,7 @@ export class CodeMapMouseEventService
 						: mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
 
 				const from = this.threeSceneService.getHighlightedBuilding()
-				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
+				const to = this.intersectedBuilding ?? this.highlightedInTreeView
 
 				if (from !== to) {
 					if (this.temporaryLabelForBuilding !== null) {
@@ -282,7 +287,7 @@ export class CodeMapMouseEventService
 	private calculateHoveredLabel(labels: Object3D[]) {
 		let labelClosestToViewPoint = null
 
-		if (labels !== null) {
+		if (labels != null) {
 			for (let counter = 0; counter < labels.length; counter += 2) {
 				const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
 				if (intersect.length > 0) {
