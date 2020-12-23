@@ -175,7 +175,7 @@ describe("CodeMapLabelService", () => {
 			expect(lineCount).toBe(1)
 		})
 
-		it("scaling existing labels should scale their position correctly", () => {
+		it("scaling existing labels multiple times should scale their position correctly", () => {
 			const { margin } = storeService.getState().dynamicSettings
 			const SX = 1
 			const SY = 2
@@ -185,26 +185,51 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
 
-			const scaleBeforeA: Vector3 = new Vector3(
-				codeMapLabelService["labels"][0].sprite.position.x,
-				codeMapLabelService["labels"][0].sprite.position.y,
-				codeMapLabelService["labels"][0].sprite.position.z
-			)
+			const originalSpritePositionsA = codeMapLabelService["labels"][0].sprite.position.clone()
+			const originalLineGeometryStartVertices = codeMapLabelService["labels"][0].line.geometry["vertices"][0].clone()
+
+			const scaledLabelA = codeMapLabelService["labels"][0]
+			const scaledLabelB = codeMapLabelService["labels"][1]
+
 			storeService.dispatch(setScaling(new Vector3(SX, SY, SZ)))
+
+			const expectedScaledSpritePositions = new Vector3(
+				originalSpritePositionsA.x * SX,
+				(originalSpritePositionsA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin,
+				originalSpritePositionsA.z * SZ
+			)
+
+			const expectedScaledLineGeometryStart = new Vector3(
+				originalLineGeometryStartVertices.x * SX,
+				originalLineGeometryStartVertices.y * SY,
+				originalLineGeometryStartVertices.z * SZ
+			)
 
 			codeMapLabelService.scale()
 
-			const scaleAfterA: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position
+			assertLabelPositions(scaledLabelA, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
+			assertLabelPositions(scaledLabelB, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
 
-			expect(scaleAfterA.x).toBe(scaleBeforeA.x * SX)
-			expect(scaleAfterA.y).toBe((scaleBeforeA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin)
-			expect(scaleAfterA.z).toBe(scaleBeforeA.z * SZ)
+			codeMapLabelService.scale()
 
-			expect(scaleAfterB.x).toBe(scaleBeforeA.x * SX)
-			expect(scaleAfterB.y).toBe((scaleBeforeA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin)
-			expect(scaleAfterB.z).toBe(scaleBeforeA.z * SZ)
+			// Ensure that scaling factors are not additive
+			assertLabelPositions(scaledLabelA, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
+			assertLabelPositions(scaledLabelB, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
 		})
+
+		function assertLabelPositions(scaledLabel, expectedSpritePositions: Vector3, expectedScaledLineGeometryStart: Vector3) {
+			expect(scaledLabel.sprite.position.x).toBe(expectedSpritePositions.x)
+			expect(scaledLabel.sprite.position.y).toBe(expectedSpritePositions.y)
+			expect(scaledLabel.sprite.position.z).toBe(expectedSpritePositions.z)
+
+			expect(scaledLabel.line.geometry.vertices[0].x).toBe(expectedScaledLineGeometryStart.x)
+			expect(scaledLabel.line.geometry.vertices[0].y).toBe(expectedScaledLineGeometryStart.y)
+			expect(scaledLabel.line.geometry.vertices[0].z).toBe(expectedScaledLineGeometryStart.z)
+
+			expect(scaledLabel.line.geometry.vertices[1].x).toBe(expectedSpritePositions.x)
+			expect(scaledLabel.line.geometry.vertices[1].y).toBe(expectedSpritePositions.y)
+			expect(scaledLabel.line.geometry.vertices[1].z).toBe(expectedSpritePositions.z)
+		}
 	})
 
 	describe("clearTemporaryLabel", () => {
