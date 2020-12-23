@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { Node } from "../../codeCharta.model"
+import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -26,8 +26,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_HEIGHT_COEFFICIENT = 15 / 4 //empirically gathered, needed to prevent label collision with building with higher margin, TODO scale with margin factor once its avalible
 	private LABEL_HEIGHT_POSITION = 60
 
-	private currentScale: Vector3 = new Vector3(1, 1, 1)
-	private resetScale = false
+	private previousScaling: Vector3 = new Vector3(1, 1, 1)
 	private lineCount = 1
 	private nodeHeight = 0
 
@@ -45,7 +44,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNode: number) {
 		this.nodeHeight = this.nodeHeight > highestNode ? this.nodeHeight : highestNode
 		// todo: tk rename to addLeafLabel
-
 		const state = this.storeService.getState()
 		const x = node.x0 - state.treeMap.mapSize
 		const y = node.z0
@@ -71,10 +69,27 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			const label = this.makeText(labelText, 30, node)
 			const { margin } = this.storeService.getState().dynamicSettings
+			const {
+				appSettings: { layoutAlgorithm }
+			} = state
 			const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
+			let labelOffset = labelHeightScaled + label.heightValue / 2
 
-			label.sprite.position.set(labelX, labelY + labelHeightScaled + label.heightValue / 2, labelZ) //label_height
-			label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
+			switch (layoutAlgorithm) {
+				// !remark : algorithm scaling is not same as the squarified layout,
+				// !layout offset needs to be scaled down,the divided by value is just empirical,
+				// TODO !needs further investigation
+				case LayoutAlgorithm.StreetMap:
+				case LayoutAlgorithm.TreeMapStreet:
+					labelOffset /= 10
+					this.LABEL_HEIGHT_POSITION = 0
+					label.line = this.makeLine(labelX, labelY + labelOffset, labelYOrigin, labelZ)
+					break
+				default:
+					label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
+			}
+
+			label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
 			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
 			label.sprite.material.opacity = this.mapLabelColors.alpha
 			label.sprite.userData = { node }
@@ -84,11 +99,12 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
 		}
-		this.resetScale = true
 	}
 
 	clearLabels() {
 		this.labels = []
+		this.nodeHeight = 0
+		this.LABEL_HEIGHT_POSITION = 60
 		// Reset the children
 		this.threeSceneService.labels.children.length = 0
 	}
@@ -104,25 +120,20 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	scale() {
 		const { scaling } = this.storeService.getState().appSettings
 		const { margin } = this.storeService.getState().dynamicSettings
-		if (this.resetScale) {
-			this.resetScale = false
-			this.currentScale = new Vector3(1, 1, 1)
-		}
+
+		const multiplier = scaling.clone().divide(this.previousScaling)
 
 		for (const label of this.labels) {
 			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
-			label.sprite.position
-				.sub(labelHeightDifference.clone())
-				.divide(this.currentScale.clone())
-				.multiply(scaling.clone())
-				.add(labelHeightDifference.clone())
+			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
 
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
-			label.line.geometry["vertices"][0].divide(this.currentScale.clone()).multiply(scaling.clone())
-			label.line.geometry["vertices"][1].copy(label.sprite.position)
+			label.line.geometry["vertices"][0].multiply(multiplier)
+			label.line.geometry["vertices"][1] = label.sprite.position
 			label.line.geometry.translate(0, 0, 0)
 		}
-		this.currentScale.copy(scaling)
+
+		this.previousScaling.copy(scaling)
 	}
 
 	onCameraChanged() {

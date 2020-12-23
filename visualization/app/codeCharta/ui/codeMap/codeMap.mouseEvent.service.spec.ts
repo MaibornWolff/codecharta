@@ -10,7 +10,14 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, DEFAULT_STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
+import {
+	CODE_MAP_BUILDING,
+	CONSTANT_HIGHLIGHT,
+	DEFAULT_STATE,
+	TEST_FILE_WITH_PATHS,
+	TEST_NODES,
+	withMockedEventMethods
+} from "../../util/dataMocks"
 import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
@@ -20,6 +27,8 @@ import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuild
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
+import { CodeMapMesh } from "./rendering/codeMapMesh"
+import { Material, Object3D, Raycaster, Vector3 } from "three"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -274,6 +283,81 @@ describe("codeMapMouseEventService", () => {
 
 			expect(document.body.style.cursor).toEqual(CursorType.Default)
 		})
+	})
+
+	describe("updateHoveringIntegrationTest", () => {
+		it("should not animate any labels and reset animated label and temporary label if the map is turned", () => {
+			const label = new Object3D()
+			setAnimatedLabel(label)
+
+			// Grabbing and turning the map (should reset the animated label)
+			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.LeftClick } as MouseEvent)
+			expect(codeMapMouseEventService["isGrabbing"]).toBe(true)
+			expect(codeMapMouseEventService["isMoving"]).toBe(false)
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 2, clientY: 3 } as MouseEvent)
+
+			const animatedLabelPosition = label.position.clone()
+
+			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService["highlightedLabel"]).toBeNull()
+			expect(codeMapMouseEventService["temporaryLabelForBuilding"]).toBeNull()
+			expect(label["material"].opacity).toEqual(0.7)
+			expect(label.position).not.toEqual(animatedLabelPosition)
+		})
+
+		it("should not animate any labels and reset animated label and temporary label if the map is moved", () => {
+			const label = new Object3D()
+			setAnimatedLabel(label)
+
+			// Grabbing and moving the map (should reset the animated label)
+			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.RightClick } as MouseEvent)
+			expect(codeMapMouseEventService["isGrabbing"]).toBe(false)
+			expect(codeMapMouseEventService["isMoving"]).toBe(true)
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 3, clientY: 4 } as MouseEvent)
+
+			const animatedLabelPosition = label.position.clone()
+
+			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService["highlightedLabel"]).toBeNull()
+			expect(codeMapMouseEventService["temporaryLabelForBuilding"]).toBeNull()
+			expect(label["material"].opacity).toEqual(0.7)
+			expect(label.position).not.toEqual(animatedLabelPosition)
+		})
+
+		function setAnimatedLabel(label: Object3D) {
+			// At first, animate a label
+			threeSceneService = new ThreeSceneService($rootScope, storeService)
+			threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
+			threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
+			threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
+
+			const resultPosition = new Vector3(0.5, 0.5, 0)
+
+			const labels = []
+			const labelLine = new Object3D()
+			const labelNode = new Object3D()
+			label["material"] = new Material()
+			const rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
+
+			labelNode.translateX(-4)
+			labelNode.translateY(5)
+
+			labels.push(label, labelLine, labelNode, labelLine)
+
+			threeSceneService.animateLabel(label, rayCaster, labels)
+
+			// Ensure that label is animated correctly
+			expect(label["material"].opacity).toEqual(1)
+			expect(label.position).toEqual(resultPosition)
+			expect(threeSceneService["highlightedLabel"]).toEqual(label)
+
+			// Rebuild service with modified threeSceneService
+			rebuildService()
+		}
 	})
 
 	describe("updateHovering", () => {

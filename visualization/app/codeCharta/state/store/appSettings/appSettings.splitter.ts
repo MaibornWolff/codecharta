@@ -28,6 +28,8 @@ import { splitAmountOfEdgePreviewsAction } from "./amountOfEdgePreviews/amountOf
 import { splitAmountOfTopLabelsAction } from "./amountOfTopLabels/amountOfTopLabels.splitter"
 import { splitIsPresentationModeAction } from "./isPresentationMode/isPresentationMode.splitter"
 import { splitExperimentalFeaturesEnabledAction } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.splitter"
+import { splitLayoutAlgorithmAction } from "./layoutAlgorithm/layoutAlgorithm.splitter"
+import { splitMaxTreeMapFilesAction } from "./maxTreeMapFiles/maxTreeMapFiles.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []
@@ -135,6 +137,14 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.experimentalFeaturesEnabled !== undefined) {
 		actions.push(splitExperimentalFeaturesEnabledAction(payload.experimentalFeaturesEnabled))
+	}
+
+	if (payload.layoutAlgorithm !== undefined) {
+		actions.push(splitLayoutAlgorithmAction(payload.layoutAlgorithm))
+	}
+
+	if (payload.maxTreeMapFiles !== undefined) {
+		actions.push(splitMaxTreeMapFilesAction(payload.maxTreeMapFiles))
 	}
 
 	return actions

@@ -4,6 +4,7 @@ import { ExportCCFile } from "./codeCharta.api.model"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
+import Rectangle from "./util/algorithm/streetLayout/rectangle"
 
 export interface NameDataPair {
 	fileName: string
@@ -17,6 +18,12 @@ export enum SearchPanelMode {
 	minimized = "minimized"
 }
 
+export enum LayoutAlgorithm {
+	SquarifiedTreeMap = "Squarified TreeMap",
+	StreetMap = "StreetMap",
+	TreeMapStreet = "TreeMapStreet"
+}
+
 export interface CCFile {
 	map: CodeMapNode
 	settings: {
@@ -25,7 +32,7 @@ export interface CCFile {
 	fileMeta: FileMeta
 }
 
-export interface CodeMapNode {
+interface squarifiedNode {
 	name: string
 	id?: number
 	type: NodeType
@@ -43,6 +50,13 @@ export interface CodeMapNode {
 	}
 	fixedPosition?: FixedPosition
 }
+
+interface streetNode {
+	value?: number
+	rect?: Rectangle
+	zOffset?: number
+}
+export interface CodeMapNode extends squarifiedNode, streetNode {}
 
 export interface FixedPosition {
 	left: number
@@ -123,6 +137,8 @@ export interface AppSettings {
 	panelSelection: PanelSelection
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
+	layoutAlgorithm: LayoutAlgorithm
+	maxTreeMapFiles: number
 	experimentalFeaturesEnabled: boolean
 }
 
