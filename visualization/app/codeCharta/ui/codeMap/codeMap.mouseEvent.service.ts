@@ -160,10 +160,18 @@ export class CodeMapMouseEventService
 		this.unhoverBuilding()
 	}
 
+	private clearTemporaryLabel() {
+		if (this.temporaryLabelForBuilding !== null) {
+			this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForBuilding)
+			this.temporaryLabelForBuilding = null
+		}
+	}
+
 	updateHovering() {
 		if (this.hasMouseMoved(this.oldMouse)) {
 			if (this.isGrabbing || this.isMoving) {
 				this.threeSceneService.resetLabel()
+				this.clearTemporaryLabel()
 				return
 			}
 

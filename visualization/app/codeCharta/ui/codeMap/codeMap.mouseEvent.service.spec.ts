@@ -286,7 +286,7 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("updateHoveringIntegrationTest", () => {
-		it("should not animate any labels and reset animated label if the map is turned", () => {
+		it("should not animate any labels and reset animated label and temporary label if the map is turned", () => {
 			const label = new Object3D()
 			setAnimatedLabel(label)
 
@@ -298,14 +298,16 @@ describe("codeMapMouseEventService", () => {
 
 			const animatedLabelPosition = label.position.clone()
 
+			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService["highlightedLabel"]).toBeNull()
+			expect(codeMapMouseEventService["temporaryLabelForBuilding"]).toBeNull()
 			expect(label["material"].opacity).toEqual(0.7)
 			expect(label.position).not.toEqual(animatedLabelPosition)
 		})
 
-		it("should not animate any labels and reset animated label if the map is moved", () => {
+		it("should not animate any labels and reset animated label and temporary label if the map is moved", () => {
 			const label = new Object3D()
 			setAnimatedLabel(label)
 
@@ -317,9 +319,11 @@ describe("codeMapMouseEventService", () => {
 
 			const animatedLabelPosition = label.position.clone()
 
+			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService["highlightedLabel"]).toBeNull()
+			expect(codeMapMouseEventService["temporaryLabelForBuilding"]).toBeNull()
 			expect(label["material"].opacity).toEqual(0.7)
 			expect(label.position).not.toEqual(animatedLabelPosition)
 		})
