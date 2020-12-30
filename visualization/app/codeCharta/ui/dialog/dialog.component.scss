@@ -7,6 +7,12 @@
 	}
 }
 
+.icon-link {
+	font-size: 16px !important;
+	margin-left: 6px;
+	margin-right: 13px;
+}
+
 .md-toolbar-tools {
 	color: white;
 }
@@ -40,7 +46,7 @@
 .global-settings {
 	.weblink {
 		display: block;
-		margin: 0 0 10px 0;
+		margin: 10 0 0 36px;
 		color: rgba(0, 0, 0, 0.870588);
 		text-decoration: none;
 
