@@ -9,7 +9,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632)))
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.65.0] - 2020-12-23
+
+### Added 🚀
+
 -   Highlight label while hovering over building, draw a temporary label for hovered buildings that have none ([#1529](https://github.com/MaibornWolff/codecharta/issues/1529))
+-   Integrated streetlayout ([#904](https://github.com/MaibornWolff/codecharta/issues/904))
+    ![cc_street_ccv](https://user-images.githubusercontent.com/63230711/78872405-87eed900-7a49-11ea-984a-c0ef738779b9.png)
+    In street layout file nodes are displayed as buildings and directories are displayed as streets. A street layout has the advantage of a more apparent directory structure and stable positioning of nodes after metric changes.
+    two different Street layout are integrated : - StreetLayout : as described above. - TMStreet : a combination of street layout and squarified layout.
 
 ### Changed
 
@@ -20,8 +38,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Height scaling not applied to buildings ([#1595](https://github.com/MaibornWolff/codecharta/issues/1595)))
+-   Fixed multiple label positioning/scaling bugs
 
 ### Chore 👨‍💻 👩‍💻
+
+-   e2e flaky test ([#1322](https://github.com/MaibornWolff/codecharta/issues/1322))
 
 ## [1.64.0] - 2020-12-15
 
@@ -42,11 +63,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
         -   You can click the displayed "download and purge" button to download/backup at least 6 months old Configs and then purge them from the local storage to make space for new ones.
         -   If we cannot purge any Configs, you might have to do that by your own by deleting specific Configs manually.
 
--   Integrated streetlayout ([#904](https://github.com/MaibornWolff/codecharta/issues/904))
-    ![cc_street_ccv](https://user-images.githubusercontent.com/63230711/78872405-87eed900-7a49-11ea-984a-c0ef738779b9.png)
-    In street layout file nodes are displayed as buildings and directories are displayed as streets. A street layout has the advantage of a more apparent directory structure and stable positioning of nodes after metric changes.
-    two different Street layout are integrated : - StreetLayout : as described above. - TMStreet : a combination of street layout and squarified layout.
-
 ### Changed
 
 -   Increase possible margin size ([#1490](https://github.com/MaibornWolff/codecharta/pull/1490))
@@ -64,8 +80,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   Now only the selected maps will be considered for the calculation. Unselected maps will be skipped.
 
 ### Chore 👨‍💻 👩‍💻
-
--   e2e flaky test ([#1322](https://github.com/MaibornWolff/codecharta/issues/1322))
 
 ## [1.63.0] - 2020-11-30
 

@@ -175,7 +175,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.rayPoint = new Vector3()
 			this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
 
-			const norm = Math.sqrt(Math.pow(this.rayPoint.x, 2) + Math.pow(this.rayPoint.y, 2) + Math.pow(this.rayPoint.z, 2))
+			const norm = Math.sqrt(this.rayPoint.x ** 2 + this.rayPoint.y ** 2 + this.rayPoint.z ** 2)
 			const cameraPoint = raycaster.ray.origin
 			const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
 
@@ -191,13 +191,13 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	resetLabel() {
 		if (this.highlightedLabel !== null) {
 			this.highlightedLabel.position.sub(this.normedTransformVector)
-			this.highlightedLabel["material"].opacity = this.mapLabelColors.alpha
+			this.highlightedLabel.material.opacity = this.mapLabelColors.alpha
 			this.highlightedLabel = null
 		}
 	}
 
 	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
-		if (labels === null) {
+		if (labels == null) {
 			return null
 		}
 		// 2-step: the labels array consists of alternating label and the corresponding label antennae
