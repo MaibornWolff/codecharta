@@ -582,9 +582,12 @@ describe("CustomConfigHelper", () => {
 			FileDownloader.downloadData = jest.fn()
 
 			CustomConfigHelper.downloadCustomConfigs(exportedCustomConfigs, CustomConfigFileStateConnector.prototype)
+
+			const timestampFormat = "\\d{4}-\\d{02}-\\d{2}_\\d{2}-\\d{2}"
+			const fileNameRegEx = new RegExp(`mocked_currently_uploaded_map_${timestampFormat}.cc.config.json`)
 			expect(FileDownloader.downloadData).toHaveBeenCalledWith(
 				"mock_serialized_config_to_be_downloaded",
-				expect.stringContaining("mocked_currently_uploaded_map_2020")
+				expect.stringMatching(fileNameRegEx)
 			)
 		})
 	})
