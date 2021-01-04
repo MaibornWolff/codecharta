@@ -17,7 +17,8 @@
 			</layout-selection-component>
 			<max-tree-map-files-component
 				ng-model="$ctrl._viewModel.maxTreeMapFiles"
-				ng-change="$ctrl.applySettingsMaxTreeMapFiles()">
+				ng-change="$ctrl.applySettingsMaxTreeMapFiles()"
+				ng-show="$ctrl._viewModel.layoutAlgorithm === 'Squarified TreeMap'">
 			</max-tree-map-files-component>
 
 			<md-input-container class="input-container md-block">
