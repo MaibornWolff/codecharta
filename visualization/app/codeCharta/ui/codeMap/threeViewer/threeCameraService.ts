@@ -10,7 +10,7 @@ import { CameraService, CameraSubscriber } from "../../../state/store/appSetting
 
 export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscriber {
 	static VIEW_ANGLE = 45
-	static NEAR = 100
+	static NEAR = 1 // !NOTE decreased in order to disable clipping for street layout, can be reverted after rescaling and repositioning the layout
 	static FAR = 200000 //TODO optimize renderer for far objects
 	private static DEBOUNCE_TIME = 400
 	private readonly throttledCameraChange: () => void

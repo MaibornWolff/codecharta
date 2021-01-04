@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.64.0",
+	"version": "1.65.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -75,7 +75,11 @@
 		"plop": "tsc --esModuleInterop true --outDir ./dist/plop ./plopfile.ts && cd dist/plop && plop",
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "npm run lint -- --fix",
+		"precommit": "lint-staged",
 		"schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json"
+	},
+	"lint-staged": {
+		"app/**/*.ts": "eslint --fix"
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
@@ -107,9 +111,9 @@
 		"nw": "^0.50.0",
 		"redux": "^4.0.4",
 		"shelljs": "^0.8.1",
-		"three": "^0.123.0",
+		"three": "^0.124.0",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "^0.45.0"
+		"typescript-json-schema": "^0.46.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.4",
@@ -136,13 +140,14 @@
 		"es6-shim": "^0.35.3",
 		"eslint": "^7.11.0",
 		"eslint-config-prettier": "^7.0.0",
-		"eslint-plugin-unicorn": "^23.0.0",
+		"eslint-plugin-unicorn": "^24.0.0",
 		"file-loader": "^6.0.0",
 		"html-loader": "^1.1.0",
 		"html-webpack-plugin": "^4.3.0",
 		"jest": "^26.1.0",
 		"jest-puppeteer": "^4.4.0",
 		"jest-serializer-html": "^7.0.0",
+		"lint-staged": "^10.5.2",
 		"makeshift": "^1.1.0",
 		"node-sass": "^5.0.0",
 		"nwjs-builder-phoenix": "^1.15.0",

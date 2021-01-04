@@ -1,6 +1,6 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../codeCharta.model"
-import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
+import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../../../codeCharta.model"
+import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 
 describe("TreeMapHelper", () => {
@@ -208,7 +208,6 @@ describe("TreeMapHelper", () => {
 
 		describe("getBuildingColor", () => {
 			let node: CodeMapNode
-			let state: State
 
 			beforeEach(() => {
 				node = {

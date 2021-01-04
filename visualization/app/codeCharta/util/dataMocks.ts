@@ -18,7 +18,8 @@ import {
 	SearchPanelMode,
 	Settings,
 	SortingOption,
-	State
+	State,
+	LayoutAlgorithm
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -1601,7 +1602,9 @@ export const STATE: State = {
 		panelSelection: PanelSelection.AREA_PANEL_OPEN,
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
-		experimentalFeaturesEnabled: false
+		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		maxTreeMapFiles: 200
 	},
 	treeMap: {
 		mapSize: 250
@@ -1660,7 +1663,9 @@ export const DEFAULT_STATE: State = {
 		panelSelection: PanelSelection.NONE,
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
-		experimentalFeaturesEnabled: false
+		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		maxTreeMapFiles: 100
 	},
 	dynamicSettings: {
 		areaMetric: null,

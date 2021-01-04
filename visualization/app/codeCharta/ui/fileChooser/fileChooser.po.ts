@@ -1,7 +1,7 @@
 export class FileChooserPageObject {
 	async openFiles(paths: string[], clickOnFileChooser = true) {
 		const [fileChooser] = await Promise.all([
-			page.waitForFileChooser(),
+			page.waitForFileChooser({ timeout: 60000 }),
 			clickOnFileChooser && expect(page).toClick("file-chooser-directive .toolbar-button", { timeout: 3000 })
 		])
 

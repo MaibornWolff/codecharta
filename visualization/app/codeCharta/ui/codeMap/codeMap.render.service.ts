@@ -1,13 +1,14 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { createTreemapNodes } from "../../util/treeMapGenerator"
+import * as SquarifiedLayoutGenerator from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, Node } from "../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
+import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 
 export class CodeMapRenderService {
 	constructor(
@@ -16,6 +17,8 @@ export class CodeMapRenderService {
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
 	) {}
+
+	private highestNode = 0
 
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
@@ -34,11 +37,25 @@ export class CodeMapRenderService {
 	scaleMap() {
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
+		this.threeSceneService.scaleHeight()
 	}
 
 	private getSortedNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
-		const nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+		const {
+			appSettings: { layoutAlgorithm },
+			metricData
+		} = state
+		let nodes: Node[] = []
+		switch (layoutAlgorithm) {
+			case LayoutAlgorithm.StreetMap:
+			case LayoutAlgorithm.TreeMapStreet:
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricData.nodeMetricData, isDeltaState(state.files))
+				break
+			case LayoutAlgorithm.SquarifiedTreeMap:
+				nodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+				break
+		}
 		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
 		// prevent multiple steps if the visibility is checked first.
 		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
@@ -49,7 +66,7 @@ export class CodeMapRenderService {
 		const appSettings = this.storeService.getState().appSettings
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
-		const highestNode = this.getHighestNode(sortedNodes)
+		this.highestNode = this.getHighestNode(sortedNodes)
 
 		this.codeMapLabelService.clearLabels()
 		if (showLabelNodeName || showLabelNodeMetric) {
@@ -64,7 +81,7 @@ export class CodeMapRenderService {
 							showNodeName: showLabelNodeName,
 							showNodeMetric: showLabelNodeMetric
 						},
-						highestNode
+						this.highestNode
 					)
 					amountOfTopLabels -= 1
 				}

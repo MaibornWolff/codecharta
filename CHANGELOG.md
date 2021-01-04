@@ -19,6 +19,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.65.0] - 2020-12-23
+
+### Added 🚀
+
+-   Highlight label while hovering over building, draw a temporary label for hovered buildings that have none ([#1529](https://github.com/MaibornWolff/codecharta/issues/1529))
+-   Integrated streetlayout ([#904](https://github.com/MaibornWolff/codecharta/issues/904))
+    ![cc_street_ccv](https://user-images.githubusercontent.com/63230711/78872405-87eed900-7a49-11ea-984a-c0ef738779b9.png)
+    In street layout file nodes are displayed as buildings and directories are displayed as streets. A street layout has the advantage of a more apparent directory structure and stable positioning of nodes after metric changes.
+    two different Street layout are integrated : - StreetLayout : as described above. - TMStreet : a combination of street layout and squarified layout.
+
+### Changed
+
+-   The button to see excluded buildings is now merged into the flattened button. Excluded and flattened buildings can now be seen by opening the building with the eye slash icon ([#1543](https://github.com/MaibornWolff/codecharta/issues/1543))
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Height scaling not applied to buildings ([#1595](https://github.com/MaibornWolff/codecharta/issues/1595)))
+-   Fixed multiple label positioning/scaling bugs
+
+### Chore 👨‍💻 👩‍💻
+
+-   e2e flaky test ([#1322](https://github.com/MaibornWolff/codecharta/issues/1322))
+
 ## [1.64.0] - 2020-12-15
 
 ### Added 🚀
