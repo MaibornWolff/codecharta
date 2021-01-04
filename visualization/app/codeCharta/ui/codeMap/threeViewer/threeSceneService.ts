@@ -40,7 +40,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
 	private folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
 	private folderLabelColorSelected = this.storeService.getState().appSettings.mapColors.selected
-	private numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+	private numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
 	private rayPoint = new Vector3(0, 0, 0)
 	private normedTransformVector = new Vector3(0, 0, 0)
 	private highlightedLabel = null
@@ -66,7 +66,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	onMapColorsChanged(mapColors: MapColors) {
 		this.folderLabelColorSelected = mapColors.selected
-		this.numberOrangeColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+		this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
 	}
 
 	onRenderMapChanged() {
@@ -93,7 +93,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	private selectMaterial(materials: Material[]) {
 		const selectedMaterial = materials.find(({ userData }) => userData.id === this.selected.node.id)
-		selectedMaterial?.["color"].setHex(this.numberOrangeColor)
+		selectedMaterial?.["color"].setHex(this.numberSelectionColor)
 	}
 
 	private resetMaterial(materials: Material[]) {
@@ -126,7 +126,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		for (const material of materials) {
 			const materialNodeId = material.userData.id
 			if (this.selected && materialNodeId === this.selected.node.id) {
-				material["color"].setHex(this.numberOrangeColor)
+				material["color"].setHex(this.numberSelectionColor)
 			} else if (highlightedNodeIds.has(materialNodeId) || constantHighlightedNodes.has(materialNodeId)) {
 				material["color"].setHex(this.folderLabelColorHighlighted)
 			} else {
