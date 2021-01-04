@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632)))
+-   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632))
+-   maximum treemap files shown in squarified node ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
 
 ### Chore 👨‍💻 👩‍💻
 
