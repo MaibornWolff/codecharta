@@ -1,8 +1,7 @@
 import "./mapColorPicker.module"
 
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import angular, { IScope } from "angular"
-import "angular-mocks"
+import angular, { IScope, IControllerService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { MapColorPickerController } from "./mapColorPicker.component"
@@ -12,8 +11,7 @@ describe("MapColorPickerController", () => {
 	let $rootScope: IScope
 	let storeService: StoreService
 	let $scope: IScope
-	// let $compile
-	let $controller
+	let $controller: IControllerService
 	let createMapColorController: () => MapColorPickerController
 
 	beforeEach(() => {
@@ -23,7 +21,7 @@ describe("MapColorPickerController", () => {
 		$rootScope = getService<IScope>("$rootScope")
 		$scope = $rootScope.$new()
 		storeService = getService<StoreService>("storeService")
-		$controller = getService<any>("$controller")
+		$controller = getService<IControllerService>("$controller")
 
 		createMapColorController = (mapColorFor = "positive") => {
 			const controller = $controller(MapColorPickerController, {
