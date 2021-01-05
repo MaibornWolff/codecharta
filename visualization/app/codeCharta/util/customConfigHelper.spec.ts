@@ -582,7 +582,7 @@ describe("CustomConfigHelper", () => {
 			FileDownloader.downloadData = jest.fn()
 
 			CustomConfigHelper.downloadCustomConfigs(exportedCustomConfigs, CustomConfigFileStateConnector.prototype)
-
+			
 			const now = new Date()
 			expect(FileDownloader.downloadData).toHaveBeenCalledWith(
 				"mock_serialized_config_to_be_downloaded",
