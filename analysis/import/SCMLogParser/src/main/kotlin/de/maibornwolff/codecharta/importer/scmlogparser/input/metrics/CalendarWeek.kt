@@ -20,13 +20,13 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
         }
 
         fun numberOfWeeksBetween(a: CalendarWeek, b: CalendarWeek): Int {
-            return ChronoUnit.WEEKS.between(getWeekDate(a.year,a.week),getWeekDate(b.year,b.week) ).toInt()
+            return ChronoUnit.WEEKS.between(getWeekDate(a.year, a.week), getWeekDate(b.year, b.week)).toInt()
         }
 
         private fun getWeekDate(year: Int, week: Int): OffsetDateTime? {
             return OffsetDateTime.now().withYear(year)
-                                    .with(WeekFields.ISO.weekOfYear(), week.toLong())
-                                    .with(WeekFields.ISO.dayOfWeek(), 1)
+                .with(WeekFields.ISO.weekOfYear(), week.toLong())
+                .with(WeekFields.ISO.dayOfWeek(), 1)
         }
 
         private fun modifyYear(dateTime: OffsetDateTime, cwWeek: Int, cwYear: Int): Int {
