@@ -1,11 +1,11 @@
 package de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics
 
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 
 internal data class CalendarWeek(private val week: Int, private val year: Int) : Comparable<CalendarWeek> {
-
     override fun compareTo(other: CalendarWeek): Int {
         return numberOfWeeksBetween(this, other)
     }
@@ -25,8 +25,10 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
 
         private fun getWeekDate(year: Int, week: Int): OffsetDateTime? {
             return OffsetDateTime.now().withYear(year)
-                .with(WeekFields.ISO.weekOfYear(), week.toLong())
+                .with(WeekFields.ISO.weekOfWeekBasedYear(), week.toLong())
                 .with(WeekFields.ISO.dayOfWeek(), 1)
+                .withHour(12).withMinute(0).withSecond(0).withNano(0)
+                .withOffsetSameInstant(ZoneOffset.UTC)
         }
 
         private fun modifyYear(dateTime: OffsetDateTime, week: Int, initialYear: Int): Int {
