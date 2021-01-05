@@ -583,11 +583,10 @@ describe("CustomConfigHelper", () => {
 
 			CustomConfigHelper.downloadCustomConfigs(exportedCustomConfigs, CustomConfigFileStateConnector.prototype)
 
-			const timestampFormat = "\\d{4}-\\d{02}-\\d{2}_\\d{2}-\\d{2}"
-			const fileNameRegEx = new RegExp(`mocked_currently_uploaded_map_${timestampFormat}.cc.config.json`)
+			const now = new Date()
 			expect(FileDownloader.downloadData).toHaveBeenCalledWith(
 				"mock_serialized_config_to_be_downloaded",
-				expect.stringMatching(fileNameRegEx)
+				expect.stringContaining(`mocked_currently_uploaded_map_${now.a.getUTCFullYear()})
 			)
 		})
 	})
