@@ -22,15 +22,17 @@ describe("MapColorPickerController", () => {
 		$rootScope = getService<IScope>("$rootScope")
 		$scope = $rootScope.$new()
 		$compile = getService<ICompileService>("$compile")
-		storeService = getService<StoreService>("storeService")
 		$controller = getService<IControllerService>("$controller")
+		storeService = getService<StoreService>("storeService")
 
 		createMapColorController = (mapColorFor: keyof MapColors = "positive") => {
-			const controller = $controller(
+			return $controller(
 				MapColorPickerController,
 				{
 					$rootScope,
-					$element: $compile('<cc-map-color-picker map-color-for="positive" label="my label"></cc-map-color-picker>')($rootScope),
+					$element: $compile(`<cc-map-color-picker map-color-for="${mapColorFor}" label="my label"></cc-map-color-picker>`)(
+						$rootScope
+					),
 					$scope,
 					storeService
 				},
@@ -38,7 +40,6 @@ describe("MapColorPickerController", () => {
 					mapColorFor
 				}
 			)
-			return controller
 		}
 	})
 
@@ -52,13 +53,13 @@ describe("MapColorPickerController", () => {
 		expect(mapColorsServiceSubscribeSpy).toHaveBeenCalled()
 	})
 
-	it("should set the initial color if used for 'negative", () => {
+	it("should set the initial color of 'negative' if used for 'negative'", () => {
 		const mapColorController = createMapColorController("negative")
 		mapColorController.$onInit()
 		expect(mapColorController["$scope"].color).toBe(defaultMapColors["negative"])
 	})
 
-	it("should set the initial color if used for 'positive", () => {
+	it("should set the initial color of 'positive' if used for 'positive'", () => {
 		const mapColorController = createMapColorController("positive")
 		mapColorController.$onInit()
 		expect(mapColorController["$scope"].color).toBe(defaultMapColors["positive"])
@@ -85,19 +86,21 @@ describe("MapColorPickerController", () => {
 		$rootScope.$digest()
 		mapColorController.$onInit()
 
+		const ownDomElement = mapColorController["$element"][0]
+
 		// verify there is no color-input field and margin element initially
-		expect(mapColorController["$element"][0].querySelector(inputFieldSelector)).toBe(null)
-		expect(mapColorController["$element"][0].querySelector(marginSelector)).toBe(null)
+		expect(ownDomElement.querySelector(inputFieldSelector)).toBe(null)
+		expect(ownDomElement.querySelector(marginSelector)).toBe(null)
 
 		// verify they are added once `onOpen`
 		mapColorController["$scope"].colorPickerEventApi.onOpen()
-		expect(mapColorController["$element"][0].querySelectorAll(inputFieldSelector).length).toBe(1)
-		expect(mapColorController["$element"][0].querySelectorAll(marginSelector).length).toBe(1)
+		expect(ownDomElement.querySelectorAll(inputFieldSelector).length).toBe(1)
+		expect(ownDomElement.querySelectorAll(marginSelector).length).toBe(1)
 
 		// verify they exist only once after another call to `onOpen`
 		mapColorController["$scope"].colorPickerEventApi.onOpen()
-		expect(mapColorController["$element"][0].querySelectorAll(inputFieldSelector).length).toBe(1)
-		expect(mapColorController["$element"][0].querySelectorAll(marginSelector).length).toBe(1)
+		expect(ownDomElement.querySelectorAll(inputFieldSelector).length).toBe(1)
+		expect(ownDomElement.querySelectorAll(marginSelector).length).toBe(1)
 	})
 
 	it("should focus its wrapper on `onOpen`", () => {
