@@ -100,7 +100,34 @@ describe("MapColorPickerController", () => {
 		expect(mapColorController["$element"][0].querySelectorAll(marginSelector).length).toBe(1)
 	})
 
-	it("should update the color onMapColorsChanged", () => {
+	it("should focus its wrapper on `onOpen`", () => {
+		const mapColorController = createMapColorController()
+		$rootScope.$digest()
+		mapColorController.$onInit()
+		const wrapperToBeFocused = mapColorController["$element"][0].querySelector(".cc-map-color-picker-wrapper") as HTMLElement
+		wrapperToBeFocused.focus = jest.fn()
+		mapColorController["$scope"].colorPickerEventApi.onOpen()
+
+		expect(wrapperToBeFocused.focus).toHaveBeenCalled()
+	})
+
+	it("should add brush-icon `onOpen` and remove it again `onClose`", () => {
+		const mapColorController = createMapColorController()
+		$rootScope.$digest()
+		mapColorController.$onInit()
+
+		const swatch = mapColorController["$element"][0].querySelector(".color-picker-swatch")
+
+		expect(swatch.classList.contains("fa-paint-brush")).toBe(false)
+
+		mapColorController["$scope"].colorPickerEventApi.onOpen()
+		expect(swatch.classList.contains("fa-paint-brush")).toBe(true)
+
+		mapColorController["$scope"].colorPickerEventApi.onClose()
+		expect(swatch.classList.contains("fa-paint-brush")).toBe(false)
+	})
+
+	it("should update its scope color onMapColorsChanged", () => {
 		const mapColorController = createMapColorController()
 		mapColorController.$onInit()
 
@@ -113,5 +140,32 @@ describe("MapColorPickerController", () => {
 		expect(mapColorController["$scope"].color).toBe(newColor)
 	})
 
-	it.skip("should change store on color change", () => {})
+	it("should update store only if the color has changed", () => {
+		const mapColorController = createMapColorController()
+		mapColorController["storeService"].dispatch = jest.fn()
+		$rootScope.$digest()
+		mapColorController.$onInit()
+
+		mapColorController["$scope"].colorPickerEventApi.onChange(null, mapColorController["$scope"].color)
+		expect(mapColorController["storeService"].dispatch).not.toHaveBeenCalled()
+
+		mapColorController["$scope"].colorPickerEventApi.onChange(null, "#fffff")
+		expect(mapColorController["storeService"].dispatch).toHaveBeenCalledTimes(1)
+	})
+
+	it("should update value of custom color input field, when its $scope.color changes", () => {
+		const mapColorController = createMapColorController()
+		mapColorController["storeService"].dispatch = jest.fn()
+		$rootScope.$digest()
+		mapColorController.$onInit()
+		mapColorController["$scope"].colorPickerEventApi.onOpen()
+		const colorInputField = mapColorController["$element"][0].querySelector(".cc-color-picker-input") as HTMLInputElement
+		const initialValue = colorInputField.value
+
+		const newValue = `${initialValue}1`
+		mapColorController["$scope"].color = newValue
+		mapColorController["$scope"].$digest()
+
+		expect(colorInputField.value).toBe(newValue)
+	})
 })
