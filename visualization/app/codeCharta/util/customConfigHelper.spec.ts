@@ -586,7 +586,7 @@ describe("CustomConfigHelper", () => {
 			const now = new Date()
 			expect(FileDownloader.downloadData).toHaveBeenCalledWith(
 				"mock_serialized_config_to_be_downloaded",
-				expect.stringContaining(`mocked_currently_uploaded_map_${now.a.getUTCFullYear()})
+				expect.stringContaining(`mocked_currently_uploaded_map_${now.getUTCFullYear()}`)
 			)
 		})
 	})
