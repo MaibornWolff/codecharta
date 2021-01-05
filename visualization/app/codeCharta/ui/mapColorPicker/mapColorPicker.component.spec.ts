@@ -4,8 +4,9 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import angular, { IScope, IControllerService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
-import { MapColorPickerController } from "./mapColorPicker.component"
+import { MapColorPickerController, mapColorPickerComponent } from "./mapColorPicker.component"
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { MapColors } from "../../codeCharta.model"
 
 describe("MapColorPickerController", () => {
 	let $rootScope: IScope
@@ -17,20 +18,24 @@ describe("MapColorPickerController", () => {
 	beforeEach(() => {
 		instantiateModule("app.codeCharta.ui.mapColorPicker")
 
-		// $compile = getService<ICompileService>("$compile")
 		$rootScope = getService<IScope>("$rootScope")
 		$scope = $rootScope.$new()
 		storeService = getService<StoreService>("storeService")
 		$controller = getService<IControllerService>("$controller")
 
-		createMapColorController = (mapColorFor = "positive") => {
-			const controller = $controller(MapColorPickerController, {
-				$rootScope,
-				$element: angular.element('<cc-map-color-picker map-color-for="positive" label="my label"></cc-map-color-picker>'),
-				$scope,
-				storeService
-			})
-			controller["mapColorFor"] = mapColorFor
+		createMapColorController = (mapColorFor: keyof MapColors = "positive") => {
+			const controller = $controller(
+				MapColorPickerController,
+				{
+					$rootScope,
+					$element: angular.element('<cc-map-color-picker map-color-for="positive" label="my label"></cc-map-color-picker>'),
+					$scope,
+					storeService
+				},
+				{
+					mapColorFor
+				}
+			)
 			return controller
 		}
 	})
@@ -54,11 +59,14 @@ describe("MapColorPickerController", () => {
 	it("should update the color onMapColorsChanged", () => {
 		const mapColorController = createMapColorController()
 		mapColorController.$onInit()
+
+		const newColor = "#ffffff"
 		mapColorController.onMapColorsChanged({
 			...defaultMapColors,
-			positive: "#ffffff"
+			positive: newColor
 		})
-		expect(mapColorController["$scope"].color).toBe("#ffffff")
+
+		expect(mapColorController["$scope"].color).toBe(newColor)
 	})
 
 	it("should set colorPickerOptions to overwrite angularjs-color-picker's default value", () => {
@@ -67,15 +75,12 @@ describe("MapColorPickerController", () => {
 		expect(mapColorController["$scope"].colorPickerOptions).toEqual({ pos: undefined })
 	})
 
-	it.skip("toto: should test map-color-for attribute", () => {
-		// const mapColorController = createMapColorController();
-		// mapColorController.$onInit()
-		// mapColorController["$scope"].colorPickerEventApi.onOpen();
-		// const component = $compile('<cc-map-color-picker map-color-for="positive" label="my label"></cc-map-color-picker>')($rootScope)
-		// $rootScope.$digest()
-		// console.log(component.html())
-		// console.log(component.controller.mapColorFor)
-		// component.attr("map-color-for")
+	it("should bind map-color-for attribute", () => {
+		expect(mapColorPickerComponent.bindings.mapColorFor).toBe("@")
+	})
+
+	it("should bind label attribute", () => {
+		expect(mapColorPickerComponent.bindings.label).toBe("@")
 	})
 
 	it.skip("toto: should add margin elem and color-input field once", () => {})
