@@ -5,7 +5,7 @@ export class FilePanelPageObject {
 	}
 
 	async clickChooser() {
-		await expect(page).toClick("file-panel-component md-select", { timeout: 3000 })
+		await expect(page).toClick("file-panel-component md-select", { timeout: 6000 })
 	}
 
 	async getAllNames() {
