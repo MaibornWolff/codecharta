@@ -578,8 +578,7 @@ describe("CustomConfigHelper", () => {
 			CustomConfigFileStateConnector.prototype.isEachFileSelected = jest.fn().mockReturnValue(true)
 			CustomConfigFileStateConnector.prototype.getJointMapName = jest.fn().mockReturnValue("mocked_currently_uploaded_map.cc.json")
 
-			spyOn(JSON, "stringify")
-			JSON["stringify"] = jest.fn(() => {
+			jest.spyOn(JSON, "stringify").mockImplementation(() => {
 				return "mock_serialized_config_to_be_downloaded"
 			})
 
