@@ -30,7 +30,7 @@ class CalendarWeekTest {
         val kw = CalendarWeek.forDateTime(commitDateTime)
 
         // then
-        assertThat(kw).isEqualTo(CalendarWeek(53, 2015)) // 2015 has 52 Weeks
+        assertThat(kw).isEqualTo(CalendarWeek(53, 2015)) // 2015 has 53 Weeks
     }
 
     @Test
