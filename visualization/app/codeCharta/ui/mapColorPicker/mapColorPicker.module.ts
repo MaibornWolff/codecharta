@@ -4,6 +4,7 @@ import "../../state/state.module"
 import "../../codeCharta.module"
 
 import { mapColorPickerComponent } from "./mapColorPicker.component"
+import customColorPickerTemplate from "./colorPicker.template.html"
 
 angular
 	.module("app.codeCharta.ui.mapColorPicker", [
@@ -24,3 +25,6 @@ angular
 		})
 	})
 	.component(mapColorPickerComponent.selector, mapColorPickerComponent)
+	.run(function ($templateCache) {
+		$templateCache.put("template/color-picker/directive.html", customColorPickerTemplate)
+	})
