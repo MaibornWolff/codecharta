@@ -10,6 +10,7 @@ import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfig
 import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 import { klona } from "klona"
 import { FileDownloader } from "./fileDownloader"
+import { stubDate } from "../../../mocks/dateMock.helper"
 
 describe("CustomConfigHelper", () => {
 	beforeEach(() => {
@@ -552,6 +553,9 @@ describe("CustomConfigHelper", () => {
 	})
 
 	describe("downloadCustomConfigs", () => {
+		stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
+		const newDate = "2018-12-14_09-39"
+
 		it("should trigger download and append the download-file-name with the one and only selected map name", () => {
 			const exportCustomConfig1 = {
 				id: "1-invalid-md5-checksum",
@@ -583,11 +587,9 @@ describe("CustomConfigHelper", () => {
 
 			CustomConfigHelper.downloadCustomConfigs(exportedCustomConfigs, CustomConfigFileStateConnector.prototype)
 
-			const timestampFormat = "\\d{4}-\\d{02}-\\d{2}_\\d{2}-\\d{2}"
-			const fileNameRegEx = new RegExp(`mocked_currently_uploaded_map_${timestampFormat}.cc.config.json`)
 			expect(FileDownloader.downloadData).toHaveBeenCalledWith(
 				"mock_serialized_config_to_be_downloaded",
-				expect.stringMatching(fileNameRegEx)
+				`mocked_currently_uploaded_map_${newDate}.cc.config.json`
 			)
 		})
 	})
