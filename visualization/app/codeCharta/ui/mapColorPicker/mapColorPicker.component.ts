@@ -4,6 +4,7 @@ import { IRootScopeService } from "angular"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { MapColors } from "../../codeCharta.model"
 import { MapColorsSubscriber, MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 export class MapColorPickerController implements MapColorsSubscriber {
 	private mapColorFor: keyof MapColors
@@ -21,9 +22,8 @@ export class MapColorPickerController implements MapColorsSubscriber {
 		this.$scope.colorPickerOptions = { pos: undefined } // reset unwanted default positioning
 		this.$scope.colorPickerEventApi = {
 			onOpen: () => {
-				const ownDomElement = this.$element[0] as HTMLElement
-				;(ownDomElement.querySelector(".cc-map-color-picker-wrapper") as HTMLElement).focus()
-				ownDomElement.querySelector(".color-picker-swatch").classList.add("fa", "fa-paint-brush")
+				;(this.$element[0].querySelector(".cc-map-color-picker-wrapper") as HTMLElement).focus()
+				this.getSwatch().classList.add("fa", "fa-paint-brush")
 				if (!this.hasColorInputField()) {
 					// check this each time `onOpen`, instead of using a MutationObserver in `$postLink`,
 					// as e.g. angularjs' `ng-if` re-creates the innerNode (e.g. in the legend component)
@@ -35,12 +35,23 @@ export class MapColorPickerController implements MapColorsSubscriber {
 				}
 			},
 			onClose: () => {
-				this.$element[0].querySelector(".color-picker-swatch").classList.remove("fa", "fa-paint-brush")
+				this.getSwatch().classList.remove("fa", "fa-paint-brush")
 			},
 			onChange: (_, color) => {
 				this.updateMapColor(color)
 			}
 		}
+	}
+
+	$postLink() {
+		this.$scope.$watch("color", () => {
+			const swatch = this.getSwatch()
+			if (swatch === null) {
+				return
+			}
+
+			swatch.style.color = ColorConverter.getReadableColorForBackground(swatch.style["backgroundColor"])
+		})
 	}
 
 	private updateMapColor(color: string) {
@@ -52,6 +63,10 @@ export class MapColorPickerController implements MapColorsSubscriber {
 				})
 			)
 		}
+	}
+
+	private getSwatch() {
+		return this.$element[0].querySelector(".color-picker-swatch") as HTMLElement
 	}
 
 	private getColorFromStore() {
