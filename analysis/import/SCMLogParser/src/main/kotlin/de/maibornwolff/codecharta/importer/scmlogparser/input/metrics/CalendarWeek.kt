@@ -24,10 +24,11 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
         }
 
         private fun getWeekDate(year: Int, week: Int): OffsetDateTime? {
+            // returns the date of Monday based on the week and year
             return OffsetDateTime.now().withYear(year)
                 .with(WeekFields.ISO.weekOfWeekBasedYear(), week.toLong())
                 .with(WeekFields.ISO.dayOfWeek(), 1)
-                .withHour(12).withMinute(0).withSecond(0).withNano(0)
+                .withHour(12).withMinute(0).withSecond(0).withNano(0) 
                 .withOffsetSameInstant(ZoneOffset.UTC)
         }
 

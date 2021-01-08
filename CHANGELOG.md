@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632))
 -   Maximum treemap files shown in squarified node ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
--   Fixed kotlin test ([#1322](https://github.com/MaibornWolff/codecharta/issues/1322))
 
 ### Chore 👨‍💻 👩‍💻
 

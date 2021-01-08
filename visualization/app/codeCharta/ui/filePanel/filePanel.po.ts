@@ -5,16 +5,14 @@ export class FilePanelPageObject {
 	}
 
 	async clickChooser() {
-		// expect toClick timeout does not work it might be the reason of flaky tests
-		// [toClick issue](https://github.com/smooth-code/jest-puppeteer/issues/202)
-		await page.waitForSelector("file-panel-component md-select", {timeout : 6000})
-		await page.click("file-panel-component md-select")
+		await expect(page).toClick("file-panel-component md-select") // timeout added globally in puppeteer.helper.ts
 	}
 
 	async getAllNames() {
 		await this.clickChooser()
+		
+		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu");
 
-		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu")
 		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", element => element["innerText"])
 		return content.split("\n")
 	}
