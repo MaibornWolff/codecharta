@@ -20,6 +20,11 @@ export class FilePanelPageObject {
 			const snapshot = page.accessibility.snapshot({
 				interestingOnly : false
 			})
+
+			const node = this.findFocusedNode(snapshot);
+			// @ts-ignore
+			// eslint-disable-next-line no-console
+			console.log(node?.name);
 			// @ts-ignore
 			// eslint-disable-next-line no-console
 			console.log(snapshot)
@@ -29,4 +34,14 @@ export class FilePanelPageObject {
 		disableConsole()
 		return content.split("\n")
 	}
+
+	findFocusedNode =(node) => {
+		if (node.focused)
+		  return node;
+		for (const child of node.children || []) {
+		  const foundNode = this.findFocusedNode(child);
+		  return foundNode;
+		}
+		return null;
+	  }
 }
