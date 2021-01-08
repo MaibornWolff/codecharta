@@ -21,3 +21,7 @@ export async function enableConsole() {
 		console[message._type](...data)
 	})
 }
+
+export async function disableConsole() {
+	page.on("console", async () => {})
+}
