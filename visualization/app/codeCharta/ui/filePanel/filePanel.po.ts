@@ -10,18 +10,16 @@ export class FilePanelPageObject {
 
 	async getAllNames() {
 		await this.clickChooser()
-		this.printSnapShot("first chooser")
+		await this.printSnapShot("##################################")
 		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu");
-		this.printSnapShot("first chooser 2")
+		await this.printSnapShot("----------------------------------")
 
 		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", element => element["innerText"])
 		return content.split("\n")
 	}
 
-	printSnapShot(tag) {
-		const snapshot = page.accessibility.snapshot({
-			interestingOnly : false
-		})
+	async printSnapShot(tag) {
+		const snapshot = await page.accessibility.snapshot()
 
 		const node = this.findFocusedNode(snapshot);
 		// @ts-ignore

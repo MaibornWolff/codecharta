@@ -15,12 +15,9 @@ export async function goto(url = CC_URL) {
 
 export async function enableConsole() {
 	page.on("console", async (message: ConsoleMessage) => {
+		const data = await Promise.all(message.args().map(async argument => argument.jsonValue()))
 		// @ts-ignore
 		// eslint-disable-next-line no-console
-		console.log(`${message.type().slice(0, 3).toUpperCase()} ${message.text()}`)
+		console[message._type](...data)
 	})
-}
-
-export async function disableConsole() {
-	page.on("console", async () => {})
 }
