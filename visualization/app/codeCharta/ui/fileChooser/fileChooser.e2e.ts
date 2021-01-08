@@ -9,7 +9,7 @@ describe("FileChooser", () => {
 	let filePanel: FilePanelPageObject
 	let dialogError: DialogErrorPageObject
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		fileChooser = new FileChooserPageObject()
 		filePanel = new FilePanelPageObject()
 		dialogError = new DialogErrorPageObject()

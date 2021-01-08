@@ -4,7 +4,7 @@ import { SearchPanelModeSelectorPageObject } from "./searchPanelModeSelector.po"
 describe("SearchPanelModeSelector", () => {
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 
 		await goto()

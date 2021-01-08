@@ -4,7 +4,7 @@ import { MetricChooserPageObject } from "./metricChooser.po"
 describe("MapTreeViewLevel", () => {
 	let metricChooser: MetricChooserPageObject
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		metricChooser = new MetricChooserPageObject()
 
 		await goto()

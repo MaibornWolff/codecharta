@@ -1,13 +1,13 @@
 export class CustomConfigsPageObject {
-	async enableExperimentalFeatures() {
+	async toggleExperimentalFeatures() {
 		await expect(page).toClick("global-settings-button-component .toolbar-button", { timeout: 3000 })
 		await page.waitForSelector("md-dialog.global-settings", { visible: true })
-		await expect(page).toClick("md-dialog.global-settings div.md-dialog-content md-input-container:nth-child(4) md-checkbox", {
+		await expect(page).toClick("md-dialog.global-settings div.md-dialog-content md-input-container:nth-child(6) md-checkbox", {
 			timeout: 3000
 		})
 
 		// Close Global Settings dialog
-		await expect(page).toClick("code-charta-component", { timeout: 3000 })
+		await expect(page).toClick("md-dialog-actions > button", { timeout: 3000 })
 		await page.waitForSelector("md-dialog.global-settings", { hidden: true })
 	}
 
@@ -30,6 +30,13 @@ export class CustomConfigsPageObject {
 	}
 
 	async openCustomConfigAddDialog() {
+		await page.waitForSelector(".custom-configs-button.plus", { visible: true })
+		await expect(page).toClick(".custom-configs-button.plus", { timeout: 3000 })
+
+		await page.waitForSelector(".custom-config-dialog")
+	}
+
+	async closeCustomConfigAddDialog() {
 		await page.waitForSelector(".custom-configs-button.plus", { visible: true })
 		await expect(page).toClick(".custom-configs-button.plus", { timeout: 3000 })
 
@@ -80,8 +87,8 @@ export class CustomConfigsPageObject {
 
 	async hasCustomConfigItemGroup(groupName: string, groupIndex: number) {
 		await page.waitForFunction(
-			(groupIndex, groupName) =>
-				document.querySelectorAll(".custom-configs-drop-down span.collapse-trigger")[groupIndex].innerHTML.includes(groupName),
+			(_groupIndex, _groupName) =>
+				document.querySelectorAll(".custom-configs-drop-down span.collapse-trigger")[_groupIndex].innerHTML.includes(_groupName),
 			{},
 			groupIndex,
 			groupName

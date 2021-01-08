@@ -8,47 +8,46 @@ describe("MapTreeViewLevel", () => {
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let nodeContextMenu: NodeContextMenuPageObject
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		nodeContextMenu = new NodeContextMenuPageObject()
 
 		await goto()
-	})
-
-	describe("Blacklist", () => {
-		it("excluding a building should exclude it from the tree-view as well", async () => {
-			const filePath = "/root/ParentLeaf/smallLeaf.html"
-
-			await searchPanelModeSelector.toggleTreeView()
-			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
-			await mapTreeViewLevel.openContextMenu(filePath)
-			await nodeContextMenu.exclude()
-
-			expect(await mapTreeViewLevel.nodeExists(filePath)).toBeFalsy()
-		})
+		await searchPanelModeSelector.toggleTreeView()
 	})
 
 	describe("NodeContextMenu", () => {
 		it("NodeContextMenu path should remain marked when hovering over another mapTreeView Element", async () => {
 			const filePath = "/root/ParentLeaf/smallLeaf.html"
-
-			await searchPanelModeSelector.toggleTreeView()
+			
 			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
 			await mapTreeViewLevel.openContextMenu(filePath)
 			await mapTreeViewLevel.hoverNode("/root/sample1OnlyLeaf.scss")
-
+			
 			expect(await mapTreeViewLevel.isNodeMarked(filePath)).toBeTruthy()
+			await mapTreeViewLevel.closeContextMenu(filePath)
 		})
 	})
 
 	describe("Number of Files", () => {
 		it("should show the correct number of files in a folder", async () => {
 			const folder = "/root/ParentLeaf"
-			await searchPanelModeSelector.toggleTreeView()
-			await mapTreeViewLevel.hoverNode(folder)
 
+			await mapTreeViewLevel.hoverNode(folder)
 			expect(await mapTreeViewLevel.getNumberOfFiles(folder)).toBe(2)
+		})
+	})
+
+	// reordered as excluding can be done at last in order to not reload the page every time
+	describe("Blacklist", () => {
+		it("excluding a building should exclude it from the tree-view as well", async () => {
+			const filePath = "/root/ParentLeaf/smallLeaf.html"
+
+			await mapTreeViewLevel.openContextMenu(filePath)
+			await nodeContextMenu.exclude()
+
+			expect(await mapTreeViewLevel.nodeExists(filePath)).toBeFalsy()
 		})
 	})
 })

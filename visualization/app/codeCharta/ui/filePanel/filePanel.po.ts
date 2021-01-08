@@ -5,41 +5,18 @@ export class FilePanelPageObject {
 	}
 
 	async clickChooser() {
-		await expect(page).toClick("file-panel-component md-select") // timeout added globally in puppeteer.helper.ts
+		await expect(page).toClick("file-panel-component md-select")
 	}
 
 	async getAllNames() {
 		await this.clickChooser()
-		await this.printSnapShot("##################################")
 		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu");
-		await this.printSnapShot("----------------------------------")
 
 		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", element => element["innerText"])
+		
+		// revert to initial value by clicking away
+		await this.clickChooser()
+		
 		return content.split("\n")
 	}
-
-	async printSnapShot(tag) {
-		const snapshot = await page.accessibility.snapshot()
-
-		const node = this.findFocusedNode(snapshot);
-		// @ts-ignore
-		// eslint-disable-next-line no-console
-		console.log(tag)
-		// @ts-ignore
-		// eslint-disable-next-line no-console
-		console.log(node?.name);
-		// @ts-ignore
-		// eslint-disable-next-line no-console
-		console.log(snapshot)
-	}
-
-	findFocusedNode =(node) => {
-		if (node.focused)
-		  return node;
-		for (const child of node.children || []) {
-		  const foundNode = this.findFocusedNode(child);
-		  return foundNode;
-		}
-		return null;
-	  }
 }

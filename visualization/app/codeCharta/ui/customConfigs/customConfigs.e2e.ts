@@ -4,7 +4,7 @@ import { CustomConfigsPageObject } from "./customConfigs.po"
 describe("CustomConfigs", () => {
 	let customConfigs: CustomConfigsPageObject
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		customConfigs = new CustomConfigsPageObject()
 
 		await goto()
@@ -14,11 +14,9 @@ describe("CustomConfigs", () => {
 		await customConfigs.isCustomConfigFeatureDisabled()
 	})
 
-	// @TODO the following ones are working in general but sometimes the tests fails. Fix and reactivate them.
-	/*
 	it("QuickAdding CustomConfig with already existing name will show a warning message", async () => {
 		// Enable experimental CustomConfigs Feature first
-		await customConfigs.enableExperimentalFeatures()
+		await customConfigs.toggleExperimentalFeatures()
 
 		await customConfigs.addCustomConfig("TestConfigName")
 
@@ -29,11 +27,14 @@ describe("CustomConfigs", () => {
 		// Enter existing name
 		await customConfigs.fillInCustomConfigName()
 		await customConfigs.isOverrideWarningVisible()
+
+		// revert to initial state
+		await customConfigs.closeCustomConfigAddDialog()
 	}, 90000)
 
-	it("Custom Configs for SINGLE, MULTIPLE, DELTA mode will be shown in separate groups (grouped by selection mode) and can be collapsed properly", async () => {
+	/*it("Custom Configs for SINGLE, MULTIPLE, DELTA mode will be shown in separate groups (grouped by selection mode) and can be collapsed properly", async () => {
 		// Enable experimental CustomConfigs Feature first
-		await customConfigs.enableExperimentalFeatures()
+		await customConfigs.toggleExperimentalFeatures()
 		await customConfigs.addCustomConfig("TestSingleConfig")
 
 		await customConfigs.switchToMultipleMode()
@@ -54,6 +55,5 @@ describe("CustomConfigs", () => {
 		await customConfigs.collapseCustomConfigItemGroup(1)
 		await customConfigs.collapseCustomConfigItemGroup(2)
 		await customConfigs.collapseCustomConfigItemGroup(3)
-	}, 90000)
-	*/
+	}, 90000)*/
 })

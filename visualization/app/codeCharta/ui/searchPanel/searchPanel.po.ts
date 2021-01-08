@@ -1,6 +1,10 @@
 export class SearchPanelPageObject {
 	private EXPANDED = "expanded"
 
+	async waitForClosed() {
+		page.waitForSelector("#search-panel-card", { visible: false })
+	}
+
 	async toggle() {
 		const wasOpen = await this.isOpen()
 
