@@ -12,15 +12,15 @@ export class LazyLoader {
         LazyLoader._fileName = fileName
         LazyLoader._nodePath = nodePath
         const directory = localStorage.getItem(LazyLoader._fileName)
-        const path: string = nodePath.replace("root", directory)
+        const path = nodePath.replace("root", directory)
         if (directory === null){
             LazyLoader.setDirectory()
             return
         }
-        LazyLoader.checkDirExists().then((exists) =>{
+        //check if root still exists
+        LazyLoader.checkDirExists(directory).then(exists =>{
             if (!exists){
-                const message = `Unknown or non-existent path: ${path}`
-                alert(message)
+                alert(`Unknown or non-existent directory: ${directory}`)
                 LazyLoader.setDirectory()
                 return
             }
@@ -35,14 +35,16 @@ export class LazyLoader {
         if (navigator.userAgent.indexOf("Windows") !== 1){
             _default = "C:".concat(_default)
         }
-        const directoryName = prompt("Please enter a root directory path of the project", _default)
+        let directoryName = prompt("Please enter a root directory path of the project", _default)
         if (directoryName !== null && directoryName !== ""){
+            directoryName = directoryName.split("\\").join("/")
             localStorage.setItem(LazyLoader._fileName, directoryName)
             LazyLoader.openFile()
         }
     }
 
-    private static async checkDirExists(){
-        return import('fs').then(fs => fs.existsSync(localStorage.getItem(LazyLoader._fileName)))
+    private static async checkDirExists(path: string){
+        const fs = await import('fs')
+        return fs.existsSync(path)
     }
 }
