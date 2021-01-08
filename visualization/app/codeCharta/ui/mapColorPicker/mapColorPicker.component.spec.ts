@@ -79,58 +79,23 @@ describe("MapColorPickerController", () => {
 		expect(mapColorPickerComponent.bindings.label).toBe("@")
 	})
 
-	it("should add margin element and color-input field `onOpen` once", () => {
-		const inputFieldSelector = "color-picker .cc-color-picker-input"
-		const marginSelector = ".cc-color-picker-grid-margin"
+	it("should use customized template", () => {
+		const customBrushSelector = ".cc-color-picker-swatch-brush-icon.fa.fa-paint-brush"
+		const customMarginSelector = ".cc-color-picker-grid-margin"
+		const customInputSelector = ".color-picker-panel input"
+
 		const mapColorController = createMapColorController()
 		$rootScope.$digest()
 		mapColorController.$onInit()
 
 		const ownDomElement = mapColorController["$element"][0]
 
-		// verify there is no color-input field and margin element initially
-		expect(ownDomElement.querySelector(inputFieldSelector)).toBe(null)
-		expect(ownDomElement.querySelector(marginSelector)).toBe(null)
-
-		// verify they are added once `onOpen`
-		mapColorController["$scope"].colorPickerEventApi.onOpen()
-		expect(ownDomElement.querySelectorAll(inputFieldSelector).length).toBe(1)
-		expect(ownDomElement.querySelectorAll(marginSelector).length).toBe(1)
-
-		// verify they exist only once after another call to `onOpen`
-		mapColorController["$scope"].colorPickerEventApi.onOpen()
-		expect(ownDomElement.querySelectorAll(inputFieldSelector).length).toBe(1)
-		expect(ownDomElement.querySelectorAll(marginSelector).length).toBe(1)
+		expect(ownDomElement.querySelector(customBrushSelector)).not.toBe(null)
+		expect(ownDomElement.querySelector(customMarginSelector)).not.toBe(null)
+		expect(ownDomElement.querySelector(customInputSelector)).not.toBe(null)
 	})
 
-	it("should focus its wrapper on `onOpen`", () => {
-		const mapColorController = createMapColorController()
-		$rootScope.$digest()
-		mapColorController.$onInit()
-		const wrapperToBeFocused = mapColorController["$element"][0].querySelector(".cc-map-color-picker-wrapper") as HTMLElement
-		wrapperToBeFocused.focus = jest.fn()
-		mapColorController["$scope"].colorPickerEventApi.onOpen()
-
-		expect(wrapperToBeFocused.focus).toHaveBeenCalled()
-	})
-
-	it("should add brush-icon `onOpen` and remove it again `onClose`", () => {
-		const mapColorController = createMapColorController()
-		$rootScope.$digest()
-		mapColorController.$onInit()
-
-		const swatch = mapColorController["$element"][0].querySelector(".color-picker-swatch")
-
-		expect(swatch.classList.contains("fa-paint-brush")).toBe(false)
-
-		mapColorController["$scope"].colorPickerEventApi.onOpen()
-		expect(swatch.classList.contains("fa-paint-brush")).toBe(true)
-
-		mapColorController["$scope"].colorPickerEventApi.onClose()
-		expect(swatch.classList.contains("fa-paint-brush")).toBe(false)
-	})
-
-	it("should update its scope color onMapColorsChanged", () => {
+	it("should update its scope's color onMapColorsChanged if color has changed", () => {
 		const mapColorController = createMapColorController()
 		mapColorController.$onInit()
 
@@ -143,32 +108,72 @@ describe("MapColorPickerController", () => {
 		expect(mapColorController["$scope"].color).toBe(newColor)
 	})
 
-	it("should update store only if the color has changed", () => {
+	it("should not update its scope's color onMapColorsChanged if color hasn't changed", () => {
+		// this is important, as the input field is bound to $scope.color
+		// and therefore "#fff" would jump immediately to "#ffffff" what is annoying for the user
 		const mapColorController = createMapColorController()
-		mapColorController["storeService"].dispatch = jest.fn()
-		$rootScope.$digest()
 		mapColorController.$onInit()
 
-		mapColorController["$scope"].colorPickerEventApi.onChange(null, mapColorController["$scope"].color)
-		expect(mapColorController["storeService"].dispatch).not.toHaveBeenCalled()
+		const oldColor = "#fff"
+		mapColorController["$scope"].color = oldColor
+		const newSameColor = "#ffffff"
+		mapColorController.onMapColorsChanged({
+			...defaultMapColors,
+			positive: newSameColor
+		})
 
-		mapColorController["$scope"].colorPickerEventApi.onChange(null, "#fffff")
-		expect(mapColorController["storeService"].dispatch).toHaveBeenCalledTimes(1)
+		expect(mapColorController["$scope"].color).toBe(oldColor)
 	})
 
-	it("should update value of custom color input field, when its $scope.color changes", () => {
+	it("should update the store, when its scope's color has changed to a new color", () => {
 		const mapColorController = createMapColorController()
-		mapColorController["storeService"].dispatch = jest.fn()
 		$rootScope.$digest()
 		mapColorController.$onInit()
-		mapColorController["$scope"].colorPickerEventApi.onOpen()
-		const colorInputField = mapColorController["$element"][0].querySelector(".cc-color-picker-input") as HTMLInputElement
-		const initialValue = colorInputField.value
 
-		const newValue = `${initialValue}1`
-		mapColorController["$scope"].color = newValue
-		mapColorController["$scope"].$digest()
+		const dispatchSpy = jest.spyOn(mapColorController["storeService"], "dispatch")
+		mapColorController["$scope"].color = "#ffffff"
+		$rootScope.$digest()
 
-		expect(colorInputField.value).toBe(newValue)
+		expect(dispatchSpy).toHaveBeenCalled()
+		expect(dispatchSpy.mock.calls[0][0]).toMatchObject({
+			payload: { positive: "#ffffff" }
+		})
+	})
+
+	it("should not update the store, when its scope's color has changed to the same color", () => {
+		const mapColorController = createMapColorController()
+		$rootScope.$digest()
+		mapColorController.$onInit()
+
+		mapColorController["$scope"].color = "#ffffff"
+		$rootScope.$digest()
+		const dispatchSpy = jest.spyOn(mapColorController["storeService"], "dispatch")
+		mapColorController["$scope"].color = "#fff"
+
+		expect(dispatchSpy).not.toHaveBeenCalled()
+	})
+
+	it("should not update the store, when its scope's color has changed but is incomplete", () => {
+		const mapColorController = createMapColorController()
+		$rootScope.$digest()
+		mapColorController.$onInit()
+
+		const dispatchSpy = jest.spyOn(mapColorController["storeService"], "dispatch")
+		mapColorController["$scope"].color = "#ff"
+		$rootScope.$digest()
+
+		expect(dispatchSpy).not.toHaveBeenCalled()
+	})
+
+	it("should update its brush' color, when its scope's color has changed", () => {
+		const mapColorController = createMapColorController()
+		$rootScope.$digest()
+		mapColorController.$onInit()
+
+		const updateBrushSpy = jest.spyOn<any, any>(mapColorController, "updateBrushColor")
+		mapColorController["$scope"].color = "#ffffff"
+		$rootScope.$digest()
+
+		expect(updateBrushSpy).toHaveBeenCalled()
 	})
 })

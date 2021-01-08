@@ -171,14 +171,4 @@ describe("colorConverter", () => {
 			expect(ColorConverter["hexToNumberMap"].size).toBe(1)
 		})
 	})
-
-	describe("getReadableColorForBackground", () => {
-		it("should decide 'black' for orange", () => {
-			expect(ColorConverter.getReadableColorForBackground("rgb(250, 163, 27)")).toBe("black")
-		})
-
-		it("should decide 'white' for red", () => {
-			expect(ColorConverter.getReadableColorForBackground("rgb(239, 68, 68)")).toBe("white")
-		})
-	})
 })

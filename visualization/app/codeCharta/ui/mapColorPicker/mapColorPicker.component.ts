@@ -20,12 +20,12 @@ export class MapColorPickerController implements MapColorsSubscriber {
 
 	$onInit() {
 		this.$scope.color = this.getColorFromStore()
-		this.$scope.$watch("color", () => {
-			if (hasValidHexLength(this.$scope.color)) {
-				const normalizedHex = normalizeHex(this.$scope.color)
-				this.updateMapColorInStore(normalizedHex)
-				this.updateBrushColor(normalizedHex)
-			}
+		this.$scope.$watch("color", newColor => {
+			if (!hasValidHexLength(newColor) || isSameHexColor(newColor, this.getColorFromStore())) return
+
+			const normalizedHex = normalizeHex(newColor)
+			this.updateMapColorInStore(normalizedHex)
+			this.updateBrushColor(normalizedHex)
 		})
 
 		this.$scope.colorPickerOptions = { pos: undefined } // reset unwanted default positioning
@@ -53,7 +53,7 @@ export class MapColorPickerController implements MapColorsSubscriber {
 	}
 
 	private getColorFromStore() {
-		return this.storeService.getState().appSettings.mapColors[this.mapColorFor]
+		return this.storeService.getState().appSettings.mapColors[this.mapColorFor] as string
 	}
 }
 

@@ -143,6 +143,7 @@
 		"eslint-plugin-unicorn": "^24.0.0",
 		"file-loader": "^6.0.0",
 		"html-loader": "^1.1.0",
+		"html-loader-jest": "^0.2.1",
 		"html-webpack-plugin": "^4.3.0",
 		"jest": "^26.1.0",
 		"jest-puppeteer": "^4.4.0",
