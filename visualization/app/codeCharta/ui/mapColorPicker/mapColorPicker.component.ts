@@ -7,15 +7,14 @@ import { MapColorsSubscriber, MapColorsService } from "../../state/store/appSett
 import { isSameHexColor, hasValidHexLength, normalizeHex, getReadableColorForBackground } from "./colorHelper"
 
 export class MapColorPickerController implements MapColorsSubscriber {
-	private mapColorFor: keyof MapColors
+	private mapColorFor: Exclude<keyof MapColors, "markingColors" | "labelColorAndAlpha">
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private $element: JQLite, private $scope) {
 		MapColorsService.subscribe(this.$rootScope, this)
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
-		const colorFromStore = mapColors[this.mapColorFor] as string // todo improve type / exclude non strings
-		if (!isSameHexColor(this.$scope.color, colorFromStore)) this.$scope.color = mapColors[this.mapColorFor]
+		if (!isSameHexColor(this.$scope.color, mapColors[this.mapColorFor])) this.$scope.color = mapColors[this.mapColorFor]
 	}
 
 	$onInit() {
@@ -53,7 +52,7 @@ export class MapColorPickerController implements MapColorsSubscriber {
 	}
 
 	private getColorFromStore() {
-		return this.storeService.getState().appSettings.mapColors[this.mapColorFor] as string
+		return this.storeService.getState().appSettings.mapColors[this.mapColorFor]
 	}
 }
 
