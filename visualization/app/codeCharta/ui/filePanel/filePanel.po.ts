@@ -1,5 +1,3 @@
-import { enableConsole, disableConsole } from "../../../puppeteer.helper"
-
 export class FilePanelPageObject {
 	async getSelectedName() {
 		await page.waitForSelector("file-panel-component md-select .md-text")
@@ -11,28 +9,30 @@ export class FilePanelPageObject {
 	}
 
 	async getAllNames() {
-		enableConsole()
 		await this.clickChooser()
-		try {
-			await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu");
-		} 
-		catch {
-			const snapshot = page.accessibility.snapshot({
-				interestingOnly : false
-			})
-
-			const node = this.findFocusedNode(snapshot);
-			// @ts-ignore
-			// eslint-disable-next-line no-console
-			console.log(node?.name);
-			// @ts-ignore
-			// eslint-disable-next-line no-console
-			console.log(snapshot)
-		}
+		this.printSnapShot("first chooser")
+		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu");
+		this.printSnapShot("first chooser 2")
 
 		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", element => element["innerText"])
-		disableConsole()
 		return content.split("\n")
+	}
+
+	printSnapShot(tag) {
+		const snapshot = page.accessibility.snapshot({
+			interestingOnly : false
+		})
+
+		const node = this.findFocusedNode(snapshot);
+		// @ts-ignore
+		// eslint-disable-next-line no-console
+		console.log(tag)
+		// @ts-ignore
+		// eslint-disable-next-line no-console
+		console.log(node?.name);
+		// @ts-ignore
+		// eslint-disable-next-line no-console
+		console.log(snapshot)
 	}
 
 	findFocusedNode =(node) => {
