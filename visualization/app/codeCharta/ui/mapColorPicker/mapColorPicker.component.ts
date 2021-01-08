@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { MapColors } from "../../codeCharta.model"
 import { MapColorsSubscriber, MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
-import { ColorConverter } from "../../util/color/colorConverter"
+import { isSameHexColor, hasValidHexLength, normalizeHex, getReadableColorForBackground } from "./colorHelper"
 
 export class MapColorPickerController implements MapColorsSubscriber {
 	private mapColorFor: keyof MapColors
@@ -14,92 +14,46 @@ export class MapColorPickerController implements MapColorsSubscriber {
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
-		this.$scope.color = mapColors[this.mapColorFor]
+		const colorFromStore = mapColors[this.mapColorFor] as string // todo improve type / exclude non strings
+		if (!isSameHexColor(this.$scope.color, colorFromStore)) this.$scope.color = mapColors[this.mapColorFor]
 	}
 
 	$onInit() {
 		this.$scope.color = this.getColorFromStore()
+		this.$scope.$watch("color", () => {
+			if (hasValidHexLength(this.$scope.color)) {
+				const normalizedHex = normalizeHex(this.$scope.color)
+				this.updateMapColorInStore(normalizedHex)
+				this.updateBrushColor(normalizedHex)
+			}
+		})
+
 		this.$scope.colorPickerOptions = { pos: undefined } // reset unwanted default positioning
 		this.$scope.colorPickerEventApi = {
-			onOpen: () => {
-				;(this.$element[0].querySelector(".cc-map-color-picker-wrapper") as HTMLElement).focus()
-				this.getSwatch().classList.add("fa", "fa-paint-brush")
-				if (!this.hasColorInputField()) {
-					// check this each time `onOpen`, instead of using a MutationObserver in `$postLink`,
-					// as e.g. angularjs' `ng-if` re-creates the innerNode (e.g. in the legend component)
-					const colorPicker = this.$element[0].querySelector("color-picker")
-					colorPicker.querySelector(".color-picker-panel").appendChild(this.createColorInput())
-					colorPicker
-						.querySelector(".color-picker-grid")
-						.insertAdjacentHTML("afterend", this.createDivForColorPickerMargin().outerHTML)
-				}
-			},
-			onClose: () => {
-				this.getSwatch().classList.remove("fa", "fa-paint-brush")
-			},
-			onChange: (_, color) => {
-				this.updateMapColor(color)
+			onChange: (_, newColor) => {
+				// The color picker area works fine without manual assigning of scope, but the input field doesn't.
+				// Related: https://github.com/ruhley/angular-color-picker/issues/184 and 188
+				this.$scope.color = newColor
 			}
 		}
 	}
 
-	$postLink() {
-		this.$scope.$watch("color", () => {
-			const swatch = this.getSwatch()
-			if (swatch === null) {
-				return
-			}
-
-			swatch.style.color = ColorConverter.getReadableColorForBackground(swatch.style["backgroundColor"])
-		})
+	private updateBrushColor(normalizedHex: string) {
+		const brushIcon = this.$element[0].querySelector(".cc-color-picker-swatch-brush-icon") as HTMLElement
+		if (brushIcon !== null) brushIcon.style.color = getReadableColorForBackground(normalizedHex)
 	}
 
-	private updateMapColor(color: string) {
-		if (color !== this.getColorFromStore()) {
-			this.storeService.dispatch(
-				setMapColors({
-					...this.storeService.getState().appSettings.mapColors,
-					[this.mapColorFor]: color
-				})
-			)
-		}
-	}
-
-	private getSwatch() {
-		return this.$element[0].querySelector(".color-picker-swatch") as HTMLElement
+	private updateMapColorInStore(color: string) {
+		this.storeService.dispatch(
+			setMapColors({
+				...this.storeService.getState().appSettings.mapColors,
+				[this.mapColorFor]: color
+			})
+		)
 	}
 
 	private getColorFromStore() {
 		return this.storeService.getState().appSettings.mapColors[this.mapColorFor]
-	}
-
-	private hasColorInputField() {
-		return this.$element[0].querySelector("color-picker .cc-color-picker-input") !== null
-	}
-
-	private createColorInput() {
-		const input = document.createElement("input")
-
-		input.classList.add("cc-color-picker-input")
-
-		input.value = this.$scope.color
-		this.$scope.$watch("color", () => {
-			if (input.value !== this.$scope.color) {
-				input.value = this.$scope.color
-			}
-		})
-
-		input.addEventListener("input", () => {
-			this.updateMapColor(input.value)
-		})
-
-		return input
-	}
-
-	private createDivForColorPickerMargin() {
-		const div = document.createElement("div")
-		div.classList.add("cc-color-picker-grid-margin")
-		return div
 	}
 }
 

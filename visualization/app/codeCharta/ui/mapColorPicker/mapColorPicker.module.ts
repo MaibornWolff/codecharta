@@ -18,7 +18,6 @@ angular
 
 			options.alpha = false
 			options.format = "hexString"
-			options.swatchOnly = true
 			options.restrictToFormat = true
 
 			return options

@@ -91,16 +91,6 @@ export class ColorConverter {
 		return this.generatePixel(encodedRGBColor)
 	}
 
-	static getReadableColorForBackground(backgroundColorInRgb: string) {
-		const [r, g, b] = /rgb\((\d+), (\d+), (\d+)\)/
-			.exec(backgroundColorInRgb)
-			.slice(1)
-			.map(s => Number.parseInt(s))
-		// calculation taken from https://24ways.org/2010/calculating-color-contrast/
-		const yiqRatio = (r * 299 + g * 587 + b * 114) / 1000
-		return yiqRatio >= 128 ? "black" : "white"
-	}
-
 	private static encodeHex(string: string) {
 		// Cut off the hash sign.
 		let hex = string.slice(1)

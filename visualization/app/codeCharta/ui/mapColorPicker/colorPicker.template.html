@@ -12,6 +12,7 @@
 		class="color-picker-input-wrapper"
 		ng-class="{'input-group': AngularColorPickerController.options.swatchBootstrap && AngularColorPickerController.options.swatch}"
 	>
+		<span class="cc-color-picker-swatch-brush-icon fa fa-paint-brush"></span>
 		<span
 			ng-if="AngularColorPickerController.options.swatchPos === 'left'"
 			class="color-picker-swatch"
@@ -19,21 +20,6 @@
 			ng-show="AngularColorPickerController.options.swatch"
 			ng-class="{'color-picker-swatch-left': AngularColorPickerController.options.swatchPos !== 'right', 'color-picker-swatch-right': AngularColorPickerController.options.swatchPos === 'right', 'input-group-addon': AngularColorPickerController.options.swatchBootstrap}"
 		></span>
-		<input
-			ng-attr-id="{{AngularColorPickerController.options.id}}"
-			ng-attr-name="{{AngularColorPickerController.options.name}}"
-			class="color-picker-input {{AngularColorPickerController.options.inputClass}}"
-			type="text"
-			ng-model="AngularColorPickerController.internalNgModel"
-			ng-model-options="AngularColorPickerController.ngModelOptions"
-			ng-readonly="AngularColorPickerController.options.swatchOnly"
-			ng-disabled="AngularColorPickerController.options.disabled"
-			ng-change="AngularColorPickerController.onChange($event)"
-			size="7"
-			ng-class="{'color-picker-input-swatch': AngularColorPickerController.options.swatch && !AngularColorPickerController.options.swatchOnly && AngularColorPickerController.options.swatchPos === 'left'}"
-			placeholder="{{AngularColorPickerController.options.placeholder}}"
-			ng-required="AngularColorPickerController.options.required"
-		/>
 		<span
 			ng-if="AngularColorPickerController.options.swatchPos === 'right'"
 			class="color-picker-swatch"
@@ -66,6 +52,7 @@
 						<div></div>
 					</div>
 				</div>
+				<div class="cc-color-picker-grid-margin"></div>
 				<div class="color-picker-hue" ng-show="AngularColorPickerController.options.hue">
 					<div class="color-picker-overlay"></div>
 					<div class="color-picker-slider"></div>
@@ -119,5 +106,20 @@
 				{{AngularColorPickerController.options.close.label}}
 			</button>
 		</div>
+		<input
+			ng-attr-id="{{AngularColorPickerController.options.id}}"
+			ng-attr-name="{{AngularColorPickerController.options.name}}"
+			class="color-picker-input {{AngularColorPickerController.options.inputClass}}"
+			type="text"
+			ng-model="AngularColorPickerController.internalNgModel"
+			ng-model-options="AngularColorPickerController.ngModelOptions"
+			ng-readonly="AngularColorPickerController.options.swatchOnly"
+			ng-disabled="AngularColorPickerController.options.disabled"
+			ng-change="AngularColorPickerController.onChange($event)"
+			size="7"
+			ng-class="{'color-picker-input-swatch': AngularColorPickerController.options.swatch && !AngularColorPickerController.options.swatchOnly && AngularColorPickerController.options.swatchPos === 'left'}"
+			placeholder="{{AngularColorPickerController.options.placeholder}}"
+			ng-required="AngularColorPickerController.options.required"
+		/>
 	</div>
 </div>
