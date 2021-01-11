@@ -95,9 +95,11 @@ describe("MapColorPickerController", () => {
 		expect(ownDomElement.querySelector(customInputSelector)).not.toBe(null)
 	})
 
-	it("should update its scope's color onMapColorsChanged if color has changed", () => {
+	it("should update its scope's color and brush color onMapColorsChanged if color has changed", () => {
 		const mapColorController = createMapColorController()
 		mapColorController.$onInit()
+
+		const updateBrushColorSpy = jest.spyOn<any, any>(mapColorController, "updateBrushColor")
 
 		const newColor = "#ffffff"
 		mapColorController.onMapColorsChanged({
@@ -106,6 +108,7 @@ describe("MapColorPickerController", () => {
 		})
 
 		expect(mapColorController["$scope"].color).toBe(newColor)
+		expect(updateBrushColorSpy).toHaveBeenCalled()
 	})
 
 	it("should not update its scope's color onMapColorsChanged if color hasn't changed", () => {

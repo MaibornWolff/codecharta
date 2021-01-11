@@ -14,7 +14,10 @@ export class MapColorPickerController implements MapColorsSubscriber {
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
-		if (!isSameHexColor(this.$scope.color, mapColors[this.mapColorFor])) this.$scope.color = mapColors[this.mapColorFor]
+		if (!isSameHexColor(this.$scope.color, mapColors[this.mapColorFor])) {
+			this.$scope.color = mapColors[this.mapColorFor]
+			this.updateBrushColor(mapColors[this.mapColorFor])
+		}
 	}
 
 	$onInit() {
