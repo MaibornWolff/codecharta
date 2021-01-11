@@ -3,6 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
+import "./mapColorPicker/mapColorPicker.module"
 import "./customConfigs/customConfigs.module"
 import "./attributeTypeSelector/attributeTypeSelector.module"
 import "./sortingOption/sortingOption.module"
@@ -48,6 +49,7 @@ import "./maxTreeMapFiles/maxTreeMapFiles.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
+	"app.codeCharta.ui.mapColorPicker",
 	"app.codeCharta.ui.customConfigs",
 	"app.codeCharta.ui.sortingOptionDialog",
 	"app.codeCharta.ui.sortingButton",

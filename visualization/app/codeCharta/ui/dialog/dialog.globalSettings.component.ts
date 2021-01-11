@@ -21,13 +21,9 @@ import {
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithm } from "../../codeCharta.model"
-import { 
-	LayoutAlgorithmService,
-	LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
+import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { 
-	MaxTreeMapFilesService,
-	MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
+import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 
 export class DialogGlobalSettingsController
@@ -43,15 +39,15 @@ export class DialogGlobalSettingsController
 		isWhiteBackground: boolean
 		resetCameraIfNewFileIsLoaded: boolean
 		experimentalFeaturesEnabled: boolean
-		layoutAlgorithm : LayoutAlgorithm,
-		maxTreeMapFiles : number
+		layoutAlgorithm: LayoutAlgorithm
+		maxTreeMapFiles: number
 	} = {
 		hideFlatBuildings: null,
 		isWhiteBackground: null,
 		resetCameraIfNewFileIsLoaded: null,
 		experimentalFeaturesEnabled: false,
-		layoutAlgorithm : null,
-		maxTreeMapFiles : null
+		layoutAlgorithm: null,
+		maxTreeMapFiles: null
 	}
 
 	constructor(private $mdDialog, private $rootScope: IRootScopeService, private storeService: StoreService) {
