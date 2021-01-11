@@ -1,0 +1,38 @@
+cc-store-color-picker {
+	.cc-store-color-picker-wrapper {
+		margin: 4px 0;
+
+		&:hover {
+			cursor: pointer;
+		}
+
+		.color-picker-wrapper .color-picker-swatch {
+			width: 16px;
+			height: 16px;
+			padding: 0;
+		}
+
+		.cc-color-picker-swatch-brush-icon {
+			width: 16px;
+			height: 16px;
+			opacity: 0;
+		}
+
+		&:hover .cc-color-picker-swatch-brush-icon,
+		.color-picker-open .cc-color-picker-swatch-brush-icon {
+			opacity: 1;
+		}
+	}
+
+	.cc-color-picker-label {
+		display: inline-block;
+		margin: 0;
+		vertical-align: middle;
+	}
+
+	color-picker {
+		.color-picker-panel {
+			right: 24px; /* left to swatch */
+		}
+	}
+}
