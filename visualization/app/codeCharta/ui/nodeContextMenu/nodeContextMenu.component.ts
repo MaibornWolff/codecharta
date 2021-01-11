@@ -48,8 +48,10 @@ export class NodeContextMenuController
 		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
-		private threeSceneService: ThreeSceneService
+		private threeSceneService: ThreeSceneService,
+		private $scope
 	) {
+		// todo put mark into scope
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
@@ -82,7 +84,13 @@ export class NodeContextMenuController
 		document.getElementById("codeMap").addEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
 
-	onBodyLeftClickHideNodeContextMenu = () => {
+	onBodyLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
+		if (mouseEvent.composedPath().some((element: any) => {
+			return element?.nodeName === "CC-NODE-CONTEXT-MENU-COLOR-PICKER"
+		}
+		))
+			return;
+
 		// Just close node context menu, if you click anywhere on the map.
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 

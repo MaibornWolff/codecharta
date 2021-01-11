@@ -1,0 +1,20 @@
+cc-node-context-menu-color-picker {
+  display: inline-block;
+
+  color-picker {
+    width: 32px;
+    height: 32px;
+
+    .color-picker-swatch {
+      opacity: 0;
+      width: 32px;
+      height: 32px;
+    }
+
+    .cc-color-picker-swatch-brush-icon {
+      font-size: 25px;
+      width: 32px;
+      height: 32px;
+    }
+  }
+}

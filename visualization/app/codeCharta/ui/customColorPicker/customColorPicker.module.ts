@@ -3,8 +3,9 @@ import "angularjs-color-picker"
 import "../../state/state.module"
 import "../../codeCharta.module"
 
-import { storeColorPickerComponent } from "./storeColorPicker/storeColorPicker.component"
 import customColorPickerTemplate from "./customColorPicker.template.html"
+import { storeColorPickerComponent } from "./storeColorPicker/storeColorPicker.component"
+import { nodeContextMenuColorPickerComponent } from "./nodeContextMenuColorPicker/nodeContextMenuColorPicker.component"
 
 import "./customColorPicker.scss"
 
@@ -26,6 +27,7 @@ angular
 		})
 	})
 	.component(storeColorPickerComponent.selector, storeColorPickerComponent)
+	.component(nodeContextMenuColorPickerComponent.selector, nodeContextMenuColorPickerComponent)
 	.run(function ($templateCache) {
 		$templateCache.put("template/color-picker/directive.html", customColorPickerTemplate)
 	})
