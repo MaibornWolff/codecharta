@@ -20,23 +20,38 @@ import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
+import { LayoutAlgorithm } from "../../codeCharta.model"
+import { 
+	LayoutAlgorithmService,
+	LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
+import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { 
+	MaxTreeMapFilesService,
+	MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
+import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 
 export class DialogGlobalSettingsController
 	implements
 		HideFlatBuildingsSubscriber,
 		IsWhiteBackgroundSubscriber,
 		ResetCameraIfNewFileIsLoadedSubscriber,
-		ExperimentalFeaturesEnabledSubscriber {
+		ExperimentalFeaturesEnabledSubscriber,
+		LayoutAlgorithmSubscriber,
+		MaxTreeMapFilesSubscriber {
 	private _viewModel: {
 		hideFlatBuildings: boolean
 		isWhiteBackground: boolean
 		resetCameraIfNewFileIsLoaded: boolean
 		experimentalFeaturesEnabled: boolean
+		layoutAlgorithm : LayoutAlgorithm,
+		maxTreeMapFiles : number
 	} = {
 		hideFlatBuildings: null,
 		isWhiteBackground: null,
 		resetCameraIfNewFileIsLoaded: null,
-		experimentalFeaturesEnabled: false
+		experimentalFeaturesEnabled: false,
+		layoutAlgorithm : null,
+		maxTreeMapFiles : null
 	}
 
 	constructor(private $mdDialog, private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -44,7 +59,8 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
-
+		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
 		this.initDialogOnClick()
 	}
 
@@ -54,6 +70,7 @@ export class DialogGlobalSettingsController
 		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)
 		this.onIsWhiteBackgroundChanged(appSettings.isWhiteBackground)
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
+		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
 	}
 
@@ -67,6 +84,14 @@ export class DialogGlobalSettingsController
 
 	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
 		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
+	}
+
+	onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
+		this._viewModel.layoutAlgorithm = layoutAlgorithm
+	}
+
+	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
+		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
@@ -87,6 +112,14 @@ export class DialogGlobalSettingsController
 
 	applySettingsEnableExperimentalFeatures() {
 		this.storeService.dispatch(setExperimentalFeaturesEnabled(this._viewModel.experimentalFeaturesEnabled))
+	}
+
+	applySettingsAlgorithm() {
+		this.storeService.dispatch(setLayoutAlgorithm(this._viewModel.layoutAlgorithm))
+	}
+
+	applySettingsMaxTreeMapFiles() {
+		this.storeService.dispatch(setMaxTreeMapFiles(this._viewModel.maxTreeMapFiles))
 	}
 
 	hide() {

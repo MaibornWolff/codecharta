@@ -5,14 +5,21 @@
 
 	<reset-settings-button-component
 		autofocus="false"
-		settings-names="appSettings.hideFlatBuildings, appSettings.isWhiteBackground, appSettings.resetCameraIfNewFileIsLoaded"
+		settings-names="appSettings.hideFlatBuildings, appSettings.isWhiteBackground, appSettings.resetCameraIfNewFileIsLoaded, appSettings.layoutAlgorithm, appSettings.maxTreeMapFiles"
 		tooltip="Reset global settings to their defaults"
 	></reset-settings-button-component>
 
 	<md-dialog-content>
 		<div class="md-dialog-content">
-			<layout-selection-component></layout-selection-component>
-			<max-tree-map-files-component></max-tree-map-files-component>
+			<layout-selection-component
+				ng-model="$ctrl._viewModel.layoutAlgorithm"
+				ng-change="$ctrl.applySettingsAlgorithm()">
+			</layout-selection-component>
+			<max-tree-map-files-component
+				ng-model="$ctrl._viewModel.maxTreeMapFiles"
+				ng-change="$ctrl.applySettingsMaxTreeMapFiles()"
+				ng-show="$ctrl._viewModel.layoutAlgorithm === 'Squarified TreeMap'">
+			</max-tree-map-files-component>
 
 			<md-input-container class="input-container md-block">
 				<md-checkbox
@@ -60,15 +67,15 @@
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				<em class="fa fa-external-link"></em>Manual
+				<em class="fa fa-external-link icon-link"></em>Manual
 			</a>
 
 			<a class="weblink" href="https://github.com/MaibornWolff/codecharta/" target="_blank" rel="noopener noreferrer">
-				<em class="fa fa-external-link"></em>Github
+				<em class="fa fa-external-link icon-link"></em>Github
 			</a>
 
 			<a class="weblink" href="https://github.com/MaibornWolff/codecharta/wiki" target="_blank" rel="noopener noreferrer">
-				<em class="fa fa-external-link"></em>Wiki
+				<em class="fa fa-external-link icon-link"></em>Wiki
 			</a>
 		</div>
 	</md-dialog-content>
