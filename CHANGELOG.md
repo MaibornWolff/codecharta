@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533))<br/><br/>
-    ![example of new feature](https://user-images.githubusercontent.com/3596742/103547861-3c1c7380-4ea5-11eb-8df2-541caf65b9df.png)
+-   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533)).<br/><br/>
+    ![example of new feature #1533](https://user-images.githubusercontent.com/3596742/103547861-3c1c7380-4ea5-11eb-8df2-541caf65b9df.png)
+-   Allow customized color in the node context menu ([#1556](https://github.com/MaibornWolff/codecharta/issues/1556).<br/><br/>
+    [!example of new feature #1556](https://user-images.githubusercontent.com/3596742/104302048-a007f300-54c8-11eb-86c1-287483884783.png)
 
 ### Changed
 
