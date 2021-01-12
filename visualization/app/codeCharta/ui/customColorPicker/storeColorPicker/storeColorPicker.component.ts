@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { MapColors } from "../../../codeCharta.model"
 import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
-import { isSameHexColor, hasValidHexLength, normalizeHex, getReadableColorForBackground } from "./colorHelper"
+import { isSameHexColor, hasValidHexLength, normalizeHex, getReadableColorForBackground } from "../colorHelper"
 
 export class StoreColorPickerController implements MapColorsSubscriber {
 	private mapColorFor: Exclude<keyof MapColors, "markingColors" | "labelColorAndAlpha">
