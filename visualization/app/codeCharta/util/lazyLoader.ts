@@ -11,7 +11,8 @@ export class LazyLoader {
 		LazyLoader._fileName = fileName
 		LazyLoader._nodePath = nodePath
 		const directory = localStorage.getItem(LazyLoader._fileName)
-		const path = nodePath.replace("root", directory)
+		//replace '/root' with directory
+		const path = nodePath.replace(nodePath.split("/", 2).join("/"), directory)
 		if (directory === null) {
 			return LazyLoader.setDirectory()
 		}
