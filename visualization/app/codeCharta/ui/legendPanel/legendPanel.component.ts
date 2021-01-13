@@ -136,7 +136,6 @@ export class LegendPanelController
 	}
 
 	private setMarkedPackageLists(markedPackages: MarkedPackage[]) {
-		//	console.log(markedPackages)
 		if (markedPackages) {
 			this._viewModel.packageLists = []
 			for (const markedPackage of markedPackages) {
