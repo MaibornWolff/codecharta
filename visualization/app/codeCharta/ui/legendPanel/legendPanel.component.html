@@ -33,7 +33,7 @@
 			ng-repeat="item in packageList.markedPackages"
 			title="{{::item.path}}"
 		>
-			{{ $last ? " and " : "," }}{{ item.path }}
+			{{ $last ? "" : "," }}{{ item.path }}
 		</span>
 	</div>
 </div>
