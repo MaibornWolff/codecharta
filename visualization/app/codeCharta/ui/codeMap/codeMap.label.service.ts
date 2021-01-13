@@ -54,51 +54,49 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const labelYOrigin = y + node.height
 		const labelZ = z + node.length / 2
 
-		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
-			let labelText = ""
+		let labelText = ""
 
-			if (options.showNodeName) {
-				labelText = `${node.name}`
-			}
-			if (options.showNodeMetric) {
-				if (labelText !== "") {
-					labelText += "\n"
-				}
-				labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
-			}
-
-			const label = this.makeText(labelText, 30, node)
-			const { margin } = this.storeService.getState().dynamicSettings
-			const {
-				appSettings: { layoutAlgorithm }
-			} = state
-			const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
-			let labelOffset = labelHeightScaled + label.heightValue / 2
-
-			switch (layoutAlgorithm) {
-				// !remark : algorithm scaling is not same as the squarified layout,
-				// !layout offset needs to be scaled down,the divided by value is just empirical,
-				// TODO !needs further investigation
-				case LayoutAlgorithm.StreetMap:
-				case LayoutAlgorithm.TreeMapStreet:
-					labelOffset /= 10
-					this.LABEL_HEIGHT_POSITION = 0
-					label.line = this.makeLine(labelX, labelY + labelOffset, labelYOrigin, labelZ)
-					break
-				default:
-					label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
-			}
-
-			label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
-			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
-			label.sprite.material.opacity = this.mapLabelColors.alpha
-			label.sprite.userData = { node }
-
-			this.threeSceneService.labels.add(label.sprite)
-			this.threeSceneService.labels.add(label.line)
-
-			this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
+		if (options.showNodeName) {
+			labelText = `${node.name}`
 		}
+		if (options.showNodeMetric) {
+			if (labelText !== "") {
+				labelText += "\n"
+			}
+			labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+		}
+
+		const label = this.makeText(labelText, 30, node)
+		const { margin } = this.storeService.getState().dynamicSettings
+		const {
+			appSettings: { layoutAlgorithm }
+		} = state
+		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
+		let labelOffset = labelHeightScaled + label.heightValue / 2
+
+		switch (layoutAlgorithm) {
+			// !remark : algorithm scaling is not same as the squarified layout,
+			// !layout offset needs to be scaled down,the divided by value is just empirical,
+			// TODO !needs further investigation
+			case LayoutAlgorithm.StreetMap:
+			case LayoutAlgorithm.TreeMapStreet:
+				labelOffset /= 10
+				this.LABEL_HEIGHT_POSITION = 0
+				label.line = this.makeLine(labelX, labelY + labelOffset, labelYOrigin, labelZ)
+				break
+			default:
+				label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
+		}
+
+		label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
+		label.sprite.material.color = new Color(this.mapLabelColors.rgb)
+		label.sprite.material.opacity = this.mapLabelColors.alpha
+		label.sprite.userData = { node }
+
+		this.threeSceneService.labels.add(label.sprite)
+		this.threeSceneService.labels.add(label.line)
+
+		this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
 	}
 
 	clearLabels() {

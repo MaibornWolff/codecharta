@@ -132,12 +132,12 @@ describe("CodeMapLabelService", () => {
 			expect(codeMapLabelService["labels"].length).toBe(1)
 		})
 
-		it("should not add label if node has not a height attribute mentioned in renderSettings", () => {
-			sampleLeaf.attributes = { notsome: 0 }
+		it("should add label even if node has a height attribute value of 0", () => {
+			sampleLeaf.attributes = { mcc: 0 }
 
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 100)
 
-			expect(codeMapLabelService["labels"].length).toBe(0)
+			expect(codeMapLabelService["labels"].length).toBe(1)
 		})
 
 		it("should calculate correct height without delta with node name only", () => {
