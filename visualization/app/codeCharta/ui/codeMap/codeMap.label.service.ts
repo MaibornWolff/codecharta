@@ -55,10 +55,10 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const y = node.z0
 		const z = node.y0 - state.treeMap.mapSize
 
-		const labelX = x + node.width / 2
-		const labelY = y + this.nodeHeight * multiplier.y
+		const labelX = (x + node.width / 2) * multiplier.x
+		const labelY = (y + this.nodeHeight) * multiplier.y
 		const labelYOrigin = y + node.height
-		const labelZ = z + node.length / 2
+		const labelZ = (z + node.length / 2) * multiplier.z
 
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
 			let labelText = ""

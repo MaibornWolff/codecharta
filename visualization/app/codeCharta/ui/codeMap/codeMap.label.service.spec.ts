@@ -217,6 +217,14 @@ describe("CodeMapLabelService", () => {
 			assertLabelPositions(scaledLabelB, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
 		})
 
+		it("should apply scaling factor to a newly created label", () => {
+			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+
+			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionWithoutDelta.y).toBe(37)
+		})
+
 		function assertLabelPositions(scaledLabel, expectedSpritePositions: Vector3, expectedScaledLineGeometryStart: Vector3) {
 			expect(scaledLabel.sprite.position.x).toBe(expectedSpritePositions.x)
 			expect(scaledLabel.sprite.position.y).toBe(expectedSpritePositions.y)
