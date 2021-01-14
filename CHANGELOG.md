@@ -9,17 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533))<br/><br/>
-    ![example of new feature](https://user-images.githubusercontent.com/3596742/103547861-3c1c7380-4ea5-11eb-8df2-541caf65b9df.png)
+-   Allow opening files from local drive by double clicking on the buildings or clicking on their names ([#1314](https://github.com/MaibornWolff/codecharta/issues/1314))
+    -   only available in a standalone version!
+    -   files are opened in associated third-party applications
+    -   web-links are opened in a browser window
 
 ### Changed
 
 ### Removed 🗑
 
 ### Fixed 🐞
-
--   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632))
--   Maximum treemap files shown in squarified node ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
 
 ### Chore 👨‍💻 👩‍💻
 
