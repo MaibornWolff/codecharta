@@ -15,7 +15,7 @@ describe("CustomConfigs", () => {
 	})
 
 	// @TODO the following ones are working in general but sometimes the tests fails. Fix and reactivate them.
-	/*
+
 	it("QuickAdding CustomConfig with already existing name will show a warning message", async () => {
 		// Enable experimental CustomConfigs Feature first
 		await customConfigs.enableExperimentalFeatures()
@@ -55,5 +55,4 @@ describe("CustomConfigs", () => {
 		await customConfigs.collapseCustomConfigItemGroup(2)
 		await customConfigs.collapseCustomConfigItemGroup(3)
 	}, 90000)
-	*/
 })
