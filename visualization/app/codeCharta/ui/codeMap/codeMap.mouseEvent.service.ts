@@ -242,7 +242,7 @@ export class CodeMapMouseEventService
 				showNodeName: showLabelNodeName,
 				showNodeMetric: showLabelNodeMetric
 			},
-			0
+			codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 		)
 
 		labels = this.threeSceneService.labels?.children
