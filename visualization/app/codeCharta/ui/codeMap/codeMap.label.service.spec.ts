@@ -154,6 +154,22 @@ describe("CodeMapLabelService", () => {
 			expect(positionWithoutDelta.y).toBe(31)
 		})
 
+		it("should use node height value if nodeHeight is greater than the nodes height ", () => {
+			codeMapLabelService["nodeHeight"] = 100
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+
+			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionWithoutDelta.y).toBe(131)
+		})
+
+		it("should use the nodes actual height if its greater then node height( by construction this is is only the case for temporary labels)", () => {
+			codeMapLabelService["nodeHeight"] = 0
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 10)
+
+			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionWithoutDelta.y).toBe(41)
+		})
+
 		it("should calculate correct height without delta for two line label: node name and metric value", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
 
@@ -215,6 +231,14 @@ describe("CodeMapLabelService", () => {
 			// Ensure that scaling factors are not additive
 			assertLabelPositions(scaledLabelA, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
 			assertLabelPositions(scaledLabelB, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
+		})
+
+		it("should apply scaling factor to a newly created label", () => {
+			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+
+			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionWithoutDelta.y).toBe(37)
 		})
 
 		function assertLabelPositions(scaledLabel, expectedSpritePositions: Vector3, expectedScaledLineGeometryStart: Vector3) {
