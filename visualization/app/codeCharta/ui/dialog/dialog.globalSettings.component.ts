@@ -20,11 +20,12 @@ import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { LayoutAlgorithm } from "../../codeCharta.model"
+import { GlobalSettings, LayoutAlgorithm } from "../../codeCharta.model"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
 
 export class DialogGlobalSettingsController
 	implements
@@ -50,6 +51,9 @@ export class DialogGlobalSettingsController
 		maxTreeMapFiles: null
 	}
 
+	static readonly GLOBALSETTINGS_LOCAL_STORAGE_VERSION = "1.0.0"
+	static readonly GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT = "globalSettings"
+
 	constructor(private $mdDialog, private $rootScope: IRootScopeService, private storeService: StoreService) {
 		HideFlatBuildingsService.subscribe(this.$rootScope, this)
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
@@ -61,6 +65,10 @@ export class DialogGlobalSettingsController
 	}
 
 	private initDialogOnClick() {
+		this.loadInitGlobal()
+	}
+
+	loadInitGlobal(){
 		const { appSettings } = this.storeService.getState()
 
 		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)
@@ -72,18 +80,22 @@ export class DialogGlobalSettingsController
 
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
 		this._viewModel.hideFlatBuildings = hideFlatBuildings
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		this._viewModel.isWhiteBackground = isWhiteBackground
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
 		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
 		this._viewModel.layoutAlgorithm = layoutAlgorithm
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
@@ -92,6 +104,7 @@ export class DialogGlobalSettingsController
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	applySettingsHideFlatBuildings() {
@@ -120,6 +133,17 @@ export class DialogGlobalSettingsController
 
 	hide() {
 		this.$mdDialog.hide()
+	}
+
+	changeGlobalSettingsInLocalStorage(){
+		const globalSettings: GlobalSettings = {
+			hideFlatBuilding: this._viewModel.hideFlatBuildings,
+			isWhiteBackground: this._viewModel.isWhiteBackground,
+			resetCameraIfNewFileIsLoaded: this._viewModel.resetCameraIfNewFileIsLoaded,
+			experimentalFeaturesEnabled: this._viewModel.resetCameraIfNewFileIsLoaded,
+			layoutAlgorithm: this._viewModel.layoutAlgorithm
+		}
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage(globalSettings)
 	}
 }
 
