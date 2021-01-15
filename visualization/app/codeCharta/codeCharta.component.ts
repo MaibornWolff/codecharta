@@ -3,7 +3,7 @@ import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { LocalStorageGlobalSettings, NameDataPair } from "./codeCharta.model"
+import {  NameDataPair } from "./codeCharta.model"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
@@ -14,14 +14,7 @@ import { getCCFiles } from "./model/files/files.helper"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
 import { ExportCCFile } from "./codeCharta.api.model"
-import { DialogGlobalSettingsController } from "./ui/dialog/dialog.globalSettings.component"
-import { setLayoutAlgorithm } from "./state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { setIsWhiteBackground } from "./state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
-import { setResetCameraIfNewFileIsLoaded } from "./state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setExperimentalFeaturesEnabled } from "./state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
-import { setHideFlatBuildings } from "./state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { GlobalSettingsHelper } from "./util/globalSettingsHelper"
-import { setMaxTreeMapFiles } from "./state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -77,20 +70,8 @@ export class CodeChartaController {
 
 	private tryLoadingFiles(values: NameDataPair[]) {
 		this.storeService.dispatch(setAppSettings())
-		this.setLocalStorageGlobalSettingsIfExists()
+		GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.storeService)
 		this.codeChartaService.loadFiles(values)
-	}
-
-	private setLocalStorageGlobalSettingsIfExists(){
-		if(GlobalSettingsHelper.getGlobalSettings()){
-			const ccLocalStorage: LocalStorageGlobalSettings = JSON.parse(localStorage.getItem(DialogGlobalSettingsController.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT))
-			this.storeService.dispatch(setLayoutAlgorithm(ccLocalStorage.globalSettings.layoutAlgorithm))
-			this.storeService.dispatch(setIsWhiteBackground(ccLocalStorage.globalSettings.isWhiteBackground))
-			this.storeService.dispatch(setResetCameraIfNewFileIsLoaded(ccLocalStorage.globalSettings.resetCameraIfNewFileIsLoaded))
-			this.storeService.dispatch(setExperimentalFeaturesEnabled(ccLocalStorage.globalSettings.experimentalFeaturesEnabled))
-			this.storeService.dispatch(setHideFlatBuildings(ccLocalStorage.globalSettings.hideFlatBuilding))
-			this.storeService.dispatch(setMaxTreeMapFiles(ccLocalStorage.globalSettings.maxTreeMapFiles))
-		}
 	}
 
 	private setRenderStateFromUrl() {

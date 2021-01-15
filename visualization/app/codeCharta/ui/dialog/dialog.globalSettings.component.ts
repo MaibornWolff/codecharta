@@ -51,9 +51,6 @@ export class DialogGlobalSettingsController
 		maxTreeMapFiles: null
 	}
 
-	static readonly GLOBALSETTINGS_LOCAL_STORAGE_VERSION = "1.0.0"
-	static readonly GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT = "globalSettings"
-
 	constructor(private $mdDialog, private $rootScope: IRootScopeService, private storeService: StoreService) {
 		HideFlatBuildingsService.subscribe(this.$rootScope, this)
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
