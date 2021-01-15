@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Maximum treemap files shown in squarified node ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
 -   Temporary labels are placed at the wrong height for scaled buildings ([#1618](https://github.com/MaibornWolff/codecharta/issues/1618))
 -   Visible labels will disappear or placed lower for scaled buildings ([#1619](https://github.com/MaibornWolff/codecharta/issues/1619))
+-   Unnecessary break line for secondary metrics ([#1093](https://github.com/MaibornWolff/codecharta/issues/1093))
 
 ### Chore 👨‍💻 👩‍💻
 
