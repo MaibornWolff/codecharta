@@ -22,6 +22,7 @@ angular
 			options.alpha = false
 			options.format = "hexString"
 			options.restrictToFormat = true
+			options.pos = undefined // reset unwanted default positioning
 
 			return options
 		})

@@ -30,7 +30,6 @@ export class StoreColorPickerController implements MapColorsSubscriber {
 			this.updateBrushColor(normalizedHex)
 		})
 
-		this.$scope.colorPickerOptions = { pos: undefined } // reset unwanted default positioning
 		this.$scope.colorPickerEventApi = {
 			onChange: (_, newColor) => {
 				// The color picker area works fine without manual assigning of scope, but the input field doesn't.
