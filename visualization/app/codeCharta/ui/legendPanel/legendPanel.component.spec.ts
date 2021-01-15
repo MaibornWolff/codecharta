@@ -4,15 +4,14 @@ import { LegendPanelController } from "./legendPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { ColorRange } from "../../codeCharta.model"
-import { StoreService } from "../../state/store.service"
 import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { FilesService } from "../../state/store/files/files.service"
 
 describe("LegendPanelController", () => {
 	let legendPanelController: LegendPanelController
 	let $rootScope: IRootScopeService
-	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
@@ -23,11 +22,10 @@ describe("LegendPanelController", () => {
 		instantiateModule("app.codeCharta.ui.legendPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		legendPanelController = new LegendPanelController($rootScope, storeService)
+		legendPanelController = new LegendPanelController($rootScope)
 	}
 
 	describe("constructor", () => {
@@ -53,6 +51,23 @@ describe("LegendPanelController", () => {
 			rebuildController()
 
 			expect(IsAttributeSideBarVisibleService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
+		})
+
+		it("should subscribe to FilesService", () => {
+			const fileServiceSubscribeSpy = jest.spyOn(FilesService, "subscribe").mockImplementation(jest.fn())
+
+			rebuildController()
+
+			expect(fileServiceSubscribeSpy).toHaveBeenCalled()
+		})
+	})
+
+	describe("onFilesSelectionChanged", () => {
+		it("should update its _viewModel.isDeltaState", () => {
+			legendPanelController["_viewModel"].isDeltaState = true
+			legendPanelController.onFilesSelectionChanged([])
+
+			expect(legendPanelController["_viewModel"].isDeltaState).toBe(false)
 		})
 	})
 

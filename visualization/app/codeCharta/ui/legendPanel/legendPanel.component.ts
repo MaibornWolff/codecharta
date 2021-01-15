@@ -2,15 +2,17 @@ import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
 import { ColorRange } from "../../codeCharta.model"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
-import { StoreService } from "../../state/store.service"
 import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
+import { FileState } from "../../model/files/files"
 
-export class LegendPanelController implements IsAttributeSideBarVisibleSubscriber, ColorMetricSubscriber, ColorRangeSubscriber {
+export class LegendPanelController
+	implements IsAttributeSideBarVisibleSubscriber, ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber {
 	private _viewModel: {
 		isLegendVisible: boolean
 		isSideBarVisible: boolean
@@ -25,13 +27,15 @@ export class LegendPanelController implements IsAttributeSideBarVisibleSubscribe
 		colorRange: null
 	}
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService) {
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
+	}
 
-		// todo needed? find related subscriber or check this on each update as it was done before
-		this._viewModel.isDeltaState = isDeltaState(this.storeService.getState().files)
+	onFilesSelectionChanged(files: FileState[]) {
+		this._viewModel.isDeltaState = isDeltaState(files)
 	}
 
 	onColorMetricChanged(colorMetric: string) {
