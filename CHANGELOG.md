@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632))
 -   Maximum treemap files shown in squarified node ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   Wrong folder names and colors in legend when using the highlight folder feature ([#1555](https://github.com/MaibornWolff/codecharta/issues/1555))
 -   Temporary labels are placed at the wrong height for scaled buildings ([#1618](https://github.com/MaibornWolff/codecharta/issues/1618))
 -   Visible labels will disappear or placed lower for scaled buildings ([#1619](https://github.com/MaibornWolff/codecharta/issues/1619))
 -   Unnecessary break line for secondary metrics ([#1093](https://github.com/MaibornWolff/codecharta/issues/1093))
