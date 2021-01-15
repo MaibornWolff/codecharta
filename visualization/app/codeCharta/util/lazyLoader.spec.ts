@@ -14,11 +14,20 @@ describe("LazyLoader", () => {
 
 	it("should call setDirectory if not yet set in localStorage", () => {
 		localStorage.getItem = jest.fn().mockReturnValue(null)
-		const setDirectorySpy = jest.spyOn(LazyLoader.prototype as any, "setDirectory")
-		setDirectorySpy.mockImplementation(() => {})
-
+		localStorage.setItem = jest.fn()
+		LazyLoader["setDirectory"] = jest.fn()
 		window.prompt = jest.fn().mockReturnValue("path")
-		LazyLoader.openFile("file")
-		expect(localStorage.getItem("file")).toEqual("path")
+
+		LazyLoader.openFile("file", "path")
+		expect(LazyLoader["setDirectory"]).toHaveBeenCalled()
+	})
+
+	it("should call setDirectory if root is wrong", () => {
+		localStorage.getItem = jest.fn()
+		LazyLoader["checkDirExists"] = jest.fn().mockReturnValue(false)
+		LazyLoader["setDirectory"] = jest.fn()
+
+		LazyLoader.openFile("file", "path")
+		expect(LazyLoader["setDirectory"]).toHaveBeenCalled()
 	})
 })
