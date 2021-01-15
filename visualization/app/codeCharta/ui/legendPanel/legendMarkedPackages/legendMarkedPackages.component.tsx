@@ -27,7 +27,6 @@ export class LegendPanelController implements MarkedPackagesSubscriber {
 		private $timeout,
 		private codeMapActionsService: CodeMapActionsService
 	) {
-		this.$scope._colorPickerScopes = {}
 		MarkedPackagesService.subscribe(this.$rootScope, this)
 	}
 
@@ -35,6 +34,7 @@ export class LegendPanelController implements MarkedPackagesSubscriber {
 		this._viewModel.packageLists = this.calculatePackageLists(markedPackages)
 
 		this._colorPickerScopes = this.calculateColorPickerScopes(this._viewModel.packageLists)
+
 		this.updateBrushesColor()
 	}
 
