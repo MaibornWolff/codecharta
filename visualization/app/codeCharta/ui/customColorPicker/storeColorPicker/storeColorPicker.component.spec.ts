@@ -65,12 +65,6 @@ describe("StoreColorPickerController", () => {
 		expect(storeColorController["$scope"].color).toBe(defaultMapColors["positive"])
 	})
 
-	it("should set colorPickerOptions to overwrite angularjs-color-picker's default value", () => {
-		const storeColorController = createStoreColorController()
-		storeColorController.$onInit()
-		expect(storeColorController["$scope"].colorPickerOptions).toEqual({ pos: undefined })
-	})
-
 	it("should bind map-color-for attribute", () => {
 		expect(storeColorPickerComponent.bindings.mapColorFor).toBe("@")
 	})
