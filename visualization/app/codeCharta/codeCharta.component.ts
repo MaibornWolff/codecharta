@@ -21,6 +21,7 @@ import { setResetCameraIfNewFileIsLoaded } from "./state/store/appSettings/reset
 import { setExperimentalFeaturesEnabled } from "./state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { setHideFlatBuildings } from "./state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { GlobalSettingsHelper } from "./util/globalSettingsHelper"
+import { setMaxTreeMapFiles } from "./state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -88,6 +89,7 @@ export class CodeChartaController {
 			this.storeService.dispatch(setResetCameraIfNewFileIsLoaded(ccLocalStorage.globalSettings.resetCameraIfNewFileIsLoaded))
 			this.storeService.dispatch(setExperimentalFeaturesEnabled(ccLocalStorage.globalSettings.experimentalFeaturesEnabled))
 			this.storeService.dispatch(setHideFlatBuildings(ccLocalStorage.globalSettings.hideFlatBuilding))
+			this.storeService.dispatch(setMaxTreeMapFiles(ccLocalStorage.globalSettings.maxTreeMapFiles))
 		}
 	}
 

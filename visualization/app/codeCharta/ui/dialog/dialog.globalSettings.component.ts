@@ -76,6 +76,7 @@ export class DialogGlobalSettingsController
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
 		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
+		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
 	}
 
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
@@ -100,6 +101,7 @@ export class DialogGlobalSettingsController
 
 	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
 		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
@@ -141,7 +143,8 @@ export class DialogGlobalSettingsController
 			isWhiteBackground: this._viewModel.isWhiteBackground,
 			resetCameraIfNewFileIsLoaded: this._viewModel.resetCameraIfNewFileIsLoaded,
 			experimentalFeaturesEnabled: this._viewModel.resetCameraIfNewFileIsLoaded,
-			layoutAlgorithm: this._viewModel.layoutAlgorithm
+			layoutAlgorithm: this._viewModel.layoutAlgorithm,
+			maxTreeMapFiles: this._viewModel.maxTreeMapFiles
 		}
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage(globalSettings)
 	}

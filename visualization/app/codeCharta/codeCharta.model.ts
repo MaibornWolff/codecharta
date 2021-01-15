@@ -248,7 +248,8 @@ export interface GlobalSettings{
 	isWhiteBackground: boolean,
 	resetCameraIfNewFileIsLoaded: boolean,
 	experimentalFeaturesEnabled: boolean,
-	layoutAlgorithm: LayoutAlgorithm
+	layoutAlgorithm: LayoutAlgorithm,
+	maxTreeMapFiles: number
 }
 
 export interface Scenario {
