@@ -17,6 +17,7 @@ export class LegendPanelController implements MarkedPackagesSubscriber {
 		packageLists: {}
 	}
 
+	// @ts-ignore TS6133 - used by rendered color-picker
 	private _colorPickerScopes = {}
 
 	constructor(private $rootScope: IRootScopeService, private $scope, private codeMapActionsService: CodeMapActionsService) {
