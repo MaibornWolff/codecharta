@@ -3,14 +3,14 @@ import angular, { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../../codeMap/codeMap.actions.service"
 import { MarkedPackage } from "../../../codeCharta.model"
 import { MarkedPackagesSubscriber, MarkedPackagesService } from "../../../state/store/fileSettings/markedPackages/markedPackages.service"
-import { getReadableColorForBackground, hasValidHexLength, normalizeHex } from "../../customColorPicker/colorHelper"
+import { getReadableColorForBackground, hasValidHexLength, isSameHexColor, normalizeHex } from "../../customColorPicker/colorHelper"
 
 type Path = string
 interface MarkedPackagesMap {
 	[color: string]: Path[]
 }
 
-export class LegendPanelController implements MarkedPackagesSubscriber {
+export class LegendMarkedPackagesController implements MarkedPackagesSubscriber {
 	private _viewModel: {
 		packageLists: MarkedPackagesMap
 	} = {
@@ -43,9 +43,11 @@ export class LegendPanelController implements MarkedPackagesSubscriber {
 			onChange: (api, newColor) => {
 				if (!hasValidHexLength(newColor)) return
 
+				const oldColor = api.getElement().scope().color
 				newColor = normalizeHex(newColor)
+				if (isSameHexColor(oldColor, newColor)) return
 
-				this.updateViewModelPackageList(api.getElement().scope().color, newColor)
+				this.updateViewModelPackageList(normalizeHex(oldColor), newColor)
 
 				this._viewModel.packageLists[newColor].forEach(path => {
 					this.codeMapActionsService.markFolder({ path }, newColor)
@@ -89,5 +91,5 @@ export class LegendPanelController implements MarkedPackagesSubscriber {
 export const legendMarkedPackagesComponent = {
 	selector: "ccLegendMarkedPackagesComponent",
 	template: require("./legendMarkedPackages.component.html"),
-	controller: LegendPanelController
+	controller: LegendMarkedPackagesController
 }
