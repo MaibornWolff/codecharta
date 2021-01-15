@@ -25,21 +25,7 @@
 	<cc-store-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-store-color-picker>
 	<cc-store-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-store-color-picker>
 
-	<hr ng-show="$ctrl._viewModel.packageLists[0]" />
-	<div
-		class="legend-block"
-		ng-show="$ctrl._viewModel.packageLists"
-		ng-repeat="packageList in $ctrl._viewModel.packageLists track by $index"
-	>
-		<img ng-src="{{::packageList.colorPixel}}" alt="" />
-		<span
-			class="marked-package {{ $first ? '' : 'set-left-margin' }}"
-			ng-repeat="item in packageList.markedPackages track by $index"
-			title="{{::item.path}}"
-		>
-			{{::item.path}}{{ $last ? "" : ",&nbsp;" }}
-		</span>
-	</div>
+	<cc-legend-marked-packages-component></cc-legend-marked-packages-component>
 </div>
 
 <md-button
