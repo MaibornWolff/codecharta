@@ -128,7 +128,7 @@ jobs:
             tags: true
             branch: main
 
-        # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
+        # commits the gh-pages directory to the gh-pages branch. Does not ignore built resources
         - provider: pages
           github_token: $GITHUB_TOKEN
           skip_cleanup: true
