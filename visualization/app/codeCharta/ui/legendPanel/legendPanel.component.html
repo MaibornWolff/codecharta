@@ -25,19 +25,19 @@
 	<cc-map-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-map-color-picker>
 	<cc-map-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-map-color-picker>
 
-	<hr ng-show="$ctrl._viewModel.packageLists[0]" />
+	<hr ng-if="$ctrl._viewModel.packageLists[0]" />
 	<div
 		class="legend-block"
 		ng-show="$ctrl._viewModel.packageLists"
-		ng-repeat="packageList in $ctrl._viewModel.packageLists track by $index"
+		ng-repeat="packageList in $ctrl._viewModel.packageLists track by packageList.colorPixel"
 	>
 		<img ng-src="{{::packageList.colorPixel}}" alt="" />
 		<span
 			class="marked-package {{ $first ? '' : 'set-left-margin' }}"
-			ng-repeat="item in packageList.markedPackages track by $index"
+			ng-repeat="item in packageList.markedPackages track by item.path"
 			title="{{::item.path}}"
 		>
-			{{::item.path}}{{ $last ? "" : ",&nbsp;" }}
+			{{ $last ? "" : "," }}{{ item.path }}
 		</span>
 	</div>
 </div>
