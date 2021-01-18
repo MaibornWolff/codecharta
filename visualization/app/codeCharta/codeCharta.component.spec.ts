@@ -1,15 +1,18 @@
 import "./codeCharta.module"
-import { IHttpService, ILocationService } from "angular"
-import { DialogService } from "./ui/dialog/dialog.service"
-import { CodeChartaService } from "./codeCharta.service"
-import { CodeChartaController } from "./codeCharta.component"
-import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { InjectorService } from "./state/injector.service"
-import { StoreService } from "./state/store.service"
-import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
-import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
+import {IHttpService, ILocationService} from "angular"
+import {DialogService} from "./ui/dialog/dialog.service"
+import {CodeChartaService} from "./codeCharta.service"
+import {CodeChartaController} from "./codeCharta.component"
+import {getService, instantiateModule} from "../../mocks/ng.mockhelper"
+import {InjectorService} from "./state/injector.service"
+import {StoreService} from "./state/store.service"
+import {setAppSettings} from "./state/store/appSettings/appSettings.actions"
+import {ThreeCameraService} from "./ui/codeMap/threeViewer/threeCameraService"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
+import {LayoutAlgorithm} from "./codeCharta.model";
+import {GlobalSettingsHelper} from "./util/globalSettingsHelper";
+import {GLOBAL_SETTINGS} from "./util/dataMocks";
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -28,6 +31,8 @@ describe("codeChartaController", () => {
 		withMockedUrlUtils()
 		withMockedCodeChartaService()
 		withMockedDialogService()
+		clearlocalStorage()
+
 	})
 
 	function restartSystem() {
@@ -68,6 +73,10 @@ describe("codeChartaController", () => {
 	function initThreeCameraService() {
 		// Has to be called, to initialize the camera
 		threeCameraService.init(1536, 754)
+	}
+
+	function clearlocalStorage(){
+		localStorage.clear()
 	}
 
 	describe("constructor", () => {
@@ -111,6 +120,33 @@ describe("codeChartaController", () => {
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setAppSettings())
 		})
+
+		it("should set the default global settings if localStorage does not exist", async () => {
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+
+			await codeChartaController.loadFileOrSample()
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBeFalsy()
+			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toEqual(100)
+		})
+
+		it("should set the global settings from localStorage", async () => {
+			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+
+			await codeChartaController.loadFileOrSample()
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeTruthy()
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeTruthy()
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBeTruthy()
+			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toEqual(50)
+		})
 	})
 
 	describe("tryLoadingSampleFiles", () => {
@@ -137,6 +173,31 @@ describe("codeChartaController", () => {
 			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
+		})
+		it("should set the default global settings for the sample files if localStorage does not exist",  () => {
+
+			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBeFalsy()
+			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toEqual(100)
+		})
+
+		it("should set the global settings from localStorage for sample files",  () => {
+			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+
+			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeTruthy()
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeTruthy()
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBeTruthy()
+			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toEqual(50)
 		})
 	})
 })
