@@ -21,12 +21,8 @@ describe("MapTreeViewLevel", () => {
 
 	describe("EdgeChooser", () => {
 		it("should update metrics correctly after switching to a map with different metrics", async () => {
-<<<<<<< HEAD
-			await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_different_edges.cc.json"])
-=======
 			await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
 
->>>>>>> fix/1632/reset-street-layout-global-config
 			await edgeChooser.open()
 			const metrics = await edgeChooser.getMetrics()
 
