@@ -4,69 +4,49 @@
 >
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="legend-block bold">{{ $ctrl._viewModel.colorMetric }}:</div>
-		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.positive }}" alt="" />
-			<span ng-if="!$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
-			<span ng-if="$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span>
-		</div>
-		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.neutral }}" alt="" />
-			&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le;
-			{{ $ctrl._viewModel.colorRange.to | number: 0 }}
-		</div>
-		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.negative }}" alt="" />
-			<span ng-if="!$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span>
-			<span ng-if="$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
-		</div>
+		<cc-map-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
+		</cc-map-color-picker>
+		<cc-map-color-picker
+			map-color-for="neutral"
+			label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
+		>
+		</cc-map-color-picker>
+		<cc-map-color-picker map-color-for="negative" label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite">
+		</cc-map-color-picker>
 	</div>
 
 	<div ng-if="$ctrl._viewModel.isDeltaState">
-		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.positiveDelta }}" alt="positive delta;" />
-			+&Delta;
-		</div>
-		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.negativeDelta }}" alt="negative delta;" />
-			-&Delta;
-		</div>
+		<cc-map-color-picker map-color-for="positiveDelta" label="+&Delta;"> </cc-map-color-picker>
+		<cc-map-color-picker map-color-for="negativeDelta" label="-&Delta;"> </cc-map-color-picker>
 	</div>
 
-	<div class="legend-block">
-		<img ng-src="{{ $ctrl._viewModel.colorIcons.selected }}" alt="selected" />
-		selected
-	</div>
+	<cc-map-color-picker map-color-for="selected" label="selected"> </cc-map-color-picker>
 	<hr />
-	<div class="legend-block">
-		<img ng-src="{{ $ctrl._viewModel.colorIcons.outgoingEdge }}" alt="outgoing edge" />
-		Outgoing Edge
-	</div>
+	<cc-map-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-map-color-picker>
+	<cc-map-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-map-color-picker>
 
-	<div class="legend-block">
-		<img ng-src="{{ $ctrl._viewModel.colorIcons.incomingEdge }}" alt="incoming edge" />
-		Incoming Edge
-	</div>
-
-	<hr ng-show="$ctrl._viewModel.packageLists[0]" />
+	<hr ng-if="$ctrl._viewModel.packageLists[0]" />
 	<div
 		class="legend-block"
 		ng-show="$ctrl._viewModel.packageLists"
-		ng-repeat="packageList in $ctrl._viewModel.packageLists track by $index"
+		ng-repeat="packageList in $ctrl._viewModel.packageLists track by packageList.colorPixel"
 	>
 		<img ng-src="{{::packageList.colorPixel}}" alt="" />
 		<span
 			class="marked-package {{ $first ? '' : 'set-left-margin' }}"
-			ng-repeat="item in packageList.markedPackages track by $index"
+			ng-repeat="item in packageList.markedPackages track by item.path"
 			title="{{::item.path}}"
 		>
-			{{::item.path}}{{ $last ? "" : ",&nbsp;" }}
+			{{ $last ? "" : "," }}{{ item.path }}
 		</span>
 	</div>
 </div>
+
 <md-button
 	class="panel-button md-raised md-primary cc-shadow"
 	ng-click="$ctrl.toggle()"
 	ng-class="{ sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
 	ng-attr-title="{{ $ctrl._viewModel.isLegendVisible ? 'Hide panel' : 'Show panel' }}"
-	>Legend</md-button
 >
+	Legend
+</md-button>

@@ -11,14 +11,13 @@
 
 	<md-dialog-content>
 		<div class="md-dialog-content">
-			<layout-selection-component
-				ng-model="$ctrl._viewModel.layoutAlgorithm"
-				ng-change="$ctrl.applySettingsAlgorithm()">
+			<layout-selection-component ng-model="$ctrl._viewModel.layoutAlgorithm" ng-change="$ctrl.applySettingsAlgorithm()">
 			</layout-selection-component>
 			<max-tree-map-files-component
 				ng-model="$ctrl._viewModel.maxTreeMapFiles"
 				ng-change="$ctrl.applySettingsMaxTreeMapFiles()"
-				ng-show="$ctrl._viewModel.layoutAlgorithm === 'Squarified TreeMap'">
+				ng-show="$ctrl._viewModel.layoutAlgorithm === 'Squarified TreeMap'"
+			>
 			</max-tree-map-files-component>
 
 			<md-input-container class="input-container md-block">
