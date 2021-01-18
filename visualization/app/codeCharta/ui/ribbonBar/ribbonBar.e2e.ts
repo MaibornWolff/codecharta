@@ -13,7 +13,7 @@ describe("RibbonBar", () => {
 	let metricChooser: MetricChooserPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		searchPanel = new SearchPanelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		ribbonBar = new RibbonBarPageObject()
@@ -54,6 +54,8 @@ describe("RibbonBar", () => {
 
 			isSearchPanelOpen = await searchPanel.toggle()
 			expect(isSearchPanelOpen).toBeFalsy()
+
+			await searchPanel.waitForClosed()
 		})
 
 		it("height-metric cad", async () => {
