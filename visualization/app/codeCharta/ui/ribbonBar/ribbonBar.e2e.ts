@@ -54,6 +54,8 @@ describe("RibbonBar", () => {
 
 			isSearchPanelOpen = await searchPanel.toggle()
 			expect(isSearchPanelOpen).toBeFalsy()
+
+			await searchPanel.waitForClosed()
 		})
 
 		it("height-metric cad", async () => {

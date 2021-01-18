@@ -4,7 +4,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { ExportCCFile } from "./../../codeCharta.api.model"
+import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
@@ -36,7 +36,7 @@ export class FileChooserController {
 				}
 
 				reader.onload = event => {
-					content = isCompressed ? zlib.unzipSync(Buffer.from((<any>event.target).result)) : event.target.result
+					content = isCompressed ? zlib.unzipSync(Buffer.from(event.target.result)) : event.target.result
 				}
 
 				reader.onloadend = () => {

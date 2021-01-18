@@ -49,11 +49,11 @@ export function validate(file: ExportCCFile) {
 
 	if (result.error.length === 0) {
 		const ajv = new Ajv({ allErrors: true })
-		const validate = ajv.compile(jsonSchema)
-		const valid = validate(file)
+		const ajvValidate = ajv.compile(jsonSchema)
+		const valid = ajvValidate(file)
 
 		if (!valid) {
-			result.error = validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
+			result.error = ajvValidate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
 		} else if (file.nodes.length === 0) {
 			result.error.push(ERROR_MESSAGES.nodesEmpty)
 		} else {

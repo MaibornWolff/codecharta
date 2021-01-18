@@ -44,30 +44,23 @@ describe("FileChooser", () => {
 	it("should open an invalid file, close the dialog and open a valid file", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/assets/empty.png"])
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
-
 		await dialogError.clickOk()
 
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
-
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
 
 	it("should open an valid and an invalid file, close the dialog and open a valid file", async () => {
-		// !note : openFiles is done in parallel @check Promise.all , first loaded is first served,
-		// !an empty png file insure that the first loaded file is empty.png
-		// !fixes bug https://github.com/MaibornWolff/codecharta/issues/1322
 		await fileChooser.openFiles(["./app/codeCharta/assets/empty.png", "./app/codeCharta/assets/sample3.cc.json"])
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
-
 		await dialogError.clickOk()
 
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
-
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
 
 	it("should not load a map and show error, when loading a map with warning and a map with error", async () => {
-		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/empty.png"])
+		await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_api_warning.cc.json", "./app/codeCharta/resources/empty.png"])
 
 		const t=await dialogError.getMessage()
 
@@ -75,17 +68,25 @@ describe("FileChooser", () => {
 
 		expect(t).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
 		await dialogError.waitUntilDialogIsClosed()
+		
+		await page.waitForFunction(() => {
+			const temporary = document.getElementsByClassName('md-dialog-content-body')[0]
+			if (temporary===undefined)
+				return false
+			return temporary.textContent !== ' Minor API Version Outdated. Found: 1.5'
+		}, {});
 
-		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
+		const t = await dialogError.getMessage()
+		
+		expect(t).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
+		
 		await dialogError.clickOk()
-
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
-
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
 
 	it("should be able to open a cc.json with a lower minor api version without a warning", async () => {
-		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_lower_minor_api.cc.json"])
+		await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_lower_minor_api.cc.json"])
 
 		expect(await filePanel.getSelectedName()).toEqual("sample1_with_lower_minor_api.cc.json")
 	})
