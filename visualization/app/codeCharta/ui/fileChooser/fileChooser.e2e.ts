@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { goto } from "../../../puppeteer.helper"
 import { FileChooserPageObject } from "./fileChooser.po"
 import { FilePanelPageObject } from "../filePanel/filePanel.po"
@@ -65,7 +66,11 @@ describe("FileChooser", () => {
 	it("should not load a map and show error, when loading a map with warning and a map with error", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/empty.png"])
 
-		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
+		const t=await dialogError.getMessage()
+
+		console.log(t)
+
+		expect(t).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
 		await dialogError.waitUntilDialogIsClosed()
 
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
