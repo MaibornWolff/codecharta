@@ -10,6 +10,7 @@ class MetricStatisticsType {
     private var numberOfFiles = 0
     //private var median: Number
     private var average = 0
+    private var values = ArrayList<Int>()
 
     constructor(metricName: String, metricValue: Int) {
         this.metricName = metricName
@@ -17,6 +18,9 @@ class MetricStatisticsType {
     }
 
     fun refresh(metricValue: Int) {
+        this.values.add(metricValue)
+        this.values = ArrayList(this.values.sorted())
+
         this.numberOfFiles++
         this.totalSum += metricValue
         this.average = this.totalSum / this.numberOfFiles

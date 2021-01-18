@@ -294,7 +294,7 @@ function collectMedians(medians: Map<string, number[]>, selector: string, child:
 // TODO: Evaluate if sorting in `getMedian` is not better than using a
 // pre-sorted array. It's a lot less code and should roughly have the same
 // performance.
-function getMedian(numbers: number[]) {
+export function getMedian(numbers: number[]) {
 	if (numbers === undefined || numbers.length === 0) {
 		return 0
 	}
