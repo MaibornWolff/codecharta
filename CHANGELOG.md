@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.66.0] - 2021-01-18
