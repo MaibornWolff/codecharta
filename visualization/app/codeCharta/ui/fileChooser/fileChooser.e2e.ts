@@ -63,17 +63,9 @@ describe("FileChooser", () => {
 
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
 		await dialogError.waitUntilDialogIsClosed()
-		
-		await page.waitForFunction(() => {
-			const temporary = document.getElementsByClassName('md-dialog-content-body')[0]
-			if (temporary===undefined)
-				return false
-			return temporary.textContent !== ' Minor API Version Outdated. Found: 1.5'
-		}, {});
 
-		const t = await dialogError.getMessage()
-		
-		expect(t).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
+		await dialogError.waitUntilDialogContentChanges(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
+		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
 		
 		await dialogError.clickOk()
 		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])

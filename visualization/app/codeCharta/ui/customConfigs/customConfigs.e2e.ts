@@ -4,7 +4,7 @@ import { CustomConfigsPageObject } from "./customConfigs.po"
 describe("CustomConfigs", () => {
 	let customConfigs: CustomConfigsPageObject
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		customConfigs = new CustomConfigsPageObject()
 
 		await goto()

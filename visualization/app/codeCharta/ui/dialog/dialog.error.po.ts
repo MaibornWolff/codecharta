@@ -20,4 +20,10 @@ export class DialogErrorPageObject {
 		await page.waitForSelector("md-dialog-actions button", { visible: false })
 		await page.waitForSelector(".md-dialog-content-body", { visible: false })
 	}
+
+	async waitUntilDialogContentChanges(oldContent : string) {
+		await page.waitForFunction((argument) => {
+			return document.getElementsByClassName(`md-dialog-content-body`)[0]?.textContent !== argument
+		}, {}, oldContent)
+	}
 }

@@ -10,7 +10,7 @@ describe("MapTreeViewLevel", () => {
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 	let searchPanel: SearchPanelPageObject
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		edgeChooser = new EdgeChooserPageObject()
 		fileChooser = new FileChooserPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()

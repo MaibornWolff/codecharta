@@ -10,7 +10,7 @@ describe("NodeContextMenu", () => {
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 	let codeMap: CodeMapPageObject
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		contextMenu = new NodeContextMenuPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()

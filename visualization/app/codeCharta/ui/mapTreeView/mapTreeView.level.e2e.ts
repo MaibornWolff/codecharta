@@ -8,7 +8,7 @@ describe("MapTreeViewLevel", () => {
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let nodeContextMenu: NodeContextMenuPageObject
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		nodeContextMenu = new NodeContextMenuPageObject()

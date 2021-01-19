@@ -128,7 +128,7 @@ export default class VerticalStreet extends Street {
 		for (const child of children) {
 			if (sum < totalLength / 2) {
 				if (child instanceof HorizontalStreet) {
-					;(<HorizontalStreet>child).orientation = HorizontalOrientation.LEFT
+					(<HorizontalStreet>child).orientation = HorizontalOrientation.LEFT
 				}
 				this.leftRow.push(child)
 				sum += child.height
