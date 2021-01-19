@@ -1,29 +1,29 @@
 import { goto } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
-/*import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
+import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
-import { AreaSettingsPanelPageObject } from "../areaSettingsPanel/areaSettingsPanel.po"*/
+import { AreaSettingsPanelPageObject } from "../areaSettingsPanel/areaSettingsPanel.po"
 
 describe("RibbonBar", () => {
 	let searchPanel: SearchPanelPageObject
-	//let searchPanelModeSelector: SearchPanelModeSelectorPageObject
+	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let ribbonBar: RibbonBarPageObject
-	//let metricChooser: MetricChooserPageObject
-	//let mapTreeViewLevel: MapTreeViewLevelPageObject
+	let metricChooser: MetricChooserPageObject
+	let mapTreeViewLevel: MapTreeViewLevelPageObject
 
 	beforeEach(async () => {
 		searchPanel = new SearchPanelPageObject()
-		//searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
+		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		ribbonBar = new RibbonBarPageObject()
-		//metricChooser = new MetricChooserPageObject()
-		//mapTreeViewLevel = new MapTreeViewLevelPageObject()
+		metricChooser = new MetricChooserPageObject()
+		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 
 		await goto()
 	})
 
-	/*it("hovering over a folder should display the sum of metric of all children", async () => {
+	it("hovering over a folder should display the sum of metric of all children", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 
 		await mapTreeViewLevel.hoverNode("/root")
@@ -54,8 +54,6 @@ describe("RibbonBar", () => {
 
 			isSearchPanelOpen = await searchPanel.toggle()
 			expect(isSearchPanelOpen).toBeFalsy()
-
-			await searchPanel.waitForClosed()
 		})
 
 		it("height-metric cad", async () => {
@@ -97,7 +95,7 @@ describe("RibbonBar", () => {
 			isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isEdgeSettingsPanelOpen).toBeFalsy()
 		})
-	})*/
+	})
 
 	it("should open a section, open the search bar and close the section again automatically", async () => {
 		const areaPanel = "area-metric"
@@ -119,7 +117,7 @@ describe("RibbonBar", () => {
 		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeFalsy()
 	})
 
-	/*it("should open a section and keep it open after clicking a button inside it", async () => {
+	it("should open a section and keep it open after clicking a button inside it", async () => {
 		const areaPanel = "area-metric"
 
 		await ribbonBar.togglePanel(areaPanel)
@@ -127,5 +125,5 @@ describe("RibbonBar", () => {
 		expect(await AreaSettingsPanelPageObject.toggleDynamicMargin()).toBeFalsy()
 
 		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeTruthy()
-	})*/
+	})
 })

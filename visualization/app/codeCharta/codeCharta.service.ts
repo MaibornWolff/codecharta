@@ -28,22 +28,14 @@ export class CodeChartaService {
 				if (error.error.length > 0) {
 					this.fileStates = []
 					this.storeService.dispatch(setIsLoadingFile(false))
-					// eslint-disable-next-line no-console
-					console.log("#3")
 					await this.dialogService.showValidationErrorDialog(error)
-					// eslint-disable-next-line no-console
-					console.log("#4")
 					break
 				}
 
 				if (error.warning.length > 0) {
 					this.addFile(nameDataPair)
 					this.storeService.dispatch(setIsLoadingFile(false))
-					// eslint-disable-next-line no-console
-					console.log("#1")
 					await this.dialogService.showValidationWarningDialog(error)
-					// eslint-disable-next-line no-console
-					console.log("#2")
 				}
 			}
 		}

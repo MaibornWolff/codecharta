@@ -10,12 +10,9 @@ export class FilePanelPageObject {
 
 	async getAllNames() {
 		await this.clickChooser()
-		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu");
+		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu")
 
 		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", element => element["innerText"])
-		
-		// revert to initial value by clicking away
-		await this.clickChooser()
 		
 		return content.split("\n")
 	}

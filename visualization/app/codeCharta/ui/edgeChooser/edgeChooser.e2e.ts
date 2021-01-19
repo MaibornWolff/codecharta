@@ -27,10 +27,6 @@ describe("MapTreeViewLevel", () => {
 			const metrics = await edgeChooser.getMetrics()
 
 			expect(metrics).toHaveLength(2)
-
-			// revert to initial state
-			await edgeChooser.close()
-			await fileChooser.openFiles(["./app/codeCharta/assets/sample1.cc.json"])
 		})
 
 		it("should display the amount of incoming and outgoing edges next to the metric name", async () => {
@@ -42,10 +38,6 @@ describe("MapTreeViewLevel", () => {
 
 			const edgeCount = await edgeChooser.getAmountOfEdges()
 			expect(edgeCount).toEqual({ incoming: 2, outgoing: 0 })
-
-			// revert to initial state
-			await edgeChooser.selectEdgeMetric("None")
-			await searchPanel.waitForClosed()
 		})
 
 		it("should not display the amount of incoming and outgoing edges of buildings for the none metric", async () => {
@@ -54,10 +46,6 @@ describe("MapTreeViewLevel", () => {
 			await mapTreeViewLevel.hoverNode("/root/ParentLeaf/smallLeaf.html")
 
 			expect(await edgeChooser.isEdgeCountAvailable()).toBeFalsy()
-
-			// revert to initial state
-			await mapTreeViewLevel.closeFolder("/root/ParentLeaf")
-			await searchPanel.toggle()
 		})
 	})
 })
