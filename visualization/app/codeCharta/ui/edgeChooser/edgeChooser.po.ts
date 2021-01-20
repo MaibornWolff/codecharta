@@ -6,11 +6,6 @@ export class EdgeChooserPageObject {
 		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active.md-clickable")
 	}
 
-	async close() {
-		await expect(page).toClick("edge-chooser-component md-select", { timeout: 3000 })
-		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-leave")
-	}
-
 	async getMetrics() {
 		await page.waitForSelector(".edge-metric")
 		return page.$$eval(".edge-metric", metrics => metrics.map(x => x.textContent))

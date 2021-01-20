@@ -1,11 +1,20 @@
 export class RibbonBarPageObject {
 	private EXPANDED = "expanded"
+	private EXPANDED_REMOVE = "expanded-remove"
 
 	async isPanelOpen(selector: string) {
 		await page.waitForSelector(`#${selector}-card`)
 		const classNames = await page.$eval(`#${selector}-card`, element => element["className"])
-		return classNames.includes(this.EXPANDED)
+		return classNames.includes(this.EXPANDED) && !classNames.includes(this.EXPANDED_REMOVE)
 	}
+
+	/*async isPanelOpenAfterStateChange(selector: string,oldState : boolean) {
+		await page.waitForFunction((_selector,_oldState,_EXPANDED) => {
+			const elements = document.querySelector(`#${_selector}-card`).className
+			return elements.includes(_EXPANDED)!==_oldState
+		}, {}, selector,oldState,this.EXPANDED)
+		return this.isPanelOpen(selector)
+	}*/
 
 	async togglePanel(selector: string) {
 		const wasOpen = await this.isPanelOpen(selector)

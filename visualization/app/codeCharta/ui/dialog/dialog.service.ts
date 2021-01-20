@@ -29,28 +29,20 @@ export class DialogService {
 	}
 
 	showInfoDialog(message, title = "Info", button = "Ok") {
-		// eslint-disable-next-line no-console
-		console.log("showInfoDialog")
 		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
 	async showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
-		// eslint-disable-next-line no-console
-		console.log("showErrorDialog")
 		await this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
 	async showErrorDialogAndOpenFileChooser(message = "An error occurred.", title = "Error", button = "Ok") {
-		// eslint-disable-next-line no-console
-		console.log("showErrorDialogAndOpenFileChooser")
 		const prompt = this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button)
 		await this.$mdDialog.show(prompt)
 		document.getElementById("input-file-id").click()
 	}
 
 	async showValidationWarningDialog(validationResult: CCValidationResult) {
-		// eslint-disable-next-line no-console
-		console.log("showValidationWarningDialog")
 		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
 
 		const htmlMessage = this.buildHtmlMessage(warningSymbol, validationResult.warning)
@@ -59,8 +51,6 @@ export class DialogService {
 	}
 
 	async showValidationErrorDialog(validationResult: CCValidationResult) {
-		// eslint-disable-next-line no-console
-		console.log("showValidationErrorDialog")
 		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
 
 		const htmlMessage = this.buildHtmlMessage(errorSymbol, validationResult.error)

@@ -103,7 +103,8 @@ describe("RibbonBar", () => {
 
 		let isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel)
 		expect(isAreaSettingsPanelOpen).toBeTruthy()
-
+		
+		
 		const isSearchPanelOpen = await searchPanel.toggle()
 		expect(isSearchPanelOpen).toBeTruthy()
 		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeFalsy()

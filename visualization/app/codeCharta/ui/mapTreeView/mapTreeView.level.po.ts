@@ -5,19 +5,9 @@ export class MapTreeViewLevelPageObject {
 		await page.waitForSelector(".tree-element-label.marked")
 	}
 
-	async closeContextMenu(path: string) {
-		await expect(page).toClick(`[id='${path}']`, { button: "left", timeout: 3000 })
-		await page.waitForSelector("node-context-menu-component", { visible: false })
-	}
-
 	async openFolder(path: string) {
 		await expect(page).toClick(`[id='${path}']`, { timeout: 3000 })
 		await page.waitForSelector(`[id='${path}'] span.fa.fa-folder-open`)
-	}
-
-	async closeFolder(path: string) {
-		await expect(page).toClick(`[id='${path}']`, { timeout: 3000 })
-		await page.waitForSelector(`[id='${path}'] span.fa.fa-folder`)
 	}
 
 	async hoverNode(path: string) {
