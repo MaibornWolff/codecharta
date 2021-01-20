@@ -132,7 +132,7 @@ describe("RibbonBar", () => {
 		const colorPanel = "color-metric"
 
 		await ribbonBar.togglePanel(colorPanel)
-		const boundingBoxCheckbox = await ColorSettingsPageObject.toggleMarginBoundingBox()
+		const boundingBoxCheckbox = await ColorSettingsPageObject.toggleInverColorBoundingBox()
 		const boundingBoxResetButton = await ColorSettingsPageObject.resetButtonBoundingBox()
 
 		expect(Math.round(boundingBoxCheckbox.y)).toEqual(Math.floor(boundingBoxResetButton.y))

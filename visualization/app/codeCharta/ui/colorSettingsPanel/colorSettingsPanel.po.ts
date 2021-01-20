@@ -1,5 +1,5 @@
 export class ColorSettingsPageObject {
-	static async toggleMarginBoundingBox() {
+	static async toggleInverColorBoundingBox() {
 		const marginToggleBoxHandle = await page.$("color-settings-panel-component md-checkbox .md-container")
 		return marginToggleBoxHandle.boundingBox()
 	}
