@@ -5,6 +5,7 @@ import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 import { AreaSettingsPanelPageObject } from "../areaSettingsPanel/areaSettingsPanel.po"
+import { ColorSettingsPageObject } from "../colorSettingsPanel/colorSettingsPanel.po"
 
 describe("RibbonBar", () => {
 	let searchPanel: SearchPanelPageObject
@@ -121,9 +122,29 @@ describe("RibbonBar", () => {
 		const areaPanel = "area-metric"
 
 		await ribbonBar.togglePanel(areaPanel)
-		expect(AreaSettingsPanelPageObject.isDynamicMarginEnabled()).toBeTruthy()
-		expect(await AreaSettingsPanelPageObject.toggleDynamicMargin()).toBeFalsy()
+		expect(AreaSettingsPanelPageObject.isDefaultMarginEnabled()).toBeTruthy()
+		expect(await AreaSettingsPanelPageObject.toggleDefaultMargin()).toBeFalsy()
 
 		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeTruthy()
+	})
+
+	it("should check if reset button height matches the height of the last entry of color component", async () => {
+		const colorPanel = "color-metric"
+
+		await ribbonBar.togglePanel(colorPanel)
+		const boundingBoxCheckbox = await ColorSettingsPageObject.toggleMarginBoundingBox()
+		const boundingBoxResetButton = await ColorSettingsPageObject.resetButtonBoundingBox()
+
+		expect(Math.round(boundingBoxCheckbox.y)).toEqual(Math.floor(boundingBoxResetButton.y))
+	})
+
+	it("should check if reset button height matches the height of the last entry of area component", async () => {
+		const areaPanel = "area-metric"
+
+		await ribbonBar.togglePanel(areaPanel)
+		const boundingBoxCheckbox = await AreaSettingsPanelPageObject.toggleMarginBoundingBox()
+		const boundingBoxResetButton = await AreaSettingsPanelPageObject.resetButtonBoundingBox()
+
+		expect(Math.floor(boundingBoxCheckbox.y)).toEqual(Math.floor(boundingBoxResetButton.y))
 	})
 })
