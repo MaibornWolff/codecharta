@@ -23,7 +23,7 @@ describe("globalSettingsHelper", () => {
             GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
             const ccLocalStorage: LocalStorageGlobalSettings = JSON.parse(localStorage.getItem(GlobalSettingsHelper.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT))
 
-            expect(ccLocalStorage.globalSettings.hideFlatBuilding).toBeTruthy()
+            expect(ccLocalStorage.globalSettings.hideFlatBuildings).toBeTruthy()
             expect(ccLocalStorage.globalSettings.isWhiteBackground).toBeTruthy()
             expect(ccLocalStorage.globalSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
             expect(ccLocalStorage.globalSettings.experimentalFeaturesEnabled).toBeTruthy()
@@ -39,7 +39,7 @@ describe("globalSettingsHelper", () => {
 
             const result: GlobalSettings = GlobalSettingsHelper.getGlobalSettings()
 
-            expect(result.hideFlatBuilding).toBeTruthy()
+            expect(result.hideFlatBuildings).toBeTruthy()
             expect(result.isWhiteBackground).toBeTruthy()
             expect(result.resetCameraIfNewFileIsLoaded).toBeTruthy()
             expect(result.experimentalFeaturesEnabled).toBeTruthy()
