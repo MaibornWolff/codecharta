@@ -23,6 +23,7 @@ describe("CodeMapLabelService", () => {
 	let sampleLeaf: Node
 	let otherSampleLeaf: Node
 	let canvasContextMock
+	let sampleLeafDelta: Node
 
 	beforeEach(() => {
 		restartSystem()
@@ -88,6 +89,22 @@ describe("CodeMapLabelService", () => {
 			children: []
 		} as undefined) as Node
 
+		sampleLeafDelta = ({
+			name: "otherSampleLeaf",
+			width: 4,
+			height: 7,
+			length: 2,
+			depth: 1,
+			x0: 5,
+			z0: 6,
+			y0: 7,
+			isLeaf: true,
+			deltas: { a: 1, b: 2 },
+			attributes: { a: 20, b: 15, mcc: 99 },
+			heightDelta: 8,
+			children: []
+		} as undefined) as Node
+
 		canvasContextMock = {
 			font: "",
 			measureText: jest.fn(),
@@ -124,10 +141,11 @@ describe("CodeMapLabelService", () => {
 		beforeEach(() => {
 			storeService.dispatch(setAmountOfTopLabels(1))
 			storeService.dispatch(setHeightMetric("mcc"))
+			codeMapLabelService["nodeHeight"] = 0
 		})
 
 		it("should add label if node has a height attribute mentioned in renderSettings", () => {
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 100)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			expect(codeMapLabelService["labels"].length).toBe(1)
 		})
@@ -135,57 +153,77 @@ describe("CodeMapLabelService", () => {
 		it("should not add label if node has not a height attribute mentioned in renderSettings", () => {
 			sampleLeaf.attributes = { notsome: 0 }
 
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 100)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			expect(codeMapLabelService["labels"].length).toBe(0)
 		})
 
 		it("should calculate correct height without delta with node name only", () => {
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(31)
+			expect(positionWithoutDelta.y).toBe(33)
 		})
 
 		it("should calculate correct height without delta with metric values only", () => {
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(31)
+			expect(positionWithoutDelta.y).toBe(33)
 		})
 
 		it("should use node height value if nodeHeight is greater than the nodes height ", () => {
 			codeMapLabelService["nodeHeight"] = 100
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(131)
 		})
 
-		it("should use the nodes actual height if its greater then node height( by construction this is is only the case for temporary labels)", () => {
-			codeMapLabelService["nodeHeight"] = 0
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 10)
+		it("should use the nodes actual height if its greater then nodeHeight", () => {
+			codeMapLabelService["nodeHeight"] = 10
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(41)
 		})
 
 		it("should calculate correct height without delta for two line label: node name and metric value", () => {
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
+
+			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionWithoutDelta.y).toBe(48)
+		})
+
+		it("should use the nodes actual height if its greater then nodeHeight and update nodeHeight correctly", () => {
+			codeMapLabelService.addLabel(sampleLeafDelta, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(46)
+			expect(codeMapLabelService["nodeHeight"]).toEqual(15)
+		})
+
+		it("should use the updated and stored value for nodeHeight when adding a new, smaller node", () => {
+			codeMapLabelService["nodeHeight"] = 10
+			codeMapLabelService.addLabel(sampleLeafDelta, { showNodeName: true, showNodeMetric: false })
+
+			const positionSampleDeltaLeaf: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionSampleDeltaLeaf.y).toBe(46)
+
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
+			const positionSampleLeafWithAppliedDeltaNodeHeight: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionSampleLeafWithAppliedDeltaNodeHeight.y).toBe(46)
 		})
 
 		it("should set the text correctly, creating a two line label", () => {
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			const lineCount = codeMapLabelService["labels"][0].lineCount
 			expect(lineCount).toBe(2)
 		})
 
 		it("should set the text correctly, creating a one line label", () => {
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const lineCount = codeMapLabelService["labels"][0].lineCount
 			expect(lineCount).toBe(1)
@@ -198,8 +236,8 @@ describe("CodeMapLabelService", () => {
 			const SZ = 3
 			const SCALE_CONSTANT_LABEL = codeMapLabelService["LABEL_HEIGHT_COEFFICIENT"]
 
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			const originalSpritePositionsA = codeMapLabelService["labels"][0].sprite.position.clone()
 			const originalLineGeometryStartVertices = codeMapLabelService["labels"][0].line.geometry["vertices"][0].clone()
@@ -235,10 +273,10 @@ describe("CodeMapLabelService", () => {
 
 		it("should apply scaling factor to a newly created label", () => {
 			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(37)
+			expect(positionWithoutDelta.y).toBe(41)
 		})
 
 		function assertLabelPositions(scaledLabel, expectedSpritePositions: Vector3, expectedScaledLineGeometryStart: Vector3) {
@@ -261,8 +299,8 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setAmountOfTopLabels(2))
 			storeService.dispatch(setHeightMetric("mcc"))
 
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
-			codeMapLabelService.addLabel(otherSampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
+			codeMapLabelService.addLabel(otherSampleLeaf, { showNodeName: true, showNodeMetric: false })
 			threeSceneService.labels.children.length = 4
 
 			codeMapLabelService.clearTemporaryLabel(sampleLeaf)
@@ -275,7 +313,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setAmountOfTopLabels(2))
 			storeService.dispatch(setHeightMetric("mcc"))
 
-			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false }, 0)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 			threeSceneService.labels.children.length = 2
 
 			codeMapLabelService.clearTemporaryLabel(otherSampleLeaf)

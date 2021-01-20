@@ -18,8 +18,6 @@ export class CodeMapRenderService {
 		private codeMapArrowService: CodeMapArrowService
 	) {}
 
-	private highestNode = 0
-
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
 		this.setNewMapMesh(sortedNodes)
@@ -66,7 +64,6 @@ export class CodeMapRenderService {
 		const appSettings = this.storeService.getState().appSettings
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
-		this.highestNode = this.getHighestNode(sortedNodes)
 
 		this.codeMapLabelService.clearLabels()
 		if (showLabelNodeName || showLabelNodeMetric) {
@@ -75,23 +72,14 @@ export class CodeMapRenderService {
 				if (sortedNodes[index].isLeaf) {
 					//get neighbors with label
 					//neighbor ==> width + margin + 1
-					this.codeMapLabelService.addLabel(
-						sortedNodes[index],
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						this.highestNode
-					)
+					this.codeMapLabelService.addLabel(sortedNodes[index], {
+						showNodeName: showLabelNodeName,
+						showNodeMetric: showLabelNodeMetric
+					})
 					amountOfTopLabels -= 1
 				}
 			}
 		}
-	}
-
-	private getHighestNode(sortedNodes: Node[]) {
-		const sortedNodeValues = sortedNodes.map(({ height, heightDelta }) => height + Math.abs(heightDelta ?? 0))
-		return Math.max(...sortedNodeValues)
 	}
 
 	private setArrows(sortedNodes: Node[]) {
