@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- fixed incorrect reset button position ([#1682](https://github.com/MaibornWolff/codecharta/issues/1682))
 - fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
 
 ### Chore 👨‍💻 👩‍💻
