@@ -24,18 +24,37 @@ export class GlobalSettingsHelper {
 	static setGlobalSettingsOfLocalStorageIfExists(storeService: StoreService){
 		if(GlobalSettingsHelper.getGlobalSettings()){
 
-		const ccLocalStorage: LocalStorageGlobalSettings = JSON.parse(localStorage.getItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT))
-			storeService.dispatch(setLayoutAlgorithm(ccLocalStorage.globalSettings.layoutAlgorithm))
-			storeService.dispatch(setIsWhiteBackground(ccLocalStorage.globalSettings.isWhiteBackground))
-			storeService.dispatch(setResetCameraIfNewFileIsLoaded(ccLocalStorage.globalSettings.resetCameraIfNewFileIsLoaded))
-			storeService.dispatch(setExperimentalFeaturesEnabled(ccLocalStorage.globalSettings.experimentalFeaturesEnabled))
-			storeService.dispatch(setHideFlatBuildings(ccLocalStorage.globalSettings.hideFlatBuilding))
-			storeService.dispatch(setMaxTreeMapFiles(ccLocalStorage.globalSettings.maxTreeMapFiles))
+		const globalSettings: GlobalSettings = JSON.parse(localStorage.getItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT)).globalSettings
+		const {appSettings} = storeService.getState()
+		
+		if(appSettings.hideFlatBuildings !== globalSettings.hideFlatBuildings){
+			storeService.dispatch(setHideFlatBuildings(globalSettings.hideFlatBuildings))
+		}
+		if(appSettings.isWhiteBackground !== globalSettings.isWhiteBackground){
+			storeService.dispatch(setIsWhiteBackground(globalSettings.isWhiteBackground))
+		}
+		if(appSettings.resetCameraIfNewFileIsLoaded !== globalSettings.resetCameraIfNewFileIsLoaded){
+			storeService.dispatch(setResetCameraIfNewFileIsLoaded(globalSettings.resetCameraIfNewFileIsLoaded))
+		}
+		if(appSettings.experimentalFeaturesEnabled !== globalSettings.experimentalFeaturesEnabled){
+			storeService.dispatch(setExperimentalFeaturesEnabled(globalSettings.experimentalFeaturesEnabled))
+		}
+		if(appSettings.layoutAlgorithm !== globalSettings.layoutAlgorithm){
+			storeService.dispatch(setLayoutAlgorithm(globalSettings.layoutAlgorithm))
+		}
+		if(appSettings.maxTreeMapFiles !== globalSettings.maxTreeMapFiles){
+			storeService.dispatch(setMaxTreeMapFiles(globalSettings.maxTreeMapFiles))
+		}
 		}
 	}
 
 	static getGlobalSettings() {
-		const ccLocalStorage: LocalStorageGlobalSettings = JSON.parse(localStorage.getItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT))
+		let ccLocalStorage: LocalStorageGlobalSettings
+		try{
+			ccLocalStorage = JSON.parse(localStorage.getItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT))
+		}catch{
+			ccLocalStorage = null
+		}
 		if (ccLocalStorage) {
 			return ccLocalStorage.globalSettings
 		}
