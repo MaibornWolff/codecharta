@@ -31,7 +31,7 @@ describe("codeChartaController", () => {
 		withMockedUrlUtils()
 		withMockedCodeChartaService()
 		withMockedDialogService()
-		clearlocalStorage()
+		localStorage.clear()
 
 	})
 
@@ -75,9 +75,6 @@ describe("codeChartaController", () => {
 		threeCameraService.init(1536, 754)
 	}
 
-	function clearlocalStorage(){
-		localStorage.clear()
-	}
 
 	describe("constructor", () => {
 		it("should set urlUtils", () => {

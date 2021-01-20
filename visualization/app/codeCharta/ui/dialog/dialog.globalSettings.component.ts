@@ -20,7 +20,7 @@ import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { GlobalSettings, LayoutAlgorithm } from "../../codeCharta.model"
+import { LayoutAlgorithm } from "../../codeCharta.model"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
@@ -62,10 +62,6 @@ export class DialogGlobalSettingsController
 	}
 
 	private initDialogOnClick() {
-		this.loadInitGlobal()
-	}
-
-	loadInitGlobal(){
 		const { appSettings } = this.storeService.getState()
 
 		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)
@@ -135,15 +131,7 @@ export class DialogGlobalSettingsController
 	}
 
 	changeGlobalSettingsInLocalStorage(){
-		const globalSettings: GlobalSettings = {
-			hideFlatBuilding: this._viewModel.hideFlatBuildings,
-			isWhiteBackground: this._viewModel.isWhiteBackground,
-			resetCameraIfNewFileIsLoaded: this._viewModel.resetCameraIfNewFileIsLoaded,
-			experimentalFeaturesEnabled: this._viewModel.resetCameraIfNewFileIsLoaded,
-			layoutAlgorithm: this._viewModel.layoutAlgorithm,
-			maxTreeMapFiles: this._viewModel.maxTreeMapFiles
-		}
-		GlobalSettingsHelper.setGlobalSettingsInLocalStorage(globalSettings)
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({...this._viewModel})
 	}
 }
 

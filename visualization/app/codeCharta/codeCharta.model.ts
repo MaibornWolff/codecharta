@@ -244,7 +244,7 @@ export interface LocalStorageGlobalSettings{
 }
 
 export interface GlobalSettings{
-	hideFlatBuilding: boolean,
+	hideFlatBuildings: boolean,
 	isWhiteBackground: boolean,
 	resetCameraIfNewFileIsLoaded: boolean,
 	experimentalFeaturesEnabled: boolean,

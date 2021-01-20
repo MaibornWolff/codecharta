@@ -1142,7 +1142,7 @@ export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 }
 
 export const GLOBAL_SETTINGS: GlobalSettings ={
-	hideFlatBuilding: true,
+	hideFlatBuildings: true,
 	isWhiteBackground: true,
 	resetCameraIfNewFileIsLoaded: true,
 	experimentalFeaturesEnabled: true,
