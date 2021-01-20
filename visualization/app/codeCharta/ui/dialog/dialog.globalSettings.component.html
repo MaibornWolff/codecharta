@@ -53,6 +53,16 @@
 			<md-input-container class="input-container md-block">
 				<md-checkbox
 					class="md-primary"
+					ng-model="$ctrl._viewModel.trackingDataEnabled"
+					ng-change="$ctrl.applySettingsEnableTrackingData()"
+				>
+					Enable Tracking data
+				</md-checkbox>
+			</md-input-container>
+
+			<md-input-container class="input-container md-block">
+				<md-checkbox
+					class="md-primary"
 					ng-model="$ctrl._viewModel.experimentalFeaturesEnabled"
 					ng-change="$ctrl.applySettingsEnableExperimentalFeatures()"
 				>

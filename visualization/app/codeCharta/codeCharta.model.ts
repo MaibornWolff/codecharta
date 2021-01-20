@@ -140,6 +140,7 @@ export interface AppSettings {
 	layoutAlgorithm: LayoutAlgorithm
 	maxTreeMapFiles: number
 	experimentalFeaturesEnabled: boolean
+	trackingDataEnabled: boolean
 }
 
 export interface TreeMapSettings {

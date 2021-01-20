@@ -30,6 +30,7 @@ import { splitIsPresentationModeAction } from "./isPresentationMode/isPresentati
 import { splitExperimentalFeaturesEnabledAction } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.splitter"
 import { splitLayoutAlgorithmAction } from "./layoutAlgorithm/layoutAlgorithm.splitter"
 import { splitMaxTreeMapFilesAction } from "./maxTreeMapFiles/maxTreeMapFiles.splitter"
+import { splitTrackingDataEnabledAction } from "./enableTrackingData/trackingDataEnabled.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []
@@ -137,6 +138,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.experimentalFeaturesEnabled !== undefined) {
 		actions.push(splitExperimentalFeaturesEnabledAction(payload.experimentalFeaturesEnabled))
+	}
+
+	if (payload.trackingDataEnabled !== undefined) {
+		actions.push(splitTrackingDataEnabledAction(payload.trackingDataEnabled))
 	}
 
 	if (payload.layoutAlgorithm !== undefined) {

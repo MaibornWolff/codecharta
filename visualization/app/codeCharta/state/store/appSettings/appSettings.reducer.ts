@@ -28,6 +28,7 @@ import { combineReducers } from "redux"
 import { experimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
 import { layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
 import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
+import { trackingDataEnabled } from "./enableTrackingData/trackingDataEnabled.reducer"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
@@ -57,6 +58,7 @@ const appSettings = combineReducers({
 	amountOfTopLabels,
 	isPresentationMode,
 	experimentalFeaturesEnabled,
+	trackingDataEnabled,
 	layoutAlgorithm,
 	maxTreeMapFiles
 })

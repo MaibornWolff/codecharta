@@ -67,6 +67,7 @@ function initializeAppSettings(target: CustomConfig) {
 		sortingOrderAscending: false,
 		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
+		trackingDataEnabled: false,
 		layoutAlgorithm: undefined,
 		maxTreeMapFiles: 0,
 		mapColors: {

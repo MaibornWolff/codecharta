@@ -29,6 +29,7 @@ import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
 import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { defaultLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
 import { defaultMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
+import { defaultTrackingDataEnabled } from "./enableTrackingData/trackingDataEnabled.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -76,6 +77,7 @@ export const defaultAppSettings: AppSettings = {
 	searchPanelMode: defaultSearchPanelMode,
 	sortingOrderAscending: defaultSortingOrderAscending,
 	experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
+	trackingDataEnabled: defaultTrackingDataEnabled,
 	layoutAlgorithm: defaultLayoutAlgorithm,
 	maxTreeMapFiles: defaultMaxTreeMapFiles
 }

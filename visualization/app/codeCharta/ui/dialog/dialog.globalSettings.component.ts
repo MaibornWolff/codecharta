@@ -25,6 +25,11 @@ import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/s
 import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { setTrackingDataEnabled } from "../../state/store/appSettings/enableTrackingData/trackingDataEnabled.actions"
+import {
+	TrackingDataEnabledService,
+	TrackingDataEnabledSubscriber
+} from "../../state/store/appSettings/enableTrackingData/trackingDataEnabled.service"
 
 export class DialogGlobalSettingsController
 	implements
@@ -32,6 +37,7 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundSubscriber,
 		ResetCameraIfNewFileIsLoadedSubscriber,
 		ExperimentalFeaturesEnabledSubscriber,
+		TrackingDataEnabledSubscriber,
 		LayoutAlgorithmSubscriber,
 		MaxTreeMapFilesSubscriber {
 	private _viewModel: {
@@ -39,6 +45,7 @@ export class DialogGlobalSettingsController
 		isWhiteBackground: boolean
 		resetCameraIfNewFileIsLoaded: boolean
 		experimentalFeaturesEnabled: boolean
+		trackingDataEnabled: boolean
 		layoutAlgorithm: LayoutAlgorithm
 		maxTreeMapFiles: number
 	} = {
@@ -46,6 +53,7 @@ export class DialogGlobalSettingsController
 		isWhiteBackground: null,
 		resetCameraIfNewFileIsLoaded: null,
 		experimentalFeaturesEnabled: false,
+		trackingDataEnabled: false,
 		layoutAlgorithm: null,
 		maxTreeMapFiles: null
 	}
@@ -55,6 +63,7 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
+		TrackingDataEnabledService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
 		this.initDialogOnClick()
@@ -68,6 +77,7 @@ export class DialogGlobalSettingsController
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
 		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
+		this.onTrackingDataEnabledChanged(appSettings.trackingDataEnabled)
 	}
 
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
@@ -94,6 +104,10 @@ export class DialogGlobalSettingsController
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
 	}
 
+	onTrackingDataEnabledChanged(trackingDataEnabled: boolean) {
+		this._viewModel.trackingDataEnabled = trackingDataEnabled
+	}
+
 	applySettingsHideFlatBuildings() {
 		this.storeService.dispatch(setHideFlatBuildings(this._viewModel.hideFlatBuildings))
 	}
@@ -108,6 +122,10 @@ export class DialogGlobalSettingsController
 
 	applySettingsEnableExperimentalFeatures() {
 		this.storeService.dispatch(setExperimentalFeaturesEnabled(this._viewModel.experimentalFeaturesEnabled))
+	}
+
+	applySettingsEnableTrackingData() {
+		this.storeService.dispatch(setTrackingDataEnabled(this._viewModel.trackingDataEnabled))
 	}
 
 	applySettingsAlgorithm() {
