@@ -14,7 +14,9 @@ import {
 	CODE_MAP_BUILDING,
 	CONSTANT_HIGHLIGHT,
 	DEFAULT_STATE,
+	FILE_META,
 	TEST_FILE_WITH_PATHS,
+	TEST_NODE_LEAF,
 	TEST_NODES,
 	withMockedEventMethods
 } from "../../util/dataMocks"
@@ -29,6 +31,8 @@ import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { Material, Object3D, Raycaster, Vector3 } from "three"
+import { CodeMapPreRenderService } from "./codeMap.preRender.service"
+import { LazyLoader } from "../../util/lazyLoader"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -41,6 +45,7 @@ describe("codeMapMouseEventService", () => {
 	let threeUpdateCycleService: ThreeUpdateCycleService
 	let storeService: StoreService
 	let codeMapLabelService: CodeMapLabelService
+	let codeMapPreRenderService: CodeMapPreRenderService
 
 	let codeMapBuilding: CodeMapBuilding
 	let file: CCFile
@@ -69,6 +74,7 @@ describe("codeMapMouseEventService", () => {
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		storeService = getService<StoreService>("storeService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		file = klona(TEST_FILE_WITH_PATHS)
@@ -84,7 +90,8 @@ describe("codeMapMouseEventService", () => {
 			threeSceneService,
 			threeUpdateCycleService,
 			storeService,
-			codeMapLabelService
+			codeMapLabelService,
+			codeMapPreRenderService
 		)
 
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
@@ -612,20 +619,23 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onDocumentDoubleClick", () => {
-		it("should return if highlighted is null", () => {
+		it("should return if highlighted and selected is null", () => {
 			threeSceneService.getHighlightedBuilding = jest.fn()
+			threeSceneService.getSelectedBuilding = jest.fn()
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).not.toHaveBeenCalled()
 		})
 
-		it("should not do anything if hovered.node.link is null", () => {
+		it("should not call window.open if hovered.node.link and selected.node.link is null", () => {
 			threeSceneService.getHighlightedBuilding = jest.fn()
+			threeSceneService.getSelectedBuilding = jest.fn()
 
 			codeMapBuilding.setNode({ link: null } as Node)
 
 			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
+			codeMapMouseEventService["selectedInCodeMap"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
@@ -638,6 +648,34 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+		})
+
+		it("should call open with link if selected.node.link is defined", () => {
+			codeMapMouseEventService["selectedInCodeMap"] = codeMapBuilding
+
+			codeMapMouseEventService.onDocumentDoubleClick()
+
+			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+		})
+
+		it("should call open with link if selected.node.link is defined", () => {
+			codeMapMouseEventService["selectedInCodeMap"] = codeMapBuilding
+
+			codeMapMouseEventService.onDocumentDoubleClick()
+
+			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+		})
+
+		it("should call open file if selected.node.link is undefined", () => {
+			LazyLoader.openFile = jest.fn()
+			const node: Node = klona(TEST_NODE_LEAF)
+			node.isLeaf = true
+			node.link = null
+			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, node, null))
+			codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue(klona(FILE_META))
+			codeMapMouseEventService.onDocumentDoubleClick()
+
+			expect(LazyLoader.openFile).toHaveBeenCalled()
 		})
 	})
 
@@ -717,14 +755,10 @@ describe("codeMapMouseEventService", () => {
 			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
-				codeMapBuilding.node,
-				{
-					showNodeName: true,
-					showNodeMetric: false
-				},
-				12
-			)
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, {
+				showNodeName: true,
+				showNodeMetric: false
+			})
 			expect(nodeHeight).toBeGreaterThan(0)
 		})
 	})

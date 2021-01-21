@@ -5,15 +5,15 @@ export class LegendPanelObject {
 	}
 
 	async getMultipleFilenames() {
-		return page.$$eval("legend-panel-component .block-wrapper .legend-block .marked-package", elements =>
+		return page.$$eval("legend-panel-component cc-legend-marked-packages-component p", elements =>
 			elements.map(x => x.textContent.replace(/[\n\r]+|\s{2,}/g, " ").trim())
 		)
 	}
 	async getFilename() {
-		return page.$eval("legend-panel-component .block-wrapper .legend-block .marked-package", element => element["innerText"])
+		return page.$eval("legend-panel-component cc-legend-marked-packages-component p", element => element["innerText"])
 	}
 
 	async getEmptyLegendIfNoFilenamesExist() {
-		return (await page.$("legend-panel-component .block-wrapper .legend-block .marked-package")) || ""
+		return (await page.$("legend-panel-component cc-legend-marked-packages-component p")) || ""
 	}
 }
