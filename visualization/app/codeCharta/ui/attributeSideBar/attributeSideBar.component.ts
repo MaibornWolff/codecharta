@@ -14,7 +14,7 @@ import {
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { StoreService } from "../../state/store.service"
 import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import {LazyLoader} from "../../util/lazyLoader";
+import { LazyLoader } from "../../util/lazyLoader"
 
 export interface PrimaryMetrics {
 	node: {
@@ -97,8 +97,8 @@ export class AttributeSideBarController
 		this.storeService.dispatch(closeAttributeSideBar())
 	}
 
-	onClickNodeName(){
-		if (!this._viewModel.node.isLeaf){
+	onClickNodeName() {
+		if (!this._viewModel.node.isLeaf) {
 			return
 		}
 		LazyLoader.openFile(this._viewModel.fileName, this._viewModel.node.path)
