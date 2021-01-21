@@ -1,8 +1,6 @@
 name: github_actions
 
-on: 
-  push:
-    branches: [ $default-branch ]
+on: [push]
 
 jobs:
   build_analysis:
