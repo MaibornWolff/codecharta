@@ -5,6 +5,9 @@ on: [push]
 jobs:
   build_analysis:
     name: Build Analysis
+    env:
+      working-directory: ./analysis
+
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -15,18 +18,19 @@ jobs:
         java-version: '11'
 
     - name: Build
-      run: |
-          cd analysis
-          chmod +x ./gradlew
+      run: chmod +x ./gradlew
+      working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
       run: ./gradlew build integrationTest
-  
+      working-directory: ${{env.working-directory}}
   
   
   build_visualization_test:
     name: Visualization Test
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./visualization
     steps:
     - uses: actions/checkout@v2
          
@@ -37,18 +41,20 @@ jobs:
         
 
     - name: Install Node
-      run: |
-        cd visualization
-        npm install
+      run: npm install
+      working-directory: ${{env.working-directory}}  
 
     - name: Test and Linter
       run: |
         npm run test --ci
         npm run lint      
+      working-directory: ${{env.working-directory}}
   
   build_visualization_e2e:
     name: Visualization E2E
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./visualization
     steps:
     - uses: actions/checkout@v2
          
@@ -58,12 +64,12 @@ jobs:
         node-version: '12'  
 
     - name: Install Node
-      run: |
-       cd visualization
-       npm install
+      run: npm install
+      working-directory: ${{env.working-directory}} 
 
     - name: Test and Linter
       run: |
         npm run build:web
         npm run e2e:ci
+      working-directory: ${{env.working-directory}}  
 
