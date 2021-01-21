@@ -1,1 +1,71 @@
+name: github_actions
+
+on: 
+  push:
+    branches: [ $default-branch ]
+
+jobs:
+  build_analysis:
+    name: Build Analysis
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup Java JDK
+      uses: actions/setup-java@v1.4.3
+      with: 
+        java-version: '11'
+
+    - name: Build
+      run: |
+          cd analysis
+          chmod +x ./gradlew
+
+    - name: Test and Linter
+      run: ./gradlew build integrationTest
+  
+  
+  
+  build_visualization_test:
+    name: Visualization Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+         
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.4
+      with:
+        node-version: '12'  
+        
+
+    - name: Install Node
+      run: |
+        cd visualization
+        npm install
+
+    - name: Test and Linter
+      run: |
+        npm run test --ci
+        npm run lint      
+  
+  build_visualization_e2e:
+    name: Visualization E2E
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+         
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.4
+      with:
+        node-version: '12'  
+
+    - name: Install Node
+      run: |
+       cd visualization
+       npm install
+
+    - name: Test and Linter
+      run: |
+        npm run build:web
+        npm run e2e:ci
 
