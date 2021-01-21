@@ -12,7 +12,7 @@ export class LazyLoader {
 		LazyLoader._nodePath = nodePath
 		const directory = localStorage.getItem(LazyLoader._fileName)
 		//replace '/root' with directory
-		const path = nodePath.replace(nodePath.split("/", 2).join("/"), directory)
+		const path = `/${directory}${nodePath.slice(nodePath.indexOf("/", 1))}`
 		if (directory === null) {
 			return LazyLoader.setDirectory()
 		}
