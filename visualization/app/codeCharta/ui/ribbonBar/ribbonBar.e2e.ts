@@ -130,21 +130,24 @@ describe("RibbonBar", () => {
 
 	it("should check if reset button height matches the height of the last entry of color component", async () => {
 		const colorPanel = "color-metric"
+		const bound = 3
 
 		await ribbonBar.togglePanel(colorPanel)
 		const boundingBoxCheckbox = await ColorSettingsPageObject.toggleInverColorBoundingBox()
 		const boundingBoxResetButton = await ColorSettingsPageObject.resetButtonBoundingBox()
 
-		expect(Math.round(boundingBoxCheckbox.y)).toEqual(Math.floor(boundingBoxResetButton.y))
+		expect(Math.abs(boundingBoxCheckbox.y - boundingBoxResetButton.y)).toBeLessThan(bound)
 	})
 
 	it("should check if reset button height matches the height of the last entry of area component", async () => {
 		const areaPanel = "area-metric"
+		const bound = 3
 
 		await ribbonBar.togglePanel(areaPanel)
+
 		const boundingBoxCheckbox = await AreaSettingsPanelPageObject.toggleMarginBoundingBox()
 		const boundingBoxResetButton = await AreaSettingsPanelPageObject.resetButtonBoundingBox()
 
-		expect(Math.floor(boundingBoxCheckbox.y)).toEqual(Math.floor(boundingBoxResetButton.y))
+		expect(Math.abs(boundingBoxCheckbox.y - boundingBoxResetButton.y)).toBeLessThan(bound)
 	})
 })
