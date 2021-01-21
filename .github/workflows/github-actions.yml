@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build_analysis:
-    name: Build Analysis
+    name: Analysis Test
     env:
       working-directory: ./analysis
 
