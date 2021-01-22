@@ -46,7 +46,7 @@ describe("fileChooserController", () => {
 			loadFiles: jest.fn().mockReturnValue({ catch: jest.fn() })
 		})()
 	}
-
+	// TODO add mocking setNewData with sortingArray and remove the upper test
 	describe("setNewData", () => {
 		it("should call loadFiles with read files", () => {
 			const file: NameDataPair = {

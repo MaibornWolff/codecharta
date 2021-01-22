@@ -46,7 +46,7 @@ describe("FileChooser", () => {
 
 		await dialogError.clickOk()
 
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
@@ -57,7 +57,7 @@ describe("FileChooser", () => {
 
 		await dialogError.clickOk()
 
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
@@ -71,7 +71,7 @@ describe("FileChooser", () => {
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
 		await dialogError.clickOk()
 
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
