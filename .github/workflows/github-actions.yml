@@ -64,14 +64,6 @@ jobs:
     - name: Install Node
       run: npm install
       working-directory: ${{env.working-directory}}  
-    
-    - name: Recache-Node     
-      if: failure()
-      run: |
-        npm cache clean --force
-        npm cache verify
-        npm run build:web
-        npm run e2e:ci
 
     - name: Test and Linter
       run: |
@@ -107,17 +99,7 @@ jobs:
     - name: Install Node
       run: npm install
       working-directory: ${{env.working-directory}} 
-    
-    - name: Recache-Node     
-      if: failure()
-      run: |
-        npm cache clean --force
-        npm cache verify
-        npm run build:web
-        npm run e2e:ci
-        
-      working-directory: ${{env.working-directory}}  
-      
+          
     - name: Test and Linter
       run: |
         npm run build:web
@@ -189,15 +171,7 @@ jobs:
       - name: Install Node
         run: npm install
         working-directory: ${{env.working-directory}} 
-      
-      - name: Recache-Node     
-        if: failure()
-        run: |
-          npm cache clean --force
-          npm cache verify
-          npm run build:web
-          npm run e2e:ci
-      
+    
       - name: Visualization Test
         run: npm run test
       
