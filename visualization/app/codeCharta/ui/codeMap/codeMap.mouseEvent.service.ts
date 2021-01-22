@@ -233,14 +233,10 @@ export class CodeMapMouseEventService
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 
-		this.codeMapLabelService.addLabel(
-			codeMapBuilding.node,
-			{
-				showNodeName: showLabelNodeName,
-				showNodeMetric: showLabelNodeMetric
-			},
-			codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
-		)
+		this.codeMapLabelService.addLabel(codeMapBuilding.node, {
+			showNodeName: showLabelNodeName,
+			showNodeMetric: showLabelNodeMetric
+		})
 
 		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
