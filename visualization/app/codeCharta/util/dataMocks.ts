@@ -19,7 +19,8 @@ import {
 	Settings,
 	SortingOption,
 	State,
-	LayoutAlgorithm, GlobalSettings
+	LayoutAlgorithm,
+	GlobalSettings
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -1141,7 +1142,7 @@ export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 	}
 }
 
-export const GLOBAL_SETTINGS: GlobalSettings ={
+export const GLOBAL_SETTINGS: GlobalSettings = {
 	hideFlatBuildings: true,
 	isWhiteBackground: true,
 	resetCameraIfNewFileIsLoaded: true,

@@ -130,8 +130,8 @@ export class DialogGlobalSettingsController
 		this.$mdDialog.hide()
 	}
 
-	changeGlobalSettingsInLocalStorage(){
-		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({...this._viewModel})
+	changeGlobalSettingsInLocalStorage() {
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ ...this._viewModel })
 	}
 }
 
