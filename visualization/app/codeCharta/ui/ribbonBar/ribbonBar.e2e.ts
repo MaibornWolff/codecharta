@@ -13,6 +13,7 @@ describe("RibbonBar", () => {
 	let ribbonBar: RibbonBarPageObject
 	let metricChooser: MetricChooserPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
+	const bound = 10
 
 	beforeEach(async () => {
 		searchPanel = new SearchPanelPageObject()
@@ -130,7 +131,6 @@ describe("RibbonBar", () => {
 
 	it("should check if reset button height matches the height of the last entry of color component", async () => {
 		const colorPanel = "color-metric"
-		const bound = 3
 
 		await ribbonBar.togglePanel(colorPanel)
 		const boundingBoxCheckbox = await ColorSettingsPageObject.toggleInverColorBoundingBox()
@@ -141,7 +141,6 @@ describe("RibbonBar", () => {
 
 	it("should check if reset button height matches the height of the last entry of area component", async () => {
 		const areaPanel = "area-metric"
-		const bound = 3
 
 		await ribbonBar.togglePanel(areaPanel)
 
