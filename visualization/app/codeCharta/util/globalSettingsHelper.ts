@@ -7,14 +7,14 @@ import { setIsWhiteBackground } from "../state/store/appSettings/isWhiteBackgrou
 import { setLayoutAlgorithm } from "../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setResetCameraIfNewFileIsLoaded } from "../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import packageJson from "../../../package.json"
 
 export class GlobalSettingsHelper {
-	static readonly GLOBALSETTINGS_LOCAL_STORAGE_VERSION = "1.0.0"
 	static readonly GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT = "globalSettings"
 
 	static setGlobalSettingsInLocalStorage(globalSettings: GlobalSettings) {
 		const newLocalStorageElement: LocalStorageGlobalSettings = {
-			version: this.GLOBALSETTINGS_LOCAL_STORAGE_VERSION,
+			version: packageJson.version,
 			globalSettings
 		}
 		localStorage.setItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement))

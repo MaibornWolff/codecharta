@@ -1,5 +1,6 @@
 import { GlobalSettings, LayoutAlgorithm, LocalStorageGlobalSettings } from "../codeCharta.model"
 import { GLOBAL_SETTINGS } from "./dataMocks"
+import packageJson from "../../../package.json"
 
 import { GlobalSettingsHelper } from "./globalSettingsHelper"
 
@@ -11,16 +12,24 @@ describe("globalSettingsHelper", () => {
 	describe("setGlobalSettingsInLocalStorage", () => {
 		it("should set the globalSetting into the localStorage", () => {
 			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
-			const ccLocalStorage: LocalStorageGlobalSettings = JSON.parse(
+			const localStorageGlobalSettings: LocalStorageGlobalSettings = JSON.parse(
 				localStorage.getItem(GlobalSettingsHelper.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT)
 			)
 
-			expect(ccLocalStorage.globalSettings.hideFlatBuildings).toBeTruthy()
-			expect(ccLocalStorage.globalSettings.isWhiteBackground).toBeTruthy()
-			expect(ccLocalStorage.globalSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
-			expect(ccLocalStorage.globalSettings.experimentalFeaturesEnabled).toBeTruthy()
-			expect(ccLocalStorage.globalSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
-			expect(ccLocalStorage.globalSettings.maxTreeMapFiles).toEqual(50)
+			expect(localStorageGlobalSettings.globalSettings.hideFlatBuildings).toBeTruthy()
+			expect(localStorageGlobalSettings.globalSettings.isWhiteBackground).toBeTruthy()
+			expect(localStorageGlobalSettings.globalSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(localStorageGlobalSettings.globalSettings.experimentalFeaturesEnabled).toBeTruthy()
+			expect(localStorageGlobalSettings.globalSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(localStorageGlobalSettings.globalSettings.maxTreeMapFiles).toEqual(50)
+		})
+		it("have the recent version of CodeCharta Visualization", () => {
+			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
+			const localStorageGlobalSettings: LocalStorageGlobalSettings = JSON.parse(
+				localStorage.getItem(GlobalSettingsHelper.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT)
+			)
+
+			expect(localStorageGlobalSettings.version).toEqual(packageJson.version)
 		})
 	})
 
