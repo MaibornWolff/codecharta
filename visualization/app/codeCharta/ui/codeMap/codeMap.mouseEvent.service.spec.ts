@@ -120,6 +120,8 @@ describe("codeMapMouseEventService", () => {
 				updateMatrixWorld: jest.fn()
 			}
 		})()
+		//threeCameraService.camera = new PerspectiveCamera()
+		threeCameraService.camera.position.distanceTo = jest.fn()
 	}
 
 	function withMockedThreeSceneService() {
@@ -709,14 +711,23 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("drawTemporaryLabelFor", () => {
-		it("should call addLabel on codeMapLabelService with given node and set temporaryLabel", () => {
+		it("should call addLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
 			codeMapLabelService.addLabel = jest.fn()
 
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
+			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalled()
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
+				codeMapBuilding.node,
+				{
+					showNodeName: true,
+					showNodeMetric: false
+				},
+				12
+			)
+			expect(nodeHeight).toBeGreaterThan(0)
 		})
 	})
 })

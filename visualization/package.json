@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.65.0",
+	"version": "1.66.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -84,6 +84,11 @@
 	"bin": {
 		"codecharta-visualization": "cli.js"
 	},
+	"jest": {
+		"setupFiles": [
+			"jest-canvas-mock"
+		]
+	},
 	"license": "BSD-3-Clause",
 	"dependencies": {
 		"ajv": "^6.12.2",
@@ -135,6 +140,7 @@
 		"angularjs-color-picker": "^3.4.8",
 		"babel-loader": "^8.1.0",
 		"bestzip": "^2.1.5",
+		"canvas": "^2.6.1",
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^5.0.0",
 		"es6-shim": "^0.35.3",
@@ -146,6 +152,7 @@
 		"html-loader-jest": "^0.2.1",
 		"html-webpack-plugin": "^4.3.0",
 		"jest": "^26.1.0",
+		"jest-canvas-mock": "^2.3.0",
 		"jest-puppeteer": "^4.4.0",
 		"jest-serializer-html": "^7.0.0",
 		"lint-staged": "^10.5.2",
