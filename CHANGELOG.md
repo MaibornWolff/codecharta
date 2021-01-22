@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
+-   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   add a checkbox for enable tracking data to global setting Dialog ([#1604](https://github.com/maibornwolff/codecharta/issues/1604))
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -38,7 +41,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Temporary labels are placed at the wrong height for scaled buildings ([#1618](https://github.com/MaibornWolff/codecharta/issues/1618))
 -   Visible labels will disappear or placed lower for scaled buildings ([#1619](https://github.com/MaibornWolff/codecharta/issues/1619))
 -   Unnecessary break line for secondary metrics ([#1093](https://github.com/MaibornWolff/codecharta/issues/1093))
--   add a checkbox for enable tracking data to global setting Dialog ([#1604](https://github.com/maibornwolff/codecharta/issues/1604))
 
 ### Chore 👨‍💻 👩‍💻
 
