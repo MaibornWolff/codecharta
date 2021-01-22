@@ -63,7 +63,14 @@ jobs:
 
     - name: Install Node
       run: npm install
-      working-directory: ${{env.working-directory}}  
+      working-directory: ${{env.working-directory}} 
+    
+    - name: Recache-Node     
+      if: failure()
+      run: |
+        npm cache clean --force
+        npm cache verify
+      working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
       run: |
@@ -99,6 +106,13 @@ jobs:
     - name: Install Node
       run: npm install
       working-directory: ${{env.working-directory}} 
+      
+    - name: Recache-Node     
+      if: failure()
+      run: |
+        npm cache clean --force
+        npm cache verify
+      working-directory: ${{env.working-directory}}  
           
     - name: Test and Linter
       run: |
@@ -171,9 +185,16 @@ jobs:
       - name: Install Node
         run: npm install
         working-directory: ${{env.working-directory}} 
+        
+      - name: Recache-Node     
+        if: failure()
+        run: |
+          npm cache clean --force
+          npm cache verify
+        working-directory: ${{env.working-directory}}  
     
       - name: Visualization Test
-        run: npm run test
+        run: npm run test --ci
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v1.5
