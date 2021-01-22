@@ -32,8 +32,8 @@ export class DialogService {
 		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
-	showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
-		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
+	async showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
+		await this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
 	async showErrorDialogAndOpenFileChooser(message = "An error occurred.", title = "Error", button = "Ok") {
@@ -42,20 +42,20 @@ export class DialogService {
 		document.getElementById("input-file-id").click()
 	}
 
-	showValidationWarningDialog(validationResult: CCValidationResult) {
+	async showValidationWarningDialog(validationResult: CCValidationResult) {
 		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
 
 		const htmlMessage = this.buildHtmlMessage(warningSymbol, validationResult.warning)
 
-		this.showErrorDialog(htmlMessage, "Validation Warning")
+		await this.showErrorDialog(htmlMessage, "Validation Warning")
 	}
 
-	showValidationErrorDialog(validationResult: CCValidationResult) {
+	async showValidationErrorDialog(validationResult: CCValidationResult) {
 		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
 
 		const htmlMessage = this.buildHtmlMessage(errorSymbol, validationResult.error)
 
-		this.showErrorDialogAndOpenFileChooser(htmlMessage, "Validation Error")
+		await this.showErrorDialogAndOpenFileChooser(htmlMessage, "Validation Error")
 	}
 
 	private buildHtmlMessage(symbol: string, validationResult: string[]) {

@@ -66,7 +66,7 @@ describe("FileChooser", () => {
 		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/empty.png"])
 
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
-		await dialogError.waitUntilDialogIsClosed()
+		await dialogError.clickAndWaitUntilContentChange()
 
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
 		await dialogError.clickOk()
