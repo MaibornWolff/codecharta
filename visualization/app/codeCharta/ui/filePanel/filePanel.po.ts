@@ -12,14 +12,7 @@ export class FilePanelPageObject {
 
 	private async waitUntilNameChange(oldName : string) {
 		await page.waitForFunction((names) => {
-			let changed = true
-			const elements = document.querySelector(`file-panel-component md-select .md-text md-truncate`)
-			const fileName = elements.textContent
-			// eslint-disable-next-line no-console
-			console.log(elements.textContent)
-			if (fileName===names)
-				changed = false
-			return changed
+			return document.querySelector(`file-panel-component md-select .md-text md-truncate`).textContent!==names
 		}, {}, oldName)
 	}
 
@@ -36,13 +29,13 @@ export class FilePanelPageObject {
 		return content.split("\n")
 	}
 
-	async getAllNamesWithWait(oldName : string) {
+	/*async getAllNamesWithWait(oldName : string) {
 		await this.clickChooser()
 		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu")
 		await this.waitUntilNameChanges(oldName)
 
 		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", element => element["innerText"])
-		
+
 		return content.split("\n")
 	}
 
@@ -57,5 +50,5 @@ export class FilePanelPageObject {
 			})
 			return changed
 		}, {}, oldName)
-	}
+	}*/
 }

@@ -9,21 +9,16 @@ export class DialogErrorPageObject {
 		await page.waitForSelector("md-dialog-actions button", { visible: false })
 	}
 
-	// TODO remove
-	async clickOkAndReturnWhenOnlyClosed() {
+	async clickOkAndReturnWhenFullyClosed() {
 		await expect(page).toClick("md-dialog-actions button")
-		await page.waitForSelector("md-dialog-actions button", { hidden: true })
-		//await page.waitForFunction(() => !document.querySelector(".md-dialog-content-body"))
+		await page.waitForFunction(() => !document.querySelector(".md-dialog-content-body"))
 	}
 
 	async clickAndWaitUntilContentChange() {
 		const message=await this.getMessage()
 		await expect(page).toClick("md-dialog-actions > button")
-		await this.waitUntilDialogContentChanges(message)
-	}
 
-	private async waitUntilDialogContentChanges(oldContent : string) {
 		await page.waitForFunction((argument) => !document.querySelector(".md-dialog-content-body")?.textContent.includes(argument),
-		{}, oldContent)
+		{}, message)
 	}
 }
