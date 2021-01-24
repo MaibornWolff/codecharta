@@ -19,7 +19,8 @@ import {
 	Settings,
 	SortingOption,
 	State,
-	LayoutAlgorithm
+	LayoutAlgorithm,
+	GlobalSettings
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -1139,6 +1140,15 @@ export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 		labelSlider: 31,
 		heightSlider: new Vector3(1, 1.8, 1)
 	}
+}
+
+export const GLOBAL_SETTINGS: GlobalSettings = {
+	hideFlatBuildings: true,
+	isWhiteBackground: true,
+	resetCameraIfNewFileIsLoaded: true,
+	experimentalFeaturesEnabled: true,
+	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+	maxTreeMapFiles: 50
 }
 
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
