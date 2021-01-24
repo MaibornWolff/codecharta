@@ -14,6 +14,7 @@ import { getCCFiles } from "./model/files/files.helper"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
 import { ExportCCFile } from "./codeCharta.api.model"
+import { GlobalSettingsHelper } from "./util/globalSettingsHelper"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -69,6 +70,7 @@ export class CodeChartaController {
 
 	private tryLoadingFiles(values: NameDataPair[]) {
 		this.storeService.dispatch(setAppSettings())
+		GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.storeService)
 		this.codeChartaService.loadFiles(values)
 	}
 

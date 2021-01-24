@@ -10,6 +10,15 @@ import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
+import { LayoutAlgorithm } from "./codeCharta.model"
+import { GlobalSettingsHelper } from "./util/globalSettingsHelper"
+import { GLOBAL_SETTINGS } from "./util/dataMocks"
+import { setIsWhiteBackground } from "./state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import { setResetCameraIfNewFileIsLoaded } from "./state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { setHideFlatBuildings } from "./state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
+import { setExperimentalFeaturesEnabled } from "./state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { setLayoutAlgorithm } from "./state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { setMaxTreeMapFiles } from "./state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -28,6 +37,7 @@ describe("codeChartaController", () => {
 		withMockedUrlUtils()
 		withMockedCodeChartaService()
 		withMockedDialogService()
+		localStorage.clear()
 	})
 
 	function restartSystem() {
@@ -111,6 +121,33 @@ describe("codeChartaController", () => {
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setAppSettings())
 		})
+
+		it("should set the default global settings if localStorage does not exist", async () => {
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+
+			await codeChartaController.loadFileOrSample()
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBeFalsy()
+			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toEqual(100)
+		})
+
+		it("should set the global settings from localStorage", async () => {
+			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+
+			await codeChartaController.loadFileOrSample()
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeTruthy()
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeTruthy()
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBeTruthy()
+			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toEqual(50)
+		})
 	})
 
 	describe("tryLoadingSampleFiles", () => {
@@ -137,6 +174,44 @@ describe("codeChartaController", () => {
 			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
+		})
+		it("should set the default global settings for the sample files if localStorage does not exist", () => {
+			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBeFalsy()
+			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toEqual(100)
+		})
+
+		it("should set the global settings from localStorage for sample files", () => {
+			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
+
+			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeTruthy()
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeTruthy()
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeTruthy()
+			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBeTruthy()
+			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toEqual(50)
+		})
+
+		it("should not dispatch a global setting from localStorage if the setting is currently the same", () => {
+			storeService.dispatch(setHideFlatBuildings(true))
+			storeService.dispatch(setIsWhiteBackground(true))
+			storeService.dispatch(setResetCameraIfNewFileIsLoaded(true))
+			storeService.dispatch(setExperimentalFeaturesEnabled(true))
+			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
+			storeService.dispatch(setMaxTreeMapFiles(50))
+			storeService.dispatch = jest.fn()
+			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
+
+			GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(storeService)
+
+			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
 	})
 })
