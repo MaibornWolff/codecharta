@@ -118,7 +118,7 @@ ribbon-bar-component {
 				}
 
 				reset-settings-button-component .md-button {
-					top: 0;
+					top: -7.5px;
 					right: -5px;
 					opacity: 0;
 					height: 0;
@@ -140,7 +140,6 @@ ribbon-bar-component {
 
 			.section-body {
 				reset-settings-button-component .md-button {
-					top: ($heightExpanded - 45) + px;
 					opacity: 1;
 					height: 20px;
 					pointer-events: all;
@@ -171,21 +170,13 @@ ribbon-bar-component {
 
 	#color-metric-card.expanded {
 		height: 250px;
-
-		reset-settings-button-component .md-button {
-			top: 205px;
-		}
 	}
 
 	#edge-metric-card.expanded {
 		height: 250px;
-
-		reset-settings-button-component .md-button {
-			top: 202px;
-		}
 	}
-
-	cc-store-color-picker .cc-store-color-picker-wrapper {
-		margin-left: 5px;
+  
+	cc-map-color-picker .cc-map-color-picker-wrapper {
+		margin-left: 9px;
 	}
 }

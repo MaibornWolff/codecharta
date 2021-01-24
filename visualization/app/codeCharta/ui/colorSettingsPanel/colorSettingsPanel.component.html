@@ -19,13 +19,13 @@
 
 <cc-store-color-picker map-color-for="selected" label="selected"> </cc-store-color-picker>
 
-<md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
-	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertColorRange" ng-change="$ctrl.invertColorRange()">
-		Invert Colors
+<md-input-container ng-if="!$ctrl._viewModel.isDeltaState">
+	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertColorRange" ng-change="$ctrl.invertColorRange()"
+		>Invert Colors
 	</md-checkbox>
 </md-input-container>
 
-<md-input-container class="md-block" ng-if="$ctrl._viewModel.isDeltaState">
+<md-input-container ng-if="$ctrl._viewModel.isDeltaState">
 	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertDeltaColors" ng-change="$ctrl.invertDeltaColors()">
 		Invert Colors
 	</md-checkbox>
