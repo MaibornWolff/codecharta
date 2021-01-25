@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Allow customized color in the node context menu ([#1556](https://github.com/MaibornWolff/codecharta/issues/1556).<br/><br/>
+-   Allow opening files from local drive by double clicking on the buildings or clicking on their names ([#1314](https://github.com/MaibornWolff/codecharta/issues/1314))
+    -   Only available in the standalone version!
+    -   files are opened in associated third-party applications
+    -   web-links are opened in a browser window
+-   Allow customized color in the node context menu ([#1556](https://github.com/MaibornWolff/codecharta/issues/1556)).
 
     [!example of new feature #1556](https://user-images.githubusercontent.com/3596742/104302048-a007f300-54c8-11eb-86c1-287483884783.png)
 
@@ -19,8 +23,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
-- fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
+-   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
 
 ### Chore 👨‍💻 👩‍💻
 
