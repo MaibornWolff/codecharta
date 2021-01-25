@@ -1,5 +1,5 @@
-import { NodeMetricData, State, CodeMapNode, Node, NameDataPair } from "../codeCharta.model"
-import { createTreemapNodes, calculateAreaValue } from "./treeMapGenerator"
+import { NodeMetricData, State, CodeMapNode, Node, NameDataPair } from "../../../codeCharta.model"
+
 import {
 	METRIC_DATA,
 	TEST_FILE_WITH_PATHS,
@@ -8,11 +8,12 @@ import {
 	STATE,
 	FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE,
 	FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE
-} from "./dataMocks"
+} from "../../dataMocks"
 import { klona } from "klona"
-import { NodeDecorator } from "./nodeDecorator"
-import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
-import { getCCFile } from "./fileHelper"
+import { NodeDecorator } from "../../nodeDecorator"
+import { fileWithFixedFolders } from "../../../ressources/fixed-folders/fixed-folders-example"
+import { getCCFile } from "../../fileHelper"
+import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 
 describe("treeMapGenerator", () => {
 	let map: CodeMapNode
@@ -40,7 +41,7 @@ describe("treeMapGenerator", () => {
 		it("create map with fixed root children which include dynamic folders on the one hand and fixed ones at the other", () => {
 			map = klona(FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE.map)
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			const fixedResourcesFolder = {
 				x0: nodes[7].x0,
@@ -77,7 +78,7 @@ describe("treeMapGenerator", () => {
 		it("create map with fixed root children which include fixed folders on the one hand and a file at the other", () => {
 			map = klona(FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE.map)
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -85,7 +86,7 @@ describe("treeMapGenerator", () => {
 		it("only root node", () => {
 			map.children = []
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -93,19 +94,19 @@ describe("treeMapGenerator", () => {
 		it("root node with two direct children", () => {
 			map.children[1].children = []
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
 
 		it("root node with two direct children and some grand children", () => {
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
 
 		it("should build the tree map with valid coordinates using the fixed folder structure", () => {
-			const nodes = createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
+			const nodes = SquarifiedLayoutGenerator.createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -129,7 +130,7 @@ describe("treeMapGenerator", () => {
 				{ name: "myHeight", maxValue: 99 }
 			]
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[2].name).toBe("Parent Leaf")
 			expect(nodes[2].width).toBeGreaterThan(0)
@@ -140,7 +141,7 @@ describe("treeMapGenerator", () => {
 			map.children = []
 			map.attributes = { a: 100 }
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["a"]).toBe(100)
 		})
@@ -148,7 +149,7 @@ describe("treeMapGenerator", () => {
 		it("attribute do not exists, no children", () => {
 			map.children = []
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
@@ -161,7 +162,7 @@ describe("treeMapGenerator", () => {
 				{ name: "b", maxValue: 99 }
 			]
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
@@ -172,7 +173,7 @@ describe("treeMapGenerator", () => {
 			state.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "unknown", maxValue: 100 }]
 
-			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[2].width * nodes[2].length).toEqual(0)
 		})
@@ -180,7 +181,7 @@ describe("treeMapGenerator", () => {
 
 	describe("calculateAreaValue", () => {
 		it("should return 0 if node has children, not blacklisted and not only visible in comparison map", () => {
-			const actual = calculateAreaValue(codeMapNode, state)
+			const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode, state)
 
 			expect(actual).toBe(0)
 		})

@@ -4,6 +4,7 @@ import { ExportCCFile } from "./codeCharta.api.model"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
+import Rectangle from "./util/algorithm/streetLayout/rectangle"
 
 export interface NameDataPair {
 	fileName: string
@@ -13,9 +14,14 @@ export interface NameDataPair {
 
 export enum SearchPanelMode {
 	treeView = "treeView",
-	flatten = "flatten",
-	exclude = "exclude",
+	blacklist = "blacklist",
 	minimized = "minimized"
+}
+
+export enum LayoutAlgorithm {
+	SquarifiedTreeMap = "Squarified TreeMap",
+	StreetMap = "StreetMap",
+	TreeMapStreet = "TreeMapStreet"
 }
 
 export interface CCFile {
@@ -26,7 +32,7 @@ export interface CCFile {
 	fileMeta: FileMeta
 }
 
-export interface CodeMapNode {
+interface squarifiedNode {
 	name: string
 	id?: number
 	type: NodeType
@@ -44,6 +50,13 @@ export interface CodeMapNode {
 	}
 	fixedPosition?: FixedPosition
 }
+
+interface streetNode {
+	value?: number
+	rect?: Rectangle
+	zOffset?: number
+}
+export interface CodeMapNode extends squarifiedNode, streetNode {}
 
 export interface FixedPosition {
 	left: number
@@ -124,6 +137,8 @@ export interface AppSettings {
 	panelSelection: PanelSelection
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
+	layoutAlgorithm: LayoutAlgorithm
+	maxTreeMapFiles: number
 	experimentalFeaturesEnabled: boolean
 }
 
@@ -215,12 +230,26 @@ export interface MetricData {
 
 export interface LocalStorageCustomConfigs {
 	version: string
-	customConfigs: [string, RecursivePartial<CustomConfig>][]
+	customConfigs: [string, CustomConfig][]
 }
 
 export interface LocalStorageScenarios {
 	version: string
 	scenarios: [string, RecursivePartial<Scenario>][]
+}
+
+export interface LocalStorageGlobalSettings {
+	version: string
+	globalSettings: GlobalSettings
+}
+
+export interface GlobalSettings {
+	hideFlatBuildings: boolean
+	isWhiteBackground: boolean
+	resetCameraIfNewFileIsLoaded: boolean
+	experimentalFeaturesEnabled: boolean
+	layoutAlgorithm: LayoutAlgorithm
+	maxTreeMapFiles: number
 }
 
 export interface Scenario {
@@ -293,35 +322,27 @@ export interface State {
 	metricData: MetricData
 }
 
-export function stateObjectReplacer(this, key) {
-	const originalObject = this[key]
-	if (originalObject instanceof Map) {
+export function stateObjectReplacer(_, valueToReplace) {
+	if (valueToReplace instanceof Map) {
 		return {
 			dataType: "Map",
-			value: [...originalObject.entries()]
+			value: [...valueToReplace.entries()]
 		}
 	}
-	if (originalObject instanceof Set) {
+	if (valueToReplace instanceof Set) {
 		return {
 			dataType: "Set",
-			value: [...originalObject]
+			value: [...valueToReplace]
 		}
 	}
-	return originalObject
+	return valueToReplace
 }
 
-export function stateObjectReviver(this, key) {
-	const valueToRevive = this[key]
-	if (typeof valueToRevive !== "object" || valueToRevive === null) {
-		return valueToRevive
-	}
-
-	// our state has not got a Map so far
-	// Nevertheless, we keep this logic
-	if (valueToRevive.dataType === "Map") {
+export function stateObjectReviver(_, valueToRevive) {
+	if (valueToRevive?.dataType === "Map") {
 		return new Map(valueToRevive.value)
 	}
-	if (valueToRevive.dataType === "Set") {
+	if (valueToRevive?.dataType === "Set") {
 		return new Set(valueToRevive.value)
 	}
 

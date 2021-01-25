@@ -3,6 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
+import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
 import "./attributeTypeSelector/attributeTypeSelector.module"
 import "./sortingOption/sortingOption.module"
@@ -43,9 +44,12 @@ import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
 import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
+import "./layoutSelection/layoutSelection.module"
+import "./maxTreeMapFiles/maxTreeMapFiles.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
+	"app.codeCharta.ui.customColorPicker",
 	"app.codeCharta.ui.customConfigs",
 	"app.codeCharta.ui.sortingOptionDialog",
 	"app.codeCharta.ui.sortingButton",
@@ -86,5 +90,7 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.ribbonBar",
 	"app.codeCharta.ui.scenarioDropDown",
 	"app.codeCharta.ui.toolBar",
-	"app.codeCharta.ui.viewCube"
+	"app.codeCharta.ui.viewCube",
+	"app.codeCharta.ui.layoutSelection",
+	"app.codeCharta.ui.maxTreeMapFiles"
 ])

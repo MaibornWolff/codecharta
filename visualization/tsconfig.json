@@ -7,7 +7,7 @@
 		"declaration": false,
 		"jsx": "preserve",
 		"lib": ["dom", "es2015", "es2016", "es2019"],
-		"module": "es2015",
+		"module": "es2020",
 		"moduleResolution": "node",
 		"noImplicitAny": false,
 		"noImplicitThis": true,

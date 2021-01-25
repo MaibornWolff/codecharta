@@ -1,12 +1,13 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 
 internal data class CalendarWeek(private val week: Int, private val year: Int) : Comparable<CalendarWeek> {
-
-    override fun compareTo(o: CalendarWeek): Int {
-        return numberOfWeeksBetween(this, o)
+    override fun compareTo(other: CalendarWeek): Int {
+        return numberOfWeeksBetween(this, other)
     }
 
     companion object {
@@ -19,7 +20,16 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
         }
 
         fun numberOfWeeksBetween(a: CalendarWeek, b: CalendarWeek): Int {
-            return b.week + 52 * b.year - (a.week + 52 * a.year)
+            return ChronoUnit.WEEKS.between(getWeekDate(a.year, a.week), getWeekDate(b.year, b.week)).toInt()
+        }
+
+        private fun getWeekDate(year: Int, week: Int): OffsetDateTime? {
+            // returns the date of Monday based on the week and year
+            return OffsetDateTime.now().withYear(year)
+                .with(WeekFields.ISO.weekOfWeekBasedYear(), week.toLong())
+                .with(WeekFields.ISO.dayOfWeek(), 1)
+                .withHour(12).withMinute(0).withSecond(0).withNano(0)
+                .withOffsetSameInstant(ZoneOffset.UTC)
         }
 
         private fun modifyYear(dateTime: OffsetDateTime, cwWeek: Int, cwYear: Int): Int {
@@ -36,8 +46,8 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
             return dateTime.dayOfYear < 7
         }
 
-        private fun isFirstOrSecondWeek(kalenderWeeknWeek: Int): Boolean {
-            return kalenderWeeknWeek <= 2
+        private fun isFirstOrSecondWeek(calendarWeek: Int): Boolean {
+            return calendarWeek <= 2
         }
 
         private fun dayIsOneOfTheLastSevenDaysInYear(dateTime: OffsetDateTime): Boolean {

@@ -61,14 +61,17 @@
 	</md-input-container>
 </md-slider-container>
 
-<md-input-container class="md-block">
+<cc-store-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-store-color-picker>
+<cc-store-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-store-color-picker>
+
+<md-input-container>
 	<md-checkbox
 		class="md-primary"
 		ng-model="$ctrl._viewModel.showOnlyBuildingsWithEdges"
 		ng-change="$ctrl.applyShowOnlyBuildingsWithEdges()"
 		ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
 	>
-		Show only nodes with edges
+		Only nodes with edges
 	</md-checkbox>
 </md-input-container>
 

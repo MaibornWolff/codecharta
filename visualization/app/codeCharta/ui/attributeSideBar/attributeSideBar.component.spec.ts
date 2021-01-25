@@ -14,7 +14,7 @@ import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/
 import { StoreService } from "../../state/store.service"
 import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { klona } from "klona"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { LazyLoader } from "../../util/lazyLoader"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
@@ -120,13 +120,6 @@ describe("AttributeSideBarController", () => {
 
 			expect(attributeSideBarController["_viewModel"].fileName).toEqual("my_fileName")
 		})
-
-		it("should have packageFileCount in it's _viewModel", () => {
-			codeMapBuilding.node.attributes[NodeMetricDataService.UNARY_METRIC] = 1
-			attributeSideBarController.onBuildingSelected(codeMapBuilding)
-
-			expect(attributeSideBarController["_viewModel"].packageFileCount).toEqual(1)
-		})
 	})
 
 	describe("onAreaMetricChanged", () => {
@@ -220,6 +213,17 @@ describe("AttributeSideBarController", () => {
 			attributeSideBarController.onClickCloseSideBar()
 
 			expect(storeService.getState().appSettings.isAttributeSideBarVisible).toBeFalsy()
+		})
+	})
+
+	describe("onClickNodeName", () => {
+		it("should open file if node is a leaf", () => {
+			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
+
+			LazyLoader.openFile = jest.fn()
+			attributeSideBarController.onClickNodeName()
+
+			expect(LazyLoader.openFile).toHaveBeenCalled()
 		})
 	})
 

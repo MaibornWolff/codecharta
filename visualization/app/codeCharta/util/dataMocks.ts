@@ -18,7 +18,9 @@ import {
 	SearchPanelMode,
 	Settings,
 	SortingOption,
-	State
+	State,
+	LayoutAlgorithm,
+	GlobalSettings
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -32,7 +34,7 @@ import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
-import { CustomConfigItem, CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
+import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
 export const VALID_NODE: CodeMapNode = {
@@ -449,61 +451,6 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 					name: "empty folder",
 					type: NodeType.FOLDER,
 					path: "/root/Parent Leaf/empty folder",
-					attributes: {},
-					isExcluded: false,
-					isFlattened: false,
-					children: []
-				}
-			]
-		}
-	]
-}
-
-export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	path: "/root",
-	isExcluded: false,
-	isFlattened: false,
-	children: [
-		{
-			name: "big leaf",
-			type: NodeType.FILE,
-			path: "/root/in/between/big leaf",
-			attributes: { rloc: 100, functions: 10, mcc: 1 },
-			link: "http://www.google.de",
-			isExcluded: false,
-			isFlattened: false
-		},
-		{
-			name: "Parent Leaf",
-			type: NodeType.FOLDER,
-			attributes: {},
-			path: "/root/in/between/Parent Leaf",
-			isExcluded: false,
-			isFlattened: false,
-			children: [
-				{
-					name: "small leaf",
-					type: NodeType.FILE,
-					path: "/root/in/between/Parent Leaf/small leaf",
-					attributes: { rloc: 30, functions: 100, mcc: 100 },
-					isExcluded: false,
-					isFlattened: false
-				},
-				{
-					name: "other small leaf",
-					type: NodeType.FILE,
-					path: "/root/in/between/Parent Leaf/other small leaf",
-					attributes: { rloc: 70, functions: 1000, mcc: 10 },
-					isExcluded: false,
-					isFlattened: false
-				},
-				{
-					name: "empty folder",
-					type: NodeType.FOLDER,
-					path: "/root/in/between/Parent Leaf/empty folder",
 					attributes: {},
 					isExcluded: false,
 					isFlattened: false,
@@ -1195,6 +1142,15 @@ export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 	}
 }
 
+export const GLOBAL_SETTINGS: GlobalSettings = {
+	hideFlatBuildings: true,
+	isWhiteBackground: true,
+	resetCameraIfNewFileIsLoaded: true,
+	experimentalFeaturesEnabled: true,
+	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+	maxTreeMapFiles: 50
+}
+
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	name: "root",
 	attributes: {},
@@ -1485,84 +1441,84 @@ export const TEST_DELTA_MAP_B: CCFile = {
 }
 
 export const TEST_FILE_DATA_DOWNLOADED = {
+	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
-	attributeTypes: {},
-	blacklist: [
-		{ path: "/root/bigLeaf.ts", type: "hide" },
-		{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
-	],
-	edges: [
-		{
-			attributes: {
-				avgCommits: 34,
-				pairingRate: 89
-			},
-			fromNodeName: "/root/big leaf",
-			toNodeName: "/root/Parent Leaf/small leaf"
-		},
-		{
-			attributes: {
-				avgCommits: 34,
-				pairingRate: 89
-			},
-			fromNodeName: "/root/Parent Leaf/small leaf",
-			toNodeName: "/root/different leaf"
-		},
-		{
-			attributes: {
-				otherMetric: 34,
-				pairingRate: 89
-			},
-			fromNodeName: "/root/Parent Leaf/other small leaf",
-			toNodeName: "/root/Parent Leaf/small leaf"
-		}
-	],
-	markedPackages: [],
 	nodes: [
 		{
+			name: "root",
 			attributes: {},
+			type: NodeType.FOLDER,
 			children: [
 				{
-					attributes: {
-						functions: 10,
-						mcc: 1,
-						rloc: 100
-					},
-					link: "http://www.google.de",
 					name: "big leaf",
-					type: NodeType.FILE
+					type: NodeType.FILE,
+					attributes: {
+						rloc: 100,
+						functions: 10,
+						mcc: 1
+					},
+					link: "http://www.google.de"
 				},
 				{
+					name: "Parent Leaf",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
-							attributes: {
-								functions: 100,
-								mcc: 100,
-								rloc: 30
-							},
 							name: "small leaf",
-							type: NodeType.FILE
+							type: NodeType.FILE,
+							attributes: {
+								rloc: 30,
+								functions: 100,
+								mcc: 100
+							}
 						},
 						{
-							attributes: {
-								functions: 1000,
-								mcc: 10,
-								rloc: 70
-							},
 							name: "other small leaf",
-							type: NodeType.FILE
+							type: NodeType.FILE,
+							attributes: {
+								rloc: 70,
+								functions: 1000,
+								mcc: 10
+							}
 						}
-					],
-					name: "Parent Leaf",
-					type: NodeType.FOLDER
+					]
 				}
-			],
-			name: "root",
-			type: NodeType.FOLDER
+			]
 		}
 	],
-	projectName: "Sample Project"
+	attributeTypes: {},
+	edges: [
+		{
+			fromNodeName: "/root/big leaf",
+			toNodeName: "/root/Parent Leaf/small leaf",
+			attributes: {
+				pairingRate: 89,
+				avgCommits: 34
+			}
+		},
+		{
+			fromNodeName: "/root/Parent Leaf/small leaf",
+			toNodeName: "/root/different leaf",
+			attributes: {
+				pairingRate: 89,
+				avgCommits: 34
+			}
+		},
+		{
+			fromNodeName: "/root/Parent Leaf/other small leaf",
+			toNodeName: "/root/Parent Leaf/small leaf",
+			attributes: {
+				pairingRate: 89,
+				otherMetric: 34
+			}
+		}
+	],
+	markedPackages: [],
+	blacklist: [
+		{ path: "/root/bigLeaf.ts", type: "hide" },
+		{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
+	]
 }
 
 export const FILE_STATES: FileState[] = [
@@ -1640,7 +1596,7 @@ export const STATE: State = {
 			flat: "#AAAAAA",
 			lightGrey: "#DDDDDD",
 			angularGreen: "#00BFA5",
-			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",
 			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
@@ -1656,7 +1612,9 @@ export const STATE: State = {
 		panelSelection: PanelSelection.AREA_PANEL_OPEN,
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
-		experimentalFeaturesEnabled: false
+		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		maxTreeMapFiles: 200
 	},
 	treeMap: {
 		mapSize: 250
@@ -1691,7 +1649,7 @@ export const DEFAULT_STATE: State = {
 			defaultC: "#89ACB4",
 			flat: "#AAAAAA",
 			lightGrey: "#DDDDDD",
-			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			negative: "#820E0E",
 			negativeDelta: "#ff0E0E",
 			neutral: "#ddcc00",
@@ -1715,7 +1673,9 @@ export const DEFAULT_STATE: State = {
 		panelSelection: PanelSelection.NONE,
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
-		experimentalFeaturesEnabled: false
+		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		maxTreeMapFiles: 100
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -1892,31 +1852,7 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 	}
 ]
 
-export const CUSTOM_VIEW_ITEMS: CustomConfigItem[] = [
-	{
-		id: "SINGLEfileASampleMap View #1",
-		name: "SampleMap View #1",
-		mapNames: "fileA",
-		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-		isApplicable: true
-	},
-	{
-		id: "SINGLEfileAAnotherMap View #1",
-		name: "AnotherMap View #1",
-		mapNames: "fileB",
-		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-		isApplicable: false
-	},
-	{
-		id: "SINGLEfileASampleMap View #2",
-		name: "SampleMap View #2",
-		mapNames: "fileA",
-		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-		isApplicable: true
-	}
-]
-
-export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
+export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
 	[
 		"fileAfileBSINGLE",
 		{

@@ -17,7 +17,6 @@
 			step="1"
 			min="1"
 			max="100"
-			type="number"
 			ng-model="$ctrl._viewModel.margin"
 			ng-change="$ctrl.onChangeMarginSlider()"
 			aria-controls="margin-slider"
@@ -25,14 +24,14 @@
 	</md-input-container>
 </md-slider-container>
 
-<md-input-container class="md-block">
+<md-input-container>
 	<md-checkbox
 		class="md-primary"
 		ng-model="$ctrl._viewModel.dynamicMargin"
 		ng-change="$ctrl.applyDynamicMargin()"
-		title="Use a fit to width margin to see the whole map"
+		title="Set margin to default (50px)."
 	>
-		Dynamic Margin
+		Default margin (50px)
 	</md-checkbox>
 </md-input-container>
 

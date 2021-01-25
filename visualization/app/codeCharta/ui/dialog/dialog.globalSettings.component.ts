@@ -20,23 +20,35 @@ import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
+import { LayoutAlgorithm } from "../../codeCharta.model"
+import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
+import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
+import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
 
 export class DialogGlobalSettingsController
 	implements
 		HideFlatBuildingsSubscriber,
 		IsWhiteBackgroundSubscriber,
 		ResetCameraIfNewFileIsLoadedSubscriber,
-		ExperimentalFeaturesEnabledSubscriber {
+		ExperimentalFeaturesEnabledSubscriber,
+		LayoutAlgorithmSubscriber,
+		MaxTreeMapFilesSubscriber {
 	private _viewModel: {
 		hideFlatBuildings: boolean
 		isWhiteBackground: boolean
 		resetCameraIfNewFileIsLoaded: boolean
 		experimentalFeaturesEnabled: boolean
+		layoutAlgorithm: LayoutAlgorithm
+		maxTreeMapFiles: number
 	} = {
 		hideFlatBuildings: null,
 		isWhiteBackground: null,
 		resetCameraIfNewFileIsLoaded: null,
-		experimentalFeaturesEnabled: false
+		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: null,
+		maxTreeMapFiles: null
 	}
 
 	constructor(private $mdDialog, private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -44,7 +56,8 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
-
+		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
 		this.initDialogOnClick()
 	}
 
@@ -54,23 +67,39 @@ export class DialogGlobalSettingsController
 		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)
 		this.onIsWhiteBackgroundChanged(appSettings.isWhiteBackground)
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
+		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
+		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
 	}
 
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
 		this._viewModel.hideFlatBuildings = hideFlatBuildings
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		this._viewModel.isWhiteBackground = isWhiteBackground
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
 		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
+		this.changeGlobalSettingsInLocalStorage()
+	}
+
+	onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
+		this._viewModel.layoutAlgorithm = layoutAlgorithm
+		this.changeGlobalSettingsInLocalStorage()
+	}
+
+	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
+		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	applySettingsHideFlatBuildings() {
@@ -89,8 +118,20 @@ export class DialogGlobalSettingsController
 		this.storeService.dispatch(setExperimentalFeaturesEnabled(this._viewModel.experimentalFeaturesEnabled))
 	}
 
+	applySettingsAlgorithm() {
+		this.storeService.dispatch(setLayoutAlgorithm(this._viewModel.layoutAlgorithm))
+	}
+
+	applySettingsMaxTreeMapFiles() {
+		this.storeService.dispatch(setMaxTreeMapFiles(this._viewModel.maxTreeMapFiles))
+	}
+
 	hide() {
 		this.$mdDialog.hide()
+	}
+
+	changeGlobalSettingsInLocalStorage() {
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ ...this._viewModel })
 	}
 }
 

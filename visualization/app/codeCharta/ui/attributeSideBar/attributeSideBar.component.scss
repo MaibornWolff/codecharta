@@ -40,6 +40,7 @@ attribute-side-bar-component {
 
 			.node-name {
 				width: 90%;
+				cursor: pointer;
 
 				.node-link {
 					font-size: 11pt;
@@ -52,10 +53,10 @@ attribute-side-bar-component {
 			}
 
 			.node-origin,
-			.node-path {
+			.cc-node-path {
 				color: grey;
 
-				.file-count {
+				.cc-node-file-count {
 					background: #f0f0f0;
 					border-radius: 3px;
 					padding: 1px 3px;
@@ -129,6 +130,10 @@ attribute-side-bar-component {
 					.metric-name {
 						margin: 5px 0 0 0;
 					}
+				}
+
+				th {
+					text-align: left;
 				}
 
 				td {

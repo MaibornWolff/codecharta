@@ -1,39 +1,16 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { createTreemapNodes } from "../../util/treeMapGenerator"
+import * as SquarifiedLayoutGenerator from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, Node } from "../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
-import { FileState } from "../../model/files/files"
+import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IRootScopeService } from "angular"
-
-const ONE_MB = 1024 * 1024
-
-export enum MAP_RESOLUTION_SCALE {
-	SMALL_MAP = 1,
-	MEDIUM_MAP = 0.5,
-	BIG_MAP = 0.25
-}
-export function getMapResolutionScaleFactor(files: FileState[]) {
-	let totalFileSize = 0
-	for (const file of files) {
-		totalFileSize += file.file.fileMeta.exportedFileSize
-	}
-
-	switch (true) {
-		case totalFileSize >= 7 * ONE_MB:
-			return 0.25
-		case totalFileSize >= 2 * ONE_MB:
-			return 0.5
-		default:
-			return 1
-	}
-}
 
 export class CodeMapRenderService implements IsLoadingFileSubscriber{
 	constructor(
@@ -66,14 +43,27 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 	}
 
 	scaleMap() {
-		this.threeSceneService.scale()
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
+		this.threeSceneService.scaleHeight()
 	}
 
 	private getSortedNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
-		const nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+		const {
+			appSettings: { layoutAlgorithm },
+			metricData
+		} = state
+		let nodes: Node[] = []
+		switch (layoutAlgorithm) {
+			case LayoutAlgorithm.StreetMap:
+			case LayoutAlgorithm.TreeMapStreet:
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricData.nodeMetricData, isDeltaState(state.files))
+				break
+			case LayoutAlgorithm.SquarifiedTreeMap:
+				nodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+				break
+		}
 		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
 		// prevent multiple steps if the visibility is checked first.
 		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
@@ -84,7 +74,6 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 		const appSettings = this.storeService.getState().appSettings
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
-		const hightestNode = this.getHighestNode(sortedNodes)
 
 		this.codeMapLabelService.clearLabels()
 		if (showLabelNodeName || showLabelNodeMetric) {
@@ -93,23 +82,14 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 				if (sortedNodes[index].isLeaf) {
 					//get neighbors with label
 					//neighbor ==> width + margin + 1
-					this.codeMapLabelService.addLabel(
-						sortedNodes[index],
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						hightestNode
-					)
+					this.codeMapLabelService.addLabel(sortedNodes[index], {
+						showNodeName: showLabelNodeName,
+						showNodeMetric: showLabelNodeMetric
+					})
 					amountOfTopLabels -= 1
 				}
 			}
 		}
-	}
-
-	private getHighestNode(sortedNodes: Node[]) {
-		const sortedNodeValues = sortedNodes.map(node => node.height)
-		return Math.max(...sortedNodeValues)
 	}
 
 	private setArrows(sortedNodes: Node[]) {

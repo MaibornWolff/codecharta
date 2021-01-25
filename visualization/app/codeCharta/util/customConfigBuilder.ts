@@ -1,26 +1,22 @@
 "use strict"
-import { State } from "../codeCharta.model"
-import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+import { State, stateObjectReplacer } from "../codeCharta.model"
+import { CustomConfig } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
+import md5 from "md5"
 
-const CC_CUSTOM_VIEW_API_VERSION = "1.0.0"
+const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
-export function buildCustomConfigFromState(viewName: string, state: State): CustomConfig {
+export function buildCustomConfigFromState(configName: string, state: State): CustomConfig {
 	const customConfigFileStateConnector = new CustomConfigFileStateConnector(state.files)
 
-	const uniqueIdentifier = createCustomConfigIdentifier(
-		customConfigFileStateConnector.getMapSelectionMode(),
-		customConfigFileStateConnector.getSelectedMaps(),
-		viewName
-	)
-
 	const customConfig: CustomConfig = {
-		id: uniqueIdentifier,
-		name: viewName,
+		id: "",
+		name: configName,
+		creationTime: Date.now(),
 		mapSelectionMode: customConfigFileStateConnector.getMapSelectionMode(),
 		assignedMaps: customConfigFileStateConnector.getSelectedMaps(),
 		mapChecksum: customConfigFileStateConnector.getChecksumOfAssignedMaps(),
-		customConfigVersion: CC_CUSTOM_VIEW_API_VERSION,
+		customConfigVersion: CUSTOM_CONFIG_API_VERSION,
 		stateSettings: {
 			appSettings: undefined,
 			dynamicSettings: undefined,
@@ -40,11 +36,8 @@ export function buildCustomConfigFromState(viewName: string, state: State): Cust
 	// Override the default state settings with the stored CustomConfig values
 	deepMapOneToOther(state, customConfig.stateSettings)
 
+	customConfig.id = md5(JSON.stringify(customConfig, stateObjectReplacer))
 	return customConfig
-}
-
-export function createCustomConfigIdentifier(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], viewName: string) {
-	return mapSelectionMode + selectedMaps.join("") + viewName
 }
 
 function initializeAppSettings(target: CustomConfig) {
@@ -74,6 +67,8 @@ function initializeAppSettings(target: CustomConfig) {
 		sortingOrderAscending: false,
 		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: undefined,
+		maxTreeMapFiles: 0,
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
 			angularGreen: "",
@@ -128,7 +123,7 @@ function initializeTreeMapSettings(target: CustomConfig) {
 	}
 }
 
-function deepMapOneToOther<T>(source: any, target: T) {
+function deepMapOneToOther<T>(source: State, target: T) {
 	for (const [key, value] of Object.entries(source)) {
 		// if a property of source is missing, we don't want to copy it into target.
 		if (!Object.prototype.hasOwnProperty.call(target, key)) {
