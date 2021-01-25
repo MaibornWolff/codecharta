@@ -15,6 +15,8 @@ import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3-hierarchy"
 import { Object3D, Raycaster } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
+import { LazyLoader } from "../../util/lazyLoader"
+import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 
 interface Coordinates {
 	x: number
@@ -72,7 +74,8 @@ export class CodeMapMouseEventService
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
-		private codeMapLabelService: CodeMapLabelService
+		private codeMapLabelService: CodeMapLabelService,
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
@@ -252,11 +255,23 @@ export class CodeMapMouseEventService
 
 	onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
 		// check if mouse moved to prevent opening the building link after rotating the map, when the cursor ends on a building
 		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			const fileSourceLink = highlightedBuilding.node.link
 			if (fileSourceLink) {
 				this.$window.open(fileSourceLink, "_blank")
+			}
+		}
+		if (selectedBuilding?.node.isLeaf) {
+			const sourceLink = selectedBuilding.node.link
+			if (sourceLink) {
+				this.$window.open(sourceLink, "_blank")
+				return
+			}
+			const fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
+			if (fileName) {
+				LazyLoader.openFile(fileName, selectedBuilding.node.path)
 			}
 		}
 	}
