@@ -25,6 +25,7 @@ import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/s
 import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
 
 export class DialogGlobalSettingsController
 	implements
@@ -68,30 +69,37 @@ export class DialogGlobalSettingsController
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
 		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
+		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
 	}
 
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
 		this._viewModel.hideFlatBuildings = hideFlatBuildings
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		this._viewModel.isWhiteBackground = isWhiteBackground
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
 		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
 		this._viewModel.layoutAlgorithm = layoutAlgorithm
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
 		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	applySettingsHideFlatBuildings() {
@@ -120,6 +128,10 @@ export class DialogGlobalSettingsController
 
 	hide() {
 		this.$mdDialog.hide()
+	}
+
+	changeGlobalSettingsInLocalStorage() {
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ ...this._viewModel })
 	}
 }
 

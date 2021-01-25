@@ -82,7 +82,9 @@ export class NodeContextMenuController
 		document.getElementById("codeMap").addEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
 
-	onBodyLeftClickHideNodeContextMenu = () => {
+	onBodyLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
+		if (this.isEventFromColorPicker(mouseEvent)) return
+
 		// Just close node context menu, if you click anywhere on the map.
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 
@@ -193,6 +195,10 @@ export class NodeContextMenuController
 			return this.packageMatchesColor(color)
 		}
 		return this.packageMatchesColorOfParentMP(color)
+	}
+
+	private isEventFromColorPicker(mouseEvent: MouseEvent) {
+		return mouseEvent.composedPath().some((element: any) => element?.nodeName === "CC-NODE-CONTEXT-MENU-COLOR-PICKER")
 	}
 
 	private isNodeMarked() {

@@ -472,4 +472,26 @@ describe("nodeContextMenuController", () => {
 			expect(actual).toBeFalsy()
 		})
 	})
+
+	describe("onBodyLeftClickHideNodeContextMenu", () => {
+		it("should not hide if a click on color-picker occurs", () => {
+			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const mockedMouseEvent = {
+				composedPath: () => [{ nodeName: "CC-NODE-CONTEXT-MENU-COLOR-PICKER" }]
+			} as any
+			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
+
+			expect(broadcastHideEventSpy).not.toHaveBeenCalled()
+		})
+
+		it("should hide if clicked somewhere but not within the color-picker", () => {
+			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const mockedMouseEvent = {
+				composedPath: () => [{ nodeName: "DIV" }]
+			} as any
+			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
+
+			expect(broadcastHideEventSpy).toHaveBeenCalled()
+		})
+	})
 })

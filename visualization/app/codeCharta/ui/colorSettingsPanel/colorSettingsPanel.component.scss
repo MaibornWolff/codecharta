@@ -1,2 +1,14 @@
 color-settings-panel-component {
+	md-card .section .section-body md-checkbox {
+		font-size: 0.9em;
+	}
+
+	md-checkbox .md-label {
+		margin-left: 25px;
+		margin-top: 7px;
+	}
+
+	md-checkbox .md-container {
+		transform: translateY(-80%);
+	}
 }
