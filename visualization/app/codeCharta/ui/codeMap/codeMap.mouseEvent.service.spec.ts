@@ -755,14 +755,10 @@ describe("codeMapMouseEventService", () => {
 			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
-				codeMapBuilding.node,
-				{
-					showNodeName: true,
-					showNodeMetric: false
-				},
-				12
-			)
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, {
+				showNodeName: true,
+				showNodeMetric: false
+			})
 			expect(nodeHeight).toBeGreaterThan(0)
 		})
 	})

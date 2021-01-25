@@ -13,6 +13,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   Only available in the standalone version!
     -   files are opened in associated third-party applications
     -   web-links are opened in a browser window
+-   Allow customized color in the node context menu ([#1556](https://github.com/MaibornWolff/codecharta/issues/1556)).
+
+    [!example of new feature #1556](https://user-images.githubusercontent.com/3596742/104302048-a007f300-54c8-11eb-86c1-287483884783.png)
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.66.0] - 2021-01-18
+
+### Added 🚀
+
+-   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533))<br/><br/>
+    ![example of new feature](https://user-images.githubusercontent.com/3596742/103547861-3c1c7380-4ea5-11eb-8df2-541caf65b9df.png)
 
 ### Changed
 
@@ -22,8 +43,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632))
 -   Maximum treemap files shown in squarified node ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   Wrong folder names and colors in legend when using the highlight folder feature ([#1555](https://github.com/MaibornWolff/codecharta/issues/1555))
 -   Temporary labels are placed at the wrong height for scaled buildings ([#1618](https://github.com/MaibornWolff/codecharta/issues/1618))
 -   Visible labels will disappear or placed lower for scaled buildings ([#1619](https://github.com/MaibornWolff/codecharta/issues/1619))
+-   Unnecessary break line for secondary metrics ([#1093](https://github.com/MaibornWolff/codecharta/issues/1093))
 
 ### Chore 👨‍💻 👩‍💻
 

@@ -16,7 +16,7 @@ import { hierarchy } from "d3-hierarchy"
 import { Object3D, Raycaster } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { LazyLoader } from "../../util/lazyLoader"
-import { CodeMapPreRenderService } from "./codeMap.preRender.service";
+import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 
 interface Coordinates {
 	x: number
@@ -236,14 +236,10 @@ export class CodeMapMouseEventService
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 
-		this.codeMapLabelService.addLabel(
-			codeMapBuilding.node,
-			{
-				showNodeName: showLabelNodeName,
-				showNodeMetric: showLabelNodeMetric
-			},
-			codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
-		)
+		this.codeMapLabelService.addLabel(codeMapBuilding.node, {
+			showNodeName: showLabelNodeName,
+			showNodeMetric: showLabelNodeMetric
+		})
 
 		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
@@ -267,14 +263,14 @@ export class CodeMapMouseEventService
 				this.$window.open(fileSourceLink, "_blank")
 			}
 		}
-		if (selectedBuilding?.node.isLeaf){
+		if (selectedBuilding?.node.isLeaf) {
 			const sourceLink = selectedBuilding.node.link
-			if (sourceLink){
+			if (sourceLink) {
 				this.$window.open(sourceLink, "_blank")
 				return
 			}
 			const fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
-			if (fileName){
+			if (fileName) {
 				LazyLoader.openFile(fileName, selectedBuilding.node.path)
 			}
 		}
