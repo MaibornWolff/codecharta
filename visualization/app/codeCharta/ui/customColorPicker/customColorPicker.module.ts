@@ -3,11 +3,14 @@ import "angularjs-color-picker"
 import "../../state/state.module"
 import "../../codeCharta.module"
 
-import { mapColorPickerComponent } from "./mapColorPicker.component"
-import customColorPickerTemplate from "./colorPicker.template.html"
+import customColorPickerTemplate from "./customColorPicker.template.html"
+import { storeColorPickerComponent } from "./storeColorPicker/storeColorPicker.component"
+import { nodeContextMenuColorPickerComponent } from "./nodeContextMenuColorPicker/nodeContextMenuColorPicker.component"
+
+import "./customColorPicker.scss"
 
 angular
-	.module("app.codeCharta.ui.mapColorPicker", [
+	.module("app.codeCharta.ui.customColorPicker", [
 		"color.picker", // https://github.com/ruhley/angular-color-picker
 		"app.codeCharta.state",
 		"app.codeCharta"
@@ -19,11 +22,13 @@ angular
 			options.alpha = false
 			options.format = "hexString"
 			options.restrictToFormat = true
+			options.pos = undefined // reset unwanted default positioning
 
 			return options
 		})
 	})
-	.component(mapColorPickerComponent.selector, mapColorPickerComponent)
+	.component(storeColorPickerComponent.selector, storeColorPickerComponent)
+	.component(nodeContextMenuColorPickerComponent.selector, nodeContextMenuColorPickerComponent)
 	.run(function ($templateCache) {
 		$templateCache.put("template/color-picker/directive.html", customColorPickerTemplate)
 	})
