@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.67.0] - 2021-01-26
+
+### Added 🚀
+
 -   Allow opening files from local drive by double clicking on the buildings or clicking on their names ([#1314](https://github.com/MaibornWolff/codecharta/issues/1314))
     -   Only available in the standalone version!
     -   files are opened in associated third-party applications
