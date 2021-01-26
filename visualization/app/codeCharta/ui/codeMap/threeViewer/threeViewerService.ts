@@ -6,8 +6,8 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { FXAAShader } from './shaders/FXAAShader.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { fxaaShaderStrings } from '../rendering/fxaaShaderString'
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
 import { WebGLInfo } from "three"
 
@@ -92,8 +92,8 @@ export class ThreeViewerService {
 		this.threeRendererService.composer.setSize( window.innerWidth* pixelRatio, window.innerHeight* pixelRatio)
 		const renderPass = new RenderPass( this.threeSceneService.scene, this.threeCameraService.camera )
 		this.threeRendererService.composer.addPass( renderPass )
-
-		const effectFXAA = new ShaderPass( FXAAShader )
+		
+		const effectFXAA = new ShaderPass( new fxaaShaderStrings() )
 		effectFXAA.renderToScreen = false
         effectFXAA.uniforms[ 'resolution' ].value.x = 1 / ( window.innerWidth* pixelRatio ) 
 		effectFXAA.uniforms[ 'resolution' ].value.y = 1 / ( window.innerHeight* pixelRatio )

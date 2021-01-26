@@ -3,7 +3,7 @@ export class CodeMapShaderStrings {
 	fragmentShaderCode: string
 
 	constructor() {
-		this.vertexShaderCode = require("./codeMapVertexShader.glsl")
-		this.fragmentShaderCode = require("./codeMapFragmentShader.glsl")
+		this.vertexShaderCode = require("./shaders/codeMapVertexShader.glsl")
+		this.fragmentShaderCode = require("./shaders/codeMapFragmentShader.glsl")
 	}
 }
