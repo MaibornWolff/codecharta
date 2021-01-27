@@ -1,12 +1,12 @@
-import "./mapColorPicker.component.scss"
-import { StoreService } from "../../state/store.service"
+import "./storeColorPicker.component.scss"
+import { StoreService } from "../../../state/store.service"
 import { IRootScopeService } from "angular"
-import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
-import { MapColors } from "../../codeCharta.model"
-import { MapColorsSubscriber, MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
-import { isSameHexColor, hasValidHexLength, normalizeHex, getReadableColorForBackground } from "./colorHelper"
+import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
+import { MapColors } from "../../../codeCharta.model"
+import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { isSameHexColor, hasValidHexLength, normalizeHex, getReadableColorForBackground } from "../colorHelper"
 
-export class MapColorPickerController implements MapColorsSubscriber {
+export class StoreColorPickerController implements MapColorsSubscriber {
 	private mapColorFor: Exclude<keyof MapColors, "markingColors" | "labelColorAndAlpha">
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private $element: JQLite, private $scope) {
@@ -30,7 +30,6 @@ export class MapColorPickerController implements MapColorsSubscriber {
 			this.updateBrushColor(normalizedHex)
 		})
 
-		this.$scope.colorPickerOptions = { pos: undefined } // reset unwanted default positioning
 		this.$scope.colorPickerEventApi = {
 			onChange: (_, newColor) => {
 				// The color picker area works fine without manual assigning of scope, but the input field doesn't.
@@ -59,10 +58,10 @@ export class MapColorPickerController implements MapColorsSubscriber {
 	}
 }
 
-export const mapColorPickerComponent = {
-	selector: "ccMapColorPicker",
-	template: require("./mapColorPicker.component.html"),
-	controller: MapColorPickerController,
+export const storeColorPickerComponent = {
+	selector: "ccStoreColorPicker",
+	template: require("./storeColorPicker.component.html"),
+	controller: StoreColorPickerController,
 	bindings: {
 		label: "@",
 		mapColorFor: "@"

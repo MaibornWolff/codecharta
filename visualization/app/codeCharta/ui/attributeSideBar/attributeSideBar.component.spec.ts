@@ -14,6 +14,7 @@ import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/
 import { StoreService } from "../../state/store.service"
 import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { klona } from "klona"
+import { LazyLoader } from "../../util/lazyLoader"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
@@ -212,6 +213,17 @@ describe("AttributeSideBarController", () => {
 			attributeSideBarController.onClickCloseSideBar()
 
 			expect(storeService.getState().appSettings.isAttributeSideBarVisible).toBeFalsy()
+		})
+	})
+
+	describe("onClickNodeName", () => {
+		it("should open file if node is a leaf", () => {
+			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
+
+			LazyLoader.openFile = jest.fn()
+			attributeSideBarController.onClickNodeName()
+
+			expect(LazyLoader.openFile).toHaveBeenCalled()
 		})
 	})
 
