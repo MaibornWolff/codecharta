@@ -35,6 +35,10 @@ module.exports = env => {
 		devtool: "source-map",
 		resolve: {
 			extensions: [".ts", ".tsx", ".js"]
+		},
+		externals: {
+			fs: "require('fs')",
+			child_process: "require('child_process')"
 		}
 	}
 }

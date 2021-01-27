@@ -239,6 +239,20 @@ export interface LocalStorageScenarios {
 	scenarios: [string, RecursivePartial<Scenario>][]
 }
 
+export interface LocalStorageGlobalSettings {
+	version: string
+	globalSettings: GlobalSettings
+}
+
+export interface GlobalSettings {
+	hideFlatBuildings: boolean
+	isWhiteBackground: boolean
+	resetCameraIfNewFileIsLoaded: boolean
+	experimentalFeaturesEnabled: boolean
+	layoutAlgorithm: LayoutAlgorithm
+	maxTreeMapFiles: number
+}
+
 export interface Scenario {
 	name: string
 	area: {

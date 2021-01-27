@@ -30,6 +30,7 @@ import {
 	TrackingDataEnabledService,
 	TrackingDataEnabledSubscriber
 } from "../../state/store/appSettings/enableTrackingData/trackingDataEnabled.service"
+import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
 
 export class DialogGlobalSettingsController
 	implements
@@ -78,30 +79,37 @@ export class DialogGlobalSettingsController
 		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
 		this.onTrackingDataEnabledChanged(appSettings.trackingDataEnabled)
+		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
 	}
 
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
 		this._viewModel.hideFlatBuildings = hideFlatBuildings
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		this._viewModel.isWhiteBackground = isWhiteBackground
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
 		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
 		this._viewModel.layoutAlgorithm = layoutAlgorithm
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
 		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onTrackingDataEnabledChanged(trackingDataEnabled: boolean) {
@@ -138,6 +146,10 @@ export class DialogGlobalSettingsController
 
 	hide() {
 		this.$mdDialog.hide()
+	}
+
+	changeGlobalSettingsInLocalStorage() {
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ ...this._viewModel })
 	}
 }
 
