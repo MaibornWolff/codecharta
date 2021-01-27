@@ -5,6 +5,7 @@ import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../stat
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
+import { CodeChartaService } from "../../codeCharta.service"
 
 interface SelectedFileNames {
 	single: string
@@ -98,6 +99,8 @@ export class FilePanelController implements FilesSelectionSubscriber {
 
 	onSingleFileChange(singleFileName: string) {
 		this.storeService.dispatch(setSingleByName(singleFileName))
+		const rootName = this._viewModel.files.find(x => x.selectedAs === FileSelectionState.Single).file.map.name
+		CodeChartaService.updateRootData(rootName)
 	}
 
 	onDeltaReferenceFileChange(referenceFileName: string) {
