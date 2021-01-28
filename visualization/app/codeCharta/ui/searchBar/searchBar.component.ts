@@ -45,7 +45,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	onClickBlacklistPattern(blacklistType: BlacklistType) {
-		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.searchPattern, type: blacklistType }))
+		this.storeService.dispatch(addBlacklistItem({ path: this.unifyWildCard(this._viewModel.searchPattern), type: blacklistType }))
 		this.resetSearchPattern()
 	}
 
@@ -60,7 +60,14 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType) {
-		return blacklist.some(x => this._viewModel.searchPattern === x.path && blacklistType === x.type)
+		return blacklist.some(x => this.unifyWildCard(this._viewModel.searchPattern) === x.path && blacklistType === x.type)
+	}
+
+	unifyWildCard(path: string): string {
+		if (path.startsWith(".")) {
+			return `*${path}`
+		}
+		return path
 	}
 
 	private resetSearchPattern() {

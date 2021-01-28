@@ -91,6 +91,48 @@ describe("SearchBarController", () => {
 		})
 	})
 
+	describe("onClickBlacklistPattern", () => {
+		it("should be able to recognize WildCard Searches and Blacklist", () => {
+			const blacklistItem = { path: ".ts", type: BlacklistType.exclude }
+			const blacklistItemResult = { path: "*.ts", type: BlacklistType.exclude }
+
+			searchBarController["_viewModel"].searchPattern = blacklistItem.path
+			storeService.dispatch(setSearchPattern(searchBarController.unifyWildCard(searchBarController["_viewModel"].searchPattern)))
+
+			searchBarController.onClickBlacklistPattern(blacklistItem.type)
+
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItemResult)
+			expect(searchBarController["_viewModel"].searchPattern).toBe("")
+			expect(storeService.getState().dynamicSettings.searchPattern).toBe("")
+		})
+	})
+
+	describe("onBlacklistChanged", () => {
+		beforeEach(() => {
+			searchBarController["_viewModel"].searchPattern = ".ts"
+		})
+
+		it("should update ViewModel when pattern is Wildcard", () => {
+			const blacklist: BlacklistItem[] = [{ path: "*.ts", type: BlacklistType.exclude }]
+			storeService.dispatch(setBlacklist(blacklist))
+
+			searchBarController.onBlacklistChanged()
+
+			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
+			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
+		})
+
+		it("should update ViewModel when pattern is Wildcard", () => {
+			const blacklist: BlacklistItem[] = [{ path: "*.ts", type: BlacklistType.flatten }]
+			storeService.dispatch(setBlacklist(blacklist))
+
+			searchBarController.onBlacklistChanged()
+
+			expect(searchBarController["_viewModel"].isPatternHidden).toBeTruthy()
+			expect(searchBarController["_viewModel"].isPatternExcluded).toBeFalsy()
+		})
+	})
+
 	describe("onBlacklistChanged", () => {
 		beforeEach(() => {
 			searchBarController["_viewModel"].searchPattern = "/root/node/path"

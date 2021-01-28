@@ -15,8 +15,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
-- fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
+### Chore 👨‍💻 👩‍💻
+
+## [1.67.0] - 2021-01-27
+
+### Added 🚀
+
+### Changed
+
+-   Removed the track by index attribute from the blacklistpanel.component.html as it is the cause of unpredictable behaviour
+    when removing items from the flatten and exclude lists
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
+    (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
+
+-   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
 
 ### Chore 👨‍💻 👩‍💻
 
