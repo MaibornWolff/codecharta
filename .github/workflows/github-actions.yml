@@ -1,4 +1,5 @@
-name: github_actions
+# Change ref to main
+name: Test and Publish Sonar Results
 
 on: [push, release, pull_request]
 
