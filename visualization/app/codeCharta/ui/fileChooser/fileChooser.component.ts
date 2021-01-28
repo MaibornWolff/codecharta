@@ -59,16 +59,16 @@ export class FileChooserController {
 		})
 	}
 
-	setNewData(sortingArray ?) {
-		if (sortingArray!== undefined) {
-			this.sortFiles(sortingArray,this.files)
+	setNewData(sortingArray?) {
+		if (sortingArray !== undefined) {
+			this.sortFiles(sortingArray, this.files)
 		}
 		this.codeChartaService.loadFiles(this.files)
 		this.files = []
 	}
 
-	private findInFileList = (fileName : string, fileList : FileList) : number => {
-		for (let index=0;index<fileList.length;index++) {
+	private findInFileList = (fileName: string, fileList: FileList): number => {
+		for (let index = 0; index < fileList.length; index++) {
 			if (fileList.item(index).name === fileName) {
 				return index
 			}
@@ -77,9 +77,9 @@ export class FileChooserController {
 	}
 
 	// this will sort the array based on the order the files have been imported, needed for e2e fileChooser test
-	private sortFiles(sortingArray,arrayToSort) {
+	private sortFiles(sortingArray, arrayToSort) {
 		const sorter = (a, b) => {
-			return this.findInFileList(a.fileName,sortingArray)-this.findInFileList(b.fileName,sortingArray)
+			return this.findInFileList(a.fileName, sortingArray) - this.findInFileList(b.fileName, sortingArray)
 		}
 		return arrayToSort.sort(sorter)
 	}
