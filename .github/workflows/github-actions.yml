@@ -1,12 +1,11 @@
-# Change ref to main
 name: Test and Publish Sonar Results
 
-on: [push, release, pull_request]
+on: [push, pull_request]
 
 jobs:
   build_analysis:
     name: Analysis Test
-    if: github.ref != 'refs/heads/tech/1605/move-to-github-actions'
+    if: github.ref != 'refs/heads/main'
     env:
       working-directory: ./analysis
 
@@ -40,7 +39,7 @@ jobs:
   
   build_visualization_test:
     name: Visualization Test
-    if: github.ref != 'refs/heads/tech/1605/move-to-github-actions'
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
@@ -84,7 +83,7 @@ jobs:
   
   build_visualization_e2e:
     name: Visualization E2E
-    if: github.ref != 'refs/heads/tech/1605/move-to-github-actions'
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
@@ -129,7 +128,7 @@ jobs:
   publish_sonar_analysis:
     name: "Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/tech/1605/move-to-github-actions'
+    if: github.ref == 'refs/heads/main'
     env:
       working-directory: ./analysis
     
@@ -161,21 +160,12 @@ jobs:
           JAVA_HOME: ''
 
 
-         
-
-
-
-
-
-
-
-
 
 
   publish_sonar_visualization:
     name: "Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/tech/1605/move-to-github-actions'
+    if: github.ref == 'refs/heads/main'
     env:
       working-directory: ./visualization
     
@@ -201,6 +191,12 @@ jobs:
     
       - name: Visualization Test
         run: npm run test --ci
+        working-directory: ${{env.working-directory}} 
+      
+      - name: E2E Test
+        run: |
+          npm run build:web
+          npm run e2e:ci
         working-directory: ${{env.working-directory}} 
       
       - name: SonarCloud Scan
