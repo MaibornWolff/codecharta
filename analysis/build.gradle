@@ -52,7 +52,6 @@ buildscript {
 plugins {
     id 'distribution'
     id "org.jlleitschuh.gradle.ktlint" version "${ktlint_version}"
-    id("org.sonarqube") version "${sonarqube_version}"
 }
 
 allprojects {
