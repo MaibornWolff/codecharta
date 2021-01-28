@@ -1,5 +1,5 @@
 import { IntermediateVertexData } from "./intermediateVertexData"
-import { CodeMapShaderStrings } from "./codeMapShaderStrings"
+import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
 import { Vector2, Vector3 } from "three"
 
 describe("common rendering tests", () => {

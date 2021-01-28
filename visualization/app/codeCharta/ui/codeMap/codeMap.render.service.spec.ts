@@ -18,8 +18,10 @@ import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/n
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { klona } from "klona"
+import { IRootScopeService } from "angular"
 
 describe("codeMapRenderService", () => {
+	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
@@ -40,6 +42,7 @@ describe("codeMapRenderService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
+		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
@@ -55,7 +58,7 @@ describe("codeMapRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapRenderService = new CodeMapRenderService(storeService, threeSceneService, codeMapLabelService, codeMapArrowService)
+		codeMapRenderService = new CodeMapRenderService($rootScope,storeService, threeSceneService, codeMapLabelService, codeMapArrowService)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
 	}
 

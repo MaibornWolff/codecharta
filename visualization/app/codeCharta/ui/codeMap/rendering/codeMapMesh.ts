@@ -1,4 +1,4 @@
-import { CodeMapShaderStrings } from "./codeMapShaderStrings"
+import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
 import { GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"

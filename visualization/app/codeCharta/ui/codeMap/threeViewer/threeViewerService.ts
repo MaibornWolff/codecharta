@@ -1,22 +1,22 @@
 "use strict"
 
-import * as Stats from "stats-js"	// NOTE npm i stats-js
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { fxaaShaderStrings } from '../rendering/fxaaShaderString'
+import { fxaaShaderStrings } from '../rendering/shaders/loaders/fxaaShaderString'
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
-import { WebGLInfo } from "three"
+/*import Stats from 'three/examples/jsm/libs/stats.module';
+import { WebGLInfo } from "three"*/
 
 export class ThreeViewerService {
-	private stats : Stats
+	/*stats : Stats
 	private xPanel
 	private yPanel
 	private maxXPanel = 0
-	private maxYPanel = 0
+	private maxYPanel = 0*/
 	private enableFXAA = false // TODO can be selective
 
 	/* ngInject */
@@ -27,7 +27,7 @@ export class ThreeViewerService {
 		private threeRendererService: ThreeRendererService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
-		this.stats = new Stats()	// TODO needs to be injected only for test purpose 
+		//this.stats = Stats()	// TODO needs to be injected only for test purpose 
 		
 		/* 	NOTE FXAA instead of aliasing shader set to medium quality,
 			could try out different filtering techniques */
@@ -37,7 +37,7 @@ export class ThreeViewerService {
 	}
 
 	init(canvasElement: Element) {
-		this.initStats(canvasElement)
+		//this.initStats(canvasElement)
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
 		this.threeCameraService.camera.lookAt(this.threeSceneService.scene.position)
 		this.threeSceneService.scene.add(this.threeCameraService.camera)
@@ -56,11 +56,11 @@ export class ThreeViewerService {
 		window.addEventListener("focusout", event => this.onFocusOut(event))
 	}
 
-	initStats = (canvasElement: Element) => {
+	/*initStats = (canvasElement: Element) => {
 		// TODO refactoring is needed
 		const { stats } = this
-		this.xPanel = stats.addPanel( new Stats.Panel( 'triangles', '#ff8', '#221' ) )
-		this.yPanel = stats.addPanel( new Stats.Panel( 'calls', '#f8f', '#212' ) )
+		this.xPanel = stats.addPanel( Stats.Panel( 'triangles', '#ff8', '#221' ) )
+		this.yPanel = stats.addPanel( Stats.Panel( 'calls', '#f8f', '#212' ) )
 		stats.showPanel( 3 )
 
 		stats.domElement.style.position = 'absolute'
@@ -69,7 +69,7 @@ export class ThreeViewerService {
 		canvasElement.appendChild( stats.dom )
 	}
 
-	private updateStats = () => {
+	updateStats = () => {
 		const webGLInfo : WebGLInfo["render"]= this.enableFXAA ? 
 			this.threeRendererService.composer.getInfo() : 
 			this.threeRendererService.renderer.info.render
@@ -83,7 +83,7 @@ export class ThreeViewerService {
 		this.yPanel.update( calls, this.maxYPanel*1.3 )
 
 		this.stats.update()
-	}
+	}*/
 
 	// TODO render pass needs to be injected
 	private initComposer = () => { 
@@ -136,6 +136,6 @@ export class ThreeViewerService {
 		this.render()
 		this.threeOrbitControlsService.controls.update()
 		this.threeUpdateCycleService.update()
-		this.updateStats()
+		//this.updateStats()
 	}
 }

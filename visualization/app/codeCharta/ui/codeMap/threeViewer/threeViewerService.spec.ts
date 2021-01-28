@@ -55,6 +55,7 @@ describe("ThreeViewerService", () => {
 		threeRendererService.renderer = { domElement: null } as WebGLRenderer
 		threeRendererService.renderer.setSize = jest.fn()
 		threeRendererService.renderer.render = jest.fn()
+		threeRendererService.renderer.setPixelRatio = jest.fn()
 		threeOrbitControlsService.controls = { enableKeys: null } as OrbitControls
 		threeOrbitControlsService.controls.update = jest.fn()
 		threeUpdateCycleService.update = jest.fn()

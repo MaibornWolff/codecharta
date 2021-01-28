@@ -5,7 +5,7 @@ import {
 	IsWhiteBackgroundService,
 	IsWhiteBackgroundSubscriber
 } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
-import { CustomComposer } from "./postprocessing/customComposer";
+import { CustomComposer } from "../rendering/postprocessor/customComposer"
 
 export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	static BACKGROUND_COLOR = {
