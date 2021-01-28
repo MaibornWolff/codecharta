@@ -146,6 +146,8 @@ jobs:
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
         
+      - name: SonarCloud change permission
+        run: chmod 755 ...sonar-scanner-4.3.0.2102-linux/jre/bin/java
         
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v1.5
