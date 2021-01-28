@@ -1,1 +1,27 @@
+name: Release Gh-Pages
 
+on: [push]
+
+jobs:
+  deploy_ghPages:
+    name: Build Project
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+      - uses: actions/checkout@v2
+        
+      - name: Run building scripts
+      - run: |
+          sh ./analysis/script/travis-build.sh
+          sh ./visualization/script/travis-build.sh
+          sh ./script/build_gh_pages.sh
+          
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: tech/1605/move-to-github-actions
+          build_dir: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
