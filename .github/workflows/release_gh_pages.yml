@@ -1,6 +1,6 @@
 name: Release Gh-Pages
 
-on: [push]
+on: [push, release, pull_request]
 
 jobs:
   deploy_ghPages:
