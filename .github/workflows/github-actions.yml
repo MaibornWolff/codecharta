@@ -147,13 +147,9 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: SonarQube Scan
-        uses: kitabisa/sonarqube-action@master
-        with:
-         host: ${{ secrets.SONAR_HOST }}
-         login: ${{ secrets.SONAR_TOKEN }}
-         projectBaseDir: ${{env.working-directory}}
-         projectKey: "maibornwolff-gmbh_codecharta_analysis"
-         projectName: "CodeCharta Analysis"
+        run: ./gradlew sonarqube
+        working-directory: ${{env.working-directory}}
+
 
          
 
