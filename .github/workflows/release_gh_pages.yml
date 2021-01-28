@@ -1,9 +1,11 @@
 name: Release Gh-Pages
 
-on: [push, release, pull_request]
+on: 
+  push: 
+    tags: 'v*'
 
-jobs:
-  deploy_ghPages:
+jobs:  
+  build_project:
     name: Build Project
 
     runs-on: ubuntu-latest
@@ -12,16 +14,77 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         
-      - name: Run building scripts
-        run: |
-          sh ./analysis/script/travis-build.sh
-          sh ./visualization/script/travis-build.sh
-          sh ./script/build_gh_pages.sh
+      - name: Run building script analysis
+        run: sh ./analysis/script/travis-build.sh
           
+      - name: Run building script visualization
+        run: sh ./visualization/script/travis-build.sh     
+        
+      - name: Run building script build gh pages
+        run: sh ./script/build_gh_pages.sh   
+
+      - name: Upload Release Files to tagged release
+        uses: alexellis/upload-assets@0.2.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
+          
+  
+  publish_visualization:
+    name: Publish Visualization package
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+    
+      - name: Publish visualization npm package
+        run: sh ./visualization/script/npm-publish.sh
+        
+  
+  publish_analysis:
+    name: Publish Analysis package
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+          
+      - name: Publish analysis npm package
+        run: ./analysis/script/npm-publish.sh       
+         
+  
+  deploy_gh_pages:
+    needs: build_project
+    name: Deploy Gh-Pages
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2    
+    
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2
         with:
-          target_branch: tech/1605/move-to-github-actions
+          target_branch: main
           build_dir: gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+  
+  build_docker_image:
+    name: Build Docker Image
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+          
+      - name: Run Docker Image
+        run: sh ./visualization/script/docker-publish.sh
+          
