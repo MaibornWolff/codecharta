@@ -145,19 +145,17 @@ jobs:
           ./gradlew build integrationTest
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
-        
-      - name: SonarCloud change permission
-        run: chmod 755 ...sonar-scanner-4.3.0.2102-linux/jre/bin/java
-        
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v1.5
+
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@master
         with:
-          projectBaseDir: ${{env.working-directory}}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+         host: ${{ secrets.SONAR_HOST }}
+         login: ${{ secrets.SONAR_TOKEN }}
+         projectBaseDir: ${{env.working-directory}}
+         projectKey: "maibornwolff-gmbh_codecharta_analysis"
+         projectName: "CodeCharta Analysis"
 
-
+         
 
 
 
