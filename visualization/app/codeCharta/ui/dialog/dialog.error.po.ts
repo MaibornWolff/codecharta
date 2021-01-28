@@ -15,10 +15,13 @@ export class DialogErrorPageObject {
 	}
 
 	async clickAndWaitUntilContentChange() {
-		const message=await this.getMessage()
+		const message = await this.getMessage()
 		await expect(page).toClick("md-dialog-actions > button")
 
-		await page.waitForFunction((argument) => !document.querySelector(".md-dialog-content-body")?.textContent.includes(argument),
-		{}, message)
+		await page.waitForFunction(
+			argument => !document.querySelector(".md-dialog-content-body")?.textContent.includes(argument),
+			{},
+			message
+		)
 	}
 }
