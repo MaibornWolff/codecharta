@@ -5,6 +5,7 @@ on: [push, release]
 jobs:
   build_analysis:
     name: Analysis Test
+    if: github.ref != 'refs/heads/tech/1605/move-to-github-actions'
     env:
       working-directory: ./analysis
 
@@ -38,6 +39,7 @@ jobs:
   
   build_visualization_test:
     name: Visualization Test
+    if: github.ref != 'refs/heads/tech/1605/move-to-github-actions'
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
@@ -70,6 +72,7 @@ jobs:
       run: |
         npm cache clean --force
         npm cache verify
+        npm install
       working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
@@ -80,6 +83,7 @@ jobs:
   
   build_visualization_e2e:
     name: Visualization E2E
+    if: github.ref != 'refs/heads/tech/1605/move-to-github-actions'
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
@@ -112,6 +116,7 @@ jobs:
       run: |
         npm cache clean --force
         npm cache verify
+        npm install
       working-directory: ${{env.working-directory}}  
           
     - name: Test and Linter
@@ -123,7 +128,6 @@ jobs:
   publish_sonar_analysis:
     name: "Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
-    needs: [build_analysis, build_visualization_test, build_visualization_e2e]
     if: github.ref == 'refs/heads/tech/1605/move-to-github-actions'
     env:
       working-directory: ./analysis
@@ -170,7 +174,6 @@ jobs:
   publish_sonar_visualization:
     name: "Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
-    needs: [build_analysis, build_visualization_test, build_visualization_e2e]
     if: github.ref == 'refs/heads/tech/1605/move-to-github-actions'
     env:
       working-directory: ./visualization
@@ -192,6 +195,7 @@ jobs:
         run: |
           npm cache clean --force
           npm cache verify
+          npm install
         working-directory: ${{env.working-directory}}  
     
       - name: Visualization Test
