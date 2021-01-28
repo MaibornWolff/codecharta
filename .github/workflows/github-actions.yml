@@ -1,6 +1,6 @@
 name: github_actions
 
-on: [push, release]
+on: [push, release, pull_request]
 
 jobs:
   build_analysis:
