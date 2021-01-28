@@ -195,6 +195,7 @@ jobs:
     
       - name: Visualization Test
         run: npm run test --ci
+        working-directory: ${{env.working-directory}} 
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v1.5
