@@ -93,13 +93,21 @@ jobs:
   
   build_docker_image:
     name: Build Docker Image
+    env:
+      working-directory: ./visualization
 
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
         uses: actions/checkout@v2
-          
+    
       - name: Run Docker Image
-        run: sh ./visualization/script/docker-publish.sh
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          default_branch: main
+          name: codecharta/codecharta-visualization
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          workdir: ${{ env.working-directory }}
           
