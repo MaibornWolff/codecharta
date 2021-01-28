@@ -4,6 +4,7 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
+import { ThreeStatsService } from "./threeStatsService"
 import "../../../state/state.module"
 import camelCase from "lodash.camelcase"
 
@@ -17,3 +18,4 @@ angular
 	.service(camelCase(ThreeRendererService.name), ThreeRendererService)
 	.service(camelCase(ThreeOrbitControlsService.name), ThreeOrbitControlsService)
 	.service(camelCase(ThreeCameraService.name), ThreeCameraService)
+	.service(camelCase(ThreeStatsService.name), ThreeStatsService)

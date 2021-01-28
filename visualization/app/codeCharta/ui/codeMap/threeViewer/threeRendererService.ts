@@ -1,4 +1,4 @@
-import { WebGLRenderer } from "three"
+import { Camera, Scene, WebGLRenderer } from "three"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import {
@@ -6,8 +6,12 @@ import {
 	IsWhiteBackgroundSubscriber
 } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { fxaaShaderStrings } from '../rendering/shaders/loaders/fxaaShaderString'
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
 
 export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
+	
 	static BACKGROUND_COLOR = {
 		white: 0xffffff,
 		normal: 0xeeeedd
@@ -28,15 +32,38 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	composer: CustomComposer
 	renderer: WebGLRenderer
+	scene : Scene
+	camera: Camera
+	enableFXAA = false
 
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {}
 
-	init(containerWidth: number, containerHeight: number) {
+	init(containerWidth: number, containerHeight: number,scene : Scene, camera: Camera) {
+		this.scene = scene
+		this.camera = camera
 		this.renderer = new WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
 		this.composer = new CustomComposer( this.renderer );
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		this.renderer.setSize(containerWidth, containerHeight)
 		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)
+		if (!ThreeRendererService.RENDER_OPTIONS.antialias) {
+			this.enableFXAA = true
+			this.initComposer()
+		}
+	}
+
+	private initComposer = () => { 
+		const pixelRatio = this.renderer.getPixelRatio()
+
+		this.composer.setSize( window.innerWidth* pixelRatio, window.innerHeight* pixelRatio)
+		const renderPass = new RenderPass( this.scene, this.camera )
+		this.composer.addPass( renderPass )
+		
+		const effectFXAA = new ShaderPass( new fxaaShaderStrings() )
+		effectFXAA.renderToScreen = false
+        effectFXAA.uniforms[ 'resolution' ].value.x = 1 / ( window.innerWidth* pixelRatio ) 
+		effectFXAA.uniforms[ 'resolution' ].value.y = 1 / ( window.innerHeight* pixelRatio )
+        this.composer.addPass( effectFXAA )
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
@@ -46,5 +73,14 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
 		}
 		this.renderer.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
+	}
+
+	render() {
+		const { scene, camera } = this
+		if (this.enableFXAA) {
+			this.composer.render()
+		} else {
+			this.renderer.render(scene, camera)
+		}
 	}
 }
