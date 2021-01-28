@@ -72,7 +72,6 @@ jobs:
       run: |
         npm cache clean --force
         npm cache verify
-        npm install
       working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
@@ -116,7 +115,6 @@ jobs:
       run: |
         npm cache clean --force
         npm cache verify
-        npm install
       working-directory: ${{env.working-directory}}  
           
     - name: Test and Linter
@@ -186,7 +184,6 @@ jobs:
         run: |
           npm cache clean --force
           npm cache verify
-          npm install
         working-directory: ${{env.working-directory}}  
     
       - name: Visualization Test
