@@ -32,6 +32,7 @@ jobs:
         
           
       - name: Build visualization
+        working-directory: ./visualization
         run: | 
           npm install
           npm run test
