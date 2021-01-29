@@ -13,6 +13,7 @@ import { FilesService, FilesSelectionSubscriber } from "../../../state/store/fil
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
+// TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"

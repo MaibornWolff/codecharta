@@ -36,14 +36,15 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	camera: Camera
 	enableFXAA = false
 
-	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {}
+	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {
+		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
+	}
 
 	init(containerWidth: number, containerHeight: number,scene : Scene, camera: Camera) {
 		this.scene = scene
 		this.camera = camera
 		this.renderer = new WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
 		this.composer = new CustomComposer( this.renderer );
-		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		this.renderer.setSize(containerWidth, containerHeight)
 		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)
 		if (!ThreeRendererService.RENDER_OPTIONS.antialias) {
