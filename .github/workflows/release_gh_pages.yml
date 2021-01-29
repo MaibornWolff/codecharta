@@ -51,4 +51,84 @@ jobs:
         with:
           asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
           
+  publish_visualization:
+    name: Publish Visualization package
+    env:
+      working-directory: ./visualization
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Publish visualization npm package
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm install
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
+
+  publish_analysis:
+    name: Publish Analysis package
+    env:
+      working-directory: ./analysis/node-wrapper
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Publish analysis npm package
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm install
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}     
+
+
+  deploy_gh_pages:
+    needs: build_project
+    name: Deploy Gh-Pages
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2    
+
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: main
+          build_dir: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+  build_docker_image:
+    name: Build Docker Image
+    env:
+      working-directory: ./visualization
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run Docker Image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          default_branch: main
+          name: codecharta/codecharta-visualization
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          workdir: ${{ env.working-directory }}
+          
   
