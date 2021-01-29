@@ -21,7 +21,7 @@ describe("ThreeRenderService", () => {
         rebuildService()
 	})
 
-	function restartSystem() {
+	const restartSystem = () => {
         instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
 
         $rootScope = getService<IRootScopeService>("$rootScope")
@@ -30,11 +30,11 @@ describe("ThreeRenderService", () => {
         threeSceneService = getService<ThreeSceneService>("threeSceneService")
     }
 
-    function rebuildService() {
+    const rebuildService = () => {
 		threeRendererService = new ThreeRendererService(storeService, $rootScope)
     }
     
-    function mockThreeJs() {
+    const mockThreeJs = () => {
         threeCameraService = getService<ThreeCameraService>("threeCameraService")
         threeCameraService.camera = new PerspectiveCamera()
         threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
@@ -56,21 +56,25 @@ describe("ThreeRenderService", () => {
         beforeEach(() => {
 			mockThreeJs()
         })
+
+        const setFXAA = (value : boolean) => {
+            threeRendererService.enableFXAA = value
+        }
         
 		it("should call composer when FXAA is enabled", () => {
-            threeRendererService.enableFXAA = true
+            setFXAA(true)
             threeRendererService.render()
             
             expect(threeRendererService.composer.render).toHaveBeenCalled()
         })
 
         it("should call normal renderer when FXAA is disabled", () => {
-            threeRendererService.scene = threeSceneService.scene
-            threeRendererService.camera = threeCameraService.camera
-            threeRendererService.enableFXAA = false
+            setFXAA(false)
+            const { scene = threeSceneService.scene, camera = threeCameraService.camera} = threeRendererService
+            
             threeRendererService.render()
             
-            expect(threeRendererService.renderer.render).toHaveBeenCalledWith(threeSceneService.scene,threeCameraService.camera)
+            expect(threeRendererService.renderer.render).toHaveBeenCalledWith(scene,camera)
         })
 	})
 })

@@ -3,9 +3,9 @@ import { WebGLInfo } from "three"
 import { ThreeRendererService } from './threeRendererService';
 
 export class ThreeStatsService {
-    private stats : Stats
-    private xPanel : Stats.Panel
-	private yPanel : Stats.Panel
+	stats : Stats
+    xPanel : Stats.Panel
+	yPanel : Stats.Panel
 	private maxXPanel = 0
     private maxYPanel = 0
 
@@ -14,14 +14,10 @@ export class ThreeStatsService {
         private threeRendererService: ThreeRendererService
     ) {}
 
-    init(canvasElement: Element) {
-        this.stats = Stats()
-        this.initStats(canvasElement)
-    }
-
-    initStats = (canvasElement: Element) => {
-		const { stats } = this
-		this.xPanel = stats.addPanel( Stats.Panel( 'triangles', '#ff8', '#221' ) )
+    init = (canvasElement: Element) => {
+		const { stats = Stats() } = this
+        
+        this.xPanel = stats.addPanel( Stats.Panel( 'triangles', '#ff8', '#221' ) )
 		this.yPanel = stats.addPanel( Stats.Panel( 'calls', '#f8f', '#212' ) )
 		stats.showPanel( 3 )
 
@@ -29,10 +25,10 @@ export class ThreeStatsService {
 		stats.domElement.style.left = '0'
 		stats.domElement.style.top = '0'
 		canvasElement.appendChild( stats.dom )
-	}
+    }
 
 	updateStats = () => {
-		const webGLInfo : WebGLInfo["render"]= this.threeRendererService.enableFXAA ? 
+		const webGLInfo : WebGLInfo["render"] = this.threeRendererService.enableFXAA ? 
 			this.threeRendererService.composer.getInfo() : 
 			this.threeRendererService.renderer.info.render
 		
