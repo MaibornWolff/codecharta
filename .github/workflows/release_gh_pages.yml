@@ -26,10 +26,16 @@ jobs:
       
       - name: Build analysis
         working-directory: ./analysis
-        run: chmod +x ./gradlew build
+        run: chmod +x ./gradlew
           
       - name: Build visualization
-        run: sh ./visualization/script/travis-build.sh     
+        run: | 
+          npm install
+          npm run test
+          npm run build:web
+          npm run package
+          docker build -t codecharta/codecharta-visualization .
+     
         
       - name: Run building script build gh pages
         run: sh ./script/build_gh_pages.sh   
