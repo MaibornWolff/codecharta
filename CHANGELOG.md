@@ -1,6 +1,7 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+This is a test!
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
@@ -15,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
 
 ### Chore 👨‍💻 👩‍💻
 
