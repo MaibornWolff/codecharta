@@ -26,7 +26,10 @@ jobs:
       
       - name: Build analysis
         working-directory: ./analysis
-        run: chmod +x ./gradlew
+        run: |
+              chmod +x ./gradlew
+              ./gradlew build
+        
           
       - name: Build visualization
         run: | 
