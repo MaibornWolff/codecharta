@@ -102,6 +102,9 @@ jobs:
       run: |
         npm run build:web
         npm package
+      working-directory: ${{env.working-directory}} 
+
+      
   
   build_visualization_e2e:
     name: Visualization E2E
