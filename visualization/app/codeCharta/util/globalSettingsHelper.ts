@@ -5,6 +5,7 @@ import { setExperimentalFeaturesEnabled } from "../state/store/appSettings/enabl
 import { setHideFlatBuildings } from "../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { setIsWhiteBackground } from "../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
 import { setLayoutAlgorithm } from "../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { setSharpnessMode } from "../state/store/appSettings/sharpness/sharpness.actions"
 import { setMaxTreeMapFiles } from "../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setResetCameraIfNewFileIsLoaded } from "../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import packageJson from "../../../package.json"
@@ -43,6 +44,9 @@ export class GlobalSettingsHelper {
 			}
 			if (appSettings.maxTreeMapFiles !== globalSettings.maxTreeMapFiles) {
 				storeService.dispatch(setMaxTreeMapFiles(globalSettings.maxTreeMapFiles))
+			}
+			if (appSettings.sharpnessMode !== globalSettings.sharpnessMode) {
+				storeService.dispatch(setSharpnessMode(globalSettings.sharpnessMode))
 			}
 		}
 	}

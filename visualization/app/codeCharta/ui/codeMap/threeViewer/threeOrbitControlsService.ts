@@ -62,6 +62,8 @@ export class ThreeOrbitControlsService
 		this.autoFitTo()
 	}
 
+	// TODO add autofit for SharpnessMode ?
+
 	setControlTarget() {
 		const { cameraTarget } = this.storeService.getState().appSettings
 		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)

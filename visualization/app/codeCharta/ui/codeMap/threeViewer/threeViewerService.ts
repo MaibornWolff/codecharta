@@ -26,14 +26,18 @@ export class ThreeViewerService {
 		this.threeRendererService.init(window.innerWidth, window.innerHeight,scene, camera)
 		this.threeStatsService.init(canvasElement)
 		this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
-		this.threeRendererService.renderer.setPixelRatio(window.devicePixelRatio)  // TODO needs ui progressbar (from 1 to window.devicePixelRatio)
-
+		
 		canvasElement.appendChild(this.threeRendererService.renderer.domElement)
 
+		// TODO do we need to remove these listeners ?
 		window.addEventListener("resize", () => this.onWindowResize())
 		window.addEventListener("focusin", event => this.onFocusIn(event))
 		window.addEventListener("focusout", event => this.onFocusOut(event))
 	}
+
+	getRenderer = () => {
+		return this.threeRendererService.renderer
+	} 
 
 	onWindowResize() {
 		this.threeSceneService.scene.updateMatrixWorld(false)

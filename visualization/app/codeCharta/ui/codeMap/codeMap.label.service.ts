@@ -146,7 +146,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	onCameraChanged() {
 		for (const label of this.labels) {
-			this.setLabelSize(label.sprite, label.sprite.material.map.image.width, label)
+			this.setLabelSize(label.sprite, label, label.sprite.material.map.image.width)
 		}
 	}
 
@@ -194,7 +194,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const spriteMaterial = new SpriteMaterial({ map: texture })
 		const sprite = new Sprite(spriteMaterial)
 		this.lineCount = multiLineContext.length
-		this.setLabelSize(sprite, canvas.width, null)
+		this.setLabelSize(sprite, null, canvas.width)
 
 		return {
 			sprite,
@@ -220,7 +220,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.fill()
 	}
 
-	private setLabelSize(sprite: Sprite, labelWidth: number = sprite.material.map.image.width, label: InternalLabel) {
+	private setLabelSize(sprite: Sprite, label: InternalLabel, labelWidth: number = sprite.material.map.image.width) {
 		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
 		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
 		if (label !== null) {

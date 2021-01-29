@@ -15,7 +15,8 @@ export class ThreeStatsService {
     ) {}
 
     init = (canvasElement: Element) => {
-		const { stats = Stats() } = this
+		this.stats = Stats()
+		const { stats } = this
         
         this.xPanel = stats.addPanel( Stats.Panel( 'triangles', '#ff8', '#221' ) )
 		this.yPanel = stats.addPanel( Stats.Panel( 'calls', '#f8f', '#212' ) )

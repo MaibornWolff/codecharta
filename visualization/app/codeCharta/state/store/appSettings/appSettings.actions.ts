@@ -29,6 +29,7 @@ import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
 import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { defaultLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
 import { defaultMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
+import { defaultSharpnessMode } from "./sharpness/sharpness.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -77,5 +78,6 @@ export const defaultAppSettings: AppSettings = {
 	sortingOrderAscending: defaultSortingOrderAscending,
 	experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
 	layoutAlgorithm: defaultLayoutAlgorithm,
-	maxTreeMapFiles: defaultMaxTreeMapFiles
+	maxTreeMapFiles: defaultMaxTreeMapFiles,
+	sharpnessMode: defaultSharpnessMode
 }

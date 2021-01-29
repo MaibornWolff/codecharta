@@ -9,7 +9,6 @@ import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { fxaaShaderStrings } from '../rendering/shaders/loaders/fxaaShaderString'
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
-
 export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	
 	static BACKGROUND_COLOR = {
@@ -41,9 +40,12 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	}
 
 	init(containerWidth: number, containerHeight: number,scene : Scene, camera: Camera) {
+		// eslint-disable-next-line no-console
+		console.log("init")
 		this.scene = scene
 		this.camera = camera
 		this.renderer = new WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
+		this.renderer.setPixelRatio(window.devicePixelRatio)
 		this.composer = new CustomComposer( this.renderer );
 		this.renderer.setSize(containerWidth, containerHeight)
 		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)
