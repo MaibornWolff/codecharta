@@ -14,10 +14,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         
-      - name: Run building script analysis
-        run: sh ./analysis/script/travis-build.sh
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1.4.3
+        with: 
+          java-version: '11'
           
-      - name: Run building script visualization
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: '12'  
+      
+      - name: Build analysis
+        working-directory: ./analysis
+        run: chmod +x ./gradlew build
+          
+      - name: Build visualization
         run: sh ./visualization/script/travis-build.sh     
         
       - name: Run building script build gh pages
