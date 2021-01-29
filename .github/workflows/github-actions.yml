@@ -101,7 +101,7 @@ jobs:
     - name: Package
       run: |
         npm run build:web
-        npm package
+        npm run package
       working-directory: ${{env.working-directory}} 
 
       
