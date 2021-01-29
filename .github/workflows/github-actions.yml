@@ -79,33 +79,7 @@ jobs:
         npm run test --ci
         npm run lint      
       working-directory: ${{env.working-directory}}
-  
-  package:
-    name: NPM Package
-    if: github.ref != 'refs/heads/main'
-    runs-on: ubuntu-latest
-    env:
-      working-directory: ./visualization
-    steps:
-    - uses: actions/checkout@v2
-         
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.4
-      with:
-        node-version: '12' 
 
-    - name: Install Node
-      run: npm install
-      working-directory: ${{env.working-directory}} 
-          
-    - name: Package
-      run: |
-        npm run build:web
-        npm run package
-      working-directory: ${{env.working-directory}} 
-
-      
-  
   build_visualization_e2e:
     name: Visualization E2E
     if: github.ref != 'refs/heads/main'
@@ -146,7 +120,6 @@ jobs:
     - name: Test and Linter
       run: |
         npm run build:web
-        npm package
         npm run e2e:ci
       working-directory: ${{env.working-directory}}  
   
