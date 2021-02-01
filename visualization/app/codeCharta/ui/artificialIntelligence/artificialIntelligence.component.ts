@@ -2,30 +2,25 @@ import "./artificialIntelligence.component.scss"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
-import {getMedian} from "../../util/nodeDecorator";
-import {buildCustomConfigFromState} from "../../util/customConfigBuilder";
-import {CustomConfigHelper} from "../../util/customConfigHelper";
-import {StoreService} from "../../state/store.service";
-import {setHeightMetric} from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions";
-import {setAreaMetric} from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions";
-import {setColorMetric} from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions";
-import {setColorRange} from "../../state/store/dynamicSettings/colorRange/colorRange.actions";
+import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
+import { CustomConfigHelper } from "../../util/customConfigHelper"
+import { StoreService } from "../../state/store.service"
+import { klona } from "klona"
+import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
+import { getMedian } from "../../util/nodeDecorator"
 
 type OutlierConfig = {
 	threshold: number
 }
 
 export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
-	// private badMetricThresholds: Map<string, number> = new Map([
-	// 	["mcc", 15]
-	// ])
-	
 	private metricsOutlierConfig: Map<string, OutlierConfig> = new Map([
 		["mcc", { threshold: 20 }],
 		["loc", { threshold: 1000 }],
 		["rloc", { threshold: 1000 }],
 		["cognitive_complexity", { threshold: 10 }],
 		["code_smell", { threshold: 25 }],
+		["bug", { threshold: 10 }],
 		["functions", { threshold: 20 }],
 		["statements", { threshold: 150 }]
 	])
@@ -40,11 +35,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 
 		for (const fileState of files) {
 			if (fileState.selectedAs !== FileSelectionState.None) {
-
-				console.log(fileState)
-
 				for (const [metricName, outlierConfig] of this.metricsOutlierConfig) {
-					console.log(`DETECT OUTLIERS FOR ${metricName}`)
 					const outliers = this.detectOutliers(metricName, outlierConfig, fileState)
 					if (outliers.length > 0) {
 						outliersFound.set(metricName, Math.min(...outliers) - 1)
@@ -53,30 +44,37 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			}
 		}
 
-		const rlocOutlier = outliersFound.get("rloc")
-		const functionsOutlier = outliersFound.get("functions")
+		//const rlocOutlier = outliersFound.get("rloc")
+		//const functionsOutlier = outliersFound.get("functions")
 		const mccOutlier = outliersFound.get("mcc")
-		console.log(mccOutlier)
-		if (rlocOutlier && functionsOutlier && mccOutlier) {
-			const state = this.storeService.getState()
-			this.storeService.dispatch(setAreaMetric("rloc"))
-			this.storeService.dispatch(setHeightMetric("functions"))
-			this.storeService.dispatch(setColorMetric("mcc"))
-			this.storeService.dispatch(setColorRange({from: state.dynamicSettings.colorRange.from, to: mccOutlier.valueOf()}))
+		const bugOutlier = outliersFound.get("bug")
 
-			//TODO: clone state instead of dispatching the new settings (metrics/range)
+		// Just make one static suggestion if possible
+		if (mccOutlier && bugOutlier) {
+			const state = klona(this.storeService.getState())
+			state.dynamicSettings.areaMetric = "mcc"
+			state.dynamicSettings.heightMetric = "bug"
+			state.dynamicSettings.colorMetric = "bug"
+			state.dynamicSettings.colorRange.to = bugOutlier.valueOf()
 
-			const customConfig = buildCustomConfigFromState("AI: RLOC/FUNC/MCC", this.storeService.getState())
-			CustomConfigHelper.addCustomConfig(customConfig)
+			const configName = "Buggy Classes (AI)"
+			const customConfig = buildCustomConfigFromState(configName, state)
+			if (
+				!CustomConfigHelper.hasCustomConfigByName(
+					CustomConfigMapSelectionMode.SINGLE,
+					[state.files[0].file.fileMeta.fileName],
+					configName
+				)
+			) {
+				CustomConfigHelper.addCustomConfig(customConfig)
+			}
 		}
-
-		console.log(outliersFound)
 	}
 
 	private detectOutliers(metricName: string, outlierConfig: OutlierConfig, fileState: FileState) {
 		let outliers: number[] = []
 
-		const metricStatistics = fileState.file.fileMeta.metricStatistics[metricName]
+		const metricStatistics = fileState.file.fileMeta.statistics[metricName]
 		if (!metricStatistics) {
 			return outliers
 		}
@@ -88,23 +86,21 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 
 		//let euklideanDistanceToAverage = 0
 		//for (const metricValue of metricValues) {
-			//euklideanDistanceToAverage = (metricValue - metricStatistics.average) ** 2
+		//euklideanDistanceToAverage = (metricValue - metricStatistics.average) ** 2
 		//}
 
 		//const variance = euklideanDistanceToAverage / metricValues.length
 		//const standardVariation = Math.sqrt(variance)
 
-		//console.log(variance, standardVariation)
-
 		let valuesFirstHalf: number[]
 		let valuesSecondHalf: number[]
 
 		if (metricValues.length % 2 === 0) {
-			valuesFirstHalf = metricValues.slice(0, metricValues.length / 2);
-			valuesSecondHalf = metricValues.slice(metricValues.length / 2, metricValues.length);
+			valuesFirstHalf = metricValues.slice(0, metricValues.length / 2)
+			valuesSecondHalf = metricValues.slice(metricValues.length / 2, metricValues.length)
 		} else {
-			valuesFirstHalf = metricValues.slice(0, metricValues.length / 2);
-			valuesSecondHalf = metricValues.slice(metricValues.length / 2 + 1, metricValues.length);
+			valuesFirstHalf = metricValues.slice(0, metricValues.length / 2)
+			valuesSecondHalf = metricValues.slice(metricValues.length / 2 + 1, metricValues.length)
 		}
 
 		const firstQuartil = getMedian(valuesFirstHalf)
@@ -114,17 +110,9 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		const interQuartilRange = thirdQuartil - firstQuartil
 		const upperOutlierBound = thirdQuartil + 1.5 * interQuartilRange
 
-		//console.log(valuesFirstHalf, valuesSecondHalf, firstQuartil, thirdQuartil, interQuartilRange, upperOutlierBound)
-
 		outliers = metricValues.filter(function (value) {
-			if (!(value > upperOutlierBound) && value > outlierConfig.threshold) {
-				console.log("THREEEEEEESHOLD FALLLLLLLLBACK")
-				console.log("upperOutlierBound", upperOutlierBound)
-			}
 			return value > upperOutlierBound || value > outlierConfig.threshold
 		})
-
-		console.log(outliers)
 
 		return outliers
 	}
