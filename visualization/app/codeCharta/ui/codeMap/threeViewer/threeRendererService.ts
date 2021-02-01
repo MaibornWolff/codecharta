@@ -1,4 +1,4 @@
-import { Camera, Scene, WebGLInfo, WebGLRenderer } from "three"
+import { Camera, RGBAFormat, Scene, Vector2, WebGLInfo, WebGLRenderer, WebGLRenderTarget } from "three"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import {
@@ -24,7 +24,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	static RENDER_OPTIONS = {
 		antialias: true,
-		preserveDrawingBuffer: true
+		preserveDrawingBuffer: false
 	} as WebGLContextAttributes 
 
 	static enableFXAA = false
@@ -48,13 +48,19 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	private initGL = (containerWidth: number, containerHeight: number) => {
 		this.setGLOptions()
-		const canvas = document.createElement( 'canvas' )
-		const context = this.getWebGlContext(canvas)
-		this.renderer = new WebGLRenderer( { canvas, context } );
+		this.renderer = new WebGLRenderer( ThreeRendererService.RENDER_OPTIONS );
 		if (ThreeRendererService.setPixelRatio) {
 			this.renderer.setPixelRatio(window.devicePixelRatio)
 		}
-		this.composer = new CustomComposer( this.renderer );
+		if (WEBGL.isWebGL2Available) {
+			const size = this.renderer.getDrawingBufferSize( new Vector2() );
+			const renderTarget = new WebGLRenderTarget( size.width, size.height, {
+				format: RGBAFormat
+			})
+			this.composer = new CustomComposer( this.renderer, renderTarget )
+		} else {
+			this.composer = new CustomComposer( this.renderer )
+		}
 		this.renderer.setSize(containerWidth, containerHeight)
 		if (ThreeRendererService.enableFXAA) {
 			this.initComposer()
@@ -86,12 +92,6 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 				ThreeRendererService.setPixelRatio = true
 				break
 		}
-	}
-
-	// using webgl2 instead of webgl 
-	private getWebGlContext = (canvas : HTMLCanvasElement) => {
-		return WEBGL.isWebGL2Available() ? canvas.getContext( 'webgl2', ThreeRendererService.RENDER_OPTIONS ) : 
-			canvas.getContext( 'webgl', ThreeRendererService.RENDER_OPTIONS );
 	}
 
 	private initComposer = () => { 
