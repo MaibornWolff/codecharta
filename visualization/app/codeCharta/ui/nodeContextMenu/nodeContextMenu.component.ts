@@ -126,20 +126,35 @@ export class NodeContextMenuController
 	}
 
 	flattenNode() {
-		const blacklistItem: BlacklistItem = { path: this._viewModel.codeMapNode.path, type: BlacklistType.flatten }
+		const codeMapNode = this._viewModel.codeMapNode
+		const blacklistItem: BlacklistItem = {
+			path: codeMapNode.path,
+			type: BlacklistType.flatten,
+			nodeType: codeMapNode.type,
+			attributes: codeMapNode.attributes
+		}
 		this.storeService.dispatch(addBlacklistItem(blacklistItem))
 	}
 
 	showFlattenedNode() {
-		const blacklistItem: BlacklistItem = { path: this._viewModel.codeMapNode.path, type: BlacklistType.flatten }
+		const codeMapNode = this._viewModel.codeMapNode
+		const blacklistItem: BlacklistItem = {
+			path: codeMapNode.path,
+			type: BlacklistType.flatten,
+			nodeType: codeMapNode.type,
+			attributes: codeMapNode.attributes
+		}
 		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
 	}
 
 	excludeNode() {
+		const codeMapNode = this._viewModel.codeMapNode
 		this.storeService.dispatch(
 			addBlacklistItem({
-				path: this._viewModel.codeMapNode.path,
-				type: BlacklistType.exclude
+				path: codeMapNode.path,
+				type: BlacklistType.exclude,
+				nodeType: codeMapNode.type,
+				attributes: codeMapNode.attributes
 			})
 		)
 	}

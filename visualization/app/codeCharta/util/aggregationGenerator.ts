@@ -1,4 +1,4 @@
-import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
+import { CodeMapNode, CCFile, NodeType, Statistics } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
@@ -34,7 +34,7 @@ export class AggregationGenerator {
 				fileChecksum: this.fileChecksumArray.join(";"),
 				apiVersion: packageJson.codecharta.apiVersion,
 				exportedFileSize: this.fileSizesSum,
-				metricStatistics: []
+				statistics: {} as Statistics
 			},
 			map: {
 				name: CodeChartaService.ROOT_NAME,

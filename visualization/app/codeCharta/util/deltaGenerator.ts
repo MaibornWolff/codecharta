@@ -1,4 +1,4 @@
-import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model"
+import { CodeMapNode, CCFile, KeyValuePair, FileMeta, Statistics } from "../codeCharta.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
@@ -101,7 +101,7 @@ export class DeltaGenerator {
 			apiVersion: packageJson.codecharta.apiVersion,
 			projectName: `delta_between_${referenceFile.fileMeta.projectName}_and_${comparisonFile.fileMeta.projectName}`,
 			exportedFileSize: referenceFile.fileMeta.exportedFileSize + comparisonFile.fileMeta.exportedFileSize,
-			metricStatistics: []
+			statistics: {} as Statistics
 		}
 	}
 

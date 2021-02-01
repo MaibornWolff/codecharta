@@ -68,16 +68,38 @@ export interface FileMeta {
 	apiVersion: string
 	projectName: string
 	exportedFileSize: number
-	metricStatistics?: MetricStatisticsItem[]
+	statistics?: Statistics
+}
+
+export interface Statistics {
+	totalRealLinesOfCode: number
+	totalLinesOfCode: number
+	programmingLanguages: string[]
+	totalNumberOfFiles: number
+	numberOfFilesPerLanguage: Map<string, number>
+	maxFilePathDepth: number
+	totalFilePathDepth: number
+	avgFilePathDepth: number
+	metricStatisticsPerLanguage: MetricsPerLanguage
+	metricStatisticsOverall: MetricKeyValue
+}
+
+export interface MetricsPerLanguage {
+	[language: string]: MetricKeyValue
+}
+
+export interface MetricKeyValue {
+	[metricName: string]: MetricStatisticsItem
 }
 
 export interface MetricStatisticsItem {
+	metricName: string
 	min: number
 	max: number
 	totalSum: number
 	numberOfFiles: number
-	//median: number
 	average: number
+	values: number[]
 }
 
 export interface Settings {
@@ -196,6 +218,10 @@ export interface EdgeMetricCount {
 export interface BlacklistItem {
 	path: string
 	type: BlacklistType
+	nodeType?: NodeType
+	attributes?: {
+		[metricName: string]: any
+	}
 }
 
 export enum BlacklistType {

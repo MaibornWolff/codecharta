@@ -4,9 +4,9 @@ import {
 	CodeMapNode,
 	Edge,
 	MarkedPackage,
-	MetricStatisticsItem,
 	RecursivePartial,
-	Settings
+	Settings,
+	Statistics
 } from "./codeCharta.model"
 
 export interface ExportCCFile {
@@ -18,7 +18,7 @@ export interface ExportCCFile {
 	edges?: Edge[]
 	markedPackages?: MarkedPackage[]
 	blacklist?: ExportBlacklistItem[]
-	metricStatistics?: ExportMetricStatisticsItem[]
+	statistics?: ExportStatistics
 }
 
 export interface ExportBlacklistItem {
@@ -26,7 +26,7 @@ export interface ExportBlacklistItem {
 	type: ExportBlacklistType
 }
 
-export type ExportMetricStatisticsItem = MetricStatisticsItem
+export type ExportStatistics = Statistics
 
 export enum ExportBlacklistType {
 	hide = "hide",

@@ -1,5 +1,5 @@
 import { ExportBlacklistType, OldAttributeTypes } from "../codeCharta.api.model"
-import { AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
+import { AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair, Statistics } from "../codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
 
 export function getCCFile(file: NameDataPair): CCFile {
@@ -11,7 +11,7 @@ export function getCCFile(file: NameDataPair): CCFile {
 			projectName: fileContent.projectName,
 			apiVersion: fileContent.apiVersion,
 			exportedFileSize: file.fileSize,
-			metricStatistics: file.content.metricStatistics || []
+			statistics: fileContent.statistics || ({} as Statistics)
 		},
 		settings: {
 			fileSettings: {
