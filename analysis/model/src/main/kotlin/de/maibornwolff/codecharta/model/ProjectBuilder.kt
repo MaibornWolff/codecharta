@@ -8,7 +8,7 @@ open class ProjectBuilder(
     private var edges: MutableList<Edge> = mutableListOf(),
     private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
     private var blacklist: MutableList<BlacklistItem> = mutableListOf(),
-    private var metricStatistics: MutableMap<String, MetricStatisticsType> = mutableMapOf()
+    private var statistics: StatisticsType = StatisticsType()
 ) {
 
     val DUMMY_PROJECT_NAME = ""
@@ -26,19 +26,9 @@ open class ProjectBuilder(
         get() = rootNode.size
 
     fun insertByPath(position: Path, node: MutableNode): ProjectBuilder {
-        refreshMetricStatistics(node.attributes)
+        statistics.refreshStatistics(node, position)
         rootNode.insertAt(position, node)
         return this
-    }
-
-    private fun refreshMetricStatistics(metrics: Map<String, Any>) {
-        metrics.forEach { (metricName, metricValue) ->
-            if (!metricStatistics.containsKey(metricName)) {
-                metricStatistics[metricName] = MetricStatisticsType(metricName, metricValue as Int)
-            } else {
-                metricStatistics[metricName]!!.refresh(metricValue as Int)
-            }
-        }
     }
 
     fun insertEdge(thisEdge: Edge): ProjectBuilder {
@@ -75,7 +65,7 @@ open class ProjectBuilder(
             edges = edges.toList(),
             attributeTypes = attributeTypes.toMap(),
             blacklist = blacklist.toList(),
-            metricStatistics = metricStatistics
+            statistics = statistics
         )
 
         System.err.println()
