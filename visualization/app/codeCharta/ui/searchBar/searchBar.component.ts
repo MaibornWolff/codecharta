@@ -1,12 +1,12 @@
-import "./searchBar.component.scss"
-import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
-import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
-import debounce from "lodash.debounce"
-import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import './searchBar.component.scss'
+import { BlacklistType, BlacklistItem } from '../../codeCharta.model'
+import { IRootScopeService } from 'angular'
+import { StoreService } from '../../state/store.service'
+import { setSearchPattern } from '../../state/store/dynamicSettings/searchPattern/searchPattern.actions'
+import debounce from 'lodash.debounce'
+import { BlacklistService, BlacklistSubscriber } from '../../state/store/fileSettings/blacklist/blacklist.service'
+import { addBlacklistItem } from '../../state/store/fileSettings/blacklist/blacklist.actions'
+import { SearchPatternService, SearchPatternSubscriber } from '../../state/store/dynamicSettings/searchPattern/searchPattern.service'
 
 export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -17,7 +17,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		isPatternHidden: boolean
 		isPatternExcluded: boolean
 	} = {
-		searchPattern: "",
+		searchPattern: '',
 		isPatternHidden: true,
 		isPatternExcluded: true
 	}
@@ -45,12 +45,15 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	onClickBlacklistPattern(blacklistType: BlacklistType) {
-		this.storeService.dispatch(addBlacklistItem({ path: this.unifyWildCard(this._viewModel.searchPattern), type: blacklistType }))
+		const paths: string[] = this._viewModel.searchPattern.split(',')
+		for (const path of paths) {
+			this.storeService.dispatch(addBlacklistItem({ path: this.unifyWildCard(path), type: blacklistType }))
+		}
 		this.resetSearchPattern()
 	}
 
 	isSearchPatternEmpty() {
-		return this._viewModel.searchPattern === ""
+		return this._viewModel.searchPattern === '' || this._viewModel.searchPattern === '!' || this._viewModel.searchPattern === '*'
 	}
 
 	private updateViewModel() {
@@ -64,14 +67,22 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	unifyWildCard(path: string): string {
-		if (path.startsWith(".")) {
-			return `*${path}`
+		path = path.trim()
+		if (path.startsWith('*') || path.endsWith('*')) {
+			return path
+		}
+		if (path.startsWith('/') || path.startsWith('./')) {
+			return path
+		}
+		if (!path.startsWith('"') && !path.endsWith('"')) {
+			path = path.startsWith('!') ? path : `*${path}*`
+			return path
 		}
 		return path
 	}
 
 	private resetSearchPattern() {
-		this._viewModel.searchPattern = ""
+		this._viewModel.searchPattern = ''
 		this.updateSearchPattern()
 	}
 
@@ -81,7 +92,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 }
 
 export const searchBarComponent = {
-	selector: "searchBarComponent",
-	template: require("./searchBar.component.html"),
+	selector: 'searchBarComponent',
+	template: require('./searchBar.component.html'),
 	controller: SearchBarController
 }
