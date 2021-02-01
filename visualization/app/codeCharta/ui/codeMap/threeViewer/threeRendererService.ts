@@ -65,6 +65,11 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 		const state = this.storeService.getState()
 		const { appSettings: { sharpnessMode } } = state
 		switch (sharpnessMode) {
+			case SharpnessMode.Standard:
+				ThreeRendererService.RENDER_OPTIONS.antialias =true
+				ThreeRendererService.enableFXAA = false
+				ThreeRendererService.setPixelRatio = false
+				break
 			case SharpnessMode.PixelRatioNoAA:
 				ThreeRendererService.RENDER_OPTIONS.antialias =false
 				ThreeRendererService.enableFXAA = false
@@ -79,11 +84,6 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 				ThreeRendererService.RENDER_OPTIONS.antialias =true
 				ThreeRendererService.enableFXAA = false
 				ThreeRendererService.setPixelRatio = true
-				break
-			case SharpnessMode.Standard:
-				ThreeRendererService.RENDER_OPTIONS.antialias =true
-				ThreeRendererService.enableFXAA = false
-				ThreeRendererService.setPixelRatio = false
 				break
 		}
 	}

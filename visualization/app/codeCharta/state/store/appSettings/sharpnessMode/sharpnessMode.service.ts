@@ -1,10 +1,10 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { SharpnessActions } from "./sharpness.actions"
+import { SharpnessModeActions } from "./sharpnessMode.actions"
 import { SharpnessMode } from "../../../../codeCharta.model"
 import { isActionOfType } from "../../../../util/reduxHelper"
 
-export interface SharpnessSubscriber {
+export interface SharpnessModeSubscriber {
 	onSharpnessModeChanged(sharpnessMode: SharpnessMode)
 }
 
@@ -16,7 +16,7 @@ export class SharpnessModeService implements StoreSubscriber {
 	}
 
 	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, SharpnessActions)) {
+		if (isActionOfType(actionType, SharpnessModeActions)) {
 			this.notify(this.select())
 		}
 	}
@@ -29,7 +29,7 @@ export class SharpnessModeService implements StoreSubscriber {
 		this.$rootScope.$broadcast(SharpnessModeService.SHARPNESS_MODE_CHANGED_EVENT, { sharpnessMode: newState })
 	}
 
-	static subscribe($rootScope: IRootScopeService, subscriber: SharpnessSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: SharpnessModeSubscriber) {
 		$rootScope.$on(SharpnessModeService.SHARPNESS_MODE_CHANGED_EVENT, (_event, data) => {
 			subscriber.onSharpnessModeChanged(data.sharpnessMode)
 		})

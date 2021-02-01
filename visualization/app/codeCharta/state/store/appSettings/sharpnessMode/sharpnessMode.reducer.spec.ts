@@ -1,11 +1,11 @@
-import { sharpnessMode } from "./sharpness.reducer"
-import { SharpnessAction, setSharpnessMode } from "./sharpness.actions"
+import { sharpnessMode } from "./sharpnessMode.reducer"
+import { SharpnessModeAction, setSharpnessMode } from "./sharpnessMode.actions"
 import { SharpnessMode } from "../../../../codeCharta.model"
 
 describe("sharpnessMode", () => {
 	describe("Default State", () => {
 		it("should initialize the default state", () => {
-			const result = sharpnessMode(undefined, {} as SharpnessAction)
+			const result = sharpnessMode(undefined, {} as SharpnessModeAction)
 
 			expect(result).toEqual(SharpnessMode.Standard)
 		})

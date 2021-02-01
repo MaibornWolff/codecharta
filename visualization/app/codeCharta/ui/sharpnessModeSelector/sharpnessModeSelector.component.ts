@@ -2,11 +2,11 @@ import { IRootScopeService } from "angular"
 import _ from "lodash"
 import { SharpnessMode } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
-import { setSharpnessMode } from "../../state/store/appSettings/sharpness/sharpness.actions"
-import { SharpnessModeService, SharpnessSubscriber } from "../../state/store/appSettings/sharpness/sharpness.service"
-import "./sharpnessSelector.component.scss"
+import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
+import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
+import "./sharpnessModeSelector.component.scss"
 
-export class SharpnessSelectorController implements SharpnessSubscriber {
+export class SharpnessModeSelectorController implements SharpnessModeSubscriber {
 	private _viewModel: {
 		sharpnessModes: string[]
 		sharpnessMode: SharpnessMode
@@ -30,8 +30,8 @@ export class SharpnessSelectorController implements SharpnessSubscriber {
 	}
 }
 
-export const sharpnessSelectorComponent = {
-	selector: "sharpnessSelectorComponent",
-	template: require("./sharpnessSelector.component.html"),
-	controller: SharpnessSelectorController
+export const sharpnessModeSelectorComponent = {
+	selector: "sharpnessModeSelectorComponent",
+	template: require("./sharpnessModeSelector.component.html"),
+	controller: SharpnessModeSelectorController
 }

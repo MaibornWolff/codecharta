@@ -8,8 +8,8 @@ import {
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
-import { SharpnessModeService, SharpnessSubscriber } from "../../state/store/appSettings/sharpness/sharpness.service"
-export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber,SharpnessSubscriber {
+import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
+export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber,SharpnessModeSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isSideBarVisible: boolean

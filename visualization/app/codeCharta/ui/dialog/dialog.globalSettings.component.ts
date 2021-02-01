@@ -26,8 +26,8 @@ import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorith
 import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
-import { SharpnessModeService, SharpnessSubscriber } from "../../state/store/appSettings/sharpness/sharpness.service"
-import { setSharpnessMode } from "../../state/store/appSettings/sharpness/sharpness.actions"
+import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
+import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 
 export class DialogGlobalSettingsController
 	implements
@@ -36,7 +36,7 @@ export class DialogGlobalSettingsController
 		ResetCameraIfNewFileIsLoadedSubscriber,
 		ExperimentalFeaturesEnabledSubscriber,
 		LayoutAlgorithmSubscriber,
-		SharpnessSubscriber,
+		SharpnessModeSubscriber,
 		MaxTreeMapFilesSubscriber {
 	private _viewModel: {
 		hideFlatBuildings: boolean

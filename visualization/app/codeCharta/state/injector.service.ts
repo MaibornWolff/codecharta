@@ -52,7 +52,7 @@ import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
-import { SharpnessModeService} from "./store/appSettings/sharpness/sharpness.service"
+import { SharpnessModeService} from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 export class InjectorService {
 	/* @ngInject */
 	constructor(

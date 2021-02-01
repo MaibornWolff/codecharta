@@ -30,7 +30,7 @@ import { splitIsPresentationModeAction } from "./isPresentationMode/isPresentati
 import { splitExperimentalFeaturesEnabledAction } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.splitter"
 import { splitLayoutAlgorithmAction } from "./layoutAlgorithm/layoutAlgorithm.splitter"
 import { splitMaxTreeMapFilesAction } from "./maxTreeMapFiles/maxTreeMapFiles.splitter"
-import { splitSharpnessAction } from "./sharpness/sharpness.splitter"
+import { splitSharpnessAction } from "./sharpnessMode/sharpnessMode.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []

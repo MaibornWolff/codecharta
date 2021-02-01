@@ -2,8 +2,8 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { SharpnessAction, SharpnessActions } from "./sharpness.actions"
-import { SharpnessModeService } from "./sharpness.service"
+import { SharpnessModeAction, SharpnessModeActions } from "./sharpnessMode.actions"
+import { SharpnessModeService } from "./sharpnessMode.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { SharpnessMode } from "../../../../codeCharta.model"
 
@@ -41,13 +41,13 @@ describe("SharpnessModeService", () => {
 
 	describe("onStoreChanged", () => {
 		it("should notify all subscribers with the new sharpnessMode value", () => {
-			const action: SharpnessAction = {
-				type: SharpnessActions.SET_SHARPNESS_MODE,
+			const action: SharpnessModeAction = {
+				type: SharpnessModeActions.SET_SHARPNESS_MODE,
 				payload: SharpnessMode.PixelRatioAA
 			}
 			storeService["store"].dispatch(action)
 
-			sharpnessModeService.onStoreChanged(SharpnessActions.SET_SHARPNESS_MODE)
+			sharpnessModeService.onStoreChanged(SharpnessModeActions.SET_SHARPNESS_MODE)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("sharpness-mode-changed", { sharpnessMode: SharpnessMode.PixelRatioAA })
 		})

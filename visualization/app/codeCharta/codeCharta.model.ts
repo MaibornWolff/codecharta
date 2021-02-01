@@ -26,9 +26,9 @@ export enum LayoutAlgorithm {
 
 export enum SharpnessMode {
 	Standard = "Standard",
-	PixelRatioNoAA = "Pixel Ratio without AA",
-	PixelRatioFXAA = "Pixel Ratio With FXAA",
-	PixelRatioAA = "Pixel Ratio with MSAA"
+	PixelRatioNoAA = "Pixel Ratio without Antialiasing",
+	PixelRatioFXAA = "Pixel Ratio With FXAA Antialiasing",
+	PixelRatioAA = "Pixel Ratio with Antialisaing (best)"
 }
 
 export interface CCFile {
