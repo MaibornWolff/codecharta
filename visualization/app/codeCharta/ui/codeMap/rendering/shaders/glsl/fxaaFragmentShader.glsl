@@ -44,7 +44,6 @@ varying vec2 vUv;
 #define FXAA_PC 1
 #define FXAA_GLSL_100 1
 #define FXAA_QUALITY_PRESET 10
-#define FXAA_DISCARD 0
 #define FXAA_GATHER4_ALPHA 0
 #define FXAA_GREEN_AS_LUMA 1
 #define FXAA_EARLY_EXIT 1

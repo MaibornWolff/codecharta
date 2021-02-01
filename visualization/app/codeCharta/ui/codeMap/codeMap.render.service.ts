@@ -23,8 +23,8 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
 	onIsLoadingFileChanged(isLoadingFile: boolean) {
-		if (isLoadingFile && this.threeSceneService!==undefined) {
-			this.threeSceneService.dispose()
+		if (isLoadingFile) {
+			this.threeSceneService?.dispose()
 		}
 	}
 

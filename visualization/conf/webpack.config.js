@@ -29,7 +29,8 @@ module.exports = env => {
 				template: "./app/index.html"
 			}),
 			new DefinePlugin({
-				"process.env.STANDALONE": JSON.stringify(env.STANDALONE)
+				"process.env.STANDALONE": JSON.stringify(env.STANDALONE),
+				"process.env.DEV": JSON.stringify(env.DEV)
 			})
 		],
 		devtool: "source-map",

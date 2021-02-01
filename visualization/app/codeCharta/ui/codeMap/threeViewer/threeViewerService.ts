@@ -7,6 +7,7 @@ import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 import { ThreeStatsService } from "./threeStatsService"
 export class ThreeViewerService {
+	private animationFrameId : number
 
 	/* ngInject */
 	constructor(
@@ -35,10 +36,6 @@ export class ThreeViewerService {
 		window.addEventListener("focusout", event => this.onFocusOut(event))
 	}
 
-	getRenderer = () => {
-		return this.threeRendererService.renderer
-	} 
-
 	onWindowResize() {
 		this.threeSceneService.scene.updateMatrixWorld(false)
 		this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
@@ -58,15 +55,40 @@ export class ThreeViewerService {
 		}
 	}
 
-	dispose() {
-		this.threeRendererService?.composer?.dispose()
-	}
-
 	animate() {
-		requestAnimationFrame(() => this.animate())
+		this.animationFrameId = requestAnimationFrame(() => this.animate())
 		this.threeRendererService.render()
 		this.threeOrbitControlsService.controls.update()
 		this.threeUpdateCycleService.update()
 		this.threeStatsService.updateStats()
+	}
+
+	getRenderCanvas() {
+		return this.threeRendererService.renderer.domElement
+	}
+
+	getRenderLoseExtention() {
+		const gl = this.threeRendererService.renderer.getContext()
+		return gl.getExtension("WEBGL_lose_context")
+	}
+
+	autoFitTo() {
+		this.threeOrbitControlsService.autoFitTo()
+	}
+
+	stopAnimate() {
+		cancelAnimationFrame(this.animationFrameId)
+	}
+
+	dispose() {
+		this.threeRendererService?.composer?.dispose()
+		this.threeRendererService?.renderer?.dispose()
+	}
+
+	destroy() {
+		this.threeStatsService.destroy()
+		this.getRenderCanvas().remove()
+		//this.getRenderLoseExtention().loseContext() 
+		this.dispose()
 	}
 }

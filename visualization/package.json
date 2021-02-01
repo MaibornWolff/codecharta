@@ -61,9 +61,9 @@
 	],
 	"scripts": {
 		"start": "nw .",
-		"build": "webpack --config ./conf/webpack.config.js --env STANDALONE=true",
-		"build:web": "webpack --config ./conf/webpack.config.js --env STANDALONE=false",
-		"dev": "webpack serve --config ./conf/webpack.config.js --env STANDALONE=false",
+		"build": "webpack --config ./conf/webpack.config.js --env STANDALONE=true --env DEV=false",
+		"build:web": "webpack --config ./conf/webpack.config.js --env STANDALONE=false --env DEV=false",
+		"dev": "webpack serve --config ./conf/webpack.config.js --env STANDALONE=false --env DEV=true",
 		"test": "jest --config ./jest.config.json .*\\.spec\\.ts --env=jsdom",
 		"test:auto": "npm test -- --watch",
 		"test:autoNoCoverage": "npm run test:auto -- --coverage false",
@@ -86,9 +86,6 @@
 	},
 	"license": "BSD-3-Clause",
 	"dependencies": {
-		"7zip-bin-linux": "^1.2.0",
-		"7zip-bin-mac": "^1.0.1",
-		"7zip-bin-win": "^2.1.1",
 		"ajv": "^6.12.2",
 		"angular": "^1.8.0",
 		"angular-animate": "^1.6.9",
@@ -99,6 +96,7 @@
 		"angularjs-nouislider": "^14.1.1",
 		"angularjs-slider": "^7.0.0",
 		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+		"canvas": "^2.6.1",
 		"color-convert": "^2.0.0",
 		"core-js": "^3.6.5",
 		"d3-hierarchy": "^2.0.0",
@@ -117,7 +115,6 @@
 		"redux": "^4.0.4",
 		"sass": "^1.32.5",
 		"shelljs": "^0.8.1",
-		"stats-js": "^1.0.1",
 		"three": "^0.124.0",
 		"three-orbit-controls": "^82.1.0",
 		"typescript-json-schema": "^0.47.0"

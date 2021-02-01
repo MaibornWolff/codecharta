@@ -1,46 +1,58 @@
-import Stats from 'three/examples/jsm/libs/stats.module';
-import { WebGLInfo } from "three"
-import { ThreeRendererService } from './threeRendererService';
-
+import Stats from 'three/examples/jsm/libs/stats.module'
+import { ThreeRendererService } from './threeRendererService'
+import { isDevelopment } from "../../../util/envDetector"
+export interface CustomPanel {
+	panel : Stats.Panel,
+	maxHeight : number
+}
 export class ThreeStatsService {
 	stats : Stats
-    xPanel : Stats.Panel
-	yPanel : Stats.Panel
-	private maxXPanel = 0
-    private maxYPanel = 0
+    trianglesPanel : CustomPanel
+	glCallsPanel : CustomPanel
+	isDevelopmentMode = isDevelopment()
 
     /* ngInject */
 	constructor(
         private threeRendererService: ThreeRendererService
-    ) {}
+    ) {
+	}
 
     init = (canvasElement: Element) => {
-		this.stats = Stats()
-		const { stats } = this
-        
-        this.xPanel = stats.addPanel( Stats.Panel( 'triangles', '#ff8', '#221' ) )
-		this.yPanel = stats.addPanel( Stats.Panel( 'calls', '#f8f', '#212' ) )
-		stats.showPanel( 3 )
+		if (this.isDevelopmentMode) {
+			this.stats = Stats()
 
-		stats.domElement.style.position = 'absolute'
-		stats.domElement.style.left = '0'
-		stats.domElement.style.top = '0'
-		canvasElement.appendChild( stats.dom )
-    }
+			this.stats.domElement.style.position = 'absolute'
+			this.stats.domElement.style.left = '0'
+			this.stats.domElement.style.top = '0'
+			canvasElement.appendChild( this.stats.dom )
+
+			this.generateStatPanels()
+		}
+	}
+	
+	private generateStatPanels = () => {
+		this.trianglesPanel = {panel : this.stats.addPanel( Stats.Panel( 'triangles', '#ff8', '#221' ) ), maxHeight : 0 }
+		this.glCallsPanel = {panel : this.stats.addPanel( Stats.Panel( 'calls', '#f8f', '#212' ) ), maxHeight : 0}
+		this.stats.showPanel( 3 )
+	}
 
 	updateStats = () => {
-		const webGLInfo : WebGLInfo["render"] = this.threeRendererService.enableFXAA ? 
-			this.threeRendererService.composer.getInfo() : 
-			this.threeRendererService.renderer.info.render
-		
-		const triangles : number = webGLInfo.triangles
-		this.maxXPanel = Math.max(this.maxXPanel,triangles)
-		this.xPanel.update( triangles, this.maxXPanel*1.3 )
+		if (this.isDevelopmentMode) {
+			const webGLInfo  = this.threeRendererService.getInfo()
+			this.processPanel(this.trianglesPanel,webGLInfo.triangles)
+			this.processPanel(this.glCallsPanel,webGLInfo.calls)
+			this.stats.update()
+		}
+	}
 
-		const calls : number = webGLInfo.calls
-		this.maxYPanel = Math.max(this.maxYPanel,calls)
-		this.yPanel.update( calls, this.maxYPanel*1.3 )
+	private processPanel = (customPanel : CustomPanel, value : number) => {
+		customPanel.maxHeight = Math.max(customPanel.maxHeight,value)
+		customPanel.panel.update( value, customPanel.maxHeight*1.3 )
+	}
 
-		this.stats.update()
+	destroy = () => {
+		if (this.isDevelopmentMode) {
+			this.stats.domElement.remove()
+		}
 	}
 }

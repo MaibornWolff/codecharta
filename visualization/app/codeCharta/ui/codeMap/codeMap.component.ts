@@ -9,9 +9,6 @@ import {
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 import { SharpnessModeService, SharpnessSubscriber } from "../../state/store/appSettings/sharpness/sharpness.service"
-import { StoreService } from "../../state/store.service"
-import { SharpnessMode } from "../../codeCharta.model"
-
 export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber,SharpnessSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
@@ -29,7 +26,6 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService,
 		private codeChartaMouseEventService: CodeChartaMouseEventService,
-		private storeService: StoreService
 	) {
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
@@ -38,7 +34,6 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 
 	$postLink() {
 		this.threeViewerService.init(this.$element[0].children[0])
-		this.threeViewerService.animate()
 		this.codeMapMouseEventService.start()
 	}
 
@@ -47,46 +42,27 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 	}
 
 	onIsLoadingFileChanged(isLoadingFile: boolean) {
+		this.threeViewerService?.dispose()
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
 	}
 
-	catchContextLoss = () => {
-		const canvas = this.threeViewerService.getRenderer().domElement
-		const gl = this.threeViewerService.getRenderer().getContext()
-		const extention = gl.getExtension("WEBGL_lose_context")
+	// TODO not used right now, but added for catching the gl context loss, needs to be further implemented and tested 
+	catchContextLoss() {
+		const canvas = this.threeViewerService.getRenderCanvas()
+		const extention = this.threeViewerService.getRenderLoseExtention()
 		canvas.addEventListener('webglcontextlost', () => {
-			// eslint-disable-next-line no-console
-			console.log("context lost")
 			extention.restoreContext()
 		}, false);
-		canvas.addEventListener("webglcontextrestored", () => {
-			// eslint-disable-next-line no-console
-			console.log("context restored")
-		})
-	}
-
-	stopGlContext = () => {
-		const gl = this.threeViewerService.getRenderer().getContext()
-		const extention = gl.getExtension("WEBGL_lose_context")
-		extention.loseContext()
+		canvas.addEventListener("webglcontextrestored", () => {})
 	}
 
 	onSharpnessModeChanged() {
-		const state = this.storeService.getState()
-		const { appSettings: { sharpnessMode } } = state
-		
-		const canvas = this.threeViewerService.getRenderer().domElement;
-
-		switch (sharpnessMode) {
-			case SharpnessMode.PixelRatioNoAA:
-				canvas.remove()
-				this.stopGlContext()
-				this.threeViewerService.getRenderer().dispose()
-				this.$postLink()
-				
-				break;
-		}
+		this.threeViewerService.stopAnimate()
+		this.threeViewerService.destroy()
+		this.$postLink()
+		this.threeViewerService.autoFitTo()
+		this.threeViewerService.animate()
 	}
 
 	onClick() {

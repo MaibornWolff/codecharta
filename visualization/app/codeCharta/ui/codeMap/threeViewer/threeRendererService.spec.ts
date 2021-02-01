@@ -58,7 +58,7 @@ describe("ThreeRenderService", () => {
         })
 
         const setFXAA = (value : boolean) => {
-            threeRendererService.enableFXAA = value
+            ThreeRendererService.enableFXAA = value
         }
         
 		it("should call composer when FXAA is enabled", () => {
@@ -70,7 +70,9 @@ describe("ThreeRenderService", () => {
 
         it("should call normal renderer when FXAA is disabled", () => {
             setFXAA(false)
-            const { scene = threeSceneService.scene, camera = threeCameraService.camera} = threeRendererService
+            threeRendererService.scene = threeSceneService.scene
+            threeRendererService.camera = threeCameraService.camera
+            const { scene , camera } = threeRendererService
             
             threeRendererService.render()
             

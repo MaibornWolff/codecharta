@@ -1,4 +1,4 @@
-import { Camera, Scene, WebGLRenderer } from "three"
+import { Camera, Scene, WebGLInfo, WebGLRenderer } from "three"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import {
@@ -9,6 +9,8 @@ import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { fxaaShaderStrings } from '../rendering/shaders/loaders/fxaaShaderString'
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
+import { WEBGL } from "three/examples/jsm/WebGL"
+import { SharpnessMode } from "../../../codeCharta.model"
 export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	
 	static BACKGROUND_COLOR = {
@@ -21,38 +23,75 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	static CLEAR_ALPHA = 1
 
 	static RENDER_OPTIONS = {
-		antialias: window.devicePixelRatio > 1.7 ? false : true,
-									// 1.7 is just a guess number			
-									// on deactivated pixel ratio>1.7 improves quality, 
-									// performance hit is huge especially on fill rate limited gpus 
-									// better to use fxaa and composing when device ratio is high
+		antialias: true,
 		preserveDrawingBuffer: true
-	}
+	} as WebGLContextAttributes 
+
+	static enableFXAA = false
+	static setPixelRatio = false 
 
 	composer: CustomComposer
 	renderer: WebGLRenderer
 	scene : Scene
 	camera: Camera
-	enableFXAA = false
 
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 	}
 
 	init(containerWidth: number, containerHeight: number,scene : Scene, camera: Camera) {
-		// eslint-disable-next-line no-console
-		console.log("init")
 		this.scene = scene
 		this.camera = camera
-		this.renderer = new WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
-		this.renderer.setPixelRatio(window.devicePixelRatio)
+		this.initGL(containerWidth,containerHeight)
+		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)
+	}
+
+	private initGL = (containerWidth: number, containerHeight: number) => {
+		this.setGLOptions()
+		const canvas = document.createElement( 'canvas' )
+		const context = this.getWebGlContext(canvas)
+		this.renderer = new WebGLRenderer( { canvas, context } );
+		if (ThreeRendererService.setPixelRatio) {
+			this.renderer.setPixelRatio(window.devicePixelRatio)
+		}
 		this.composer = new CustomComposer( this.renderer );
 		this.renderer.setSize(containerWidth, containerHeight)
-		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)
-		if (!ThreeRendererService.RENDER_OPTIONS.antialias) {
-			this.enableFXAA = true
+		if (ThreeRendererService.enableFXAA) {
 			this.initComposer()
 		}
+	}
+
+	private setGLOptions = () => {
+		const state = this.storeService.getState()
+		const { appSettings: { sharpnessMode } } = state
+		switch (sharpnessMode) {
+			case SharpnessMode.PixelRatioNoAA:
+				ThreeRendererService.RENDER_OPTIONS.antialias =false
+				ThreeRendererService.enableFXAA = false
+				ThreeRendererService.setPixelRatio = true
+				break
+			case SharpnessMode.PixelRatioFXAA:
+				ThreeRendererService.RENDER_OPTIONS.antialias =false
+				ThreeRendererService.enableFXAA = true
+				ThreeRendererService.setPixelRatio = true
+				break
+			case SharpnessMode.PixelRatioAA:
+				ThreeRendererService.RENDER_OPTIONS.antialias =true
+				ThreeRendererService.enableFXAA = false
+				ThreeRendererService.setPixelRatio = true
+				break
+			case SharpnessMode.Standard:
+				ThreeRendererService.RENDER_OPTIONS.antialias =true
+				ThreeRendererService.enableFXAA = false
+				ThreeRendererService.setPixelRatio = false
+				break
+		}
+	}
+
+	// using webgl2 instead of webgl 
+	private getWebGlContext = (canvas : HTMLCanvasElement) => {
+		return WEBGL.isWebGL2Available() ? canvas.getContext( 'webgl2', ThreeRendererService.RENDER_OPTIONS ) : 
+			canvas.getContext( 'webgl', ThreeRendererService.RENDER_OPTIONS );
 	}
 
 	private initComposer = () => { 
@@ -69,6 +108,12 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
         this.composer.addPass( effectFXAA )
 	}
 
+	getInfo = () : WebGLInfo["render"] =>  {
+		return ThreeRendererService.enableFXAA ? 
+			this.composer.getInfo() : 
+			this.renderer.info.render
+	}
+
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		if (isWhiteBackground) {
 			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white
@@ -80,7 +125,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	render() {
 		const { scene, camera } = this
-		if (this.enableFXAA) {
+		if (ThreeRendererService.enableFXAA) {
 			this.composer.render()
 		} else {
 			this.renderer.render(scene, camera)
