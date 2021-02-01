@@ -10,39 +10,39 @@ import { ThreeSceneService } from "./threeSceneService"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
 
 describe("ThreeRenderService", () => {
-    let threeRendererService: ThreeRendererService
-    let storeService: StoreService
-    let $rootScope: IRootScopeService
-    let threeCameraService: ThreeCameraService
-    let threeSceneService: ThreeSceneService
+	let threeRendererService: ThreeRendererService
+	let storeService: StoreService
+	let $rootScope: IRootScopeService
+	let threeCameraService: ThreeCameraService
+	let threeSceneService: ThreeSceneService
 
 	beforeEach(() => {
-        restartSystem()
-        rebuildService()
+		restartSystem()
+		rebuildService()
 	})
 
 	const restartSystem = () => {
-        instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
+		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
 
-        $rootScope = getService<IRootScopeService>("$rootScope")
-        storeService = getService<StoreService>("storeService")
-        threeCameraService = getService<ThreeCameraService>("threeCameraService")
-        threeSceneService = getService<ThreeSceneService>("threeSceneService")
-    }
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
+		threeCameraService = getService<ThreeCameraService>("threeCameraService")
+		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+	}
 
-    const rebuildService = () => {
+	const rebuildService = () => {
 		threeRendererService = new ThreeRendererService(storeService, $rootScope)
-    }
-    
-    const mockThreeJs = () => {
-        threeCameraService = getService<ThreeCameraService>("threeCameraService")
-        threeCameraService.camera = new PerspectiveCamera()
-        threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
-        threeRendererService.composer = { render: jest.fn() } as unknown as CustomComposer
-        threeRendererService.renderer = { render: jest.fn() } as unknown as WebGLRenderer
-    }
+	}
 
-    describe("constructor", () => {
+	const mockThreeJs = () => {
+		threeCameraService = getService<ThreeCameraService>("threeCameraService")
+		threeCameraService.camera = new PerspectiveCamera()
+		threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
+		threeRendererService.composer = ({ render: jest.fn() } as unknown) as CustomComposer
+		threeRendererService.renderer = ({ render: jest.fn() } as unknown) as WebGLRenderer
+	}
+
+	describe("constructor", () => {
 		it("should subscribe to IsWhiteBackgroundService", () => {
 			IsWhiteBackgroundService.subscribe = jest.fn()
 
@@ -50,33 +50,33 @@ describe("ThreeRenderService", () => {
 
 			expect(IsWhiteBackgroundService.subscribe).toHaveBeenCalledWith($rootScope, threeRendererService)
 		})
-    })
+	})
 
 	describe("render", () => {
-        beforeEach(() => {
+		beforeEach(() => {
 			mockThreeJs()
-        })
+		})
 
-        const setFXAA = (value : boolean) => {
-            ThreeRendererService.enableFXAA = value
-        }
-        
+		const setFXAA = (value: boolean) => {
+			ThreeRendererService.enableFXAA = value
+		}
+
 		it("should call composer when FXAA is enabled", () => {
-            setFXAA(true)
-            threeRendererService.render()
-            
-            expect(threeRendererService.composer.render).toHaveBeenCalled()
-        })
+			setFXAA(true)
+			threeRendererService.render()
 
-        it("should call normal renderer when FXAA is disabled", () => {
-            setFXAA(false)
-            threeRendererService.scene = threeSceneService.scene
-            threeRendererService.camera = threeCameraService.camera
-            const { scene , camera } = threeRendererService
-            
-            threeRendererService.render()
-            
-            expect(threeRendererService.renderer.render).toHaveBeenCalledWith(scene,camera)
-        })
+			expect(threeRendererService.composer.render).toHaveBeenCalled()
+		})
+
+		it("should call normal renderer when FXAA is disabled", () => {
+			setFXAA(false)
+			threeRendererService.scene = threeSceneService.scene
+			threeRendererService.camera = threeCameraService.camera
+			const { scene, camera } = threeRendererService
+
+			threeRendererService.render()
+
+			expect(threeRendererService.renderer.render).toHaveBeenCalledWith(scene, camera)
+		})
 	})
 })

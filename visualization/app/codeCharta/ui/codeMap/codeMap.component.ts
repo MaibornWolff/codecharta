@@ -9,7 +9,7 @@ import {
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
-export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber,SharpnessModeSubscriber {
+export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber, SharpnessModeSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isSideBarVisible: boolean
@@ -25,7 +25,7 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		private $element: Element,
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService,
-		private codeChartaMouseEventService: CodeChartaMouseEventService,
+		private codeChartaMouseEventService: CodeChartaMouseEventService
 	) {
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
@@ -47,13 +47,17 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		this.synchronizeAngularTwoWayBinding()
 	}
 
-	// TODO not used right now, but added for catching the gl context loss, needs to be further implemented and tested 
+	// TODO not used right now, but added for catching the gl context loss, needs to be further implemented and tested
 	catchContextLoss() {
 		const canvas = this.threeViewerService.getRenderCanvas()
 		const extention = this.threeViewerService.getRenderLoseExtention()
-		canvas.addEventListener('webglcontextlost', () => {
-			extention.restoreContext()
-		}, false);
+		canvas.addEventListener(
+			"webglcontextlost",
+			() => {
+				extention.restoreContext()
+			},
+			false
+		)
 		canvas.addEventListener("webglcontextrestored", () => {})
 	}
 

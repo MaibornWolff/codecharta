@@ -380,8 +380,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	dispose() {
-		if (this.mapMesh!==undefined)
-			this.mapMesh.dispose()
+		if (this.mapMesh !== undefined) this.mapMesh.dispose()
 	}
 
 	static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {

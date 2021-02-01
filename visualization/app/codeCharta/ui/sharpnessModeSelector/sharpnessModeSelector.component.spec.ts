@@ -18,7 +18,7 @@ describe("SharpnessModeSelectorController", () => {
 	})
 
 	function restartSystem() {
-		instantiateModule(	"app.codeCharta.ui.sharpnessModeSelector")
+		instantiateModule("app.codeCharta.ui.sharpnessModeSelector")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")

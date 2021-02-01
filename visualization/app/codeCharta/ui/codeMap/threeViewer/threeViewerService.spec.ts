@@ -18,7 +18,7 @@ describe("ThreeViewerService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let threeRendererService: ThreeRendererService
 	let threeUpdateCycleService: ThreeUpdateCycleService
-	let threeStatsService : ThreeStatsService
+	let threeStatsService: ThreeStatsService
 
 	let element: Element
 
@@ -59,11 +59,11 @@ describe("ThreeViewerService", () => {
 		threeCameraService.camera.lookAt = jest.fn()
 		threeCameraService.camera.updateProjectionMatrix = jest.fn()
 		threeRendererService.render = jest.fn()
-		threeRendererService.renderer = { domElement: { height : 1, width: 1} } as WebGLRenderer
+		threeRendererService.renderer = { domElement: { height: 1, width: 1 } } as WebGLRenderer
 		threeRendererService.renderer.setSize = jest.fn()
 		threeRendererService.renderer.render = jest.fn()
 		threeRendererService.renderer.dispose = jest.fn()
-		threeRendererService.composer = { dispose: jest.fn() } as unknown as CustomComposer
+		threeRendererService.composer = ({ dispose: jest.fn() } as unknown) as CustomComposer
 		threeRendererService.renderer.getContext = jest.fn()
 		threeRendererService.renderer.setPixelRatio = jest.fn()
 		threeOrbitControlsService.controls = { enableKeys: null } as OrbitControls
@@ -129,13 +129,13 @@ describe("ThreeViewerService", () => {
 		it("should init threeOrbitControlsService", () => {
 			threeViewerService.init(element)
 
-			expect(threeOrbitControlsService.init).toHaveBeenCalledWith({"height": 1, "width": 1})
+			expect(threeOrbitControlsService.init).toHaveBeenCalledWith({ height: 1, width: 1 })
 		})
 
 		it("should call appendChild", () => {
 			threeViewerService.init(element)
 
-			expect(element.appendChild).toHaveBeenCalledWith({"height": 1, "width": 1})
+			expect(element.appendChild).toHaveBeenCalledWith({ height: 1, width: 1 })
 		})
 
 		it("should setup three event listeners", () => {
@@ -219,16 +219,15 @@ describe("ThreeViewerService", () => {
 		})
 
 		it("should call requestAnimationFrame", () => {
-	
 			threeViewerService.animate()
-			
+
 			expect(threeRendererService.render).toHaveBeenCalled()
 		})
 
 		it("should call render", () => {
 			ThreeRendererService.enableFXAA = false
 			threeViewerService.animate()
-			
+
 			expect(threeRendererService.render).toHaveBeenCalled()
 		})
 
@@ -251,8 +250,8 @@ describe("ThreeViewerService", () => {
 		})
 		it("should return dom element", () => {
 			threeViewerService.getRenderCanvas()
-			
-			expect(threeRendererService.renderer.domElement).toEqual({ height : 1, width: 1})
+
+			expect(threeRendererService.renderer.domElement).toEqual({ height: 1, width: 1 })
 		})
 	})
 
@@ -262,9 +261,9 @@ describe("ThreeViewerService", () => {
 		})
 		it("should call orbital control autoFitTo", () => {
 			threeOrbitControlsService.autoFitTo = jest.fn()
-			
+
 			threeViewerService.autoFitTo()
-			
+
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 		})
 	})
@@ -273,11 +272,11 @@ describe("ThreeViewerService", () => {
 		beforeEach(() => {
 			mockThreeJs()
 
-			threeViewerService.getRenderCanvas= jest.fn().mockReturnValue({ remove: jest.fn() } as unknown as HTMLCanvasElement)
+			threeViewerService.getRenderCanvas = jest.fn().mockReturnValue(({ remove: jest.fn() } as unknown) as HTMLCanvasElement)
 		})
 		it("should call stats destroy", () => {
 			threeViewerService.destroy()
-			
+
 			expect(threeStatsService.destroy).toHaveBeenCalled()
 		})
 
@@ -285,7 +284,7 @@ describe("ThreeViewerService", () => {
 			threeViewerService.dispose = jest.fn()
 
 			threeViewerService.destroy()
-			
+
 			expect(threeViewerService.dispose).toHaveBeenCalled()
 		})
 	})

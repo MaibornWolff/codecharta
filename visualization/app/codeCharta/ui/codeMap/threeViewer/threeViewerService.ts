@@ -7,7 +7,7 @@ import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 import { ThreeStatsService } from "./threeStatsService"
 export class ThreeViewerService {
-	private animationFrameId : number
+	private animationFrameId: number
 
 	/* ngInject */
 	constructor(
@@ -16,18 +16,21 @@ export class ThreeViewerService {
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeRendererService: ThreeRendererService,
 		private threeUpdateCycleService: ThreeUpdateCycleService,
-		private threeStatsService : ThreeStatsService
+		private threeStatsService: ThreeStatsService
 	) {}
 
 	init(canvasElement: Element) {
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
-		const { threeSceneService : {scene}, threeCameraService : {camera} } = this
+		const {
+			threeSceneService: { scene },
+			threeCameraService: { camera }
+		} = this
 		camera.lookAt(scene.position)
 		scene.add(camera)
-		this.threeRendererService.init(window.innerWidth, window.innerHeight,scene, camera)
+		this.threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
 		this.threeStatsService.init(canvasElement)
 		this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
-		
+
 		canvasElement.appendChild(this.threeRendererService.renderer.domElement)
 
 		// TODO do we need to remove these listeners ?
@@ -88,7 +91,7 @@ export class ThreeViewerService {
 	destroy() {
 		this.threeStatsService.destroy()
 		this.getRenderCanvas().remove()
-		//this.getRenderLoseExtention().loseContext() 
+		//this.getRenderLoseExtention().loseContext()
 		this.dispose()
 	}
 }

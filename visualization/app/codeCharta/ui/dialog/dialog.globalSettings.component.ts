@@ -44,8 +44,8 @@ export class DialogGlobalSettingsController
 		resetCameraIfNewFileIsLoaded: boolean
 		experimentalFeaturesEnabled: boolean
 		layoutAlgorithm: LayoutAlgorithm
-		maxTreeMapFiles: number,
-		sharpnessMode : SharpnessMode
+		maxTreeMapFiles: number
+		sharpnessMode: SharpnessMode
 	} = {
 		hideFlatBuildings: null,
 		isWhiteBackground: null,
