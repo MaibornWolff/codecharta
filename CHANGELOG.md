@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added 🚀
-
+-   Added WebGL FXAA antialias & PixelRatio Options in order to achieve better resolution on high dpi displays(https://github.com/MaibornWolff/codecharta/pull/1551).
+-   Added GPU Stats (only in dev mode)
+    
 -   Allow opening files from local drive by double clicking on the buildings or clicking on their names ([#1314](https://github.com/MaibornWolff/codecharta/issues/1314))
     -   Only available in the standalone version!
     -   files are opened in associated third-party applications
