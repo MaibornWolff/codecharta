@@ -15,6 +15,8 @@ import { InvertColorRangeActions } from "../state/store/appSettings/invertColorR
 import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import md5 from "md5"
 import { getMedian } from "./nodeDecorator"
+import { APIVersions } from "../codeCharta.api.model"
+import { getAsApiVersion } from "./fileValidator"
 
 interface TrackingDataItem {
 	mapId: string
@@ -48,7 +50,7 @@ interface MetricStatisticsPerLanguage {
 }
 
 interface MetricStatisticsOverall {
-	[metricName: string]: TrackingDataMetricOutlierItem
+	[metricName: string]: TrackingDataMetricItem
 }
 
 interface TrackingDataMetricItem {
@@ -61,12 +63,16 @@ interface TrackingDataMetricItem {
 	avg: number
 }
 
-interface TrackingDataMetricOutlierItem extends TrackingDataMetricItem {
-	boxplot_irq_outliers: string[]
-}
-
 function isTrackingAllowed(state: State) {
-	return isStandalone() && isSingleState(state.files) && getVisibleFileStates(state.files).length === 1
+	if (!isStandalone() || !isSingleState(state.files) || getVisibleFileStates(state.files).length > 1) {
+		return false
+	}
+
+	const singleFileStates = getVisibleFileStates(state.files)
+	const fileMeta = singleFileStates[0].file.fileMeta
+	const apiVersion = getAsApiVersion(fileMeta.apiVersion)
+
+	return apiVersion.minor >= getAsApiVersion(APIVersions.ONE_POINT_THREE).minor && fileMeta.statistics
 }
 
 export function trackMetaUsageData(state: State) {
@@ -79,15 +85,15 @@ export function trackMetaUsageData(state: State) {
 	const fileMeta = singleFileStates[0].file.fileMeta
 	const fileMetaStatistics = fileMeta.statistics
 
-	// TODO: handle and check for absence of rloc and presence of loc
-	const languageDistribution = FileExtensionCalculator.getMetricDistribution(singleFileStates[0].file.map, "rloc")
+	const distributionMetric = getDistributionMetric(fileMetaStatistics, state)
+	const languageDistribution = FileExtensionCalculator.getMetricDistribution(singleFileStates[0].file.map, distributionMetric)
 
 	const trackingDataItem: TrackingDataItem = {
 		mapId: fileMeta.fileChecksum,
 		codeChartaApiVersion: fileMeta.apiVersion,
 		creationTime: Date.now(),
 		exportedFileSizeInBytes: fileMeta.exportedFileSize,
-		languageDistribution: mapLanguageDistribution(languageDistribution),
+		languageDistribution: mapLanguageDistribution(languageDistribution, distributionMetric),
 		totalRealLinesOfCode: fileMetaStatistics.totalRealLinesOfCode,
 		totalLinesOfCode: fileMetaStatistics.totalLinesOfCode,
 		programmingLanguages: fileMetaStatistics.programmingLanguages,
@@ -96,7 +102,7 @@ export function trackMetaUsageData(state: State) {
 		maxFilePathDepth: fileMetaStatistics.maxFilePathDepth,
 		avgFilePathDepth: fileMetaStatistics.avgFilePathDepth,
 		metricStatisticsPerLanguage: mapMetricStatisticsPerLanguage(fileMetaStatistics.metricStatisticsPerLanguage),
-		metricStatisticsOverall: mapMetricStatisticsOverall(fileMetaStatistics.metricStatisticsOverall)
+		metricStatisticsOverall: mapMetricStatistics(fileMetaStatistics.metricStatisticsOverall)
 	}
 
 	const fileStorage = new CodeChartaStorage()
@@ -108,12 +114,26 @@ export function trackMetaUsageData(state: State) {
 	}
 }
 
-function mapLanguageDistribution(languageDistribution: MetricDistribution[]) {
+function getDistributionMetric(metricStatistics, state) {
+	let distributionMetric: string
+
+	if (Object.prototype.hasOwnProperty.call(metricStatistics, "rloc")) {
+		distributionMetric = "rloc"
+	} else if (Object.prototype.hasOwnProperty.call(metricStatistics, "loc")) {
+		distributionMetric = "loc"
+	} else {
+		distributionMetric = state.dynamicSettings.distributionMetric
+	}
+
+	return distributionMetric
+}
+
+function mapLanguageDistribution(languageDistribution: MetricDistribution[], distributionMetric: string) {
 	const mappedDistribution: LanguageDistributionStatistics = {}
 
 	for (const distributionItem of languageDistribution) {
 		mappedDistribution[distributionItem.fileExtension] = {
-			metricName: "rloc",
+			metricName: distributionMetric,
 			absoluteValue: distributionItem.absoluteMetricValue,
 			relativeValue: distributionItem.relativeMetricValue
 		}
@@ -122,43 +142,21 @@ function mapLanguageDistribution(languageDistribution: MetricDistribution[]) {
 	return mappedDistribution
 }
 
-function mapMetricStatisticsPerLanguage(metricStatisticsPerLanguage: MetricsPerLanguage) {
-	//TODO: reuse mapMetricStatisticsOverall()
+function mapMetricStatisticsPerLanguage(metricStatisticsPerLanguage: MetricsPerLanguage): MetricStatisticsPerLanguage {
 	const mappedStatistics = {}
 
 	for (const languageIndex of Object.keys(metricStatisticsPerLanguage)) {
-		const languageMetrics = {}
-		mappedStatistics[languageIndex] = languageMetrics
-
-		for (const metricIndex of Object.keys(metricStatisticsPerLanguage[languageIndex])) {
-			const metricStatistics = metricStatisticsPerLanguage[languageIndex][metricIndex]
-
-			// Filter 0-values to calculate median properly
-			let metricValues = metricStatistics.values
-			metricValues = metricValues.filter(function (metricValue) {
-				return metricValue > 0
-			})
-
-			languageMetrics[metricIndex] = {
-				metricName: metricIndex,
-				min: metricStatistics.min,
-				max: metricStatistics.max,
-				totalSum: metricStatistics.totalSum,
-				numberOfFiles: metricStatistics.numberOfFiles,
-				median: getMedian(metricValues).toPrecision(2),
-				avg: metricStatistics.average.toPrecision(2)
-			}
-		}
+		mappedStatistics[languageIndex] = mapMetricStatistics(metricStatisticsPerLanguage[languageIndex])
 	}
 
 	return mappedStatistics
 }
 
-function mapMetricStatisticsOverall(metricStatisticsOverall: MetricKeyValue) {
+function mapMetricStatistics(metricKeyValueStatistics: MetricKeyValue) {
 	const mappedStatistics = {}
 
-	for (const metricIndex of Object.keys(metricStatisticsOverall)) {
-		const metricStatistics = metricStatisticsOverall[metricIndex]
+	for (const metricIndex of Object.keys(metricKeyValueStatistics)) {
+		const metricStatistics = metricKeyValueStatistics[metricIndex]
 
 		// Filter 0-values to calculate median properly
 		let metricValues = metricStatistics.values
@@ -168,7 +166,6 @@ function mapMetricStatisticsOverall(metricStatisticsOverall: MetricKeyValue) {
 
 		mappedStatistics[metricIndex] = {
 			metricName: metricIndex,
-			boxplot_irq_outliers: [],
 			min: metricStatistics.min,
 			max: metricStatistics.max,
 			totalSum: metricStatistics.totalSum,
@@ -177,6 +174,7 @@ function mapMetricStatisticsOverall(metricStatisticsOverall: MetricKeyValue) {
 			avg: metricStatistics.average.toPrecision(2)
 		}
 	}
+
 	return mappedStatistics
 }
 
@@ -200,33 +198,47 @@ interface EventTrackingItem {
 }
 
 export function trackEventUsageData(actionType: string, state: State, payload?: any) {
-	if (!isTrackingAllowed(state)) {
-		return
-	}
-
-	//TODO: Refactor
 	if (
-		!isActionOfType(actionType, AreaMetricActions) &&
-		!isActionOfType(actionType, HeightMetricActions) &&
-		!isActionOfType(actionType, ColorMetricActions) &&
-		!isActionOfType(actionType, ColorRangeActions) &&
-		!isActionOfType(actionType, InvertColorRangeActions) &&
-		!isActionOfType(actionType, BlacklistActions) &&
-		!isActionOfType(actionType, FocusedNodePathActions)
+		!isTrackingAllowed(state) ||
+		(!isActionOfType(actionType, AreaMetricActions) &&
+			!isActionOfType(actionType, HeightMetricActions) &&
+			!isActionOfType(actionType, ColorMetricActions) &&
+			!isActionOfType(actionType, ColorRangeActions) &&
+			!isActionOfType(actionType, InvertColorRangeActions) &&
+			!isActionOfType(actionType, BlacklistActions) &&
+			!isActionOfType(actionType, FocusedNodePathActions))
 	) {
 		return
 	}
 
-	let eventTrackingItem: EventTrackingItem
+	const eventTrackingItem = buildEvenTrackingItem(actionType, payload)
+	if (eventTrackingItem === null) {
+		return
+	}
 
-	if (
-		isActionOfType(actionType, AreaMetricActions) ||
-		isActionOfType(actionType, HeightMetricActions) ||
-		isActionOfType(actionType, ColorMetricActions) ||
-		isActionOfType(actionType, ColorRangeActions) ||
-		isActionOfType(actionType, InvertColorRangeActions)
-	) {
-		eventTrackingItem = {
+	const { fileChecksum } = getVisibleFileStates(state.files)[0].file.fileMeta
+	const fileStorage = new CodeChartaStorage()
+
+	let appendedEvents = ""
+	try {
+		appendedEvents = fileStorage.getItem(`usageData/${fileChecksum}-events`)
+	} catch {
+		// ignore, it no events item exists
+	}
+
+	try {
+		if (appendedEvents.length > 0) {
+			appendedEvents += "\n"
+		}
+		fileStorage.setItem(`usageData/${fileChecksum}-events`, appendedEvents + JSON.stringify(eventTrackingItem))
+	} catch {
+		// ignore tracking errors
+	}
+}
+
+function buildEvenTrackingItem(actionType: string, payload?: any): EventTrackingItem | null {
+	if (isSettingChangedEvent(actionType)) {
+		return {
 			eventType: "setting_changed",
 			eventTime: Date.now(),
 			payload: {
@@ -237,7 +249,7 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 	}
 
 	if (isActionOfType(actionType, BlacklistActions)) {
-		eventTrackingItem = {
+		return {
 			eventType: "node_interaction",
 			eventTime: Date.now(),
 			payload: {
@@ -251,7 +263,7 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 	}
 
 	if (isActionOfType(actionType, FocusedNodePathActions) && payload !== "") {
-		eventTrackingItem = {
+		return {
 			eventType: "node_interaction",
 			eventTime: Date.now(),
 			payload: {
@@ -261,13 +273,15 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 		}
 	}
 
-	const { fileChecksum } = getVisibleFileStates(state.files)[0].file.fileMeta
-	const fileStorage = new CodeChartaStorage()
+	return null
+}
 
-	try {
-		const appendedEvents = `${fileStorage.getItem(`usageData/${fileChecksum}-events`)}\n${JSON.stringify(eventTrackingItem)}`
-		fileStorage.setItem(`usageData/${fileChecksum}-events`, appendedEvents)
-	} catch {
-		// ignore tracking errors
-	}
+function isSettingChangedEvent(actionType: string) {
+	return (
+		isActionOfType(actionType, AreaMetricActions) ||
+		isActionOfType(actionType, HeightMetricActions) ||
+		isActionOfType(actionType, ColorMetricActions) ||
+		isActionOfType(actionType, ColorRangeActions) ||
+		isActionOfType(actionType, InvertColorRangeActions)
+	)
 }
