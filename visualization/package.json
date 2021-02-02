@@ -112,7 +112,7 @@
 		"open": "^7.3.0",
 		"redux": "^4.0.4",
 		"shelljs": "^0.8.1",
-		"three": "^0.124.0",
+		"three": "^0.125.2",
 		"three-orbit-controls": "^82.1.0",
 		"typescript-json-schema": "^0.47.0"
 	},
