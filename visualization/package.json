@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.66.0",
+	"version": "1.67.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -113,7 +113,6 @@
 		"nw": "^0.50.0",
 		"open": "^7.3.0",
 		"redux": "^4.0.4",
-		"sass": "^1.32.5",
 		"shelljs": "^0.8.1",
 		"three": "^0.124.0",
 		"three-orbit-controls": "^82.1.0",
@@ -159,7 +158,7 @@
 		"plop": "^2.7.3",
 		"puppeteer": "^5.4.1",
 		"rimraf": "^3.0.2",
-		"sass-loader": "^10.1.1",
+		"sass-loader": "^10.0.1",
 		"style-loader": "^2.0.0",
 		"ts-jest": "^26.1.1",
 		"ts-loader": "^8.0.3",
