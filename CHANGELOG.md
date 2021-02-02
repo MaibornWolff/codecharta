@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Added WebGL FXAA antialias & PixelRatio Options in order to achieve better resolution on high dpi displays(https://github.com/MaibornWolff/codecharta/pull/1551).
 -   Added GPU Stats (only in dev mode)
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.67.0] - 2021-01-26
