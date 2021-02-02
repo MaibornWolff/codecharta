@@ -1,61 +1,39 @@
-'use strict'
-import { hierarchy } from 'd3-hierarchy'
-import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from '../codeCharta.model'
-import { isLeaf, transformPath } from './codeMapHelper'
-import ignore from 'ignore'
-import { NodeMetricDataService } from '../state/store/metricData/nodeMetricData/nodeMetricData.service'
+"use strict"
+import { hierarchy } from "d3-hierarchy"
+import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
+import { isLeaf, transformPath } from "./codeMapHelper"
+import ignore from "ignore"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 const enum MedianSelectors {
-	MEDIAN = 'MEDIAN',
-	DELTA = 'DELTA',
-	INCOMING = 'INCOMING',
-	OUTGOING = 'OUTGOING'
+	MEDIAN = "MEDIAN",
+	DELTA = "DELTA",
+	INCOMING = "INCOMING",
+	OUTGOING = "OUTGOING"
 }
 
 const enum EdgeAttributeType {
-	INCOMING = 'incoming',
-	OUTGOING = 'outgoing'
+	INCOMING = "incoming",
+	OUTGOING = "outgoing"
 }
 
 export class NodeDecorator {
 	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 		const flattened = ignore()
 		const excluded = ignore()
-		const negatedFlattened = ignore()
-		const negatedExcluded = ignore()
 
-		let hasNegatedFlattenedPaths = false
-		let hasNegatedExcludedPaths = false
 		let hasFlattenedPaths = false
 		let hasExcludedPaths = false
 
 		for (const item of blacklist) {
-			item.path = item.path.trim()
-			let path = transformPath(item.path)
+			const path = transformPath(item.path)
 
-			if (path.startsWith('!')) {
-				path = path.slice(1)
-				if (!path.startsWith('*') && !path.endsWith('*') && path.length > 0) {
-					path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
-				}
-				if (item.type === BlacklistType.flatten) {
-					hasNegatedFlattenedPaths = true
-					negatedFlattened.add(transformPath(path))
-				} else {
-					hasNegatedExcludedPaths = true
-					negatedExcluded.add(transformPath(path))
-				}
+			if (item.type === BlacklistType.flatten) {
+				hasFlattenedPaths = true
+				flattened.add(path)
 			} else {
-				if (!path.startsWith('*') && !path.endsWith('*') && path.length > 0) {
-					path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
-				}
-				if (item.type === BlacklistType.flatten) {
-					hasFlattenedPaths = true
-					flattened.add(transformPath(path))
-				} else {
-					hasExcludedPaths = true
-					excluded.add(transformPath(path))
-				}
+				hasExcludedPaths = true
+				excluded.add(path)
 			}
 		}
 
@@ -95,12 +73,8 @@ export class NodeDecorator {
 
 			if (blacklist.length > 0) {
 				const path = transformPath(data.path)
-				data.isFlattened =
-					(hasFlattenedPaths && flattened.ignores(path)) ||
-					(hasNegatedFlattenedPaths && !negatedFlattened.ignores(path) && isLeaf(data))
-				data.isExcluded =
-					(hasExcludedPaths && excluded.ignores(path)) ||
-					(hasNegatedExcludedPaths && !negatedExcluded.ignores(path) && isLeaf(data))
+				data.isFlattened = hasFlattenedPaths && flattened.ignores(path)
+				data.isExcluded = hasExcludedPaths && excluded.ignores(path)
 			}
 
 			// TODO: Verify the need for this code. It is unclear why child

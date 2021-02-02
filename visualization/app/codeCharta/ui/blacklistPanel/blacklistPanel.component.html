@@ -16,8 +16,8 @@
 		</md-list-item>
 
 		<md-list-item
-			ng-repeat="item in $ctrl._viewModel.flatten | orderBy: ['path'] "
-			title="{{::item.path}} track by $ctrl._viewModel.flatten.indexOf(item.path)"
+			ng-repeat="item in $ctrl._viewModel.flatten | orderBy: ['path']"
+			title="{{::item.path}} track by $ctrl._viewModel.exclude.indexOf(item.path)"
 		>
 			<md-button class="round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
 				<em class="fa fa-minus-square" title="Remove list item"></em>
@@ -48,7 +48,7 @@
 		</md-list-item>
 
 		<md-list-item
-			ng-repeat="item in $ctrl._viewModel.exclude | orderBy: ['path']"
+			ng-repeat="item in $ctrl._viewModel.exclude | orderBy: ['path'] "
 			title="{{::item.path}} track by $ctrl._viewModel.exclude.indexOf(item.path)"
 		>
 			<md-button class="round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
