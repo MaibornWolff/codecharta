@@ -1,20 +1,22 @@
-import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
-import { IRootScopeService, IWindowService } from "angular"
-import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import $ from "jquery"
-import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
-import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
-import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { StoreService } from "../../state/store.service"
-import { hierarchy } from "d3-hierarchy"
-import { Object3D, Raycaster } from "three"
-import { CodeMapLabelService } from "./codeMap.label.service"
+import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from '../mapTreeView/mapTreeView.level.component'
+import { ThreeCameraService } from './threeViewer/threeCameraService'
+import { IRootScopeService, IWindowService } from 'angular'
+import { CodeMapBuilding } from './rendering/codeMapBuilding'
+import $ from 'jquery'
+import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from '../viewCube/viewCube.mouseEvents.service'
+import { CodeMapNode, BlacklistItem } from '../../codeCharta.model'
+import { ThreeSceneService } from './threeViewer/threeSceneService'
+import { ThreeUpdateCycleService } from './threeViewer/threeUpdateCycleService'
+import { ThreeRendererService } from './threeViewer/threeRendererService'
+import { isPathHiddenOrExcluded } from '../../util/codeMapHelper'
+import { BlacklistService, BlacklistSubscriber } from '../../state/store/fileSettings/blacklist/blacklist.service'
+import { FilesService, FilesSelectionSubscriber } from '../../state/store/files/files.service'
+import { StoreService } from '../../state/store.service'
+import { hierarchy } from 'd3-hierarchy'
+import { Object3D, Raycaster } from 'three'
+import { CodeMapLabelService } from './codeMap.label.service'
+import { LazyLoader } from '../../util/lazyLoader'
+import { CodeMapPreRenderService } from './codeMap.preRender.service'
 
 interface Coordinates {
 	x: number
@@ -39,17 +41,17 @@ export enum ClickType {
 }
 
 export enum CursorType {
-	Default = "default",
-	Grabbing = "grabbing",
-	Pointer = "pointer",
-	Moving = "move"
+	Default = 'default',
+	Grabbing = 'grabbing',
+	Pointer = 'pointer',
+	Moving = 'move'
 }
 
 export class CodeMapMouseEventService
 	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
-	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
-	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
-	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
+	private static readonly BUILDING_HOVERED_EVENT = 'building-hovered'
+	private static readonly BUILDING_UNHOVERED_EVENT = 'building-unhovered'
+	private static readonly BUILDING_RIGHT_CLICKED_EVENT = 'building-right-clicked'
 	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
 
 	private highlightedInTreeView: CodeMapBuilding
@@ -72,7 +74,8 @@ export class CodeMapMouseEventService
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
-		private codeMapLabelService: CodeMapLabelService
+		private codeMapLabelService: CodeMapLabelService,
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
@@ -104,10 +107,10 @@ export class CodeMapMouseEventService
 
 	start() {
 		// TODO: Check if these event listeners should ever be removed again.
-		this.threeRendererService.renderer.domElement.addEventListener("mousemove", event => this.onDocumentMouseMove(event))
-		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
-		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
-		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
+		this.threeRendererService.renderer.domElement.addEventListener('mousemove', event => this.onDocumentMouseMove(event))
+		this.threeRendererService.renderer.domElement.addEventListener('mouseup', event => this.onDocumentMouseUp(event))
+		this.threeRendererService.renderer.domElement.addEventListener('mousedown', event => this.onDocumentMouseDown(event))
+		this.threeRendererService.renderer.domElement.addEventListener('dblclick', () => this.onDocumentDoubleClick())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -128,16 +131,16 @@ export class CodeMapMouseEventService
 
 	onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
 		switch (eventType) {
-			case "mousemove":
+			case 'mousemove':
 				this.onDocumentMouseMove(event)
 				break
-			case "mouseup":
+			case 'mouseup':
 				this.onDocumentMouseUp(event)
 				break
-			case "mousedown":
+			case 'mousedown':
 				this.onDocumentMouseDown(event)
 				break
-			case "dblclick":
+			case 'dblclick':
 				this.onDocumentDoubleClick()
 				break
 		}
@@ -183,7 +186,7 @@ export class CodeMapMouseEventService
 			const labels = this.threeSceneService.labels?.children
 
 			const mapMesh = this.threeSceneService.getMapMesh()
-			let nodeNameHoveredLabel = ""
+			let nodeNameHoveredLabel = ''
 
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
@@ -200,7 +203,7 @@ export class CodeMapMouseEventService
 				}
 
 				this.intersectedBuilding =
-					nodeNameHoveredLabel !== ""
+					nodeNameHoveredLabel !== ''
 						? mapMesh.getBuildingByPath(nodeNameHoveredLabel)
 						: mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
 
@@ -252,11 +255,23 @@ export class CodeMapMouseEventService
 
 	onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
 		// check if mouse moved to prevent opening the building link after rotating the map, when the cursor ends on a building
 		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			const fileSourceLink = highlightedBuilding.node.link
 			if (fileSourceLink) {
-				this.$window.open(fileSourceLink, "_blank")
+				this.$window.open(fileSourceLink, '_blank')
+			}
+		}
+		if (selectedBuilding?.node.isLeaf) {
+			const sourceLink = selectedBuilding.node.link
+			if (sourceLink) {
+				this.$window.open(sourceLink, '_blank')
+				return
+			}
+			const fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
+			if (fileName) {
+				LazyLoader.openFile(fileName, selectedBuilding.node.path)
 			}
 		}
 	}

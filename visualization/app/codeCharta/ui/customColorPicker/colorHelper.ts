@@ -10,5 +10,5 @@ export const getReadableColorForBackground = (hex: string) => {
 	const g = Number.parseInt(hex.slice(3, 5), 16)
 	const b = Number.parseInt(hex.slice(5, 7), 16)
 	const yiqRatio = (r * 299 + g * 587 + b * 114) / 1000
-	return yiqRatio >= 128 ? "black" : "white"
+	return yiqRatio >= 128 ? 'black' : 'white'
 }

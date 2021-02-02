@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
-## [Unreleased]
+## [unreleased]
 
 ### Added 🚀
 
@@ -18,9 +18,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
     (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
 
-## [unreleased]
+### Chore 👨‍💻 👩‍💻
+
+## [1.67.0] - 2021-01-26
 
 ### Added 🚀
+
+-   Allow opening files from local drive by double clicking on the buildings or clicking on their names ([#1314](https://github.com/MaibornWolff/codecharta/issues/1314))
+    -   Only available in the standalone version!
+    -   files are opened in associated third-party applications
+    -   web-links are opened in a browser window
+-   Allow customized color in the node context menu ([#1556](https://github.com/MaibornWolff/codecharta/issues/1556)).
+
+    [!example of new feature #1556](https://user-images.githubusercontent.com/3596742/104302048-a007f300-54c8-11eb-86c1-287483884783.png)
 
 ### Changed
 

@@ -1,30 +1,31 @@
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
-import { setHideFlatBuildings } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
-import { setResetCameraIfNewFileIsLoaded } from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setIsWhiteBackground } from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import { IRootScopeService } from 'angular'
+import { StoreService } from '../../state/store.service'
+import { setHideFlatBuildings } from '../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions'
+import { setResetCameraIfNewFileIsLoaded } from '../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions'
+import { setIsWhiteBackground } from '../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions'
 import {
 	HideFlatBuildingsService,
 	HideFlatBuildingsSubscriber
-} from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
+} from '../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.service'
 import {
 	IsWhiteBackgroundService,
 	IsWhiteBackgroundSubscriber
-} from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
+} from '../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service'
 import {
 	ResetCameraIfNewFileIsLoadedService,
 	ResetCameraIfNewFileIsLoadedSubscriber
-} from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
-import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+} from '../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service'
+import { setExperimentalFeaturesEnabled } from '../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions'
 import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
-} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { LayoutAlgorithm } from "../../codeCharta.model"
-import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
-import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
-import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+} from '../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service'
+import { LayoutAlgorithm } from '../../codeCharta.model'
+import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from '../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service'
+import { setLayoutAlgorithm } from '../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions'
+import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from '../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service'
+import { setMaxTreeMapFiles } from '../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions'
+import { GlobalSettingsHelper } from '../../util/globalSettingsHelper'
 
 export class DialogGlobalSettingsController
 	implements
@@ -68,30 +69,37 @@ export class DialogGlobalSettingsController
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
 		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
+		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
 	}
 
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
 		this._viewModel.hideFlatBuildings = hideFlatBuildings
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		this._viewModel.isWhiteBackground = isWhiteBackground
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
 		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
 		this._viewModel.layoutAlgorithm = layoutAlgorithm
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
 		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
+		this.changeGlobalSettingsInLocalStorage()
 	}
 
 	applySettingsHideFlatBuildings() {
@@ -121,12 +129,16 @@ export class DialogGlobalSettingsController
 	hide() {
 		this.$mdDialog.hide()
 	}
+
+	changeGlobalSettingsInLocalStorage() {
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ ...this._viewModel })
+	}
 }
 
 export const dialogGlobalSettingsComponent = {
-	selector: "dialogGlobalSettingsComponent",
-	template: require("./dialog.globalSettings.component.html"),
+	selector: 'dialogGlobalSettingsComponent',
+	template: require('./dialog.globalSettings.component.html'),
 	controller: DialogGlobalSettingsController,
 	clickOutsideToClose: true,
-	controllerAs: "$ctrl"
+	controllerAs: '$ctrl'
 }

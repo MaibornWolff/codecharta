@@ -1,25 +1,26 @@
-import { UrlExtractor } from "./util/urlExtractor"
-import { IHttpService, ILocationService } from "angular"
-import "./codeCharta.component.scss"
-import { CodeChartaService } from "./codeCharta.service"
-import { DialogService } from "./ui/dialog/dialog.service"
-import { NameDataPair } from "./codeCharta.model"
-import { InjectorService } from "./state/injector.service"
-import { StoreService } from "./state/store.service"
-import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
-import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import packageJson from "../../package.json"
-import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
-import { getCCFiles } from "./model/files/files.helper"
-import sample1 from "./assets/sample1.cc.json"
-import sample2 from "./assets/sample2.cc.json"
-import { ExportCCFile } from "./codeCharta.api.model"
+import { UrlExtractor } from './util/urlExtractor'
+import { IHttpService, ILocationService } from 'angular'
+import './codeCharta.component.scss'
+import { CodeChartaService } from './codeCharta.service'
+import { DialogService } from './ui/dialog/dialog.service'
+import { NameDataPair } from './codeCharta.model'
+import { InjectorService } from './state/injector.service'
+import { StoreService } from './state/store.service'
+import { setAppSettings } from './state/store/appSettings/appSettings.actions'
+import { setIsLoadingFile } from './state/store/appSettings/isLoadingFile/isLoadingFile.actions'
+import packageJson from '../../package.json'
+import { setDelta, setMultiple, setSingle } from './state/store/files/files.actions'
+import { getCCFiles } from './model/files/files.helper'
+import sample1 from './assets/sample1.cc.json'
+import sample2 from './assets/sample2.cc.json'
+import { ExportCCFile } from './codeCharta.api.model'
+import { GlobalSettingsHelper } from './util/globalSettingsHelper'
 
 export class CodeChartaController {
 	private _viewModel: {
 		version: string
 	} = {
-		version: "version unavailable"
+		version: 'version unavailable'
 	}
 
 	private urlUtils: UrlExtractor
@@ -51,9 +52,9 @@ export class CodeChartaController {
 	}
 
 	tryLoadingSampleFiles(error: Error & { statusText?: string; status?: number }) {
-		if (this.urlUtils.getParameterByName("file")) {
-			const message = "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
-			let title = "Error"
+		if (this.urlUtils.getParameterByName('file')) {
+			const message = 'One or more files from the given file URL parameter could not be loaded. Loading sample files instead.'
+			let title = 'Error'
 			if (error.message) {
 				title += ` (${error.message})`
 			} else if (error.statusText && error.status) {
@@ -62,23 +63,24 @@ export class CodeChartaController {
 			this.dialogService.showErrorDialog(message, title)
 		}
 		this.tryLoadingFiles([
-			{ fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile },
-			{ fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
+			{ fileName: 'sample1.cc.json', fileSize: 3 * 1024, content: sample1 as ExportCCFile },
+			{ fileName: 'sample2.cc.json', fileSize: 2 * 1024, content: sample2 as ExportCCFile }
 		])
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
 		this.storeService.dispatch(setAppSettings())
+		GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.storeService)
 		this.codeChartaService.loadFiles(values)
 	}
 
 	private setRenderStateFromUrl() {
-		const renderState = this.urlUtils.getParameterByName("mode")
+		const renderState = this.urlUtils.getParameterByName('mode')
 		const files = getCCFiles(this.storeService.getState().files)
 
-		if (renderState === "Delta" && files.length >= 2) {
+		if (renderState === 'Delta' && files.length >= 2) {
 			this.storeService.dispatch(setDelta(files[0], files[1]))
-		} else if (renderState === "Multiple") {
+		} else if (renderState === 'Multiple') {
 			this.storeService.dispatch(setMultiple(files))
 		} else {
 			this.storeService.dispatch(setSingle(files[0]))
@@ -87,7 +89,7 @@ export class CodeChartaController {
 }
 
 export const codeChartaComponent = {
-	selector: "codeChartaComponent",
-	template: require("./codeCharta.component.html"),
+	selector: 'codeChartaComponent',
+	template: require('./codeCharta.component.html'),
 	controller: CodeChartaController
 }

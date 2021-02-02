@@ -1,16 +1,16 @@
-import "./nodeContextMenu.component.scss"
-import angular, { IRootScopeService, ITimeoutService } from "angular"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { StoreService } from "../../state/store.service"
-import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
-import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import './nodeContextMenu.component.scss'
+import angular, { IRootScopeService, ITimeoutService } from 'angular'
+import { CodeMapActionsService } from '../codeMap/codeMap.actions.service'
+import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from '../../codeCharta.model'
+import { CodeMapPreRenderService } from '../codeMap/codeMap.preRender.service'
+import { StoreService } from '../../state/store.service'
+import { addBlacklistItem, removeBlacklistItem } from '../../state/store/fileSettings/blacklist/blacklist.actions'
+import { focusNode } from '../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions'
+import { CodeMapBuilding } from '../codeMap/rendering/codeMapBuilding'
+import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from '../codeMap/codeMap.mouseEvent.service'
+import { MapColorsService, MapColorsSubscriber } from '../../state/store/appSettings/mapColors/mapColors.service'
+import { getCodeMapNodeFromPath } from '../../util/codeMapHelper'
+import { ThreeSceneService } from '../codeMap/threeViewer/threeSceneService'
 
 export enum ClickType {
 	RightClick = 2
@@ -26,8 +26,8 @@ export interface HideNodeContextMenuSubscriber {
 
 export class NodeContextMenuController
 	implements BuildingRightClickedEventSubscriber, ShowNodeContextMenuSubscriber, HideNodeContextMenuSubscriber, MapColorsSubscriber {
-	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
-	private static HIDE_NODE_CONTEXT_MENU_EVENT = "hide-node-context-menu"
+	private static SHOW_NODE_CONTEXT_MENU_EVENT = 'show-node-context-menu'
+	private static HIDE_NODE_CONTEXT_MENU_EVENT = 'hide-node-context-menu'
 
 	private _viewModel: {
 		codeMapNode: CodeMapNode
@@ -77,19 +77,21 @@ export class NodeContextMenuController
 		// Add event listeners, so that opened node context menu can be closed again later
 		// when clicking (left or right button)
 		// or using the mouse wheel on the body element.
-		document.body.addEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
-		document.body.addEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
-		document.getElementById("codeMap").addEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
+		document.body.addEventListener('click', this.onBodyLeftClickHideNodeContextMenu, true)
+		document.body.addEventListener('mousedown', this.onBodyRightClickHideNodeContextMenu, true)
+		document.getElementById('codeMap').addEventListener('wheel', this.onMapWheelHideNodeContextMenu, true)
 	}
 
-	onBodyLeftClickHideNodeContextMenu = () => {
+	onBodyLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
+		if (this.isEventFromColorPicker(mouseEvent)) return
+
 		// Just close node context menu, if you click anywhere on the map.
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 
 		// The listener is added when showing the node context menu.
 		// Thus, remove the listener when clicking the body element with the left or right button
 		// to fire hide events only (once) when it is really necessary.
-		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
+		document.body.removeEventListener('click', this.onBodyLeftClickHideNodeContextMenu, true)
 	}
 
 	onBodyRightClickHideNodeContextMenu = event => {
@@ -103,7 +105,7 @@ export class NodeContextMenuController
 		// The listener is added when showing the node context menu.
 		// Thus, remove the listener when clicking the body element with the left or right button
 		// to fire hide events only (once) when it is really necessary.
-		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
+		document.body.removeEventListener('mousedown', this.onBodyRightClickHideNodeContextMenu, true)
 	}
 
 	onMapWheelHideNodeContextMenu = () => {
@@ -113,7 +115,7 @@ export class NodeContextMenuController
 		// The listener is added when showing the node context menu.
 		// Thus, remove the listener when using the mouse wheel on the body element
 		// to fire hide events only (once) when it is really necessary.
-		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
+		document.getElementById('codeMap').removeEventListener('wheel', this.onMapWheelHideNodeContextMenu, true)
 	}
 
 	onHideNodeContextMenu() {
@@ -180,8 +182,8 @@ export class NodeContextMenuController
 	}
 
 	setPosition(x: number, y: number) {
-		angular.element(this.$element[0].children[0]).css("top", `${y}px`)
-		angular.element(this.$element[0].children[0]).css("left", `${x}px`)
+		angular.element(this.$element[0].children[0]).css('top', `${y}px`)
+		angular.element(this.$element[0].children[0]).css('left', `${x}px`)
 	}
 
 	isNodeOrParentMarked(color?: string) {
@@ -193,6 +195,10 @@ export class NodeContextMenuController
 			return this.packageMatchesColor(color)
 		}
 		return this.packageMatchesColorOfParentMP(color)
+	}
+
+	private isEventFromColorPicker(mouseEvent: MouseEvent) {
+		return mouseEvent.composedPath().some((element: any) => element?.nodeName === 'CC-NODE-CONTEXT-MENU-COLOR-PICKER')
 	}
 
 	private isNodeMarked() {
@@ -271,7 +277,7 @@ export class NodeContextMenuController
 }
 
 export const nodeContextMenuComponent = {
-	selector: "nodeContextMenuComponent",
-	template: require("./nodeContextMenu.component.html"),
+	selector: 'nodeContextMenuComponent',
+	template: require('./nodeContextMenu.component.html'),
 	controller: NodeContextMenuController
 }

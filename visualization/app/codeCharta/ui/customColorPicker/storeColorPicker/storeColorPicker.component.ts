@@ -1,13 +1,13 @@
-import "./mapColorPicker.component.scss"
-import { StoreService } from "../../state/store.service"
-import { IRootScopeService } from "angular"
-import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
-import { MapColors } from "../../codeCharta.model"
-import { MapColorsSubscriber, MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
-import { isSameHexColor, hasValidHexLength, normalizeHex, getReadableColorForBackground } from "./colorHelper"
+import './storeColorPicker.component.scss'
+import { StoreService } from '../../../state/store.service'
+import { IRootScopeService } from 'angular'
+import { setMapColors } from '../../../state/store/appSettings/mapColors/mapColors.actions'
+import { MapColors } from '../../../codeCharta.model'
+import { MapColorsSubscriber, MapColorsService } from '../../../state/store/appSettings/mapColors/mapColors.service'
+import { isSameHexColor, hasValidHexLength, normalizeHex, getReadableColorForBackground } from '../colorHelper'
 
-export class MapColorPickerController implements MapColorsSubscriber {
-	private mapColorFor: Exclude<keyof MapColors, "markingColors" | "labelColorAndAlpha">
+export class StoreColorPickerController implements MapColorsSubscriber {
+	private mapColorFor: Exclude<keyof MapColors, 'markingColors' | 'labelColorAndAlpha'>
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private $element: JQLite, private $scope) {
 		MapColorsService.subscribe(this.$rootScope, this)
@@ -22,7 +22,7 @@ export class MapColorPickerController implements MapColorsSubscriber {
 
 	$onInit() {
 		this.$scope.color = this.getColorFromStore()
-		this.$scope.$watch("color", newColor => {
+		this.$scope.$watch('color', newColor => {
 			if (!hasValidHexLength(newColor) || isSameHexColor(newColor, this.getColorFromStore())) return
 
 			const normalizedHex = normalizeHex(newColor)
@@ -30,7 +30,6 @@ export class MapColorPickerController implements MapColorsSubscriber {
 			this.updateBrushColor(normalizedHex)
 		})
 
-		this.$scope.colorPickerOptions = { pos: undefined } // reset unwanted default positioning
 		this.$scope.colorPickerEventApi = {
 			onChange: (_, newColor) => {
 				// The color picker area works fine without manual assigning of scope, but the input field doesn't.
@@ -41,7 +40,7 @@ export class MapColorPickerController implements MapColorsSubscriber {
 	}
 
 	private updateBrushColor(normalizedHex: string) {
-		const brushIcon = this.$element[0].querySelector(".cc-color-picker-swatch-brush-icon") as HTMLElement
+		const brushIcon = this.$element[0].querySelector('.cc-color-picker-swatch-brush-icon') as HTMLElement
 		if (brushIcon !== null) brushIcon.style.color = getReadableColorForBackground(normalizedHex)
 	}
 
@@ -59,12 +58,12 @@ export class MapColorPickerController implements MapColorsSubscriber {
 	}
 }
 
-export const mapColorPickerComponent = {
-	selector: "ccMapColorPicker",
-	template: require("./mapColorPicker.component.html"),
-	controller: MapColorPickerController,
+export const storeColorPickerComponent = {
+	selector: 'ccStoreColorPicker',
+	template: require('./storeColorPicker.component.html'),
+	controller: StoreColorPickerController,
 	bindings: {
-		label: "@",
-		mapColorFor: "@"
+		label: '@',
+		mapColorFor: '@'
 	}
 }

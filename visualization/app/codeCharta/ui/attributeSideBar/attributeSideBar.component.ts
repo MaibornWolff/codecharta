@@ -1,19 +1,20 @@
-import "./attributeSideBar.component.scss"
-import { IRootScopeService } from "angular"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { Node } from "../../codeCharta.model"
-import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
-import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
-import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import './attributeSideBar.component.scss'
+import { IRootScopeService } from 'angular'
+import { CodeMapBuilding } from '../codeMap/rendering/codeMapBuilding'
+import { Node } from '../../codeCharta.model'
+import { BuildingSelectedEventSubscriber, ThreeSceneService } from '../codeMap/threeViewer/threeSceneService'
+import { CodeMapPreRenderService } from '../codeMap/codeMap.preRender.service'
+import { AreaMetricService, AreaMetricSubscriber } from '../../state/store/dynamicSettings/areaMetric/areaMetric.service'
+import { HeightMetricService, HeightMetricSubscriber } from '../../state/store/dynamicSettings/heightMetric/heightMetric.service'
+import { ColorMetricService, ColorMetricSubscriber } from '../../state/store/dynamicSettings/colorMetric/colorMetric.service'
+import { EdgeMetricService, EdgeMetricSubscriber } from '../../state/store/dynamicSettings/edgeMetric/edgeMetric.service'
 import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber
-} from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { StoreService } from "../../state/store.service"
-import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
+} from '../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service'
+import { StoreService } from '../../state/store.service'
+import { closeAttributeSideBar } from '../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions'
+import { LazyLoader } from '../../util/lazyLoader'
 
 export interface PrimaryMetrics {
 	node: {
@@ -96,6 +97,13 @@ export class AttributeSideBarController
 		this.storeService.dispatch(closeAttributeSideBar())
 	}
 
+	onClickNodeName() {
+		if (!this._viewModel.node.isLeaf) {
+			return
+		}
+		LazyLoader.openFile(this._viewModel.fileName, this._viewModel.node.path)
+	}
+
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
 		if (this._viewModel.node) {
 			const metricValues = new Set(Object.values(this._viewModel.primaryMetricKeys.node))
@@ -107,7 +115,7 @@ export class AttributeSideBarController
 }
 
 export const attributeSideBarComponent = {
-	selector: "attributeSideBarComponent",
-	template: require("./attributeSideBar.component.html"),
+	selector: 'attributeSideBarComponent',
+	template: require('./attributeSideBar.component.html'),
 	controller: AttributeSideBarController
 }

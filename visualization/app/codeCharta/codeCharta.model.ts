@@ -1,10 +1,10 @@
-import { Vector3 } from "three"
-import { Action } from "redux"
-import { ExportCCFile } from "./codeCharta.api.model"
-import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
-import { FileState } from "./model/files/files"
-import { CustomConfig } from "./model/customConfig/customConfig.api.model"
-import Rectangle from "./util/algorithm/streetLayout/rectangle"
+import { Vector3 } from 'three'
+import { Action } from 'redux'
+import { ExportCCFile } from './codeCharta.api.model'
+import { CodeMapBuilding } from './ui/codeMap/rendering/codeMapBuilding'
+import { FileState } from './model/files/files'
+import { CustomConfig } from './model/customConfig/customConfig.api.model'
+import Rectangle from './util/algorithm/streetLayout/rectangle'
 
 export interface NameDataPair {
 	fileName: string
@@ -13,15 +13,15 @@ export interface NameDataPair {
 }
 
 export enum SearchPanelMode {
-	treeView = "treeView",
-	blacklist = "blacklist",
-	minimized = "minimized"
+	treeView = 'treeView',
+	blacklist = 'blacklist',
+	minimized = 'minimized'
 }
 
 export enum LayoutAlgorithm {
-	SquarifiedTreeMap = "Squarified TreeMap",
-	StreetMap = "StreetMap",
-	TreeMapStreet = "TreeMapStreet"
+	SquarifiedTreeMap = 'Squarified TreeMap',
+	StreetMap = 'StreetMap',
+	TreeMapStreet = 'TreeMapStreet'
 }
 
 export interface CCFile {
@@ -66,13 +66,13 @@ export interface FixedPosition {
 }
 
 export enum NodeType {
-	FILE = "File",
-	FOLDER = "Folder"
+	FILE = 'File',
+	FOLDER = 'Folder'
 }
 
 export enum SortingOption {
-	NAME = "Name",
-	NUMBER_OF_FILES = "Number of Files"
+	NAME = 'Name',
+	NUMBER_OF_FILES = 'Number of Files'
 }
 
 export interface FileMeta {
@@ -175,8 +175,8 @@ export interface AttributeTypes {
 }
 
 export enum AttributeTypeValue {
-	absolute = "absolute",
-	relative = "relative"
+	absolute = 'absolute',
+	relative = 'relative'
 }
 
 export interface Edge {
@@ -187,10 +187,10 @@ export interface Edge {
 }
 
 export enum EdgeVisibility {
-	none = "none",
-	from = "from",
-	to = "to",
-	both = "both"
+	none = 'none',
+	from = 'from',
+	to = 'to',
+	both = 'both'
 }
 
 export interface EdgeMetricCount {
@@ -204,8 +204,8 @@ export interface BlacklistItem {
 }
 
 export enum BlacklistType {
-	flatten = "flatten",
-	exclude = "exclude"
+	flatten = 'flatten',
+	exclude = 'exclude'
 }
 
 export interface MarkedPackage {
@@ -236,6 +236,20 @@ export interface LocalStorageCustomConfigs {
 export interface LocalStorageScenarios {
 	version: string
 	scenarios: [string, RecursivePartial<Scenario>][]
+}
+
+export interface LocalStorageGlobalSettings {
+	version: string
+	globalSettings: GlobalSettings
+}
+
+export interface GlobalSettings {
+	hideFlatBuildings: boolean
+	isWhiteBackground: boolean
+	resetCameraIfNewFileIsLoaded: boolean
+	experimentalFeaturesEnabled: boolean
+	layoutAlgorithm: LayoutAlgorithm
+	maxTreeMapFiles: number
 }
 
 export interface Scenario {
@@ -311,13 +325,13 @@ export interface State {
 export function stateObjectReplacer(_, valueToReplace) {
 	if (valueToReplace instanceof Map) {
 		return {
-			dataType: "Map",
+			dataType: 'Map',
 			value: [...valueToReplace.entries()]
 		}
 	}
 	if (valueToReplace instanceof Set) {
 		return {
-			dataType: "Set",
+			dataType: 'Set',
 			value: [...valueToReplace]
 		}
 	}
@@ -325,10 +339,10 @@ export function stateObjectReplacer(_, valueToReplace) {
 }
 
 export function stateObjectReviver(_, valueToRevive) {
-	if (valueToRevive?.dataType === "Map") {
+	if (valueToRevive?.dataType === 'Map') {
 		return new Map(valueToRevive.value)
 	}
-	if (valueToRevive?.dataType === "Set") {
+	if (valueToRevive?.dataType === 'Set') {
 		return new Set(valueToRevive.value)
 	}
 
@@ -345,9 +359,9 @@ export interface LookUp {
 }
 
 export enum PanelSelection {
-	AREA_PANEL_OPEN = "AREA_PANEL_OPEN",
-	HEIGHT_PANEL_OPEN = "HEIGHT_PANEL_OPEN",
-	COLOR_PANEL_OPEN = "COLOR_PANEL_OPEN",
-	EDGE_PANEL_OPEN = "EDGE_PANEL_OPEN",
-	NONE = "NONE"
+	AREA_PANEL_OPEN = 'AREA_PANEL_OPEN',
+	HEIGHT_PANEL_OPEN = 'HEIGHT_PANEL_OPEN',
+	COLOR_PANEL_OPEN = 'COLOR_PANEL_OPEN',
+	EDGE_PANEL_OPEN = 'EDGE_PANEL_OPEN',
+	NONE = 'NONE'
 }

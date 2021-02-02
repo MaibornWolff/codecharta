@@ -1,17 +1,19 @@
-import { goto } from "../../../puppeteer.helper"
-import { RibbonBarPageObject } from "./ribbonBar.po"
-import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
-import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
-import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
-import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
-import { AreaSettingsPanelPageObject } from "../areaSettingsPanel/areaSettingsPanel.po"
+import { goto } from '../../../puppeteer.helper'
+import { RibbonBarPageObject } from './ribbonBar.po'
+import { SearchPanelPageObject } from '../searchPanel/searchPanel.po'
+import { MetricChooserPageObject } from '../metricChooser/metricChooser.po'
+import { SearchPanelModeSelectorPageObject } from '../searchPanelModeSelector/searchPanelModeSelector.po'
+import { MapTreeViewLevelPageObject } from '../mapTreeView/mapTreeView.level.po'
+import { AreaSettingsPanelPageObject } from '../areaSettingsPanel/areaSettingsPanel.po'
+import { ColorSettingsPageObject } from '../colorSettingsPanel/colorSettingsPanel.po'
 
-describe("RibbonBar", () => {
+describe('RibbonBar', () => {
 	let searchPanel: SearchPanelPageObject
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let ribbonBar: RibbonBarPageObject
 	let metricChooser: MetricChooserPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
+	const bound = 10
 
 	beforeEach(async () => {
 		searchPanel = new SearchPanelPageObject()
@@ -23,17 +25,17 @@ describe("RibbonBar", () => {
 		await goto()
 	})
 
-	it("hovering over a folder should display the sum of metric of all children", async () => {
+	it('hovering over a folder should display the sum of metric of all children', async () => {
 		await searchPanelModeSelector.toggleTreeView()
 
-		await mapTreeViewLevel.hoverNode("/root")
+		await mapTreeViewLevel.hoverNode('/root')
 
 		const actual = await metricChooser.getAreaMetricValue()
-		expect(actual).toContain("600")
+		expect(actual).toContain('600')
 	})
 
-	it("focus of ui element should be removed on ribbonBar toggle", async () => {
-		const panel = "color-metric"
+	it('focus of ui element should be removed on ribbonBar toggle', async () => {
+		const panel = 'color-metric'
 		let isColorSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 		expect(isColorSettingsPanelOpen).toBeTruthy()
 		await ribbonBar.focusSomething()
@@ -43,12 +45,12 @@ describe("RibbonBar", () => {
 		expect(isColorSettingsPanelOpen).toBeFalsy()
 
 		const activeAfter = await ribbonBar.getActiveClassName()
-		expect(activeBefore).not.toBe("ng-scope")
-		expect(activeAfter).toBe("ng-scope")
+		expect(activeBefore).not.toBe('ng-scope')
+		expect(activeAfter).toBe('ng-scope')
 	})
 
-	describe("opening and closing ribbon-bar cards", () => {
-		it("searchPanel", async () => {
+	describe('opening and closing ribbon-bar cards', () => {
+		it('searchPanel', async () => {
 			let isSearchPanelOpen = await searchPanel.toggle()
 			expect(isSearchPanelOpen).toBeTruthy()
 
@@ -56,8 +58,8 @@ describe("RibbonBar", () => {
 			expect(isSearchPanelOpen).toBeFalsy()
 		})
 
-		it("height-metric cad", async () => {
-			const panel = "height-metric"
+		it('height-metric cad', async () => {
+			const panel = 'height-metric'
 
 			let isHeightSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isHeightSettingsPanelOpen).toBeTruthy()
@@ -66,8 +68,8 @@ describe("RibbonBar", () => {
 			expect(isHeightSettingsPanelOpen).toBeFalsy()
 		})
 
-		it("area-metric card", async () => {
-			const panel = "area-metric"
+		it('area-metric card', async () => {
+			const panel = 'area-metric'
 
 			let isAreaSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isAreaSettingsPanelOpen).toBeTruthy()
@@ -76,8 +78,8 @@ describe("RibbonBar", () => {
 			expect(isAreaSettingsPanelOpen).toBeFalsy()
 		})
 
-		it("color-metric card", async () => {
-			const panel = "color-metric"
+		it('color-metric card', async () => {
+			const panel = 'color-metric'
 
 			let isColorSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isColorSettingsPanelOpen).toBeTruthy()
@@ -86,8 +88,8 @@ describe("RibbonBar", () => {
 			expect(isColorSettingsPanelOpen).toBeFalsy()
 		})
 
-		it("edge-metric", async () => {
-			const panel = "edge-metric"
+		it('edge-metric', async () => {
+			const panel = 'edge-metric'
 
 			let isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isEdgeSettingsPanelOpen).toBeTruthy()
@@ -97,9 +99,9 @@ describe("RibbonBar", () => {
 		})
 	})
 
-	it("should open a section, open the search bar and close the section again automatically", async () => {
-		const areaPanel = "area-metric"
-		const edgePanel = "edge-metric"
+	it('should open a section, open the search bar and close the section again automatically', async () => {
+		const areaPanel = 'area-metric'
+		const edgePanel = 'edge-metric'
 
 		let isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel)
 		expect(isAreaSettingsPanelOpen).toBeTruthy()
@@ -117,13 +119,34 @@ describe("RibbonBar", () => {
 		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeFalsy()
 	})
 
-	it("should open a section and keep it open after clicking a button inside it", async () => {
-		const areaPanel = "area-metric"
+	it('should open a section and keep it open after clicking a button inside it', async () => {
+		const areaPanel = 'area-metric'
 
 		await ribbonBar.togglePanel(areaPanel)
-		expect(AreaSettingsPanelPageObject.isDynamicMarginEnabled()).toBeTruthy()
-		expect(await AreaSettingsPanelPageObject.toggleDynamicMargin()).toBeFalsy()
+		expect(AreaSettingsPanelPageObject.isDefaultMarginEnabled()).toBeTruthy()
+		expect(await AreaSettingsPanelPageObject.toggleDefaultMargin()).toBeFalsy()
 
 		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeTruthy()
+	})
+
+	it('should check if reset button height matches the height of the last entry of color component', async () => {
+		const colorPanel = 'color-metric'
+
+		await ribbonBar.togglePanel(colorPanel)
+		const boundingBoxCheckbox = await ColorSettingsPageObject.toggleInverColorBoundingBox()
+		const boundingBoxResetButton = await ColorSettingsPageObject.resetButtonBoundingBox()
+
+		expect(Math.abs(boundingBoxCheckbox.y - boundingBoxResetButton.y)).toBeLessThan(bound)
+	})
+
+	it('should check if reset button height matches the height of the last entry of area component', async () => {
+		const areaPanel = 'area-metric'
+
+		await ribbonBar.togglePanel(areaPanel)
+
+		const boundingBoxCheckbox = await AreaSettingsPanelPageObject.toggleMarginBoundingBox()
+		const boundingBoxResetButton = await AreaSettingsPanelPageObject.resetButtonBoundingBox()
+
+		expect(Math.abs(boundingBoxCheckbox.y - boundingBoxResetButton.y)).toBeLessThan(bound)
 	})
 })

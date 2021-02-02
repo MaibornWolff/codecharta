@@ -1,14 +1,14 @@
-import { CodeMapNode, EdgeVisibility, MarkedPackage } from "../../codeCharta.model"
-import { StoreService } from "../../state/store.service"
-import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { unmarkPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
-import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import { getParent } from "../../util/nodePathHelper"
+import { CodeMapNode, EdgeVisibility, MarkedPackage } from '../../codeCharta.model'
+import { StoreService } from '../../state/store.service'
+import { setEdges } from '../../state/store/fileSettings/edges/edges.actions'
+import { unmarkPackage, setMarkedPackages } from '../../state/store/fileSettings/markedPackages/markedPackages.actions'
+import { EdgeMetricDataService } from '../../state/store/metricData/edgeMetricData/edgeMetricData.service'
+import { getParent } from '../../util/nodePathHelper'
 
 export class CodeMapActionsService {
 	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {}
 
-	markFolder({ path }: CodeMapNode, color: string) {
+	markFolder({ path }: { path?: string }, color: string) {
 		const { markedPackages } = this.storeService.getState().fileSettings
 		const markedPackagesMap = new Map(markedPackages.map(entry => [entry.path, entry]))
 
