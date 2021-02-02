@@ -8,6 +8,8 @@ import { StoreService } from "../../state/store.service"
 import { klona } from "klona"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { getMedian } from "../../util/nodeDecorator"
+import { getAsApiVersion } from "../../util/fileValidator"
+import { APIVersions } from "../../codeCharta.api.model"
 
 type OutlierConfig = {
 	threshold: number
@@ -15,7 +17,7 @@ type OutlierConfig = {
 
 export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
 	private metricsOutlierConfig: Map<string, OutlierConfig> = new Map([
-		["mcc", { threshold: 20 }],
+		["mcc", { threshold: 15 }],
 		["loc", { threshold: 1000 }],
 		["rloc", { threshold: 1000 }],
 		["cognitive_complexity", { threshold: 10 }],
@@ -35,6 +37,17 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 
 		for (const fileState of files) {
 			if (fileState.selectedAs !== FileSelectionState.None) {
+				const fileMeta = fileState.file.fileMeta
+				const fileApiVersion = getAsApiVersion(fileMeta.apiVersion)
+				const apiVersionOneThree = getAsApiVersion(APIVersions.ONE_POINT_THREE)
+				if (
+					fileApiVersion.major < apiVersionOneThree.major ||
+					fileApiVersion.minor < apiVersionOneThree.minor ||
+					!Object.prototype.hasOwnProperty.call(fileMeta.statistics, "metricStatisticsOverall")
+				) {
+					return
+				}
+
 				for (const [metricName, outlierConfig] of this.metricsOutlierConfig) {
 					const outliers = this.detectOutliers(metricName, outlierConfig, fileState)
 					if (outliers.length > 0) {
@@ -74,7 +87,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	private detectOutliers(metricName: string, outlierConfig: OutlierConfig, fileState: FileState) {
 		let outliers: number[] = []
 
-		const metricStatistics = fileState.file.fileMeta.statistics[metricName]
+		const metricStatistics = fileState.file.fileMeta.statistics.metricStatisticsOverall[metricName]
 		if (!metricStatistics) {
 			return outliers
 		}

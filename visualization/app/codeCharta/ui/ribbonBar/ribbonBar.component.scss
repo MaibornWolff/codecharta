@@ -33,7 +33,7 @@ ribbon-bar-component {
 			width: 380px;
 		}
 
-		&:not(#scenario-card):not(#custom-configs-card) {
+		&:not(#scenario-card):not(#custom-configs-card):not(#ai-card) {
 			min-width: 240px;
 		}
 

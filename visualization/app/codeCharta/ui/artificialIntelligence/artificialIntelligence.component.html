@@ -1,5 +1,9 @@
 <md-menu class="artificial-intelligence-component">
-	<md-button class="ai-button" title="AI">
+	<md-button class="ai-button" ng-click="$mdMenu.open($event);" title="Open AI Panel">
 		<i class="fa fa-cogs"></i>
 	</md-button>
+
+	<md-menu-content class="ai-drop-down" width="7">
+		<md-menu-item class="ai-item">Nothing to see here yet</md-menu-item>
+	</md-menu-content>
 </md-menu>

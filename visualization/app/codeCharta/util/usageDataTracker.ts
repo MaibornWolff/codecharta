@@ -72,7 +72,12 @@ function isTrackingAllowed(state: State) {
 	const fileMeta = singleFileStates[0].file.fileMeta
 	const apiVersion = getAsApiVersion(fileMeta.apiVersion)
 
-	return apiVersion.minor >= getAsApiVersion(APIVersions.ONE_POINT_THREE).minor && fileMeta.statistics
+	const apiVersionOneThree = getAsApiVersion(APIVersions.ONE_POINT_THREE)
+	return (
+		apiVersion.major >= apiVersionOneThree.major &&
+		apiVersion.minor >= apiVersionOneThree.minor &&
+		Object.prototype.hasOwnProperty.call(fileMeta.statistics, "metricStatisticsOverall")
+	)
 }
 
 export function trackMetaUsageData(state: State) {
