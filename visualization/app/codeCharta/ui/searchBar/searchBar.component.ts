@@ -45,12 +45,39 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	onClickBlacklistPattern(blacklistType: BlacklistType) {
-		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.searchPattern, type: blacklistType }))
+		const paths: string[] = this._viewModel.searchPattern.split(",")
+		if (paths[0].startsWith("!")) {
+			paths[0] = paths[0].slice(1)
+			for (const path of paths) {
+				if (path.length > 0) {
+					this.storeService.dispatch(addBlacklistItem({ path: `!${this.unifyWildCard(path)}`, type: blacklistType }))
+				}
+			}
+		} else {
+			for (let path of paths) {
+				if (path.length > 0) {
+					if (path.startsWith("!")) {
+						path = path.slice(1)
+						path = this.unifyWildCard(path)
+						path = `!${path}`
+					} else {
+						path = path = this.unifyWildCard(path)
+					}
+					this.storeService.dispatch(addBlacklistItem({ path, type: blacklistType }))
+				}
+			}
+		}
+
 		this.resetSearchPattern()
 	}
 
 	isSearchPatternEmpty() {
-		return this._viewModel.searchPattern === ""
+		return (
+			this._viewModel.searchPattern === "" ||
+			this._viewModel.searchPattern === "!" ||
+			this._viewModel.searchPattern === "*" ||
+			this._viewModel.searchPattern === ","
+		)
 	}
 
 	private updateViewModel() {
@@ -60,7 +87,41 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType) {
-		return blacklist.some(x => this._viewModel.searchPattern === x.path && blacklistType === x.type)
+		const paths: string[] = this._viewModel.searchPattern.trim().split(",")
+		let condition = false
+		if (this._viewModel.searchPattern.trim().startsWith("!")) {
+			paths[0] = paths[0].slice(1)
+			for (const path of paths) {
+				const pathNew = `!${this.unifyWildCard(path)}`
+				condition = blacklist.some(x => pathNew === x.path && blacklistType === x.type)
+				if (condition) {
+					break
+				}
+			}
+			return condition
+		}
+		for (const path of paths) {
+			condition = blacklist.some(x => this.unifyWildCard(path) === x.path && blacklistType === x.type)
+			if (condition) {
+				break
+			}
+		}
+		return condition
+	}
+
+	unifyWildCard(path: string): string {
+		path = path.trim()
+		if (path.startsWith("*") || path.endsWith("*")) {
+			return path
+		}
+		if (path.startsWith("/") || path.startsWith("./")) {
+			return path
+		}
+		if (!path.startsWith('"') && !path.endsWith('"')) {
+			path = path.startsWith("!") ? path : `*${path}*`
+			return path
+		}
+		return path
 	}
 
 	private resetSearchPattern() {
