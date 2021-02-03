@@ -41,7 +41,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 	private unifiedFileMeta: FileMeta
 
 	private readonly debounceRendering: () => void
-	//private readonly debounceTracking: (actionType: string, payload?: any) => void
+	private readonly debounceTracking: (actionType: string, payload?: any) => void
 	private DEBOUNCE_TIME = 0
 
 	constructor(
@@ -58,6 +58,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
+
+		this.debounceTracking = debounce(() => {
+			trackMetaUsageData(this.storeService.getState())
+		}, 1000)
 	}
 
 	getRenderMap() {
@@ -83,6 +87,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
 		) {
 			this.debounceRendering()
+			this.debounceTracking(actionType)
 		}
 	}
 
@@ -101,7 +106,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
 		) {
 			//TODO: On which action to track?
-			trackMetaUsageData(this.storeService.getState())
+			//trackMetaUsageData(this.storeService.getState())
 			trackEventUsageData(actionType, this.storeService.getState(), payload)
 			//this.debounceTracking(actionType, payload)
 		}

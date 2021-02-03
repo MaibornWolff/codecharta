@@ -7,9 +7,9 @@ import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
 import { klona } from "klona"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
-import { getMedian } from "../../util/nodeDecorator"
-import { getAsApiVersion } from "../../util/fileValidator"
-import { APIVersions } from "../../codeCharta.api.model"
+import { getMedian, pushSorted } from "../../util/nodeDecorator"
+import { NodeType } from "../../codeCharta.model"
+import { hierarchy } from "d3-hierarchy"
 
 type OutlierConfig = {
 	threshold: number
@@ -37,19 +37,14 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 
 		for (const fileState of files) {
 			if (fileState.selectedAs !== FileSelectionState.None) {
-				const fileMeta = fileState.file.fileMeta
-				const fileApiVersion = getAsApiVersion(fileMeta.apiVersion)
-				const apiVersionOneThree = getAsApiVersion(APIVersions.ONE_POINT_THREE)
-				if (
-					fileApiVersion.major < apiVersionOneThree.major ||
-					fileApiVersion.minor < apiVersionOneThree.minor ||
-					!Object.prototype.hasOwnProperty.call(fileMeta.statistics, "metricStatisticsOverall")
-				) {
-					return
-				}
+				const metricValues = this.getMetricValues(fileState)
 
 				for (const [metricName, outlierConfig] of this.metricsOutlierConfig) {
-					const outliers = this.detectOutliers(metricName, outlierConfig, fileState)
+					if (metricValues[metricName] === undefined) {
+						continue
+					}
+
+					const outliers = this.detectOutliers(metricValues[metricName], outlierConfig)
 					if (outliers.length > 0) {
 						outliersFound.set(metricName, Math.min(...outliers) - 1)
 					}
@@ -84,18 +79,28 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}
 	}
 
-	private detectOutliers(metricName: string, outlierConfig: OutlierConfig, fileState: FileState) {
-		let outliers: number[] = []
+	private getMetricValues(fileState: FileState) {
+		const metricValues: { [metric: string]: number[] } = {}
 
-		const metricStatistics = fileState.file.fileMeta.statistics.metricStatisticsOverall[metricName]
-		if (!metricStatistics) {
-			return outliers
+		for (const { data } of hierarchy(fileState.file.map)) {
+			if (data.type === NodeType.FILE) {
+				for (const metricIndex of Object.keys(data.attributes)) {
+					const value = data.attributes[metricIndex]
+					if (value > 0) {
+						if (metricValues[metricIndex] === undefined) {
+							metricValues[metricIndex] = []
+						}
+						pushSorted(metricValues[metricIndex], data.attributes[metricIndex])
+					}
+				}
+			}
 		}
 
-		let metricValues = metricStatistics.values
-		metricValues = metricValues.filter(function (metricValue) {
-			return metricValue > 0
-		})
+		return metricValues
+	}
+
+	private detectOutliers(metricValues: number[], outlierConfig: OutlierConfig) {
+		let outliers: number[] = []
 
 		//let euklideanDistanceToAverage = 0
 		//for (const metricValue of metricValues) {

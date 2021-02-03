@@ -1,9 +1,8 @@
 "use strict"
 
 import { getVisibleFileStates, isSingleState } from "../model/files/files.helper"
-import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { CodeChartaStorage } from "./codeChartaStorage"
-import { MetricKeyValue, MetricsPerLanguage, State } from "../codeCharta.model"
+import { CodeMapNode, NodeType, State } from "../codeCharta.model"
 import { isStandalone } from "./envDetector"
 import { isActionOfType } from "./reduxHelper"
 import { AreaMetricActions } from "../state/store/dynamicSettings/areaMetric/areaMetric.actions"
@@ -14,47 +13,35 @@ import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklis
 import { InvertColorRangeActions } from "../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import md5 from "md5"
-import { getMedian } from "./nodeDecorator"
 import { APIVersions } from "../codeCharta.api.model"
 import { getAsApiVersion } from "./fileValidator"
+import { hierarchy } from "d3-hierarchy"
+import { getMedian, pushSorted } from "./nodeDecorator"
 
 interface TrackingDataItem {
 	mapId: string
 	codeChartaApiVersion: string
 	creationTime: number
 	exportedFileSizeInBytes: number
-	totalLinesOfCode: number
-	totalRealLinesOfCode: number
-	programmingLanguages: string[]
-	totalNumberOfFiles: number
-	numberOfFilesPerLanguage: Map<string, number>
-	maxFilePathDepth: number
-	avgFilePathDepth: number
-	languageDistribution: LanguageDistributionStatistics
-	metricStatisticsPerLanguage: MetricStatisticsPerLanguage
-	metricStatisticsOverall: MetricStatisticsOverall
-}
-
-interface LanguageDistributionStatistics {
-	[languageName: string]: {
-		metricName: string
-		absoluteValue: number
-		relativeValue: number
-	}
-}
-
-interface MetricStatisticsPerLanguage {
-	[languageName: string]: {
-		[metricName: string]: TrackingDataMetricItem
-	}
+	statisticsPerLanguage: StatisticsPerLanguage
 }
 
 interface MetricStatisticsOverall {
 	[metricName: string]: TrackingDataMetricItem
 }
 
+interface StatisticsPerLanguage {
+	[languageName: string]: {
+		numberOfFiles: number
+		maxFilePathDepth: number
+		avgFilePathDepth: number
+		metrics: {
+			[metricName: string]: TrackingDataMetricItem
+		}
+	}
+}
+
 interface TrackingDataMetricItem {
-	metricName: string
 	min: number
 	max: number
 	totalSum: number
@@ -70,13 +57,12 @@ function isTrackingAllowed(state: State) {
 
 	const singleFileStates = getVisibleFileStates(state.files)
 	const fileMeta = singleFileStates[0].file.fileMeta
-	const apiVersion = getAsApiVersion(fileMeta.apiVersion)
+	const fileApiVersion = getAsApiVersion(fileMeta.apiVersion)
 
-	const apiVersionOneThree = getAsApiVersion(APIVersions.ONE_POINT_THREE)
+	const apiVersionOneThree = getAsApiVersion(APIVersions.ONE_POINT_ONE)
 	return (
-		apiVersion.major >= apiVersionOneThree.major &&
-		apiVersion.minor >= apiVersionOneThree.minor &&
-		Object.prototype.hasOwnProperty.call(fileMeta.statistics, "metricStatisticsOverall")
+		fileApiVersion.major > apiVersionOneThree.major ||
+		(fileApiVersion.major === apiVersionOneThree.major && fileApiVersion.minor >= apiVersionOneThree.minor)
 	)
 }
 
@@ -87,27 +73,21 @@ export function trackMetaUsageData(state: State) {
 
 	const singleFileStates = getVisibleFileStates(state.files)
 
-	const fileMeta = singleFileStates[0].file.fileMeta
-	const fileMetaStatistics = fileMeta.statistics
+	const fileNodes: CodeMapNode[] = []
+	for (const { data } of hierarchy(singleFileStates[0].file.map)) {
+		if (data.type === NodeType.FILE) {
+			fileNodes.push(data)
+		}
+	}
 
-	const distributionMetric = getDistributionMetric(fileMetaStatistics, state)
-	const languageDistribution = FileExtensionCalculator.getMetricDistribution(singleFileStates[0].file.map, distributionMetric)
+	const fileMeta = singleFileStates[0].file.fileMeta
 
 	const trackingDataItem: TrackingDataItem = {
 		mapId: fileMeta.fileChecksum,
 		codeChartaApiVersion: fileMeta.apiVersion,
 		creationTime: Date.now(),
 		exportedFileSizeInBytes: fileMeta.exportedFileSize,
-		languageDistribution: mapLanguageDistribution(languageDistribution, distributionMetric),
-		totalRealLinesOfCode: fileMetaStatistics.totalRealLinesOfCode,
-		totalLinesOfCode: fileMetaStatistics.totalLinesOfCode,
-		programmingLanguages: fileMetaStatistics.programmingLanguages,
-		numberOfFilesPerLanguage: fileMetaStatistics.numberOfFilesPerLanguage,
-		totalNumberOfFiles: fileMetaStatistics.totalNumberOfFiles,
-		maxFilePathDepth: fileMetaStatistics.maxFilePathDepth,
-		avgFilePathDepth: fileMetaStatistics.avgFilePathDepth,
-		metricStatisticsPerLanguage: mapMetricStatisticsPerLanguage(fileMetaStatistics.metricStatisticsPerLanguage),
-		metricStatisticsOverall: mapMetricStatistics(fileMetaStatistics.metricStatisticsOverall)
+		statisticsPerLanguage: mapStatisticsPerLanguage(fileNodes)
 	}
 
 	const fileStorage = new CodeChartaStorage()
@@ -119,68 +99,85 @@ export function trackMetaUsageData(state: State) {
 	}
 }
 
-function getDistributionMetric(metricStatistics, state) {
-	let distributionMetric: string
+function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLanguage {
+	const statisticsPerLanguage: StatisticsPerLanguage = {}
+	const sumOfFilePathDepths: { [languageName: string]: number } = {}
+	const metricValues: { [languageName: string]: { [metricName: string]: number[] } } = {}
 
-	if (Object.prototype.hasOwnProperty.call(metricStatistics, "rloc")) {
-		distributionMetric = "rloc"
-	} else if (Object.prototype.hasOwnProperty.call(metricStatistics, "loc")) {
-		distributionMetric = "loc"
-	} else {
-		distributionMetric = state.dynamicSettings.distributionMetric
-	}
+	for (const fileNode of fileNodes) {
+		const fileLanguage = getFileExtension(fileNode.name)
+		if (fileLanguage === null) {
+			continue
+		}
 
-	return distributionMetric
-}
+		if (metricValues[fileLanguage] === undefined) {
+			metricValues[fileLanguage] = {}
+		}
+		if (sumOfFilePathDepths[fileLanguage] === undefined) {
+			sumOfFilePathDepths[fileLanguage] = 0
+		}
 
-function mapLanguageDistribution(languageDistribution: MetricDistribution[], distributionMetric: string) {
-	const mappedDistribution: LanguageDistributionStatistics = {}
+		// Initialize statistics object for unseen metric of language
+		if (!Object.prototype.hasOwnProperty.call(statisticsPerLanguage, fileLanguage)) {
+			const initialPathDepth = getPathDepth(fileNode.path)
+			statisticsPerLanguage[fileLanguage] = {
+				metrics: {},
+				numberOfFiles: 0,
+				maxFilePathDepth: initialPathDepth,
+				avgFilePathDepth: initialPathDepth
+			}
 
-	for (const distributionItem of languageDistribution) {
-		mappedDistribution[distributionItem.fileExtension] = {
-			metricName: distributionMetric,
-			absoluteValue: distributionItem.absoluteMetricValue,
-			relativeValue: distributionItem.relativeMetricValue
+			for (const metricName of Object.keys(fileNode.attributes)) {
+				statisticsPerLanguage[fileLanguage].metrics[metricName] = {
+					avg: 0,
+					max: fileNode.attributes[metricName],
+					median: 0,
+					min: fileNode.attributes[metricName],
+					numberOfFiles: 0,
+					totalSum: 0
+				}
+			}
+		}
+
+		statisticsPerLanguage[fileLanguage].numberOfFiles += 1
+
+		const currentPathDepth = getPathDepth(fileNode.path)
+		sumOfFilePathDepths[fileLanguage] += currentPathDepth
+		statisticsPerLanguage[fileLanguage].maxFilePathDepth = Math.max(
+			statisticsPerLanguage[fileLanguage].maxFilePathDepth,
+			currentPathDepth
+		)
+		statisticsPerLanguage[fileLanguage].avgFilePathDepth =
+			sumOfFilePathDepths[fileLanguage] / statisticsPerLanguage[fileLanguage].numberOfFiles
+
+		for (const metricName of Object.keys(fileNode.attributes)) {
+			const metricStatistics: TrackingDataMetricItem = statisticsPerLanguage[fileLanguage].metrics[metricName]
+
+			if (metricValues[fileLanguage][metricName] === undefined) {
+				metricValues[fileLanguage][metricName] = []
+			}
+			// push sorted to calculate the median afterwards
+			pushSorted(metricValues[fileLanguage][metricName], fileNode.attributes[metricName])
+
+			metricStatistics.median = getMedian(metricValues[fileLanguage][metricName])
+			metricStatistics.max = Math.max(metricStatistics.max, fileNode.attributes[metricName])
+			metricStatistics.min = Math.min(metricStatistics.min, fileNode.attributes[metricName])
+			metricStatistics.numberOfFiles += 1
+			metricStatistics.totalSum += fileNode.attributes[metricName]
+			metricStatistics.avg = metricStatistics.totalSum / metricStatistics.numberOfFiles
 		}
 	}
 
-	return mappedDistribution
+	return statisticsPerLanguage
 }
 
-function mapMetricStatisticsPerLanguage(metricStatisticsPerLanguage: MetricsPerLanguage): MetricStatisticsPerLanguage {
-	const mappedStatistics = {}
-
-	for (const languageIndex of Object.keys(metricStatisticsPerLanguage)) {
-		mappedStatistics[languageIndex] = mapMetricStatistics(metricStatisticsPerLanguage[languageIndex])
-	}
-
-	return mappedStatistics
+function getPathDepth(path: string): number {
+	return path.split("/").length
 }
 
-function mapMetricStatistics(metricKeyValueStatistics: MetricKeyValue) {
-	const mappedStatistics = {}
-
-	for (const metricIndex of Object.keys(metricKeyValueStatistics)) {
-		const metricStatistics = metricKeyValueStatistics[metricIndex]
-
-		// Filter 0-values to calculate median properly
-		let metricValues = metricStatistics.values
-		metricValues = metricValues.filter(function (metricValue) {
-			return metricValue > 0
-		})
-
-		mappedStatistics[metricIndex] = {
-			metricName: metricIndex,
-			min: metricStatistics.min,
-			max: metricStatistics.max,
-			totalSum: metricStatistics.totalSum,
-			numberOfFiles: metricStatistics.numberOfFiles,
-			median: getMedian(metricValues).toPrecision(2),
-			avg: metricStatistics.average.toPrecision(2)
-		}
-	}
-
-	return mappedStatistics
+function getFileExtension(filePath: string): string {
+	const lastDotPosition = filePath.lastIndexOf(".")
+	return lastDotPosition !== -1 ? filePath.slice(lastDotPosition + 1) : null
 }
 
 interface SettingChangedEventPayload {
