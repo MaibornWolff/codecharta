@@ -6,8 +6,7 @@ class Project(
     val apiVersion: String = API_VERSION,
     val edges: List<Edge> = listOf(),
     val attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
-    var blacklist: List<BlacklistItem> = listOf(),
-    var metricStatistics: Map<String, MetricStatisticsType> = mapOf()
+    var blacklist: List<BlacklistItem> = listOf()
 ) {
 
     init {
