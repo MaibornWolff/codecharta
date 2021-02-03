@@ -7,7 +7,7 @@ class Project(
     val edges: List<Edge> = listOf(),
     val attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
     var blacklist: List<BlacklistItem> = listOf(),
-    var statistics: StatisticsType = StatisticsType()
+    var metricStatistics: Map<String, MetricStatisticsType> = mapOf()
 ) {
 
     init {

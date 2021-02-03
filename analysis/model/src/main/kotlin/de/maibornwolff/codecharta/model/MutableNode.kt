@@ -23,15 +23,6 @@ class MutableNode(
         return Path(listOf((child.asTreeNode()).name))
     }
 
-    fun getFileType(): String? {
-        val fileType = this.name.substringAfterLast(".")
-        if (fileType !== this.name) {
-            return fileType
-        }
-
-        return null
-    }
-
     override fun toString(): String {
         return "MutableNode(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
     }
