@@ -122,7 +122,7 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 
 		// Initialize statistics object for unseen metric of language
 		if (!Object.prototype.hasOwnProperty.call(statisticsPerLanguage, fileLanguage)) {
-			initializeLanguageStatistics(fileNode, statisticsPerLanguage[fileLanguage])
+			initializeLanguageStatistics(fileNode, statisticsPerLanguage, fileLanguage)
 		}
 
 		const currentLanguageStats = statisticsPerLanguage[fileLanguage]
@@ -136,14 +136,12 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 		for (const metricName of Object.keys(fileNode.attributes)) {
 			const metricStatistics: MetricStatistics = currentLanguageStats.metrics[metricName]
 
-			let valuesOfMetric = metricValues[fileLanguage][metricName]
-			if (valuesOfMetric === undefined) {
-				valuesOfMetric = []
+			if (metricValues[fileLanguage][metricName] === undefined) {
+				metricValues[fileLanguage][metricName] = []
 			}
 
+			const valuesOfMetric = metricValues[fileLanguage][metricName]
 			const currentMetricValue = fileNode.attributes[metricName]
-
-			// push sorted to calculate the median afterwards
 			pushSorted(valuesOfMetric, currentMetricValue)
 
 			metricStatistics.median = getMedian(valuesOfMetric)
@@ -158,14 +156,14 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 	return statisticsPerLanguage
 }
 
-function initializeLanguageStatistics(fileNode: CodeMapNode, statisticsCurrentLanguage: LanguageStatistics) {
+function initializeLanguageStatistics(fileNode: CodeMapNode, statisticsPerLanguage: StatisticsPerLanguage, fileLanguage: string) {
 	const initialPathDepth = getPathDepth(fileNode.path)
-	statisticsCurrentLanguage = {
+	const statisticsCurrentLanguage = (statisticsPerLanguage[fileLanguage] = {
 		metrics: {},
 		numberOfFiles: 0,
 		maxFilePathDepth: initialPathDepth,
 		avgFilePathDepth: initialPathDepth
-	}
+	})
 
 	for (const metricName of Object.keys(fileNode.attributes)) {
 		statisticsCurrentLanguage.metrics[metricName] = {
