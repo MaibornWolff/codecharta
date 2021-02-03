@@ -1,6 +1,6 @@
 import "./artificialIntelligence.component.scss"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
-import { FileSelectionState, FileState } from "../../model/files/files"
+import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
 import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
@@ -10,9 +10,14 @@ import { CustomConfigMapSelectionMode } from "../../model/customConfig/customCon
 import { getMedian, pushSorted } from "../../util/nodeDecorator"
 import { NodeType } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
+import { getVisibleFileStates } from "../../model/files/files.helper"
 
 type OutlierConfig = {
 	threshold: number
+}
+
+interface MetricValues {
+	[metric: string]: number[]
 }
 
 export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
@@ -35,29 +40,25 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	onFilesSelectionChanged(files: FileState[]) {
 		const outliersFound = new Map<string, number>()
 
-		for (const fileState of files) {
-			if (fileState.selectedAs !== FileSelectionState.None) {
-				const metricValues = this.getMetricValues(fileState)
+		for (const fileState of getVisibleFileStates(files)) {
+			const metricValues = this.getMetricValues(fileState)
 
-				for (const [metricName, outlierConfig] of this.metricsOutlierConfig) {
-					if (metricValues[metricName] === undefined) {
-						continue
-					}
+			for (const [metricName, outlierConfig] of this.metricsOutlierConfig) {
+				if (metricValues[metricName] === undefined) {
+					continue
+				}
 
-					const outliers = this.detectOutliers(metricValues[metricName], outlierConfig)
-					if (outliers.length > 0) {
-						outliersFound.set(metricName, Math.min(...outliers) - 1)
-					}
+				const outliers = this.detectOutliers(metricValues[metricName], outlierConfig)
+				if (outliers.length > 0) {
+					outliersFound.set(metricName, Math.min(...outliers) - 1)
 				}
 			}
 		}
 
-		//const rlocOutlier = outliersFound.get("rloc")
-		//const functionsOutlier = outliersFound.get("functions")
+		// Make one single static suggestion for the first version of the algorithm
 		const mccOutlier = outliersFound.get("mcc")
 		const bugOutlier = outliersFound.get("bug")
 
-		// Just make one static suggestion if possible
 		if (mccOutlier && bugOutlier) {
 			const state = klona(this.storeService.getState())
 			state.dynamicSettings.areaMetric = "mcc"
@@ -79,19 +80,21 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}
 	}
 
-	private getMetricValues(fileState: FileState) {
-		const metricValues: { [metric: string]: number[] } = {}
+	private getMetricValues(fileState: FileState): MetricValues {
+		const metricValues: MetricValues = {}
 
 		for (const { data } of hierarchy(fileState.file.map)) {
-			if (data.type === NodeType.FILE) {
-				for (const metricIndex of Object.keys(data.attributes)) {
-					const value = data.attributes[metricIndex]
-					if (value > 0) {
-						if (metricValues[metricIndex] === undefined) {
-							metricValues[metricIndex] = []
-						}
-						pushSorted(metricValues[metricIndex], data.attributes[metricIndex])
+			if (data.type !== NodeType.FILE) {
+				continue
+			}
+
+			for (const metricIndex of Object.keys(data.attributes)) {
+				const value = data.attributes[metricIndex]
+				if (value > 0) {
+					if (metricValues[metricIndex] === undefined) {
+						metricValues[metricIndex] = []
 					}
+					pushSorted(metricValues[metricIndex], data.attributes[metricIndex])
 				}
 			}
 		}
@@ -99,17 +102,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		return metricValues
 	}
 
-	private detectOutliers(metricValues: number[], outlierConfig: OutlierConfig) {
-		let outliers: number[] = []
-
-		//let euklideanDistanceToAverage = 0
-		//for (const metricValue of metricValues) {
-		//euklideanDistanceToAverage = (metricValue - metricStatistics.average) ** 2
-		//}
-
-		//const variance = euklideanDistanceToAverage / metricValues.length
-		//const standardVariation = Math.sqrt(variance)
-
+	private detectOutliers(metricValues: number[], outlierConfig: OutlierConfig): number[] {
 		let valuesFirstHalf: number[]
 		let valuesSecondHalf: number[]
 
@@ -128,11 +121,9 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		const interQuartilRange = thirdQuartil - firstQuartil
 		const upperOutlierBound = thirdQuartil + 1.5 * interQuartilRange
 
-		outliers = metricValues.filter(function (value) {
+		return metricValues.filter(function (value) {
 			return value > upperOutlierBound || value > outlierConfig.threshold
 		})
-
-		return outliers
 	}
 }
 

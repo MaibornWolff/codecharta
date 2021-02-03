@@ -18,7 +18,7 @@ import { getAsApiVersion } from "./fileValidator"
 import { hierarchy } from "d3-hierarchy"
 import { getMedian, pushSorted } from "./nodeDecorator"
 
-interface TrackingDataItem {
+interface MetaDataTrackingItem {
 	mapId: string
 	codeChartaApiVersion: string
 	creationTime: number
@@ -26,22 +26,20 @@ interface TrackingDataItem {
 	statisticsPerLanguage: StatisticsPerLanguage
 }
 
-interface MetricStatisticsOverall {
-	[metricName: string]: TrackingDataMetricItem
+interface StatisticsPerLanguage {
+	[languageName: string]: LanguageStatistics
 }
 
-interface StatisticsPerLanguage {
-	[languageName: string]: {
-		numberOfFiles: number
-		maxFilePathDepth: number
-		avgFilePathDepth: number
-		metrics: {
-			[metricName: string]: TrackingDataMetricItem
-		}
+interface LanguageStatistics {
+	numberOfFiles: number
+	maxFilePathDepth: number
+	avgFilePathDepth: number
+	metrics: {
+		[metricName: string]: MetricStatistics
 	}
 }
 
-interface TrackingDataMetricItem {
+interface MetricStatistics {
 	min: number
 	max: number
 	totalSum: number
@@ -51,38 +49,31 @@ interface TrackingDataMetricItem {
 }
 
 function isTrackingAllowed(state: State) {
-	if (!isStandalone() || !isSingleState(state.files) || getVisibleFileStates(state.files).length > 1) {
+	const singleFileStates = getVisibleFileStates(state.files)
+
+	if (!isStandalone() || !isSingleState(state.files) || singleFileStates.length > 1) {
 		return false
 	}
 
-	const singleFileStates = getVisibleFileStates(state.files)
-	const fileMeta = singleFileStates[0].file.fileMeta
-	const fileApiVersion = getAsApiVersion(fileMeta.apiVersion)
+	const fileApiVersion = getAsApiVersion(singleFileStates[0].file.fileMeta.apiVersion)
+	const supportedApiVersion = getAsApiVersion(APIVersions.ONE_POINT_ONE)
 
-	const apiVersionOneThree = getAsApiVersion(APIVersions.ONE_POINT_ONE)
 	return (
-		fileApiVersion.major > apiVersionOneThree.major ||
-		(fileApiVersion.major === apiVersionOneThree.major && fileApiVersion.minor >= apiVersionOneThree.minor)
+		fileApiVersion.major > supportedApiVersion.major ||
+		(fileApiVersion.major === supportedApiVersion.major && fileApiVersion.minor >= supportedApiVersion.minor)
 	)
 }
 
-export function trackMetaUsageData(state: State) {
+export function trackMapMetaData(state: State) {
 	if (!isTrackingAllowed(state)) {
 		return
 	}
 
 	const singleFileStates = getVisibleFileStates(state.files)
-
-	const fileNodes: CodeMapNode[] = []
-	for (const { data } of hierarchy(singleFileStates[0].file.map)) {
-		if (data.type === NodeType.FILE) {
-			fileNodes.push(data)
-		}
-	}
-
+	const fileNodes: CodeMapNode[] = getFileNodes(singleFileStates[0].file.map)
 	const fileMeta = singleFileStates[0].file.fileMeta
 
-	const trackingDataItem: TrackingDataItem = {
+	const trackingDataItem: MetaDataTrackingItem = {
 		mapId: fileMeta.fileChecksum,
 		codeChartaApiVersion: fileMeta.apiVersion,
 		creationTime: Date.now(),
@@ -99,8 +90,19 @@ export function trackMetaUsageData(state: State) {
 	}
 }
 
+function getFileNodes(node: CodeMapNode): CodeMapNode[] {
+	const fileNodes: CodeMapNode[] = []
+	for (const { data } of hierarchy(node)) {
+		if (data.type === NodeType.FILE) {
+			fileNodes.push(data)
+		}
+	}
+	return fileNodes
+}
+
 function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLanguage {
 	const statisticsPerLanguage: StatisticsPerLanguage = {}
+
 	const sumOfFilePathDepths: { [languageName: string]: number } = {}
 	const metricValues: { [languageName: string]: { [metricName: string]: number[] } } = {}
 
@@ -110,6 +112,7 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 			continue
 		}
 
+		//TODO: How to initialize automatically?
 		if (metricValues[fileLanguage] === undefined) {
 			metricValues[fileLanguage] = {}
 		}
@@ -119,56 +122,61 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 
 		// Initialize statistics object for unseen metric of language
 		if (!Object.prototype.hasOwnProperty.call(statisticsPerLanguage, fileLanguage)) {
-			const initialPathDepth = getPathDepth(fileNode.path)
-			statisticsPerLanguage[fileLanguage] = {
-				metrics: {},
-				numberOfFiles: 0,
-				maxFilePathDepth: initialPathDepth,
-				avgFilePathDepth: initialPathDepth
-			}
-
-			for (const metricName of Object.keys(fileNode.attributes)) {
-				statisticsPerLanguage[fileLanguage].metrics[metricName] = {
-					avg: 0,
-					max: fileNode.attributes[metricName],
-					median: 0,
-					min: fileNode.attributes[metricName],
-					numberOfFiles: 0,
-					totalSum: 0
-				}
-			}
+			initializeLanguageStatistics(fileNode, statisticsPerLanguage[fileLanguage])
 		}
 
-		statisticsPerLanguage[fileLanguage].numberOfFiles += 1
+		const currentLanguageStats = statisticsPerLanguage[fileLanguage]
+		currentLanguageStats.numberOfFiles += 1
 
 		const currentPathDepth = getPathDepth(fileNode.path)
 		sumOfFilePathDepths[fileLanguage] += currentPathDepth
-		statisticsPerLanguage[fileLanguage].maxFilePathDepth = Math.max(
-			statisticsPerLanguage[fileLanguage].maxFilePathDepth,
-			currentPathDepth
-		)
-		statisticsPerLanguage[fileLanguage].avgFilePathDepth =
-			sumOfFilePathDepths[fileLanguage] / statisticsPerLanguage[fileLanguage].numberOfFiles
+		currentLanguageStats.maxFilePathDepth = Math.max(currentLanguageStats.maxFilePathDepth, currentPathDepth)
+		currentLanguageStats.avgFilePathDepth = sumOfFilePathDepths[fileLanguage] / currentLanguageStats.numberOfFiles
 
 		for (const metricName of Object.keys(fileNode.attributes)) {
-			const metricStatistics: TrackingDataMetricItem = statisticsPerLanguage[fileLanguage].metrics[metricName]
+			const metricStatistics: MetricStatistics = currentLanguageStats.metrics[metricName]
 
-			if (metricValues[fileLanguage][metricName] === undefined) {
-				metricValues[fileLanguage][metricName] = []
+			let valuesOfMetric = metricValues[fileLanguage][metricName]
+			if (valuesOfMetric === undefined) {
+				valuesOfMetric = []
 			}
-			// push sorted to calculate the median afterwards
-			pushSorted(metricValues[fileLanguage][metricName], fileNode.attributes[metricName])
 
-			metricStatistics.median = getMedian(metricValues[fileLanguage][metricName])
-			metricStatistics.max = Math.max(metricStatistics.max, fileNode.attributes[metricName])
-			metricStatistics.min = Math.min(metricStatistics.min, fileNode.attributes[metricName])
+			const currentMetricValue = fileNode.attributes[metricName]
+
+			// push sorted to calculate the median afterwards
+			pushSorted(valuesOfMetric, currentMetricValue)
+
+			metricStatistics.median = getMedian(valuesOfMetric)
+			metricStatistics.max = Math.max(metricStatistics.max, currentMetricValue)
+			metricStatistics.min = Math.min(metricStatistics.min, currentMetricValue)
 			metricStatistics.numberOfFiles += 1
-			metricStatistics.totalSum += fileNode.attributes[metricName]
+			metricStatistics.totalSum += currentMetricValue
 			metricStatistics.avg = metricStatistics.totalSum / metricStatistics.numberOfFiles
 		}
 	}
 
 	return statisticsPerLanguage
+}
+
+function initializeLanguageStatistics(fileNode: CodeMapNode, statisticsCurrentLanguage: LanguageStatistics) {
+	const initialPathDepth = getPathDepth(fileNode.path)
+	statisticsCurrentLanguage = {
+		metrics: {},
+		numberOfFiles: 0,
+		maxFilePathDepth: initialPathDepth,
+		avgFilePathDepth: initialPathDepth
+	}
+
+	for (const metricName of Object.keys(fileNode.attributes)) {
+		statisticsCurrentLanguage.metrics[metricName] = {
+			avg: 0,
+			max: fileNode.attributes[metricName],
+			median: 0,
+			min: fileNode.attributes[metricName],
+			numberOfFiles: 0,
+			totalSum: 0
+		}
+	}
 }
 
 function getPathDepth(path: string): number {
@@ -190,7 +198,7 @@ interface NodeInteractionEventPayload {
 	id: string
 	type?: string
 	nodeType?: string
-	attributes?: MetricStatisticsOverall
+	attributes?: MetricStatistics
 }
 
 interface EventTrackingItem {
@@ -213,7 +221,7 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 		return
 	}
 
-	const eventTrackingItem = buildEvenTrackingItem(actionType, payload)
+	const eventTrackingItem = buildEventTrackingItem(actionType, payload)
 	if (eventTrackingItem === null) {
 		return
 	}
@@ -238,7 +246,7 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 	}
 }
 
-function buildEvenTrackingItem(actionType: string, payload?: any): EventTrackingItem | null {
+function buildEventTrackingItem(actionType: string, payload?: any): EventTrackingItem | null {
 	if (isSettingChangedEvent(actionType)) {
 		return {
 			eventType: "setting_changed",

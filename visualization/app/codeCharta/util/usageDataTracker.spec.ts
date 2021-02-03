@@ -1,5 +1,5 @@
 import { State } from "../codeCharta.model"
-import { trackMetaUsageData } from "./usageDataTracker"
+import { trackMapMetaData } from "./usageDataTracker"
 import * as EnvironmentDetector from "./envDetector"
 
 describe("UsageDataTracker", () => {
@@ -20,7 +20,7 @@ describe("UsageDataTracker", () => {
 			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(false)
 			//jest.spyOn(EnvironmentDetector, "isSingleState").mockReturnValue(false)
 			//jest.spyOn(EnvironmentDetector, "getVisibleFileStates").mockReturnValue(false)
-			trackMetaUsageData(stateStub)
+			trackMapMetaData(stateStub)
 		})
 	})
 })

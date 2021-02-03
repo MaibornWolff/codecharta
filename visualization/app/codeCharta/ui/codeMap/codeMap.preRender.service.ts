@@ -28,7 +28,7 @@ import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricDa
 import { hierarchy } from "d3-hierarchy"
 import { isLeaf } from "../../util/codeMapHelper"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
-import { trackEventUsageData, trackMetaUsageData } from "../../util/usageDataTracker"
+import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTracker"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -60,7 +60,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 		}, this.DEBOUNCE_TIME)
 
 		this.debounceTracking = debounce(() => {
-			trackMetaUsageData(this.storeService.getState())
+			trackMapMetaData(this.storeService.getState())
 		}, 1000)
 	}
 
