@@ -104,11 +104,16 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	}
 
 	onDeltaReferenceFileChange(referenceFileName: string) {
+		const rootName = this._viewModel.files.find(x => x.file.fileMeta.fileName === referenceFileName).file.map.name
+		CodeChartaService.updateRootData(rootName)
 		this.storeService.dispatch(setDeltaByNames(referenceFileName, this._viewModel.selectedFileNames.delta.comparison))
 	}
 
 	onDeltaComparisonFileChange(comparisonFileName: string) {
-		this.storeService.dispatch(setDeltaByNames(this._viewModel.selectedFileNames.delta.reference, comparisonFileName))
+		const referenceFileName = this._viewModel.selectedFileNames.delta.reference
+		const rootName = this._viewModel.files.find(x => x.file.fileMeta.fileName === referenceFileName).file.map.name
+		CodeChartaService.updateRootData(rootName)
+		this.storeService.dispatch(setDeltaByNames(referenceFileName, comparisonFileName))
 	}
 
 	onPartialFilesChange(partialFileNames: string[]) {
