@@ -30,6 +30,7 @@ export class NodeDecorator {
 		let hasExcludedPaths = false
 
 		for (const item of blacklist) {
+			console.log(item.path)  /**/
 			item.path = item.path.trim()
 			let path = transformPath(item.path)
 
@@ -96,10 +97,10 @@ export class NodeDecorator {
 			if (blacklist.length > 0) {
 				const path = transformPath(data.path)
 				data.isFlattened =
-					(hasFlattenedPaths && flattened.ignores(path)) ||
+					(hasFlattenedPaths && flattened.ignores(path))  ||
 					(hasNegatedFlattenedPaths && !negatedFlattened.ignores(path) && isLeaf(data))
 				data.isExcluded =
-					(hasExcludedPaths && excluded.ignores(path)) ||
+					(hasExcludedPaths && excluded.ignores(path) && isLeaf(data)) ||
 					(hasNegatedExcludedPaths && !negatedExcluded.ignores(path) && isLeaf(data))
 			}
 
