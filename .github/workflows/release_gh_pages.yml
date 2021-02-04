@@ -23,14 +23,7 @@ jobs:
         uses: actions/setup-node@v2.1.4
         with:
           node-version: '12'  
-      
-      - name: Build analysis
-        working-directory: ./analysis
-        run: |
-              chmod +x ./gradlew
-              ./gradlew build
-        
-          
+
       - name: Build visualization
         working-directory: ./visualization
         run: | 
