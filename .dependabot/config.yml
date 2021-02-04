@@ -1,0 +1,9 @@
+version: 1
+
+update_configs:
+   - package_manager: "javascript"
+     directory: "/"
+     update_schedule: "daily"
+     target_branch: "feature/1650/change-dependabot-update-policy"
+     default_assignees:
+      - "Jacob-Kirimi"
