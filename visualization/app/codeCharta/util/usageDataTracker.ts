@@ -82,9 +82,11 @@ export function trackMapMetaData(state: State) {
 	}
 
 	const fileStorage = new CodeChartaStorage()
+	// Make sure that only files within usageData can be read
+	const fileChecksum = trackingDataItem.mapId.replace(/\//g, "")
 
 	try {
-		fileStorage.setItem(`usageData/${trackingDataItem.mapId}-meta`, JSON.stringify(trackingDataItem))
+		fileStorage.setItem(`usageData/${fileChecksum}-meta`, JSON.stringify(trackingDataItem))
 	} catch {
 		// ignore it
 	}
@@ -224,7 +226,9 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 		return
 	}
 
-	const { fileChecksum } = getVisibleFileStates(state.files)[0].file.fileMeta
+	// Make sure that only files within usageData can be read
+	const fileChecksum = getVisibleFileStates(state.files)[0].file.fileMeta.fileChecksum.replace(/\//g, "")
+
 	const fileStorage = new CodeChartaStorage()
 
 	let appendedEvents = ""
