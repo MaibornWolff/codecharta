@@ -34,11 +34,10 @@ jobs:
       - name: Build visualization
         working-directory: ./visualization
         run: | 
+          rm -rf node_modules/nwjs-builder-phoenix/caches/*
           npm install
           npm run test
           npm run build:web
-          cd node_modules/nwjs-builder-phoenix/caches
-          rm -rf caches/*
           npm run package
           docker build -t codecharta/codecharta-visualization .
      
