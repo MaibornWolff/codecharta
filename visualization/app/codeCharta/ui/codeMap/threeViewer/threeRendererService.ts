@@ -23,7 +23,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	static RENDER_OPTIONS = {
 		antialias: true,
-		preserveDrawingBuffer: false
+		preserveDrawingBuffer: true
 	} as WebGLContextAttributes
 
 	static enableFXAA = false
@@ -119,7 +119,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 		} else {
 			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
 		}
-		this.renderer.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
+		this.renderer?.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
 	}
 
 	render() {

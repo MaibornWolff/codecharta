@@ -42,6 +42,15 @@ export class ThreeStatsService {
 		}
 	}
 
+	resetPanels = () => {
+		if (this.isDevelopmentMode) {
+			[this.trianglesPanel,this.glCallsPanel].forEach(panel => {
+				if (panel!==undefined)
+					panel.maxHeight = 0
+			})
+		}
+	}
+
 	private processPanel = (customPanel: CustomPanel, value: number) => {
 		customPanel.maxHeight = Math.max(customPanel.maxHeight, value)
 		customPanel.panel.update(value, customPanel.maxHeight * 1.3)
