@@ -63,7 +63,7 @@ jobs:
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./visualization/package-lock.json
+          package: ./visualization/package.json
 
 
   publish_analysis:
@@ -85,7 +85,7 @@ jobs:
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./analysis/node-wrapper/package-lock.json
+          package: ./analysis/node-wrapper/package.json
 
   deploy_gh_pages:
     needs: build_project
