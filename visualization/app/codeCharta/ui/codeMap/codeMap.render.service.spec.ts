@@ -110,7 +110,7 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should call threeStatsService resetPanels", () => {
-			codeMapRenderService["onIsLoadingFileChanged"](true)
+			codeMapRenderService["onIsLoadingFileChanged"](false)
 			
 			expect(threeStatsService.resetPanels).toHaveBeenCalledWith()
 		})
