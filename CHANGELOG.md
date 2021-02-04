@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Errors occurred in delta mode if names of root folders were different
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.67.0] - 2021-01-26
