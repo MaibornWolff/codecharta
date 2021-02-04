@@ -29,6 +29,13 @@ import { hierarchy } from "d3-hierarchy"
 import { isLeaf } from "../../util/codeMapHelper"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTracker"
+import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
+import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { InvertColorRangeActions } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -94,21 +101,16 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 	onStoreChangedExtended(actionType: string, payload?: any) {
 		if (
 			this.allNecessaryRenderDataAvailable() &&
-			!isActionOfType(actionType, ScalingActions) &&
-			!isActionOfType(actionType, IsLoadingMapActions) &&
-			!isActionOfType(actionType, IsLoadingFileActions) &&
-			!isActionOfType(actionType, SearchPanelModeActions) &&
-			!isActionOfType(actionType, SortingOrderAscendingActions) &&
-			!isActionOfType(actionType, SortingOptionActions) &&
-			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
-			!isActionOfType(actionType, PanelSelectionActions) &&
-			!isActionOfType(actionType, PresentationModeActions) &&
-			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
+			(isActionOfType(actionType, AreaMetricActions) ||
+				isActionOfType(actionType, HeightMetricActions) ||
+				isActionOfType(actionType, ColorMetricActions) ||
+				isActionOfType(actionType, ColorRangeActions) ||
+				isActionOfType(actionType, InvertColorRangeActions) ||
+				isActionOfType(actionType, BlacklistActions) ||
+				isActionOfType(actionType, FocusedNodePathActions))
 		) {
-			//TODO: On which action to track?
-			//trackMetaUsageData(this.storeService.getState())
+			// Track event usage data only on certain events
 			trackEventUsageData(actionType, this.storeService.getState(), payload)
-			//this.debounceTracking(actionType, payload)
 		}
 	}
 
