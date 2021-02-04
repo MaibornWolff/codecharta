@@ -18,7 +18,9 @@ import {
 	SearchPanelMode,
 	Settings,
 	SortingOption,
-	State
+	State,
+	LayoutAlgorithm,
+	GlobalSettings
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -1140,6 +1142,15 @@ export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 	}
 }
 
+export const GLOBAL_SETTINGS: GlobalSettings = {
+	hideFlatBuildings: true,
+	isWhiteBackground: true,
+	resetCameraIfNewFileIsLoaded: true,
+	experimentalFeaturesEnabled: true,
+	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+	maxTreeMapFiles: 50
+}
+
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	name: "root",
 	attributes: {},
@@ -1585,7 +1596,7 @@ export const STATE: State = {
 			flat: "#AAAAAA",
 			lightGrey: "#DDDDDD",
 			angularGreen: "#00BFA5",
-			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",
 			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
@@ -1601,7 +1612,9 @@ export const STATE: State = {
 		panelSelection: PanelSelection.AREA_PANEL_OPEN,
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
-		experimentalFeaturesEnabled: false
+		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		maxTreeMapFiles: 200
 	},
 	treeMap: {
 		mapSize: 250
@@ -1636,7 +1649,7 @@ export const DEFAULT_STATE: State = {
 			defaultC: "#89ACB4",
 			flat: "#AAAAAA",
 			lightGrey: "#DDDDDD",
-			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			negative: "#820E0E",
 			negativeDelta: "#ff0E0E",
 			neutral: "#ddcc00",
@@ -1660,7 +1673,9 @@ export const DEFAULT_STATE: State = {
 		panelSelection: PanelSelection.NONE,
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
-		experimentalFeaturesEnabled: false
+		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		maxTreeMapFiles: 100
 	},
 	dynamicSettings: {
 		areaMetric: null,

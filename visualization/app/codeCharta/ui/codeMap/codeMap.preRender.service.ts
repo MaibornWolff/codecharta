@@ -28,6 +28,7 @@ import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricDa
 import { hierarchy } from "d3-hierarchy"
 import { isLeaf } from "../../util/codeMapHelper"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTracker"
 import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
@@ -41,7 +42,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber {
+export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -62,6 +63,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 		StoreService.subscribe(this.$rootScope, this)
 		StoreService.subscribeDetailedData(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
+		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
@@ -112,6 +115,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 			// Track event usage data only on certain events
 			trackEventUsageData(actionType, this.storeService.getState(), payload)
 		}
+	}
+
+	onLayoutAlgorithmChanged() {
+		this.debounceRendering()
 	}
 
 	onScalingChanged() {
@@ -208,7 +215,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 			fileStatesAvailable(this.storeService.getState().files) &&
 			this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {
-				return x !== null && Object.values(x).every(x => x !== null)
+				return x !== null && Object.values(x).every(v => v !== null)
 			})
 		)
 	}

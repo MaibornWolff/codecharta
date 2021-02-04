@@ -10,6 +10,7 @@ import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfig
 import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 import { klona } from "klona"
 import { FileDownloader } from "./fileDownloader"
+import { stubDate } from "../../../mocks/dateMock.helper"
 
 describe("CustomConfigHelper", () => {
 	beforeEach(() => {
@@ -552,6 +553,9 @@ describe("CustomConfigHelper", () => {
 	})
 
 	describe("downloadCustomConfigs", () => {
+		stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
+		const newDate = "2018-12-14_09-39"
+
 		it("should trigger download and append the download-file-name with the one and only selected map name", () => {
 			const exportCustomConfig1 = {
 				id: "1-invalid-md5-checksum",
@@ -574,8 +578,7 @@ describe("CustomConfigHelper", () => {
 			CustomConfigFileStateConnector.prototype.isEachFileSelected = jest.fn().mockReturnValue(true)
 			CustomConfigFileStateConnector.prototype.getJointMapName = jest.fn().mockReturnValue("mocked_currently_uploaded_map.cc.json")
 
-			spyOn(JSON, "stringify")
-			JSON["stringify"] = jest.fn(() => {
+			jest.spyOn(JSON, "stringify").mockImplementation(() => {
 				return "mock_serialized_config_to_be_downloaded"
 			})
 
@@ -584,7 +587,7 @@ describe("CustomConfigHelper", () => {
 			CustomConfigHelper.downloadCustomConfigs(exportedCustomConfigs, CustomConfigFileStateConnector.prototype)
 			expect(FileDownloader.downloadData).toHaveBeenCalledWith(
 				"mock_serialized_config_to_be_downloaded",
-				expect.stringContaining("mocked_currently_uploaded_map_20")
+				`mocked_currently_uploaded_map_${newDate}.cc.config.json`
 			)
 		})
 	})

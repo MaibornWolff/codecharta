@@ -3,8 +3,23 @@
 		<h2 class="md-toolbar-tools">Global Settings</h2>
 	</md-toolbar>
 
+	<reset-settings-button-component
+		autofocus="false"
+		settings-names="appSettings.hideFlatBuildings, appSettings.isWhiteBackground, appSettings.resetCameraIfNewFileIsLoaded, appSettings.layoutAlgorithm, appSettings.maxTreeMapFiles"
+		tooltip="Reset global settings to their defaults"
+	></reset-settings-button-component>
+
 	<md-dialog-content>
 		<div class="md-dialog-content">
+			<layout-selection-component ng-model="$ctrl._viewModel.layoutAlgorithm" ng-change="$ctrl.applySettingsAlgorithm()">
+			</layout-selection-component>
+			<max-tree-map-files-component
+				ng-model="$ctrl._viewModel.maxTreeMapFiles"
+				ng-change="$ctrl.applySettingsMaxTreeMapFiles()"
+				ng-show="$ctrl._viewModel.layoutAlgorithm === 'TreeMapStreet'"
+			>
+			</max-tree-map-files-component>
+
 			<md-input-container class="input-container md-block">
 				<md-checkbox
 					class="md-primary"
@@ -60,22 +75,16 @@
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				<i class="fa fa-external-link"></i>Manual
+				<em class="fa fa-external-link icon-link"></em>Manual
 			</a>
 
 			<a class="weblink" href="https://github.com/MaibornWolff/codecharta/" target="_blank" rel="noopener noreferrer">
-				<i class="fa fa-external-link"></i>Github
+				<em class="fa fa-external-link icon-link"></em>Github
 			</a>
 
 			<a class="weblink" href="https://github.com/MaibornWolff/codecharta/wiki" target="_blank" rel="noopener noreferrer">
-				<i class="fa fa-external-link"></i>Wiki
+				<em class="fa fa-external-link icon-link"></em>Wiki
 			</a>
-
-			<reset-settings-button-component
-				autofocus="false"
-				settings-names="appSettings.hideFlatBuildings, appSettings.isWhiteBackground, appSettings.resetCameraIfNewFileIsLoaded"
-				tooltip="Reset global settings to their defaults"
-			></reset-settings-button-component>
 		</div>
 	</md-dialog-content>
 

@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.64.0",
+	"version": "1.67.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -109,11 +109,12 @@
 		"md5": "^2.3.0",
 		"nouislider": "^14.6.0",
 		"nw": "^0.50.0",
+		"open": "^7.3.0",
 		"redux": "^4.0.4",
 		"shelljs": "^0.8.1",
-		"three": "^0.123.0",
+		"three": "^0.124.0",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "^0.45.0"
+		"typescript-json-schema": "^0.47.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.4",
@@ -132,6 +133,7 @@
 		"@types/puppeteer": "^5.4.0",
 		"@typescript-eslint/eslint-plugin": "^4.0.1",
 		"@typescript-eslint/parser": "^4.0.1",
+		"angularjs-color-picker": "^3.4.8",
 		"babel-loader": "^8.1.0",
 		"bestzip": "^2.1.5",
 		"clean-webpack-plugin": "^3.0.0",
@@ -139,9 +141,10 @@
 		"es6-shim": "^0.35.3",
 		"eslint": "^7.11.0",
 		"eslint-config-prettier": "^7.0.0",
-		"eslint-plugin-unicorn": "^23.0.0",
+		"eslint-plugin-unicorn": "^24.0.0",
 		"file-loader": "^6.0.0",
 		"html-loader": "^1.1.0",
+		"html-loader-jest": "^0.2.1",
 		"html-webpack-plugin": "^4.3.0",
 		"jest": "^26.1.0",
 		"jest-puppeteer": "^4.4.0",

@@ -15,9 +15,77 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Height scaling not applied to buildings ([#1595](https://github.com/MaibornWolff/codecharta/issues/1595)))
+### Chore 👨‍💻 👩‍💻
+
+## [1.67.0] - 2021-01-26
+
+### Added 🚀
+
+-   Allow opening files from local drive by double clicking on the buildings or clicking on their names ([#1314](https://github.com/MaibornWolff/codecharta/issues/1314))
+    -   Only available in the standalone version!
+    -   files are opened in associated third-party applications
+    -   web-links are opened in a browser window
+-   Allow customized color in the node context menu ([#1556](https://github.com/MaibornWolff/codecharta/issues/1556)).
+
+    [!example of new feature #1556](https://user-images.githubusercontent.com/3596742/104302048-a007f300-54c8-11eb-86c1-287483884783.png)
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
 
 ### Chore 👨‍💻 👩‍💻
+
+## [1.66.0] - 2021-01-18
+
+### Added 🚀
+
+-   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533))<br/><br/>
+    ![example of new feature](https://user-images.githubusercontent.com/3596742/103547861-3c1c7380-4ea5-11eb-8df2-541caf65b9df.png)
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632))
+-   Maximum treemap files shown in squarified node ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
+-   Wrong folder names and colors in legend when using the highlight folder feature ([#1555](https://github.com/MaibornWolff/codecharta/issues/1555))
+-   Temporary labels are placed at the wrong height for scaled buildings ([#1618](https://github.com/MaibornWolff/codecharta/issues/1618))
+-   Visible labels will disappear or placed lower for scaled buildings ([#1619](https://github.com/MaibornWolff/codecharta/issues/1619))
+-   Unnecessary break line for secondary metrics ([#1093](https://github.com/MaibornWolff/codecharta/issues/1093))
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.65.0] - 2020-12-23
+
+### Added 🚀
+
+-   Highlight label while hovering over building, draw a temporary label for hovered buildings that have none ([#1529](https://github.com/MaibornWolff/codecharta/issues/1529))
+-   Integrated streetlayout ([#904](https://github.com/MaibornWolff/codecharta/issues/904))
+    ![cc_street_ccv](https://user-images.githubusercontent.com/63230711/78872405-87eed900-7a49-11ea-984a-c0ef738779b9.png)
+    In street layout file nodes are displayed as buildings and directories are displayed as streets. A street layout has the advantage of a more apparent directory structure and stable positioning of nodes after metric changes.
+    two different Street layout are integrated : - StreetLayout : as described above. - TMStreet : a combination of street layout and squarified layout.
+
+### Changed
+
+-   The button to see excluded buildings is now merged into the flattened button. Excluded and flattened buildings can now be seen by opening the building with the eye slash icon ([#1543](https://github.com/MaibornWolff/codecharta/issues/1543))
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Height scaling not applied to buildings ([#1595](https://github.com/MaibornWolff/codecharta/issues/1595)))
+-   Fixed multiple label positioning/scaling bugs
+
+### Chore 👨‍💻 👩‍💻
+
+-   e2e flaky test ([#1322](https://github.com/MaibornWolff/codecharta/issues/1322))
 
 ## [1.64.0] - 2020-12-15
 

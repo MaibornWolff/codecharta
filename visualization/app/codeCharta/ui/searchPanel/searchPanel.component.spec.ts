@@ -49,9 +49,9 @@ describe("SearchPanelController", () => {
 		})
 
 		it("should expand the search panel and update the searchPanelMode", () => {
-			searchPanelModeController.onSearchPanelModeChanged(SearchPanelMode.flatten)
+			searchPanelModeController.onSearchPanelModeChanged(SearchPanelMode.blacklist)
 
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.flatten)
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.blacklist)
 		})
 	})
 

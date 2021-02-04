@@ -11,6 +11,8 @@
 			>
 				<i class="fa fa-times" ng-if="$ctrl.isNodeOrParentMarked(color)"></i>
 			</md-button>
+
+			<cc-node-context-menu-color-picker mark-folder="$ctrl.markFolder(color)"></cc-node-context-menu-color-picker>
 		</div>
 		<md-divider></md-divider>
 	</div>
@@ -30,13 +32,15 @@
 			ng-click="$ctrl.flattenNode()"
 			id="flatten-button"
 			title="Flatten node and children-nodes, but keep an empty space"
-			><i class="fa fa-eye-slash"></i> Flatten</md-button
 		>
+			<img alt="flattenIcon" class="png-icon" src="../../../assets/flatten.png" style="width: 17px; height: 17px" />
+			Flatten
+		</md-button>
 		<md-button
 			ng-if="$ctrl._viewModel.codeMapNode.isFlattened"
 			ng-click="$ctrl.showFlattenedNode()"
 			title="Show node and children-nodes"
-			><i class="fa fa-eye"></i> Show</md-button
+			><img alt="flattenIcon" class="png-icon" src="../../../assets/flatten.png" style="width: 17px; height: 17px" /> Show</md-button
 		>
 		<md-button
 			ng-if="!$ctrl.isNodeConstantlyHighlighted()"

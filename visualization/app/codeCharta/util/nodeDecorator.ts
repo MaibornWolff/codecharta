@@ -56,10 +56,8 @@ export class NodeDecorator {
 					data.attributes[metric.name] = 0
 				}
 
-				if (data.deltas !== undefined) {
-					if (data.deltas[metric.name] === undefined) {
-						data.deltas[metric.name] = 0
-					}
+				if (data.deltas !== undefined && data.deltas[metric.name] === undefined) {
+					data.deltas[metric.name] = 0
 				}
 			}
 
