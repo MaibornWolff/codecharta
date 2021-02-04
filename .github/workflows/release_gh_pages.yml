@@ -107,6 +107,7 @@ jobs:
 
 
   build_docker_image:
+    needs: build_project
     name: Build Docker Image
     env:
       working-directory: ./visualization
