@@ -1,9 +1,12 @@
 import { CodeChartaFileStorageEngine, CodeChartaStorage } from "./codeChartaStorage"
 import fs from "fs"
-jest.mock("fs")
 import * as EnvironmentDetector from "./envDetector"
 
 describe("CodeChartaFileStorage", () => {
+	beforeAll(() => {
+		jest.mock("fs")
+	})
+
 	afterEach(() => {
 		jest.clearAllMocks()
 	})
