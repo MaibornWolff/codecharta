@@ -37,6 +37,8 @@ jobs:
           npm install
           npm run test
           npm run build:web
+          cd node_modules/nwjs-builder-phoenix/caches
+          rm -rf caches/*
           npm run package
           docker build -t codecharta/codecharta-visualization .
      
