@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   A new experimental feature has been added to track anonymous metadata of a currently loaded map.
+    -   Neither the map name nor file names will be tracked but anonymous metric values and statistics like (average, min, max).
+    -   The tracked data will not be sent to a server yet. Instead, it can be downloaded as a json file in the Global Settings for now.
+    -   It is planned to send the anonymous data to a server in the future, so that we can collect tracking data automatically.
+    -   ![example of new feature](https://user-images.githubusercontent.com/26900540/106896300-ac5f2480-66f1-11eb-8096-246d1733c0ee.png)
+
 ### Changed
 
 ### Removed 🗑
@@ -16,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 ### Chore 👨‍💻 👩‍💻
+
+-   CodeChartaStorage class has been introduced to dynamically store values either on disk (standalone version) or in the localStorage (web version). This is the first step to solve [#684](https://github.com/MaibornWolff/codecharta/issues/684).
 
 ## [1.67.0] - 2021-01-26
 
