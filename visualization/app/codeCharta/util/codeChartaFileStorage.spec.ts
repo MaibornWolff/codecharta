@@ -1,5 +1,6 @@
 import { CodeChartaFileStorageEngine, CodeChartaStorage } from "./codeChartaStorage"
 import fs from "fs"
+jest.mock("fs")
 import * as EnvironmentDetector from "./envDetector"
 
 describe("CodeChartaStorage", () => {
@@ -34,10 +35,11 @@ describe("CodeChartaFileStorage", () => {
 		jest.unmock("fs")
 	})
 
-	jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
-	const codeChartaStorage = new CodeChartaStorage()
-
 	describe("test fileStorage", () => {
+		jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
+		jest.spyOn(fs, "realpathSync").mockReturnValue("mockedRelativeFileStoragePath")
+		const codeChartaStorage = new CodeChartaStorage()
+
 		it("should call matching file-system methods", () => {
 			jest.spyOn(fs, "writeFileSync").mockImplementation()
 			codeChartaStorage.setItem("unit/testing", "successful")
@@ -58,10 +60,9 @@ describe("CodeChartaFileStorage", () => {
 			expect(codeChartaStorage.key(99)).toBeNull()
 			expect(fs.readdirSync).toHaveBeenCalledTimes(3)
 
-			jest.spyOn(fs, "unlinkSync").mockImplementation()
+			jest.spyOn(fs, "unlinkSync").mockReset().mockImplementation()
 			codeChartaStorage.clear()
-			expect(fs.unlinkSync).toHaveBeenNthCalledWith(2, expect.stringContaining("file1"))
-			expect(fs.unlinkSync).toHaveBeenNthCalledWith(3, expect.stringContaining("file2"))
+			expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
 		})
 	})
 })

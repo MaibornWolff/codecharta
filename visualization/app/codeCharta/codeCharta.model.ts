@@ -68,38 +68,6 @@ export interface FileMeta {
 	apiVersion: string
 	projectName: string
 	exportedFileSize: number
-	statistics?: Statistics
-}
-
-export interface Statistics {
-	totalRealLinesOfCode: number
-	totalLinesOfCode: number
-	programmingLanguages: string[]
-	totalNumberOfFiles: number
-	numberOfFilesPerLanguage: Map<string, number>
-	maxFilePathDepth: number
-	totalFilePathDepth: number
-	avgFilePathDepth: number
-	metricStatisticsPerLanguage: MetricsPerLanguage
-	metricStatisticsOverall: MetricKeyValue
-}
-
-export interface MetricsPerLanguage {
-	[language: string]: MetricKeyValue
-}
-
-export interface MetricKeyValue {
-	[metricName: string]: MetricStatisticsItem
-}
-
-export interface MetricStatisticsItem {
-	metricName: string
-	min: number
-	max: number
-	totalSum: number
-	numberOfFiles: number
-	average: number
-	values: number[]
 }
 
 export interface Settings {

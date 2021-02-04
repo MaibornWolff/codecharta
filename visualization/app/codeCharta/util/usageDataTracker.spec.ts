@@ -1,43 +1,57 @@
-import { CCFile, CodeMapNode, NodeType, State } from "../codeCharta.model"
-import { trackMapMetaData } from "./usageDataTracker"
+import { BlacklistItem, CCFile, CodeMapNode, NodeType, State } from "../codeCharta.model"
+import { trackEventUsageData, trackMapMetaData } from "./usageDataTracker"
 import * as EnvironmentDetector from "./envDetector"
 import * as FilesHelper from "../model/files/files.helper"
 import { FileState } from "../model/files/files"
 import { APIVersions } from "../codeCharta.api.model"
 import { CodeChartaStorage } from "./codeChartaStorage"
+import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklist.actions"
+import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 jest.mock("./codeChartaStorage")
 
 describe("UsageDataTracker", () => {
-	describe("trackMetaUsageData", () => {
-		// provide some default state properties
-		const stateStub = {
-			appSettings: {
-				experimentalFeaturesEnabled: true,
-				showMetricLabelNameValue: undefined,
-				isWhiteBackground: false,
-				camera: { x: 1, y: 2, z: 3 }
-			},
-			dynamicSettings: {},
-			fileSettings: {}
-		} as State
+	// provide some default state properties
+	const stateStub = {
+		appSettings: {
+			experimentalFeaturesEnabled: true,
+			showMetricLabelNameValue: undefined,
+			isWhiteBackground: false,
+			camera: { x: 1, y: 2, z: 3 }
+		},
+		dynamicSettings: {},
+		fileSettings: {}
+	} as State
 
+	let singleFileState: FileState
+	beforeEach(() => {
+		jest.resetAllMocks()
+
+		singleFileState = {
+			file: {
+				fileMeta: {
+					fileChecksum: "invalid-md5-sample-checksum",
+					apiVersion: APIVersions.ONE_POINT_ONE,
+					exportedFileSize: 999
+				},
+				map: {}
+			} as CCFile
+		} as FileState
+	})
+
+	function mockTrackingToBeAllowed() {
+		jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
+		jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
+		jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
+	}
+
+	describe("trackMetaUsageData", () => {
 		const setItemMock = jest.fn()
 		CodeChartaStorage.prototype.setItem = setItemMock
 
-		let singleFileState: FileState
-		beforeEach(() => {
+		afterAll(() => {
 			jest.resetAllMocks()
-
-			singleFileState = {
-				file: {
-					fileMeta: {
-						fileChecksum: "invalid-md5-sample-checksum",
-						apiVersion: APIVersions.ONE_POINT_ONE,
-						exportedFileSize: 999
-					},
-					map: {}
-				} as CCFile
-			} as FileState
+			jest.unmock("./codeChartaStorage")
 		})
 
 		it("should not track in web version, in multi/delta mode or for more than one uploaded file", () => {
@@ -64,16 +78,10 @@ describe("UsageDataTracker", () => {
 
 		it("should not track maps from old API versions", () => {
 			singleFileState.file.fileMeta.apiVersion = APIVersions.ONE_POINT_ZERO
-
-			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
-			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
-			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
-
+			mockTrackingToBeAllowed()
 			trackMapMetaData(stateStub)
 
 			singleFileState.file.fileMeta.apiVersion = "0.2"
-			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
-
 			trackMapMetaData(stateStub)
 
 			expect(setItemMock).not.toHaveBeenCalled()
@@ -82,20 +90,13 @@ describe("UsageDataTracker", () => {
 		it("should track from API version 1.1", () => {
 			singleFileState.file.map = { path: "/root" } as CodeMapNode
 
-			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
-			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
-			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
-
+			mockTrackingToBeAllowed()
 			trackMapMetaData(stateStub)
 
 			singleFileState.file.fileMeta.apiVersion = "1.2"
-			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
-
 			trackMapMetaData(stateStub)
 
 			singleFileState.file.fileMeta.apiVersion = "2.0"
-			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
-
 			trackMapMetaData(stateStub)
 
 			expect(setItemMock).toHaveBeenCalledTimes(3)
@@ -103,11 +104,7 @@ describe("UsageDataTracker", () => {
 
 		it("should track files with multiple programming languages properly", () => {
 			singleFileState.file.map = mapStub
-
-			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
-			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
-			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
-
+			mockTrackingToBeAllowed()
 			jest.spyOn(Date, "now").mockReturnValue(1612369999999)
 
 			const expectSetItemSnapshot = (CodeChartaStorage.prototype.setItem = jest.fn().mockImplementation((_, value) => {
@@ -117,6 +114,60 @@ describe("UsageDataTracker", () => {
 			trackMapMetaData(stateStub)
 
 			expect(expectSetItemSnapshot).toHaveBeenCalledTimes(1)
+		})
+	})
+
+	describe("trackEventUsageData", () => {
+		afterAll(() => {
+			jest.resetAllMocks()
+			jest.unmock("./codeChartaStorage")
+		})
+
+		let getItemMock
+		let expectSetItemSnapshot
+
+		beforeEach(() => {
+			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
+			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
+			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
+			jest.spyOn(Date, "now").mockReturnValue(1612428357566)
+
+			getItemMock = CodeChartaStorage.prototype.getItem = jest.fn().mockReturnValue("some-already-tracked-events-from-file-storage")
+			expectSetItemSnapshot = CodeChartaStorage.prototype.setItem = jest.fn().mockImplementation((_, value) => {
+				expect(value).toMatchSnapshot()
+			})
+		})
+
+		function expectEventHasBeenTracked() {
+			expect(FilesHelper.getVisibleFileStates).toHaveBeenCalledTimes(2)
+			expect(getItemMock).toHaveBeenCalledWith("usageData/invalid-md5-sample-checksum-events")
+			expect(expectSetItemSnapshot).toHaveBeenCalledTimes(1)
+		}
+
+		it("should not track on not allowed events", () => {
+			trackEventUsageData("EVENT_ACTION_WHICH_SHOULD_NOT_BE_TRACKED", stateStub)
+
+			// A second call would indicate that the tracking has not been cancelled as expected
+			expect(FilesHelper.getVisibleFileStates).toHaveBeenCalledTimes(1)
+		})
+
+		it("should track setting changed event", () => {
+			trackEventUsageData(HeightMetricActions.SET_HEIGHT_METRIC, stateStub, "newHeightMetricValue")
+			expectEventHasBeenTracked()
+		})
+
+		it("should track node interaction blacklist event", () => {
+			trackEventUsageData(BlacklistActions.ADD_BLACKLIST_ITEM, stateStub, {
+				path: "test",
+				attributes: {},
+				type: "exclude"
+			} as BlacklistItem)
+			expectEventHasBeenTracked()
+		})
+
+		it("should track node interaction focus event", () => {
+			trackEventUsageData(FocusedNodePathActions.FOCUS_NODE, stateStub, "focusedPathPayload")
+			expectEventHasBeenTracked()
 		})
 	})
 

@@ -584,7 +584,7 @@ describe("CustomConfigHelper", () => {
 			CustomConfigHelper.downloadCustomConfigs(exportedCustomConfigs, CustomConfigFileStateConnector.prototype)
 			expect(FileDownloader.downloadData).toHaveBeenCalledWith(
 				"mock_serialized_config_to_be_downloaded",
-				expect.stringContaining("mocked_currently_uploaded_map_2020")
+				expect.stringContaining("mocked_currently_uploaded_map_20")
 			)
 		})
 	})
