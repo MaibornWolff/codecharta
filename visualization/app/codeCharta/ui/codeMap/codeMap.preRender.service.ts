@@ -155,7 +155,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		if (visibleFileStates.length === 2) {
 			let [reference, comparison] = visibleFileStates
 			if (reference.selectedAs !== FileSelectionState.Reference) {
-				const temporary = reference
+				const temporary = comparison
 				comparison = reference
 				reference = temporary
 			}
