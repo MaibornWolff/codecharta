@@ -88,7 +88,7 @@ describe("codeMapMouseEventService", () => {
 			threeCameraService,
 			threeRendererService,
 			threeSceneService,
-			threeUpdateCycleService,
+			//threeUpdateCycleService,
 			storeService,
 			codeMapLabelService,
 			codeMapPreRenderService
