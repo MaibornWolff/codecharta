@@ -36,7 +36,7 @@
 	},
 	"main": "dist/webpack/index.html",
 	"build": {
-		"nwVersion": "0.51.0",
+		"nwVersion": "0.50.3",
 		"output": "./dist/packages/",
 		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
 		"files": "./dist/webpack/**/*",
@@ -108,7 +108,7 @@
 		"lodash.throttle": "^4.1.1",
 		"md5": "^2.3.0",
 		"nouislider": "^14.6.0",
-		"nw": "^0.51.0",
+		"nw": "^0.50.3",
 		"open": "^7.3.0",
 		"redux": "^4.0.4",
 		"shelljs": "^0.8.1",
