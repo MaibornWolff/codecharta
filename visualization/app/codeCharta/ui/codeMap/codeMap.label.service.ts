@@ -220,14 +220,16 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	private setLabelSize(sprite: Sprite, labelWidth: number = sprite.material.map.image.width, label: InternalLabel) {
 		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
-		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
-		if (label !== null) {
-			this.lineCount = label.lineCount
-		}
-		if (this.lineCount > 1) {
-			sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / 25, 1)
-		} else {
-			sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
+		if (this.threeCameraService.camera) {
+			const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
+			if (label !== null) {
+				this.lineCount = label.lineCount
+			}
+			if (this.lineCount > 1) {
+				sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / 25, 1)
+			} else {
+				sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
+			}
 		}
 	}
 
