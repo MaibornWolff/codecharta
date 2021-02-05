@@ -17,8 +17,6 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 
 	camera: PerspectiveCamera
 	threeCameraService: jest.Mock
-	threeCameraService: jest.Mock
-	threeCameraService: jest.Mock
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		this.throttledCameraChange = throttle(() => {
