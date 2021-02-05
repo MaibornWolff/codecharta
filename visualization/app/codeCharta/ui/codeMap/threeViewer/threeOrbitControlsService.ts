@@ -17,6 +17,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
+import { ThreeRendererService } from "./threeRendererService"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -36,7 +37,8 @@ export class ThreeOrbitControlsService
 		private $timeout: ITimeoutService,
 		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
-		private threeSceneService: ThreeSceneService
+		private threeSceneService: ThreeSceneService,
+		private threeRendererService : ThreeRendererService
 	) {
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
@@ -87,7 +89,12 @@ export class ThreeOrbitControlsService
 			this.controls.update()
 
 			this.focusCameraViewToCenter(boundingSphere)
+			this.animateRenderer()
 		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
+	}
+
+	animateRenderer() {
+		this.threeRendererService.render()
 	}
 
 	private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {

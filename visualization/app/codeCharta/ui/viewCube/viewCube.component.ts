@@ -82,6 +82,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	onCameraChanged(camera: PerspectiveCamera) {
 		const newCameraPosition = this.calculateCameraPosition(camera)
 		this.setCameraPosition(newCameraPosition)
+		this.onAnimationFrame()
 	}
 
 	private setCameraPosition(cameraPosition: Vector3) {
@@ -97,11 +98,11 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	private startAnimation() {
-		const animate = () => {
-			requestAnimationFrame(animate)
+		//const animate = () => {
+			//requestAnimationFrame(animate)
 			this.onAnimationFrame()
-		}
-		animate()
+		//}
+		//animate()
 	}
 
 	private onAnimationFrame() {
@@ -133,11 +134,13 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 			originalMaterial: cube.material
 		}
 		this.hoverInfo.cube.material.emissive = new Color(0xffffff)
+		this.onAnimationFrame()
 	}
 
 	onCubeUnhovered() {
 		this.hoverInfo.cube.material.emissive = new Color(0x000000)
 		this.hoverInfo.cube = null
+		this.onAnimationFrame()
 	}
 
 	onCubeClicked(cube: Mesh) {
@@ -229,6 +232,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 				this.threeOrbitControlsService.rotateCameraInVectorDirection(1, 1, 1)
 				break
 		}
+		this.onAnimationFrame()
 	}
 
 	private initLights() {
