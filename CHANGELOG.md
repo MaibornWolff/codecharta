@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Switching maps in delta mode now shows the differences between the maps ([#1606](https://github.com/maibornwolff/codecharta/issues/1606))
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.67.0] - 2021-01-26
