@@ -5,5 +5,7 @@ update_configs:
      directory: "/"
      update_schedule: "daily"
      target_branch: "feature/1650/change-dependabot-update-policy"
+     commit_message:
+      prefix: "Testing For Automerging"
      default_assignees:
       - "Jacob-Kirimi"
