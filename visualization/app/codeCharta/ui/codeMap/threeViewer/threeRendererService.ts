@@ -125,9 +125,9 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	render() {
 		const { scene, camera } = this
 		if (ThreeRendererService.enableFXAA) {
-			this.composer.render()
+			this.composer?.render()
 		} else {
-			this.renderer.render(scene, camera)
+			this.renderer?.render(scene, camera)
 		}
 	}
 }

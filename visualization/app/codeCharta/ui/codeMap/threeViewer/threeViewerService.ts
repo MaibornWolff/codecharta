@@ -67,7 +67,7 @@ export class ThreeViewerService {
 	}
 
 	animateStats() {
-		this.animationFrameId = requestAnimationFrame(() => this.animateStats())
+		//this.animationFrameId = requestAnimationFrame(() => this.animateStats())
 		this.threeStatsService.updateStats()
 	}
 

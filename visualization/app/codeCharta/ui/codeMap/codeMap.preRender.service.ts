@@ -83,6 +83,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
 		) {
 			this.debounceRendering()
+		} else {
+			this.codeMapRenderService.updateRender()
 		}
 	}
 

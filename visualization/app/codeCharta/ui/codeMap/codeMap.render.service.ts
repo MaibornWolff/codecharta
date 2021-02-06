@@ -12,6 +12,7 @@ import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetL
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
+import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 
 export class CodeMapRenderService implements IsLoadingFileSubscriber{
 	constructor(
@@ -20,7 +21,8 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
-		private threeStatsService : ThreeStatsService
+		private threeStatsService : ThreeStatsService,
+		private threeOrbitControlsService : ThreeOrbitControlsService
 	) {
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
@@ -30,6 +32,10 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 		} else {
 			this.threeStatsService?.resetPanels()
 		}
+	}
+
+	updateRender() {
+		this.threeOrbitControlsService.animateRenderer()
 	}
 
 	render(map: CodeMapNode) {

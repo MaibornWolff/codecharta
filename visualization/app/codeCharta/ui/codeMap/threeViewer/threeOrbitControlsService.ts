@@ -75,6 +75,8 @@ export class ThreeOrbitControlsService
 		const zoom = this.getZoom()
 		this.lookAtDirectionFromTarget(x, y, z)
 		this.applyOldZoom(zoom)
+		this.onInput(this.threeCameraService.camera)
+		this.animateRenderer()
 	}
 
 	autoFitTo() {
@@ -90,6 +92,7 @@ export class ThreeOrbitControlsService
 
 			this.focusCameraViewToCenter(boundingSphere)
 			this.animateRenderer()
+			this.onInput(this.threeCameraService.camera)
 		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
 	}
 

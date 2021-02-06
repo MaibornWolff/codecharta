@@ -80,6 +80,8 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	onCameraChanged(camera: PerspectiveCamera) {
+		// eslint-disable-next-line no-console
+		console.log("onCam changed")
 		const newCameraPosition = this.calculateCameraPosition(camera)
 		this.setCameraPosition(newCameraPosition)
 		this.onAnimationFrame()
@@ -98,11 +100,11 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	private startAnimation() {
-		//const animate = () => {
-			//requestAnimationFrame(animate)
+		/*const animate = () => {
+			requestAnimationFrame(animate)*/
 			this.onAnimationFrame()
-		//}
-		//animate()
+		/*}
+		animate()*/
 	}
 
 	private onAnimationFrame() {
