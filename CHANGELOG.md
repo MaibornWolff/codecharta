@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Errors occurred in delta mode if names of root folders were different
 -   Switching maps in delta mode now shows the differences between the maps ([#1606](https://github.com/maibornwolff/codecharta/issues/1606))
+-   Label over hovered building not shown for height Metric value of zero ([#1623](https://github.com/MaibornWolff/codecharta/issues/1623))
 
 ### Chore 👨‍💻 👩‍💻
 
