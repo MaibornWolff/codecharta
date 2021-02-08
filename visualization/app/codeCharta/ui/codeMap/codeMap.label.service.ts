@@ -110,19 +110,52 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	clearLabels() {
+		// eslint-disable-next-line no-console
+		console.log(this.labels)
+		this.dispose(this.labels)
 		this.labels = []
 		this.nodeHeight = 0
 		this.LABEL_HEIGHT_POSITION = 60
 		// Reset the children
+		this.dispose(this.threeSceneService.labels.children)
 		this.threeSceneService.labels.children.length = 0
+		
+		
 	}
 
 	clearTemporaryLabel(hoveredNode: Node) {
 		const index = this.labels.findIndex(({ node }) => node === hoveredNode)
 		if (index > -1) {
 			this.labels.splice(index, 1)
+			this.dispose(this.threeSceneService.labels.children)
 			this.threeSceneService.labels.children.length -= 2
 		}
+	}
+
+	dispose(labels) {
+		// eslint-disable-next-line no-console
+		console.log(labels)
+		labels.forEach(element => {
+			/*if (element.sprite !==undefined) {
+				element.sprite.material.dispose()
+				element.sprite.material.map.dispose()
+				element.sprite.geometry.dispose()
+			}
+			if (element.line !==undefined) {
+				element.line.material.dispose()
+				element.line.geometry.dispose()
+			}*/
+			if (element instanceof Sprite) {
+				element.material.dispose()
+				element.material.map.dispose()
+				element.geometry.dispose()
+			}
+			if (element instanceof Line) {
+				element.material.dispose()
+				element.geometry.dispose()
+			}
+			//element.clear()
+		})
 	}
 
 	scale() {

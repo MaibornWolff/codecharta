@@ -5,12 +5,13 @@ import { Pass } from 'three/examples/jsm/postprocessing/Pass'
 
 export class CustomComposer extends EffectComposer {
     private info: WebGLInfo["render"][] = []
+	private memInfo: WebGLInfo["memory"][] = []
 
     constructor( renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget ) {
         super(renderer,renderTarget)
 	}
 
-    getInfo() : WebGLInfo["render"]{
+    getRenderInfo() : WebGLInfo["render"]{
 		const result : WebGLInfo["render"] = { calls : 0,lines : 0, triangles : 0, points : 0, frame: 0}
 
 		for (const info of this.info) {
@@ -21,6 +22,16 @@ export class CustomComposer extends EffectComposer {
 	   	}
         return result;
     }
+
+	getMemoryInfo() : WebGLInfo["memory"] {
+		const result : WebGLInfo["memory"] = { geometries : 0,textures : 0}
+
+		for (const info of this.memInfo) {
+			result.geometries += info.geometries;
+			result.textures += info.textures;
+	   	}
+        return result;
+	}
 
     render( deltaTime?: number ): void {
         if ( deltaTime === undefined ) {

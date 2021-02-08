@@ -17,7 +17,7 @@ export class CenterMapButtonController implements CameraChangeSubscriber {
 
 	onCameraChanged(camera: PerspectiveCamera) {
 		this._viewModel.isMapCentered = this.isMapCentered(camera)
-		this.threeOrbitControlsService.animateRenderer()
+		this.threeOrbitControlsService.updateRenderFrame()
 	}
 
 	fitMapToView() {

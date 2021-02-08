@@ -109,8 +109,12 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 		this.composer.addPass(effectFXAA)
 	}
 
-	getInfo = (): WebGLInfo["render"] => {
-		return ThreeRendererService.enableFXAA ? this.composer.getInfo() : this.renderer.info.render
+	getRenderInfo = (): WebGLInfo["render"] => {
+		return ThreeRendererService.enableFXAA ? this.composer.getRenderInfo() : this.renderer.info.render
+	}
+
+	getMemoryInfo = (): WebGLInfo["memory"] => {
+		return this.renderer.info.memory
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {

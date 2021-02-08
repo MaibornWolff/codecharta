@@ -35,7 +35,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 	}
 
 	updateRender() {
-		this.threeOrbitControlsService.animateRenderer()
+		this.threeOrbitControlsService.updateRenderFrame()
 	}
 
 	render(map: CodeMapNode) {

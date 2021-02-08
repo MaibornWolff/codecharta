@@ -76,7 +76,7 @@ export class ThreeOrbitControlsService
 		this.lookAtDirectionFromTarget(x, y, z)
 		this.applyOldZoom(zoom)
 		this.onInput(this.threeCameraService.camera)
-		this.animateRenderer()
+		this.updateRenderFrame()
 	}
 
 	autoFitTo() {
@@ -91,12 +91,12 @@ export class ThreeOrbitControlsService
 			this.controls.update()
 
 			this.focusCameraViewToCenter(boundingSphere)
-			this.animateRenderer()
+			this.updateRenderFrame()
 			this.onInput(this.threeCameraService.camera)
 		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
 	}
 
-	animateRenderer() {
+	updateRenderFrame() {
 		this.threeRendererService.render()
 	}
 

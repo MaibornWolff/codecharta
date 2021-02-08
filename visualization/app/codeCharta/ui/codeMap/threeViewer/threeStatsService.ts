@@ -9,7 +9,12 @@ export class ThreeStatsService {
 	stats: Stats
 	trianglesPanel: CustomPanel
 	glCallsPanel: CustomPanel
+	geometryMemory: CustomPanel
+	textureMemory: CustomPanel
+	prevTime : number
 	isDevelopmentMode = isDevelopment()
+
+	private static ONE_SECOND = 1000
 
 	/* ngInject */
 	constructor(private threeRendererService: ThreeRendererService) {}
@@ -25,26 +30,38 @@ export class ThreeStatsService {
 
 			this.generateStatPanels()
 		}
+
+		this.prevTime = ( performance || Date ).now()
 	}
 
 	private generateStatPanels = () => {
 		this.trianglesPanel = { panel: this.stats.addPanel(Stats.Panel("triangles", "#ff8", "#221")), maxHeight: 0 }
 		this.glCallsPanel = { panel: this.stats.addPanel(Stats.Panel("calls", "#f8f", "#212")), maxHeight: 0 }
-		this.stats.showPanel(3)
+		this.geometryMemory = { panel: this.stats.addPanel(Stats.Panel("geo. mem", "#f08", "#221")), maxHeight: 0 }
+		this.textureMemory= { panel: this.stats.addPanel(Stats.Panel("tex. mem", "#0f8", "#221")), maxHeight: 0 }
+		
+		this.stats.showPanel(0)
 	}
 
 	updateStats = () => {
 		if (this.isDevelopmentMode) {
-			const webGLInfo = this.threeRendererService.getInfo()
-			this.processPanel(this.trianglesPanel, webGLInfo.triangles)
-			this.processPanel(this.glCallsPanel, webGLInfo.calls)
+			const time = ( performance || Date ).now()
+			if ( time >= this.prevTime + ThreeStatsService.ONE_SECOND ) {
+				this.prevTime = time;
+				const webGLRenderInfo = this.threeRendererService.getRenderInfo()
+				const threeJsInfo = this.threeRendererService.getMemoryInfo()
+				this.processPanel(this.trianglesPanel, webGLRenderInfo.triangles)
+				this.processPanel(this.glCallsPanel, webGLRenderInfo.calls)
+				this.processPanel(this.geometryMemory, threeJsInfo.geometries)
+				this.processPanel(this.textureMemory, threeJsInfo.textures)
+			}
 			this.stats.update()
 		}
 	}
 
 	resetPanels = () => {
 		if (this.isDevelopmentMode) {
-			[this.trianglesPanel,this.glCallsPanel].forEach(panel => {
+			[this.trianglesPanel,this.glCallsPanel,this.geometryMemory,this.textureMemory].forEach(panel => {
 				if (panel!==undefined)
 					panel.maxHeight = 0
 			})

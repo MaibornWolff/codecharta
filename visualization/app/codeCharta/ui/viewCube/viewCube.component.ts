@@ -48,7 +48,6 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.initCube()
 		this.initAxesHelper()
 		this.initCamera()
-		this.startAnimation()
 		this.viewCubeMouseEventsService.init(this.cubeGroup, this.camera, this.renderer)
 
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
@@ -80,11 +79,9 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	onCameraChanged(camera: PerspectiveCamera) {
-		// eslint-disable-next-line no-console
-		console.log("onCam changed")
 		const newCameraPosition = this.calculateCameraPosition(camera)
 		this.setCameraPosition(newCameraPosition)
-		this.onAnimationFrame()
+		this.updateRenderFrame()
 	}
 
 	private setCameraPosition(cameraPosition: Vector3) {
@@ -99,15 +96,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		return codeMapCameraPosition.sub(codeMapTargetVector).normalize().multiplyScalar(3)
 	}
 
-	private startAnimation() {
-		/*const animate = () => {
-			requestAnimationFrame(animate)*/
-			this.onAnimationFrame()
-		/*}
-		animate()*/
-	}
-
-	private onAnimationFrame() {
+	private updateRenderFrame() {
 		this.renderer.render(this.scene, this.camera)
 	}
 
@@ -136,13 +125,13 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 			originalMaterial: cube.material
 		}
 		this.hoverInfo.cube.material.emissive = new Color(0xffffff)
-		this.onAnimationFrame()
+		this.updateRenderFrame()
 	}
 
 	onCubeUnhovered() {
 		this.hoverInfo.cube.material.emissive = new Color(0x000000)
 		this.hoverInfo.cube = null
-		this.onAnimationFrame()
+		this.updateRenderFrame()
 	}
 
 	onCubeClicked(cube: Mesh) {
@@ -234,7 +223,6 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 				this.threeOrbitControlsService.rotateCameraInVectorDirection(1, 1, 1)
 				break
 		}
-		this.onAnimationFrame()
 	}
 
 	private initLights() {

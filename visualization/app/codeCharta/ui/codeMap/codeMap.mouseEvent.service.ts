@@ -195,6 +195,7 @@ export class CodeMapMouseEventService
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
 			if (mapMesh) {
+				
 				if (camera.isPerspectiveCamera) {
 					this.raycaster.setFromCamera(mouseCoordinates, camera)
 				}
@@ -213,13 +214,13 @@ export class CodeMapMouseEventService
 
 				const from = this.threeSceneService.getHighlightedBuilding()
 				const to = this.intersectedBuilding ?? this.highlightedInTreeView
-
+				
 				if (from !== to) {
 					if (this.temporaryLabelForBuilding !== null) {
 						this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForBuilding)
 						this.temporaryLabelForBuilding = null
 					}
-
+					
 					this.threeSceneService.resetLabel()
 					this.unhoverBuilding()
 					if (to) {
