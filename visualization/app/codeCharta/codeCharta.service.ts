@@ -44,6 +44,8 @@ export class CodeChartaService {
 			this.storeService.dispatch(setFiles(this.fileStates))
 			this.fileStates = []
 			this.storeService.dispatch(setSingle(getCCFiles(this.storeService.getState().files)[0]))
+			const rootName = this.storeService.getState().files[0].file.map.name
+			CodeChartaService.updateRootData(rootName)
 			this.setDefaultScenario()
 		}
 	}
@@ -62,5 +64,10 @@ export class CodeChartaService {
 		if (names.every(metric => metricNames.has(metric))) {
 			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
 		}
+	}
+
+	static updateRootData(rootName: string) {
+		CodeChartaService.ROOT_NAME = rootName
+		CodeChartaService.ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
 	}
 }
