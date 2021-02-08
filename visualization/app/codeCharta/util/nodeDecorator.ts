@@ -292,7 +292,7 @@ function collectMedians(medians: Map<string, number[]>, selector: string, child:
 // TODO: Evaluate if sorting in `getMedian` is not better than using a
 // pre-sorted array. It's a lot less code and should roughly have the same
 // performance.
-function getMedian(numbers: number[]) {
+export function getMedian(numbers: number[]) {
 	if (numbers === undefined || numbers.length === 0) {
 		return 0
 	}
@@ -301,12 +301,12 @@ function getMedian(numbers: number[]) {
 	return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
 }
 
-function pushSorted(numbers, number) {
+export function pushSorted(numbers: number[], number: number) {
 	let min = 0
 	let max = numbers.length - 1
 	let guess = 0
 
-	if (numbers[max] <= number) {
+	if (max < 0 || numbers[max] <= number) {
 		numbers.push(number)
 		return
 	}

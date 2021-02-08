@@ -6,7 +6,7 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { StoreService, StoreSubscriber } from "../../state/store.service"
+import { StoreExtendedSubscriber, StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import debounce from "lodash.debounce"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
@@ -29,18 +29,28 @@ import { hierarchy } from "d3-hierarchy"
 import { isLeaf } from "../../util/codeMapHelper"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
+import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTracker"
+import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
+import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { InvertColorRangeActions } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber {
+export class CodeMapPreRenderService
+	implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
 	private unifiedFileMeta: FileMeta
 
 	private readonly debounceRendering: () => void
+	private readonly debounceTracking: (actionType: string, payload?: any) => void
 	private DEBOUNCE_TIME = 0
 
 	constructor(
@@ -52,12 +62,17 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	) {
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
+		StoreService.subscribeDetailedData(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
+
+		this.debounceTracking = debounce(() => {
+			trackMapMetaData(this.storeService.getState())
+		}, 1000)
 	}
 
 	getRenderMap() {
@@ -83,6 +98,23 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
 		) {
 			this.debounceRendering()
+			this.debounceTracking(actionType)
+		}
+	}
+
+	onStoreChangedExtended(actionType: string, payload?: any) {
+		if (
+			this.allNecessaryRenderDataAvailable() &&
+			(isActionOfType(actionType, AreaMetricActions) ||
+				isActionOfType(actionType, HeightMetricActions) ||
+				isActionOfType(actionType, ColorMetricActions) ||
+				isActionOfType(actionType, ColorRangeActions) ||
+				isActionOfType(actionType, InvertColorRangeActions) ||
+				isActionOfType(actionType, BlacklistActions) ||
+				isActionOfType(actionType, FocusedNodePathActions))
+		) {
+			// Track event usage data only on certain events
+			trackEventUsageData(actionType, this.storeService.getState(), payload)
 		}
 	}
 
