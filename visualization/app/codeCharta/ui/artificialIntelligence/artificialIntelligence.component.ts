@@ -64,6 +64,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			state.dynamicSettings.areaMetric = "mcc"
 			state.dynamicSettings.heightMetric = "bug"
 			state.dynamicSettings.colorMetric = "bug"
+			state.dynamicSettings.colorRange.from = bugOutlier.valueOf() / 2
 			state.dynamicSettings.colorRange.to = bugOutlier.valueOf()
 
 			const configName = "Buggy Classes (AI)"
