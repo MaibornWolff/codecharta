@@ -13,7 +13,7 @@ describe("CodeChartaFileStorage", () => {
 
 	describe("test fileStorage", () => {
 		jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
-		jest.spyOn(fs, "realpathSync").mockReturnValue("mockedRelativeFileStoragePath")
+		jest.spyOn(fs, "realpathSync").mockReturnValueOnce("mockedRelativeFileStoragePath")
 		const codeChartaStorage = new CodeChartaStorage()
 
 		it("should call matching file-system methods", () => {
