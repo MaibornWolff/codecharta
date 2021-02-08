@@ -147,6 +147,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 		}
 		if (isDeltaState(files)) {
+			const [reference, comparison] = visibleFileStates
+			if (comparison && reference.file.map.name !== comparison.file.map.name) {
+				return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
+			}
 			return this.getDeltaFile(visibleFileStates)
 		}
 	}
