@@ -37,8 +37,8 @@ module.exports = env => {
 			extensions: [".ts", ".tsx", ".js"]
 		},
 		externals: {
-			"fs": "require('fs')",
-			"child_process": "require('child_process')"
+			fs: "require('fs')",
+			child_process: "require('child_process')"
 		}
 	}
 }
