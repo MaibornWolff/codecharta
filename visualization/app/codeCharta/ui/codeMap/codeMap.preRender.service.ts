@@ -42,7 +42,8 @@ export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber {
+export class CodeMapPreRenderService
+	implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -178,6 +179,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 		}
 		if (isDeltaState(files)) {
+			const [reference, comparison] = visibleFileStates
+			if (comparison && reference.file.map.name !== comparison.file.map.name) {
+				return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
+			}
 			return this.getDeltaFile(visibleFileStates)
 		}
 	}
@@ -186,7 +191,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, StoreExtendedSu
 		if (visibleFileStates.length === 2) {
 			let [reference, comparison] = visibleFileStates
 			if (reference.selectedAs !== FileSelectionState.Reference) {
-				const temporary = reference
+				const temporary = comparison
 				comparison = reference
 				reference = temporary
 			}

@@ -123,7 +123,7 @@ export class NodeDecorator {
 					collectNodeMediansOnParent(medians, parentSelector, data, name, isDeltaState)
 				} else {
 					parent.data.attributes[name] += data.attributes[name]
-					if (isDeltaState) {
+					if (isDeltaState && parent.data.deltas) {
 						parent.data.deltas[name] = parent.data.deltas[name] ?? 0
 						parent.data.deltas[name] += data.deltas[name] ?? 0
 					}
@@ -188,7 +188,7 @@ export class NodeDecorator {
 		for (const name of attributeKeys) {
 			if (attributeTypes.nodes[name] === AttributeTypeValue.relative) {
 				map.attributes[name] = getMedian(medians.get(`${MedianSelectors.MEDIAN}${name}${map.path}`))
-				if (isDeltaState) {
+				if (isDeltaState && map.deltas) {
 					map.deltas[name] = getMedian(medians.get(`${MedianSelectors.DELTA}${name}${map.path}`))
 				}
 			}
@@ -219,7 +219,7 @@ function collectNodeMediansOnParent(
 		collectMedians(medians, `${MedianSelectors.MEDIAN}${parentSelector}`, child, child.attributes[metricName])
 	}
 
-	if (isDeltaState && child.deltas[metricName] !== 0) {
+	if (isDeltaState && child.deltas && child.deltas[metricName] !== 0) {
 		collectMedians(medians, `${MedianSelectors.DELTA}${parentSelector}`, child, child.deltas[metricName])
 	}
 }
@@ -242,7 +242,7 @@ function setNodeMediansToParent(
 		setMediansToParents(medians, `${MedianSelectors.MEDIAN}${parentSelector}`, numbers)
 	}
 
-	if (isDeltaState) {
+	if (isDeltaState && child.deltas) {
 		const deltaNumbers = medians.get(`${MedianSelectors.DELTA}${selector}`)
 		if (deltaNumbers !== undefined) {
 			child.deltas[metricName] = getMedian(deltaNumbers)

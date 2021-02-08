@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Errors occurred in delta mode if names of root folders were different
+-   Switching maps in delta mode now shows the differences between the maps ([#1606](https://github.com/maibornwolff/codecharta/issues/1606))
+-   Label over hovered building not shown for height Metric value of zero ([#1623](https://github.com/MaibornWolff/codecharta/issues/1623))
+
 ### Chore 👨‍💻 👩‍💻
 
 -   CodeChartaStorage class has been introduced to dynamically store values either on disk (standalone version) or in the localStorage (web version). This is the first step to solve [#684](https://github.com/MaibornWolff/codecharta/issues/684).
