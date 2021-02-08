@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.68.0] - 2021-02-08
+
+### Added 🚀
+
 -   A new experimental feature has been added to track anonymous metadata of a currently loaded map.
     -   Neither the map name nor file names will be tracked but anonymous metric values and statistics like (average, min, max).
     -   The tracked data will not be sent to a server yet. Instead, it can be downloaded as a json file in the Global Settings for now.
