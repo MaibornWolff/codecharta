@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Errors occurred in delta mode if names of root folders were different
+-   Switching maps in delta mode now shows the differences between the maps ([#1606](https://github.com/maibornwolff/codecharta/issues/1606))
 
 ### Chore 👨‍💻 👩‍💻
 
