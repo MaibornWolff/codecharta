@@ -123,7 +123,7 @@ export class NodeDecorator {
 					collectNodeMediansOnParent(medians, parentSelector, data, name, isDeltaState)
 				} else {
 					parent.data.attributes[name] += data.attributes[name]
-					if (isDeltaState) {
+					if (isDeltaState && parent.data.deltas) {
 						parent.data.deltas[name] = parent.data.deltas[name] ?? 0
 						parent.data.deltas[name] += data.deltas[name] ?? 0
 					}
@@ -188,7 +188,7 @@ export class NodeDecorator {
 		for (const name of attributeKeys) {
 			if (attributeTypes.nodes[name] === AttributeTypeValue.relative) {
 				map.attributes[name] = getMedian(medians.get(`${MedianSelectors.MEDIAN}${name}${map.path}`))
-				if (isDeltaState) {
+				if (isDeltaState && map.deltas) {
 					map.deltas[name] = getMedian(medians.get(`${MedianSelectors.DELTA}${name}${map.path}`))
 				}
 			}
@@ -219,7 +219,7 @@ function collectNodeMediansOnParent(
 		collectMedians(medians, `${MedianSelectors.MEDIAN}${parentSelector}`, child, child.attributes[metricName])
 	}
 
-	if (isDeltaState && child.deltas[metricName] !== 0) {
+	if (isDeltaState && child.deltas && child.deltas[metricName] !== 0) {
 		collectMedians(medians, `${MedianSelectors.DELTA}${parentSelector}`, child, child.deltas[metricName])
 	}
 }
@@ -242,7 +242,7 @@ function setNodeMediansToParent(
 		setMediansToParents(medians, `${MedianSelectors.MEDIAN}${parentSelector}`, numbers)
 	}
 
-	if (isDeltaState) {
+	if (isDeltaState && child.deltas) {
 		const deltaNumbers = medians.get(`${MedianSelectors.DELTA}${selector}`)
 		if (deltaNumbers !== undefined) {
 			child.deltas[metricName] = getMedian(deltaNumbers)
@@ -292,7 +292,7 @@ function collectMedians(medians: Map<string, number[]>, selector: string, child:
 // TODO: Evaluate if sorting in `getMedian` is not better than using a
 // pre-sorted array. It's a lot less code and should roughly have the same
 // performance.
-function getMedian(numbers: number[]) {
+export function getMedian(numbers: number[]) {
 	if (numbers === undefined || numbers.length === 0) {
 		return 0
 	}
@@ -301,12 +301,12 @@ function getMedian(numbers: number[]) {
 	return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
 }
 
-function pushSorted(numbers, number) {
+export function pushSorted(numbers: number[], number: number) {
 	let min = 0
 	let max = numbers.length - 1
 	let guess = 0
 
-	if (numbers[max] <= number) {
+	if (max < 0 || numbers[max] <= number) {
 		numbers.push(number)
 		return
 	}

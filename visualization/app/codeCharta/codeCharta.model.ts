@@ -209,6 +209,10 @@ export interface EdgeMetricCount {
 export interface BlacklistItem {
 	path: string
 	type: BlacklistType
+	nodeType?: NodeType
+	attributes?: {
+		[metricName: string]: any
+	}
 }
 
 export enum BlacklistType {

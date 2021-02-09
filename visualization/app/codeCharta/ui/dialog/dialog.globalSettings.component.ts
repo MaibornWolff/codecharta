@@ -28,6 +28,10 @@ import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFile
 import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
 import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
 import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
+import { CodeChartaStorage } from "../../util/codeChartaStorage"
+import { FileDownloader } from "../../util/fileDownloader"
+import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
+import { isStandalone } from "../../util/envDetector"
 
 export class DialogGlobalSettingsController
 	implements
@@ -140,6 +144,28 @@ export class DialogGlobalSettingsController
 
 	applySettingsSharpnessMode() {
 		this.storeService.dispatch(setSharpnessMode(this._viewModel.sharpnessMode))
+	}
+
+	mapTrackingDataAvailable() {
+		const files = this.storeService.getState().files
+		return isStandalone() && isSingleState(files) && getVisibleFileStates(files)
+	}
+
+	downloadTrackingData() {
+		//TODO: this should be removed as soon as we send the data to a server
+		const fileStorage = new CodeChartaStorage()
+
+		// Make sure that only file within usageData can be read
+		const fileChecksum = this.storeService.getState().files[0].file.fileMeta.fileChecksum.replace(/\//g, "")
+
+		let trackedMapMetaData = ""
+		try {
+			trackedMapMetaData = fileStorage.getItem(`usageData/${fileChecksum}-meta`)
+		} catch {
+			// ignore, it no events item exists
+		}
+
+		FileDownloader.downloadData(trackedMapMetaData, `${fileChecksum}.tracking.json`)
 	}
 
 	hide() {
