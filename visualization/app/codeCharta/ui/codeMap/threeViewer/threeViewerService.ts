@@ -91,7 +91,6 @@ export class ThreeViewerService {
 	destroy() {
 		this.threeStatsService.destroy()
 		this.getRenderCanvas().remove()
-		//this.getRenderLoseExtention().loseContext()
 		this.dispose()
 	}
 }

@@ -27,7 +27,7 @@ export class CodeMapMesh {
 		this.initMaterial()
 
 		this.geomGen = new GeometryGenerator()
-		this.material.precision = "lowp" // no need for high precision in our shaders 
+		this.material.precision = "lowp" // no need for high precision in our shaders
 		const buildResult = this.geomGen.build(nodes, this.material, state, isDeltaState)
 
 		this.threeMesh = buildResult.mesh
@@ -190,7 +190,8 @@ export class CodeMapMesh {
 		this.threeMesh.geometry["attributes"].deltaColor.needsUpdate = true
 	}
 
-	dispose() { // TODO more needs to be disposed (textures, render targets, passes , ...)
+	dispose() {
+		// TODO more needs to be disposed (textures, render targets, passes , ...)
 		this.disposeMesh()
 		this.disposeMaterial()
 	}
@@ -200,9 +201,7 @@ export class CodeMapMesh {
 	}
 
 	private disposeMaterial() {
-		if (this.material!==undefined) {
-			this.material.dispose()
-		}
+		this.material?.dispose()
 	}
 
 	private initMaterial() {
