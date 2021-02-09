@@ -1,0 +1,11 @@
+version: 1
+
+update_configs:
+   - package_manager: "javascript"
+     directory: "/"
+     update_schedule: "daily"
+     target_branch: "feature/1650/change-dependabot-update-policy"
+     commit_message:
+      prefix: "Testing For Automerging"
+     default_assignees:
+      - "Jacob-Kirimi"

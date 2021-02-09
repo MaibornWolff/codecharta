@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UsageDataTracker trackEventUsageData should track node interaction blacklist event 1`] = `
+"some-already-tracked-events-from-file-storage
+{\\"eventType\\":\\"node_interaction\\",\\"eventTime\\":1612428357566,\\"payload\\":{\\"eventName\\":\\"ADD_BLACKLIST_ITEM\\",\\"id\\":\\"098f6bcd4621d373cade4e832627b4f6\\",\\"type\\":\\"exclude\\",\\"attributes\\":{}}}"
+`;
+
+exports[`UsageDataTracker trackEventUsageData should track node interaction focus event 1`] = `
+"some-already-tracked-events-from-file-storage
+{\\"eventType\\":\\"node_interaction\\",\\"eventTime\\":1612428357566,\\"payload\\":{\\"eventName\\":\\"FOCUS_NODE\\",\\"id\\":\\"9d1e46ce2260c90b8b7600a11ca08972\\"}}"
+`;
+
+exports[`UsageDataTracker trackEventUsageData should track setting changed event 1`] = `
+"some-already-tracked-events-from-file-storage
+{\\"eventType\\":\\"setting_changed\\",\\"eventTime\\":1612428357566,\\"payload\\":{\\"eventName\\":\\"SET_HEIGHT_METRIC\\",\\"newValue\\":\\"newHeightMetricValue\\"}}"
+`;
+
+exports[`UsageDataTracker trackMetaUsageData should track files with multiple programming languages properly 1`] = `"{\\"mapId\\":\\"invalid-md5-sample-checksum\\",\\"codeChartaApiVersion\\":\\"1.1\\",\\"creationTime\\":1612369999999,\\"exportedFileSizeInBytes\\":999,\\"statisticsPerLanguage\\":{\\"ts\\":{\\"metrics\\":{\\"rloc\\":{\\"avg\\":66.66666666666667,\\"max\\":100,\\"median\\":70,\\"min\\":30,\\"numberOfFiles\\":3,\\"totalSum\\":200},\\"functions\\":{\\"avg\\":370,\\"max\\":1000,\\"median\\":100,\\"min\\":10,\\"numberOfFiles\\":3,\\"totalSum\\":1110},\\"mcc\\":{\\"avg\\":37,\\"max\\":100,\\"median\\":10,\\"min\\":1,\\"numberOfFiles\\":3,\\"totalSum\\":111}},\\"numberOfFiles\\":3,\\"maxFilePathDepth\\":4,\\"avgFilePathDepth\\":3.6666666666666665},\\"java\\":{\\"metrics\\":{\\"rloc\\":{\\"avg\\":55,\\"max\\":100,\\"median\\":50,\\"min\\":20,\\"numberOfFiles\\":4,\\"totalSum\\":220},\\"functions\\":{\\"avg\\":280,\\"max\\":1000,\\"median\\":55,\\"min\\":10,\\"numberOfFiles\\":4,\\"totalSum\\":1120},\\"mcc\\":{\\"avg\\":28.25,\\"max\\":100,\\"median\\":6,\\"min\\":1,\\"numberOfFiles\\":4,\\"totalSum\\":113}},\\"numberOfFiles\\":4,\\"maxFilePathDepth\\":4,\\"avgFilePathDepth\\":3.75}}}"`;

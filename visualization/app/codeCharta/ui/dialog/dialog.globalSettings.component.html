@@ -61,6 +61,15 @@
 			</md-input-container>
 
 			<a
+				ng-show="$ctrl.mapTrackingDataAvailable() && $ctrl._viewModel.experimentalFeaturesEnabled"
+				ng-click="$ctrl.downloadTrackingData()"
+				class="weblink"
+				href="javascript:void(0)"
+			>
+				<i class="fa fa-download"></i>Download anonymous Tracking Data
+			</a>
+
+			<a
 				class="weblink"
 				href="https://github.com/MaibornWolff/codecharta/blob/main/README.md"
 				target="_blank"
