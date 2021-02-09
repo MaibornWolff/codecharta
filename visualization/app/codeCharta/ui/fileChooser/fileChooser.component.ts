@@ -20,7 +20,8 @@ export class FileChooserController {
 			let content
 			let readFiles = 0
 
-			for (const file of element.files) {
+			for (let index = 0; index < element.files.length; index++) {
+				const file = element.files[index]
 				const isCompressed = file.name.endsWith(".gz")
 				const reader = new FileReader()
 				if (isCompressed) {
@@ -48,43 +49,23 @@ export class FileChooserController {
 							// Explicitly ignored
 						}
 					} else {
-						this.addNameDataPair(file, content)
+						this.addNameDataPair(file, content, index)
 					}
 
 					if (readFiles === element.files.length) {
-						this.setNewData(element.files)
+						this.setNewData()
 					}
 				}
 			}
 		})
 	}
 
-	setNewData(sortingArray?) {
-		if (sortingArray !== undefined) {
-			this.sortFiles(sortingArray, this.files)
-		}
+	setNewData() {
 		this.codeChartaService.loadFiles(this.files)
 		this.files = []
 	}
 
-	private findInFileList = (fileName: string, fileList: FileList): number => {
-		for (let index = 0; index < fileList.length; index++) {
-			if (fileList.item(index).name === fileName) {
-				return index
-			}
-		}
-		return 0
-	}
-
-	// this will sort the array based on the order the files have been imported, needed for e2e fileChooser test
-	private sortFiles(sortingArray, arrayToSort) {
-		const sorter = (a, b) => {
-			return this.findInFileList(a.fileName, sortingArray) - this.findInFileList(b.fileName, sortingArray)
-		}
-		return arrayToSort.sort(sorter)
-	}
-
-	private addNameDataPair(file: File, jsonString: string) {
+	private addNameDataPair(file: File, jsonString: string, index: number) {
 		let content: ExportCCFile
 
 		try {
@@ -97,11 +78,11 @@ export class FileChooserController {
 			// Explicitly ignored
 		}
 
-		this.files.push({
+		this.files[index] = {
 			fileName: file.name,
 			fileSize: file.size,
 			content
-		})
+		}
 	}
 }
 
