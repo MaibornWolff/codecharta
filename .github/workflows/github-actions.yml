@@ -33,16 +33,10 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
+          
     - name: Install Node
       run: npm install
       working-directory: ${{env.working-directory}} 
-
-    - name: Recache-Node     
-      if: failure()
-      run: |
-        npm cache clean --force
-        npm cache verify
-      working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
       run: |
@@ -80,16 +74,10 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
+          
     - name: Install Node
       run: npm install
-      working-directory: ${{env.working-directory}} 
-
-    - name: Recache-Node     
-      if: failure()
-      run: |
-        npm cache clean --force
-        npm cache verify
-      working-directory: ${{env.working-directory}}  
+      working-directory: ${{env.working-directory}}   
 
     - name: Test and Linter
       run: |
