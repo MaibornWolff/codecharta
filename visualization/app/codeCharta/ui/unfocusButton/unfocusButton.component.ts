@@ -32,11 +32,15 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 		this._viewModel.isParentFocused = codeMapNode.path.startsWith(focusedNodePath) && codeMapNode.path !== focusedNodePath
 	}
 
-	removeFocusedNode() {
+	removeFocusedNode(removeAll = false) {
 		this.storeService.dispatch(unfocusNode())
-		this._viewModel.focusedNodes.pop()
-		const lastFocusedNode = this._viewModel.focusedNodes[this._viewModel.focusedNodes.length - 1]
-		this.storeService.dispatch(focusNode(lastFocusedNode))
+		if (!removeAll) {
+			this._viewModel.focusedNodes.pop()
+			const lastFocusedNode = this._viewModel.focusedNodes[this._viewModel.focusedNodes.length - 1]
+			this.storeService.dispatch(focusNode(lastFocusedNode))
+		} else {
+			this._viewModel.focusedNodes = []
+		}
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 	}
 }
