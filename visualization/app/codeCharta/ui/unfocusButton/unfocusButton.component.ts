@@ -7,6 +7,8 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 
 export class UnfocusButtonController implements BuildingRightClickedEventSubscriber {
+	static NEW_FILES_LOADED = false
+
 	private _viewModel: {
 		isNodeFocused: boolean
 		isParentFocused: boolean
@@ -23,6 +25,10 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 	}
 
 	onBuildingRightClicked(building: CodeMapBuilding) {
+		if (UnfocusButtonController.NEW_FILES_LOADED) {
+			this._viewModel.focusedNodes = []
+			UnfocusButtonController.NEW_FILES_LOADED = false
+		}
 		const codeMapNode = this.storeService.getState().lookUp.idToNode.get(building.node.id)
 		const { focusedNodePath } = this.storeService.getState().dynamicSettings
 		if (focusedNodePath && !this._viewModel.focusedNodes.includes(focusedNodePath)) {
