@@ -36,7 +36,15 @@ jobs:
    
     - name: Install Node
       run: npm install
-      working-directory: ${{env.working-directory}}       
+      working-directory: ${{env.working-directory}}   
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+          name: visualization
+          path: ./visualization/
+    
+    
  
  visualization_test:
     needs: build_visualization
@@ -45,8 +53,17 @@ jobs:
     env:
       working-directory: ./visualization
     steps:
-    - uses: actions/checkout@v2
   
+    - uses: actions/download-artifact@v2
+      with:
+             name: visualization
+             path: ./visualization
+     
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.4
+      with:
+        node-version: '12'  
+      
     - name: Cache node modules
       uses: actions/cache@v2
       env:
@@ -78,8 +95,12 @@ jobs:
     env:
       working-directory: ./visualization
     steps:
-    - uses: actions/checkout@v2
-
+   
+    - uses: actions/download-artifact@v2
+      with:
+             name: visualization
+             path: ./visualization
+   
     - name: Setup Node.js environment
       uses: actions/setup-node@v2.1.4
       with:
