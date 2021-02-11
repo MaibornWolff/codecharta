@@ -36,9 +36,9 @@ describe("geometryGenerator", () => {
 	describe("addBuilding", () => {
 		let buildResult: BuildResult
 		const setFlattened = (isFlat: boolean) => {
-			testNodes.forEach(element => {
-				element.flat = isFlat
-			})
+			for (const node of testNodes) {
+				node.flat = isFlat
+			}
 		}
 
 		it("should add delta to height when not flattened", () => {
