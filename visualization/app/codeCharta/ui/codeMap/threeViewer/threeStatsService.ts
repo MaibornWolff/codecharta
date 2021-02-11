@@ -9,6 +9,8 @@ export class ThreeStatsService {
 	stats: Stats
 	trianglesPanel: CustomPanel
 	glCallsPanel: CustomPanel
+	geometryMemoryPanel: CustomPanel
+	textureMemoryPanel: CustomPanel
 	isDevelopmentMode = isDevelopment()
 
 	/* ngInject */
@@ -30,23 +32,28 @@ export class ThreeStatsService {
 	private generateStatPanels = () => {
 		this.trianglesPanel = { panel: this.stats.addPanel(Stats.Panel("triangles", "#ff8", "#221")), maxHeight: 0 }
 		this.glCallsPanel = { panel: this.stats.addPanel(Stats.Panel("calls", "#f8f", "#212")), maxHeight: 0 }
+		this.geometryMemoryPanel = { panel: this.stats.addPanel(Stats.Panel("geo. mem", "#f08", "#221")), maxHeight: 0 }
+		this.textureMemoryPanel = { panel: this.stats.addPanel(Stats.Panel("tex. mem", "#0f8", "#221")), maxHeight: 0 }
+
 		this.stats.showPanel(3)
 	}
 
 	updateStats = () => {
 		if (this.isDevelopmentMode) {
 			const webGLInfo = this.threeRendererService.getInfo()
+			const threeJsInfo = this.threeRendererService.getMemoryInfo()
 			this.processPanel(this.trianglesPanel, webGLInfo.triangles)
 			this.processPanel(this.glCallsPanel, webGLInfo.calls)
+			this.processPanel(this.geometryMemoryPanel, threeJsInfo.geometries)
+			this.processPanel(this.textureMemoryPanel, threeJsInfo.textures)
 			this.stats.update()
 		}
 	}
 
 	resetPanels = () => {
 		if (this.isDevelopmentMode) {
-			[this.trianglesPanel,this.glCallsPanel].forEach(panel => {
-				if (panel!==undefined)
-					panel.maxHeight = 0
+			;[this.trianglesPanel, this.glCallsPanel, this.geometryMemoryPanel, this.textureMemoryPanel].forEach(panel => {
+				if (panel !== undefined) panel.maxHeight = 0
 			})
 		}
 	}

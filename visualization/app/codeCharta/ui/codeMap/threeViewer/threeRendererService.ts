@@ -113,6 +113,10 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 		return ThreeRendererService.enableFXAA ? this.composer.getInfo() : this.renderer.info.render
 	}
 
+	getMemoryInfo = (): WebGLInfo["memory"] => {
+		return ThreeRendererService.enableFXAA ? this.composer.getMemoryInfo() : this.renderer.info.memory
+	}
+
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		if (isWhiteBackground) {
 			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white

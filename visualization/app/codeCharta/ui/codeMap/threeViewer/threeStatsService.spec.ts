@@ -12,7 +12,7 @@ describe("ThreeStatsService", () => {
 	let threeStatsService: ThreeStatsService
 	let threeRendererService: ThreeRendererService
 
-	let element: Element
+	let element: HTMLCanvasElement
 
 	beforeEach(() => {
 		restartSystem()
@@ -36,7 +36,7 @@ describe("ThreeStatsService", () => {
 	}
 
 	const withMockedElement = () => {
-		element = ({ appendChild: jest.fn() } as unknown) as Element
+		element = { ...element, appendChild: jest.fn() }
 	}
 
 	const mockStats = () => {
@@ -52,15 +52,15 @@ describe("ThreeStatsService", () => {
 	const mockPanels = (keys: string[]) => {
 		keys.forEach(key => {
 			threeStatsService[key] = {}
-			threeStatsService[key].panel = ({
+			threeStatsService[key].panel = {
 				update: jest.fn()
-			} as unknown) as Stats.Panel
+			}
 		})
 	}
 
 	const mockRenderer = () => {
 		threeRendererService.renderer = {} as WebGLRenderer
-		threeRendererService.renderer.info = ({ render: {} } as unknown) as WebGLInfo
+		threeRendererService.renderer.info = { render: {}, memory: {} } as WebGLInfo
 	}
 
 	describe("init", () => {
@@ -93,7 +93,7 @@ describe("ThreeStatsService", () => {
 		it("should call addPanel", () => {
 			threeStatsService["generateStatPanels"]()
 
-			expect(threeStatsService.stats.addPanel).toHaveBeenCalledTimes(2)
+			expect(threeStatsService.stats.addPanel).toHaveBeenCalledTimes(4)
 		})
 
 		it("should show stats", () => {
@@ -107,7 +107,7 @@ describe("ThreeStatsService", () => {
 		beforeEach(() => {
 			rebuildService()
 
-			mockPanels(["trianglesPanel", "glCallsPanel"])
+			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 			mockRenderer()
 			mockStats()
 		})
@@ -122,7 +122,7 @@ describe("ThreeStatsService", () => {
 			threeStatsService["processPanel"] = jest.fn()
 			threeStatsService.updateStats()
 
-			expect(threeStatsService["processPanel"]).toHaveBeenCalledTimes(2)
+			expect(threeStatsService["processPanel"]).toHaveBeenCalledTimes(4)
 		})
 
 		it("should call update stats", () => {
@@ -137,12 +137,13 @@ describe("ThreeStatsService", () => {
 			rebuildService()
 		})
 		it("should process panel", () => {
-			const customPanel = ({
+			const customPanel: CustomPanel = {
 				panel: {
-					update: jest.fn()
+					update: jest.fn(),
+					dom: null
 				},
 				maxHeight: 0
-			} as unknown) as CustomPanel
+			}
 
 			threeStatsService["processPanel"](customPanel, 1)
 
