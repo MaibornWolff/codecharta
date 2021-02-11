@@ -15,7 +15,7 @@ import { ScalingActions } from "./appSettings/scaling/scaling.actions"
 import { setAppSettings } from "./appSettings/appSettings.actions"
 
 function getItemsOfType(array: CCAction[], actionTypes: string[]) {
-	return array.filter(action => actionTypes.some(type => type === action.type))
+	return array.filter(action => actionTypes.includes(action.type))
 }
 
 describe("state.splitter", () => {

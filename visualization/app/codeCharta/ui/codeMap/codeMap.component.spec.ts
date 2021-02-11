@@ -40,7 +40,8 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	function mockElement() {
-		$element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }] as any
+		// @ts-ignore we only care about few properties for the tests.
+		$element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }]
 	}
 
 	function rebuildController() {

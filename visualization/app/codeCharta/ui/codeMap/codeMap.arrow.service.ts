@@ -188,7 +188,9 @@ export class CodeMapArrowService
 
 	private getNodesAsMap(nodes: Node[]) {
 		const map: Map<string, Node> = new Map()
-		nodes.forEach(node => map.set(node.path, node))
+		for (const node of nodes) {
+			map.set(node.path, node)
+		}
 		return map
 	}
 

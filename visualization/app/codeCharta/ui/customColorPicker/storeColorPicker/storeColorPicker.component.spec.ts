@@ -93,7 +93,7 @@ describe("StoreColorPickerController", () => {
 		const storeColorController = createStoreColorController()
 		storeColorController.$onInit()
 
-		const updateBrushColorSpy = jest.spyOn<any, any>(storeColorController, "updateBrushColor")
+		const updateBrushColorSpy = jest.spyOn<any, string>(storeColorController, "updateBrushColor")
 
 		const newColor = "#ffffff"
 		storeColorController.onMapColorsChanged({
@@ -167,7 +167,7 @@ describe("StoreColorPickerController", () => {
 		$rootScope.$digest()
 		storeColorController.$onInit()
 
-		const updateBrushSpy = jest.spyOn<any, any>(storeColorController, "updateBrushColor")
+		const updateBrushSpy = jest.spyOn<any, string>(storeColorController, "updateBrushColor")
 		storeColorController["$scope"].color = "#ffffff"
 		$rootScope.$digest()
 

@@ -66,7 +66,7 @@ export class ScenarioHelper {
 			}
 		}
 
-		return !(edge && !metricData.edgeMetricData.find(x => x.name === edge.edgeMetric))
+		return !(edge && !metricData.edgeMetricData.some(x => x.name === edge.edgeMetric))
 	}
 
 	private static getPreLoadScenarios() {
