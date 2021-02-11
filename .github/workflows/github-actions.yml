@@ -9,14 +9,14 @@ on:
     - main
 
 jobs:
- build_visualization:
-   name: Build Visualization
-   runs-on: ubuntu-latest
-   env:
+ build_visualization_test:
+    name: Visualization Test
+    runs-on: ubuntu-latest
+    env:
       working-directory: ./visualization
-   steps:
+    steps:
     - uses: actions/checkout@v2
-    
+
     - name: Setup Node.js environment
       uses: actions/setup-node@v2.1.4
       with:
@@ -33,49 +33,11 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-   
+          
     - name: Install Node
       run: npm install
-      working-directory: ${{env.working-directory}}   
-    
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
-      with:
-          name: visualization
-          path: ./visualization/
-    
-    
- 
- visualization_test:
-    needs: build_visualization
-    name: Visualization Test
-    runs-on: ubuntu-latest 
-    env:
-      working-directory: ./visualization
-    steps:
-  
-    - uses: actions/download-artifact@v2
-      with:
-             name: visualization
-             path: ./visualization
-     
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.4
-      with:
-        node-version: '12'  
-      
-    - name: Cache node modules
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-      
+      working-directory: ${{env.working-directory}} 
+
     - name: Test and Linter
       run: |
         npm run test --ci
@@ -88,19 +50,14 @@ jobs:
           name: coverage
           path: ./visualization/dist/
 
- visualization_e2e:
-    needs: build_visualization
+ build_visualization_e2e:
     name: Visualization E2E
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
     steps:
-   
-    - uses: actions/download-artifact@v2
-      with:
-             name: visualization
-             path: ./visualization
-   
+    - uses: actions/checkout@v2
+
     - name: Setup Node.js environment
       uses: actions/setup-node@v2.1.4
       with:
@@ -117,6 +74,10 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
+          
+    - name: Install Node
+      run: npm install
+      working-directory: ${{env.working-directory}}   
 
     - name: Test and Linter
       run: |
@@ -158,7 +119,7 @@ jobs:
           JAVA_HOME: '' 
 
  publish_sonar_visualization:  
-    needs: [visualization_test, visualization_e2e]
+    needs: [build_visualization_test, build_visualization_e2e]
     name: "Build and Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
     env:
