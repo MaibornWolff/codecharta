@@ -190,7 +190,7 @@ function getFileExtension(filePath: string): string {
 
 interface SettingChangedEventPayload {
 	eventName: string
-	newValue: any
+	newValue: unknown
 }
 
 interface NodeInteractionEventPayload {
@@ -248,7 +248,7 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 	}
 }
 
-function buildEventTrackingItem(actionType: string, payload?: any): EventTrackingItem | null {
+function buildEventTrackingItem(actionType: string, payload?: string & Record<string, string & MetricStatistics>): EventTrackingItem | null {
 	if (isSettingChangedEvent(actionType)) {
 		return {
 			eventType: "setting_changed",

@@ -77,9 +77,9 @@ module.exports = {
         "unicorn/filename-case": "off",
         "unicorn/no-null": "off",
         "unicorn/no-object-as-default-parameter": "off",
-        "unicorn/no-reduce": "off",
+        "unicorn/no-array-reduce": "off",
         "unicorn/prefer-add-event-listener": "off",
         "unicorn/prefer-query-selector": "off",
-        "unicorn/prefer-node-append": "off",
+        "unicorn/prefer-dom-node-append": "off",
     }
 }

@@ -40,7 +40,7 @@ export default abstract class Strip {
 	populate(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string) {
 		for (const node of nodes) {
 			const score = this.worstAspectRatio(this.nodes, rect, rootSize, metricName)
-			const newScore = this.worstAspectRatio(this.nodes.concat(node), rect, rootSize, metricName)
+			const newScore = this.worstAspectRatio([...this.nodes, node], rect, rootSize, metricName)
 
 			if (newScore < score) {
 				this.nodes.push(node)
