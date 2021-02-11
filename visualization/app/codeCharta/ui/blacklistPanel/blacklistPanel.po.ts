@@ -8,8 +8,9 @@ export class BlacklistPanelPageObject {
 				return false
 			}
 			const listContent: string[] = []
-			for (let i = 0; i < list.length; i++) {
-				listContent.push(list[i].innerHTML.trim())
+			// eslint-disable-next-line no-use-before-define
+			for (const element of list) {
+				listContent.push(element.innerHTML.trim())
 			}
 			return listContent.includes("*ts*") && listContent.includes("*html*")
 		})
@@ -34,8 +35,9 @@ export class BlacklistPanelPageObject {
 				return false
 			}
 			const listContent: string[] = []
-			for (let i = 0; i < list.length; i++) { 
-				listContent.push(list[i].innerHTML.trim())
+			// eslint-disable-next-line no-use-before-define
+			for (const element of list) {
+				listContent.push(element.innerHTML.trim())
 			}
 			return listContent.includes("*ts*") && !listContent.includes("*html*")
 		})
