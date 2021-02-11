@@ -62,7 +62,8 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function mockElement() {
-		element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }] as any
+		// @ts-ignore we only care about few properties for the test.
+		element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }]
 	}
 
 	function mockWindow() {
@@ -478,9 +479,9 @@ describe("nodeContextMenuController", () => {
 	describe("onBodyLeftClickHideNodeContextMenu", () => {
 		it("should not hide if a click on color-picker occurs", () => {
 			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
-			const mockedMouseEvent = {
+			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "CC-NODE-CONTEXT-MENU-COLOR-PICKER" }]
-			} as any
+			}
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
 			expect(broadcastHideEventSpy).not.toHaveBeenCalled()
@@ -488,9 +489,9 @@ describe("nodeContextMenuController", () => {
 
 		it("should hide if clicked somewhere but not within the color-picker", () => {
 			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
-			const mockedMouseEvent = {
+			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "DIV" }]
-			} as any
+			}
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
 			expect(broadcastHideEventSpy).toHaveBeenCalled()

@@ -50,7 +50,7 @@ export class CodeMapPreRenderService
 	private unifiedFileMeta: FileMeta
 
 	private readonly debounceRendering: () => void
-	private readonly debounceTracking: (actionType: string, payload?: any) => void
+	private readonly debounceTracking: (actionType: string, payload?: unknown) => void
 	private DEBOUNCE_TIME = 0
 
 	constructor(

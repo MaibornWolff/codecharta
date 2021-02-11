@@ -19,7 +19,7 @@ export interface StoreSubscriber {
 }
 
 export interface StoreExtendedSubscriber {
-	onStoreChangedExtended(actionType: string, data?: any)
+	onStoreChangedExtended(actionType: string, data?: unknown)
 }
 
 export interface DispatchOptions {
@@ -71,7 +71,7 @@ export class StoreService {
 		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType })
 	}
 
-	private notifyExtended(actionType: string, payload?: any) {
+	private notifyExtended(actionType: string, payload?: unknown) {
 		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EXTENDED_EVENT, { actionType, payload })
 	}
 

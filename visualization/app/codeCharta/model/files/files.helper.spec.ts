@@ -90,9 +90,9 @@ describe("files", () => {
 		})
 
 		it("should return the first fileState found if multiple files match the fileName", () => {
-			files.concat([{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.None }])
+			const expectedFiles = [...files, { file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.None }]
 
-			const result = getFileByFileName(files, TEST_DELTA_MAP_A.fileMeta.fileName)
+			const result = getFileByFileName(expectedFiles, TEST_DELTA_MAP_A.fileMeta.fileName)
 
 			expect(result).toEqual(TEST_DELTA_MAP_A)
 		})

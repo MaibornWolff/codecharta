@@ -19,8 +19,7 @@ describe("reduxHelper", () => {
 
 	describe("removeItemFromArray", () => {
 		it("should deepClone an array and remove the item", () => {
-			array.push(object1)
-			array.push(object2)
+			array.push(object1, object2)
 
 			const result = removeItemFromArray(array, object1)
 			mutateObject(object1)
