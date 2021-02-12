@@ -35,9 +35,9 @@ export class CodeChartaFileStorageEngine implements Storage {
 	readonly length = -1
 
 	clear(): void {
-		fs.readdirSync(this.fileStoragePath).forEach(file => {
+		for (const file of fs.readdirSync(this.fileStoragePath)) {
 			fs.unlinkSync(this.fileStoragePath + file)
-		})
+		}
 	}
 
 	getItem(key: string): string | null {

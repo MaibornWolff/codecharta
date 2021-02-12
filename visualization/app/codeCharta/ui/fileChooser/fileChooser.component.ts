@@ -4,7 +4,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { ExportCCFile } from "./../../codeCharta.api.model"
+import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
@@ -22,7 +22,8 @@ export class FileChooserController {
 			let content
 			let readFiles = 0
 
-			for (const file of element.files) {
+			for (let index = 0; index < element.files.length; index++) {
+				const file = element.files[index]
 				const isCompressed = file.name.endsWith(".gz")
 				const reader = new FileReader()
 				if (isCompressed) {
@@ -38,7 +39,7 @@ export class FileChooserController {
 				}
 
 				reader.onload = event => {
-					content = isCompressed ? zlib.unzipSync(Buffer.from((<any>event.target).result)) : event.target.result
+					content = isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)) : event.target.result
 				}
 
 				reader.onloadend = () => {
@@ -50,7 +51,7 @@ export class FileChooserController {
 							// Explicitly ignored
 						}
 					} else {
-						this.addNameDataPair(file, content)
+						this.addNameDataPair(file, content, index)
 					}
 
 					if (readFiles === element.files.length) {
@@ -66,7 +67,7 @@ export class FileChooserController {
 		this.files = []
 	}
 
-	private addNameDataPair(file: File, jsonString: string) {
+	private addNameDataPair(file: File, jsonString: string, index: number) {
 		let content: ExportCCFile
 
 		try {
@@ -79,11 +80,11 @@ export class FileChooserController {
 			// Explicitly ignored
 		}
 
-		this.files.push({
+		this.files[index] = {
 			fileName: file.name,
 			fileSize: file.size,
 			content
-		})
+		}
 	}
 }
 

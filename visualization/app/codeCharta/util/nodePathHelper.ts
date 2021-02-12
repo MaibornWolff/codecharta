@@ -26,5 +26,5 @@ export function getParent<T>(hashMap: Map<string, T>, path: string): T {
 		if (node) {
 			return node
 		}
-	} while (path !== CodeChartaService.ROOT_PATH && path.length)
+	} while (path !== CodeChartaService.ROOT_PATH && path.length > 0)
 }

@@ -30,10 +30,7 @@ describe("CustomConfigFileStateConnector", () => {
 				selectedAs: FileSelectionState.Reference
 			} as FileState
 
-			const fileState: FileState[] = []
-			fileState.push(fileStateSingle)
-			fileState.push(fileStateMultiple)
-			fileState.push(fileStateDelta)
+			const fileState: FileState[] = [fileStateSingle, fileStateMultiple, fileStateDelta]
 
 			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 
@@ -102,9 +99,7 @@ describe("CustomConfigFileStateConnector", () => {
 			const file2 = { fileMeta: { fileName: "file2.cc.json", fileChecksum: expectedMap2Md5 }, map: { name: "test2" } } as CCFile
 			const fileState2 = { file: file2, selectedAs: FileSelectionState.Single } as FileState
 
-			const fileState: FileState[] = []
-			fileState.push(fileState1)
-			fileState.push(fileState2)
+			const fileState: FileState[] = [fileState1, fileState2]
 
 			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 

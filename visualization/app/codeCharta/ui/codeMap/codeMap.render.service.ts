@@ -1,7 +1,7 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import * as SquarifiedLayoutGenerator from "../../util/algorithm/treeMapLayout/treeMapGenerator"
+import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
@@ -42,22 +42,25 @@ export class CodeMapRenderService {
 		const state = this.storeService.getState()
 		const {
 			appSettings: { layoutAlgorithm },
-			metricData
+			metricData: { nodeMetricData },
+			files
 		} = state
 		let nodes: Node[] = []
+		const deltaState = isDeltaState(files)
 		switch (layoutAlgorithm) {
 			case LayoutAlgorithm.StreetMap:
 			case LayoutAlgorithm.TreeMapStreet:
-				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricData.nodeMetricData, isDeltaState(state.files))
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, deltaState)
 				break
 			case LayoutAlgorithm.SquarifiedTreeMap:
-				nodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+				nodes = createTreemapNodes(map, state, nodeMetricData, deltaState)
 				break
 		}
 		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
 		// prevent multiple steps if the visibility is checked first.
-		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
-		return filteredNodes.sort((a, b) => b.height - a.height)
+		return nodes
+			.filter(node => node.visible && node.length > 0 && node.width > 0)
+			.sort((a, b) => b.height - a.height)
 	}
 
 	private setLabels(sortedNodes: Node[]) {
