@@ -2,8 +2,8 @@
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { isLeaf, IsNodeExcludedOrFlattened} from "./codeMapHelper"
-//import ignore from "ignore"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+
 
 const enum MedianSelectors {
 	MEDIAN = "MEDIAN",
@@ -21,19 +21,18 @@ export class NodeDecorator {
 	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 	
 		this.decorateMapWithMetricData(map, metricData)
-		for (const item of blacklist) {
+		for (const item of blacklist) {		
 			for (const { data } of hierarchy(map)) {
 				if (blacklist.length > 0) {
 					if (item.type === BlacklistType.flatten) {
-
-						data.isFlattened = IsNodeExcludedOrFlattened(data, item.path)
+						data.isFlattened = data.isFlattened ? true : IsNodeExcludedOrFlattened(data, item.path)
 					} else {
-						data.isExcluded = IsNodeExcludedOrFlattened(data, item.path) && isLeaf(data)
+						data.isExcluded = data.isExcluded ? true : IsNodeExcludedOrFlattened(data, item.path) && isLeaf(data)
 						console.log(item.path)
 					}
 				}
-			}
-		}		
+			}				
+		}
 	}
 
 	static decorateMapWithMetricData(map: CodeMapNode, metricData: MetricData){
