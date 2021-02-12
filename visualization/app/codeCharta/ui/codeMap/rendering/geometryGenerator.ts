@@ -72,9 +72,9 @@ export class GeometryGenerator {
 
 	private getMaxNodeDepth(nodes: Node[]) {
 		let max = 0
-		nodes.forEach(node => {
+		for (const node of nodes) {
 			max = Math.max(node.depth, max)
-		})
+		}
 		return max
 	}
 

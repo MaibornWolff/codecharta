@@ -211,7 +211,7 @@ export interface BlacklistItem {
 	type: BlacklistType
 	nodeType?: NodeType
 	attributes?: {
-		[metricName: string]: any
+		[metricName: string]: unknown
 	}
 }
 
@@ -363,6 +363,19 @@ export function stateObjectReviver(_, valueToRevive) {
 }
 
 export interface CCAction extends Action {
+	// TODO: Do not use any here! Make sure all our actions are properly declared.
+	//
+	// As a starting point:
+	//
+	// RecursivePartial<MetricData & DynamicSettings & LookUp & FileSettings & AppSettings & TreeMapSettings & FileState> & {
+	// 	metricData: MetricData
+	// 	lookUp: LookUp
+	// 	dynamicSettings: DynamicSettings
+	// 	fileSettings: FileSettings
+	// 	appSettings: AppSettings
+	// 	treeMap: TreeMapSettings
+	// 	files: FileState[]
+	// }
 	payload?: any
 }
 

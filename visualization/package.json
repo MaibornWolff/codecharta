@@ -95,7 +95,7 @@
 		"angular-sanitize": "^1.7.9",
 		"angularjs-nouislider": "^14.1.1",
 		"angularjs-slider": "^7.0.0",
-		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",												  
 		"color-convert": "^2.0.0",
 		"core-js": "^3.6.5",
 		"d3-hierarchy": "^2.0.0",
@@ -115,7 +115,7 @@
 		"shelljs": "^0.8.1",
 		"three": "^0.124.0",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "^0.47.0"
+		"typescript-json-schema": "^0.49.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.4",
@@ -143,7 +143,7 @@
 		"es6-shim": "^0.35.3",
 		"eslint": "^7.11.0",
 		"eslint-config-prettier": "^7.0.0",
-		"eslint-plugin-unicorn": "^24.0.0",
+		"eslint-plugin-unicorn": "^28.0.0",
 		"file-loader": "^6.0.0",
 		"html-loader": "^1.1.0",
 		"html-loader-jest": "^0.2.1",
@@ -156,7 +156,7 @@
 		"node-sass": "^5.0.0",
 		"nwjs-builder-phoenix": "^1.15.0",
 		"plop": "^2.7.3",
-		"puppeteer": "^5.4.1",
+		"puppeteer": "^7.0.4",
 		"rimraf": "^3.0.2",
 		"sass-loader": "^10.0.1",
 		"style-loader": "^2.0.0",
