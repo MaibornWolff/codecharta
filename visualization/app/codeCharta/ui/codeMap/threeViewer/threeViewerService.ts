@@ -23,15 +23,18 @@ export class ThreeViewerService {
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
 		const {
 			threeSceneService: { scene },
-			threeCameraService: { camera }
+			threeCameraService: { camera },
+			threeRendererService,
+			threeStatsService,
+			threeOrbitControlsService
 		} = this
 		camera.lookAt(scene.position)
 		scene.add(camera)
-		this.threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
-		this.threeStatsService.init(canvasElement)
-		this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
+		threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
+		threeStatsService.init(canvasElement)
+		threeOrbitControlsService.init(threeRendererService.renderer.domElement)
 
-		canvasElement.appendChild(this.threeRendererService.renderer.domElement)
+		canvasElement.append(threeRendererService.renderer.domElement)
 
 		// TODO do we need to remove these listeners ?
 		window.addEventListener("resize", () => this.onWindowResize())

@@ -23,7 +23,7 @@ export class ThreeStatsService {
 			this.stats.domElement.style.position = "absolute"
 			this.stats.domElement.style.left = "0"
 			this.stats.domElement.style.top = "0"
-			canvasElement.appendChild(this.stats.dom)
+			canvasElement.append(this.stats.dom)
 
 			this.generateStatPanels()
 		}
@@ -52,9 +52,9 @@ export class ThreeStatsService {
 
 	resetPanels = () => {
 		if (this.isDevelopmentMode) {
-			;[this.trianglesPanel, this.glCallsPanel, this.geometryMemoryPanel, this.textureMemoryPanel].forEach(panel => {
+			for (const panel of [this.trianglesPanel, this.glCallsPanel, this.geometryMemoryPanel, this.textureMemoryPanel]) {
 				if (panel !== undefined) panel.maxHeight = 0
-			})
+			}
 		}
 	}
 

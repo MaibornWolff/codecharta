@@ -45,7 +45,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const state = this.storeService.getState()
 
 		const { scaling, layoutAlgorithm } = state.appSettings
-		const { margin } = state.dynamicSettings
+		const { margin, heightMetric } = state.dynamicSettings
 
 		const newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
 
@@ -72,7 +72,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			if (labelText !== "") {
 				labelText += "\n"
 			}
-			labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+			labelText += `${node.attributes[heightMetric]} ${heightMetric}`
 		}
 
 		const label = this.makeText(labelText, 30, node)

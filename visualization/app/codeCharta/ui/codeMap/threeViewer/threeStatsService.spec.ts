@@ -50,12 +50,12 @@ describe("ThreeStatsService", () => {
 	}
 
 	const mockPanels = (keys: string[]) => {
-		keys.forEach(key => {
+		for (const key of keys) {
 			threeStatsService[key] = {}
 			threeStatsService[key].panel = {
 				update: jest.fn()
 			}
-		})
+		}
 	}
 
 	const mockRenderer = () => {

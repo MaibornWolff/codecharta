@@ -72,11 +72,11 @@ describe("ThreeRenderService", () => {
 			setFXAA(false)
 			threeRendererService.scene = threeSceneService.scene
 			threeRendererService.camera = threeCameraService.camera
-			const { scene, camera } = threeRendererService
+			const { scene, camera, renderer } = threeRendererService
 
 			threeRendererService.render()
 
-			expect(threeRendererService.renderer.render).toHaveBeenCalledWith(scene, camera)
+			expect(renderer.render).toHaveBeenCalledWith(scene, camera)
 		})
 	})
 })
