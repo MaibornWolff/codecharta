@@ -36,7 +36,7 @@ describe("ThreeStatsService", () => {
 	}
 
 	const withMockedElement = () => {
-		element = { ...element, appendChild: jest.fn() }
+		element = { ...element, append: jest.fn() }
 	}
 
 	const mockStats = () => {
@@ -69,10 +69,10 @@ describe("ThreeStatsService", () => {
 			mockRenderer()
 		})
 
-		it("should call appendChild", () => {
+		it("should call append", () => {
 			threeStatsService.init(element)
 
-			expect(element.appendChild).toHaveBeenCalled()
+			expect(element.append).toHaveBeenCalled()
 		})
 
 		it("should call generateStatPanels", () => {

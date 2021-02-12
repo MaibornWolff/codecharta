@@ -78,7 +78,7 @@ describe("ThreeViewerService", () => {
 	}
 
 	function withMockedElement() {
-		element = jest.fn().mockReturnValue({ appendChild: jest.fn() })()
+		element = jest.fn().mockReturnValue({ append: jest.fn() })()
 	}
 
 	function withMockedThreeCameraService() {
@@ -132,10 +132,10 @@ describe("ThreeViewerService", () => {
 			expect(threeOrbitControlsService.init).toHaveBeenCalledWith({ height: 1, width: 1 })
 		})
 
-		it("should call appendChild", () => {
+		it("should call append", () => {
 			threeViewerService.init(element)
 
-			expect(element.appendChild).toHaveBeenCalledWith({ height: 1, width: 1 })
+			expect(element.append).toHaveBeenCalledWith({ height: 1, width: 1 })
 		})
 
 		it("should setup three event listeners", () => {
