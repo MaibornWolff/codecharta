@@ -67,6 +67,8 @@ function initializeAppSettings(target: CustomConfig) {
 		sortingOrderAscending: false,
 		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
+		layoutAlgorithm: undefined,
+		maxTreeMapFiles: 0,
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
 			angularGreen: "",
@@ -121,7 +123,7 @@ function initializeTreeMapSettings(target: CustomConfig) {
 	}
 }
 
-function deepMapOneToOther<T>(source: any, target: T) {
+function deepMapOneToOther<T>(source: State, target: T) {
 	for (const [key, value] of Object.entries(source)) {
 		// if a property of source is missing, we don't want to copy it into target.
 		if (!Object.prototype.hasOwnProperty.call(target, key)) {

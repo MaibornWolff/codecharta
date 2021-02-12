@@ -3,6 +3,7 @@ import { IRootScopeService, IAngularEvent, ITimeoutService } from "angular"
 import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { StoreService } from "../../../state/store.service"
+import { LayoutAlgorithmSubscriber, LayoutAlgorithmService } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import {
 	FocusedNodePathService,
 	FocusNodeSubscriber,
@@ -11,6 +12,7 @@ import {
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
@@ -19,7 +21,8 @@ export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
-export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber {
+export class ThreeOrbitControlsService
+	implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber, LayoutAlgorithmSubscriber {
 	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 	private static AUTO_FIT_TIMEOUT = 0
 
@@ -37,6 +40,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
+		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 	}
 
 	onFocusNode() {
@@ -51,6 +55,10 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}
+	}
+
+	onLayoutAlgorithmChanged() {
+		this.autoFitTo()
 	}
 
 	setControlTarget() {

@@ -6,7 +6,6 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
-import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
@@ -56,14 +55,6 @@ describe("ColorSettingsPanelController", () => {
 			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
-		it("should subscribe to WhiteColorBuildingsService", () => {
-			WhiteColorBuildingsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
-		})
-
 		it("should subscribe to InvertColorRangeService", () => {
 			InvertColorRangeService.subscribe = jest.fn()
 
@@ -98,20 +89,6 @@ describe("ColorSettingsPanelController", () => {
 			colorSettingsPanelController.onInvertColorRangeChanged(false)
 
 			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeFalsy()
-		})
-	})
-
-	describe("onWhiteColorBuildingsChanged", () => {
-		it("should set whiteColorBuildings flag to true", () => {
-			colorSettingsPanelController.onWhiteColorBuildingsChanged(true)
-
-			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
-		})
-
-		it("should set whiteColorBuildings flag to false", () => {
-			colorSettingsPanelController.onWhiteColorBuildingsChanged(false)
-
-			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeFalsy()
 		})
 	})
 
@@ -152,16 +129,6 @@ describe("ColorSettingsPanelController", () => {
 			expect(storeService.getState().appSettings.invertDeltaColors).toBeFalsy()
 			expect(storeService.getState().appSettings.mapColors.positiveDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.negativeDelta)
 			expect(storeService.getState().appSettings.mapColors.negativeDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.positiveDelta)
-		})
-	})
-
-	describe("applyWhiteColorBuildings", () => {
-		it("should call update settings correctly", () => {
-			colorSettingsPanelController["_viewModel"].whiteColorBuildings = false
-
-			colorSettingsPanelController.applyWhiteColorBuildings()
-
-			expect(storeService.getState().appSettings.whiteColorBuildings).toBeFalsy()
 		})
 	})
 })

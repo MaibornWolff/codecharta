@@ -40,7 +40,7 @@ describe("codecharta", () => {
 		const message = await dialogError.getMessage()
 		expect(message).toEqual("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.")
 		await page.waitForSelector(".md-dialog-container")
-		await dialogError.clickOk()
+		await dialogError.clickOkAndReturnWhenFullyClosed()
 	}
 
 	async function checkSelectedFileName(shouldBe: string) {

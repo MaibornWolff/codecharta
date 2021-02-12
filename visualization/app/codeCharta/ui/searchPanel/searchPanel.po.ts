@@ -1,5 +1,6 @@
 export class SearchPanelPageObject {
 	private EXPANDED = "expanded"
+	private EXPANDED_REMOVE = "expanded-remove"
 
 	async toggle() {
 		const wasOpen = await this.isOpen()
@@ -16,6 +17,6 @@ export class SearchPanelPageObject {
 	async isOpen() {
 		await page.waitForSelector("#search-panel-card")
 		const classNames = await page.$eval("#search-panel-card", element => element["className"])
-		return classNames.includes(this.EXPANDED)
+		return classNames.includes(this.EXPANDED) && !classNames.includes(this.EXPANDED_REMOVE)
 	}
 }

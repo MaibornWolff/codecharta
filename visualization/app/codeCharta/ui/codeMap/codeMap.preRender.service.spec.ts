@@ -12,7 +12,7 @@ import { ScalingService } from "../../state/store/appSettings/scaling/scaling.se
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { addFile, resetFiles, setMultiple, setSingleByName } from "../../state/store/files/files.actions"
+import { addFile, resetFiles, setDelta, setMultiple, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3-hierarchy"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
@@ -22,6 +22,7 @@ import { calculateNewNodeMetricData } from "../../state/store/metricData/nodeMet
 import { getCCFiles } from "../../model/files/files.helper"
 import { calculateNewEdgeMetricData } from "../../state/store/metricData/edgeMetricData/edgeMetricData.actions"
 import { clone } from "../../util/clone"
+import { DeltaGenerator } from "../../util/deltaGenerator"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -225,6 +226,28 @@ describe("codeMapPreRenderService", () => {
 			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(isIdUnique()).toBeTruthy()
+		})
+
+		it("should call DeltaGenerator with the right parameters", () => {
+			DeltaGenerator.getDeltaFile = jest.fn().mockReturnThis()
+			storeService.dispatch(setDelta(getCCFiles(storeService.getState().files)[0], getCCFiles(storeService.getState().files)[1]))
+			const resultMapA = NodeDecorator.decorateMapWithPathAttribute(getCCFiles(storeService.getState().files)[0])
+			const resultMapB = NodeDecorator.decorateMapWithPathAttribute(getCCFiles(storeService.getState().files)[1])
+
+			codeMapPreRenderService.onMetricDataChanged()
+
+			expect(DeltaGenerator.getDeltaFile).toBeCalledWith(resultMapA, resultMapB)
+		})
+
+		it("should call DeltaGenerator with right parameters when maps are switched", () => {
+			DeltaGenerator.getDeltaFile = jest.fn().mockReturnThis()
+			storeService.dispatch(setDelta(getCCFiles(storeService.getState().files)[1], getCCFiles(storeService.getState().files)[0]))
+			const resultMapA = NodeDecorator.decorateMapWithPathAttribute(getCCFiles(storeService.getState().files)[0])
+			const resultMapB = NodeDecorator.decorateMapWithPathAttribute(getCCFiles(storeService.getState().files)[1])
+
+			codeMapPreRenderService.onMetricDataChanged()
+
+			expect(DeltaGenerator.getDeltaFile).toBeCalledWith(resultMapB, resultMapA)
 		})
 	})
 })

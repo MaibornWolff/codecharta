@@ -213,7 +213,7 @@ export class GeometryGenerator {
 		const topSurfaceInfos = data.floorSurfaceInformation
 		if (topSurfaceInfos[0] === undefined) {
 			// Add default group
-			geometry.addGroup(0, Infinity, 0)
+			geometry.addGroup(0, Number.POSITIVE_INFINITY, 0)
 		} else {
 			this.addMaterialGroups(data, geometry)
 		}
@@ -237,7 +237,7 @@ export class GeometryGenerator {
 
 			this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
 
-			let verticesCountUntilNextFloorLabelRenderer = Infinity
+			let verticesCountUntilNextFloorLabelRenderer = Number.POSITIVE_INFINITY
 			const startOfNextDefaultRenderer = currentSurfaceInfo.surfaceStartIndex + verticesPerPlane
 			const nextSurfaceInfo = topSurfaceInfos[surfaceIndex + 1]
 

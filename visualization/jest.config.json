@@ -6,7 +6,8 @@
 	"snapshotSerializers": ["jest-serializer-html"],
 	"transform": {
 		"\\.(ts|tsx)$": "ts-jest",
-		"\\.(html|glsl)$": "<rootDir>/mocks/fileTransformer.js"
+		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js",
+		"\\.html$": "html-loader-jest"
 	},
 	"transformIgnorePatterns": ["<rootDir>/node_modules"],
 	"moduleNameMapper": {

@@ -244,6 +244,8 @@ describe("nodeContextMenuController", () => {
 		it("should add flattened blacklistItem", () => {
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
 			const expected = {
+				attributes: {},
+				nodeType: NodeType.FOLDER,
 				path: "/root/Parent Leaf",
 				type: BlacklistType.flatten
 			}
@@ -264,7 +266,7 @@ describe("nodeContextMenuController", () => {
 
 			nodeContextMenuController.showFlattenedNode()
 
-			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(expected)
+			expect(storeService.getState().fileSettings.blacklist).not.toContain(expected)
 		})
 	})
 
@@ -376,7 +378,7 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should add exclude blacklistItem", () => {
-			const expected = { path: "/root/Parent Leaf", type: BlacklistType.exclude }
+			const expected = { attributes: {}, nodeType: "Folder", path: "/root/Parent Leaf", type: BlacklistType.exclude }
 
 			nodeContextMenuController.excludeNode()
 
@@ -470,6 +472,28 @@ describe("nodeContextMenuController", () => {
 			const actual = nodeContextMenuController.isNodeOrParentFocused()
 
 			expect(actual).toBeFalsy()
+		})
+	})
+
+	describe("onBodyLeftClickHideNodeContextMenu", () => {
+		it("should not hide if a click on color-picker occurs", () => {
+			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const mockedMouseEvent = {
+				composedPath: () => [{ nodeName: "CC-NODE-CONTEXT-MENU-COLOR-PICKER" }]
+			} as any
+			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
+
+			expect(broadcastHideEventSpy).not.toHaveBeenCalled()
+		})
+
+		it("should hide if clicked somewhere but not within the color-picker", () => {
+			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const mockedMouseEvent = {
+				composedPath: () => [{ nodeName: "DIV" }]
+			} as any
+			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
+
+			expect(broadcastHideEventSpy).toHaveBeenCalled()
 		})
 	})
 })

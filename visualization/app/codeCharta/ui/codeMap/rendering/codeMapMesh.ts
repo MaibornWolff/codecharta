@@ -4,7 +4,7 @@ import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, State } from "../../../codeCharta.model"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
-import { TreeMapHelper } from "../../../util/treeMapHelper"
+import { TreeMapHelper } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 
 export interface MousePos {
 	x: number

@@ -82,7 +82,9 @@ export class NodeContextMenuController
 		document.getElementById("codeMap").addEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
 
-	onBodyLeftClickHideNodeContextMenu = () => {
+	onBodyLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
+		if (this.isEventFromColorPicker(mouseEvent)) return
+
 		// Just close node context menu, if you click anywhere on the map.
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 
@@ -126,20 +128,35 @@ export class NodeContextMenuController
 	}
 
 	flattenNode() {
-		const blacklistItem: BlacklistItem = { path: this._viewModel.codeMapNode.path, type: BlacklistType.flatten }
+		const codeMapNode = this._viewModel.codeMapNode
+		const blacklistItem: BlacklistItem = {
+			path: codeMapNode.path,
+			type: BlacklistType.flatten,
+			nodeType: codeMapNode.type,
+			attributes: codeMapNode.attributes
+		}
 		this.storeService.dispatch(addBlacklistItem(blacklistItem))
 	}
 
 	showFlattenedNode() {
-		const blacklistItem: BlacklistItem = { path: this._viewModel.codeMapNode.path, type: BlacklistType.flatten }
+		const codeMapNode = this._viewModel.codeMapNode
+		const blacklistItem: BlacklistItem = {
+			path: codeMapNode.path,
+			type: BlacklistType.flatten,
+			nodeType: codeMapNode.type,
+			attributes: codeMapNode.attributes
+		}
 		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
 	}
 
 	excludeNode() {
+		const codeMapNode = this._viewModel.codeMapNode
 		this.storeService.dispatch(
 			addBlacklistItem({
-				path: this._viewModel.codeMapNode.path,
-				type: BlacklistType.exclude
+				path: codeMapNode.path,
+				type: BlacklistType.exclude,
+				nodeType: codeMapNode.type,
+				attributes: codeMapNode.attributes
 			})
 		)
 	}
@@ -193,6 +210,10 @@ export class NodeContextMenuController
 			return this.packageMatchesColor(color)
 		}
 		return this.packageMatchesColorOfParentMP(color)
+	}
+
+	private isEventFromColorPicker(mouseEvent: MouseEvent) {
+		return mouseEvent.composedPath().some((element: any) => element?.nodeName === "CC-NODE-CONTEXT-MENU-COLOR-PICKER")
 	}
 
 	private isNodeMarked() {

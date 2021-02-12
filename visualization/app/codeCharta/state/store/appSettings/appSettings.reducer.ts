@@ -26,6 +26,8 @@ import { amountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.reducer
 import { isPresentationMode } from "./isPresentationMode/isPresentationMode.reducer"
 import { combineReducers } from "redux"
 import { experimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
+import { layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
+import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
@@ -54,7 +56,9 @@ const appSettings = combineReducers({
 	amountOfEdgePreviews,
 	amountOfTopLabels,
 	isPresentationMode,
-	experimentalFeaturesEnabled
+	experimentalFeaturesEnabled,
+	layoutAlgorithm,
+	maxTreeMapFiles
 })
 
 export default appSettings

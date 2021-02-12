@@ -8,7 +8,7 @@ import { getParent } from "../../util/nodePathHelper"
 export class CodeMapActionsService {
 	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {}
 
-	markFolder({ path }: CodeMapNode, color: string) {
+	markFolder({ path }: { path?: string }, color: string) {
 		const { markedPackages } = this.storeService.getState().fileSettings
 		const markedPackagesMap = new Map(markedPackages.map(entry => [entry.path, entry]))
 

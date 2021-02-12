@@ -10,7 +10,16 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, DEFAULT_STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
+import {
+	CODE_MAP_BUILDING,
+	CONSTANT_HIGHLIGHT,
+	DEFAULT_STATE,
+	FILE_META,
+	TEST_FILE_WITH_PATHS,
+	TEST_NODE_LEAF,
+	TEST_NODES,
+	withMockedEventMethods
+} from "../../util/dataMocks"
 import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
@@ -19,7 +28,11 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
-import { Box3, Vector3 } from "three"
+import { CodeMapLabelService } from "./codeMap.label.service"
+import { CodeMapMesh } from "./rendering/codeMapMesh"
+import { Material, Object3D, Raycaster, Vector3 } from "three"
+import { CodeMapPreRenderService } from "./codeMap.preRender.service"
+import { LazyLoader } from "../../util/lazyLoader"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -31,6 +44,8 @@ describe("codeMapMouseEventService", () => {
 	let threeSceneService: ThreeSceneService
 	let threeUpdateCycleService: ThreeUpdateCycleService
 	let storeService: StoreService
+	let codeMapLabelService: CodeMapLabelService
+	let codeMapPreRenderService: CodeMapPreRenderService
 
 	let codeMapBuilding: CodeMapBuilding
 	let file: CCFile
@@ -58,6 +73,8 @@ describe("codeMapMouseEventService", () => {
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		storeService = getService<StoreService>("storeService")
+		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		file = klona(TEST_FILE_WITH_PATHS)
@@ -72,7 +89,9 @@ describe("codeMapMouseEventService", () => {
 			threeRendererService,
 			threeSceneService,
 			threeUpdateCycleService,
-			storeService
+			storeService,
+			codeMapLabelService,
+			codeMapPreRenderService
 		)
 
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
@@ -257,6 +276,97 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
+	describe("changeCursorIndicator", () => {
+		it("should set the mouseIcon to grabbing", () => {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
+		})
+
+		it("should set the mouseIcon to default", () => {
+			document.body.style.cursor = CursorType.Pointer
+
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Default)
+		})
+	})
+
+	describe("updateHoveringIntegrationTest", () => {
+		it("should not animate any labels and reset animated label and temporary label if the map is turned", () => {
+			const label = new Object3D()
+			setAnimatedLabel(label)
+
+			// Grabbing and turning the map (should reset the animated label)
+			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.LeftClick } as MouseEvent)
+			expect(codeMapMouseEventService["isGrabbing"]).toBe(true)
+			expect(codeMapMouseEventService["isMoving"]).toBe(false)
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 2, clientY: 3 } as MouseEvent)
+
+			const animatedLabelPosition = label.position.clone()
+
+			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService["highlightedLabel"]).toBeNull()
+			expect(codeMapMouseEventService["temporaryLabelForBuilding"]).toBeNull()
+			expect(label["material"].opacity).toEqual(0.7)
+			expect(label.position).not.toEqual(animatedLabelPosition)
+		})
+
+		it("should not animate any labels and reset animated label and temporary label if the map is moved", () => {
+			const label = new Object3D()
+			setAnimatedLabel(label)
+
+			// Grabbing and moving the map (should reset the animated label)
+			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.RightClick } as MouseEvent)
+			expect(codeMapMouseEventService["isGrabbing"]).toBe(false)
+			expect(codeMapMouseEventService["isMoving"]).toBe(true)
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 3, clientY: 4 } as MouseEvent)
+
+			const animatedLabelPosition = label.position.clone()
+
+			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService["highlightedLabel"]).toBeNull()
+			expect(codeMapMouseEventService["temporaryLabelForBuilding"]).toBeNull()
+			expect(label["material"].opacity).toEqual(0.7)
+			expect(label.position).not.toEqual(animatedLabelPosition)
+		})
+
+		function setAnimatedLabel(label: Object3D) {
+			// At first, animate a label
+			threeSceneService = new ThreeSceneService($rootScope, storeService)
+			threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
+			threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
+			threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
+
+			const resultPosition = new Vector3(0.5, 0.5, 0)
+
+			const labels = []
+			const labelLine = new Object3D()
+			const labelNode = new Object3D()
+			label["material"] = new Material()
+			const rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
+
+			labelNode.translateX(-4)
+			labelNode.translateY(5)
+
+			labels.push(label, labelLine, labelNode, labelLine)
+
+			threeSceneService.animateLabel(label, rayCaster, labels)
+
+			// Ensure that label is animated correctly
+			expect(label["material"].opacity).toEqual(1)
+			expect(label.position).toEqual(resultPosition)
+			expect(threeSceneService["highlightedLabel"]).toEqual(label)
+
+			// Rebuild service with modified threeSceneService
+			rebuildService()
+		}
+	})
+
 	describe("updateHovering", () => {
 		beforeEach(() => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
@@ -270,6 +380,10 @@ describe("codeMapMouseEventService", () => {
 			idToNode.set(file.map.id, file.map)
 			storeService.dispatch(setIdToBuilding(idToBuilding))
 			storeService.dispatch(setIdToNode(idToNode))
+			threeSceneService.resetLabel = jest.fn()
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			threeSceneService.animateLabel = jest.fn()
+			threeSceneService.getHighlightedBuilding = jest.fn()
 		})
 
 		it("should call updateMatrixWorld", () => {
@@ -280,26 +394,59 @@ describe("codeMapMouseEventService", () => {
 			expect(threeCameraService.camera.updateMatrixWorld).toHaveBeenCalledWith(false)
 		})
 
-		it("should un-highlight the building, when no intersection was found and a  building is hovered", () => {
+		it("should un-highlight the building, when no intersection was found and a building is hovered", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
+			codeMapMouseEventService["highlightedInTreeView"] = null
+
+			codeMapMouseEventService.updateHovering()
+			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
+		})
+
+		it("should not call resetLabel if no change has happened ", () => {
 			codeMapMouseEventService["modifiedLabel"] = null
 			codeMapMouseEventService["highlightedInTreeView"] = null
 
 			codeMapMouseEventService.updateHovering()
 
-			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
+			expect(threeSceneService.getLabelForHoveredNode).not.toHaveBeenCalled()
 		})
 
-		it("should hover a node when an intersection was found and the cursor is set to pointing", () => {
+		it("should call resetLabel when a new building is hovered", () => {
 			codeMapMouseEventService["modifiedLabel"] = null
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
-			threeSceneService.getHighlightedBuilding = jest.fn()
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService.resetLabel).toHaveBeenCalled()
+		})
+
+		it("should call clearTemporaryLabel and remove temporary label when a new building is hovered", () => {
+			codeMapMouseEventService["temporaryLabelForBuilding"] = CODE_MAP_BUILDING.node
+
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			})
+			codeMapLabelService.clearTemporaryLabel = jest.fn()
+			codeMapMouseEventService.updateHovering()
+
+			expect(codeMapLabelService.clearTemporaryLabel).toHaveBeenCalled()
+			expect(codeMapLabelService["temporaryLabelForBuilding"]).not.toEqual(CODE_MAP_BUILDING.node)
+		})
+
+		it("should hover a node when an intersection was found and the cursor is set to pointing and call getLabelForHoveredNode", () => {
+			codeMapMouseEventService["modifiedLabel"] = null
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			})
+			threeSceneService.animateLabel = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(threeSceneService.animateLabel).toHaveBeenCalled()
 			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
 		})
 
@@ -310,7 +457,6 @@ describe("codeMapMouseEventService", () => {
 			})
 			codeMapMouseEventService["isGrabbing"] = true
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
-			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
@@ -326,7 +472,6 @@ describe("codeMapMouseEventService", () => {
 			})
 			codeMapMouseEventService["isMoving"] = true
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
-			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
@@ -344,54 +489,6 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.highlightSingleBuilding).not.toHaveBeenCalled()
-		})
-	})
-
-	describe("getIntersectionDistance", () => {
-		let bboxOverlap = null
-		let bboxHovered = null
-		let bboxMiss = null
-		let normedVector = null
-		let bboxContain = null
-		const overlapDistance = 2
-
-		beforeEach(() => {
-			bboxOverlap = new Box3(new Vector3(2, 2, 2), new Vector3(4, 4, 4))
-			bboxHovered = new Box3(new Vector3(1, 1, 1), new Vector3(2, 2, 2))
-			bboxMiss = new Box3(new Vector3(5, 5, 5), new Vector3(6, 6, 6))
-			bboxContain = new Box3(new Vector3(3, 3, 3), new Vector3(4, 4, 4))
-			normedVector = new Vector3(1, 1, 1)
-		})
-
-		it("should calculate distance if labels partially overlap", () => {
-			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxOverlap, normedVector, overlapDistance)
-			expect(distance).toEqual(overlapDistance)
-		})
-
-		it("should calculate distance if labels fully overlap", () => {
-			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxContain, normedVector, overlapDistance)
-			expect(distance).toEqual(overlapDistance)
-		})
-
-		it("should return 0 if labels dont overlap", () => {
-			const distance = codeMapMouseEventService.getIntersectionDistance(bboxHovered, bboxMiss, normedVector, overlapDistance)
-			expect(distance).toEqual(0)
-		})
-	})
-
-	describe("changeCursorIndicator", () => {
-		it("should set the mouseIcon to grabbing", () => {
-			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
-
-			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
-		})
-
-		it("should set the mouseIcon to default", () => {
-			document.body.style.cursor = CursorType.Pointer
-
-			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
-
-			expect(document.body.style.cursor).toEqual(CursorType.Default)
 		})
 	})
 
@@ -522,20 +619,23 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onDocumentDoubleClick", () => {
-		it("should return if highlighted is null", () => {
+		it("should return if highlighted and selected is null", () => {
 			threeSceneService.getHighlightedBuilding = jest.fn()
+			threeSceneService.getSelectedBuilding = jest.fn()
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).not.toHaveBeenCalled()
 		})
 
-		it("should not do anything if hovered.node.link is null", () => {
+		it("should not call window.open if hovered.node.link and selected.node.link is null", () => {
 			threeSceneService.getHighlightedBuilding = jest.fn()
+			threeSceneService.getSelectedBuilding = jest.fn()
 
 			codeMapBuilding.setNode({ link: null } as Node)
 
 			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
+			codeMapMouseEventService["selectedInCodeMap"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
@@ -548,6 +648,34 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+		})
+
+		it("should call open with link if selected.node.link is defined", () => {
+			codeMapMouseEventService["selectedInCodeMap"] = codeMapBuilding
+
+			codeMapMouseEventService.onDocumentDoubleClick()
+
+			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+		})
+
+		it("should call open with link if selected.node.link is defined", () => {
+			codeMapMouseEventService["selectedInCodeMap"] = codeMapBuilding
+
+			codeMapMouseEventService.onDocumentDoubleClick()
+
+			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+		})
+
+		it("should call open file if selected.node.link is undefined", () => {
+			LazyLoader.openFile = jest.fn()
+			const node: Node = klona(TEST_NODE_LEAF)
+			node.isLeaf = true
+			node.link = null
+			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, node, null))
+			codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue(klona(FILE_META))
+			codeMapMouseEventService.onDocumentDoubleClick()
+
+			expect(LazyLoader.openFile).toHaveBeenCalled()
 		})
 	})
 
@@ -615,6 +743,23 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onShouldUnhoverNode()
 
 			expect(codeMapMouseEventService["unhoverBuilding"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("drawTemporaryLabelFor", () => {
+		it("should call addLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			codeMapLabelService.addLabel = jest.fn()
+
+			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
+			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
+
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, {
+				showNodeName: true,
+				showNodeMetric: false
+			})
+			expect(nodeHeight).toBeGreaterThan(0)
 		})
 	})
 })

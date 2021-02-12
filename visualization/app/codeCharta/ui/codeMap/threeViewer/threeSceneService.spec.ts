@@ -19,7 +19,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
-import { Vector3 } from "three"
+import { Box3, Matrix4, Object3D, Raycaster, Vector3 } from "three"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -161,6 +161,38 @@ describe("ThreeSceneService", () => {
 		})
 	})
 
+	describe("getIntersectionDistance", () => {
+		let bboxOverlap = null
+		let bboxHovered = null
+		let bboxMiss = null
+		let normedVector = null
+		let bboxContain = null
+		const overlapDistance = 2
+
+		beforeEach(() => {
+			bboxOverlap = new Box3(new Vector3(2, 2, 2), new Vector3(4, 4, 4))
+			bboxHovered = new Box3(new Vector3(1, 1, 1), new Vector3(2, 2, 2))
+			bboxMiss = new Box3(new Vector3(5, 5, 5), new Vector3(6, 6, 6))
+			bboxContain = new Box3(new Vector3(3, 3, 3), new Vector3(4, 4, 4))
+			normedVector = new Vector3(1, 1, 1)
+		})
+
+		it("should calculate distance if labels partially overlap", () => {
+			const distance = threeSceneService["getIntersectionDistance"](bboxHovered, bboxOverlap, normedVector, overlapDistance)
+			expect(distance).toEqual(overlapDistance)
+		})
+
+		it("should calculate distance if labels fully overlap", () => {
+			const distance = threeSceneService["getIntersectionDistance"](bboxHovered, bboxContain, normedVector, overlapDistance)
+			expect(distance).toEqual(overlapDistance)
+		})
+
+		it("should return 0 if labels dont overlap", () => {
+			const distance = threeSceneService["getIntersectionDistance"](bboxHovered, bboxMiss, normedVector, overlapDistance)
+			expect(distance).toEqual(0)
+		})
+	})
+
 	describe("clearConstantHighlight", () => {
 		it("should clear all the constant highlighted buildings ", () => {
 			threeSceneService["constantHighlight"].set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
@@ -184,11 +216,98 @@ describe("ThreeSceneService", () => {
 		})
 	})
 
+	describe("getLabelForHoveredNode", () => {
+		it("should return null if list empty", () => {
+			const labelForHoveredNode = threeSceneService.getLabelForHoveredNode(CODE_MAP_BUILDING_TS_NODE, null)
+
+			expect(labelForHoveredNode).toBe(null)
+		})
+
+		it("should return null if label.node is not in list", () => {
+			const node = new Object3D()
+			const labels = []
+			node.userData = CODE_MAP_BUILDING
+			labels.push(node)
+
+			const labelForHoveredNode = threeSceneService.getLabelForHoveredNode(CODE_MAP_BUILDING_TS_NODE, labels)
+
+			expect(labelForHoveredNode).toBe(null)
+		})
+
+		it("should return label object for a given label.node", () => {
+			const labels = []
+			const otherNode = new Object3D()
+			const labelLine = new Object3D()
+			const labeledNode = new Object3D()
+
+			labeledNode.userData = CODE_MAP_BUILDING_TS_NODE
+			otherNode.userData = CODE_MAP_BUILDING
+			labels.push(otherNode, labelLine, labeledNode, labelLine)
+
+			const labelForHoveredNode = threeSceneService.getLabelForHoveredNode(CODE_MAP_BUILDING_TS_NODE, labels)
+
+			expect(labelForHoveredNode).toBe(labeledNode)
+		})
+	})
+
 	describe("clearHighlight", () => {
 		it("should clear the highlighting list", () => {
 			threeSceneService.clearHighlight()
 
 			expect(threeSceneService["highlighted"]).toHaveLength(0)
+		})
+	})
+
+	describe("animateLabel", () => {
+		let labels = null
+		let labelLine = null
+		let otherNode = null
+		let label = null
+		let rayCaster = null
+
+		beforeEach(() => {
+			labels = []
+			labelLine = new Object3D()
+			otherNode = new Object3D()
+			label = new Object3D()
+			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
+		})
+
+		it("should animate the label by moving it 20% on the viewRay if it has no intersection", () => {
+			otherNode.translateX(-4)
+			otherNode.translateY(5)
+			const resultPosition = new Vector3(0.5, 0.5, 0)
+
+			labels.push(label, labelLine, otherNode, labelLine)
+
+			threeSceneService.animateLabel(label, rayCaster, labels)
+			expect(threeSceneService["highlightedLabel"]).toEqual(label)
+			expect(label.position).toEqual(resultPosition)
+		})
+
+		it("should animate the label by moving it 20% on the viewRay if the intersection distance is smaller", () => {
+			otherNode.applyMatrix4(new Matrix4().makeTranslation(0.3, 0.3, 0))
+
+			const resultPosition = new Vector3(0.5, 0.5, 0)
+
+			labels.push(label, labelLine, otherNode, labelLine)
+
+			threeSceneService.animateLabel(label, rayCaster, labels)
+			expect(threeSceneService["highlightedLabel"]).toEqual(label)
+			expect(label.position).toEqual(resultPosition)
+		})
+
+		it("should animate the label by moving it on top of intersecting node", () => {
+			const unObstructingNode = new Object3D()
+			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(0, 0, 0))
+			unObstructingNode.applyMatrix4(new Matrix4().makeTranslation(0.5, 0.5, 0))
+
+			label.userData = CODE_MAP_BUILDING
+			labels.push(label, labelLine, otherNode, labelLine, unObstructingNode, labelLine)
+
+			threeSceneService.animateLabel(label, rayCaster, labels)
+			expect(threeSceneService["highlightedLabel"]).toEqual(label)
+			expect(label.position).toEqual(unObstructingNode.position)
 		})
 	})
 

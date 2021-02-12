@@ -84,7 +84,7 @@ describe("RibbonBarController", () => {
 		})
 
 		it("should minimize all other panels except the ribbon bar panels", () => {
-			storeService.dispatch(setSearchPanelMode(SearchPanelMode.exclude))
+			storeService.dispatch(setSearchPanelMode(SearchPanelMode.blacklist))
 			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 
 			ribbonBarController.toggle(PanelSelection.COLOR_PANEL_OPEN)

@@ -7,6 +7,7 @@ gem "wdm", "~> 0.1.0" if Gem.win_platform?
 gem "kramdown", ">= 2.3.0"
 gem "activesupport", "~> 4.2.11"
 gem "tzinfo", "~> 1.1"
+gem "nokogiri", ">= 1.11.0"
 
 # If you have any plugins, put them here!
 group :jekyll_plugins do

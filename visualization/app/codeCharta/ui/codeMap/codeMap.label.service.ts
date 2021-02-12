@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { Node } from "../../codeCharta.model"
+import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -12,6 +12,7 @@ interface InternalLabel {
 	line: Line | null
 	heightValue: number
 	lineCount: number
+	node: Node
 }
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
@@ -25,9 +26,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_HEIGHT_COEFFICIENT = 15 / 4 //empirically gathered, needed to prevent label collision with building with higher margin, TODO scale with margin factor once its avalible
 	private LABEL_HEIGHT_POSITION = 60
 
-	private currentScale: Vector3 = new Vector3(1, 1, 1)
-	private resetScale = false
+	private previousScaling: Vector3 = new Vector3(1, 1, 1)
 	private lineCount = 1
+	private nodeHeight = 0
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -40,81 +41,105 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	//labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNode: number) {
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
+		const { scaling } = this.storeService.getState().appSettings
+		const { margin } = this.storeService.getState().dynamicSettings
+
+		const newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
+
+		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
 		// todo: tk rename to addLeafLabel
+
+		const multiplier = scaling.clone()
 
 		const state = this.storeService.getState()
 		const x = node.x0 - state.treeMap.mapSize
 		const y = node.z0
 		const z = node.y0 - state.treeMap.mapSize
 
-		const labelX = x + node.width / 2
-		const labelY = y + highestNode
+		const labelX = (x + node.width / 2) * multiplier.x
+		const labelY = (y + this.nodeHeight) * multiplier.y
 		const labelYOrigin = y + node.height
-		const labelZ = z + node.length / 2
+		const labelZ = (z + node.length / 2) * multiplier.z
 
-		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
-			let labelText = ""
+		let labelText = ""
 
-			if (options.showNodeName) {
-				labelText = `${node.name}`
-			}
-			if (options.showNodeMetric) {
-				if (labelText !== "") {
-					labelText += "\n"
-				}
-				labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
-			}
-
-			const label = this.makeText(labelText, 30)
-			const { margin } = this.storeService.getState().dynamicSettings
-
-			label.sprite.position.set(
-				labelX,
-				labelY + this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR + label.heightValue / 2,
-				labelZ
-			) //label_height
-			label.line = this.makeLine(labelX, labelY, labelYOrigin, labelZ)
-			label.sprite.material.color = new Color(this.mapLabelColors.rgb)
-			label.sprite.material.opacity = this.mapLabelColors.alpha
-			label.sprite.userData = { node }
-
-			this.threeSceneService.labels.add(label.sprite)
-			this.threeSceneService.labels.add(label.line)
-
-			this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
+		if (options.showNodeName) {
+			labelText = `${node.name}`
 		}
-		this.resetScale = true
+		if (options.showNodeMetric) {
+			if (labelText !== "") {
+				labelText += "\n"
+			}
+			labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+		}
+
+		const label = this.makeText(labelText, 30, node)
+		const {
+			appSettings: { layoutAlgorithm }
+		} = state
+		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
+		let labelOffset = labelHeightScaled + label.heightValue / 2
+
+		switch (layoutAlgorithm) {
+			// !remark : algorithm scaling is not same as the squarified layout,
+			// !layout offset needs to be scaled down,the divided by value is just empirical,
+			// TODO !needs further investigation
+			case LayoutAlgorithm.StreetMap:
+			case LayoutAlgorithm.TreeMapStreet:
+				labelOffset /= 10
+				this.LABEL_HEIGHT_POSITION = 0
+				label.line = this.makeLine(labelX, labelY + labelOffset, labelYOrigin, labelZ)
+				break
+			default:
+				label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
+		}
+
+		label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
+
+		label.sprite.material.color = new Color(this.mapLabelColors.rgb)
+		label.sprite.material.opacity = this.mapLabelColors.alpha
+		label.sprite.userData = { node }
+
+		this.threeSceneService.labels.add(label.sprite)
+		this.threeSceneService.labels.add(label.line)
+
+		this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
 	}
 
 	clearLabels() {
 		this.labels = []
+		this.nodeHeight = 0
+		this.LABEL_HEIGHT_POSITION = 60
 		// Reset the children
 		this.threeSceneService.labels.children.length = 0
+	}
+
+	clearTemporaryLabel(hoveredNode: Node) {
+		const index = this.labels.findIndex(({ node }) => node === hoveredNode)
+		if (index > -1) {
+			this.labels.splice(index, 1)
+			this.threeSceneService.labels.children.length -= 2
+		}
 	}
 
 	scale() {
 		const { scaling } = this.storeService.getState().appSettings
 		const { margin } = this.storeService.getState().dynamicSettings
-		if (this.resetScale) {
-			this.resetScale = false
-			this.currentScale = new Vector3(1, 1, 1)
-		}
+
+		const multiplier = scaling.clone().divide(this.previousScaling)
 
 		for (const label of this.labels) {
 			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
-			label.sprite.position
-				.sub(labelHeightDifference.clone())
-				.divide(this.currentScale.clone())
-				.multiply(scaling.clone())
-				.add(labelHeightDifference.clone())
+			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
 
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
-			label.line.geometry["vertices"][0].divide(this.currentScale.clone()).multiply(scaling.clone())
-			label.line.geometry["vertices"][1].copy(label.sprite.position)
+			label.line.geometry["vertices"][0].multiply(multiplier)
+			label.line.geometry["vertices"][1] = label.sprite.position
 			label.line.geometry.translate(0, 0, 0)
 		}
-		this.currentScale.copy(scaling)
+
+		this.previousScaling.copy(scaling)
 	}
 
 	onCameraChanged() {
@@ -123,7 +148,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	private makeText(message: string, fontsize: number): InternalLabel {
+	private makeText(message: string, fontsize: number, node: Node): InternalLabel {
 		const canvas = document.createElement("canvas")
 		const context = canvas.getContext("2d")
 
@@ -173,7 +198,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			sprite,
 			heightValue: canvas.height,
 			line: null,
-			lineCount: multiLineContext.length
+			lineCount: multiLineContext.length,
+			node
 		}
 	}
 
@@ -194,14 +220,16 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	private setLabelSize(sprite: Sprite, labelWidth: number = sprite.material.map.image.width, label: InternalLabel) {
 		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
-		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
-		if (label !== null) {
-			this.lineCount = label.lineCount
-		}
-		if (this.lineCount > 1) {
-			sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / 25, 1)
-		} else {
-			sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
+		if (this.threeCameraService.camera) {
+			const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
+			if (label !== null) {
+				this.lineCount = label.lineCount
+			}
+			if (this.lineCount > 1) {
+				sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / 25, 1)
+			} else {
+				sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
+			}
 		}
 	}
 

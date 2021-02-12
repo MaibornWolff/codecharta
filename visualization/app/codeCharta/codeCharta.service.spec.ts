@@ -130,7 +130,7 @@ describe("codeChartaService", () => {
 			expect(isSingleState(storeService.getState().files)).toBeTruthy()
 		})
 
-		it("should load a valid file", () => {
+		it("should load a valid file and update root data", () => {
 			codeChartaService.loadFiles([
 				{
 					fileName,
@@ -143,6 +143,9 @@ describe("codeChartaService", () => {
 			expect(isSingleState(storeService.getState().files)).toBeTruthy()
 			expect(dialogService.showValidationWarningDialog).not.toHaveBeenCalled()
 			expect(dialogService.showValidationErrorDialog).not.toHaveBeenCalled()
+
+			expect(CodeChartaService.ROOT_NAME).toEqual(expected.map.name)
+			expect(CodeChartaService.ROOT_PATH).toEqual(`/${expected.map.name}`)
 		})
 
 		it("should load the default scenario after loading a valid file", () => {

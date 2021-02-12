@@ -86,7 +86,7 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onClick", () => {
 		it("should minimize all panels", () => {
-			storeService.dispatch(setSearchPanelMode(SearchPanelMode.exclude))
+			storeService.dispatch(setSearchPanelMode(SearchPanelMode.blacklist))
 			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 
 			codeMapController.onClick()

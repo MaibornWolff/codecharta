@@ -30,7 +30,7 @@ export class CodeMapGeometricDescription {
 
 	intersect(ray: Ray) {
 		let intersectedBuilding: CodeMapBuilding
-		let leastIntersectedDistance = Infinity
+		let leastIntersectedDistance = Number.POSITIVE_INFINITY
 
 		const boxTranslation = this.scales.clone().multiplyScalar(this.mapSize).multiply(new Vector3(-1, 0, -1))
 

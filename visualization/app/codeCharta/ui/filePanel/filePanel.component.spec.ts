@@ -8,6 +8,7 @@ import { addFile, resetFiles, resetSelection, setDelta, setMultiple, setSingle }
 import { FilesService } from "../../state/store/files/files.service"
 import { getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState } from "../../model/files/files"
+import { CodeChartaService } from "../../codeCharta.service"
 
 describe("filePanelController", () => {
 	let filePanelController: FilePanelController
@@ -146,33 +147,72 @@ describe("filePanelController", () => {
 	})
 
 	describe("onSingleFileChange", () => {
-		it("should set a single file in state", () => {
+		it("should set a single file in state und update root data", () => {
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Single
+				}
+			]
 			filePanelController.onSingleFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
 
 			expect(isSingleState(storeService.getState().files)).toBeTruthy()
 			expect(getVisibleFileStates(storeService.getState().files)[0].selectedAs).toEqual(FileSelectionState.Single)
+
+			expect(CodeChartaService.ROOT_NAME).toEqual(TEST_DELTA_MAP_B.map.name)
+			expect(CodeChartaService.ROOT_PATH).toEqual(`/${TEST_DELTA_MAP_B.map.name}`)
 		})
 	})
 
 	describe("onDeltaReferenceFileChange", () => {
-		it("should set referenceFile in delta mode", () => {
+		it("should set referenceFile in delta mode and update root data", () => {
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Reference
+				}
+			]
 			filePanelController["_viewModel"].selectedFileNames.delta.comparison = TEST_DELTA_MAP_A.fileMeta.fileName
 
 			filePanelController.onDeltaReferenceFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
 
 			expect(isDeltaState(storeService.getState().files)).toBeTruthy()
 			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(FileSelectionState.Reference)
+
+			expect(CodeChartaService.ROOT_NAME).toEqual(TEST_DELTA_MAP_B.map.name)
+			expect(CodeChartaService.ROOT_PATH).toEqual(`/${TEST_DELTA_MAP_B.map.name}`)
 		})
 	})
 
 	describe("onDeltaComparisonFileChange", () => {
-		it("should set comparisonFile in delta mode", () => {
+		it("should set comparisonFile in delta mode and update root data", () => {
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.Reference
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Comparison
+				}
+			]
 			filePanelController["_viewModel"].selectedFileNames.delta.reference = TEST_DELTA_MAP_A.fileMeta.fileName
 
 			filePanelController.onDeltaComparisonFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
 
 			expect(isDeltaState(storeService.getState().files)).toBeTruthy()
 			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(FileSelectionState.Comparison)
+
+			expect(CodeChartaService.ROOT_NAME).toEqual(TEST_DELTA_MAP_A.map.name)
+			expect(CodeChartaService.ROOT_PATH).toEqual(`/${TEST_DELTA_MAP_A.map.name}`)
 		})
 	})
 

@@ -85,7 +85,7 @@ function fileHasHigherMinorVersion(file: ExportCCFile) {
 	return apiVersion.minor > getAsApiVersion(latestApiVersion).minor
 }
 
-function getAsApiVersion(version: string): ApiVersion {
+export function getAsApiVersion(version: string): ApiVersion {
 	return {
 		major: Number(version.split(".")[0]),
 		minor: Number(version.split(".")[1])

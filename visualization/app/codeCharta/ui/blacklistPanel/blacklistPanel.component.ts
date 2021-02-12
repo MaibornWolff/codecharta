@@ -39,14 +39,8 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 	}
 }
 
-export const blacklistPanelFlattenComponent = {
-	selector: "blacklistPanelExcludeComponent",
-	template: require("./blacklistPanel.exclude.component.html"),
-	controller: BlacklistPanelController
-}
-
-export const blacklistPanelExcludeComponent = {
-	selector: "blacklistPanelFlattenComponent",
-	template: require("./blacklistPanel.flatten.component.html"),
+export const blacklistPanelComponent = {
+	selector: "blacklistPanelComponent",
+	template: require("./blacklistPanel.component.html"),
 	controller: BlacklistPanelController
 }

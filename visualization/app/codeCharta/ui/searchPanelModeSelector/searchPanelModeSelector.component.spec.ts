@@ -57,11 +57,11 @@ describe("SearchPanelModeSelectorController", () => {
 
 	describe("onSearchPanelModeChanged", () => {
 		it("should update searchPanelMode", () => {
-			const searchPanelMode = SearchPanelMode.flatten
+			const searchPanelMode = SearchPanelMode.blacklist
 
 			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode)
 
-			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.flatten)
+			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.blacklist)
 		})
 	})
 

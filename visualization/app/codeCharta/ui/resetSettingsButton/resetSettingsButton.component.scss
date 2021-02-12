@@ -1,9 +1,11 @@
 reset-settings-button-component {
+	height: 30px;
 	.md-button {
+		top: 0px;
 		margin-left: 0;
 		min-width: 37px;
-		position: absolute;
-		bottom: 0;
+		float: right;
+		bottom: 10px;
 		right: 10px;
 		border-radius: 50%;
 	}
