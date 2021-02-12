@@ -4,6 +4,7 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
+import { Color, WebGLRenderer } from "three"
 
 export class ThreeViewerService {
 	/* ngInject */
@@ -14,6 +15,31 @@ export class ThreeViewerService {
 		private threeRendererService: ThreeRendererService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {}
+
+	private createSaveButton(renderer: WebGLRenderer) {
+		const link = document.createElement("a")
+		link.appendChild(document.createTextNode("Link"))
+		link.setAttribute("download", "test.png")
+		link.onclick = () => this.loadScript(link, renderer)
+		link.style.left = "0"
+		link.style.top = "0"
+		link.style.position = "absolute"
+		return link
+	}
+
+	private loadScript(link, renderer: WebGLRenderer) {
+		const currentClearColor = new Color()
+		renderer.setPixelRatio(window.devicePixelRatio)
+		renderer.getClearColor(currentClearColor)
+
+		renderer.setClearColor(0x000000, 0)
+		this.threeSceneService.scene.background = null
+		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
+		renderer.setClearColor(currentClearColor)
+
+		link.setAttribute("href", renderer.domElement.toDataURL())
+		renderer.setPixelRatio(1)
+	}
 
 	init(canvasElement: Element) {
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
@@ -27,6 +53,8 @@ export class ThreeViewerService {
 		this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
 
 		canvasElement.appendChild(this.threeRendererService.renderer.domElement)
+
+		canvasElement.appendChild(this.createSaveButton(this.threeRendererService.renderer))
 
 		window.addEventListener("resize", () => this.onWindowResize())
 		window.addEventListener("focusin", event => this.onFocusIn(event))
