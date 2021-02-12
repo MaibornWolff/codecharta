@@ -1,8 +1,8 @@
 "use strict"
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
-import { isLeaf, transformPath } from "./codeMapHelper"
-import ignore from "ignore"
+import { isLeaf, IsNodeExcludedOrFlattened} from "./codeMapHelper"
+//import ignore from "ignore"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 const enum MedianSelectors {
@@ -19,24 +19,24 @@ const enum EdgeAttributeType {
 
 export class NodeDecorator {
 	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
-		const flattened = ignore()
-		const excluded = ignore()
-
-		let hasFlattenedPaths = false
-		let hasExcludedPaths = false
-
+	
+		this.decorateMapWithMetricData(map, metricData)
 		for (const item of blacklist) {
-			const path = transformPath(item.path)
+			for (const { data } of hierarchy(map)) {
+				if (blacklist.length > 0) {
+					if (item.type === BlacklistType.flatten) {
 
-			if (item.type === BlacklistType.flatten) {
-				hasFlattenedPaths = true
-				flattened.add(path)
-			} else {
-				hasExcludedPaths = true
-				excluded.add(path)
+						data.isFlattened = IsNodeExcludedOrFlattened(data, item.path)
+					} else {
+						data.isExcluded = IsNodeExcludedOrFlattened(data, item.path) && isLeaf(data)
+						console.log(item.path)
+					}
+				}
 			}
-		}
+		}		
+	}
 
+	static decorateMapWithMetricData(map: CodeMapNode, metricData: MetricData){
 		const { nodeMetricData, edgeMetricData } = metricData
 		let id = 0
 		for (const { data } of hierarchy(map)) {
@@ -70,13 +70,6 @@ export class NodeDecorator {
 					data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
 				}
 			}
-
-			if (blacklist.length > 0) {
-				const path = transformPath(data.path)
-				data.isFlattened = hasFlattenedPaths && flattened.ignores(path)
-				data.isExcluded = hasExcludedPaths && excluded.ignores(path)
-			}
-
 			// TODO: Verify the need for this code. It is unclear why child
 			// properties are copied to their parent.
 			if (data.children?.length === 1 && data.children[0].children?.length > 0) {
