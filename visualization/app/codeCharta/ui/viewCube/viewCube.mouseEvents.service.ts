@@ -83,7 +83,6 @@ export class ViewCubeMouseEventsService {
 			if (this.currentlyHovered) {
 				this.triggerViewCubeUnhoverEvent()
 			}
-
 			this.triggerViewCubeEventPropagation("mousemove", event)
 		}
 	}

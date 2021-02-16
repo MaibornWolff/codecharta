@@ -1,6 +1,5 @@
-import angular from "angular"
+import angular, { IAngularStatic } from "angular"
 import "angular-mocks"
-import { IAngularStatic } from "angular"
 
 export const NGMock: IAngularStatic = angular
 export const NG = angular
@@ -10,7 +9,8 @@ export function instantiateModule(id: string) {
 }
 
 export function getService<T>(id: string): T {
+	// eslint-disable-next-line prefer-const
 	let service: T = null
-	eval("NGMock.mock.inject(function(_" + id + "_) { service = _" + id + "_; });")
+	eval(`NGMock.mock.inject(function(_${  id  }_) { service = _${  id  }_; });`)
 	return service
 }

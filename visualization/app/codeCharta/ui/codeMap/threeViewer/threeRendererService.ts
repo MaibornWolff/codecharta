@@ -7,7 +7,7 @@ import {
 } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass"
-import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderString"
+import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderStrings"
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
 import { WEBGL } from "three/examples/jsm/WebGL"
 import { SharpnessMode } from "../../../codeCharta.model"

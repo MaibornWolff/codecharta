@@ -111,8 +111,14 @@ describe("codeMapMouseEventService", () => {
 		threeRendererService = codeMapMouseEventService["threeRendererService"] = jest.fn().mockReturnValue({
 			renderer: {
 				domElement: {
-					addEventListener: jest.fn()
-				}
+					addEventListener: jest.fn(),
+					getBoundingClientRect : jest.fn().mockReturnValue ({
+						top: 0
+					}),
+					width : 1,
+					height : 1
+				},
+				getPixelRatio : jest.fn().mockReturnValue(2)
 			}
 		})()
 	}
@@ -711,6 +717,34 @@ describe("codeMapMouseEventService", () => {
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+		})
+	})
+
+	describe("transformHTMLToSceneCoordinates",() => {
+		beforeEach(() => {
+			rebuildService()
+			codeMapMouseEventService.onDocumentMouseMove = jest.fn()
+		})
+
+		it("should call getPixelRatio", () => {
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 6, clientY: 20 } as MouseEvent)
+			codeMapMouseEventService["transformHTMLToSceneCoordinates"]()
+
+			expect(threeRendererService.renderer.getPixelRatio).toHaveBeenCalled()
+		})
+
+		it("should call getBoundingClientRect", () => {
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 6, clientY: 20 } as MouseEvent)
+			codeMapMouseEventService["transformHTMLToSceneCoordinates"]()
+
+			expect(threeRendererService.renderer.domElement.getBoundingClientRect).toHaveBeenCalled()
+		})
+
+		it("should return the screen cordiantes", () => {
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 6, clientY: 20 } as MouseEvent)
+			const result = codeMapMouseEventService["transformHTMLToSceneCoordinates"]()
+
+			expect(result).toStrictEqual({"x":-1,"y":1})
 		})
 	})
 

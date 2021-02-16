@@ -64,23 +64,20 @@ export class CustomComposer extends EffectComposer {
 				this.swapBuffers()
 			}
 
-			if (MaskPass !== undefined) {
-				if (pass instanceof MaskPass) {
-					maskActive = true
-				} else if (pass instanceof ClearMaskPass) {
-					maskActive = false
-				}
+			if (pass instanceof MaskPass) {
+				maskActive = true
+			} else if (pass instanceof ClearMaskPass) {
+				maskActive = false
 			}
 		}
 		this.renderer.setRenderTarget(currentRenderTarget)
 	}
 
 	dispose() {
-		let pass: Pass.FullScreenQuad
+		// TODO add more dispose 
 		for (let index = 0; index < this.passes.length; index++) {
-			if (this.passes[index] instanceof Pass.FullScreenQuad) {
-				pass.dispose()
-			}
+			this.passes[index]["fsQuad"]?.material.dispose()
+			this.passes[index]["fsQuad"]?._mesh?.geometry.dispose()
 		}
 	}
 }

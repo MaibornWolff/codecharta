@@ -39,14 +39,15 @@ describe("ThreeStatsService", () => {
 		element = { ...element, append: jest.fn() }
 	}
 
-	const mockStats = () => {
+	const withMockedStats = () => {
 		threeStatsService.stats = {} as Stats
 		threeStatsService.stats.addPanel = jest.fn()
 		threeStatsService.stats.showPanel = jest.fn()
 		threeStatsService.stats.update = jest.fn()
 		threeStatsService.stats.domElement = {
-			style: {} as CSSStyleDeclaration
-		} as HTMLDivElement
+			style: {} as CSSStyleDeclaration,
+			remove: jest.fn()
+		} as unknown as HTMLDivElement
 	}
 
 	const mockPanels = (keys: string[]) => {
@@ -76,7 +77,7 @@ describe("ThreeStatsService", () => {
 		})
 
 		it("should call generateStatPanels", () => {
-			mockStats()
+			withMockedStats()
 			threeStatsService["generateStatPanels"] = jest.fn()
 			threeStatsService.init(element)
 
@@ -87,7 +88,7 @@ describe("ThreeStatsService", () => {
 	describe("generateStatPanels", () => {
 		beforeEach(() => {
 			rebuildService()
-			mockStats()
+			withMockedStats()
 		})
 
 		it("should call addPanel", () => {
@@ -109,7 +110,7 @@ describe("ThreeStatsService", () => {
 
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 			mockRenderer()
-			mockStats()
+			withMockedStats()
 		})
 		it("should call update panels", () => {
 			threeStatsService.updateStats()
@@ -132,6 +133,23 @@ describe("ThreeStatsService", () => {
 		})
 	})
 
+	describe("resetPanels", () => {
+		beforeEach(() => {
+			rebuildService()
+
+			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
+		})
+
+		it("should rest all panels", () => {
+			threeStatsService.resetPanels()
+
+			expect(threeStatsService["trianglesPanel"]["maxHeight"]).toBe(0)
+			expect(threeStatsService["glCallsPanel"]["maxHeight"]).toBe(0)
+			expect(threeStatsService["geometryMemoryPanel"]["maxHeight"]).toBe(0)
+			expect(threeStatsService["textureMemoryPanel"]["maxHeight"]).toBe(0)
+		})
+	})
+
 	describe("processPanel", () => {
 		beforeEach(() => {
 			rebuildService()
@@ -149,6 +167,19 @@ describe("ThreeStatsService", () => {
 
 			expect(customPanel.maxHeight).toBe(1)
 			expect(customPanel.panel.update).toHaveBeenCalledWith(1, 1.3)
+		})
+	})
+
+	describe("destroy", () => {
+		beforeEach(() => {
+			rebuildService()
+			withMockedStats()
+		})
+
+		it("should remove dom Element", () => {
+			threeStatsService.destroy()
+
+			expect(threeStatsService["stats"]["domElement"].remove).toHaveBeenCalled()
 		})
 	})
 })
