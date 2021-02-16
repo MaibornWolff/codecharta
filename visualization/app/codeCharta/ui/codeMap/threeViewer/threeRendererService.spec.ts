@@ -41,22 +41,23 @@ describe("ThreeRenderService", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeCameraService.camera = new PerspectiveCamera()
 		threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
-		threeRendererService.composer = ({ 
-			render: jest.fn(), 
-			setSize: jest.fn(), 
+		threeRendererService.composer = ({
+			render: jest.fn(),
+			setSize: jest.fn(),
 			addPass: jest.fn(),
 			getInfo: jest.fn().mockReturnValue({
 				triangles: 0
 			}),
 			getMemoryInfo: jest.fn().mockReturnValue({
-				geom : 0
-			})} as unknown) as CustomComposer
-		threeRendererService.renderer = ({ 
-			render: jest.fn(), 
+				geom: 0
+			})
+		} as unknown) as CustomComposer
+		threeRendererService.renderer = ({
+			render: jest.fn(),
 			getPixelRatio: jest.fn(),
 			info: {
-				render: {triangles : 1},
-				memory: {geom: 1}
+				render: { triangles: 1 },
+				memory: { geom: 1 }
 			}
 		} as unknown) as WebGLRenderer
 		threeRendererService["initGL"] = jest.fn()
@@ -73,22 +74,22 @@ describe("ThreeRenderService", () => {
 	})
 
 	describe("init", () => {
-		beforeEach( () => {
+		beforeEach(() => {
 			rebuildService()
 			threeRendererService["initGL"] = jest.fn()
 		})
 		it("should call initGL", () => {
-			threeRendererService.init(10,20,new Scene(),new Camera())
+			threeRendererService.init(10, 20, new Scene(), new Camera())
 
-			expect(threeRendererService["initGL"]).toHaveBeenCalledWith(10,20)
+			expect(threeRendererService["initGL"]).toHaveBeenCalledWith(10, 20)
 		})
 
 		it("should call onIsWhiteBackgroundChanged with true when option is set", () => {
 			threeRendererService["onIsWhiteBackgroundChanged"] = jest.fn()
 			storeService.dispatch(setIsWhiteBackground(true))
 
-			threeRendererService.init(10,20,new Scene(),new Camera())
-			
+			threeRendererService.init(10, 20, new Scene(), new Camera())
+
 			expect(threeRendererService["onIsWhiteBackgroundChanged"]).toBeCalledWith(true)
 		})
 
@@ -96,13 +97,12 @@ describe("ThreeRenderService", () => {
 			threeRendererService["onIsWhiteBackgroundChanged"] = jest.fn()
 			storeService.dispatch(setIsWhiteBackground(false))
 
-			threeRendererService.init(10,20,new Scene(),new Camera())
-			
+			threeRendererService.init(10, 20, new Scene(), new Camera())
+
 			expect(threeRendererService["onIsWhiteBackgroundChanged"]).toBeCalledWith(false)
 		})
 	})
 
-	
 	describe("setGLOptions", () => {
 		it("should call and set the standard options", () => {
 			storeService.dispatch(setSharpnessMode(SharpnessMode.Standard))
@@ -146,7 +146,7 @@ describe("ThreeRenderService", () => {
 	})
 
 	describe("initComposer", () => {
-		beforeEach ( () => {
+		beforeEach(() => {
 			rebuildService()
 			mockThreeJs()
 		})
@@ -179,7 +179,7 @@ describe("ThreeRenderService", () => {
 			const info = threeRendererService.getInfo()
 
 			expect(threeRendererService.composer.getInfo).toBeCalled()
-			expect(info).toStrictEqual({triangles: 0})
+			expect(info).toStrictEqual({ triangles: 0 })
 		})
 
 		it("should return renderer.info when FXAA disabled", () => {
@@ -187,7 +187,7 @@ describe("ThreeRenderService", () => {
 
 			const info = threeRendererService.getInfo()
 
-			expect(info).toStrictEqual({triangles: 1})
+			expect(info).toStrictEqual({ triangles: 1 })
 		})
 	})
 
@@ -201,7 +201,7 @@ describe("ThreeRenderService", () => {
 			const info = threeRendererService.getMemoryInfo()
 
 			expect(threeRendererService.composer.getMemoryInfo).toBeCalled()
-			expect(info).toStrictEqual({geom: 0})
+			expect(info).toStrictEqual({ geom: 0 })
 		})
 
 		it("should return renderer.info when FXAA disabled", () => {
@@ -209,10 +209,10 @@ describe("ThreeRenderService", () => {
 
 			const info = threeRendererService.getMemoryInfo()
 
-			expect(info).toStrictEqual({geom: 1})
+			expect(info).toStrictEqual({ geom: 1 })
 		})
 	})
-	
+
 	describe("render", () => {
 		beforeEach(() => {
 			mockThreeJs()

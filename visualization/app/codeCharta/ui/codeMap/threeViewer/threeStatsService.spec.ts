@@ -44,10 +44,10 @@ describe("ThreeStatsService", () => {
 		threeStatsService.stats.addPanel = jest.fn()
 		threeStatsService.stats.showPanel = jest.fn()
 		threeStatsService.stats.update = jest.fn()
-		threeStatsService.stats.domElement = {
+		threeStatsService.stats.domElement = ({
 			style: {} as CSSStyleDeclaration,
 			remove: jest.fn()
-		} as unknown as HTMLDivElement
+		} as unknown) as HTMLDivElement
 	}
 
 	const mockPanels = (keys: string[]) => {
@@ -140,7 +140,7 @@ describe("ThreeStatsService", () => {
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 		})
 
-		it("should rest all panels", () => {
+		it("should reset all panels", () => {
 			threeStatsService.resetPanels()
 
 			expect(threeStatsService["trianglesPanel"]["maxHeight"]).toBe(0)

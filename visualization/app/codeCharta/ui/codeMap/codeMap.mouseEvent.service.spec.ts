@@ -112,13 +112,13 @@ describe("codeMapMouseEventService", () => {
 			renderer: {
 				domElement: {
 					addEventListener: jest.fn(),
-					getBoundingClientRect : jest.fn().mockReturnValue ({
+					getBoundingClientRect: jest.fn().mockReturnValue({
 						top: 0
 					}),
-					width : 1,
-					height : 1
+					width: 1,
+					height: 1
 				},
-				getPixelRatio : jest.fn().mockReturnValue(2)
+				getPixelRatio: jest.fn().mockReturnValue(2)
 			}
 		})()
 	}
@@ -720,7 +720,7 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
-	describe("transformHTMLToSceneCoordinates",() => {
+	describe("transformHTMLToSceneCoordinates", () => {
 		beforeEach(() => {
 			rebuildService()
 			codeMapMouseEventService.onDocumentMouseMove = jest.fn()
@@ -744,7 +744,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onDocumentMouseMove({ clientX: 6, clientY: 20 } as MouseEvent)
 			const result = codeMapMouseEventService["transformHTMLToSceneCoordinates"]()
 
-			expect(result).toStrictEqual({"x":-1,"y":1})
+			expect(result).toStrictEqual({ x: -1, y: 1 })
 		})
 	})
 

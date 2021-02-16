@@ -74,7 +74,7 @@ export class CustomComposer extends EffectComposer {
 	}
 
 	dispose() {
-		// TODO add more dispose 
+		// TODO add more dispose
 		for (let index = 0; index < this.passes.length; index++) {
 			this.passes[index]["fsQuad"]?.material.dispose()
 			this.passes[index]["fsQuad"]?._mesh?.geometry.dispose()
