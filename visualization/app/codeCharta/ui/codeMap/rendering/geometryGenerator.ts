@@ -197,6 +197,7 @@ export class GeometryGenerator {
 		const indices = new Uint32Array(data.indices)
 		const ids = new Float32Array(data.subGeometryIdx)
 		const deltas = new Float32Array(data.deltas)
+		const isHeight = new Float32Array(data.isVertexHeight)
 
 		const geometry = new BufferGeometry()
 
@@ -207,6 +208,7 @@ export class GeometryGenerator {
 		geometry.setAttribute("deltaColor", new BufferAttribute(deltaColors, dimension))
 		geometry.setAttribute("subGeomIdx", new BufferAttribute(ids, 1))
 		geometry.setAttribute("delta", new BufferAttribute(deltas, 1))
+		geometry.setAttribute("isHeight", new BufferAttribute(isHeight, 1))
 
 		geometry.setIndex(new BufferAttribute(indices, 1))
 

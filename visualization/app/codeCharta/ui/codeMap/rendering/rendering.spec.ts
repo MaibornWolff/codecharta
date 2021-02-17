@@ -24,7 +24,7 @@ describe("common rendering tests", () => {
 
 		it("addVertex", () => {
 			const ivd: IntermediateVertexData = new IntermediateVertexData()
-			const result = ivd.addVertex(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector2(2, 2), "#000000", 3, 20)
+			const result = ivd.addVertex(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector2(2, 2), "#000000", 3, 20, 0)
 			expect(ivd.indices.length).toBe(0)
 			expect(ivd.positions.length).toBe(1)
 			expect(ivd.normals.length).toBe(1)
@@ -32,6 +32,7 @@ describe("common rendering tests", () => {
 			expect(ivd.colors.length).toBe(1)
 			expect(ivd.subGeometryIdx.length).toBe(1)
 			expect(ivd.deltas.length).toBe(1)
+			expect(ivd.isVertexHeight.length).toBe(1)
 			expect(result).toBe(0)
 		})
 	})

@@ -6,6 +6,7 @@ attribute vec3 defaultColor;
 attribute vec3 deltaColor;
 attribute highp float subGeomIdx;
 attribute highp float delta;
+attribute lowp float isHeight;
 
 varying vec3 vColor;
 varying vec3 vDeltaColor;
@@ -41,11 +42,27 @@ void getDirectionalDirectLightIrradiance(const in DirectionalLight directionalLi
 
 void main() 
 {
-    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+    vec3 adjustedHeightPos = position;
+    // height position will be adjusted based on camera position in order to prevent 
+    // z-fighting even in far away zoom levels when position is positive.
+    // preferred multiplication over if branching for the isHeight variable 
+    // the single line could be written this way : 
+    //
+    // adjustedHeightPos = position
+    // if (isHeight>0.5 && cameraPosition.y>0) {
+    //    adjustedHeightPos.y = position.y + cameraPosition.y/1000.
+    // } 
+    // 
+    
+    // abs function is used to prevent adjusting the height when the camera position.y is negative.
+    // we are then underneath the camera. 
+    adjustedHeightPos.y = position.y + (isHeight*abs(cameraPosition.y/1000.));
+
+    vec4 worldPosition = modelMatrix * vec4(adjustedHeightPos, 1.0);
     vec4 viewPosition = viewMatrix * worldPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition;
 
-	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+	vec4 modelViewPosition = modelViewMatrix * vec4(adjustedHeightPos, 1.0);
 	gl_Position = projectionMatrix * modelViewPosition;
 
     worldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
