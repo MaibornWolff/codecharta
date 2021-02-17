@@ -138,6 +138,20 @@ export class BoxGeometryGenerationHelper {
 		}
 	}
 
+	private static isTopSide(side : number,node: Node) {
+		if (!node.isLeaf)
+			return [0,0,0,0]
+		if (side===3)
+			return [1,1,1,1]
+		if (side===1 || side===0) {
+			return [0,1,1,0]
+		}
+		if (side===5 || side ===4) {
+			return [0,0,1,1]
+		}
+		return [0,0,0,0]
+	}
+
 	private static createVerticesAndFaces(
 		node: Node,
 		minPos: Vector3,
@@ -153,6 +167,7 @@ export class BoxGeometryGenerationHelper {
 		const deltaRelativeToHeight = delta / (maxPos.y - minPos.y)
 
 		for (let side = 0; side < numberSides; ++side) {
+			const isTopSide = this.isTopSide(side,node)
 			const intermediateIndexBL = side * verticesPerSide + vertexLocation.bottomLeft
 			const intermediateIndexTL = side * verticesPerSide + vertexLocation.topLeft
 			const intermediateIndexTR = side * verticesPerSide + vertexLocation.topRight
@@ -164,7 +179,7 @@ export class BoxGeometryGenerationHelper {
 				uvs[intermediateIndexBL],
 				color,
 				subGeomIndex,
-				deltaRelativeToHeight
+				deltaRelativeToHeight,isTopSide[0]
 			)
 			const indexTopLeft = data.addVertex(
 				positions[intermediateIndexTL],
@@ -172,7 +187,7 @@ export class BoxGeometryGenerationHelper {
 				uvs[intermediateIndexTL],
 				color,
 				subGeomIndex,
-				deltaRelativeToHeight
+				deltaRelativeToHeight,isTopSide[1]
 			)
 			const indexTopRight = data.addVertex(
 				positions[intermediateIndexTR],
@@ -180,7 +195,7 @@ export class BoxGeometryGenerationHelper {
 				uvs[intermediateIndexTR],
 				color,
 				subGeomIndex,
-				deltaRelativeToHeight
+				deltaRelativeToHeight,isTopSide[2]
 			)
 			const indexBottomRight = data.addVertex(
 				positions[intermediateIndexBR],
@@ -188,7 +203,7 @@ export class BoxGeometryGenerationHelper {
 				uvs[intermediateIndexBR],
 				color,
 				subGeomIndex,
-				deltaRelativeToHeight
+				deltaRelativeToHeight,isTopSide[3]
 			)
 
 			const dimension = Math.floor(side / 2)

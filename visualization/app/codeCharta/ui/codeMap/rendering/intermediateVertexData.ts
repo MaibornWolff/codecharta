@@ -17,6 +17,7 @@ export class IntermediateVertexData {
 	deltas: number[]
 
 	indices: number[]
+	isVertexHeight: number[]
 	floorSurfaceInformation: SurfaceInformation[]
 
 	constructor() {
@@ -28,16 +29,18 @@ export class IntermediateVertexData {
 		this.deltas = new Array<number>()
 
 		this.indices = new Array<number>()
+		this.isVertexHeight = new Array<number>()
 		this.floorSurfaceInformation = new Array<SurfaceInformation>()
 	}
 
-	addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIndex: number, delta: number) {
+	addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIndex: number, delta: number,isHeight: number) {
 		this.positions.push(pos)
 		this.normals.push(normal)
 		this.uvs.push(uv)
 		this.colors.push(color)
 		this.subGeometryIdx.push(subGeomIndex)
 		this.deltas.push(delta)
+		this.isVertexHeight.push(isHeight)
 
 		return this.positions.length - 1
 	}

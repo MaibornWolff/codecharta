@@ -195,11 +195,13 @@ export class GeometryGenerator {
 		const indices = new Uint32Array(data.indices)
 		const ids = new Float32Array(data.subGeometryIdx)
 		const deltas = new Float32Array(data.deltas)
+		const isHeight= new Float32Array(data.isVertexHeight)
 
 		const geometry = new BufferGeometry()
 
 		geometry.setAttribute("position", new BufferAttribute(positions, dimension))
 		geometry.setAttribute("normal", new BufferAttribute(normals, dimension))
+		geometry.setAttribute("isHeight", new BufferAttribute(isHeight, 1))
 		geometry.setAttribute("uv", new BufferAttribute(uvs, uvDimension))
 		geometry.setAttribute("color", new BufferAttribute(colors, dimension))
 		geometry.setAttribute("deltaColor", new BufferAttribute(deltaColors, dimension))

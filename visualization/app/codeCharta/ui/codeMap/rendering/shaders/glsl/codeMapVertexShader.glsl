@@ -5,6 +5,7 @@
 attribute vec3 color;
 attribute vec3 deltaColor;
 attribute lowp float delta;
+attribute lowp float isHeight;
 
 varying vec3 vWorldNormal;
 varying lowp float vDelta;
@@ -57,7 +58,22 @@ vec3 getBaseOutgoingLight(const vec3 lightFront) {
 
 void main() 
 {
-	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+    vec3 adjustedHeightPos = position;
+    
+    // height position will be adjusted based on camera position in order to prevent 
+    // z-fighting in different zoom levels when position is positive.
+    // preferred multiplication over if branching of the isHeight variable 
+    // the same line could be written this way : 
+    //
+    // adjustedHeightPos = position
+    // if (isHeight>0.5 && cameraPosition.y>0) {
+    //    adjustedHeightPos.y = position.y + cameraPosition.y/1000.
+    // } 
+    // 
+    
+    adjustedHeightPos.y = position.y + (isHeight*max(0.,cameraPosition.y/1000.));
+
+	vec4 modelViewPosition = modelViewMatrix * vec4(adjustedHeightPos, 1.0);
 	gl_Position = projectionMatrix * modelViewPosition;
 
     vec3 worldNormal = vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
