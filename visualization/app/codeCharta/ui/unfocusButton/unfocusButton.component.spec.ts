@@ -72,18 +72,6 @@ describe("UnfocusButtonController", () => {
 			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeFalsy()
 		})
 
-		it("should clear focusedNodes if new files were loaded", () => {
-			UnfocusButtonController.NEW_FILES_LOADED = true
-			unfocusButtonController["_viewModel"].focusedNodes = ["/root/app", "/root/app/ui"]
-			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].children[0].id
-			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[1].children[0].path
-
-			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
-
-			expect(unfocusButtonController["_viewModel"].focusedNodes).toEqual([])
-			expect(UnfocusButtonController.NEW_FILES_LOADED).toBe(false)
-		})
-
 		it("should update focusedNodes if new node became focused", () => {
 			unfocusButtonController["_viewModel"].focusedNodes = ["/root"]
 			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].children[0].id
@@ -116,6 +104,17 @@ describe("UnfocusButtonController", () => {
 
 			expect(unfocusButtonController["_viewModel"].focusedNodes.length).toBe(0)
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toBe("")
+		})
+	})
+
+	describe("onIsLoadingFileChanged", () => {
+		it("should clear focusedNodes", () => {
+			unfocusButtonController["_viewModel"].focusedNodes = ["/root", "/root/app"]
+
+			unfocusButtonController.onIsLoadingFileChanged(true)
+
+			expect(unfocusButtonController["_viewModel"].isLoadingFile).toBe(true)
+			expect(unfocusButtonController["_viewModel"].focusedNodes).toEqual([])
 		})
 	})
 })
