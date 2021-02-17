@@ -25,6 +25,7 @@ describe("LegendPanel", () => {
 		await legendPanelObject.open()
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
+		await page.waitForSelector(".colorButton:nth-child(1)")
 		await expect(page).toClick(".colorButton:nth-child(2)", { timeout: 3000 })
 	}
 
@@ -36,6 +37,7 @@ describe("LegendPanel", () => {
 
 		it("should remove a highlighted folder and remove from legend", async () => {
 			await mapTreeViewLevel.openContextMenu("/root")
+			await page.waitForSelector(".colorButton:nth-child(2)")
 			await expect(page).toClick(".colorButton:nth-child(2)", { timeout: 3000 })
 			const emptyFilelist = await legendPanelObject.getEmptyLegendIfNoFilenamesExist()
 			expect(emptyFilelist).toEqual("")
@@ -43,6 +45,7 @@ describe("LegendPanel", () => {
 
 		it("should highlight two different folders and add both to the legend", async () => {
 			await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
+			await page.waitForSelector(".colorButton:nth-child(1)")
 			await expect(page).toClick(".colorButton:nth-child(1)", { timeout: 3000 })
 			const selectedFolder = await legendPanelObject.getMultipleFilenames()
 			expect(selectedFolder[0]).toEqual("/root")
@@ -51,8 +54,10 @@ describe("LegendPanel", () => {
 
 		it("should highlight two different folders and add both to the legend then remove the first", async () => {
 			await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
+			await page.waitForSelector(".colorButton:nth-child(1)")
 			await expect(page).toClick(".colorButton:nth-child(1)", { timeout: 3000 })
 			await mapTreeViewLevel.openContextMenu("/root")
+			await page.waitForSelector(".colorButton:nth-child(2)")
 			await expect(page).toClick(".colorButton:nth-child(2)", { timeout: 3000 })
 			const selectedFolder = await legendPanelObject.getFilename()
 			expect(selectedFolder).toEqual("/root/ParentLeaf")
