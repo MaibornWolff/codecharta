@@ -106,7 +106,6 @@ describe("UnfocusButtonController", () => {
 
 			expect(unfocusButtonController["_viewModel"].focusedNodes.length).toBe(1)
 			expect(unfocusButtonController["_viewModel"].focusedNodes).toEqual(["/root"])
-			//expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("/root")
 		})
 
 		it("should clear focusedNodePath in storeService", () => {
