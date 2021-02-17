@@ -10,7 +10,7 @@ export class RibbonBarPageObject {
 
 	async togglePanel(selector: string) {
 		const wasOpen = await this.isPanelOpen(selector)
-
+		await page.waitForSelector(`#${selector}-card .section .section-title`)
 		await expect(page).toClick(`#${selector}-card .section .section-title`, { timeout: 3000 })
 
 		await (wasOpen

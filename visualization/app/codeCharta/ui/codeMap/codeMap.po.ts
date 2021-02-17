@@ -1,5 +1,6 @@
 export class CodeMapPageObject {
 	async clickMap() {
+		await page.waitForSelector("#codeMap")
 		await expect(page).toClick("#codeMap", { button: "left", timeout: 3000 })
 	}
 

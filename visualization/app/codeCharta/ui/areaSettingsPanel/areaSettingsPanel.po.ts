@@ -1,5 +1,6 @@
 export class AreaSettingsPanelPageObject {
 	static async toggleDefaultMargin() {
+		await page.waitForSelector("area-settings-panel-component md-checkbox")
 		await expect(page).toClick("area-settings-panel-component md-checkbox", { timeout: 3000 })
 		return this.isDefaultMarginEnabled()
 	}

@@ -4,7 +4,7 @@ export class SearchPanelPageObject {
 
 	async toggle() {
 		const wasOpen = await this.isOpen()
-
+		await page.waitForSelector("search-panel-component md-card .section .section-title")
 		await expect(page).toClick("search-panel-component md-card .section .section-title", { timeout: 3000 })
 
 		await (wasOpen

@@ -1,5 +1,6 @@
 export class LegendPanelObject {
 	async open() {
+		await page.waitForSelector("legend-panel-component .panel-button")
 		await expect(page).toClick("legend-panel-component .panel-button", { timeout: 3000 })
 		await page.waitForSelector("legend-panel-component .block-wrapper", { visible: true })
 	}

@@ -21,6 +21,7 @@ export class FilePanelPageObject {
 	}
 
 	async clickChooser() {
+		await page.waitForSelector("file-panel-component md-select")
 		await expect(page).toClick("file-panel-component md-select")
 	}
 

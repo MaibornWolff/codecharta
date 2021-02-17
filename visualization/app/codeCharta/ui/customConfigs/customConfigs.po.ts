@@ -1,5 +1,6 @@
 export class CustomConfigsPageObject {
 	async enableExperimentalFeatures() {
+		await page.waitForSelector("global-settings-button-component .toolbar-button")
 		await expect(page).toClick("global-settings-button-component .toolbar-button", { timeout: 3000 })
 		await page.waitForSelector("md-dialog.global-settings", { visible: true })
 		await expect(page).toClick("md-dialog.global-settings div.md-dialog-content md-input-container:nth-child(4) md-checkbox", {
@@ -7,6 +8,7 @@ export class CustomConfigsPageObject {
 		})
 
 		// Close Global Settings dialog
+		await page.waitForSelector("code-charta-component")
 		await expect(page).toClick("code-charta-component", { timeout: 3000 })
 		await page.waitForSelector("md-dialog.global-settings", { hidden: true })
 	}
@@ -53,6 +55,7 @@ export class CustomConfigsPageObject {
 	}
 
 	async submitAddDialog() {
+		await page.waitForSelector("md-dialog-actions .md-primary")
 		return expect(page).toClick("md-dialog-actions .md-primary", { timeout: 3000 })
 	}
 
@@ -80,8 +83,8 @@ export class CustomConfigsPageObject {
 
 	async hasCustomConfigItemGroup(groupName: string, groupIndex: number) {
 		await page.waitForFunction(
-			(groupIndex, groupName) =>
-				document.querySelectorAll(".custom-configs-drop-down span.collapse-trigger")[groupIndex].innerHTML.includes(groupName),
+			(index, name) =>
+				document.querySelectorAll(".custom-configs-drop-down span.collapse-trigger")[index].innerHTML.includes(name),
 			{},
 			groupIndex,
 			groupName
@@ -90,6 +93,7 @@ export class CustomConfigsPageObject {
 
 	async collapseCustomConfigItemGroup(groupIndex: number) {
 		// +2 to skip two disabled/invisible menu-items
+		await page.waitForSelector(`.custom-configs-drop-down .custom-configs-item:nth-child(${groupIndex + 2}) .button-hovering`)
 		await expect(page).toClick(`.custom-configs-drop-down .custom-configs-item:nth-child(${groupIndex + 2}) .button-hovering`, {
 			timeout: 3000
 		})
