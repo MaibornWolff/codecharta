@@ -8,7 +8,6 @@ import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
-import { UnfocusButtonController } from "../unfocusButton/unfocusButton.component"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
@@ -17,7 +16,6 @@ export class FileChooserController {
 	constructor(private $scope, private codeChartaService: CodeChartaService, private storeService: StoreService) {}
 
 	onImportNewFiles(element) {
-		UnfocusButtonController.NEW_FILES_LOADED = true
 		this.$scope.$apply(() => {
 			let content
 			let readFiles = 0

@@ -5,15 +5,16 @@ import { StoreService } from "../../state/store.service"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
+import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 
-export class UnfocusButtonController implements BuildingRightClickedEventSubscriber {
-	static NEW_FILES_LOADED = false
-
+export class UnfocusButtonController implements BuildingRightClickedEventSubscriber, IsLoadingFileSubscriber {
 	private _viewModel: {
+		isLoadingFile: boolean
 		isNodeFocused: boolean
 		isParentFocused: boolean
 		focusedNodes: string[]
 	} = {
+		isLoadingFile: false,
 		isNodeFocused: false,
 		isParentFocused: false,
 		focusedNodes: []
@@ -22,13 +23,10 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
+		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
 
 	onBuildingRightClicked(building: CodeMapBuilding) {
-		if (UnfocusButtonController.NEW_FILES_LOADED) {
-			this._viewModel.focusedNodes = []
-			UnfocusButtonController.NEW_FILES_LOADED = false
-		}
 		const codeMapNode = this.storeService.getState().lookUp.idToNode.get(building.node.id)
 		const { focusedNodePath } = this.storeService.getState().dynamicSettings
 		if (focusedNodePath && !this._viewModel.focusedNodes.includes(focusedNodePath)) {
@@ -48,6 +46,11 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 			this._viewModel.focusedNodes = []
 		}
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+	}
+
+	onIsLoadingFileChanged(isLoadingFile: boolean) {
+		this._viewModel.isLoadingFile = isLoadingFile
+		this._viewModel.focusedNodes = []
 	}
 }
 
