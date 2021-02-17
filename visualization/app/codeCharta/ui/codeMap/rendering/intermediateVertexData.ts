@@ -33,7 +33,7 @@ export class IntermediateVertexData {
 		this.floorSurfaceInformation = new Array<SurfaceInformation>()
 	}
 
-	addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIndex: number, delta: number,isHeight: number) {
+	addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIndex: number, delta: number, isHeight: number) {
 		this.positions.push(pos)
 		this.normals.push(normal)
 		this.uvs.push(uv)
