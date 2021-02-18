@@ -4,10 +4,10 @@
 
 attribute vec3 color;
 attribute vec3 deltaColor;
-attribute lowp float delta;
+attribute highp float delta;
 
 varying vec3 vWorldNormal;
-varying lowp float vDelta;
+varying highp float vDelta;
 varying vec2 vUV;
 varying vec4 vOutgoingDiffuseColor;
 varying vec4 vOutgoingDiffuseDeltaColor;
