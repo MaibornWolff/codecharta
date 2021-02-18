@@ -83,7 +83,7 @@ void main()
     vUV = uv;
     vDelta = abs(delta);
 
-    for (int i=0; i < 2; ++i)   // do we really need 2 directionallights ?
+    for (int i=0; i < 2; ++i)
     {
         IncidentLight directLight;
 
