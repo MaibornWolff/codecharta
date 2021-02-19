@@ -29,7 +29,7 @@ describe("nodeContextMenuColorPicker.component", () => {
 
 	it("should call `markFolder` when its color changes", () => {
 		nodeContextMenuColorPickerController.$onInit()
-		const markFolderSpy = jest.spyOn<any, any>(nodeContextMenuColorPickerController, "markFolder")
+		const markFolderSpy = jest.spyOn<any, string>(nodeContextMenuColorPickerController, "markFolder")
 
 		nodeContextMenuColorPickerController["$scope"].nodeContextMenuColorPickerEventApi.onChange("", "#FFFFFF")
 
@@ -39,7 +39,7 @@ describe("nodeContextMenuColorPicker.component", () => {
 
 	it("should not call `markFolder` when the color is not yet complete", () => {
 		nodeContextMenuColorPickerController.$onInit()
-		const markFolderSpy = jest.spyOn<any, any>(nodeContextMenuColorPickerController, "markFolder")
+		const markFolderSpy = jest.spyOn<any, string>(nodeContextMenuColorPickerController, "markFolder")
 
 		nodeContextMenuColorPickerController["$scope"].nodeContextMenuColorPickerEventApi.onChange("", "#FFFFF")
 

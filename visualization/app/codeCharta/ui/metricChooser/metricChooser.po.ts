@@ -1,11 +1,13 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class MetricChooserPageObject {
 	async openHeightMetricChooser() {
-		await expect(page).toClick("height-metric-chooser-component md-select", { timeout: 3000 })
+		await clickButtonOnPageElement("height-metric-chooser-component md-select")
 		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active", { visible: true })
 	}
 
 	async clickOnHeightMetricSearch() {
-		await expect(page).toClick(".metric-search.height-metric", { timeout: 3000 })
+		await clickButtonOnPageElement(".metric-search.height-metric")
 	}
 
 	async isMetricChooserVisible() {

@@ -95,7 +95,8 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate("" as any)
+			// @ts-expect-error
+			validate("")
 		}, expectedError)
 	})
 
@@ -157,8 +158,9 @@ describe("FileValidator", () => {
 
 	it("should throw if nodes is not a node and therefore has no name or id", () => {
 		file.nodes[0] = {
+			// @ts-expect-error
 			something: "something"
-		} as any
+		}
 
 		const expectedError: CCValidationResult = {
 			error: [

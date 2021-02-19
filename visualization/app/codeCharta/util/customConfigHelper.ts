@@ -22,7 +22,7 @@ export class CustomConfigHelper {
 	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): Map<string, CustomConfigItemGroup> {
 		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
 
-		CustomConfigHelper.customConfigs.forEach(customConfig => {
+		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
 			const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
 
 			if (!customConfigItemGroups.has(groupKey)) {
@@ -46,7 +46,7 @@ export class CustomConfigHelper {
 			if (customConfigItemApplicable) {
 				customConfigItemGroups.get(groupKey).hasApplicableItems = true
 			}
-		})
+		}
 
 		return customConfigItemGroups
 	}
@@ -167,11 +167,11 @@ export class CustomConfigHelper {
 	static getCustomConfigsAmountByMapAndMode(mapNames: string, mapSelectionMode: CustomConfigMapSelectionMode): number {
 		let count = 0
 
-		CustomConfigHelper.customConfigs.forEach(config => {
+		for (const config of CustomConfigHelper.customConfigs.values()) {
 			if (config.assignedMaps.join(" ") === mapNames && config.mapSelectionMode === mapSelectionMode) {
 				count++
 			}
-		})
+		}
 
 		return count
 	}

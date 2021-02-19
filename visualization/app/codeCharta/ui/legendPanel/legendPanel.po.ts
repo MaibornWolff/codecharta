@@ -1,6 +1,8 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class LegendPanelObject {
 	async open() {
-		await expect(page).toClick("legend-panel-component .panel-button", { timeout: 3000 })
+		await clickButtonOnPageElement("legend-panel-component .panel-button")
 		await page.waitForSelector("legend-panel-component .block-wrapper", { visible: true })
 	}
 

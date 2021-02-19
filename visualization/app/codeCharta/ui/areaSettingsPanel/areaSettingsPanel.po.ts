@@ -1,6 +1,8 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class AreaSettingsPanelPageObject {
 	static async toggleDefaultMargin() {
-		await expect(page).toClick("area-settings-panel-component md-checkbox", { timeout: 3000 })
+		await clickButtonOnPageElement("area-settings-panel-component md-checkbox")
 		return this.isDefaultMarginEnabled()
 	}
 
