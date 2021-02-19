@@ -1,12 +1,14 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class MapTreeViewLevelPageObject {
 	async openContextMenu(path: string) {
-		await expect(page).toClick(`[id='${path}']`, { button: "right", timeout: 3000 })
+		await clickButtonOnPageElement(`[id='${path}']`, { button: "right" })
 		await page.waitForSelector("node-context-menu-component", { visible: true })
 		await page.waitForSelector(".tree-element-label.marked")
 	}
 
 	async openFolder(path: string) {
-		await expect(page).toClick(`[id='${path}']`, { timeout: 3000 })
+		await clickButtonOnPageElement(`[id='${path}']`)
 		await page.waitForSelector(`[id='${path}'] span.fa.fa-folder-open`)
 	}
 

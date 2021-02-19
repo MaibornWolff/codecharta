@@ -1,3 +1,5 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class DialogErrorPageObject {
 	async getMessage() {
 		await page.waitForSelector(".md-dialog-content-body")
@@ -5,21 +7,21 @@ export class DialogErrorPageObject {
 	}
 
 	async clickOk() {
-		await expect(page).toClick("md-dialog-actions button", { timeout: 3000 })
+		await clickButtonOnPageElement("md-dialog-actions button")
 		await page.waitForSelector("md-dialog-actions button", { visible: false })
 	}
 
 	async clickOkAndReturnWhenFullyClosed() {
-		await expect(page).toClick("md-dialog-actions button")
+		await clickButtonOnPageElement("md-dialog-actions button")
 		await page.waitForFunction(() => !document.querySelector(".md-dialog-content-body"))
 	}
 
 	async clickAndWaitUntilContentChange() {
 		const message = await this.getMessage()
-		await expect(page).toClick("md-dialog-actions > button")
+		await clickButtonOnPageElement("md-dialog-actions > button")
 
 		await page.waitForFunction(
-			argument => !document.querySelector(".md-dialog-content-body")?.textContent.includes(argument),
+			(argument: string) => !document.querySelector(".md-dialog-content-body")?.textContent.includes(argument),
 			{},
 			message
 		)

@@ -1,21 +1,19 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class CustomConfigsPageObject {
 	async enableExperimentalFeatures() {
-		await page.waitForSelector("global-settings-button-component .toolbar-button")
-		await expect(page).toClick("global-settings-button-component .toolbar-button", { timeout: 3000 })
+		await clickButtonOnPageElement("global-settings-button-component .toolbar-button")
 		await page.waitForSelector("md-dialog.global-settings", { visible: true })
-		await expect(page).toClick("md-dialog.global-settings div.md-dialog-content md-input-container:nth-child(4) md-checkbox", {
-			timeout: 3000
-		})
+		await clickButtonOnPageElement("md-dialog.global-settings div.md-dialog-content md-input-container:nth-child(4) md-checkbox")
 
 		// Close Global Settings dialog
-		await page.waitForSelector("code-charta-component")
-		await expect(page).toClick("code-charta-component", { timeout: 3000 })
+		await clickButtonOnPageElement("code-charta-component")
 		await page.waitForSelector("md-dialog.global-settings", { hidden: true })
 	}
 
 	async openCustomConfigPanel() {
 		await page.waitForSelector(".custom-configs-button", { hidden: false })
-		await expect(page).toClick("custom-configs-component md-menu:nth-child(1) .custom-configs-button", { timeout: 3000 })
+		await clickButtonOnPageElement("custom-configs-component md-menu:nth-child(1) .custom-configs-button")
 
 		await page.waitForSelector(".custom-configs-drop-down", { visible: true })
 	}
@@ -33,7 +31,7 @@ export class CustomConfigsPageObject {
 
 	async openCustomConfigAddDialog() {
 		await page.waitForSelector(".custom-configs-button.plus", { visible: true })
-		await expect(page).toClick(".custom-configs-button.plus", { timeout: 3000 })
+		await clickButtonOnPageElement(".custom-configs-button.plus")
 
 		await page.waitForSelector(".custom-config-dialog")
 	}
@@ -55,8 +53,7 @@ export class CustomConfigsPageObject {
 	}
 
 	async submitAddDialog() {
-		await page.waitForSelector("md-dialog-actions .md-primary")
-		return expect(page).toClick("md-dialog-actions .md-primary", { timeout: 3000 })
+		await clickButtonOnPageElement("md-dialog-actions .md-primary")
 	}
 
 	async isOverrideWarningVisible() {
@@ -65,14 +62,14 @@ export class CustomConfigsPageObject {
 
 	async switchToMultipleMode() {
 		await page.waitForSelector("file-panel-component", { visible: true })
-		await expect(page).toClick("file-panel-component button.middle", { timeout: 3000 })
+		await clickButtonOnPageElement("file-panel-component button.middle")
 
 		await page.waitForSelector("file-panel-component button.middle.current", { visible: true })
 	}
 
 	async switchToDeltaMode() {
 		await page.waitForSelector("file-panel-component", { visible: true })
-		await expect(page).toClick("file-panel-component button.right", { timeout: 3000 })
+		await clickButtonOnPageElement("file-panel-component button.right")
 
 		await page.waitForSelector("file-panel-component button.right.current", { visible: true })
 	}
@@ -83,8 +80,7 @@ export class CustomConfigsPageObject {
 
 	async hasCustomConfigItemGroup(groupName: string, groupIndex: number) {
 		await page.waitForFunction(
-			(index, name) =>
-				document.querySelectorAll(".custom-configs-drop-down span.collapse-trigger")[index].innerHTML.includes(name),
+			(index, name) => document.querySelectorAll(".custom-configs-drop-down span.collapse-trigger")[index].innerHTML.includes(name),
 			{},
 			groupIndex,
 			groupName
@@ -93,10 +89,7 @@ export class CustomConfigsPageObject {
 
 	async collapseCustomConfigItemGroup(groupIndex: number) {
 		// +2 to skip two disabled/invisible menu-items
-		await page.waitForSelector(`.custom-configs-drop-down .custom-configs-item:nth-child(${groupIndex + 2}) .button-hovering`)
-		await expect(page).toClick(`.custom-configs-drop-down .custom-configs-item:nth-child(${groupIndex + 2}) .button-hovering`, {
-			timeout: 3000
-		})
+		await clickButtonOnPageElement(`.custom-configs-drop-down .custom-configs-item:nth-child(${groupIndex + 2}) .button-hovering`)
 		await page.waitForSelector(`.custom-configs-drop-down .custom-configs-item:nth-child(${groupIndex + 2}) .collapsable`, {
 			visible: true
 		})

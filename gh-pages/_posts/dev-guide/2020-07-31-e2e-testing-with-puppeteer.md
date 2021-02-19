@@ -119,7 +119,7 @@ Running e2e-tests can lead to timeouts and race conditions depending on how fast
 **Best practices**
 
 -   Before accessing a selector, wait until it's available using `await page.waitForSelector(MY_SELECTOR)`
--   When clicking a button, use `expect(page).toClick(MY_SELECTOR, { timeout: 3000 })`. This function awaits the selector for 3s before throwing an error
+-   When clicking a button, import the `clickButtonOnPageElement` function from the ` puppeteer.helper` file and  use `clickButtonOnPageElement(MY_SELECTOR, options)` instead of `expect(page).toClick(MY_SELECTOR, options)`. This function awaits the selector and clicks on it when it becomes available.
 -   After clicking a button or changing the state, use `waitForSelector()` to verify, that the new state is rendered before continuing
 
 ## Most used functions

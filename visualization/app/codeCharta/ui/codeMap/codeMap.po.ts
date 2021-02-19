@@ -1,7 +1,8 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class CodeMapPageObject {
 	async clickMap() {
-		await page.waitForSelector("#codeMap")
-		await expect(page).toClick("#codeMap", { button: "left", timeout: 3000 })
+		await clickButtonOnPageElement("#codeMap", { button: "left" })
 	}
 
 	async rightClickMouseDownOnMap() {
