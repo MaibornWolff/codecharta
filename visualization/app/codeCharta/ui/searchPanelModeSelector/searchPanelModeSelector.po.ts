@@ -1,8 +1,9 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class SearchPanelModeSelectorPageObject {
 	async toggleTreeView() {
 		const wasOpen = await this.isTreeViewOpen()
-
-		await expect(page).toClick("#tree-view", { timeout: 3000 })
+		await clickButtonOnPageElement("#tree-view")
 
 		await (wasOpen
 			? page.waitForSelector("#search-panel-card", { visible: false })

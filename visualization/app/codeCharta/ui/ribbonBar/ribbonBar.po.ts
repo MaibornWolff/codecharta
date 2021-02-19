@@ -1,3 +1,5 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class RibbonBarPageObject {
 	private EXPANDED = "expanded"
 	private EXPANDED_REMOVE = "expanded-remove"
@@ -10,8 +12,7 @@ export class RibbonBarPageObject {
 
 	async togglePanel(selector: string) {
 		const wasOpen = await this.isPanelOpen(selector)
-
-		await expect(page).toClick(`#${selector}-card .section .section-title`, { timeout: 3000 })
+		await clickButtonOnPageElement(`#${selector}-card .section .section-title`)
 
 		await (wasOpen
 			? page.waitForSelector(`#${selector}-card`, { visible: false })

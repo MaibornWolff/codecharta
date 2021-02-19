@@ -1,3 +1,5 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class NodeContextMenuPageObject {
 	async hasColorButtons() {
 		return page.waitForSelector(".colorButton", {
@@ -6,7 +8,7 @@ export class NodeContextMenuPageObject {
 	}
 
 	async exclude() {
-		await expect(page).toClick("#exclude-button", { timeout: 3000 })
+		await clickButtonOnPageElement("#exclude-button")
 		await page.waitForSelector("#loading-gif-map", { visible: false })
 	}
 

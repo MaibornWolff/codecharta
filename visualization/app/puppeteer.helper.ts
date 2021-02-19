@@ -21,3 +21,8 @@ export async function enableConsole() {
 		console[message._type](...data)
 	})
 }
+
+export const clickButtonOnPageElement = async (selectorString: string, expectToClickOptions?) => {
+	await page.waitForSelector(selectorString)
+	await expect(page).toClick(selectorString, expectToClickOptions)
+}
