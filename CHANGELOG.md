@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Unfocus now respects the focus depth ([#1099](https://github.com/MaibornWolff/codecharta/issues/1099))
+-   Track anonymous usage data also for older CodeCharta API versions and fix some minor bugs.
 
 ### Chore 👨‍💻 👩‍💻
 
