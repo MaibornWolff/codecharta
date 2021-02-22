@@ -111,6 +111,8 @@ describe("ThreeStatsService", () => {
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 			mockRenderer()
 			withMockedStats()
+			const ONE_SECOND = 1000
+			threeStatsService.prevTime = (performance || Date).now() - ONE_SECOND
 		})
 		it("should call update panels", () => {
 			threeStatsService.updateStats()
@@ -121,6 +123,7 @@ describe("ThreeStatsService", () => {
 
 		it("should call processPanel", () => {
 			threeStatsService["processPanel"] = jest.fn()
+
 			threeStatsService.updateStats()
 
 			expect(threeStatsService["processPanel"]).toHaveBeenCalledTimes(4)

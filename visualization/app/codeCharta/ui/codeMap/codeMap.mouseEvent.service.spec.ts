@@ -159,7 +159,7 @@ describe("codeMapMouseEventService", () => {
 			getConstantHighlight: jest.fn().mockReturnValue(new Map()),
 			addBuildingToHighlightingList: jest.fn(),
 			highlightBuildings: jest.fn(),
-			resetLabel : jest.fn()
+			resetLabel: jest.fn()
 		})()
 	}
 
@@ -305,14 +305,13 @@ describe("codeMapMouseEventService", () => {
 		it("should not animate any labels and reset animated label and temporary label if the map is turned", () => {
 			const label = new Object3D()
 			setAnimatedLabel(label)
+			const animatedLabelPosition = label.position.clone()
 
 			// Grabbing and turning the map (should reset the animated label)
 			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.LeftClick } as MouseEvent)
 			expect(codeMapMouseEventService["isGrabbing"]).toBe(true)
 			expect(codeMapMouseEventService["isMoving"]).toBe(false)
 			codeMapMouseEventService.onDocumentMouseMove({ clientX: 2, clientY: 3 } as MouseEvent)
-
-			const animatedLabelPosition = label.position.clone()
 
 			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
 			codeMapMouseEventService.updateHovering()
@@ -326,14 +325,13 @@ describe("codeMapMouseEventService", () => {
 		it("should not animate any labels and reset animated label and temporary label if the map is moved", () => {
 			const label = new Object3D()
 			setAnimatedLabel(label)
+			const animatedLabelPosition = label.position.clone()
 
 			// Grabbing and moving the map (should reset the animated label)
 			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.RightClick } as MouseEvent)
 			expect(codeMapMouseEventService["isGrabbing"]).toBe(false)
 			expect(codeMapMouseEventService["isMoving"]).toBe(true)
 			codeMapMouseEventService.onDocumentMouseMove({ clientX: 3, clientY: 4 } as MouseEvent)
-
-			const animatedLabelPosition = label.position.clone()
 
 			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
 			codeMapMouseEventService.updateHovering()
@@ -373,8 +371,6 @@ describe("codeMapMouseEventService", () => {
 
 			// Rebuild service with modified threeSceneService
 			rebuildService()
-
-			codeMapMouseEventService.updateHovering()
 		}
 	})
 
