@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Unfocus now respects the focus depth ([#1099](https://github.com/MaibornWolff/codecharta/issues/1099))
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.68.0] - 2021-02-08
