@@ -379,6 +379,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.$rootScope.$broadcast(ThreeSceneService.CODE_MAP_MESH_CHANGED_EVENT, this.mapMesh)
 	}
 
+	dispose() {
+		this.mapMesh?.dispose()
+	}
+
 	static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, () => {
 			subscriber.onBuildingDeselected()

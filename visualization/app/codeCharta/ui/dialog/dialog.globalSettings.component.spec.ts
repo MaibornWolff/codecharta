@@ -12,6 +12,7 @@ import { IsWhiteBackgroundService } from "../../state/store/appSettings/isWhiteB
 import { ResetCameraIfNewFileIsLoadedService } from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { LayoutAlgorithm, SharpnessMode } from "../../codeCharta.model"
 
 describe("DialogGlobalSettingsController", () => {
 	let dialogGlobalSettingsController: DialogGlobalSettingsController
@@ -181,6 +182,36 @@ describe("DialogGlobalSettingsController", () => {
 			dialogGlobalSettingsController.applySettingsEnableExperimentalFeatures()
 
 			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBe(false)
+		})
+	})
+
+	describe("applySettingsAlgorithm", () => {
+		it("should update layoutAlgorithm in store", () => {
+			dialogGlobalSettingsController["_viewModel"].layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
+
+			dialogGlobalSettingsController.applySettingsAlgorithm()
+
+			expect(storeService.getState().appSettings.layoutAlgorithm).toBe(LayoutAlgorithm.TreeMapStreet)
+		})
+	})
+
+	describe("applySettingsMaxTreeMapFiles", () => {
+		it("should update max treemap file number in store", () => {
+			dialogGlobalSettingsController["_viewModel"].maxTreeMapFiles = 10
+
+			dialogGlobalSettingsController.applySettingsMaxTreeMapFiles()
+
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toBe(10)
+		})
+	})
+
+	describe("applySettingsSharpnessMode", () => {
+		it("should update sharpness mode in store", () => {
+			dialogGlobalSettingsController["_viewModel"].sharpnessMode = SharpnessMode.PixelRatioFXAA
+
+			dialogGlobalSettingsController.applySettingsSharpnessMode()
+
+			expect(storeService.getState().appSettings.sharpnessMode).toBe(SharpnessMode.PixelRatioFXAA)
 		})
 	})
 

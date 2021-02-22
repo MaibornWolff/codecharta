@@ -8,8 +8,8 @@ import {
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
-
-export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber {
+import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
+export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber, SharpnessModeSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isSideBarVisible: boolean
@@ -29,11 +29,11 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 	) {
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
+		SharpnessModeService.subscribe(this.$rootScope, this)
 	}
 
 	$postLink() {
 		this.threeViewerService.init(this.$element[0].children[0])
-		this.threeViewerService.animate()
 		this.codeMapMouseEventService.start()
 	}
 
@@ -42,8 +42,31 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 	}
 
 	onIsLoadingFileChanged(isLoadingFile: boolean) {
+		this.threeViewerService?.dispose()
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
+	}
+
+	// TODO not used right now, but added for catching the gl context loss, needs to be further implemented and tested
+	catchContextLoss() {
+		const canvas = this.threeViewerService.getRenderCanvas()
+		const extention = this.threeViewerService.getRenderLoseExtention()
+		canvas.addEventListener(
+			"webglcontextlost",
+			() => {
+				extention.restoreContext()
+			},
+			false
+		)
+		canvas.addEventListener("webglcontextrestored", () => {})
+	}
+
+	onSharpnessModeChanged() {
+		this.threeViewerService.stopAnimate()
+		this.threeViewerService.destroy()
+		this.$postLink()
+		this.threeViewerService.autoFitTo()
+		this.threeViewerService.animate()
 	}
 
 	onClick() {

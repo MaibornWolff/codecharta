@@ -1,4 +1,4 @@
-import { CodeMapShaderStrings } from "./codeMapShaderStrings"
+import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
 import { GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
@@ -27,6 +27,7 @@ export class CodeMapMesh {
 		this.initMaterial()
 
 		this.geomGen = new GeometryGenerator()
+		this.material.precision = "lowp" // no need for high precision in our shaders
 		const buildResult = this.geomGen.build(nodes, this.material, state, isDeltaState)
 
 		this.threeMesh = buildResult.mesh
@@ -187,6 +188,20 @@ export class CodeMapMesh {
 	private updateVertices() {
 		this.threeMesh.geometry["attributes"].color.needsUpdate = true
 		this.threeMesh.geometry["attributes"].deltaColor.needsUpdate = true
+	}
+
+	dispose() {
+		// TODO more needs to be disposed (textures, render targets, passes , ...)
+		this.disposeMesh()
+		this.disposeMaterial()
+	}
+
+	private disposeMesh() {
+		this.threeMesh?.geometry?.dispose()
+	}
+
+	private disposeMaterial() {
+		this.material?.dispose()
 	}
 
 	private initMaterial() {
