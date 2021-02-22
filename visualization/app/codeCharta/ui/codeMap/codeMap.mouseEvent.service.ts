@@ -6,7 +6,7 @@ import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-//import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
@@ -72,12 +72,12 @@ export class CodeMapMouseEventService
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
 		private threeSceneService: ThreeSceneService,
-		//private threeUpdateCycleService: ThreeUpdateCycleService,
+		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
-		//this.threeUpdateCycleService.register(() => this.updateHovering())
+		this.threeUpdateCycleService.register(() => this.threeRendererService.render())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
@@ -122,13 +122,13 @@ export class CodeMapMouseEventService
 				this.highlightedInTreeView = building
 			}
 		}
-		this.threeRendererService.render()
+		this.threeUpdateCycleService.update()
 	}
 
 	onShouldUnhoverNode() {
 		this.unhoverBuilding()
 		this.highlightedInTreeView = null
-		this.threeRendererService.render()
+		this.threeUpdateCycleService.update()
 	}
 
 	onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
@@ -151,7 +151,7 @@ export class CodeMapMouseEventService
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.clearConstantHighlight()
-		this.threeRendererService.render()
+		this.threeUpdateCycleService.update()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
@@ -178,7 +178,7 @@ export class CodeMapMouseEventService
 			if (this.isGrabbing || this.isMoving) {
 				this.threeSceneService.resetLabel()
 				this.clearTemporaryLabel()
-				this.threeRendererService.render()
+				this.threeUpdateCycleService.update()
 				return
 			}
 
@@ -233,7 +233,7 @@ export class CodeMapMouseEventService
 				}
 			}
 		}
-		this.threeRendererService.render()
+		this.threeUpdateCycleService.update()
 	}
 
 	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
@@ -340,7 +340,7 @@ export class CodeMapMouseEventService
 			})
 			this.hoverBuilding(building)
 		}
-		this.threeRendererService.render()
+		this.threeUpdateCycleService.update()
 	}
 
 	private onLeftClick() {
@@ -352,7 +352,7 @@ export class CodeMapMouseEventService
 				this.threeSceneService.selectBuilding(this.intersectedBuilding)
 			}
 		}
-		this.threeRendererService.render()
+		this.threeUpdateCycleService.update()
 	}
 
 	private hasMouseMovedMoreThanThreePixels({ x, y }: Coordinates) {

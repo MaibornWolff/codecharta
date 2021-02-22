@@ -100,7 +100,7 @@ export class CodeMapPreRenderService
 			this.debounceRendering()
 			this.debounceTracking(actionType)
 		} else {
-			this.codeMapRenderService.updateRender()
+			this.codeMapRenderService.update()
 		}
 	}
 

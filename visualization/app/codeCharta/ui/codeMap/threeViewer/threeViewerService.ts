@@ -63,7 +63,6 @@ export class ThreeViewerService {
 	}
 
 	animate() {
-		this.threeRendererService.render()
 		this.threeOrbitControlsService.controls.update()
 		this.threeUpdateCycleService.update()
 	}

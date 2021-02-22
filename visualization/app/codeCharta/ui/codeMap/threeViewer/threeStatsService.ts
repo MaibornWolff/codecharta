@@ -55,8 +55,8 @@ export class ThreeStatsService {
 				this.processPanel(this.glCallsPanel, webGLInfo.calls)
 				this.processPanel(this.geometryMemoryPanel, threeJsInfo.geometries)
 				this.processPanel(this.textureMemoryPanel, threeJsInfo.textures)
-				this.stats.update()
 			}
+			this.stats.update()
 		}
 	}
 
