@@ -1,7 +1,8 @@
-interface UpdateFunction { (): void }
+interface UpdateFunction {
+	(): void
+}
 
 export class ThreeUpdateCycleService {
-
 	private updatables: UpdateFunction[] = []
 
 	register(onUpdate: UpdateFunction) {

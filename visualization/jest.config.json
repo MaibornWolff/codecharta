@@ -5,7 +5,7 @@
 	"coveragePathIgnorePatterns": ["(/__tests__/.*|\\.(spec|e2e|po))\\.(ts|tsx)$", "<rootDir>/app/puppeteer.helper.ts"],
 	"snapshotSerializers": ["jest-serializer-html"],
 	"transform": {
-		"\\.(js)$" : "babel-jest",
+		"\\.(js)$": "babel-jest",
 		"\\.(ts|tsx)$": "ts-jest",
 		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js",
 		"\\.html$": "html-loader-jest"
