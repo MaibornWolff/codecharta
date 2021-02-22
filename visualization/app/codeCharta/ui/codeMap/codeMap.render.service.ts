@@ -22,7 +22,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
 		private threeStatsService: ThreeStatsService,
-		private threeUpdateCycleService : ThreeUpdateCycleService
+		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}

@@ -103,7 +103,8 @@ describe("codeMapMouseEventService", () => {
 
 	function withMockedThreeUpdateCycleService() {
 		threeUpdateCycleService = codeMapMouseEventService["threeUpdateCycleService"] = jest.fn().mockReturnValue({
-			register: jest.fn()
+			register: jest.fn(),
+			update: jest.fn()
 		})()
 	}
 
@@ -144,7 +145,8 @@ describe("codeMapMouseEventService", () => {
 				selectBuilding: jest.fn(),
 				getMeshDescription: jest.fn().mockReturnValue({
 					buildings: [codeMapBuilding]
-				})
+				}),
+				checkMouseRayMeshIntersection: jest.fn()
 			}),
 			clearHighlight: jest.fn(),
 			highlightSingleBuilding: jest.fn(),
@@ -156,7 +158,8 @@ describe("codeMapMouseEventService", () => {
 			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
 			getConstantHighlight: jest.fn().mockReturnValue(new Map()),
 			addBuildingToHighlightingList: jest.fn(),
-			highlightBuildings: jest.fn()
+			highlightBuildings: jest.fn(),
+			resetLabel : jest.fn()
 		})()
 	}
 
@@ -370,6 +373,8 @@ describe("codeMapMouseEventService", () => {
 
 			// Rebuild service with modified threeSceneService
 			rebuildService()
+
+			codeMapMouseEventService.updateHovering()
 		}
 	})
 

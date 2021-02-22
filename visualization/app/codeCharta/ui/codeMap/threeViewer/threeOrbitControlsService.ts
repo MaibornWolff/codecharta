@@ -75,7 +75,7 @@ export class ThreeOrbitControlsService
 		const zoom = this.getZoom()
 		this.lookAtDirectionFromTarget(x, y, z)
 		this.applyOldZoom(zoom)
-		
+
 		this.update()
 		this.onInput(this.threeCameraService.camera)
 	}
