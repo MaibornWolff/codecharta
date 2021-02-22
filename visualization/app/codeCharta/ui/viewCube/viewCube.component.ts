@@ -118,6 +118,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 			antialias: true
 		})
 		this.renderer.setSize(this.WIDTH, this.HEIGHT)
+		this.renderer.setPixelRatio(window.devicePixelRatio) // geometry is low poly, no noticeble performance hit even with higher device pixel ratio
 		$element[0].appendChild(this.renderer.domElement)
 	}
 
@@ -135,7 +136,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	onCubeUnhovered() {
-		this.hoverInfo.cube.material.emissive = new Color(0x000000)
+		this.hoverInfo.cube.material.emissive = new Color(0x000000) //? NOTE why is this needed
 		this.hoverInfo.cube = null
 	}
 

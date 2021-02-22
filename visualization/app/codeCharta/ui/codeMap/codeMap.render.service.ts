@@ -9,14 +9,28 @@ import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
+import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import { IRootScopeService } from "angular"
+import { ThreeStatsService } from "./threeViewer/threeStatsService"
 
-export class CodeMapRenderService {
+export class CodeMapRenderService implements IsLoadingFileSubscriber{
 	constructor(
+		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
-		private codeMapArrowService: CodeMapArrowService
-	) {}
+		private codeMapArrowService: CodeMapArrowService,
+		private threeStatsService : ThreeStatsService
+	) {
+		IsLoadingFileService.subscribe(this.$rootScope, this)
+	}
+	onIsLoadingFileChanged(isLoadingFile: boolean) {
+		if (isLoadingFile) {
+			this.threeSceneService?.dispose()
+		} else {
+			this.threeStatsService?.resetPanels()
+		}
+	}
 
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
