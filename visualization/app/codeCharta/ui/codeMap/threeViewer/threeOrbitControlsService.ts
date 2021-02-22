@@ -13,6 +13,7 @@ import { FilesService, FilesSelectionSubscriber } from "../../../state/store/fil
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
+// TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
@@ -61,6 +62,8 @@ export class ThreeOrbitControlsService
 		this.autoFitTo()
 	}
 
+	// TODO add autofit for SharpnessMode ?
+
 	setControlTarget() {
 		const { cameraTarget } = this.storeService.getState().appSettings
 		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
@@ -87,7 +90,7 @@ export class ThreeOrbitControlsService
 		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
 	}
 
-	private cameraPerspectiveLengthCalculation(boundingSphere) {
+	private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {
 		const cameraReference = this.threeCameraService.camera
 
 		//TODO: Scale Factor for object to camera ratio
@@ -97,7 +100,7 @@ export class ThreeOrbitControlsService
 		return Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
 	}
 
-	private focusCameraViewToCenter(boundingSphere) {
+	private focusCameraViewToCenter(boundingSphere: Sphere) {
 		const boundingSphereCenter: Vector3 = boundingSphere.center.clone()
 
 		boundingSphereCenter.setY(0)
@@ -138,7 +141,7 @@ export class ThreeOrbitControlsService
 		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
-	init(domElement) {
+	init(domElement: HTMLCanvasElement) {
 		const orbitControls = oc(Three)
 		this.controls = new orbitControls(this.threeCameraService.camera, domElement)
 		this.controls.addEventListener("change", () => {

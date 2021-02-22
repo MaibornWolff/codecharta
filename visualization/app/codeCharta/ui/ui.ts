@@ -47,6 +47,7 @@ import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
 import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
+import "./sharpnessModeSelector/sharpnessModeSelector.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
@@ -94,5 +95,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.toolBar",
 	"app.codeCharta.ui.viewCube",
 	"app.codeCharta.ui.layoutSelection",
+	"app.codeCharta.ui.sharpnessModeSelector",
 	"app.codeCharta.ui.maxTreeMapFiles"
 ])

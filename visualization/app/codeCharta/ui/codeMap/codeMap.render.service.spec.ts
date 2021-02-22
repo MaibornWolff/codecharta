@@ -10,7 +10,6 @@ import { DEFAULT_STATE, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VA
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { StoreService } from "../../state/store.service"
-import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
@@ -18,13 +17,17 @@ import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/n
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { klona } from "klona"
+import { IRootScopeService } from "angular"
+import { ThreeStatsService } from "./threeViewer/threeStatsService"
 
 describe("codeMapRenderService", () => {
+	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
+	let threeStatsService : ThreeStatsService
 
 	let state: State
 	let map: CodeMapNode
@@ -35,15 +38,18 @@ describe("codeMapRenderService", () => {
 		withMockedThreeSceneService()
 		withMockedCodeMapLabelService()
 		withMockedCodeMapArrowService()
+		withMockedStatsService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
+		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
+		threeStatsService = getService<ThreeStatsService>("threeStatsService")
 
 		state = klona(STATE)
 		map = klona(TEST_FILE_WITH_PATHS.map)
@@ -55,8 +61,9 @@ describe("codeMapRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapRenderService = new CodeMapRenderService(storeService, threeSceneService, codeMapLabelService, codeMapArrowService)
+		codeMapRenderService = new CodeMapRenderService($rootScope,storeService, threeSceneService, codeMapLabelService, codeMapArrowService,threeStatsService)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
+		
 	}
 
 	function withMockedThreeSceneService() {
@@ -65,6 +72,7 @@ describe("codeMapRenderService", () => {
 			mapGeometry: jest.fn().mockReturnValue({
 				scale: new Vector3(1, 2, 3)
 			}),
+			dispose : jest.fn(),
 			setMapMesh: jest.fn()
 		})()
 	}
@@ -82,36 +90,80 @@ describe("codeMapRenderService", () => {
 			scale: jest.fn(),
 			clearArrows: jest.fn(),
 			addEdgeArrows: jest.fn(),
+			addEdgePreview: jest.fn(),
 			arrows: [new Object3D()]
 		})()
 	}
 
-	describe("scaleMap", () => {
-		let scaling: Vector3
+	function withMockedStatsService() {
+		threeStatsService = codeMapRenderService["threeStatsService"] = jest.fn().mockReturnValue({
+			resetPanels : jest.fn(),
+			dispose : jest.fn()
+		})()
+	}
 
-		beforeEach(() => {
-			scaling = new Vector3(1, 2, 3)
+	describe("onIsLoadingFileChanged", () => {
+		it("should call threeSceneService dispose", () => {
+			codeMapRenderService["onIsLoadingFileChanged"](true)
+			
+			expect(threeSceneService.dispose).toHaveBeenCalledWith()
 		})
 
-		it("should call codeMapLabelService.scale", () => {
-			storeService.dispatch(setScaling(scaling))
+		it("should call threeStatsService resetPanels", () => {
+			codeMapRenderService["onIsLoadingFileChanged"](false)
+			
+			expect(threeStatsService.resetPanels).toHaveBeenCalledWith()
+		})
+	})
 
+	describe("render", () => {
+		let  sortedNodes: Node[]
+		beforeEach(() => {
+			sortedNodes = codeMapRenderService["getSortedNodes"](map)
+		})
+		it("should call setNewMapMesh", () => {
+			codeMapRenderService["setNewMapMesh"]= jest.fn().mockReturnValue(sortedNodes)
+			codeMapRenderService.render(map)
+
+			expect(codeMapRenderService["setNewMapMesh"]).toHaveBeenCalledWith(sortedNodes)
+		})
+
+		it("should call setLabels", () => {
+			codeMapRenderService["setLabels"]= jest.fn().mockReturnValue(sortedNodes)
+			codeMapRenderService.render(map)
+
+			expect(codeMapRenderService["setLabels"]).toHaveBeenCalledWith(sortedNodes)
+		})
+
+		it("should call setArrows", () => {
+			codeMapRenderService["setArrows"]= jest.fn().mockReturnValue(sortedNodes)
+			codeMapRenderService.render(map)
+
+			expect(codeMapRenderService["setArrows"]).toHaveBeenCalledWith(sortedNodes)
+		})
+
+		it("should call scaleMap", () => {
+			codeMapRenderService["scaleMap"]= jest.fn()
+			codeMapRenderService.render(map)
+
+			expect(codeMapRenderService["scaleMap"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("scaleMap", () => {
+		it("should call codeMapLabelService.scale", () => {
 			codeMapRenderService["scaleMap"]()
 
 			expect(codeMapLabelService.scale).toHaveBeenCalledWith()
 		})
 
 		it("should call codeMapArrowService.scale", () => {
-			storeService.dispatch(setScaling(scaling))
-
 			codeMapRenderService["scaleMap"]()
 
 			expect(codeMapArrowService.scale).toHaveBeenCalledWith()
 		})
 
 		it("should call threeSceneService.scaleHeight", () => {
-			storeService.dispatch(setScaling(scaling))
-
 			codeMapRenderService["scaleMap"]()
 
 			expect(threeSceneService.scaleHeight).toHaveBeenCalled()

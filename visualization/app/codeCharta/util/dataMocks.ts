@@ -20,7 +20,8 @@ import {
 	SortingOption,
 	State,
 	LayoutAlgorithm,
-	GlobalSettings
+	GlobalSettings,
+	SharpnessMode
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -1148,7 +1149,8 @@ export const GLOBAL_SETTINGS: GlobalSettings = {
 	resetCameraIfNewFileIsLoaded: true,
 	experimentalFeaturesEnabled: true,
 	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-	maxTreeMapFiles: 50
+	maxTreeMapFiles: 50,
+	sharpnessMode : SharpnessMode.Standard
 }
 
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
@@ -1614,6 +1616,7 @@ export const STATE: State = {
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		sharpnessMode : SharpnessMode.Standard,
 		maxTreeMapFiles: 200
 	},
 	treeMap: {
@@ -1675,6 +1678,7 @@ export const DEFAULT_STATE: State = {
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		sharpnessMode : SharpnessMode.Standard,
 		maxTreeMapFiles: 100
 	},
 	dynamicSettings: {

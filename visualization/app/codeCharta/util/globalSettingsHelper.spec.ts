@@ -1,4 +1,4 @@
-import { GlobalSettings, LayoutAlgorithm, LocalStorageGlobalSettings } from "../codeCharta.model"
+import { GlobalSettings, LayoutAlgorithm, LocalStorageGlobalSettings, SharpnessMode } from "../codeCharta.model"
 import { GLOBAL_SETTINGS } from "./dataMocks"
 import packageJson from "../../../package.json"
 
@@ -22,6 +22,7 @@ describe("globalSettingsHelper", () => {
 			expect(localStorageGlobalSettings.globalSettings.experimentalFeaturesEnabled).toBeTruthy()
 			expect(localStorageGlobalSettings.globalSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
 			expect(localStorageGlobalSettings.globalSettings.maxTreeMapFiles).toEqual(50)
+			expect(localStorageGlobalSettings.globalSettings.sharpnessMode).toEqual(SharpnessMode.Standard)
 		})
 		it("have the recent version of CodeCharta Visualization", () => {
 			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
@@ -45,6 +46,7 @@ describe("globalSettingsHelper", () => {
 			expect(result.experimentalFeaturesEnabled).toBeTruthy()
 			expect(result.layoutAlgorithm).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
 			expect(result.maxTreeMapFiles).toEqual(50)
+			expect(result.sharpnessMode).toEqual(SharpnessMode.Standard)
 		})
 
 		it("should return nothing if no globalSettings are stored in localStorage", () => {

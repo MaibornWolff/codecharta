@@ -42,8 +42,10 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	//labels need to be scaled according to map or it will clip + looks bad
 	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
-		const { scaling } = this.storeService.getState().appSettings
-		const { margin } = this.storeService.getState().dynamicSettings
+		const state = this.storeService.getState()
+
+		const { scaling, layoutAlgorithm } = state.appSettings
+		const { margin, heightMetric } = state.dynamicSettings
 
 		const newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
 
@@ -52,7 +54,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		const multiplier = scaling.clone()
 
-		const state = this.storeService.getState()
 		const x = node.x0 - state.treeMap.mapSize
 		const y = node.z0
 		const z = node.y0 - state.treeMap.mapSize
@@ -71,13 +72,11 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			if (labelText !== "") {
 				labelText += "\n"
 			}
-			labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+			labelText += `${node.attributes[heightMetric]} ${heightMetric}`
 		}
 
 		const label = this.makeText(labelText, 30, node)
-		const {
-			appSettings: { layoutAlgorithm }
-		} = state
+
 		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 		let labelOffset = labelHeightScaled + label.heightValue / 2
 
@@ -144,7 +143,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	onCameraChanged() {
 		for (const label of this.labels) {
-			this.setLabelSize(label.sprite, label.sprite.material.map.image.width, label)
+			this.setLabelSize(label.sprite, label, label.sprite.material.map.image.width)
 		}
 	}
 
@@ -192,7 +191,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const spriteMaterial = new SpriteMaterial({ map: texture })
 		const sprite = new Sprite(spriteMaterial)
 		this.lineCount = multiLineContext.length
-		this.setLabelSize(sprite, canvas.width, null)
+		this.setLabelSize(sprite, null, canvas.width)
 
 		return {
 			sprite,
@@ -218,7 +217,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.fill()
 	}
 
-	private setLabelSize(sprite: Sprite, labelWidth: number = sprite.material.map.image.width, label: InternalLabel) {
+	private setLabelSize(sprite: Sprite, label: InternalLabel, labelWidth: number = sprite.material.map.image.width) {
 		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
 		if (this.threeCameraService.camera) {
 			const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)

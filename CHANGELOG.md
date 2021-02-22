@@ -9,11 +9,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Added WebGL FXAA antialias & PixelRatio Options in order to achieve better resolution on high dpi displays(https://github.com/MaibornWolff/codecharta/pull/1551).</br></br>
+    ![option dialog](https://user-images.githubusercontent.com/74670211/106582136-f4404900-6543-11eb-8f5b-5e1ec47457c7.png)
+    There are 4 available modes :
+    -   **standard mode**: the pixel density is only applied to the small cube with standard browser aliasing
+    -   **pixel ratio without aliasing** : no antialiasing is used
+    -   **pixel ration with FXAA** : Nvidia FXAA antialiasing shader is used as an alisaing technique. this has better perfromance the standard browser aliasing aliasing
+    -   **pixel ration with MSAA** : this is the best aliasing quality, slower then FXAA.
+-   Added GPU Stats (only in dev mode)
+
 ### Changed
 
 ### Removed 🗑
 
 ### Fixed 🐞
+
+-   Unfocus now respects the focus depth ([#1099](https://github.com/MaibornWolff/codecharta/issues/1099))
 
 ### Chore 👨‍💻 👩‍💻
 
