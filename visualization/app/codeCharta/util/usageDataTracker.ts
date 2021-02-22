@@ -301,6 +301,7 @@ function isSettingChangedEvent(actionType: string) {
 		isActionOfType(actionType, HeightMetricActions) ||
 		isActionOfType(actionType, ColorMetricActions) ||
 		isActionOfType(actionType, ColorRangeActions) ||
-		isActionOfType(actionType, InvertColorRangeActions)
+		isActionOfType(actionType, InvertColorRangeActions) ||
+		actionType === BlacklistActions.SET_BLACKLIST
 	)
 }
