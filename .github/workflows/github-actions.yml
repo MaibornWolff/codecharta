@@ -1,4 +1,4 @@
-name: Test and Publish Sonar Results
+name: Tests
 
 on:
   push:
