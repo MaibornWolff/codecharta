@@ -9,6 +9,40 @@ on:
     - main
 
 jobs:
+ check_prettier:
+    name: Prettier Test
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.4
+      with:
+        node-version: '12'
+
+    - name: Cache root node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-root-node-modules
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Install Node
+      run: npm install
+      working-directory: ${{env.working-directory}}
+
+    - name: Lint files
+      run: |
+        npm run format -- --check
+      working-directory: ${{env.working-directory}}
+
  build_visualization_test:
     name: Visualization Test
     runs-on: ubuntu-latest
