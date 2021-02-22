@@ -12,15 +12,17 @@ import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetL
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
+import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 
-export class CodeMapRenderService implements IsLoadingFileSubscriber{
+export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
-		private threeStatsService : ThreeStatsService
+		private threeStatsService: ThreeStatsService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
@@ -30,6 +32,10 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 		} else {
 			this.threeStatsService?.resetPanels()
 		}
+	}
+
+	updateRender() {
+		this.threeOrbitControlsService.updateRenderFrame()
 	}
 
 	render(map: CodeMapNode) {
@@ -72,9 +78,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber{
 		}
 		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
 		// prevent multiple steps if the visibility is checked first.
-		return nodes
-			.filter(node => node.visible && node.length > 0 && node.width > 0)
-			.sort((a, b) => b.height - a.height)
+		return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
 	}
 
 	private setLabels(sortedNodes: Node[]) {

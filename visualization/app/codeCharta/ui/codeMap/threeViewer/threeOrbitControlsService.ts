@@ -12,6 +12,7 @@ import {
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { ThreeRendererService } from "./threeRendererService"
 
 // TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
@@ -36,7 +37,8 @@ export class ThreeOrbitControlsService
 		private $timeout: ITimeoutService,
 		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
-		private threeSceneService: ThreeSceneService
+		private threeSceneService: ThreeSceneService,
+		private threeRendererService: ThreeRendererService
 	) {
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
@@ -73,6 +75,8 @@ export class ThreeOrbitControlsService
 		const zoom = this.getZoom()
 		this.lookAtDirectionFromTarget(x, y, z)
 		this.applyOldZoom(zoom)
+		this.onInput(this.threeCameraService.camera)
+		this.updateRenderFrame()
 	}
 
 	autoFitTo() {
@@ -87,7 +91,13 @@ export class ThreeOrbitControlsService
 			this.controls.update()
 
 			this.focusCameraViewToCenter(boundingSphere)
+			this.updateRenderFrame()
+			this.onInput(this.threeCameraService.camera)
 		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
+	}
+
+	updateRenderFrame() {
+		this.threeRendererService.render()
 	}
 
 	private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {

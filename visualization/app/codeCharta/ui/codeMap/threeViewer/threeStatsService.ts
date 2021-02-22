@@ -11,7 +11,10 @@ export class ThreeStatsService {
 	glCallsPanel: CustomPanel
 	geometryMemoryPanel: CustomPanel
 	textureMemoryPanel: CustomPanel
+	prevTime: number
 	isDevelopmentMode = isDevelopment()
+
+	private static ONE_SECOND = 1000
 
 	/* ngInject */
 	constructor(private threeRendererService: ThreeRendererService) {}
@@ -23,11 +26,13 @@ export class ThreeStatsService {
 			this.stats.domElement.style.position = "absolute"
 			this.stats.domElement.style.left = "0"
 			this.stats.domElement.style.top = "0"
-			
+
 			canvasElement.append(this.stats.dom)
 
 			this.generateStatPanels()
 		}
+
+		this.prevTime = (performance || Date).now()
 	}
 
 	private generateStatPanels = () => {
@@ -41,13 +46,17 @@ export class ThreeStatsService {
 
 	updateStats = () => {
 		if (this.isDevelopmentMode) {
-			const webGLInfo = this.threeRendererService.getInfo()
-			const threeJsInfo = this.threeRendererService.getMemoryInfo()
-			this.processPanel(this.trianglesPanel, webGLInfo.triangles)
-			this.processPanel(this.glCallsPanel, webGLInfo.calls)
-			this.processPanel(this.geometryMemoryPanel, threeJsInfo.geometries)
-			this.processPanel(this.textureMemoryPanel, threeJsInfo.textures)
-			this.stats.update()
+			const time = (performance || Date).now()
+			if (time >= this.prevTime + ThreeStatsService.ONE_SECOND) {
+				this.prevTime = time
+				const webGLInfo = this.threeRendererService.getInfo()
+				const threeJsInfo = this.threeRendererService.getMemoryInfo()
+				this.processPanel(this.trianglesPanel, webGLInfo.triangles)
+				this.processPanel(this.glCallsPanel, webGLInfo.calls)
+				this.processPanel(this.geometryMemoryPanel, threeJsInfo.geometries)
+				this.processPanel(this.textureMemoryPanel, threeJsInfo.textures)
+				this.stats.update()
+			}
 		}
 	}
 
