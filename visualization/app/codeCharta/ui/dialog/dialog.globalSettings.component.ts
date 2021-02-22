@@ -68,10 +68,7 @@ export class DialogGlobalSettingsController
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
 		SharpnessModeService.subscribe(this.$rootScope, this)
-		this.initDialogOnClick()
-	}
 
-	private initDialogOnClick() {
 		const { appSettings } = this.storeService.getState()
 
 		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)

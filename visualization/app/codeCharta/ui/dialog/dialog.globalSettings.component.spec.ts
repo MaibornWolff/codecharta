@@ -70,47 +70,39 @@ describe("DialogGlobalSettingsController", () => {
 			expect(ExperimentalFeaturesEnabledService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
-		it("should call initDialogOnClick", () => {
-			jest.spyOn(DialogGlobalSettingsController.prototype as any, "initDialogOnClick")
+		for (const setting of [true, false]) {
+			it(`should update viewModel.hideFlatBuildings to ${setting}`, () => {
+				storeService.dispatch(setHideFlatBuildings(setting))
 
-			rebuildController()
+				rebuildController()
 
-			expect(dialogGlobalSettingsController["initDialogOnClick"]).toHaveBeenCalled()
-		})
-	})
+				expect(dialogGlobalSettingsController["_viewModel"].hideFlatBuildings).toBe(setting)
+			})
 
-	describe("initDialogOnClick", () => {
-		it("should update viewModel.hideFlatBuildings", () => {
-			storeService.dispatch(setHideFlatBuildings(false))
+			it(`should update viewModel.isWhiteBackground to ${setting}`, () => {
+				storeService.dispatch(setIsWhiteBackground(setting))
 
-			dialogGlobalSettingsController["initDialogOnClick"]()
+				rebuildController()
 
-			expect(dialogGlobalSettingsController["_viewModel"].hideFlatBuildings).toBeFalsy()
-		})
+				expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBe(setting)
+			})
 
-		it("should update viewModel.isWhiteBackground", () => {
-			storeService.dispatch(setIsWhiteBackground(true))
+			it(`should update viewModel.resetCameraIfNewFileIsLoaded to ${setting}`, () => {
+				storeService.dispatch(setResetCameraIfNewFileIsLoaded(setting))
 
-			dialogGlobalSettingsController["initDialogOnClick"]()
+				rebuildController()
 
-			expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBeTruthy()
-		})
+				expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBe(setting)
+			})
 
-		it("should update viewModel.resetCameraIfNewFileIsLoaded", () => {
-			storeService.dispatch(setResetCameraIfNewFileIsLoaded(false))
+			it(`should update viewModel.experimentalFeaturesEnabled to ${setting}`, () => {
+				storeService.dispatch(setExperimentalFeaturesEnabled(setting))
 
-			dialogGlobalSettingsController["initDialogOnClick"]()
+				rebuildController()
 
-			expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBeFalsy()
-		})
-
-		it("should update viewModel.experimentalFeaturesEnabled", () => {
-			storeService.dispatch(setExperimentalFeaturesEnabled(false))
-
-			dialogGlobalSettingsController["initDialogOnClick"]()
-
-			expect(dialogGlobalSettingsController["_viewModel"].experimentalFeaturesEnabled).toBeFalsy()
-		})
+				expect(dialogGlobalSettingsController["_viewModel"].experimentalFeaturesEnabled).toBe(setting)
+			})
+		}
 	})
 
 	describe("onHideFlatBuildingsChanged", () => {
