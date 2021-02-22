@@ -23,7 +23,7 @@ export class ThreeStatsService {
 			this.stats.domElement.style.position = "absolute"
 			this.stats.domElement.style.left = "0"
 			this.stats.domElement.style.top = "0"
-			
+
 			canvasElement.append(this.stats.dom)
 
 			this.generateStatPanels()

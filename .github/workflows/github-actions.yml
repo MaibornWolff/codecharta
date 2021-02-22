@@ -20,7 +20,7 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v2.1.4
       with:
-        node-version: '12'  
+        node-version: '12'
 
     - name: Cache node modules
       uses: actions/cache@v2
@@ -33,15 +33,15 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-          
+
     - name: Install Node
       run: npm install
-      working-directory: ${{env.working-directory}} 
+      working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
       run: |
         npm run test --ci
-        npm run lint      
+        npm run lint
       working-directory: ${{env.working-directory}}
 
     - name: Upload artifact
@@ -61,7 +61,7 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v2.1.4
       with:
-        node-version: '12'  
+        node-version: '12'
 
     - name: Cache node modules
       uses: actions/cache@v2
@@ -74,31 +74,31 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-          
+
     - name: Install Node
       run: npm install
-      working-directory: ${{env.working-directory}}   
+      working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
       run: |
         npm run build:web
         npm run e2e:ci
-      working-directory: ${{env.working-directory}}  
-      
+      working-directory: ${{env.working-directory}}
+
  publish_sonar_analysis:
     name: "Build and Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
     env:
       working-directory: ./analysis
-    
+
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Setup Java JDK
         uses: actions/setup-java@v1.4.3
-        with: 
-          java-version: '11' 
-      
+        with:
+          java-version: '11'
+
       - name: Build
         run: chmod +x ./gradlew
         working-directory: ${{env.working-directory}}
@@ -116,23 +116,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          JAVA_HOME: '' 
+          JAVA_HOME: ''
 
- publish_sonar_visualization:  
+ publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]
     name: "Build and Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
-    
+
     steps:
       - uses: actions/checkout@v2
-         
+
       - uses: actions/download-artifact@v2
         with:
           name: coverage
           path: ./visualization/dist/
-      
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v1.5
         with:

@@ -27,7 +27,7 @@ describe("codeMapRenderService", () => {
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
-	let threeStatsService : ThreeStatsService
+	let threeStatsService: ThreeStatsService
 
 	let state: State
 	let map: CodeMapNode
@@ -61,9 +61,15 @@ describe("codeMapRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapRenderService = new CodeMapRenderService($rootScope,storeService, threeSceneService, codeMapLabelService, codeMapArrowService,threeStatsService)
+		codeMapRenderService = new CodeMapRenderService(
+			$rootScope,
+			storeService,
+			threeSceneService,
+			codeMapLabelService,
+			codeMapArrowService,
+			threeStatsService
+		)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
-		
 	}
 
 	function withMockedThreeSceneService() {
@@ -72,7 +78,7 @@ describe("codeMapRenderService", () => {
 			mapGeometry: jest.fn().mockReturnValue({
 				scale: new Vector3(1, 2, 3)
 			}),
-			dispose : jest.fn(),
+			dispose: jest.fn(),
 			setMapMesh: jest.fn()
 		})()
 	}
@@ -97,53 +103,53 @@ describe("codeMapRenderService", () => {
 
 	function withMockedStatsService() {
 		threeStatsService = codeMapRenderService["threeStatsService"] = jest.fn().mockReturnValue({
-			resetPanels : jest.fn(),
-			dispose : jest.fn()
+			resetPanels: jest.fn(),
+			dispose: jest.fn()
 		})()
 	}
 
 	describe("onIsLoadingFileChanged", () => {
 		it("should call threeSceneService dispose", () => {
 			codeMapRenderService["onIsLoadingFileChanged"](true)
-			
+
 			expect(threeSceneService.dispose).toHaveBeenCalledWith()
 		})
 
 		it("should call threeStatsService resetPanels", () => {
 			codeMapRenderService["onIsLoadingFileChanged"](false)
-			
+
 			expect(threeStatsService.resetPanels).toHaveBeenCalledWith()
 		})
 	})
 
 	describe("render", () => {
-		let  sortedNodes: Node[]
+		let sortedNodes: Node[]
 		beforeEach(() => {
 			sortedNodes = codeMapRenderService["getSortedNodes"](map)
 		})
 		it("should call setNewMapMesh", () => {
-			codeMapRenderService["setNewMapMesh"]= jest.fn().mockReturnValue(sortedNodes)
+			codeMapRenderService["setNewMapMesh"] = jest.fn().mockReturnValue(sortedNodes)
 			codeMapRenderService.render(map)
 
 			expect(codeMapRenderService["setNewMapMesh"]).toHaveBeenCalledWith(sortedNodes)
 		})
 
 		it("should call setLabels", () => {
-			codeMapRenderService["setLabels"]= jest.fn().mockReturnValue(sortedNodes)
+			codeMapRenderService["setLabels"] = jest.fn().mockReturnValue(sortedNodes)
 			codeMapRenderService.render(map)
 
 			expect(codeMapRenderService["setLabels"]).toHaveBeenCalledWith(sortedNodes)
 		})
 
 		it("should call setArrows", () => {
-			codeMapRenderService["setArrows"]= jest.fn().mockReturnValue(sortedNodes)
+			codeMapRenderService["setArrows"] = jest.fn().mockReturnValue(sortedNodes)
 			codeMapRenderService.render(map)
 
 			expect(codeMapRenderService["setArrows"]).toHaveBeenCalledWith(sortedNodes)
 		})
 
 		it("should call scaleMap", () => {
-			codeMapRenderService["scaleMap"]= jest.fn()
+			codeMapRenderService["scaleMap"] = jest.fn()
 			codeMapRenderService.render(map)
 
 			expect(codeMapRenderService["scaleMap"]).toHaveBeenCalled()

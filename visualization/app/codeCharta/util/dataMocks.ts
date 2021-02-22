@@ -1150,7 +1150,7 @@ export const GLOBAL_SETTINGS: GlobalSettings = {
 	experimentalFeaturesEnabled: true,
 	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 	maxTreeMapFiles: 50,
-	sharpnessMode : SharpnessMode.Standard
+	sharpnessMode: SharpnessMode.Standard
 }
 
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
@@ -1616,7 +1616,7 @@ export const STATE: State = {
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-		sharpnessMode : SharpnessMode.Standard,
+		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
 	},
 	treeMap: {
@@ -1678,7 +1678,7 @@ export const DEFAULT_STATE: State = {
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-		sharpnessMode : SharpnessMode.Standard,
+		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 100
 	},
 	dynamicSettings: {
