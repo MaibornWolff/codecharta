@@ -1,0 +1,17 @@
+# Default behavior, in case someone does not have core.autocrlf set.
+* text eol=lf
+
+# Files that should be normalized and converted.
+*.md text
+*.json text
+*.ts
+*.py
+*.yaml
+*.java
+*.kt
+*.txt
+*.csv
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
