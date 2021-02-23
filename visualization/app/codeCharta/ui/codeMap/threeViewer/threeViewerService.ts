@@ -49,6 +49,10 @@ export class ThreeViewerService {
 		this.threeCameraService.camera.updateProjectionMatrix()
 	}
 
+	enableRotation(value: boolean) {
+		this.threeOrbitControlsService.controls.enableRotate = value
+	}
+
 	onFocusIn(event) {
 		if (event.target.nodeName === "INPUT") {
 			this.threeOrbitControlsService.controls.enableKeys = false
