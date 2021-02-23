@@ -30,9 +30,9 @@ export class ThreeStatsService {
 			canvasElement.append(this.stats.dom)
 
 			this.generateStatPanels()
-		}
 
-		this.prevTime = (performance || Date).now()
+			this.prevTime = (performance || Date).now()
+		}
 	}
 
 	private generateStatPanels = () => {

@@ -51,14 +51,16 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 		if (ThreeRendererService.setPixelRatio) {
 			this.renderer.setPixelRatio(window.devicePixelRatio)
 		}
-		if (WEBGL.isWebGL2Available) {
-			const size = this.renderer.getDrawingBufferSize(new Vector2())
-			const renderTarget = new WebGLRenderTarget(size.width, size.height, {
-				format: RGBAFormat
-			})
-			this.composer = new CustomComposer(this.renderer, renderTarget)
-		} else {
-			this.composer = new CustomComposer(this.renderer)
+		if (ThreeRendererService.enableFXAA) {
+			if (WEBGL.isWebGL2Available) {
+				const size = this.renderer.getDrawingBufferSize(new Vector2())
+				const renderTarget = new WebGLRenderTarget(size.width, size.height, {
+					format: RGBAFormat
+				})
+				this.composer = new CustomComposer(this.renderer, renderTarget)
+			} else {
+				this.composer = new CustomComposer(this.renderer)
+			}
 		}
 		this.renderer.setSize(containerWidth, containerHeight)
 		if (ThreeRendererService.enableFXAA) {
