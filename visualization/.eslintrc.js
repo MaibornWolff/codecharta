@@ -17,8 +17,6 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:unicorn/recommended",
         "prettier",
-        "prettier/@typescript-eslint",
-        "prettier/unicorn",
     ], // prettier must be last in array to override other configs
     parser: "@typescript-eslint/parser",
     parserOptions: {

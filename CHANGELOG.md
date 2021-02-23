@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+- GPU On demand rendering [#1728](https://github.com/MaibornWolff/codecharta/issues/1728)
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.69.0] - 2021-02-23
+
+### Added 🚀
+
 -   Added WebGL FXAA antialias & PixelRatio Options in order to achieve better resolution on high dpi displays(https://github.com/MaibornWolff/codecharta/pull/1551).</br></br>
     ![option dialog](https://user-images.githubusercontent.com/74670211/106582136-f4404900-6543-11eb-8f5b-5e1ec47457c7.png)
     There are 4 available modes :
