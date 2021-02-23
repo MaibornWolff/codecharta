@@ -179,7 +179,7 @@ with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
     for line in fp:
         if line_number == 6:
             fp.write(
-                "\n## [unreleased]\n\n### Added 🚀\n\n### Changed\n\n### Removed 🗑\n\n### Fixed 🐞\n\n### Chore 👨‍💻 👩‍💻\n\n")
+                "\n## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n")
         else:
             fp.write(line)
         line_number = line_number + 1
