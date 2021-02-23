@@ -114,7 +114,7 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
-		this.threeRendererService.renderer.domElement.addEventListener("mouseleave", () => this.onDocumentMouseLeave())
+		this.threeRendererService.renderer.domElement.addEventListener("mouseleave", (event) => this.onDocumentMouseLeave(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
@@ -262,8 +262,9 @@ export class CodeMapMouseEventService
 		this.EnableOrbitalsRotation(true)
 	}
 
-	onDocumentMouseLeave() {
-		this.EnableOrbitalsRotation(false)
+	onDocumentMouseLeave(event: MouseEvent) {
+		if (!(event.relatedTarget instanceof  HTMLCanvasElement))
+			this.EnableOrbitalsRotation(false)
 	}
 
 	onDocumentMouseMove(event: MouseEvent) {
