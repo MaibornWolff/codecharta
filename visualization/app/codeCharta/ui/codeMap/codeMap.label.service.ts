@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color, Object3D } from "three"
 import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -107,17 +107,36 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	clearLabels() {
+		this.dispose(this.labels)
+
 		this.labels = []
 		this.nodeHeight = 0
 		this.LABEL_HEIGHT_POSITION = 60
+
 		// Reset the children
-		this.threeSceneService.labels.children.length = 0
+		this.dispose(this.threeSceneService.labels.children)
+		this.threeSceneService.labels.children = []
+	}
+
+	dispose(labels: InternalLabel[] | Object3D[]) {
+		for (const element of labels) {
+			if (element instanceof Sprite) {
+				element.material.dispose()
+				element.material.map.dispose()
+				element.geometry.dispose()
+			}
+			if (element instanceof Line) {
+				element.material.dispose()
+				element.geometry.dispose()
+			}
+		}
 	}
 
 	clearTemporaryLabel(hoveredNode: Node) {
 		const index = this.labels.findIndex(({ node }) => node === hoveredNode)
 		if (index > -1) {
 			this.labels.splice(index, 1)
+			this.dispose(this.threeSceneService.labels.children)
 			this.threeSceneService.labels.children.length -= 2
 		}
 	}
