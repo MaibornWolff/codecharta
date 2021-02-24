@@ -1,6 +1,9 @@
 # Publishing new version
 
-## Automatic
+1. [Run the release script to release a new version. It will do everything necessary for you.](#run-release-script)
+1. [Perform all steps manually by yourself.](#release-manually)
+
+## Run release script
 
 ### Prerequisites
 
@@ -15,17 +18,17 @@
 
 ### Explanation of the script
 
--   The script will ask you what version you want to increase (major, minor, patch). Read the Versioning Strategy Guide first (https://maibornwolff.github.io/codecharta/docs/versioning/).
--   The version number will be updated automatically in corresponding files (see the manual guide for which files are updated).
+-   The script will ask you what version you want to increase (major, minor, patch). Read the [Versioning Strategy Guide](https://maibornwolff.github.io/codecharta/docs/versioning/) first.
+-   The version number will be updated automatically in corresponding files (see the manual guide for which files [will be updated](#increment-version-numbers)).
 -   The Changelog section `[unreleased]` will be renamed to the release date like e.g. `[2020-12-12]` and a new `[unreleased]` section will be added on top of the Changelog.
 -   A release post will be created for the GitHub Pages with the corresponding release notes from the Changelog.
 -   You will be ask if you want to commit and tag the automatically changed files and thus, the release itself.
 -   Then you will be ask if you want to push the release commits finally.
 -   Our build pipeline will detect the new release (tag) and starts a build to publish the new release as npm packages on npmjs.com
 
-## Manual
+## Release manually
 
-### Increment
+### Increment version numbers
 
 To release a new version please modify the version property of the following files
 
@@ -38,10 +41,10 @@ To release a new version please modify the version property of the following fil
 -   CHANGELOG.md
 -   Add release post: /gh-pages/\_posts/release/YYYY-mm-dd-v<YOUR.NEW.VERSION>.md
 
-### Changelog
+### Update the Changelog
 
 Add a new release section in the changelog
 
-### Tag
+### Tag the new release
 
 Commit your changes but do not push them. You need to tag your commit with the version number and then push both.
