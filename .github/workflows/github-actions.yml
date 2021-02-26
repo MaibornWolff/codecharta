@@ -40,7 +40,7 @@ jobs:
 
     - name: Lint files
       run: |
-        npm run format -- --check
+        npm run format:check
       working-directory: ${{env.working-directory}}
 
  build_visualization_test:
