@@ -99,30 +99,25 @@ describe("ColorSettingsPanelController", () => {
 	})
 
 	describe("onSharpnessModeChanged", () => {
-		beforeEach(() => codeMapController.onSharpnessModeChanged())
-
-		it("should call threeViewerService stopAnimate", () => {
-			expect(threeViewerService.stopAnimate).toHaveBeenCalled()
+		const sharpnessTests= [
+			{func: "stopAnimate" },
+			{func: "destroy" },
+			{func: "autoFitTo" },
+			{func: "animate" },
+			{func: "animateStats"}
+		]
+		beforeEach(() => {
+			codeMapController.onSharpnessModeChanged()
 		})
 
-		it("should call threeViewerService destroy", () => {
-			expect(threeViewerService.destroy).toHaveBeenCalled()
-		})
+		for(const test of sharpnessTests) {
+			it(`should call threeViewerService ${test.func}`, () => {
+				expect(threeViewerService[`${test.func}`]).toHaveBeenCalled()
+			})
+		}
 
-		it("should call codeMapController $postLink", () => {
+		it ("should call CodeMapController $postLink", () => {
 			expect(codeMapController.$postLink).toHaveBeenCalled()
-		})
-
-		it("should call threeViewerService autoFitTo", () => {
-			expect(threeViewerService.autoFitTo).toHaveBeenCalled()
-		})
-
-		it("should call threeViewerService animate", () => {
-			expect(threeViewerService.animate).toHaveBeenCalled()
-		})
-
-		it("should call threeViewerService animateStats", () => {
-			expect(threeViewerService.animateStats).toHaveBeenCalled()
 		})
 	})
 

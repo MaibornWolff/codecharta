@@ -121,12 +121,13 @@ describe("ThreeStatsService", () => {
 
 		beforeEach(() => {
 			rebuildService()
+			const getTimeFunctor = (jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown as CallableFunction)()
 
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 			mockRenderer()
 			withMockedStats()
 
-			threeStatsService.prevTime = (performance || Date).now() - ONE_SECOND
+			threeStatsService.prevTime = getTimeFunctor.now() - ONE_SECOND
 		})
 
 		it("should not do anything when not in development mode", () => {
@@ -148,7 +149,9 @@ describe("ThreeStatsService", () => {
 		})
 
 		it("should not call processPanel when time difference is less then one second", () => {
-			threeStatsService.prevTime = (performance || Date).now()
+			const getTimeFunctor = (jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown as CallableFunction)()
+			threeStatsService.prevTime = getTimeFunctor.now()
+
 			const processPanel = jest.spyOn(threeStatsService, "processPanel" as any)
 
 			threeStatsService.updateStats()
@@ -176,19 +179,19 @@ describe("ThreeStatsService", () => {
 
 			threeStatsService.resetPanels()
 
-			expect(threeStatsService["trianglesPanel"]).toBe(undefined)
-			expect(threeStatsService["glCallsPanel"]).toBe(undefined)
-			expect(threeStatsService["geometryMemoryPanel"]).toBe(undefined)
-			expect(threeStatsService["textureMemoryPanel"]).toBe(undefined)
+			expect(threeStatsService.trianglesPanel).toBe(undefined)
+			expect(threeStatsService.glCallsPanel).toBe(undefined)
+			expect(threeStatsService.geometryMemoryPanel).toBe(undefined)
+			expect(threeStatsService.textureMemoryPanel).toBe(undefined)
 		})
 
 		it("should reset all panels", () => {
 			threeStatsService.resetPanels()
 
-			expect(threeStatsService["trianglesPanel"]["maxHeight"]).toBe(0)
-			expect(threeStatsService["glCallsPanel"]["maxHeight"]).toBe(0)
-			expect(threeStatsService["geometryMemoryPanel"]["maxHeight"]).toBe(0)
-			expect(threeStatsService["textureMemoryPanel"]["maxHeight"]).toBe(0)
+			expect(threeStatsService.trianglesPanel.maxHeight).toBe(0)
+			expect(threeStatsService.glCallsPanel.maxHeight).toBe(0)
+			expect(threeStatsService.geometryMemoryPanel.maxHeight).toBe(0)
+			expect(threeStatsService.textureMemoryPanel.maxHeight).toBe(0)
 		})
 	})
 
@@ -228,13 +231,13 @@ describe("ThreeStatsService", () => {
 
 			threeStatsService.destroy()
 
-			expect(threeStatsService["stats"]).toBe(undefined)
+			expect(threeStatsService.stats).toBe(undefined)
 		})
 
 		it("should remove dom Element", () => {
 			threeStatsService.destroy()
 
-			expect(threeStatsService["stats"]["domElement"].remove).toHaveBeenCalled()
+			expect(threeStatsService.stats.domElement.remove).toHaveBeenCalled()
 		})
 	})
 })

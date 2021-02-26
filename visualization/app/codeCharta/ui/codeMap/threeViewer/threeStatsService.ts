@@ -1,6 +1,8 @@
 import Stats from "three/examples/jsm/libs/stats.module"
 import { ThreeRendererService } from "./threeRendererService"
 import { isDevelopment } from "../../../util/envDetector"
+
+const ONE_SECOND = 1000
 export interface CustomPanel {
 	panel: Stats.Panel
 	maxHeight: number
@@ -13,8 +15,6 @@ export class ThreeStatsService {
 	textureMemoryPanel: CustomPanel
 	prevTime: number
 	isDevelopmentMode = isDevelopment()
-
-	private static ONE_SECOND = 1000
 
 	/* ngInject */
 	constructor(private threeRendererService: ThreeRendererService) {}
@@ -31,8 +31,12 @@ export class ThreeStatsService {
 
 			this.generateStatPanels()
 
-			this.prevTime = (performance || Date).now()
+			this.prevTime = this.getTimeFunctor().now()
 		}
+	}
+
+	private getTimeFunctor = () => {
+		return typeof performance === "undefined" ? Date : performance
 	}
 
 	private generateStatPanels = () => {
@@ -46,8 +50,8 @@ export class ThreeStatsService {
 
 	updateStats = () => {
 		if (this.isDevelopmentMode) {
-			const time = (performance || Date).now()
-			if (time >= this.prevTime + ThreeStatsService.ONE_SECOND) {
+			const time = this.getTimeFunctor().now()
+			if (time >= this.prevTime + ONE_SECOND) {
 				this.prevTime = time
 				const webGLInfo = this.threeRendererService.getInfo()
 				const threeJsInfo = this.threeRendererService.getMemoryInfo()
