@@ -121,7 +121,7 @@ describe("ThreeStatsService", () => {
 
 		beforeEach(() => {
 			rebuildService()
-			const getTimeFunctor = (jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown as CallableFunction)()
+			const getTimeFunctor = ((jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown) as CallableFunction)()
 
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 			mockRenderer()
@@ -149,7 +149,7 @@ describe("ThreeStatsService", () => {
 		})
 
 		it("should not call processPanel when time difference is less then one second", () => {
-			const getTimeFunctor = (jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown as CallableFunction)()
+			const getTimeFunctor = ((jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown) as CallableFunction)()
 			threeStatsService.prevTime = getTimeFunctor.now()
 
 			const processPanel = jest.spyOn(threeStatsService, "processPanel" as any)
