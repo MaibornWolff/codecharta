@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color/*, Object3D*/ } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -118,14 +118,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.threeSceneService.labels.children = []
 	}
 
-	private disposeSprite(element : Sprite) {
+	private disposeSprite(element: Sprite) {
 		element.material.dispose()
 		element.material.map.dispose()
 		element.geometry.dispose()
 	}
 
 	private disposeLine(element: Line) {
-		(element.material as LineBasicMaterial).dispose()
+		;(element.material as LineBasicMaterial).dispose()
 		element.geometry.dispose()
 	}
 
@@ -138,11 +138,11 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 				this.disposeLine(element)
 			}
 
-			if (element.sprite!==undefined) {
+			if (element.sprite !== undefined) {
 				this.disposeSprite(element.sprite)
 			}
 
-			if (element.line!==undefined) {
+			if (element.line !== undefined) {
 				this.disposeLine(element.line)
 			}
 		}

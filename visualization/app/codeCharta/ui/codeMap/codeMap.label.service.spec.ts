@@ -2,7 +2,7 @@ import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { Node } from "../../codeCharta.model"
-import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
+import { BoxGeometry, Group, Mesh, Object3D, PerspectiveCamera, Vector3 } from "three"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
@@ -295,13 +295,20 @@ describe("CodeMapLabelService", () => {
 	})
 
 	describe("clearTemporaryLabel", () => {
+		const generateSceneLabelChild = (numberOfChildren: number): Object3D[] => {
+			const generated = []
+			for (let index = 0; index < numberOfChildren; index++) {
+				generated[index] = ({ line: undefined, sprite: undefined } as unknown) as Object3D
+			}
+			return generated
+		}
 		it("should clear label for the correct node only", () => {
 			storeService.dispatch(setAmountOfTopLabels(2))
 			storeService.dispatch(setHeightMetric("mcc"))
 
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 			codeMapLabelService.addLabel(otherSampleLeaf, { showNodeName: true, showNodeMetric: false })
-			threeSceneService.labels.children.length = 4
+			threeSceneService.labels.children = generateSceneLabelChild(4)
 
 			codeMapLabelService.clearTemporaryLabel(sampleLeaf)
 
