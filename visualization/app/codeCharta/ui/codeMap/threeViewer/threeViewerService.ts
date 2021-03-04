@@ -5,7 +5,6 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
-import { Color, WebGLRenderer } from "three"
 
 import { ThreeStatsService } from "./threeStatsService"
 export class ThreeViewerService {
@@ -20,31 +19,6 @@ export class ThreeViewerService {
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private threeStatsService: ThreeStatsService
 	) {}
-
-	private createSaveButton(renderer: WebGLRenderer) {
-		const link = document.createElement("a")
-		link.appendChild(document.createTextNode("Link"))
-		link.setAttribute("download", "test.png")
-		link.onclick = () => this.loadScript(link, renderer)
-		link.style.left = "0"
-		link.style.top = "0"
-		link.style.position = "absolute"
-		return link
-	}
-
-	private loadScript(link, renderer: WebGLRenderer) {
-		const currentClearColor = new Color()
-		renderer.setPixelRatio(window.devicePixelRatio)
-		renderer.getClearColor(currentClearColor)
-
-		renderer.setClearColor(0x000000, 0)
-		this.threeSceneService.scene.background = null
-		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
-		renderer.setClearColor(currentClearColor)
-
-		link.setAttribute("href", renderer.domElement.toDataURL())
-		renderer.setPixelRatio(1)
-	}
 
 	init(canvasElement: Element) {
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
@@ -62,8 +36,6 @@ export class ThreeViewerService {
 		threeOrbitControlsService.init(threeRendererService.renderer.domElement)
 
 		canvasElement.append(threeRendererService.renderer.domElement)
-
-		canvasElement.appendChild(this.createSaveButton(threeRendererService.renderer))
 
 		// TODO do we need to remove these listeners ?
 		window.addEventListener("resize", () => this.onWindowResize())
