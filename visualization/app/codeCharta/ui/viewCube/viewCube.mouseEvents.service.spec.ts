@@ -1,10 +1,12 @@
 import { IRootScopeService } from "angular"
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
 import { getService } from "../../../../mocks/ng.mockhelper"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 
 describe("ViewCubeMouseEventsService", () => {
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
+	let threeOrbitControlsService: ThreeOrbitControlsService
 	let $rootScope: IRootScopeService
 	let webGLRenderer: WebGLRenderer
 
@@ -19,7 +21,7 @@ describe("ViewCubeMouseEventsService", () => {
 	}
 
 	function rebuildService() {
-		viewCubeMouseEventsService = new ViewCubeMouseEventsService($rootScope)
+		viewCubeMouseEventsService = new ViewCubeMouseEventsService($rootScope, threeOrbitControlsService)
 	}
 
 	function withMockedWebGLRenderer() {
@@ -61,12 +63,15 @@ describe("ViewCubeMouseEventsService", () => {
 	}
 
 	describe("init", () => {
-		it("should call initRendererEventListeners", () => {
+		it("should call initRendererEventListeners and initOrbitalControl", () => {
 			viewCubeMouseEventsService["initRendererEventListeners"] = jest.fn()
+			viewCubeMouseEventsService["initOrbitalControl"] = jest.fn()
+			const camera = new PerspectiveCamera()
 
-			viewCubeMouseEventsService.init(new Group(), new PerspectiveCamera(), webGLRenderer)
+			viewCubeMouseEventsService.init(new Group(), camera, webGLRenderer)
 
 			expect(viewCubeMouseEventsService["initRendererEventListeners"]).toHaveBeenCalledWith(webGLRenderer)
+			expect(viewCubeMouseEventsService["initOrbitalControl"]).toHaveBeenCalledWith(camera, webGLRenderer)
 		})
 	})
 
@@ -88,6 +93,14 @@ describe("ViewCubeMouseEventsService", () => {
 
 		it("should add dblclick listener", () => {
 			expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("dblclick", expect.any(Function))
+		})
+
+		it("should add mouseleave listener", () => {
+			expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mouseleave", expect.any(Function))
+		})
+
+		it("should add mouseenter listener", () => {
+			expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mouseenter", expect.any(Function))
 		})
 	})
 
