@@ -8,6 +8,7 @@ import { CodeChartaStorage } from "./codeChartaStorage"
 import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { klona } from "klona"
 jest.mock("./codeChartaStorage")
 
 describe("UsageDataTracker", () => {
@@ -77,23 +78,23 @@ describe("UsageDataTracker", () => {
 		})
 
 		it("should not track maps from old API versions", () => {
-			singleFileState.file.fileMeta.apiVersion = APIVersions.ONE_POINT_ZERO
+			singleFileState.file.fileMeta.apiVersion = APIVersions.ZERO_POINT_ONE
 			mockTrackingToBeAllowed()
 			trackMapMetaData(stateStub)
 
-			singleFileState.file.fileMeta.apiVersion = "0.2"
+			singleFileState.file.fileMeta.apiVersion = "0.9"
 			trackMapMetaData(stateStub)
 
 			expect(setItemMock).not.toHaveBeenCalled()
 		})
 
-		it("should track from API version 1.1", () => {
+		it("should track from API version 1.0", () => {
 			singleFileState.file.map = { path: "/root" } as CodeMapNode
 
 			mockTrackingToBeAllowed()
 			trackMapMetaData(stateStub)
 
-			singleFileState.file.fileMeta.apiVersion = "1.2"
+			singleFileState.file.fileMeta.apiVersion = "1.0"
 			trackMapMetaData(stateStub)
 
 			singleFileState.file.fileMeta.apiVersion = "2.0"
@@ -104,6 +105,19 @@ describe("UsageDataTracker", () => {
 
 		it("should track files with multiple programming languages properly", () => {
 			singleFileState.file.map = mapStub
+
+			assertMetaDataSnapshot()
+		})
+
+		it("should not consider files with divergent metrics for statistic calculation", () => {
+			const mapStubDivergentMetrics = klona(mapStub)
+			mapStubDivergentMetrics.children[1].attributes = { rloc: 0 }
+			singleFileState.file.map = mapStubDivergentMetrics
+
+			assertMetaDataSnapshot()
+		})
+
+		function assertMetaDataSnapshot() {
 			mockTrackingToBeAllowed()
 			jest.spyOn(Date, "now").mockReturnValue(1612369999999)
 
@@ -114,7 +128,7 @@ describe("UsageDataTracker", () => {
 			trackMapMetaData(stateStub)
 
 			expect(expectSetItemSnapshot).toHaveBeenCalledTimes(1)
-		})
+		}
 	})
 
 	describe("trackEventUsageData", () => {
@@ -153,6 +167,11 @@ describe("UsageDataTracker", () => {
 
 		it("should track setting changed event", () => {
 			trackEventUsageData(HeightMetricActions.SET_HEIGHT_METRIC, stateStub, "newHeightMetricValue")
+			expectEventHasBeenTracked()
+		})
+
+		it("should track setting changed event for resetting the blacklist", () => {
+			trackEventUsageData(BlacklistActions.SET_BLACKLIST, stateStub, [])
 			expectEventHasBeenTracked()
 		})
 

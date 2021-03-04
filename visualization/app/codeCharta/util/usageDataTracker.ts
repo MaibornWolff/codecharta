@@ -56,7 +56,7 @@ function isTrackingAllowed(state: State) {
 	}
 
 	const fileApiVersion = getAsApiVersion(singleFileStates[0].file.fileMeta.apiVersion)
-	const supportedApiVersion = getAsApiVersion(APIVersions.ONE_POINT_ONE)
+	const supportedApiVersion = getAsApiVersion(APIVersions.ONE_POINT_ZERO)
 
 	return (
 		fileApiVersion.major > supportedApiVersion.major ||
@@ -137,6 +137,10 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 
 		for (const metricName of Object.keys(fileNode.attributes)) {
 			const metricStatistics: MetricStatistics = currentLanguageStats.metrics[metricName]
+			if (metricStatistics === undefined) {
+				// Skip if file has different set of metrics compared to other files of the same language
+				continue
+			}
 
 			if (metricValues[fileLanguage][metricName] === undefined) {
 				metricValues[fileLanguage][metricName] = []
@@ -190,7 +194,7 @@ function getFileExtension(filePath: string): string {
 
 interface SettingChangedEventPayload {
 	eventName: string
-	newValue: any
+	newValue: unknown
 }
 
 interface NodeInteractionEventPayload {
@@ -248,7 +252,10 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 	}
 }
 
-function buildEventTrackingItem(actionType: string, payload?: any): EventTrackingItem | null {
+function buildEventTrackingItem(
+	actionType: string,
+	payload?: string & Record<string, string & MetricStatistics>
+): EventTrackingItem | null {
 	if (isSettingChangedEvent(actionType)) {
 		return {
 			eventType: "setting_changed",
@@ -260,7 +267,7 @@ function buildEventTrackingItem(actionType: string, payload?: any): EventTrackin
 		}
 	}
 
-	if (isActionOfType(actionType, BlacklistActions)) {
+	if (actionType === BlacklistActions.ADD_BLACKLIST_ITEM || actionType === BlacklistActions.REMOVE_BLACKLIST_ITEM) {
 		return {
 			eventType: "node_interaction",
 			eventTime: Date.now(),
@@ -294,6 +301,7 @@ function isSettingChangedEvent(actionType: string) {
 		isActionOfType(actionType, HeightMetricActions) ||
 		isActionOfType(actionType, ColorMetricActions) ||
 		isActionOfType(actionType, ColorRangeActions) ||
-		isActionOfType(actionType, InvertColorRangeActions)
+		isActionOfType(actionType, InvertColorRangeActions) ||
+		actionType === BlacklistActions.SET_BLACKLIST
 	)
 }

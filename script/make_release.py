@@ -31,7 +31,7 @@ def confirm(message, printMessage):
 
 def getLatestChangelogEntry(path):
     release_post_content = ""
-    with open(path, "r", encoding="utf-8") as fp:
+    with open(path, "rb", encoding="utf-8") as fp:
         line_number = 0
         section = None
         for line in fp:
@@ -179,7 +179,7 @@ with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
     for line in fp:
         if line_number == 6:
             fp.write(
-                "\n## [unreleased]\n\n### Added 🚀\n\n### Changed\n\n### Removed 🗑\n\n### Fixed 🐞\n\n### Chore 👨‍💻 👩‍💻\n\n")
+                "\n## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n")
         else:
             fp.write(line)
         line_number = line_number + 1
@@ -192,7 +192,7 @@ new_version_formatted = new_version.replace(".", "_")
 release_post = f"{date_formatted}-v{new_version_formatted}.md"
 release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
 
-with open(release_post_path, "w", encoding="utf-8") as fp:
+with open(release_post_path, "wb", encoding="utf-8") as fp:
     pass
     fp.write("\n")
 

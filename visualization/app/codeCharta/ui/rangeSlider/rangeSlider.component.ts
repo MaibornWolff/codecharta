@@ -1,7 +1,7 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
 import { ColorRange } from "../../codeCharta.model"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService, ITimeoutService, RzSlider } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
@@ -41,7 +41,7 @@ export class RangeSliderController
 	private _viewModel: {
 		colorRangeFrom: number
 		colorRangeTo: number
-		sliderOptions: Record<string, any>
+		sliderOptions: RzSlider.RzOptions
 	} = {
 		colorRangeFrom: null,
 		colorRangeTo: null,

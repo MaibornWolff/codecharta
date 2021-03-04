@@ -174,7 +174,7 @@ export default class HorizontalStreet extends Street {
 				sum += child.width
 			} else {
 				if (child instanceof VerticalStreet) {
-					;(<VerticalStreet>child).orientation = VerticalOrientation.DOWN
+					child.orientation = VerticalOrientation.DOWN
 				}
 				this.bottomRow.push(child)
 			}

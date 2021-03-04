@@ -213,7 +213,9 @@ export class NodeContextMenuController
 	}
 
 	private isEventFromColorPicker(mouseEvent: MouseEvent) {
-		return mouseEvent.composedPath().some((element: any) => element?.nodeName === "CC-NODE-CONTEXT-MENU-COLOR-PICKER")
+		return mouseEvent
+			.composedPath()
+			.some((element: EventTarget & { nodeName: string }) => element?.nodeName === "CC-NODE-CONTEXT-MENU-COLOR-PICKER")
 	}
 
 	private isNodeMarked() {

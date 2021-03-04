@@ -302,9 +302,9 @@ describe("nodeDecorator", () => {
 			h.each(({ data }) => {
 				expect(data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})
-			h.leaves().forEach(({ data }) => {
+			for (const { data } of h.leaves()) {
 				expect(data.attributes[NodeMetricDataService.UNARY_METRIC]).toBe(1)
-			})
+			}
 		})
 	})
 

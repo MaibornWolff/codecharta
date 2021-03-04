@@ -170,7 +170,7 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: State) {
 		return state.dynamicSettings.searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
 	}
 
-	if (state.appSettings.showOnlyBuildingsWithEdges && state.fileSettings.edges.find(edge => edge.visible)) {
+	if (state.appSettings.showOnlyBuildingsWithEdges && state.fileSettings.edges.some(edge => edge.visible)) {
 		return nodeHasNoVisibleEdges(codeMapNode, state)
 	}
 
@@ -180,7 +180,7 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: State) {
 function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, state: State) {
 	return (
 		codeMapNode.edgeAttributes[state.dynamicSettings.edgeMetric] === undefined ||
-		!state.fileSettings.edges.find(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName)
+		!state.fileSettings.edges.some(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName)
 	)
 }
 

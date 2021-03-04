@@ -365,9 +365,15 @@ export class CodeMapMouseEventService
 	}
 
 	private transformHTMLToSceneCoordinates(): Coordinates {
-		const rect = this.threeRendererService.renderer.domElement.getBoundingClientRect()
-		const x = (this.mouse.x / this.threeRendererService.renderer.domElement.width) * 2 - 1
-		const y = -((this.mouse.y - rect.top) / this.threeRendererService.renderer.domElement.height) * 2 + 1
+		const {
+			renderer,
+			renderer: { domElement }
+		} = this.threeRendererService
+
+		const pixelRatio = renderer.getPixelRatio()
+		const rect = domElement.getBoundingClientRect()
+		const x = (this.mouse.x / domElement.width) * pixelRatio * 2 - 1
+		const y = -(((this.mouse.y - rect.top) / domElement.height) * pixelRatio) * 2 + 1
 		return { x, y }
 	}
 

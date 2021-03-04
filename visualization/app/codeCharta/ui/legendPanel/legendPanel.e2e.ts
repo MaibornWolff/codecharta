@@ -1,4 +1,4 @@
-import { goto } from "../../../puppeteer.helper"
+import { goto, clickButtonOnPageElement } from "../../../puppeteer.helper"
 import { LegendPanelObject } from "./legendPanel.po"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
@@ -25,7 +25,7 @@ describe("LegendPanel", () => {
 		await legendPanelObject.open()
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
-		await expect(page).toClick(".colorButton:nth-child(2)", { timeout: 3000 })
+		await clickButtonOnPageElement(".colorButton:nth-child(2)")
 	}
 
 	describe("LegendPanel", () => {
@@ -36,14 +36,14 @@ describe("LegendPanel", () => {
 
 		it("should remove a highlighted folder and remove from legend", async () => {
 			await mapTreeViewLevel.openContextMenu("/root")
-			await expect(page).toClick(".colorButton:nth-child(2)", { timeout: 3000 })
+			await clickButtonOnPageElement(".colorButton:nth-child(2)")
 			const emptyFilelist = await legendPanelObject.getEmptyLegendIfNoFilenamesExist()
 			expect(emptyFilelist).toEqual("")
 		})
 
 		it("should highlight two different folders and add both to the legend", async () => {
 			await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
-			await expect(page).toClick(".colorButton:nth-child(1)", { timeout: 3000 })
+			await clickButtonOnPageElement(".colorButton:nth-child(1)")
 			const selectedFolder = await legendPanelObject.getMultipleFilenames()
 			expect(selectedFolder[0]).toEqual("/root")
 			expect(selectedFolder[1]).toEqual("/root/ParentLeaf")
@@ -51,9 +51,9 @@ describe("LegendPanel", () => {
 
 		it("should highlight two different folders and add both to the legend then remove the first", async () => {
 			await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
-			await expect(page).toClick(".colorButton:nth-child(1)", { timeout: 3000 })
+			await clickButtonOnPageElement(".colorButton:nth-child(1)")
 			await mapTreeViewLevel.openContextMenu("/root")
-			await expect(page).toClick(".colorButton:nth-child(2)", { timeout: 3000 })
+			await clickButtonOnPageElement(".colorButton:nth-child(2)")
 			const selectedFolder = await legendPanelObject.getFilename()
 			expect(selectedFolder).toEqual("/root/ParentLeaf")
 		})

@@ -21,7 +21,7 @@ export class ResetSettingsButtonController {
 			let defaultSettingsPointer = defaultState
 			let updatedSettingsPointer = updatedSettings
 
-			steps.forEach((step, index) => {
+			for (const [index, step] of steps.entries()) {
 				if (defaultSettingsPointer[step] !== undefined) {
 					if (!updatedSettingsPointer[step]) {
 						updatedSettingsPointer[step] = {}
@@ -34,7 +34,7 @@ export class ResetSettingsButtonController {
 						updatedSettingsPointer = updatedSettingsPointer[step]
 					}
 				}
-			})
+			}
 		}
 
 		if (settingsCounter !== 0) {

@@ -25,7 +25,9 @@ describe("codeMapMesh", () => {
 		} = STATE
 
 		const setFlattened = (isFlat: boolean) => {
-			testNodes.forEach(node => (node.flat = isFlat))
+			for (const node of testNodes) {
+				node.flat = isFlat
+			}
 		}
 
 		const rebuildMesh = () => {

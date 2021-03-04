@@ -1,14 +1,17 @@
-// TODO: Do not use `Function` as type. See the eslint description for further
-// informations.
-/* eslint-disable @typescript-eslint/ban-types */
-export class ThreeUpdateCycleService {
-	private updatables: Function[] = []
+interface UpdateFunction {
+	(): void
+}
 
-	register(onUpdate: Function) {
+export class ThreeUpdateCycleService {
+	private updatables: UpdateFunction[] = []
+
+	register(onUpdate: UpdateFunction) {
 		this.updatables.push(onUpdate)
 	}
 
 	update() {
-		this.updatables.forEach(u => u())
+		for (const updatable of this.updatables) {
+			updatable()
+		}
 	}
 }

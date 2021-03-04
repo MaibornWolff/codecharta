@@ -1,7 +1,7 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import * as SquarifiedLayoutGenerator from "../../util/algorithm/treeMapLayout/treeMapGenerator"
+import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
@@ -9,14 +9,28 @@ import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
+import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import { IRootScopeService } from "angular"
+import { ThreeStatsService } from "./threeViewer/threeStatsService"
 
-export class CodeMapRenderService {
+export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	constructor(
+		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
-		private codeMapArrowService: CodeMapArrowService
-	) {}
+		private codeMapArrowService: CodeMapArrowService,
+		private threeStatsService: ThreeStatsService
+	) {
+		IsLoadingFileService.subscribe(this.$rootScope, this)
+	}
+	onIsLoadingFileChanged(isLoadingFile: boolean) {
+		if (isLoadingFile) {
+			this.threeSceneService?.dispose()
+		} else {
+			this.threeStatsService?.resetPanels()
+		}
+	}
 
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
@@ -42,22 +56,23 @@ export class CodeMapRenderService {
 		const state = this.storeService.getState()
 		const {
 			appSettings: { layoutAlgorithm },
-			metricData
+			metricData: { nodeMetricData },
+			files
 		} = state
 		let nodes: Node[] = []
+		const deltaState = isDeltaState(files)
 		switch (layoutAlgorithm) {
 			case LayoutAlgorithm.StreetMap:
 			case LayoutAlgorithm.TreeMapStreet:
-				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricData.nodeMetricData, isDeltaState(state.files))
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, deltaState)
 				break
 			case LayoutAlgorithm.SquarifiedTreeMap:
-				nodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+				nodes = createTreemapNodes(map, state, nodeMetricData, deltaState)
 				break
 		}
 		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
 		// prevent multiple steps if the visibility is checked first.
-		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
-		return filteredNodes.sort((a, b) => b.height - a.height)
+		return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
 	}
 
 	private setLabels(sortedNodes: Node[]) {

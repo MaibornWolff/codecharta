@@ -1,8 +1,9 @@
 import { EdgeMetricCount } from "../../codeCharta.model"
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 
 export class EdgeChooserPageObject {
 	async open() {
-		await expect(page).toClick("edge-chooser-component md-select", { timeout: 3000 })
+		await clickButtonOnPageElement("edge-chooser-component md-select")
 		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active.md-clickable")
 	}
 
@@ -13,7 +14,7 @@ export class EdgeChooserPageObject {
 
 	async selectEdgeMetric(metric: string) {
 		await this.open()
-		await expect(page).toClick(`#edge-metric-${metric}`, { timeout: 3000 })
+		await clickButtonOnPageElement(`#edge-metric-${metric}`)
 	}
 
 	async isEdgeCountAvailable() {
