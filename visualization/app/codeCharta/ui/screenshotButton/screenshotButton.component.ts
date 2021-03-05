@@ -4,16 +4,23 @@ import { StoreService } from "../../state/store.service"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererService"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import hotkeys from "hotkeys-js"
 import "./screenshotButton.component.scss"
 
 export class ScreenshotButtonController {
+	private static SCREENSHOT_HOTKEY = "Ctrl+Alt+S"
 	/* @ngInject */
 	constructor(
 		private threeSceneService: ThreeSceneService,
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
 		private storeService: StoreService
-	) {}
+	) {
+		document.getElementById("scrBtn").title += ` (${ScreenshotButtonController.SCREENSHOT_HOTKEY})`
+		hotkeys(ScreenshotButtonController.SCREENSHOT_HOTKEY, () => {
+			this.makeScreenshot()
+		})
+	}
 
 	makeScreenshot() {
 		const link = document.createElement("a")
