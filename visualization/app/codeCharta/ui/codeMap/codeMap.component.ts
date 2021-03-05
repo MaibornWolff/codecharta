@@ -67,6 +67,7 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		this.$postLink()
 		this.threeViewerService.autoFitTo()
 		this.threeViewerService.animate()
+		this.threeViewerService.animateStats()
 	}
 
 	onClick() {
