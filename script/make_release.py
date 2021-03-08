@@ -31,7 +31,7 @@ def confirm(message, printMessage):
 
 def getLatestChangelogEntry(path):
     release_post_content = ""
-    with open(path, "rb", encoding="utf-8") as fp:
+    with open(path, "rb") as fp:
         line_number = 0
         section = None
         for line in fp:
