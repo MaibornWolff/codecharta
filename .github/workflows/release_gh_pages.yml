@@ -87,14 +87,6 @@ jobs:
           package: ./analysis/node-wrapper/package.json
           working-directory: ./visualization
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-          BRANCH: main
-          FOLDER: gh-pages
-          CLEAN: true
-
       - name: Run Docker Image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
@@ -103,3 +95,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           workdir: ./visualization
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          BRANCH: main
+          FOLDER: gh-pages
+          CLEAN: true
