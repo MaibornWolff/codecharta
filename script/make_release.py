@@ -194,7 +194,7 @@ release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
 
 with open(release_post_path, "wb") as fp:
     pass
-    fp.write("\n")
+    fp.write("\n".encode())
 
 with in_place.InPlace(release_post_path, encoding="utf-8") as fp:
     for line in fp:
