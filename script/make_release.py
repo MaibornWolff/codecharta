@@ -192,7 +192,7 @@ new_version_formatted = new_version.replace(".", "_")
 release_post = f"{date_formatted}-v{new_version_formatted}.md"
 release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
 
-with open(release_post_path, "wb", encoding="utf-8") as fp:
+with open(release_post_path, "wb") as fp:
     pass
     fp.write("\n")
 
