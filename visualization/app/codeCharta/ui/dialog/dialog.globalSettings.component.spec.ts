@@ -12,6 +12,7 @@ import { IsWhiteBackgroundService } from "../../state/store/appSettings/isWhiteB
 import { ResetCameraIfNewFileIsLoadedService } from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { LayoutAlgorithm, SharpnessMode } from "../../codeCharta.model"
 
 describe("DialogGlobalSettingsController", () => {
 	let dialogGlobalSettingsController: DialogGlobalSettingsController
@@ -69,47 +70,39 @@ describe("DialogGlobalSettingsController", () => {
 			expect(ExperimentalFeaturesEnabledService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
-		it("should call initDialogOnClick", () => {
-			jest.spyOn(DialogGlobalSettingsController.prototype as any, "initDialogOnClick")
+		for (const setting of [true, false]) {
+			it(`should update viewModel.hideFlatBuildings to ${setting}`, () => {
+				storeService.dispatch(setHideFlatBuildings(setting))
 
-			rebuildController()
+				rebuildController()
 
-			expect(dialogGlobalSettingsController["initDialogOnClick"]).toHaveBeenCalled()
-		})
-	})
+				expect(dialogGlobalSettingsController["_viewModel"].hideFlatBuildings).toBe(setting)
+			})
 
-	describe("initDialogOnClick", () => {
-		it("should update viewModel.hideFlatBuildings", () => {
-			storeService.dispatch(setHideFlatBuildings(false))
+			it(`should update viewModel.isWhiteBackground to ${setting}`, () => {
+				storeService.dispatch(setIsWhiteBackground(setting))
 
-			dialogGlobalSettingsController["initDialogOnClick"]()
+				rebuildController()
 
-			expect(dialogGlobalSettingsController["_viewModel"].hideFlatBuildings).toBeFalsy()
-		})
+				expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBe(setting)
+			})
 
-		it("should update viewModel.isWhiteBackground", () => {
-			storeService.dispatch(setIsWhiteBackground(true))
+			it(`should update viewModel.resetCameraIfNewFileIsLoaded to ${setting}`, () => {
+				storeService.dispatch(setResetCameraIfNewFileIsLoaded(setting))
 
-			dialogGlobalSettingsController["initDialogOnClick"]()
+				rebuildController()
 
-			expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBeTruthy()
-		})
+				expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBe(setting)
+			})
 
-		it("should update viewModel.resetCameraIfNewFileIsLoaded", () => {
-			storeService.dispatch(setResetCameraIfNewFileIsLoaded(false))
+			it(`should update viewModel.experimentalFeaturesEnabled to ${setting}`, () => {
+				storeService.dispatch(setExperimentalFeaturesEnabled(setting))
 
-			dialogGlobalSettingsController["initDialogOnClick"]()
+				rebuildController()
 
-			expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBeFalsy()
-		})
-
-		it("should update viewModel.experimentalFeaturesEnabled", () => {
-			storeService.dispatch(setExperimentalFeaturesEnabled(false))
-
-			dialogGlobalSettingsController["initDialogOnClick"]()
-
-			expect(dialogGlobalSettingsController["_viewModel"].experimentalFeaturesEnabled).toBeFalsy()
-		})
+				expect(dialogGlobalSettingsController["_viewModel"].experimentalFeaturesEnabled).toBe(setting)
+			})
+		}
 	})
 
 	describe("onHideFlatBuildingsChanged", () => {
@@ -181,6 +174,36 @@ describe("DialogGlobalSettingsController", () => {
 			dialogGlobalSettingsController.applySettingsEnableExperimentalFeatures()
 
 			expect(storeService.getState().appSettings.experimentalFeaturesEnabled).toBe(false)
+		})
+	})
+
+	describe("applySettingsAlgorithm", () => {
+		it("should update layoutAlgorithm in store", () => {
+			dialogGlobalSettingsController["_viewModel"].layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
+
+			dialogGlobalSettingsController.applySettingsAlgorithm()
+
+			expect(storeService.getState().appSettings.layoutAlgorithm).toBe(LayoutAlgorithm.TreeMapStreet)
+		})
+	})
+
+	describe("applySettingsMaxTreeMapFiles", () => {
+		it("should update max treemap file number in store", () => {
+			dialogGlobalSettingsController["_viewModel"].maxTreeMapFiles = 10
+
+			dialogGlobalSettingsController.applySettingsMaxTreeMapFiles()
+
+			expect(storeService.getState().appSettings.maxTreeMapFiles).toBe(10)
+		})
+	})
+
+	describe("applySettingsSharpnessMode", () => {
+		it("should update sharpness mode in store", () => {
+			dialogGlobalSettingsController["_viewModel"].sharpnessMode = SharpnessMode.PixelRatioFXAA
+
+			dialogGlobalSettingsController.applySettingsSharpnessMode()
+
+			expect(storeService.getState().appSettings.sharpnessMode).toBe(SharpnessMode.PixelRatioFXAA)
 		})
 	})
 

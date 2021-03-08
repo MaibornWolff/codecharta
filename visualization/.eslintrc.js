@@ -17,8 +17,6 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:unicorn/recommended",
         "prettier",
-        "prettier/@typescript-eslint",
-        "prettier/unicorn",
     ], // prettier must be last in array to override other configs
     parser: "@typescript-eslint/parser",
     parserOptions: {
@@ -48,6 +46,8 @@ module.exports = {
         "@typescript-eslint/promise-function-async": "error",
         "@typescript-eslint/explicit-member-accessibility": ["error", { accessibility: "no-public" }],
 
+        eqeqeq: ["error", "smart"],
+        "linebreak-style": ["error", "unix"],
         "no-console": ["error", { allow: ["warn", "error"] }],
         "no-duplicate-imports": "error",
         "no-else-return": ["error", { allowElseIf: false }],
@@ -64,7 +64,6 @@ module.exports = {
         }],
         "prefer-regex-literals": "error",
         "prefer-template": "error",
-        eqeqeq: ["error", "smart"],
 
         "unicorn/prevent-abbreviations": ["error", { checkFilenames: false, whitelist: { len: true } }],
 

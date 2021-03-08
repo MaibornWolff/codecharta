@@ -103,7 +103,8 @@ describe("codeMapMouseEventService", () => {
 
 	function withMockedThreeUpdateCycleService() {
 		threeUpdateCycleService = codeMapMouseEventService["threeUpdateCycleService"] = jest.fn().mockReturnValue({
-			register: jest.fn()
+			register: jest.fn(),
+			update: jest.fn()
 		})()
 	}
 
@@ -111,8 +112,14 @@ describe("codeMapMouseEventService", () => {
 		threeRendererService = codeMapMouseEventService["threeRendererService"] = jest.fn().mockReturnValue({
 			renderer: {
 				domElement: {
-					addEventListener: jest.fn()
-				}
+					addEventListener: jest.fn(),
+					getBoundingClientRect: jest.fn().mockReturnValue({
+						top: 0
+					}),
+					width: 1,
+					height: 1
+				},
+				getPixelRatio: jest.fn().mockReturnValue(2)
 			}
 		})()
 	}
@@ -138,7 +145,8 @@ describe("codeMapMouseEventService", () => {
 				selectBuilding: jest.fn(),
 				getMeshDescription: jest.fn().mockReturnValue({
 					buildings: [codeMapBuilding]
-				})
+				}),
+				checkMouseRayMeshIntersection: jest.fn()
 			}),
 			clearHighlight: jest.fn(),
 			highlightSingleBuilding: jest.fn(),
@@ -150,7 +158,8 @@ describe("codeMapMouseEventService", () => {
 			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
 			getConstantHighlight: jest.fn().mockReturnValue(new Map()),
 			addBuildingToHighlightingList: jest.fn(),
-			highlightBuildings: jest.fn()
+			highlightBuildings: jest.fn(),
+			resetLabel: jest.fn()
 		})()
 	}
 
@@ -296,14 +305,13 @@ describe("codeMapMouseEventService", () => {
 		it("should not animate any labels and reset animated label and temporary label if the map is turned", () => {
 			const label = new Object3D()
 			setAnimatedLabel(label)
+			const animatedLabelPosition = label.position.clone()
 
 			// Grabbing and turning the map (should reset the animated label)
 			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.LeftClick } as MouseEvent)
 			expect(codeMapMouseEventService["isGrabbing"]).toBe(true)
 			expect(codeMapMouseEventService["isMoving"]).toBe(false)
 			codeMapMouseEventService.onDocumentMouseMove({ clientX: 2, clientY: 3 } as MouseEvent)
-
-			const animatedLabelPosition = label.position.clone()
 
 			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
 			codeMapMouseEventService.updateHovering()
@@ -317,14 +325,13 @@ describe("codeMapMouseEventService", () => {
 		it("should not animate any labels and reset animated label and temporary label if the map is moved", () => {
 			const label = new Object3D()
 			setAnimatedLabel(label)
+			const animatedLabelPosition = label.position.clone()
 
 			// Grabbing and moving the map (should reset the animated label)
 			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.RightClick } as MouseEvent)
 			expect(codeMapMouseEventService["isGrabbing"]).toBe(false)
 			expect(codeMapMouseEventService["isMoving"]).toBe(true)
 			codeMapMouseEventService.onDocumentMouseMove({ clientX: 3, clientY: 4 } as MouseEvent)
-
-			const animatedLabelPosition = label.position.clone()
 
 			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
 			codeMapMouseEventService.updateHovering()
@@ -711,6 +718,34 @@ describe("codeMapMouseEventService", () => {
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+		})
+	})
+
+	describe("transformHTMLToSceneCoordinates", () => {
+		beforeEach(() => {
+			rebuildService()
+			codeMapMouseEventService.onDocumentMouseMove = jest.fn()
+		})
+
+		it("should call getPixelRatio", () => {
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 6, clientY: 20 } as MouseEvent)
+			codeMapMouseEventService["transformHTMLToSceneCoordinates"]()
+
+			expect(threeRendererService.renderer.getPixelRatio).toHaveBeenCalled()
+		})
+
+		it("should call getBoundingClientRect", () => {
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 6, clientY: 20 } as MouseEvent)
+			codeMapMouseEventService["transformHTMLToSceneCoordinates"]()
+
+			expect(threeRendererService.renderer.domElement.getBoundingClientRect).toHaveBeenCalled()
+		})
+
+		it("should return the screen cordiantes", () => {
+			codeMapMouseEventService.onDocumentMouseMove({ clientX: 6, clientY: 20 } as MouseEvent)
+			const result = codeMapMouseEventService["transformHTMLToSceneCoordinates"]()
+
+			expect(result).toStrictEqual({ x: -1, y: 1 })
 		})
 	})
 

@@ -5,20 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
-## [unreleased]
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
+## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
 ### Fixed 🐞
 
 -   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
     (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
 
-### Chore 👨‍💻 👩‍💻
+## [1.69.0] - 2021-02-23
+
+### Added 🚀
+
+-   Added WebGL FXAA antialias & PixelRatio Options in order to achieve better resolution on high dpi displays(https://github.com/MaibornWolff/codecharta/pull/1551).</br></br>
+    ![option dialog](https://user-images.githubusercontent.com/74670211/106582136-f4404900-6543-11eb-8f5b-5e1ec47457c7.png)
+    There are 4 available modes:
+    -   **standard mode**: the pixel density is only applied to the small cube with standard browser aliasing
+    -   **pixel ratio without aliasing**: no antialiasing is used
+    -   **pixel ration with FXAA**: Nvidia FXAA antialiasing shader is used as an alisaing technique. this has better perfromance the standard browser aliasing aliasing
+    -   **pixel ration with MSAA**: this is the best aliasing quality, slower then FXAA.
+-   Added GPU Stats (only in dev mode)
+
+### Fixed 🐞
+
+-   Unfocus now respects the focus depth ([#1099](https://github.com/MaibornWolff/codecharta/issues/1099))
+-   Track anonymous usage data also for older CodeCharta API versions and fix some minor bugs.
 
 ## [1.68.0] - 2021-02-08
 
@@ -29,10 +39,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   The tracked data will not be sent to a server yet. Instead, it can be downloaded as a json file in the Global Settings for now.
     -   It is planned to send the anonymous data to a server in the future, so that we can collect tracking data automatically.
     -   ![example of new feature](https://user-images.githubusercontent.com/26900540/106896300-ac5f2480-66f1-11eb-8096-246d1733c0ee.png)
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -56,16 +62,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
     [!example of new feature #1556](https://user-images.githubusercontent.com/3596742/104302048-a007f300-54c8-11eb-86c1-287483884783.png)
 
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
 -   fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.66.0] - 2021-01-18
 
@@ -73,10 +73,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533))<br/><br/>
     ![example of new feature](https://user-images.githubusercontent.com/3596742/103547861-3c1c7380-4ea5-11eb-8df2-541caf65b9df.png)
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -86,8 +82,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Temporary labels are placed at the wrong height for scaled buildings ([#1618](https://github.com/MaibornWolff/codecharta/issues/1618))
 -   Visible labels will disappear or placed lower for scaled buildings ([#1619](https://github.com/MaibornWolff/codecharta/issues/1619))
 -   Unnecessary break line for secondary metrics ([#1093](https://github.com/MaibornWolff/codecharta/issues/1093))
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.65.0] - 2020-12-23
 
@@ -102,8 +96,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   The button to see excluded buildings is now merged into the flattened button. Excluded and flattened buildings can now be seen by opening the building with the eye slash icon ([#1543](https://github.com/MaibornWolff/codecharta/issues/1543))
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -139,8 +131,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   change displayed margin value from % to pixel
     -   change dynamic margin value to a default margin value that should fit the map
 
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Re-enabled color selection for folders and on hover ([#1544](https://github.com/MaibornWolff/codecharta/pull/1544))
@@ -148,8 +138,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   The calculation of the map resolution scale factor was wrong ([#1491](https://github.com/MaibornWolff/codecharta/issues/1491))
     -   The factor is used to decrease the map resolution especially for big maps to avoid performance issues.
     -   Now only the selected maps will be considered for the calculation. Unselected maps will be skipped.
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.63.0] - 2020-11-30
 
@@ -166,16 +154,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Show file count of folders in Attribute-Side-Bar ([#1255](https://github.com/MaibornWolff/codecharta/issues/1255)):
     ![img showing file count of folder](https://user-images.githubusercontent.com/3596742/100371884-be915800-3008-11eb-89f5-ed57c62680cc.png)
 
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Buildings are flattened when delta is active #824.
 -   Selected Building now stays highlighted when map is rotated #1498
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.62.0] - 2020-11-12
 
@@ -226,21 +208,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   Characters are compared with their base character (e.g., `a` is now next to `á`).
 -   Label metric not shown by default anymore
 
-### Removed 🗑
-
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
 ## [1.61.0] - 2020-10-30
-
-### Added 🚀
 
 ### Changed
 
 -   Disable highlighting buildings during map movement #1432
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -253,34 +225,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.60.2] - 2020-10-24
 
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Mouse cursor flickering #1170
 -   Fix flipping map when clicking any option in the toolbar #1410
 -   Fix edge metric not working correctly
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.60.1] - 2020-10-20
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Issue with first start without an internet connection not working#1266
 -   Issue with ribbon bar sizes for opened cards #1035
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.60.0] - 2020-10-16
 
@@ -295,8 +251,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Label design #1035
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -322,30 +276,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   ATTENTION: the parser is experimental, therefore some potential issues might remain, e.g. potentially an unhandled edge case when parsing node
 -   To use the new parser a reversed git log is needed, as well as a git file list, refer to `ccsh scmlogparserv2 -h` for additional information
 
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Color-Metric slider is set and activated in the map accordingly to the released sliderbutton #1319
 -   Deselcting a building will instantly dehighlight the buildings which were connected through edges #890
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.58.1] - 2020-10-02
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Showing wrong edges when hovering a building after selecting one #1137
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.58.0] - 2020-10-02
 
@@ -354,71 +294,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Add active color metric to the top of the legend panel #1278
 -   SourceCodeParser: Java 14 Support #1277
 
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
 ## [1.57.4] - 2020-09-25
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Metric-Settings-Panels closed when clicking an option inside the panel #1258
 -   Improve loading and rendering maps performance
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.57.3] - 2020-09-18
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Improve overall performance for loading and rendering maps
 -   Improve error messages when a file can't be loaded with the URL parameters
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.57.2] - 2020-09-11
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   New API version 1.2 not set correctly in analysis
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.57.1] - 2020-09-11
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Validation of unique filenames not checking for the complete path and instead throwing an error on duplicate filename
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.57.0] - 2020-09-11
 
@@ -429,8 +329,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   `cc.json` version updated to `1.2`
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -443,20 +341,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.56.0] - 2020-09-04
 
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Improve performance when switching to multiple or delta mode when edges are available
 -   Scenario with EdgeMetric is only appliable when EdgeMetric is existing for the Map #1201
 -   Starting standalone version results in infinite loading loop #1202
 -   Expanded metric selection will close when clicking anywhere outside of that selection #1036
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.55.0] - 2020-08-28
 
@@ -468,24 +358,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Edge-Metrics sorted by name now instead of number of incoming and outgoing edges
 
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Number of incoming and outgoing edges not visible when hovering over a node #1095
 -   Highlighting buildings in multiple mode now works #956
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.54.0] - 2020-08-21
 
 ### Added 🚀
 
 -   Opening NodeContextMenu in the tree-view marks the node until it is closed #1068
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -495,23 +377,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Added note how to fix missing `sh` command issue when running integration tests on Windows
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.53.0] - 2020-08-14
-
-### Added 🚀
 
 ### Changed
 
 -   NodeContextMenu will show up when releasing the right-mouse-button now #1027
 
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   NodeContextMenu showing up after moving the mouse while holding right-mouse-button #1027
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.52.0] - 2020-08-07
 
@@ -523,8 +397,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Rename master branch to main for a more inclusive naming #1117
 
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   After loading an invalid file the filechooser pops up again, so that the user can choose a valid file #1021
@@ -534,8 +406,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Moved developer guides to our [gh-pages](https://maibornwolff.github.io/codecharta/) #986
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.51.0] - 2020-07-24
 
 ### Added 🚀
@@ -543,17 +413,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   File chooser now accept ".json" files only to avoid accidentally loading incorrect files #1094
 -   Lots of tooltips #1030
 
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Blacklisting a building would sometimes not update the map #1098
 -   Changes made after opening the filechooser and closing it won't be applied #875
 -   Edge metric list not always updated correctly when loading a new file #1106
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.50.0] - 2020-07-10
 
@@ -566,30 +430,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Reduced transition time when opening or collapsing parts of the ribbon bar #1043
 -   Search Panel will open now when clicking in the search field and collapse when clicking somewhere else #1071
 
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Opening the same file again will now reload the file and reset the application #1032
 -   Improve render performance by persisting color conversions #1034
 -   Sorting in tree-view not being applied #1040
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.49.1] - 2020-07-03
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Improved performance significantly when switching between single, multiple and delta
 -   Color-Range-Slider sometimes misbehaved when loading a new map or excluding buildings #926
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.49.0] - 2020-06-19
 
@@ -598,12 +450,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Custom scenarios can be created and saved through the scenario menu #675
 -   Importer and parser documentation can now be found on the github Website #954
 -   Output of sourcemonitor can now be compressed with the compression flag
-
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -615,29 +461,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Support of compressed cc.json files. Files can be compressed in the analysis #848
 
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Improved performance of several importers #846
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.47.1] - 2020-05-08
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Attribute-Side-Bar being invisible
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.47.0] - 2020-05-02
 
@@ -649,8 +481,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Rename the button Show-Complete-Map button to Unfocus #642
 -   Move the Unfocus button (visible when right-clicking a focused node) to the node-context-menu #948
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -667,15 +497,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Error dialogs in case of validation or api version issues #610
 
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Improved overall rendering performance of larger maps by roughly 40% #836
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.45.5] - 2020-04-17
 
@@ -705,8 +529,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Wrong file description for tokeiimporter
 -   Improved search performance #837
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.44.0] - 2020-03-27
 
 ### Added 🚀
@@ -714,26 +536,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Dialog to select between different sorting options #388
 -   Button to reverse the current selected sorting #388
 
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Show file selection in toolBar after excluding or hiding a node instead of an empty toolBar #896
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.43.0] - 2020-03-20
-
-### Added 🚀
 
 ### Changed
 
 -   Selectable metrics will only contain metrics from the visible maps
 -   Closing the attribute-side-bar by clicking somewhere in the map will now be triggered on mouse up instead of mouse down
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -745,27 +557,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.42.3] - 2020-03-13
 
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Loading Gif not displayed when preparing to render a new map #857
 -   Selecting zero files in Multiple mode will not trigger the 3D CodeMap creation
 -   Metrics in the dropdown menu now show the correct max value for the visible maps #876
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.42.2] - 2020-02-14
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
@@ -773,21 +571,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Improved performance for loading a new file #836
 -   Marked Packages are loaded from files #798
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.42.1] - 2020-02-07
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   GC Overhead Limit (OutOfMemory Exception) during analysis of large SCMLogs fixed #845
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.42.0] - 2020-01-31
 
@@ -802,57 +590,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Options of the ccsh are now consistently in kebab-case #772
 
-### Removed 🗑
-
 ### Fixed 🐞
 
 -   Path prefix handling in tokeiimporter #841
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.41.8] - 2020-01-17
-
-### Added 🚀
-
-### Changed
 
 ### Removed 🗑
 
 -   Project name parameters in the ccsh #773
 
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
 ## [1.41.6] - 2020-01-10
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Deployment
 
-### Chore 👨‍💻 👩‍💻
-
 ## [1.41.1] - 2020-01-10
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
 
 ### Fixed 🐞
 
 -   Performance of loading maps with edges improved #823
 -   Calculation of other Group for fileExtensionBar #768
 -   Remove focus of UI elements when they are not visible anymore
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.41.0] - 2019-12-06
 
@@ -864,26 +624,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Toggle between percentage and absolute values when clicking the file extension details section #545
 -   Sum hovered delta values for folders #781
 
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
 ## [1.40.0] - 2019-11-22
-
-### Added 🚀
 
 ### Changed
 
 -   Replaced Blacklist Hide with Flatten option #691
 -   Flattened buildings are not hidden by default #691
-
-### Removed 🗑
-
-### Fixed 🐞
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -904,14 +650,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Redesigned slider labels in ribbonBar sections #696
 -   Shortened ribbonBar sections #696
 
-### Removed
-
 ### Fixed
 
 -   Missing pictures and broken links in docs #785
 -   SCMLogParser is now more resilient to unusual SVN commit messages #763
-
-### Chore
 
 ## [1.38.1] - 2019-11-13
 
@@ -919,15 +661,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   New github-pages https://maibornwolff.github.io/codecharta/
 
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   Sum symbol for hovered metric values only shows for folders #775
-
-### Chore
 
 ## [1.38.0] - 2019-11-08
 
@@ -941,13 +677,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Added highly and median coupled files metrics to non-churn metric list of SCMLogParser #622
 -   Moved nodePathPanel to toolBar and updated style #607
 
-### Removed
-
 ### Fixed
 
 -   Removed attributes from downloaded files that should not be there #679
-
-### Chore
 
 ## [1.37.0] - 2019-10-25
 
@@ -972,17 +704,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   IllegalStateException when scanning single file in SourceCodeParser #573
 -   SourceCodeParser places files in the project root correctly into the hierarchy #574
 
-### Chore
-
 ## [1.36.0] - 2019-10-18
-
-### Added
 
 ### Changed
 
 -   Open and close the ribbonBar sections independently with an updated animation
-
-### Removed
 
 ### Fixed
 
@@ -1006,15 +732,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Pipe support for SCMLogParser #717
 -   Pipe support for SonarImporter #715
 
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   Exclude and Hide options are disabled for empty and already existing search patterns #654
-
-### Chore
 
 ## [1.34.0] - 2019-09-20
 
@@ -1022,12 +742,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Tokei Importer #538
 -   Prominent Notice that we use Sonar-jar #713
-
-### Changed
-
-### Removed
-
-### Fixed
 
 ### Chore
 
@@ -1077,28 +791,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Replaced Scenario dropdown with button on the left of the metric sections #628
 
-### Removed
-
-### Fixed
-
-### Chore
-
 ## [1.31.0] - 2019-08-02
 
 ### Added
 
 -   New Metric in SourceCodeParser: Maximum-Nesting-Level #659
 
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   Label hight adjustment now matches scaling of map #594
 -   SCMLogParser now guesses the input file encoding #614
-
-### Chore
 
 ## [1.30.0] - 2019-07-26
 
@@ -1134,8 +836,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.29.0] - 2019-07-12
 
-### Added
-
 ### Changed
 
 -   Moved Button to reset the map to the center next to the view-cube #606
@@ -1148,8 +848,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 -   Colors in File-Extension-Bar will be displayed in MS Edge and Standlone now #584
-
-### Chore
 
 ## [1.28.0] - 2019-06-28
 
@@ -1169,8 +867,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 -   Margin will now be set correctly depending on whether dynamicMargin is enabled or not #602
-
-### Chore
 
 ## [1.27.0] - 2019-06-25
 
@@ -1195,8 +891,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Unary Metric will no longer be auto-selected when a new map is loaded #579
 
-### Chore
-
 ## [1.26.0] - 2019-06-14
 
 ### Added
@@ -1205,25 +899,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   sum icon is now displayed on the left of the metric value #364
 -   Added Pop-up dialog before downloading file to set filename and see what data will be stored #523
 
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   Fix set default ColorRange when resetting color section #560
-
-### Chore
 
 ## [1.25.1] - 2019-05-30
 
 ### Added
 
 -   SVN log parser keeps track of renaming of files for metric calculation #542
-
-### Changed
-
-### Removed
 
 ### Fixed
 
@@ -1249,8 +933,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Use debounced settings update instead of throttled
 -   Filename of downloaded file now contains time #484
 
-### Removed
-
 ### Fixed
 
 -   Fixed issue with too long line in ccsh.bat #506
@@ -1264,10 +946,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   [Security] Bump jquery from 3.3.1 to 3.4.0 in /visualization
 
 ## [1.24.0] - 2019-04-23
-
-### Added
-
-### Changed
 
 ### Removed
 
@@ -1292,8 +970,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Throw a MergeException if project names do not match in MergeFilter #394
 
-### Removed
-
 ### Fixed
 
 -   Excluded buildings are no longer used for aggregated metric calculation #352
@@ -1314,10 +990,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
 -   Merge filter can merge all files of folders #392
 
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
@@ -1336,10 +1008,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   When entering Multiple Mode, all Maps/revisions are preselected
 
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   Fixing non-existent metric aggregation on root-level when using multiple Files
@@ -1349,10 +1017,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 -   Hovering a node in the map also hovers it in the tree view #351
-
-### Changed
-
-### Removed
 
 ### Fixed
 
@@ -1405,13 +1069,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.20.1] - 2018-12-19
 
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
+Fixed release issues.
 
 ## [1.20.0] - 2018-12-19
 
@@ -1440,10 +1098,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Deleted files in delta view use their previous area value in order to be visible #254
 
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   Buildings in the delta view are not colored correctly #253
@@ -1452,13 +1106,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.18.1] - 2018-10-31
 
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
+Fixed release issues
 
 ## [1.18.0] - 2018-10-29
 
@@ -1487,15 +1135,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.17.0] - 2018-09-28
 
-### Added
-
 ### Changed
 
 -   Invert delta colors moved from color to heigh metric column in ribbon bar #220
 -   Delta value now as kindOfMap shown #220
 -   Aggreate maps as multiple rename #220
-
-### Removed
 
 ### Fixed
 
@@ -1513,17 +1157,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   MergeFilter merges edges #172
 
-### Removed
-
-### Fixed
-
 ## [1.16.2] - 2018-09-10
-
-### Added
-
-### Changed
-
-### Removed
 
 ### Fixed
 
@@ -1535,33 +1169,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   gitlab + dotnet manual
 
-### Changed
-
-### Removed
-
-### Fixed
-
 ## [1.16.0] - 2018-08-31
 
 ### Added
 
 -   add the option to add multiple files via url parameter (e.g. ?file=a&file=b...)
 
-### Changed
-
-### Removed
-
-### Fixed
-
 ## [1.15.1] - 2018-08-13
 
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
+Fixed release issues
 
 ## [1.15.0] - 2018-08-13
 
@@ -1574,35 +1190,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   keep settings when the user changes a file
 -   Added option to set white background
 
-### Changed
-
 ### Removed
 
 -   cypress
 
-### Fixed
-
 ## [1.14.2] - 2018-07-16
-
-### Added
 
 ### Changed
 
 -   Changed folder detail metrics from mean to sum
 
-### Removed
-
-### Fixed
-
 ## [1.14.1] - 2018-07-13
 
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
+Fixed release issues
 
 ## [1.14.0] - 2018-07-13
 
@@ -1617,8 +1217,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Details panel: using the sum of the childrens metrics instead of the mean value
-
-### Removed
 
 ### Fixed
 
@@ -1647,8 +1245,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   compacting empty middle packages #150
 -   Detail panel minimized by default
 
-### Removed
-
 ### Fixed
 
 -   filter by regex shows parent nodes #116
@@ -1665,22 +1261,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Settings option to minimize Detail Panel
 -   cypress as an e2e test runner
 
-### Changed
-
 ### Removed
 
 -   metric details from legend
 -   metric chooser from settings panel
 
-### Fixed
-
 ## [1.11.2] - 2018-04-13
-
-### Added
-
-### Changed
-
-### Removed
 
 ### Fixed
 
@@ -1688,13 +1274,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.11.1] - 2018-04-11
 
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
+Fixed release issues
 
 ## [1.11.0] - 2018-04-11
 
@@ -1710,8 +1290,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Scenarios are now filtered by compatibility for the given map
 -   Link in visualization #84
 
-### Changed
-
 ### Removed
 
 -   materialize-css
@@ -1723,14 +1301,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.10.0] - 2018-03-22
 
-### Added
-
 ### Changed
 
 -   Clean up UI #86
 -   Updated analysis dependencies
-
-### Removed
 
 ### Fixed
 
@@ -1743,15 +1317,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.9.3] - 2018-02-23
 
-### Added
-
 ### Changed
 
 -   sorting treeview by folders and names
-
-### Removed
-
-### Fixed
 
 ## [1.9.2] - 2018-02-20
 
@@ -1765,17 +1333,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   minimal building height is 1 to prevent clipping issues
 -   fallback values for visualization when no metric is available (area = 1, height = 1, color = grey). Data in data structure will not be changed.
 
-### Removed
-
-### Fixed
-
 ## [1.9.1] - 2018-02-20
-
-### Added
-
-### Changed
-
-### Removed
 
 ### Fixed
 
@@ -1783,39 +1341,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.9.0] - 2018-02-20
 
-### Added
-
 ### Changed
 
 -   moved to unscoped npm packages
 
-### Removed
-
-### Fixed
-
 ## [1.8.2] - 2018-02-20
-
-### Added
 
 ### Changed
 
 -   detail panel background is white now. better visibility
 
-### Removed
-
-### Fixed
-
 ## [1.8.1] - 2018-02-20
-
-### Added
 
 ### Changed
 
 -   revision chooser moved to settings panel and uses now understandable dropdowns instead of links. Part of the #82 proposals
-
-### Removed
-
-### Fixed
 
 ## [1.8.0] - 2018-02-20
 
@@ -1830,8 +1370,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   added a ray-aabb intersection test before precise testing. Less time is spent in intersection methods.
 
-### Removed
-
 ### Fixed
 
 -   fixed a minor bug
@@ -1844,12 +1382,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.7.2] - 2018-02-02
 
-### Added
-
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   url to homepage
@@ -1857,17 +1389,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.7.1] - 2018-02-02
 
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
+Fixed release issues
 
 ## [1.7.0] - 2018-02-02
-
-### Added
 
 ### Changed
 
@@ -1877,21 +1401,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   using fixed point values in detail panel (ui) to truncate infinite or long decimals
 -   folders now use the mean attributes of their buildings(leaves)
 
-### Removed
-
 ### Fixed
 
 -   Bugfix: detail panel should be cleared before setting new details else old values may survive
 
 ## [1.6.7] - 2018-02-01
 
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
+Fixed release issues
 
 ## [1.6.6] - 2018-02-01
 
@@ -1905,29 +1421,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   rewrote command line interface
 -   linking ccsh to bin/ccsh will be deleted later
 
-### Removed
-
 ### Fixed
 
 -   No underscore for scenarios in tooltips #71
 
 ## [1.6.5] - 2018-01-30
 
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
+Fixed release issues
 
 ## [1.6.4] - 2018-01-30
-
-### Added
-
-### Changed
-
-### Removed
 
 ### Fixed
 
@@ -1939,12 +1441,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   added npm publish for analysis
 -   simple release script for automatic changelog updates, commits, tags, version bumps
-
-### Changed
-
-### Removed
-
-### Fixed
 
 ## [1.6.2] - 2018-01-25
 
@@ -1967,8 +1463,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     File additions/deletions are therefore only visible when areaMetric is
     unary and deltas are activated.
 
-### Removed
-
 ### Fixed
 
 -   delta display bug for heights
@@ -1979,14 +1473,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.5.2] - 2018-01-04
 
-### Added
-
 ### Changed
 
 -   scaling slider now has steps of 0.1. This allows the user to select precise values like 2.0
 -   updated jdk to jdk9
-
-### Removed
 
 ### Fixed
 
@@ -2000,10 +1490,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 -   command line parameter to toggle "authors" attribute in SCMLogParser
-
-### Changed
-
-### Removed
 
 ### Fixed
 
@@ -2044,10 +1530,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Better debugging
 -   Karma instead of Mocha
 
-### Removed
-
-### Fixed
-
 ## [1.3.2] - 2017-08-18
 
 ### Added
@@ -2075,12 +1557,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.3.1] - 2017-07-05
 
-### Added
-
-### Changed
-
-### Removed
-
 ### Fixed
 
 -   Prevented override of URL-parameters by default scenario
@@ -2098,8 +1574,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Changed uppercase metrics, e.g. RLOC, to lowercase metrics
 
-### Removed
-
 ### Fixed
 
 -   Simple cc.json does not display anything #17
@@ -2111,10 +1585,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Adding Labels and UI
 -   Support for links to source page of SonarQube in sonarimporter
 -   Added SCMLogParser
-
-### Changed
-
-### Removed
 
 ### Fixed
 

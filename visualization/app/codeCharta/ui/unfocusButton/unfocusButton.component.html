@@ -1,5 +1,15 @@
-<md-button aria-label="Remove Focus from node" ng-click="$ctrl.removeFocusedNode()" title="Show complete map"
-	><i class="fa fa-bullseye"></i>
-	<span ng-show="$ctrl._viewModel.isParentFocused">Unfocus Parent</span>
-	<span ng-show="$ctrl._viewModel.isNodeFocused">Unfocus</span>
-</md-button>
+<div layout="column">
+	<md-button aria-label="Remove Focus from node" ng-click="$ctrl.removeFocusedNode()" title="Show previous focused node"
+		><i class="fa fa-bullseye"></i>
+		<span ng-show="$ctrl._viewModel.isParentFocused">Unfocus Parent</span>
+		<span ng-show="$ctrl._viewModel.isNodeFocused">Unfocus</span>
+	</md-button>
+	<md-button
+		aria-label="Remove Focus from all nodes"
+		ng-click="$ctrl.removeFocusedNode(true)"
+		title="Show complete map"
+		ng-show="$ctrl._viewModel.focusedNodes.length > 1"
+		><i class="fa fa-bullseye"></i>
+		<span>Unfocus All</span>
+	</md-button>
+</div>

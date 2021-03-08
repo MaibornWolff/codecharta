@@ -20,12 +20,14 @@ import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { LayoutAlgorithm } from "../../codeCharta.model"
+import { LayoutAlgorithm, SharpnessMode } from "../../codeCharta.model"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
+import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
+import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { CodeChartaStorage } from "../../util/codeChartaStorage"
 import { FileDownloader } from "../../util/fileDownloader"
 import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
@@ -38,6 +40,7 @@ export class DialogGlobalSettingsController
 		ResetCameraIfNewFileIsLoadedSubscriber,
 		ExperimentalFeaturesEnabledSubscriber,
 		LayoutAlgorithmSubscriber,
+		SharpnessModeSubscriber,
 		MaxTreeMapFilesSubscriber {
 	private _viewModel: {
 		hideFlatBuildings: boolean
@@ -46,13 +49,15 @@ export class DialogGlobalSettingsController
 		experimentalFeaturesEnabled: boolean
 		layoutAlgorithm: LayoutAlgorithm
 		maxTreeMapFiles: number
+		sharpnessMode: SharpnessMode
 	} = {
 		hideFlatBuildings: null,
 		isWhiteBackground: null,
 		resetCameraIfNewFileIsLoaded: null,
 		experimentalFeaturesEnabled: false,
 		layoutAlgorithm: null,
-		maxTreeMapFiles: null
+		maxTreeMapFiles: null,
+		sharpnessMode: null
 	}
 
 	constructor(private $mdDialog, private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -62,10 +67,8 @@ export class DialogGlobalSettingsController
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
-		this.initDialogOnClick()
-	}
+		SharpnessModeService.subscribe(this.$rootScope, this)
 
-	private initDialogOnClick() {
 		const { appSettings } = this.storeService.getState()
 
 		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)
@@ -74,6 +77,7 @@ export class DialogGlobalSettingsController
 		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
 		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
+		this.onSharpnessModeChanged(appSettings.sharpnessMode)
 	}
 
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
@@ -98,6 +102,11 @@ export class DialogGlobalSettingsController
 
 	onMaxTreeMapFilesChanged(maxTreeMapFiles: number) {
 		this._viewModel.maxTreeMapFiles = maxTreeMapFiles
+		this.changeGlobalSettingsInLocalStorage()
+	}
+
+	onSharpnessModeChanged(sharpnessMode: SharpnessMode) {
+		this._viewModel.sharpnessMode = sharpnessMode
 		this.changeGlobalSettingsInLocalStorage()
 	}
 
@@ -128,6 +137,10 @@ export class DialogGlobalSettingsController
 
 	applySettingsMaxTreeMapFiles() {
 		this.storeService.dispatch(setMaxTreeMapFiles(this._viewModel.maxTreeMapFiles))
+	}
+
+	applySettingsSharpnessMode() {
+		this.storeService.dispatch(setSharpnessMode(this._viewModel.sharpnessMode))
 	}
 
 	mapTrackingDataAvailable() {

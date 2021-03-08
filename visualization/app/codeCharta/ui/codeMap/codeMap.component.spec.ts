@@ -26,6 +26,7 @@ describe("ColorSettingsPanelController", () => {
 		restartSystem()
 		rebuildController()
 		mockElement()
+		withMockedThreeViewerService()
 	})
 
 	function restartSystem() {
@@ -44,6 +45,17 @@ describe("ColorSettingsPanelController", () => {
 		$element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }]
 	}
 
+	function withMockedThreeViewerService() {
+		threeViewerService = codeMapController["threeViewerService"] = jest.fn().mockReturnValue({
+			destroy: jest.fn(),
+			animate: jest.fn(),
+			stopAnimate: jest.fn(),
+			autoFitTo: jest.fn(),
+			animateStats: jest.fn(),
+			dispose: jest.fn()
+		})()
+	}
+
 	function rebuildController() {
 		codeMapController = new CodeMapController(
 			$rootScope,
@@ -53,6 +65,7 @@ describe("ColorSettingsPanelController", () => {
 			codeMapMouseEventService,
 			codeChartaMouseEventService
 		)
+		codeMapController.$postLink = jest.fn()
 	}
 
 	describe("constructor", () => {
@@ -82,6 +95,29 @@ describe("ColorSettingsPanelController", () => {
 			codeMapController.onIsLoadingFileChanged(false)
 
 			expect(codeMapController["_viewModel"].isLoadingFile).toBe(false)
+		})
+	})
+
+	describe("onSharpnessModeChanged", () => {
+		const sharpnessTests = [
+			{ func: "stopAnimate" },
+			{ func: "destroy" },
+			{ func: "autoFitTo" },
+			{ func: "animate" },
+			{ func: "animateStats" }
+		]
+		beforeEach(() => {
+			codeMapController.onSharpnessModeChanged()
+		})
+
+		for (const test of sharpnessTests) {
+			it(`should call threeViewerService ${test.func}`, () => {
+				expect(threeViewerService[`${test.func}`]).toHaveBeenCalled()
+			})
+		}
+
+		it("should call CodeMapController $postLink", () => {
+			expect(codeMapController.$postLink).toHaveBeenCalled()
 		})
 	})
 

@@ -9,15 +9,34 @@ import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
+import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import { IRootScopeService } from "angular"
+import { ThreeStatsService } from "./threeViewer/threeStatsService"
+import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 
-export class CodeMapRenderService {
+export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	constructor(
+		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
-		private codeMapArrowService: CodeMapArrowService
-	) {}
+		private codeMapArrowService: CodeMapArrowService,
+		private threeStatsService: ThreeStatsService,
+		private threeUpdateCycleService: ThreeUpdateCycleService
+	) {
+		IsLoadingFileService.subscribe(this.$rootScope, this)
+	}
+	onIsLoadingFileChanged(isLoadingFile: boolean) {
+		if (isLoadingFile) {
+			this.threeSceneService?.dispose()
+		} else {
+			this.threeStatsService?.resetPanels()
+		}
+	}
 
+	update() {
+		this.threeUpdateCycleService.update()
+	}
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
 		this.setNewMapMesh(sortedNodes)
@@ -58,9 +77,7 @@ export class CodeMapRenderService {
 		}
 		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
 		// prevent multiple steps if the visibility is checked first.
-		return nodes
-			.filter(node => node.visible && node.length > 0 && node.width > 0)
-			.sort((a, b) => b.height - a.height)
+		return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
 	}
 
 	private setLabels(sortedNodes: Node[]) {

@@ -2,7 +2,19 @@ import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { Node } from "../../codeCharta.model"
-import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
+import {
+	BoxGeometry,
+	BufferGeometry,
+	Group,
+	Line,
+	LineBasicMaterial,
+	Mesh,
+	Object3D,
+	PerspectiveCamera,
+	Sprite,
+	SpriteMaterial,
+	Vector3
+} from "three"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
@@ -295,16 +307,24 @@ describe("CodeMapLabelService", () => {
 	})
 
 	describe("clearTemporaryLabel", () => {
+		const generateSceneLabelChild = (numberOfChildren: number): Object3D[] => {
+			const generated = []
+			for (let index = 0; index < numberOfChildren; index++) {
+				generated[index] = ({ line: undefined, sprite: undefined } as unknown) as Object3D
+			}
+			return generated
+		}
 		it("should clear label for the correct node only", () => {
 			storeService.dispatch(setAmountOfTopLabels(2))
 			storeService.dispatch(setHeightMetric("mcc"))
-
+			codeMapLabelService.dispose = jest.fn()
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 			codeMapLabelService.addLabel(otherSampleLeaf, { showNodeName: true, showNodeMetric: false })
-			threeSceneService.labels.children.length = 4
+			threeSceneService.labels.children = generateSceneLabelChild(4)
 
 			codeMapLabelService.clearTemporaryLabel(sampleLeaf)
 
+			expect(codeMapLabelService.dispose).toBeCalledWith(threeSceneService.labels.children)
 			expect(threeSceneService.labels.children.length).toEqual(2)
 			expect(codeMapLabelService["labels"][0].node).toEqual(otherSampleLeaf)
 		})
@@ -329,6 +349,114 @@ describe("CodeMapLabelService", () => {
 
 			expect(codeMapLabelService["threeSceneService"].labels.children.length).toBe(0)
 			expect(codeMapLabelService["labels"].length).toBe(0)
+		})
+	})
+
+	const MockedSprite = () => {
+		const sprite = new Sprite()
+		sprite.material = ({
+			map: { dispose: jest.fn() },
+			dispose: jest.fn()
+		} as unknown) as SpriteMaterial
+		sprite.geometry = ({ dispose: jest.fn() } as unknown) as BufferGeometry
+		return sprite
+	}
+
+	const MockedLine = () => {
+		const line = new Line()
+		line.material = ({
+			dispose: jest.fn()
+		} as unknown) as LineBasicMaterial
+		line.geometry = ({ dispose: jest.fn() } as unknown) as BufferGeometry
+		return line
+	}
+
+	const MockedInternalLabel = () => {
+		return {
+			sprite: MockedSprite(),
+			line: MockedLine()
+		}
+	}
+
+	describe("disposeSprite", () => {
+		let sprite
+
+		beforeEach(() => {
+			sprite = MockedSprite()
+		})
+		it("should dispose material", () => {
+			codeMapLabelService["disposeSprite"](sprite)
+
+			expect(sprite.material.dispose).toBeCalled()
+		})
+
+		it("should dispose material map texture", () => {
+			codeMapLabelService["disposeSprite"](sprite)
+
+			expect(sprite.material.map.dispose).toBeCalled()
+		})
+
+		it("should dispose sprite geometry", () => {
+			codeMapLabelService["disposeSprite"](sprite)
+
+			expect(sprite.geometry.dispose).toBeCalled()
+		})
+	})
+
+	describe("disposeLine", () => {
+		let line
+		beforeEach(() => {
+			line = MockedLine()
+		})
+
+		it("should dispose material", () => {
+			codeMapLabelService["disposeLine"](line)
+
+			expect(line.material.dispose).toBeCalled()
+		})
+
+		it("should dispose geometry", () => {
+			codeMapLabelService["disposeLine"](line)
+
+			expect(line.geometry.dispose).toBeCalled()
+		})
+	})
+
+	describe("dispose", () => {
+		beforeEach(() => {
+			codeMapLabelService["disposeSprite"] = jest.fn()
+			codeMapLabelService["disposeLine"] = jest.fn()
+		})
+		it("should call disposeSprite two times", () => {
+			const spriteElement = MockedSprite()
+
+			codeMapLabelService.dispose([spriteElement, spriteElement])
+
+			expect(codeMapLabelService["disposeSprite"]).toBeCalledTimes(2)
+		})
+
+		it("should call disposeLine two times", () => {
+			const lineElement = MockedLine()
+
+			codeMapLabelService.dispose([lineElement, lineElement])
+
+			expect(codeMapLabelService["disposeLine"]).toBeCalledTimes(2)
+		})
+
+		it("should call disposeSprite two times when InternalLabel[] is set", () => {
+			const internalLabel = MockedInternalLabel()
+
+			codeMapLabelService.dispose([internalLabel, internalLabel])
+
+			expect(codeMapLabelService["disposeSprite"]).toBeCalledTimes(2)
+		})
+
+		it("should call disposeLine two times when InternalLabel[] is set", () => {
+			const internalLabel = MockedInternalLabel()
+
+			codeMapLabelService.dispose([internalLabel, internalLabel])
+
+			expect(codeMapLabelService["disposeLine"]).toBeCalledTimes(2)
 		})
 	})
 })

@@ -62,9 +62,12 @@ export class ViewCubeMouseEventsService {
 	}
 
 	private transformIntoCanvasVector(event: MouseEvent) {
-		const rect = this.renderer.domElement.getBoundingClientRect()
-		const x = ((event.clientX - rect.left) / this.renderer.domElement.width) * 2 - 1
-		const y = -((event.clientY - rect.top) / this.renderer.domElement.height) * 2 + 1
+		const { domElement } = this.renderer
+
+		const pixelRatio = this.renderer.getPixelRatio()
+		const rect = domElement.getBoundingClientRect()
+		const x = ((event.clientX - rect.left) / domElement.width) * pixelRatio * 2 - 1
+		const y = -(((event.clientY - rect.top) / domElement.height) * pixelRatio) * 2 + 1
 		return new Vector2(x, y)
 	}
 
@@ -80,7 +83,6 @@ export class ViewCubeMouseEventsService {
 			if (this.currentlyHovered) {
 				this.triggerViewCubeUnhoverEvent()
 			}
-
 			this.triggerViewCubeEventPropagation("mousemove", event)
 		}
 	}

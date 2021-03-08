@@ -13,9 +13,11 @@ import { FilesService, FilesSelectionSubscriber } from "../../../state/store/fil
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
+// TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
+import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -35,7 +37,8 @@ export class ThreeOrbitControlsService
 		private $timeout: ITimeoutService,
 		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
-		private threeSceneService: ThreeSceneService
+		private threeSceneService: ThreeSceneService,
+		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
@@ -61,6 +64,8 @@ export class ThreeOrbitControlsService
 		this.autoFitTo()
 	}
 
+	// TODO add autofit for SharpnessMode ?
+
 	setControlTarget() {
 		const { cameraTarget } = this.storeService.getState().appSettings
 		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
@@ -70,6 +75,9 @@ export class ThreeOrbitControlsService
 		const zoom = this.getZoom()
 		this.lookAtDirectionFromTarget(x, y, z)
 		this.applyOldZoom(zoom)
+
+		this.update()
+		this.onInput(this.threeCameraService.camera)
 	}
 
 	autoFitTo() {
@@ -84,10 +92,16 @@ export class ThreeOrbitControlsService
 			this.controls.update()
 
 			this.focusCameraViewToCenter(boundingSphere)
+			this.threeUpdateCycleService.update()
+			this.onInput(this.threeCameraService.camera)
 		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
 	}
 
-	private cameraPerspectiveLengthCalculation(boundingSphere) {
+	update() {
+		this.threeUpdateCycleService.update()
+	}
+
+	private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {
 		const cameraReference = this.threeCameraService.camera
 
 		//TODO: Scale Factor for object to camera ratio
@@ -97,7 +111,7 @@ export class ThreeOrbitControlsService
 		return Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
 	}
 
-	private focusCameraViewToCenter(boundingSphere) {
+	private focusCameraViewToCenter(boundingSphere: Sphere) {
 		const boundingSphereCenter: Vector3 = boundingSphere.center.clone()
 
 		boundingSphereCenter.setY(0)
@@ -138,7 +152,7 @@ export class ThreeOrbitControlsService
 		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
-	init(domElement) {
+	init(domElement: HTMLCanvasElement) {
 		const orbitControls = oc(Three)
 		this.controls = new orbitControls(this.threeCameraService.camera, domElement)
 		this.controls.addEventListener("change", () => {

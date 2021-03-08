@@ -48,7 +48,6 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.initCube()
 		this.initAxesHelper()
 		this.initCamera()
-		this.startAnimation()
 		this.viewCubeMouseEventsService.init(this.cubeGroup, this.camera, this.renderer)
 
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
@@ -82,6 +81,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	onCameraChanged(camera: PerspectiveCamera) {
 		const newCameraPosition = this.calculateCameraPosition(camera)
 		this.setCameraPosition(newCameraPosition)
+		this.updateRenderFrame()
 	}
 
 	private setCameraPosition(cameraPosition: Vector3) {
@@ -96,15 +96,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		return codeMapCameraPosition.sub(codeMapTargetVector).normalize().multiplyScalar(3)
 	}
 
-	private startAnimation() {
-		const animate = () => {
-			requestAnimationFrame(animate)
-			this.onAnimationFrame()
-		}
-		animate()
-	}
-
-	private onAnimationFrame() {
+	private updateRenderFrame() {
 		this.renderer.render(this.scene, this.camera)
 	}
 
@@ -118,6 +110,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 			antialias: true
 		})
 		this.renderer.setSize(this.WIDTH, this.HEIGHT)
+		this.renderer.setPixelRatio(window.devicePixelRatio) // geometry is low poly, no noticeble performance hit even with higher device pixel ratio
 		$element[0].appendChild(this.renderer.domElement)
 	}
 
@@ -132,11 +125,13 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 			originalMaterial: cube.material
 		}
 		this.hoverInfo.cube.material.emissive = new Color(0xffffff)
+		this.updateRenderFrame()
 	}
 
 	onCubeUnhovered() {
-		this.hoverInfo.cube.material.emissive = new Color(0x000000)
+		this.hoverInfo.cube.material.emissive = new Color(0x000000) //? NOTE why is this needed
 		this.hoverInfo.cube = null
+		this.updateRenderFrame()
 	}
 
 	onCubeClicked(cube: Mesh) {
