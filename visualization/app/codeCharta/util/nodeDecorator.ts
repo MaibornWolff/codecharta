@@ -19,20 +19,24 @@ const enum EdgeAttributeType {
 
 export class NodeDecorator {
 	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
-	
-		this.decorateMapWithMetricData(map, metricData)
-		for (const item of blacklist) {		
+
+		for (const item of blacklist) {					
 			for (const { data } of hierarchy(map)) {
+			
 				if (blacklist.length > 0) {
 					if (item.type === BlacklistType.flatten) {
 						data.isFlattened = data.isFlattened ? true : IsNodeExcludedOrFlattened(data, item.path)
 					} else {
 						data.isExcluded = data.isExcluded ? true : IsNodeExcludedOrFlattened(data, item.path) && isLeaf(data)
-						console.log(item.path)
+					}
+					if(data.type === "Folder"){
+						data.isExcluded = false
+						data.isFlattened = false
 					}
 				}
-			}				
+			}	
 		}
+		this.decorateMapWithMetricData(map, metricData)
 	}
 
 	static decorateMapWithMetricData(map: CodeMapNode, metricData: MetricData){

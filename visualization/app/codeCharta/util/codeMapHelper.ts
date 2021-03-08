@@ -1,6 +1,6 @@
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
-import ignore from "ignore"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../codeCharta.model"
+import ignore from "ignore"
 import { FileState } from "../model/files/files"
 import { getSelectedFilesSize } from "./fileHelper"
 
@@ -61,7 +61,7 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 }
 
 export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string) : boolean {
-	gitignorePath = gitignorePath.trimStart()
+	gitignorePath = transformPath(gitignorePath.trimStart())
 
 	let condition = true
 	if (gitignorePath.startsWith("!")) {
