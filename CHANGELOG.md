@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.70.0] - 2021-03-09
+
+### Changed
+
+-   Render on demand ([#1728](https://github.com/MaibornWolff/codecharta/issues/1728))
+
+### Fixed
+
+-   Memory leaks
+
 ## [1.69.0] - 2021-02-23
 
 ### Added 🚀
