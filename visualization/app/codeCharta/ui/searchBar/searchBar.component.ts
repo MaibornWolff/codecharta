@@ -59,7 +59,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 					if (path.startsWith("!")) {
 						break
 					} else {
-						path = path = this.unifyWildCard(path)
+						path = this.unifyWildCard(path)
 					}
 					this.storeService.dispatch(addBlacklistItem({path : path, type: blacklistType }))
 				}
