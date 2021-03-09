@@ -1,3 +1,5 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class SearchBarPageObject {
 	async enterAndExcludeSearchPattern() {
 		await page.click("#searchInput")
@@ -10,7 +12,8 @@ export class SearchBarPageObject {
 		})
 
 		if (excludeOption) {
-			await expect(page).toClick("#toExcludeButton", { timeout: 3000 })
+			//await expect(page).toClick("#toExcludeButton", { timeout: 3000 })
+			await clickButtonOnPageElement("#toExcludeButton")
 			return true
 		}
 		return false

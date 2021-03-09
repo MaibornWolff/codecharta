@@ -2,7 +2,8 @@
 	<span class="header">
 		<h3 class="header-text">Flattened</h3>
 		<em class="fa fa-question-circle-o">
-			<md-tooltip>Flattened nodes are shown as flat/short buildings and are included in folder metrics</md-tooltip>
+			<md-tooltip>Flattened nodes are shown as flat/short buildings and are included in folder metrics
+			</md-tooltip>
 		</em>
 	</span>
 
@@ -15,10 +16,8 @@
 			</div>
 		</md-list-item>
 
-		<md-list-item
-			ng-repeat="item in $ctrl._viewModel.flatten | orderBy: ['path'] track by item.path"
-			title="{{::item.path}}"
-		>
+		<md-list-item ng-repeat="item in $ctrl._viewModel.flatten | orderBy: ['path'] track by item.path"
+			title="{{::item.path}}">
 			<md-button class="round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
 				<em class="fa fa-minus-square" title="Remove list item"></em>
 			</md-button>
@@ -38,7 +37,7 @@
 		</em>
 	</span>
 
-	<div class="sub-list" id="excludedList">
+	<div id="excludedList" class="sub-list">
 		<md-list-item ng-show="$ctrl._viewModel.exclude.length == 0">
 			<div class="pattern-text" layout="column">
 				<p>
@@ -47,11 +46,9 @@
 			</div>
 		</md-list-item>
 
-		<md-list-item
-			ng-repeat="item in $ctrl._viewModel.exclude | orderBy: ['path'] track by item.path"
-			title="{{::item.path}}"
-		>
-			<md-button class="round-button" ng-attr-id="{{ 'object-' + $index }}" ng-click="$ctrl.removeBlacklistEntry(item)">
+		<md-list-item ng-repeat="item in $ctrl._viewModel.exclude | orderBy: ['path']  track by item.path"
+			title="{{::item.path}}">
+			<md-button ng-attr-id="{{ 'object-' + $index }}" class="round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
 				<em class="fa fa-minus-square" title="Remove list item"></em>
 			</md-button>
 			<div class="pattern-text" layout="column">
