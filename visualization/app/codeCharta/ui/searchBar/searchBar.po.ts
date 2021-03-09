@@ -1,10 +1,11 @@
-import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+import { AddAndSubmitInput, clickButtonOnPageElement } from "../../../puppeteer.helper"
 
 export class SearchBarPageObject {
 	async enterAndExcludeSearchPattern() {
 		await page.click("#searchInput")
 		await page.type("#searchInput", "html,ts")
-		await expect(page).toClick("#blacklistMenu", { timeout: 3000 })
+		await clickButtonOnPageElement("#blacklistMenu",{ timeout: 6000 })
+		await AddAndSubmitInput("#searchInput", "#blacklistMenu", "html,ts")
 
 		const excludeOption = await page.evaluate(() => {
 			const element = document.querySelector("#toExcludeButton")
@@ -12,8 +13,7 @@ export class SearchBarPageObject {
 		})
 
 		if (excludeOption) {
-			//await expect(page).toClick("#toExcludeButton", { timeout: 3000 })
-			await clickButtonOnPageElement("#toExcludeButton")
+			await clickButtonOnPageElement("#toExcludeButton", { timeout: 6000 })
 			return true
 		}
 		return false

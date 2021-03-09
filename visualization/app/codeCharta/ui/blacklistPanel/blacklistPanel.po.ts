@@ -1,3 +1,5 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class BlacklistPanelPageObject {
 	async checkExludedListAfterExclusion() {
 		const result = await page.evaluate(() => {
@@ -8,9 +10,8 @@ export class BlacklistPanelPageObject {
 				return false
 			}
 			const listContent: string[] = []
-			for (let i = 0; i < list.length; i++) {
-				listContent.push(list[i].innerHTML.trim())
-			}
+			list.forEach(el => listContent.push(el.innerHTML))
+
 			return listContent.includes("*ts*") && listContent.includes("*html*")
 		})
 		return result
@@ -23,7 +24,7 @@ export class BlacklistPanelPageObject {
 		})
 
 		if (excludeOption) {
-			await expect(page).toClick("#object-0", { timeout: 3000 })
+			await clickButtonOnPageElement("#blacklist")
 		}
 
 		const result = await page.evaluate(() => {
@@ -34,9 +35,8 @@ export class BlacklistPanelPageObject {
 				return false
 			}
 			const listContent: string[] = []
-			for (let i = 0; i < list.length; i++) {
-				listContent.push(list[i].innerHTML.trim())
-			}
+			list.forEach(el => listContent.push(el.innerHTML))
+			
 			return listContent.includes("*ts*") && !listContent.includes("*html*")
 		})
 		return result

@@ -23,8 +23,6 @@ export class SearchPanelModeSelectorPageObject {
 	}
 
 	async toggleBlacklistView() {
-		//await expect(page).toClick("#blacklist", { timeout: 3000 })
 		await clickButtonOnPageElement("#blacklist")
-		return true
 	}
 }
