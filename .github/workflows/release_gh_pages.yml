@@ -60,32 +60,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
-          
-
-      - name: Publish visualization npm package
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - run: npm install
-        working-directory: ./visualization
-      
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./visualization/package.json
-          working-directory: ./visualization
-
-      - name: Publish analysis npm package
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - run: npm install
-        working-directory: ./visualization
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./analysis/node-wrapper/package.json
-          working-directory: ./visualization
 
       - name: Run Docker Image
         uses: elgohr/Publish-Docker-Github-Action@master
