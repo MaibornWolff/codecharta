@@ -28,8 +28,7 @@ export const clickButtonOnPageElement = async (selectorString: string, expectToC
 }
 
 export const AddAndSubmitInput = async (selectorInputString: string, selectorButtonString : string, value :string) => {
-	await page.waitForSelector(selectorInputString)
-	await page.click(selectorInputString)
+	await page.waitForSelector(selectorInputString, { visible: true })
 	await page.type(selectorInputString, value)
 	await expect(page).toClick(selectorButtonString, { timeout: 6000 })
 }
