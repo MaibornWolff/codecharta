@@ -57,17 +57,14 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 			for (let path of paths) {
 				if (path.length > 0) {
 					if (path.startsWith("!")) {
-						path = path.slice(1)
-						path = this.unifyWildCard(path)
-						path = `!${path}`
+						break
 					} else {
 						path = path = this.unifyWildCard(path)
 					}
-					this.storeService.dispatch(addBlacklistItem({ path, type: blacklistType }))
+					this.storeService.dispatch(addBlacklistItem({path : path, type: blacklistType }))
 				}
 			}
 		}
-
 		this.resetSearchPattern()
 	}
 
