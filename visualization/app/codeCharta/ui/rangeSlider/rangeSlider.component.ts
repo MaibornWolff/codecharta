@@ -1,7 +1,7 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
 import { ColorRange } from "../../codeCharta.model"
-import { IRootScopeService, ITimeoutService, RzSlider } from "angular"
+import angular, { IRootScopeService, ITimeoutService, RzSlider} from "angular"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
@@ -29,7 +29,8 @@ export class RangeSliderController
 		WhiteColorBuildingsSubscriber,
 		FilesSelectionSubscriber,
 		BlacklistSubscriber,
-		MapColorsSubscriber {
+		MapColorsSubscriber
+	{
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
@@ -63,7 +64,11 @@ export class RangeSliderController
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		MapColorsService.subscribe(this.$rootScope, this)
-
+		angular.element(document).ready(() => {
+			this.$timeout(() => {
+				this.$rootScope.$broadcast('rzSliderForceRender')
+			})
+		})
 		this.applyDebouncedColorRange = debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
 		}, RangeSliderController.DEBOUNCE_TIME)
