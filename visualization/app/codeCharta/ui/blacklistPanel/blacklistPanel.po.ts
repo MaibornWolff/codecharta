@@ -1,44 +1,35 @@
-import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 
 export class BlacklistPanelPageObject {
 	async checkExludedListAfterExclusion() {
-		const result = await page.evaluate(() => {
-			const element = document.querySelector("#excludedList")
-			const list = element.querySelectorAll("bdi")
 
-			if (list[0].innerHTML === "Add pattern via search or node context-menu" && list.length === 1) {
-				return false
-			}
-			const listContent: string[] = []
-			list.forEach(el => listContent.push(el.innerHTML))
+		await page.waitForSelector('#excludedList', {visible : true, hidden : false} )
 
-			return listContent.includes("*ts*") && listContent.includes("*html*")
+		const selector = '#excludedList > md-list-item > div.pattern-text.layout-column > p > bdi'
+			
+		const list = await page.$$eval(selector, ls => {
+			return ls.filter(x => {
+				return x.innerHTML === "*html*" || x.innerHTML === "*ts*"
+			})
 		})
-		return result
+
+		return list.length === 2		
 	}
 
 	async checkExludedListAfterItemRemovalFromExclusionList() {
-		const excludeOption = await page.evaluate(() => {
-			const element = document.querySelector("#object-0")
-			return element
+		await page.waitForSelector('#excludedList', {visible : true, hidden : false} )
+
+		await page.waitForSelector("#object-1", {visible: true})
+			.then(el => el.click())
+			.catch(err => console.log(err))
+		await page.waitForTimeout(500)	
+
+		const selector = '#excludedList > md-list-item > div.pattern-text.layout-column > p > bdi'
+
+		const list = await page.$$eval(selector, ls => {
+			return ls.map(x => {
+				return x.innerHTML 
+			})
 		})
-
-		if (excludeOption) {
-			await clickButtonOnPageElement("#blacklist")
-		}
-
-		const result = await page.evaluate(() => {
-			const elet = document.querySelector("#excludedList")
-			const list = elet.querySelectorAll("bdi")
-
-			if (list[0].innerHTML === "Add pattern via search or node context-menu" && list.length === 1) {
-				return false
-			}
-			const listContent: string[] = []
-			list.forEach(el => listContent.push(el.innerHTML))
-			
-			return listContent.includes("*ts*") && !listContent.includes("*html*")
-		})
-		return result
+		return list.includes("*html*") && !list.includes("*ts*")	
 	}
 }

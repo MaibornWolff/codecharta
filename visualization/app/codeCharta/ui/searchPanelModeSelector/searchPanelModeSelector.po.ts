@@ -23,6 +23,9 @@ export class SearchPanelModeSelectorPageObject {
 	}
 
 	async toggleBlacklistView() {
-		await clickButtonOnPageElement("#blacklist")
+		await page.waitForSelector("#blacklist", {visible: true})
+			.then(el => el.click())
+			.catch(err => console.log(err))
+		await page.waitForTimeout(500)	
 	}
 }
