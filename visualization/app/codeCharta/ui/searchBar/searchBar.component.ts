@@ -11,7 +11,6 @@ import { SearchPatternService, SearchPatternSubscriber } from "../../state/store
 export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedSearchPattern: () => void
-
 	private _viewModel: {
 		searchPattern: string
 		isPatternHidden: boolean
@@ -61,7 +60,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 					} else {
 						path = this.unifyWildCard(path)
 					}
-					this.storeService.dispatch(addBlacklistItem({path : path, type: blacklistType }))
+					this.storeService.dispatch(addBlacklistItem({ path, type: blacklistType }))
 				}
 			}
 		}

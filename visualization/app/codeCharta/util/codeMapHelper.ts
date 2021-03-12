@@ -50,7 +50,6 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 		}
 		ignoredNodePaths.add(transformPath(path))
 	}
-
 	const filtered = []
 	for (const { data } of hierarchy(root)) {
 		if (ignoredNodePaths.ignores(transformPath(data.path)) === condition) {
@@ -60,7 +59,7 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 	return filtered
 }
 
-export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string) : boolean {
+export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string): boolean {
 	gitignorePath = transformPath(gitignorePath.trimStart())
 
 	let condition = true
@@ -68,7 +67,6 @@ export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: stri
 		gitignorePath = gitignorePath.slice(1)
 		condition = false
 	}
-
 	const ignoredNodePaths = ignore()
 
 	for (let path of gitignorePath.split(",")) {
@@ -81,7 +79,6 @@ export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: stri
 		}
 		ignoredNodePaths.add(transformPath(path))
 	}
-
 	return ignoredNodePaths.ignores(transformPath(node.path)) === condition
 }
 
