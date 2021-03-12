@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
     (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
     
+## [1.70.2] - 2021-03-12
+
+### Fixed 🐞
+
+-   Disable unready AI function
+-   Fix linter errors
+-   Fix editorconfig
+
 ## [1.70.1] - 2021-03-12
 
 ## [1.70.0] - 2021-03-09
