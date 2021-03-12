@@ -24,7 +24,7 @@ export class ScreenshotButtonController {
 
 	makeScreenshot() {
 		const link = document.createElement("a")
-		link.setAttribute("download", this.makePNGFileName())
+		link.download = this.makePNGFileName()
 		link.onclick = () => this.loadScript(link, this.threeRendererService.renderer)
 		link.click()
 	}
@@ -51,7 +51,7 @@ export class ScreenshotButtonController {
 		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 		renderer.setClearColor(currentClearColor)
 
-		link.setAttribute("href", renderer.domElement.toDataURL())
+		link.href = renderer.domElement.toDataURL()
 		renderer.setPixelRatio(1)
 	}
 }
