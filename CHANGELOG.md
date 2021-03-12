@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
     (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
+    
+## [1.70.1] - 2021-03-12
+
+## [1.70.0] - 2021-03-09
+
+### Changed
+
+-   Render on demand ([#1728](https://github.com/MaibornWolff/codecharta/issues/1728))
+
+### Fixed
+
+-   Memory leaks
 
 ## [1.69.0] - 2021-02-23
 
