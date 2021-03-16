@@ -13,13 +13,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.71.0] - 2021-03-16
 
-## [1.70.2] - 2021-03-12
-
 ### Fixed 🐞
 
 -   Disable unready AI function
 -   Fix linter errors
 -   Fix editorconfig
+
+## [1.70.2] - 2021-03-12
 
 ## [1.70.1] - 2021-03-12
 
