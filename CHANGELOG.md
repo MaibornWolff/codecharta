@@ -9,7 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.71.2] - 2021-03-16
 
+### Fixed 🐞
+
+-   DevOps pipeline changes
+-   Fixed web visualization in github
+
 ## [1.71.1] - 2021-03-16
+
+### Fixed 🐞
+
+-   DevOps pipeline changes
 
 ## [1.71.0] - 2021-03-16
 
@@ -21,7 +30,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.70.2] - 2021-03-12
 
+### Fixed 🐞
+
+-   DevOps pipeline changes
+-   Project naming for Docker deployment
+
 ## [1.70.1] - 2021-03-12
+
+### Fixed 🐞
+
+-   DevOps pipeline changes
 
 ## [1.70.0] - 2021-03-09
 
