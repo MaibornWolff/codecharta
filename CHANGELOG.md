@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.71.0] - 2021-03-16
 
-### Fixed 🐞
+### Changed
 
 -   Disable unready AI function
 -   Fix linter errors
