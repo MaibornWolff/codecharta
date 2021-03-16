@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.74% </span>
+                <span class="strong">42.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/38</span>
+                <span class='fraction'>17/40</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.67% </span>
+                <span class="strong">40.54% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/36</span>
+                <span class='fraction'>15/37</span>
             </div>
         
             
@@ -149,16 +149,17 @@
 <a name='L90'></a><a href='#L90'>90</a>
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">116x</span>
+<span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">116x</span>
+<span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">116x</span>
-<span class="cline-any cline-yes">116x</span>
-<span class="cline-any cline-yes">116x</span>
+<span class="cline-any cline-yes">121x</span>
+<span class="cline-any cline-yes">121x</span>
+<span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -171,6 +172,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -236,7 +238,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">116x</span>
+<span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -247,7 +249,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { ExportCCFile } from "./../../codeCharta.api.model"
+import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
@@ -263,7 +265,8 @@ export class FileChooserController {
 			let content
 			let readFiles = <span class="cstat-no" title="statement not covered" >0</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >			for (const file of element.files) {</span>
+<span class="cstat-no" title="statement not covered" >			for (let index = <span class="cstat-no" title="statement not covered" >0; i</span>ndex &lt; element.files.length; index++) {</span>
+				const file = <span class="cstat-no" title="statement not covered" >element.</span>files[index]
 				const isCompressed = <span class="cstat-no" title="statement not covered" >file.</span>name.endsWith(".gz")
 				const reader = <span class="cstat-no" title="statement not covered" >new F</span>ileReader()
 <span class="cstat-no" title="statement not covered" >				if (isCompressed) {</span>
@@ -279,7 +282,7 @@ export class FileChooserController {
 				}
 &nbsp;
 <span class="cstat-no" title="statement not covered" >				reader.</span>onload = <span class="fstat-no" title="function not covered" >event </span>=&gt; {
-<span class="cstat-no" title="statement not covered" >					content </span>= isCompressed ? zlib.unzipSync(Buffer.from((&lt;any&gt;event.target).result)) : event.target.result
+<span class="cstat-no" title="statement not covered" >					content </span>= isCompressed ? zlib.unzipSync(Buffer.from(&lt;string&gt;event.target.result)) : event.target.result
 				}
 &nbsp;
 <span class="cstat-no" title="statement not covered" >				reader.</span>onloadend = <span class="fstat-no" title="function not covered" >() =&gt; </span>{
@@ -291,7 +294,7 @@ export class FileChooserController {
 							// Explicitly ignored
 						}
 					} else {
-<span class="cstat-no" title="statement not covered" >						this.a</span>ddNameDataPair(file, content)
+<span class="cstat-no" title="statement not covered" >						this.a</span>ddNameDataPair(file, content, index)
 					}
 &nbsp;
 <span class="cstat-no" title="statement not covered" >					if (readFiles === element.files.length) {</span>
@@ -307,7 +310,7 @@ export class FileChooserController {
 		this.files = []
 	}
 &nbsp;
-	private addNameDataPair(file: File, jsonString: string) {
+	private addNameDataPair(file: File, jsonString: string, index: number) {
 		let content: ExportCCFile
 &nbsp;
 		try {
@@ -320,11 +323,11 @@ export class FileChooserController {
 			// Explicitly ignored
 		}
 &nbsp;
-		this.files.push({
+		this.files[index] = {
 			fileName: file.name,
 			fileSize: file.size,
 			content
-		})
+		}
 	}
 }
 &nbsp;
@@ -340,7 +343,7 @@ export const fileChooserComponent = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 08 2021 17:37:29 GMT+0000 (Coordinated Universal Time)
+                at Tue Mar 16 2021 14:41:48 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

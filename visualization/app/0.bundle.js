@@ -1,5 +1,36 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[0],{
 
+/***/ "./node_modules/define-lazy-prop/index.js":
+/*!************************************************!*\
+  !*** ./node_modules/define-lazy-prop/index.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = (object, propertyName, fn) => {
+	const define = value => Object.defineProperty(object, propertyName, {value, enumerable: true, writable: true});
+
+	Object.defineProperty(object, propertyName, {
+		configurable: true,
+		enumerable: true,
+		get() {
+			const result = fn();
+			define(result);
+			return result;
+		},
+		set(value) {
+			define(value);
+		}
+	});
+
+	return object;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/is-docker/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/is-docker/index.js ***!
@@ -92,41 +123,78 @@ if (process.env.__IS_WSL_TEST__) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(__dirname, process, Buffer) {
-const {promisify} = __webpack_require__(/*! util */ "./node_modules/util/util.js");
-const path = __webpack_require__(/*! path */ "./node_modules/path-browserify/index.js");
+/* WEBPACK VAR INJECTION */(function(__dirname, process, Buffer) {const path = __webpack_require__(/*! path */ "./node_modules/path-browserify/index.js");
 const childProcess = __webpack_require__(/*! child_process */ "child_process");
-const fs = __webpack_require__(/*! fs */ "./node_modules/fs/index.js");
+const {promises: fs} = __webpack_require__(/*! fs */ "./node_modules/fs/index.js");
 const isWsl = __webpack_require__(/*! is-wsl */ "./node_modules/is-wsl/index.js");
 const isDocker = __webpack_require__(/*! is-docker */ "./node_modules/is-docker/index.js");
-
-const pAccess = promisify(fs.access);
-const pExecFile = promisify(childProcess.execFile);
+const defineLazyProperty = __webpack_require__(/*! define-lazy-prop */ "./node_modules/define-lazy-prop/index.js");
 
 // Path to included `xdg-open`.
 const localXdgOpenPath = path.join(__dirname, 'xdg-open');
 
-// Convert a path from WSL format to Windows format:
-// `/mnt/c/Program Files/Example/MyApp.exe` → `C:\Program Files\Example\MyApp.exe`
-const wslToWindowsPath = async path => {
-	const {stdout} = await pExecFile('wslpath', ['-w', path]);
-	return stdout.trim();
+const {platform, arch} = process;
+
+/**
+Get the mount point for fixed drives in WSL.
+
+@inner
+@returns {string} The mount point.
+*/
+const getWslDrivesMountPoint = (() => {
+	// Default value for "root" param
+	// according to https://docs.microsoft.com/en-us/windows/wsl/wsl-config
+	const defaultMountPoint = '/mnt/';
+
+	let mountPoint;
+
+	return async function () {
+		if (mountPoint) {
+			// Return memoized mount point value
+			return mountPoint;
+		}
+
+		const configFilePath = '/etc/wsl.conf';
+
+		let isConfigFileExists = false;
+		try {
+			await fs.access(configFilePath, fs.constants.F_OK);
+			isConfigFileExists = true;
+		} catch {}
+
+		if (!isConfigFileExists) {
+			return defaultMountPoint;
+		}
+
+		const configContent = await fs.readFile(configFilePath, {encoding: 'utf8'});
+		const configMountPoint = /root\s*=\s*(?<mountPoint>.*)/g.exec(configContent);
+
+		if (!configMountPoint) {
+			return defaultMountPoint;
+		}
+
+		mountPoint = configMountPoint.groups.mountPoint.trim();
+		mountPoint = mountPoint.endsWith('/') ? mountPoint : `${mountPoint}/`;
+
+		return mountPoint;
+	};
+})();
+
+const pTryEach = async (array, mapper) => {
+	let latestError;
+
+	for (const item of array) {
+		try {
+			return await mapper(item); // eslint-disable-line no-await-in-loop
+		} catch (error) {
+			latestError = error;
+		}
+	}
+
+	throw latestError;
 };
 
-// Convert a path from Windows format to WSL format
-const windowsToWslPath = async path => {
-	const {stdout} = await pExecFile('wslpath', [path]);
-	return stdout.trim();
-};
-
-// Get an environment variable from Windows
-const wslGetWindowsEnvVar = async envVar => {
-	const {stdout} = await pExecFile('wslvar', [envVar]);
-	return stdout.trim();
-};
-
-module.exports = async (target, options) => {
+const open = async (target, options) => {
 	if (typeof target !== 'string') {
 		throw new TypeError('Expected a `target`');
 	}
@@ -138,18 +206,30 @@ module.exports = async (target, options) => {
 		...options
 	};
 
+	if (Array.isArray(options.app)) {
+		return pTryEach(options.app, singleApp => open(target, {
+			...options,
+			app: singleApp
+		}));
+	}
+
+	let {name: app, appArguments = []} = options.app || {};
+
+	if (Array.isArray(app)) {
+		return pTryEach(app, appName => open(target, {
+			...options,
+			app: {
+				name: appName,
+				arguments: appArguments
+			}
+		}));
+	}
+
 	let command;
-	let {app} = options;
-	let appArguments = [];
 	const cliArguments = [];
 	const childProcessOptions = {};
 
-	if (Array.isArray(app)) {
-		appArguments = app.slice(1);
-		app = app[0];
-	}
-
-	if (process.platform === 'darwin') {
+	if (platform === 'darwin') {
 		command = 'open';
 
 		if (options.wait) {
@@ -163,9 +243,13 @@ module.exports = async (target, options) => {
 		if (app) {
 			cliArguments.push('-a', app);
 		}
-	} else if (process.platform === 'win32' || (isWsl && !isDocker())) {
-		const windowsRoot = isWsl ? await wslGetWindowsEnvVar('systemroot') : process.env.SYSTEMROOT;
-		command = String.raw`${windowsRoot}\System32\WindowsPowerShell\v1.0\powershell${isWsl ? '.exe' : ''}`;
+	} else if (platform === 'win32' || (isWsl && !isDocker())) {
+		const mountPoint = await getWslDrivesMountPoint();
+
+		command = isWsl ?
+			`${mountPoint}c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe` :
+			`${process.env.SYSTEMROOT}\\System32\\WindowsPowerShell\\v1.0\\powershell`;
+
 		cliArguments.push(
 			'-NoProfile',
 			'-NonInteractive',
@@ -174,9 +258,7 @@ module.exports = async (target, options) => {
 			'-EncodedCommand'
 		);
 
-		if (isWsl) {
-			command = await windowsToWslPath(command);
-		} else {
+		if (!isWsl) {
 			childProcessOptions.windowsVerbatimArguments = true;
 		}
 
@@ -187,17 +269,12 @@ module.exports = async (target, options) => {
 		}
 
 		if (app) {
-			if (isWsl && app.startsWith('/mnt/')) {
-				const windowsPath = await wslToWindowsPath(app);
-				app = windowsPath;
-			}
-
 			// Double quote with double quotes to ensure the inner quotes are passed through.
 			// Inner quotes are delimited for PowerShell interpretation with backticks.
 			encodedArguments.push(`"\`"${app}\`""`, '-ArgumentList');
 			appArguments.unshift(target);
 		} else {
-			encodedArguments.push(`"\`"${target}\`""`);
+			encodedArguments.push(`"${target}"`);
 		}
 
 		if (appArguments.length > 0) {
@@ -217,12 +294,12 @@ module.exports = async (target, options) => {
 			// Check if local `xdg-open` exists and is executable.
 			let exeLocalXdgOpen = false;
 			try {
-				await pAccess(localXdgOpenPath, fs.constants.X_OK);
+				await fs.access(localXdgOpenPath, fs.constants.X_OK);
 				exeLocalXdgOpen = true;
-			} catch (_) {}
+			} catch {}
 
 			const useSystemXdgOpen = process.versions.electron ||
-				process.platform === 'android' || isBundled || !exeLocalXdgOpen;
+				platform === 'android' || isBundled || !exeLocalXdgOpen;
 			command = useSystemXdgOpen ? 'xdg-open' : localXdgOpenPath;
 		}
 
@@ -240,7 +317,7 @@ module.exports = async (target, options) => {
 
 	cliArguments.push(target);
 
-	if (process.platform === 'darwin' && appArguments.length > 0) {
+	if (platform === 'darwin' && appArguments.length > 0) {
 		cliArguments.push('--args', ...appArguments);
 	}
 
@@ -265,6 +342,57 @@ module.exports = async (target, options) => {
 
 	return subprocess;
 };
+
+function detectArchBinary(binary) {
+	if (typeof binary === 'string') {
+		return binary;
+	}
+
+	const {[arch]: archBinary} = binary;
+
+	if (!archBinary) {
+		throw new Error(`${arch} is not supported`);
+	}
+
+	return archBinary;
+}
+
+function detectPlatformBinary({[platform]: platformBinary}, {wsl}) {
+	if (wsl && isWsl) {
+		return detectArchBinary(wsl);
+	}
+
+	if (!platformBinary) {
+		throw new Error(`${platform} is not supported`);
+	}
+
+	return detectArchBinary(platformBinary);
+}
+
+const apps = {};
+
+defineLazyProperty(apps, 'chrome', () => detectPlatformBinary({
+	darwin: 'google chrome canary',
+	win32: 'chrome',
+	linux: ['google-chrome', 'google-chrome-stable']
+}, {
+	wsl: {
+		ia32: '/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+		x64: ['/mnt/c/Program Files/Google/Chrome/Application/chrome.exe', '/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe']
+	}
+}));
+
+defineLazyProperty(apps, 'firefox', () => detectPlatformBinary({
+	darwin: 'firefox',
+	win32: 'C:\\Program Files\\Mozilla Firefox\\firefox.exe',
+	linux: 'firefox'
+}, {
+	wsl: '/mnt/c/Program Files/Mozilla Firefox/firefox.exe'
+}));
+
+open.apps = apps;
+
+module.exports = open;
 
 /* WEBPACK VAR INJECTION */}.call(this, "/", __webpack_require__(/*! ./../process/browser.js */ "./node_modules/process/browser.js"), __webpack_require__(/*! ./../node-libs-browser/node_modules/buffer/index.js */ "./node_modules/node-libs-browser/node_modules/buffer/index.js").Buffer))
 
