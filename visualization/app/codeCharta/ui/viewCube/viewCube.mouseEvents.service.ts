@@ -3,6 +3,11 @@ import { hierarchy } from "d3-hierarchy"
 import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
 import { isLeaf } from "../../util/codeMapHelper"
+// eslint-disable-next-line no-duplicate-imports
+import * as Three from "three"
+import oc from "three-orbit-controls"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 export interface ViewCubeEventPropagationSubscriber {
 	onViewCubeEventPropagation(eventType: string, event: MouseEvent)
@@ -24,21 +29,58 @@ export class ViewCubeMouseEventsService {
 	private camera: PerspectiveCamera
 	private renderer: WebGLRenderer
 	private currentlyHovered: Mesh | null = null
+	private controls: OrbitControls
+	private isDragging = false
 
-	constructor(private $rootScope: IRootScopeService) {}
+	constructor(private $rootScope: IRootScopeService, private threeOrbitControlsService: ThreeOrbitControlsService) {}
 
 	init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		this.cubeGroup = cubeGroup
 		this.camera = camera
 		this.renderer = renderer
+		this.initOrbitalControl(camera, renderer)
 		this.initRendererEventListeners(renderer)
+	}
+
+	resetIsDragging() {
+		this.isDragging = false
+	}
+
+	private initOrbitalControl(camera: PerspectiveCamera, renderer: WebGLRenderer) {
+		const orbitControls = oc(Three)
+		this.controls = new orbitControls(camera, renderer.domElement)
+		this.controls.enableZoom = false
+		this.controls.enableKeys = false
+		this.controls.enablePan = false
+		this.controls.rotateSpeed = 1
 	}
 
 	private initRendererEventListeners(renderer: WebGLRenderer) {
 		renderer.domElement.addEventListener("mousemove", (event: MouseEvent) => this.onDocumentMouseMove(event))
 		renderer.domElement.addEventListener("mouseup", (event: MouseEvent) => this.onDocumentMouseUp(event))
-		renderer.domElement.addEventListener("mousedown", (event: MouseEvent) => this.checkMouseIntersection(event, "mousedown"))
-		renderer.domElement.addEventListener("dblclick", (event: MouseEvent) => this.checkMouseIntersection(event, "dblclick"))
+		renderer.domElement.addEventListener("mousedown", (event: MouseEvent) => this.onDocumentMouseClick(event, "mousedown"))
+		renderer.domElement.addEventListener("dblclick", (event: MouseEvent) => this.onDocumentMouseClick(event, "dblclick"))
+		renderer.domElement.addEventListener("mouseleave", (event: MouseEvent) => this.onWindowMouseLeave(event))
+		renderer.domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
+	}
+
+	private onDocumentMouseClick(event: MouseEvent, mouseAction: string) {
+		this.isDragging = true
+		this.checkMouseIntersection(event, mouseAction)
+	}
+
+	private onWindowMouseLeave(event: MouseEvent) {
+		if (event.relatedTarget == null || !(event.relatedTarget instanceof HTMLCanvasElement)) {
+			this.enableRotation(false)
+		}
+	}
+
+	private onDocumentMouseEnter() {
+		this.enableRotation(true)
+	}
+
+	enableRotation(value: boolean) {
+		this.controls.enableRotate = value
 	}
 
 	private checkMouseIntersection(event: MouseEvent, mouseAction: string) {
@@ -71,7 +113,18 @@ export class ViewCubeMouseEventsService {
 		return new Vector2(x, y)
 	}
 
+	propagateMovement() {
+		if (this.isDragging) {
+			const vec3 = this.camera.position
+			this.threeOrbitControlsService.rotateCameraInVectorDirection(-vec3.x, -vec3.y, -vec3.z)
+		}
+		return this.isDragging
+	}
+
 	private onDocumentMouseMove(event: MouseEvent) {
+		if (this.propagateMovement()) {
+			return
+		}
 		const cube = this.getCubeIntersectedByMouse(event)
 		if (cube) {
 			if (this.currentlyHovered && cube.uuid !== this.currentlyHovered.uuid) {
@@ -88,6 +141,7 @@ export class ViewCubeMouseEventsService {
 	}
 
 	private onDocumentMouseUp(event: MouseEvent) {
+		this.isDragging = false
 		const cube = this.getCubeIntersectedByMouse(event)
 		if (cube) {
 			this.triggerViewCubeClickEvent(cube)
