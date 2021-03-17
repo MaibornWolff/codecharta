@@ -47,6 +47,7 @@ export class ThreeViewerService {
 		this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
 		this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight
 		this.threeCameraService.camera.updateProjectionMatrix()
+		this.animate()
 	}
 
 	enableRotation(value: boolean) {
@@ -66,10 +67,12 @@ export class ThreeViewerService {
 	}
 
 	animate() {
-		this.animationFrameId = requestAnimationFrame(() => this.animate())
-		this.threeRendererService.render()
 		this.threeOrbitControlsService.controls.update()
 		this.threeUpdateCycleService.update()
+	}
+
+	animateStats() {
+		this.animationFrameId = requestAnimationFrame(() => this.animateStats())
 		this.threeStatsService.updateStats()
 	}
 

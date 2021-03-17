@@ -80,7 +80,7 @@ export class CodeMapMouseEventService
 		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
 		private threeViewerService: ThreeViewerService
 	) {
-		this.threeUpdateCycleService.register(() => this.updateHovering())
+		this.threeUpdateCycleService.register(() => this.threeRendererService.render())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
@@ -114,7 +114,7 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
-		this.threeRendererService.renderer.domElement.addEventListener("mouseleave", (event) => this.onDocumentMouseLeave(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mouseleave", event => this.onDocumentMouseLeave(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
@@ -127,11 +127,13 @@ export class CodeMapMouseEventService
 				this.highlightedInTreeView = building
 			}
 		}
+		this.threeUpdateCycleService.update()
 	}
 
 	onShouldUnhoverNode() {
 		this.unhoverBuilding()
 		this.highlightedInTreeView = null
+		this.threeUpdateCycleService.update()
 	}
 
 	onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
@@ -154,6 +156,7 @@ export class CodeMapMouseEventService
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.clearConstantHighlight()
+		this.threeUpdateCycleService.update()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
@@ -180,6 +183,7 @@ export class CodeMapMouseEventService
 			if (this.isGrabbing || this.isMoving) {
 				this.threeSceneService.resetLabel()
 				this.clearTemporaryLabel()
+				this.threeUpdateCycleService.update()
 				return
 			}
 
@@ -234,6 +238,7 @@ export class CodeMapMouseEventService
 				}
 			}
 		}
+		this.threeUpdateCycleService.update()
 	}
 
 	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
@@ -263,8 +268,7 @@ export class CodeMapMouseEventService
 	}
 
 	onDocumentMouseLeave(event: MouseEvent) {
-		if (!(event.relatedTarget instanceof  HTMLCanvasElement))
-			this.EnableOrbitalsRotation(false)
+		if (!(event.relatedTarget instanceof HTMLCanvasElement)) this.EnableOrbitalsRotation(false)
 	}
 
 	onDocumentMouseMove(event: MouseEvent) {
@@ -355,6 +359,7 @@ export class CodeMapMouseEventService
 			})
 			this.hoverBuilding(building)
 		}
+		this.threeUpdateCycleService.update()
 	}
 
 	private onLeftClick() {
@@ -366,6 +371,7 @@ export class CodeMapMouseEventService
 				this.threeSceneService.selectBuilding(this.intersectedBuilding)
 			}
 		}
+		this.threeUpdateCycleService.update()
 	}
 
 	private hasMouseMovedMoreThanThreePixels({ x, y }: Coordinates) {

@@ -107,17 +107,53 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	clearLabels() {
+		this.dispose(this.labels)
+
 		this.labels = []
 		this.nodeHeight = 0
 		this.LABEL_HEIGHT_POSITION = 60
+
 		// Reset the children
-		this.threeSceneService.labels.children.length = 0
+		this.dispose(this.threeSceneService.labels.children)
+		this.threeSceneService.labels.children = []
+	}
+
+	private disposeSprite(element: Sprite) {
+		element.material.dispose()
+		element.material.map.dispose()
+		element.geometry.dispose()
+	}
+
+	private disposeLine(element: Line) {
+		const lineBasicMaterial = (element.material as unknown) as LineBasicMaterial
+		lineBasicMaterial.dispose()
+		element.geometry.dispose()
+	}
+
+	dispose(labels) {
+		for (const element of labels) {
+			if (element instanceof Sprite) {
+				this.disposeSprite(element)
+			}
+			if (element instanceof Line) {
+				this.disposeLine(element)
+			}
+
+			if (element.sprite !== undefined) {
+				this.disposeSprite(element.sprite)
+			}
+
+			if (element.line !== undefined) {
+				this.disposeLine(element.line)
+			}
+		}
 	}
 
 	clearTemporaryLabel(hoveredNode: Node) {
 		const index = this.labels.findIndex(({ node }) => node === hoveredNode)
 		if (index > -1) {
 			this.labels.splice(index, 1)
+			this.dispose(this.threeSceneService.labels.children)
 			this.threeSceneService.labels.children.length -= 2
 		}
 	}
