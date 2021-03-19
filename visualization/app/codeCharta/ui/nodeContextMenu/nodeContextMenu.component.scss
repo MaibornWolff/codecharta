@@ -4,6 +4,12 @@ node-context-menu-component {
 		z-index: 2000;
 	}
 
+	.div-disabled{
+		pointer-events: none;
+		opacity: 0.5;
+		background: #CCC;
+	}
+
 	.button-group {
 		display: inline-grid;
 	}

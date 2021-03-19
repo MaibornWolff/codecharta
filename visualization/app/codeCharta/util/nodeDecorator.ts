@@ -1,8 +1,9 @@
 "use strict"
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
-import { isLeaf, IsNodeExcludedOrFlattened } from "./codeMapHelper"
+import { areAllNodesExcluded, isLeaf, IsNodeExcludedOrFlattened} from "./codeMapHelper"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+
 
 const enum MedianSelectors {
 	MEDIAN = "MEDIAN",
@@ -18,25 +19,35 @@ const enum EdgeAttributeType {
 
 export class NodeDecorator {
 	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
-		for (const item of blacklist) {
+
+
+		for (const item of blacklist) {	
+	
+			
+
 			for (const { data } of hierarchy(map)) {
+			
 				if (blacklist.length > 0) {
 					if (item.type === BlacklistType.flatten) {
 						data.isFlattened = data.isFlattened ? true : IsNodeExcludedOrFlattened(data, item.path)
 					} else {
-						data.isExcluded = data.isExcluded ? true : IsNodeExcludedOrFlattened(data, item.path) && isLeaf(data)
-					}
-					if (data.type === "Folder") {
-						data.isExcluded = false
-						data.isFlattened = false
+						data.isExcluded = data.isExcluded ? true : IsNodeExcludedOrFlattened(data, item.path) 
 					}
 				}
-			}
+				if(data.type === "Folder"){
+					data.isExcluded = false
+				}
+
+				
+			}	
 		}
+	
+		map.isExcluded = false		
+		console.log("2. allexcluded : "+areAllNodesExcluded(map))
 		this.decorateMapWithMetricData(map, metricData)
 	}
 
-	static decorateMapWithMetricData(map: CodeMapNode, metricData: MetricData) {
+	static decorateMapWithMetricData(map: CodeMapNode, metricData: MetricData){
 		const { nodeMetricData, edgeMetricData } = metricData
 		let id = 0
 		for (const { data } of hierarchy(map)) {

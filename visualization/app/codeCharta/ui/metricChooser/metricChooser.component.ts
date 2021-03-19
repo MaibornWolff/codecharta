@@ -64,6 +64,11 @@ export class MetricChooserController
 	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
 		this._viewModel.metricData = nodeMetricData
 		this.originalMetricData = nodeMetricData
+		if( nodeMetricData.length < 2 ){
+			this._viewModel.areaMetric = nodeMetricData[0].name
+			this._viewModel.heightMetric = nodeMetricData[0].name
+			this._viewModel.colorMetric = nodeMetricData[0].name
+		}
 	}
 
 	filterMetricData() {

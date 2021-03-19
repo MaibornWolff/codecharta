@@ -149,10 +149,16 @@ export class CodeMapPreRenderService
 	private decorateIfPossible() {
 		const { metricData, files, fileSettings } = this.storeService.getState()
 		if (this.unifiedMap && this.unifiedFileMeta && fileStatesAvailable(files) && metricData.nodeMetricData) {
+		  
 			NodeDecorator.decorateMap(this.unifiedMap, metricData, fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(this.unifiedMap, isDeltaState(files), fileSettings.attributeTypes)
+		
 		}
+        console.log(`root : ${this.unifiedMap.path}. isExcluded ${this.unifiedMap.isExcluded}`)
+		for (const { data } of hierarchy(this.unifiedMap)) {
+			console.log(` ${data.path} : ${data.isExcluded}`)
+		}	
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
@@ -205,6 +211,7 @@ export class CodeMapPreRenderService
 	}
 
 	private renderAndNotify() {
+		
 		this.codeMapRenderService.render(this.unifiedMap)
 		this.removeLoadingGifs()
 		this.notifyMapChanged()

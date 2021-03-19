@@ -9,7 +9,7 @@ import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/foc
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
-import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
+import { areAllNodesExcluded, getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 export enum ClickType {
@@ -33,10 +33,16 @@ export class NodeContextMenuController
 		codeMapNode: CodeMapNode
 		showNodeContextMenu: boolean
 		markingColors: string[]
+		isExcluded : boolean
+		isFlattened : boolean
+		isAllExcluded : boolean
 	} = {
 		codeMapNode: null,
 		showNodeContextMenu: false,
-		markingColors: null
+		markingColors: null,
+		isExcluded : false,
+		isFlattened : false,
+		isAllExcluded : false
 	}
 
 	/* @ngInject */
@@ -68,7 +74,16 @@ export class NodeContextMenuController
 	onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		this._viewModel.showNodeContextMenu = true
-
+	
+		if(areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())){
+			this._viewModel.isAllExcluded = true
+		}else{
+			this._viewModel.isAllExcluded = false
+		}
+		const { blacklist } = this.storeService.getState().fileSettings
+		this._viewModel.isExcluded = blacklist.some(x => path === x.path && BlacklistType.exclude === x.type) 
+		this._viewModel.isFlattened = blacklist.some(x => path === x.path && BlacklistType.flatten === x.type)
+		
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
 

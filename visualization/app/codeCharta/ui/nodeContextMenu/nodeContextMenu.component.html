@@ -17,7 +17,7 @@
 		<md-divider></md-divider>
 	</div>
 
-	<div class="button-group">
+	<div class="button-group" ng-class="{ 'div-disabled': $ctrl._viewModel.isAllExcluded}">
 		<md-button ng-disabled="true">Node</md-button>
 		<md-button
 			ng-show="!$ctrl.isNodeFocused()"
@@ -28,6 +28,7 @@
 		>
 		<unfocus-button-component ng-show="$ctrl.isNodeOrParentFocused()"></unfocus-button-component>
 		<md-button
+			ng-disabled="$ctrl._viewModel.isFlattened"
 			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
 			ng-click="$ctrl.flattenNode()"
 			id="flatten-button"
@@ -55,7 +56,8 @@
 			><i class="fa fa-cubes"></i> Remove Highlight</md-button
 		>
 
-		<md-button ng-click="$ctrl.excludeNode()" id="exclude-button" title="Exclude node and children-nodes and reorder the CodeMap"
+		<md-button ng-disabled="$ctrl._viewModel.isExcluded" ng-click="$ctrl.excludeNode()" id="exclude-button"
+			title="Exclude node and children-nodes and reorder the CodeMap"
 			><i class="fa fa-ban"></i> Exclude</md-button
 		>
 	</div>

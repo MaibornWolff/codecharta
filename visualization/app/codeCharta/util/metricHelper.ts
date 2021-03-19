@@ -5,7 +5,7 @@ export function isAnyMetricAvailable(metricData: NodeMetricData[]) {
 }
 
 export function isMetricUnavailable(metricData: NodeMetricData[], metricName: string) {
-	return !metricData.some(x => x.maxValue > 0 && x.name === metricName)
+	return !metricData.some(x => x.name === metricName)
 }
 
 export function getMetricNameFromIndexOrLast(metricData: NodeMetricData[], index: number) {

@@ -7,6 +7,8 @@ import debounce from "lodash.debounce"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import { areAllNodesExcluded } from "../../util/codeMapHelper"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -15,14 +17,16 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		searchPattern: string
 		isPatternHidden: boolean
 		isPatternExcluded: boolean
+		isEverythingExcluded : boolean
 	} = {
 		searchPattern: "",
 		isPatternHidden: true,
-		isPatternExcluded: true
+		isPatternExcluded: true,
+		isEverythingExcluded : false
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private codeMapPreRenderService: CodeMapPreRenderService) {
 		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPatternService.subscribe(this.$rootScope, this)
 		this.applyDebouncedSearchPattern = debounce(() => {
@@ -35,6 +39,9 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	onSearchPatternChanged(searchPattern: string) {
+		// if(areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())){
+		// 	searchPattern = ""
+		// }
 		this._viewModel.searchPattern = searchPattern
 		this.updateViewModel()
 	}
@@ -71,7 +78,6 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		return (
 			this._viewModel.searchPattern === "" ||
 			this._viewModel.searchPattern === "!" ||
-			this._viewModel.searchPattern === "*" ||
 			this._viewModel.searchPattern === ","
 		)
 	}
@@ -80,6 +86,12 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		const { blacklist } = this.storeService.getState().fileSettings
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
+		
+		if(areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())){
+			this._viewModel.isEverythingExcluded = true
+		}else{
+			this._viewModel.isEverythingExcluded = false
+		}
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType) {

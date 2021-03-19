@@ -11,7 +11,8 @@ const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
+	const x =  metricData.find(x => x.name === state.dynamicSettings.heightMetric)
+	const maxHeight = x ? x.maxValue * mapSizeResolutionScaling : mapSizeResolutionScaling
 	const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 
 	if (hasFixedFolders(map)) {
