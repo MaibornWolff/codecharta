@@ -21,6 +21,14 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 
+export interface ColorRangeFromSubscriber {
+	onColorRangeFromUpdated(colorMetric: string, fromValue: number)
+}
+
+export interface ColorRangeToSubscriber {
+	onColorRangeToUpdated(colorMetric: string, toValue: number)
+}
+
 export class RangeSliderController
 	implements
 		ColorMetricSubscriber,
@@ -37,6 +45,9 @@ export class RangeSliderController
 	private MIN_DIGITS = 4
 	private MAX_DIGITS = 6
 	private FULL_WIDTH_SLIDER = 235
+
+	static COLOR_RANGE_FROM_UPDATED = "color-range-from-updated"
+	static COLOR_RANGE_TO_UPDATED = "color-range-to-updated"
 
 	private _viewModel: {
 		colorRangeFrom: number
@@ -139,6 +150,7 @@ export class RangeSliderController
 		this._viewModel.sliderOptions = {
 			ceil: this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
+			onEnd: (_, modelValue, highValue, pointerType) => this.applySliderUpdateDone(modelValue, highValue, pointerType),
 			pushRange: true,
 			disabled: isDeltaState(this.storeService.getState().files)
 		}
@@ -160,6 +172,34 @@ export class RangeSliderController
 				from: this._viewModel.colorRangeFrom
 			})
 		)
+	}
+
+	private applySliderUpdateDone(modelValue, highValue, pointerType) {
+		if (pointerType === "min") {
+			this.broadcastColorRangeFromUpdated(this.storeService.getState().dynamicSettings.colorMetric, modelValue)
+		} else if (pointerType === "max") {
+			this.broadcastColorRangeToUpdated(this.storeService.getState().dynamicSettings.colorMetric, highValue)
+		}
+	}
+
+	private broadcastColorRangeFromUpdated(colorMetric: string, fromValue: number) {
+		this.$rootScope.$broadcast(RangeSliderController.COLOR_RANGE_FROM_UPDATED, { colorMetric, fromValue })
+	}
+
+	private broadcastColorRangeToUpdated(colorMetric: string, toValue: number) {
+		this.$rootScope.$broadcast(RangeSliderController.COLOR_RANGE_TO_UPDATED, { colorMetric, toValue })
+	}
+
+	static subscribeToColorRangeFromUpdated($rootScope: IRootScopeService, subscriber: ColorRangeFromSubscriber) {
+		$rootScope.$on(RangeSliderController.COLOR_RANGE_FROM_UPDATED, (_event, data) => {
+			subscriber.onColorRangeFromUpdated(data.colorMetric, data.fromValue)
+		})
+	}
+
+	static subscribeToColorRangeToUpdated($rootScope: IRootScopeService, subscriber: ColorRangeToSubscriber) {
+		$rootScope.$on(RangeSliderController.COLOR_RANGE_TO_UPDATED, (_event, data) => {
+			subscriber.onColorRangeToUpdated(data.colorMetric, data.toValue)
+		})
 	}
 
 	private updateInputFieldWidth() {

@@ -8,7 +8,6 @@ import { isActionOfType } from "./reduxHelper"
 import { AreaMetricActions } from "../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { ColorRangeActions } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklist.actions"
 import { InvertColorRangeActions } from "../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
@@ -17,6 +16,7 @@ import { APIVersions } from "../codeCharta.api.model"
 import { getAsApiVersion } from "./fileValidator"
 import { hierarchy } from "d3-hierarchy"
 import { getMedian, pushSorted } from "./nodeDecorator"
+import { RangeSliderController } from "../ui/rangeSlider/rangeSlider.component"
 
 interface MetaDataTrackingItem {
 	mapId: string
@@ -24,6 +24,7 @@ interface MetaDataTrackingItem {
 	creationTime: number
 	exportedFileSizeInBytes: number
 	statisticsPerLanguage: StatisticsPerLanguage
+	repoCreationDate: string
 }
 
 interface StatisticsPerLanguage {
@@ -41,11 +42,18 @@ interface LanguageStatistics {
 
 interface MetricStatistics {
 	min: number
+	firstQuantile: number
+	median: number
+	thirdQuantile: number
 	max: number
+	outliers: number[]
+	variance: number
+	standardDeviation: number
+	variationCoefficient: number
 	totalSum: number
 	numberOfFiles: number
-	median: number
 	avg: number
+	metricValues: number[]
 }
 
 function isTrackingAllowed(state: State) {
@@ -65,10 +73,6 @@ function isTrackingAllowed(state: State) {
 }
 
 export function trackMapMetaData(state: State) {
-	if (!isTrackingAllowed(state)) {
-		return
-	}
-
 	const singleFileStates = getVisibleFileStates(state.files)
 	const fileNodes: CodeMapNode[] = getFileNodes(singleFileStates[0].file.map)
 	const fileMeta = singleFileStates[0].file.fileMeta
@@ -78,7 +82,8 @@ export function trackMapMetaData(state: State) {
 		codeChartaApiVersion: fileMeta.apiVersion,
 		creationTime: Date.now(),
 		exportedFileSizeInBytes: fileMeta.exportedFileSize,
-		statisticsPerLanguage: mapStatisticsPerLanguage(fileNodes)
+		statisticsPerLanguage: mapStatisticsPerLanguage(fileNodes),
+		repoCreationDate: fileMeta.repoCreationDate
 	}
 
 	const fileStorage = new CodeChartaStorage()
@@ -107,6 +112,7 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 
 	const sumOfFilePathDepths: { [languageName: string]: number } = {}
 	const metricValues: { [languageName: string]: { [metricName: string]: number[] } } = {}
+	const unsortedMetricValues: { [languageName: string]: { [metricName: string]: number[] } } = {}
 
 	for (const fileNode of fileNodes) {
 		const fileLanguage = getFileExtension(fileNode.name)
@@ -117,6 +123,9 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 		//TODO: How to initialize automatically?
 		if (metricValues[fileLanguage] === undefined) {
 			metricValues[fileLanguage] = {}
+		}
+		if (unsortedMetricValues[fileLanguage] === undefined) {
+			unsortedMetricValues[fileLanguage] = {}
 		}
 		if (sumOfFilePathDepths[fileLanguage] === undefined) {
 			sumOfFilePathDepths[fileLanguage] = 0
@@ -145,10 +154,15 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 			if (metricValues[fileLanguage][metricName] === undefined) {
 				metricValues[fileLanguage][metricName] = []
 			}
+			if (unsortedMetricValues[fileLanguage][metricName] === undefined) {
+				unsortedMetricValues[fileLanguage][metricName] = []
+			}
 
 			const valuesOfMetric = metricValues[fileLanguage][metricName]
+			const unsortedValuesOfMetric = unsortedMetricValues[fileLanguage][metricName]
 			const currentMetricValue = fileNode.attributes[metricName]
 			pushSorted(valuesOfMetric, currentMetricValue)
+			unsortedValuesOfMetric.push(currentMetricValue)
 
 			metricStatistics.median = getMedian(valuesOfMetric)
 			metricStatistics.max = Math.max(metricStatistics.max, currentMetricValue)
@@ -156,10 +170,43 @@ function mapStatisticsPerLanguage(fileNodes: CodeMapNode[]): StatisticsPerLangua
 			metricStatistics.numberOfFiles += 1
 			metricStatistics.totalSum += currentMetricValue
 			metricStatistics.avg = metricStatistics.totalSum / metricStatistics.numberOfFiles
+
+			metricStatistics.variance = getVariance(valuesOfMetric)
+			metricStatistics.standardDeviation = Math.sqrt(metricStatistics.variance)
+			metricStatistics.variationCoefficient = metricStatistics.standardDeviation / metricStatistics.avg
+
+			metricStatistics.metricValues = unsortedValuesOfMetric
+
+			let valuesFirstHalf: number[]
+			let valuesSecondHalf: number[]
+
+			if (valuesOfMetric.length % 2 === 0) {
+				valuesFirstHalf = valuesOfMetric.slice(0, valuesOfMetric.length / 2)
+				valuesSecondHalf = valuesOfMetric.slice(valuesOfMetric.length / 2, valuesOfMetric.length)
+			} else {
+				valuesFirstHalf = valuesOfMetric.slice(0, valuesOfMetric.length / 2)
+				valuesSecondHalf = valuesOfMetric.slice(valuesOfMetric.length / 2 + 1, valuesOfMetric.length)
+			}
+
+			metricStatistics.firstQuantile = getMedian(valuesFirstHalf)
+			metricStatistics.thirdQuantile = getMedian(valuesSecondHalf)
+
+			const interQuartileRange = metricStatistics.thirdQuantile - metricStatistics.firstQuantile
+			const upperOutlierBound = metricStatistics.thirdQuantile + 1.5 * interQuartileRange
+
+			metricStatistics.outliers = valuesOfMetric.filter(function (value) {
+				return value > upperOutlierBound
+			})
 		}
 	}
 
 	return statisticsPerLanguage
+}
+
+function getVariance(array) {
+	const n = array.length
+	const mean = array.reduce((a, b) => a + b) / n
+	return array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n
 }
 
 function initializeLanguageStatistics(fileNode: CodeMapNode, statisticsPerLanguage: StatisticsPerLanguage, fileLanguage: string) {
@@ -178,7 +225,13 @@ function initializeLanguageStatistics(fileNode: CodeMapNode, statisticsPerLangua
 			median: 0,
 			min: fileNode.attributes[metricName],
 			numberOfFiles: 0,
-			totalSum: 0
+			totalSum: 0,
+			firstQuantile: 0,
+			thirdQuantile: 0,
+			variance: 0,
+			standardDeviation: 0,
+			variationCoefficient: 0,
+			outliers: []
 		}
 	}
 }
@@ -206,6 +259,7 @@ interface NodeInteractionEventPayload {
 }
 
 interface EventTrackingItem {
+	mapId: string
 	eventType: string
 	eventTime: number
 	payload: SettingChangedEventPayload | NodeInteractionEventPayload
@@ -217,15 +271,18 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 		(!isActionOfType(actionType, AreaMetricActions) &&
 			!isActionOfType(actionType, HeightMetricActions) &&
 			!isActionOfType(actionType, ColorMetricActions) &&
-			!isActionOfType(actionType, ColorRangeActions) &&
 			!isActionOfType(actionType, InvertColorRangeActions) &&
 			!isActionOfType(actionType, BlacklistActions) &&
-			!isActionOfType(actionType, FocusedNodePathActions))
+			!isActionOfType(actionType, FocusedNodePathActions) &&
+			![RangeSliderController.COLOR_RANGE_FROM_UPDATED, RangeSliderController.COLOR_RANGE_TO_UPDATED].includes(actionType))
 	) {
 		return
 	}
 
-	const eventTrackingItem = buildEventTrackingItem(actionType, payload)
+	const singleFileStates = getVisibleFileStates(state.files)
+	const fileMeta = singleFileStates[0].file.fileMeta
+
+	const eventTrackingItem = buildEventTrackingItem(fileMeta.fileChecksum, actionType, payload)
 	if (eventTrackingItem === null) {
 		return
 	}
@@ -253,11 +310,13 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 }
 
 function buildEventTrackingItem(
+	mapId: string,
 	actionType: string,
 	payload?: string & Record<string, string & MetricStatistics>
 ): EventTrackingItem | null {
 	if (isSettingChangedEvent(actionType)) {
 		return {
+			mapId,
 			eventType: "setting_changed",
 			eventTime: Date.now(),
 			payload: {
@@ -269,6 +328,7 @@ function buildEventTrackingItem(
 
 	if (actionType === BlacklistActions.ADD_BLACKLIST_ITEM || actionType === BlacklistActions.REMOVE_BLACKLIST_ITEM) {
 		return {
+			mapId,
 			eventType: "node_interaction",
 			eventTime: Date.now(),
 			payload: {
@@ -283,6 +343,7 @@ function buildEventTrackingItem(
 
 	if (isActionOfType(actionType, FocusedNodePathActions) && payload !== "") {
 		return {
+			mapId,
 			eventType: "node_interaction",
 			eventTime: Date.now(),
 			payload: {
@@ -300,8 +361,8 @@ function isSettingChangedEvent(actionType: string) {
 		isActionOfType(actionType, AreaMetricActions) ||
 		isActionOfType(actionType, HeightMetricActions) ||
 		isActionOfType(actionType, ColorMetricActions) ||
-		isActionOfType(actionType, ColorRangeActions) ||
 		isActionOfType(actionType, InvertColorRangeActions) ||
+		[RangeSliderController.COLOR_RANGE_FROM_UPDATED, RangeSliderController.COLOR_RANGE_TO_UPDATED].includes(actionType) ||
 		actionType === BlacklistActions.SET_BLACKLIST
 	)
 }

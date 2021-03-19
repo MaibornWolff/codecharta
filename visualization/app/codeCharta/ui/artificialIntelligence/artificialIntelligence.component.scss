@@ -9,9 +9,48 @@
 		font-size: 9pt;
 		text-transform: none;
 		background-color: rgba(230, 230, 230, 0.96);
+		overflow: visible;
 
 		&.plus {
 			min-width: 30px;
 		}
+
+		#ai-badge {
+			position: absolute;
+			top: 12px;
+			right: -5px;
+			padding: 4px 6px;
+			border-radius: 50%;
+			background: red;
+			color: white;
+			font-size: 10px;
+			width: 18px;
+			height: 18px;
+			line-height: 10px;
+		}
+	}
+}
+
+md-menu-item.ai-list-item {
+	padding: 0 16px;
+}
+
+md-menu-item.risk-profile {
+	.md-button {
+		min-width: unset;
+		padding: 0;
+		margin: auto 0;
+	}
+	.low-risk {
+		background-color: #00d600;
+	}
+	.moderate-risk {
+		background: #ffff00;
+	}
+	.high-risk {
+		background: #ff0000;
+	}
+	.very-high-risk {
+		background: #ff00a6;
 	}
 }

@@ -88,6 +88,7 @@ export interface FileMeta {
 	apiVersion: string
 	projectName: string
 	exportedFileSize: number
+	repoCreationDate?: string
 }
 
 export interface Settings {

@@ -99,6 +99,24 @@ export class CustomConfigHelper {
 		return false
 	}
 
+	static getCustomConfigByName(
+		mapSelectionMode: CustomConfigMapSelectionMode,
+		selectedMaps: string[],
+		configName: string
+	): CustomConfig | null {
+		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
+			if (
+				customConfig.name === configName &&
+				customConfig.mapSelectionMode === mapSelectionMode &&
+				customConfig.assignedMaps.join("") === selectedMaps.join("")
+			) {
+				return customConfig
+			}
+		}
+
+		return null
+	}
+
 	static getCustomConfigs(): Map<string, CustomConfig> {
 		return CustomConfigHelper.customConfigs
 	}
