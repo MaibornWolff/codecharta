@@ -223,25 +223,26 @@ export class CodeMapPreRenderService
 		this.removeLoadingGifs()
 	}
 
+	/* This is necessary if we do not disable the searchbar incase all is excluded */
 	private allNecessaryRenderDataAvailable() {
 		return (
 			this.storeService.getState().metricData.nodeMetricData !== null &&
 			fileStatesAvailable(this.storeService.getState().files) &&
-			this.areChosenMetricsInMetricData() &&
+		//	this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {
 				return x !== null && Object.values(x).every(v => v !== null)
 			})
 		)
 	}
 
-	private areChosenMetricsInMetricData() {
-		const { dynamicSettings } = this.storeService.getState()
-		return (
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.areaMetric) &&
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.colorMetric) &&
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.heightMetric)
-		)
-	}
+	// private areChosenMetricsInMetricData() {
+	// 	const { dynamicSettings } = this.storeService.getState()
+	// 	return (
+	// 		this.nodeMetricDataService.isMetricAvailable(dynamicSettings.areaMetric) &&
+	// 		this.nodeMetricDataService.isMetricAvailable(dynamicSettings.colorMetric) &&
+	// 		this.nodeMetricDataService.isMetricAvailable(dynamicSettings.heightMetric)
+	// 	)
+	// }
 
 	private removeLoadingGifs() {
 		if (this.storeService.getState().appSettings.isLoadingFile) {

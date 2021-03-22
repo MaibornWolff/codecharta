@@ -33,15 +33,11 @@ export class NodeContextMenuController
 		codeMapNode: CodeMapNode
 		showNodeContextMenu: boolean
 		markingColors: string[]
-		isExcluded : boolean
-		isFlattened : boolean
 		isAllExcluded : boolean
 	} = {
 		codeMapNode: null,
 		showNodeContextMenu: false,
 		markingColors: null,
-		isExcluded : false,
-		isFlattened : false,
 		isAllExcluded : false
 	}
 
@@ -80,9 +76,6 @@ export class NodeContextMenuController
 		}else{
 			this._viewModel.isAllExcluded = false
 		}
-		const { blacklist } = this.storeService.getState().fileSettings
-		this._viewModel.isExcluded = blacklist.some(x => path === x.path && BlacklistType.exclude === x.type) 
-		this._viewModel.isFlattened = blacklist.some(x => path === x.path && BlacklistType.flatten === x.type)
 		
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
