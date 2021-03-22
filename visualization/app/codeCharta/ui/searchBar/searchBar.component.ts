@@ -68,12 +68,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	isSearchPatternEmpty() {
-		return (
-			this._viewModel.searchPattern === "" ||
-			this._viewModel.searchPattern === "!" ||
-			this._viewModel.searchPattern === "*" ||
-			this._viewModel.searchPattern === ","
-		)
+		return this._viewModel.searchPattern === "" || this._viewModel.searchPattern === "!" || this._viewModel.searchPattern === ","
 	}
 
 	private updateViewModel() {

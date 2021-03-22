@@ -31,28 +31,10 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 	if (gitignorePath.length === 0) {
 		return []
 	}
-
-	let condition = true
-	if (gitignorePath.startsWith("!")) {
-		gitignorePath = gitignorePath.slice(1)
-		condition = false
-	}
-
-	const ignoredNodePaths = ignore()
-
-	for (let path of gitignorePath.split(",")) {
-		path = path.trimStart()
-		if (!path.startsWith("*") && !path.endsWith("*")) {
-			path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
-		}
-		if (path.length === 0) {
-			continue
-		}
-		ignoredNodePaths.add(transformPath(path))
-	}
+	const ignoreResults = returnIgnore(gitignorePath)
 	const filtered = []
 	for (const { data } of hierarchy(root)) {
-		if (ignoredNodePaths.ignores(transformPath(data.path)) === condition) {
+		if (ignoreResults.ignoredNodePaths.ignores(transformPath(data.path)) === ignoreResults.condition) {
 			filtered.push(data)
 		}
 	}
@@ -60,6 +42,11 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 }
 
 export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string): boolean {
+	const ignoreResults = returnIgnore(gitignorePath)
+	return ignoreResults.ignoredNodePaths.ignores(transformPath(node.path)) === ignoreResults.condition
+}
+
+export function returnIgnore(gitignorePath: string) {
 	gitignorePath = transformPath(gitignorePath.trimStart())
 
 	let condition = true
@@ -79,7 +66,7 @@ export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: stri
 		}
 		ignoredNodePaths.add(transformPath(path))
 	}
-	return ignoredNodePaths.ignores(transformPath(node.path)) === condition
+	return { ignoredNodePaths, condition }
 }
 
 export function numberOfBlacklistedNodes(nodes: Array<CodeMapNode>) {
