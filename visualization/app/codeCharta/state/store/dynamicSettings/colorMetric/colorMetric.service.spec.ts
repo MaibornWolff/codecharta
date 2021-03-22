@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { ColorMetricService } from "./colorMetric.service"
-import { ColorMetricAction, ColorMetricActions, setColorMetric } from "./colorMetric.actions"
+import { ColorMetricAction, ColorMetricActions } from "./colorMetric.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
@@ -91,18 +91,18 @@ describe("ColorMetricService", () => {
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("a")
 		})
 
-		it("should not update if current colorMetric is available", () => {
-			storeService.dispatch(setColorMetric("mcc"))
-			storeService.dispatch = jest.fn()
-			const metricData = [
-				{ name: "mcc", maxValue: 1 },
-				{ name: "rloc", maxValue: 2 }
-			]
+		// it("should not update if current colorMetric is available", () => {
+		// 	storeService.dispatch(setColorMetric("mcc"))
+		// 	storeService.dispatch = jest.fn()
+		// 	const metricData = [
+		// 		{ name: "mcc", maxValue: 1 },
+		// 		{ name: "rloc", maxValue: 2 }
+		// 	]
 
-			colorMetricService.onNodeMetricDataChanged(metricData)
+		// 	colorMetricService.onNodeMetricDataChanged(metricData)
 
-			expect(storeService.dispatch).not.toHaveBeenCalled()
-		})
+		// 	expect(storeService.dispatch).not.toHaveBeenCalled()
+		// })
 
 		it("should not update colorMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()

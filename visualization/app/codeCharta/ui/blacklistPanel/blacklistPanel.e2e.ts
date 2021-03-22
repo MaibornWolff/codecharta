@@ -16,14 +16,14 @@ describe("Blacklist(TrackByEvaluation)", () => {
 	})
 
 	it("should have correct list entries in case of track by", async () => {
-		await searchBar.enterAndExcludeSearchPattern()
+		await searchBar.enterAndExcludeSearchPattern("html,ts")
 		await searchPanelModeSelector.toggleBlacklistView()
 		const inList = await blacklistPanelPageObject.checkExludedListAfterExclusion()
 		expect(inList).toBeTruthy()
 	})
 
 	it("should have correct list entries after exclusion in case of track by", async () => {
-		await searchBar.enterAndExcludeSearchPattern()
+		await searchBar.enterAndExcludeSearchPattern("html,ts")
 		await searchPanelModeSelector.toggleBlacklistView()
 		const excluded = await blacklistPanelPageObject.checkExludedListAfterItemRemovalFromExclusionList()
 		expect(excluded).toBeTruthy()

@@ -74,13 +74,7 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapPreRenderService = new CodeMapPreRenderService(
-			$rootScope,
-			storeService,
-			nodeMetricDataService,
-			codeMapRenderService,
-			edgeMetricDataService
-		)
+		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, storeService, codeMapRenderService, edgeMetricDataService)
 	}
 
 	function withMockedCodeMapRenderService() {

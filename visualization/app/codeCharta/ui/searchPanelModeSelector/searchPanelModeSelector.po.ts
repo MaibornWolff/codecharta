@@ -23,7 +23,7 @@ export class SearchPanelModeSelectorPageObject {
 	}
 
 	async toggleBlacklistView() {
-		await page.waitForSelector("#blacklist", { visible: true }).then(async element => element.click())
+		await clickButtonOnPageElement("#blacklist")
 		await page.waitForTimeout(500)
 	}
 }

@@ -17,16 +17,20 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		searchPattern: string
 		isPatternHidden: boolean
 		isPatternExcluded: boolean
-		isEverythingExcluded : boolean
+		isEverythingExcluded: boolean
 	} = {
 		searchPattern: "",
 		isPatternHidden: true,
 		isPatternExcluded: true,
-		isEverythingExcluded : false
+		isEverythingExcluded: false
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private codeMapPreRenderService: CodeMapPreRenderService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private codeMapPreRenderService: CodeMapPreRenderService
+	) {
 		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPatternService.subscribe(this.$rootScope, this)
 		this.applyDebouncedSearchPattern = debounce(() => {
@@ -39,9 +43,6 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	onSearchPatternChanged(searchPattern: string) {
-		// if(areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())){
-		// 	searchPattern = ""
-		// }
 		this._viewModel.searchPattern = searchPattern
 		this.updateViewModel()
 	}
@@ -75,21 +76,17 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	isSearchPatternEmpty() {
-		return (
-			this._viewModel.searchPattern === "" ||
-			this._viewModel.searchPattern === "!" ||
-			this._viewModel.searchPattern === ","
-		)
+		return this._viewModel.searchPattern === "" || this._viewModel.searchPattern === "!" || this._viewModel.searchPattern === ","
 	}
 
 	private updateViewModel() {
 		const { blacklist } = this.storeService.getState().fileSettings
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
-		
-		if(areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())){
+
+		if (areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())) {
 			this._viewModel.isEverythingExcluded = true
-		}else{
+		} else {
 			this._viewModel.isEverythingExcluded = false
 		}
 	}

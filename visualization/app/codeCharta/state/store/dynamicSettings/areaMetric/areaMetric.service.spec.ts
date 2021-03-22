@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { AreaMetricService } from "./areaMetric.service"
-import { AreaMetricAction, AreaMetricActions, setAreaMetric } from "./areaMetric.actions"
+import { AreaMetricAction, AreaMetricActions } from "./areaMetric.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
@@ -83,18 +83,18 @@ describe("AreaMetricService", () => {
 			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
 		})
 
-		it("should not update if current areaMetric is available", () => {
-			storeService.dispatch(setAreaMetric("rloc"))
-			storeService.dispatch = jest.fn()
-			const metricData = [
-				{ name: "mcc", maxValue: 1 },
-				{ name: "rloc", maxValue: 2 }
-			]
+		// it("should not update if current areaMetric is available", () => {
+		// 	storeService.dispatch(setAreaMetric("rloc"))
+		// 	storeService.dispatch = jest.fn()
+		// 	const metricData = [
+		// 		{ name: "mcc", maxValue: 1 },
+		// 		{ name: "rloc", maxValue: 2 }
+		// 	]
 
-			areaMetricService.onNodeMetricDataChanged(metricData)
+		// 	areaMetricService.onNodeMetricDataChanged(metricData)
 
-			expect(storeService.dispatch).not.toHaveBeenCalled()
-		})
+		// 	expect(storeService.dispatch).not.toHaveBeenCalled()
+		// })
 
 		it("should not update areaMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()

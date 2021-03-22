@@ -1,19 +1,22 @@
 import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 
 export class SearchBarPageObject {
-	async enterAndExcludeSearchPattern() {
-		await page.waitForSelector("#searchInput", { visible: true }).then(element => {
-			element.focus()
-			element.type("html,ts")
-		})
-
+	async enterAndExcludeSearchPattern(search: string) {
+		const input = await page.waitForSelector("#searchInput", { visible: true })
+		await input.focus()
+		await input.type(search)
 		await page.waitForTimeout(500)
 
 		await clickButtonOnPageElement("#blacklistMenu")
-		await page.waitForSelector("#blacklistMenu", { visible: true }).then(async element => element.click())
 
 		await page.waitForTimeout(500)
 
-		await page.waitForSelector("#toExcludeButton", { visible: true }).then(async element => element.click())
+		await clickButtonOnPageElement("#toExcludeButton")
+	}
+
+	async searchInputIsDisabled() {
+		await page.waitForSelector("#searchInput", { visible: true })
+		const isDisabled = await page.$eval("input[disabled]", element => element !== null)
+		return isDisabled
 	}
 }

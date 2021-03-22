@@ -23,7 +23,6 @@ import { clone } from "../../util/clone"
 import { PanelSelectionActions } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 import { PresentationModeActions } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
 import { isLeaf } from "../../util/codeMapHelper"
@@ -56,7 +55,6 @@ export class CodeMapPreRenderService
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private nodeMetricDataService: NodeMetricDataService,
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
@@ -149,16 +147,10 @@ export class CodeMapPreRenderService
 	private decorateIfPossible() {
 		const { metricData, files, fileSettings } = this.storeService.getState()
 		if (this.unifiedMap && this.unifiedFileMeta && fileStatesAvailable(files) && metricData.nodeMetricData) {
-		  
 			NodeDecorator.decorateMap(this.unifiedMap, metricData, fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(this.unifiedMap, isDeltaState(files), fileSettings.attributeTypes)
-		
 		}
-        console.log(`root : ${this.unifiedMap.path}. isExcluded ${this.unifiedMap.isExcluded}`)
-		for (const { data } of hierarchy(this.unifiedMap)) {
-			console.log(` ${data.path} : ${data.isExcluded}`)
-		}	
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
@@ -211,7 +203,6 @@ export class CodeMapPreRenderService
 	}
 
 	private renderAndNotify() {
-		
 		this.codeMapRenderService.render(this.unifiedMap)
 		this.removeLoadingGifs()
 		this.notifyMapChanged()
@@ -228,7 +219,7 @@ export class CodeMapPreRenderService
 		return (
 			this.storeService.getState().metricData.nodeMetricData !== null &&
 			fileStatesAvailable(this.storeService.getState().files) &&
-		//	this.areChosenMetricsInMetricData() &&
+			//	this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {
 				return x !== null && Object.values(x).every(v => v !== null)
 			})

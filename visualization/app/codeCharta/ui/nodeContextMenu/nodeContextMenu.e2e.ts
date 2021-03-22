@@ -3,19 +3,21 @@ import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 import { CodeMapPageObject } from "../codeMap/codeMap.po"
+import { SearchBarPageObject } from "../searchBar/searchBar.po"
 
 describe("NodeContextMenu", () => {
 	let contextMenu: NodeContextMenuPageObject
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 	let codeMap: CodeMapPageObject
+	let searchBar: SearchBarPageObject
 
 	beforeEach(async () => {
 		contextMenu = new NodeContextMenuPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		codeMap = new CodeMapPageObject()
-
+		searchBar = new SearchBarPageObject()
 		await goto()
 	})
 
@@ -54,6 +56,22 @@ describe("NodeContextMenu", () => {
 		await contextMenu.isOpened()
 
 		await codeMap.mouseWheelWithinMap()
+		await contextMenu.isClosed()
+	})
+
+	it("it should be disabled when everything is excluded", async () => {
+		await searchBar.enterAndExcludeSearchPattern("*")
+
+		await searchPanelModeSelector.toggleTreeView()
+
+		await mapTreeViewLevel.openContextMenu("/root")
+
+		await contextMenu.isOpened()
+
+		const condition = contextMenu.areButtonsDisabled()
+		expect(condition).toBeTruthy()
+
+		await codeMap.rightClickMouseDownOnMap()
 		await contextMenu.isClosed()
 	})
 })

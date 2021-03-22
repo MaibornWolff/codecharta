@@ -9,18 +9,24 @@ import { BlacklistService } from "../../state/store/fileSettings/blacklist/black
 import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+//import { areAllNodesExcluded } from "../../util/codeMapHelper"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
 
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
+	let codeMapPreRenderService: CodeMapPreRenderService
 	const SOME_EXTRA_TIME = 100
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
 		withMockedEventMethods($rootScope)
+		// jest.mock("../../util/codeMapHelper")
+		// const areAllNodesExcluded = jest.fn()
+		// areAllNodesExcluded.mockReturnValue(false)
 	})
 
 	function restartSystem() {
@@ -28,10 +34,11 @@ describe("SearchBarController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 	}
 
 	function rebuildController() {
-		searchBarController = new SearchBarController($rootScope, storeService)
+		searchBarController = new SearchBarController($rootScope, storeService, codeMapPreRenderService)
 	}
 
 	describe("constructor", () => {
@@ -63,6 +70,7 @@ describe("SearchBarController", () => {
 			searchBarController.onSearchPatternChanged("/root/node/path")
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
+			expect(searchBarController["_viewModel"].isEverythingExcluded).toBeFalsy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
 			expect(searchBarController["_viewModel"].searchPattern).toBe("/root/node/path")
 		})
