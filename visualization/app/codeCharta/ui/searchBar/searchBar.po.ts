@@ -15,8 +15,12 @@ export class SearchBarPageObject {
 	}
 
 	async searchInputIsDisabled() {
-		await page.waitForSelector("#searchInput", { visible: true })
-		const isDisabled = await page.$eval("input[disabled]", element => element !== null)
-		return isDisabled
+		try {
+			await page.waitForSelector("#searchInput", { visible: true })
+			const isDisabled = await page.$eval("input[disabled]", element => element !== null)
+			return isDisabled
+		} catch {
+			return false
+		}
 	}
 }

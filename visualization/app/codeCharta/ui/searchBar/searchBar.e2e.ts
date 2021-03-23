@@ -11,6 +11,8 @@ describe("Blacklist(TrackByEvaluation)", () => {
 
 	it("should disable searchBar when everything is disabled", async () => {
 		await searchBar.enterAndExcludeSearchPattern("*")
+		await page.waitForTimeout(500)
+
 		const condition = searchBar.searchInputIsDisabled()
 		expect(condition).toBeTruthy()
 	})
