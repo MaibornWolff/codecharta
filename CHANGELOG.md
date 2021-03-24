@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Hints for Global Settings were added
+
 ## [1.70.1] - 2021-03-12
 
 ## [1.70.0] - 2021-03-09
