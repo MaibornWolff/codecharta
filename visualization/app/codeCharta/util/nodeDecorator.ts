@@ -27,9 +27,9 @@ export class NodeDecorator {
 						data.isExcluded = data.isExcluded ? true : IsNodeExcludedOrFlattened(data, item.path)
 					}
 				}
-				if (data.type === "Folder") {
-					data.isExcluded = false
-				}
+				// if (data.type === "Folder") {
+				// 	data.isExcluded = false
+				// }
 			}
 		}
 		map.isExcluded = false
