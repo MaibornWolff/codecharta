@@ -1,8 +1,9 @@
 import { goto } from "../../../puppeteer.helper"
+import { LayoutAlgorithm, SharpnessMode } from "../../codeCharta.model"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 import { DialogGlobalSettingsPageObject } from "./dialog.globalSettings.po"
 
-describe("LegendPanel", () => {
+describe("DialogGlobalSettings", () => {
 	let globalSettingsPageObject: DialogGlobalSettingsPageObject
 	let fileChooser: FileChooserPageObject
 
@@ -19,22 +20,40 @@ describe("LegendPanel", () => {
 		await globalSettingsPageObject.openGlobalSettings()
 	}
 
-	describe("GlobalSettings", () => {
-		it("Should contain the label for the map layout", async () => {
+	describe("Map Layout", () => {
+		it("should contain the label for the map layout", async () => {
 			const label = await globalSettingsPageObject.getMapLayoutLabel()
+
 			expect(label).toEqual("Map Layout")
 		})
-		it("Should contain the Display quality Layout", async () => {
+		it("should contain the Display quality Layout", async () => {
 			const label = await globalSettingsPageObject.getDisplayQualityLabel()
+
 			expect(label).toEqual("Display quality")
 		})
-		/*
-		it("Should change the layout algorithm", async () => {
-			globalSettingsPageObject.changeLayout()
-			globalSettingsPageObject.setStreetMapAsLayout()
-			const label = await globalSettingsPageObject.getLayout()
-			console.log("this.is.it ", label)
+
+		it("should change the layout algorithm", async () => {
+			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
+
+			const layout = await globalSettingsPageObject.getLayout()
+
+			expect(layout).toEqual(LayoutAlgorithm.TreeMapStreet)
 		})
-*/
+	})
+
+	describe("Display Quality", () => {
+		it("should should maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
+			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
+
+			await globalSettingsPageObject.isTreeMapFilesComponentVisible()
+		})
+
+		it("should change the display quality to Pixel Ratio without Antialiasing", async () => {
+			await globalSettingsPageObject.changedDisplayQuality()
+
+			const layout = await globalSettingsPageObject.getDisplayQuality()
+
+			expect(layout).toEqual(SharpnessMode.PixelRatioNoAA)
+		})
 	})
 })

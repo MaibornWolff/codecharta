@@ -13,4 +13,30 @@ export class DialogGlobalSettingsPageObject {
 	async getDisplayQualityLabel() {
 		return page.$eval("sharpness-mode-selector-component > div > md-input-container > label", element => element["innerText"])
 	}
+
+	async changeLayoutToTreeMapStreet() {
+		await page.click("div.md-dialog-content layout-selection-component div md-input-container md-select")
+		await page.waitForSelector(".md-select-menu-container.md-active", { visible: true })
+		await page.click('md-select-menu md-content [value="TreeMapStreet"]')
+	}
+
+	async getLayout() {
+		await page.waitForSelector("layout-selection-component .md-select-value")
+		return page.$eval("layout-selection-component .md-select-value", element => element["innerText"])
+	}
+
+	async isTreeMapFilesComponentVisible() {
+		return page.waitForSelector("max-tree-map-files-component", { visible: true })
+	}
+
+	async changedDisplayQuality() {
+		await page.click("div.md-dialog-content sharpness-mode-selector-component div md-input-container md-select")
+		await page.waitForSelector(".md-select-menu-container.md-active", { visible: true })
+		await page.click('md-select-menu md-content [value="Pixel Ratio without Antialiasing"]')
+	}
+
+	async getDisplayQuality() {
+		await page.waitForSelector("sharpness-mode-selector-component .md-select-value")
+		return page.$eval("sharpness-mode-selector-component .md-select-value", element => element["innerText"])
+	}
 }
