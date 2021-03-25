@@ -104,8 +104,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	getUnaryPercentage() {
 		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[NodeMetricDataService.UNARY_METRIC]
-		return !Number.isNaN((100 * this.getNodeUnaryValue()) / rootUnary) ?
-			((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0) : 100
+		return !Number.isNaN((100 * this.getNodeUnaryValue()) / rootUnary) ? ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0) : 100
 	}
 
 	static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
