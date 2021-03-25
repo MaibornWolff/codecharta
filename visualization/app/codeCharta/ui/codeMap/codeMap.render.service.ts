@@ -14,7 +14,6 @@ import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 
-
 export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -39,13 +38,11 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		this.threeUpdateCycleService.update()
 	}
 	render(map: CodeMapNode) {
-
 		const sortedNodes = this.getSortedNodes(map)
-			this.setNewMapMesh(sortedNodes)
-			this.setLabels(sortedNodes)
-			this.setArrows(sortedNodes)
-			this.scaleMap()
-		
+		this.setNewMapMesh(sortedNodes)
+		this.setLabels(sortedNodes)
+		this.setArrows(sortedNodes)
+		this.scaleMap()
 	}
 
 	private setNewMapMesh(sortedNodes) {
@@ -67,6 +64,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 			metricData: { nodeMetricData },
 			files
 		} = state
+
 		let nodes: Node[] = []
 		const deltaState = isDeltaState(files)
 		switch (layoutAlgorithm) {

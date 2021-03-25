@@ -51,7 +51,6 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 
 		// Clone the map to prevent changing the order of the original map.
 		this._viewModel.rootNode = klona(map)
-
 		this.synchronizeAngularTwoWayBinding()
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}

@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { HeightMetricActions, setHeightMetric } from "./heightMetric.actions"
 import { NodeMetricData } from "../../../../codeCharta.model"
-import { getMetricNameFromIndexOrLast, isAnyMetricAvailable} from "../../../../util/metricHelper"
+import { getMetricNameFromIndexOrLast, isAnyMetricAvailable } from "../../../../util/metricHelper"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
@@ -31,11 +31,12 @@ export class HeightMetricService implements StoreSubscriber, NodeMetricDataSubsc
 	}
 
 	reset(nodeMetricData: NodeMetricData[]) {
-		const { heightMetric } = this.storeService.getState().dynamicSettings	
+		const { heightMetric } = this.storeService.getState().dynamicSettings
+
 		if (heightMetric) {
 			this.storeService.dispatch(setHeightMetric(heightMetric))
-		}else{
-			const newHeightMetric = getMetricNameFromIndexOrLast(nodeMetricData, 1) 
+		} else {
+			const newHeightMetric = getMetricNameFromIndexOrLast(nodeMetricData, 1)
 			this.storeService.dispatch(setHeightMetric(newHeightMetric))
 		}
 	}

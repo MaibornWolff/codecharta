@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AreaMetricActions, setAreaMetric } from "./areaMetric.actions"
 import { NodeMetricData } from "../../../../codeCharta.model"
-import {  getMetricNameFromIndexOrLast, isAnyMetricAvailable} from "../../../../util/metricHelper"
+import { getMetricNameFromIndexOrLast, isAnyMetricAvailable } from "../../../../util/metricHelper"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
@@ -32,10 +32,11 @@ export class AreaMetricService implements StoreSubscriber, NodeMetricDataSubscri
 
 	reset(nodeMetricData: NodeMetricData[]) {
 		const { areaMetric } = this.storeService.getState().dynamicSettings
+
 		if (areaMetric) {
 			this.storeService.dispatch(setAreaMetric(areaMetric))
-		}else{
-			const newAreaMetric = getMetricNameFromIndexOrLast(nodeMetricData, 0) 
+		} else {
+			const newAreaMetric = getMetricNameFromIndexOrLast(nodeMetricData, 0)
 			this.storeService.dispatch(setAreaMetric(newAreaMetric))
 		}
 	}

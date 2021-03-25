@@ -33,12 +33,12 @@ export class NodeContextMenuController
 		codeMapNode: CodeMapNode
 		showNodeContextMenu: boolean
 		markingColors: string[]
-		isAllExcluded : boolean
+		isAllExcluded: boolean
 	} = {
 		codeMapNode: null,
 		showNodeContextMenu: false,
 		markingColors: null,
-		isAllExcluded : false
+		isAllExcluded: false
 	}
 
 	/* @ngInject */
@@ -70,13 +70,12 @@ export class NodeContextMenuController
 	onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		this._viewModel.showNodeContextMenu = true
-	
-		if(areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())){
+		if (areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())) {
 			this._viewModel.isAllExcluded = true
-		}else{
+		} else {
 			this._viewModel.isAllExcluded = false
 		}
-		
+
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
 
