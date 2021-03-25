@@ -26,6 +26,12 @@ interface MetricValues {
 	[metric: string]: number[]
 }
 
+interface MetricAssessmentResults {
+	suspiciousMetrics: Map<string, ColorRange>
+	unsuspiciousMetrics: string[]
+	outliersThresholds: Map<string, number>
+}
+
 interface MetricSuggestionParameters {
 	metric: string
 	from: number
@@ -93,78 +99,27 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
-		const suspiciousMetricsSuggestions = new Map<string, ColorRange>()
-		const outlierLimits = new Map<string, number>()
-		const unsuspiciousMetrics = []
-
 		const fileState = getVisibleFileStates(files)[0]
 		if (fileState === undefined) {
 			return
 		}
 
+		// Thresholds are derived for Java maps only (currently)
 		if (!this.hasJavaFiles(fileState.file.map)) {
 			return
 		}
 
+		this.calculateRiskProfile(fileState, "mcc")
+		this.createCustomConfigSuggestions(fileState)
+	}
+
+	private createCustomConfigSuggestions(fileState: FileState) {
 		const metricValues = this.getMetricValues(fileState)
-
-		let totalRloc = 0
-		let numberOfRlocLowRisk = 0
-		let numberOfRlocModerateRisk = 0
-		let numberOfRlocHighRisk = 0
-		let numberOfRlocVeryHighRisk = 0
-
-		for (const { data } of hierarchy(fileState.file.map)) {
-			if (data.type !== NodeType.FILE) {
-				continue
-			}
-
-			if (data.attributes["mcc"] === undefined || data.attributes["rloc"] === undefined) {
-				continue
-			}
-
-			totalRloc += data.attributes["rloc"]
-
-			// We could calculate risk profiles per directory
-			if (data.attributes["mcc"] <= clusterMetricThresholds["java"]["notClustered"]["mcc"].percentile70) {
-				numberOfRlocLowRisk += data.attributes["rloc"]
-			} else if (data.attributes["mcc"] <= clusterMetricThresholds["java"]["notClustered"]["mcc"].percentile80) {
-				numberOfRlocModerateRisk += data.attributes["rloc"]
-			} else if (data.attributes["mcc"] <= clusterMetricThresholds["java"]["notClustered"]["mcc"].percentile90) {
-				numberOfRlocHighRisk += data.attributes["rloc"]
-			} else {
-				numberOfRlocVeryHighRisk += data.attributes["rloc"]
-			}
-		}
-
-		this._viewModel.riskProfile.lowRisk = Math.ceil((numberOfRlocLowRisk / totalRloc) * 100)
-		this._viewModel.riskProfile.moderateRisk = Math.ceil((numberOfRlocModerateRisk / totalRloc) * 100)
-		this._viewModel.riskProfile.highRisk = Math.ceil((numberOfRlocHighRisk / totalRloc) * 100)
-		this._viewModel.riskProfile.veryHighRisk = Math.ceil((numberOfRlocVeryHighRisk / totalRloc) * 100)
-
-		for (const metricName of Object.keys(clusterMetricThresholds["java"]["notClustered"])) {
-			const valuesOfMetric = metricValues[metricName]
-			if (valuesOfMetric === undefined) {
-				continue
-			}
-
-			const thresholdConfig = clusterMetricThresholds["java"]["notClustered"][metricName]
-			const maxMetricValue = Math.max(...valuesOfMetric)
-
-			if (maxMetricValue > thresholdConfig.percentile70) {
-				suspiciousMetricsSuggestions.set(metricName, { from: thresholdConfig.percentile70, to: thresholdConfig.percentile80 })
-
-				if (maxMetricValue > thresholdConfig.percentile90) {
-					outlierLimits.set(metricName, thresholdConfig.percentile90)
-				}
-			} else {
-				unsuspiciousMetrics.push(metricName)
-			}
-		}
+		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues)
 
 		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
 
-		for (const [metricName, colorRange] of suspiciousMetricsSuggestions) {
+		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
 			const overviewConfigState = this.prepareOverviewConfigState(metricName, colorRange.from, colorRange.to)
 			const overviewConfigName = `Suspicious ${metricName.toUpperCase()} Files (AI)`
 			const overviewConfig = this.createAndAddCustomConfig(overviewConfigName, overviewConfigState, fileState)
@@ -175,7 +130,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 				generalCustomConfigId: overviewConfig.id
 			})
 
-			const outlierThreshold = outlierLimits.get(metricName)
+			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
 			if (outlierThreshold > 0) {
 				const outlierToValue = outlierThreshold
 				const outlierFromValue = outlierToValue - 1
@@ -189,7 +144,86 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}
 
 		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()]
-		this._viewModel.unsuspiciousMetrics = unsuspiciousMetrics
+		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+	}
+
+	private findGoodAndBadMetrics(metricValues): MetricAssessmentResults {
+		const metricAssessmentResults: MetricAssessmentResults = {
+			suspiciousMetrics: new Map<string, ColorRange>(),
+			unsuspiciousMetrics: [],
+			outliersThresholds: new Map<string, number>()
+		}
+
+		for (const metricName of Object.keys(clusterMetricThresholds["java"]["notClustered"])) {
+			const valuesOfMetric = metricValues[metricName]
+			if (valuesOfMetric === undefined) {
+				continue
+			}
+
+			const thresholdConfig = clusterMetricThresholds["java"]["notClustered"][metricName]
+			const maxMetricValue = Math.max(...valuesOfMetric)
+
+			if (maxMetricValue > thresholdConfig.percentile70) {
+				metricAssessmentResults.suspiciousMetrics.set(metricName, {
+					from: thresholdConfig.percentile70,
+					to: thresholdConfig.percentile80
+				})
+
+				if (maxMetricValue > thresholdConfig.percentile90) {
+					metricAssessmentResults.outliersThresholds.set(metricName, thresholdConfig.percentile90)
+				}
+			} else {
+				metricAssessmentResults.unsuspiciousMetrics.push(metricName)
+			}
+		}
+
+		return metricAssessmentResults
+	}
+
+	private calculateRiskProfile(fileState: FileState, metricName) {
+		let totalRloc = 0
+		let numberOfRlocLowRisk = 0
+		let numberOfRlocModerateRisk = 0
+		let numberOfRlocHighRisk = 0
+		let numberOfRlocVeryHighRisk = 0
+
+		for (const { data } of hierarchy(fileState.file.map)) {
+			if (data.type !== NodeType.FILE) {
+				continue
+			}
+
+			const nodeMetricValue = data.attributes[metricName]
+			const nodeRlocValue = data.attributes["rloc"]
+
+			if (
+				nodeMetricValue === undefined ||
+				nodeRlocValue === undefined ||
+				!(metricName in clusterMetricThresholds["java"]["notClustered"])
+			) {
+				continue
+			}
+
+			const clusteredMetricThresholds = clusterMetricThresholds["java"]["notClustered"][metricName]
+			totalRloc += nodeRlocValue
+
+			// Idea: We could calculate risk profiles per directory in the future.
+			if (nodeMetricValue <= clusteredMetricThresholds.percentile70) {
+				numberOfRlocLowRisk += nodeRlocValue
+			} else if (nodeMetricValue <= clusteredMetricThresholds.percentile80) {
+				numberOfRlocModerateRisk += nodeRlocValue
+			} else if (nodeMetricValue <= clusteredMetricThresholds.percentile90) {
+				numberOfRlocHighRisk += nodeRlocValue
+			} else {
+				numberOfRlocVeryHighRisk += nodeRlocValue
+			}
+		}
+
+		this._viewModel.riskProfile = {
+			lowRisk: Math.ceil((numberOfRlocLowRisk / totalRloc) * 100),
+			moderateRisk: Math.ceil((numberOfRlocModerateRisk / totalRloc) * 100),
+			highRisk: Math.ceil((numberOfRlocHighRisk / totalRloc) * 100),
+			veryHighRisk: Math.ceil((numberOfRlocVeryHighRisk / totalRloc) * 100)
+		}
 	}
 
 	private createAndAddCustomConfig(configName: string, state: State, fileState: FileState) {
