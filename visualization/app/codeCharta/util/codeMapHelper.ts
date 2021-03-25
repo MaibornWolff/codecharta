@@ -26,6 +26,17 @@ export function transformPath(toTransform: string) {
 	return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
+export function unifyPath(path: string) {
+	path = path.trimStart()
+	if (!path.startsWith("*") && !path.endsWith("*")) {
+		path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
+	}
+	if (path.length === 0) {
+		return ""
+	}
+	return path
+}
+
 export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
 	const filtered = []
 	gitignorePath = gitignorePath.trimStart()
@@ -42,14 +53,10 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 	const ignoredNodePaths = ignore()
 
 	for (let path of gitignorePath.split(",")) {
-		path = path.trimStart()
-		if (!path.startsWith("*") && !path.endsWith("*")) {
-			path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
+		path = unifyPath(path)
+		if (path.length > 0) {
+			ignoredNodePaths.add(transformPath(path))
 		}
-		if (path.length === 0) {
-			continue
-		}
-		ignoredNodePaths.add(transformPath(path))
 	}
 
 	for (const { data } of hierarchy(root)) {
@@ -71,14 +78,10 @@ export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: stri
 	const ignoredNodePaths = ignore()
 
 	for (let path of gitignorePath.split(",")) {
-		path = path.trimStart()
-		if (!path.startsWith("*") && !path.endsWith("*")) {
-			path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
+		path = unifyPath(path)
+		if (path.length > 0) {
+			ignoredNodePaths.add(transformPath(path))
 		}
-		if (path.length === 0) {
-			continue
-		}
-		ignoredNodePaths.add(transformPath(path))
 	}
 	return ignoredNodePaths.ignores(transformPath(node.path)) === condition
 }
