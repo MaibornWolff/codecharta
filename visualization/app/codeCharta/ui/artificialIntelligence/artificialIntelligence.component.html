@@ -10,17 +10,25 @@
 	</md-button>
 
 	<md-menu-content class="ai-drop-down" width="7">
+		<md-menu-item class="ai-item" ng-show="!$ctrl._viewModel.isFeatureApplicable">
+			<md-button ng-disabled="true">Suspicious Metrics can currently be found within JAVA maps only.</md-button>
+		</md-menu-item>
+
 		<md-menu-item class="ai-item" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length"
 			><md-button ng-disabled="true">Unsuspicious Metrics</md-button></md-menu-item
 		>
 
-		<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length">
+		<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.isFeatureApplicable && $ctrl._viewModel.unsuspiciousMetrics.length">
 			<ul ng-repeat="inconspicuousMetric in $ctrl._viewModel.unsuspiciousMetrics">
 				<li>{{ inconspicuousMetric }}</li>
 			</ul>
 		</md-menu-item>
 
-		<md-menu-item class="ai-item"><md-button ng-disabled="true">Risk Profile (based on mcc)</md-button></md-menu-item>
+		<md-menu-item class="ai-item"
+			><md-button ng-disabled="true" ng-show="$ctrl._viewModel.isFeatureApplicable"
+				>Risk Profile (based on mcc)</md-button
+			></md-menu-item
+		>
 		<md-menu-item class="ai-item risk-profile">
 			<md-button
 				ng-if="$ctrl._viewModel.riskProfile.lowRisk > 0"
@@ -52,7 +60,9 @@
 			></md-button>
 		</md-menu-item>
 
-		<md-menu-item class="ai-item" ng-show="$ctrl._viewModel.suspiciousMetricSuggestionLinks.length"
+		<md-menu-item
+			class="ai-item"
+			ng-show="$ctrl._viewModel.isFeatureApplicable && $ctrl._viewModel.suspiciousMetricSuggestionLinks.length"
 			><md-button ng-disabled="true">Suspicious Metrics</md-button></md-menu-item
 		>
 

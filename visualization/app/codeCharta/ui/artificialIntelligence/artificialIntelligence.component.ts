@@ -42,6 +42,7 @@ interface MetricSuggestionParameters {
 
 export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
 	private _viewModel: {
+		isFeatureApplicable: boolean
 		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
 		unsuspiciousMetrics: string[]
 		riskProfile: {
@@ -51,6 +52,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			veryHighRisk: number
 		}
 	} = {
+		isFeatureApplicable: false,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
 		riskProfile: {
@@ -108,6 +110,8 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		if (!this.hasJavaFiles(fileState.file.map)) {
 			return
 		}
+
+		this._viewModel.isFeatureApplicable = true
 
 		this.calculateRiskProfile(fileState, "mcc")
 		this.createCustomConfigSuggestions(fileState)
