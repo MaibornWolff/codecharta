@@ -64,11 +64,7 @@ export class RangeSliderController
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		MapColorsService.subscribe(this.$rootScope, this)
-		angular.element(document).ready(() => {
-			this.$timeout(() => {
-				this.$rootScope.$broadcast('rzSliderForceRender')
-			})
-		})
+		this.renderSliderOnInitialisation()
 		this.applyDebouncedColorRange = debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
 		}, RangeSliderController.DEBOUNCE_TIME)
@@ -76,6 +72,14 @@ export class RangeSliderController
 
 	onMapColorsChanged() {
 		this.updateSliderColors()
+	}
+
+	renderSliderOnInitialisation() {
+		angular.element(() => {
+			this.$timeout(() => {
+				this.$rootScope.$broadcast("rzSliderForceRender")
+			})
+		})
 	}
 
 	onBlacklistChanged() {
