@@ -13,7 +13,6 @@ describe("Disable searchbar on exclusion of all buildings", () => {
 		await searchBar.enterAndExcludeSearchPattern("*")
 		await page.waitForTimeout(500)
 
-		const condition = searchBar.searchInputIsDisabled()
-		expect(condition).toBeTruthy()
+		expect(searchBar.searchInputIsDisabled()).toBeTruthy()
 	})
 })
