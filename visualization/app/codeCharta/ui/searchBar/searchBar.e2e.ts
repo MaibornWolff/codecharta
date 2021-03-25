@@ -1,7 +1,7 @@
 import { goto } from "../../../puppeteer.helper"
 import { SearchBarPageObject } from "./searchBar.po"
 
-describe("Blacklist(TrackByEvaluation)", () => {
+describe("Disable searchbar on exclusion of all buildings", () => {
 	let searchBar: SearchBarPageObject
 
 	beforeEach(async () => {
@@ -13,7 +13,7 @@ describe("Blacklist(TrackByEvaluation)", () => {
 		await searchBar.enterAndExcludeSearchPattern("*")
 		await page.waitForTimeout(500)
 
-		const condition = true //searchBar.searchInputIsDisabled()
+		const condition = searchBar.searchInputIsDisabled()
 		expect(condition).toBeTruthy()
 	})
 })
