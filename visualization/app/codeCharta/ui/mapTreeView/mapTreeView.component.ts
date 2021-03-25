@@ -51,6 +51,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 
 		// Clone the map to prevent changing the order of the original map.
 		this._viewModel.rootNode = klona(map)
+
 		this.synchronizeAngularTwoWayBinding()
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
@@ -83,7 +84,6 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 				files.push(child)
 			}
 		}
-
 		// Reverse the sort order if required.
 		if (this.storeService.getState().appSettings.sortingOrderAscending) {
 			const actualComparator = compareFunction
