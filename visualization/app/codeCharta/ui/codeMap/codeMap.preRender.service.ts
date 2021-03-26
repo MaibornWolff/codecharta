@@ -57,9 +57,8 @@ export class CodeMapPreRenderService
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeMapRenderService: CodeMapRenderService,
-		private edgeMetricDataService: EdgeMetricDataService
-	) //private nodeMetricDataService : NodeMetricDataService
-	{
+		private edgeMetricDataService: EdgeMetricDataService //private nodeMetricDataService : NodeMetricDataService
+	) {
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		StoreService.subscribeDetailedData(this.$rootScope, this)
@@ -227,6 +226,7 @@ export class CodeMapPreRenderService
 			})
 		)
 	}
+
 	/** This part of the code seems redundant */
 	// private areChosenMetricsInMetricData() {
 	// 	const { dynamicSettings } = this.storeService.getState()
