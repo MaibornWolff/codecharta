@@ -14,7 +14,7 @@ export function getCodeMapNodeFromPath(path: string, nodeType: string, root: Cod
 	return matchingNode?.data
 }
 
-export function transformPath(toTransform: string) {
+function transformPath(toTransform: string) {
 	let removeNumberOfCharactersFromStart = 2
 
 	if (toTransform.startsWith("/")) {
@@ -46,7 +46,7 @@ export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: stri
 	return ignoreResults.ignoredNodePaths.ignores(transformPath(node.path)) === ignoreResults.condition
 }
 
-export function returnIgnore(gitignorePath: string) {
+function returnIgnore(gitignorePath: string) {
 	gitignorePath = transformPath(gitignorePath.trimStart())
 
 	let condition = true
@@ -67,16 +67,6 @@ export function returnIgnore(gitignorePath: string) {
 		ignoredNodePaths.add(transformPath(path))
 	}
 	return { ignoredNodePaths, condition }
-}
-
-export function numberOfBlacklistedNodes(nodes: Array<CodeMapNode>) {
-	let count = 0
-	for (const node of nodes) {
-		if (isBlacklisted(node)) {
-			count++
-		}
-	}
-	return count
 }
 
 export function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>) {
