@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Fix breaking changes with newest three-js version([#1877](https://github.com/MaibornWolff/codecharta/issues/1877))
+
 ## [1.72.0] - 2021-04-22
 
 ### Added 🚀
