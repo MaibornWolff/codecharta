@@ -66,10 +66,10 @@ export class MetricChooserController
 		this.originalMetricData = nodeMetricData
 
 		if (nodeMetricData.length < 2) {
-			const metric = nodeMetricData[0].name
-			this._viewModel.areaMetric = metric ? metric : ""
-			this._viewModel.heightMetric = metric ? metric : ""
-			this._viewModel.colorMetric = metric ? metric : ""
+			const metric = nodeMetricData[0] ? nodeMetricData[0].name : ""
+			this._viewModel.areaMetric = metric
+			this._viewModel.heightMetric = metric
+			this._viewModel.colorMetric = metric
 		}
 	}
 
