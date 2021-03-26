@@ -13,14 +13,4 @@ export class SearchBarPageObject {
 
 		await clickButtonOnPageElement("#toExcludeButton")
 	}
-
-	async searchInputIsDisabled() {
-		try {
-			await page.waitForSelector("#searchInput", { visible: true })
-			const isDisabled = await page.$eval("input[disabled]", element => element !== null)
-			return isDisabled
-		} catch {
-			return false
-		}
-	}
 }
