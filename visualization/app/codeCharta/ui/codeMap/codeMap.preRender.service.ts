@@ -36,6 +36,7 @@ import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/
 import { InvertColorRangeActions } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+//import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -57,7 +58,8 @@ export class CodeMapPreRenderService
 		private storeService: StoreService,
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
-	) {
+	) //private nodeMetricDataService : NodeMetricDataService
+	{
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		StoreService.subscribeDetailedData(this.$rootScope, this)
@@ -219,13 +221,13 @@ export class CodeMapPreRenderService
 		return (
 			this.storeService.getState().metricData.nodeMetricData !== null &&
 			fileStatesAvailable(this.storeService.getState().files) &&
-			//	this.areChosenMetricsInMetricData() &&
+			//this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {
 				return x !== null && Object.values(x).every(v => v !== null)
 			})
 		)
 	}
-
+	/** This part of the code seems redundant */
 	// private areChosenMetricsInMetricData() {
 	// 	const { dynamicSettings } = this.storeService.getState()
 	// 	return (

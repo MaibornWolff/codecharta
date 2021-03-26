@@ -27,17 +27,15 @@ export class NodeDecorator {
 						data.isExcluded = data.isExcluded ? true : IsNodeExcludedOrFlattened(data, item.path)
 					}
 				}
-				// if (data.type === "Folder") {
-				// 	data.isExcluded = false
-				// }
 			}
 		}
 		map.isExcluded = false
-		this.decorateMapWithMetricData(map, metricData)
+		this.decorateMapWithNodeMetricData(map, metricData)
+		this.decorateMapWithEdgeMetricData(map, metricData)
+		this.addIdAndParentPathToMapNodes(map)
 	}
-
-	static decorateMapWithMetricData(map: CodeMapNode, metricData: MetricData) {
-		const { nodeMetricData, edgeMetricData } = metricData
+	static decorateMapWithNodeMetricData(map: CodeMapNode, metricData: MetricData) {
+		const { nodeMetricData } = metricData
 		let id = 0
 		for (const { data } of hierarchy(map)) {
 			data.id = id
@@ -60,7 +58,11 @@ export class NodeDecorator {
 					data.deltas[metric.name] = 0
 				}
 			}
-
+		}
+	}
+	static decorateMapWithEdgeMetricData(map: CodeMapNode, metricData: MetricData) {
+		const { edgeMetricData } = metricData
+		for (const { data } of hierarchy(map)) {
 			if (data.edgeAttributes === undefined) {
 				data.edgeAttributes = {}
 			}
@@ -70,6 +72,11 @@ export class NodeDecorator {
 					data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
 				}
 			}
+		}
+	}
+
+	static addIdAndParentPathToMapNodes(map: CodeMapNode) {
+		for (const { data } of hierarchy(map)) {
 			// TODO: Verify the need for this code. It is unclear why child
 			// properties are copied to their parent.
 			if (data.children?.length === 1 && data.children[0].children?.length > 0) {

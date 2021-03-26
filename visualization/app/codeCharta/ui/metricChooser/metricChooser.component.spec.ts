@@ -16,6 +16,7 @@ describe("MetricChooserController", () => {
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
 	let storeService: StoreService
+	const metricDataArray: NodeMetricData[] = [{ name: "a", maxValue: 1 }]
 
 	function rebuildController() {
 		metricChooserController = new MetricChooserController($rootScope, $timeout, storeService)
@@ -123,6 +124,17 @@ describe("MetricChooserController", () => {
 			metricChooserController.onNodeMetricDataChanged(metricData)
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
+		})
+	})
+	/*** */
+	describe("onNodeMetricDataChanged", () => {
+		it("metric data should be updated", () => {
+			metricChooserController.onNodeMetricDataChanged(metricDataArray)
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual(metricDataArray)
+			expect(metricChooserController["_viewModel"].heightMetric).toEqual("a")
+			expect(metricChooserController["_viewModel"].colorMetric).toEqual("a")
+			expect(metricChooserController["_viewModel"].areaMetric).toEqual("a")
 		})
 	})
 

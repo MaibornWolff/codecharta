@@ -7,7 +7,9 @@ import {
 	AttributeTypes,
 	NodeMetricData,
 	EdgeMetricData,
-	MetricData
+	MetricData,
+	BlacklistItem,
+	BlacklistType
 } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { HierarchyNode, hierarchy } from "d3-hierarchy"
@@ -41,6 +43,7 @@ describe("nodeDecorator", () => {
 			nodes: { functions: AttributeTypeValue.relative, rloc: AttributeTypeValue.absolute },
 			edges: { pairingRate: AttributeTypeValue.relative }
 		}
+
 		NodeDecorator.decorateMapWithPathAttribute(file)
 	})
 
@@ -53,7 +56,7 @@ describe("nodeDecorator", () => {
 		})
 		return count === ids.size
 	}
-
+	///////
 	describe("decorateMap", () => {
 		it("nodes should have all metrics", () => {
 			nodeMetricData.push({ name: "some", maxValue: 999999 })
@@ -65,6 +68,21 @@ describe("nodeDecorator", () => {
 				expect(node.data.attributes.rloc).toBeDefined()
 				expect(node.data.attributes.functions).toBeDefined()
 				expect(node.data.attributes.mcc).toBeDefined()
+			})
+		})
+
+		it("some nodes should be excluded", () => {
+			const a: BlacklistItem = {
+				path: "small leaf",
+				type: BlacklistType.exclude
+			}
+
+			NodeDecorator.decorateMap(map, metricData, [a])
+
+			hierarchy(map).each(node => {
+				if (node.data.name === "small leaf") {
+					expect(node.data.isExcluded).toBeTruthy()
+				}
 			})
 		})
 
