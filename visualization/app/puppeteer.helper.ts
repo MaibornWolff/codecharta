@@ -25,4 +25,5 @@ export async function enableConsole() {
 export const clickButtonOnPageElement = async (selectorString: string, expectToClickOptions?) => {
 	await page.waitForSelector(selectorString)
 	await expect(page).toClick(selectorString, expectToClickOptions)
+	await page.waitForTimeout(500)
 }
