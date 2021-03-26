@@ -14,7 +14,7 @@ export function getCodeMapNodeFromPath(path: string, nodeType: string, root: Cod
 	return matchingNode?.data
 }
 
-export function transformPath(toTransform: string) {
+function transformPath(toTransform: string) {
 	let removeNumberOfCharactersFromStart = 2
 
 	if (toTransform.startsWith("/")) {
@@ -26,7 +26,7 @@ export function transformPath(toTransform: string) {
 	return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
-export function unifyPath(path: string) {
+function unifyPath(path: string) {
 	path = path.trimStart()
 	if (!path.startsWith("*") && !path.endsWith("*")) {
 		path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
@@ -101,16 +101,6 @@ export function areAllNodesExcluded(map: CodeMapNode) {
 		return condition
 	}
 	return false
-}
-
-export function numberOfBlacklistedNodes(nodes: Array<CodeMapNode>) {
-	let count = 0
-	for (const node of nodes) {
-		if (isBlacklisted(node)) {
-			count++
-		}
-	}
-	return count
 }
 
 export function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>) {
