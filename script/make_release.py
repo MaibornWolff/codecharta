@@ -10,80 +10,80 @@ root = pathlib.Path().absolute()
 
 
 def isRootFolder():
-    return root[-10:] == "codecharta"
+  return root[-10:] == "codecharta"
 
 
 def confirm(message, printMessage):
-    confirm = [{
-        "type": "confirm",
-        "name": "confirmed",
-        "message": message,
-        "default": True
-    }]
-    confirmation = PyInquirer.prompt(confirm)["confirmed"]
+  confirm = [{
+    "type": "confirm",
+    "name": "confirmed",
+    "message": message,
+    "default": True
+  }]
+  confirmation = PyInquirer.prompt(confirm)["confirmed"]
 
-    if confirmation:
-        print(printMessage)
-    else:
-        print("Aborting.")
-        quit()
+  if confirmation:
+    print(printMessage)
+  else:
+    print("Aborting.")
+    quit()
 
 
 def getLatestChangelogEntry(path):
-    release_post_content = ""
-    with open(path, "rb") as fp:
-        line_number = 0
-        section = None
-        for line in fp:
-            if line_number > 20:
-                if "## [" in line:
-                    break
+  release_post_content = ""
+  with open(path, "r", encoding="utf-8") as fp:
+    line_number = 0
+    section = None
+    for line in fp:
+      if line_number > 20:
+        if "## [" in line:
+          break
 
-                if "###" in line and section != None:
-                    if len(section.split("\n")) > 3:
-                        release_post_content = release_post_content + section
-                    section = None
+        if "###" in line and section != None:
+          if len(section.split("\n")) > 3:
+            release_post_content = release_post_content + section
+          section = None
 
-                if section != None:
-                    section = section + line
+        if section != None:
+          section = section + line
 
-                if "###" in line and section == None:
-                    section = line
+        if "###" in line and section == None:
+          section = line
 
-            line_number = line_number + 1
-    return release_post_content
+      line_number = line_number + 1
+  return release_post_content
 
 
 def getReleasePost(version, path):
-    release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n\ntitle: {version}\n---\n\n"
-    release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
-    release_post_content = getLatestChangelogEntry(path)
-    return release_post_header + release_post_headline + release_post_content
+  release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n\ntitle: {version}\n---\n\n"
+  release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
+  release_post_content = getLatestChangelogEntry(path)
+  return release_post_header + release_post_headline + release_post_content
 
 
 # Check if we're on project root folder
 if not isRootFolder:
-    print("Please execute this script from the project root folder. Aborting.")
-    quit()
+  print("Please execute this script from the project root folder. Aborting.")
+  quit()
 else:
-    repo = git.Repo(root)
+  repo = git.Repo(root)
 
 
 # Check if there are any uncommited changes
 if repo.is_dirty():
-    print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
-    quit()
+  print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
+  quit()
 
 
 # Check if we are on main branch
 if repo.active_branch.name != "main":
-    print("You can only release on main branch. Aborting.")
-    quit()
+  print("You can only release on main branch. Aborting.")
+  quit()
 
 
 # Get latest tag
 latest_tag = str(
-    sorted(repo.tags, key=lambda t: t.commit.committed_datetime)[-1])
+  sorted(repo.tags, key=lambda t: t.commit.committed_datetime)[-1])
 print(f"Last version tag in git is {latest_tag}")
 
 
@@ -101,22 +101,22 @@ new_patch_version = f"{major}.{minor}.{patch + 1}"
 
 # Get release type and version
 questions = [{
-    "type": "list",
-    "name": "version",
-    "message": f"Do you want to release a major version [{new_major_version}], minor version [{new_minor_version}] or a patch [{new_patch_version}]?",
-    "choices": ["Major", "Minor", "Patch"],
+  "type": "list",
+  "name": "version",
+  "message": f"Do you want to release a major version [{new_major_version}], minor version [{new_minor_version}] or a patch [{new_patch_version}]?",
+  "choices": ["Major", "Minor", "Patch"],
 }]
 
 release_type = PyInquirer.prompt(questions)["version"]
 
 if release_type == None:
-    quit()
+  quit()
 elif release_type == "Major":
-    new_version = new_major_version
+  new_version = new_major_version
 elif release_type == "Minor":
-    new_version = new_minor_version
+  new_version = new_minor_version
 elif release_type == "Patch":
-    new_version = new_patch_version
+  new_version = new_patch_version
 
 
 # Confirm release
@@ -129,12 +129,12 @@ confirm(message, printMessage)
 gradle_properties = f"{root}/analysis/gradle.properties"
 
 with in_place.InPlace(gradle_properties, encoding="utf-8") as fp:
-    for line in fp:
-        if "currentVersion=" in line:
-            fp.write(
-                f"currentVersion={new_version}\n")
-        else:
-            fp.write(line)
+  for line in fp:
+    if "currentVersion=" in line:
+      fp.write(
+        f"currentVersion={new_version}\n")
+    else:
+      fp.write(line)
 
 print(f"v{new_version}")
 print("incremented version in ./analysis/gradle.properties")
@@ -166,23 +166,23 @@ date_formatted = f"{date.year}-{month}-{day}"
 
 
 with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
-    for line in fp:
-        if "## [unreleased]" in line:
-            fp.write(
-                f"## [{new_version}] - {date_formatted}\n")
-        else:
-            fp.write(line)
+  for line in fp:
+    if "## [unreleased]" in line:
+      fp.write(
+        f"## [{new_version}] - {date_formatted}\n")
+    else:
+      fp.write(line)
 
 with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
-    line_number = 0
+  line_number = 0
 
-    for line in fp:
-        if line_number == 6:
-            fp.write(
-                "\n## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n")
-        else:
-            fp.write(line)
-        line_number = line_number + 1
+  for line in fp:
+    if line_number == 6:
+      fp.write(
+        "\n## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n")
+    else:
+      fp.write(line)
+    line_number = line_number + 1
 
 print("updated ./CHANGELOG.md")
 
@@ -192,14 +192,14 @@ new_version_formatted = new_version.replace(".", "_")
 release_post = f"{date_formatted}-v{new_version_formatted}.md"
 release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
 
-with open(release_post_path, "wb") as fp:
-    pass
-    fp.write("\n".encode())
+with open(release_post_path, "w", encoding="utf-8") as fp:
+  pass
+  fp.write("\n")
 
 with in_place.InPlace(release_post_path, encoding="utf-8") as fp:
-    for line in fp:
-        fp.write(getReleasePost(new_version, changelog_path))
-        break
+  for line in fp:
+    fp.write(getReleasePost(new_version, changelog_path))
+    break
 
 
 # confirm and make a commit and tag it correctly
