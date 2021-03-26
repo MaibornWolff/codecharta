@@ -5,6 +5,7 @@ export class SearchBarPageObject {
 		const input = await page.waitForSelector("#searchInput", { visible: true })
 		await input.focus()
 		await input.type(search)
+
 		await page.waitForTimeout(500)
 
 		await clickButtonOnPageElement("#blacklistMenu")
