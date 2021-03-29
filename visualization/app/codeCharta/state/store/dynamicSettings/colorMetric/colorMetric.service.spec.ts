@@ -91,19 +91,6 @@ describe("ColorMetricService", () => {
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("a")
 		})
 
-		// it("should not update if current colorMetric is available", () => {
-		// 	storeService.dispatch(setColorMetric("mcc"))
-		// 	storeService.dispatch = jest.fn()
-		// 	const metricData = [
-		// 		{ name: "mcc", maxValue: 1 },
-		// 		{ name: "rloc", maxValue: 2 }
-		// 	]
-
-		// 	colorMetricService.onNodeMetricDataChanged(metricData)
-
-		// 	expect(storeService.dispatch).not.toHaveBeenCalled()
-		// })
-
 		it("should not update colorMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()
 			const metricData = []

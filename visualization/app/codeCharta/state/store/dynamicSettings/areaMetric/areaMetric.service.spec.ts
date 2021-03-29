@@ -83,19 +83,6 @@ describe("AreaMetricService", () => {
 			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
 		})
 
-		// it("should not update if current areaMetric is available", () => {
-		// 	storeService.dispatch(setAreaMetric("rloc"))
-		// 	storeService.dispatch = jest.fn()
-		// 	const metricData = [
-		// 		{ name: "mcc", maxValue: 1 },
-		// 		{ name: "rloc", maxValue: 2 }
-		// 	]
-
-		// 	areaMetricService.onNodeMetricDataChanged(metricData)
-
-		// 	expect(storeService.dispatch).not.toHaveBeenCalled()
-		// })
-
 		it("should not update areaMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()
 			const metricData = []

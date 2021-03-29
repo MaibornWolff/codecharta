@@ -91,19 +91,6 @@ describe("HeightMetricService", () => {
 			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("a")
 		})
 
-		// it("should not update if current heightMetric is available", () => {
-		// 	storeService.dispatch(setHeightMetric("mcc"))
-		// 	storeService.dispatch = jest.fn()
-		// 	const metricData = [
-		// 		{ name: "mcc", maxValue: 1 },
-		// 		{ name: "rloc", maxValue: 2 }
-		// 	]
-
-		// 	heightMetricService.onNodeMetricDataChanged(metricData)
-
-		// 	expect(storeService.dispatch).not.toHaveBeenCalled()
-		// })
-
 		it("should not update heightMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()
 			const metricData = []
