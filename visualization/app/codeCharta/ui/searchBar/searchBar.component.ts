@@ -79,25 +79,22 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType) {
 		const paths: string[] = this._viewModel.searchPattern.trim().split(",")
-		let condition = false
 		if (this._viewModel.searchPattern.trim().startsWith("!")) {
 			paths[0] = paths[0].slice(1)
 			for (const path of paths) {
 				const pathNew = `!${this.unifyWildCard(path)}`
-				condition = blacklist.some(x => pathNew === x.path && blacklistType === x.type)
-				if (condition) {
-					break
+				if (blacklist.some(x => pathNew === x.path && blacklistType === x.type)) {
+					return true
 				}
 			}
-			return condition
+			return false
 		}
 		for (const path of paths) {
-			condition = blacklist.some(x => this.unifyWildCard(path) === x.path && blacklistType === x.type)
-			if (condition) {
-				break
+			if (blacklist.some(x => this.unifyWildCard(path) === x.path && blacklistType === x.type) {
+				return true
 			}
 		}
-		return condition
+		return false
 	}
 
 	unifyWildCard(path: string): string {
