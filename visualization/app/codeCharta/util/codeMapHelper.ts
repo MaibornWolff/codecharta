@@ -41,7 +41,7 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 	return filtered
 }
 
-export function IsNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string): boolean {
+export function isNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string): boolean {
 	const ignoreResults = returnIgnore(gitignorePath)
 	return ignoreResults.ignoredNodePaths.ignores(transformPath(node.path)) === ignoreResults.condition
 }

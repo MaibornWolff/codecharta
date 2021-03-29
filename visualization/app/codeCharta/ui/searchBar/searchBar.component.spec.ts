@@ -112,7 +112,7 @@ describe("SearchBarController", () => {
 	})
 
 	describe("onClickBlacklistPattern", () => {
-		it("separate entries for many in one searchPattern", () => {
+		it("separate entries for negated many in one searchPattern", () => {
 			const blacklistItem = { path: "!*html*", type: BlacklistType.exclude }
 			const blacklistItem1 = { path: "!*ts*", type: BlacklistType.exclude }
 			searchBarController["_viewModel"].searchPattern = "!html,ts"
