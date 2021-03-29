@@ -109,8 +109,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 			return path
 		}
 		if (!path.startsWith('"') && !path.endsWith('"')) {
-			path = path.startsWith("!") ? path : `*${path}*`
-			return path
+			return path.startsWith("!") ? path : `*${path}*`
 		}
 		return path
 	}
