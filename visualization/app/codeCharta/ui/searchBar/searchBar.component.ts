@@ -90,7 +90,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 			return false
 		}
 		for (const path of paths) {
-			if (blacklist.some(x => this.unifyWildCard(path) === x.path && blacklistType === x.type) {
+			if (blacklist.some(x => this.unifyWildCard(path) === x.path && blacklistType === x.type)) {
 				return true
 			}
 		}
