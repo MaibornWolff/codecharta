@@ -1,15 +1,22 @@
 export class BlacklistPanelPageObject {
-	async checkExludedListAfterExclusion() {
+	async checkExludedListAfterExclusion(paths: string[]) {
 		await page.waitForSelector("#excludedList", { visible: true, hidden: false })
 
 		const selector = "#excludedList > md-list-item > div.pattern-text.layout-column > p > bdi"
 
 		const list = await page.$$eval(selector, ls => {
-			return ls.filter(x => {
-				return x.innerHTML === "*html*" || x.innerHTML === "*ts*"
+			return ls.map(x => {
+				return x.innerHTML
 			})
 		})
-		return list.length === 2
+		const filtered = list.filter(x => {
+			for (const path of paths) {
+				if (x === path) {
+					return true
+				}
+			}
+		})
+		return filtered.length === paths.length
 	}
 
 	async checkExludedListAfterItemRemovalFromExclusionList() {
