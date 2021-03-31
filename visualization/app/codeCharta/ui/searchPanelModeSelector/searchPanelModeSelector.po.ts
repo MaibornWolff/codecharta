@@ -23,7 +23,25 @@ export class SearchPanelModeSelectorPageObject {
 	}
 
 	async toggleBlacklistView() {
+		//await clickButtonOnPageElement("#blacklist")
+		//await page.waitForTimeout(500)
+		const wasOpen = await this.isBlacklistViewOpen()
 		await clickButtonOnPageElement("#blacklist")
-		await page.waitForTimeout(500)
+
+		await (wasOpen
+			? page.waitForSelector("#search-panel-card", { visible: false })
+			: page.waitForSelector("#search-panel-card.expanded"))
+
+		return !wasOpen
+	}
+
+	async isBlacklistViewOpen() {
+		await page.waitForSelector("#blacklist")
+		const treeViewClassNames = await page.$eval("#blacklist", element => element.className)
+
+		await page.waitForSelector("#search-panel-card")
+		const searchPanelClassNames = await page.$eval("#search-panel-card", element => element.className)
+
+		return treeViewClassNames.includes("current") && searchPanelClassNames.includes("expanded")
 	}
 }

@@ -39,6 +39,7 @@ describe("MapTreeViewLevel", () => {
 			await mapTreeViewLevel.hoverNode("/root/sample1OnlyLeaf.scss")
 
 			expect(await mapTreeViewLevel.isNodeMarked(filePath)).toBeTruthy()
+			await searchPanelModeSelector.toggleTreeView()
 		})
 	})
 
@@ -49,6 +50,7 @@ describe("MapTreeViewLevel", () => {
 			await mapTreeViewLevel.hoverNode(folder)
 
 			expect(await mapTreeViewLevel.getNumberOfFiles(folder)).toBe(2)
+			await searchPanelModeSelector.toggleTreeView()
 		})
 	})
 })

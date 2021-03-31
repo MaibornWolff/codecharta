@@ -19,7 +19,7 @@ export class BlacklistPanelPageObject {
 
 		await clickButtonOnPageElement("#object-1")
 
-		await page.waitForTimeout(500)
+		//await page.waitForTimeout(500)
 
 		const selector = "#excludedList > md-list-item > div.pattern-text.layout-column > p > bdi"
 
