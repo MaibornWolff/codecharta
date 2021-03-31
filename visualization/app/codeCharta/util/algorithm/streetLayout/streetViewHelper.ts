@@ -19,6 +19,9 @@ function calculateSize(node: CodeMapNode, metricName: string) {
 }
 
 function mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
+	if(metricName !== 'unary'){
+
+	}
 	let mergedNode = node
 	const nodeSize = calculateSize(node, metricName)
 	for (const child of node.children) {
@@ -50,23 +53,25 @@ function getHeightValue(s: State, squaredNode: CodeMapNode, maxHeight: number, f
 function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
 	const isNodeLeaf = !(layoutNode.children && layoutNode.children.length > 0)
 	const flattened: boolean = isNodeFlat(layoutNode, s)
-	const heightValue: number = getHeightValue(s, layoutNode, maxHeight, flattened)
-	const height = Math.abs(
+	let heightValue: number = getHeightValue(s, layoutNode, maxHeight, flattened)
+	console.log("heightValue : "+heightValue)
+	let height = Math.abs(
 		isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
 	)
+	console.log("height : "+height)
 
-	const length = layoutNode.rect.height
-	const x0 = layoutNode.rect.topLeft.x
-	const y0 = layoutNode.rect.topLeft.y
-	const z0 = layoutNode.zOffset * TreeMapHelper.FOLDER_HEIGHT
-
+	const length = layoutNode.rect ? layoutNode.rect.height : 1
+	const x0 = layoutNode.rect ? layoutNode.rect.topLeft.x : 1
+	const y0 = layoutNode.rect ? layoutNode.rect.topLeft.y : 1
+	const z0 = layoutNode.zOffset ?layoutNode.zOffset * TreeMapHelper.FOLDER_HEIGHT : TreeMapHelper.FOLDER_HEIGHT
+	let width = layoutNode.rect ? layoutNode.rect.width : 1
 	return {
 		name: layoutNode.name,
 		id: layoutNode.id,
-		width: layoutNode.rect.width,
+		width: width,
 		height,
 		length,
-		depth: layoutNode.zOffset,
+		depth: layoutNode.zOffset ? layoutNode.zOffset : 0,
 		mapNodeDepth: 100,
 		x0,
 		z0,
@@ -84,8 +89,8 @@ function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: 
 		markingColor: getMarkingColor(layoutNode, s.fileSettings.markedPackages),
 		flat: flattened,
 		color: getBuildingColor(layoutNode, s, isDeltaState, flattened),
-		incomingEdgePoint: getIncomingEdgePoint(layoutNode.rect.width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),
-		outgoingEdgePoint: getIncomingEdgePoint(layoutNode.rect.width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize)
+		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),
+		outgoingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize)
 	}
 }
 

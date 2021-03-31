@@ -15,19 +15,26 @@ const HEIGHT_SCALING_FACTOR = 0.1
 export class StreetLayoutGenerator {
 	static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-		const maxHeight =
-			(metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling) /
-			HEIGHT_SCALING_FACTOR
+		const heightMetric = metricData.find(x => x.name === state.dynamicSettings.heightMetric) 
+		const maxHeight = heightMetric && heightMetric.maxValue ? heightMetric.maxValue * mapSizeResolutionScaling /
+			HEIGHT_SCALING_FACTOR : mapSizeResolutionScaling
 		const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 
-		const metricName = state.dynamicSettings.areaMetric
+		const areaMetric = state.dynamicSettings.areaMetric
+		const metricName =  areaMetric ? areaMetric : 'unary'
+		console.log("Metric name : "+metricName)
+		console.log(metricData)
 		const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
 		const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
 		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
 		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
-		const layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
+		let layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
+
+		if(metricData.length < 2){
+			layoutNodes = [map]
+		}
 
 		return layoutNodes.map(streetLayoutNode => {
 			return StreetViewHelper.buildNodeFrom(streetLayoutNode as CodeMapNode, heightScale, maxHeight, state, isDeltaState)
