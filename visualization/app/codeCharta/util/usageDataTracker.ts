@@ -73,6 +73,10 @@ function isTrackingAllowed(state: State) {
 }
 
 export function trackMapMetaData(state: State) {
+	if (!isTrackingAllowed(state)) {
+		return
+	}
+
 	const singleFileStates = getVisibleFileStates(state.files)
 	const fileNodes: CodeMapNode[] = getFileNodes(singleFileStates[0].file.map)
 	const fileMeta = singleFileStates[0].file.fileMeta
