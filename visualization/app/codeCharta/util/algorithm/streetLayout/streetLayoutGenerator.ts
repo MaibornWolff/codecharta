@@ -16,7 +16,7 @@ export class StreetLayoutGenerator {
 	static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 		const heightMetric = metricData.find(x => x.name === state.dynamicSettings.heightMetric)
-		const maxHeight = heightMetric!.maxValue //heightMetric && heightMetric.maxValue
+		const maxHeight = heightMetric //heightMetric && heightMetric.maxValue
 			? (heightMetric.maxValue * mapSizeResolutionScaling) / HEIGHT_SCALING_FACTOR
 			: mapSizeResolutionScaling
 
