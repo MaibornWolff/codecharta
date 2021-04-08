@@ -15,15 +15,18 @@ const HEIGHT_SCALING_FACTOR = 0.1
 export class StreetLayoutGenerator {
 	static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-		const heightMetric = metricData.find(x => x.name === state.dynamicSettings.heightMetric) 
-		const maxHeight = heightMetric && heightMetric.maxValue ? heightMetric.maxValue * mapSizeResolutionScaling /
-			HEIGHT_SCALING_FACTOR : mapSizeResolutionScaling
-		const heightScale = (state.treeMap.mapSize * 2) / maxHeight
+		const heightMetric = metricData.find(x => x.name === state.dynamicSettings.heightMetric)
+		const maxHeight = heightMetric!.maxValue //heightMetric && heightMetric.maxValue
+			? (heightMetric.maxValue * mapSizeResolutionScaling) / HEIGHT_SCALING_FACTOR
+			: mapSizeResolutionScaling
 
+		const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 		const areaMetric = state.dynamicSettings.areaMetric
-		const metricName =  areaMetric ? areaMetric : 'unary'
+		const metricName = areaMetric ? areaMetric : "unary"
+		/*
 		console.log("Metric name : "+metricName)
 		console.log(metricData)
+		*/
 		const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
 		const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
 		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
@@ -32,7 +35,7 @@ export class StreetLayoutGenerator {
 		const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
 		let layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
 
-		if(metricData.length < 2){
+		if (metricData.length < 2) {
 			layoutNodes = [map]
 		}
 
@@ -59,7 +62,6 @@ export class StreetLayoutGenerator {
 				children.push(new House(child))
 				continue
 			}
-
 			const layoutAlgorithm = state.appSettings.layoutAlgorithm
 			const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
 			if (layoutAlgorithm === LayoutAlgorithm.TreeMapStreet && fileDescendants <= maxTreeMapFiles) {
