@@ -15,14 +15,14 @@ describe("ThreeStatsService", () => {
 	let element: HTMLCanvasElement
 
 	beforeEach(() => {
+		setDevelopmentMode(true)
 		restartSystem()
 		rebuildService()
 		withMockedElement()
-		setDevelopmentMode()
 	})
 
-	const setDevelopmentMode = () => {
-		jest.spyOn(environmentDetector, "isDevelopment").mockReturnValue(true)
+	const setDevelopmentMode = (value: boolean) => {
+		jest.spyOn(environmentDetector, "isDevelopment").mockReturnValue(value)
 	}
 
 	const restartSystem = () => {
@@ -70,7 +70,18 @@ describe("ThreeStatsService", () => {
 			mockRenderer()
 		})
 
-		it("should call append", () => {
+		it("should not do anything when not in development mode", () => {
+			setDevelopmentMode(false)
+			rebuildService()
+			const generateStatPanels = jest.spyOn(threeStatsService, "generateStatPanels" as any)
+
+			threeStatsService.init(element)
+
+			expect(element.append).not.toHaveBeenCalled()
+			expect(generateStatPanels).not.toHaveBeenCalled()
+		})
+
+		it("should append element when in development mode", () => {
 			threeStatsService.init(element)
 
 			expect(element.append).toHaveBeenCalled()
@@ -78,10 +89,11 @@ describe("ThreeStatsService", () => {
 
 		it("should call generateStatPanels", () => {
 			withMockedStats()
-			threeStatsService["generateStatPanels"] = jest.fn()
+			const generateStatPanels = jest.spyOn(threeStatsService, "generateStatPanels" as any)
+
 			threeStatsService.init(element)
 
-			expect(threeStatsService["generateStatPanels"]).toHaveBeenCalled()
+			expect(generateStatPanels).toHaveBeenCalled()
 		})
 	})
 
@@ -105,28 +117,49 @@ describe("ThreeStatsService", () => {
 	})
 
 	describe("updateStats", () => {
+		const ONE_SECOND = 1000
+
 		beforeEach(() => {
 			rebuildService()
+			const getTimeFunctor = ((jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown) as CallableFunction)()
 
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 			mockRenderer()
 			withMockedStats()
+
+			threeStatsService.prevTime = getTimeFunctor.now() - ONE_SECOND
 		})
-		it("should call update panels", () => {
+
+		it("should not do anything when not in development mode", () => {
+			setDevelopmentMode(false)
+			rebuildService()
+			const processPanel = jest.spyOn(threeStatsService, "processPanel" as any)
+
 			threeStatsService.updateStats()
 
-			expect(threeStatsService.trianglesPanel.panel.update).toHaveBeenCalled()
-			expect(threeStatsService.glCallsPanel.panel.update).toHaveBeenCalled()
+			expect(processPanel).not.toHaveBeenCalled()
 		})
 
-		it("should call processPanel", () => {
-			threeStatsService["processPanel"] = jest.fn()
+		it("should call processPanel when time difference is more then one second", () => {
+			const processPanel = jest.spyOn(threeStatsService, "processPanel" as any)
+
 			threeStatsService.updateStats()
 
-			expect(threeStatsService["processPanel"]).toHaveBeenCalledTimes(4)
+			expect(processPanel).toHaveBeenCalledTimes(4)
 		})
 
-		it("should call update stats", () => {
+		it("should not call processPanel when time difference is less then one second", () => {
+			const getTimeFunctor = ((jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown) as CallableFunction)()
+			threeStatsService.prevTime = getTimeFunctor.now()
+
+			const processPanel = jest.spyOn(threeStatsService, "processPanel" as any)
+
+			threeStatsService.updateStats()
+
+			expect(processPanel).not.toHaveBeenCalled()
+		})
+
+		it("should call stats update", () => {
 			threeStatsService.updateStats()
 
 			expect(threeStatsService.stats.update).toHaveBeenCalled()
@@ -140,13 +173,25 @@ describe("ThreeStatsService", () => {
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 		})
 
+		it("should not do anything when not in development mode", () => {
+			setDevelopmentMode(false)
+			rebuildService()
+
+			threeStatsService.resetPanels()
+
+			expect(threeStatsService.trianglesPanel).toBe(undefined)
+			expect(threeStatsService.glCallsPanel).toBe(undefined)
+			expect(threeStatsService.geometryMemoryPanel).toBe(undefined)
+			expect(threeStatsService.textureMemoryPanel).toBe(undefined)
+		})
+
 		it("should reset all panels", () => {
 			threeStatsService.resetPanels()
 
-			expect(threeStatsService["trianglesPanel"]["maxHeight"]).toBe(0)
-			expect(threeStatsService["glCallsPanel"]["maxHeight"]).toBe(0)
-			expect(threeStatsService["geometryMemoryPanel"]["maxHeight"]).toBe(0)
-			expect(threeStatsService["textureMemoryPanel"]["maxHeight"]).toBe(0)
+			expect(threeStatsService.trianglesPanel.maxHeight).toBe(0)
+			expect(threeStatsService.glCallsPanel.maxHeight).toBe(0)
+			expect(threeStatsService.geometryMemoryPanel.maxHeight).toBe(0)
+			expect(threeStatsService.textureMemoryPanel.maxHeight).toBe(0)
 		})
 	})
 
@@ -154,14 +199,18 @@ describe("ThreeStatsService", () => {
 		beforeEach(() => {
 			rebuildService()
 		})
-		it("should process panel", () => {
-			const customPanel: CustomPanel = {
+
+		const mockCustomPanel = (): CustomPanel => {
+			return {
 				panel: {
 					update: jest.fn(),
 					dom: null
 				},
 				maxHeight: 0
 			}
+		}
+		it("should process panel", () => {
+			const customPanel = mockCustomPanel()
 
 			threeStatsService["processPanel"](customPanel, 1)
 
@@ -176,10 +225,19 @@ describe("ThreeStatsService", () => {
 			withMockedStats()
 		})
 
+		it("should not do anything when not in development mode", () => {
+			setDevelopmentMode(false)
+			rebuildService()
+
+			threeStatsService.destroy()
+
+			expect(threeStatsService.stats).toBe(undefined)
+		})
+
 		it("should remove dom Element", () => {
 			threeStatsService.destroy()
 
-			expect(threeStatsService["stats"]["domElement"].remove).toHaveBeenCalled()
+			expect(threeStatsService.stats.domElement.remove).toHaveBeenCalled()
 		})
 	})
 })
