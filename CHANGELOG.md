@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Made the header semi responsive ([#1037](https://github.com/MaibornWolff/codecharta/issues/1037))
+
 ## [1.71.2] - 2021-03-16
 
 ### Fixed 🐞
