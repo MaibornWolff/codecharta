@@ -3,18 +3,21 @@ import { EdgeChooserPageObject } from "./edgeChooser.po"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
+import { FilePanelPageObject } from "../filePanel/filePanel.po"
 
 describe("MapTreeViewLevel", () => {
 	let edgeChooser: EdgeChooserPageObject
 	let fileChooser: FileChooserPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 	let searchPanel: SearchPanelPageObject
+	let filePanel: FilePanelPageObject
 
 	beforeEach(async () => {
 		edgeChooser = new EdgeChooserPageObject()
 		fileChooser = new FileChooserPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanel = new SearchPanelPageObject()
+		filePanel = new FilePanelPageObject()
 
 		await goto()
 	})
@@ -22,6 +25,8 @@ describe("MapTreeViewLevel", () => {
 	describe("EdgeChooser", () => {
 		it("should update metrics correctly after switching to a map with different metrics", async () => {
 			await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_different_edges.cc.json"])
+
+			expect(await filePanel.getSelectedName()).toEqual("sample1_with_different_edges.cc.json")
 
 			await edgeChooser.open()
 			const metrics = await edgeChooser.getMetrics()

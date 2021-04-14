@@ -24,7 +24,7 @@ export class DialogGlobalSettingsPageObject {
 	async changeLayoutToSquarifiedTreeMap() {
 		await page.click("div.md-dialog-content layout-selection-component div md-input-container md-select")
 		await page.waitForSelector(".md-select-menu-container.md-active", { visible: true })
-		await page.click('md-select-menu md-content [value="Squarified TreeMap"]')
+		await clickButtonOnPageElement('md-select-menu md-content [value="Squarified TreeMap"]')
 	}
 
 	async getLayout() {

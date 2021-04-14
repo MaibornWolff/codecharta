@@ -31,32 +31,43 @@ describe("DialogGlobalSettings", () => {
 
 			expect(label).toEqual("Display quality")
 		})
+	})
 
-		it("should change the layout algorithm", async () => {
+	describe("change layout to treemapstreet", () => {
+		it("should change the layout algorithm to treemapstreet", async () => {
 			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
 
 			const layout = await globalSettingsPageObject.getLayout()
 
-			await globalSettingsPageObject.changeLayoutToSquarifiedTreeMap()
 			expect(layout).toEqual(LayoutAlgorithm.TreeMapStreet)
 		})
 	})
 
-	describe("Display Quality", () => {
-		it("should should maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
+	describe("maximum-tree-map slider", () => {
+		it("should maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
 			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
 
 			await globalSettingsPageObject.isTreeMapFilesComponentVisible()
-
-			await globalSettingsPageObject.changeLayoutToSquarifiedTreeMap()
 		})
+	})
 
+	describe("Display Quality", () => {
 		it("should change the display quality to Pixel Ratio without Antialiasing", async () => {
 			await globalSettingsPageObject.changedDisplayQuality()
 
 			const layout = await globalSettingsPageObject.getDisplayQuality()
 
 			expect(layout).toEqual(SharpnessMode.PixelRatioNoAA)
+		})
+	})
+
+	describe("change layout to squarified treemap", () => {
+		it("should set the layout algorithm to squarified treemap", async () => {
+			await globalSettingsPageObject.changeLayoutToSquarifiedTreeMap()
+
+			const layout = await globalSettingsPageObject.getLayout()
+
+			expect(layout).toEqual(LayoutAlgorithm.SquarifiedTreeMap)
 		})
 	})
 })
