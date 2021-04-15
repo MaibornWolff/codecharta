@@ -252,7 +252,10 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			const originalSpritePositionsA = codeMapLabelService["labels"][0].sprite.position.clone()
-			const originalLineGeometryStartVertices = codeMapLabelService["labels"][0].line.geometry["vertices"][0].clone()
+
+			const lineGeometry = codeMapLabelService["labels"][0].line.geometry as BufferGeometry
+
+			const originalLineGeometryStartVertices = lineGeometry.attributes.position.clone()
 
 			const scaledLabelA = codeMapLabelService["labels"][0]
 			const scaledLabelB = codeMapLabelService["labels"][1]
@@ -266,9 +269,9 @@ describe("CodeMapLabelService", () => {
 			)
 
 			const expectedScaledLineGeometryStart = new Vector3(
-				originalLineGeometryStartVertices.x * SX,
-				originalLineGeometryStartVertices.y * SY,
-				originalLineGeometryStartVertices.z * SZ
+				originalLineGeometryStartVertices.getX(0) * SX,
+				originalLineGeometryStartVertices.getY(0) * SY,
+				originalLineGeometryStartVertices.getZ(0) * SZ
 			)
 
 			codeMapLabelService.scale()
@@ -296,13 +299,16 @@ describe("CodeMapLabelService", () => {
 			expect(scaledLabel.sprite.position.y).toBe(expectedSpritePositions.y)
 			expect(scaledLabel.sprite.position.z).toBe(expectedSpritePositions.z)
 
-			expect(scaledLabel.line.geometry.vertices[0].x).toBe(expectedScaledLineGeometryStart.x)
-			expect(scaledLabel.line.geometry.vertices[0].y).toBe(expectedScaledLineGeometryStart.y)
-			expect(scaledLabel.line.geometry.vertices[0].z).toBe(expectedScaledLineGeometryStart.z)
+			const lineGeometry = scaledLabel.line.geometry as BufferGeometry
+			const scaledLabelPos =  lineGeometry.attributes.position
 
-			expect(scaledLabel.line.geometry.vertices[1].x).toBe(expectedSpritePositions.x)
-			expect(scaledLabel.line.geometry.vertices[1].y).toBe(expectedSpritePositions.y)
-			expect(scaledLabel.line.geometry.vertices[1].z).toBe(expectedSpritePositions.z)
+			expect(scaledLabelPos.getX(0)).toBe(expectedScaledLineGeometryStart.x)
+			expect(scaledLabelPos.getY(0)).toBe(expectedScaledLineGeometryStart.y)
+			expect(scaledLabelPos.getZ(0)).toBe(expectedScaledLineGeometryStart.z)
+
+			expect(scaledLabelPos.getX(1)).toBe(expectedSpritePositions.x)
+			expect(scaledLabelPos.getY(1)).toBe(expectedSpritePositions.y)
+			expect(scaledLabelPos.getZ(1)).toBe(expectedSpritePositions.z)
 		}
 	})
 
