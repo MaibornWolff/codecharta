@@ -10,7 +10,6 @@ import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist
 import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-//import { areAllNodesExcluded } from "../../util/codeMapHelper"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
@@ -24,9 +23,6 @@ describe("SearchBarController", () => {
 		restartSystem()
 		rebuildController()
 		withMockedEventMethods($rootScope)
-		// jest.mock("../../util/codeMapHelper")
-		// const areAllNodesExcluded = jest.fn()
-		// areAllNodesExcluded.mockReturnValue(false)
 	})
 
 	function restartSystem() {
@@ -59,6 +55,18 @@ describe("SearchBarController", () => {
 		})
 	})
 
+	describe("unifyWIldCard()", () => {
+		it("should unifyPaths", () => {
+			expect(searchBarController.unifyWildCard("ts")).toEqual("*ts*")
+			expect(searchBarController.unifyWildCard("*")).toEqual("*")
+			expect(searchBarController.unifyWildCard("ts*")).toEqual("ts*")
+			expect(searchBarController.unifyWildCard("*")).toEqual("*")
+			expect(searchBarController.unifyWildCard("./small")).toEqual("./small")
+			expect(searchBarController.unifyWildCard("/small")).toEqual("/small")
+			expect(searchBarController.unifyWildCard("!ts")).toEqual("!ts")
+		})
+	})
+
 	describe("onSearchPatternChange", () => {
 		it("should update the viewModel", () => {
 			const blacklist: BlacklistItem[] = [
@@ -66,7 +74,6 @@ describe("SearchBarController", () => {
 				{ path: "/root/another/node/path", type: BlacklistType.exclude }
 			]
 			storeService.dispatch(setBlacklist(blacklist))
-
 			searchBarController.onSearchPatternChanged("/root/node/path")
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
@@ -96,6 +103,16 @@ describe("SearchBarController", () => {
 			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItem)
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 			expect(storeService.getState().dynamicSettings.searchPattern).toBe("")
+		})
+	})
+
+	describe("onClickBlacklistPattern", () => {
+		it("should not add new blacklist entry if searchPattern is empty", () => {
+			searchBarController["_viewModel"].searchPattern = ""
+
+			searchBarController.onClickBlacklistPattern(BlacklistType.exclude)
+
+			expect(storeService.getState().fileSettings.blacklist.length).toEqual(0)
 		})
 	})
 

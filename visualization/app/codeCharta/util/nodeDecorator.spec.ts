@@ -86,6 +86,41 @@ describe("nodeDecorator", () => {
 			})
 		})
 
+		it("root should never be excluded", () => {
+			const a: BlacklistItem = {
+				path: "*",
+				type: BlacklistType.exclude
+			}
+
+			NodeDecorator.decorateMap(map, metricData, [a])
+
+			expect(map.isExcluded).toBeFalsy()
+		})
+
+		it("some nodes should be flattened", () => {
+			const a: BlacklistItem = {
+				path: "small leaf",
+				type: BlacklistType.flatten
+			}
+
+			NodeDecorator.decorateMap(map, metricData, [a])
+
+			hierarchy(map).each(node => {
+				if (node.data.name === "small leaf") {
+					expect(node.data.isFlattened).toBeTruthy()
+				}
+			})
+		})
+
+		it("No nodes should be excluded or flattened", () => {
+			NodeDecorator.decorateMap(map, metricData, [])
+
+			hierarchy(map).each(node => {
+				expect(node.data.isFlattened).toBeFalsy()
+				expect(node.data.isExcluded).toBeFalsy()
+			})
+		})
+
 		it("nodes should have all metrics even if some attributesLists are undefined", () => {
 			map.children[0].attributes = undefined
 			nodeMetricData.push({ name: "some", maxValue: 999999 })
