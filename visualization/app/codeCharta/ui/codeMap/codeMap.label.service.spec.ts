@@ -300,7 +300,7 @@ describe("CodeMapLabelService", () => {
 			expect(scaledLabel.sprite.position.z).toBe(expectedSpritePositions.z)
 
 			const lineGeometry = scaledLabel.line.geometry as BufferGeometry
-			const scaledLabelPos =  lineGeometry.attributes.position
+			const scaledLabelPos = lineGeometry.attributes.position
 
 			expect(scaledLabelPos.getX(0)).toBe(expectedScaledLineGeometryStart.x)
 			expect(scaledLabelPos.getY(0)).toBe(expectedScaledLineGeometryStart.y)
