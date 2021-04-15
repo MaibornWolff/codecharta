@@ -39,8 +39,6 @@ describe("DialogGlobalSettings", () => {
 			const layout = await globalSettingsPageObject.getLayout()
 
 			expect(layout).toEqual(LayoutAlgorithm.TreeMapStreet)
-
-			await globalSettingsPageObject.changeLayoutToSquarifiedTreeMap()
 		})
 	})
 
@@ -49,8 +47,6 @@ describe("DialogGlobalSettings", () => {
 			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
 
 			await globalSettingsPageObject.isTreeMapFilesComponentVisible()
-
-			await globalSettingsPageObject.changeLayoutToSquarifiedTreeMap()
 		})
 
 		it("should change the display quality to Pixel Ratio without Antialiasing", async () => {
