@@ -44,7 +44,7 @@ describe("DialogGlobalSettings", () => {
 	})
 
 	describe("maximum-tree-map slider", () => {
-		it("should maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
+		it("should show maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
 			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
 
 			await globalSettingsPageObject.isTreeMapFilesComponentVisible()
