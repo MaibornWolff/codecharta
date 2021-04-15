@@ -26,32 +26,33 @@ describe("DialogGlobalSettings", () => {
 
 			expect(label).toEqual("Map Layout")
 		})
+
 		it("should contain the Display quality Layout", async () => {
 			const label = await globalSettingsPageObject.getDisplayQualityLabel()
 
 			expect(label).toEqual("Display quality")
 		})
-	})
 
-	describe("change layout to treemapstreet", () => {
-		it("should change the layout algorithm to treemapstreet", async () => {
+		it("should change the layout algorithm", async () => {
 			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
 
 			const layout = await globalSettingsPageObject.getLayout()
 
 			expect(layout).toEqual(LayoutAlgorithm.TreeMapStreet)
-		})
-	})
 
-	describe("maximum-tree-map slider", () => {
-		it("should show maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
-			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
-
-			await globalSettingsPageObject.isTreeMapFilesComponentVisible()
+			await globalSettingsPageObject.changeLayoutToSquarifiedTreeMap()
 		})
 	})
 
 	describe("Display Quality", () => {
+		it("should should maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
+			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
+
+			await globalSettingsPageObject.isTreeMapFilesComponentVisible()
+
+			await globalSettingsPageObject.changeLayoutToSquarifiedTreeMap()
+		})
+
 		it("should change the display quality to Pixel Ratio without Antialiasing", async () => {
 			await globalSettingsPageObject.changedDisplayQuality()
 
