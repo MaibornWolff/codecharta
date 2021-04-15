@@ -1,7 +1,16 @@
-import { CCFile } from "../codeCharta.model"
+import { CCFile, CodeMapNode, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
-import { getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "./codeMapHelper"
+import {
+	areAllNodesExcluded,
+	getMapResolutionScaleFactor,
+	getNodesByGitignorePath,
+	isNodeExcludedOrFlattened,
+	MAP_RESOLUTION_SCALE
+} from "./codeMapHelper"
 import { FileSelectionState, FileState } from "../model/files/files"
+import { clone } from "lodash"
+import { VALID_NODE_WITH_PATH } from "./dataMocks"
+import { hierarchy } from "d3-hierarchy"
 
 describe("CodeMapHelper", () => {
 	describe("getMapResolutionScaleFactor", () => {
@@ -132,6 +141,46 @@ describe("CodeMapHelper", () => {
 			]
 
 			expect(getMapResolutionScaleFactor(fileStateMultiple)).toBe(MAP_RESOLUTION_SCALE.BIG_MAP)
+		})
+	})
+
+	describe("exclusion functions", () => {
+		const map: CodeMapNode = clone(VALID_NODE_WITH_PATH)
+
+		it("areAllNodesExcluded() should be false", () => {
+			expect(areAllNodesExcluded(map)).toBeFalsy()
+		})
+
+		it("areAllNodesExcluded() should be true", () => {
+			for (const { data } of hierarchy(map)) {
+				if (data.path !== map.path) {
+					data.isExcluded = true
+				}
+			}
+			expect(areAllNodesExcluded(map)).toBeTruthy()
+		})
+
+		it("IsNodeExcludedOrFlattened()", () => {
+			const node: CodeMapNode = {
+				name: "bigleaf.ts",
+				type: NodeType.FILE,
+				path: "/root/bigleaf.ts",
+				attributes: { rloc: 100, functions: 10, mcc: 1 },
+				link: "http://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			}
+			expect(isNodeExcludedOrFlattened(node, "!ts")).toBeFalsy()
+			expect(isNodeExcludedOrFlattened(node, "ts")).toBeTruthy()
+			expect(isNodeExcludedOrFlattened(node, "*")).toBeTruthy()
+			expect(isNodeExcludedOrFlattened(node, "xx")).toBeFalsy()
+		})
+
+		it("getNodesByGitignorePath()", () => {
+			expect(getNodesByGitignorePath(map, "*").length).toEqual(6)
+			expect(getNodesByGitignorePath(map, "small").length).toEqual(2)
+			expect(getNodesByGitignorePath(map, "!small").length).toEqual(4)
+			expect(getNodesByGitignorePath(map, "xx").length).toEqual(0)
 		})
 	})
 })

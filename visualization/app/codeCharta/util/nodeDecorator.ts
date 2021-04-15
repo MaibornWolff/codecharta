@@ -1,7 +1,7 @@
 "use strict"
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
-import { isLeaf, IsNodeExcludedOrFlattened } from "./codeMapHelper"
+import { isLeaf, isNodeExcludedOrFlattened } from "./codeMapHelper"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 const enum MedianSelectors {
@@ -22,9 +22,9 @@ export class NodeDecorator {
 			for (const { data } of hierarchy(map)) {
 				if (blacklist.length > 0) {
 					if (item.type === BlacklistType.flatten) {
-						data.isFlattened = data.isFlattened ? true : IsNodeExcludedOrFlattened(data, item.path)
+						data.isFlattened = data.isFlattened ? true : isNodeExcludedOrFlattened(data, item.path)
 					} else {
-						data.isExcluded = data.isExcluded ? true : IsNodeExcludedOrFlattened(data, item.path)
+						data.isExcluded = data.isExcluded ? true : isNodeExcludedOrFlattened(data, item.path)
 					}
 				}
 				//console.log(data.name+" : "+data.isExcluded)
