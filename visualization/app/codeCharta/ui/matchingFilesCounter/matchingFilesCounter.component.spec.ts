@@ -8,7 +8,7 @@ import { NodeSearchService } from "../../state/nodeSearch.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("MatchingFilesCounterController", () => {
 	let matchingFilesCounterController: MatchingFilesCounterController
@@ -84,7 +84,7 @@ describe("MatchingFilesCounterController", () => {
 				rootNode.children[1].children[1],
 				rootNode.children[1].children[2]
 			]
-			matchingFilesCounterController.onNodeSearchComplete(searchNodes, 'r')
+			matchingFilesCounterController.onNodeSearchComplete(searchNodes, "r")
 			expect(matchingFilesCounterController["searchedNodeLeaves"]).toEqual(nodeLeaves)
 		})
 	})

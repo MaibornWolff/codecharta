@@ -1,8 +1,8 @@
 import { CCFile } from "../codeCharta.model"
 import packageJson from "../../../package.json"
-import {getAllNodes, getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE} from "./codeMapHelper"
+import { getAllNodes, getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "./codeMapHelper"
 import { FileSelectionState, FileState } from "../model/files/files"
-import {VALID_NODE_WITH_PATH} from "./dataMocks";
+import { VALID_NODE_WITH_PATH } from "./dataMocks"
 
 describe("CodeMapHelper", () => {
 	describe("getMapResolutionScaleFactor", () => {
@@ -139,11 +139,7 @@ describe("CodeMapHelper", () => {
 	describe("getAllNodes", () => {
 		it("should return array of all nodes for given root", () => {
 			const rootNode = VALID_NODE_WITH_PATH
-			const nodeLeaves = [
-				rootNode.children[0],
-				rootNode.children[1].children[0],
-				rootNode.children[1].children[1],
-			]
+			const nodeLeaves = [rootNode.children[0], rootNode.children[1].children[0], rootNode.children[1].children[1]]
 			expect(getAllNodes(rootNode)).toEqual(nodeLeaves)
 		})
 
