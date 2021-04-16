@@ -33,7 +33,7 @@ module.exports = env => {
 				"process.env.STANDALONE": JSON.stringify(env.STANDALONE),
 				"process.env.DEV": JSON.stringify(env.DEV)
 			}),
-      new NodePolyfillPlugin()
+			new NodePolyfillPlugin()
 		],
 		devtool: "source-map",
 		resolve: {

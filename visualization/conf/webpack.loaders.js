@@ -7,7 +7,7 @@ module.exports = {
 		},
 		{
 			test: /\.html$/,
-      use: ["html-loader"]
+			use: ["html-loader"]
 		},
 		{
 			test: /\.css$/,
@@ -35,7 +35,7 @@ module.exports = {
 		},
 		{
 			test: /\.glsl$/,
-      use: ["webpack-glsl-loader"]
+			use: ["webpack-glsl-loader"]
 		}
 	]
 }
