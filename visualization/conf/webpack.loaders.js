@@ -26,10 +26,6 @@ module.exports = {
 			use: ["file-loader"]
 		},
 		{
-			test: /\.(ico)$/,
-			use: ["file-loader?name=[name].[ext]"]
-		},
-		{
 			test: /\.ts(x?)$/,
 			use: ["babel-loader", "ts-loader?configFile=tsconfig.webpack.json"]
 		},
