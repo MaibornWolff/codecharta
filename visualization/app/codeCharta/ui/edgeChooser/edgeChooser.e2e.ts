@@ -28,9 +28,6 @@ describe("MapTreeViewLevel", () => {
 
 			expect(await filePanel.getSelectedName()).toEqual("sample1_with_different_edges.cc.json")
 
-			/*todo Timeout */
-			//await page.waitForTimeout(500)
-
 			await edgeChooser.open()
 			const metrics = await edgeChooser.getMetrics()
 
@@ -40,6 +37,10 @@ describe("MapTreeViewLevel", () => {
 		it("should display the amount of incoming and outgoing edges next to the metric name", async () => {
 			await edgeChooser.selectEdgeMetric("pairingRate")
 			await searchPanel.toggle()
+
+			/* TODO Remove Timeout */
+			//await page.waitForTimeout(500)
+
 			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
 			await mapTreeViewLevel.hoverNode("/root/ParentLeaf/smallLeaf.html")
 

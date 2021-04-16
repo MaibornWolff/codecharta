@@ -9,11 +9,11 @@ export class MapTreeViewLevelPageObject {
 
 	async openFolder(path: string) {
 		await clickButtonOnPageElement(`[id='${path}']`)
-		await page.waitForSelector(`[id='${path}'] span.fa.fa-folder-open`)
+		await page.waitForSelector(`[id='${path}'] span.fa.fa-folder-open`, { visible: true })
 	}
 
 	async hoverNode(path: string) {
-		await page.waitForSelector(`[id='${path}']`)
+		await page.waitForSelector(`[id='${path}']`, { visible: true })
 		await page.hover(`[id='${path}']`)
 		await page.waitForSelector(`[id='${path}'].hovered`)
 	}
