@@ -3,7 +3,7 @@ import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 export class MetricChooserPageObject {
 	async openHeightMetricChooser() {
 		await clickButtonOnPageElement("height-metric-chooser-component md-select")
-		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active", { visible: true })
+		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active.md-clickable", { visible: true })
 	}
 
 	async clickOnHeightMetricSearch() {
@@ -11,7 +11,7 @@ export class MetricChooserPageObject {
 	}
 
 	async isMetricChooserVisible() {
-		return page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active", { visible: true })
+		return page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active.md-clickable", { visible: true })
 	}
 
 	async getAreaMetricValue(): Promise<number> {
