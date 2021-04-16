@@ -21,7 +21,7 @@ describe("LegendPanel", () => {
 	})
 
 	async function setupTest() {
-		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_different_edges.cc.json"])
+		await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
 		await legendPanelObject.open()
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")

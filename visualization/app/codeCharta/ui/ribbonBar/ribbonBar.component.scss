@@ -28,17 +28,12 @@ ribbon-bar-component {
 		float: left;
 		position: relative;
 		overflow: hidden;
+		flex: 1 1 0;
+		min-width: 92px;
+		transition: 200ms width ease-in-out;
 
 		&.expanded {
 			overflow: visible;
-		}
-
-		&.search {
-			width: 380px;
-		}
-
-		&:not(#scenario-card):not(#custom-configs-card):not(#ai-card) {
-			min-width: 240px;
 		}
 
 		.section {
@@ -160,19 +155,40 @@ ribbon-bar-component {
 		margin: 0;
 	}
 
-	#height-metric-card.expanded {
+	md-card.custom-configs-card {
+		max-width: 90px;
+		min-width: 90px;
+	}
+
+	md-card.scenario-card {
+		max-width: 56px;
+		min-width: 56px;
+	}
+
+	.height-metric-card.expanded,
+	.area-metric-card.expanded,
+	.color-metric-card.expanded,
+	.edge-metric-card.expanded {
+		flex: 1 1 300px;
+	}
+
+	md-card.minimized {
+		min-width: 24px;
+	}
+
+	.height-metric-card.expanded {
 		height: 295px;
 	}
 
-	#area-metric-card.expanded {
+	.area-metric-card.expanded {
 		height: 155px;
 	}
 
-	#color-metric-card.expanded {
+	.color-metric-card.expanded {
 		height: 250px;
 	}
 
-	#edge-metric-card.expanded {
+	.edge-metric-card.expanded {
 		height: 250px;
 	}
 
