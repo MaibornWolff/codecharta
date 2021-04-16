@@ -11,7 +11,7 @@ import {
 } from "../../dataMocks"
 import { klona } from "klona"
 import { NodeDecorator } from "../../nodeDecorator"
-import { fileWithFixedFolders } from "../../../ressources/fixed-folders/fixed-folders-example"
+import { fileWithFixedFolders } from "../../../resources/fixed-folders/fixed-folders-example"
 import { getCCFile } from "../../fileHelper"
 import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 

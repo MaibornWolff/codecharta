@@ -14,5 +14,5 @@ test-output/
 doc
 coverage
 .cache
-/app/codeCharta/ressources/fileStorage/usageData/*-meta
-/app/codeCharta/ressources/fileStorage/usageData/*-events
+/app/codeCharta/resources/fileStorage/usageData/*-meta
+/app/codeCharta/resources/fileStorage/usageData/*-events
