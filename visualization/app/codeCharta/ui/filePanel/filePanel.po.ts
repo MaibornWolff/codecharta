@@ -24,17 +24,8 @@ export class FilePanelPageObject {
 
 	async getAllNames() {
 		await clickButtonOnPageElement("file-panel-component md-select")
-		/* TODO Remove Timeout*/
-		//await page.waitForTimeout(500)
 
-		await page.waitForSelector("body > md-backdrop.md-select-backdrop.md-click-catcher.ng-scope")
-		await page.waitForFunction(
-			(selector: string) => getComputedStyle(document.querySelector(selector)).position === "fixed",
-			{},
-			"body > md-backdrop.md-select-backdrop.md-click-catcher.ng-scope"
-		)
-
-		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu")
+		await page.waitForSelector(".md-select-menu-container.md-active.md-clickable > md-select-menu")
 
 		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", element => element["innerText"])
 

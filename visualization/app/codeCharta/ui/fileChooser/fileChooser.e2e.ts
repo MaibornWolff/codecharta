@@ -26,8 +26,6 @@ describe("FileChooser", () => {
 	it("should load multiple cc.json files", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json", "./app/codeCharta/assets/sample2.cc.json"])
 
-		/*todo Timeout */
-		//await page.waitForTimeout(500)
 		const loadedMapsName = await filePanel.getAllNames()
 
 		expect(loadedMapsName[0]).toEqual("sample3.cc.json")

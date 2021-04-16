@@ -38,9 +38,6 @@ describe("MapTreeViewLevel", () => {
 			await edgeChooser.selectEdgeMetric("pairingRate")
 			await searchPanel.toggle()
 
-			/* TODO Remove Timeout */
-			//await page.waitForTimeout(500)
-
 			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
 			await mapTreeViewLevel.hoverNode("/root/ParentLeaf/smallLeaf.html")
 
