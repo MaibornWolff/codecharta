@@ -28,9 +28,9 @@ ribbon-bar-component {
 		float: left;
 		position: relative;
 		overflow: hidden;
-    flex: 1 1 0;
-    min-width: 92px;
-    transition: 200ms width ease-in-out;
+		flex: 1 1 0;
+		min-width: 92px;
+		transition: 200ms width ease-in-out;
 
 		&.expanded {
 			overflow: visible;
@@ -155,26 +155,26 @@ ribbon-bar-component {
 		margin: 0;
 	}
 
-  md-card.custom-configs-card {
-    max-width: 90px;
-    min-width: 90px;
-  }
+	md-card.custom-configs-card {
+		max-width: 90px;
+		min-width: 90px;
+	}
 
-  md-card.scenario-card {
-    max-width: 56px;
-    min-width: 56px;
-  }
+	md-card.scenario-card {
+		max-width: 56px;
+		min-width: 56px;
+	}
 
-  .height-metric-card.expanded,
-  .area-metric-card.expanded,
-  .color-metric-card.expanded,
-  .edge-metric-card.expanded {
-    flex: 1 1 300px;
-  }
+	.height-metric-card.expanded,
+	.area-metric-card.expanded,
+	.color-metric-card.expanded,
+	.edge-metric-card.expanded {
+		flex: 1 1 300px;
+	}
 
-  md-card.minimized {
-    min-width: 24px;
-  }
+	md-card.minimized {
+		min-width: 24px;
+	}
 
 	.height-metric-card.expanded {
 		height: 295px;
