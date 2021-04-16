@@ -14,8 +14,12 @@ export class SearchBarPageObject {
 
 		await clickButtonOnPageElement("#blacklistMenu")
 
-		/* TODO remove timeout */
-		await page.waitForTimeout(500)
+		await page.waitForSelector("#blacklistMenuContent")
+		await page.waitForFunction(
+			(selector: string) => document.querySelector(selector).parentElement.classList.contains("md-clickable"),
+			{},
+			"#blacklistMenuContent"
+		)
 
 		await clickButtonOnPageElement("#toExcludeButton")
 	}

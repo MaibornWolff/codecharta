@@ -28,6 +28,9 @@ describe("MapTreeViewLevel", () => {
 
 			expect(await filePanel.getSelectedName()).toEqual("sample1_with_different_edges.cc.json")
 
+			/*todo Timeout */
+			//await page.waitForTimeout(500)
+
 			await edgeChooser.open()
 			const metrics = await edgeChooser.getMetrics()
 

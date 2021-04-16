@@ -69,8 +69,5 @@ describe("NodeContextMenu", () => {
 		await contextMenu.isOpened()
 
 		expect(await contextMenu.areButtonsDisabled()).toBeTruthy()
-
-		await codeMap.mouseWheelWithinMap()
-		await contextMenu.isClosed()
 	})
 })
