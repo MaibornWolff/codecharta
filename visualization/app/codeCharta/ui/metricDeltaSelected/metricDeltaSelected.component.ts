@@ -51,11 +51,8 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 	}
 
 	private setDeltaColorClass() {
-		if (this._viewModel.deltaValue > 0 === this.storeService.getState().appSettings.invertDeltaColors) {
-			this._viewModel.colorClass = "red"
-		} else {
-			this._viewModel.colorClass = "green"
-		}
+		this._viewModel.colorClass =
+			this._viewModel.deltaValue > 0 === this.storeService.getState().appSettings.invertDeltaColors ? "red" : "green"
 	}
 }
 

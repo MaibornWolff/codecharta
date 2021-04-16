@@ -44,11 +44,9 @@ export class EdgeChooserController
 	}
 
 	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		if (hoveredBuilding.node?.edgeAttributes) {
-			this._viewModel.hoveredEdgeValue = hoveredBuilding.node.edgeAttributes[this._viewModel.edgeMetric]
-		} else {
-			this._viewModel.hoveredEdgeValue = null
-		}
+		this._viewModel.hoveredEdgeValue = hoveredBuilding.node?.edgeAttributes
+			? hoveredBuilding.node.edgeAttributes[this._viewModel.edgeMetric]
+			: null
 	}
 
 	onBuildingUnhovered() {
