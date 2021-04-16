@@ -28,9 +28,11 @@ export function transformPath(toTransform: string) {
 
 export function getAllNodes(root: CodeMapNode) {
 	const filtered = []
-	for (const { data } of hierarchy(root)) {
-		if(data.type !== "Folder") {
-			filtered.push(data)
+	if(root !== undefined) {
+		for (const { data } of hierarchy(root)) {
+			if(data.type !== "Folder") {
+				filtered.push(data)
+			}
 		}
 	}
 	return filtered

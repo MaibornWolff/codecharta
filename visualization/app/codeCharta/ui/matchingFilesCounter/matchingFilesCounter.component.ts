@@ -33,7 +33,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	onNodeSearchComplete(searchedNodes: CodeMapNode[], searchPattern: string) {
 		this.searchedNodeLeaves = searchedNodes.filter(node => isLeaf(node))
-		this.allNodes = getAllNodes(this.codeMapPreRenderService.getRenderMap());
+		this.allNodes = getAllNodes(this.codeMapPreRenderService.getRenderMap())
 		this._viewModel.searchPattern = searchPattern
 		this.updateViewModel()
 	}
