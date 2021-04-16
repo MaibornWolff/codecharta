@@ -21,7 +21,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 	}
 
 	private searchedNodeLeaves: CodeMapNode[] = []
-	private nodeLeaves: CodeMapNode[] = []
+	private allNodes: CodeMapNode[] = []
 
 	constructor(private $rootScope: IRootScopeService,
 				private storeService: StoreService,
@@ -33,7 +33,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	onNodeSearchComplete(searchedNodes: CodeMapNode[], searchPattern: string) {
 		this.searchedNodeLeaves = searchedNodes.filter(node => isLeaf(node))
-		this.nodeLeaves = getAllNodes(this.codeMapPreRenderService.getRenderMap());
+		this.allNodes = getAllNodes(this.codeMapPreRenderService.getRenderMap());
 		this._viewModel.searchPattern = searchPattern
 		this.updateViewModel()
 	}
@@ -44,13 +44,13 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	private updateViewModel() {
 		if(this._viewModel.searchPattern.length === 0) {
-			this._viewModel.fileCount = `${this.nodeLeaves.length}`
-			this._viewModel.flattenCount = `${this.getBlacklistedFileCount(BlacklistType.flatten, this.nodeLeaves)}`
-			this._viewModel.excludeCount = `${this.getBlacklistedFileCount(BlacklistType.exclude, this.nodeLeaves)}`
+			this._viewModel.fileCount = `${this.allNodes.length}`
+			this._viewModel.flattenCount = `${this.getBlacklistedFileCount(BlacklistType.flatten, this.allNodes)}`
+			this._viewModel.excludeCount = `${this.getBlacklistedFileCount(BlacklistType.exclude, this.allNodes)}`
 		}
-		this._viewModel.fileCount = `${this.searchedNodeLeaves.length  }/${  this.nodeLeaves.length}`
-		this._viewModel.flattenCount = `${this.getBlacklistedFileCount(BlacklistType.flatten, this.searchedNodeLeaves)  }/${  this.getBlacklistedFileCount(BlacklistType.flatten, this.nodeLeaves)}`
-		this._viewModel.excludeCount = `${this.getBlacklistedFileCount(BlacklistType.exclude, this.searchedNodeLeaves)  }/${  this.getBlacklistedFileCount(BlacklistType.exclude, this.nodeLeaves)}`
+		this._viewModel.fileCount = `${this.searchedNodeLeaves.length  }/${  this.allNodes.length}`
+		this._viewModel.flattenCount = `${this.getBlacklistedFileCount(BlacklistType.flatten, this.searchedNodeLeaves)  }/${  this.getBlacklistedFileCount(BlacklistType.flatten, this.allNodes)}`
+		this._viewModel.excludeCount = `${this.getBlacklistedFileCount(BlacklistType.exclude, this.searchedNodeLeaves)  }/${  this.getBlacklistedFileCount(BlacklistType.exclude, this.allNodes)}`
 	}
 
 	private getBlacklistedFileCount(blacklistType: BlacklistType, nodes: CodeMapNode[]) {
