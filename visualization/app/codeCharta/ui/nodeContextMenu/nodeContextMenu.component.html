@@ -17,8 +17,10 @@
 		<md-divider></md-divider>
 	</div>
 
-	<div class="button-group" ng-class="{ 'div-disabled': $ctrl._viewModel.isAllExcluded }">
-		<md-button ng-disabled="true">Node</md-button>
+	<div class="button-group">
+		<md-button ng-disabled="true" title="{{ $ctrl._viewModel.nodePath }}">
+			{{ $ctrl._viewModel.lastPartOfNodePath }}
+		</md-button>
 		<md-button
 			ng-show="!$ctrl.isNodeFocused()"
 			ng-click="$ctrl.focusNode()"
