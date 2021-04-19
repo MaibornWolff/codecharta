@@ -3,7 +3,6 @@ import "angular-animate"
 import "angular-aria"
 import "angular-material"
 import "./codeCharta/codeCharta.module"
-import "./assets/icon.ico"
 import "angular-sanitize"
 import "./app.scss"
 
