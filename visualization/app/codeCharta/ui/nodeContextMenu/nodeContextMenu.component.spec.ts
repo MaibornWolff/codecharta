@@ -139,18 +139,18 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("onShowNodeContextMenu", () => {
+		let elementMock
 		beforeEach(() => {
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
+
+			document.body.addEventListener = jest.fn()
+			elementMock = { addEventListener: jest.fn() }
+			// @ts-ignore
+			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
 		})
 
 		it("should set the correct building after some timeout", () => {
-			document.body.addEventListener = jest.fn()
-
-			const elementMock = { addEventListener: jest.fn() }
-			// @ts-ignore
-			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
-
 			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 
 			expect(nodeContextMenuController["_viewModel"].codeMapNode).toEqual(TEST_DELTA_MAP_A.map)
@@ -167,12 +167,6 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should not shorten the path if it has no sub paths", () => {
-			document.body.addEventListener = jest.fn()
-
-			const elementMock = { addEventListener: jest.fn() }
-			// @ts-ignore
-			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
-
 			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 
 			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(TEST_DELTA_MAP_A.map.path)
@@ -180,19 +174,12 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should set the complete and shortened node path", () => {
-			document.body.addEventListener = jest.fn()
-
-			const elementMock = { addEventListener: jest.fn() }
-			// @ts-ignore
-			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
-
 			nodeContextMenuController.onShowNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
 			const nodePath = TEST_DELTA_MAP_A.map.children[0].path
 
 			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(nodePath)
 			expect(nodeContextMenuController["_viewModel"].lastPartOfNodePath).toBe(`...${nodePath.slice(nodePath.lastIndexOf("/"))}`)
 		})
-
 	})
 
 	describe("calculatePosition", () => {
