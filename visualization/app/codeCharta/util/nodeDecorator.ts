@@ -16,9 +16,8 @@ const enum EdgeAttributeType {
 	OUTGOING = "outgoing"
 }
 
-
-export class NodeDecorator {
-	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
+export const NodeDecorator = {
+	decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 		for (const item of blacklist) {
 			for (const { data } of hierarchy(map)) {
 				if (blacklist.length > 0) {
@@ -34,8 +33,8 @@ export class NodeDecorator {
 		this.decorateMapWithNodeMetricData(map, metricData)
 		this.decorateMapWithEdgeMetricData(map, metricData)
 		this.addIdAndParentPathToMapNodes(map)
-	}
-	static decorateMapWithNodeMetricData(map: CodeMapNode, metricData: MetricData) {
+	},
+	decorateMapWithNodeMetricData(map: CodeMapNode, metricData: MetricData) {
 		const { nodeMetricData } = metricData
 		let id = 0
 		for (const { data } of hierarchy(map)) {
@@ -60,8 +59,8 @@ export class NodeDecorator {
 				}
 			}
 		}
-	}
-	static decorateMapWithEdgeMetricData(map: CodeMapNode, metricData: MetricData) {
+	},
+	decorateMapWithEdgeMetricData(map: CodeMapNode, metricData: MetricData) {
 		const { edgeMetricData } = metricData
 		for (const { data } of hierarchy(map)) {
 			if (data.edgeAttributes === undefined) {
@@ -74,9 +73,9 @@ export class NodeDecorator {
 				}
 			}
 		}
-	}
+	},
 
-	static addIdAndParentPathToMapNodes(map: CodeMapNode) {
+	addIdAndParentPathToMapNodes(map: CodeMapNode) {
 		for (const { data } of hierarchy(map)) {
 			// TODO: Verify the need for this code. It is unclear why child
 			// properties are copied to their parent.
