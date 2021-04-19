@@ -17,8 +17,8 @@ const enum EdgeAttributeType {
 	OUTGOING = "outgoing"
 }
 
-export class NodeDecorator {
-	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
+export const NodeDecorator = {
+	decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 		const flattened = ignore()
 		const excluded = ignore()
 
@@ -89,20 +89,16 @@ export class NodeDecorator {
 				}
 			}
 		}
-	}
+	},
 
-	static decorateMapWithPathAttribute(file: CCFile) {
+	decorateMapWithPathAttribute(file: CCFile) {
 		for (const node of hierarchy(file.map)) {
-			if (node.parent) {
-				node.data.path = `${node.parent.data.path}/${node.data.name}`
-			} else {
-				node.data.path = `/${node.data.name}`
-			}
+			node.data.path = node.parent ? `${node.parent.data.path}/${node.data.name}` : `/${node.data.name}`
 		}
 		return file
-	}
+	},
 
-	static decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
+	decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
 		const medians: Map<string, number[]> = new Map()
 		// TODO: Combine decorateMap, decorateMapWithPathAttribute and this one and
 		// remove the Object.keys calls from then on. They are identical to the
