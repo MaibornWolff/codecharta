@@ -170,8 +170,8 @@ describe("nodeContextMenuController", () => {
 		it("should show everything is excluded if root or everything is excluded", () => {
 			codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_EVERYTHING_EXCLUDED)
 			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
-			expect(nodeContextMenuController["_viewModel"].isAllExcluded).toBeTruthy()
 
+			expect(nodeContextMenuController["_viewModel"].isAllExcluded).toBeTruthy() 
 		})	
 
 		it("should not shorten the path if it has no sub paths", () => {
