@@ -4,7 +4,8 @@ module.exports = {
 		//devtools : true,
 		browserContext: "incognito",
 		args: ["--allow-file-access-from-files", "--start-maximized"],
-		defaultViewport: { width: 1920, height: 1080 }
-		//slowMo: 0
+		defaultViewport: { width: 1920, height: 1080 },
+		/* Temporary Fix */
+		slowMo: 10
 	}
 }
