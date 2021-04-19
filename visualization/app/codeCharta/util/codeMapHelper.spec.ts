@@ -2,6 +2,7 @@ import { CCFile, CodeMapNode, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
 import {
 	areAllNodesExcluded,
+	getAllNodes,
 	getMapResolutionScaleFactor,
 	getNodesByGitignorePath,
 	isNodeExcludedOrFlattened,
@@ -181,7 +182,7 @@ describe("CodeMapHelper", () => {
 			expect(getNodesByGitignorePath(map, "small").length).toEqual(2)
 			expect(getNodesByGitignorePath(map, "!small").length).toEqual(4)
 			expect(getNodesByGitignorePath(map, "xx").length).toEqual(0)
-  	})
+		})
 	})
 	describe("getAllNodes", () => {
 		it("should return array of all nodes for given root", () => {

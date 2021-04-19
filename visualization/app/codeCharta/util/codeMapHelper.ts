@@ -36,6 +36,7 @@ function unifyPath(path: string) {
 	}
 	return path
 }
+
 export function getAllNodes(root: CodeMapNode) {
 	const filtered = []
 	if (root !== undefined) {

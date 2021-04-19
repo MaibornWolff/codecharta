@@ -16,22 +16,14 @@ export class DialogGlobalSettingsPageObject {
 
 	async changeLayoutToTreeMapStreet() {
 		await page.click("div.md-dialog-content layout-selection-component div md-input-container md-select")
-		await page.waitForSelector(".md-select-menu-container.md-active", { visible: true })
+		await page.waitForSelector(".md-select-menu-container.md-clickable")
 		await page.click('md-select-menu md-content [value="TreeMapStreet"]')
 		await page.waitForSelector("#maxTreeMapFiles-slider > div", { visible: true })
 	}
 
 	async changeLayoutToSquarifiedTreeMap() {
 		await page.click("div.md-dialog-content layout-selection-component div md-input-container md-select")
-		await page.waitForSelector(".md-select-menu-container.md-active.md-clickable", { visible: true })
-
-		// await page.waitForSelector("body > md-backdrop.md-select-backdrop.md-click-catcher.ng-scope")
-		// await page.waitForFunction(
-		// 	(selector: string) => getComputedStyle(document.querySelector(selector)).position === "fixed",
-		// 	{},
-		// 	"body > md-backdrop.md-select-backdrop.md-click-catcher.ng-scope"
-		// )
-
+		await page.waitForSelector(".md-select-menu-container.md-clickable")
 		await clickButtonOnPageElement('md-select-menu md-content [value="Squarified TreeMap"]')
 	}
 
