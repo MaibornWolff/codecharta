@@ -36,6 +36,17 @@ function unifyPath(path: string) {
 	}
 	return path
 }
+export function getAllNodes(root: CodeMapNode) {
+	const filtered = []
+	if (root !== undefined) {
+		for (const { data } of hierarchy(root)) {
+			if (data.type !== "Folder") {
+				filtered.push(data)
+			}
+		}
+	}
+	return filtered
+}
 
 export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
 	const filtered = []

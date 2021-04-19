@@ -3,11 +3,11 @@ module.exports = {
 		{
 			test: /\.js$/,
 			exclude: /node_modules/,
-			loaders: ["babel-loader"]
+			use: ["babel-loader"]
 		},
 		{
 			test: /\.html$/,
-			loaders: ["html-loader"]
+			use: ["html-loader"]
 		},
 		{
 			test: /\.css$/,
@@ -35,7 +35,7 @@ module.exports = {
 		},
 		{
 			test: /\.glsl$/,
-			loaders: ["webpack-glsl-loader"]
+			use: ["webpack-glsl-loader"]
 		}
 	]
 }

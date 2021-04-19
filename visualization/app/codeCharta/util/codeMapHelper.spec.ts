@@ -181,6 +181,18 @@ describe("CodeMapHelper", () => {
 			expect(getNodesByGitignorePath(map, "small").length).toEqual(2)
 			expect(getNodesByGitignorePath(map, "!small").length).toEqual(4)
 			expect(getNodesByGitignorePath(map, "xx").length).toEqual(0)
+  	})
+	})
+	describe("getAllNodes", () => {
+		it("should return array of all nodes for given root", () => {
+			const rootNode = VALID_NODE_WITH_PATH
+			const nodeLeaves = [rootNode.children[0], rootNode.children[1].children[0], rootNode.children[1].children[1]]
+			expect(getAllNodes(rootNode)).toEqual(nodeLeaves)
+		})
+
+		it("should return empty array for undefined root", () => {
+			const rootNode = undefined
+			expect(getAllNodes(rootNode)).toEqual([])
 		})
 	})
 })

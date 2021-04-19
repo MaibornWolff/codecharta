@@ -24,7 +24,7 @@ describe("MapTreeViewLevel", () => {
 
 	describe("EdgeChooser", () => {
 		it("should update metrics correctly after switching to a map with different metrics", async () => {
-			await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_different_edges.cc.json"])
+			await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
 
 			expect(await filePanel.getSelectedName()).toEqual("sample1_with_different_edges.cc.json")
 
