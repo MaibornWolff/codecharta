@@ -27,7 +27,6 @@ export class NodeDecorator {
 						data.isExcluded = data.isExcluded ? true : isNodeExcludedOrFlattened(data, item.path)
 					}
 				}
-				//console.log(data.name+" : "+data.isExcluded)
 			}
 		}
 		map.isExcluded = false

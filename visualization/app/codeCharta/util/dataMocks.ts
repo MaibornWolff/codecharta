@@ -79,6 +79,47 @@ export const VALID_NODE: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_EVERYTHING_EXCLUDED: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	isExcluded: true,
+	isFlattened: false,
+	children: [
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			isExcluded: false,
+			isFlattened: false,
+			link: "http://www.google.de"
+		},
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "other small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 70, functions: 1000, mcc: 10 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		}
+	]
+}
+
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 	name: "root",
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },

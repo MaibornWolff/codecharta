@@ -5,8 +5,10 @@ import {
 	getAllNodes,
 	getMapResolutionScaleFactor,
 	getNodesByGitignorePath,
+	isBlacklisted,
 	isNodeExcludedOrFlattened,
-	MAP_RESOLUTION_SCALE
+	MAP_RESOLUTION_SCALE,
+	unifyPath
 } from "./codeMapHelper"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { clone } from "lodash"
@@ -147,9 +149,24 @@ describe("CodeMapHelper", () => {
 
 	describe("exclusion functions", () => {
 		const map: CodeMapNode = clone(VALID_NODE_WITH_PATH)
+		const map2: CodeMapNode = clone(VALID_NODE_WITH_PATH)
+		map2.isExcluded = true
+		const node: CodeMapNode = {
+			name: "bigleaf.ts",
+			type: NodeType.FILE,
+			path: "/root/bigleaf.ts",
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		}
 
 		it("areAllNodesExcluded() should be false", () => {
 			expect(areAllNodesExcluded(map)).toBeFalsy()
+		})
+
+		it("areAllNodesExcluded() should be false", () => {
+			expect(areAllNodesExcluded(map2)).toBeTruthy()
 		})
 
 		it("areAllNodesExcluded() should be true", () => {
@@ -162,19 +179,19 @@ describe("CodeMapHelper", () => {
 		})
 
 		it("IsNodeExcludedOrFlattened()", () => {
-			const node: CodeMapNode = {
-				name: "bigleaf.ts",
-				type: NodeType.FILE,
-				path: "/root/bigleaf.ts",
-				attributes: { rloc: 100, functions: 10, mcc: 1 },
-				link: "http://www.google.de",
-				isExcluded: false,
-				isFlattened: false
-			}
 			expect(isNodeExcludedOrFlattened(node, "!ts")).toBeFalsy()
 			expect(isNodeExcludedOrFlattened(node, "ts")).toBeTruthy()
 			expect(isNodeExcludedOrFlattened(node, "*")).toBeTruthy()
 			expect(isNodeExcludedOrFlattened(node, "xx")).toBeFalsy()
+		})
+
+		it("isBlacklisted()", () => {
+			expect(isBlacklisted(node)).toBeFalsy()
+			node.isExcluded = true
+			expect(isBlacklisted(node)).toBeTruthy()
+			node.isExcluded = undefined
+			node.isFlattened = undefined
+			expect(isBlacklisted(node)).toBeFalsy()
 		})
 
 		it("getNodesByGitignorePath()", () => {
@@ -182,6 +199,12 @@ describe("CodeMapHelper", () => {
 			expect(getNodesByGitignorePath(map, "small").length).toEqual(2)
 			expect(getNodesByGitignorePath(map, "!small").length).toEqual(4)
 			expect(getNodesByGitignorePath(map, "xx").length).toEqual(0)
+		})
+
+		it("should unifyPaths", () => {
+			expect(unifyPath("ts")).toEqual("*ts*")
+			expect(unifyPath("")).toEqual("")
+			expect(unifyPath('"small"')).toEqual("small")
 		})
 	})
 	describe("getAllNodes", () => {

@@ -136,6 +136,15 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].colorMetric).toEqual("a")
 			expect(metricChooserController["_viewModel"].areaMetric).toEqual("a")
 		})
+
+		it("metric data should be updated", () => {
+			metricChooserController.onNodeMetricDataChanged([])
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([])
+			expect(metricChooserController["_viewModel"].heightMetric).toEqual("")
+			expect(metricChooserController["_viewModel"].colorMetric).toEqual("")
+			expect(metricChooserController["_viewModel"].areaMetric).toEqual("")
+		})
 	})
 
 	describe("applySettingsAreaMetric", () => {

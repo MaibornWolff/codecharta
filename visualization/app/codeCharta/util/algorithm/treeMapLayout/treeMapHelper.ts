@@ -219,6 +219,7 @@ export const TreeMapHelper = {
 	calculateSize,
 	buildNodeFrom,
 	isNodeFlat,
+	getHeightValue,
 	FOLDER_HEIGHT,
 	MIN_BUILDING_HEIGHT,
 	HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND

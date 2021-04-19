@@ -26,13 +26,13 @@ function transformPath(toTransform: string) {
 	return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
-function unifyPath(path: string) {
+export function unifyPath(path: string) {
 	path = path.trimStart()
-	if (!path.startsWith("*") && !path.endsWith("*")) {
-		path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
-	}
 	if (path.length === 0) {
 		return ""
+	}
+	if (!path.startsWith("*") && !path.endsWith("*")) {
+		path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
 	}
 	return path
 }

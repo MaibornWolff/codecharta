@@ -10,6 +10,7 @@ import {
 	CONSTANT_HIGHLIGHT,
 	TEST_DELTA_MAP_A,
 	VALID_FILE_NODE_WITH_ID,
+	VALID_NODE_EVERYTHING_EXCLUDED,
 	VALID_NODE_WITH_PATH,
 	withMockedEventMethods
 } from "../../util/dataMocks"
@@ -164,6 +165,12 @@ describe("nodeContextMenuController", () => {
 
 			expect(document.getElementById).toHaveBeenCalledWith("codeMap")
 			expect(elementMock.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
+		})
+
+		it("should show everything is excluded if root or everything is excluded", () => {
+			codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_EVERYTHING_EXCLUDED)
+			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
+			expect(nodeContextMenuController["_viewModel"].isAllExcluded).toBeTruthy()
 		})
 	})
 

@@ -4,7 +4,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
-import { withMockedEventMethods } from "../../util/dataMocks"
+import { VALID_NODE_EVERYTHING_EXCLUDED, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../util/dataMocks"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
@@ -23,6 +23,7 @@ describe("SearchBarController", () => {
 		restartSystem()
 		rebuildController()
 		withMockedEventMethods($rootScope)
+		withMockedCodeMapPreRenderService()
 	})
 
 	function restartSystem() {
@@ -35,6 +36,10 @@ describe("SearchBarController", () => {
 
 	function rebuildController() {
 		searchBarController = new SearchBarController($rootScope, storeService, codeMapPreRenderService)
+	}
+
+	function withMockedCodeMapPreRenderService() {
+		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_WITH_PATH)
 	}
 
 	describe("constructor", () => {
@@ -64,6 +69,7 @@ describe("SearchBarController", () => {
 			expect(searchBarController.unifyWildCard("./small")).toEqual("./small")
 			expect(searchBarController.unifyWildCard("/small")).toEqual("/small")
 			expect(searchBarController.unifyWildCard("!ts")).toEqual("!ts")
+			expect(searchBarController.unifyWildCard('"ts"')).toEqual('"ts"')
 		})
 	})
 
@@ -80,6 +86,12 @@ describe("SearchBarController", () => {
 			expect(searchBarController["_viewModel"].isEverythingExcluded).toBeFalsy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
 			expect(searchBarController["_viewModel"].searchPattern).toBe("/root/node/path")
+		})
+
+		it("should show everything is excluded if root or everything is excluded", () => {
+			codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_EVERYTHING_EXCLUDED)
+			searchBarController.onSearchPatternChanged("*")
+			expect(searchBarController["_viewModel"].isEverythingExcluded).toBeTruthy()
 		})
 	})
 

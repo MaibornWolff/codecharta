@@ -3,6 +3,8 @@ import { CodeMapNode, Node, State } from "../../../codeCharta.model"
 import { getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { getBuildingColor, getIncomingEdgePoint, isNodeFlat, isVisible, TreeMapHelper } from "../treeMapLayout/treeMapHelper"
 
+const DEFAULT_VALUE = 0.000000000001
+
 function calculateSize(node: CodeMapNode, metricName: string) {
 	// TODO if it is same as countNodes in treeMapHelper.ts
 	// TODO from Ruben: This function is frequently used (even during sorting).
@@ -47,18 +49,19 @@ function getHeightValue(s: State, squaredNode: CodeMapNode, maxHeight: number, f
 	return heightValue
 }
 
-function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
+export function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
 	const isNodeLeaf = !(layoutNode.children && layoutNode.children.length > 0)
 	const flattened: boolean = isNodeFlat(layoutNode, s)
 	const heightValue: number = getHeightValue(s, layoutNode, maxHeight, flattened)
 	const height = Math.abs(
 		isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
 	)
-	const length = layoutNode.rect ? layoutNode.rect.height : 0.000000000001
-	const x0 = layoutNode.rect ? layoutNode.rect.topLeft.x : 0.000000000001
-	const y0 = layoutNode.rect ? layoutNode.rect.topLeft.y : 0.000000000001
+	const length = layoutNode.rect ? layoutNode.rect.height : DEFAULT_VALUE
+	const x0 = layoutNode.rect ? layoutNode.rect.topLeft.x : DEFAULT_VALUE
+	const y0 = layoutNode.rect ? layoutNode.rect.topLeft.y : DEFAULT_VALUE
 	const z0 = layoutNode.zOffset ? layoutNode.zOffset * TreeMapHelper.FOLDER_HEIGHT : TreeMapHelper.FOLDER_HEIGHT
-	const width = layoutNode.rect ? layoutNode.rect.width : 0.000000000001
+	const width = layoutNode.rect ? layoutNode.rect.width : DEFAULT_VALUE
+
 	return {
 		name: layoutNode.name,
 		id: layoutNode.id,

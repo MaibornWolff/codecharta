@@ -16,17 +16,13 @@ export class StreetLayoutGenerator {
 	static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 		const heightMetric = metricData.find(x => x.name === state.dynamicSettings.heightMetric)
-		const maxHeight = heightMetric //heightMetric && heightMetric.maxValue
+		const maxHeight = heightMetric
 			? (heightMetric.maxValue * mapSizeResolutionScaling) / HEIGHT_SCALING_FACTOR
 			: mapSizeResolutionScaling
 
 		const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 		const areaMetric = state.dynamicSettings.areaMetric
 		const metricName = areaMetric ? areaMetric : "unary"
-		/*
-		console.log("Metric name : "+metricName)
-		console.log(metricData)
-		*/
 		const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
 		const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
 		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
