@@ -27,7 +27,8 @@ module.exports = env => {
 		plugins: [
 			new CleanWebpackPlugin(),
 			new HtmlWebpackPlugin({
-				template: "./app/index.html"
+				template: "./app/index.html",
+				favicon: "./app/assets/icon.ico"
 			}),
 			new DefinePlugin({
 				"process.env.STANDALONE": JSON.stringify(env.STANDALONE),
