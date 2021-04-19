@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Hints for Global Settings ([#1715](https://github.com/MaibornWolff/codecharta/issues/1715))
 -   Indicate total nodes and excluded / flattened nodes in file explorer ([#1880](https://github.com/MaibornWolff/codecharta/issues/1880))
+-   Add path to node context menu ([#1667](https://github.com/MaibornWolff/codecharta/issues/1667))
 
 ### Fixed 🐞
 

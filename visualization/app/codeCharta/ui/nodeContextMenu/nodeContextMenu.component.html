@@ -18,7 +18,9 @@
 	</div>
 
 	<div class="button-group">
-		<md-button ng-disabled="true">Node</md-button>
+		<md-button ng-disabled="true">
+			<span title="{{ $ctrl._viewModel.nodePath }}">{{ $ctrl._viewModel.lastPartOfNodePath }}</span>
+		</md-button>
 		<md-button
 			ng-show="!$ctrl.isNodeFocused()"
 			ng-click="$ctrl.focusNode()"
