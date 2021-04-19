@@ -72,8 +72,7 @@ export class NodeContextMenuController
 	onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		this._viewModel.nodePath = path
-		this._viewModel.lastPartOfNodePath =
-			path.lastIndexOf("/") === 0 ? path.slice(path.lastIndexOf("/")) : `...${path.slice(path.lastIndexOf("/"))}`
+		this._viewModel.lastPartOfNodePath = `${path.lastIndexOf("/") === 0 ? "" : "..."}${path.slice(path.lastIndexOf("/"))}`
 		this._viewModel.showNodeContextMenu = true
 
 		const { x, y } = this.calculatePosition(mouseX, mouseY)

@@ -165,6 +165,34 @@ describe("nodeContextMenuController", () => {
 			expect(document.getElementById).toHaveBeenCalledWith("codeMap")
 			expect(elementMock.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
 		})
+
+		it("should not shorten the path if it has no sub paths", () => {
+			document.body.addEventListener = jest.fn()
+
+			const elementMock = { addEventListener: jest.fn() }
+			// @ts-ignore
+			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
+
+			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
+
+			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(TEST_DELTA_MAP_A.map.path)
+			expect(nodeContextMenuController["_viewModel"].lastPartOfNodePath).toBe(TEST_DELTA_MAP_A.map.path)
+		})
+
+		it("should set the complete and shortened node path", () => {
+			document.body.addEventListener = jest.fn()
+
+			const elementMock = { addEventListener: jest.fn() }
+			// @ts-ignore
+			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
+
+			nodeContextMenuController.onShowNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
+			const nodePath = TEST_DELTA_MAP_A.map.children[0].path
+
+			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(nodePath)
+			expect(nodeContextMenuController["_viewModel"].lastPartOfNodePath).toBe(`...${nodePath.slice(nodePath.lastIndexOf("/"))}`)
+		})
+
 	})
 
 	describe("calculatePosition", () => {
