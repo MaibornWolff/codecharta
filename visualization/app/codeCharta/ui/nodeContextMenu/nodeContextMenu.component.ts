@@ -70,11 +70,7 @@ export class NodeContextMenuController
 	onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		this._viewModel.showNodeContextMenu = true
-		if (areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())) {
-			this._viewModel.isAllExcluded = true
-		} else {
-			this._viewModel.isAllExcluded = false
-		}
+		this._viewModel.isAllExcluded = areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap()) ? true : false
 
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)

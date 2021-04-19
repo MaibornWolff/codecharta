@@ -84,11 +84,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
 
-		if (areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap())) {
-			this._viewModel.isEverythingExcluded = true
-		} else {
-			this._viewModel.isEverythingExcluded = false
-		}
+		this._viewModel.isEverythingExcluded = areAllNodesExcluded(this.codeMapPreRenderService.getRenderMap()) ? true : false
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType) {
