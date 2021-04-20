@@ -171,8 +171,8 @@ describe("nodeContextMenuController", () => {
 			codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_EVERYTHING_EXCLUDED)
 			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 
-			expect(nodeContextMenuController["_viewModel"].isAllExcluded).toBeTruthy() 
-		})	
+			expect(nodeContextMenuController["_viewModel"].isAllExcluded).toBeTruthy()
+		})
 
 		it("should not shorten the path if it has no sub paths", () => {
 			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
@@ -505,7 +505,6 @@ describe("nodeContextMenuController", () => {
 			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "CC-NODE-CONTEXT-MENU-COLOR-PICKER" }]
 			}
-
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
 			expect(broadcastHideEventSpy).not.toHaveBeenCalled()
@@ -516,10 +515,9 @@ describe("nodeContextMenuController", () => {
 			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "DIV" }]
 			}
-			
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
 			expect(broadcastHideEventSpy).toHaveBeenCalled()
-		})		
+		})
 	})
 })
