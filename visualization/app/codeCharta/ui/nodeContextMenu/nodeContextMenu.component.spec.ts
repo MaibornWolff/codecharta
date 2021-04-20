@@ -505,6 +505,7 @@ describe("nodeContextMenuController", () => {
 			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "CC-NODE-CONTEXT-MENU-COLOR-PICKER" }]
 			}
+
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
 			expect(broadcastHideEventSpy).not.toHaveBeenCalled()
@@ -515,6 +516,7 @@ describe("nodeContextMenuController", () => {
 			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "DIV" }]
 			}
+			
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
 			expect(broadcastHideEventSpy).toHaveBeenCalled()
