@@ -1,3 +1,7 @@
+.custom-configs {
+	margin-left: 15%;
+}
+
 .custom-configs-component {
 	.custom-configs-button {
 		height: 22px;
@@ -9,7 +13,6 @@
 		font-size: 9pt;
 		text-transform: none;
 		background-color: rgba(230, 230, 230, 0.96);
-		left: 13px;
 
 		&.plus {
 			min-width: 30px;
