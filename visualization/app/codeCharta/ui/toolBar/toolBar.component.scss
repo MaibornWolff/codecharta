@@ -34,11 +34,16 @@ tool-bar-component {
 		right: 10px;
 		display: inline-flex;
 		align-items: center;
-		width: 150px;
+		width: 400px;
+	}
+
+	span {
+		font-size: 10pt;
+		margin: 3px;
 	}
 
 	loading-gif-map-component {
-		margin-right: 15px;
+		margin-right: 13px;
 		width: 15px;
 	}
 }
