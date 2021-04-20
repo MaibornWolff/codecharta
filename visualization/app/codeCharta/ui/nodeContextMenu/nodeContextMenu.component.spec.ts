@@ -518,7 +518,6 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
 			expect(broadcastHideEventSpy).toHaveBeenCalled()
-		})
-		
+		})		
 	})
 })
