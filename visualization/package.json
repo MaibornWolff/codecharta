@@ -144,7 +144,7 @@
 		"es6-shim": "^0.35.6",
 		"eslint": "^7.24.0",
 		"eslint-config-prettier": "^8.2.0",
-		"eslint-plugin-unicorn": "^29.0.0",
+		"eslint-plugin-unicorn": "^30.0.0",
 		"file-loader": "^6.2.0",
 		"html-loader": "^1.1.0",
 		"html-loader-jest": "^0.2.1",
