@@ -30,7 +30,7 @@ import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import {Geometry, Material, Object3D, Raycaster, Vector3} from "three"
+import { Geometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LazyLoader } from "../../util/lazyLoader"
 
@@ -361,7 +361,7 @@ describe("codeMapMouseEventService", () => {
 			labelNode.translateY(5)
 
 			const lineGeometry = new Geometry()
-			lineGeometry.vertices.push(new Vector3(2,2,2), new Vector3(1,1,1))
+			lineGeometry.vertices.push(new Vector3(2, 2, 2), new Vector3(1, 1, 1))
 			placeholderLine["geometry"] = lineGeometry
 
 			labels.push(label, placeholderLine, labelNode, placeholderLine)

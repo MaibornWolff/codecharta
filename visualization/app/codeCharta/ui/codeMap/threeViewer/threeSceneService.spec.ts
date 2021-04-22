@@ -19,7 +19,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
-import {Box3, Geometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3} from "three"
+import { Box3, Geometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -274,7 +274,7 @@ describe("ThreeSceneService", () => {
 			lineGeometry = new Geometry()
 
 			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
-			lineGeometry.vertices.push(new Vector3(2,2,2), new Vector3(1,1,1))
+			lineGeometry.vertices.push(new Vector3(2, 2, 2), new Vector3(1, 1, 1))
 			placeholderLine["geometry"] = lineGeometry
 		})
 
@@ -368,32 +368,29 @@ describe("ThreeSceneService", () => {
 			hoveredLabel.position.set(2, 2, 2)
 
 			highlightedLabel = new Object3D()
-			highlightedLabel.position.set(1,1,1)
+			highlightedLabel.position.set(1, 1, 1)
 			highlightedLabel.material = new Material()
 
 			threeSceneService["highlightedLineIndex"] = 1
 			threeSceneService["highlightedLabel"] = highlightedLabel
 			threeSceneService["highlightedLine"] = highlightedLine
-			threeSceneService["normedTransformVector"] = new Vector3(0,0,0)
-
+			threeSceneService["normedTransformVector"] = new Vector3(0, 0, 0)
 		})
 
 		it("should set endpoint to given hoveredLabel coordinates if not in reset mode", () => {
-
 			threeSceneService.toggleLineAnimation(false, hoveredLabel)
 
-			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3,3,3))
-			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(2,2,2))
+			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3, 3, 3))
+			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(2, 2, 2))
 			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
 			expect(threeSceneService["highlightedLine"]).toEqual(null)
 		})
 
 		it("should set endpoint to highlightedLabel if in reset mode", () => {
-
 			threeSceneService.resetLabel()
 
-			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3,3,3))
-			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(1,1,1))
+			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3, 3, 3))
+			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(1, 1, 1))
 			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
 			expect(threeSceneService["highlightedLine"]).toEqual(null)
 			expect(threeSceneService["highlightedLabel"]).toEqual(null)
