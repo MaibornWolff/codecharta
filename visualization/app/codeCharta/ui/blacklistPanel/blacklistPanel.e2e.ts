@@ -16,7 +16,7 @@ describe("Blacklist(TrackByEvaluation)", () => {
 	})
 
 	it("should have correct list entries in case of track by", async () => {
-		await searchBar.enterAndExcludeSearchPattern()
+		await searchBar.enterAndExcludeSearchPattern("ts,html")
 		await searchPanelModeSelector.toggleBlacklistView()
 		const paths = ["*ts*", "*html*"]
 		const inList = await blacklistPanelPageObject.checkExludedListAfterExclusion(paths)
@@ -24,7 +24,7 @@ describe("Blacklist(TrackByEvaluation)", () => {
 	})
 
 	it("should have correct list entries after exclusion in case of track by", async () => {
-		await searchBar.enterAndExcludeSearchPattern()
+		await searchBar.enterAndExcludeSearchPattern("ts,html")
 		await searchPanelModeSelector.toggleBlacklistView()
 		const excluded = await blacklistPanelPageObject.checkExludedListAfterItemRemovalFromExclusionList()
 		expect(excluded).toBeTruthy()

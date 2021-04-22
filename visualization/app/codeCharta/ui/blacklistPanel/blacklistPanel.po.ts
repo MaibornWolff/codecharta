@@ -1,3 +1,5 @@
+import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+
 export class BlacklistPanelPageObject {
 	async checkExludedListAfterExclusion(paths: string[]) {
 		await page.waitForSelector("#excludedList", { visible: true, hidden: false })
@@ -22,8 +24,7 @@ export class BlacklistPanelPageObject {
 	async checkExludedListAfterItemRemovalFromExclusionList() {
 		await page.waitForSelector("#excludedList", { visible: true, hidden: false })
 
-		await page.waitForSelector("#object-1", { visible: true }).then(async element => element.click())
-		await page.waitForTimeout(500)
+		await clickButtonOnPageElement("#object-1")
 
 		const selector = "#excludedList > md-list-item > div.pattern-text.layout-column > p > bdi"
 
