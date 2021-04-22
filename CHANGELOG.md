@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.72.0] - 2021-04-22
+
 ### Added 🚀
 
 -   Hints for Global Settings ([#1715](https://github.com/MaibornWolff/codecharta/issues/1715))
+-   Indicate total nodes and excluded / flattened nodes in file explorer ([#1880](https://github.com/MaibornWolff/codecharta/issues/1880))
+-   Add path to node context menu ([#1667](https://github.com/MaibornWolff/codecharta/issues/1667))
+
+### Fixed 🐞
+
+-   Made the header semi responsive ([#1037](https://github.com/MaibornWolff/codecharta/issues/1037))
 
 ## [1.71.2] - 2021-03-16
 

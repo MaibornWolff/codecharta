@@ -26,6 +26,18 @@ export function transformPath(toTransform: string) {
 	return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
+export function getAllNodes(root: CodeMapNode) {
+	const filtered = []
+	if (root !== undefined) {
+		for (const { data } of hierarchy(root)) {
+			if (data.type !== "Folder") {
+				filtered.push(data)
+			}
+		}
+	}
+	return filtered
+}
+
 export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
 	gitignorePath = gitignorePath.trimStart()
 	if (gitignorePath.length === 0) {
