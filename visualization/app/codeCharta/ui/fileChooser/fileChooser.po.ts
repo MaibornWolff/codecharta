@@ -10,7 +10,6 @@ export class FileChooserPageObject {
 
 		await page.waitForSelector("#loading-gif-file")
 		await page.waitForSelector("#loading-gif-file", { visible: false })
-		await page.waitForTimeout(1000)
 	}
 
 	async cancelOpeningFile() {
