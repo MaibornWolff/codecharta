@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.72.0] - 2021-04-22
+
 ### Added 🚀
 
 -   Hints for Global Settings ([#1715](https://github.com/MaibornWolff/codecharta/issues/1715))
