@@ -211,14 +211,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 			hoveredLabel.position.add(this.normedTransformVector)
 
-
-			const geometry = new Geometry()
-			const endPoint = new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
-			geometry.vertices.push(this.highlightedLine.geometry.vertices[0], endPoint)
-
-			const newLineForHiglightedLabel = new Line( geometry,  this.highlightedLine.material );
-
-			labels.splice(this.highlightedLineIndex, 0, newLineForHiglightedLabel)
+			this.animateLine(false, hoveredLabel)
 
 			this.highlightedLabel = hoveredLabel
 		}
@@ -236,17 +229,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 			if(this.highlightedLineIndex > -1) {
 				this.labels.children.splice(this.highlightedLineIndex, 1)
-
-				const geometry = new Geometry()
-				const endPoint = new Vector3(this.highlightedLabel.position.x, this.highlightedLabel.position.y, this.highlightedLabel.position.z)
-				geometry.vertices.push(this.highlightedLine.geometry.vertices[0], endPoint)
-
-				const newLineForHiglightedLabel = new Line(geometry, this.highlightedLine.material);
-
-				this.labels.children.splice(this.highlightedLineIndex, 0, newLineForHiglightedLabel)
-
-				this.highlightedLineIndex = -1
-				this.highlightedLine = null
+				this.animateLine(true)
 			}
 
 			this.highlightedLabel = null
@@ -262,6 +245,21 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			return index+1
 		}
 
+	}
+
+	animateLine(reset: boolean, hoveredLabel? : Object3D){
+
+		const geometry = new Geometry()
+		const endPoint = reset ? new Vector3(this.highlightedLabel.position.x, this.highlightedLabel.position.y, this.highlightedLabel.position.z) : new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
+
+		geometry.vertices.push(this.highlightedLine.geometry.vertices[0], endPoint)
+
+		const newLineForHiglightedLabel = new Line(geometry, this.highlightedLine.material);
+
+		this.labels.children.splice(this.highlightedLineIndex, 0, newLineForHiglightedLabel)
+
+		this.highlightedLineIndex = -1
+		this.highlightedLine = null
 	}
 
 	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
