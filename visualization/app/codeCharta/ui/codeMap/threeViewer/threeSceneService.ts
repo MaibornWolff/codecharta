@@ -224,8 +224,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			})
 			.indexOf(label.uuid)
 
-		labels.indexOf(label)
-
 		if (index >= 0) {
 			return index + 1
 		}
