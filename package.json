@@ -14,13 +14,8 @@
 		"format:check": "prettier --check \"./**/*\"",
 		"format:quick": "pretty-quick --staged",
 		"lint:visualization": "cd visualization && npm run lint:fix",
-		"lint:visualization:quick": "cd visualization && npm run precommit"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "npm run lint:visualization:quick && npm run format:quick",
-			"pre-push": "sh ./script/pre-push.sh"
-		}
+		"lint:visualization:quick": "cd visualization && npm run precommit",
+		"prepare": "husky install"
 	},
 	"devDependencies": {
 		"husky": "^6.0.0",

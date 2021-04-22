@@ -84,10 +84,10 @@ export class ThreeOrbitControlsService
 		this.$timeout(() => {
 			const boundingSphere = this.getBoundingSphere()
 
-			const len = this.cameraPerspectiveLengthCalculation(boundingSphere)
+			const length = this.cameraPerspectiveLengthCalculation(boundingSphere)
 			const cameraReference = this.threeCameraService.camera
 
-			cameraReference.position.set(boundingSphere.center.x + len, len, boundingSphere.center.z + len)
+			cameraReference.position.set(boundingSphere.center.x + length, length, boundingSphere.center.z + length)
 			this.defaultCameraPosition = cameraReference.position.clone()
 			this.controls.update()
 
