@@ -382,8 +382,6 @@ describe("ThreeSceneService", () => {
 
 			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3, 3, 3))
 			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(2, 2, 2))
-			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
-			expect(threeSceneService["highlightedLine"]).toEqual(null)
 		})
 
 		it("should set endpoint to highlightedLabel if in reset mode", () => {
@@ -391,8 +389,6 @@ describe("ThreeSceneService", () => {
 
 			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3, 3, 3))
 			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(1, 1, 1))
-			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
-			expect(threeSceneService["highlightedLine"]).toEqual(null)
 			expect(threeSceneService["highlightedLabel"]).toEqual(null)
 		})
 	})

@@ -178,8 +178,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			this.highlightedLineIndex = this.getHoveredLabelLineIndex(labels, hoveredLabel)
 			this.highlightedLine = labels[this.highlightedLineIndex]
 
-			labels.splice(this.highlightedLineIndex, 1)
-
 			this.rayPoint = new Vector3()
 			this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
 
@@ -209,7 +207,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			this.highlightedLabel.material.opacity = this.mapLabelColors.alpha
 
 			if (this.highlightedLineIndex > -1) {
-				this.labels.children.splice(this.highlightedLineIndex, 1)
 				this.toggleLineAnimation(true)
 			}
 
@@ -219,8 +216,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	getHoveredLabelLineIndex(labels: Object3D[], label: any) {
 		const index = labels
-			.map(function (label) {
-				return label.uuid
+			.map(function (labelObject) {
+				return labelObject.uuid
 			})
 			.indexOf(label.uuid)
 
@@ -239,10 +236,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 		const newLineForHighlightedLabel = new Line(geometry, this.highlightedLine.material)
 
-		this.labels.children.splice(this.highlightedLineIndex, 0, newLineForHighlightedLabel)
-
-		this.highlightedLineIndex = -1
-		this.highlightedLine = null
+		this.labels.children.splice(this.highlightedLineIndex, 1, newLineForHighlightedLabel)
 	}
 
 	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
