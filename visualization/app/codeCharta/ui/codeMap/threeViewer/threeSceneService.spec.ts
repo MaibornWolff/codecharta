@@ -19,7 +19,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
-import { Box3, Matrix4, Object3D, Raycaster, Vector3 } from "three"
+import {Box3, Geometry, Matrix4, Object3D, Raycaster, Vector3} from "three"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -260,17 +260,22 @@ describe("ThreeSceneService", () => {
 
 	describe("animateLabel", () => {
 		let labels = null
-		let labelLine = null
 		let otherNode = null
 		let label = null
 		let rayCaster = null
+		let placeholderLine = null
+		let lineGeometry = null
 
 		beforeEach(() => {
 			labels = []
-			labelLine = new Object3D()
 			otherNode = new Object3D()
 			label = new Object3D()
+			placeholderLine = new Object3D()
+			lineGeometry = new Geometry()
+
 			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
+			lineGeometry.vertices.push(new Vector3(2,2,2), new Vector3(1,1,1))
+			placeholderLine["geometry"] = lineGeometry
 		})
 
 		it("should animate the label by moving it 20% on the viewRay if it has no intersection", () => {
@@ -278,7 +283,7 @@ describe("ThreeSceneService", () => {
 			otherNode.translateY(5)
 			const resultPosition = new Vector3(0.5, 0.5, 0)
 
-			labels.push(label, labelLine, otherNode, labelLine)
+			labels.push(label, placeholderLine, otherNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 			expect(threeSceneService["highlightedLabel"]).toEqual(label)
@@ -290,7 +295,7 @@ describe("ThreeSceneService", () => {
 
 			const resultPosition = new Vector3(0.5, 0.5, 0)
 
-			labels.push(label, labelLine, otherNode, labelLine)
+			labels.push(label, placeholderLine, otherNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 			expect(threeSceneService["highlightedLabel"]).toEqual(label)
@@ -303,7 +308,7 @@ describe("ThreeSceneService", () => {
 			unObstructingNode.applyMatrix4(new Matrix4().makeTranslation(0.5, 0.5, 0))
 
 			label.userData = CODE_MAP_BUILDING
-			labels.push(label, labelLine, otherNode, labelLine, unObstructingNode, labelLine)
+			labels.push(label, placeholderLine, otherNode, placeholderLine, unObstructingNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 			expect(threeSceneService["highlightedLabel"]).toEqual(label)

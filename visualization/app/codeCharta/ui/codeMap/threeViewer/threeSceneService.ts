@@ -211,7 +211,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 			hoveredLabel.position.add(this.normedTransformVector)
 
-			this.animateLine(false, hoveredLabel)
+			this.toggleLineAnimation(false, hoveredLabel)
 
 			this.highlightedLabel = hoveredLabel
 		}
@@ -229,7 +229,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 			if(this.highlightedLineIndex > -1) {
 				this.labels.children.splice(this.highlightedLineIndex, 1)
-				this.animateLine(true)
+				this.toggleLineAnimation(true)
 			}
 
 			this.highlightedLabel = null
@@ -247,7 +247,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	}
 
-	animateLine(reset: boolean, hoveredLabel? : Object3D){
+	toggleLineAnimation(reset: boolean, hoveredLabel? : Object3D){
 
 		const geometry = new Geometry()
 		const endPoint = reset ? new Vector3(this.highlightedLabel.position.x, this.highlightedLabel.position.y, this.highlightedLabel.position.z) : new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
