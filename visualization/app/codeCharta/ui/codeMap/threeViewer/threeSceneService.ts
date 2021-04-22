@@ -99,12 +99,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		}
 	}
 
-	highlightBuildingsAfterSelect() {
-		// TODO dead code? Remove it please.
-		const state = this.storeService.getState()
-		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
-	}
-
 	private selectMaterial(materials: Material[]) {
 		const selectedMaterial = materials.find(({ userData }) => userData.id === this.selected.node.id)
 		selectedMaterial?.["color"].setHex(this.numberSelectionColor)
@@ -248,15 +242,14 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	toggleLineAnimation(reset: boolean, hoveredLabel? : Object3D){
-
 		const geometry = new Geometry()
 		const endPoint = reset ? new Vector3(this.highlightedLabel.position.x, this.highlightedLabel.position.y, this.highlightedLabel.position.z) : new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
 
 		geometry.vertices.push(this.highlightedLine.geometry.vertices[0], endPoint)
 
-		const newLineForHiglightedLabel = new Line(geometry, this.highlightedLine.material);
+		const newLineForHighlightedLabel = new Line(geometry, this.highlightedLine.material);
 
-		this.labels.children.splice(this.highlightedLineIndex, 0, newLineForHiglightedLabel)
+		this.labels.children.splice(this.highlightedLineIndex, 0, newLineForHighlightedLabel)
 
 		this.highlightedLineIndex = -1
 		this.highlightedLine = null

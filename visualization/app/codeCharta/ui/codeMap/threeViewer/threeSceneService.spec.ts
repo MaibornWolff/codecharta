@@ -19,7 +19,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
-import {Box3, Geometry, Matrix4, Object3D, Raycaster, Vector3} from "three"
+import {Box3, Geometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3} from "three"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -313,6 +313,90 @@ describe("ThreeSceneService", () => {
 			threeSceneService.animateLabel(label, rayCaster, labels)
 			expect(threeSceneService["highlightedLabel"]).toEqual(label)
 			expect(label.position).toEqual(unObstructingNode.position)
+		})
+	})
+
+	describe("resetLineHighlight", () => {
+		it("should reset line highlighting", () => {
+			threeSceneService["highlightedLineIndex"] = 5
+			threeSceneService["highlightedLine"] = new Object3D()
+
+			threeSceneService.resetLineHighlight()
+
+			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
+			expect(threeSceneService["highlightedLine"]).toEqual(null)
+		})
+	})
+
+	describe("getHoveredLabelLineIndex", () => {
+		it("should return index+1 if found", () => {
+			const labels = []
+			const label1 = new Object3D()
+			const label2 = new Object3D()
+			const label3 = new Object3D()
+			labels.push(label1, label2, label3)
+
+			const indexIncrement = threeSceneService.getHoveredLabelLineIndex(labels, label2)
+
+			expect(indexIncrement).toEqual(2)
+		})
+	})
+
+	describe("toggleLineAnimation", () => {
+		let highlightedLabel = null
+		let hoveredLabel = null
+		let highlightedLine = null
+		let lineGeometry = null
+		let labels = null
+		let labelsGroup = null
+
+		beforeEach(() => {
+			highlightedLine = new Object3D()
+			lineGeometry = new Geometry()
+			lineGeometry.vertices.push(new Vector3(3, 3, 3), new Vector3(3, 3, 3))
+			highlightedLine["geometry"] = lineGeometry
+			highlightedLine.material = new Material()
+
+			labels = []
+			labels.push(new Object3D(), new Object3D(), new Object3D())
+
+			labelsGroup = new Group()
+			labelsGroup.children = labels
+			threeSceneService.labels = labelsGroup
+
+			hoveredLabel = new Object3D()
+			hoveredLabel.position.set(2, 2, 2)
+
+			highlightedLabel = new Object3D()
+			highlightedLabel.position.set(1,1,1)
+			highlightedLabel.material = new Material()
+
+			threeSceneService["highlightedLineIndex"] = 1
+			threeSceneService["highlightedLabel"] = highlightedLabel
+			threeSceneService["highlightedLine"] = highlightedLine
+			threeSceneService["normedTransformVector"] = new Vector3(0,0,0)
+
+		})
+
+		it("should set endpoint to given hoveredLabel coordinates if not in reset mode", () => {
+
+			threeSceneService.toggleLineAnimation(false, hoveredLabel)
+
+			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3,3,3))
+			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(2,2,2))
+			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
+			expect(threeSceneService["highlightedLine"]).toEqual(null)
+		})
+
+		it("should set endpoint to highlightedLabel if in reset mode", () => {
+
+			threeSceneService.resetLabel()
+
+			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3,3,3))
+			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(1,1,1))
+			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
+			expect(threeSceneService["highlightedLine"]).toEqual(null)
+			expect(threeSceneService["highlightedLabel"]).toEqual(null)
 		})
 	})
 
