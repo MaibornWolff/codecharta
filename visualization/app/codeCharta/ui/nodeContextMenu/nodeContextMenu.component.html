@@ -17,7 +17,7 @@
 		<md-divider></md-divider>
 	</div>
 
-	<div class="button-group">
+	<div class="button-group" ng-class="{ 'div-disabled': $ctrl._viewModel.isAllExcluded }">
 		<md-button ng-disabled="true" title="{{ $ctrl._viewModel.nodePath }}">
 			{{ $ctrl._viewModel.lastPartOfNodePath }}
 		</md-button>
