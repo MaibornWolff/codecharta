@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.78% </span>
+                <span class="strong">98.77% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>162/164</span>
+                <span class='fraction'>161/163</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">98.77% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>161/163</span>
+                <span class='fraction'>160/162</span>
             </div>
         
             
@@ -408,30 +408,26 @@
 <a name='L349'></a><a href='#L349'>349</a>
 <a name='L350'></a><a href='#L350'>350</a>
 <a name='L351'></a><a href='#L351'>351</a>
-<a name='L352'></a><a href='#L352'>352</a>
-<a name='L353'></a><a href='#L353'>353</a>
-<a name='L354'></a><a href='#L354'>354</a>
-<a name='L355'></a><a href='#L355'>355</a>
-<a name='L356'></a><a href='#L356'>356</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
+<a name='L352'></a><a href='#L352'>352</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
-<span class="cline-any cline-yes">159x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">160x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">104x</span>
 <span class="cline-any cline-yes">104x</span>
@@ -506,14 +502,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">141x</span>
-<span class="cline-any cline-yes">926x</span>
-<span class="cline-any cline-yes">785x</span>
+<span class="cline-any cline-yes">143x</span>
+<span class="cline-any cline-yes">936x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">141x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">141x</span>
+<span class="cline-any cline-yes">143x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -786,8 +778,8 @@ const enum EdgeAttributeType {
 	OUTGOING = "outgoing"
 }
 &nbsp;
-export class NodeDecorator {
-	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
+export const NodeDecorator = {
+	decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 		const flattened = ignore()
 		const excluded = ignore()
 &nbsp;
@@ -858,20 +850,16 @@ export class NodeDecorator {
 				}
 			}
 		}
-	}
+	},
 &nbsp;
-	static decorateMapWithPathAttribute(file: CCFile) {
+	decorateMapWithPathAttribute(file: CCFile) {
 		for (const node of hierarchy(file.map)) {
-			if (node.parent) {
-				node.data.path = `${node.parent.data.path}/${node.data.name}`
-			} else {
-				node.data.path = `/${node.data.name}`
-			}
+			node.data.path = node.parent ? `${node.parent.data.path}/${node.data.name}` : `/${node.data.name}`
 		}
 		return file
-	}
+	},
 &nbsp;
-	static decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
+	decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
 		const medians: Map&lt;string, number[]&gt; = new Map()
 		// TODO: Combine decorateMap, decorateMapWithPathAttribute and this one and
 		// remove the Object.keys calls from then on. They are identical to the
@@ -1129,7 +1117,7 @@ function pushSortedArray(numbers: number[], toPush: number[]) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 16 2021 14:41:48 GMT+0000 (Coordinated Universal Time)
+                at Thu Apr 22 2021 08:54:01 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>
