@@ -12,7 +12,7 @@ export class FilePanelPageObject {
 		return page.$eval("file-panel-component md-select .md-text", element => element["innerText"])
 	}
 
-	private async waitUntilNameChange(oldName: string) {
+	async waitUntilNameChange(oldName: string) {
 		await page.waitForFunction(
 			names => {
 				return document.querySelector(`file-panel-component md-select .md-text md-truncate`).textContent !== names
@@ -25,7 +25,7 @@ export class FilePanelPageObject {
 	async getAllNames() {
 		await clickButtonOnPageElement("file-panel-component md-select")
 
-		await page.waitForSelector(".md-select-menu-container.md-active.md-clickable > md-select-menu")
+		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu", { hidden: false })
 
 		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", element => element["innerText"])
 

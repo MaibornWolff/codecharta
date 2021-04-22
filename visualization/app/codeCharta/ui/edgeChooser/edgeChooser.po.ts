@@ -7,13 +7,13 @@ export class EdgeChooserPageObject {
 
 		await page.waitForSelector("body > md-backdrop.md-select-backdrop.md-click-catcher.ng-scope")
 
-		await page.waitForFunction(
-			(selector: string) => getComputedStyle(document.querySelector(selector)).position === "fixed",
-			{},
-			"body > md-backdrop.md-select-backdrop.md-click-catcher.ng-scope"
-		)
+		// await page.waitForFunction(
+		// 	(selector: string) => getComputedStyle(document.querySelector(selector)).position === "fixed",
+		// 	{},
+		// 	"body > md-backdrop.md-select-backdrop.md-click-catcher.ng-scope"
+		// )
 
-		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active.md-clickable")
+		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active.md-clickable", { hidden: false })
 	}
 
 	async getMetrics() {

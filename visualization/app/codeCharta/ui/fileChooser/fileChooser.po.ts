@@ -6,11 +6,11 @@ export class FileChooserPageObject {
 			page.waitForFileChooser({ timeout: 60000 }),
 			clickOnFileChooser && clickButtonOnPageElement("file-chooser-directive .toolbar-button")
 		])
-
 		await fileChooser.accept(paths)
 
 		await page.waitForSelector("#loading-gif-file")
 		await page.waitForSelector("#loading-gif-file", { visible: false })
+		await page.waitForTimeout(1000)
 	}
 
 	async cancelOpeningFile() {
