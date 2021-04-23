@@ -378,7 +378,7 @@ describe("ThreeSceneService", () => {
 		})
 
 		it("should set endpoint to given hoveredLabel coordinates if not in reset mode", () => {
-			threeSceneService.toggleLineAnimation(false, hoveredLabel)
+			threeSceneService.toggleLineAnimation(hoveredLabel)
 
 			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3, 3, 3))
 			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(2, 2, 2))

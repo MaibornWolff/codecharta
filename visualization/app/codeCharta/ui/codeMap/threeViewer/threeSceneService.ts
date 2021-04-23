@@ -190,7 +190,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 			hoveredLabel.position.add(this.normedTransformVector)
 
-			this.toggleLineAnimation(false, hoveredLabel)
+			this.toggleLineAnimation(hoveredLabel)
 
 			this.highlightedLabel = hoveredLabel
 		}
@@ -207,30 +207,24 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			this.highlightedLabel.material.opacity = this.mapLabelColors.alpha
 
 			if (this.highlightedLineIndex > -1) {
-				this.toggleLineAnimation(true)
+				this.toggleLineAnimation(this.highlightedLabel)
 			}
 
 			this.highlightedLabel = null
 		}
 	}
 
-	getHoveredLabelLineIndex(labels: Object3D[], label: any) {
-		const index = labels
-			.map(function (labelObject) {
-				return labelObject.uuid
-			})
-			.indexOf(label.uuid)
+	getHoveredLabelLineIndex(labels: Object3D[], label: Object3D) {
+		const index = labels.findIndex(({ uuid }) => uuid === label.uuid)
 
 		if (index >= 0) {
 			return index + 1
 		}
 	}
 
-	toggleLineAnimation(reset: boolean, hoveredLabel?: Object3D) {
+	toggleLineAnimation(hoveredLabel: Object3D) {
 		const geometry = new Geometry()
-		const endPoint = reset
-			? new Vector3(this.highlightedLabel.position.x, this.highlightedLabel.position.y, this.highlightedLabel.position.z)
-			: new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
+		const endPoint = new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
 
 		geometry.vertices.push(this.highlightedLine.geometry.vertices[0], endPoint)
 
