@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Indicate total nodes and excluded / flattened nodes in file explorer ([#1880](https://github.com/MaibornWolff/codecharta/issues/1880))
 -   Add path to node context menu ([#1667](https://github.com/MaibornWolff/codecharta/issues/1667))
 -   Improve descriptions ([#1879](https://github.com/MaibornWolff/codecharta/issues/1879))
+    <br></br>
+    ![option dialog](https://user-images.githubusercontent.com/57844849/115393175-b2897b00-a1e1-11eb-8601-d2128f3469a3.png)
 
 ### Fixed 🐞
 
