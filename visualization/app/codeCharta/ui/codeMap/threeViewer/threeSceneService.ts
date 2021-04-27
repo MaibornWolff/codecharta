@@ -1,4 +1,4 @@
-import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3 } from "three"
+import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3, Line, Geometry } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
@@ -44,6 +44,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private rayPoint = new Vector3(0, 0, 0)
 	private normedTransformVector = new Vector3(0, 0, 0)
 	private highlightedLabel = null
+	private highlightedLineIndex = -1
+	private highlightedLine = null
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -83,12 +85,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		if (this.mapGeometry.children[0]) {
 			this.highlightMaterial(this.mapGeometry.children[0]["material"])
 		}
-	}
-
-	highlightBuildingsAfterSelect() {
-		// TODO dead code? Remove it please.
-		const state = this.storeService.getState()
-		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 	}
 
 	private selectMaterial(materials: Material[]) {
@@ -179,6 +175,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 				hoveredLabel["material"].opacity = 1
 			}
 
+			this.highlightedLineIndex = this.getHoveredLabelLineIndex(labels, hoveredLabel)
+			this.highlightedLine = labels[this.highlightedLineIndex]
+
 			this.rayPoint = new Vector3()
 			this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
 
@@ -191,16 +190,47 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 			hoveredLabel.position.add(this.normedTransformVector)
 
+			this.toggleLineAnimation(hoveredLabel)
+
 			this.highlightedLabel = hoveredLabel
 		}
+	}
+
+	resetLineHighlight() {
+		this.highlightedLineIndex = -1
+		this.highlightedLine = null
 	}
 
 	resetLabel() {
 		if (this.highlightedLabel !== null) {
 			this.highlightedLabel.position.sub(this.normedTransformVector)
 			this.highlightedLabel.material.opacity = this.mapLabelColors.alpha
+
+			if (this.highlightedLine) {
+				this.toggleLineAnimation(this.highlightedLabel)
+			}
+
 			this.highlightedLabel = null
 		}
+	}
+
+	getHoveredLabelLineIndex(labels: Object3D[], label: Object3D) {
+		const index = labels.findIndex(({ uuid }) => uuid === label.uuid)
+
+		if (index >= 0) {
+			return index + 1
+		}
+	}
+
+	toggleLineAnimation(hoveredLabel: Object3D) {
+		const geometry = new Geometry()
+		const endPoint = new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
+
+		geometry.vertices.push(this.highlightedLine.geometry.vertices[0], endPoint)
+
+		const newLineForHighlightedLabel = new Line(geometry, this.highlightedLine.material)
+
+		this.labels.children.splice(this.highlightedLineIndex, 1, newLineForHighlightedLabel)
 	}
 
 	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {

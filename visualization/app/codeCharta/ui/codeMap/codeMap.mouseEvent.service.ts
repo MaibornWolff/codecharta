@@ -175,6 +175,8 @@ export class CodeMapMouseEventService
 
 	updateHovering() {
 		if (this.hasMouseMoved(this.oldMouse)) {
+			const labels = this.threeSceneService.labels?.children
+
 			if (this.isGrabbing || this.isMoving) {
 				this.threeSceneService.resetLabel()
 				this.clearTemporaryLabel()
@@ -187,7 +189,6 @@ export class CodeMapMouseEventService
 
 			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
 			const camera = this.threeCameraService.camera
-			const labels = this.threeSceneService.labels?.children
 
 			const mapMesh = this.threeSceneService.getMapMesh()
 			let nodeNameHoveredLabel = ""
