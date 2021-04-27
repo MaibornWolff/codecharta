@@ -206,7 +206,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			this.highlightedLabel.position.sub(this.normedTransformVector)
 			this.highlightedLabel.material.opacity = this.mapLabelColors.alpha
 
-			if (this.highlightedLineIndex > -1) {
+			if (this.highlightedLine) {
 				this.toggleLineAnimation(this.highlightedLabel)
 			}
 
