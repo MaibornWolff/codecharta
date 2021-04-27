@@ -168,21 +168,16 @@ export class CodeMapMesh {
 	}
 
 	private setVertexColor(id: number, newColorVector: Vector3, newDeltaColorVector) {
-
 		//!Note  this function is called a lot of times see highlightBuilding , maybe bulk update the color and delta colors
 		const numberOfColorFieldsPerBuilding = CodeMapMesh.NUM_OF_VERTICES
 		const positionOfFirstColorEntry = id * numberOfColorFieldsPerBuilding
 
-		const colorAttribute = this.threeMesh.geometry.getAttribute("color") as BufferAttribute;
-		const deltaAttribute = this.threeMesh.geometry.getAttribute("deltaColor") as BufferAttribute;
+		const colorAttribute = this.threeMesh.geometry.getAttribute("color") as BufferAttribute
+		const deltaAttribute = this.threeMesh.geometry.getAttribute("deltaColor") as BufferAttribute
 
-		for (
-			let index = positionOfFirstColorEntry;
-			index < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding;
-			index += 1
-		) {
-			colorAttribute.setXYZ(index,newColorVector.x,newColorVector.y,newColorVector.z)
-			deltaAttribute.setXYZ(index,newDeltaColorVector.x,newDeltaColorVector.y,newDeltaColorVector.z)
+		for (let index = positionOfFirstColorEntry; index < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding; index += 1) {
+			colorAttribute.setXYZ(index, newColorVector.x, newColorVector.y, newColorVector.z)
+			deltaAttribute.setXYZ(index, newDeltaColorVector.x, newDeltaColorVector.y, newDeltaColorVector.z)
 		}
 
 		//!Note this can be used to update only the needed range => faster rendering
