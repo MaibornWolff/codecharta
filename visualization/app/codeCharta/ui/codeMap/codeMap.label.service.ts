@@ -155,6 +155,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			this.labels.splice(index, 1)
 			this.dispose(this.threeSceneService.labels.children)
 			this.threeSceneService.labels.children.length -= 2
+			this.threeSceneService.resetLineHighlight()
 		}
 	}
 
