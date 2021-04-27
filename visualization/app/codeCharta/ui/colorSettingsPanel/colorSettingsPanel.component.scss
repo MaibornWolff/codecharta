@@ -1,4 +1,9 @@
 color-settings-panel-component {
+
+  md-checkbox {
+    margin-left: -4px;
+  }
+
 	md-card .section .section-body md-checkbox {
 		font-size: 0.9em;
 	}
