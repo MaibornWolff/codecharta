@@ -322,11 +322,15 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(otherSampleLeaf, { showNodeName: true, showNodeMetric: false })
 			threeSceneService.labels.children = generateSceneLabelChild(4)
 
+			threeSceneService["highlightedLineIndex"] = 5
+			threeSceneService["highlightedLine"] = new Object3D()
 			codeMapLabelService.clearTemporaryLabel(sampleLeaf)
 
 			expect(codeMapLabelService.dispose).toBeCalledWith(threeSceneService.labels.children)
 			expect(threeSceneService.labels.children.length).toEqual(2)
 			expect(codeMapLabelService["labels"][0].node).toEqual(otherSampleLeaf)
+			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
+			expect(threeSceneService["highlightedLine"]).toEqual(null)
 		})
 
 		it("should not clear if no label exists for a given node", () => {
