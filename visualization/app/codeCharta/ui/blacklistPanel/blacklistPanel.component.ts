@@ -29,7 +29,6 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 				excluded.push(item)
 			}
 		}
-
 		this._viewModel.flatten = flattened
 		this._viewModel.exclude = excluded
 	}

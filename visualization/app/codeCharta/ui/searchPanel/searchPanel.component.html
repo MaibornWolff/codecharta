@@ -4,7 +4,9 @@
 			<search-bar-component ng-click="$ctrl.openSearchPanel()"></search-bar-component>
 			<search-panel-mode-selector-component></search-panel-mode-selector-component>
 		</div>
-		<span class="section-title" ng-click="$ctrl.toggle()"> Search <i class="fa fa-angle-down" title="Show folder structure"></i> </span>
+		<span class="section-title" ng-click="$ctrl.toggle()">
+			File/Node Explorer <i class="fa fa-angle-down" title="Show folder structure"></i>
+		</span>
 		<div class="section-body">
 			<blacklist-panel-component ng-show="$ctrl._viewModel.searchPanelMode === 'blacklist'"></blacklist-panel-component>
 			<matching-files-counter-component ng-show="$ctrl._viewModel.searchPanelMode === 'treeView'"></matching-files-counter-component>
