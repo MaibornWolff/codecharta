@@ -14,9 +14,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Hints for Global Settings ([#1715](https://github.com/MaibornWolff/codecharta/issues/1715))
 -   Indicate total nodes and excluded / flattened nodes in file explorer ([#1880](https://github.com/MaibornWolff/codecharta/issues/1880))
 -   Add path to node context menu ([#1667](https://github.com/MaibornWolff/codecharta/issues/1667))
+-   Improve descriptions ([#1879](https://github.com/MaibornWolff/codecharta/issues/1879))
+    <br></br>
+    ![option dialog](https://user-images.githubusercontent.com/57844849/115393175-b2897b00-a1e1-11eb-8601-d2128f3469a3.png)
 
 ### Fixed 🐞
 
+-   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
+    (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
 -   Made the header semi responsive ([#1037](https://github.com/MaibornWolff/codecharta/issues/1037))
 
 ## [1.71.2] - 2021-03-16
