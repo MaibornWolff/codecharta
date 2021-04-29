@@ -30,7 +30,7 @@ import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { Material, Object3D, Raycaster, Vector3 } from "three"
+import { Geometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LazyLoader } from "../../util/lazyLoader"
 
@@ -352,7 +352,7 @@ describe("codeMapMouseEventService", () => {
 			const resultPosition = new Vector3(0.5, 0.5, 0)
 
 			const labels = []
-			const labelLine = new Object3D()
+			const placeholderLine = new Object3D()
 			const labelNode = new Object3D()
 			label["material"] = new Material()
 			const rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
@@ -360,7 +360,11 @@ describe("codeMapMouseEventService", () => {
 			labelNode.translateX(-4)
 			labelNode.translateY(5)
 
-			labels.push(label, labelLine, labelNode, labelLine)
+			const lineGeometry = new Geometry()
+			lineGeometry.vertices.push(new Vector3(2, 2, 2), new Vector3(1, 1, 1))
+			placeholderLine["geometry"] = lineGeometry
+
+			labels.push(label, placeholderLine, labelNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 
