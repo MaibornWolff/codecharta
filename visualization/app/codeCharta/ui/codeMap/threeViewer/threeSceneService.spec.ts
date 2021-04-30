@@ -355,8 +355,7 @@ describe("ThreeSceneService", () => {
 
 		beforeEach(() => {
 			highlightedLine = new Object3D()
-			const points = []
-			points.push(new Vector3(3, 3, 3), new Vector3(3, 3, 3))
+			const points = [new Vector3(3, 3, 3), new Vector3(3, 3, 3))]
 
 			lineGeometry = new BufferGeometry().setFromPoints(points)
 			highlightedLine["geometry"] = lineGeometry

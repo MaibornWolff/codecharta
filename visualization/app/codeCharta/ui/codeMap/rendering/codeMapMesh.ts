@@ -192,7 +192,6 @@ export class CodeMapMesh {
 	}
 
 	private updateVertices() {
-		//! Note this is the same as before
 		this.threeMesh.geometry.getAttribute("color").needsUpdate = true
 		this.threeMesh.geometry.getAttribute("deltaColor").needsUpdate = true
 	}

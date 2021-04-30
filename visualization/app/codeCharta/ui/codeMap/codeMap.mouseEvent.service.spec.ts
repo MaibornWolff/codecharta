@@ -360,8 +360,7 @@ describe("codeMapMouseEventService", () => {
 			labelNode.translateX(-4)
 			labelNode.translateY(5)
 
-			const points = []
-			points.push(new Vector3(2, 2, 2), new Vector3(1, 1, 1))
+			const points = [new Vector3(2, 2, 2), new Vector3(1, 1, 1))]
 
 			const lineGeometry = new BufferGeometry().setFromPoints(points)
 			placeholderLine["geometry"] = lineGeometry
