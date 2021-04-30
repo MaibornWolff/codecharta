@@ -19,7 +19,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
-import { Box3, Geometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
+import { Box3, BufferGeometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -271,10 +271,13 @@ describe("ThreeSceneService", () => {
 			otherNode = new Object3D()
 			label = new Object3D()
 			placeholderLine = new Object3D()
-			lineGeometry = new Geometry()
+			lineGeometry = new BufferGeometry()
 
 			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
-			lineGeometry.vertices.push(new Vector3(2, 2, 2), new Vector3(1, 1, 1))
+			const points = []
+			points.push(new Vector3(3, 3, 3), new Vector3(3, 3, 3))
+
+			lineGeometry = new BufferGeometry().setFromPoints(points)
 			placeholderLine["geometry"] = lineGeometry
 		})
 
@@ -352,8 +355,10 @@ describe("ThreeSceneService", () => {
 
 		beforeEach(() => {
 			highlightedLine = new Object3D()
-			lineGeometry = new Geometry()
-			lineGeometry.vertices.push(new Vector3(3, 3, 3), new Vector3(3, 3, 3))
+			const points = []
+			points.push(new Vector3(3, 3, 3), new Vector3(3, 3, 3))
+
+			lineGeometry = new BufferGeometry().setFromPoints(points)
 			highlightedLine["geometry"] = lineGeometry
 			highlightedLine.material = new Material()
 
@@ -380,15 +385,21 @@ describe("ThreeSceneService", () => {
 		it("should set endpoint to given hoveredLabel coordinates if not in reset mode", () => {
 			threeSceneService.toggleLineAnimation(hoveredLabel)
 
-			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3, 3, 3))
-			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(2, 2, 2))
+			const pointsBufferGeometry = threeSceneService.labels.children[1]["geometry"] as BufferGeometry
+			const pointsArray = pointsBufferGeometry.attributes.position.array as Array<number>
+
+			expect(new Vector3(pointsArray[0], pointsArray[1], pointsArray[2])).toEqual(new Vector3(3, 3, 3))
+			expect(new Vector3(pointsArray[3], pointsArray[4], pointsArray[5])).toEqual(new Vector3(2, 2, 2))
 		})
 
 		it("should set endpoint to highlightedLabel if in reset mode", () => {
 			threeSceneService.resetLabel()
 
-			expect(threeSceneService.labels.children[1]["geometry"].vertices[0]).toEqual(new Vector3(3, 3, 3))
-			expect(threeSceneService.labels.children[1]["geometry"].vertices[1]).toEqual(new Vector3(1, 1, 1))
+			const pointsBufferGeometry = threeSceneService.labels.children[1]["geometry"] as BufferGeometry
+			const pointsArray = pointsBufferGeometry.attributes.position.array as Array<number>
+
+			expect(new Vector3(pointsArray[0], pointsArray[1], pointsArray[2])).toEqual(new Vector3(3, 3, 3))
+			expect(new Vector3(pointsArray[3], pointsArray[4], pointsArray[5])).toEqual(new Vector3(1, 1, 1))
 			expect(threeSceneService["highlightedLabel"]).toEqual(null)
 		})
 	})
