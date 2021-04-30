@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -170,9 +170,18 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
 
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
-			label.line.geometry["vertices"][0].multiply(multiplier)
-			label.line.geometry["vertices"][1] = label.sprite.position
-			label.line.geometry.translate(0, 0, 0)
+			const lineGeometry = label.line.geometry as BufferGeometry
+			const lineGeometryPosition = lineGeometry.attributes.position
+
+			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
+			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
+			lineGeometryPosition.setZ(0, lineGeometryPosition.getZ(0) * multiplier.z)
+
+			lineGeometryPosition.setX(1, label.sprite.position.x)
+			lineGeometryPosition.setY(1, label.sprite.position.y)
+			lineGeometryPosition.setZ(1, label.sprite.position.z)
+
+			lineGeometryPosition.needsUpdate = true
 		}
 
 		this.previousScaling.copy(scaling)
@@ -275,9 +284,11 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			linewidth: 2
 		})
 
-		const geometry = new Geometry()
-		geometry.vertices.push(new Vector3(x, yOrigin, z), new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z))
+		const bufferGeometry = new BufferGeometry().setFromPoints([
+			new Vector3(x, yOrigin, z),
+			new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z)
+		])
 
-		return new Line(geometry, material)
+		return new Line(bufferGeometry, material)
 	}
 }

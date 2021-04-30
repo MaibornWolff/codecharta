@@ -1,4 +1,4 @@
-import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3, Line, Geometry } from "three"
+import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3, Line, BufferGeometry } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
@@ -223,10 +223,12 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	toggleLineAnimation(hoveredLabel: Object3D) {
-		const geometry = new Geometry()
 		const endPoint = new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
 
-		geometry.vertices.push(this.highlightedLine.geometry.vertices[0], endPoint)
+		const pointsBufferGeometry = this.highlightedLine.geometry as BufferGeometry
+		const pointsArray = pointsBufferGeometry.attributes.position.array as Array<number>
+
+		const geometry = new BufferGeometry().setFromPoints([new Vector3(pointsArray[0], pointsArray[1], pointsArray[2]), endPoint])
 
 		const newLineForHighlightedLabel = new Line(geometry, this.highlightedLine.material)
 
