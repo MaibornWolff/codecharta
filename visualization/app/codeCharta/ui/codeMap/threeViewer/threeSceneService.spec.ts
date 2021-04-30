@@ -274,7 +274,7 @@ describe("ThreeSceneService", () => {
 			lineGeometry = new BufferGeometry()
 
 			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
-			const points = [new Vector3(3, 3, 3), new Vector3(3, 3, 3))]
+			const points = [new Vector3(3, 3, 3), new Vector3(3, 3, 3)]
 
 			lineGeometry = new BufferGeometry().setFromPoints(points)
 			placeholderLine["geometry"] = lineGeometry
@@ -354,7 +354,7 @@ describe("ThreeSceneService", () => {
 
 		beforeEach(() => {
 			highlightedLine = new Object3D()
-			const points = [new Vector3(3, 3, 3), new Vector3(3, 3, 3))]
+			const points = [new Vector3(3, 3, 3), new Vector3(3, 3, 3)]
 
 			lineGeometry = new BufferGeometry().setFromPoints(points)
 			highlightedLine["geometry"] = lineGeometry
