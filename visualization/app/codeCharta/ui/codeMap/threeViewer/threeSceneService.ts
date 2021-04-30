@@ -236,7 +236,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
-		if (labels == null) {
+		if (!labels) {
 			return null
 		}
 		// 2-step: the labels array consists of alternating label and the corresponding label antennae

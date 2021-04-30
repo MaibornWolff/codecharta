@@ -313,7 +313,7 @@ export class CodeMapMouseEventService
 	private calculateHoveredLabel(labels: Object3D[]) {
 		let labelClosestToViewPoint = null
 
-		if (labels != null) {
+		if (labels) {
 			for (let counter = 0; counter < labels.length; counter += 2) {
 				const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
 				if (intersect.length > 0) {
