@@ -1,14 +1,30 @@
 color-settings-panel-component {
-	md-card .section .section-body md-checkbox {
-		font-size: 0.9em;
+	background: #ffffff;
+	border: 1px solid #b5b5b5;
+	border-top: none;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
+	padding: 6px;
+	position: relative;
+	overflow: visible;
+	font-size: 0.9em;
+	text-align: left;
+	width: 262px;
+
+	.wrapper {
+		margin-left: 3px;
 	}
 
-	md-checkbox .md-label {
-		margin-left: 25px;
-		margin-top: 7px;
+	.spacer .cc-store-color-picker-wrapper {
+		margin-bottom: 12px;
 	}
 
-	md-checkbox .md-container {
-		transform: translateY(-80%);
+	cc-store-color-picker p.cc-store-color-picker-label {
+		margin-left: 12px;
+	}
+
+	.bottom-row {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
 	}
 }

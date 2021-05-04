@@ -1,2 +1,45 @@
 edge-settings-panel-component {
+	background: #ffffff;
+	border: 1px solid #b5b5b5;
+	border-top: none;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
+	display: block;
+	padding: 6px;
+	position: relative;
+	overflow: visible;
+	font-size: 0.9em;
+	text-align: left;
+	width: 262px;
+
+	md-slider-container {
+		position: relative;
+		.slider-title {
+			position: absolute;
+			top: 0;
+			font-size: 0.8em;
+			color: grey;
+			left: 4px;
+		}
+		.margin-input {
+			height: 24px;
+		}
+	}
+
+	.wrapper {
+		margin-left: 3px;
+	}
+
+	.wrapper cc-store-color-picker:not(:last-child) .cc-store-color-picker-wrapper {
+		margin-bottom: 12px;
+	}
+
+	cc-store-color-picker p.cc-store-color-picker-label {
+		margin-left: 12px;
+	}
+
+	.bottom-row {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+	}
 }

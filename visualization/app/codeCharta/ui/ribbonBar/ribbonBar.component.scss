@@ -9,12 +9,6 @@ ribbon-bar-component {
 	search-panel-component {
 		#search-panel-card.expanded {
 			height: 100%;
-
-			.section-body {
-				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
-				max-height: 500px;
-				overflow-y: auto;
-			}
 		}
 	}
 
@@ -48,10 +42,6 @@ ribbon-bar-component {
 				color: #444444;
 				overflow: hidden;
 				padding: 5px;
-
-				&.space {
-					width: 10000px;
-				}
 			}
 
 			.section-title {
@@ -81,53 +71,50 @@ ribbon-bar-component {
 					content: "\f107";
 				}
 			}
+		}
 
-			.section-body {
-				margin: 5px 5px 5px 5px;
-				overflow: visible;
-				font-size: 0.9em;
-				text-align: left;
-				vertical-align: top;
+		.area-settings-panesl {
+			background: #ffffff;
+			margin: 5px 5px 5px 5px;
+			overflow: visible;
+			font-size: 0.9em;
+			text-align: left;
+			vertical-align: top;
 
-				md-slider-container {
-					position: relative;
-					padding-left: 2px;
+			md-slider-container {
+				position: relative;
+				padding-left: 2px;
 
-					span {
-						position: absolute;
-						top: 0;
-						font-size: 10pt;
-						color: grey;
-						left: 5px;
-					}
-				}
-
-				md-input-container:not(#colorSliderContainer) > input {
-					height: 30px;
-					margin-top: -17px;
-				}
-
-				md-checkbox {
+				span {
+					position: absolute;
+					top: 0;
 					font-size: 10pt;
-					margin-left: 5px;
+					color: grey;
+					left: 5px;
 				}
+			}
 
-				reset-settings-button-component .md-button {
-					top: -7.5px;
-					right: -5px;
-					opacity: 0;
-					height: 0;
-					pointer-events: none;
-				}
+			md-input-container:not(#colorSliderContainer) > input {
+				height: 30px;
+				margin-top: -17px;
+			}
+
+			md-checkbox {
+				font-size: 10pt;
+				margin-left: 5px;
+			}
+
+			reset-settings-button-component .md-button {
+				top: -7.5px;
+				right: -5px;
+				opacity: 0;
+				height: 0;
+				pointer-events: none;
 			}
 		}
 
 		&.expanded {
-			height: $heightExpanded + px;
-
 			.section-title {
-				border-bottom: $border;
-
 				i:before {
 					content: "\f106";
 				}
@@ -163,33 +150,6 @@ ribbon-bar-component {
 	md-card.scenario-card {
 		max-width: 100px;
 		min-width: 100px;
-	}
-
-	.height-metric-card.expanded,
-	.area-metric-card.expanded,
-	.color-metric-card.expanded,
-	.edge-metric-card.expanded {
-		flex: 1 1 300px;
-	}
-
-	md-card.minimized {
-		min-width: 24px;
-	}
-
-	.height-metric-card.expanded {
-		height: 295px;
-	}
-
-	.area-metric-card.expanded {
-		height: 155px;
-	}
-
-	.color-metric-card.expanded {
-		height: 250px;
-	}
-
-	.edge-metric-card.expanded {
-		height: 250px;
 	}
 
 	cc-map-color-picker .cc-map-color-picker-wrapper {
