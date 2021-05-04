@@ -109,7 +109,7 @@
 		"lodash.isequal": "^4.5.0",
 		"lodash.throttle": "^4.1.1",
 		"md5": "^2.3.0",
-		"nouislider": "^14.7.0",
+		"nouislider": "^15.0.0",
 		"nw": "^0.53.0",
 		"open": "^8.0.6",
 		"redux": "^4.0.5",
