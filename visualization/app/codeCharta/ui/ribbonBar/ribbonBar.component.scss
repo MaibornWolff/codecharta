@@ -24,7 +24,7 @@ ribbon-bar-component {
 			height: 100%;
 			border-right: $border;
 			vertical-align: top;
-			flex-grow: 100;
+			overflow: hidden;
 
 			.section-header {
 				height: 31px;
