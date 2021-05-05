@@ -6,12 +6,6 @@ ribbon-bar-component {
 	pointer-events: none;
 	display: flex;
 
-	search-panel-component {
-		#search-panel-card.expanded {
-			height: 100%;
-		}
-	}
-
 	md-card {
 		pointer-events: all;
 		margin: 0;
@@ -21,14 +15,9 @@ ribbon-bar-component {
 		border-top: $border;
 		float: left;
 		position: relative;
-		overflow: hidden;
 		flex: 1 1 0;
 		min-width: 92px;
 		transition: 200ms width ease-in-out;
-
-		&.expanded {
-			overflow: visible;
-		}
 
 		.section {
 			display: inline-block;
@@ -123,7 +112,6 @@ ribbon-bar-component {
 			.section-body {
 				reset-settings-button-component .md-button {
 					opacity: 1;
-					height: 20px;
 					pointer-events: all;
 				}
 			}
