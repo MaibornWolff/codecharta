@@ -6,6 +6,18 @@ ribbon-bar-component {
 	pointer-events: none;
 	display: flex;
 
+	search-panel-component {
+		#search-panel-card.expanded {
+			height: 100%;
+
+			.section-body {
+				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
+				max-height: 500px;
+				overflow-y: auto;
+			}
+		}
+	}
+
 	md-card {
 		pointer-events: all;
 		margin: 0;
