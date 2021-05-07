@@ -14,7 +14,7 @@ export function getCodeMapNodeFromPath(path: string, nodeType: string, root: Cod
 	return matchingNode?.data
 }
 
-export function transformPath(toTransform: string) {
+function transformPath(toTransform: string) {
 	let removeNumberOfCharactersFromStart = 2
 
 	if (toTransform.startsWith("/")) {
@@ -26,18 +26,46 @@ export function transformPath(toTransform: string) {
 	return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
+export function getAllNodes(root: CodeMapNode) {
+	const filtered = []
+	if (root !== undefined) {
+		for (const { data } of hierarchy(root)) {
+			if (data.type !== "Folder") {
+				filtered.push(data)
+			}
+		}
+	}
+	return filtered
+}
+
 export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
 	gitignorePath = gitignorePath.trimStart()
 	if (gitignorePath.length === 0) {
 		return []
 	}
+	const ignoreResults = returnIgnore(gitignorePath)
+	const filtered = []
+	for (const { data } of hierarchy(root)) {
+		if (ignoreResults.ignoredNodePaths.ignores(transformPath(data.path)) === ignoreResults.condition) {
+			filtered.push(data)
+		}
+	}
+	return filtered
+}
+
+export function isNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string): boolean {
+	const ignoreResults = returnIgnore(gitignorePath)
+	return ignoreResults.ignoredNodePaths.ignores(transformPath(node.path)) === ignoreResults.condition
+}
+
+function returnIgnore(gitignorePath: string) {
+	gitignorePath = transformPath(gitignorePath.trimStart())
 
 	let condition = true
 	if (gitignorePath.startsWith("!")) {
 		gitignorePath = gitignorePath.slice(1)
 		condition = false
 	}
-
 	const ignoredNodePaths = ignore()
 
 	for (let path of gitignorePath.split(",")) {
@@ -50,24 +78,7 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 		}
 		ignoredNodePaths.add(transformPath(path))
 	}
-
-	const filtered = []
-	for (const { data } of hierarchy(root)) {
-		if (ignoredNodePaths.ignores(transformPath(data.path)) === condition) {
-			filtered.push(data)
-		}
-	}
-	return filtered
-}
-
-export function numberOfBlacklistedNodes(nodes: Array<CodeMapNode>) {
-	let count = 0
-	for (const node of nodes) {
-		if (isBlacklisted(node)) {
-			count++
-		}
-	}
-	return count
+	return { ignoredNodePaths, condition }
 }
 
 export function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>) {

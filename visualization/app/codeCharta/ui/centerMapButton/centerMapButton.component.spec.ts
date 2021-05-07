@@ -29,7 +29,8 @@ describe("CenterMapButtonController", () => {
 
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = centerMapButtonController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
-			autoFitTo: jest.fn()
+			autoFitTo: jest.fn(),
+			update: jest.fn()
 		})()
 	}
 

@@ -218,19 +218,6 @@ describe("ThreeViewerService", () => {
 			mockThreeJs()
 		})
 
-		it("should call requestAnimationFrame", () => {
-			threeViewerService.animate()
-
-			expect(threeRendererService.render).toHaveBeenCalled()
-		})
-
-		it("should call render", () => {
-			ThreeRendererService.enableFXAA = false
-			threeViewerService.animate()
-
-			expect(threeRendererService.render).toHaveBeenCalled()
-		})
-
 		it("should call controls.update", () => {
 			threeViewerService.animate()
 
@@ -241,6 +228,17 @@ describe("ThreeViewerService", () => {
 			threeViewerService.animate()
 
 			expect(threeUpdateCycleService.update).toHaveBeenCalled()
+		})
+	})
+
+	describe("animateStats", () => {
+		beforeEach(() => {
+			mockThreeJs()
+		})
+		it("should call threeStatsService updateStats", () => {
+			threeViewerService.animateStats()
+
+			expect(threeStatsService.updateStats).toHaveBeenCalled()
 		})
 	})
 

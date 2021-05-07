@@ -10,13 +10,13 @@ on:
 
 jobs:
  check_prettier:
+    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     name: Prettier Test
     runs-on: ubuntu-latest
     env:
       working-directory: ./
     steps:
     - uses: actions/checkout@v2
-
     - name: Setup Node.js environment
       uses: actions/setup-node@v2.1.4
       with:
@@ -40,10 +40,11 @@ jobs:
 
     - name: Lint files
       run: |
-        npm run format -- --check
+        npm run format:check
       working-directory: ${{env.working-directory}}
 
  build_visualization_test:
+    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     name: Visualization Test
     runs-on: ubuntu-latest
     env:
@@ -85,6 +86,7 @@ jobs:
           path: ./visualization/dist/
 
  build_visualization_e2e:
+    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     name: Visualization E2E
     runs-on: ubuntu-latest
     env:
@@ -120,6 +122,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
  publish_sonar_analysis:
+    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     name: "Build and Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
     env:
@@ -153,6 +156,7 @@ jobs:
           JAVA_HOME: ''
 
  publish_sonar_visualization:
+    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     needs: [build_visualization_test, build_visualization_e2e]
     name: "Build and Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
