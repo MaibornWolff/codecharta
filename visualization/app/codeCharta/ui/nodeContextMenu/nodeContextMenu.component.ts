@@ -33,10 +33,14 @@ export class NodeContextMenuController
 		codeMapNode: CodeMapNode
 		showNodeContextMenu: boolean
 		markingColors: string[]
+		nodePath: string
+		lastPartOfNodePath: string
 	} = {
 		codeMapNode: null,
 		showNodeContextMenu: false,
-		markingColors: null
+		markingColors: null,
+		nodePath: "",
+		lastPartOfNodePath: ""
 	}
 
 	/* @ngInject */
@@ -67,6 +71,8 @@ export class NodeContextMenuController
 
 	onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
+		this._viewModel.nodePath = path
+		this._viewModel.lastPartOfNodePath = `${path.lastIndexOf("/") === 0 ? "" : "..."}${path.slice(path.lastIndexOf("/"))}`
 		this._viewModel.showNodeContextMenu = true
 
 		const { x, y } = this.calculatePosition(mouseX, mouseY)

@@ -11,6 +11,7 @@ import { setResetCameraIfNewFileIsLoaded } from "../../../state/store/appSetting
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { FilesService } from "../../../state/store/files/files.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -19,6 +20,7 @@ describe("ThreeOrbitControlsService", () => {
 	let storeService: StoreService
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
+	let threeUpdateCycleService: ThreeUpdateCycleService
 
 	let vector: Vector3
 
@@ -38,6 +40,7 @@ describe("ThreeOrbitControlsService", () => {
 		storeService = getService<StoreService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 
 		vector = new Vector3(1.0715129195828004, 1.0715129195828004, 1.0715129195828004)
 	}
@@ -63,7 +66,14 @@ describe("ThreeOrbitControlsService", () => {
 	}
 
 	function rebuildService() {
-		threeOrbitControlsService = new ThreeOrbitControlsService($rootScope, $timeout, storeService, threeCameraService, threeSceneService)
+		threeOrbitControlsService = new ThreeOrbitControlsService(
+			$rootScope,
+			$timeout,
+			storeService,
+			threeCameraService,
+			threeSceneService,
+			threeUpdateCycleService
+		)
 	}
 
 	describe("constructor", () => {

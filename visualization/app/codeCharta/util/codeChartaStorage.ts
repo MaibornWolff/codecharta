@@ -29,7 +29,7 @@ export class CodeChartaStorage implements Storage {
 }
 
 export class CodeChartaFileStorageEngine implements Storage {
-	private fileStoragePath = `${fs.realpathSync(".")}/app/codeCharta/ressources/fileStorage/`
+	private fileStoragePath = `${fs.realpathSync(".")}/app/codeCharta/resources/fileStorage/`
 
 	// TODO: Find out, how to implement this.
 	readonly length = -1
