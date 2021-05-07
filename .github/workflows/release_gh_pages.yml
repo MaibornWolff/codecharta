@@ -1,4 +1,4 @@
-name: Release Gh-Pages
+name: CodeCharta Build
 
 on: 
   push: 
