@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.27% </span>
+                <span class="strong">95.45% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>141/148</span>
+                <span class='fraction'>147/154</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.17% </span>
+                <span class="strong">95.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>138/145</span>
+                <span class='fraction'>144/151</span>
             </div>
         
             
@@ -339,7 +339,19 @@
 <a name='L280'></a><a href='#L280'>280</a>
 <a name='L281'></a><a href='#L281'>281</a>
 <a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">121x</span>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -496,6 +508,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -512,6 +525,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -616,12 +638,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -778,6 +802,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			this.labels.splice(index, 1)
 			this.dispose(this.threeSceneService.labels.children)
 			this.threeSceneService.labels.children.length -= 2
+			this.threeSceneService.resetLineHighlight()
 		}
 	}
 &nbsp;
@@ -792,9 +817,18 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
 &nbsp;
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
-			label.line.geometry["vertices"][0].multiply(multiplier)
-			label.line.geometry["vertices"][1] = label.sprite.position
-			label.line.geometry.translate(0, 0, 0)
+			const lineGeometry = label.line.geometry as BufferGeometry
+			const lineGeometryPosition = lineGeometry.attributes.position
+&nbsp;
+			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
+			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
+			lineGeometryPosition.setZ(0, lineGeometryPosition.getZ(0) * multiplier.z)
+&nbsp;
+			lineGeometryPosition.setX(1, label.sprite.position.x)
+			lineGeometryPosition.setY(1, label.sprite.position.y)
+			lineGeometryPosition.setZ(1, label.sprite.position.z)
+&nbsp;
+			lineGeometryPosition.needsUpdate = true
 		}
 &nbsp;
 		this.previousScaling.copy(scaling)
@@ -897,10 +931,12 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			linewidth: 2
 		})
 &nbsp;
-		const geometry = new Geometry()
-		geometry.vertices.push(new Vector3(x, yOrigin, z), new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z))
+		const bufferGeometry = new BufferGeometry().setFromPoints([
+			new Vector3(x, yOrigin, z),
+			new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z)
+		])
 &nbsp;
-		return new Line(geometry, material)
+		return new Line(bufferGeometry, material)
 	}
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -910,7 +946,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Apr 22 2021 08:54:01 GMT+0000 (Coordinated Universal Time)
+                at Mon May 10 2021 14:09:50 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
