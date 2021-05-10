@@ -1,9 +1,9 @@
 <div class="metric-value" ng-show="$ctrl._viewModel.hoveredNode">
 	<div class="rounded-box">
 		<metric-type-component metric-selection="areaMetric"></metric-type-component>
-		<span>{{ $ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.areaMetric] | number }}</span>
+		<span class="value">{{ $ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.areaMetric] | number }}</span>
 	</div>
 	<div class="rounded-box" ng-show="$ctrl._viewModel.hoveredNode.deltas">
-		<span>&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.areaMetric] | number }}</span>
+		<span class="value">&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.areaMetric] | number }}</span>
 	</div>
 </div>
