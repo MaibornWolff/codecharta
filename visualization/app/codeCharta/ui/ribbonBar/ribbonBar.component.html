@@ -27,7 +27,13 @@
 	</div>
 </md-card>
 
-<md-card ng-attr-id="area-metric-card" class="area-metric-card">
+<md-card
+	ng-attr-id="area-metric-card"
+	class="area-metric-card metric-card"
+	ng-class="{
+		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN
+	}"
+>
 	<div class="section">
 		<div class="section-header">
 			<area-metric-chooser-component></area-metric-chooser-component>
@@ -46,7 +52,13 @@
 	></area-settings-panel-component>
 </md-card>
 
-<md-card ng-attr-id="height-metric-card" class="height-metric-card">
+<md-card
+	ng-attr-id="height-metric-card"
+	class="height-metric-card metric-card"
+	ng-class="{
+		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN
+	}"
+>
 	<div class="section">
 		<div class="section-header">
 			<height-metric-chooser-component></height-metric-chooser-component>
@@ -65,7 +77,13 @@
 	></height-settings-panel-component>
 </md-card>
 
-<md-card ng-attr-id="color-metric-card" class="color-metric-card">
+<md-card
+	ng-attr-id="color-metric-card"
+	class="color-metric-card metric-card"
+	ng-class="{
+		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN
+	}"
+>
 	<div class="section">
 		<div class="section-header">
 			<color-metric-chooser-component></color-metric-chooser-component>
@@ -84,7 +102,13 @@
 	></color-settings-panel-component>
 </md-card>
 
-<md-card ng-attr-id="edge-metric-card" class="edge-metric-card">
+<md-card
+	ng-attr-id="edge-metric-card"
+	class="edge-metric-card metric-card"
+	ng-class="{
+		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN
+	}"
+>
 	<div class="section">
 		<div class="section-header">
 			<edge-chooser-component></edge-chooser-component>

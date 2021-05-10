@@ -18,6 +18,14 @@ ribbon-bar-component {
 		}
 	}
 
+	.metric-card {
+		transition: background-color 100ms ease-in-out;
+
+		&.expanded {
+			background-color: antiquewhite;
+		}
+	}
+
 	md-card {
 		pointer-events: all;
 		margin: 0;
@@ -71,46 +79,6 @@ ribbon-bar-component {
 				i:before {
 					content: "\f107";
 				}
-			}
-		}
-
-		.area-settings-panesl {
-			background: #ffffff;
-			margin: 5px 5px 5px 5px;
-			overflow: visible;
-			font-size: 0.9em;
-			text-align: left;
-			vertical-align: top;
-
-			md-slider-container {
-				position: relative;
-				padding-left: 2px;
-
-				span {
-					position: absolute;
-					top: 0;
-					font-size: 10pt;
-					color: grey;
-					left: 5px;
-				}
-			}
-
-			md-input-container:not(#colorSliderContainer) > input {
-				height: 30px;
-				margin-top: -17px;
-			}
-
-			md-checkbox {
-				font-size: 10pt;
-				margin-left: 5px;
-			}
-
-			reset-settings-button-component .md-button {
-				top: -7.5px;
-				right: -5px;
-				opacity: 0;
-				height: 0;
-				pointer-events: none;
 			}
 		}
 
