@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.73.0] - 2021-05-10
+
 ### Added 🚀
 
 -   Improve descriptions ([#1879](https://github.com/MaibornWolff/codecharta/issues/1879))
@@ -18,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
     (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
 -   Fix labels and lines missing a connection in some cases([#1716](https://github.com/MaibornWolff/codecharta/issues/1716))
+-   Ribbons resizing when expanding ([#1952](https://github.com/MaibornWolff/codecharta/issues/1952))
 
 ### Chore 👨‍💻 👩‍💻
 
