@@ -18,14 +18,6 @@ ribbon-bar-component {
 		}
 	}
 
-	.metric-card {
-		transition: background-color 100ms ease-in-out;
-
-		&.expanded {
-			background-color: antiquewhite;
-		}
-	}
-
 	md-card {
 		pointer-events: all;
 		margin: 0;
