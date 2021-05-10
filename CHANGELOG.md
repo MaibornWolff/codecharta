@@ -7,6 +7,78 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Improve descriptions ([#1879](https://github.com/MaibornWolff/codecharta/issues/1879))
+    <br></br>
+    ![option dialog](https://user-images.githubusercontent.com/57844849/115393175-b2897b00-a1e1-11eb-8601-d2128f3469a3.png)
+
+### Fixed 🐞
+
+-   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
+    (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
+-   Fix labels and lines missing a connection in some cases([#1716](https://github.com/MaibornWolff/codecharta/issues/1716))
+
+### Chore 👨‍💻 👩‍💻
+
+-   Fix breaking changes with newest three-js version([#1877](https://github.com/MaibornWolff/codecharta/issues/1877))
+
+## [1.72.0] - 2021-04-22
+
+### Added 🚀
+
+-   Hints for Global Settings ([#1715](https://github.com/MaibornWolff/codecharta/issues/1715))
+-   Indicate total nodes and excluded / flattened nodes in file explorer ([#1880](https://github.com/MaibornWolff/codecharta/issues/1880))
+-   Add path to node context menu ([#1667](https://github.com/MaibornWolff/codecharta/issues/1667))
+
+### Fixed 🐞
+
+-   Made the header semi responsive ([#1037](https://github.com/MaibornWolff/codecharta/issues/1037))
+
+## [1.71.2] - 2021-03-16
+
+### Fixed 🐞
+
+-   DevOps pipeline changes
+-   Fixed web visualization in github
+
+## [1.71.1] - 2021-03-16
+
+### Fixed 🐞
+
+-   DevOps pipeline changes
+
+## [1.71.0] - 2021-03-16
+
+### Changed
+
+-   Disable unready AI function
+-   Fix linter errors
+-   Fix editorconfig
+
+## [1.70.2] - 2021-03-12
+
+### Fixed 🐞
+
+-   DevOps pipeline changes
+-   Project naming for Docker deployment
+
+## [1.70.1] - 2021-03-12
+
+### Fixed 🐞
+
+-   DevOps pipeline changes
+
+## [1.70.0] - 2021-03-09
+
+### Changed
+
+-   Render on demand ([#1728](https://github.com/MaibornWolff/codecharta/issues/1728))
+
+### Fixed
+
+-   Memory leaks
+
 ## [1.69.0] - 2021-02-23
 
 ### Added 🚀

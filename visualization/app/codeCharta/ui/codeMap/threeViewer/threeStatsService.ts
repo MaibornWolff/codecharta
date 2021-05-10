@@ -1,6 +1,8 @@
 import Stats from "three/examples/jsm/libs/stats.module"
 import { ThreeRendererService } from "./threeRendererService"
 import { isDevelopment } from "../../../util/envDetector"
+
+const ONE_SECOND = 1000
 export interface CustomPanel {
 	panel: Stats.Panel
 	maxHeight: number
@@ -11,6 +13,7 @@ export class ThreeStatsService {
 	glCallsPanel: CustomPanel
 	geometryMemoryPanel: CustomPanel
 	textureMemoryPanel: CustomPanel
+	prevTime: number
 	isDevelopmentMode = isDevelopment()
 
 	/* ngInject */
@@ -27,7 +30,13 @@ export class ThreeStatsService {
 			canvasElement.append(this.stats.dom)
 
 			this.generateStatPanels()
+
+			this.prevTime = this.getTimeFunctor().now()
 		}
+	}
+
+	private getTimeFunctor = () => {
+		return typeof performance === "undefined" ? Date : performance
 	}
 
 	private generateStatPanels = () => {
@@ -41,12 +50,16 @@ export class ThreeStatsService {
 
 	updateStats = () => {
 		if (this.isDevelopmentMode) {
-			const webGLInfo = this.threeRendererService.getInfo()
-			const threeJsInfo = this.threeRendererService.getMemoryInfo()
-			this.processPanel(this.trianglesPanel, webGLInfo.triangles)
-			this.processPanel(this.glCallsPanel, webGLInfo.calls)
-			this.processPanel(this.geometryMemoryPanel, threeJsInfo.geometries)
-			this.processPanel(this.textureMemoryPanel, threeJsInfo.textures)
+			const time = this.getTimeFunctor().now()
+			if (time >= this.prevTime + ONE_SECOND) {
+				this.prevTime = time
+				const webGLInfo = this.threeRendererService.getInfo()
+				const threeJsInfo = this.threeRendererService.getMemoryInfo()
+				this.processPanel(this.trianglesPanel, webGLInfo.triangles)
+				this.processPanel(this.glCallsPanel, webGLInfo.calls)
+				this.processPanel(this.geometryMemoryPanel, threeJsInfo.geometries)
+				this.processPanel(this.textureMemoryPanel, threeJsInfo.textures)
+			}
 			this.stats.update()
 		}
 	}

@@ -9,6 +9,7 @@
 	></md-button>
 	<md-button
 		class="state-selector-button right"
+		id="blacklist"
 		ng-class="{ current: $ctrl._viewModel.searchPanelMode == 'blacklist' }"
 		ng-click="$ctrl.onToggleSearchPanelMode('blacklist')"
 		title="Excluded and flattened buildings"

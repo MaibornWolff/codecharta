@@ -19,7 +19,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
-import { Box3, Matrix4, Object3D, Raycaster, Vector3 } from "three"
+import { Box3, BufferGeometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -260,17 +260,24 @@ describe("ThreeSceneService", () => {
 
 	describe("animateLabel", () => {
 		let labels = null
-		let labelLine = null
 		let otherNode = null
 		let label = null
 		let rayCaster = null
+		let placeholderLine = null
+		let lineGeometry = null
 
 		beforeEach(() => {
 			labels = []
-			labelLine = new Object3D()
 			otherNode = new Object3D()
 			label = new Object3D()
+			placeholderLine = new Object3D()
+			lineGeometry = new BufferGeometry()
+
 			rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
+			const points = [new Vector3(3, 3, 3), new Vector3(3, 3, 3)]
+
+			lineGeometry = new BufferGeometry().setFromPoints(points)
+			placeholderLine["geometry"] = lineGeometry
 		})
 
 		it("should animate the label by moving it 20% on the viewRay if it has no intersection", () => {
@@ -278,7 +285,7 @@ describe("ThreeSceneService", () => {
 			otherNode.translateY(5)
 			const resultPosition = new Vector3(0.5, 0.5, 0)
 
-			labels.push(label, labelLine, otherNode, labelLine)
+			labels.push(label, placeholderLine, otherNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 			expect(threeSceneService["highlightedLabel"]).toEqual(label)
@@ -290,7 +297,7 @@ describe("ThreeSceneService", () => {
 
 			const resultPosition = new Vector3(0.5, 0.5, 0)
 
-			labels.push(label, labelLine, otherNode, labelLine)
+			labels.push(label, placeholderLine, otherNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 			expect(threeSceneService["highlightedLabel"]).toEqual(label)
@@ -303,11 +310,95 @@ describe("ThreeSceneService", () => {
 			unObstructingNode.applyMatrix4(new Matrix4().makeTranslation(0.5, 0.5, 0))
 
 			label.userData = CODE_MAP_BUILDING
-			labels.push(label, labelLine, otherNode, labelLine, unObstructingNode, labelLine)
+			labels.push(label, placeholderLine, otherNode, placeholderLine, unObstructingNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 			expect(threeSceneService["highlightedLabel"]).toEqual(label)
 			expect(label.position).toEqual(unObstructingNode.position)
+		})
+	})
+
+	describe("resetLineHighlight", () => {
+		it("should reset line highlighting", () => {
+			threeSceneService["highlightedLineIndex"] = 5
+			threeSceneService["highlightedLine"] = new Object3D()
+
+			threeSceneService.resetLineHighlight()
+
+			expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
+			expect(threeSceneService["highlightedLine"]).toEqual(null)
+		})
+	})
+
+	describe("getHoveredLabelLineIndex", () => {
+		it("should return index+1 if found", () => {
+			const labels = []
+			const label1 = new Object3D()
+			const label2 = new Object3D()
+			const label3 = new Object3D()
+			labels.push(label1, label2, label3)
+
+			const indexIncrement = threeSceneService.getHoveredLabelLineIndex(labels, label2)
+
+			expect(indexIncrement).toEqual(2)
+		})
+	})
+
+	describe("toggleLineAnimation", () => {
+		let highlightedLabel = null
+		let hoveredLabel = null
+		let highlightedLine = null
+		let lineGeometry = null
+		let labels = null
+		let labelsGroup = null
+
+		beforeEach(() => {
+			highlightedLine = new Object3D()
+			const points = [new Vector3(3, 3, 3), new Vector3(3, 3, 3)]
+
+			lineGeometry = new BufferGeometry().setFromPoints(points)
+			highlightedLine["geometry"] = lineGeometry
+			highlightedLine.material = new Material()
+
+			labels = []
+			labels.push(new Object3D(), new Object3D(), new Object3D())
+
+			labelsGroup = new Group()
+			labelsGroup.children = labels
+			threeSceneService.labels = labelsGroup
+
+			hoveredLabel = new Object3D()
+			hoveredLabel.position.set(2, 2, 2)
+
+			highlightedLabel = new Object3D()
+			highlightedLabel.position.set(1, 1, 1)
+			highlightedLabel.material = new Material()
+
+			threeSceneService["highlightedLineIndex"] = 1
+			threeSceneService["highlightedLabel"] = highlightedLabel
+			threeSceneService["highlightedLine"] = highlightedLine
+			threeSceneService["normedTransformVector"] = new Vector3(0, 0, 0)
+		})
+
+		it("should set endpoint to given hoveredLabel coordinates if not in reset mode", () => {
+			threeSceneService.toggleLineAnimation(hoveredLabel)
+
+			const pointsBufferGeometry = threeSceneService.labels.children[1]["geometry"] as BufferGeometry
+			const pointsArray = pointsBufferGeometry.attributes.position.array as Array<number>
+
+			expect(new Vector3(pointsArray[0], pointsArray[1], pointsArray[2])).toEqual(new Vector3(3, 3, 3))
+			expect(new Vector3(pointsArray[3], pointsArray[4], pointsArray[5])).toEqual(new Vector3(2, 2, 2))
+		})
+
+		it("should set endpoint to highlightedLabel if in reset mode", () => {
+			threeSceneService.resetLabel()
+
+			const pointsBufferGeometry = threeSceneService.labels.children[1]["geometry"] as BufferGeometry
+			const pointsArray = pointsBufferGeometry.attributes.position.array as Array<number>
+
+			expect(new Vector3(pointsArray[0], pointsArray[1], pointsArray[2])).toEqual(new Vector3(3, 3, 3))
+			expect(new Vector3(pointsArray[3], pointsArray[4], pointsArray[5])).toEqual(new Vector3(1, 1, 1))
+			expect(threeSceneService["highlightedLabel"]).toEqual(null)
 		})
 	})
 
