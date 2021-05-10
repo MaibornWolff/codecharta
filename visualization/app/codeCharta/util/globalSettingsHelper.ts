@@ -23,8 +23,9 @@ export class GlobalSettingsHelper {
 
 	static setGlobalSettingsOfLocalStorageIfExists(storeService: StoreService) {
 		if (GlobalSettingsHelper.getGlobalSettings()) {
-			const globalSettings: GlobalSettings = JSON.parse(localStorage.getItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT))
-				.globalSettings
+			const globalSettings: GlobalSettings = JSON.parse(
+				localStorage.getItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT)
+			).globalSettings
 			const { appSettings } = storeService.getState()
 
 			if (appSettings.hideFlatBuildings !== globalSettings.hideFlatBuildings) {
