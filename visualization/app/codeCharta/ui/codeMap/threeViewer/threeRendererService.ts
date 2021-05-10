@@ -52,14 +52,16 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 		if (ThreeRendererService.setPixelRatio) {
 			this.renderer.setPixelRatio(window.devicePixelRatio)
 		}
-		if (WEBGL.isWebGL2Available) {
-			const size = this.renderer.getDrawingBufferSize(new Vector2())
-			const renderTarget = new WebGLRenderTarget(size.width, size.height, {
-				format: RGBAFormat
-			})
-			this.composer = new CustomComposer(this.renderer, renderTarget)
-		} else {
-			this.composer = new CustomComposer(this.renderer)
+		if (ThreeRendererService.enableFXAA) {
+			if (WEBGL.isWebGL2Available) {
+				const size = this.renderer.getDrawingBufferSize(new Vector2())
+				const renderTarget = new WebGLRenderTarget(size.width, size.height, {
+					format: RGBAFormat
+				})
+				this.composer = new CustomComposer(this.renderer, renderTarget)
+			} else {
+				this.composer = new CustomComposer(this.renderer)
+			}
 		}
 		this.renderer.setSize(containerWidth, containerHeight)
 		if (ThreeRendererService.enableFXAA) {
@@ -119,20 +121,18 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
-		if (isWhiteBackground) {
-			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white
-		} else {
-			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
-		}
+		ThreeRendererService.CLEAR_COLOR = isWhiteBackground
+			? ThreeRendererService.BACKGROUND_COLOR.white
+			: ThreeRendererService.BACKGROUND_COLOR.normal
 		this.renderer?.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
 	}
 
 	render() {
 		const { scene, camera, composer, renderer } = this
 		if (ThreeRendererService.enableFXAA) {
-			composer.render()
+			composer?.render()
 		} else {
-			renderer.render(scene, camera)
+			renderer?.render(scene, camera)
 		}
 	}
 }

@@ -19,6 +19,7 @@ import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showM
 import { klona } from "klona"
 import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
+import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 
 describe("codeMapRenderService", () => {
 	let $rootScope: IRootScopeService
@@ -28,6 +29,7 @@ describe("codeMapRenderService", () => {
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
 	let threeStatsService: ThreeStatsService
+	let threeUpdateCycleService: ThreeUpdateCycleService
 
 	let state: State
 	let map: CodeMapNode
@@ -50,6 +52,7 @@ describe("codeMapRenderService", () => {
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 		threeStatsService = getService<ThreeStatsService>("threeStatsService")
+		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 
 		state = klona(STATE)
 		map = klona(TEST_FILE_WITH_PATHS.map)
@@ -67,7 +70,8 @@ describe("codeMapRenderService", () => {
 			threeSceneService,
 			codeMapLabelService,
 			codeMapArrowService,
-			threeStatsService
+			threeStatsService,
+			threeUpdateCycleService
 		)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
 	}

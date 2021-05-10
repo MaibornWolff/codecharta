@@ -30,7 +30,7 @@ import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { Material, Object3D, Raycaster, Vector3 } from "three"
+import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LazyLoader } from "../../util/lazyLoader"
 
@@ -103,7 +103,8 @@ describe("codeMapMouseEventService", () => {
 
 	function withMockedThreeUpdateCycleService() {
 		threeUpdateCycleService = codeMapMouseEventService["threeUpdateCycleService"] = jest.fn().mockReturnValue({
-			register: jest.fn()
+			register: jest.fn(),
+			update: jest.fn()
 		})()
 	}
 
@@ -144,7 +145,8 @@ describe("codeMapMouseEventService", () => {
 				selectBuilding: jest.fn(),
 				getMeshDescription: jest.fn().mockReturnValue({
 					buildings: [codeMapBuilding]
-				})
+				}),
+				checkMouseRayMeshIntersection: jest.fn()
 			}),
 			clearHighlight: jest.fn(),
 			highlightSingleBuilding: jest.fn(),
@@ -156,7 +158,8 @@ describe("codeMapMouseEventService", () => {
 			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
 			getConstantHighlight: jest.fn().mockReturnValue(new Map()),
 			addBuildingToHighlightingList: jest.fn(),
-			highlightBuildings: jest.fn()
+			highlightBuildings: jest.fn(),
+			resetLabel: jest.fn()
 		})()
 	}
 
@@ -302,14 +305,13 @@ describe("codeMapMouseEventService", () => {
 		it("should not animate any labels and reset animated label and temporary label if the map is turned", () => {
 			const label = new Object3D()
 			setAnimatedLabel(label)
+			const animatedLabelPosition = label.position.clone()
 
 			// Grabbing and turning the map (should reset the animated label)
 			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.LeftClick } as MouseEvent)
 			expect(codeMapMouseEventService["isGrabbing"]).toBe(true)
 			expect(codeMapMouseEventService["isMoving"]).toBe(false)
 			codeMapMouseEventService.onDocumentMouseMove({ clientX: 2, clientY: 3 } as MouseEvent)
-
-			const animatedLabelPosition = label.position.clone()
 
 			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
 			codeMapMouseEventService.updateHovering()
@@ -323,14 +325,13 @@ describe("codeMapMouseEventService", () => {
 		it("should not animate any labels and reset animated label and temporary label if the map is moved", () => {
 			const label = new Object3D()
 			setAnimatedLabel(label)
+			const animatedLabelPosition = label.position.clone()
 
 			// Grabbing and moving the map (should reset the animated label)
 			codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.RightClick } as MouseEvent)
 			expect(codeMapMouseEventService["isGrabbing"]).toBe(false)
 			expect(codeMapMouseEventService["isMoving"]).toBe(true)
 			codeMapMouseEventService.onDocumentMouseMove({ clientX: 3, clientY: 4 } as MouseEvent)
-
-			const animatedLabelPosition = label.position.clone()
 
 			codeMapMouseEventService["temporaryLabelForBuilding"] = label.clone()
 			codeMapMouseEventService.updateHovering()
@@ -351,7 +352,7 @@ describe("codeMapMouseEventService", () => {
 			const resultPosition = new Vector3(0.5, 0.5, 0)
 
 			const labels = []
-			const labelLine = new Object3D()
+			const placeholderLine = new Object3D()
 			const labelNode = new Object3D()
 			label["material"] = new Material()
 			const rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
@@ -359,7 +360,12 @@ describe("codeMapMouseEventService", () => {
 			labelNode.translateX(-4)
 			labelNode.translateY(5)
 
-			labels.push(label, labelLine, labelNode, labelLine)
+			const points = [new Vector3(2, 2, 2), new Vector3(1, 1, 1)]
+
+			const lineGeometry = new BufferGeometry().setFromPoints(points)
+			placeholderLine["geometry"] = lineGeometry
+
+			labels.push(label, placeholderLine, labelNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 

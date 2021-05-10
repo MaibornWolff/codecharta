@@ -1,8 +1,7 @@
 "use strict"
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
-import { isLeaf, transformPath } from "./codeMapHelper"
-import ignore from "ignore"
+import { isLeaf, isNodeExcludedOrFlattened } from "./codeMapHelper"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 const enum MedianSelectors {
@@ -17,26 +16,24 @@ const enum EdgeAttributeType {
 	OUTGOING = "outgoing"
 }
 
-export class NodeDecorator {
-	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
-		const flattened = ignore()
-		const excluded = ignore()
-
-		let hasFlattenedPaths = false
-		let hasExcludedPaths = false
-
+export const NodeDecorator = {
+	decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 		for (const item of blacklist) {
-			const path = transformPath(item.path)
-
-			if (item.type === BlacklistType.flatten) {
-				hasFlattenedPaths = true
-				flattened.add(path)
-			} else {
-				hasExcludedPaths = true
-				excluded.add(path)
+			for (const { data } of hierarchy(map)) {
+				if (blacklist.length > 0) {
+					if (item.type === BlacklistType.flatten) {
+						data.isFlattened = data.isFlattened ? true : isNodeExcludedOrFlattened(data, item.path)
+					} else {
+						data.isExcluded = data.isExcluded ? true : isNodeExcludedOrFlattened(data, item.path) && isLeaf(data)
+					}
+				}
 			}
 		}
+		map.isExcluded = false
+		this.decorateMapWithMetricData(map, metricData)
+	},
 
+	decorateMapWithMetricData(map: CodeMapNode, metricData: MetricData) {
 		const { nodeMetricData, edgeMetricData } = metricData
 		let id = 0
 		for (const { data } of hierarchy(map)) {
@@ -70,13 +67,6 @@ export class NodeDecorator {
 					data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
 				}
 			}
-
-			if (blacklist.length > 0) {
-				const path = transformPath(data.path)
-				data.isFlattened = hasFlattenedPaths && flattened.ignores(path)
-				data.isExcluded = hasExcludedPaths && excluded.ignores(path)
-			}
-
 			// TODO: Verify the need for this code. It is unclear why child
 			// properties are copied to their parent.
 			if (data.children?.length === 1 && data.children[0].children?.length > 0) {
@@ -89,20 +79,16 @@ export class NodeDecorator {
 				}
 			}
 		}
-	}
+	},
 
-	static decorateMapWithPathAttribute(file: CCFile) {
+	decorateMapWithPathAttribute(file: CCFile) {
 		for (const node of hierarchy(file.map)) {
-			if (node.parent) {
-				node.data.path = `${node.parent.data.path}/${node.data.name}`
-			} else {
-				node.data.path = `/${node.data.name}`
-			}
+			node.data.path = node.parent ? `${node.parent.data.path}/${node.data.name}` : `/${node.data.name}`
 		}
 		return file
-	}
+	},
 
-	static decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
+	decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
 		const medians: Map<string, number[]> = new Map()
 		// TODO: Combine decorateMap, decorateMapWithPathAttribute and this one and
 		// remove the Object.keys calls from then on. They are identical to the

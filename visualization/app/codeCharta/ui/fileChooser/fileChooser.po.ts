@@ -19,6 +19,6 @@ export class FileChooserPageObject {
 			clickButtonOnPageElement("file-chooser-directive .toolbar-button")
 		])
 
-		await fileChooser.cancel()
+		fileChooser.cancel()
 	}
 }

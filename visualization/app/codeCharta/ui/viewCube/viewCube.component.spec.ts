@@ -6,7 +6,7 @@ import { ViewCubeController } from "./viewCube.component"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
-import { Color, Mesh, Vector3 } from "three"
+import { Color, Mesh, Vector3, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 describe("ViewCubeController", () => {
@@ -66,6 +66,9 @@ describe("ViewCubeController", () => {
 	describe("onCameraChanged", () => {
 		it("should call setCameraPosition", () => {
 			viewCubeController["setCameraPosition"] = jest.fn()
+			viewCubeController["renderer"] = ({
+				render: jest.fn()
+			} as unknown) as WebGLRenderer
 			const perspectiveCamera = new PerspectiveCamera(
 				ThreeCameraService.VIEW_ANGLE,
 				1,
@@ -85,6 +88,9 @@ describe("ViewCubeController", () => {
 
 	describe("onCubeHovered", () => {
 		it("should set hover info cube emmisive color to white", () => {
+			viewCubeController["renderer"] = ({
+				render: jest.fn()
+			} as unknown) as WebGLRenderer
 			viewCubeController.onCubeHovered(new Mesh())
 
 			expect(viewCubeController["hoverInfo"].cube.material.emissive).toStrictEqual(new Color(0xffffff))
@@ -98,6 +104,9 @@ describe("ViewCubeController", () => {
 					emissive: new Color(0xffffff)
 				}
 			}
+			viewCubeController["renderer"] = ({
+				render: jest.fn()
+			} as unknown) as WebGLRenderer
 			viewCubeController.onCubeUnhovered()
 
 			expect(viewCubeController["hoverInfo"].cube).toBe(null)
