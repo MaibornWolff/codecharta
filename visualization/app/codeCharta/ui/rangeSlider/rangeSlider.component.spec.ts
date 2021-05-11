@@ -103,10 +103,9 @@ describe("RangeSliderController", () => {
 		})
 
 		it("should have called rzSliderForceRender", () => {
-
 			rebuildController()
 
-			expect($rootScope.$broadcast).toBeCalledWith("rzSliderForceRender");
+			expect($rootScope.$broadcast).toBeCalledWith("rzSliderForceRender")
 		})
 	})
 
