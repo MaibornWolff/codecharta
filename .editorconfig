@@ -16,3 +16,6 @@ indent_style = tab
 [*.kt]
 indent_size = unset
 quote_type = unset
+
+[*.md]
+indent_size = 4
