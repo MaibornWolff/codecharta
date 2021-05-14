@@ -5,9 +5,8 @@ import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
-const PADDING_SCALING_FACTOR = 0.4
-const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
-const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
+const PADDING_SCALING_FACTOR = 1
+
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -48,7 +47,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 		]
 	}
 
-	const squarifiedTreeMap = getSquarifiedTreeMap(map, state, mapSizeResolutionScaling)
+	const squarifiedTreeMap = getSquarifiedTreeMap(map, state)
 
 	const nodes: Node[] = []
 	for (const squarifiedNode of squarifiedTreeMap.treeMap) {
@@ -73,7 +72,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 
 	for (const fixedFolder of hierarchyNode.children) {
 		const fixedPosition = fixedFolder.data.fixedPosition
-		const squarified = getSquarifiedTreeMap(fixedFolder.data, state, mapSizeResolutionScaling)
+		const squarified = getSquarifiedTreeMap(fixedFolder.data, state)
 
 		for (const squarifiedNode of squarified.treeMap.descendants()) {
 			// squarified.width/height is a sum of the fixedPosition.width/height and applied margins
@@ -150,12 +149,85 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 	root.length *= scaleLength
 }
 
-function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionScaling: number): SquarifiedTreeMap {
+function getSmallestDifference(childAreaValues:any[]){
+
+		let diff = Number.MAX_VALUE
+
+
+
+	const smallestValue = childAreaValues[0]
+
+
+	for (let index = 0;index < childAreaValues.length-1; index++) {
+
+			const intermediateDiff = childAreaValues[index + 1] - childAreaValues[index]
+			if (intermediateDiff < diff && intermediateDiff > 0) {
+					diff = intermediateDiff
+			}
+		}
+
+		// Return min diff
+		return Math.min(diff,smallestValue)
+}
+
+function getBuildingAreas(childrenAreaValue:any[], smallestDelta: number, minimumBuildingSize: number, padding: number){
+
+	return childrenAreaValue.map(element => {
+		const buildingArea = (element/smallestDelta) * minimumBuildingSize
+		return (Math.sqrt(buildingArea)+ padding)**2
+	})
+}
+
+function getNonZeroMetrics(areaValues:any[]){
+	let index = 0
+	while(areaValues[index] === 0){
+		index ++
+	}
+	return areaValues.slice(index)
+}
+
+
+function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
+
+	/**
+	 * DELETE AFTER THIS
+	 */
+
 	const hierarchyNode = hierarchy(map)
 	const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
+	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR
 	let mapWidth
 	let mapHeight
+
+	const leafAreaValues = []
+
+	for (const node of hierarchyNode) {
+		if(isLeaf(node.data)) leafAreaValues.push(getAreaValue(node.data,state))
+	}
+
+	const childrenAreaValue = getNonZeroMetrics(leafAreaValues)
+
+	const smallestDelta = getSmallestDifference(childrenAreaValue)
+
+	const minBuildingSize = 100
+
+	const metricBuildingAreas = getBuildingAreas(childrenAreaValue, smallestDelta, minBuildingSize, padding)
+
+
+	let totalNodeArea = metricBuildingAreas.reduce((intermediate, current) => intermediate + current)
+
+
+	const metricSum = hierarchyNode.sum(node => getAreaValue(node, state) + padding)
+
+	for (const node of hierarchyNode) {
+		if(!isLeaf(node.data)&& node.value !== undefined) {
+			const folderAreaValue = node.value
+			console.log("folderAreaValue: ", folderAreaValue)
+			totalNodeArea += (folderAreaValue +padding)**2 - folderAreaValue**2
+		}
+	}
+
+	const rootWidth = Math.sqrt(totalNodeArea)
 
 	if (map.fixedPosition !== undefined) {
 		mapWidth = map.fixedPosition.width
@@ -165,45 +237,41 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 		mapHeight = state.treeMap.mapSize * 2
 	}
 
-	let addedLabelSpace = 0
-	hierarchyNode.eachAfter(node => {
-		// Precalculate the needed paddings for the floor folder labels to be able to expand the default map size
-		if (!isLeaf(node)) {
-			if (node.depth === 0) {
-				addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
-			}
-			if (node.depth > 0 && node.depth < 3) {
-				addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2
-			}
-		}
-	})
 
 	// nodesPerSide is just an estimation.
 	// We do not know the exact amount,
 	// because the treemap algorithm is/must be executed with an initial width and height afterwards.
 	// TODO If it is wrong some buildings might be cut off.
 	// Use mapSizeResolutionScaling to scale down the pixels need for rendering of the map (width and height size)
-	const width = (mapWidth + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace) * mapSizeResolutionScaling
-	const height = (mapHeight + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace) * mapSizeResolutionScaling
+	const width = rootWidth
+	const height = rootWidth
+
+	console.log(rootWidth)
+	console.log("treeMapSize ", state.treeMap.mapSize)
+
+	const oldHeight = mapHeight + nodesPerSide * state.dynamicSettings.margin
+
+	console.log("childrenAreaValues:" , childrenAreaValue)
+	console.log("metricBuildingAreas", metricBuildingAreas)
+	console.log("totalNodeArea", totalNodeArea)
+
+	console.log(width,height)
+	console.log(mapHeight + nodesPerSide * state.dynamicSettings.margin)
+	console.log(mapWidth + nodesPerSide * state.dynamicSettings.margin)
+
+	console.log(width/oldHeight)
+
+
+	/**
+	 * DELETE BEFORE THIS
+	 */
 
 	const treeMap = treemap<CodeMapNode>()
 		.size([width, height])
-		.paddingOuter(padding)
-		.paddingInner(padding)
-		.paddingRight(node => {
-			// Start the labels at level 1 not 0 because the root folder should not be labeled
-			if (node.depth === 0) {
-				// Add a big padding for the first folder level (the font is bigger than in deeper levels)
-				return DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
-			}
-			if (node.depth > 0 && node.depth < 3) {
-				return DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2
-			}
-			// add treemap algorithm default padding otherwise
-			return padding
-		})
+		.paddingOuter(padding/2)
 
-	return { treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state) * mapSizeResolutionScaling)), height, width }
+
+	return { treeMap: treeMap(metricSum), height, width }
 }
 
 function getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {
@@ -228,7 +296,7 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, dynamicSettings: Dynami
 }
 
 // Only exported for testing.
-export function calculateAreaValue(node: CodeMapNode, { dynamicSettings }: State) {
+export function getAreaValue(node: CodeMapNode, { dynamicSettings }: State) {
 	if (node.isExcluded) {
 		return 0
 	}

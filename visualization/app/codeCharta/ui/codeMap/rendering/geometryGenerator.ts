@@ -1,7 +1,7 @@
 import { Node, State } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { IntermediateVertexData, SurfaceInformation } from "./intermediateVertexData"
+import { IntermediateVertexData } from "./intermediateVertexData"
 import { BoxGeometryGenerationHelper } from "./boxGeometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import {
@@ -11,10 +11,6 @@ import {
 	Box3,
 	Vector3,
 	BufferAttribute,
-	MeshBasicMaterial,
-	CanvasTexture,
-	RepeatWrapping,
-	DoubleSide
 } from "three"
 import { getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "../../../util/codeMapHelper"
 
@@ -44,6 +40,7 @@ export class GeometryGenerator {
 	])
 	private mapSizeResolutionScaling = MAP_RESOLUTION_SCALE.SMALL_MAP
 
+
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const data = new IntermediateVertexData()
 		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
@@ -63,6 +60,10 @@ export class GeometryGenerator {
 				this.addBuilding(data, node, index, desc, state, isDeltaState)
 			}
 		}
+		console.log(this.floorSurfaceLabelFontSizes)
+		console.log(this.mapSizeResolutionScaling)
+
+
 
 		return {
 			mesh: this.buildMeshFromIntermediateVertexData(data),
@@ -234,7 +235,7 @@ export class GeometryGenerator {
 			// Render the floors surface with the text label texture
 			geometry.addGroup(currentSurfaceInfo.surfaceStartIndex, verticesPerPlane, surfaceIndex + 1)
 
-			this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
+		//	this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
 
 			let verticesCountUntilNextFloorLabelRenderer = Number.POSITIVE_INFINITY
 			const startOfNextDefaultRenderer = currentSurfaceInfo.surfaceStartIndex + verticesPerPlane
@@ -248,7 +249,7 @@ export class GeometryGenerator {
 			geometry.addGroup(startOfNextDefaultRenderer, verticesCountUntilNextFloorLabelRenderer, 0)
 		}
 	}
-
+/*
 	private createAndAssignFloorLabelTextureMaterial(surfaceInfo: SurfaceInformation) {
 		const textCanvas = document.createElement("canvas")
 		textCanvas.height = surfaceInfo.maxPos.x - surfaceInfo.minPos.x
@@ -317,4 +318,5 @@ export class GeometryGenerator {
 
 		return abbreviatedText
 	}
+	*/
 }
