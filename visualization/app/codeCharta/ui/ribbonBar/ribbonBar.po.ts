@@ -14,9 +14,7 @@ export class RibbonBarPageObject {
 		const wasOpen = await this.isPanelOpen(selector)
 		await clickButtonOnPageElement(`#${selector}-card .section .section-title`)
 
-		await (wasOpen
-			? page.waitForSelector(`#${selector}-card`, { visible: false })
-			: page.waitForSelector(`#${selector}-card.${this.EXPANDED}`))
+		await (wasOpen ? page.waitForSelector(`#${selector}-card`) : page.waitForSelector(`#${selector}-card.${this.EXPANDED}`))
 
 		return !wasOpen
 	}

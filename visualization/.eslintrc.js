@@ -65,7 +65,7 @@ module.exports = {
         "prefer-regex-literals": "error",
         "prefer-template": "error",
 
-        "unicorn/prevent-abbreviations": ["error", { checkFilenames: false, whitelist: { len: true } }],
+        "unicorn/prevent-abbreviations": ["error", { checkFilenames: false }],
 
         // Do not apply inappropriate rules below
         "@typescript-eslint/ban-ts-comment": "off",
@@ -80,5 +80,7 @@ module.exports = {
         "unicorn/prefer-add-event-listener": "off",
         "unicorn/prefer-query-selector": "off",
         "unicorn/prefer-dom-node-append": "off",
+        "unicorn/prefer-module": "off",
+        "unicorn/prefer-node-protocol": "off"
     }
 }

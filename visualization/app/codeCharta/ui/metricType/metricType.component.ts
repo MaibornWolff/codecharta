@@ -27,7 +27,8 @@ export class MetricTypeController
 		EdgeMetricSubscriber,
 		BuildingHoveredSubscriber,
 		BuildingUnhoveredSubscriber,
-		MetricDataSubscriber {
+		MetricDataSubscriber
+{
 	private _viewModel: {
 		metricType: AttributeTypeValue
 		isFolderHovered: boolean
@@ -88,11 +89,10 @@ export class MetricTypeController
 
 	onMetricDataChanged() {
 		const state = this.storeService.getState()
-		if (this.metricSelection === MetricSelections.edgeMetric) {
-			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
-		} else {
-			this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
-		}
+		this._viewModel.metricType =
+			this.metricSelection === MetricSelections.edgeMetric
+				? this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
+				: this.nodeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
 	}
 }
 
