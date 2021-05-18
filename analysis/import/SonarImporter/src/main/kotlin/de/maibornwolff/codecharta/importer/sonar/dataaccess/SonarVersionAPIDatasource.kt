@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.importer.sonar.model.Version
 import java.net.URI
@@ -34,18 +33,14 @@ class SonarVersionAPIDatasource(private val user: String, private val baseUrl: U
             val version = request.get(String::class.java)
             Version.parse(version)
         } catch (exception: Exception) {
-            when (exception) {
-                is SonarImporterException -> {
-                    System.err.println("Falling back to SonarQube version $DEFAULT_VERSION")
-                    DEFAULT_VERSION
-                }
-                else -> throw SonarImporterException("Error requesting $versionAPIRequestURI")
-            }
+            System.err.println("Error requesting $versionAPIRequestURI")
+            System.err.println("Falling back to SonarQube version ${DEFAULT_VERSION.major}.${DEFAULT_VERSION.minor}")
+            DEFAULT_VERSION
         }
     }
 
     companion object {
         private const val VERSION_URL_PATTERN = "%s/api/server/version"
-        val DEFAULT_VERSION = Version(6, 5)
+        val DEFAULT_VERSION = Version(8, 9)
     }
 }
