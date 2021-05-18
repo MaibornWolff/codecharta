@@ -5,9 +5,11 @@ import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.junit.WireMockRule
+import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import java.net.MalformedURLException
 import java.net.URL
 import javax.ws.rs.core.MediaType
@@ -45,7 +47,7 @@ class SonarVersionAPIDatasourceIntegrationTest {
                     aResponse()
                         .withHeader("Content-Type", MediaType.TEXT_PLAIN + "; charset=utf-8")
                         .withStatus(200)
-                        .withBody("6")
+                        .withBody("something_weird")
                 )
         )
 
@@ -56,7 +58,25 @@ class SonarVersionAPIDatasourceIntegrationTest {
     }
 
     @Test
-    fun `should fallback to default version if version endpoint is not available`() {
+    fun `should parse the version even if minor is missing`() {
+        stubFor(
+            get(urlEqualTo(URL_PATH))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", MediaType.TEXT_PLAIN + "; charset=utf-8")
+                        .withStatus(200)
+                        .withBody("6")
+                )
+        )
+
+        val version = versionAPIDatasource.getSonarqubeVersion()
+
+        assertEquals(version.major, 6)
+        assertEquals(version.minor, 0)
+    }
+
+    @Test
+    fun `should throw an exception if version endpoint is not available`() {
         stubFor(
             get(urlEqualTo(URL_PATH))
                 .willReturn(
@@ -66,10 +86,7 @@ class SonarVersionAPIDatasourceIntegrationTest {
                 )
         )
 
-        val version = versionAPIDatasource.getSonarqubeVersion()
-
-        assertEquals(version.major, SonarVersionAPIDatasource.DEFAULT_VERSION.major)
-        assertEquals(version.minor, SonarVersionAPIDatasource.DEFAULT_VERSION.minor)
+        assertThrows<SonarImporterException> { versionAPIDatasource.getSonarqubeVersion() }
     }
 
     companion object {

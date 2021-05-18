@@ -18,8 +18,21 @@ class VersionTest {
     }
 
     @Test
-    fun `should throw an error if version is not parsable`() {
-        assertThrows<SonarImporterException> { Version.parse("8") }
+    fun `should parse a version even though minor is not specified`() {
+        val result = Version.parse("8")
+
+        assertEquals(result.major, 8)
+        assertEquals(result.minor, 0)
+    }
+
+    @Test
+    fun `should throw an error if version is empty`() {
+        assertThrows<SonarImporterException> { Version.parse("") }
+    }
+
+    @Test
+    fun `should throw an error if version does not contain a number`() {
+        assertThrows<SonarImporterException> { Version.parse("a") }
     }
 
     @Test
