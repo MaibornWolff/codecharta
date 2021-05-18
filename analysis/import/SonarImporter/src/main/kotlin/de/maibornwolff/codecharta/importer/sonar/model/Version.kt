@@ -1,15 +1,17 @@
 package de.maibornwolff.codecharta.importer.sonar.model
 
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
+import java.lang.Exception
 
-class Version(private val major: Int, private val minor: Int) {
+class Version(val major: Int, val minor: Int) {
+
     companion object {
         fun parse(version: String): Version {
-            val tokenized = version.split(".").subList(0, 2)
-            val versions = tokenized.map { it.toInt() }
             try {
+                val tokenized = version.split(".").subList(0, 2)
+                val versions = tokenized.map { it.toInt() }
                 return Version(versions[0], versions[1])
-            } catch (exception: NullPointerException) {
+            } catch (exception: Exception) {
                 throw SonarImporterException("Could not parse version $version.")
             }
         }

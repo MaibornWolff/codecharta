@@ -20,7 +20,11 @@ import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType
 
-class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: URL, private val version: Version) {
+class SonarMeasuresAPIDatasource(
+    private val user: String,
+    private val baseUrl: URL,
+    private val version: Version = Version(6, 5)
+) {
 
     private val client: Client = ClientBuilder.newClient()
     private val logger = KotlinLogging.logger {}
