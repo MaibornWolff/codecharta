@@ -25,8 +25,6 @@ import java.net.URL
 
 class SonarMeasuresAPIDatasourceIntegrationTest {
 
-    private val logger = KotlinLogging.logger {}
-
     @Rule
     @JvmField
     var wireMockRule = WireMockRule(PORT)

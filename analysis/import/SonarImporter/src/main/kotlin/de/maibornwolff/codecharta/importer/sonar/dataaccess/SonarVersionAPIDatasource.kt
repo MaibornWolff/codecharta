@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
+import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.importer.sonar.model.Version
 import java.net.URI
@@ -22,7 +23,7 @@ class SonarVersionAPIDatasource(private val user: String, private val baseUrl: U
 
         val request = client
             .target(versionAPIRequestURI)
-            .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
+            .request(MediaType.TEXT_PLAIN + "; charset=utf-8")
 
         if (user.isNotEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user))
@@ -32,10 +33,14 @@ class SonarVersionAPIDatasource(private val user: String, private val baseUrl: U
             System.err.println("Fetching SonarQube Version...")
             val version = request.get(String::class.java)
             Version.parse(version)
-        } catch (e: Exception) {
-            System.err.println("Error requesting $versionAPIRequestURI")
-            System.err.println("Falling back to SonarQube version $DEFAULT_VERSION")
-            DEFAULT_VERSION
+        } catch (exception: Exception) {
+            when (exception) {
+                is SonarImporterException -> {
+                    System.err.println("Falling back to SonarQube version $DEFAULT_VERSION")
+                    DEFAULT_VERSION
+                }
+                else -> throw SonarImporterException("Error requesting $versionAPIRequestURI")
+            }
         }
     }
 
