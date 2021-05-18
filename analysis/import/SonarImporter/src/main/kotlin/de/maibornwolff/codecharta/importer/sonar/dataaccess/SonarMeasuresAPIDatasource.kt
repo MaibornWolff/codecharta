@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.importer.sonar.model.Component
 import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.importer.sonar.model.Measures
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
+import de.maibornwolff.codecharta.importer.sonar.model.Version
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import io.reactivex.BackpressureStrategy
@@ -19,7 +20,7 @@ import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType
 
-class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: URL?) {
+class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: URL, private val version: Version) {
 
     private val client: Client = ClientBuilder.newClient()
     private val logger = KotlinLogging.logger {}
@@ -38,7 +39,13 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         val componentMap = ComponentMap()
         System.err.print("0% of data retrieved...")
 
-        val flowable = Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, MAX_METRICS_IN_ONE_SONARCALL, true))
+        val flowable = Flowable.fromIterable(
+            metricsList.windowed(
+                MAX_METRICS_IN_ONE_SONAR_CALL,
+                MAX_METRICS_IN_ONE_SONAR_CALL,
+                true
+            )
+        )
         flowable.flatMap { p ->
             measureBatches++
             getMeasures(componentKey, p)
@@ -81,13 +88,13 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
             .target(measureAPIRequestURI)
             .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
 
-        if (!user.isEmpty()) {
+        if (user.isNotEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user))
         }
 
         try {
             logger.debug { "Getting measures from $measureAPIRequestURI" }
-            return request.get<Measures>(Measures::class.java)
+            return request.get(Measures::class.java)
         } catch (e: RuntimeException) {
             throw SonarImporterException("Error requesting $measureAPIRequestURI", e)
         }
@@ -100,7 +107,9 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
         val metricString = metrics.joinToString(",") { it }
         try {
-            return URI(String.format(MEASURES_URL_PATTERN, baseUrl, componentKey, metricString, pageNumber))
+            val pattern =
+                if (version.isSmallerThan(Version(6, 6))) MEASURES_URL_PATTERN_DEPRECATED else MEASURES_URL_PATTERN
+            return URI(String.format(pattern, baseUrl, componentKey, metricString, pageNumber))
         } catch (e: URISyntaxException) {
             throw SonarImporterException(e)
         }
@@ -109,14 +118,19 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     private fun updateProgress(componentCount: Int) {
         processedPages++
         val pagesPerRun = (componentCount + PAGE_SIZE - 1) / PAGE_SIZE
-        progressTracker.updateProgress((pagesPerRun * measureBatches).toLong(), processedPages.toLong(), parsingUnit.name)
+        progressTracker.updateProgress(
+            (pagesPerRun * measureBatches).toLong(),
+            processedPages.toLong(),
+            parsingUnit.name
+        )
     }
 
     companion object {
-
         private const val PAGE_SIZE = 500
-        private const val MAX_METRICS_IN_ONE_SONARCALL = 15
-        private const val MEASURES_URL_PATTERN =
+        private const val MAX_METRICS_IN_ONE_SONAR_CALL = 15
+        private const val MEASURES_URL_PATTERN_DEPRECATED =
             "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
+        private const val MEASURES_URL_PATTERN =
+            "%s/api/measures/component_tree?component=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
     }
 }
