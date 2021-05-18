@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType
 class SonarMeasuresAPIDatasource(
     private val user: String,
     private val baseUrl: URL,
-    private val version: Version = Version(6, 5)
+    private val version: Version = SonarVersionAPIDatasource.DEFAULT_VERSION
 ) {
 
     private val client: Client = ClientBuilder.newClient()
