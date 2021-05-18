@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   SonarImport: SonarQube 8.8 support. Older versions are still supported.
+
 ## [1.73.0] - 2021-05-10
 
 ### Added 🚀
