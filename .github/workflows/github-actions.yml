@@ -95,7 +95,8 @@ jobs:
     if: |
      "!contains(github.event.head_commit.message, 'Deploying to main')" && 
      ((github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') 
-     || (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]'))    name: Visualization E2E
+     || (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]'))    
+    name: Visualization E2E
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
@@ -133,7 +134,8 @@ jobs:
     if: |
      "!contains(github.event.head_commit.message, 'Deploying to main')" && 
      ((github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') 
-     || (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]'))    name: "Build and Publish Analysis Sonar Results"
+     || (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]'))   
+    name: "Build and Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
     env:
       working-directory: ./analysis
@@ -169,7 +171,8 @@ jobs:
     if: |
      "!contains(github.event.head_commit.message, 'Deploying to main')" && 
      ((github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') 
-     || (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]'))    needs: [build_visualization_test, build_visualization_e2e]
+     || (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]'))    
+    needs: [build_visualization_test, build_visualization_e2e]
     name: "Build and Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
     env:
