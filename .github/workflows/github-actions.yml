@@ -1,7 +1,12 @@
 name: Tests
 
 on:
-  pull_request_target
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
 
 jobs:
  check_prettier:
