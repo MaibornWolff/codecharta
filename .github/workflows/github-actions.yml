@@ -5,13 +5,13 @@ on:
     branches:
     - main
   pull_request_target:
-    branches:
-    - main
 
 jobs:
  check_prettier:
     if: |
-     "!contains(github.event.head_commit.message, 'Deploying to main')" 
+     "!contains(github.event.head_commit.message, 'Deploying to main')" && 
+      ((github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') 
+      || (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]'))
     name: Prettier Test
     runs-on: ubuntu-latest
     env:
