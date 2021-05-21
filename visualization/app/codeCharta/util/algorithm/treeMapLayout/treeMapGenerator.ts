@@ -217,7 +217,11 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	let totalNodeArea = metricBuildingAreas.reduce((intermediate, current) => intermediate + current)
 
 
+	//paddingInner
 	const metricSum = hierarchyNode.sum(node => getAreaValue(node, state) + padding)
+
+	//const hierarchyNodeCopy = hierarchyNode.copy()
+
 
 	for (const node of hierarchyNode) {
 		if(!isLeaf(node.data)&& node.value !== undefined) {
