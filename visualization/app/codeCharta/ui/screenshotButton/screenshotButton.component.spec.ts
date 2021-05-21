@@ -6,6 +6,7 @@ import { ScreenshotButtonController } from "./screenshotButton.component"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererService"
+import { Scene, WebGLRenderer } from "three"
 
 describe("resetSettingsButtonController", () => {
 	let screenshotButtonController: ScreenshotButtonController
@@ -14,8 +15,19 @@ describe("resetSettingsButtonController", () => {
 	let threeCameraService: ThreeCameraService
 	let threeRendererService: ThreeRendererService
 
+	function mockLoadScript() {
+		threeRendererService.renderer = { domElement: { height: 1, width: 1 } } as WebGLRenderer
+		threeRendererService.renderer.setPixelRatio = jest.fn()
+		threeRendererService.renderer.getClearColor = jest.fn()
+		threeRendererService.renderer.setClearColor = jest.fn()
+		threeRendererService.renderer.render = jest.fn()
+		threeRendererService.renderer.domElement.toDataURL = jest.fn()
+		threeSceneService.scene = { background: null } as Scene
+	}
+
 	beforeEach(() => {
 		restartSystem()
+		mockLoadScript()
 		rebuildController()
 	})
 
@@ -38,9 +50,15 @@ describe("resetSettingsButtonController", () => {
 	}
 
 	describe("makeScreenshot", () => {
-		it("should ", () => {
+		it("should call loadScript", () => {
+			screenshotButtonController["loadScript"] = jest.fn()
 			screenshotButtonController.makeScreenshot()
-			expect(screenshotButtonController["loadScript"]).toHaveBeenCalled()
+			expect(screenshotButtonController["loadScript"]).toBeCalled()
+		})
+		it("should call makePNGFileName", () => {
+			screenshotButtonController["makePNGFileName"] = jest.fn()
+			screenshotButtonController.makeScreenshot()
+			expect(screenshotButtonController["makePNGFileName"]).toBeCalled()
 		})
 	})
 })
