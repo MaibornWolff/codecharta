@@ -43,8 +43,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 }
 
 export class CodeMapPreRenderService
-	implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber
-{
+	implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode

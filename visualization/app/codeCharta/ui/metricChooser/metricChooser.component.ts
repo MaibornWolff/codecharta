@@ -17,8 +17,7 @@ import {
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export class MetricChooserController
-	implements NodeMetricDataSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber
-{
+	implements NodeMetricDataSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
 	private originalMetricData: NodeMetricData[]
 
 	private _viewModel: {

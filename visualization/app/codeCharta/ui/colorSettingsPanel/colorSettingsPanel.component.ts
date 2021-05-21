@@ -18,8 +18,7 @@ import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynam
 import { ColorRange } from "../../codeCharta.model"
 
 export class ColorSettingsPanelController
-	implements FilesSelectionSubscriber, InvertDeltaColorsSubscriber, InvertColorRangeSubscriber, ColorRangeSubscriber
-{
+	implements FilesSelectionSubscriber, InvertDeltaColorsSubscriber, InvertColorRangeSubscriber, ColorRangeSubscriber {
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean

@@ -34,8 +34,7 @@ export class AttributeSideBarController
 		HeightMetricSubscriber,
 		ColorMetricSubscriber,
 		EdgeMetricSubscriber,
-		IsAttributeSideBarVisibleSubscriber
-{
+		IsAttributeSideBarVisibleSubscriber {
 	private _viewModel: {
 		node: Node
 		fileName: string

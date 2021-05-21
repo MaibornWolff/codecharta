@@ -42,7 +42,7 @@ describe("ViewCubeController", () => {
 	}
 
 	function mockElement() {
-		$element = [] as unknown as Element
+		$element = ([] as unknown) as Element
 	}
 
 	describe("constructor", () => {
@@ -66,9 +66,9 @@ describe("ViewCubeController", () => {
 	describe("onCameraChanged", () => {
 		it("should call setCameraPosition", () => {
 			viewCubeController["setCameraPosition"] = jest.fn()
-			viewCubeController["renderer"] = {
+			viewCubeController["renderer"] = ({
 				render: jest.fn()
-			} as unknown as WebGLRenderer
+			} as unknown) as WebGLRenderer
 			const perspectiveCamera = new PerspectiveCamera(
 				ThreeCameraService.VIEW_ANGLE,
 				1,
@@ -88,9 +88,9 @@ describe("ViewCubeController", () => {
 
 	describe("onCubeHovered", () => {
 		it("should set hover info cube emmisive color to white", () => {
-			viewCubeController["renderer"] = {
+			viewCubeController["renderer"] = ({
 				render: jest.fn()
-			} as unknown as WebGLRenderer
+			} as unknown) as WebGLRenderer
 			viewCubeController.onCubeHovered(new Mesh())
 
 			expect(viewCubeController["hoverInfo"].cube.material.emissive).toStrictEqual(new Color(0xffffff))
@@ -104,9 +104,9 @@ describe("ViewCubeController", () => {
 					emissive: new Color(0xffffff)
 				}
 			}
-			viewCubeController["renderer"] = {
+			viewCubeController["renderer"] = ({
 				render: jest.fn()
-			} as unknown as WebGLRenderer
+			} as unknown) as WebGLRenderer
 			viewCubeController.onCubeUnhovered()
 
 			expect(viewCubeController["hoverInfo"].cube).toBe(null)

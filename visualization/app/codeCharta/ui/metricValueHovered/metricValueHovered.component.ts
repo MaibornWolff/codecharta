@@ -8,8 +8,7 @@ import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/d
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 export class MetricValueHoveredController
-	implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber
-{
+	implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber {
 	private POSITIVE_COLOR = "#b1d8a8"
 	private NEGATIVE_COLOR = "#ffcccc"
 	private NEUTRAL_COLOR = "#e6e6e6"

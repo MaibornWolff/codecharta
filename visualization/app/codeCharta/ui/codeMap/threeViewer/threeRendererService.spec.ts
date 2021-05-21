@@ -45,7 +45,7 @@ describe("ThreeRenderService", () => {
 	const mockedWebGLRenderer = () => {
 		const eventMap = {}
 		const webGLRenderer = new WebGLRenderer({
-			context: {
+			context: ({
 				getParameter: jest.fn().mockReturnValue(["WebGL 2"]),
 				getExtension: jest.fn().mockReturnValue({
 					EXT_blend_minmax: null
@@ -65,17 +65,17 @@ describe("ThreeRenderService", () => {
 				initGLContext: jest.fn(),
 				scissor: jest.fn(),
 				viewport: jest.fn()
-			} as unknown as WebGLRenderingContext
+			} as unknown) as WebGLRenderingContext
 		})
 
-		webGLRenderer.domElement = {
+		webGLRenderer.domElement = ({
 			addEventListener: jest.fn((event, callback) => {
 				eventMap[event] = callback
 			}),
 			getBoundingClientRect: jest.fn().mockReturnValue({ left: 20, top: 20 }),
 			width: 100,
 			height: 100
-		} as unknown as HTMLCanvasElement
+		} as unknown) as HTMLCanvasElement
 
 		webGLRenderer.getPixelRatio = jest.fn().mockReturnValue(2)
 		webGLRenderer.setClearColor = jest.fn()
@@ -96,7 +96,7 @@ describe("ThreeRenderService", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeCameraService.camera = new PerspectiveCamera()
 		threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
-		threeRendererService.composer = {
+		threeRendererService.composer = ({
 			render: jest.fn(),
 			setSize: jest.fn(),
 			addPass: jest.fn(),
@@ -106,14 +106,14 @@ describe("ThreeRenderService", () => {
 			getMemoryInfo: jest.fn().mockReturnValue({
 				geom: 0
 			})
-		} as unknown as CustomComposer
-		threeRendererService.renderer = {
+		} as unknown) as CustomComposer
+		threeRendererService.renderer = ({
 			...mockedWebGLRenderer(),
 			info: {
 				render: { triangles: 1 },
 				memory: { geom: 1 }
 			}
-		} as unknown as WebGLRenderer
+		} as unknown) as WebGLRenderer
 		threeRendererService["initGL"] = jest.fn()
 		threeRendererService["onIsWhiteBackgroundChanged"] = jest.fn()
 		threeRendererService["setGLOptions"] = jest.fn()
@@ -200,10 +200,10 @@ describe("ThreeRenderService", () => {
 		})
 
 		const spyOnComposer = () => {
-			return jest.spyOn(composer, "CustomComposer").mockReturnValue({
+			return jest.spyOn(composer, "CustomComposer").mockReturnValue(({
 				setSize: jest.fn(),
 				addPass: jest.fn()
-			} as unknown as CustomComposer)
+			} as unknown) as CustomComposer)
 		}
 
 		it("should generate customcomposer with render target  when webgl2 is available and FXAA is true", () => {
