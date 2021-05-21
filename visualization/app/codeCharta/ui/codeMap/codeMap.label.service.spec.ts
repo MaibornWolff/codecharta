@@ -71,7 +71,7 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function setCanvasRenderSettings() {
-		sampleLeaf = {
+		sampleLeaf = ({
 			name: "sample",
 			width: 1,
 			height: 2,
@@ -84,9 +84,9 @@ describe("CodeMapLabelService", () => {
 			deltas: { a: 1, b: 2 },
 			attributes: { a: 20, b: 15, mcc: 99 },
 			children: []
-		} as undefined as Node
+		} as undefined) as Node
 
-		otherSampleLeaf = {
+		otherSampleLeaf = ({
 			name: "otherSampleLeaf",
 			width: 4,
 			height: 3,
@@ -99,9 +99,9 @@ describe("CodeMapLabelService", () => {
 			deltas: { a: 1, b: 2 },
 			attributes: { a: 20, b: 15, mcc: 99 },
 			children: []
-		} as undefined as Node
+		} as undefined) as Node
 
-		sampleLeafDelta = {
+		sampleLeafDelta = ({
 			name: "otherSampleLeaf",
 			width: 4,
 			height: 7,
@@ -115,7 +115,7 @@ describe("CodeMapLabelService", () => {
 			attributes: { a: 20, b: 15, mcc: 99 },
 			heightDelta: 8,
 			children: []
-		} as undefined as Node
+		} as undefined) as Node
 
 		canvasContextMock = {
 			font: "",
@@ -316,7 +316,7 @@ describe("CodeMapLabelService", () => {
 		const generateSceneLabelChild = (numberOfChildren: number): Object3D[] => {
 			const generated = []
 			for (let index = 0; index < numberOfChildren; index++) {
-				generated[index] = { line: undefined, sprite: undefined } as unknown as Object3D
+				generated[index] = ({ line: undefined, sprite: undefined } as unknown) as Object3D
 			}
 			return generated
 		}
@@ -364,20 +364,20 @@ describe("CodeMapLabelService", () => {
 
 	const MockedSprite = () => {
 		const sprite = new Sprite()
-		sprite.material = {
+		sprite.material = ({
 			map: { dispose: jest.fn() },
 			dispose: jest.fn()
-		} as unknown as SpriteMaterial
-		sprite.geometry = { dispose: jest.fn() } as unknown as BufferGeometry
+		} as unknown) as SpriteMaterial
+		sprite.geometry = ({ dispose: jest.fn() } as unknown) as BufferGeometry
 		return sprite
 	}
 
 	const MockedLine = () => {
 		const line = new Line()
-		line.material = {
+		line.material = ({
 			dispose: jest.fn()
-		} as unknown as LineBasicMaterial
-		line.geometry = { dispose: jest.fn() } as unknown as BufferGeometry
+		} as unknown) as LineBasicMaterial
+		line.geometry = ({ dispose: jest.fn() } as unknown) as BufferGeometry
 		return line
 	}
 
