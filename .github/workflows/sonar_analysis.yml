@@ -6,12 +6,9 @@ on:
     types:
       - completed
 jobs:
-  if: |
-    github.actor != 'dependabot[bot]'
-    && github.actor != 'dependabot-preview[bot]'
 
   publish_sonar_analysis:
-    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     name: "Build and Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
     env:
@@ -45,7 +42,7 @@ jobs:
           JAVA_HOME: ''
 
   publish_sonar_visualization:
-    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     name: "Build and Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
     env:
