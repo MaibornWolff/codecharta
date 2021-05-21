@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   SonarImport: SonarQube 8.8 support. Older versions are still supported.
 
+### Fixed 🐞
+
+-   Only show labels for building included in the search
+
 ## [1.73.0] - 2021-05-10
 
 ### Added 🚀
