@@ -1,0 +1,72 @@
+name: SonarAnalysis
+
+on:
+  workflow_run:
+    workflows: ["Tests"]
+    types:
+      - completed
+jobs:
+  if: github.actor != 'dependabot[bot]' || github.actor != 'dependabot-preview[bot]'
+
+  publish_sonar_analysis:
+    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
+    name: "Build and Publish Analysis Sonar Results"
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./analysis
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: '11'
+
+      - name: Build
+        run: chmod +x ./gradlew
+        working-directory: ${{env.working-directory}}
+
+      - name: Test Analysis
+        run: |
+          ./gradlew build integrationTest
+          ./gradlew jacocoTestReport
+        working-directory: ${{env.working-directory}}
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v1.5
+        with:
+          projectBaseDir: ./analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          JAVA_HOME: ''
+
+  publish_sonar_visualization:
+    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
+    needs: [ build_visualization_test, build_visualization_e2e ]
+    name: "Build and Publish Visualization Sonar Results"
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./visualization
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: test.yml
+          workflow_conclusion: success
+          commit: ${{github.event.pull_request.head.sha}}
+          name: coverage
+          path: ./visualization/dist/
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v1.5
+        with:
+          projectBaseDir: ./visualization
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
