@@ -16,7 +16,6 @@ export class ScreenshotButtonController {
 		private threeRendererService: ThreeRendererService,
 		private storeService: StoreService
 	) {
-		document.getElementById("scrBtn").title += ` (${ScreenshotButtonController.SCREENSHOT_HOTKEY})`
 		hotkeys(ScreenshotButtonController.SCREENSHOT_HOTKEY, () => {
 			this.makeScreenshot()
 		})
