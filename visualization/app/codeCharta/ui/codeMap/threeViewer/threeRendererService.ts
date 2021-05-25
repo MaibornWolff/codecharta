@@ -120,11 +120,9 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
-		if (isWhiteBackground) {
-			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white
-		} else {
-			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
-		}
+		ThreeRendererService.CLEAR_COLOR = isWhiteBackground
+			? ThreeRendererService.BACKGROUND_COLOR.white
+			: ThreeRendererService.BACKGROUND_COLOR.normal
 		this.renderer?.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
 	}
 

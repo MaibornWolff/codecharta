@@ -48,7 +48,8 @@ export enum CursorType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber
+{
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -175,6 +176,8 @@ export class CodeMapMouseEventService
 
 	updateHovering() {
 		if (this.hasMouseMoved(this.oldMouse)) {
+			const labels = this.threeSceneService.labels?.children
+
 			if (this.isGrabbing || this.isMoving) {
 				this.threeSceneService.resetLabel()
 				this.clearTemporaryLabel()
@@ -187,7 +190,6 @@ export class CodeMapMouseEventService
 
 			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
 			const camera = this.threeCameraService.camera
-			const labels = this.threeSceneService.labels?.children
 
 			const mapMesh = this.threeSceneService.getMapMesh()
 			let nodeNameHoveredLabel = ""
@@ -312,7 +314,7 @@ export class CodeMapMouseEventService
 	private calculateHoveredLabel(labels: Object3D[]) {
 		let labelClosestToViewPoint = null
 
-		if (labels != null) {
+		if (labels) {
 			for (let counter = 0; counter < labels.length; counter += 2) {
 				const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
 				if (intersect.length > 0) {
