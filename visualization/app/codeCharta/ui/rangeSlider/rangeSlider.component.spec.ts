@@ -47,7 +47,6 @@ describe("RangeSliderController", () => {
 		withMockedMetricService()
 		rebuildController()
 		initFiles()
-		spyOn($rootScope, "$broadcast")
 	})
 
 	function withMockedMetricService() {
@@ -103,9 +102,11 @@ describe("RangeSliderController", () => {
 		})
 
 		it("should have called rzSliderForceRender", () => {
+			const spy = spyOn(RangeSliderController.prototype, "renderSliderOnInitialisation")
+
 			rebuildController()
 
-			expect($rootScope.$broadcast).toBeCalledWith("rzSliderForceRender")
+			expect(spy).toHaveBeenCalled()
 		})
 	})
 

@@ -76,11 +76,16 @@ export class RangeSliderController
 	renderSliderOnInitialisation() {
 		// quick and dirty: Better solution would be to wait for the content to be loaded for the first render
 		// should be taken care of when switching to Angular
+
 		angular.element(() => {
 			this.$timeout(() => {
-				this.$rootScope.$broadcast("rzSliderForceRender")
+				this.forceSliderRender()
 			})
 		})
+	}
+
+	forceSliderRender() {
+		this.$rootScope.$broadcast("rzSliderForceRender")
 	}
 
 	onBlacklistChanged() {
