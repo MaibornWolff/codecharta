@@ -223,6 +223,15 @@ describe("codeMapRenderService", () => {
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(0)
 		})
+
+		it("should not generate labels for flattened nodes", () => {
+			sortedNodes[0].flat = true
+
+			codeMapRenderService["getSortedNodes"] = jest.fn().mockReturnValue(sortedNodes)
+			codeMapRenderService.render(null)
+
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(1)
+		})
 	})
 
 	describe("setArrows", () => {
