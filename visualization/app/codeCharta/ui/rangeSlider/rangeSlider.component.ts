@@ -1,7 +1,7 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
 import { ColorRange } from "../../codeCharta.model"
-import { IRootScopeService, ITimeoutService, RzSlider } from "angular"
+import angular, { IRootScopeService, ITimeoutService, RzSlider } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
@@ -64,7 +64,7 @@ export class RangeSliderController
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		MapColorsService.subscribe(this.$rootScope, this)
-
+		this.renderSliderOnInitialisation()
 		this.applyDebouncedColorRange = debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
 		}, RangeSliderController.DEBOUNCE_TIME)
@@ -72,6 +72,21 @@ export class RangeSliderController
 
 	onMapColorsChanged() {
 		this.updateSliderColors()
+	}
+
+	renderSliderOnInitialisation() {
+		// quick and dirty: Better solution would be to wait for the content to be loaded for the first render
+		// should be taken care of when switching to Angular
+
+		angular.element(() => {
+			this.$timeout(() => {
+				this.forceSliderRender()
+			})
+		})
+	}
+
+	forceSliderRender() {
+		this.$rootScope.$broadcast("rzSliderForceRender")
 	}
 
 	onBlacklistChanged() {
