@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Only show labels for building included in the search
+-   Color slider not initialized correctly ([#1592](https://github.com/MaibornWolff/codecharta/issues/1592))
 
 ## [1.73.0] - 2021-05-10
 
