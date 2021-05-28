@@ -28,3 +28,4 @@ Pipfile
 Pipfile.lock
 _site
 out
+**/resources/fileStorage/**

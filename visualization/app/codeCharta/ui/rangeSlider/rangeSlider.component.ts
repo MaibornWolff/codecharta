@@ -29,7 +29,8 @@ export class RangeSliderController
 		WhiteColorBuildingsSubscriber,
 		FilesSelectionSubscriber,
 		BlacklistSubscriber,
-		MapColorsSubscriber {
+		MapColorsSubscriber
+{
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 

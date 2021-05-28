@@ -2,6 +2,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const path = require("path")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const { DefinePlugin } = require("webpack")
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const dist = path.resolve(__dirname, "../dist/webpack")
 
@@ -26,12 +27,14 @@ module.exports = env => {
 		plugins: [
 			new CleanWebpackPlugin(),
 			new HtmlWebpackPlugin({
-				template: "./app/index.html"
+				template: "./app/index.html",
+				favicon: "./app/assets/icon.ico"
 			}),
 			new DefinePlugin({
 				"process.env.STANDALONE": JSON.stringify(env.STANDALONE),
 				"process.env.DEV": JSON.stringify(env.DEV)
-			})
+			}),
+			new NodePolyfillPlugin()
 		],
 		devtool: "source-map",
 		resolve: {

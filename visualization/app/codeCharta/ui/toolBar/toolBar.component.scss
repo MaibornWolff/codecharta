@@ -34,7 +34,12 @@ tool-bar-component {
 		right: 10px;
 		display: inline-flex;
 		align-items: center;
-		width: 150px;
+		width: 400px;
+	}
+
+	span {
+		font-size: 10pt;
+		margin-right: 8px;
 	}
 
 	loading-gif-map-component {

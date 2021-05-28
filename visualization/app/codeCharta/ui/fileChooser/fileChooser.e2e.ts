@@ -63,7 +63,7 @@ describe("FileChooser", () => {
 	})
 
 	it("should not load a map and show error, when loading a map with warning and a map with error", async () => {
-		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/empty.png"])
+		await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/empty.png"])
 
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
 		await dialogError.clickAndWaitUntilContentChange()
@@ -77,7 +77,7 @@ describe("FileChooser", () => {
 	})
 
 	it("should be able to open a cc.json with a lower minor api version without a warning", async () => {
-		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_lower_minor_api.cc.json"])
+		await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_lower_minor_api.cc.json"])
 
 		expect(await filePanel.getSelectedName()).toEqual("sample1_with_lower_minor_api.cc.json")
 	})

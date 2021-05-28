@@ -8,11 +8,13 @@ import { NodeSearchService } from "../../state/nodeSearch.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("MatchingFilesCounterController", () => {
 	let matchingFilesCounterController: MatchingFilesCounterController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
+	let codeMapPreRenderService: CodeMapPreRenderService
 
 	beforeEach(() => {
 		restartSystem()
@@ -23,10 +25,11 @@ describe("MatchingFilesCounterController", () => {
 		instantiateModule("app.codeCharta.ui.matchingFilesCounter")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 	}
 
 	function rebuildController() {
-		matchingFilesCounterController = new MatchingFilesCounterController($rootScope, storeService)
+		matchingFilesCounterController = new MatchingFilesCounterController($rootScope, storeService, codeMapPreRenderService)
 	}
 
 	describe("constructor", () => {
@@ -59,9 +62,9 @@ describe("MatchingFilesCounterController", () => {
 
 			matchingFilesCounterController["updateViewModel"]()
 
-			expect(matchingFilesCounterController["_viewModel"].fileCount).toEqual(2)
-			expect(matchingFilesCounterController["_viewModel"].flattenCount).toEqual(2)
-			expect(matchingFilesCounterController["_viewModel"].excludeCount).toEqual(2)
+			expect(matchingFilesCounterController["_viewModel"].fileCount).toEqual("2/0")
+			expect(matchingFilesCounterController["_viewModel"].flattenCount).toEqual("2/0")
+			expect(matchingFilesCounterController["_viewModel"].excludeCount).toEqual("2/0")
 		})
 	})
 
@@ -81,8 +84,7 @@ describe("MatchingFilesCounterController", () => {
 				rootNode.children[1].children[1],
 				rootNode.children[1].children[2]
 			]
-			matchingFilesCounterController.onNodeSearchComplete(searchNodes)
-
+			matchingFilesCounterController.onNodeSearchComplete(searchNodes, "r")
 			expect(matchingFilesCounterController["searchedNodeLeaves"]).toEqual(nodeLeaves)
 		})
 	})
