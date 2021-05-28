@@ -40,10 +40,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           JAVA_HOME: ''
-          
-      - name: Dependabot_Success_Analysis
-        if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
-        run: echo "Success"
 
   publish_sonar_visualization:
     name: "Build and Publish Visualization Sonar Results"
@@ -74,7 +70,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         
-      - name: Dependabot_Success_Visualization
-        if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
-        run: echo "Success"
         
