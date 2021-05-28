@@ -101,12 +101,22 @@ describe("RangeSliderController", () => {
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should have called rzSliderForceRender", () => {
+		it("should have called renderSliderOnInitialisation", () => {
 			const spy = spyOn(RangeSliderController.prototype, "renderSliderOnInitialisation")
 
 			rebuildController()
 
 			expect(spy).toHaveBeenCalled()
+		})
+
+		it("should have called broadcast with rzSliderForceRender", () => {
+			const spy = spyOn($rootScope, "$broadcast")
+
+			rebuildController()
+
+			setTimeout(() => {
+				expect(spy).toHaveBeenCalledWith("rzSliderForceRender")
+			})
 		})
 	})
 
