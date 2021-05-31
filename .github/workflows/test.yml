@@ -122,9 +122,9 @@ jobs:
       working-directory: ${{env.working-directory}}
       
       
- publish_sonar_analysis:
+ test_and_sonar_analysis:
     if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-    name: "Build and Publish Analysis Sonar Results"
+    name: "Build, Test and Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
     env:
       working-directory: ./analysis
@@ -158,6 +158,7 @@ jobs:
 
 
  publish_sonar_visualization:
+    needs: [build_visualization_test, build_visualization_e2e]
     if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     name: "Build and Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
