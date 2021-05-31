@@ -213,7 +213,6 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 
 	const metricBuildingAreas = getBuildingAreas(childrenAreaValue, smallestDelta, minBuildingSize, padding)
 
-
 	let totalNodeArea = metricBuildingAreas.reduce((intermediate, current) => intermediate + current)
 
 
@@ -228,11 +227,13 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 		return area + padding
 	})
 
+	//TODO add padding Outer to the metricSum calculation
+
 
 	for (const node of hierarchyNode) {
 		if(!isLeaf(node.data)&& node.value !== undefined) {
 			const folderAreaValue = node.value
-			totalNodeArea += (folderAreaValue +padding)**2 - folderAreaValue**2
+			totalNodeArea += (folderAreaValue + padding)**2 - folderAreaValue**2
 		}
 	}
 
