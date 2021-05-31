@@ -9,7 +9,7 @@ import { CodeMapNode, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
 import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
 import assert from "assert"
-import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../ressources/fixed-folders/fixed-folders-example"
+import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../resources/fixed-folders/fixed-folders-example"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { clone } from "./clone"
 
