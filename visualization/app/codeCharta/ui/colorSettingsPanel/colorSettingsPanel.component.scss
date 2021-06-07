@@ -22,6 +22,11 @@ color-settings-panel-component {
 
 	.wrapper {
 		margin-left: 3px;
+
+		.row md-checkbox,
+		.row cc-store-color-picker {
+			display: inline-block;
+		}
 	}
 
 	.spacer .cc-store-color-picker-wrapper {
