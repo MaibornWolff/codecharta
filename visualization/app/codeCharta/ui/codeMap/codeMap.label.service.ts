@@ -197,9 +197,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const canvas = document.createElement("canvas")
 		const context = canvas.getContext("2d")
 
-		context.font = `${fontsize}px Helvetica Neue`
+		context.font = `${fontsize}px Roboto`
 
-		const margin = 20
+		const margin = 25
 		const multiLineContext = message.split("\n")
 
 		// setting canvas width/height before ctx draw, else canvas is empty
@@ -212,7 +212,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		canvas.height = margin + fontsize * multiLineContext.length
 
 		// bg
-		context.font = `${fontsize}px Helvetica Neue`
+		context.font = `${fontsize}px Roboto`
 		context.fillStyle = "rgba(255,255,255,1)"
 		context.lineJoin = "round"
 		context.lineCap = "round"
