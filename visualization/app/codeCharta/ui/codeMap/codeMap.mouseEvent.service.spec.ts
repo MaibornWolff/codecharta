@@ -33,7 +33,6 @@ import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LazyLoader } from "../../util/lazyLoader"
-import { ThreeViewerService } from "./threeViewer/threeViewerService"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -47,8 +46,6 @@ describe("codeMapMouseEventService", () => {
 	let storeService: StoreService
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapPreRenderService: CodeMapPreRenderService
-	let viewCubeMouseEventsService: ViewCubeMouseEventsService
-	let threeViewerService: ThreeViewerService
 
 	let codeMapBuilding: CodeMapBuilding
 	let file: CCFile
@@ -78,8 +75,6 @@ describe("codeMapMouseEventService", () => {
 		storeService = getService<StoreService>("storeService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-		viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>("viewCubeMouseEventsService")
-		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		file = klona(TEST_FILE_WITH_PATHS)
@@ -96,9 +91,7 @@ describe("codeMapMouseEventService", () => {
 			threeUpdateCycleService,
 			storeService,
 			codeMapLabelService,
-			codeMapPreRenderService,
-			viewCubeMouseEventsService,
-			threeViewerService
+			codeMapPreRenderService
 		)
 
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
@@ -203,10 +196,10 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("start", () => {
-		it("should setup six event listeners", () => {
+		it("should setup four event listeners", () => {
 			codeMapMouseEventService.start()
 
-			expect(threeRendererService.renderer.domElement.addEventListener).toHaveBeenCalledTimes(6)
+			expect(threeRendererService.renderer.domElement.addEventListener).toHaveBeenCalledTimes(4)
 		})
 
 		it("should subscribe to event propagation", () => {
@@ -514,15 +507,6 @@ describe("codeMapMouseEventService", () => {
 	describe("onDocumentMouseUp", () => {
 		let event
 
-		it("should call resetIsDragging", () => {
-			event = { button: ClickType.LeftClick }
-			viewCubeMouseEventsService["resetIsDragging"] = jest.fn()
-
-			codeMapMouseEventService.onDocumentMouseUp(event)
-
-			expect(viewCubeMouseEventsService.resetIsDragging).toHaveBeenCalled()
-		})
-
 		describe("on left click", () => {
 			beforeEach(() => {
 				event = { button: ClickType.LeftClick, clientX: 10, clientY: 20 }
@@ -704,44 +688,6 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect(LazyLoader.openFile).toHaveBeenCalled()
-		})
-	})
-
-	describe("onDocumentMouseEnter", () => {
-		it("should enable orbitals rotation", () => {
-			threeViewerService["enableRotation"] = jest.fn()
-			viewCubeMouseEventsService["enableRotation"] = jest.fn()
-
-			codeMapMouseEventService.onDocumentMouseEnter()
-
-			expect(threeViewerService.enableRotation).toHaveBeenCalledWith(true)
-			expect(viewCubeMouseEventsService.enableRotation).toHaveBeenCalledWith(true)
-		})
-	})
-
-	describe("onDocumentMouseLeave", () => {
-		it("should disable orbitals rotation", () => {
-			const event = { relatedTarget: {} } as MouseEvent
-
-			threeViewerService["enableRotation"] = jest.fn()
-			viewCubeMouseEventsService["enableRotation"] = jest.fn()
-
-			codeMapMouseEventService.onDocumentMouseLeave(event)
-
-			expect(threeViewerService.enableRotation).toHaveBeenCalledWith(false)
-			expect(viewCubeMouseEventsService.enableRotation).toHaveBeenCalledWith(false)
-		})
-	})
-
-	describe("onDocumentMouseMove", () => {
-		it("should call propagateMovement", () => {
-			const event = { clientX: 10, clientY: 10 } as MouseEvent
-
-			viewCubeMouseEventsService["propagateMovement"] = jest.fn()
-
-			codeMapMouseEventService.onDocumentMouseMove(event)
-
-			expect(viewCubeMouseEventsService.propagateMovement).toHaveBeenCalled()
 		})
 	})
 
