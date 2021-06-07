@@ -2,6 +2,9 @@ import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../../../codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
+import {calculatePadding} from "./paddingCalculator";
+import {getChildrenAreaValues, getSmallestDifference} from "./treeMapHelper2";
+import {calculateTotalNodeArea} from "./nodeAreaCalculator";
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
@@ -149,28 +152,8 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 	root.length *= scaleLength
 }
 
-function getSmallestDifference(childAreaValues:any[]){
 
-		let diff = Number.MAX_VALUE
-
-
-
-	const smallestValue = childAreaValues[0]
-
-
-	for (let index = 0;index < childAreaValues.length-1; index++) {
-
-			const intermediateDiff = childAreaValues[index + 1] - childAreaValues[index]
-			if (intermediateDiff < diff && intermediateDiff > 0) {
-					diff = intermediateDiff
-			}
-		}
-
-		// Return min diff
-		return Math.min(diff,smallestValue)
-}
-
-function getBuildingAreas(childrenAreaValue:any[], smallestDelta: number, minimumBuildingSize: number, padding: number){
+function getBuildingAreasWithProportionalPadding(childrenAreaValue:any[], smallestDelta: number, minimumBuildingSize: number, padding: number){
 
 	return childrenAreaValue.map(element => {
 		const buildingArea = (element/smallestDelta) * minimumBuildingSize
@@ -178,112 +161,36 @@ function getBuildingAreas(childrenAreaValue:any[], smallestDelta: number, minimu
 	})
 }
 
-function getNonZeroMetrics(areaValues:any[]){
-	let index = 0
-	while(areaValues[index] === 0){
-		index ++
-	}
-	return areaValues.slice(index)
-}
-
-
 function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
 
-	/**
-	 * DELETE AFTER THIS
-	 */
-
 	const hierarchyNode = hierarchy(map)
-	const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR
-	let mapWidth
-	let mapHeight
+	let padding = state.dynamicSettings.margin
 
-	const leafAreaValues = []
+	const childrenAreaValues = getChildrenAreaValues(hierarchyNode, state)
 
-	for (const node of hierarchyNode) {
-		if(isLeaf(node.data)) leafAreaValues.push(getAreaValue(node.data,state))
-	}
-
-	const childrenAreaValue = getNonZeroMetrics(leafAreaValues)
-
-	const smallestDelta = getSmallestDifference(childrenAreaValue)
+	const smallestDelta = getSmallestDifference(childrenAreaValues)
 
 	const minBuildingSize = 100
 
-	const metricBuildingAreas = getBuildingAreas(childrenAreaValue, smallestDelta, minBuildingSize, padding)
+	padding = calculatePadding(childrenAreaValues, smallestDelta, minBuildingSize, padding)
+	console.log("Padding ", padding)
 
-	let totalNodeArea = metricBuildingAreas.reduce((intermediate, current) => intermediate + current)
+	const metricBuildingAreasIncludingPadding = getBuildingAreasWithProportionalPadding(childrenAreaValues, smallestDelta, minBuildingSize, padding)
 
+	const {rootWidth, metricSum}= calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyNode, padding, state)
 
-	//paddingInner = padding Root -> Child(Folder/Node) -> Child(Node)
-	//paddingOuter = paddingSelf in Hierarchy
-
-	const metricSum = hierarchyNode.sum(node => {
-		const area = getAreaValue(node, state)
-		if(area + (node.value??0) === 0){
-			return area
-		}
-		return area + padding
-	})
-
-	//TODO add padding Outer to the metricSum calculation
-
-
-	for (const node of hierarchyNode) {
-		if(!isLeaf(node.data)&& node.value !== undefined) {
-			const folderAreaValue = node.value
-			totalNodeArea += (folderAreaValue + padding)**2 - folderAreaValue**2
-		}
-	}
-
-	const rootWidth = Math.sqrt(totalNodeArea)
-
-	if (map.fixedPosition !== undefined) {
-		mapWidth = map.fixedPosition.width
-		mapHeight = map.fixedPosition.height
-	} else {
-		mapWidth = state.treeMap.mapSize * 2
-		mapHeight = state.treeMap.mapSize * 2
-	}
-
-
-	// nodesPerSide is just an estimation.
-	// We do not know the exact amount,
-	// because the treemap algorithm is/must be executed with an initial width and height afterwards.
-	// TODO If it is wrong some buildings might be cut off.
-	// Use mapSizeResolutionScaling to scale down the pixels need for rendering of the map (width and height size)
 	const width = rootWidth
 	const height = rootWidth
 
-	console.log(rootWidth)
-	console.log("treeMapSize ", state.treeMap.mapSize)
-
-	const oldHeight = mapHeight + nodesPerSide * state.dynamicSettings.margin
-
-	console.log("childrenAreaValues:" , childrenAreaValue)
-	console.log("metricBuildingAreas", metricBuildingAreas)
-	console.log("totalNodeArea", totalNodeArea)
-
-	console.log(width,height)
-	console.log(mapHeight + nodesPerSide * state.dynamicSettings.margin)
-	console.log(mapWidth + nodesPerSide * state.dynamicSettings.margin)
-
-	console.log(width/oldHeight)
-
-
-	/**
-	 * DELETE BEFORE THIS
-	 */
-
 	const treeMap = treemap<CodeMapNode>()
-		.size([width, height])
-		.paddingInner(padding/2)
-		.paddingOuter(padding/2)
+		.size([width, height]) // padding does not need to be divided by 2, already calculated by d3-hierarchy
+		.paddingOuter(padding) // padding of the element; applied to leaves
+		.paddingInner(padding) // margin of the element; applied to folders
 
+	const logSum = treeMap(metricSum)
+	console.log(logSum)
 
-
-	return { treeMap: treeMap(metricSum), height, width }
+	return { treeMap: logSum, height, width }
 }
 
 function getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {

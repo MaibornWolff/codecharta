@@ -1,6 +1,6 @@
 import { CodeMapNode } from "../../../../codeCharta.model"
 
-const PRESET_MARGIN = 50
+const PRESET_MARGIN = 25
 
 export function getResetMargin(dynamicMargin: boolean, map?: CodeMapNode) {
 	if (dynamicMargin && map) {
