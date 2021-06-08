@@ -1575,6 +1575,11 @@ export const STATE: State = {
 	appSettings: {
 		amountOfTopLabels: 31,
 		amountOfEdgePreviews: 5,
+		colorLabels: {
+			positive: false,
+			negative: false,
+			neutral: false
+		},
 		edgeHeight: 4,
 		scaling: new Vector3(1, 1.8, 1),
 		camera: new Vector3(0, 300, 1000),
@@ -1637,6 +1642,11 @@ export const DEFAULT_STATE: State = {
 	appSettings: {
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,
+		colorLabels: {
+			positive: false,
+			negative: false,
+			neutral: false
+		},
 		edgeHeight: 4,
 		camera: new Vector3(0, 300, 1000),
 		cameraTarget: new Vector3(177, 0, 299),

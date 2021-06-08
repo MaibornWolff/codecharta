@@ -174,14 +174,14 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(33)
+			expect(positionWithoutDelta.y).toBe(35.5)
 		})
 
 		it("should calculate correct height without delta with metric values only", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(33)
+			expect(positionWithoutDelta.y).toBe(35.5)
 		})
 
 		it("should use node height value if nodeHeight is greater than the nodes height ", () => {
@@ -189,7 +189,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(131)
+			expect(positionWithoutDelta.y).toBe(133.5)
 		})
 
 		it("should use the nodes actual height if its greater then nodeHeight", () => {
@@ -197,21 +197,21 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(41)
+			expect(positionWithoutDelta.y).toBe(43.5)
 		})
 
 		it("should calculate correct height without delta for two line label: node name and metric value", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(48)
+			expect(positionWithoutDelta.y).toBe(50.5)
 		})
 
 		it("should use the nodes actual height if its greater then nodeHeight and update nodeHeight correctly", () => {
 			codeMapLabelService.addLabel(sampleLeafDelta, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(46)
+			expect(positionWithoutDelta.y).toBe(48.5)
 			expect(codeMapLabelService["nodeHeight"]).toEqual(15)
 		})
 
@@ -220,7 +220,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeafDelta, { showNodeName: true, showNodeMetric: false })
 
 			const positionSampleDeltaLeaf: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionSampleDeltaLeaf.y).toBe(46)
+			expect(positionSampleDeltaLeaf.y).toBe(48.5)
 
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 			const positionSampleLeafWithAppliedDeltaNodeHeight: Vector3 = codeMapLabelService["labels"][0].sprite.position
@@ -291,7 +291,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(41)
+			expect(positionWithoutDelta.y).toBe(43.5)
 		})
 
 		function assertLabelPositions(scaledLabel, expectedSpritePositions: Vector3, expectedScaledLineGeometryStart: Vector3) {

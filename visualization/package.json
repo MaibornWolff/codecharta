@@ -144,7 +144,7 @@
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^5.2.1",
 		"es6-shim": "^0.35.6",
-		"eslint": "^7.24.0",
+		"eslint": "^7.28.0",
 		"eslint-config-prettier": "^8.2.0",
 		"eslint-plugin-unicorn": "^31.0.0",
 		"file-loader": "^6.2.0",
