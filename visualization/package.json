@@ -101,6 +101,7 @@
 		"core-js": "^3.10.1",
 		"d3-hierarchy": "^2.0.0",
 		"font-awesome": "^4.7.0",
+		"hotkeys-js": "^3.8.2",
 		"ignore": "^5.1.8",
 		"jquery": "^3.6.0",
 		"klona": "^2.0.4",
