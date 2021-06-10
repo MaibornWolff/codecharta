@@ -133,28 +133,42 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		 * */
 
 		if (showLabelNodeName || showLabelNodeMetric) {
+			const highestNodeInSet = sortedNodes[0].height
+
 			if (colorLabelOptions.positive) {
 				for (const node of this.nodesByColor.positive) {
-					this.codeMapLabelService.addLabel(node, {
-						showNodeName: showLabelNodeName,
-						showNodeMetric: showLabelNodeMetric
-					})
+					this.codeMapLabelService.addLabel(
+						node,
+						{
+							showNodeName: showLabelNodeName,
+							showNodeMetric: showLabelNodeMetric
+						},
+						highestNodeInSet
+					)
 				}
 			}
 			if (colorLabelOptions.neutral) {
 				for (const node of this.nodesByColor.neutral) {
-					this.codeMapLabelService.addLabel(node, {
-						showNodeName: showLabelNodeName,
-						showNodeMetric: showLabelNodeMetric
-					})
+					this.codeMapLabelService.addLabel(
+						node,
+						{
+							showNodeName: showLabelNodeName,
+							showNodeMetric: showLabelNodeMetric
+						},
+						highestNodeInSet
+					)
 				}
 			}
 			if (colorLabelOptions.negative) {
 				for (const node of this.nodesByColor.negative) {
-					this.codeMapLabelService.addLabel(node, {
-						showNodeName: showLabelNodeName,
-						showNodeMetric: showLabelNodeMetric
-					})
+					this.codeMapLabelService.addLabel(
+						node,
+						{
+							showNodeName: showLabelNodeName,
+							showNodeMetric: showLabelNodeMetric
+						},
+						highestNodeInSet
+					)
 				}
 			}
 			if (!colorLabelOptions.negative && !colorLabelOptions.positive && !colorLabelOptions.neutral) {
@@ -163,10 +177,14 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 					if (sortedNodes[index].isLeaf) {
 						//get neighbors with label
 						//neighbor ==> width + margin + 1
-						this.codeMapLabelService.addLabel(sortedNodes[index], {
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						})
+						this.codeMapLabelService.addLabel(
+							sortedNodes[index],
+							{
+								showNodeName: showLabelNodeName,
+								showNodeMetric: showLabelNodeMetric
+							},
+							highestNodeInSet
+						)
 						amountOfTopLabels -= 1
 					}
 				}
