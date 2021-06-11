@@ -46,9 +46,11 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
+		const filteredSortedNodes = sortedNodes.filter(({ flat }) => !flat)
+
 		this.setNewMapMesh(sortedNodes)
-		this.getNodesMatchingColorSelector(sortedNodes.filter(({ flat }) => !flat))
-		this.setLabels(sortedNodes.filter(({ flat }) => !flat))
+		this.getNodesMatchingColorSelector(filteredSortedNodes)
+		this.setLabels(filteredSortedNodes)
 		this.setArrows(sortedNodes)
 		this.scaleMap()
 	}
@@ -123,14 +125,6 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		const colorLabelOptions = appSettings.colorLabels
 
 		this.codeMapLabelService.clearLabels()
-
-		/**
-		 *  color Nodes besorgen
-		 *  umsortieren nach Farbe
-		 *  amountOfTopLabels = Anzahl der Elemente mit Farbe x
-		 *  Fallunterscheidung: HöhenLabel/ Farblabel
-		 *
-		 * */
 
 		if (showLabelNodeName || showLabelNodeMetric) {
 			const highestNodeInSet = sortedNodes[0].height

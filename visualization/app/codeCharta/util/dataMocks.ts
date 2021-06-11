@@ -1741,7 +1741,7 @@ export const TEST_NODE_ROOT: Node = {
 	link: "NO_LINK",
 	markingColor: "0x000000",
 	flat: false,
-	color: "#AABBCC",
+	color: "#69AE40",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }
@@ -1989,7 +1989,7 @@ export const TEST_NODE_LEAF: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
-	color: "#AABBCC",
+	color: "#ddcc00",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }
@@ -2017,10 +2017,12 @@ export const INCOMING_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
-	color: "#AABBCC",
+	color: "#820E0E",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
 }
+
+export const COLOR_TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF, INCOMING_NODE]
 
 export const OUTGOING_NODE: Node = {
 	name: "root/big leaf",
