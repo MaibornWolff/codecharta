@@ -21,14 +21,6 @@ color-settings-panel-component {
 		margin-bottom: -10px;
 	}
 
-	hr {
-		border: none;
-		border-top: 1px dashed #979797;
-		color: #fff;
-		height: 1px;
-		width: 100%;
-	}
-
 	.wrapper {
 		margin-left: 3px;
 	}
@@ -52,4 +44,8 @@ color-settings-panel-component.hidden {
 	max-height: 0;
 	opacity: 0;
 	transition: max-height 200ms ease-in-out, opacity 0ms 200ms;
+}
+
+reset-settings-button-component {
+	margin-top: -15px;
 }
