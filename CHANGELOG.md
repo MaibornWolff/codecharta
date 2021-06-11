@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Export the current view as a png image by using "Ctrl+Alt+S" or clicking the corresponding button ([#674](https://github.com/MaibornWolff/codecharta/issues/674))
+-   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
+
+### Added 🚀
+
 -   SonarImport: SonarQube 8.8 support. Older versions are still supported.
 
 ### Fixed 🐞
