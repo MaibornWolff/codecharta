@@ -37,7 +37,7 @@ export class RangeSliderController
 	private DIGIT_WIDTH = 11
 	private MIN_DIGITS = 4
 	private MAX_DIGITS = 6
-	private FULL_WIDTH_SLIDER = 235
+	private FULL_WIDTH_SLIDER = 197
 
 	private _viewModel: {
 		colorRangeFrom: number
