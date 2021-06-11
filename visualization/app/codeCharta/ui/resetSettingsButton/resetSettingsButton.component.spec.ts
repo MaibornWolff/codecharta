@@ -6,6 +6,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 
 describe("resetSettingsButtonController", () => {
 	let resetSettingsButtonController: ResetSettingsButtonController
@@ -37,6 +38,16 @@ describe("resetSettingsButtonController", () => {
 
 			expect(storeService.getState().appSettings.invertColorRange).toBeFalsy()
 			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
+		})
+
+		it("should only reset the color options when specified", () => {
+			resetSettingsButtonController["settingsNames"] =
+				"appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, " +
+				"appSettings.mapColors.selected, appSettings.invertDeltaColors, appSettings.invertColorRange"
+			const mapColors = storeService.getState().appSettings.mapColors
+			storeService.dispatch(setMapColors({ ...mapColors, positive: "#176666" }))
+			resetSettingsButtonController.applyDefaultSettings()
+			expect(storeService.getState().appSettings.mapColors).toEqual(defaultMapColors)
 		})
 
 		it("settingsNames should allow newline", () => {
