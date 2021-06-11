@@ -9,6 +9,8 @@ import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDe
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
+import { colorLabelOptions } from "../../codeCharta.model"
+import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
@@ -75,6 +77,54 @@ describe("ColorSettingsPanelController", () => {
 			colorSettingsPanelController.onInvertDeltaColorsChanged(false)
 
 			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBeFalsy()
+		})
+	})
+
+	describe("onColorLabelsChanged", () => {
+		it("should set onColorLabelsChanged to given option", () => {
+			const colorLabelsPosNeut: colorLabelOptions = {
+				positive: true,
+				negative: false,
+				neutral: true
+			}
+			colorSettingsPanelController.onColorLabelsChanged(colorLabelsPosNeut)
+
+			expect(colorSettingsPanelController["_viewModel"].colorLabels).toBe(colorLabelsPosNeut)
+		})
+	})
+
+	describe("swapColorLabelsPositive", () => {
+		let colorLabels: colorLabelOptions = null
+
+		beforeEach(() => {
+			colorLabels = {
+				positive: false,
+				negative: false,
+				neutral: false
+			}
+		})
+
+		it("should swap positive value of colorLabels", () => {
+			storeService.dispatch(setColorLabels(colorLabels))
+			colorSettingsPanelController.swapColorLabelsPositive()
+
+			expect(storeService.getState().appSettings.colorLabels.positive).toBe(true)
+		})
+
+		it("should swap negative value of colorLabels", () => {
+			colorLabels.negative = true
+
+			storeService.dispatch(setColorLabels(colorLabels))
+			colorSettingsPanelController.swapColorLabelsNegative()
+
+			expect(storeService.getState().appSettings.colorLabels.negative).toBe(false)
+		})
+
+		it("should swap neutral value of colorLabels", () => {
+			storeService.dispatch(setColorLabels(colorLabels))
+			colorSettingsPanelController.swapColorLabelsNeutral()
+
+			expect(storeService.getState().appSettings.colorLabels.neutral).toBe(true)
 		})
 	})
 
