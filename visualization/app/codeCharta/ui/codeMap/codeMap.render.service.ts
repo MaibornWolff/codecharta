@@ -47,8 +47,8 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
 		this.setNewMapMesh(sortedNodes)
-		this.setLabels(sortedNodes.filter(({ flat }) => !flat))
 		this.getNodesMatchingColorSelector(sortedNodes.filter(({ flat }) => !flat))
+		this.setLabels(sortedNodes.filter(({ flat }) => !flat))
 		this.setArrows(sortedNodes)
 		this.scaleMap()
 	}
