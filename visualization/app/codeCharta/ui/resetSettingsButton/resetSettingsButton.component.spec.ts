@@ -7,6 +7,7 @@ import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 describe("resetSettingsButtonController", () => {
 	let resetSettingsButtonController: ResetSettingsButtonController
@@ -45,9 +46,14 @@ describe("resetSettingsButtonController", () => {
 				"appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, " +
 				"appSettings.mapColors.selected, appSettings.invertDeltaColors, appSettings.invertColorRange"
 			const mapColors = storeService.getState().appSettings.mapColors
+			const colorRange = storeService.getState().dynamicSettings.colorRange
+
 			storeService.dispatch(setMapColors({ ...mapColors, positive: "#176666" }))
+			storeService.dispatch(setColorRange({ ...colorRange, from: 50 }))
 			resetSettingsButtonController.applyDefaultSettings()
+
 			expect(storeService.getState().appSettings.mapColors).toEqual(defaultMapColors)
+			expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(50)
 		})
 
 		it("settingsNames should allow newline", () => {
