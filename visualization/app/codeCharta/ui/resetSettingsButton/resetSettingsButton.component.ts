@@ -17,7 +17,6 @@ export class ResetSettingsButtonController {
 
 		for (const token of tokens) {
 			const steps = token.split(".")
-
 			let defaultSettingsPointer = defaultState
 			let updatedSettingsPointer = updatedSettings
 

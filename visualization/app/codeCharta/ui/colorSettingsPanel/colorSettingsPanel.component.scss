@@ -7,9 +7,9 @@ color-settings-panel-component {
 	overflow: hidden;
 	font-size: 0.9em;
 	text-align: left;
-	max-height: 300px;
+	max-height: 316px;
 	opacity: 1;
-	width: 262px;
+	width: 266px;
 	transition: opacity 0ms, max-height 200ms ease-in-out;
 
 	top: 45px;
@@ -21,7 +21,17 @@ color-settings-panel-component {
 	}
 
 	.wrapper {
-		margin-left: 3px;
+		margin: 0 3px;
+
+		.row md-checkbox,
+		.row cc-store-color-picker {
+			display: inline-block;
+		}
+	}
+
+	.color-row {
+		display: flex;
+		justify-content: space-between;
 	}
 
 	.spacer .cc-store-color-picker-wrapper {

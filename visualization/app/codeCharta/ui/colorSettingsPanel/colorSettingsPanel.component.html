@@ -10,15 +10,32 @@
 
 <div class="wrapper">
 	<div class="spacer" ng-if="!$ctrl._viewModel.isDeltaState">
-		<cc-store-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
-		</cc-store-color-picker>
-		<cc-store-color-picker
-			map-color-for="neutral"
-			label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
-		>
-		</cc-store-color-picker>
-		<cc-store-color-picker map-color-for="negative" label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite">
-		</cc-store-color-picker>
+		<div class="color-row">
+			<cc-store-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
+			</cc-store-color-picker>
+			<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.colorLabels.positive" ng-change="$ctrl.swapColorLabelsPositive()">
+				Show labels
+			</md-checkbox>
+		</div>
+
+		<div class="color-row">
+			<cc-store-color-picker
+				map-color-for="neutral"
+				label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
+			>
+			</cc-store-color-picker>
+			<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.colorLabels.neutral" ng-change="$ctrl.swapColorLabelsNeutral()">
+				Show labels
+			</md-checkbox>
+		</div>
+
+		<div class="color-row">
+			<cc-store-color-picker map-color-for="negative" label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite">
+			</cc-store-color-picker>
+			<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.colorLabels.negative" ng-change="$ctrl.swapColorLabelsNegative()">
+				Show labels
+			</md-checkbox>
+		</div>
 	</div>
 
 	<div class="spacer" ng-if="$ctrl._viewModel.isDeltaState">
@@ -41,6 +58,11 @@
 			Invert Colors
 		</md-checkbox>
 	</md-input-container>
+
+	<reset-settings-button-component
+		settings-names="dynamicSettings.colorRange, appSettings.invertColorRange, appSettings.invertDeltaColors, appSettings.mapColors.positiveDelta, appSettings.mapColors.negativeDelta, appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected, appSettings.colorLabels"
+		tooltip="Reset color metric settings to their defaults"
+	></reset-settings-button-component>
 </div>
 
 <reset-settings-button-component
