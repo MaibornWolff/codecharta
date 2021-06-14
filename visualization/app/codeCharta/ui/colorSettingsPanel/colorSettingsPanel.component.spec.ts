@@ -11,6 +11,7 @@ import { FilesService } from "../../state/store/files/files.service"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
 import { colorLabelOptions } from "../../codeCharta.model"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
+import { ColorLabelsService } from "../../state/store/appSettings/colorLabels/colorLabels.service"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
@@ -63,6 +64,14 @@ describe("ColorSettingsPanelController", () => {
 			rebuildController()
 
 			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+		})
+
+		it("should subscribe to ColorLabelService", () => {
+			ColorLabelsService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ColorLabelsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 	})
 

@@ -9,6 +9,7 @@
 		id="labels-slider"
 		ng-change="$ctrl.applySettingsAmountOfTopLabels()"
 		class="md-primary"
+		ng-disabled="$ctrl._viewModel.sliderDisabled"
 	>
 	</md-slider>
 	<md-input-container>
@@ -21,6 +22,7 @@
 			ng-model="$ctrl._viewModel.amountOfTopLabels"
 			ng-change="$ctrl.applySettingsAmountOfTopLabels()"
 			aria-controls="labels-slider"
+			ng-readonly="$ctrl._viewModel.sliderDisabled"
 		/>
 	</md-input-container>
 </md-slider-container>

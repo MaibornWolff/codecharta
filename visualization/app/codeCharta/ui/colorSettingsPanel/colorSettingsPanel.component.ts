@@ -16,7 +16,7 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { colorLabelOptions, ColorRange } from "../../codeCharta.model"
-import { ColorLabelsSubscriber } from "../../state/store/appSettings/colorLabels/colorLabels.service"
+import { ColorLabelsService, ColorLabelsSubscriber } from "../../state/store/appSettings/colorLabels/colorLabels.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 
 export class ColorSettingsPanelController
@@ -47,6 +47,7 @@ export class ColorSettingsPanelController
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
+		ColorLabelsService.subscribe(this.$rootScope, this)
 	}
 
 	onColorRangeChanged(colorRange: ColorRange) {
