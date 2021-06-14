@@ -50,6 +50,7 @@ export const resetSettingsButtonComponent = {
 	controller: ResetSettingsButtonController,
 	bindings: {
 		settingsNames: "@",
-		tooltip: "@"
+		tooltip: "@",
+		text: "@"
 	}
 }
