@@ -89,19 +89,6 @@ describe("ColorSettingsPanelController", () => {
 		})
 	})
 
-	describe("onColorLabelsChanged", () => {
-		it("should set onColorLabelsChanged to given option", () => {
-			const colorLabelsPosNeut: colorLabelOptions = {
-				positive: true,
-				negative: false,
-				neutral: true
-			}
-			colorSettingsPanelController.onColorLabelsChanged(colorLabelsPosNeut)
-
-			expect(colorSettingsPanelController["_viewModel"].colorLabels).toBe(colorLabelsPosNeut)
-		})
-	})
-
 	describe("swapColorLabelsPositive", () => {
 		let colorLabels: colorLabelOptions = null
 
