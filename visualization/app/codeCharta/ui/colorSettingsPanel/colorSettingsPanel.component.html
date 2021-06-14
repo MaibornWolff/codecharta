@@ -2,7 +2,7 @@
 
 <div class="wrapper">
 	<div class="spacer" ng-if="!$ctrl._viewModel.isDeltaState">
-		<div class="row">
+		<div class="color-row">
 			<cc-store-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
 			</cc-store-color-picker>
 			<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.colorLabels.positive" ng-change="$ctrl.swapColorLabelsPositive()">
@@ -10,7 +10,7 @@
 			</md-checkbox>
 		</div>
 
-		<div class="row">
+		<div class="color-row">
 			<cc-store-color-picker
 				map-color-for="neutral"
 				label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
@@ -21,7 +21,7 @@
 			</md-checkbox>
 		</div>
 
-		<div class="row">
+		<div class="color-row">
 			<cc-store-color-picker map-color-for="negative" label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite">
 			</cc-store-color-picker>
 			<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.colorLabels.negative" ng-change="$ctrl.swapColorLabelsNegative()">
