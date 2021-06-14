@@ -18,7 +18,6 @@ color-settings-panel-component {
 	range-slider-component {
 		margin-top: 4px;
 		margin-left: 3px;
-		margin-bottom: -10px;
 	}
 
 	.wrapper {
@@ -37,6 +36,9 @@ color-settings-panel-component {
 		align-items: center;
 		display: flex;
 		justify-content: space-between;
+		position: relative;
+		height: 35px;
+		top: 7px;
 	}
 }
 
@@ -44,8 +46,4 @@ color-settings-panel-component.hidden {
 	max-height: 0;
 	opacity: 0;
 	transition: max-height 200ms ease-in-out, opacity 0ms 200ms;
-}
-
-reset-settings-button-component {
-	margin-top: -15px;
 }
