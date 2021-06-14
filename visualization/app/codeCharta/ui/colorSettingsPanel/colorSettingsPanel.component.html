@@ -1,5 +1,13 @@
 <range-slider-component></range-slider-component>
 
+<reset-settings-button-component
+	settings-names="dynamicSettings.colorRange, appSettings.mapColors.positiveDelta, appSettings.mapColors.negativeDelta"
+	tooltip=" Reset slider thresholds to default"
+	text="Reset thresholds"
+></reset-settings-button-component>
+
+<md-divider></md-divider>
+
 <div class="wrapper">
 	<div class="spacer" ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="color-row">
@@ -50,9 +58,16 @@
 			Invert Colors
 		</md-checkbox>
 	</md-input-container>
-
+  
 	<reset-settings-button-component
 		settings-names="dynamicSettings.colorRange, appSettings.invertColorRange, appSettings.invertDeltaColors, appSettings.mapColors.positiveDelta, appSettings.mapColors.negativeDelta, appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected, appSettings.colorLabels"
 		tooltip="Reset color metric settings to their defaults"
 	></reset-settings-button-component>
+
 </div>
+
+<reset-settings-button-component
+	settings-names="appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected, appSettings.invertDeltaColors, appSettings.invertColorRange"
+	tooltip=" Reset color values to default"
+	text="Reset colors"
+></reset-settings-button-component>
