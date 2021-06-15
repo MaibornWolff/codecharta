@@ -8,6 +8,8 @@ export default function files(state = setFiles().payload, action: FilesAction) {
 			return action.payload
 		case NewFilesImportedActions.ADD_FILE:
 			return addFile(state, action.payload)
+		case NewFilesImportedActions.REMOVE_FILE:
+			return removeFile(state, action.payload)
 		case NewFilesImportedActions.RESET_FILES:
 			return reset()
 		case FilesSelectionActions.RESET_SELECTION:
@@ -41,6 +43,10 @@ function resetSelection(state: FileState[]): FileState[] {
 
 function addFile(state: FileState[], file: CCFile) {
 	return [...state, { file, selectedAs: FileSelectionState.None }]
+}
+
+function removeFile(state: FileState[], fileName: string) {
+	return state.filter(file => file.file.fileMeta.fileName !== fileName)
 }
 
 function setSingleByName(state: FileState[], fileName: string): FileState[] {
