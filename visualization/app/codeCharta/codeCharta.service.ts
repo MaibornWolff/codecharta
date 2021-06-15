@@ -68,6 +68,11 @@ export class CodeChartaService {
 		}
 	}
 
+	removeFile(fileName: string): void {
+		const files = this.storeService.getState().files.filter(file => file.file.fileMeta.fileName !== fileName)
+		this.storeService.dispatch(setFiles(files))
+	}
+
 	static updateRootData(rootName: string) {
 		CodeChartaService.ROOT_NAME = rootName
 		CodeChartaService.ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`

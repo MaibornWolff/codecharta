@@ -307,5 +307,16 @@ describe("codeChartaService", () => {
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
 			expect(storeService.getState().files).toHaveLength(1)
 		})
+
+		it("should remove a file", () => {
+			codeChartaService.loadFiles([
+				{ fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+				{ fileName: "SecondFile", content: validFileContent, fileSize: 42 }
+			])
+
+			codeChartaService.removeFile("FirstFile")
+			expect(storeService.getState().files).toHaveLength(1)
+			expect(storeService.getState().files[0].file.fileMeta.fileName).toEqual("SecondFile")
+		})
 	})
 })
