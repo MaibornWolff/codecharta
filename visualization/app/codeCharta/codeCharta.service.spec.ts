@@ -148,6 +148,26 @@ describe("codeChartaService", () => {
 			expect(CodeChartaService.ROOT_PATH).toEqual(`/${expected.map.name}`)
 		})
 
+		it("should not replace the last files when loading new files", () => {
+			codeChartaService.loadFiles([
+				{
+					fileName: "FirstFile",
+					content: validFileContent,
+					fileSize: 42
+				}
+			])
+
+			codeChartaService.loadFiles([
+				{ fileName: "SecondFile", content: validFileContent, fileSize: 42 },
+				{ fileName: "ThirdFile", content: validFileContent, fileSize: 42 }
+			])
+
+			expect(getCCFiles(storeService.getState().files).length).toEqual(3)
+			expect(getCCFiles(storeService.getState().files)[0].fileMeta.fileName).toEqual("FirstFile")
+			expect(getCCFiles(storeService.getState().files)[1].fileMeta.fileName).toEqual("SecondFile")
+			expect(getCCFiles(storeService.getState().files)[2].fileMeta.fileName).toEqual("ThirdFile")
+		})
+
 		it("should load the default scenario after loading a valid file", () => {
 			storeService.dispatch(setNodeMetricData(metricData))
 

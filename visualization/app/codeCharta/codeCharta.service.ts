@@ -20,6 +20,7 @@ export class CodeChartaService {
 	constructor(private storeService: StoreService, private dialogService: DialogService) {}
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
+		this.fileStates = this.storeService.getState().files
 		for (const nameDataPair of nameDataPairs) {
 			try {
 				validate(nameDataPair.content)
