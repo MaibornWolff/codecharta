@@ -1,4 +1,11 @@
-<md-slider-container class="md-block" title="Display the labels of the {{ $ctrl._viewModel.amountOfTopLabels }} highest buildings">
+<md-slider-container
+	class="md-block"
+	title="{{
+		$ctrl._viewModel.sliderDisabled
+			? 'Disabled because color labels are used'
+			: 'Display the labels of the ' + $ctrl._viewModel.amountOfTopLabels + ' highest buildings'
+	}} "
+>
 	<span class="slider-title"> Labels </span>
 	<md-slider
 		flex
@@ -9,6 +16,7 @@
 		id="labels-slider"
 		ng-change="$ctrl.applySettingsAmountOfTopLabels()"
 		class="md-primary"
+		ng-disabled="$ctrl._viewModel.sliderDisabled"
 	>
 	</md-slider>
 	<md-input-container>
@@ -21,6 +29,7 @@
 			ng-model="$ctrl._viewModel.amountOfTopLabels"
 			ng-change="$ctrl.applySettingsAmountOfTopLabels()"
 			aria-controls="labels-slider"
+			ng-disabled="$ctrl._viewModel.sliderDisabled"
 		/>
 	</md-input-container>
 </md-slider-container>
