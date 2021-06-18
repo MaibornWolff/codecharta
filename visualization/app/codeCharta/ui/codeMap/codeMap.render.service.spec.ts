@@ -4,9 +4,20 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Node, CodeMapNode, State } from "../../codeCharta.model"
+import { Node, CodeMapNode, State, colorLabelOptions } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_STATE, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
+import {
+	COLOR_TEST_NODES,
+	DEFAULT_STATE,
+	INCOMING_NODE,
+	METRIC_DATA,
+	STATE,
+	TEST_FILE_WITH_PATHS,
+	TEST_NODE_LEAF,
+	TEST_NODE_ROOT,
+	TEST_NODES,
+	VALID_EDGES
+} from "../../util/dataMocks"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { StoreService } from "../../state/store.service"
@@ -20,6 +31,7 @@ import { klona } from "klona"
 import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 
 describe("codeMapRenderService", () => {
 	let $rootScope: IRootScopeService
@@ -158,6 +170,14 @@ describe("codeMapRenderService", () => {
 
 			expect(codeMapRenderService["scaleMap"]).toHaveBeenCalled()
 		})
+
+		it("should call getNodesMatchingColorSelector", () => {
+			codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+
+			expect(codeMapRenderService["nodesByColor"].positive).toEqual([TEST_NODE_ROOT])
+			expect(codeMapRenderService["nodesByColor"].neutral).toEqual([TEST_NODE_LEAF])
+			expect(codeMapRenderService["nodesByColor"].negative).toEqual([INCOMING_NODE])
+		})
 	})
 
 	describe("scaleMap", () => {
@@ -231,6 +251,34 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService.render(null)
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(1)
+		})
+
+		it("should generate labels for color if option is toggled on", () => {
+			const colorLabelsNegative: colorLabelOptions = {
+				positive: false,
+				negative: true,
+				neutral: false
+			}
+
+			storeService.dispatch(setColorLabels(colorLabelsNegative))
+			codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+			codeMapRenderService["setLabels"](COLOR_TEST_NODES)
+
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(1)
+		})
+
+		it("should generate labels for multiple colors if corresponding options are toggled on", () => {
+			const colorLabelsPosNeut: colorLabelOptions = {
+				positive: true,
+				negative: false,
+				neutral: true
+			}
+
+			storeService.dispatch(setColorLabels(colorLabelsPosNeut))
+			codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+			codeMapRenderService["setLabels"](COLOR_TEST_NODES)
+
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(2)
 		})
 	})
 
