@@ -4,15 +4,7 @@ import { CodeMapBuilding } from "./codeMapBuilding"
 import { IntermediateVertexData } from "./intermediateVertexData"
 import { BoxGeometryGenerationHelper } from "./boxGeometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import {
-	Mesh,
-	BufferGeometry,
-	Material,
-	Box3,
-	Vector3,
-	BufferAttribute,
-} from "three"
-import { getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "../../../util/codeMapHelper"
+import { Mesh, BufferGeometry, Material, Box3, Vector3, BufferAttribute } from "three"
 
 export interface BoxMeasures {
 	x: number
@@ -33,18 +25,18 @@ export class GeometryGenerator {
 
 	private floorGradient: string[]
 	private materials: Material[]
-	private floorSurfaceLabelFontSizes = new Map([
+	/*private floorSurfaceLabelFontSizes = new Map([
 		[MAP_RESOLUTION_SCALE.SMALL_MAP, [54, 54, 54]],
 		[MAP_RESOLUTION_SCALE.MEDIUM_MAP, [72, 54, 54]],
 		[MAP_RESOLUTION_SCALE.BIG_MAP, [108, 72, 72]]
 	])
-	private mapSizeResolutionScaling = MAP_RESOLUTION_SCALE.SMALL_MAP
-
+	 */
+	//private mapSizeResolutionScaling = MAP_RESOLUTION_SCALE.SMALL_MAP
 
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const data = new IntermediateVertexData()
 		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
-		this.mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
+		//	this.mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 		this.materials = [material]
@@ -60,10 +52,8 @@ export class GeometryGenerator {
 				this.addBuilding(data, node, index, desc, state, isDeltaState)
 			}
 		}
-		console.log(this.floorSurfaceLabelFontSizes)
-		console.log(this.mapSizeResolutionScaling)
-
-
+		//console.log(this.floorSurfaceLabelFontSizes)
+		//console.log(this.mapSizeResolutionScaling)
 
 		return {
 			mesh: this.buildMeshFromIntermediateVertexData(data),
@@ -235,7 +225,7 @@ export class GeometryGenerator {
 			// Render the floors surface with the text label texture
 			geometry.addGroup(currentSurfaceInfo.surfaceStartIndex, verticesPerPlane, surfaceIndex + 1)
 
-		//	this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
+			//	this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
 
 			let verticesCountUntilNextFloorLabelRenderer = Number.POSITIVE_INFINITY
 			const startOfNextDefaultRenderer = currentSurfaceInfo.surfaceStartIndex + verticesPerPlane
@@ -249,7 +239,7 @@ export class GeometryGenerator {
 			geometry.addGroup(startOfNextDefaultRenderer, verticesCountUntilNextFloorLabelRenderer, 0)
 		}
 	}
-/*
+	/*
 	private createAndAssignFloorLabelTextureMaterial(surfaceInfo: SurfaceInformation) {
 		const textCanvas = document.createElement("canvas")
 		textCanvas.height = surfaceInfo.maxPos.x - surfaceInfo.minPos.x

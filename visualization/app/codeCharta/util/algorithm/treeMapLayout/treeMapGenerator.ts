@@ -2,14 +2,13 @@ import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../../../codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
-import {calculatePadding} from "./paddingCalculator";
-import {getChildrenAreaValues, getSmallestDifference} from "./treeMapHelper2";
-import {calculateTotalNodeArea} from "./nodeAreaCalculator";
+import { calculatePadding } from "./paddingCalculator"
+import { getChildrenAreaValues, getSmallestDifference } from "./treeMapHelper2"
+import { calculateTotalNodeArea } from "./nodeAreaCalculator"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
 const PADDING_SCALING_FACTOR = 1
-
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -152,17 +151,19 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 	root.length *= scaleLength
 }
 
-
-function getBuildingAreasWithProportionalPadding(childrenAreaValue:any[], smallestDelta: number, minimumBuildingSize: number, padding: number){
-
+function getBuildingAreasWithProportionalPadding(
+	childrenAreaValue: any[],
+	smallestDelta: number,
+	minimumBuildingSize: number,
+	padding: number
+) {
 	return childrenAreaValue.map(element => {
-		const buildingArea = (element/smallestDelta) * minimumBuildingSize
-		return (Math.sqrt(buildingArea)+ padding)**2
+		const buildingArea = (element / smallestDelta) * minimumBuildingSize
+		return (Math.sqrt(buildingArea) + padding) ** 2
 	})
 }
 
 function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
-
 	const hierarchyNode = hierarchy(map)
 	let padding = state.dynamicSettings.margin
 
@@ -173,11 +174,16 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	const minBuildingSize = 100
 
 	padding = calculatePadding(childrenAreaValues, smallestDelta, minBuildingSize, padding)
-	console.log("Padding ", padding)
+	//console.log("Padding ", padding)
 
-	const metricBuildingAreasIncludingPadding = getBuildingAreasWithProportionalPadding(childrenAreaValues, smallestDelta, minBuildingSize, padding)
+	const metricBuildingAreasIncludingPadding = getBuildingAreasWithProportionalPadding(
+		childrenAreaValues,
+		smallestDelta,
+		minBuildingSize,
+		padding
+	)
 
-	const {rootWidth, metricSum}= calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyNode, padding, state)
+	const { rootWidth, metricSum } = calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyNode, padding, state)
 
 	const width = rootWidth
 	const height = rootWidth
@@ -188,7 +194,6 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 		.paddingInner(padding) // margin of the element; applied to folders
 
 	const logSum = treeMap(metricSum)
-	console.log(logSum)
 
 	return { treeMap: logSum, height, width }
 }
