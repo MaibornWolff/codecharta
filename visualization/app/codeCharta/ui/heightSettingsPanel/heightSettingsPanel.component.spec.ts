@@ -13,6 +13,8 @@ import { TEST_DELTA_MAP_A } from "../../util/dataMocks"
 import { addFile, setDelta } from "../../state/store/files/files.actions"
 import { LabelShowNodeNameService } from "../../state/store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
 import { LabelShowMetricValueService } from "../../state/store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
+import { ColorLabelsService } from "../../state/store/appSettings/colorLabels/colorLabels.service"
+import { colorLabelOptions } from "../../codeCharta.model"
 
 describe("HeightSettingsPanelController", () => {
 	let heightSettingsPanelController: HeightSettingsPanelController
@@ -85,6 +87,14 @@ describe("HeightSettingsPanelController", () => {
 
 			expect(LabelShowMetricValueService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
+
+		it("should subscribe to ColorLabelService", () => {
+			ColorLabelsService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ColorLabelsService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+		})
 	})
 
 	describe("onAmountOfTopLabelsChanged", () => {
@@ -148,6 +158,38 @@ describe("HeightSettingsPanelController", () => {
 				expect(storeService.getState().appSettings.amountOfTopLabels).toBe(12)
 				done()
 			}, HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+		})
+	})
+
+	describe("onColorLabelsChanged", () => {
+		it("should set sliderDisabled in viewModel to true if one option is truthy", () => {
+			const colorLabelsNeg: colorLabelOptions = {
+				positive: false,
+				negative: true,
+				neutral: false
+			}
+			heightSettingsPanelController.onColorLabelsChanged(colorLabelsNeg)
+			expect(heightSettingsPanelController["_viewModel"].sliderDisabled).toBeTruthy()
+		})
+
+		it("should set sliderDisabled in viewModel to true if multiple options are truthy", () => {
+			const colorLabelsPosNeut: colorLabelOptions = {
+				positive: true,
+				negative: false,
+				neutral: true
+			}
+			heightSettingsPanelController.onColorLabelsChanged(colorLabelsPosNeut)
+			expect(heightSettingsPanelController["_viewModel"].sliderDisabled).toBeTruthy()
+		})
+
+		it("should set sliderDisabled in viewModel to false if no color label options are truthy", () => {
+			const colorLabelsFalse: colorLabelOptions = {
+				positive: false,
+				negative: false,
+				neutral: false
+			}
+			heightSettingsPanelController.onColorLabelsChanged(colorLabelsFalse)
+			expect(heightSettingsPanelController["_viewModel"].sliderDisabled).toBeFalsy()
 		})
 	})
 
