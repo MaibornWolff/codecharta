@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Export the current view as a png image by using "Ctrl+Alt+S" or clicking the corresponding button ([#674](https://github.com/MaibornWolff/codecharta/issues/674))
+-   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
+-   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613))
+
+    <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350">
+
+## [1.74.0] - 2021-05-31
+
+### Added 🚀
+
+-   SonarImport: SonarQube 8.8 support. Older versions are still supported.
+
+### Fixed 🐞
+
+-   Only show labels for building included in the search
+-   Color slider not initialized correctly ([#1592](https://github.com/MaibornWolff/codecharta/issues/1592))
+
+## [1.73.0] - 2021-05-10
+
+### Added 🚀
+
 -   Improve descriptions ([#1879](https://github.com/MaibornWolff/codecharta/issues/1879))
     <br></br>
     ![option dialog](https://user-images.githubusercontent.com/57844849/115393175-b2897b00-a1e1-11eb-8601-d2128f3469a3.png)
@@ -18,6 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
     (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
 -   Fix labels and lines missing a connection in some cases([#1716](https://github.com/MaibornWolff/codecharta/issues/1716))
+-   Ribbons resizing when expanding ([#1952](https://github.com/MaibornWolff/codecharta/issues/1952))
 
 ### Chore 👨‍💻 👩‍💻
 

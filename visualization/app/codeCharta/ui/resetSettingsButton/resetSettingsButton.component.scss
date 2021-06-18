@@ -1,12 +1,13 @@
 reset-settings-button-component {
-	height: 30px;
+	display: inline-block;
+	height: 48px;
 	.md-button {
-		top: 0px;
+		border-radius: 3%;
 		margin-left: 0;
-		min-width: 37px;
-		float: right;
-		bottom: 10px;
-		right: 10px;
-		border-radius: 50%;
+		min-width: 36px;
+	}
+
+	.md-button-label {
+		text-transform: none;
 	}
 }

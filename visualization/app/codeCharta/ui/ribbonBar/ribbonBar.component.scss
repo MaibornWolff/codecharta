@@ -27,31 +27,22 @@ ribbon-bar-component {
 		border-top: $border;
 		float: left;
 		position: relative;
-		overflow: hidden;
 		flex: 1 1 0;
 		min-width: 92px;
 		transition: 200ms width ease-in-out;
-
-		&.expanded {
-			overflow: visible;
-		}
 
 		.section {
 			display: inline-block;
 			height: 100%;
 			border-right: $border;
 			vertical-align: top;
-			flex-grow: 100;
+			overflow: hidden;
 
 			.section-header {
 				height: 31px;
 				color: #444444;
 				overflow: hidden;
 				padding: 5px;
-
-				&.space {
-					width: 10000px;
-				}
 			}
 
 			.section-title {
@@ -81,53 +72,10 @@ ribbon-bar-component {
 					content: "\f107";
 				}
 			}
-
-			.section-body {
-				margin: 5px 5px 5px 5px;
-				overflow: visible;
-				font-size: 0.9em;
-				text-align: left;
-				vertical-align: top;
-
-				md-slider-container {
-					position: relative;
-					padding-left: 2px;
-
-					span {
-						position: absolute;
-						top: 0;
-						font-size: 10pt;
-						color: grey;
-						left: 5px;
-					}
-				}
-
-				md-input-container:not(#colorSliderContainer) > input {
-					height: 30px;
-					margin-top: -17px;
-				}
-
-				md-checkbox {
-					font-size: 10pt;
-					margin-left: 5px;
-				}
-
-				reset-settings-button-component .md-button {
-					top: -7.5px;
-					right: -5px;
-					opacity: 0;
-					height: 0;
-					pointer-events: none;
-				}
-			}
 		}
 
 		&.expanded {
-			height: $heightExpanded + px;
-
 			.section-title {
-				border-bottom: $border;
-
 				i:before {
 					content: "\f106";
 				}
@@ -136,7 +84,6 @@ ribbon-bar-component {
 			.section-body {
 				reset-settings-button-component .md-button {
 					opacity: 1;
-					height: 20px;
 					pointer-events: all;
 				}
 			}
@@ -163,33 +110,6 @@ ribbon-bar-component {
 	md-card.scenario-card {
 		max-width: 100px;
 		min-width: 100px;
-	}
-
-	.height-metric-card.expanded,
-	.area-metric-card.expanded,
-	.color-metric-card.expanded,
-	.edge-metric-card.expanded {
-		flex: 1 1 300px;
-	}
-
-	md-card.minimized {
-		min-width: 24px;
-	}
-
-	.height-metric-card.expanded {
-		height: 295px;
-	}
-
-	.area-metric-card.expanded {
-		height: 155px;
-	}
-
-	.color-metric-card.expanded {
-		height: 250px;
-	}
-
-	.edge-metric-card.expanded {
-		height: 250px;
 	}
 
 	cc-map-color-picker .cc-map-color-picker-wrapper {
