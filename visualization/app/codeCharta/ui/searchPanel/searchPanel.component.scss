@@ -2,4 +2,8 @@ search-panel-component {
 	search-panel-mode-selector-component {
 		display: inline-block;
 	}
+
+	.search-panel-card .section-body {
+		padding: 6px;
+	}
 }
