@@ -39,5 +39,3 @@ angular
 			$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|chrome-extension):/)
 		}
 	])
-
-angular.bootstrap(document.body, ["app"], { strictDi: true })
