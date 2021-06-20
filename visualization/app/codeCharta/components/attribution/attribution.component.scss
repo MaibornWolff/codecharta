@@ -1,0 +1,25 @@
+.logo {
+	width: 160px;
+	height: 100px;
+	position: absolute;
+	left: 0;
+	bottom: 30px;
+	z-index: 1;
+
+	a,
+	img {
+		width: 5em;
+		display: block;
+		margin: auto !important;
+	}
+
+	h2 {
+		text-transform: uppercase;
+		color: #5a585a;
+		font-weight: 500;
+		font-size: 9pt;
+		text-align: center;
+		margin: 0;
+		z-index: -1;
+	}
+}
