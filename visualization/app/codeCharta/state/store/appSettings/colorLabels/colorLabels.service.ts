@@ -12,6 +12,7 @@ export class ColorLabelsService implements StoreSubscriber {
 	private static COLOR_LABELS_CHANGED_EVENT = "color-labels-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

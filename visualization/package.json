@@ -140,6 +140,7 @@
 		"@typescript-eslint/parser": "^4.22.0",
 		"angularjs-color-picker": "^3.4.8",
 		"babel-loader": "^8.2.2",
+		"babel-plugin-angularjs-annotate": "^0.10.0",
 		"bestzip": "^2.2.0",
 		"canvas": "^2.7.0",
 		"clean-webpack-plugin": "^3.0.0",

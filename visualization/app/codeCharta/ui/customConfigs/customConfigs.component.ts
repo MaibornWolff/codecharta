@@ -51,6 +51,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService
 	) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 	}
 

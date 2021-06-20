@@ -12,8 +12,8 @@ export class NodePathPanelController implements BuildingHoveredSubscriber, Build
 		hoveredNodeIsFile: null
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService) {
+		"ngInject"
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}

@@ -30,6 +30,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		private threeStatsService: ThreeStatsService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
+		"ngInject"
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
 	onIsLoadingFileChanged(isLoadingFile: boolean) {

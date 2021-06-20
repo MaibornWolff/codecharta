@@ -11,6 +11,7 @@ export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDa
 	private static METRIC_DATA_COMPLETE = "metric-data-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}

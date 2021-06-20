@@ -31,8 +31,8 @@ export class StoreService {
 	private static STORE_CHANGED_EXTENDED_EVENT = "store-changed-extended"
 	private store: Store
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService) {
+		"ngInject"
 		this.store = createStore(rootReducer)
 	}
 

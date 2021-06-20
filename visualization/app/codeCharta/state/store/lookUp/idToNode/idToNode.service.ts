@@ -7,6 +7,7 @@ import { setIdToNode } from "./idToNode.actions"
 
 export class IdToNodeService implements CodeMapPreRenderServiceSubscriber {
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 

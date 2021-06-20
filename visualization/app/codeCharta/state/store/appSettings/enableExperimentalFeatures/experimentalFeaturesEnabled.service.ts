@@ -11,6 +11,7 @@ export class ExperimentalFeaturesEnabledService implements StoreSubscriber {
 	private static EXPERIMENTAL_FEATURES_ENABLED_CHANGED_EVENT = "experimental-features-enabled-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

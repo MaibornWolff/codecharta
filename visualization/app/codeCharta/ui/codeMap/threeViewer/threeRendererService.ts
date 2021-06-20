@@ -36,6 +36,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	camera: Camera
 
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {
+		"ngInject"
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 	}
 

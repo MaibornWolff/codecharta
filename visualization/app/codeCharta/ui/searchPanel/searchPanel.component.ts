@@ -15,12 +15,12 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 		isExpanded: false
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeChartaMouseEventService: CodeChartaMouseEventService
 	) {
+		"ngInject"
 		SearchPanelModeService.subscribe(this.$rootScope, this)
 		this.onSearchPanelModeChanged(SearchPanelMode.minimized)
 	}
