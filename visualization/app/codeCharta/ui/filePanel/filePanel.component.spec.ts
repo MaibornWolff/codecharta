@@ -239,12 +239,12 @@ describe("filePanelController", () => {
 			expect(filePanelController.onSingleFileChange).toHaveBeenCalledWith("fileA")
 		})
 
-		it("should update the viewModel with the last visible filename and call Files if partial mode is active", () => {
-			filePanelController.selectAllPartialFiles = jest.fn()
+		it("should update the viewModel with the first recently loaded filename and call Files if partial mode is active", () => {
+			filePanelController.selectRecentPartialFiles = jest.fn()
 
 			filePanelController.onPartialStateSelected()
 
-			expect(filePanelController.selectAllPartialFiles).toHaveBeenCalled()
+			expect(filePanelController.selectRecentPartialFiles).toHaveBeenCalled()
 		})
 
 		it("should update the viewModel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
