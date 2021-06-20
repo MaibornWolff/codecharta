@@ -130,7 +130,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	}
 
 	onPartialStateSelected() {
-		this.selectAllPartialFiles()
+		this.selectRecentPartialFiles()
 	}
 
 	onDeltaStateSelected() {
@@ -141,6 +141,11 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	selectAllPartialFiles() {
 		const allFileNames = this._viewModel.files.map(x => x.file.fileMeta.fileName)
 		this.onPartialFilesChange(allFileNames)
+	}
+
+	selectRecentPartialFiles() {
+		const recentFileNames = this.storeService.getState().dynamicSettings.recentFiles
+		this.onPartialFilesChange(recentFileNames)
 	}
 
 	selectZeroPartialFiles() {

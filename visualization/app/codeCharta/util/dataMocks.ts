@@ -1570,7 +1570,8 @@ export const STATE: State = {
 			from: 19,
 			to: 67
 		},
-		sortingOption: SortingOption.NAME
+		sortingOption: SortingOption.NAME,
+		recentFiles: ["fileA", "fileB"]
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -1705,7 +1706,8 @@ export const DEFAULT_STATE: State = {
 		},
 		searchPattern: "",
 		searchedNodePaths: new Set(),
-		sortingOption: SortingOption.NAME
+		sortingOption: SortingOption.NAME,
+		recentFiles: []
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
