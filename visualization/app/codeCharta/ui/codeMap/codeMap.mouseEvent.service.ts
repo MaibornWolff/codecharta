@@ -152,11 +152,13 @@ export class CodeMapMouseEventService
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.clearConstantHighlight()
+		this.clearTemporaryLabel()
 		this.threeUpdateCycleService.update()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+		this.clearTemporaryLabel()
 		if (selectedBuilding) {
 			const isSelectedBuildingBlacklisted = isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
@@ -243,10 +245,14 @@ export class CodeMapMouseEventService
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 
-		this.codeMapLabelService.addLabel(codeMapBuilding.node, {
-			showNodeName: showLabelNodeName,
-			showNodeMetric: showLabelNodeMetric
-		})
+		this.codeMapLabelService.addLabel(
+			codeMapBuilding.node,
+			{
+				showNodeName: showLabelNodeName,
+				showNodeMetric: showLabelNodeMetric
+			},
+			0
+		)
 
 		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
