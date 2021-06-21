@@ -1,11 +1,12 @@
 import "./filePanel.component.scss"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
-import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
+import { removeFile, setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
+import { removeRecentFile } from "../../state/store/dynamicSettings/recentFiles/recentFiles.actions"
 
 interface SelectedFileNames {
 	single: string
@@ -145,7 +146,33 @@ export class FilePanelController implements FilesSelectionSubscriber {
 
 	selectRecentPartialFiles() {
 		const recentFileNames = this.storeService.getState().dynamicSettings.recentFiles
-		this.onPartialFilesChange(recentFileNames)
+		if (recentFileNames.length > 0) {
+			this.onPartialFilesChange(recentFileNames)
+		} else {
+			this.selectAllPartialFiles()
+		}
+	}
+
+	onPartialRemoveFile(fileName: string, $event): void {
+		this.storeService.dispatch(removeFile(fileName))
+		this.storeService.dispatch(removeRecentFile(fileName))
+
+		const allRemainingFiles = this._viewModel.files.map(x => x.file.fileMeta.fileName)
+		this.onPartialFilesChange(allRemainingFiles)
+
+		$event.stopPropagation()
+		$event.preventDefault()
+	}
+
+	onSingleRemoveFile(fileName: string, $event): void {
+		this.storeService.dispatch(removeFile(fileName))
+		this.storeService.dispatch(removeRecentFile(fileName))
+
+		const remainingFile = this.storeService.getState().files[0].file.fileMeta.fileName
+		this.onSingleFileChange(remainingFile)
+
+		$event.stopPropagation()
+		$event.preventDefault()
 	}
 
 	selectZeroPartialFiles() {

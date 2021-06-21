@@ -4,7 +4,7 @@ import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
 import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
 import { StoreService } from "./state/store.service"
-import { resetFiles } from "./state/store/files/files.actions"
+import { removeFile, resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
@@ -168,6 +168,15 @@ describe("codeChartaService", () => {
 			expect(getCCFiles(storeService.getState().files)[2].fileMeta.fileName).toEqual("ThirdFile")
 		})
 
+		it("should select the newly added file", () => {
+			codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+
+			codeChartaService.loadFiles([{ fileName: "SecondFile", content: validFileContent, fileSize: 42 }])
+
+			expect(storeService.getState().files[0].selectedAs).toEqual("None")
+			expect(storeService.getState().files[1].selectedAs).toEqual("Single")
+		})
+
 		it("should load the default scenario after loading a valid file", () => {
 			storeService.dispatch(setNodeMetricData(metricData))
 
@@ -314,7 +323,7 @@ describe("codeChartaService", () => {
 				{ fileName: "SecondFile", content: validFileContent, fileSize: 42 }
 			])
 
-			codeChartaService.removeFile("FirstFile")
+			storeService.dispatch(removeFile("FirstFile"))
 			expect(storeService.getState().files).toHaveLength(1)
 			expect(storeService.getState().files[0].file.fileMeta.fileName).toEqual("SecondFile")
 		})

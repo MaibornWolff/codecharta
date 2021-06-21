@@ -24,13 +24,7 @@ export class CodeChartaService {
 		this.fileStates = this.storeService.getState().files
 		for (const nameDataPair of nameDataPairs) {
 			try {
-				validate(nameDataPair.content)
-				if (this.storeService.getState().files.some(f => f.file.fileMeta.fileName === nameDataPair.fileName)) {
-					this.fileStates = []
-					this.recentFiles = []
-					this.storeService.dispatch(setIsLoadingFile(false))
-					break
-				}
+				validate(nameDataPair, this.storeService)
 				this.addFile(nameDataPair)
 				this.addRecentFile(nameDataPair.fileName)
 			} catch (error) {
@@ -52,7 +46,6 @@ export class CodeChartaService {
 		}
 
 		if (this.fileStates.length > 0) {
-			// this.storeService.dispatch(resetFiles())
 			this.storeService.dispatch(setRecentFiles(this.recentFiles))
 			this.storeService.dispatch(setFiles(this.fileStates))
 
@@ -82,11 +75,6 @@ export class CodeChartaService {
 		if (names.every(metric => metricNames.has(metric))) {
 			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
 		}
-	}
-
-	removeFile(fileName: string): void {
-		const files = this.storeService.getState().files.filter(file => file.file.fileMeta.fileName !== fileName)
-		this.storeService.dispatch(setFiles(files))
 	}
 
 	static updateRootData(rootName: string) {

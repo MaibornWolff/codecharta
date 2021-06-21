@@ -25,10 +25,18 @@
 		ng-change="$ctrl.onSingleFileChange($ctrl._viewModel.selectedFileNames.single)"
 	>
 		<md-option
+			class="files"
 			ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
 			value="{{::fileState.file.fileMeta.fileName}}"
 		>
-			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
+			<md-truncate class="file-name">{{::fileState.file.fileMeta.fileName}}</md-truncate>
+			<md-button
+				class="delete"
+				ng-if="$ctrl._viewModel.files.length > 1"
+				ng-click="$ctrl.onSingleRemoveFile(fileState.file.fileMeta.fileName, $event)"
+			>
+				<i class="fa fa-trash"></i>
+			</md-button>
 		</md-option>
 	</md-select>
 </md-input-container>
@@ -45,10 +53,19 @@
 		<md-button ng-click="$ctrl.invertPartialFileSelection()">Invert</md-button>
 
 		<md-option
+			style="justify-content: space-between"
 			ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
 			value="{{::fileState.file.fileMeta.fileName}}"
 		>
 			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
+			<md-button
+				class="attribute-type-select"
+				style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; align-self: flex-end"
+				ng-if="$ctrl._viewModel.files.length > 1"
+				ng-click="$ctrl.onPartialRemoveFile(fileState.file.fileMeta.fileName, $event)"
+			>
+				<i class="fa fa-trash"></i>
+			</md-button>
 		</md-option>
 	</md-select>
 </md-input-container>
