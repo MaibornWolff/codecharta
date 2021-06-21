@@ -39,13 +39,13 @@ export class MetricTypeController
 
 	private metricSelection: MetricSelections
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private storeService: StoreService
 	) {
+		"ngInject"
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)

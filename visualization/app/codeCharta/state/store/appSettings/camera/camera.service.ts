@@ -12,6 +12,7 @@ export class CameraService implements StoreSubscriber {
 	private static CAMERA_CHANGED_EVENT = "store-camera-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

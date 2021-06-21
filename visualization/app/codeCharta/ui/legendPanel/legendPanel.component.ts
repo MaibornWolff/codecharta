@@ -29,6 +29,7 @@ export class LegendPanelController
 	}
 
 	constructor(private $rootScope: IRootScopeService) {
+		"ngInject"
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)

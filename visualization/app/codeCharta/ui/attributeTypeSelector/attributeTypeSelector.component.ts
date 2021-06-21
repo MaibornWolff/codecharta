@@ -15,12 +15,13 @@ export class AttributeTypeSelectorController {
 	private type: string
 	private metric: string
 
-	/* @ngInject */
 	constructor(
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService
-	) {}
+	) {
+		"ngInject"
+	}
 
 	$onInit() {
 		this.setAggregationSymbol()

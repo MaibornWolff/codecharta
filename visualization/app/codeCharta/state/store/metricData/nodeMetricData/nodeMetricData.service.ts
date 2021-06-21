@@ -17,6 +17,7 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)

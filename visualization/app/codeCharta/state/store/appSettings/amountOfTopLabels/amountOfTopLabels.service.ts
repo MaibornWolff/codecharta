@@ -11,6 +11,7 @@ export class AmountOfTopLabelsService implements StoreSubscriber {
 	private static AMOUNT_OF_TOP_LABELS_CHANGED_EVENT = "amount-of-top-labels-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

@@ -12,6 +12,7 @@ export class ScalingService implements StoreSubscriber {
 	private static SCALING_CHANGED_EVENT = "scaling-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

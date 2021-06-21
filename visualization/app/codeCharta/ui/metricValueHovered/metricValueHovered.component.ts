@@ -28,8 +28,8 @@ export class MetricValueHoveredController
 		deltaColor: null
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
+		"ngInject"
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)

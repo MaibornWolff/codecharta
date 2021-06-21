@@ -16,6 +16,7 @@ export class SharpnessModeSelectorController implements SharpnessModeSubscriber 
 	}
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		SharpnessModeService.subscribe(this.$rootScope, this)
 		this.onSharpnessModeChanged(this.storeService.getState().appSettings.sharpnessMode)
 		this._viewModel.sharpnessModes = _.values(SharpnessMode)

@@ -7,8 +7,9 @@ import { convertToVectors } from "../../util/settingsHelper"
 export class ResetSettingsButtonController {
 	private settingsNames = ""
 
-	/* @ngInject */
-	constructor(private storeService: StoreService) {}
+	constructor(private storeService: StoreService) {
+		"ngInject"
+	}
 
 	applyDefaultSettings() {
 		const tokens = this.settingsNames.replace(/ |\n/g, "").split(",")
