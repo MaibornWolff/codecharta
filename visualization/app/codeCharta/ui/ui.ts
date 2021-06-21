@@ -12,6 +12,7 @@ import "./sortingButton/sortingButton.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
 import "./downloadButton/downloadButton.module"
+import "./screenshotButton/screenshotButton.module"
 import "./globalSettingsButton/globalSettingsButton.module"
 import "./metricDeltaSelected/metricDeltaSelected.module"
 import "./nodePathPanel/nodePathPanel.module"
@@ -60,6 +61,7 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.unfocusButton",
 	"app.codeCharta.ui.metricValueHovered",
 	"app.codeCharta.ui.downloadButton",
+	"app.codeCharta.ui.screenshotButton",
 	"app.codeCharta.ui.globalSettingsButton",
 	"app.codeCharta.ui.metricDeltaSelected",
 	"app.codeCharta.ui.nodePathPanel",

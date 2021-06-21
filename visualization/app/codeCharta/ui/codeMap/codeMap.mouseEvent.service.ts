@@ -48,7 +48,8 @@ export enum CursorType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber
+{
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -151,11 +152,13 @@ export class CodeMapMouseEventService
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.clearConstantHighlight()
+		this.clearTemporaryLabel()
 		this.threeUpdateCycleService.update()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+		this.clearTemporaryLabel()
 		if (selectedBuilding) {
 			const isSelectedBuildingBlacklisted = isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
@@ -175,6 +178,8 @@ export class CodeMapMouseEventService
 
 	updateHovering() {
 		if (this.hasMouseMoved(this.oldMouse)) {
+			const labels = this.threeSceneService.labels?.children
+
 			if (this.isGrabbing || this.isMoving) {
 				this.threeSceneService.resetLabel()
 				this.clearTemporaryLabel()
@@ -187,7 +192,6 @@ export class CodeMapMouseEventService
 
 			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
 			const camera = this.threeCameraService.camera
-			const labels = this.threeSceneService.labels?.children
 
 			const mapMesh = this.threeSceneService.getMapMesh()
 			let nodeNameHoveredLabel = ""
@@ -241,10 +245,14 @@ export class CodeMapMouseEventService
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 
-		this.codeMapLabelService.addLabel(codeMapBuilding.node, {
-			showNodeName: showLabelNodeName,
-			showNodeMetric: showLabelNodeMetric
-		})
+		this.codeMapLabelService.addLabel(
+			codeMapBuilding.node,
+			{
+				showNodeName: showLabelNodeName,
+				showNodeMetric: showLabelNodeMetric
+			},
+			0
+		)
 
 		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
@@ -312,7 +320,7 @@ export class CodeMapMouseEventService
 	private calculateHoveredLabel(labels: Object3D[]) {
 		let labelClosestToViewPoint = null
 
-		if (labels != null) {
+		if (labels) {
 			for (let counter = 0; counter < labels.length; counter += 2) {
 				const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
 				if (intersect.length > 0) {

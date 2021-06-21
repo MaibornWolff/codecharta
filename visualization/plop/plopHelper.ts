@@ -1,10 +1,10 @@
 const OUTSIDE_DIST = "../../"
-const APP_BASE = OUTSIDE_DIST + "app/codeCharta/"
-const TEMPLATE_DIRECTORY = OUTSIDE_DIST + "plop/templates/"
+const APP_BASE = `${OUTSIDE_DIST}app/codeCharta/`
+const TEMPLATE_DIRECTORY = `${OUTSIDE_DIST}plop/templates/`
 const FILE_NAME_SEPARATOR = "."
 const PATH_SEPARATOR = "/"
 const NAME = "{{camelCase name}}"
-const PLOP_TEMPLATE_EXTENSION = FILE_NAME_SEPARATOR + "hbs"
+const PLOP_TEMPLATE_EXTENSION = `${FILE_NAME_SEPARATOR}hbs`
 
 interface FileModification {
 	path: string
@@ -31,7 +31,7 @@ export function modifyFileAction(modification: FileModification) {
 export function createInputPromt(name: string, message: string) {
 	return {
 		type: "input",
-		name: name,
-		message: message
+		name,
+		message
 	}
 }

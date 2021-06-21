@@ -91,6 +91,46 @@ describe("SearchBarController", () => {
 		})
 	})
 
+	describe("onClickBlacklistPattern", () => {
+		it("separate entries for many in one searchPattern", () => {
+			const blacklistItem = { path: "*html*", type: BlacklistType.exclude }
+			const blacklistItem1 = { path: "*ts*", type: BlacklistType.exclude }
+			searchBarController["_viewModel"].searchPattern = "html,ts"
+			storeService.dispatch(setSearchPattern(blacklistItem.path))
+
+			searchBarController.onClickBlacklistPattern(BlacklistType.exclude)
+
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItem)
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItem1)
+			expect(searchBarController["_viewModel"].searchPattern).toBe("")
+			expect(storeService.getState().dynamicSettings.searchPattern).toBe("")
+
+			searchBarController.onSearchPatternChanged("ts")
+			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
+			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
+		})
+	})
+
+	describe("onClickBlacklistPattern", () => {
+		it("separate entries for negated many in one searchPattern", () => {
+			const blacklistItem = { path: "!*html*", type: BlacklistType.exclude }
+			const blacklistItem1 = { path: "!*ts*", type: BlacklistType.exclude }
+			searchBarController["_viewModel"].searchPattern = "!html,ts"
+			storeService.dispatch(setSearchPattern(blacklistItem.path))
+
+			searchBarController.onClickBlacklistPattern(BlacklistType.exclude)
+
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItem)
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItem1)
+			expect(searchBarController["_viewModel"].searchPattern).toBe("")
+			expect(storeService.getState().dynamicSettings.searchPattern).toBe("")
+
+			searchBarController.onSearchPatternChanged("!ts")
+			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
+			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
+		})
+	})
+
 	describe("onBlacklistChanged", () => {
 		beforeEach(() => {
 			searchBarController["_viewModel"].searchPattern = "/root/node/path"

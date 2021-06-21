@@ -1,7 +1,8 @@
-import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
+import { AppSettings, CCAction, colorLabelOptions, MapColors, RecursivePartial } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 
 // Plop: Append action splitter import here
+import { splitColorLabelsAction } from "./colorLabels/colorLabels.splitter"
 import { splitShowMetricLabelNodeNameAction } from "./showMetricLabelNodeName/showMetricLabelNodeName.splitter"
 import { splitShowMetricLabelNameValueAction } from "./showMetricLabelNameValue/showMetricLabelNameValue.splitter"
 import { splitPanelSelectionAction } from "./panelSelection/panelSelection.splitter"
@@ -150,6 +151,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.sharpnessMode !== undefined) {
 		actions.push(splitSharpnessAction(payload.sharpnessMode))
+	}
+
+	if (payload.colorLabels !== undefined) {
+		actions.push(splitColorLabelsAction(payload.colorLabels as colorLabelOptions))
 	}
 
 	return actions

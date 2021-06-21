@@ -25,7 +25,7 @@ describe("ViewCubeMouseEventsService", () => {
 	function withMockedWebGLRenderer() {
 		const eventMap = {}
 		webGLRenderer = new WebGLRenderer({
-			context: ({
+			context: {
 				getParameter: jest.fn().mockReturnValue(["WebGL 2"]),
 				getExtension: jest.fn().mockReturnValue({
 					EXT_blend_minmax: null
@@ -45,17 +45,17 @@ describe("ViewCubeMouseEventsService", () => {
 				initGLContext: jest.fn(),
 				scissor: jest.fn(),
 				viewport: jest.fn()
-			} as unknown) as WebGLRenderingContext
+			} as unknown as WebGLRenderingContext
 		})
 
-		webGLRenderer.domElement = ({
+		webGLRenderer.domElement = {
 			addEventListener: jest.fn((event, callback) => {
 				eventMap[event] = callback
 			}),
 			getBoundingClientRect: jest.fn().mockReturnValue({ left: 20, top: 20 }),
 			width: 100,
 			height: 100
-		} as unknown) as HTMLCanvasElement
+		} as unknown as HTMLCanvasElement
 
 		webGLRenderer.getPixelRatio = jest.fn().mockReturnValue(2)
 	}

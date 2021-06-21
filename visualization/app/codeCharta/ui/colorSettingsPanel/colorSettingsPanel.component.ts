@@ -15,20 +15,24 @@ import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/
 import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
+import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { ColorRange } from "../../codeCharta.model"
 
 export class ColorSettingsPanelController
-	implements FilesSelectionSubscriber, InvertDeltaColorsSubscriber, InvertColorRangeSubscriber, ColorRangeSubscriber {
+	implements FilesSelectionSubscriber, InvertDeltaColorsSubscriber, InvertColorRangeSubscriber, ColorRangeSubscriber
+{
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean
 		isDeltaState: boolean
 		colorRange: { from: number; to: number }
+		colorLabels: { positive: boolean; negative: boolean; neutral: boolean }
 	} = {
 		invertColorRange: null,
 		invertDeltaColors: null,
 		isDeltaState: null,
-		colorRange: { from: null, to: null }
+		colorRange: { from: null, to: null },
+		colorLabels: { positive: false, negative: false, neutral: false }
 	}
 
 	/* @ngInject */
@@ -53,6 +57,24 @@ export class ColorSettingsPanelController
 
 	onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.isDeltaState = isDeltaState(files)
+	}
+
+	swapColorLabelsPositive() {
+		const colorLabels = this.storeService.getState().appSettings.colorLabels
+		colorLabels.positive = !colorLabels.positive
+		this.storeService.dispatch(setColorLabels(colorLabels))
+	}
+
+	swapColorLabelsNegative() {
+		const colorLabels = this.storeService.getState().appSettings.colorLabels
+		colorLabels.negative = !colorLabels.negative
+		this.storeService.dispatch(setColorLabels(colorLabels))
+	}
+
+	swapColorLabelsNeutral() {
+		const colorLabels = this.storeService.getState().appSettings.colorLabels
+		colorLabels.neutral = !colorLabels.neutral
+		this.storeService.dispatch(setColorLabels(colorLabels))
 	}
 
 	invertColorRange() {

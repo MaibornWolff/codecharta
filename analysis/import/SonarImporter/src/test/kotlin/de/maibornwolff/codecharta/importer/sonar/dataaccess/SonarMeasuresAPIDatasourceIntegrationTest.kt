@@ -13,19 +13,18 @@ import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatas
 import de.maibornwolff.codecharta.importer.sonar.model.ErrorEntity
 import de.maibornwolff.codecharta.importer.sonar.model.ErrorResponse
 import de.maibornwolff.codecharta.importer.sonar.model.Measures
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.importer.sonar.model.Version
 import org.hamcrest.Matchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URI
 import java.net.URL
 
 class SonarMeasuresAPIDatasourceIntegrationTest {
-
-    private val logger = KotlinLogging.logger {}
 
     @Rule
     @JvmField
@@ -88,9 +87,9 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         )
 
         // when
-        val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
 
-        val componentMap = ds.getComponentMap(PROJECT_KEY, listOf("coverage"))
+        val componentMap = measuresApiDatasource.getComponentMap(PROJECT_KEY, listOf("coverage"))
 
         // then
         assertThat(componentMap.componentList.size, `is`(5))
@@ -131,11 +130,11 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         )
 
         // when
-        val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
 
-        val measures1 = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
-        val measures2 = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 2)
-        val measures3 = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 3)
+        val measures1 = measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
+        val measures2 = measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 2)
+        val measures3 = measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 3)
 
         // then
         assertThat(measures1, `is`(createExpectedPagedMeasures(1)))
@@ -158,8 +157,8 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         )
 
         // when
-        val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        val measures = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
+        val measures = measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
 
         // then
         assertThat(measures, `is`(createExpectedMeasures()))
@@ -180,8 +179,8 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         )
 
         // when
-        val ds = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
-        val measures = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
+        val measuresApiDatasource = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
+        val measures = measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
 
         // then
         assertThat(measures, `is`(createExpectedMeasures()))
@@ -203,51 +202,42 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         )
 
         // when
-        val ds = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
-        ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
+        val measuresApiDatasource = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
+        measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
     }
 
     @Test
-    @Throws(Exception::class)
     fun createMeasureAPIRequestURI() {
-        // given
         val expectedMeasuresAPIRequestURI =
-            URI(createBaseUrl().toString() + "/api/measures/component_tree?baseComponentKey=&qualifiers=FIL,UTS&metricKeys=coverage&p=0&ps=500")
+            URI(createBaseUrl().toString() + "/api/measures/component_tree?component=&qualifiers=FIL,UTS&metricKeys=coverage&p=0&ps=500")
 
-        // when
-        val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        val measureAPIRequestURI = ds.createMeasureAPIRequestURI("", listOf("coverage"), 0)
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
+        val measureAPIRequestURI = measuresApiDatasource.createMeasureAPIRequestURI("", listOf("coverage"), 0)
 
-        // then
         assertThat(measureAPIRequestURI, `is`(expectedMeasuresAPIRequestURI))
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    @Throws(Exception::class)
+    @Test
     fun createMeasureAPIRequestURI_without_metrics_throws_exception() {
-        // given
-        // when
-        val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        ds.createMeasureAPIRequestURI("", listOf(), 0)
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
 
-        // then throw
+        assertThrows<IllegalArgumentException> {
+            measuresApiDatasource.createMeasureAPIRequestURI("", listOf(), 0)
+        }
     }
 
-    @Test(expected = SonarImporterException::class)
-    @Throws(Exception::class)
+    @Test
     fun createMeasureAPIRequestURI_illegal_character_in_metrics_should_throw_exception() {
-        // given
-        // when
-        val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        ds.createMeasureAPIRequestURI("", listOf(" "), 0)
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
 
-        // then throw
+        assertThrows<SonarImporterException> {
+            measuresApiDatasource.createMeasureAPIRequestURI("", listOf(" "), 0)
+        }
     }
 
     @Test
     @Throws(Exception::class)
     fun getComponents_from_server_if_no_authentication_needed() {
-        // given
         stubFor(
             get(urlEqualTo(URL_PATH))
                 .willReturn(
@@ -258,11 +248,27 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
                 )
         )
 
-        // when
-        val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        val components = ds.getComponentMap(PROJECT_KEY, listOf("coverage"))
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
+        val components = measuresApiDatasource.getComponentMap(PROJECT_KEY, listOf("coverage"))
 
-        // then
+        assertThat(components.componentList.count(), `is`(34))
+    }
+
+    @Test
+    fun `should use deprecated query parameters if sonarqube version is too old`() {
+        stubFor(
+            get(urlEqualTo(URL_PATH_DEPRECATED))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)
+                        .withBody(createResponseString())
+                )
+        )
+
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl(), Version(6, 5))
+        val components = measuresApiDatasource.getComponentMap(PROJECT_KEY, listOf("coverage"))
+
         assertThat(components.componentList.count(), `is`(34))
     }
 
@@ -272,11 +278,13 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         private const val PROJECT_KEY = "someProject"
         private val GSON = GsonBuilder().create()
         private const val URL_PATH =
-            "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=$PAGE_SIZE"
+            "/api/measures/component_tree?component=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=$PAGE_SIZE"
         private const val URL_PATH_SECOND_PAGE =
-            "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=2&ps=$PAGE_SIZE"
+            "/api/measures/component_tree?component=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=2&ps=$PAGE_SIZE"
         private const val URL_PATH_THIRD_PAGE =
-            "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=3&ps=$PAGE_SIZE"
+            "/api/measures/component_tree?component=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=3&ps=$PAGE_SIZE"
+        private const val URL_PATH_DEPRECATED =
+            "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=$PAGE_SIZE"
 
         private fun createBaseUrl(): URL {
             try {

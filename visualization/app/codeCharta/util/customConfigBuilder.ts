@@ -44,6 +44,11 @@ function initializeAppSettings(target: CustomConfig) {
 	target.stateSettings.appSettings = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: false,
+		colorLabels: {
+			positive: false,
+			negative: false,
+			neutral: false
+		},
 		amountOfEdgePreviews: 0,
 		amountOfTopLabels: 0,
 		camera: undefined,

@@ -3,7 +3,7 @@ import { GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, State } from "../../../codeCharta.model"
-import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
+import { BufferAttribute, Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 import { TreeMapHelper } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 
 export interface MousePos {
@@ -168,26 +168,32 @@ export class CodeMapMesh {
 	}
 
 	private setVertexColor(id: number, newColorVector: Vector3, newDeltaColorVector) {
-		const numberOfColorFieldsPerBuilding = CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES
+		//!Note  this function is called a lot of times see highlightBuilding , maybe bulk update the color and delta colors
+		const numberOfColorFieldsPerBuilding = CodeMapMesh.NUM_OF_VERTICES
 		const positionOfFirstColorEntry = id * numberOfColorFieldsPerBuilding
-		for (
-			let index = positionOfFirstColorEntry;
-			index < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding;
-			index += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
-		) {
-			this.threeMesh.geometry["attributes"].color.array[index] = newColorVector.x
-			this.threeMesh.geometry["attributes"].color.array[index + 1] = newColorVector.y
-			this.threeMesh.geometry["attributes"].color.array[index + 2] = newColorVector.z
 
-			this.threeMesh.geometry["attributes"].deltaColor.array[index] = newDeltaColorVector.x
-			this.threeMesh.geometry["attributes"].deltaColor.array[index + 1] = newDeltaColorVector.y
-			this.threeMesh.geometry["attributes"].deltaColor.array[index + 2] = newDeltaColorVector.z
+		const colorAttribute = this.threeMesh.geometry.getAttribute("color") as BufferAttribute
+		const deltaAttribute = this.threeMesh.geometry.getAttribute("deltaColor") as BufferAttribute
+
+		for (let index = positionOfFirstColorEntry; index < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding; index += 1) {
+			colorAttribute.setXYZ(index, newColorVector.x, newColorVector.y, newColorVector.z)
+			deltaAttribute.setXYZ(index, newDeltaColorVector.x, newDeltaColorVector.y, newDeltaColorVector.z)
 		}
+
+		//!Note this can be used to update only the needed range => faster rendering
+		//!     maybe return the offset and count, build the union of the result, and
+		//!     use next lines inside updateVertices ?
+
+		/*colorAttribute.updateRange.offset = positionOfFirstColorEntry
+		colorAttribute.updateRange.count = numberOfColorFieldsPerBuilding
+
+		deltaAttribute.updateRange.offset = positionOfFirstColorEntry
+		deltaAttribute.updateRange.count = numberOfColorFieldsPerBuilding*/
 	}
 
 	private updateVertices() {
-		this.threeMesh.geometry["attributes"].color.needsUpdate = true
-		this.threeMesh.geometry["attributes"].deltaColor.needsUpdate = true
+		this.threeMesh.geometry.getAttribute("color").needsUpdate = true
+		this.threeMesh.geometry.getAttribute("deltaColor").needsUpdate = true
 	}
 
 	dispose() {

@@ -13,7 +13,8 @@ export interface IsAttributeSideBarVisibleSubscriber {
 }
 
 export class IsAttributeSideBarVisibleService
-	implements StoreSubscriber, BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber {
+	implements StoreSubscriber, BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber
+{
 	private static IS_ATTRIBUTE_SIDE_BAR_VISIBLE_CHANGED_EVENT = "is-attribute-side-bar-visible-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {

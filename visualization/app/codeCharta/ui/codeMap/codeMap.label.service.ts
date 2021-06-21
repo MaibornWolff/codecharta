@@ -1,4 +1,4 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -41,13 +41,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	//labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNodeInSet: number) {
 		const state = this.storeService.getState()
 
 		const { scaling, layoutAlgorithm } = state.appSettings
 		const { margin, heightMetric } = state.dynamicSettings
 
-		const newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
+		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
+		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
 
 		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
 		// todo: tk rename to addLeafLabel
@@ -107,6 +108,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	clearLabels() {
+		this.threeSceneService.resetLabel()
+		this.threeSceneService.resetLineHighlight()
 		this.dispose(this.labels)
 
 		this.labels = []
@@ -125,7 +128,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	private disposeLine(element: Line) {
-		const lineBasicMaterial = (element.material as unknown) as LineBasicMaterial
+		const lineBasicMaterial = element.material as unknown as LineBasicMaterial
 		lineBasicMaterial.dispose()
 		element.geometry.dispose()
 	}
@@ -155,6 +158,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			this.labels.splice(index, 1)
 			this.dispose(this.threeSceneService.labels.children)
 			this.threeSceneService.labels.children.length -= 2
+			this.threeSceneService.resetLineHighlight()
 		}
 	}
 
@@ -169,9 +173,18 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
 
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
-			label.line.geometry["vertices"][0].multiply(multiplier)
-			label.line.geometry["vertices"][1] = label.sprite.position
-			label.line.geometry.translate(0, 0, 0)
+			const lineGeometry = label.line.geometry as BufferGeometry
+			const lineGeometryPosition = lineGeometry.attributes.position
+
+			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
+			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
+			lineGeometryPosition.setZ(0, lineGeometryPosition.getZ(0) * multiplier.z)
+
+			lineGeometryPosition.setX(1, label.sprite.position.x)
+			lineGeometryPosition.setY(1, label.sprite.position.y)
+			lineGeometryPosition.setZ(1, label.sprite.position.z)
+
+			lineGeometryPosition.needsUpdate = true
 		}
 
 		this.previousScaling.copy(scaling)
@@ -187,9 +200,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const canvas = document.createElement("canvas")
 		const context = canvas.getContext("2d")
 
-		context.font = `${fontsize}px Helvetica Neue`
+		context.font = `${fontsize}px Roboto`
 
-		const margin = 20
+		const margin = 25
 		const multiLineContext = message.split("\n")
 
 		// setting canvas width/height before ctx draw, else canvas is empty
@@ -202,7 +215,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		canvas.height = margin + fontsize * multiLineContext.length
 
 		// bg
-		context.font = `${fontsize}px Helvetica Neue`
+		context.font = `${fontsize}px Roboto`
 		context.fillStyle = "rgba(255,255,255,1)"
 		context.lineJoin = "round"
 		context.lineCap = "round"
@@ -274,9 +287,11 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			linewidth: 2
 		})
 
-		const geometry = new Geometry()
-		geometry.vertices.push(new Vector3(x, yOrigin, z), new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z))
+		const bufferGeometry = new BufferGeometry().setFromPoints([
+			new Vector3(x, yOrigin, z),
+			new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z)
+		])
 
-		return new Line(geometry, material)
+		return new Line(bufferGeometry, material)
 	}
 }

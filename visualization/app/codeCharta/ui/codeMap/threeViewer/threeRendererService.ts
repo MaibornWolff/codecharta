@@ -23,7 +23,8 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	static RENDER_OPTIONS: WebGLContextAttributes = {
 		antialias: true,
-		preserveDrawingBuffer: true
+		preserveDrawingBuffer: true,
+		alpha: true
 	}
 
 	static enableFXAA = false

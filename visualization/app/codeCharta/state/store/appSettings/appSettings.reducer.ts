@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { colorLabels } from "./colorLabels/colorLabels.reducer"
 import { showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
 import { showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
 import { panelSelection } from "./panelSelection/panelSelection.reducer"
@@ -32,6 +33,7 @@ import { sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
+	colorLabels,
 	showMetricLabelNodeName,
 	showMetricLabelNameValue,
 	panelSelection,

@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
@@ -60,6 +61,7 @@ import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnes
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(camelCase(ColorLabelsService.name), ColorLabelsService)
 	.service(camelCase(LabelShowMetricValueService.name), LabelShowMetricValueService)
 	.service(camelCase(LabelShowNodeNameService.name), LabelShowNodeNameService)
 	.service(camelCase(MetricDataService.name), MetricDataService)

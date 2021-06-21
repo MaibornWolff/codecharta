@@ -82,6 +82,12 @@ export enum SortingOption {
 	NUMBER_OF_FILES = "Number of Files"
 }
 
+export interface colorLabelOptions {
+	positive: boolean
+	negative: boolean
+	neutral: boolean
+}
+
 export interface FileMeta {
 	fileName: string
 	fileChecksum: string
@@ -148,6 +154,7 @@ export interface AppSettings {
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
+	colorLabels: colorLabelOptions
 }
 
 export interface TreeMapSettings {

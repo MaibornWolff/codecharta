@@ -2,8 +2,10 @@
 
 <md-input-container md-no-float="">
 	<input
+		name="search"
+		id="searchInput"
 		type="text"
-		placeholder="gitignore style: *.js, **/app/*"
+		placeholder="Search: *.js, **/app/*"
 		ng-model="$ctrl._viewModel.searchPattern"
 		ng-change="$ctrl.handleSearchPatternChange()"
 	/>
@@ -11,11 +13,11 @@
 
 <md-menu>
 	<div class="small-action-button transparent">
-		<md-button class="md-fab" ng-click="$mdMenu.open($event)" title="Add to Blacklist">
+		<md-button id="blacklistMenu" class="md-fab" ng-click="$mdMenu.open($event)" title="Add to Blacklist">
 			<i class="fa fa-ellipsis-h"></i>
 		</md-button>
 	</div>
-	<md-menu-content width="2">
+	<md-menu-content id="blacklistMenuContent" width="2">
 		<md-menu-item style="min-height: 20px; height: 20px">
 			<md-button style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; text-align: center" ng-disabled="true"
 				>Add Pattern to Blacklist</md-button
@@ -31,6 +33,7 @@
 		</md-menu-item>
 		<md-menu-item>
 			<md-button
+				id="toExcludeButton"
 				ng-disabled="$ctrl.isSearchPatternEmpty() || $ctrl._viewModel.isPatternExcluded"
 				ng-click="$ctrl.onClickBlacklistPattern('exclude')"
 				><i class="fa fa-ban"></i> Exclude</md-button
