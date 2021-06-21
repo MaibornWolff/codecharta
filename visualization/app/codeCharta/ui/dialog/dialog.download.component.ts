@@ -35,6 +35,7 @@ export class DialogDownloadController {
 	}
 
 	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private storeService: StoreService) {
+		"ngInject"
 		this.initDialogFields()
 	}
 

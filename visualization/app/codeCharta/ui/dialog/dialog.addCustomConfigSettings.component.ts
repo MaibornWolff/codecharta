@@ -31,6 +31,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		private storeService: StoreService,
 		private dialogService: DialogService
 	) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 		this.onFilesSelectionChanged(this.storeService.getState().files)
 		this.validateLocalStorageSize()
