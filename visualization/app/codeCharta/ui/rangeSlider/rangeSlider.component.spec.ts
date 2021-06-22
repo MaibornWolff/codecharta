@@ -313,19 +313,19 @@ describe("RangeSliderController", () => {
 
 	describe("applySliderChange", () => {
 		it("should call applyColorRange", () => {
-			rangeSliderController["applyColorRange"] = jest.fn()
-
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			expect(rangeSliderController["applyColorRange"]).toBeCalled()
+			setTimeout(() => {
+				expect(rangeSliderController["applyColorRange"]).toBeCalled()
+			})
 		})
 
 		it("should call updateSliderColors", () => {
-			rangeSliderController["updateSliderColors"] = jest.fn()
-
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			expect(rangeSliderController["updateSliderColors"]).toBeCalled()
+			setTimeout(() => {
+				expect(rangeSliderController["updateSliderColors"]).toBeCalled()
+			})
 		})
 	})
 })

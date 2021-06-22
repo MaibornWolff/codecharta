@@ -60,10 +60,5 @@ describe("resetSettingsButtonController", () => {
 			screenshotButtonController.makeScreenshot()
 			expect(screenshotButtonController["makePNGFileName"]).toBeCalled()
 		})
-		it("should call makePNGFileName", () => {
-			screenshotButtonController["handleHotkeys"] = jest.fn()
-			rebuildController()
-			expect(screenshotButtonController["handleHotkeys"]).toBeCalled()
-		})
 	})
 })

@@ -16,10 +16,6 @@ export class ScreenshotButtonController {
 		private threeRendererService: ThreeRendererService,
 		private storeService: StoreService
 	) {
-		this.handleHotkeys()
-	}
-
-	private handleHotkeys() {
 		hotkeys(ScreenshotButtonController.SCREENSHOT_HOTKEY, () => {
 			this.makeScreenshot()
 		})
