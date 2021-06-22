@@ -20,8 +20,6 @@
 </section>
 
 <md-input-container ng-show="$ctrl._viewModel.isSingleState" title="Select a file">
-	<label></label>
-
 	<md-select
 		ng-model="$ctrl._viewModel.selectedFileNames.single"
 		ng-change="$ctrl.onSingleFileChange($ctrl._viewModel.selectedFileNames.single)"
@@ -31,13 +29,17 @@
 			value="{{::fileState.file.fileMeta.fileName}}"
 		>
 			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-			<remove-file-button-component ng-if="$ctrl._viewModel.files.length > 1" filename="{{::fileState.file.fileMeta.fileName}}">
+			<remove-file-button-component
+				ng-if="$ctrl._viewModel.files.length > 1"
+				filename="{{::fileState.file.fileMeta.fileName}}"
+				state="Single"
+			>
 			</remove-file-button-component>
 		</md-option>
 	</md-select>
 </md-input-container>
 
-<md-input-container class="input-container" ng-show="$ctrl._viewModel.isPartialState" title="Select files">
+<md-input-container ng-show="$ctrl._viewModel.isPartialState" title="Select files">
 	<md-select
 		ng-model="$ctrl._viewModel.selectedFileNames.partial"
 		multiple="{{ true }}"
@@ -49,19 +51,16 @@
 		<md-button ng-click="$ctrl.invertPartialFileSelection()">Invert</md-button>
 
 		<md-option
-			style="justify-content: space-between"
 			ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
 			value="{{::fileState.file.fileMeta.fileName}}"
 		>
 			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-			<md-button
-				class="attribute-type-select"
-				style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; align-self: flex-end"
+			<remove-file-button-component
 				ng-if="$ctrl._viewModel.files.length > 1"
-				ng-click="$ctrl.onPartialRemoveFile(fileState.file.fileMeta.fileName, $event)"
+				filename="{{::fileState.file.fileMeta.fileName}}"
+				state="Partial"
 			>
-				<i class="fa fa-trash"></i>
-			</md-button>
+			</remove-file-button-component>
 		</md-option>
 	</md-select>
 </md-input-container>

@@ -15,15 +15,6 @@ file-panel-component {
 		margin-left: 10px;
 	}
 
-	.files {
-		position: relative;
-
-		&.delete {
-			position: absolute;
-			right: 8px;
-		}
-	}
-
 	.state-selector-button {
 		&.mode-selector {
 			height: 24px;

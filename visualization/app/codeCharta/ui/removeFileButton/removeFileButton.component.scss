@@ -23,6 +23,10 @@ remove-file-button-component {
 			}
 		}
 
+		.delete-symbol {
+			color: black;
+		}
+
 		&.transparent .md-fab {
 			background-color: rgba(230, 230, 230, 0.96);
 			box-shadow: none;
