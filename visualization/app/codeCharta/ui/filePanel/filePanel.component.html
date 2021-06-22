@@ -19,24 +19,20 @@
 	>
 </section>
 
-<md-input-container class="input-container" ng-show="$ctrl._viewModel.isSingleState" title="Select a file">
+<md-input-container ng-show="$ctrl._viewModel.isSingleState" title="Select a file">
+	<label></label>
+
 	<md-select
 		ng-model="$ctrl._viewModel.selectedFileNames.single"
 		ng-change="$ctrl.onSingleFileChange($ctrl._viewModel.selectedFileNames.single)"
 	>
 		<md-option
-			class="files"
 			ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
 			value="{{::fileState.file.fileMeta.fileName}}"
 		>
-			<md-truncate class="file-name">{{::fileState.file.fileMeta.fileName}}</md-truncate>
-			<md-button
-				class="delete"
-				ng-if="$ctrl._viewModel.files.length > 1"
-				ng-click="$ctrl.onSingleRemoveFile(fileState.file.fileMeta.fileName, $event)"
-			>
-				<i class="fa fa-trash"></i>
-			</md-button>
+			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
+			<remove-file-button-component ng-if="$ctrl._viewModel.files.length > 1" filename="{{::fileState.file.fileMeta.fileName}}">
+			</remove-file-button-component>
 		</md-option>
 	</md-select>
 </md-input-container>
