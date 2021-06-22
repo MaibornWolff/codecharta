@@ -25,6 +25,8 @@ import {
 	ShowMetricLabelNodeNameSubscriber
 } from "../../state/store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { ColorLabelsService, ColorLabelsSubscriber } from "../../state/store/appSettings/colorLabels/colorLabels.service"
+import { colorLabelOptions } from "../../codeCharta.model"
 
 export class HeightSettingsPanelController
 	implements
@@ -33,8 +35,8 @@ export class HeightSettingsPanelController
 		ScalingSubscriber,
 		InvertHeightSubscriber,
 		ShowMetricLabelNameValueSubscriber,
-		ShowMetricLabelNodeNameSubscriber
-{
+		ShowMetricLabelNodeNameSubscriber,
+		ColorLabelsSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedTopLabels: () => void
 	private readonly applyDebouncedScaling: (newScaling: Vector3) => void
@@ -46,13 +48,15 @@ export class HeightSettingsPanelController
 		isDeltaState: boolean
 		showMetricValue: boolean
 		showNodeName: boolean
+		sliderDisabled: boolean
 	} = {
 		amountOfTopLabels: null,
 		scalingY: null,
 		invertHeight: null,
 		isDeltaState: null,
 		showMetricValue: true,
-		showNodeName: true
+		showNodeName: true,
+		sliderDisabled: false
 	}
 
 	/* @ngInject */
@@ -63,6 +67,7 @@ export class HeightSettingsPanelController
 		FilesService.subscribe(this.$rootScope, this)
 		LabelShowNodeNameService.subscribe(this.$rootScope, this)
 		LabelShowMetricValueService.subscribe(this.$rootScope, this)
+		ColorLabelsService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedTopLabels = debounce(() => {
 			this.storeService.dispatch(setAmountOfTopLabels(this._viewModel.amountOfTopLabels))
@@ -95,6 +100,10 @@ export class HeightSettingsPanelController
 
 	onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.isDeltaState = isDeltaState(files)
+	}
+
+	onColorLabelsChanged(colorLabels: colorLabelOptions) {
+		this._viewModel.sliderDisabled = colorLabels.negative || colorLabels.neutral || colorLabels.positive ? true : false
 	}
 
 	applySettingsAmountOfTopLabels() {

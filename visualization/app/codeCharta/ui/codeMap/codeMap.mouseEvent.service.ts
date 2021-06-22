@@ -49,8 +49,7 @@ export enum CursorType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber
-{
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -157,11 +156,13 @@ export class CodeMapMouseEventService
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.clearConstantHighlight()
+		this.clearTemporaryLabel()
 		this.threeUpdateCycleService.update()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+		this.clearTemporaryLabel()
 		if (selectedBuilding) {
 			const isSelectedBuildingBlacklisted = isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
@@ -248,10 +249,14 @@ export class CodeMapMouseEventService
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 
-		this.codeMapLabelService.addLabel(codeMapBuilding.node, {
-			showNodeName: showLabelNodeName,
-			showNodeMetric: showLabelNodeMetric
-		})
+		this.codeMapLabelService.addLabel(
+			codeMapBuilding.node,
+			{
+				showNodeName: showLabelNodeName,
+				showNodeMetric: showLabelNodeMetric
+			},
+			0
+		)
 
 		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
