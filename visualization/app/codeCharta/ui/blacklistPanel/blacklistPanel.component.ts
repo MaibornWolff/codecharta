@@ -15,6 +15,7 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 	}
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 

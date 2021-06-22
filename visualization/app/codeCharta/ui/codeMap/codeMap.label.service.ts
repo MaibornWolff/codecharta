@@ -36,6 +36,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService
 	) {
+		"ngInject"
 		this.labels = new Array<InternalLabel>()
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}

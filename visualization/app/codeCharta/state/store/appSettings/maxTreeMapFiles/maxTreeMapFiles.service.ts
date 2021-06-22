@@ -11,6 +11,7 @@ export class MaxTreeMapFilesService implements StoreSubscriber {
 	private static MAX_TREE_MAP_FILES_CHANGED_EVENT = "max-tree-map-files-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

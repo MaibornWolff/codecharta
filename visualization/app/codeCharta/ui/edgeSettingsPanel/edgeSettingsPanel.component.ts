@@ -35,13 +35,13 @@ export class EdgeSettingsPanelController
 		showOnlyBuildingsWithEdges: null
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
+		"ngInject"
 		AmountOfEdgePreviewsService.subscribe(this.$rootScope, this)
 		EdgeHeightService.subscribe(this.$rootScope, this)
 		ShowOnlyBuildingsWithEdgesService.subscribe(this.$rootScope, this)

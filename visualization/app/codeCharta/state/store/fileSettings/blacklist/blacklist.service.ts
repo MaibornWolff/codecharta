@@ -16,6 +16,7 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 	}

@@ -66,7 +66,6 @@ export class CodeMapMouseEventService
 	private raycaster = new Raycaster()
 	private temporaryLabelForBuilding = null
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $window: IWindowService,
@@ -80,6 +79,7 @@ export class CodeMapMouseEventService
 		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
 		private threeViewerService: ThreeViewerService
 	) {
+		"ngInject"
 		this.threeUpdateCycleService.register(() => this.threeRendererService.render())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)

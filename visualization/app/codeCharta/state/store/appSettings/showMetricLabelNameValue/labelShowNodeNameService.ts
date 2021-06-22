@@ -11,6 +11,7 @@ export class LabelShowNodeNameService implements StoreSubscriber {
 	private static SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT = "show-metric-label-name-value-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

@@ -12,6 +12,7 @@ export class FilesService implements StoreSubscriber {
 	private static FILES_SELECTION_CHANGED_EVENT = "files-selection-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
