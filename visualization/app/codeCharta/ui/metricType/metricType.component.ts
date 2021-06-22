@@ -27,8 +27,7 @@ export class MetricTypeController
 		EdgeMetricSubscriber,
 		BuildingHoveredSubscriber,
 		BuildingUnhoveredSubscriber,
-		MetricDataSubscriber
-{
+		MetricDataSubscriber {
 	private _viewModel: {
 		metricType: AttributeTypeValue
 		isFolderHovered: boolean

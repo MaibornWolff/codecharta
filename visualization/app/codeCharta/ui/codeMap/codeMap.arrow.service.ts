@@ -8,8 +8,7 @@ import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 
 export class CodeMapArrowService
-	implements BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber
-{
+	implements BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private VERTICES_PER_LINE = 5
 	private map: Map<string, Node>
 	private arrows: Object3D[]
