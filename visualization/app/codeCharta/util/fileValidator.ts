@@ -33,8 +33,8 @@ export const ERROR_MESSAGES = {
 }
 
 export function validate(nameDataPair: NameDataPair, storeService: StoreService) {
-	const file = nameDataPair.content
-	const fileName = nameDataPair.fileName
+	const file = nameDataPair?.content
+	const fileName = nameDataPair?.fileName
 	const result: CCValidationResult = { error: [], warning: [] }
 	switch (true) {
 		case !file:

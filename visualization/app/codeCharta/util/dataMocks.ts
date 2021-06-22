@@ -642,31 +642,31 @@ export const TEST_FILE_CONTENT: ExportCCFile = {
 	nodes: [VALID_NODE]
 }
 
-export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
-	fileName: "noFileName",
+export const TEST_FILE_CONTENT_INVALID_MAJOR_API: ExportCCFile = {
+	fileChecksum: "invalid-md5-sample",
 	projectName: "Invalid Sample Map",
 	apiVersion: "2.0",
 	nodes: [VALID_NODE]
 }
 
-export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
-	fileName: "noFileName",
-	fileChecksum: "invalid-md5-sample",
+export const TEST_FILE_CONTENT_INVALID_MINOR_API: ExportCCFile = {
 	projectName: "Valid Sample Map Minor API High",
+	fileChecksum: "invalid-md5-sample",
 	apiVersion: "1.3",
 	nodes: [VALID_NODE]
 }
 
-export const TEST_FILE_CONTENT_INVALID_API = {
-	fileName: "noFileName",
+export const TEST_FILE_CONTENT_INVALID_API: ExportCCFile = {
 	projectName: "Invalid Sample Map",
+	fileChecksum: "invalid-md5-sample",
 	apiVersion: "2.a",
 	nodes: [VALID_NODE]
 }
 
-export const TEST_FILE_CONTENT_NO_API = {
-	fileName: "noFileName",
+export const TEST_FILE_CONTENT_NO_API: ExportCCFile = {
 	projectName: "Invalid Sample Map",
+	fileChecksum: "invalid-md5-sample",
+	apiVersion: null,
 	nodes: [VALID_NODE]
 }
 
