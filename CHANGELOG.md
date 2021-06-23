@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
     <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350">
 
+-   Opening new files does no longer remove old ones.
+    -   Already loaded files can be individually removed.
+    -   The 'Multiple' view will select the latest files.
+
 ## [1.74.0] - 2021-05-31
 
 ### Added 🚀
