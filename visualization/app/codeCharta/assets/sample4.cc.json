@@ -1,0 +1,40 @@
+{
+  "projectName": "Sample Project 4",
+  "fileChecksum": "invalid-md5-sample",
+  "apiVersion": "1.2",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "children": [
+        {
+          "name": "bigLeaf.ts",
+          "type": "File",
+          "attributes": { "rloc": 120, "functions": 10, "mcc": 1 },
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "ParentLeaf",
+          "type": "Folder",
+          "attributes": {},
+          "children": [
+            {
+              "name": "firstSmallLeaf.html",
+              "type": "File",
+              "attributes": { "rloc": 50, "functions": 19, "mcc": 80 }
+            },
+            {
+              "name": "secondSmallLeaf.ts",
+              "type": "File",
+              "attributes": { "rloc": 100, "functions": 10, "mcc": 100 }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "attributeTypes": {
+    "nodes": { "rloc": "absolute", "functions": "absolute", "mcc": "absolute" }
+  }
+}

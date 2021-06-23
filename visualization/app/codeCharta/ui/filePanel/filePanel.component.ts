@@ -54,6 +54,33 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
+	onRemoveFile(filename, state, event): void {
+		if (state === FileSelectionState.Single) this.onSingleRemoveFile(filename, event)
+		else this.onPartialRemoveFile(filename, event)
+	}
+
+	onSingleRemoveFile(fileName, $event): void {
+		this.storeService.dispatch(removeFile(fileName))
+		this.storeService.dispatch(removeRecentFile(fileName))
+
+		const remainingFile = this._viewModel.files[0].file.fileMeta.fileName
+		this.onSingleFileChange(remainingFile)
+
+		$event.stopPropagation()
+		$event.preventDefault()
+	}
+
+	onPartialRemoveFile(fileName, $event): void {
+		this.storeService.dispatch(removeFile(fileName))
+		this.storeService.dispatch(removeRecentFile(fileName))
+
+		const allRemainingFiles = this._viewModel.files.map(x => x.file.fileMeta.fileName)
+		this.onPartialFilesChange(allRemainingFiles)
+
+		$event.stopPropagation()
+		$event.preventDefault()
+	}
+
 	onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.files = files
 		this._viewModel.isSingleState = isSingleState(files)
@@ -151,28 +178,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		} else {
 			this.selectAllPartialFiles()
 		}
-	}
-
-	onPartialRemoveFile(fileName: string, $event): void {
-		this.storeService.dispatch(removeFile(fileName))
-		this.storeService.dispatch(removeRecentFile(fileName))
-
-		const allRemainingFiles = this._viewModel.files.map(x => x.file.fileMeta.fileName)
-		this.onPartialFilesChange(allRemainingFiles)
-
-		$event.stopPropagation()
-		$event.preventDefault()
-	}
-
-	onSingleRemoveFile(fileName: string, $event): void {
-		this.storeService.dispatch(removeFile(fileName))
-		this.storeService.dispatch(removeRecentFile(fileName))
-
-		const remainingFile = this.storeService.getState().files[0].file.fileMeta.fileName
-		this.onSingleFileChange(remainingFile)
-
-		$event.stopPropagation()
-		$event.preventDefault()
 	}
 
 	selectZeroPartialFiles() {
