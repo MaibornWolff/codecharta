@@ -25,6 +25,8 @@ remove-file-button-component {
 
 		.delete-symbol {
 			color: black;
+			position: relative;
+			right: 1px;
 		}
 
 		&.transparent .md-fab {
