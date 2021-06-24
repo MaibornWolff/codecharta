@@ -12,6 +12,7 @@ import { setDynamicMargin } from "../../appSettings/dynamicMargin/dynamicMargin.
 import { setAreaMetric } from "../areaMetric/areaMetric.actions"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { clone } from "../../../../util/clone"
+import { getStoreService } from "../../../../testUtils/MockedStoreService"
 
 describe("MarginService", () => {
 	let marginService: MarginService
@@ -31,7 +32,7 @@ describe("MarginService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
+		storeService = getStoreService()
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 
 		map = clone(TEST_FILE_WITH_PATHS.map)

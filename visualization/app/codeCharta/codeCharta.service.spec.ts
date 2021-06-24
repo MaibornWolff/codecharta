@@ -12,6 +12,7 @@ import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import packageJson from "../../package.json"
 import { clone } from "./util/clone"
+import { getStoreService } from "./testUtils/MockedStoreService"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -36,7 +37,7 @@ describe("codeChartaService", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
-		storeService = getService<StoreService>("storeService")
+		storeService = getStoreService()
 		dialogService = getService<DialogService>("dialogService")
 	}
 
