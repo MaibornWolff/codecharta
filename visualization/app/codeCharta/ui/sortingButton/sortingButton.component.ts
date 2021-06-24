@@ -1,29 +1,29 @@
 import "./sortingButton.component.scss"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
 import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
-import {
-	SortingOrderAscendingService,
-	SortingOrderAscendingSubscriber
-} from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
+import { CcState } from "../../state/store/store"
 
-export class SortingButtonController implements SortingOrderAscendingSubscriber {
-	private _viewModel: {
-		orderAscending: boolean
-	} = {
-		orderAscending: true
-	}
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+export class SortingButtonController {
+	_viewModel: { orderAscending: boolean }
+	private setSortingOrderAscending: typeof setSortingOrderAscending
+	private unsubscribeFromNgRedux: () => void
+
+	constructor($ngRedux) {
 		"ngInject"
-		SortingOrderAscendingService.subscribe(this.$rootScope, this)
+		this.unsubscribeFromNgRedux = $ngRedux.connect(this.mapStateToThis, { setSortingOrderAscending })(this)
 	}
 
-	onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
-		this._viewModel.orderAscending = sortingOrderAscending
+	$onDestroy() {
+		this.unsubscribeFromNgRedux()
+	}
+
+	private mapStateToThis(state: CcState) {
+		return {
+			_viewModel: { orderAscending: state.appSettings.sortingOrderAscending }
+		}
 	}
 
 	onButtonClick() {
-		this.storeService.dispatch(setSortingOrderAscending(!this._viewModel.orderAscending))
+		this.setSortingOrderAscending(!this._viewModel.orderAscending)
 	}
 }
 

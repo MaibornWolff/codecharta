@@ -111,6 +111,7 @@
 		"lodash.isequal": "^4.5.0",
 		"lodash.throttle": "^4.1.1",
 		"md5": "^2.3.0",
+		"ng-redux": "^4.4.3",
 		"nouislider": "^15.0.0",
 		"nw": "^0.54.0",
 		"open": "^8.0.6",

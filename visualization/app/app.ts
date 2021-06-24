@@ -2,14 +2,21 @@ import angular from "angular"
 import "angular-animate"
 import "angular-aria"
 import "angular-material"
-import "./codeCharta/codeCharta.module"
 import "angular-sanitize"
-import "./app.scss"
+import ngRedux from "ng-redux"
 
-angular.module("app", ["app.codeCharta", "ngMaterial", "ngSanitize"])
+import "./codeCharta/codeCharta.module"
+import "./app.scss"
+import { Store } from "./codeCharta/state/store/store"
 
 angular
-	.module("app")
+	.module("app", [ngRedux, "app.codeCharta", "ngMaterial", "ngSanitize"])
+	.config([
+		"$ngReduxProvider",
+		$ngReduxProvider => {
+			$ngReduxProvider.provideStore(Store.store)
+		}
+	])
 	.config([
 		"$locationProvider",
 		$locationProvider => {
