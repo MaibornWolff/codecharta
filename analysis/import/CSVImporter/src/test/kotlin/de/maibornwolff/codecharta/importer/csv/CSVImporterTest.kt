@@ -1,3 +1,5 @@
+package de.maibornwolff.codecharta.importer.csv
+
 import de.maibornwolff.codecharta.importer.csv.CSVImporter.Companion.main
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
