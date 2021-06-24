@@ -1,15 +1,15 @@
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter.Companion.main
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.io.File
 
-
-internal class CSVImporterTest{
+internal class UnderstandImporterTest {
 
     @Test
     fun `should create json uncompressed file`() {
-        val cliResult = main(arrayOf("src/test/resources/understand.csv", "-nc", "-o=src/test/resources/understand.cc.json"))
+        val cliResult =
+                main(arrayOf("src/test/resources/understand.csv", "-nc", "-o=src/test/resources/understand.cc.json"))
         val file = File("src/test/resources/understand.cc.json")
         file.deleteOnExit()
 
@@ -26,12 +26,12 @@ internal class CSVImporterTest{
     }
 
     @Test
-    fun `should contain Lines value of 44`(){
-        val cliResult = main(arrayOf("src/test/resources/understand.csv", "-nc", "-o=src/test/resources/understand.cc.json"))
+    fun `should contain Lines value of 44`() {
+        val cliResult =
+                main(arrayOf("src/test/resources/understand.csv", "-nc", "-o=src/test/resources/understand.cc.json"))
         val file = File("src/test/resources/understand.cc.json")
         file.deleteOnExit()
 
         assertThat(file.readText()).contains(listOf("\"max_lcom\":50"))
     }
-
 }
