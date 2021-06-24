@@ -9,6 +9,7 @@ import { EDGE_METRIC_DATA, METRIC_DATA, VALID_EDGE, withMockedEventMethods } fro
 import { NodeMetricDataService } from "./nodeMetricData/nodeMetricData.service"
 import { StoreService } from "../../store.service"
 import { setEdges } from "../fileSettings/edges/edges.actions"
+import { getStoreService } from "../../../testUtils/MockedStoreService"
 
 describe("MetricDataService", () => {
 	let metricDataService: MetricDataService
@@ -25,7 +26,7 @@ describe("MetricDataService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
+		storeService = getStoreService()
 	}
 
 	function rebuildService() {

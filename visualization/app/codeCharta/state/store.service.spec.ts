@@ -11,6 +11,7 @@ import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { setCamera } from "./store/appSettings/camera/camera.actions"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { setIsLoadingFile } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { getStoreService } from "../testUtils/MockedStoreService"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -29,7 +30,7 @@ describe("StoreService", () => {
 	}
 
 	function rebuildService() {
-		storeService = new StoreService($rootScope)
+		storeService = getStoreService()
 	}
 
 	describe("constructor", () => {

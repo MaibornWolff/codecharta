@@ -1,6 +1,5 @@
-import { createStore, Store } from "redux"
-import rootReducer from "./store/state.reducer"
 import { IRootScopeService } from "angular"
+import { Store } from "./store/store"
 import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -29,11 +28,10 @@ export interface DispatchOptions {
 export class StoreService {
 	private static STORE_CHANGED_EVENT = "store-changed"
 	private static STORE_CHANGED_EXTENDED_EVENT = "store-changed-extended"
-	private store: Store
+	private store = Store.store
 
 	constructor(private $rootScope: IRootScopeService) {
 		"ngInject"
-		this.store = createStore(rootReducer)
 	}
 
 	dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {

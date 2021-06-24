@@ -7,6 +7,7 @@ import { MapColorsService } from "../../../state/store/appSettings/mapColors/map
 import { StoreColorPickerController, storeColorPickerComponent } from "./storeColorPicker.component"
 import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { MapColors } from "../../../codeCharta.model"
+import { getStoreService } from "../../../testUtils/MockedStoreService"
 
 describe("StoreColorPickerController", () => {
 	let $rootScope: IScope
@@ -23,7 +24,7 @@ describe("StoreColorPickerController", () => {
 		$scope = $rootScope.$new()
 		$compile = getService<ICompileService>("$compile")
 		$controller = getService<IControllerService>("$controller")
-		storeService = getService<StoreService>("storeService")
+		storeService = getStoreService()
 
 		createStoreColorController = (mapColorFor: keyof MapColors = "positive") => {
 			return $controller(
