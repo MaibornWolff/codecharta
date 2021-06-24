@@ -17,6 +17,8 @@ dependencies {
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
 
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
