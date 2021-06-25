@@ -120,10 +120,11 @@ jobs:
         npm run build:web
         npm run e2e:ci
       working-directory: ${{env.working-directory}}
-
- publish_sonar_analysis:
-    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
-    name: "Build and Publish Analysis Sonar Results"
+      
+      
+ test_and_sonar_analysis:
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+    name: "Build, Test and Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
     env:
       working-directory: ./analysis
@@ -155,9 +156,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           JAVA_HOME: ''
 
+
  publish_sonar_visualization:
-    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     needs: [build_visualization_test, build_visualization_e2e]
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     name: "Build and Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
     env:
@@ -172,9 +174,11 @@ jobs:
           path: ./visualization/dist/
 
       - name: SonarCloud Scan
+        if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
         uses: SonarSource/sonarcloud-github-action@v1.5
         with:
           projectBaseDir: ./visualization
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
