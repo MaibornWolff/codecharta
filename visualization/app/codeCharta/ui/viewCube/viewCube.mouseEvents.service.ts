@@ -32,7 +32,9 @@ export class ViewCubeMouseEventsService {
 	private controls: OrbitControls
 	private isDragging = false
 
-	constructor(private $rootScope: IRootScopeService, private threeOrbitControlsService: ThreeOrbitControlsService) {}
+	constructor(private $rootScope: IRootScopeService, private threeOrbitControlsService: ThreeOrbitControlsService) {
+		"ngInject"
+	}
 
 	init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		this.cubeGroup = cubeGroup
