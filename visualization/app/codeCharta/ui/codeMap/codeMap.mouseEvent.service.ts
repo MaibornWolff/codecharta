@@ -17,6 +17,7 @@ import { Object3D, Raycaster } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { LazyLoader } from "../../util/lazyLoader"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
+import { ThreeViewerService } from "./threeViewer/threeViewerService"
 
 interface Coordinates {
 	x: number
@@ -75,7 +76,9 @@ export class CodeMapMouseEventService
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
 		private codeMapLabelService: CodeMapLabelService,
-		private codeMapPreRenderService: CodeMapPreRenderService
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
+		private threeViewerService: ThreeViewerService
 	) {
 		"ngInject"
 		this.threeUpdateCycleService.register(() => this.threeRendererService.render())
@@ -112,6 +115,8 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
+		this.threeRendererService.renderer.domElement.addEventListener("mouseleave", event => this.onDocumentMouseLeave(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -261,10 +266,23 @@ export class CodeMapMouseEventService
 		return labelForBuilding
 	}
 
+	private EnableOrbitalsRotation(isRotation: boolean) {
+		this.threeViewerService.enableRotation(isRotation)
+		this.viewCubeMouseEventsService.enableRotation(isRotation)
+	}
+
+	onDocumentMouseEnter() {
+		this.EnableOrbitalsRotation(true)
+	}
+
+	onDocumentMouseLeave(event: MouseEvent) {
+		if (!(event.relatedTarget instanceof HTMLCanvasElement)) this.EnableOrbitalsRotation(false)
+	}
+
 	onDocumentMouseMove(event: MouseEvent) {
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
-		this.updateHovering()
+		this.viewCubeMouseEventsService.propagateMovement()
 	}
 
 	onDocumentDoubleClick() {
@@ -305,6 +323,7 @@ export class CodeMapMouseEventService
 	}
 
 	onDocumentMouseUp(event: MouseEvent) {
+		this.viewCubeMouseEventsService.resetIsDragging()
 		if (event.button === ClickType.LeftClick) {
 			this.onLeftClick()
 		} else {

@@ -1,10 +1,16 @@
 import { IRootScopeService } from "angular"
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
 import { getService } from "../../../../mocks/ng.mockhelper"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
+// eslint-disable-next-line no-duplicate-imports
+import * as Three from "three"
+import oc from "three-orbit-controls"
+import { CursorType } from "../codeMap/codeMap.mouseEvent.service"
 
 describe("ViewCubeMouseEventsService", () => {
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
+	let threeOrbitControlsService: ThreeOrbitControlsService
 	let $rootScope: IRootScopeService
 	let webGLRenderer: WebGLRenderer
 
@@ -19,7 +25,7 @@ describe("ViewCubeMouseEventsService", () => {
 	}
 
 	function rebuildService() {
-		viewCubeMouseEventsService = new ViewCubeMouseEventsService($rootScope)
+		viewCubeMouseEventsService = new ViewCubeMouseEventsService($rootScope, threeOrbitControlsService)
 	}
 
 	function withMockedWebGLRenderer() {
@@ -61,12 +67,33 @@ describe("ViewCubeMouseEventsService", () => {
 	}
 
 	describe("init", () => {
-		it("should call initRendererEventListeners", () => {
+		it("should call initRendererEventListeners and initOrbitalControl", () => {
 			viewCubeMouseEventsService["initRendererEventListeners"] = jest.fn()
+			viewCubeMouseEventsService["initOrbitalControl"] = jest.fn()
+			const camera = new PerspectiveCamera()
 
-			viewCubeMouseEventsService.init(new Group(), new PerspectiveCamera(), webGLRenderer)
+			viewCubeMouseEventsService.init(new Group(), camera, webGLRenderer)
 
 			expect(viewCubeMouseEventsService["initRendererEventListeners"]).toHaveBeenCalledWith(webGLRenderer)
+			expect(viewCubeMouseEventsService["initOrbitalControl"]).toHaveBeenCalledWith(camera, webGLRenderer)
+		})
+	})
+
+	describe("initOrbitalControl", () => {
+		it("should initialize controls with parameters", () => {
+			const camera = new PerspectiveCamera()
+			const OrbitControls = oc(Three)
+			const expectedControls = new OrbitControls(camera, webGLRenderer.domElement)
+			expectedControls.enableZoom = false
+			expectedControls.enableKeys = false
+			expectedControls.enablePan = false
+			expectedControls.rotateSpeed = 1
+
+			viewCubeMouseEventsService["initOrbitalControl"](camera, webGLRenderer)
+
+			const receivedControls = viewCubeMouseEventsService["controls"]
+
+			expect(JSON.stringify(receivedControls)).toMatch(JSON.stringify(expectedControls))
 		})
 	})
 
@@ -88,6 +115,45 @@ describe("ViewCubeMouseEventsService", () => {
 
 		it("should add dblclick listener", () => {
 			expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("dblclick", expect.any(Function))
+		})
+
+		it("should add mouseleave listener", () => {
+			expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mouseleave", expect.any(Function))
+		})
+
+		it("should add mouseenter listener", () => {
+			expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mouseenter", expect.any(Function))
+		})
+	})
+
+	describe("onDocumentMouseClick", () => {
+		it("should call checkMouseIntersection", () => {
+			viewCubeMouseEventsService["checkMouseIntersection"] = jest.fn()
+
+			viewCubeMouseEventsService["onDocumentMouseClick"]({} as MouseEvent, "")
+
+			expect(viewCubeMouseEventsService["checkMouseIntersection"]).toHaveBeenCalled()
+			expect(viewCubeMouseEventsService["isDragging"]).toEqual(true)
+		})
+	})
+
+	describe("onWindowMouseLeave", () => {
+		it("should call enableRotation", () => {
+			viewCubeMouseEventsService["enableRotation"] = jest.fn()
+
+			viewCubeMouseEventsService["onWindowMouseLeave"]({ relatedTarget: null } as MouseEvent)
+
+			expect(viewCubeMouseEventsService["enableRotation"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("onDocumentMouseEnter", () => {
+		it("should call enableRotation", () => {
+			viewCubeMouseEventsService["enableRotation"] = jest.fn()
+
+			viewCubeMouseEventsService["onDocumentMouseEnter"]()
+
+			expect(viewCubeMouseEventsService["enableRotation"]).toHaveBeenCalled()
 		})
 	})
 
@@ -123,6 +189,19 @@ describe("ViewCubeMouseEventsService", () => {
 			const result = viewCubeMouseEventsService["transformIntoCanvasVector"](mouseEvent)
 
 			expect(result).toStrictEqual(new Vector2(-1.76, 1.72))
+		})
+	})
+
+	describe("getCubeIntersectedByMouse", () => {
+		it("should call transformIntoCanvasVector and return null", () => {
+			viewCubeMouseEventsService["camera"] = new PerspectiveCamera()
+			viewCubeMouseEventsService["transformIntoCanvasVector"] = jest.fn().mockReturnValue(new Vector2(0, 0))
+			viewCubeMouseEventsService["cubeGroup"] = new Group()
+
+			const returnValue = viewCubeMouseEventsService["getCubeIntersectedByMouse"]({} as MouseEvent)
+
+			expect(viewCubeMouseEventsService["transformIntoCanvasVector"]).toHaveBeenCalled()
+			expect(returnValue).toEqual(null)
 		})
 	})
 
@@ -209,6 +288,27 @@ describe("ViewCubeMouseEventsService", () => {
 			viewCubeMouseEventsService["onDocumentMouseUp"](mouseEvent)
 
 			expect(viewCubeMouseEventsService["triggerViewCubeClickEvent"]).toHaveBeenCalledWith(mockedCube)
+		})
+	})
+
+	describe("triggerViewCubeHoverEvent", () => {
+		it("should change cursor indicator", () => {
+			const cube = new Mesh()
+			viewCubeMouseEventsService["triggerViewCubeHoverEvent"](cube)
+			viewCubeMouseEventsService["$rootScope"].$broadcast = jest.fn()
+
+			expect(viewCubeMouseEventsService["currentlyHovered"]).toEqual(cube)
+			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
+		})
+	})
+
+	describe("triggerViewCubeUnhoverEvent", () => {
+		it("should change cursor indicator", () => {
+			viewCubeMouseEventsService["triggerViewCubeUnhoverEvent"]()
+			viewCubeMouseEventsService["$rootScope"].$broadcast = jest.fn()
+
+			expect(viewCubeMouseEventsService["currentlyHovered"]).toEqual(null)
+			expect(document.body.style.cursor).toEqual(CursorType.Default)
 		})
 	})
 })
