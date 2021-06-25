@@ -12,6 +12,7 @@ export class PanelSelectionService implements StoreSubscriber {
 	private static PANEL_SELECTION_CHANGED_EVENT = "panel-selection-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

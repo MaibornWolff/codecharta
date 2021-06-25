@@ -7,6 +7,7 @@ import { setIdToBuilding } from "./idToBuilding.actions"
 
 export class IdToBuildingService implements CodeMapMeshChangedSubscriber {
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		ThreeSceneService.subscribeToCodeMapMeshChangedEvent(this.$rootScope, this)
 	}
 

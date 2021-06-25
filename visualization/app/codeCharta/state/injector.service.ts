@@ -55,7 +55,6 @@ import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layo
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 export class InjectorService {
-	/* @ngInject */
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
@@ -112,5 +111,7 @@ export class InjectorService {
 		private maxTreeMapFilesService: MaxTreeMapFilesService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService
-	) {}
+	) {
+		"ngInject"
+	}
 }

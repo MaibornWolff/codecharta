@@ -11,6 +11,7 @@ export class SortingOrderAscendingService implements StoreSubscriber {
 	private static SORTING_ORDER_ASCENDING_CHANGED_EVENT = "sorting-order-ascending-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

@@ -12,8 +12,8 @@ export class LoadingGifController implements IsLoadingFileSubscriber, IsLoadingM
 		isLoadingMap: true
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
+		"ngInject"
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 		IsLoadingMapService.subscribe(this.$rootScope, this)
 	}

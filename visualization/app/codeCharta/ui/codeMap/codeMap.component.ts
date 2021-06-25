@@ -18,7 +18,6 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		isSideBarVisible: null
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
@@ -27,6 +26,7 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		private codeMapMouseEventService: CodeMapMouseEventService,
 		private codeChartaMouseEventService: CodeChartaMouseEventService
 	) {
+		"ngInject"
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 		SharpnessModeService.subscribe(this.$rootScope, this)

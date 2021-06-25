@@ -35,8 +35,8 @@ export class ColorSettingsPanelController
 		colorLabels: { positive: false, negative: false, neutral: false }
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)

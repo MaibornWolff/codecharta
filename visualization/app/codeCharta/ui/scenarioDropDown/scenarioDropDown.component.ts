@@ -30,6 +30,7 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 		private dialogService: DialogService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
+		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 	}
 

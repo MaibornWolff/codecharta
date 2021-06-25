@@ -27,6 +27,7 @@ export class LegendMarkedPackagesController implements MarkedPackagesSubscriber 
 		private $timeout,
 		private codeMapActionsService: CodeMapActionsService
 	) {
+		"ngInject"
 		MarkedPackagesService.subscribe(this.$rootScope, this)
 	}
 

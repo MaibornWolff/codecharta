@@ -20,12 +20,18 @@ angular
 			})
 		}
 	])
-	.config($mdThemingProvider => {
-		$mdThemingProvider.theme("default").primaryPalette("teal").warnPalette("teal").accentPalette("teal")
-	})
-	.config($mdAriaProvider => {
-		$mdAriaProvider.disableWarnings()
-	})
+	.config([
+		"$mdThemingProvider",
+		$mdThemingProvider => {
+			$mdThemingProvider.theme("default").primaryPalette("teal").warnPalette("teal").accentPalette("teal")
+		}
+	])
+	.config([
+		"$mdAriaProvider",
+		$mdAriaProvider => {
+			$mdAriaProvider.disableWarnings()
+		}
+	])
 	.config([
 		"$compileProvider",
 		$compileProvider => {
@@ -33,3 +39,5 @@ angular
 			$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|chrome-extension):/)
 		}
 	])
+
+angular.bootstrap(document.body, ["app"], { strictDi: true })

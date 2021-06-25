@@ -17,7 +17,9 @@ export class CodeChartaService {
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 
-	constructor(private storeService: StoreService, private dialogService: DialogService) {}
+	constructor(private storeService: StoreService, private dialogService: DialogService) {
+		"ngInject"
+	}
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
 		for (const nameDataPair of nameDataPairs) {
