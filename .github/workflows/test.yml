@@ -144,7 +144,6 @@ jobs:
       - name: Test Analysis
         run: |
           ./gradlew build integrationTest
-          ./gradlew test
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
 
