@@ -21,8 +21,8 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		isPatternExcluded: true
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPatternService.subscribe(this.$rootScope, this)
 		this.applyDebouncedSearchPattern = debounce(() => {

@@ -310,4 +310,22 @@ describe("RangeSliderController", () => {
 			})
 		})
 	})
+
+	describe("applySliderChange", () => {
+		it("should call applyColorRange", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			setTimeout(() => {
+				expect(rangeSliderController["applyColorRange"]).toBeCalled()
+			})
+		})
+
+		it("should call updateSliderColors", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			setTimeout(() => {
+				expect(rangeSliderController["updateSliderColors"]).toBeCalled()
+			})
+		})
+	})
 })

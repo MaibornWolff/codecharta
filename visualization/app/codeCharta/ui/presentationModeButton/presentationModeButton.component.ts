@@ -14,8 +14,8 @@ export class PresentationModeButtonController implements IsPresentationModeSubsc
 		isEnabled: false
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		IsPresentationModeService.subscribe(this.$rootScope, this)
 	}
 

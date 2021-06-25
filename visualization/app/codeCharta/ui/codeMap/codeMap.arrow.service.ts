@@ -15,6 +15,7 @@ export class CodeMapArrowService
 	private arrows: Object3D[]
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
+		"ngInject"
 		this.arrows = new Array<Object3D>()
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)

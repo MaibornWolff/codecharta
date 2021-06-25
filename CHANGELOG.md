@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Metric aggregations now work as intended and are available from the sidebar when selecting folders ([#1953](https://github.com/MaibornWolff/codecharta/issues/1953))
 
+### Fixed 🐞
+
+-   It is now possible to rotate the map by rotating the view cube ([#353](https://github.com/MaibornWolff/codecharta/issues/353))
+
 ## [1.74.0] - 2021-05-31
 
 ### Added 🚀

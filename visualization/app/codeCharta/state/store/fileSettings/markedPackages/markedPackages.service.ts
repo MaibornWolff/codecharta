@@ -16,6 +16,7 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSub
 	private static MARKED_PACKAGES_CHANGED_EVENT = "marked-packages-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 	}

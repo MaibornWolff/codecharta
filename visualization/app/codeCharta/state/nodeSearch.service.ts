@@ -15,12 +15,12 @@ export class NodeSearchService implements SearchPatternSubscriber {
 
 	private searchedNodes: CodeMapNode[] = []
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
+		"ngInject"
 		SearchPatternService.subscribe(this.$rootScope, this)
 	}
 

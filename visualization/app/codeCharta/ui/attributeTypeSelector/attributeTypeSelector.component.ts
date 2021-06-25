@@ -16,7 +16,6 @@ export class AttributeTypeSelectorController {
 	private type: string
 	private metric: string
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
@@ -28,6 +27,7 @@ export class AttributeTypeSelectorController {
 				this.setAggregationSymbol()
 			}
 		})
+		"ngInject"
 	}
 
 	$onInit() {

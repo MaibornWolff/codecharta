@@ -12,6 +12,7 @@ export class SearchPatternService implements StoreSubscriber, FilesSelectionSubs
 	private static SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 	}

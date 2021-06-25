@@ -11,6 +11,7 @@ export class MapSizeService implements StoreSubscriber {
 	private static MAP_SIZE_CHANGED_EVENT = "map-size-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
