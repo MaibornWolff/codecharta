@@ -80,5 +80,7 @@ module.exports = {
         "unicorn/prefer-add-event-listener": "off",
         "unicorn/prefer-query-selector": "off",
         "unicorn/prefer-dom-node-append": "off",
+        "unicorn/prefer-module": "off",
+        "unicorn/prefer-node-protocol": "off"
     }
 }
