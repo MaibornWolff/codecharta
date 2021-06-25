@@ -12,6 +12,7 @@ export class LayoutAlgorithmService implements StoreSubscriber {
 	private static LAYOUT_ALGORITHM_CHANGED_EVENT = "layout-algorithm-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

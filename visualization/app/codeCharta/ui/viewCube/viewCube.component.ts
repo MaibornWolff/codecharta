@@ -35,13 +35,13 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		back: null
 	}
 
-	/* @ngInject */
 	constructor(
 		private $element,
 		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private viewCubeMouseEventsService: ViewCubeMouseEventsService
 	) {
+		"ngInject"
 		this.initScene()
 		this.initLights()
 		this.initRenderer(this.$element)

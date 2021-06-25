@@ -14,6 +14,7 @@ export class HeightMetricService implements StoreSubscriber, NodeMetricDataSubsc
 	private static HEIGHT_METRIC_CHANGED_EVENT = "height-metric-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}

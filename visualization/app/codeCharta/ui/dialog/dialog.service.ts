@@ -5,8 +5,9 @@ import { addCustomConfigSettingsComponent } from "./dialog.addCustomConfigSettin
 import { CCValidationResult } from "../../util/fileValidator"
 
 export class DialogService {
-	/* @ngInject */
-	constructor(private $mdDialog) {}
+	constructor(private $mdDialog) {
+		"ngInject"
+	}
 
 	showDownloadDialog() {
 		this.showCustomDialog(dialogDownloadComponent)

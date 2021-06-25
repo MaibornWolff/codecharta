@@ -25,7 +25,9 @@ export class ViewCubeMouseEventsService {
 	private renderer: WebGLRenderer
 	private currentlyHovered: Mesh | null = null
 
-	constructor(private $rootScope: IRootScopeService) {}
+	constructor(private $rootScope: IRootScopeService) {
+		"ngInject"
+	}
 
 	init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		this.cubeGroup = cubeGroup

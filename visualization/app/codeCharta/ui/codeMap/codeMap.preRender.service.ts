@@ -61,6 +61,7 @@ export class CodeMapPreRenderService
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
+		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		StoreService.subscribeDetailedData(this.$rootScope, this)
