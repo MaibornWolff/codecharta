@@ -15,6 +15,8 @@ import {
 import { StoreService } from "../../state/store.service"
 import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { LazyLoader } from "../../util/lazyLoader"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export interface PrimaryMetrics {
 	node: {
@@ -25,6 +27,11 @@ export interface PrimaryMetrics {
 	edge: {
 		edge: string
 	}
+}
+
+export interface SecondaryMetric {
+	name: string
+	type: string
 }
 
 export class AttributeSideBarController
@@ -40,13 +47,13 @@ export class AttributeSideBarController
 		node: Node
 		fileName: string
 		primaryMetricKeys: PrimaryMetrics
-		secondaryMetricKeys: string[]
+		secondaryMetrics: SecondaryMetric[]
 		isSideBarVisible: boolean
 	} = {
 		node: null,
 		fileName: null,
 		primaryMetricKeys: { node: {}, edge: {} } as PrimaryMetrics,
-		secondaryMetricKeys: null,
+		secondaryMetrics: null,
 		isSideBarVisible: null
 	}
 
@@ -54,7 +61,9 @@ export class AttributeSideBarController
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private codeMapPreRenderService: CodeMapPreRenderService
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private nodeMetricDataService: NodeMetricDataService,
+		private edgeMetricDataService: EdgeMetricDataService
 	) {
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		AreaMetricService.subscribe(this.$rootScope, this)
@@ -108,9 +117,27 @@ export class AttributeSideBarController
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
 		if (this._viewModel.node) {
 			const metricValues = new Set(Object.values(this._viewModel.primaryMetricKeys.node))
-			this._viewModel.secondaryMetricKeys = Object.keys(this._viewModel.node.attributes)
+
+			const secondaryMetricKeys = Object.keys(this._viewModel.node.attributes)
 				.filter(key => !metricValues.has(key))
 				.sort()
+
+			const secondaryMetrics = []
+
+			for (const metricKey of secondaryMetricKeys) {
+				// Temporary solution to remove unary as viewable metric
+				if (metricKey === "unary") {
+					continue
+				}
+
+				const metricType =
+					metricKey in this._viewModel.node.edgeAttributes
+						? this.edgeMetricDataService.getAttributeTypeByMetric(metricKey)
+						: this.nodeMetricDataService.getAttributeTypeByMetric(metricKey)
+				secondaryMetrics.push({ name: metricKey, type: metricType } as SecondaryMetric)
+			}
+
+			this._viewModel.secondaryMetrics = secondaryMetrics
 		}
 	}
 }
