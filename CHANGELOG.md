@@ -13,7 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
 -   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613))
 
-    <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350">
+    <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350" alt="Updated menu">
+
+### Changed
+
+-   Metric aggregations now work as intended and are available from the sidebar when selecting folders ([#1953](https://github.com/MaibornWolff/codecharta/issues/1953))
 
 ## [1.74.0] - 2021-05-31
 
