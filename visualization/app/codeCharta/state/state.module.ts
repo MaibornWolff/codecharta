@@ -10,7 +10,6 @@ import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
-import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
@@ -74,7 +73,6 @@ angular
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(camelCase(SortingOptionService.name), SortingOptionService)
 	.service(camelCase(SearchPanelModeService.name), SearchPanelModeService)
-	.service(camelCase(SortingOrderAscendingService.name), SortingOrderAscendingService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(camelCase(FilesService.name), FilesService)

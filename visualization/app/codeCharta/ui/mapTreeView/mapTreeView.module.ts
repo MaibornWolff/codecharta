@@ -1,4 +1,5 @@
 import angular from "angular"
+import ngRedux from "ng-redux"
 import "../../state/state.module"
 import "../codeMap/codeMap.module"
 import "../../codeCharta.module"
@@ -9,7 +10,7 @@ import { mapTreeViewComponent } from "./mapTreeView.component"
 import { mapTreeViewLevelComponent } from "./mapTreeView.level.component"
 
 angular
-	.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.state", "app.codeCharta.ui.codeMap", "app.codeCharta"])
+	.module("app.codeCharta.ui.mapTreeView", [ngRedux, "app.codeCharta.state", "app.codeCharta.ui.codeMap", "app.codeCharta"])
 	.component(mapTreeViewComponent.selector, mapTreeViewComponent)
 	.component(mapTreeViewLevelComponent.selector, mapTreeViewLevelComponent)
 	.directive("ngRightClick", $parse => {

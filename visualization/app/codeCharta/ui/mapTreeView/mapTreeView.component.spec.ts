@@ -2,7 +2,7 @@ import "./mapTreeView.module"
 import { MapTreeViewController } from "./mapTreeView.component"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { getService, instantiateModuleWithNgRedux } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, SortingOption } from "../../codeCharta.model"
 import {
 	VALID_NODE_WITH_MULTIPLE_FOLDERS,
@@ -13,17 +13,19 @@ import {
 	VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED
 } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
-import { SortingOrderAscendingService } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import { clone } from "../../util/clone"
 import { klona } from "klona"
+import ngRedux from "ng-redux"
 
 describe("MapTreeViewController", () => {
 	let mapTreeViewController: MapTreeViewController
 	let $rootScope: IRootScopeService
+	let $scope: IRootScopeService
 	let $timeout: ITimeoutService
 	let storeService = getService<StoreService>("storeService")
 	let mapWithMultipleFolders: CodeMapNode
+	let $ngRedux: ngRedux.INgRedux
 
 	beforeEach(() => {
 		restartSystem()
@@ -31,9 +33,10 @@ describe("MapTreeViewController", () => {
 	})
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.mapTreeView")
+		$ngRedux = instantiateModuleWithNgRedux("app.codeCharta.ui.mapTreeView")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		$scope = $rootScope.$new()
 		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 
@@ -41,7 +44,7 @@ describe("MapTreeViewController", () => {
 	}
 
 	function rebuildController() {
-		mapTreeViewController = new MapTreeViewController($rootScope, $timeout, storeService)
+		mapTreeViewController = new MapTreeViewController($rootScope, $timeout, storeService, $ngRedux, $scope)
 	}
 
 	describe("constructor", () => {
@@ -60,20 +63,14 @@ describe("MapTreeViewController", () => {
 
 			expect(SortingOptionService.subscribe).toHaveBeenCalledWith($rootScope, mapTreeViewController)
 		})
-		it("should subscribe to SortingOrderAscendingService", () => {
-			SortingOrderAscendingService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(SortingOrderAscendingService.subscribe).toHaveBeenCalledWith($rootScope, mapTreeViewController)
-		})
 	})
 
 	describe("onSortingOrderAscendingChanged", () => {
 		it("should reverse the sorting order", () => {
 			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
 
-			mapTreeViewController.onSortingOrderAscendingChanged()
+			mapTreeViewController["$scope"].appSettingsSortingOrderAscending = false
+			mapTreeViewController["$scope"].$digest()
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED)
 		})
