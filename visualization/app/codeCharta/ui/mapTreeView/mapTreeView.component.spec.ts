@@ -17,11 +17,11 @@ import { SortingOptionService } from "../../state/store/dynamicSettings/sortingO
 import { clone } from "../../util/clone"
 import { klona } from "klona"
 import ngRedux from "ng-redux"
+import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 
 describe("MapTreeViewController", () => {
 	let mapTreeViewController: MapTreeViewController
 	let $rootScope: IRootScopeService
-	let $scope: IRootScopeService
 	let $timeout: ITimeoutService
 	let storeService = getService<StoreService>("storeService")
 	let mapWithMultipleFolders: CodeMapNode
@@ -36,7 +36,6 @@ describe("MapTreeViewController", () => {
 		$ngRedux = instantiateModuleWithNgRedux("app.codeCharta.ui.mapTreeView")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$scope = $rootScope.$new()
 		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 
@@ -44,7 +43,7 @@ describe("MapTreeViewController", () => {
 	}
 
 	function rebuildController() {
-		mapTreeViewController = new MapTreeViewController($rootScope, $timeout, storeService, $ngRedux, $scope)
+		mapTreeViewController = new MapTreeViewController($rootScope, $timeout, storeService, $ngRedux)
 	}
 
 	describe("constructor", () => {
@@ -66,11 +65,10 @@ describe("MapTreeViewController", () => {
 	})
 
 	describe("onSortingOrderAscendingChanged", () => {
-		it("should reverse the sorting order", () => {
+		it("should reverse the sorting order if sortingOrderAscending changes", () => {
 			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
 
-			mapTreeViewController["$scope"].appSettingsSortingOrderAscending = false
-			mapTreeViewController["$scope"].$digest()
+			$ngRedux.dispatch(setSortingOrderAscending(true))
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED)
 		})

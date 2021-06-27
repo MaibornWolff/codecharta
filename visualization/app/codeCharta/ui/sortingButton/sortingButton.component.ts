@@ -4,6 +4,7 @@ import ngRedux from "ng-redux"
 
 import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { CcState } from "../../state/store/store"
+import { selectSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
 
 export class SortingButtonController {
 	_viewModel: { orderAscending: boolean }
@@ -21,7 +22,7 @@ export class SortingButtonController {
 
 	private mapStateToThis(state: CcState) {
 		return {
-			_viewModel: { orderAscending: state.appSettings.sortingOrderAscending }
+			_viewModel: { orderAscending: selectSortingOrderAscending(state) }
 		}
 	}
 

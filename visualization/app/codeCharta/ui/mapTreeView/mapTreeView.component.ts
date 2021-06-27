@@ -7,7 +7,8 @@ import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../c
 import { StoreService } from "../../state/store.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { CcState } from "../../state/store/store"
+import { selectSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
+import { onStoreValueChanged } from "../../state/store/ngReduxHelper"
 
 const REVERSE_ORDER = true
 const KEEP_ORDER = false
@@ -17,6 +18,7 @@ type CompareFunction = (a: CodeMapNode, b: CodeMapNode) => number
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber {
 	private unsubscribeFromNgRedux: () => void
+	private unsubscribeFromNgReduxValueChange: () => void
 	private _viewModel: {
 		rootNode: CodeMapNode
 	} = {
@@ -27,26 +29,20 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
 		private storeService: StoreService,
-		$ngRedux: ngRedux.INgRedux,
-		private $scope
+		$ngRedux: ngRedux.INgRedux
 	) {
 		"ngInject"
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 		SortingOptionService.subscribe(this.$rootScope, this)
 
-		// Todo: Instead of subscribing to $scope we could write a custom onChange for ngRedux
-		this.unsubscribeFromNgRedux = $ngRedux.connect(this.mapStateToThis)($scope)
-		$scope.$watch("appSettingsSortingOrderAscending", () => {
+		this.unsubscribeFromNgReduxValueChange = onStoreValueChanged($ngRedux, selectSortingOrderAscending, () => {
 			this.applySortOrderChange(this._viewModel.rootNode, REVERSE_ORDER)
 		})
 	}
 
 	$onDestroy() {
 		this.unsubscribeFromNgRedux()
-	}
-
-	private mapStateToThis(state: CcState) {
-		return { appSettingsSortingOrderAscending: state.appSettings.sortingOrderAscending }
+		this.unsubscribeFromNgReduxValueChange()
 	}
 
 	onSortingOptionChanged(sortingOption: SortingOption) {
@@ -116,7 +112,6 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 
 	// Todo: this can probably be removed, after all store listeneres are replaced through ng-redux
 	private synchronizeAngularTwoWayBinding() {
-		this.$scope.$digest()
 		this.$timeout(() => {})
 	}
 }
