@@ -1,4 +1,7 @@
 import "./sortingButton.component.scss"
+
+import ngRedux from "ng-redux"
+
 import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { CcState } from "../../state/store/store"
 
@@ -7,7 +10,7 @@ export class SortingButtonController {
 	private setSortingOrderAscending: typeof setSortingOrderAscending
 	private unsubscribeFromNgRedux: () => void
 
-	constructor($ngRedux) {
+	constructor($ngRedux: ngRedux.INgRedux) {
 		"ngInject"
 		this.unsubscribeFromNgRedux = $ngRedux.connect(this.mapStateToThis, { setSortingOrderAscending })(this)
 	}

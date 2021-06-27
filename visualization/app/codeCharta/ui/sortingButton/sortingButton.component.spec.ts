@@ -1,57 +1,28 @@
+import ngRedux from "ng-redux"
+
 import "./sortingButton.module"
 import { SortingButtonController } from "./sortingButton.component"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
-import { SortingOrderAscendingService } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
+import { instantiateModuleWithNgRedux } from "../../../../mocks/ng.mockhelper"
+import { CcState } from "../../state/store/store"
 
 describe("SortingButtonController", () => {
 	let sortingButtonController: SortingButtonController
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
+	let $ngRedux: ngRedux.INgRedux
 
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.sortingButton")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-	}
-
-	function rebuildController() {
-		sortingButtonController = new SortingButtonController($rootScope, storeService)
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to SortingOrderAscendingService", () => {
-			SortingOrderAscendingService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(SortingOrderAscendingService.subscribe).toHaveBeenCalledWith($rootScope, sortingButtonController)
-		})
-	})
-
-	describe("onSortingOrderAscendingChanged", () => {
-		it("should invert the sorting order", () => {
-			const sortingOrderAscendingValue = false
-
-			sortingButtonController.onSortingOrderAscendingChanged(sortingOrderAscendingValue)
-
-			expect(sortingButtonController["_viewModel"].orderAscending).toBeFalsy()
-		})
+		$ngRedux = instantiateModuleWithNgRedux("app.codeCharta.ui.sortingButton")
+		sortingButtonController = new SortingButtonController($ngRedux)
 	})
 
 	describe("onButtonClick", () => {
-		it("should change sortingOrderAscending in service", () => {
-			sortingButtonController["_viewModel"].orderAscending = false
+		it("should toggle sortingOrderAscending", () => {
+			expect($ngRedux.getState<CcState>().appSettings.sortingOrderAscending).toBe(false)
+			expect(sortingButtonController["_viewModel"].orderAscending).toBe(false)
 
 			sortingButtonController.onButtonClick()
 
-			expect(storeService.getState().appSettings.sortingOrderAscending).toBeTruthy()
+			expect($ngRedux.getState<CcState>().appSettings.sortingOrderAscending).toBe(true)
+			expect(sortingButtonController["_viewModel"].orderAscending).toBe(true)
 		})
 	})
 })
