@@ -16,7 +16,6 @@ describe("LegendPanel", () => {
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 
-		await page.setDefaultTimeout(80000)
 		await goto()
 		await setupTest()
 	})

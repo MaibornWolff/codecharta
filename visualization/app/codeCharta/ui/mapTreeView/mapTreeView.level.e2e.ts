@@ -13,7 +13,6 @@ describe("MapTreeViewLevel", () => {
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		nodeContextMenu = new NodeContextMenuPageObject()
 
-		await page.setDefaultTimeout(80000)
 		await goto()
 	})
 
