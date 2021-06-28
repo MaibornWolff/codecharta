@@ -1590,7 +1590,6 @@ export const STATE: State = {
 		invertColorRange: false,
 		dynamicMargin: true,
 		isWhiteBackground: false,
-		whiteColorBuildings: true,
 		mapColors: {
 			positive: "#69AE40",
 			neutral: "#ddcc00",
@@ -1674,7 +1673,6 @@ export const DEFAULT_STATE: State = {
 			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
 		},
 		scaling: new Vector3(1, 1, 1),
-		whiteColorBuildings: false,
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,

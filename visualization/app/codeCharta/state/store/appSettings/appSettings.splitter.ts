@@ -15,7 +15,6 @@ import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
 import { splitMapColorsAction } from "./mapColors/mapColors.splitter"
 import { splitResetCameraIfNewFileIsLoadedAction } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.splitter"
 import { splitShowOnlyBuildingsWithEdgesAction } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.splitter"
-import { splitWhiteColorBuildingsAction } from "./whiteColorBuildings/whiteColorBuildings.splitter"
 import { splitIsWhiteBackgroundAction } from "./isWhiteBackground/isWhiteBackground.splitter"
 import { splitDynamicMarginAction } from "./dynamicMargin/dynamicMargin.splitter"
 import { splitInvertHeightAction } from "./invertHeight/invertHeight.splitter"
@@ -83,10 +82,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.showOnlyBuildingsWithEdges !== undefined) {
 		actions.push(splitShowOnlyBuildingsWithEdgesAction(payload.showOnlyBuildingsWithEdges))
-	}
-
-	if (payload.whiteColorBuildings !== undefined) {
-		actions.push(splitWhiteColorBuildingsAction(payload.whiteColorBuildings))
 	}
 
 	if (payload.isWhiteBackground !== undefined) {

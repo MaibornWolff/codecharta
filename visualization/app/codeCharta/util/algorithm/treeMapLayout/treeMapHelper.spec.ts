@@ -223,7 +223,6 @@ describe("TreeMapHelper", () => {
 
 				state = STATE
 				state.appSettings.invertColorRange = false
-				state.appSettings.whiteColorBuildings = false
 				state.dynamicSettings.colorRange.from = 5
 				state.dynamicSettings.colorRange.to = 10
 				state.dynamicSettings.colorMetric = "validMetricName"
@@ -245,37 +244,10 @@ describe("TreeMapHelper", () => {
 				expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
 			})
 
-			it("creates white colored building colorMetricValue < colorRangeFrom", () => {
-				state.appSettings.whiteColorBuildings = true
-
-				expect(buildNode().color).toBe(state.appSettings.mapColors.lightGrey)
-			})
-
-			it("creates red colored building colorMetricValue < colorRangeFrom with inverted range", () => {
-				state.appSettings.invertColorRange = true
-
-				expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
-			})
-
 			it("creates red colored building colorMetricValue > colorRangeFrom", () => {
 				node.attributes = { validMetricName: 12 }
 
 				expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
-			})
-
-			it("creates green colored building colorMetricValue > colorRangeFrom with inverted range", () => {
-				state.appSettings.invertColorRange = true
-				node.attributes = { validMetricName: 12 }
-
-				expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
-			})
-
-			it("creates white colored building colorMetricValue > colorRangeFrom with inverted range", () => {
-				state.appSettings.invertColorRange = true
-				state.appSettings.whiteColorBuildings = true
-				node.attributes = { validMetricName: 12 }
-
-				expect(buildNode().color).toBe(state.appSettings.mapColors.lightGrey)
 			})
 
 			it("creates yellow colored building", () => {

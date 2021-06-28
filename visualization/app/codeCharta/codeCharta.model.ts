@@ -138,7 +138,6 @@ export interface AppSettings {
 	dynamicMargin: boolean
 	isWhiteBackground: boolean
 	mapColors: MapColors
-	whiteColorBuildings: boolean
 	isPresentationMode: boolean
 	showOnlyBuildingsWithEdges: boolean
 	resetCameraIfNewFileIsLoaded: boolean

@@ -11,10 +11,6 @@ import {
 	InvertColorRangeService,
 	InvertColorRangeSubscriber
 } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
-import {
-	WhiteColorBuildingsService,
-	WhiteColorBuildingsSubscriber
-} from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
@@ -26,7 +22,6 @@ export class RangeSliderController
 		ColorMetricSubscriber,
 		ColorRangeSubscriber,
 		InvertColorRangeSubscriber,
-		WhiteColorBuildingsSubscriber,
 		FilesSelectionSubscriber,
 		BlacklistSubscriber,
 		MapColorsSubscriber
@@ -60,7 +55,6 @@ export class RangeSliderController
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
-		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		MapColorsService.subscribe(this.$rootScope, this)
@@ -116,10 +110,6 @@ export class RangeSliderController
 	}
 
 	onInvertColorRangeChanged() {
-		this.updateSliderColors()
-	}
-
-	onWhiteColorBuildingsChanged() {
 		this.updateSliderColors()
 	}
 

@@ -70,7 +70,6 @@ function initializeAppSettings(target: CustomConfig) {
 		searchPanelMode: undefined,
 		showOnlyBuildingsWithEdges: false,
 		sortingOrderAscending: false,
-		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
 		layoutAlgorithm: undefined,
 		maxTreeMapFiles: 0,

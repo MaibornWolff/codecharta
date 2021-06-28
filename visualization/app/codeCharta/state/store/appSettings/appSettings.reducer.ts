@@ -12,7 +12,6 @@ import { isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
 import { mapColors } from "./mapColors/mapColors.reducer"
 import { resetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.reducer"
 import { showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
-import { whiteColorBuildings } from "./whiteColorBuildings/whiteColorBuildings.reducer"
 import { isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer"
 import { dynamicMargin } from "./dynamicMargin/dynamicMargin.reducer"
 import { invertHeight } from "./invertHeight/invertHeight.reducer"
@@ -46,7 +45,6 @@ const appSettings = combineReducers({
 	mapColors,
 	resetCameraIfNewFileIsLoaded,
 	showOnlyBuildingsWithEdges,
-	whiteColorBuildings,
 	isWhiteBackground,
 	dynamicMargin,
 	invertHeight,

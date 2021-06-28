@@ -17,7 +17,6 @@ import { defaultInvertDeltaColors } from "./invertDeltaColors/invertDeltaColors.
 import { defaultInvertHeight } from "./invertHeight/invertHeight.actions"
 import { defaultDynamicMargin } from "./dynamicMargin/dynamicMargin.actions"
 import { defaultIsWhiteBackground } from "./isWhiteBackground/isWhiteBackground.actions"
-import { defaultWhiteColorBuildings } from "./whiteColorBuildings/whiteColorBuildings.actions"
 import { defaultMapColors } from "./mapColors/mapColors.actions"
 import { defaultIsPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 import { defaultShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
@@ -69,7 +68,6 @@ export const defaultAppSettings: AppSettings = {
 	invertHeight: defaultInvertHeight,
 	dynamicMargin: defaultDynamicMargin,
 	isWhiteBackground: defaultIsWhiteBackground,
-	whiteColorBuildings: defaultWhiteColorBuildings,
 	mapColors: defaultMapColors,
 	isPresentationMode: defaultIsPresentationMode,
 	showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,
