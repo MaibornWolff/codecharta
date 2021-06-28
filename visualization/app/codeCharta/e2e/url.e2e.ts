@@ -33,6 +33,7 @@ describe("codecharta", () => {
 		dialogError = new DialogErrorPageObject()
 		filePanel = new FilePanelPageObject()
 
+		page.setDefaultTimeout(50000)
 		await goto()
 	})
 

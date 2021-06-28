@@ -14,6 +14,7 @@ describe("FileChooser", () => {
 		filePanel = new FilePanelPageObject()
 		dialogError = new DialogErrorPageObject()
 
+		await page.setDefaultTimeout(80000)
 		await goto()
 	})
 

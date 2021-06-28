@@ -20,6 +20,7 @@ describe("RibbonBar", () => {
 		metricChooser = new MetricChooserPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 
+		await page.setDefaultTimeout(80000)
 		await goto()
 	})
 
