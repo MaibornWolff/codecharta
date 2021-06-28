@@ -9,13 +9,13 @@ import "./screenshotButton.component.scss"
 
 export class ScreenshotButtonController {
 	private static SCREENSHOT_HOTKEY = "Ctrl+Alt+S"
-	/* @ngInject */
 	constructor(
 		private threeSceneService: ThreeSceneService,
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
 		private storeService: StoreService
 	) {
+		"ngInject"
 		hotkeys(ScreenshotButtonController.SCREENSHOT_HOTKEY, () => {
 			this.makeScreenshot()
 		})

@@ -33,6 +33,7 @@ export class EdgeChooserController
 		private codeMapActionsService: CodeMapActionsService,
 		private $timeout: ITimeoutService
 	) {
+		"ngInject"
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)

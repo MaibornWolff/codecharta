@@ -2,8 +2,9 @@ import "./globalSettingsButton.component.scss"
 import { DialogService } from "../dialog/dialog.service"
 
 export class GlobalSettingsButtonController {
-	/* @ngInject */
-	constructor(private dialogService: DialogService) {}
+	constructor(private dialogService: DialogService) {
+		"ngInject"
+	}
 
 	showGlobalSettings() {
 		this.dialogService.showGlobalSettingsDialog()

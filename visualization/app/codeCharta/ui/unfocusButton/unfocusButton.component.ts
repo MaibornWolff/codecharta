@@ -20,8 +20,8 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 		focusedNodes: []
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}

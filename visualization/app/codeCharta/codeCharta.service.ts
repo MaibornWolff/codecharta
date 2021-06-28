@@ -18,7 +18,9 @@ export class CodeChartaService {
 	private fileStates: FileState[] = []
 	private recentFiles: string[] = []
 
-	constructor(private storeService: StoreService, private dialogService: DialogService) {}
+	constructor(private storeService: StoreService, private dialogService: DialogService) {
+		"ngInject"
+	}
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
 		this.fileStates = this.storeService.getState().files

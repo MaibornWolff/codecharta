@@ -16,8 +16,9 @@ export class ThreeStatsService {
 	prevTime: number
 	isDevelopmentMode = isDevelopment()
 
-	/* ngInject */
-	constructor(private threeRendererService: ThreeRendererService) {}
+	constructor(private threeRendererService: ThreeRendererService) {
+		"ngInject"
+	}
 
 	init = (canvasElement: Element) => {
 		if (this.isDevelopmentMode) {

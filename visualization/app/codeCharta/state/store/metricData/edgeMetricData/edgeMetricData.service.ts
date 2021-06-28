@@ -19,6 +19,7 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 	static NONE_METRIC = "None"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)

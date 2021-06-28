@@ -11,6 +11,7 @@ export class InvertDeltaColorsService implements StoreSubscriber {
 	private static INVERT_DELTA_COLORS_CHANGED_EVENT = "invert-delta-colors-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

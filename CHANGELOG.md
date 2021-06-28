@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   Already loaded files can be individually removed.
     -   The 'Multiple' view will select the latest files.
 
+### Fixed 🐞
+
+-   It is now possible to rotate the map by rotating the view cube ([#353](https://github.com/MaibornWolff/codecharta/issues/353))
+
 ## [1.74.0] - 2021-05-31
 
 ### Added 🚀
