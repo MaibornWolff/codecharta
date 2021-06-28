@@ -2,8 +2,9 @@ import "./downloadButton.component.scss"
 import { DialogService } from "../dialog/dialog.service"
 
 export class DownloadButtonController {
-	/* @ngInject */
-	constructor(private dialogService: DialogService) {}
+	constructor(private dialogService: DialogService) {
+		"ngInject"
+	}
 
 	downloadFile() {
 		this.dialogService.showDownloadDialog()

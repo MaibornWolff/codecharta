@@ -44,7 +44,6 @@ export class NodeContextMenuController
 		lastPartOfNodePath: ""
 	}
 
-	/* @ngInject */
 	constructor(
 		private $element: Element,
 		private $timeout: ITimeoutService,
@@ -55,6 +54,7 @@ export class NodeContextMenuController
 		private codeMapPreRenderService: CodeMapPreRenderService,
 		private threeSceneService: ThreeSceneService
 	) {
+		"ngInject"
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)

@@ -28,6 +28,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
+		"ngInject"
 		NodeSearchService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}

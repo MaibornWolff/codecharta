@@ -10,6 +10,7 @@ export class StoreColorPickerController implements MapColorsSubscriber {
 	private mapColorFor: Exclude<keyof MapColors, "markingColors" | "labelColorAndAlpha">
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private $element: JQLite, private $scope) {
+		"ngInject"
 		MapColorsService.subscribe(this.$rootScope, this)
 	}
 

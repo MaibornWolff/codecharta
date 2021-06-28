@@ -11,6 +11,7 @@ export class IsLoadingMapService implements StoreSubscriber {
 	private static IS_LOADING_MAP_CHANGED_EVENT = "is-loading-map-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
