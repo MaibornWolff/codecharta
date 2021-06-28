@@ -11,6 +11,7 @@ export class RecentFilesService implements StoreSubscriber {
 	private static RECENT_FILES_CHANGED_EVENT = "recent-files-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
