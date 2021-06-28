@@ -22,7 +22,7 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, I
 		colorRange: { from: number; to: number }
 		colorLabels: { positive: boolean; negative: boolean; neutral: boolean }
 	} = {
-		invertColorRange: null, // todo check deletable?
+		invertColorRange: null,
 		invertDeltaColors: null,
 		isDeltaState: null,
 		colorRange: { from: null, to: null },
@@ -75,6 +75,10 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, I
 				negative: mapColors.positive
 			})
 		)
+	}
+
+	resetInvertColorRangeCheckboxOnly() {
+		this._viewModel.invertColorRange = null
 	}
 
 	invertDeltaColors() {
