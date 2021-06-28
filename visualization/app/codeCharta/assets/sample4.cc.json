@@ -4,30 +4,35 @@
   "apiVersion": "1.2",
   "nodes": [
     {
-      "name": "root",
+      "name": "rootLeaf",
       "type": "Folder",
       "attributes": {},
       "children": [
         {
-          "name": "bigLeaf.ts",
+          "name": "aLeaf.ts",
           "type": "File",
           "attributes": { "rloc": 120, "functions": 10, "mcc": 1 },
           "link": "http://www.google.de"
         },
         {
-          "name": "ParentLeaf",
+          "name": "bLeaf",
           "type": "Folder",
           "attributes": {},
           "children": [
             {
-              "name": "firstSmallLeaf.html",
+              "name": "smallLeafOne.html",
               "type": "File",
-              "attributes": { "rloc": 50, "functions": 19, "mcc": 80 }
+              "attributes": { "rloc": 100, "functions": 28, "mcc": 80 }
             },
             {
-              "name": "secondSmallLeaf.ts",
+              "name": "smallLeafTwo.ts",
               "type": "File",
-              "attributes": { "rloc": 100, "functions": 10, "mcc": 100 }
+              "attributes": { "rloc": 300, "functions": 5, "mcc": 150 }
+            },
+            {
+              "name": "smallLeafThree.ts",
+              "type": "File",
+              "attributes": { "rloc": 50, "functions": 5, "mcc": 150 }
             }
           ]
         }
