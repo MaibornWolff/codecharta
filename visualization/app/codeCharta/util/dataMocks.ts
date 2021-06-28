@@ -1587,7 +1587,6 @@ export const STATE: State = {
 		invertDeltaColors: false,
 		hideFlatBuildings: true,
 		invertHeight: true,
-		invertColorRange: false,
 		dynamicMargin: true,
 		isWhiteBackground: false,
 		mapColors: {
@@ -1653,7 +1652,6 @@ export const DEFAULT_STATE: State = {
 		dynamicMargin: true,
 		hideFlatBuildings: false,
 		invertHeight: false,
-		invertColorRange: false,
 		isWhiteBackground: false,
 		mapColors: {
 			angularGreen: "#00BFA5",

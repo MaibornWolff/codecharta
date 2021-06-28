@@ -6,7 +6,6 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
-import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
 import { colorLabelOptions } from "../../codeCharta.model"
@@ -55,14 +54,6 @@ describe("ColorSettingsPanelController", () => {
 			rebuildController()
 
 			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
-		})
-
-		it("should subscribe to InvertColorRangeService", () => {
-			InvertColorRangeService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 	})
 
@@ -115,20 +106,6 @@ describe("ColorSettingsPanelController", () => {
 		})
 	})
 
-	describe("onInvertColorRangeChanged", () => {
-		it("should set invertColorRange flag to true", () => {
-			colorSettingsPanelController.onInvertColorRangeChanged(true)
-
-			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeTruthy()
-		})
-
-		it("should set invertColorRange flag to false", () => {
-			colorSettingsPanelController.onInvertColorRangeChanged(false)
-
-			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeFalsy()
-		})
-	})
-
 	describe("onFilesSelectionChanged", () => {
 		it("should detect delta mode selection", () => {
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
@@ -148,12 +125,14 @@ describe("ColorSettingsPanelController", () => {
 	})
 
 	describe("invertColorRange", () => {
-		it("should call update settings correctly", () => {
-			colorSettingsPanelController["_viewModel"].invertColorRange = false
+		it("should switch positive and negative map colors in store", () => {
+			const { positive: previousPositiveColor, negative: previousNegativeColor } = storeService.getState().appSettings.mapColors
 
 			colorSettingsPanelController.invertColorRange()
 
-			expect(storeService.getState().appSettings.invertColorRange).toBeFalsy()
+			const { positive: newPositiveColor, negative: newNegativeColor } = storeService.getState().appSettings.mapColors
+			expect(newPositiveColor).toBe(previousNegativeColor)
+			expect(newNegativeColor).toBe(previousPositiveColor)
 		})
 	})
 

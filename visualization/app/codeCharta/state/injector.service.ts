@@ -25,7 +25,6 @@ import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
 import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
-import { InvertColorRangeService } from "./store/appSettings/invertColorRange/invertColorRange.service"
 import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
@@ -82,7 +81,6 @@ export class InjectorService {
 		private dynamicMarginService: DynamicMarginService,
 		private invertHeightService: InvertHeightService,
 		private invertDeltaColorsService: InvertDeltaColorsService,
-		private invertColorRangeService: InvertColorRangeService,
 		private hideFlatBuildingsService: HideFlatBuildingsService,
 		private cameraService: CameraService,
 		private scalingService: ScalingService,

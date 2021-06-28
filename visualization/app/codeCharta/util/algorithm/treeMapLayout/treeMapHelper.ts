@@ -189,7 +189,7 @@ function isNodeNonSearched(squaredNode: CodeMapNode, state: State) {
 }
 
 export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettings }: State, isDeltaState: boolean, flattened: boolean) {
-	const { mapColors, invertColorRange } = appSettings
+	const { mapColors } = appSettings
 
 	if (isDeltaState) {
 		return mapColors.base
@@ -204,10 +204,10 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 	}
 
 	if (metricValue < dynamicSettings.colorRange.from) {
-		return invertColorRange ? mapColors.negative : mapColors.positive
+		return mapColors.positive
 	}
 	if (metricValue > dynamicSettings.colorRange.to) {
-		return invertColorRange ? mapColors.positive : mapColors.negative
+		return mapColors.negative
 	}
 	return mapColors.neutral
 }

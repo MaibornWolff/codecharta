@@ -222,7 +222,6 @@ describe("TreeMapHelper", () => {
 				node.attributes = { validMetricName: 0 }
 
 				state = STATE
-				state.appSettings.invertColorRange = false
 				state.dynamicSettings.colorRange.from = 5
 				state.dynamicSettings.colorRange.to = 10
 				state.dynamicSettings.colorMetric = "validMetricName"
