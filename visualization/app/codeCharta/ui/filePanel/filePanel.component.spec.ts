@@ -260,6 +260,85 @@ describe("filePanelController", () => {
 		})
 	})
 
+	describe("onRemoveFile", () => {
+		it("should call onSingleFile when single state", () => {
+			filePanelController.onSingleRemoveFile = jest.fn()
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Single
+				}
+			]
+
+			filePanelController.onRemoveFile("fileA", FileSelectionState.Single, new Event("someEvent"))
+
+			expect(filePanelController.onSingleRemoveFile).toHaveBeenCalled()
+		})
+
+		it("should call onPartialRemoveFile when not in single state", () => {
+			filePanelController.onPartialRemoveFile = jest.fn()
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Single
+				}
+			]
+
+			filePanelController.onRemoveFile("fileA", FileSelectionState.None, new Event("someEvent"))
+
+			expect(filePanelController.onPartialRemoveFile).toHaveBeenCalled()
+		})
+	})
+
+	describe("onSingleRemoveFile", () => {
+		it("should call onSingleFileChange", () => {
+			filePanelController.onSingleFileChange = jest.fn()
+			const $event = new Event("someEvent")
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Single
+				}
+			]
+
+			filePanelController.onSingleRemoveFile("fileA", $event)
+
+			expect(filePanelController.onSingleFileChange).toHaveBeenCalled()
+		})
+	})
+
+	describe("onPartialRemoveFile", () => {
+		it("should call onPartialFileChange", () => {
+			filePanelController.onPartialFilesChange = jest.fn()
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Single
+				}
+			]
+
+			filePanelController.onPartialRemoveFile("fileA", new Event("someEvent"))
+
+			expect(filePanelController.onPartialFilesChange).toHaveBeenCalled()
+		})
+	})
+
 	describe("selectAllPartialFiles", () => {
 		it("should select all files and enable multiple mode", () => {
 			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
