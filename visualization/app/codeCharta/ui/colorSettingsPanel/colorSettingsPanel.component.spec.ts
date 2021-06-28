@@ -3,9 +3,8 @@ import "./colorSettingsPanel.module"
 import { ColorSettingsPanelController } from "./colorSettingsPanel.component"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
-import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
 import { colorLabelOptions } from "../../codeCharta.model"
@@ -46,28 +45,6 @@ describe("ColorSettingsPanelController", () => {
 			rebuildController()
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
-		})
-
-		it("should subscribe to InvertDeltaColorsService", () => {
-			InvertDeltaColorsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
-		})
-	})
-
-	describe("onInvertDeltaColorsChanged", () => {
-		it("should set invertDeltaColors flag to true", () => {
-			colorSettingsPanelController.onInvertDeltaColorsChanged(true)
-
-			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBeTruthy()
-		})
-
-		it("should set invertDeltaColors flag to false", () => {
-			colorSettingsPanelController.onInvertDeltaColorsChanged(false)
-
-			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBeFalsy()
 		})
 	})
 
@@ -137,14 +114,16 @@ describe("ColorSettingsPanelController", () => {
 	})
 
 	describe("invertDeltaColors", () => {
-		it("should call update settings correctly", () => {
-			colorSettingsPanelController["_viewModel"].invertDeltaColors = false
+		it("should switch positive and negative map colors in store", () => {
+			const { positiveDelta: previousPositiveDeltaColor, negativeDelta: previousNegativeDeltaColor } =
+				storeService.getState().appSettings.mapColors
 
 			colorSettingsPanelController.invertDeltaColors()
 
-			expect(storeService.getState().appSettings.invertDeltaColors).toBeFalsy()
-			expect(storeService.getState().appSettings.mapColors.positiveDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.negativeDelta)
-			expect(storeService.getState().appSettings.mapColors.negativeDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.positiveDelta)
+			const { positiveDelta: newPositiveDeltaColor, negativeDelta: newNegativeDeltaColor } =
+				storeService.getState().appSettings.mapColors
+			expect(newPositiveDeltaColor).toBe(previousNegativeDeltaColor)
+			expect(newNegativeDeltaColor).toBe(previousPositiveDeltaColor)
 		})
 	})
 })

@@ -132,7 +132,6 @@ export interface AppSettings {
 	camera: Vector3
 	cameraTarget: Vector3
 	hideFlatBuildings: boolean
-	invertDeltaColors: boolean
 	invertHeight: boolean
 	dynamicMargin: boolean
 	isWhiteBackground: boolean

@@ -15,7 +15,6 @@ import { showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnl
 import { isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer"
 import { dynamicMargin } from "./dynamicMargin/dynamicMargin.reducer"
 import { invertHeight } from "./invertHeight/invertHeight.reducer"
-import { invertDeltaColors } from "./invertDeltaColors/invertDeltaColors.reducer"
 import { hideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.reducer"
 import { camera } from "./camera/camera.reducer"
 import { scaling } from "./scaling/scaling.reducer"
@@ -47,7 +46,6 @@ const appSettings = combineReducers({
 	isWhiteBackground,
 	dynamicMargin,
 	invertHeight,
-	invertDeltaColors,
 	hideFlatBuildings,
 	camera,
 	scaling,

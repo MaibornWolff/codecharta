@@ -60,14 +60,15 @@
 	</md-input-container>
 
 	<reset-settings-button-component
-		settings-names="dynamicSettings.colorRange, appSettings.invertDeltaColors, appSettings.mapColors.positiveDelta, appSettings.mapColors.negativeDelta, appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected, appSettings.colorLabels"
+		settings-names="dynamicSettings.colorRange, appSettings.mapColors.positiveDelta, appSettings.mapColors.negativeDelta, appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected, appSettings.colorLabels"
 		tooltip="Reset color metric settings to their defaults"
 		callback="$ctrl.resetInvertColorRangeCheckboxOnly()"
 	></reset-settings-button-component>
 </div>
 
 <reset-settings-button-component
-	settings-names="appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected, appSettings.invertDeltaColors"
+	settings-names="appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected"
 	tooltip=" Reset color values to default"
 	text="Reset colors"
+	callback="$ctrl.resetInvertColorRangeCheckboxOnly()"
 ></reset-settings-button-component>

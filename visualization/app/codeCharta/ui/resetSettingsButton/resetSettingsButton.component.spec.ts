@@ -40,7 +40,7 @@ describe("resetSettingsButtonController", () => {
 		it("should only reset the color options when specified", () => {
 			resetSettingsButtonController["settingsNames"] =
 				"appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, " +
-				"appSettings.mapColors.selected, appSettings.invertDeltaColors"
+				"appSettings.mapColors.selected"
 			const mapColors = storeService.getState().appSettings.mapColors
 			const colorRange = storeService.getState().dynamicSettings.colorRange
 

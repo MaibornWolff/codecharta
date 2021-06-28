@@ -56,7 +56,6 @@ function initializeAppSettings(target: CustomConfig) {
 		dynamicMargin: false,
 		edgeHeight: 0,
 		hideFlatBuildings: false,
-		invertDeltaColors: false,
 		invertHeight: false,
 		isAttributeSideBarVisible: false,
 		isLoadingFile: false,

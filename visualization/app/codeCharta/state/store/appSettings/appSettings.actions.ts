@@ -12,7 +12,6 @@ import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
 import { defaultScaling } from "./scaling/scaling.actions"
 import { defaultCamera } from "./camera/camera.actions"
 import { defaultHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
-import { defaultInvertDeltaColors } from "./invertDeltaColors/invertDeltaColors.actions"
 import { defaultInvertHeight } from "./invertHeight/invertHeight.actions"
 import { defaultDynamicMargin } from "./dynamicMargin/dynamicMargin.actions"
 import { defaultIsWhiteBackground } from "./isWhiteBackground/isWhiteBackground.actions"
@@ -62,7 +61,6 @@ export const defaultAppSettings: AppSettings = {
 	camera: defaultCamera,
 	cameraTarget: defaultCameraTarget,
 	hideFlatBuildings: defaultHideFlatBuildings,
-	invertDeltaColors: defaultInvertDeltaColors,
 	invertHeight: defaultInvertHeight,
 	dynamicMargin: defaultDynamicMargin,
 	isWhiteBackground: defaultIsWhiteBackground,

@@ -1,12 +1,7 @@
 import "./colorSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
-import { setInvertDeltaColors } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.actions"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
-import {
-	InvertDeltaColorsService,
-	InvertDeltaColorsSubscriber
-} from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
@@ -14,7 +9,7 @@ import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynam
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { ColorRange } from "../../codeCharta.model"
 
-export class ColorSettingsPanelController implements FilesSelectionSubscriber, InvertDeltaColorsSubscriber, ColorRangeSubscriber {
+export class ColorSettingsPanelController implements FilesSelectionSubscriber, ColorRangeSubscriber {
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean
@@ -32,16 +27,11 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, I
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
-		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 	}
 
 	onColorRangeChanged(colorRange: ColorRange) {
 		this._viewModel.colorRange = colorRange
-	}
-
-	onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
-		this._viewModel.invertDeltaColors = invertDeltaColors
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
@@ -79,12 +69,12 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, I
 
 	resetInvertColorRangeCheckboxOnly() {
 		this._viewModel.invertColorRange = null
+		this._viewModel.invertDeltaColors = null
 	}
 
 	invertDeltaColors() {
 		const { positiveDelta, negativeDelta } = this.storeService.getState().appSettings.mapColors
 
-		this.storeService.dispatch(setInvertDeltaColors(this._viewModel.invertDeltaColors))
 		this.storeService.dispatch(
 			setMapColors({
 				...this.storeService.getState().appSettings.mapColors,

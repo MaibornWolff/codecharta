@@ -22,7 +22,6 @@ import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyB
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
-import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
@@ -83,7 +82,6 @@ angular
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
 	.service(camelCase(InvertHeightService.name), InvertHeightService)
-	.service(camelCase(InvertDeltaColorsService.name), InvertDeltaColorsService)
 	.service(camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)
