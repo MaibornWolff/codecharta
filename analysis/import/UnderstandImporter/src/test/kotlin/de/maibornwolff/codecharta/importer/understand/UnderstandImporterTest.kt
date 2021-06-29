@@ -27,7 +27,7 @@ class UnderstandImporterTest {
     }
 
     @Test
-    fun `should contain Lines value of 44`() {
+    fun `should contain max_lcom value of 50`() {
         main(arrayOf("src/test/resources/understand.csv", "-nc", "-o=src/test/resources/understand.cc.json"))
         val file = File("src/test/resources/understand.cc.json")
         file.deleteOnExit()
