@@ -63,7 +63,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		this.storeService.dispatch(removeFile(fileName))
 		this.storeService.dispatch(removeRecentFile(fileName))
 
-		const remainingFile = this._viewModel.files[0].file.fileMeta.fileName
+		const remainingFile = this.storeService.getState().files[0].file.fileMeta.fileName
 		this.onSingleFileChange(remainingFile)
 
 		$event.stopPropagation()
