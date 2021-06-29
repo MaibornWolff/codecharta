@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.crococosmo;
+package de.maibornwolff.codecharta.importer.crococosmo
 
 import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter.Companion.main
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -25,5 +25,4 @@ class CrococosmoImporterTest {
         assertTrue(file1.exists())
         assertTrue(file2.exists())
     }
-
 }
