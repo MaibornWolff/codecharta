@@ -34,7 +34,6 @@ import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { InvertColorRangeActions } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
@@ -113,7 +112,6 @@ export class CodeMapPreRenderService
 				isActionOfType(actionType, HeightMetricActions) ||
 				isActionOfType(actionType, ColorMetricActions) ||
 				isActionOfType(actionType, ColorRangeActions) ||
-				isActionOfType(actionType, InvertColorRangeActions) ||
 				isActionOfType(actionType, BlacklistActions) ||
 				isActionOfType(actionType, FocusedNodePathActions))
 		) {

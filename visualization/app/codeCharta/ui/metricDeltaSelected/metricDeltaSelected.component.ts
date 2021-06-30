@@ -3,23 +3,20 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { StoreService } from "../../state/store.service"
-import {
-	InvertDeltaColorsService,
-	InvertDeltaColorsSubscriber
-} from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
+import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 
-export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, InvertDeltaColorsSubscriber {
+export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, MapColorsSubscriber {
 	private static TIME_TO_INIT_BINDING = 50
 	private attributekey: string // angular bindings do not accept camelCase
 
 	private _viewModel: {
 		deltaValue: number
-		colorClass: string
 		attributeKey: string
+		style: { color: string }
 	} = {
 		deltaValue: null,
-		colorClass: null,
-		attributeKey: null
+		attributeKey: null,
+		style: { color: null }
 	}
 
 	constructor(
@@ -30,18 +27,18 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 	) {
 		"ngInject"
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		InvertDeltaColorsService.subscribe(this.$rootScope, this)
+		MapColorsService.subscribe(this.$rootScope, this)
 		this.$timeout(() => {
 			this.onBuildingSelected(this.threeSceneService.getSelectedBuilding())
 		}, MetricDeltaSelectedController.TIME_TO_INIT_BINDING)
 	}
 
-	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
-		this.setDeltaValue(selectedBuilding)
+	onMapColorsChanged() {
 		this.setDeltaColorClass()
 	}
 
-	onInvertDeltaColorsChanged() {
+	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
+		this.setDeltaValue(selectedBuilding)
 		this.setDeltaColorClass()
 	}
 
@@ -52,8 +49,9 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 	}
 
 	private setDeltaColorClass() {
-		this._viewModel.colorClass =
-			this._viewModel.deltaValue > 0 === this.storeService.getState().appSettings.invertDeltaColors ? "red" : "green"
+		const mapColors = this.storeService.getState().appSettings.mapColors
+		const color = this._viewModel.deltaValue > 0 ? mapColors.positiveDelta : mapColors.negativeDelta
+		this._viewModel.style = { color }
 	}
 }
 
