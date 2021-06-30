@@ -4,6 +4,6 @@ import { Store } from "../state/store/store"
 
 export const getStoreService = () => {
 	const storeService = getService<StoreService>("storeService")
-	storeService["store"] = Store["initStore"]()
+	storeService["store"] = Store["createStore"]()
 	return storeService
 }

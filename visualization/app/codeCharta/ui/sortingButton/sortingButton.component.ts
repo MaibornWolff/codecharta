@@ -1,34 +1,34 @@
-import "./sortingButton.component.scss"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
+import { NgRedux } from "@angular-redux/store"
+import { Component, Inject, OnDestroy } from "@angular/core"
+
 import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
-import {
-	SortingOrderAscendingService,
-	SortingOrderAscendingSubscriber
-} from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
+import { sortingOrderAscendingSelector } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
+import { CcReduxStore } from "../../state/store/store"
 
-export class SortingButtonController implements SortingOrderAscendingSubscriber {
-	private _viewModel: {
-		orderAscending: boolean
-	} = {
-		orderAscending: true
-	}
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		"ngInject"
-		SortingOrderAscendingService.subscribe(this.$rootScope, this)
+// Todo: Write mixin for connecting to redux with less boiler code:
+// - automatic unsubscribe
+// - create strong typed properties
+// - map dispatch
+@Component({
+	selector: "cc-sorting-button",
+	template: require("./sortingButton.component.html")
+})
+export class SortingButtonComponent implements OnDestroy {
+	private orderAscending: boolean
+	private unsubscribe: () => void
+
+	constructor(@Inject(NgRedux) private ngRedux: CcReduxStore) {
+		const subscription = this.ngRedux.select(sortingOrderAscendingSelector).subscribe(value => {
+			this.orderAscending = value
+		})
+		this.unsubscribe = subscription.unsubscribe
 	}
 
-	onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
-		this._viewModel.orderAscending = sortingOrderAscending
+	ngOnDestroy() {
+		this.unsubscribe()
 	}
 
 	onButtonClick() {
-		this.storeService.dispatch(setSortingOrderAscending(!this._viewModel.orderAscending))
+		this.ngRedux.dispatch(setSortingOrderAscending(!this.orderAscending))
 	}
-}
-
-export const sortingButtonComponent = {
-	selector: "sortingButtonComponent",
-	template: require("./sortingButton.component.html"),
-	controller: SortingButtonController
 }
