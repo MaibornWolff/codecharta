@@ -69,7 +69,7 @@ export class RangeSliderController
 	}
 
 	forceSliderRender() {
-		this.$rootScope.$broadcast("rzSliderForceRender")
+		angular.element(() => this.$rootScope.$broadcast("rzSliderForceRender"))
 	}
 
 	onBlacklistChanged() {
