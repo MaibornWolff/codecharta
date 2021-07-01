@@ -1,4 +1,7 @@
 import angular from "angular"
+import { downgradeInjectable } from "@angular/upgrade/static"
+import { NgRedux } from "@angular-redux/store"
+
 // Plop: Append module import here
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
@@ -104,6 +107,7 @@ angular
 	.service(camelCase(IsPresentationModeService.name), IsPresentationModeService)
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
+	.factory("ngRedux", downgradeInjectable(NgRedux))
 	.service(camelCase(StoreService.name), StoreService)
 	.service(camelCase(NodeSearchService.name), NodeSearchService)
 	.service(camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)

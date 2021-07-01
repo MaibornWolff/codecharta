@@ -1,5 +1,5 @@
 import { IRootScopeService } from "angular"
-import { Store } from "./store/store"
+import { CcReduxStore, Store } from "./store/store"
 import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -30,8 +30,15 @@ export class StoreService {
 	private static STORE_CHANGED_EXTENDED_EVENT = "store-changed-extended"
 	private store = Store.store
 
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(private $rootScope: IRootScopeService, private ngRedux: CcReduxStore) {
 		"ngInject"
+		// Todo angular-migration: <todo: insert ticket here>
+		//	 Temporarily monkey patch, so that store changes triggered by Angular's ngRedux
+		//	 also notify $rootScope and keep existing logic. After full migration to ngRedux,
+		//   we still need to migrate the custom logic of `this.dispatch`. We could keep it through
+		//   monkey patching ngRedux, or moving to a thunk middleware.
+		// @ts-ignore
+		ngRedux.dispatch = this.dispatch.bind(this)
 	}
 
 	dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {

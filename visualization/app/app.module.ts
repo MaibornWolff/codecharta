@@ -16,8 +16,8 @@ import { SortingButtonComponent } from "./codeCharta/ui/sortingButton/sortingBut
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule, @Inject(NgRedux) ngRedux: CcReduxStore) {
+		// Todo angular-migration: Note that currently ngRedux.dispatch is monkey patched within store.service
 		ngRedux.provideStore(Store.store)
-		// todo monkey patch dispatch to notify rootScope
 	}
 	ngDoBootstrap() {
 		this.upgrade.bootstrap(document.body, ["app"], { strictDi: true })
