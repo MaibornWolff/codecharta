@@ -10,7 +10,6 @@ import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric
 import { ColorMetricActions } from "../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { ColorRangeActions } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklist.actions"
-import { InvertColorRangeActions } from "../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import md5 from "md5"
 import { APIVersions } from "../codeCharta.api.model"
@@ -218,7 +217,6 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 			!isActionOfType(actionType, HeightMetricActions) &&
 			!isActionOfType(actionType, ColorMetricActions) &&
 			!isActionOfType(actionType, ColorRangeActions) &&
-			!isActionOfType(actionType, InvertColorRangeActions) &&
 			!isActionOfType(actionType, BlacklistActions) &&
 			!isActionOfType(actionType, FocusedNodePathActions))
 	) {
@@ -301,7 +299,6 @@ function isSettingChangedEvent(actionType: string) {
 		isActionOfType(actionType, HeightMetricActions) ||
 		isActionOfType(actionType, ColorMetricActions) ||
 		isActionOfType(actionType, ColorRangeActions) ||
-		isActionOfType(actionType, InvertColorRangeActions) ||
 		actionType === BlacklistActions.SET_BLACKLIST
 	)
 }

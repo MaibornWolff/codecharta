@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
     <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350">
 
+### Fixed 🐞
+
+-   It is now possible to rotate the map by rotating the view cube ([#353](https://github.com/MaibornWolff/codecharta/issues/353))
+
 ## [1.74.0] - 2021-05-31
 
 ### Added 🚀
