@@ -2,9 +2,7 @@
   {
     "name": "Complexity",
     "settings": {
-      "appSettings": {
-        "invertColorRange": false
-      },
+      "appSettings": { },
       "dynamicSettings": {
         "areaMetric": "rloc",
         "heightMetric": "mcc",
@@ -16,9 +14,7 @@
   {
     "name": "Average Complexity*",
     "settings": {
-      "appSettings": {
-        "invertColorRange": false
-      },
+      "appSettings": { },
       "dynamicSettings": {
         "areaMetric": "unary",
         "heightMetric": "Average Complexity*",
@@ -30,9 +26,7 @@
   {
     "name": "Coverage",
     "settings": {
-      "appSettings": {
-        "invertColorRange": true
-      },
+      "appSettings": { },
       "dynamicSettings": {
         "areaMetric": "rloc",
         "heightMetric": "mcc",
@@ -44,9 +38,7 @@
   {
     "name": "Code Churn",
     "settings": {
-      "appSettings": {
-        "invertColorRange": false
-      },
+      "appSettings": { },
       "dynamicSettings": {
         "areaMetric": "rloc",
         "heightMetric": "abs_code_churn",
