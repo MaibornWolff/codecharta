@@ -1585,13 +1585,10 @@ export const STATE: State = {
 		scaling: new Vector3(1, 1.8, 1),
 		camera: new Vector3(0, 300, 1000),
 		cameraTarget: new Vector3(177, 0, 299),
-		invertDeltaColors: false,
 		hideFlatBuildings: true,
 		invertHeight: true,
-		invertColorRange: false,
 		dynamicMargin: true,
 		isWhiteBackground: false,
-		whiteColorBuildings: true,
 		mapColors: {
 			positive: "#69AE40",
 			neutral: "#ddcc00",
@@ -1651,11 +1648,9 @@ export const DEFAULT_STATE: State = {
 		edgeHeight: 4,
 		camera: new Vector3(0, 300, 1000),
 		cameraTarget: new Vector3(177, 0, 299),
-		invertDeltaColors: false,
 		dynamicMargin: true,
 		hideFlatBuildings: false,
 		invertHeight: false,
-		invertColorRange: false,
 		isWhiteBackground: false,
 		mapColors: {
 			angularGreen: "#00BFA5",
@@ -1675,7 +1670,6 @@ export const DEFAULT_STATE: State = {
 			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
 		},
 		scaling: new Vector3(1, 1, 1),
-		whiteColorBuildings: false,
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,

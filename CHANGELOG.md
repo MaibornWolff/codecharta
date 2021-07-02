@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Imported files are now compressed by default. Use the -nc parameter to uncompress the files. ([#1702](https://github.com/maibornwolff/codecharta/issues/1702))
 -   Export the current view as a png image by using "Ctrl+Alt+S" or clicking the corresponding button ([#674](https://github.com/MaibornWolff/codecharta/issues/674))
 -   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
 -   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613))

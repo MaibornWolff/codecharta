@@ -15,12 +15,9 @@ import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
 import { splitMapColorsAction } from "./mapColors/mapColors.splitter"
 import { splitResetCameraIfNewFileIsLoadedAction } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.splitter"
 import { splitShowOnlyBuildingsWithEdgesAction } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.splitter"
-import { splitWhiteColorBuildingsAction } from "./whiteColorBuildings/whiteColorBuildings.splitter"
 import { splitIsWhiteBackgroundAction } from "./isWhiteBackground/isWhiteBackground.splitter"
 import { splitDynamicMarginAction } from "./dynamicMargin/dynamicMargin.splitter"
 import { splitInvertHeightAction } from "./invertHeight/invertHeight.splitter"
-import { splitInvertDeltaColorsAction } from "./invertDeltaColors/invertDeltaColors.splitter"
-import { splitInvertColorRangeAction } from "./invertColorRange/invertColorRange.splitter"
 import { splitHideFlatBuildingsAction } from "./hideFlatBuildings/hideFlatBuildings.splitter"
 import { splitCameraAction } from "./camera/camera.splitter"
 import { splitScalingAction } from "./scaling/scaling.splitter"
@@ -85,10 +82,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 		actions.push(splitShowOnlyBuildingsWithEdgesAction(payload.showOnlyBuildingsWithEdges))
 	}
 
-	if (payload.whiteColorBuildings !== undefined) {
-		actions.push(splitWhiteColorBuildingsAction(payload.whiteColorBuildings))
-	}
-
 	if (payload.isWhiteBackground !== undefined) {
 		actions.push(splitIsWhiteBackgroundAction(payload.isWhiteBackground))
 	}
@@ -99,14 +92,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.invertHeight !== undefined) {
 		actions.push(splitInvertHeightAction(payload.invertHeight))
-	}
-
-	if (payload.invertDeltaColors !== undefined) {
-		actions.push(splitInvertDeltaColorsAction(payload.invertDeltaColors))
-	}
-
-	if (payload.invertColorRange !== undefined) {
-		actions.push(splitInvertColorRangeAction(payload.invertColorRange))
 	}
 
 	if (payload.hideFlatBuildings !== undefined) {

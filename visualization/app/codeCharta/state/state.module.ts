@@ -20,12 +20,9 @@ import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
-import { WhiteColorBuildingsService } from "./store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
-import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
-import { InvertColorRangeService } from "./store/appSettings/invertColorRange/invertColorRange.service"
 import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
@@ -84,12 +81,9 @@ angular
 	.service(camelCase(MapColorsService.name), MapColorsService)
 	.service(camelCase(ResetCameraIfNewFileIsLoadedService.name), ResetCameraIfNewFileIsLoadedService)
 	.service(camelCase(ShowOnlyBuildingsWithEdgesService.name), ShowOnlyBuildingsWithEdgesService)
-	.service(camelCase(WhiteColorBuildingsService.name), WhiteColorBuildingsService)
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
 	.service(camelCase(InvertHeightService.name), InvertHeightService)
-	.service(camelCase(InvertDeltaColorsService.name), InvertDeltaColorsService)
-	.service(camelCase(InvertColorRangeService.name), InvertColorRangeService)
 	.service(camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)
