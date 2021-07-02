@@ -1,11 +1,9 @@
-import { NgRedux } from "@angular-redux/store"
 import { createStore } from "redux"
 
 import rootReducer from "./state.reducer"
 
 type CcStore = ReturnType<typeof Store["createStore"]>
 export type CcState = ReturnType<CcStore["getState"]>
-export type CcReduxStore = NgRedux<CcState>
 
 export class Store {
 	private static _store: CcStore

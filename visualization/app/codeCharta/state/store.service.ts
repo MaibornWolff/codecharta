@@ -1,5 +1,5 @@
 import { IRootScopeService } from "angular"
-import { CcReduxStore, Store } from "./store/store"
+import { Store } from "./store/store"
 import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -29,16 +29,18 @@ export class StoreService {
 	private static STORE_CHANGED_EVENT = "store-changed"
 	private static STORE_CHANGED_EXTENDED_EVENT = "store-changed-extended"
 	private store = Store.store
+	private originalDispatch: typeof Store.store.dispatch
 
-	constructor(private $rootScope: IRootScopeService, private ngRedux: CcReduxStore) {
+	constructor(private $rootScope: IRootScopeService) {
 		"ngInject"
 		// Todo angular-migration: <todo: insert ticket here>
-		//	 Temporarily monkey patch, so that store changes triggered by Angular's ngRedux
-		//	 also notify $rootScope and keep existing logic. After full migration to ngRedux,
+		//	 Temporarily monkey patch, so that store changes triggered by directly to store connected Angular's components
+		//	 also notify $rootScope and keep existing logic. After full migration to Angular,
 		//   we still need to migrate the custom logic of `this.dispatch`. We could keep it through
-		//   monkey patching ngRedux, or moving to a thunk middleware.
+		//   adding a custom middleware, or moving to a thunk middleware.
+		this.originalDispatch = Store.store.dispatch
 		// @ts-ignore
-		ngRedux.dispatch = this.dispatch.bind(this)
+		Store.store.dispatch = this.dispatch.bind(this)
 	}
 
 	dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {
@@ -56,11 +58,11 @@ export class StoreService {
 				options.silent
 			)
 		) {
-			this.dispatch(setIsLoadingMap(true))
+			this.originalDispatch(setIsLoadingMap(true))
 		}
 
 		for (const atomicAction of splitStateActions(action)) {
-			this.store.dispatch(atomicAction)
+			this.originalDispatch(atomicAction)
 			if (!options.silent) {
 				this.notify(atomicAction.type)
 				this.notifyExtended(atomicAction.type, atomicAction.payload)

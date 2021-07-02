@@ -1,34 +1,21 @@
-import { NgRedux } from "@angular-redux/store"
-import { Component, Inject, OnDestroy } from "@angular/core"
+import { Component } from "@angular/core"
+import { connect } from "../../state/angular-redux/connect"
 
 import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { sortingOrderAscendingSelector } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
-import { CcReduxStore } from "../../state/store/store"
+import { CcState } from "../../state/store/store"
 
-// Todo: Write mixin for connecting to redux with less boiler code:
-// - automatic unsubscribe
-// - create strong typed properties
-// - map dispatch
+const ConnectedClass = connect(
+	(state: CcState) => ({ orderAscending: sortingOrderAscendingSelector(state) }),
+	() => ({ setSortingOrderAscending })
+)
+
 @Component({
 	selector: "cc-sorting-button",
 	template: require("./sortingButton.component.html")
 })
-export class SortingButtonComponent implements OnDestroy {
-	private orderAscending: boolean
-	private unsubscribe: () => void
-
-	constructor(@Inject(NgRedux) private ngRedux: CcReduxStore) {
-		const subscription = this.ngRedux.select(sortingOrderAscendingSelector).subscribe(value => {
-			this.orderAscending = value
-		})
-		this.unsubscribe = subscription.unsubscribe
-	}
-
-	ngOnDestroy() {
-		this.unsubscribe()
-	}
-
+export class SortingButtonComponent extends ConnectedClass {
 	onButtonClick() {
-		this.ngRedux.dispatch(setSortingOrderAscending(!this.orderAscending))
+		this.setSortingOrderAscending(!this.orderAscending)
 	}
 }
