@@ -13,6 +13,10 @@ export function getFileByFileName(fileStates: FileState[], fileName: string) {
 	return matchingFileState ? matchingFileState.file : undefined
 }
 
+export function getFileNameOf(fileState: FileState) {
+	return fileState.file.fileMeta.fileName
+}
+
 export function getVisibleFiles(fileStates: FileState[]) {
 	return getVisibleFileStates(fileStates).map(x => x.file)
 }

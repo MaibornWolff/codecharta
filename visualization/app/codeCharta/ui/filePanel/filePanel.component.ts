@@ -3,7 +3,14 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { removeFile, setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
-import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
+import {
+	fileStatesAvailable,
+	getFileNameOf,
+	getVisibleFileStates,
+	isDeltaState,
+	isPartialState,
+	isSingleState
+} from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
 import { removeRecentFile } from "../../state/store/dynamicSettings/recentFiles/recentFiles.actions"
@@ -54,31 +61,47 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	onRemoveFile(filename, state, event): void {
-		if (state === FileSelectionState.Single) this.onSingleRemoveFile(filename, event)
-		else this.onPartialRemoveFile(filename, event)
-	}
+	onRemoveFile(filename, state, $event): void {
+		this.storeService.dispatch(removeFile(filename))
+		this.storeService.dispatch(removeRecentFile(filename))
 
-	onSingleRemoveFile(fileName, $event): void {
-		this.storeService.dispatch(removeFile(fileName))
-		this.storeService.dispatch(removeRecentFile(fileName))
-
-		const remainingFile = this.storeService.getState().files[0].file.fileMeta.fileName
-		this.onSingleFileChange(remainingFile)
-
-		$event.stopPropagation()
-		$event.preventDefault()
-	}
-
-	onPartialRemoveFile(fileName, $event): void {
-		this.storeService.dispatch(removeFile(fileName))
-		this.storeService.dispatch(removeRecentFile(fileName))
-
-		const allRemainingFiles = this._viewModel.files.map(x => x.file.fileMeta.fileName)
-		this.onPartialFilesChange(allRemainingFiles)
+		const files = this.storeService.getState().files
+		if (state === FileSelectionState.Single) {
+			this.singleStateFileRemove(files)
+		} else {
+			this.partialStateFileRemove(files)
+		}
 
 		$event.stopPropagation()
 		$event.preventDefault()
+	}
+
+	singleStateFileRemove(files: FileState[]) {
+		if (!isSingleState(files)) {
+			this.selectRemainingFile(files)
+		} else {
+			this.keepSelection()
+		}
+	}
+
+	private keepSelection() {
+		const selectedFile = this.storeService.getState().files.find(fileState => fileState.selectedAs === FileSelectionState.Single)
+		this.onSingleFileChange(getFileNameOf(selectedFile))
+	}
+
+	private selectRemainingFile(files: FileState[]) {
+		const remainingFile = files[files.length - 1]
+		this.onSingleFileChange(getFileNameOf(remainingFile))
+	}
+
+	private partialStateFileRemove(files: FileState[]) {
+		const selectedFiles = files.filter(x => x.selectedAs === FileSelectionState.Partial).map(fileState => getFileNameOf(fileState))
+
+		if (selectedFiles.length > 0) {
+			this.onPartialFilesChange(selectedFiles)
+		} else {
+			this.onPartialFilesChange([getFileNameOf(files[files.length - 1])])
+		}
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
