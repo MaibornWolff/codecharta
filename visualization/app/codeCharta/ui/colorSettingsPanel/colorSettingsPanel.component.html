@@ -61,7 +61,8 @@
 </div>
 
 <reset-settings-button-component
-	settings-names="appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected, appSettings.invertDeltaColors, appSettings.invertColorRange"
+	settings-names="appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected"
 	tooltip=" Reset color values to default"
 	text="Reset colors"
+	callback="$ctrl.resetInvertColorRangeCheckboxOnly()"
 ></reset-settings-button-component>
