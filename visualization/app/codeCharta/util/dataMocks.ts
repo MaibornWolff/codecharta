@@ -1461,7 +1461,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 				name: "big leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 20, functions: 10, mcc: 1 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1469,7 +1469,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 				name: "additional leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 10, functions: 11, mcc: 5 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1498,7 +1498,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 						name: "big leaf",
 						type: NodeType.FILE,
 						attributes: { rloc: 200, functions: 50, mcc: 30 },
-						link: "http://www.google.de",
+						link: "https://www.google.de",
 						isExcluded: false,
 						isFlattened: false
 					}
@@ -1535,7 +1535,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 				name: "D file 1",
 				type: NodeType.FILE,
 				attributes: { rloc: 400, functions: 12, mcc: 34 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1543,7 +1543,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 				name: "D file 2",
 				type: NodeType.FILE,
 				attributes: { rloc: 230, functions: 14, mcc: 9 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1572,7 +1572,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 						name: "D file 1.3",
 						type: NodeType.FILE,
 						attributes: { rloc: 200, functions: 20, mcc: 30 },
-						link: "http://www.google.de",
+						link: "https://www.google.de",
 						isExcluded: false,
 						isFlattened: false
 					}
