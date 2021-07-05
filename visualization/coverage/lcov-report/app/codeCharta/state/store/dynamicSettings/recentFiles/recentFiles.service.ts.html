@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for app/codeCharta/state/store/appSettings/invertDeltaColors/invertDeltaColors.service.ts</title>
+    <title>Code coverage report for app/codeCharta/state/store/dynamicSettings/recentFiles/recentFiles.service.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../../../../prettify.css" />
     <link rel="stylesheet" href="../../../../../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../../../../index.html">All files</a> / <a href="index.html">app/codeCharta/state/store/appSettings/invertDeltaColors</a> invertDeltaColors.service.ts</h1>
+        <h1><a href="../../../../../../index.html">All files</a> / <a href="index.html">app/codeCharta/state/store/dynamicSettings/recentFiles</a> recentFiles.service.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.31% </span>
+                <span class="strong">84.62% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/13</span>
+                <span class='fraction'>11/13</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/6</span>
+                <span class='fraction'>4/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.67% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>10/12</span>
             </div>
         
             
@@ -94,8 +94,7 @@
 <a name='L35'></a><a href='#L35'>35</a>
 <a name='L36'></a><a href='#L36'>36</a>
 <a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">121x</span>
+<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-yes">121x</span>
@@ -108,66 +107,64 @@
 <span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">533x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">501x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { InvertDeltaColorsActions } from "./invertDeltaColors.actions"
+import { RecentFilesActions } from "./recentFiles.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
 &nbsp;
-export interface InvertDeltaColorsSubscriber {
-	onInvertDeltaColorsChanged(invertDeltaColors: boolean)
+export interface RecentFilesSubscriber {
+	onRecentFilesChanged(recentFiles: string[])
 }
 &nbsp;
-export class InvertDeltaColorsService implements StoreSubscriber {
-	private static INVERT_DELTA_COLORS_CHANGED_EVENT = "invert-delta-colors-changed"
+export class RecentFilesService implements StoreSubscriber {
+	private static RECENT_FILES_CHANGED_EVENT = "recent-files-changed"
 &nbsp;
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 &nbsp;
 	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, InvertDeltaColorsActions)) {
+		if (isActionOfType(actionType, RecentFilesActions)) {
 			this.notify(this.select())
 		}
 	}
 &nbsp;
 	private select() {
-		return this.storeService.getState().appSettings.invertDeltaColors
+		return this.storeService.getState().dynamicSettings.recentFiles
 	}
 &nbsp;
-	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(InvertDeltaColorsService.INVERT_DELTA_COLORS_CHANGED_EVENT, {
-			invertDeltaColors: newState
-		})
+	private notify(newState: string[]) {
+		this.$rootScope.$broadcast(RecentFilesService.RECENT_FILES_CHANGED_EVENT, { recentFiles: newState })
 	}
 &nbsp;
-	static subscribe($rootScope: IRootScopeService, subscriber: InvertDeltaColorsSubscriber) {
-		$rootScope.$on(InvertDeltaColorsService.INVERT_DELTA_COLORS_CHANGED_EVENT, <span class="fstat-no" title="function not covered" >(_</span>event_, data) =&gt; {
-<span class="cstat-no" title="statement not covered" >			subscriber.</span>onInvertDeltaColorsChanged(data.invertDeltaColors)
+	static subscribe<span class="fstat-no" title="function not covered" >($</span>rootScope: IRootScopeService, subscriber: RecentFilesSubscriber) {
+<span class="cstat-no" title="statement not covered" >		$rootScope.</span>$on(RecentFilesService.RECENT_FILES_CHANGED_EVENT, <span class="fstat-no" title="function not covered" >(_</span>event, data) =&gt; {
+<span class="cstat-no" title="statement not covered" >			subscriber.</span>onRecentFilesChanged(data.recentFiles)
 		})
 	}
 }
@@ -178,7 +175,7 @@ export class InvertDeltaColorsService implements StoreSubscriber {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon May 31 2021 13:45:34 GMT+0000 (Coordinated Universal Time)
+                at Mon Jul 05 2021 10:45:02 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

@@ -14,7 +14,7 @@ Please contact this team concerning questions about Jasome.
 | `FILE`                          | codemaat coupling csv files          |
 | `-h, --help`                    | displays help                        |
 | `-o, --outputFile=<outputFile>` | output File (or empty for stdout)    |
-| `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
+| `-c`                            | compresses outputfile to gzip format |
 
 Output goes to _stdout_ or to a file if specified by '-o'.
 

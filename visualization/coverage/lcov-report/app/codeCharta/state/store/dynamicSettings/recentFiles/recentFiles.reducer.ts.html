@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for app/codeCharta/state/store/appSettings/invertDeltaColors/invertDeltaColors.reducer.ts</title>
+    <title>Code coverage report for app/codeCharta/state/store/dynamicSettings/recentFiles/recentFiles.reducer.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../../../../prettify.css" />
     <link rel="stylesheet" href="../../../../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../../../../index.html">All files</a> / <a href="index.html">app/codeCharta/state/store/appSettings/invertDeltaColors</a> invertDeltaColors.reducer.ts</h1>
+        <h1><a href="../../../../../../index.html">All files</a> / <a href="index.html">app/codeCharta/state/store/dynamicSettings/recentFiles</a> recentFiles.reducer.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -67,24 +67,42 @@
 <a name='L8'></a><a href='#L8'>8</a>
 <a name='L9'></a><a href='#L9'>9</a>
 <a name='L10'></a><a href='#L10'>10</a>
-<a name='L11'></a><a href='#L11'>11</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">161x</span>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">161x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5395x</span>
+<span class="cline-any cline-yes">5752x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-yes">57x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5341x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5687x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { InvertDeltaColorsAction, InvertDeltaColorsActions, setInvertDeltaColors } from "./invertDeltaColors.actions"
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { RecentFilesAction, RecentFilesActions, setRecentFiles } from "./recentFiles.actions"
 &nbsp;
-export function invertDeltaColors(state = setInvertDeltaColors().payload, action: InvertDeltaColorsAction) {
+export function recentFiles(state = setRecentFiles().payload, action: RecentFilesAction) {
 	switch (action.type) {
-		case InvertDeltaColorsActions.SET_INVERT_DELTA_COLORS:
+		case RecentFilesActions.SET_RECENT_FILES:
 			return action.payload
+		case RecentFilesActions.REMOVE_RECENT_FILE:
+			return removeRecentFile(state, action.payload)
 		default:
 			return state
+	}
+&nbsp;
+	function removeRecentFile(state: string[], fileName: string) {
+		return state.filter(<span class="fstat-no" title="function not covered" >file </span>=&gt; <span class="cstat-no" title="statement not covered" >file !== fileName)</span>
 	}
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -94,7 +112,7 @@ export function invertDeltaColors(state = setInvertDeltaColors().payload, action
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon May 31 2021 13:45:34 GMT+0000 (Coordinated Universal Time)
+                at Mon Jul 05 2021 10:45:02 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

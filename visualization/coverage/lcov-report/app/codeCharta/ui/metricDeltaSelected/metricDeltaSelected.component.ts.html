@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">90.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/20</span>
+                <span class='fraction'>20/22</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">90.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/20</span>
+                <span class='fraction'>20/22</span>
             </div>
         
             
@@ -122,8 +122,7 @@
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
 <a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">121x</span>
+<a name='L66'></a><a href='#L66'>66</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">121x</span>
@@ -131,13 +130,10 @@
 <span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -148,21 +144,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,14 +162,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -194,23 +192,20 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { StoreService } from "../../state/store.service"
-import {
-	InvertDeltaColorsService,
-	InvertDeltaColorsSubscriber
-} from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
+import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 &nbsp;
-export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, InvertDeltaColorsSubscriber {
+export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, MapColorsSubscriber {
 	private static TIME_TO_INIT_BINDING = 50
 	private attributekey: string // angular bindings do not accept camelCase
 &nbsp;
 	private _viewModel: {
 		deltaValue: number
-		colorClass: string
 		attributeKey: string
+		style: { color: string }
 	} = {
 		deltaValue: null,
-		colorClass: null,
-		attributeKey: null
+		attributeKey: null,
+		style: { color: null }
 	}
 &nbsp;
 	constructor(
@@ -219,20 +214,21 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 		private threeSceneService: ThreeSceneService,
 		private storeService: StoreService
 	) {
+		"ngInject"
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		InvertDeltaColorsService.subscribe(this.$rootScope, this)
+		MapColorsService.subscribe(this.$rootScope, this)
 		this.$timeout(<span class="fstat-no" title="function not covered" >() =&gt; </span>{
 <span class="cstat-no" title="statement not covered" >			this.o</span>nBuildingSelected(this.threeSceneService.getSelectedBuilding())
 		}, MetricDeltaSelectedController.TIME_TO_INIT_BINDING)
 	}
 &nbsp;
+<span class="fstat-no" title="function not covered" >	onMapColorsChanged(</span>) {
+<span class="cstat-no" title="statement not covered" >		this.s</span>etDeltaColorClass()
+	}
+&nbsp;
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
 		this.setDeltaValue(selectedBuilding)
 		this.setDeltaColorClass()
-	}
-&nbsp;
-<span class="fstat-no" title="function not covered" >	onInvertDeltaColorsChanged(</span>) {
-<span class="cstat-no" title="statement not covered" >		this.s</span>etDeltaColorClass()
 	}
 &nbsp;
 	private setDeltaValue(selectedBuilding?: CodeMapBuilding) {
@@ -242,8 +238,9 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 	}
 &nbsp;
 	private setDeltaColorClass() {
-		this._viewModel.colorClass =
-			this._viewModel.deltaValue &gt; 0 === this.storeService.getState().appSettings.invertDeltaColors ? "red" : "green"
+		const mapColors = this.storeService.getState().appSettings.mapColors
+		const color = this._viewModel.deltaValue &gt; 0 ? mapColors.positiveDelta : mapColors.negativeDelta
+		this._viewModel.style = { color }
 	}
 }
 &nbsp;
@@ -262,7 +259,7 @@ export const metricDeltaSelectedComponent = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon May 31 2021 13:45:34 GMT+0000 (Coordinated Universal Time)
+                at Mon Jul 05 2021 10:45:02 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

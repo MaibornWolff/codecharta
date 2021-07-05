@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for app/codeCharta/state/store/appSettings/invertColorRange/invertColorRange.service.ts</title>
+    <title>Code coverage report for app/codeCharta/state/store/appSettings/colorLabels/colorLabels.service.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../../../../prettify.css" />
     <link rel="stylesheet" href="../../../../../../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../../../../index.html">All files</a> / <a href="index.html">app/codeCharta/state/store/appSettings/invertColorRange</a> invertColorRange.service.ts</h1>
+        <h1><a href="../../../../../../index.html">All files</a> / <a href="index.html">app/codeCharta/state/store/appSettings/colorLabels</a> colorLabels.service.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -105,69 +105,69 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">121x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">533x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">501x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { InvertColorRangeActions } from "./invertColorRange.actions"
+import { ColorLabelsActions } from "./colorLabels.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { colorLabelOptions } from "../../../../codeCharta.model"
 &nbsp;
-export interface InvertColorRangeSubscriber {
-	onInvertColorRangeChanged(invertColorRange: boolean)
+export interface ColorLabelsSubscriber {
+	onColorLabelsChanged(colorLabels: colorLabelOptions)
 }
 &nbsp;
-export class InvertColorRangeService implements StoreSubscriber {
-	private static INVERT_COLOR_RANGE_CHANGED_EVENT = "invert-color-range-changed"
+export class ColorLabelsService implements StoreSubscriber {
+	private static COLOR_LABELS_CHANGED_EVENT = "color-labels-changed"
 &nbsp;
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 &nbsp;
 	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, InvertColorRangeActions)) {
+		if (isActionOfType(actionType, ColorLabelsActions)) {
 			this.notify(this.select())
 		}
 	}
 &nbsp;
 	private select() {
-		return this.storeService.getState().appSettings.invertColorRange
+		return this.storeService.getState().appSettings.colorLabels
 	}
 &nbsp;
-	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(InvertColorRangeService.INVERT_COLOR_RANGE_CHANGED_EVENT, {
-			invertColorRange: newState
-		})
+	private notify(newState: colorLabelOptions) {
+		this.$rootScope.$broadcast(ColorLabelsService.COLOR_LABELS_CHANGED_EVENT, { colorLabels: newState })
 	}
 &nbsp;
-	static subscribe($rootScope: IRootScopeService, subscriber: InvertColorRangeSubscriber) {
-		$rootScope.$on(InvertColorRangeService.INVERT_COLOR_RANGE_CHANGED_EVENT, <span class="fstat-no" title="function not covered" >(_</span>event_, data) =&gt; {
-<span class="cstat-no" title="statement not covered" >			subscriber.</span>onInvertColorRangeChanged(data.invertColorRange)
+	static subscribe($rootScope: IRootScopeService, subscriber: ColorLabelsSubscriber) {
+		$rootScope.$on(ColorLabelsService.COLOR_LABELS_CHANGED_EVENT, <span class="fstat-no" title="function not covered" >(_</span>event_, data) =&gt; {
+<span class="cstat-no" title="statement not covered" >			subscriber.</span>onColorLabelsChanged(data.colorLabels)
 		})
 	}
 }
@@ -178,7 +178,7 @@ export class InvertColorRangeService implements StoreSubscriber {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon May 31 2021 13:45:34 GMT+0000 (Coordinated Universal Time)
+                at Mon Jul 05 2021 10:45:02 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

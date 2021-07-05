@@ -37,7 +37,7 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 | `-h, --help`                    | displays help                                                                          |
 | `-i, --no-issues`               | do not search for sonar issues                                                         |
 | `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                                      |
-| `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip                      |
+| `-c`                            | compresses outputfile to gzip format, if format of File is JSON                        |
 | `-v, --verbose`                 | display info messages from sonar plugin                                                |
 
 ### Usage
