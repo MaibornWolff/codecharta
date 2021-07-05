@@ -2,6 +2,7 @@ import {
 	addFile,
 	defaultFiles,
 	FilesAction,
+	removeFile,
 	resetFiles,
 	resetSelection,
 	setDelta,
@@ -113,6 +114,15 @@ describe("files", () => {
 			const result = files(state, setMultipleByNames([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]))
 
 			expect(isPartialState(result)).toBeTruthy()
+		})
+	})
+
+	describe("Action: REMOVE_FILE", () => {
+		it("should remove a file", () => {
+			const result = files(state, removeFile(TEST_DELTA_MAP_A.fileMeta.fileName))
+
+			expect(result[0].file).toEqual(TEST_DELTA_MAP_B)
+			expect(result.length).toBe(1)
 		})
 	})
 })

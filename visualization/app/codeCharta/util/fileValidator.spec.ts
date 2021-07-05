@@ -5,21 +5,35 @@ import {
 	TEST_FILE_CONTENT_INVALID_MINOR_API,
 	TEST_FILE_CONTENT_NO_API
 } from "./dataMocks"
-import { CodeMapNode, NodeType } from "../codeCharta.model"
+import { CodeMapNode, NameDataPair, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
 import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
 import assert from "assert"
 import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../resources/fixed-folders/fixed-folders-example"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { clone } from "./clone"
+import { getService } from "../../../mocks/ng.mockhelper"
+import { StoreService } from "../state/store.service"
+import { IRootScopeService } from "angular"
 
 describe("FileValidator", () => {
 	let file: ExportCCFile
-	let invalidFile
+	let storeService: StoreService
+	let $rootScope: IRootScopeService
 
 	beforeEach(() => {
+		restartSystem()
+		rebuildService()
 		file = clone(TEST_FILE_CONTENT)
 	})
+
+	function restartSystem() {
+		$rootScope = getService<IRootScopeService>("$rootScope")
+	}
+
+	function rebuildService() {
+		storeService = new StoreService($rootScope)
+	}
 
 	it("API version exists in package.json", () => {
 		expect(packageJson.codecharta.apiVersion).toEqual("1.2")
@@ -32,12 +46,16 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(null)
+			validate(null, storeService)
 		}, expectedError)
 	})
 
 	it("should throw when higher Major API", () => {
-		invalidFile = TEST_FILE_CONTENT_INVALID_MAJOR_API
+		const nameDataPair: NameDataPair = {
+			fileName: "fileName",
+			fileSize: 30,
+			content: TEST_FILE_CONTENT_INVALID_MAJOR_API
+		}
 
 		const expectedError: CCValidationResult = {
 			error: [ERROR_MESSAGES.majorApiVersionIsOutdated],
@@ -45,25 +63,33 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(invalidFile)
+			validate(nameDataPair, storeService)
 		}, expectedError)
 	})
 
 	it("should throw on warning with higher minor API version", () => {
-		file = TEST_FILE_CONTENT_INVALID_MINOR_API
+		const nameDataPair: NameDataPair = {
+			fileName: "fileName",
+			fileSize: 30,
+			content: TEST_FILE_CONTENT_INVALID_MINOR_API
+		}
 
 		const expectedError: CCValidationResult = {
 			error: [],
-			warning: [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`]
+			warning: [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${nameDataPair.content.apiVersion}`]
 		}
 
 		assert.throws(() => {
-			validate(file)
+			validate(nameDataPair, storeService)
 		}, expectedError)
 	})
 
 	it("should throw on file missing API version", () => {
-		invalidFile = TEST_FILE_CONTENT_NO_API
+		const nameDataPair: NameDataPair = {
+			fileName: "fileName",
+			fileSize: 30,
+			content: TEST_FILE_CONTENT_NO_API
+		}
 
 		const expectedError: CCValidationResult = {
 			error: [ERROR_MESSAGES.apiVersionIsInvalid],
@@ -71,12 +97,16 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(invalidFile)
+			validate(nameDataPair, storeService)
 		}, expectedError)
 	})
 
 	it("should throw on file with wrong API version", () => {
-		invalidFile = TEST_FILE_CONTENT_INVALID_API
+		const nameDataPair: NameDataPair = {
+			fileName: "fileName",
+			fileSize: 30,
+			content: TEST_FILE_CONTENT_INVALID_API
+		}
 
 		const expectedError: CCValidationResult = {
 			error: [ERROR_MESSAGES.apiVersionIsInvalid],
@@ -84,19 +114,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(invalidFile)
-		}, expectedError)
-	})
-
-	it("should throw on string", () => {
-		const expectedError: CCValidationResult = {
-			error: [ERROR_MESSAGES.fileIsInvalid],
-			warning: []
-		}
-
-		assert.throws(() => {
-			// @ts-expect-error
-			validate("")
+			validate(nameDataPair, storeService)
 		}, expectedError)
 	})
 
@@ -112,19 +130,25 @@ describe("FileValidator", () => {
 			}
 		]
 
-		validate(file)
+		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+
+		validate(nameDataPair, storeService)
 	})
 
 	it("should not throw on a file without edges", () => {
 		file.edges = undefined
 
-		validate(file)
+		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+
+		validate(nameDataPair, storeService)
 	})
 
 	it("should not throw on a file when numbers are floating point values", () => {
 		file.nodes[0].children[0].attributes["rloc"] = 333.4
 
-		validate(file)
+		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+
+		validate(nameDataPair, storeService)
 	})
 
 	it("should throw when children are not unique in name+type", () => {
@@ -132,6 +156,7 @@ describe("FileValidator", () => {
 		file.nodes[0].children[0].type = NodeType.FILE
 		file.nodes[0].children[1].name = "same"
 		file.nodes[0].children[1].type = NodeType.FILE
+		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 		const expectedError: CCValidationResult = {
 			error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/same`],
@@ -139,12 +164,14 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(file)
+			validate(nameDataPair, storeService)
 		}, expectedError)
 	})
 
 	it("should throw when nodes are empty", () => {
 		file.nodes = []
+
+		const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
 
 		const expectedError: CCValidationResult = {
 			error: [ERROR_MESSAGES.nodesEmpty],
@@ -152,7 +179,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(file)
+			validate(nameDataPair, storeService)
 		}, expectedError)
 	})
 
@@ -161,6 +188,8 @@ describe("FileValidator", () => {
 			// @ts-expect-error
 			something: "something"
 		}
+
+		const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
 
 		const expectedError: CCValidationResult = {
 			error: [
@@ -171,7 +200,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(file)
+			validate(nameDataPair, storeService)
 		}, expectedError)
 	})
 
@@ -180,6 +209,7 @@ describe("FileValidator", () => {
 			file = clone(fileWithFixedOverlappingSubFolders)
 			const folder1: CodeMapNode = file.nodes[0].children[0].children[0]
 			const folder2: CodeMapNode = file.nodes[0].children[0].children[1]
+			const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [
@@ -191,7 +221,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 	})
@@ -207,20 +237,21 @@ describe("FileValidator", () => {
 
 		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
 			folder1.fixedPosition = undefined
-
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 			const expectedError: CCValidationResult = {
 				error: [`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: folder_1`],
 				warning: []
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
 		it("should throw an error, if at least one fixed folder has a padding that is out of bounds", () => {
 			folder1.fixedPosition.left = -5
 			folder1.fixedPosition.width = 7
+			const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
@@ -228,13 +259,14 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
 		it("should throw an error, if at least one fixed folder has a width or height that is out of bounds", () => {
 			folder1.fixedPosition.left = 10
 			folder1.fixedPosition.width = -50
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
@@ -242,13 +274,14 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
 		it("should throw an error, if at least one fixed folder exceeds the maximum coordinate of 100", () => {
 			folder1.fixedPosition.left = 99
 			folder1.fixedPosition.width = 2
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
@@ -256,7 +289,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
@@ -273,6 +306,7 @@ describe("FileValidator", () => {
 				width: 10,
 				height: 10
 			}
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [
@@ -284,7 +318,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
@@ -301,6 +335,7 @@ describe("FileValidator", () => {
 				width: 10,
 				height: 10
 			}
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [
@@ -312,7 +347,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
@@ -329,6 +364,7 @@ describe("FileValidator", () => {
 				width: 1,
 				height: 1
 			}
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [
@@ -340,7 +376,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
@@ -352,6 +388,7 @@ describe("FileValidator", () => {
 				height: 10
 			}
 			folder2.fixedPosition = folder1.fixedPosition
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [
@@ -363,12 +400,13 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
 		it("should throw an error, if the major api version is smaller and fixed folders were defined", () => {
 			file.apiVersion = APIVersions.ZERO_POINT_ONE
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 0.1`],
@@ -376,12 +414,13 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 
 		it("should throw an error, if the minor api version is smaller and fixed folders were defined", () => {
 			file.apiVersion = APIVersions.ONE_POINT_ONE
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
 			const expectedError: CCValidationResult = {
 				error: [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 1.1`],
@@ -389,7 +428,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(file)
+				validate(nameDataPair, storeService)
 			}, expectedError)
 		})
 	})
