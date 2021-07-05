@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.75.0] - 2021-07-05
+
 ### Added 🚀
 
 -   Imported files are now compressed by default. Use the -nc parameter to uncompress the files. ([#1702](https://github.com/maibornwolff/codecharta/issues/1702))
