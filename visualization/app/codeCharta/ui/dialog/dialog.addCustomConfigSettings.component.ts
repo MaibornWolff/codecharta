@@ -31,6 +31,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		private storeService: StoreService,
 		private dialogService: DialogService
 	) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 		this.onFilesSelectionChanged(this.storeService.getState().files)
 		this.validateLocalStorageSize()
@@ -119,17 +120,13 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 	}
 
 	validateCustomConfigName() {
-		if (
-			CustomConfigHelper.hasCustomConfigByName(
-				this.customConfigFileStateConnector.getMapSelectionMode(),
-				this.customConfigFileStateConnector.getSelectedMaps(),
-				this._viewModel.customConfigName
-			)
-		) {
-			this._viewModel.addErrorMessage = "A Custom Config with this name already exists."
-		} else {
-			this._viewModel.addErrorMessage = ""
-		}
+		this._viewModel.addErrorMessage = CustomConfigHelper.hasCustomConfigByName(
+			this.customConfigFileStateConnector.getMapSelectionMode(),
+			this.customConfigFileStateConnector.getSelectedMaps(),
+			this._viewModel.customConfigName
+		)
+			? "A Custom Config with this name already exists."
+			: ""
 	}
 
 	validateLocalStorageSize() {
@@ -145,12 +142,10 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 		// Add 3KB as it seems there is some default overhead.
 		const localStorageSizeInKB = 3 + (allStringsConcatenated.length * 16) / 8 / 1024
 
-		if (localStorageSizeInKB > this.customLocalStorageLimitInKB) {
-			this._viewModel.localStorageSizeWarningMessage =
-				"Do you want to download and then purge old unused Configs to make space for new ones?"
-		} else {
-			this._viewModel.localStorageSizeWarningMessage = ""
-		}
+		this._viewModel.localStorageSizeWarningMessage =
+			localStorageSizeInKB > this.customLocalStorageLimitInKB
+				? "Do you want to download and then purge old unused Configs to make space for new ones?"
+				: ""
 	}
 
 	isNewCustomConfigValid() {

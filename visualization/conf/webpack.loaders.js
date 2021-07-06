@@ -3,11 +3,11 @@ module.exports = {
 		{
 			test: /\.js$/,
 			exclude: /node_modules/,
-			loaders: ["babel-loader"]
+			use: ["babel-loader"]
 		},
 		{
 			test: /\.html$/,
-			loaders: ["html-loader"]
+			use: ["html-loader"]
 		},
 		{
 			test: /\.css$/,
@@ -15,7 +15,7 @@ module.exports = {
 		},
 		{
 			test: /\.scss$/,
-			use: ["style-loader", "css-loader", "sass-loader?sourceMap"]
+			use: ["style-loader", "css-loader", "sass-loader"]
 		},
 		{
 			test: /\.(png|svg|jpg|gif)$/,
@@ -26,16 +26,12 @@ module.exports = {
 			use: ["file-loader"]
 		},
 		{
-			test: /\.(ico)$/,
-			use: ["file-loader?name=[name].[ext]"]
-		},
-		{
 			test: /\.ts(x?)$/,
 			use: ["babel-loader", "ts-loader?configFile=tsconfig.webpack.json"]
 		},
 		{
 			test: /\.glsl$/,
-			loaders: ["webpack-glsl-loader"]
+			use: ["webpack-glsl-loader"]
 		}
 	]
 }

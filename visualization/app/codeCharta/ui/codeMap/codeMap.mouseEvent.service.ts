@@ -17,6 +17,7 @@ import { Object3D, Raycaster } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { LazyLoader } from "../../util/lazyLoader"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
+import { ThreeViewerService } from "./threeViewer/threeViewerService"
 
 interface Coordinates {
 	x: number
@@ -48,7 +49,8 @@ export enum CursorType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber
+{
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -65,7 +67,6 @@ export class CodeMapMouseEventService
 	private raycaster = new Raycaster()
 	private temporaryLabelForBuilding = null
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $window: IWindowService,
@@ -75,8 +76,11 @@ export class CodeMapMouseEventService
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
 		private codeMapLabelService: CodeMapLabelService,
-		private codeMapPreRenderService: CodeMapPreRenderService
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
+		private threeViewerService: ThreeViewerService
 	) {
+		"ngInject"
 		this.threeUpdateCycleService.register(() => this.threeRendererService.render())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
@@ -111,6 +115,8 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
+		this.threeRendererService.renderer.domElement.addEventListener("mouseleave", event => this.onDocumentMouseLeave(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -151,11 +157,13 @@ export class CodeMapMouseEventService
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.clearConstantHighlight()
+		this.clearTemporaryLabel()
 		this.threeUpdateCycleService.update()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+		this.clearTemporaryLabel()
 		if (selectedBuilding) {
 			const isSelectedBuildingBlacklisted = isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
@@ -175,6 +183,8 @@ export class CodeMapMouseEventService
 
 	updateHovering() {
 		if (this.hasMouseMoved(this.oldMouse)) {
+			const labels = this.threeSceneService.labels?.children
+
 			if (this.isGrabbing || this.isMoving) {
 				this.threeSceneService.resetLabel()
 				this.clearTemporaryLabel()
@@ -187,7 +197,6 @@ export class CodeMapMouseEventService
 
 			const mouseCoordinates = this.transformHTMLToSceneCoordinates()
 			const camera = this.threeCameraService.camera
-			const labels = this.threeSceneService.labels?.children
 
 			const mapMesh = this.threeSceneService.getMapMesh()
 			let nodeNameHoveredLabel = ""
@@ -241,10 +250,14 @@ export class CodeMapMouseEventService
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 
-		this.codeMapLabelService.addLabel(codeMapBuilding.node, {
-			showNodeName: showLabelNodeName,
-			showNodeMetric: showLabelNodeMetric
-		})
+		this.codeMapLabelService.addLabel(
+			codeMapBuilding.node,
+			{
+				showNodeName: showLabelNodeName,
+				showNodeMetric: showLabelNodeMetric
+			},
+			0
+		)
 
 		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
@@ -253,10 +266,23 @@ export class CodeMapMouseEventService
 		return labelForBuilding
 	}
 
+	private EnableOrbitalsRotation(isRotation: boolean) {
+		this.threeViewerService.enableRotation(isRotation)
+		this.viewCubeMouseEventsService.enableRotation(isRotation)
+	}
+
+	onDocumentMouseEnter() {
+		this.EnableOrbitalsRotation(true)
+	}
+
+	onDocumentMouseLeave(event: MouseEvent) {
+		if (!(event.relatedTarget instanceof HTMLCanvasElement)) this.EnableOrbitalsRotation(false)
+	}
+
 	onDocumentMouseMove(event: MouseEvent) {
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
-		this.updateHovering()
+		this.viewCubeMouseEventsService.propagateMovement()
 	}
 
 	onDocumentDoubleClick() {
@@ -297,6 +323,7 @@ export class CodeMapMouseEventService
 	}
 
 	onDocumentMouseUp(event: MouseEvent) {
+		this.viewCubeMouseEventsService.resetIsDragging()
 		if (event.button === ClickType.LeftClick) {
 			this.onLeftClick()
 		} else {
@@ -312,7 +339,7 @@ export class CodeMapMouseEventService
 	private calculateHoveredLabel(labels: Object3D[]) {
 		let labelClosestToViewPoint = null
 
-		if (labels != null) {
+		if (labels) {
 			for (let counter = 0; counter < labels.length; counter += 2) {
 				const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
 				if (intersect.length > 0) {

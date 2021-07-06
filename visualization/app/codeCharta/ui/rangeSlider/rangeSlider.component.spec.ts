@@ -100,6 +100,24 @@ describe("RangeSliderController", () => {
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
+
+		it("should have called renderSliderOnInitialisation", () => {
+			const spy = spyOn(RangeSliderController.prototype, "renderSliderOnInitialisation")
+
+			rebuildController()
+
+			expect(spy).toHaveBeenCalled()
+		})
+
+		it("should have called broadcast with rzSliderForceRender", () => {
+			const spy = spyOn($rootScope, "$broadcast")
+
+			rebuildController()
+
+			setTimeout(() => {
+				expect(spy).toHaveBeenCalledWith("rzSliderForceRender")
+			})
+		})
 	})
 
 	describe("onBlacklistChanged", () => {
@@ -289,6 +307,24 @@ describe("RangeSliderController", () => {
 
 			setTimeout(() => {
 				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)
+			})
+		})
+	})
+
+	describe("applySliderChange", () => {
+		it("should call applyColorRange", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			setTimeout(() => {
+				expect(rangeSliderController["applyColorRange"]).toBeCalled()
+			})
+		})
+
+		it("should call updateSliderColors", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			setTimeout(() => {
+				expect(rangeSliderController["updateSliderColors"]).toBeCalled()
 			})
 		})
 	})

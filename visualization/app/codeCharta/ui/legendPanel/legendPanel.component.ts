@@ -12,7 +12,8 @@ import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/
 import { FileState } from "../../model/files/files"
 
 export class LegendPanelController
-	implements IsAttributeSideBarVisibleSubscriber, ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber {
+	implements IsAttributeSideBarVisibleSubscriber, ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber
+{
 	private _viewModel: {
 		isLegendVisible: boolean
 		isSideBarVisible: boolean
@@ -28,6 +29,7 @@ export class LegendPanelController
 	}
 
 	constructor(private $rootScope: IRootScopeService) {
+		"ngInject"
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)

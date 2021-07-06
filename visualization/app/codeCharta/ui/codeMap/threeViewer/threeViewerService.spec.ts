@@ -63,7 +63,7 @@ describe("ThreeViewerService", () => {
 		threeRendererService.renderer.setSize = jest.fn()
 		threeRendererService.renderer.render = jest.fn()
 		threeRendererService.renderer.dispose = jest.fn()
-		threeRendererService.composer = ({ dispose: jest.fn() } as unknown) as CustomComposer
+		threeRendererService.composer = { dispose: jest.fn() } as unknown as CustomComposer
 		threeRendererService.renderer.getContext = jest.fn()
 		threeRendererService.renderer.setPixelRatio = jest.fn()
 		threeOrbitControlsService.controls = { enableKeys: null } as OrbitControls
@@ -270,7 +270,7 @@ describe("ThreeViewerService", () => {
 		beforeEach(() => {
 			mockThreeJs()
 
-			threeViewerService.getRenderCanvas = jest.fn().mockReturnValue(({ remove: jest.fn() } as unknown) as HTMLCanvasElement)
+			threeViewerService.getRenderCanvas = jest.fn().mockReturnValue({ remove: jest.fn() } as unknown as HTMLCanvasElement)
 		})
 		it("should call stats destroy", () => {
 			threeViewerService.destroy()

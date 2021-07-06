@@ -15,20 +15,26 @@ angular
 		"app.codeCharta.state",
 		"app.codeCharta"
 	])
-	.config(function ($provide) {
-		$provide.decorator("ColorPickerOptions", function ($delegate) {
-			const options = angular.copy($delegate)
+	.config([
+		"$provide",
+		function ($provide) {
+			$provide.decorator("ColorPickerOptions", function ($delegate) {
+				const options = angular.copy($delegate)
 
-			options.alpha = false
-			options.format = "hexString"
-			options.restrictToFormat = true
-			options.pos = undefined // reset unwanted default positioning
+				options.alpha = false
+				options.format = "hexString"
+				options.restrictToFormat = true
+				options.pos = undefined // reset unwanted default positioning
 
-			return options
-		})
-	})
+				return options
+			})
+		}
+	])
 	.component(storeColorPickerComponent.selector, storeColorPickerComponent)
 	.component(nodeContextMenuColorPickerComponent.selector, nodeContextMenuColorPickerComponent)
-	.run(function ($templateCache) {
-		$templateCache.put("template/color-picker/directive.html", customColorPickerTemplate)
-	})
+	.run([
+		"$templateCache",
+		function ($templateCache) {
+			$templateCache.put("template/color-picker/directive.html", customColorPickerTemplate)
+		}
+	])

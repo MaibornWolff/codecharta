@@ -14,6 +14,7 @@ export class ColorMetricService implements StoreSubscriber, NodeMetricDataSubscr
 	private static COLOR_METRIC_CHANGED_EVENT = "color-metric-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}

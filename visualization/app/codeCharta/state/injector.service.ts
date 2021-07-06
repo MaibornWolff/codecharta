@@ -1,6 +1,7 @@
 //@ts-nocheck
 
 // Plop: Append service import here
+import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
@@ -54,10 +55,10 @@ import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layo
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 export class InjectorService {
-	/* @ngInject */
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private colorLabelsService: ColorLabelsService,
 		private labelShowMetricValueService: LabelShowMetricValueService,
 		private labelShowNodeNameService: LabelShowNodeNameService,
 		private panelSelectionService: PanelSelectionService,
@@ -110,5 +111,7 @@ export class InjectorService {
 		private maxTreeMapFilesService: MaxTreeMapFilesService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService
-	) {}
+	) {
+		"ngInject"
+	}
 }

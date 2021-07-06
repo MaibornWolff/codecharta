@@ -7,8 +7,9 @@ import { convertToVectors } from "../../util/settingsHelper"
 export class ResetSettingsButtonController {
 	private settingsNames = ""
 
-	/* @ngInject */
-	constructor(private storeService: StoreService) {}
+	constructor(private storeService: StoreService) {
+		"ngInject"
+	}
 
 	applyDefaultSettings() {
 		const tokens = this.settingsNames.replace(/ |\n/g, "").split(",")
@@ -17,7 +18,6 @@ export class ResetSettingsButtonController {
 
 		for (const token of tokens) {
 			const steps = token.split(".")
-
 			let defaultSettingsPointer = defaultState
 			let updatedSettingsPointer = updatedSettings
 
@@ -50,6 +50,7 @@ export const resetSettingsButtonComponent = {
 	controller: ResetSettingsButtonController,
 	bindings: {
 		settingsNames: "@",
-		tooltip: "@"
+		tooltip: "@",
+		text: "@"
 	}
 }

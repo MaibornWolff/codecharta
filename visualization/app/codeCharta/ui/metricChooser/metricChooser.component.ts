@@ -17,7 +17,8 @@ import {
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export class MetricChooserController
-	implements NodeMetricDataSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
+	implements NodeMetricDataSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber
+{
 	private originalMetricData: NodeMetricData[]
 
 	private _viewModel: {
@@ -36,8 +37,8 @@ export class MetricChooserController
 		searchTerm: ""
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
+		"ngInject"
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)

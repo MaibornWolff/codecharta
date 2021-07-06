@@ -34,7 +34,8 @@ export class AttributeSideBarController
 		HeightMetricSubscriber,
 		ColorMetricSubscriber,
 		EdgeMetricSubscriber,
-		IsAttributeSideBarVisibleSubscriber {
+		IsAttributeSideBarVisibleSubscriber
+{
 	private _viewModel: {
 		node: Node
 		fileName: string
@@ -49,12 +50,12 @@ export class AttributeSideBarController
 		isSideBarVisible: null
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
+		"ngInject"
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)

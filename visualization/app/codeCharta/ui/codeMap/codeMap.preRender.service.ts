@@ -50,7 +50,8 @@ export class CodeMapPreRenderService
 		ScalingSubscriber,
 		LayoutAlgorithmSubscriber,
 		ColorRangeFromSubscriber,
-		ColorRangeToSubscriber {
+		ColorRangeToSubscriber
+{
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -67,6 +68,7 @@ export class CodeMapPreRenderService
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
+		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		StoreService.subscribeDetailedData(this.$rootScope, this)

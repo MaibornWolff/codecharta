@@ -23,7 +23,8 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	static RENDER_OPTIONS: WebGLContextAttributes = {
 		antialias: true,
-		preserveDrawingBuffer: true
+		preserveDrawingBuffer: true,
+		alpha: true
 	}
 
 	static enableFXAA = false
@@ -35,6 +36,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	camera: Camera
 
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {
+		"ngInject"
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 	}
 
@@ -120,11 +122,9 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	}
 
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
-		if (isWhiteBackground) {
-			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white
-		} else {
-			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
-		}
+		ThreeRendererService.CLEAR_COLOR = isWhiteBackground
+			? ThreeRendererService.BACKGROUND_COLOR.white
+			: ThreeRendererService.BACKGROUND_COLOR.normal
 		this.renderer?.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
 	}
 

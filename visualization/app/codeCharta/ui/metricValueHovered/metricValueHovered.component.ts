@@ -8,7 +8,8 @@ import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/d
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 export class MetricValueHoveredController
-	implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber {
+	implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber
+{
 	private POSITIVE_COLOR = "#b1d8a8"
 	private NEGATIVE_COLOR = "#ffcccc"
 	private NEUTRAL_COLOR = "#e6e6e6"
@@ -27,8 +28,8 @@ export class MetricValueHoveredController
 		deltaColor: null
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
+		"ngInject"
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)

@@ -21,7 +21,8 @@ import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynam
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export class EdgeSettingsPanelController
-	implements EdgeMetricSubscriber, AmountOfEdgePreviewsSubscriber, EdgeHeightSubscriber, ShowOnlyBuildingsWithEdgesSubscriber {
+	implements EdgeMetricSubscriber, AmountOfEdgePreviewsSubscriber, EdgeHeightSubscriber, ShowOnlyBuildingsWithEdgesSubscriber
+{
 	private _viewModel: {
 		amountOfEdgePreviews: number
 		totalAffectedBuildings: number
@@ -34,13 +35,13 @@ export class EdgeSettingsPanelController
 		showOnlyBuildingsWithEdges: null
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
+		"ngInject"
 		AmountOfEdgePreviewsService.subscribe(this.$rootScope, this)
 		EdgeHeightService.subscribe(this.$rootScope, this)
 		ShowOnlyBuildingsWithEdgesService.subscribe(this.$rootScope, this)

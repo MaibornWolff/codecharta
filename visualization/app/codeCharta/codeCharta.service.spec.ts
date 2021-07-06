@@ -58,7 +58,8 @@ describe("codeChartaService", () => {
 				fileName,
 				projectName: "Sample Map",
 				fileChecksum: "invalid-md5-sample",
-				exportedFileSize: 42
+				exportedFileSize: 42,
+				repoCreationDate: ""
 			},
 			map: {
 				attributes: {},
@@ -199,7 +200,7 @@ describe("codeChartaService", () => {
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, fileSize: 42, content: ("string" as unknown) as ExportCCFile }])
+			codeChartaService.loadFiles([{ fileName, fileSize: 42, content: "string" as unknown as ExportCCFile }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)

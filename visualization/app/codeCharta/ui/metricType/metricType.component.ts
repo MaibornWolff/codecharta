@@ -27,7 +27,8 @@ export class MetricTypeController
 		EdgeMetricSubscriber,
 		BuildingHoveredSubscriber,
 		BuildingUnhoveredSubscriber,
-		MetricDataSubscriber {
+		MetricDataSubscriber
+{
 	private _viewModel: {
 		metricType: AttributeTypeValue
 		isFolderHovered: boolean
@@ -38,13 +39,13 @@ export class MetricTypeController
 
 	private metricSelection: MetricSelections
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private storeService: StoreService
 	) {
+		"ngInject"
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
@@ -88,11 +89,10 @@ export class MetricTypeController
 
 	onMetricDataChanged() {
 		const state = this.storeService.getState()
-		if (this.metricSelection === MetricSelections.edgeMetric) {
-			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
-		} else {
-			this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
-		}
+		this._viewModel.metricType =
+			this.metricSelection === MetricSelections.edgeMetric
+				? this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
+				: this.nodeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
 	}
 }
 

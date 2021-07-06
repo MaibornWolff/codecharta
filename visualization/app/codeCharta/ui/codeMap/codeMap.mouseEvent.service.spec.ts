@@ -30,9 +30,10 @@ import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { Material, Object3D, Raycaster, Vector3 } from "three"
+import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LazyLoader } from "../../util/lazyLoader"
+import { ThreeViewerService } from "./threeViewer/threeViewerService"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -46,6 +47,8 @@ describe("codeMapMouseEventService", () => {
 	let storeService: StoreService
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapPreRenderService: CodeMapPreRenderService
+	let viewCubeMouseEventsService: ViewCubeMouseEventsService
+	let threeViewerService: ThreeViewerService
 
 	let codeMapBuilding: CodeMapBuilding
 	let file: CCFile
@@ -75,6 +78,8 @@ describe("codeMapMouseEventService", () => {
 		storeService = getService<StoreService>("storeService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
+		viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>("viewCubeMouseEventsService")
+		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		file = klona(TEST_FILE_WITH_PATHS)
@@ -91,7 +96,9 @@ describe("codeMapMouseEventService", () => {
 			threeUpdateCycleService,
 			storeService,
 			codeMapLabelService,
-			codeMapPreRenderService
+			codeMapPreRenderService,
+			viewCubeMouseEventsService,
+			threeViewerService
 		)
 
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
@@ -196,10 +203,10 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("start", () => {
-		it("should setup four event listeners", () => {
+		it("should setup six event listeners", () => {
 			codeMapMouseEventService.start()
 
-			expect(threeRendererService.renderer.domElement.addEventListener).toHaveBeenCalledTimes(4)
+			expect(threeRendererService.renderer.domElement.addEventListener).toHaveBeenCalledTimes(6)
 		})
 
 		it("should subscribe to event propagation", () => {
@@ -352,7 +359,7 @@ describe("codeMapMouseEventService", () => {
 			const resultPosition = new Vector3(0.5, 0.5, 0)
 
 			const labels = []
-			const labelLine = new Object3D()
+			const placeholderLine = new Object3D()
 			const labelNode = new Object3D()
 			label["material"] = new Material()
 			const rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
@@ -360,7 +367,12 @@ describe("codeMapMouseEventService", () => {
 			labelNode.translateX(-4)
 			labelNode.translateY(5)
 
-			labels.push(label, labelLine, labelNode, labelLine)
+			const points = [new Vector3(2, 2, 2), new Vector3(1, 1, 1)]
+
+			const lineGeometry = new BufferGeometry().setFromPoints(points)
+			placeholderLine["geometry"] = lineGeometry
+
+			labels.push(label, placeholderLine, labelNode, placeholderLine)
 
 			threeSceneService.animateLabel(label, rayCaster, labels)
 
@@ -501,6 +513,15 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onDocumentMouseUp", () => {
 		let event
+
+		it("should call resetIsDragging", () => {
+			event = { button: ClickType.LeftClick }
+			viewCubeMouseEventsService["resetIsDragging"] = jest.fn()
+
+			codeMapMouseEventService.onDocumentMouseUp(event)
+
+			expect(viewCubeMouseEventsService.resetIsDragging).toHaveBeenCalled()
+		})
 
 		describe("on left click", () => {
 			beforeEach(() => {
@@ -686,6 +707,44 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
+	describe("onDocumentMouseEnter", () => {
+		it("should enable orbitals rotation", () => {
+			threeViewerService["enableRotation"] = jest.fn()
+			viewCubeMouseEventsService["enableRotation"] = jest.fn()
+
+			codeMapMouseEventService.onDocumentMouseEnter()
+
+			expect(threeViewerService.enableRotation).toHaveBeenCalledWith(true)
+			expect(viewCubeMouseEventsService.enableRotation).toHaveBeenCalledWith(true)
+		})
+	})
+
+	describe("onDocumentMouseLeave", () => {
+		it("should disable orbitals rotation", () => {
+			const event = { relatedTarget: {} } as MouseEvent
+
+			threeViewerService["enableRotation"] = jest.fn()
+			viewCubeMouseEventsService["enableRotation"] = jest.fn()
+
+			codeMapMouseEventService.onDocumentMouseLeave(event)
+
+			expect(threeViewerService.enableRotation).toHaveBeenCalledWith(false)
+			expect(viewCubeMouseEventsService.enableRotation).toHaveBeenCalledWith(false)
+		})
+	})
+
+	describe("onDocumentMouseMove", () => {
+		it("should call propagateMovement", () => {
+			const event = { clientX: 10, clientY: 10 } as MouseEvent
+
+			viewCubeMouseEventsService["propagateMovement"] = jest.fn()
+
+			codeMapMouseEventService.onDocumentMouseMove(event)
+
+			expect(viewCubeMouseEventsService.propagateMovement).toHaveBeenCalled()
+		})
+	})
+
 	describe("unhoverBuilding", () => {
 		it("should clear the highlight when to is null and constantHighlight is empty", () => {
 			codeMapMouseEventService["unhoverBuilding"]()
@@ -790,10 +849,14 @@ describe("codeMapMouseEventService", () => {
 			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, {
-				showNodeName: true,
-				showNodeMetric: false
-			})
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
+				codeMapBuilding.node,
+				{
+					showNodeName: true,
+					showNodeMetric: false
+				},
+				0
+			)
 			expect(nodeHeight).toBeGreaterThan(0)
 		})
 	})

@@ -24,14 +24,14 @@ export interface CameraChangeSubscriber {
 }
 
 export class ThreeOrbitControlsService
-	implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber, LayoutAlgorithmSubscriber {
+	implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber, LayoutAlgorithmSubscriber
+{
 	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 	private static AUTO_FIT_TIMEOUT = 0
 
 	controls: OrbitControls
 	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
 
-	/* ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
@@ -40,6 +40,7 @@ export class ThreeOrbitControlsService
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
+		"ngInject"
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
@@ -84,10 +85,10 @@ export class ThreeOrbitControlsService
 		this.$timeout(() => {
 			const boundingSphere = this.getBoundingSphere()
 
-			const len = this.cameraPerspectiveLengthCalculation(boundingSphere)
+			const length = this.cameraPerspectiveLengthCalculation(boundingSphere)
 			const cameraReference = this.threeCameraService.camera
 
-			cameraReference.position.set(boundingSphere.center.x + len, len, boundingSphere.center.z + len)
+			cameraReference.position.set(boundingSphere.center.x + length, length, boundingSphere.center.z + length)
 			this.defaultCameraPosition = cameraReference.position.clone()
 			this.controls.update()
 

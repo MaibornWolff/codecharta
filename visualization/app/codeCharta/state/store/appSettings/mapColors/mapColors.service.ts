@@ -12,6 +12,7 @@ export class MapColorsService implements StoreSubscriber {
 	private static MAP_COLORS_CHANGED_EVENT = "map-colors-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

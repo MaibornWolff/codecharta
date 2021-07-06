@@ -16,8 +16,8 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 		experimentalFeaturesEnabled: false
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private codeChartaMouseEventService: CodeChartaMouseEventService) {
+		"ngInject"
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)

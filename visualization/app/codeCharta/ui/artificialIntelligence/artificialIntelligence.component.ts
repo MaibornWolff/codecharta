@@ -63,13 +63,13 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService
 	) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 	}
 

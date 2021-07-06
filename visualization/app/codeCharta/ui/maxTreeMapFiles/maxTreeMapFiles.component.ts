@@ -12,6 +12,7 @@ export class MaxTreeMapFilesController implements MaxTreeMapFilesSubscriber {
 	}
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
 		const maxTreeMapFiles = this.storeService.getState().appSettings.maxTreeMapFiles
 		this.onMaxTreeMapFilesChanged(maxTreeMapFiles)
