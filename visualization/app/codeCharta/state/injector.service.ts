@@ -1,6 +1,7 @@
 //@ts-nocheck
 
 // Plop: Append service import here
+import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
@@ -21,12 +22,9 @@ import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
-import { WhiteColorBuildingsService } from "./store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
-import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
-import { InvertColorRangeService } from "./store/appSettings/invertColorRange/invertColorRange.service"
 import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
@@ -58,6 +56,7 @@ export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private recentFilesService: RecentFilesService,
 		private colorLabelsService: ColorLabelsService,
 		private labelShowMetricValueService: LabelShowMetricValueService,
 		private labelShowNodeNameService: LabelShowNodeNameService,
@@ -79,12 +78,9 @@ export class InjectorService {
 		private mapColorsService: MapColorsService,
 		private resetCameraIfNewFileIsLoadedService: ResetCameraIfNewFileIsLoadedService,
 		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
-		private whiteColorBuildingsService: WhiteColorBuildingsService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private dynamicMarginService: DynamicMarginService,
 		private invertHeightService: InvertHeightService,
-		private invertDeltaColorsService: InvertDeltaColorsService,
-		private invertColorRangeService: InvertColorRangeService,
 		private hideFlatBuildingsService: HideFlatBuildingsService,
 		private cameraService: CameraService,
 		private scalingService: ScalingService,

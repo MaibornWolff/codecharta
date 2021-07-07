@@ -33,7 +33,7 @@ import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTrack
 import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { InvertColorRangeActions } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
@@ -121,7 +121,7 @@ export class CodeMapPreRenderService
 			(isActionOfType(actionType, AreaMetricActions) ||
 				isActionOfType(actionType, HeightMetricActions) ||
 				isActionOfType(actionType, ColorMetricActions) ||
-				isActionOfType(actionType, InvertColorRangeActions) ||
+				isActionOfType(actionType, ColorRangeActions) ||
 				isActionOfType(actionType, BlacklistActions) ||
 				isActionOfType(actionType, FocusedNodePathActions))
 		) {

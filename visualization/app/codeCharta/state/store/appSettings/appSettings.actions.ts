@@ -12,12 +12,9 @@ import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
 import { defaultScaling } from "./scaling/scaling.actions"
 import { defaultCamera } from "./camera/camera.actions"
 import { defaultHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
-import { defaultInvertColorRange } from "./invertColorRange/invertColorRange.actions"
-import { defaultInvertDeltaColors } from "./invertDeltaColors/invertDeltaColors.actions"
 import { defaultInvertHeight } from "./invertHeight/invertHeight.actions"
 import { defaultDynamicMargin } from "./dynamicMargin/dynamicMargin.actions"
 import { defaultIsWhiteBackground } from "./isWhiteBackground/isWhiteBackground.actions"
-import { defaultWhiteColorBuildings } from "./whiteColorBuildings/whiteColorBuildings.actions"
 import { defaultMapColors } from "./mapColors/mapColors.actions"
 import { defaultIsPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 import { defaultShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
@@ -64,12 +61,9 @@ export const defaultAppSettings: AppSettings = {
 	camera: defaultCamera,
 	cameraTarget: defaultCameraTarget,
 	hideFlatBuildings: defaultHideFlatBuildings,
-	invertColorRange: defaultInvertColorRange,
-	invertDeltaColors: defaultInvertDeltaColors,
 	invertHeight: defaultInvertHeight,
 	dynamicMargin: defaultDynamicMargin,
 	isWhiteBackground: defaultIsWhiteBackground,
-	whiteColorBuildings: defaultWhiteColorBuildings,
 	mapColors: defaultMapColors,
 	isPresentationMode: defaultIsPresentationMode,
 	showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,

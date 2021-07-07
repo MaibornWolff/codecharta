@@ -56,8 +56,6 @@ function initializeAppSettings(target: CustomConfig) {
 		dynamicMargin: false,
 		edgeHeight: 0,
 		hideFlatBuildings: false,
-		invertColorRange: false,
-		invertDeltaColors: false,
 		invertHeight: false,
 		isAttributeSideBarVisible: false,
 		isLoadingFile: false,
@@ -70,7 +68,6 @@ function initializeAppSettings(target: CustomConfig) {
 		searchPanelMode: undefined,
 		showOnlyBuildingsWithEdges: false,
 		sortingOrderAscending: false,
-		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
 		layoutAlgorithm: undefined,
 		maxTreeMapFiles: 0,
@@ -110,7 +107,8 @@ function initializeDynamicSettings(target: CustomConfig) {
 		colorRange: {
 			from: 0,
 			to: 0
-		}
+		},
+		recentFiles: []
 	}
 }
 

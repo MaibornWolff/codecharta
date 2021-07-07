@@ -7,14 +7,6 @@ import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSet
 import debounce from "lodash.debounce"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import {
-	InvertColorRangeService,
-	InvertColorRangeSubscriber
-} from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
-import {
-	WhiteColorBuildingsService,
-	WhiteColorBuildingsSubscriber
-} from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
@@ -30,14 +22,7 @@ export interface ColorRangeToSubscriber {
 }
 
 export class RangeSliderController
-	implements
-		ColorMetricSubscriber,
-		ColorRangeSubscriber,
-		InvertColorRangeSubscriber,
-		WhiteColorBuildingsSubscriber,
-		FilesSelectionSubscriber,
-		BlacklistSubscriber,
-		MapColorsSubscriber
+	implements ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, MapColorsSubscriber
 {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
@@ -70,8 +55,6 @@ export class RangeSliderController
 		"ngInject"
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
-		InvertColorRangeService.subscribe(this.$rootScope, this)
-		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		MapColorsService.subscribe(this.$rootScope, this)
@@ -97,7 +80,7 @@ export class RangeSliderController
 	}
 
 	forceSliderRender() {
-		this.$rootScope.$broadcast("rzSliderForceRender")
+		angular.element(() => this.$rootScope.$broadcast("rzSliderForceRender"))
 	}
 
 	onBlacklistChanged() {
@@ -124,14 +107,6 @@ export class RangeSliderController
 	onFilesSelectionChanged() {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
-	}
-
-	onInvertColorRangeChanged() {
-		this.updateSliderColors()
-	}
-
-	onWhiteColorBuildingsChanged() {
-		this.updateSliderColors()
 	}
 
 	onFromSliderChange() {

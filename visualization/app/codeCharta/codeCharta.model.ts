@@ -123,6 +123,7 @@ export interface DynamicSettings {
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
+	recentFiles: string[]
 }
 
 export interface AppSettings {
@@ -133,13 +134,10 @@ export interface AppSettings {
 	camera: Vector3
 	cameraTarget: Vector3
 	hideFlatBuildings: boolean
-	invertColorRange: boolean
-	invertDeltaColors: boolean
 	invertHeight: boolean
 	dynamicMargin: boolean
 	isWhiteBackground: boolean
 	mapColors: MapColors
-	whiteColorBuildings: boolean
 	isPresentationMode: boolean
 	showOnlyBuildingsWithEdges: boolean
 	resetCameraIfNewFileIsLoaded: boolean

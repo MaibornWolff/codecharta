@@ -743,6 +743,13 @@ describe("codeMapMouseEventService", () => {
 
 			expect(viewCubeMouseEventsService.propagateMovement).toHaveBeenCalled()
 		})
+
+		it("should call updateHovering when moving the mouse", () => {
+			const event = { clientX: 10, clientY: 10 } as MouseEvent
+			codeMapMouseEventService.updateHovering = jest.fn()
+			codeMapMouseEventService.onDocumentMouseMove(event)
+			expect(codeMapMouseEventService.updateHovering).toHaveBeenCalled()
+		})
 	})
 
 	describe("unhoverBuilding", () => {

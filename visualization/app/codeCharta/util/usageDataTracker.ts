@@ -9,7 +9,6 @@ import { AreaMetricActions } from "../state/store/dynamicSettings/areaMetric/are
 import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklist.actions"
-import { InvertColorRangeActions } from "../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import md5 from "md5"
 import { APIVersions } from "../codeCharta.api.model"
@@ -17,6 +16,7 @@ import { getAsApiVersion } from "./fileValidator"
 import { hierarchy } from "d3-hierarchy"
 import { getMedian, pushSorted } from "./nodeDecorator"
 import { RangeSliderController } from "../ui/rangeSlider/rangeSlider.component"
+import { ColorRangeActions } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 interface MetaDataTrackingItem {
 	mapId: string
@@ -275,7 +275,7 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 		(!isActionOfType(actionType, AreaMetricActions) &&
 			!isActionOfType(actionType, HeightMetricActions) &&
 			!isActionOfType(actionType, ColorMetricActions) &&
-			!isActionOfType(actionType, InvertColorRangeActions) &&
+			!isActionOfType(actionType, ColorRangeActions) &&
 			!isActionOfType(actionType, BlacklistActions) &&
 			!isActionOfType(actionType, FocusedNodePathActions) &&
 			![RangeSliderController.COLOR_RANGE_FROM_UPDATED, RangeSliderController.COLOR_RANGE_TO_UPDATED].includes(actionType))
@@ -365,8 +365,7 @@ function isSettingChangedEvent(actionType: string) {
 		isActionOfType(actionType, AreaMetricActions) ||
 		isActionOfType(actionType, HeightMetricActions) ||
 		isActionOfType(actionType, ColorMetricActions) ||
-		isActionOfType(actionType, InvertColorRangeActions) ||
-		[RangeSliderController.COLOR_RANGE_FROM_UPDATED, RangeSliderController.COLOR_RANGE_TO_UPDATED].includes(actionType) ||
+		isActionOfType(actionType, ColorRangeActions) ||
 		actionType === BlacklistActions.SET_BLACKLIST
 	)
 }

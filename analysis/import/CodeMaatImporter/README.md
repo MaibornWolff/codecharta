@@ -10,7 +10,7 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
 
 2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat)
 
-    `maat -c git -l project.log -a coupling > edges.csv`
+    `maat git -l project.log -a coupling > edges.csv`
 
 3. Convert csv file to cc.json format with CodeMaatImporter
 

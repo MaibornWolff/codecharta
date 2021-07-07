@@ -1,6 +1,7 @@
 import { RecursivePartial, DynamicSettings, CCAction, ColorRange } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
+import { splitRecentFilesAction } from "./recentFiles/recentFiles.splitter"
 import { splitSortingOptionAction } from "./sortingOption/sortingOption.splitter"
 import { splitEdgeMetricAction } from "./edgeMetric/edgeMetric.splitter"
 import { splitColorRangeAction } from "./colorRange/colorRange.splitter"
@@ -17,6 +18,10 @@ export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSet
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.recentFiles !== undefined) {
+		actions.push(splitRecentFilesAction(payload.recentFiles))
+	}
+
 	if (payload.sortingOption !== undefined) {
 		actions.push(splitSortingOptionAction(payload.sortingOption))
 	}
