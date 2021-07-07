@@ -122,6 +122,7 @@ export interface DynamicSettings {
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
+	recentFiles: string[]
 }
 
 export interface AppSettings {

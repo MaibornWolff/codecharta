@@ -107,7 +107,8 @@ function initializeDynamicSettings(target: CustomConfig) {
 		colorRange: {
 			from: 0,
 			to: 0
-		}
+		},
+		recentFiles: []
 	}
 }
 

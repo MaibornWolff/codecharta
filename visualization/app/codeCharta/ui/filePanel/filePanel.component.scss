@@ -15,6 +15,14 @@ file-panel-component {
 		margin-left: 10px;
 	}
 
+	.small-action-button.transparent {
+		.md-fab.md-button.md-ink-ripple {
+			&:hover {
+				background-color: transparent !important;
+			}
+		}
+	}
+
 	.state-selector-button {
 		&.mode-selector {
 			height: 24px;
