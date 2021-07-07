@@ -27,8 +27,8 @@ class CSVImporter : Callable<Void> {
     @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
 
-    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
-    private var compress = false
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    private var compress = true
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
@@ -44,7 +44,8 @@ class CSVImporter : Callable<Void> {
         val project = csvProjectBuilder.build()
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath) else ProjectSerializer.serializeProject(project, writer())
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath)
+        else ProjectSerializer.serializeProject(project, writer())
 
         return null
     }

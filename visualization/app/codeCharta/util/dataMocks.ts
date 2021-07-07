@@ -642,31 +642,31 @@ export const TEST_FILE_CONTENT: ExportCCFile = {
 	nodes: [VALID_NODE]
 }
 
-export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
-	fileName: "noFileName",
+export const TEST_FILE_CONTENT_INVALID_MAJOR_API: ExportCCFile = {
+	fileChecksum: "invalid-md5-sample",
 	projectName: "Invalid Sample Map",
 	apiVersion: "2.0",
 	nodes: [VALID_NODE]
 }
 
-export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
-	fileName: "noFileName",
-	fileChecksum: "invalid-md5-sample",
+export const TEST_FILE_CONTENT_INVALID_MINOR_API: ExportCCFile = {
 	projectName: "Valid Sample Map Minor API High",
+	fileChecksum: "invalid-md5-sample",
 	apiVersion: "1.3",
 	nodes: [VALID_NODE]
 }
 
-export const TEST_FILE_CONTENT_INVALID_API = {
-	fileName: "noFileName",
+export const TEST_FILE_CONTENT_INVALID_API: ExportCCFile = {
 	projectName: "Invalid Sample Map",
+	fileChecksum: "invalid-md5-sample",
 	apiVersion: "2.a",
 	nodes: [VALID_NODE]
 }
 
-export const TEST_FILE_CONTENT_NO_API = {
-	fileName: "noFileName",
+export const TEST_FILE_CONTENT_NO_API: ExportCCFile = {
 	projectName: "Invalid Sample Map",
+	fileChecksum: "invalid-md5-sample",
+	apiVersion: null,
 	nodes: [VALID_NODE]
 }
 
@@ -1391,6 +1391,154 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	}
 }
 
+export const TEST_DELTA_MAP_C: CCFile = {
+	fileMeta: {
+		fileName: "fileC",
+		fileChecksum: "md5-delta-fileB",
+		projectName: "Sample Project",
+		apiVersion: packageJson.codecharta.apiVersion,
+		exportedFileSize: 300000
+	},
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "big leaf",
+				type: NodeType.FILE,
+				attributes: { rloc: 20, functions: 10, mcc: 1 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			},
+			{
+				name: "additional leaf",
+				type: NodeType.FILE,
+				attributes: { rloc: 10, functions: 11, mcc: 5 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			},
+			{
+				name: "Parent Leaf",
+				type: NodeType.FOLDER,
+				attributes: {},
+				isExcluded: false,
+				isFlattened: false,
+				children: [
+					{
+						name: "small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 30, functions: 100, mcc: 100, more: 20 },
+						isExcluded: false,
+						isFlattened: false
+					},
+					{
+						name: "other small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 70, functions: 1000 },
+						isExcluded: false,
+						isFlattened: false
+					},
+					{
+						name: "big leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 200, functions: 50, mcc: 30 },
+						link: "https://www.google.de",
+						isExcluded: false,
+						isFlattened: false
+					}
+				]
+			}
+		]
+	},
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
+	}
+}
+
+export const TEST_DELTA_MAP_D: CCFile = {
+	fileMeta: {
+		fileName: "fileD",
+		fileChecksum: "md5-delta-fileB",
+		projectName: "Sample Project",
+		apiVersion: packageJson.codecharta.apiVersion,
+		exportedFileSize: 300000
+	},
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "D file 1",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, functions: 12, mcc: 34 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			},
+			{
+				name: "D file 2",
+				type: NodeType.FILE,
+				attributes: { rloc: 230, functions: 14, mcc: 9 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			},
+			{
+				name: "D folder 1",
+				type: NodeType.FOLDER,
+				attributes: {},
+				isExcluded: false,
+				isFlattened: false,
+				children: [
+					{
+						name: "D file 1.1",
+						type: NodeType.FILE,
+						attributes: { rloc: 400, functions: 30, mcc: 20, more: 20 },
+						isExcluded: false,
+						isFlattened: false
+					},
+					{
+						name: "D file 1.2",
+						type: NodeType.FILE,
+						attributes: { rloc: 40, functions: 3 },
+						isExcluded: false,
+						isFlattened: false
+					},
+					{
+						name: "D file 1.3",
+						type: NodeType.FILE,
+						attributes: { rloc: 200, functions: 20, mcc: 30 },
+						link: "https://www.google.de",
+						isExcluded: false,
+						isFlattened: false
+					}
+				]
+			}
+		]
+	},
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
+	}
+}
+
 export const TEST_FILE_DATA_DOWNLOADED = {
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
@@ -1519,7 +1667,8 @@ export const STATE: State = {
 			from: 19,
 			to: 67
 		},
-		sortingOption: SortingOption.NAME
+		sortingOption: SortingOption.NAME,
+		recentFiles: ["fileA", "fileB"]
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -1648,7 +1797,8 @@ export const DEFAULT_STATE: State = {
 		},
 		searchPattern: "",
 		searchedNodePaths: new Set(),
-		sortingOption: SortingOption.NAME
+		sortingOption: SortingOption.NAME,
+		recentFiles: []
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
