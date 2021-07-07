@@ -11,13 +11,16 @@
 			label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
 		>
 		</cc-store-color-picker>
-		<cc-store-color-picker map-color-for="negative" label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite">
+		<cc-store-color-picker
+			map-color-for="negative"
+			label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to {{ $ctrl._viewModel.maxMetricValue | number: 0 }}"
+		>
 		</cc-store-color-picker>
 	</div>
 
 	<div ng-if="$ctrl._viewModel.isDeltaState">
-		<cc-store-color-picker map-color-for="positiveDelta" label="+&Delta;"> </cc-store-color-picker>
-		<cc-store-color-picker map-color-for="negativeDelta" label="-&Delta;"> </cc-store-color-picker>
+		<cc-store-color-picker map-color-for="positiveDelta" label="+&Delta; positive delta"> </cc-store-color-picker>
+		<cc-store-color-picker map-color-for="negativeDelta" label="&ndash;&Delta; negative delta"> </cc-store-color-picker>
 	</div>
 
 	<cc-store-color-picker map-color-for="selected" label="selected"> </cc-store-color-picker>
