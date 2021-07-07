@@ -18,7 +18,6 @@ describe("StoreService", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		rebuildService()
 		withMockedEventMethods($rootScope)
 	})
 
@@ -26,16 +25,11 @@ describe("StoreService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-	}
-
-	function rebuildService() {
-		storeService = new StoreService($rootScope)
+		storeService = getService<StoreService>("storeService")
 	}
 
 	describe("constructor", () => {
 		it("should initialize the store", () => {
-			rebuildService()
-
 			expect(storeService["store"]).not.toBeNull()
 		})
 	})
