@@ -21,7 +21,7 @@ This parser analyzes code regardless of the programming language used to generat
 | `-h, --help`                           | displays help                                                                                      |
 | `-m, --metrics[=<metrics>...]`         | metrics to be computed (select all if not specified)                                               |
 | `-o, --outputFile=<outputFile>`        | output File (or empty for stdout)                                                                  |
-| `-c`                                   | compresses outputfile to .gz                                                                       |
+| `-nc, --not-compressed`                | uncompresses outputfile to json format, if format of File is gzip                                  |
 | `-p, --projectName=<projectName>`      | project name                                                                                       |
 | `-v, --verbose`                        | verbose mode                                                                                       |
 
