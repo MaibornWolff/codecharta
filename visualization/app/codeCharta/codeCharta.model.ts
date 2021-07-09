@@ -285,6 +285,7 @@ export interface Scenario {
 	color: {
 		colorMetric: string
 		colorRange: ColorRange
+		mapColors: MapColors
 	}
 	camera: {
 		camera: Vector3
