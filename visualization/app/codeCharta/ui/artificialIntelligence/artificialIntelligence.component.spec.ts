@@ -1,4 +1,4 @@
-import "./ArtificialIntelligence.module"
+import "./artificialIntelligence.module"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
