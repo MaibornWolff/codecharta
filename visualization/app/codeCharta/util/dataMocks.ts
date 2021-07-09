@@ -79,6 +79,50 @@ export const VALID_NODE: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_JAVA: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "main",
+			path: "/root/src/main",
+			type: NodeType.FOLDER,
+			attributes: {},
+			children: [
+				{
+					name: "file1.java",
+					path: "/root/src/main/file1.java",
+					type: NodeType.FILE,
+					attributes: { rloc: 70, functions: 1000, mcc: 10 }
+				},
+				{
+					name: "file2.java",
+					path: "/root/src/main/file2.java",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 }
+				}
+			]
+		},
+		{
+			name: "test",
+			path: "/root/src/test",
+			type: NodeType.FOLDER,
+			attributes: {},
+			children: [
+				{
+					name: "otherFile.java",
+					path: "/root/src/test/otherFile.java",
+					type: NodeType.FILE,
+					attributes: { rloc: 100, functions: 10, mcc: 1 }
+				}
+			]
+		}
+	]
+}
+
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 	name: "root",
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
@@ -681,6 +725,19 @@ export const FILE_META: FileMeta = {
 export const TEST_FILE_DATA: CCFile = {
 	fileMeta: FILE_META,
 	map: VALID_NODE,
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
+	}
+}
+
+export const TEST_FILE_DATA_JAVA: CCFile = {
+	fileMeta: FILE_META,
+	map: VALID_NODE_JAVA,
 	settings: {
 		fileSettings: {
 			attributeTypes: { nodes: {}, edges: {} },
@@ -1674,6 +1731,13 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 export const FILE_STATES: FileState[] = [
 	{
 		file: TEST_FILE_DATA,
+		selectedAs: FileSelectionState.Single
+	}
+]
+
+export const FILE_STATES_JAVA: FileState[] = [
+	{
+		file: TEST_FILE_DATA_JAVA,
 		selectedAs: FileSelectionState.Single
 	}
 ]
