@@ -13,21 +13,21 @@ CCSH=../../analysis/build/install/codecharta-analysis/bin/ccsh
 git log --numstat --raw --topo-order --reverse -m > git.log
 git ls-files > file-name-list.txt
 
-$CCSH scmlogparserv2 git.log -o codecharta_git.cc.json -n file-name-list.txt
+$CCSH scmlogparserv2 git.log -o codecharta_git.cc.json -n file-name-list.txt -nc
 
 # Map for visualization
 $CCSH modify --set-root root/visualization -o codecharta_git_mod.cc.json codecharta_git.cc.json
 
-$CCSH sonarimport -o codecharta_sonar.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_visualization
+$CCSH sonarimport -nc -o codecharta_sonar.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_visualization
 $CCSH modify --set-root root/maibornwolff-gmbh_codecharta_visualization -o codecharta_sonar_mod.cc.json codecharta_sonar.cc.json
 
-$CCSH merge -o ../visualization/app/codecharta.cc.json codecharta_sonar_mod.cc.json codecharta_git_mod.cc.json
+$CCSH merge -o ../visualization/app/codecharta.cc.json codecharta_sonar_mod.cc.json codecharta_git_mod.cc.json -nc
 
 # Map for analysis
-$CCSH sonarimport -o codecharta_sonar_analysis.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_analysis
+$CCSH sonarimport -nc -o codecharta_sonar_analysis.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_analysis 
 $CCSH modify --set-root root/maibornwolff-gmbh_codecharta_analysis -o codecharta_sonar_mod.cc.json codecharta_sonar_analysis.cc.json
 $CCSH modify --set-root root/analysis -o codecharta_git_mod.cc.json codecharta_git.cc.json
-$CCSH merge -o ../visualization/app/codecharta_analysis.cc.json codecharta_sonar_mod.cc.json codecharta_git_mod.cc.json
+$CCSH merge -o ../visualization/app/codecharta_analysis.cc.json codecharta_sonar_mod.cc.json codecharta_git_mod.cc.json -nc
 
 
 cd ../..
