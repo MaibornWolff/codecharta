@@ -1083,57 +1083,6 @@ export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 	}
 ]
 
-export const SCENARIO: RecursivePartial<Scenario> = {
-	name: "Scenario1",
-	area: {
-		areaMetric: "rloc",
-		margin: 48
-	},
-	height: {
-		heightMetric: "mcc",
-		heightSlider: new Vector3(1, 1.8, 1),
-		labelSlider: 31
-	},
-	color: {
-		colorMetric: "mcc",
-		colorRange: {
-			from: 19,
-			to: 67
-		}
-	},
-	edge: {
-		edgeMetric: "pairingRate",
-		edgePreview: 5,
-		edgeHeight: 4
-	},
-	camera: {
-		camera: new Vector3(0, 300, 1000),
-		cameraTarget: new Vector3(1, 1, 1)
-	}
-}
-
-export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
-	dynamicSettings: {
-		areaMetric: "rloc",
-		heightMetric: "mcc",
-		colorMetric: "mcc",
-		edgeMetric: "pairingRate",
-		margin: 48,
-		colorRange: {
-			from: 19,
-			to: 67
-		}
-	},
-	appSettings: {
-		amountOfTopLabels: 31,
-		amountOfEdgePreviews: 5,
-		edgeHeight: 4,
-		scaling: new Vector3(1, 1.8, 1),
-		camera: new Vector3(0, 300, 1000),
-		cameraTarget: new Vector3(1, 1, 1)
-	}
-}
-
 export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 	name: "Scenario2",
 	height: {
@@ -1752,7 +1701,7 @@ export const STATE: State = {
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",
-			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
+			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
 		},
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
@@ -1864,6 +1813,59 @@ export const DEFAULT_STATE: State = {
 	}
 }
 
+export const SCENARIO: RecursivePartial<Scenario> = {
+	name: "Scenario1",
+	area: {
+		areaMetric: "rloc",
+		margin: 48
+	},
+	height: {
+		heightMetric: "mcc",
+		heightSlider: new Vector3(1, 1.8, 1),
+		labelSlider: 31
+	},
+	color: {
+		colorMetric: "mcc",
+		colorRange: {
+			from: 19,
+			to: 67
+		},
+		mapColors: DEFAULT_STATE.appSettings.mapColors
+	},
+	edge: {
+		edgeMetric: "pairingRate",
+		edgePreview: 5,
+		edgeHeight: 4
+	},
+	camera: {
+		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(1, 1, 1)
+	}
+}
+
+export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
+	dynamicSettings: {
+		areaMetric: "rloc",
+		heightMetric: "mcc",
+		colorMetric: "mcc",
+		edgeMetric: "pairingRate",
+		margin: 48,
+		colorRange: {
+			from: 19,
+			to: 67
+		}
+	},
+	appSettings: {
+		amountOfTopLabels: 31,
+		amountOfEdgePreviews: 5,
+		edgeHeight: 4,
+		scaling: new Vector3(1, 1.8, 1),
+		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(1, 1, 1),
+		mapColors: DEFAULT_STATE.appSettings.mapColors
+	}
+}
+
 export const TEST_NODE_ROOT: Node = {
 	name: "root",
 	id: 0,
@@ -1915,7 +1917,7 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.COLOR_METRIC,
 		metricName: "mcc",
-		savedValues: { from: 19, to: 67 },
+		savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},
