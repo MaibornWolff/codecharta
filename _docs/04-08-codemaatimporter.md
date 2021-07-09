@@ -7,12 +7,12 @@ The Codemaatimporter, generates visualisation data from CodeMaat Temporal Coupli
 
 ## Parameter
 
-| Parameter                       | description                          |
-| ------------------------------- | ------------------------------------ |
-| `FILE`                          | codemaat coupling csv files          |
-| `-h, --help`                    | displays help                        |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)    |
-| `-c`                            | compresses outputfile to gzip format |
+| Parameter                       | description                                                       |
+| ------------------------------- | ----------------------------------------------------------------- |
+| `FILE`                          | codemaat coupling csv files                                       |
+| `-h, --help`                    | displays help                                                     |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                 |
+| `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
 
 ## Usage
 

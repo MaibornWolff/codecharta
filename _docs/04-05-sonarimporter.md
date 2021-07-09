@@ -7,16 +7,16 @@ The Sonar-Importer generates visualisation data from SonarQube data through an A
 
 ## Parameter and Usage
 
-| Parameter                       | description                                        |
-| ------------------------------- | -------------------------------------------------- |
-| `URL`                           | url of sonarqube server                            |
-| `PROJECT_ID`                    | sonarqube project id                               |
-| `--merge-modules`               | merges modules in multi-module projects            |
-| `-h, --help`                    | displays help                                      |
-| `-m, --metrics=<metrics>`       | comma-sepetated list of metrics to import          |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                  |
-| `-c`                            | compresses outputfile to gzip format               |
-| `-u, --user=<user>`             | user token for connecting to remote sonar instance |
+| Parameter                       | description                                                       |
+| ------------------------------- | ----------------------------------------------------------------- |
+| `URL`                           | url of sonarqube server                                           |
+| `PROJECT_ID`                    | sonarqube project id                                              |
+| `--merge-modules`               | merges modules in multi-module projects                           |
+| `-h, --help`                    | displays help                                                     |
+| `-m, --metrics=<metrics>`       | comma-sepetated list of metrics to import                         |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                 |
+| `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
+| `-u, --user=<user>`             | user token for connecting to remote sonar instance                |
 
 The command
 

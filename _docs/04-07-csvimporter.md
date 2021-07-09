@@ -20,7 +20,7 @@ _Conventions for csv input:_
 | `-d, --delimeter=<csvDelimeter>`   | delimeter in csv file                |
 | `-h, --help`                       | displays help                        |
 | `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)    |
-| `-c`                               | compresses outputfile to gzip format |
+| `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
 
 ## Usage
 
