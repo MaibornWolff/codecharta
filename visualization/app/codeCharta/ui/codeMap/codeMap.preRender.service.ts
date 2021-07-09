@@ -50,6 +50,7 @@ export class CodeMapPreRenderService
 	private unifiedFileMeta: FileMeta
 
 	private readonly debounceRendering: () => void
+	private readonly debounceDecorate: () => void
 	private readonly debounceTracking: (actionType: string, payload?: unknown) => void
 	private DEBOUNCE_TIME = 0
 
@@ -69,6 +70,13 @@ export class CodeMapPreRenderService
 
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
+		}, this.DEBOUNCE_TIME)
+
+		this.debounceDecorate = debounce(() => {
+			this.decorateIfPossible()
+			if (this.allNecessaryRenderDataAvailable()) {
+				this.renderAndNotify()
+			}
 		}, this.DEBOUNCE_TIME)
 
 		this.debounceTracking = debounce(() => {
@@ -133,10 +141,7 @@ export class CodeMapPreRenderService
 	onMetricDataChanged() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
-			this.decorateIfPossible()
-			if (this.allNecessaryRenderDataAvailable()) {
-				this.debounceRendering()
-			}
+			this.debounceDecorate()
 		}
 	}
 

@@ -206,26 +206,35 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("onMetricDataChanged", () => {
-		it("should decorate and set a new render map", () => {
+		it("should decorate and set a new render map", done => {
 			codeMapPreRenderService.onMetricDataChanged()
 
-			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
+			setTimeout(() => {
+				expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
 		})
 
-		it("should update the isBlacklisted attribute on each node", () => {
+		it("should update the isBlacklisted attribute on each node", done => {
 			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
 
 			codeMapPreRenderService.onMetricDataChanged()
 
-			expect(allNodesToBeExcluded()).toBeTruthy()
+			setTimeout(() => {
+				expect(allNodesToBeExcluded()).toBeTruthy()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
 		})
 
-		it("should change map to multiple mode and check that no id exists twice", () => {
+		it("should change map to multiple mode and check that no id exists twice", done => {
 			storeService.dispatch(setMultiple(getCCFiles(storeService.getState().files)))
 
 			codeMapPreRenderService.onMetricDataChanged()
 
-			expect(isIdUnique()).toBeTruthy()
+			setTimeout(() => {
+				expect(isIdUnique()).toBeTruthy()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
 		})
 
 		it("should call DeltaGenerator with the right parameters", () => {
