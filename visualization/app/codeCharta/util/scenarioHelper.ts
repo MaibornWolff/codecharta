@@ -98,7 +98,8 @@ export class ScenarioHelper {
 		if (dynamicSettings.colorMetric !== undefined) {
 			scenario.color = {
 				colorMetric: dynamicSettings.colorMetric,
-				colorRange: dynamicSettings.colorRange
+				colorRange: dynamicSettings.colorRange,
+				mapColors: appSettings.mapColors
 			}
 		}
 		if (dynamicSettings.edgeMetric !== undefined) {
@@ -171,7 +172,8 @@ export class ScenarioHelper {
 				case ScenarioMetricType.COLOR_METRIC: {
 					newScenario.color = {
 						colorMetric: attribute.metricName,
-						colorRange: attribute.savedValues
+						colorRange: attribute.savedValues["colorRange"],
+						mapColors: attribute.savedValues["mapColors"]
 					}
 					break
 				}
@@ -218,6 +220,7 @@ export class ScenarioHelper {
 			if (scenario.color) {
 				partialDynamicSettings.colorMetric = scenario.color.colorMetric
 				partialDynamicSettings.colorRange = scenario.color.colorRange
+				partialAppSettings.mapColors = scenario.color.mapColors
 			}
 			if (scenario.edge) {
 				partialDynamicSettings.edgeMetric = scenario.edge.edgeMetric
