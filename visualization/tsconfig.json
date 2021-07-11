@@ -1,6 +1,8 @@
 {
 	"compileOnSave": true,
 	"compilerOptions": {
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 		"allowJs": false,
 		"allowSyntheticDefaultImports": true,
 		"alwaysStrict": true,
