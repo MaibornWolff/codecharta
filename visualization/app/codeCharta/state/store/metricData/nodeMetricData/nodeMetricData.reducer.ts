@@ -8,11 +8,16 @@ import { NodeMetricDataService } from "./nodeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
 
 export function nodeMetricData(state = setNodeMetricData().payload, action: NodeMetricDataAction) {
+	let newMetricData
 	switch (action.type) {
 		case NodeMetricDataActions.SET_NODE_METRIC_DATA:
 			return action.payload
 		case NodeMetricDataActions.CALCULATE_NEW_NODE_METRIC_DATA:
-			return setNewMetricData(action.payload.fileStates, action.payload.blacklist)
+			newMetricData = setNewMetricData(action.payload.fileStates, action.payload.blacklist)
+			if (newMetricData.length !== 1) {
+				return newMetricData
+			}
+			return state
 		default:
 			return state
 	}
