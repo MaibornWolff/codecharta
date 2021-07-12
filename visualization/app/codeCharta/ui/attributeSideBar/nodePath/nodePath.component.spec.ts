@@ -1,5 +1,4 @@
 import angular from "angular"
-import "angular-mocks"
 
 import "../attributeSideBar.module"
 import { nodePathComponent } from "./nodePath.component"
@@ -9,8 +8,10 @@ describe("nodePathComponent", () => {
 	let $rootScope
 
 	beforeEach(() => {
+		// @ts-ignore
 		angular.mock.module("app.codeCharta.ui.attributeSideBar")
 
+		// @ts-ignore
 		angular.mock.inject(function (_$compile_, _$rootScope_) {
 			$compile = _$compile_
 			$rootScope = _$rootScope_

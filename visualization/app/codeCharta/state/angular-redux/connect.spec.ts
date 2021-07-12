@@ -29,4 +29,15 @@ describe("connect", () => {
 		connected.setSortingOrderAscending(true)
 		expect(Store.store.dispatch).toHaveBeenCalledTimes(1)
 	})
+
+	it("should unsubscribe to store on destroy", () => {
+		const mockedUnsubscribe = jest.fn()
+		Store.store.subscribe = jest.fn(() => mockedUnsubscribe)
+		const Connected = connect(() => ({}))
+		const connected = new (class extends Connected {})()
+
+		connected.ngOnDestroy()
+
+		expect(mockedUnsubscribe).toHaveBeenCalled()
+	})
 })

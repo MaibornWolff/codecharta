@@ -1,11 +1,11 @@
 import angular, { IAngularStatic } from "angular"
-import "angular-mocks"
 import { Store } from "../app/codeCharta/state/store/store"
 
 export const NGMock: IAngularStatic = angular
 export const NG = angular
 
 export function instantiateModule(id: string) {
+	// @ts-ignore
 	NGMock.mock.module(id)
 }
 

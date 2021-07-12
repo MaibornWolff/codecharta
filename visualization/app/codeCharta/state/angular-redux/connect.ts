@@ -22,7 +22,7 @@ type ActionCreator = (...args: unknown[]) => Action
 export const connect = <MappedState extends Record<string, unknown>, MappedDispatch extends Record<string, ActionCreator>>(
 	mapStateToThis?: (state: CcState) => MappedState,
 	mapDispatchToThis?: MappedDispatch
-): Constructor<ReturnType<typeof mapStateToThis> & MappedDispatch> => {
+): Constructor<ReturnType<typeof mapStateToThis> & MappedDispatch & { ngOnDestroy: () => void }> => {
 	const setStateToThis = (that: This, keys: string[], mappedState: ReturnType<typeof mapStateToThis>) => {
 		// always assigning no matter if changed should be fine as Angular has its own update mechanism anyway
 		for (const key of keys) that[key] = mappedState[key]
