@@ -1,12 +1,14 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { BlacklistItem } from "../../../../codeCharta.model"
+import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import { getMergedBlacklist } from "./blacklist.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { getVisibleFiles, isPartialState } from "../../../../model/files/files.helper"
+import { getVisibleFiles, getVisibleFileStates, isPartialState } from "../../../../model/files/files.helper"
 import { FileState } from "../../../../model/files/files"
+import { hierarchy } from "d3-hierarchy"
+import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
 
 export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
@@ -29,6 +31,35 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 
 	onFilesSelectionChanged(files: FileState[]) {
 		this.merge(files)
+	}
+
+	isEmptyMap() {
+		const fileStates = getVisibleFileStates(this.storeService.getState().files)
+		for (const { file } of fileStates) {
+			if (!this.isEmpty(file)) {
+				return false
+			}
+		}
+		return true
+	}
+
+	private isEmpty(file) {
+		const blacklist = this.storeService.getState().fileSettings.blacklist
+
+		let nodes = 0
+		for (const node of hierarchy(file.map)) {
+			if (this.isIncludedNode(node, blacklist)) {
+				nodes = nodes + 1
+				if (nodes > 1) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+
+	private isIncludedNode(node, blacklist: Array<BlacklistItem>) {
+		return isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)
 	}
 
 	private merge(files: FileState[]) {

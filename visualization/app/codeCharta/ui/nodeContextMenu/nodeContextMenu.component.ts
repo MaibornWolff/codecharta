@@ -11,6 +11,8 @@ import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from ".
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { DialogService } from "../dialog/dialog.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export enum ClickType {
 	RightClick = 2
@@ -52,7 +54,9 @@ export class NodeContextMenuController
 		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
-		private threeSceneService: ThreeSceneService
+		private threeSceneService: ThreeSceneService,
+		private dialogService: DialogService,
+		private blacklistService: BlacklistService
 	) {
 		"ngInject"
 		MapColorsService.subscribe(this.$rootScope, this)
@@ -157,15 +161,19 @@ export class NodeContextMenuController
 	}
 
 	excludeNode() {
-		const codeMapNode = this._viewModel.codeMapNode
-		this.storeService.dispatch(
-			addBlacklistItem({
-				path: codeMapNode.path,
-				type: BlacklistType.exclude,
-				nodeType: codeMapNode.type,
-				attributes: codeMapNode.attributes
-			})
-		)
+		if (this.blacklistService.isEmptyMap()) {
+			this.dialogService.showErrorDialog("Excluding all buildings is not possible.", "Blacklist Error")
+		} else {
+			const codeMapNode = this._viewModel.codeMapNode
+			this.storeService.dispatch(
+				addBlacklistItem({
+					path: codeMapNode.path,
+					type: BlacklistType.exclude,
+					nodeType: codeMapNode.type,
+					attributes: codeMapNode.attributes
+				})
+			)
+		}
 	}
 
 	addNodeToConstantHighlight() {
