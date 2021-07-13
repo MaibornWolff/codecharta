@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.76.0] - 2021-07-13
+
 ### Added 🚀
 
 -   Custom metric scenarios which include the 'Color-Metric' (rloc) will now also save any changes made to the color scheme. ([#1557](https://github.com/maibornwolff/codecharta/issues/1557))
