@@ -409,6 +409,15 @@ describe("nodeContextMenuController", () => {
 
 			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
 		})
+
+		it("should display error dialog when no files are left", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => true)
+			dialogService.showErrorDialog = jest.fn()
+
+			nodeContextMenuController.excludeNode()
+
+			expect(dialogService.showErrorDialog).toBeCalled()
+		})
 	})
 
 	describe("nodeIsFolder", () => {

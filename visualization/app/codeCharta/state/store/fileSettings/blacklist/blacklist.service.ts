@@ -43,6 +43,10 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 		return true
 	}
 
+	isIncludedNode(node, blacklist: Array<BlacklistItem>) {
+		return isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)
+	}
+
 	private isEmptyFile(file, blacklistItems: BlacklistItem[]) {
 		const blacklist = [...this.storeService.getState().fileSettings.blacklist]
 		for (const blacklistItem of blacklistItems) {
@@ -55,10 +59,6 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 			}
 		}
 		return true
-	}
-
-	private isIncludedNode(node, blacklist: Array<BlacklistItem>) {
-		return isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)
 	}
 
 	private merge(files: FileState[]) {
