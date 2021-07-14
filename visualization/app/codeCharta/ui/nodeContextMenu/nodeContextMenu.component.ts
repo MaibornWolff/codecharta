@@ -13,6 +13,7 @@ import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { DialogService } from "../dialog/dialog.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { ERROR_MESSAGES } from "../../util/fileValidator"
 
 export enum ClickType {
 	RightClick = 2
@@ -170,7 +171,7 @@ export class NodeContextMenuController
 		}
 
 		if (this.blacklistService.resultsInEmptyMap([blacklistItem])) {
-			this.dialogService.showErrorDialog("Excluding all buildings is not possible.", "Blacklist Error")
+			this.dialogService.showErrorDialog(ERROR_MESSAGES.blacklistError, "Blacklist Error")
 		} else {
 			this.storeService.dispatch(addBlacklistItem(blacklistItem))
 		}

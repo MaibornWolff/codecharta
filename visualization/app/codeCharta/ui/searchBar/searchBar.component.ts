@@ -8,6 +8,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { DialogService } from "../dialog/dialog.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { ERROR_MESSAGES } from "../../util/fileValidator"
 
 export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -53,7 +54,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		const blacklistItems: BlacklistItem[] = this.parseValidBlacklistItems(blacklistType)
 
 		if (blacklistType === BlacklistType.exclude && this.blacklistService.resultsInEmptyMap(blacklistItems)) {
-			this.dialogService.showErrorDialog("Excluding all buildings is not possible.", "Blacklist Error")
+			this.dialogService.showErrorDialog(ERROR_MESSAGES.blacklistError, "Blacklist Error")
 		} else {
 			for (const blackItem of blacklistItems) {
 				this.storeService.dispatch(addBlacklistItem(blackItem))
