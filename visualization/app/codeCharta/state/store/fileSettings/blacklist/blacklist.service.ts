@@ -33,26 +33,25 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 		this.merge(files)
 	}
 
-	isEmptyMap() {
+	resultsInEmptyMap(blacklistItems: BlacklistItem[]) {
 		const fileStates = getVisibleFileStates(this.storeService.getState().files)
 		for (const { file } of fileStates) {
-			if (!this.isEmpty(file)) {
+			if (!this.isEmptyFile(file, blacklistItems)) {
 				return false
 			}
 		}
 		return true
 	}
 
-	private isEmpty(file) {
-		const blacklist = this.storeService.getState().fileSettings.blacklist
+	private isEmptyFile(file, blacklistItems: BlacklistItem[]) {
+		const blacklist = [...this.storeService.getState().fileSettings.blacklist]
+		for (const blacklistItem of blacklistItems) {
+			blacklist.push(blacklistItem)
+		}
 
-		let nodes = 0
 		for (const node of hierarchy(file.map)) {
 			if (this.isIncludedNode(node, blacklist)) {
-				nodes = nodes + 1
-				if (nodes > 1) {
-					return false
-				}
+				return false
 			}
 		}
 		return true

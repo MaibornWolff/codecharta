@@ -161,18 +161,18 @@ export class NodeContextMenuController
 	}
 
 	excludeNode() {
-		if (this.blacklistService.isEmptyMap()) {
+		const codeMapNode = this._viewModel.codeMapNode
+		const blacklistItem: BlacklistItem = {
+			path: codeMapNode.path,
+			type: BlacklistType.exclude,
+			nodeType: codeMapNode.type,
+			attributes: codeMapNode.attributes
+		}
+
+		if (this.blacklistService.resultsInEmptyMap([blacklistItem])) {
 			this.dialogService.showErrorDialog("Excluding all buildings is not possible.", "Blacklist Error")
 		} else {
-			const codeMapNode = this._viewModel.codeMapNode
-			this.storeService.dispatch(
-				addBlacklistItem({
-					path: codeMapNode.path,
-					type: BlacklistType.exclude,
-					nodeType: codeMapNode.type,
-					attributes: codeMapNode.attributes
-				})
-			)
+			this.storeService.dispatch(addBlacklistItem(blacklistItem))
 		}
 	}
 
