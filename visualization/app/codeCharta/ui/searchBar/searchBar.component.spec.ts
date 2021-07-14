@@ -96,12 +96,10 @@ describe("SearchBarController", () => {
 			expect(storeService.getState().dynamicSettings.searchPattern).toBe("")
 		})
 
-		it("should display error message when all nodes would be excluded", () => {
+		it("should display error message when no files are left", () => {
 			blacklistService.resultsInEmptyMap = jest.fn(() => true)
 			dialogService.showErrorDialog = jest.fn()
-			const blacklistItem = { path: "/root/node/path", type: BlacklistType.exclude }
-			searchBarController["_viewModel"].searchPattern = blacklistItem.path
-			storeService.dispatch(setSearchPattern(blacklistItem.path))
+			const blacklistItem = { path: "/root", type: BlacklistType.exclude }
 
 			searchBarController.onClickBlacklistPattern(blacklistItem.type)
 
