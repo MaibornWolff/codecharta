@@ -9,12 +9,15 @@ import { BlacklistService } from "../../state/store/fileSettings/blacklist/black
 import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
+import { DialogService } from "../dialog/dialog.service"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
 
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
+	let blacklistService: BlacklistService
+	let dialogService: DialogService
 	const SOME_EXTRA_TIME = 100
 
 	beforeEach(() => {
@@ -28,10 +31,12 @@ describe("SearchBarController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		blacklistService = getService<BlacklistService>("blacklistService")
+		dialogService = getService<DialogService>("dialogService")
 	}
 
 	function rebuildController() {
-		searchBarController = new SearchBarController($rootScope, storeService)
+		searchBarController = new SearchBarController($rootScope, storeService, blacklistService, dialogService)
 	}
 
 	describe("constructor", () => {
@@ -79,6 +84,7 @@ describe("SearchBarController", () => {
 
 	describe("onClickBlacklistPattern", () => {
 		it("should add new blacklist entry and clear searchPattern", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => false)
 			const blacklistItem = { path: "/root/node/path", type: BlacklistType.exclude }
 			searchBarController["_viewModel"].searchPattern = blacklistItem.path
 			storeService.dispatch(setSearchPattern(blacklistItem.path))
@@ -89,10 +95,21 @@ describe("SearchBarController", () => {
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 			expect(storeService.getState().dynamicSettings.searchPattern).toBe("")
 		})
-	})
 
-	describe("onClickBlacklistPattern", () => {
-		it("separate entries for many in one searchPattern", () => {
+		it("should display error message when all nodes would be excluded", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => true)
+			dialogService.showErrorDialog = jest.fn()
+			const blacklistItem = { path: "/root/node/path", type: BlacklistType.exclude }
+			searchBarController["_viewModel"].searchPattern = blacklistItem.path
+			storeService.dispatch(setSearchPattern(blacklistItem.path))
+
+			searchBarController.onClickBlacklistPattern(blacklistItem.type)
+
+			expect(dialogService.showErrorDialog).toBeCalled()
+		})
+
+		it("should separate entries for many in one searchPattern", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => false)
 			const blacklistItem = { path: "*html*", type: BlacklistType.exclude }
 			const blacklistItem1 = { path: "*ts*", type: BlacklistType.exclude }
 			searchBarController["_viewModel"].searchPattern = "html,ts"
@@ -109,10 +126,9 @@ describe("SearchBarController", () => {
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
 		})
-	})
 
-	describe("onClickBlacklistPattern", () => {
-		it("separate entries for negated many in one searchPattern", () => {
+		it("should separate entries for negated many in one searchPattern", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => false)
 			const blacklistItem = { path: "!*html*", type: BlacklistType.exclude }
 			const blacklistItem1 = { path: "!*ts*", type: BlacklistType.exclude }
 			searchBarController["_viewModel"].searchPattern = "!html,ts"
