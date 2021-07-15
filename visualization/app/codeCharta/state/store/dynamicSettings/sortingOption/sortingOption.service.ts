@@ -12,6 +12,7 @@ export class SortingOptionService implements StoreSubscriber {
 	private static SORTING_OPTION_CHANGED_EVENT = "sorting-option-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

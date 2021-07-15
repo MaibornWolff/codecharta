@@ -4,7 +4,9 @@ import { setPanelSelection } from "./state/store/appSettings/panelSelection/pane
 import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 
 export class CodeChartaMouseEventService {
-	constructor(private storeService: StoreService) {}
+	constructor(private storeService: StoreService) {
+		"ngInject"
+	}
 
 	// TODO: Do not use `Function` as type. See the eslint description for further
 	// informations.

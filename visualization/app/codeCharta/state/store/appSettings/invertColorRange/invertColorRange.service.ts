@@ -11,6 +11,7 @@ export class InvertColorRangeService implements StoreSubscriber {
 	private static INVERT_COLOR_RANGE_CHANGED_EVENT = "invert-color-range-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

@@ -16,6 +16,7 @@ class NodePathController implements BuildingSelectedEventSubscriber {
 	}
 
 	constructor(private $rootScope: IRootScopeService) {
+		"ngInject"
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 	}
 

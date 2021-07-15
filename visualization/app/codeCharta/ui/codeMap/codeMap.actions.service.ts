@@ -6,7 +6,9 @@ import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricDa
 import { getParent } from "../../util/nodePathHelper"
 
 export class CodeMapActionsService {
-	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {}
+	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {
+		"ngInject"
+	}
 
 	markFolder({ path }: { path?: string }, color: string) {
 		const { markedPackages } = this.storeService.getState().fileSettings

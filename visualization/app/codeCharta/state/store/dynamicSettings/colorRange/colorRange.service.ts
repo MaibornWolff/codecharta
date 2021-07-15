@@ -20,6 +20,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService
 	) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)

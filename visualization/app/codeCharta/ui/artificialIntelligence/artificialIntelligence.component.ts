@@ -32,8 +32,8 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		["statements", { threshold: 150 }]
 	])
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 	}
 

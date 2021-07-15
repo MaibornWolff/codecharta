@@ -57,7 +57,6 @@ export class AttributeSideBarController
 		isSideBarVisible: null
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
@@ -65,6 +64,7 @@ export class AttributeSideBarController
 		private nodeMetricDataService: NodeMetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
+		"ngInject"
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)

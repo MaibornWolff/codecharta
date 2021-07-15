@@ -30,6 +30,7 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	constructor(private $mdDialog, private storeService: StoreService) {
+		"ngInject"
 		this.initDialogFields()
 	}
 

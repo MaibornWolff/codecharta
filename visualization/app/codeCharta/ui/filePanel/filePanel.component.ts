@@ -48,8 +48,8 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		pictogramLowerColor: null
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 	}
 

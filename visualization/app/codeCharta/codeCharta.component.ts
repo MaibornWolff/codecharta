@@ -25,7 +25,6 @@ export class CodeChartaController {
 
 	private urlUtils: UrlExtractor
 
-	/* @ngInject */
 	constructor(
 		private $location: ILocationService,
 		private $http: IHttpService,
@@ -35,6 +34,7 @@ export class CodeChartaController {
 		// @ts-ignore
 		private injectorService: InjectorService // We have to inject it somewhere
 	) {
+		"ngInject"
 		this._viewModel.version = packageJson.version
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.storeService.dispatch(setIsLoadingFile(true))

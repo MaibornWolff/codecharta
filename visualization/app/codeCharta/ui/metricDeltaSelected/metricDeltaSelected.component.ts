@@ -28,6 +28,7 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 		private threeSceneService: ThreeSceneService,
 		private storeService: StoreService
 	) {
+		"ngInject"
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 		this.$timeout(() => {

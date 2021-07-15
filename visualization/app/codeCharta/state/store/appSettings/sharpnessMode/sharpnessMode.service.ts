@@ -12,6 +12,7 @@ export class SharpnessModeService implements StoreSubscriber {
 	private static SHARPNESS_MODE_CHANGED_EVENT = "sharpness-mode-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

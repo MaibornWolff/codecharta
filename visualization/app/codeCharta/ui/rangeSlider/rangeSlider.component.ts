@@ -49,7 +49,6 @@ export class RangeSliderController
 		sliderOptions: { disabled: false }
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
@@ -57,6 +56,7 @@ export class RangeSliderController
 		private nodeMetricDataService: NodeMetricDataService,
 		private colorRangeService: ColorRangeService
 	) {
+		"ngInject"
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)

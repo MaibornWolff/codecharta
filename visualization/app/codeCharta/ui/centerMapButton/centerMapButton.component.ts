@@ -10,8 +10,8 @@ export class CenterMapButtonController implements CameraChangeSubscriber {
 		isMapCentered: true
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private threeOrbitControlsService: ThreeOrbitControlsService) {
+		"ngInject"
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 

@@ -16,6 +16,7 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 	private static ATTRIBUTE_TYPES_CHANGED_EVENT = "attribute-types-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 	}

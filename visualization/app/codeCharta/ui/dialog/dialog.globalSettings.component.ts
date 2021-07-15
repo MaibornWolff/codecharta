@@ -62,6 +62,7 @@ export class DialogGlobalSettingsController
 	}
 
 	constructor(private $mdDialog, private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		HideFlatBuildingsService.subscribe(this.$rootScope, this)
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)

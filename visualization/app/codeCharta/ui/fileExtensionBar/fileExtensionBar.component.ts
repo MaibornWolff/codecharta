@@ -17,8 +17,8 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		isAbsoluteValueVisible: false
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
+		"ngInject"
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 

@@ -11,6 +11,7 @@ export class DynamicMarginService implements StoreSubscriber {
 	private static DYNAMIC_MARGIN_CHANGED_EVENT = "dynamic-margin-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
