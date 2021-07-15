@@ -15,12 +15,16 @@ import { StoreService } from "../../state/store.service"
 import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { klona } from "klona"
 import { LazyLoader } from "../../util/lazyLoader"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
+	let nodeMetricDataService: NodeMetricDataService
+	let edgeMetricDataService: EdgeMetricDataService
 
 	beforeEach(() => {
 		restartSystem()
@@ -33,10 +37,18 @@ describe("AttributeSideBarController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
+		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 	}
 
 	function rebuildController() {
-		attributeSideBarController = new AttributeSideBarController($rootScope, storeService, codeMapPreRenderService)
+		attributeSideBarController = new AttributeSideBarController(
+			$rootScope,
+			storeService,
+			codeMapPreRenderService,
+			nodeMetricDataService,
+			edgeMetricDataService
+		)
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -248,7 +260,14 @@ describe("AttributeSideBarController", () => {
 
 			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]()
 
-			expect(attributeSideBarController["_viewModel"].secondaryMetricKeys).toEqual(["b", "c", "d", "e"])
+			const expectedSecondaryMetrics = [
+				{ name: "b", type: undefined },
+				{ name: "c", type: undefined },
+				{ name: "d", type: undefined },
+				{ name: "e", type: undefined }
+			]
+
+			expect(attributeSideBarController["_viewModel"].secondaryMetrics).toEqual(expectedSecondaryMetrics)
 		})
 
 		it("should filter node.attributes by selected metricKeys 2", () => {
@@ -262,7 +281,12 @@ describe("AttributeSideBarController", () => {
 
 			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]()
 
-			expect(attributeSideBarController["_viewModel"].secondaryMetricKeys).toEqual(["b", "d"])
+			const expectedSecondaryMetrics = [
+				{ name: "b", type: undefined },
+				{ name: "d", type: undefined }
+			]
+
+			expect(attributeSideBarController["_viewModel"].secondaryMetrics).toEqual(expectedSecondaryMetrics)
 		})
 	})
 })
