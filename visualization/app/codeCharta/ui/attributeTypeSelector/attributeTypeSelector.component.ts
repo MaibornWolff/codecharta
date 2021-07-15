@@ -22,12 +22,12 @@ export class AttributeTypeSelectorController {
 		private nodeMetricDataService: NodeMetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
+		"ngInject"
 		this.$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (_event_, data) => {
 			if (data.actionType === AttributeTypesActions.UPDATE_ATTRIBUTE_TYPE) {
 				this.setAggregationSymbol()
 			}
 		})
-		"ngInject"
 	}
 
 	$onInit() {
