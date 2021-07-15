@@ -15,8 +15,8 @@ class CrococosmoImporter : Callable<Void> {
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
 
-    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
-    private var compress = false
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    private var compress = true
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -36,7 +36,8 @@ class CrococosmoImporter : Callable<Void> {
 
             val filePath = file?.absolutePath ?: "notSpecified"
 
-            if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(it.value, filePath) else ProjectSerializer.serializeProject(it.value, writer(suffix))
+            if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(it.value, filePath)
+            else ProjectSerializer.serializeProject(it.value, writer(suffix))
         }
 
         return null

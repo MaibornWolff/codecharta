@@ -22,8 +22,8 @@ class SourceMonitorImporter : Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
-    private var compress = false
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    private var compress = true
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null

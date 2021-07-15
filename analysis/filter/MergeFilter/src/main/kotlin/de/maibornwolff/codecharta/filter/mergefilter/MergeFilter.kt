@@ -34,8 +34,8 @@ class MergeFilter : Callable<Void?> {
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
-    private var compress = false
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    private var compress = true
 
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
     private var ignoreCase = false

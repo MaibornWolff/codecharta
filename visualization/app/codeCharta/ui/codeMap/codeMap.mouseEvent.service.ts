@@ -282,6 +282,7 @@ export class CodeMapMouseEventService
 	onDocumentMouseMove(event: MouseEvent) {
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
+		this.updateHovering()
 		this.viewCubeMouseEventsService.propagateMovement()
 	}
 
