@@ -10,7 +10,8 @@ export function getCCFile(file: NameDataPair): CCFile {
 			fileChecksum: fileContent.fileChecksum,
 			projectName: fileContent.projectName,
 			apiVersion: fileContent.apiVersion,
-			exportedFileSize: file.fileSize
+			exportedFileSize: file.fileSize,
+			repoCreationDate: fileContent.repoCreationDate || ""
 		},
 		settings: {
 			fileSettings: {

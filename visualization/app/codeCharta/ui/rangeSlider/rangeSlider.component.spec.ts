@@ -176,6 +176,22 @@ describe("RangeSliderController", () => {
 			})
 		})
 
+		it("should call applySliderUpdateDone", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			setTimeout(() => {
+				expect(rangeSliderController["applySliderUpdateDone"]).toBeCalled()
+			})
+		})
+
+		it("should call initSliderOptions", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			setTimeout(() => {
+				expect(rangeSliderController["initSliderOptions"]).toBeCalled()
+			})
+		})
+
 		describe("updateSliderColors", () => {
 			beforeEach(() => {
 				rangeSliderController["applyCssColors"] = jest.fn()
@@ -262,6 +278,46 @@ describe("RangeSliderController", () => {
 			setTimeout(() => {
 				expect(rangeSliderController["updateSliderColors"]).toBeCalled()
 			})
+		})
+	})
+
+	describe("onMapColorsChanged", () => {
+		it("should call updateSliderColors", () => {
+			rangeSliderController.onMapColorsChanged()
+
+			setTimeout(() => {
+				expect(rangeSliderController["updateSliderColors"]).toBeCalled()
+			})
+		})
+	})
+
+	describe("onFromSliderChange", () => {
+		it("should update the colorRange values for onFromSliderChange", () => {
+			rangeSliderController.onFromSliderChange()
+
+			expect(rangeSliderController["_viewModel"].colorRangeFrom).toEqual(
+				Math.min(
+					rangeSliderController["_viewModel"].sliderOptions.ceil,
+					Math.max(1, rangeSliderController["_viewModel"].colorRangeTo)
+				)
+			)
+			expect(rangeSliderController["_viewModel"].colorRangeTo).toEqual(
+				Math.min(rangeSliderController["_viewModel"].colorRangeTo - 1, rangeSliderController["_viewModel"].colorRangeFrom)
+			)
+		})
+	})
+
+	describe("onToSliderChange", () => {
+		it("should update the colorRange values for onToSliderChange", () => {
+			rangeSliderController.onToSliderChange()
+
+			expect(rangeSliderController["_viewModel"].colorRangeFrom).toEqual(-1)
+			expect(rangeSliderController["_viewModel"].colorRangeTo).toEqual(
+				Math.min(
+					rangeSliderController["_viewModel"].sliderOptions.ceil,
+					Math.max(1, rangeSliderController["_viewModel"].colorRangeTo)
+				)
+			)
 		})
 	})
 })

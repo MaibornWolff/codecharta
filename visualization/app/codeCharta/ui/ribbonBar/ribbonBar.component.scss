@@ -31,6 +31,18 @@ ribbon-bar-component {
 		min-width: 92px;
 		transition: 200ms width ease-in-out;
 
+		&#ai-card {
+			.section {
+				.section-header {
+					overflow: visible !important;
+					text-align: center;
+				}
+				.section-title {
+					padding: 1px 5px;
+				}
+			}
+		}
+
 		.section {
 			display: inline-block;
 			height: 100%;

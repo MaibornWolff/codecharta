@@ -9,6 +9,7 @@ export interface ExportCCFile {
 	edges?: Edge[]
 	markedPackages?: MarkedPackage[]
 	blacklist?: ExportBlacklistItem[]
+	repoCreationDate?: string
 }
 
 export interface ExportBlacklistItem {

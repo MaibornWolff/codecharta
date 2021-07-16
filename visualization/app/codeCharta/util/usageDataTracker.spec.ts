@@ -153,7 +153,7 @@ describe("UsageDataTracker", () => {
 		})
 
 		function expectEventHasBeenTracked() {
-			expect(FilesHelper.getVisibleFileStates).toHaveBeenCalledTimes(2)
+			expect(FilesHelper.getVisibleFileStates).toHaveBeenCalledTimes(3)
 			expect(getItemMock).toHaveBeenCalledWith("usageData/invalid-md5-sample-checksum-events")
 			expect(expectSetItemSnapshot).toHaveBeenCalledTimes(1)
 		}

@@ -8,6 +8,7 @@ Object {
     "fileChecksum": "invalid-md5-sample",
     "fileName": "fileName",
     "projectName": "Sample Map",
+    "repoCreationDate": "",
   },
   "map": Object {
     "attributes": Object {},

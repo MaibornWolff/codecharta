@@ -7,78 +7,257 @@ import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
 import { klona } from "klona"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
-import { getMedian, pushSorted } from "../../util/nodeDecorator"
-import { NodeType } from "../../codeCharta.model"
+import { pushSorted } from "../../util/nodeDecorator"
+import { ColorRange, NodeType, State } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { getVisibleFileStates } from "../../model/files/files.helper"
-
-type OutlierConfig = {
-	threshold: number
-}
+import { clusterMetricThresholds } from "./artificialIntelligence.clusterMetricThresholds"
+import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 
 interface MetricValues {
 	[metric: string]: number[]
 }
 
-export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
-	private metricsOutlierConfig: Map<string, OutlierConfig> = new Map([
-		["mcc", { threshold: 15 }],
-		["loc", { threshold: 1000 }],
-		["rloc", { threshold: 1000 }],
-		["cognitive_complexity", { threshold: 10 }],
-		["code_smell", { threshold: 25 }],
-		["bug", { threshold: 10 }],
-		["functions", { threshold: 20 }],
-		["statements", { threshold: 150 }]
-	])
+interface MetricAssessmentResults {
+	suspiciousMetrics: Map<string, ColorRange>
+	unsuspiciousMetrics: string[]
+	outliersThresholds: Map<string, number>
+}
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+interface MetricSuggestionParameters {
+	metric: string
+	from: number
+	to: number
+	generalCustomConfigId: string
+	outlierCustomConfigId?: string
+}
+
+export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
+	private _viewModel: {
+		isFeatureApplicable: boolean
+		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
+		unsuspiciousMetrics: string[]
+		riskProfile: {
+			lowRisk: number
+			moderateRisk: number
+			highRisk: number
+			veryHighRisk: number
+		}
+	} = {
+		isFeatureApplicable: false,
+		suspiciousMetricSuggestionLinks: [],
+		unsuspiciousMetrics: [],
+		riskProfile: {
+			lowRisk: 0,
+			moderateRisk: 0,
+			highRisk: 0,
+			veryHighRisk: 0
+		}
+	}
+
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private threeCameraService: ThreeCameraService
+	) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
+	applyCustomConfig(configId: string) {
+		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
+	}
+
 	onFilesSelectionChanged(files: FileState[]) {
-		const outliersFound = new Map<string, number>()
+		const fileState = getVisibleFileStates(files)[0]
+		if (fileState === undefined) {
+			return
+		}
 
-		for (const fileState of getVisibleFileStates(files)) {
-			const metricValues = this.getMetricValues(fileState)
+		// Thresholds are derived for Java maps only (currently)
+		if (!this.hasJavaFiles(fileState.file.map)) {
+			return
+		}
 
-			for (const [metricName, outlierConfig] of this.metricsOutlierConfig) {
-				if (metricValues[metricName] === undefined) {
-					continue
-				}
+		this._viewModel.isFeatureApplicable = true
 
-				const outliers = this.detectOutliers(metricValues[metricName], outlierConfig)
-				if (outliers.length > 0) {
-					outliersFound.set(metricName, Math.min(...outliers) - 1)
-				}
+		this.calculateRiskProfile(fileState, "mcc")
+		this.createCustomConfigSuggestions(fileState)
+	}
+
+	private createCustomConfigSuggestions(fileState: FileState) {
+		const metricValues = this.getMetricValues(fileState)
+		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues)
+
+		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
+
+		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
+			const overviewConfigState = this.prepareOverviewConfigState(metricName, colorRange.from, colorRange.to)
+			const overviewConfigName = `Suspicious ${metricName.toUpperCase()} Files (AI)`
+			const overviewConfig = this.createAndAddCustomConfig(overviewConfigName, overviewConfigState, fileState)
+
+			noticeableMetricSuggestionLinks.set(metricName, {
+				metric: metricName,
+				...colorRange,
+				generalCustomConfigId: overviewConfig.id
+			})
+
+			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
+			if (outlierThreshold > 0) {
+				const outlierToValue = outlierThreshold
+				const outlierFromValue = outlierToValue - 1
+
+				const outlierConfigState = this.prepareOutlierConfigState(metricName, outlierFromValue, outlierToValue)
+				const outlierConfigName = `Very High Risk ${metricName.toUpperCase()} Files (AI)`
+				const outlierConfig = this.createAndAddCustomConfig(outlierConfigName, outlierConfigState, fileState)
+
+				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = outlierConfig.id
 			}
 		}
 
-		// Make one single static suggestion for the first version of the algorithm
-		const mccOutlier = outliersFound.get("mcc")
-		const bugOutlier = outliersFound.get("bug")
+		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()]
+		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+	}
 
-		if (mccOutlier && bugOutlier) {
-			const state = klona(this.storeService.getState())
-			state.dynamicSettings.areaMetric = "mcc"
-			state.dynamicSettings.heightMetric = "bug"
-			state.dynamicSettings.colorMetric = "bug"
-			state.dynamicSettings.colorRange.from = bugOutlier.valueOf() / 2
-			state.dynamicSettings.colorRange.to = bugOutlier.valueOf()
+	private findGoodAndBadMetrics(metricValues): MetricAssessmentResults {
+		const metricAssessmentResults: MetricAssessmentResults = {
+			suspiciousMetrics: new Map<string, ColorRange>(),
+			unsuspiciousMetrics: [],
+			outliersThresholds: new Map<string, number>()
+		}
 
-			const configName = "Buggy Classes (AI)"
-			const customConfig = buildCustomConfigFromState(configName, state)
+		for (const metricName of Object.keys(clusterMetricThresholds["java"]["notClustered"])) {
+			const valuesOfMetric = metricValues[metricName]
+			if (valuesOfMetric === undefined) {
+				continue
+			}
+
+			const thresholdConfig = clusterMetricThresholds["java"]["notClustered"][metricName]
+			const maxMetricValue = Math.max(...valuesOfMetric)
+
+			if (maxMetricValue > thresholdConfig.percentile70) {
+				metricAssessmentResults.suspiciousMetrics.set(metricName, {
+					from: thresholdConfig.percentile70,
+					to: thresholdConfig.percentile80
+				})
+
+				if (maxMetricValue > thresholdConfig.percentile90) {
+					metricAssessmentResults.outliersThresholds.set(metricName, thresholdConfig.percentile90)
+				}
+			} else {
+				metricAssessmentResults.unsuspiciousMetrics.push(metricName)
+			}
+		}
+
+		return metricAssessmentResults
+	}
+
+	private calculateRiskProfile(fileState: FileState, metricName) {
+		let totalRloc = 0
+		let numberOfRlocLowRisk = 0
+		let numberOfRlocModerateRisk = 0
+		let numberOfRlocHighRisk = 0
+		let numberOfRlocVeryHighRisk = 0
+
+		for (const { data } of hierarchy(fileState.file.map)) {
+			if (data.type !== NodeType.FILE) {
+				continue
+			}
+
+			const nodeMetricValue = data.attributes[metricName]
+			const nodeRlocValue = data.attributes["rloc"]
+
 			if (
-				!CustomConfigHelper.hasCustomConfigByName(
-					CustomConfigMapSelectionMode.SINGLE,
-					[state.files[0].file.fileMeta.fileName],
-					configName
-				)
+				nodeMetricValue === undefined ||
+				nodeRlocValue === undefined ||
+				!(metricName in clusterMetricThresholds["java"]["notClustered"])
 			) {
-				CustomConfigHelper.addCustomConfig(customConfig)
+				continue
+			}
+
+			const clusteredMetricThresholds = clusterMetricThresholds["java"]["notClustered"][metricName]
+			totalRloc += nodeRlocValue
+
+			// Idea: We could calculate risk profiles per directory in the future.
+			if (nodeMetricValue <= clusteredMetricThresholds.percentile70) {
+				numberOfRlocLowRisk += nodeRlocValue
+			} else if (nodeMetricValue <= clusteredMetricThresholds.percentile80) {
+				numberOfRlocModerateRisk += nodeRlocValue
+			} else if (nodeMetricValue <= clusteredMetricThresholds.percentile90) {
+				numberOfRlocHighRisk += nodeRlocValue
+			} else {
+				numberOfRlocVeryHighRisk += nodeRlocValue
 			}
 		}
+
+		this._viewModel.riskProfile = {
+			lowRisk: Math.ceil((numberOfRlocLowRisk / totalRloc) * 100),
+			moderateRisk: Math.ceil((numberOfRlocModerateRisk / totalRloc) * 100),
+			highRisk: Math.ceil((numberOfRlocHighRisk / totalRloc) * 100),
+			veryHighRisk: Math.ceil((numberOfRlocVeryHighRisk / totalRloc) * 100)
+		}
+	}
+
+	private createAndAddCustomConfig(configName: string, state: State, fileState: FileState) {
+		let customConfig = CustomConfigHelper.getCustomConfigByName(
+			CustomConfigMapSelectionMode.SINGLE,
+			[fileState.file.fileMeta.fileName],
+			configName
+		)
+
+		// If it exists, create a fresh one with current thresholds
+		if (customConfig !== null) {
+			CustomConfigHelper.deleteCustomConfig(customConfig.id)
+		}
+
+		customConfig = buildCustomConfigFromState(configName, state)
+		CustomConfigHelper.addCustomConfig(customConfig)
+
+		return customConfig
+	}
+
+	private prepareOverviewConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {
+		const state = klona(this.storeService.getState())
+
+		// just use rloc as area metric
+		state.dynamicSettings.areaMetric = "rloc"
+
+		// use bad metric as height and color metric
+		state.dynamicSettings.heightMetric = metricName
+		state.dynamicSettings.colorMetric = metricName
+		//state.dynamicSettings.colorRange.from = bugOutlier.valueOf() / 2
+		//state.dynamicSettings.colorRange.to = bugOutlier.valueOf()
+		state.dynamicSettings.colorRange.from = colorRangeFrom
+		state.dynamicSettings.colorRange.to = colorRangeTo
+
+		state.appSettings.mapColors.positive = defaultMapColors.positive
+		state.appSettings.mapColors.neutral = defaultMapColors.neutral
+		state.appSettings.mapColors.negative = defaultMapColors.negative
+
+		return state
+	}
+
+	private prepareOutlierConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {
+		const state = klona(this.storeService.getState())
+
+		// just use rloc as area metric
+		state.dynamicSettings.areaMetric = "rloc"
+
+		// use bad metric as height and color metric
+		state.dynamicSettings.heightMetric = metricName
+		state.dynamicSettings.colorMetric = metricName
+
+		state.dynamicSettings.colorRange.to = colorRangeTo
+		state.dynamicSettings.colorRange.from = colorRangeFrom
+
+		state.appSettings.mapColors.positive = "#ffffff"
+		state.appSettings.mapColors.neutral = "#ffffff"
+		state.appSettings.mapColors.negative = "#A900C0"
+
+		return state
 	}
 
 	private getMetricValues(fileState: FileState): MetricValues {
@@ -103,28 +282,13 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		return metricValues
 	}
 
-	private detectOutliers(metricValues: number[], outlierConfig: OutlierConfig): number[] {
-		let valuesFirstHalf: number[]
-		let valuesSecondHalf: number[]
-
-		if (metricValues.length % 2 === 0) {
-			valuesFirstHalf = metricValues.slice(0, metricValues.length / 2)
-			valuesSecondHalf = metricValues.slice(metricValues.length / 2, metricValues.length)
-		} else {
-			valuesFirstHalf = metricValues.slice(0, metricValues.length / 2)
-			valuesSecondHalf = metricValues.slice(metricValues.length / 2 + 1, metricValues.length)
+	private hasJavaFiles(map) {
+		for (const { data } of hierarchy(map)) {
+			if (data.type === NodeType.FILE && data.name.includes(".java")) {
+				return true
+			}
 		}
-
-		const firstQuartil = getMedian(valuesFirstHalf)
-		//const median_second_quartil = getMedian(metricValues)
-		const thirdQuartil = getMedian(valuesSecondHalf)
-
-		const interQuartilRange = thirdQuartil - firstQuartil
-		const upperOutlierBound = thirdQuartil + 1.5 * interQuartilRange
-
-		return metricValues.filter(function (value) {
-			return value > upperOutlierBound || value > outlierConfig.threshold
-		})
+		return false
 	}
 }
 

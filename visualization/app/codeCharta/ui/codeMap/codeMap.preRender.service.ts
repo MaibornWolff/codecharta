@@ -36,13 +36,21 @@ import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetri
 import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
 export class CodeMapPreRenderService
-	implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber
+	implements
+		StoreSubscriber,
+		StoreExtendedSubscriber,
+		MetricDataSubscriber,
+		ScalingSubscriber,
+		LayoutAlgorithmSubscriber,
+		ColorRangeFromSubscriber,
+		ColorRangeToSubscriber
 {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
@@ -67,6 +75,8 @@ export class CodeMapPreRenderService
 		StoreService.subscribeDetailedData(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+		RangeSliderController.subscribeToColorRangeFromUpdated(this.$rootScope, this)
+		RangeSliderController.subscribeToColorRangeToUpdated(this.$rootScope, this)
 
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
@@ -126,6 +136,14 @@ export class CodeMapPreRenderService
 			// Track event usage data only on certain events
 			trackEventUsageData(actionType, this.storeService.getState(), payload)
 		}
+	}
+
+	onColorRangeFromUpdated(colorMetric: string, fromValue: number) {
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_FROM_UPDATED, this.storeService.getState(), { colorMetric, fromValue })
+	}
+
+	onColorRangeToUpdated(colorMetric: string, toValue: number) {
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_TO_UPDATED, this.storeService.getState(), { colorMetric, toValue })
 	}
 
 	onLayoutAlgorithmChanged() {
