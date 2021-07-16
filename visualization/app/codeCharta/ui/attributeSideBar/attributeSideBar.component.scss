@@ -161,6 +161,27 @@ attribute-side-bar-component {
 					word-break: break-word;
 				}
 			}
+
+			&.notes-wrapper {
+				margin-top: 13px;
+				display: flex;
+				flex-direction: column;
+
+				.notes-header {
+					font-weight: bold;
+					margin-left: 3px;
+					margin-top: 2px;
+					margin-bottom: 5px;
+				}
+
+				.notes-text {
+					background-color: #f0f0f0;
+					width: auto;
+					height: 8em;
+					resize: vertical;
+					margin-bottom: 3px;
+				}
+			}
 		}
 	}
 }
