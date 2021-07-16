@@ -40,6 +40,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   Already loaded files can be individually removed.
     -   The 'Multiple' view will select the latest files.
 
+### Changed
+
+-   Numbers/Percentages are always shown on distribution bar.
+-   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
+-   The old expanded distribution bar is
+    now accessible through a button.
+
 ### Fixed 🐞
 
 -   It is now possible to rotate the map by rotating the view cube ([#353](https://github.com/MaibornWolff/codecharta/issues/353))
