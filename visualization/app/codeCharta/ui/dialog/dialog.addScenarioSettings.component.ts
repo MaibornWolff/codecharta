@@ -30,6 +30,7 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	constructor(private $mdDialog, private storeService: StoreService) {
+		"ngInject"
 		this.initDialogFields()
 	}
 
@@ -76,7 +77,10 @@ export class DialogAddScenarioSettingsComponent {
 			heightSlider: appSettings.scaling,
 			labelSlider: appSettings.amountOfTopLabels
 		})
-		this.pushScenarioContent(ScenarioMetricType.COLOR_METRIC, dynamicSettings.colorMetric, dynamicSettings.colorRange)
+		this.pushScenarioContent(ScenarioMetricType.COLOR_METRIC, dynamicSettings.colorMetric, {
+			colorRange: dynamicSettings.colorRange,
+			mapColors: appSettings.mapColors
+		})
 		this.pushScenarioContent(ScenarioMetricType.EDGE_METRIC, dynamicSettings.edgeMetric, {
 			edgePreview: appSettings.amountOfEdgePreviews,
 			edgeHeight: appSettings.edgeHeight

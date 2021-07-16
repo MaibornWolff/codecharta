@@ -9,13 +9,13 @@ The Understandimporter generates visualisation data from [SciTools Understand](h
 
 ### Parameter
 
-| Parameter                          | description                          |
-| ---------------------------------- | ------------------------------------ |
-| `FILE`                             | Understand csv files                 |
-| `--path-seperator=<pathSeperator>` | path seperator (default= '/')        |
-| `-h, --help`                       | displays help                        |
-| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)    |
-| `-c`                               | compresses outputfile to gzip format |
+| Parameter                          | description                                                       |
+| ---------------------------------- | ----------------------------------------------------------------- |
+| `FILE`                             | Understand csv files                                              |
+| `--path-seperator=<pathSeperator>` | path seperator (default= '/')                                     |
+| `-h, --help`                       | displays help                                                     |
+| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)                                 |
+| `-nc, --not-compressed`            | uncompresses outputfile to json format, if format of File is gzip |
 
 ### CSV Import for SciTools Understand
 

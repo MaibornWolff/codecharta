@@ -10,7 +10,6 @@ import { ThreeStatsService } from "./threeStatsService"
 export class ThreeViewerService {
 	private animationFrameId: number
 
-	/* ngInject */
 	constructor(
 		private threeSceneService: ThreeSceneService,
 		private threeCameraService: ThreeCameraService,
@@ -18,7 +17,9 @@ export class ThreeViewerService {
 		private threeRendererService: ThreeRendererService,
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private threeStatsService: ThreeStatsService
-	) {}
+	) {
+		"ngInject"
+	}
 
 	init(canvasElement: Element) {
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
@@ -49,6 +50,10 @@ export class ThreeViewerService {
 		this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight
 		this.threeCameraService.camera.updateProjectionMatrix()
 		this.animate()
+	}
+
+	enableRotation(value: boolean) {
+		this.threeOrbitControlsService.controls.enableRotate = value
 	}
 
 	onFocusIn(event) {

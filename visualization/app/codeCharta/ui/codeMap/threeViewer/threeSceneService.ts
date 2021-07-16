@@ -49,6 +49,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 

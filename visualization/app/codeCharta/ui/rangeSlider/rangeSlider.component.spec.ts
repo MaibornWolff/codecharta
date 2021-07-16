@@ -5,12 +5,8 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
-import { setWhiteColorBuildings } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.actions"
-import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { MapColors } from "../../codeCharta.model"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
-import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
@@ -77,22 +73,6 @@ describe("RangeSliderController", () => {
 			expect(ColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribe to InvertColorRangeService", () => {
-			InvertColorRangeService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
-		})
-
-		it("should subscribe to WhiteColorBuildingsService", () => {
-			WhiteColorBuildingsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
-		})
-
 		it("should subscribe to FilesService", () => {
 			FilesService.subscribe = jest.fn()
 
@@ -149,26 +129,6 @@ describe("RangeSliderController", () => {
 		})
 	})
 
-	describe("onInvertColorRangeChanged", () => {
-		it("should set the maxMetricValue", () => {
-			rangeSliderController["updateSliderColors"] = jest.fn()
-
-			rangeSliderController.onInvertColorRangeChanged()
-
-			expect(rangeSliderController["updateSliderColors"]).toHaveBeenCalled()
-		})
-	})
-
-	describe("onWhiteColorBuildingsChanged", () => {
-		it("should set the maxMetricValue", () => {
-			rangeSliderController["updateSliderColors"] = jest.fn()
-
-			rangeSliderController.onWhiteColorBuildingsChanged()
-
-			expect(rangeSliderController["updateSliderColors"]).toHaveBeenCalled()
-		})
-	})
-
 	describe("onColorRangeChanged", () => {
 		it("should update the viewModel", () => {
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
@@ -208,30 +168,6 @@ describe("RangeSliderController", () => {
 		it("should set standard colors", () => {
 			rangeSliderController["applyCssColors"] = jest.fn()
 			const expected = { left: mapColors.positive, middle: mapColors.neutral, right: mapColors.negative }
-
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
-
-			setTimeout(() => {
-				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
-			})
-		})
-
-		it("should set grey positive color when positive buildings are white", () => {
-			rangeSliderController["applyCssColors"] = jest.fn()
-			storeService.dispatch(setWhiteColorBuildings(true))
-			const expected = { left: mapColors.lightGrey, middle: mapColors.neutral, right: mapColors.negative }
-
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
-
-			setTimeout(() => {
-				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
-			})
-		})
-
-		it("should set inverted color slider", () => {
-			rangeSliderController["applyCssColors"] = jest.fn()
-			storeService.dispatch(setInvertColorRange(true))
-			const expected = { left: mapColors.negative, middle: mapColors.neutral, right: mapColors.positive }
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
@@ -307,6 +243,24 @@ describe("RangeSliderController", () => {
 
 			setTimeout(() => {
 				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)
+			})
+		})
+	})
+
+	describe("applySliderChange", () => {
+		it("should call applyColorRange", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			setTimeout(() => {
+				expect(rangeSliderController["applyColorRange"]).toBeCalled()
+			})
+		})
+
+		it("should call updateSliderColors", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			setTimeout(() => {
+				expect(rangeSliderController["updateSliderColors"]).toBeCalled()
 			})
 		})
 	})

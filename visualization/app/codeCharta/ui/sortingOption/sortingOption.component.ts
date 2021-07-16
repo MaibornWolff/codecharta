@@ -14,8 +14,8 @@ export class SortingOptionController implements SortingOptionSubscriber {
 		sortingOptions: null
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		SortingOptionService.subscribe(this.$rootScope, this)
 		this._viewModel.sortingOptions = Object.values(SortingOption)
 	}

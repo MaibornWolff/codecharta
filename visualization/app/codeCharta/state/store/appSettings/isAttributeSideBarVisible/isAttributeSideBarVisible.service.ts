@@ -18,6 +18,7 @@ export class IsAttributeSideBarVisibleService
 	private static IS_ATTRIBUTE_SIDE_BAR_VISIBLE_CHANGED_EVENT = "is-attribute-side-bar-visible-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)

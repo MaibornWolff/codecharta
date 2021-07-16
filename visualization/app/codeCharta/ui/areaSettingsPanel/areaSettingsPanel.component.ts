@@ -20,8 +20,8 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		dynamicMargin: null
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		DynamicMarginService.subscribe(this.$rootScope, this)
 		MarginService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)

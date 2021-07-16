@@ -17,6 +17,7 @@ export class RibbonBarController implements PanelSelectionSubscriber, Experiment
 		private $rootScope: IRootScopeService,
 		private codeChartaMouseEventService: CodeChartaMouseEventService
 	) {
+		"ngInject"
 		PanelSelectionService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 	}

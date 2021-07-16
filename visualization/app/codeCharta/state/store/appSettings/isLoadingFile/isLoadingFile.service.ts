@@ -11,6 +11,7 @@ export class IsLoadingFileService implements StoreSubscriber {
 	private static IS_LOADING_FILE_CHANGED_EVENT = "is-loading-file-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

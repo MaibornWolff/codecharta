@@ -21,6 +21,7 @@
 
 <md-input-container class="input-container" ng-show="$ctrl._viewModel.isSingleState" title="Select a file">
 	<md-select
+		class="md-select-menu"
 		ng-model="$ctrl._viewModel.selectedFileNames.single"
 		ng-change="$ctrl.onSingleFileChange($ctrl._viewModel.selectedFileNames.single)"
 	>
@@ -29,12 +30,20 @@
 			value="{{::fileState.file.fileMeta.fileName}}"
 		>
 			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
+			<remove-file-button-component
+				on-remove-file="$ctrl.onRemoveFile(filename, state, event)"
+				ng-if="$ctrl._viewModel.files.length > 1"
+				filename="{{::fileState.file.fileMeta.fileName}}"
+				state="Single"
+			>
+			</remove-file-button-component>
 		</md-option>
 	</md-select>
 </md-input-container>
 
 <md-input-container class="input-container" ng-show="$ctrl._viewModel.isPartialState" title="Select files">
 	<md-select
+		class="md-select-menu"
 		ng-model="$ctrl._viewModel.selectedFileNames.partial"
 		multiple="{{ true }}"
 		ng-change="$ctrl.onPartialFilesChange($ctrl._viewModel.selectedFileNames.partial)"
@@ -49,6 +58,13 @@
 			value="{{::fileState.file.fileMeta.fileName}}"
 		>
 			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
+			<remove-file-button-component
+				on-remove-file="$ctrl.onRemoveFile(filename, state, event)"
+				ng-if="$ctrl._viewModel.files.length > 1"
+				filename="{{::fileState.file.fileMeta.fileName}}"
+				state="Partial"
+			>
+			</remove-file-button-component>
 		</md-option>
 	</md-select>
 </md-input-container>

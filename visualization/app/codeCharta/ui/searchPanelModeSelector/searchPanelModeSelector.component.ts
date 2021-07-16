@@ -20,8 +20,8 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 		searchFieldIsEmpty: true
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		SearchPatternService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPanelModeService.subscribe(this.$rootScope, this)

@@ -13,8 +13,8 @@ export class SortingButtonController implements SortingOrderAscendingSubscriber 
 	} = {
 		orderAscending: true
 	}
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		SortingOrderAscendingService.subscribe(this.$rootScope, this)
 	}
 

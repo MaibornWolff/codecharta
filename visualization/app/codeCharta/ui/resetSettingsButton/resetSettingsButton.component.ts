@@ -6,9 +6,11 @@ import { convertToVectors } from "../../util/settingsHelper"
 
 export class ResetSettingsButtonController {
 	private settingsNames = ""
+	private callback?: () => void
 
-	/* @ngInject */
-	constructor(private storeService: StoreService) {}
+	constructor(private storeService: StoreService) {
+		"ngInject"
+	}
 
 	applyDefaultSettings() {
 		const tokens = this.settingsNames.replace(/ |\n/g, "").split(",")
@@ -40,6 +42,8 @@ export class ResetSettingsButtonController {
 			convertToVectors(updatedSettings)
 			this.storeService.dispatch(setState(updatedSettings))
 		}
+
+		if (this.callback) this.callback()
 	}
 }
 
@@ -50,6 +54,7 @@ export const resetSettingsButtonComponent = {
 	bindings: {
 		settingsNames: "@",
 		tooltip: "@",
-		text: "@"
+		text: "@",
+		callback: "&"
 	}
 }

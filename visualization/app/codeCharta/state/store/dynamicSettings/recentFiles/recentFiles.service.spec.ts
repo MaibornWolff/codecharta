@@ -2,12 +2,12 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { InvertColorRangeAction, InvertColorRangeActions } from "./invertColorRange.actions"
-import { InvertColorRangeService } from "./invertColorRange.service"
+import { RecentFilesAction, RecentFilesActions } from "./recentFiles.actions"
+import { RecentFilesService } from "./recentFiles.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 
-describe("InvertColorRangeService", () => {
-	let invertColorRangeService: InvertColorRangeService
+describe("RecentFilesService", () => {
+	let recentFilesService: RecentFilesService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
 
@@ -25,7 +25,7 @@ describe("InvertColorRangeService", () => {
 	}
 
 	function rebuildService() {
-		invertColorRangeService = new InvertColorRangeService($rootScope, storeService)
+		recentFilesService = new RecentFilesService($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -34,25 +34,27 @@ describe("InvertColorRangeService", () => {
 
 			rebuildService()
 
-			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, invertColorRangeService)
+			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, recentFilesService)
 		})
 	})
 
 	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new invertColorRange value", () => {
-			const action: InvertColorRangeAction = {
-				type: InvertColorRangeActions.SET_INVERT_COLOR_RANGE,
-				payload: true
+		it("should notify all subscribers with the new recentFiles value", () => {
+			const action: RecentFilesAction = {
+				type: RecentFilesActions.SET_RECENT_FILES,
+				payload: ["sample1.cc.json", "sample2.cc.json"]
 			}
 			storeService["store"].dispatch(action)
 
-			invertColorRangeService.onStoreChanged(InvertColorRangeActions.SET_INVERT_COLOR_RANGE)
+			recentFilesService.onStoreChanged(RecentFilesActions.SET_RECENT_FILES)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("invert-color-range-changed", { invertColorRange: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("recent-files-changed", {
+				recentFiles: ["sample1.cc.json", "sample2.cc.json"]
+			})
 		})
 
-		it("should not notify anything on non-invert-color-range-events", () => {
-			invertColorRangeService.onStoreChanged("ANOTHER_ACTION")
+		it("should not notify anything on non-recent-files-events", () => {
+			recentFilesService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})

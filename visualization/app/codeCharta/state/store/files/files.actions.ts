@@ -14,12 +14,18 @@ export enum FilesSelectionActions {
 export enum NewFilesImportedActions {
 	SET_FILES = "SET_FILES",
 	ADD_FILE = "ADD_FILE",
-	RESET_FILES = "RESET_FILES"
+	RESET_FILES = "RESET_FILES",
+	REMOVE_FILE = "REMOVE_FILE"
 }
 
 export interface SetFilesAction extends CCAction {
 	type: NewFilesImportedActions.SET_FILES
 	payload: FileState[]
+}
+
+export interface RemoveFileAction extends CCAction {
+	type: NewFilesImportedActions.REMOVE_FILE
+	payload: string
 }
 
 export interface AddFileAction extends CCAction {
@@ -70,6 +76,7 @@ export type FilesAction =
 	| ResetFilesAction
 	| ResetSelectionAction
 	| AddFileAction
+	| RemoveFileAction
 	| SetSingleAction
 	| SetSingleByNameAction
 	| SetMultipleAction
@@ -100,6 +107,13 @@ export function addFile(file: CCFile): AddFileAction {
 	return {
 		type: NewFilesImportedActions.ADD_FILE,
 		payload: file
+	}
+}
+
+export function removeFile(fileName: string): RemoveFileAction {
+	return {
+		type: NewFilesImportedActions.REMOVE_FILE,
+		payload: fileName
 	}
 }
 

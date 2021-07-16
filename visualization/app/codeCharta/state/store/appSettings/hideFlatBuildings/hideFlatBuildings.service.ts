@@ -11,6 +11,7 @@ export class HideFlatBuildingsService implements StoreSubscriber {
 	private static HIDE_FLAT_BUILDINGS_CHANGED_EVENT = "hide-flat-buildings-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

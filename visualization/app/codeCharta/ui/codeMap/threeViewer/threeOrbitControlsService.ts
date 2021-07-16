@@ -32,7 +32,6 @@ export class ThreeOrbitControlsService
 	controls: OrbitControls
 	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
 
-	/* ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
@@ -41,6 +40,7 @@ export class ThreeOrbitControlsService
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
+		"ngInject"
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)

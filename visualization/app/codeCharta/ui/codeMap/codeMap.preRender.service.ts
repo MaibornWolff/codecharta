@@ -34,7 +34,6 @@ import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { InvertColorRangeActions } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
@@ -51,6 +50,7 @@ export class CodeMapPreRenderService
 	private unifiedFileMeta: FileMeta
 
 	private readonly debounceRendering: () => void
+	private readonly debounceDecorate: () => void
 	private readonly debounceTracking: (actionType: string, payload?: unknown) => void
 	private DEBOUNCE_TIME = 0
 
@@ -61,6 +61,7 @@ export class CodeMapPreRenderService
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
+		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		StoreService.subscribeDetailedData(this.$rootScope, this)
@@ -69,6 +70,13 @@ export class CodeMapPreRenderService
 
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
+		}, this.DEBOUNCE_TIME)
+
+		this.debounceDecorate = debounce(() => {
+			this.decorateIfPossible()
+			if (this.allNecessaryRenderDataAvailable()) {
+				this.renderAndNotify()
+			}
 		}, this.DEBOUNCE_TIME)
 
 		this.debounceTracking = debounce(() => {
@@ -112,7 +120,6 @@ export class CodeMapPreRenderService
 				isActionOfType(actionType, HeightMetricActions) ||
 				isActionOfType(actionType, ColorMetricActions) ||
 				isActionOfType(actionType, ColorRangeActions) ||
-				isActionOfType(actionType, InvertColorRangeActions) ||
 				isActionOfType(actionType, BlacklistActions) ||
 				isActionOfType(actionType, FocusedNodePathActions))
 		) {
@@ -134,10 +141,7 @@ export class CodeMapPreRenderService
 	onMetricDataChanged() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
-			this.decorateIfPossible()
-			if (this.allNecessaryRenderDataAvailable()) {
-				this.debounceRendering()
-			}
+			this.debounceDecorate()
 		}
 	}
 

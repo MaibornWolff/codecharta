@@ -12,6 +12,7 @@ export class SearchPanelModeService implements StoreSubscriber {
 	private static SEARCH_PANEL_MODE_CHANGED_EVENT = "search-panel-mode-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
