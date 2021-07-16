@@ -1,9 +1,10 @@
 import "./attributeTypeSelector.component.scss"
 import { StoreService } from "../../state/store.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
-import { updateAttributeType } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { AttributeTypesActions, updateAttributeType } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { IRootScopeService } from "angular"
 
 export class AttributeTypeSelectorController {
 	private _viewModel: {
@@ -16,11 +17,17 @@ export class AttributeTypeSelectorController {
 	private metric: string
 
 	constructor(
+		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
 		"ngInject"
+		this.$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (_event_, data) => {
+			if (data.actionType === AttributeTypesActions.UPDATE_ATTRIBUTE_TYPE) {
+				this.setAggregationSymbol()
+			}
+		})
 	}
 
 	$onInit() {

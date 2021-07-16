@@ -24,9 +24,18 @@
 				<tr>
 					<td>
 						<i class="fa fa-arrows-alt"></i>
-						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
-						</span>
+						<div class="metric-value">
+							<attribute-type-selector-component
+								class="attribute-type-select"
+								type="nodes"
+								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.area}}"
+								ng-if="!$ctrl._viewModel.node.isLeaf"
+							>
+							</attribute-type-selector-component>
+							<span>
+								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
+							</span>
+						</div>
 						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.area"
 						></metric-delta-selected-component>
@@ -35,9 +44,18 @@
 
 					<td>
 						<i class="fa fa-arrows-v"></i>
-						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number: 0 }}
-						</span>
+						<div class="metric-value">
+							<attribute-type-selector-component
+								class="attribute-type-select"
+								type="nodes"
+								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.height}}"
+								ng-if="!$ctrl._viewModel.node.isLeaf"
+							>
+							</attribute-type-selector-component>
+							<span>
+								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number: 0 }}
+							</span>
+						</div>
 						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.height"
 						></metric-delta-selected-component>
@@ -48,16 +66,25 @@
 				<tr>
 					<td>
 						<i class="fa fa-paint-brush"></i>
-						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number: 0 }}
-						</span>
+						<div class="metric-value">
+							<attribute-type-selector-component
+								class="attribute-type-select"
+								type="nodes"
+								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.color}}"
+								ng-if="!$ctrl._viewModel.node.isLeaf"
+							>
+							</attribute-type-selector-component>
+							<span>
+								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number: 0 }}
+							</span>
+						</div>
 						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.color"
 						></metric-delta-selected-component>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</p>
 					</td>
 
-					<td>
+					<td ng-if="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
 						<i class="fa fa-exchange"></i>
 						<span class="metric-value" ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
 							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].incoming | number: 0 }}
@@ -78,14 +105,23 @@
 					<tr>
 						<th scope="col" colspan="2">Secondary Metrics</th>
 					</tr>
-					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys track by $index">
-						<td>
-							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number: 0 }}</span>
+					<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetrics track by $index" class="metric-row">
+						<td class="metric-summary">
+							<span class="metric-type">
+								<attribute-type-selector-component
+									class="attribute-type-select"
+									type="nodes"
+									metric="{{::attributeKey.name}}"
+									ng-if="!$ctrl._viewModel.node.isLeaf"
+								>
+								</attribute-type-selector-component>
+							</span>
+							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey.name] | number: 0 }}</span>
 						</td>
 						<td ng-show="$ctrl._viewModel.node.deltas">
-							<metric-delta-selected-component attributekey="::attributekey"></metric-delta-selected-component>
+							<metric-delta-selected-component attributekey="::attributeKey"></metric-delta-selected-component>
 						</td>
-						<td class="metric-name">{{ attributekey }}</td>
+						<td class="metric-name">{{ attributeKey.name }}</td>
 					</tr>
 				</table>
 			</div>

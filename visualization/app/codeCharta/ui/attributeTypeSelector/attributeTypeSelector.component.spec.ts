@@ -6,9 +6,11 @@ import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { IRootScopeService } from "angular"
 
 describe("AttributeTypeSelectorController", () => {
 	let attributeTypeSelectorController: AttributeTypeSelectorController
+	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let nodeMetricDataService: NodeMetricDataService
 	let edgeMetricDataService: EdgeMetricDataService
@@ -20,13 +22,19 @@ describe("AttributeTypeSelectorController", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.attributeTypeSelector")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 	}
 
 	function rebuildController() {
-		attributeTypeSelectorController = new AttributeTypeSelectorController(storeService, nodeMetricDataService, edgeMetricDataService)
+		attributeTypeSelectorController = new AttributeTypeSelectorController(
+			$rootScope,
+			storeService,
+			nodeMetricDataService,
+			edgeMetricDataService
+		)
 	}
 
 	describe("setToAbsolute", () => {
