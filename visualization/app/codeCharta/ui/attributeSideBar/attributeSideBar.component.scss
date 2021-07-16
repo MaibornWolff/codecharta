@@ -7,6 +7,7 @@ attribute-side-bar-component {
 		position: absolute;
 		right: -355px;
 		background: white;
+		overflow-y: scroll;
 
 		&.expanded {
 			right: 0;
@@ -177,11 +178,10 @@ attribute-side-bar-component {
 				.notes-text {
 					background-color: #f0f0f0;
 					width: auto;
-					resize: vertical;
+					resize: None;
 					margin-bottom: 3px;
 					max-height: 150px;
 					overflow-y: auto;
-					//word-wrap:break-word
 				}
 			}
 		}

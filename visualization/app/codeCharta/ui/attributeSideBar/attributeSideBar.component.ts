@@ -120,7 +120,11 @@ export class AttributeSideBarController
 		this._viewModel.notes.push({ path: "/root/leaf2", text: "Leaf2", nodeMetricData: [{ name: "rloc", maxValue: 30 }] })
 	}
 
-	adjustHeight(event) {
+	onKeyUpTextarea(event) {
+		this.adjustHeight(event)
+	}
+
+	private adjustHeight(event) {
 		const textarea = event.target
 		textarea.style.height = textarea.scrollHeight > textarea.clientHeight ? `${textarea.scrollHeight}px` : "42px"
 	}
