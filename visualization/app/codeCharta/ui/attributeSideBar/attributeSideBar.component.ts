@@ -1,7 +1,7 @@
 import "./attributeSideBar.component.scss"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { Node } from "../../codeCharta.model"
+import { Node, NodeMetricData } from "../../codeCharta.model"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
@@ -27,6 +27,12 @@ export interface PrimaryMetrics {
 	}
 }
 
+export interface FileNote {
+	path: string
+	text: string
+	nodeMetricData: NodeMetricData[]
+}
+
 export class AttributeSideBarController
 	implements
 		BuildingSelectedEventSubscriber,
@@ -42,14 +48,17 @@ export class AttributeSideBarController
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
 		isSideBarVisible: boolean
-		notes: string[]
+		notes: FileNote[]
 	} = {
 		node: null,
 		fileName: null,
 		primaryMetricKeys: { node: {}, edge: {} } as PrimaryMetrics,
 		secondaryMetricKeys: null,
 		isSideBarVisible: null,
-		notes: ["Hello World", "This is great"]
+		notes: [
+			{ path: "/root", text: "Root", nodeMetricData: [{ name: "mcc", maxValue: 100 }] },
+			{ path: "/root/leaf", text: "Leaf", nodeMetricData: [{ name: "rloc", maxValue: 400 }] }
+		]
 	}
 
 	constructor(
@@ -105,6 +114,10 @@ export class AttributeSideBarController
 			return
 		}
 		LazyLoader.openFile(this._viewModel.fileName, this._viewModel.node.path)
+	}
+
+	onClickAddNote() {
+		this._viewModel.notes.push({ path: "/root/leaf2", text: "Leaf2", nodeMetricData: [{ name: "rloc", maxValue: 30 }] })
 	}
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
