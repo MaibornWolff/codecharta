@@ -29,7 +29,8 @@ export const ERROR_MESSAGES = {
 	fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
 	fixedFoldersOverlapped: "Folders may not overlap.",
 	fixedFoldersNotAllowed: "Fixated folders may not be defined in API-Version < 1.2.",
-	fileAlreadyExists: "File already exists."
+	fileAlreadyExists: "File already exists.",
+	blacklistError: "Excluding all buildings is not possible."
 }
 
 export function validate(nameDataPair: NameDataPair, storeService: StoreService) {

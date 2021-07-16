@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Performance improvements when loading new files. ([#1312](https://github.com/maibornwolff/codecharta/issues/1312))
+-   It is no longer possible to exclude all files on the map ([#901](https://github.com/MaibornWolff/codecharta/issues/901))
 
 ## [1.75.0] - 2021-07-05
 
