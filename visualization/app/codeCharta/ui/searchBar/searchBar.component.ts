@@ -1,12 +1,14 @@
 import "./searchBar.component.scss"
-import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import debounce from "lodash.debounce"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import { DialogService } from "../dialog/dialog.service"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { ERROR_MESSAGES } from "../../util/fileValidator"
 
 export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -21,7 +23,12 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		isPatternExcluded: true
 	}
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private blacklistService: BlacklistService,
+		private dialogService: DialogService
+	) {
 		"ngInject"
 		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPatternService.subscribe(this.$rootScope, this)
@@ -44,12 +51,26 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	onClickBlacklistPattern(blacklistType: BlacklistType) {
+		const blacklistItems: BlacklistItem[] = this.parseValidBlacklistItems(blacklistType)
+
+		if (blacklistType === BlacklistType.exclude && this.blacklistService.resultsInEmptyMap(blacklistItems)) {
+			this.dialogService.showErrorDialog(ERROR_MESSAGES.blacklistError, "Blacklist Error")
+		} else {
+			for (const blackItem of blacklistItems) {
+				this.storeService.dispatch(addBlacklistItem(blackItem))
+				this.resetSearchPattern()
+			}
+		}
+	}
+
+	private parseValidBlacklistItems(blacklistType: BlacklistType) {
+		const blacklistItems: BlacklistItem[] = []
 		const paths: string[] = this._viewModel.searchPattern.split(",")
 		if (paths[0].startsWith("!")) {
 			paths[0] = paths[0].slice(1)
 			for (const path of paths) {
 				if (path.length > 0) {
-					this.storeService.dispatch(addBlacklistItem({ path: `!${this.unifyWildCard(path)}`, type: blacklistType }))
+					blacklistItems.push({ path: `!${this.unifyWildCard(path)}`, type: blacklistType })
 				}
 			}
 		} else {
@@ -60,11 +81,11 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 					} else {
 						path = this.unifyWildCard(path)
 					}
-					this.storeService.dispatch(addBlacklistItem({ path, type: blacklistType }))
+					blacklistItems.push({ path, type: blacklistType })
 				}
 			}
 		}
-		this.resetSearchPattern()
+		return blacklistItems
 	}
 
 	isSearchPatternEmpty() {
