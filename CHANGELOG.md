@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Small ui improvements added. ([#1881](https://github.com/MaibornWolff/codecharta/issues/1881))
+
 ## [1.76.0] - 2021-07-13
 
 ### Added 🚀
