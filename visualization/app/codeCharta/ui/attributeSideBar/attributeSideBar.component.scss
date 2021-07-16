@@ -177,9 +177,11 @@ attribute-side-bar-component {
 				.notes-text {
 					background-color: #f0f0f0;
 					width: auto;
-					height: 8em;
 					resize: vertical;
 					margin-bottom: 3px;
+					max-height: 150px;
+					overflow-y: auto;
+					//word-wrap:break-word
 				}
 			}
 		}

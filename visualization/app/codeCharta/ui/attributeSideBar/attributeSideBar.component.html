@@ -92,7 +92,14 @@
 			<button class="toolbar-button" ng-click="$ctrl.onClickAddNote()">Add Note</button>
 			<div ng-repeat="note in $ctrl._viewModel.notes" class="metric-box notes-wrapper">
 				<p class="notes-header">Notes</p>
-				<textarea id="node-input" class="notes-text" placeholder="Enter your notes here ...">{{ note.text }}</textarea>
+				<textarea
+					id="node-input"
+					class="notes-text"
+					ng-keyup="$ctrl.adjustHeight($event)"
+					placeholder="Enter your notes here ..."
+					contentEditable
+					>{{ note.text }}</textarea
+				>
 			</div>
 		</div>
 	</div>
