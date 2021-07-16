@@ -90,9 +90,13 @@
 				</table>
 			</div>
 
-			<div class="metric-box notes-wrapper">
+			<button>Add Note</button>
+			<div ng-repeat="note in $ctrl._viewModel.notes" class="metric-box notes-wrapper">
 				<p class="notes-header">Notes</p>
-				<textarea id="node-input" class="notes-text" placeholder="Enter your notes here ..."></textarea>
+				<textarea id="node-input" class="notes-text" placeholder="Enter your notes here ...">
+          {{ note }}
+        </textarea
+				>
 			</div>
 		</div>
 	</div>

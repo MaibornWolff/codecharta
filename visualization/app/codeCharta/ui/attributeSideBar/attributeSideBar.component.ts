@@ -42,12 +42,14 @@ export class AttributeSideBarController
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
 		isSideBarVisible: boolean
+		notes: string[]
 	} = {
 		node: null,
 		fileName: null,
 		primaryMetricKeys: { node: {}, edge: {} } as PrimaryMetrics,
 		secondaryMetricKeys: null,
-		isSideBarVisible: null
+		isSideBarVisible: null,
+		notes: ["Hello World", "This is great"]
 	}
 
 	constructor(
