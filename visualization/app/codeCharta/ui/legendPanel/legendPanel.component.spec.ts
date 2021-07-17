@@ -8,10 +8,15 @@ import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/
 import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { FilesService } from "../../state/store/files/files.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { StoreService } from "../../state/store.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("LegendPanelController", () => {
 	let legendPanelController: LegendPanelController
 	let $rootScope: IRootScopeService
+	let nodeMetricDataService: NodeMetricDataService
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
@@ -22,10 +27,12 @@ describe("LegendPanelController", () => {
 		instantiateModule("app.codeCharta.ui.legendPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		legendPanelController = new LegendPanelController($rootScope)
+		legendPanelController = new LegendPanelController($rootScope, nodeMetricDataService, storeService)
 	}
 
 	describe("constructor", () => {
@@ -53,6 +60,14 @@ describe("LegendPanelController", () => {
 			expect(IsAttributeSideBarVisibleService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
 		})
 
+		it("should subscribe to BlackListService", () => {
+			BlacklistService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
+		})
+
 		it("should subscribe to FilesService", () => {
 			const fileServiceSubscribeSpy = jest.spyOn(FilesService, "subscribe").mockImplementation(jest.fn())
 
@@ -69,6 +84,14 @@ describe("LegendPanelController", () => {
 
 			expect(legendPanelController["_viewModel"].isDeltaState).toBe(false)
 		})
+
+		it("should update _viewModel.maxMetricValue", () => {
+			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+
+			legendPanelController.onFilesSelectionChanged([])
+
+			expect(legendPanelController["_viewModel"].maxMetricValue).toBe(34)
+		})
 	})
 
 	describe("onColorMetricChanged", () => {
@@ -78,6 +101,24 @@ describe("LegendPanelController", () => {
 			legendPanelController.onColorMetricChanged(newColorMetric)
 
 			expect(legendPanelController["_viewModel"].colorMetric).toEqual(newColorMetric)
+		})
+
+		it("should update _viewModel.maxMetricValue", () => {
+			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+
+			legendPanelController.onFilesSelectionChanged([])
+
+			expect(legendPanelController["_viewModel"].maxMetricValue).toBe(34)
+		})
+	})
+
+	describe("onBlackListChanged", () => {
+		it("should update _viewModel.maxMetricValue", () => {
+			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+
+			legendPanelController.onBlacklistChanged()
+
+			expect(legendPanelController["_viewModel"].maxMetricValue).toBe(34)
 		})
 	})
 
