@@ -5,7 +5,6 @@ export const NGMock: IAngularStatic = angular
 export const NG = angular
 
 export function instantiateModule(id: string) {
-	// @ts-ignore
 	NGMock.mock.module(id)
 }
 

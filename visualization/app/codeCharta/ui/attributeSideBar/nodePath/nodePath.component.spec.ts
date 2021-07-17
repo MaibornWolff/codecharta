@@ -8,10 +8,8 @@ describe("nodePathComponent", () => {
 	let $rootScope
 
 	beforeEach(() => {
-		// @ts-ignore
 		angular.mock.module("app.codeCharta.ui.attributeSideBar")
 
-		// @ts-ignore
 		angular.mock.inject(function (_$compile_, _$rootScope_) {
 			$compile = _$compile_
 			$rootScope = _$rootScope_
