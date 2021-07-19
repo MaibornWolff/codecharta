@@ -5,6 +5,7 @@ import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
+import { FileNote } from "./ui/attributeSideBar/attributeSideBar.component"
 
 export interface NameDataPair {
 	fileName: string
@@ -253,6 +254,11 @@ export interface LocalStorageCustomConfigs {
 export interface LocalStorageScenarios {
 	version: string
 	scenarios: [string, RecursivePartial<Scenario>][]
+}
+
+export interface LocalStorageNotes {
+	version: string
+	notes: Map<string, FileNote[]>
 }
 
 export interface LocalStorageGlobalSettings {

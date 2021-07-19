@@ -15,6 +15,8 @@ import {
 import { StoreService } from "../../state/store.service"
 import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { LazyLoader } from "../../util/lazyLoader"
+import { debounce } from "lodash"
+import { NotesHelper } from "../../util/notesHelper"
 
 export interface PrimaryMetrics {
 	node: {
@@ -55,11 +57,11 @@ export class AttributeSideBarController
 		primaryMetricKeys: { node: {}, edge: {} } as PrimaryMetrics,
 		secondaryMetricKeys: null,
 		isSideBarVisible: null,
-		notes: [
-			{ path: "/root", text: "Root", nodeMetricData: [{ name: "mcc", maxValue: 100 }] },
-			{ path: "/root/leaf", text: "Leaf", nodeMetricData: [{ name: "rloc", maxValue: 400 }] }
-		]
+		notes: []
 	}
+
+	private debounceNoteUpdate: (event, index) => void
+	private DEBOUNCE_TIME = 500
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -73,12 +75,26 @@ export class AttributeSideBarController
 		ColorMetricService.subscribe(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
+		this.debounceNoteUpdate = debounce((event, index) => {
+			const path = this._viewModel.fileName + this._viewModel.node.path
+			const text = event.target.value || ""
+			const nodeMetricData = [{ name: "rloc", maxValue: 400 }]
+			const fileNote = { path, text, nodeMetricData } as FileNote
+			if (NotesHelper.noteExists(path, index)) {
+				NotesHelper.updateNote(index, fileNote)
+			} else {
+				NotesHelper.addNewNote(fileNote)
+			}
+		}, this.DEBOUNCE_TIME)
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
 		this._viewModel.fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
+
+		const path = this._viewModel.fileName + this._viewModel.node.path
+		this._viewModel.notes = NotesHelper.getNotesFromLocalStorage(path)
 	}
 
 	onAreaMetricChanged(areaMetric: string) {
@@ -117,11 +133,12 @@ export class AttributeSideBarController
 	}
 
 	onClickAddNote() {
-		this._viewModel.notes.push({ path: "/root/leaf2", text: "Leaf2", nodeMetricData: [{ name: "rloc", maxValue: 30 }] })
+		this._viewModel.notes.push({ path: this._viewModel.node.path, text: "", nodeMetricData: [{ name: "rloc", maxValue: 30 }] })
 	}
 
-	onKeyUpTextarea(event) {
+	onKeyUpTextarea(event, index) {
 		this.adjustHeight(event)
+		this.debounceNoteUpdate(event, index)
 	}
 
 	private adjustHeight(event) {
