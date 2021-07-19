@@ -1,7 +1,7 @@
 import "./attributeSideBar.component.scss"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { Node, NodeMetricData } from "../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
@@ -32,7 +32,7 @@ export interface PrimaryMetrics {
 export interface FileNote {
 	path: string
 	text: string
-	nodeMetricData: NodeMetricData[]
+	metricData: string[]
 }
 
 export class AttributeSideBarController
@@ -78,8 +78,8 @@ export class AttributeSideBarController
 		this.debounceNoteUpdate = debounce((event, index) => {
 			const path = this._viewModel.fileName + this._viewModel.node.path
 			const text = event.target.value || ""
-			const nodeMetricData = [{ name: "rloc", maxValue: 400 }]
-			const fileNote = { path, text, nodeMetricData } as FileNote
+			const metricData = this.getSelectedMetrics()
+			const fileNote = { path, text, metricData } as FileNote
 			if (NotesHelper.noteExists(path, index)) {
 				NotesHelper.updateNote(index, fileNote)
 			} else {
@@ -133,12 +133,21 @@ export class AttributeSideBarController
 	}
 
 	onClickAddNote() {
-		this._viewModel.notes.push({ path: this._viewModel.node.path, text: "", nodeMetricData: [{ name: "rloc", maxValue: 30 }] })
+		this._viewModel.notes.push({
+			path: this._viewModel.node.path,
+			text: "",
+			metricData: this.getSelectedMetrics()
+		})
 	}
 
 	onKeyUpTextarea(event, index) {
 		this.adjustHeight(event)
 		this.debounceNoteUpdate(event, index)
+	}
+
+	private getSelectedMetrics() {
+		const dynamicSettings = this.storeService.getState().dynamicSettings
+		return [dynamicSettings.areaMetric, dynamicSettings.heightMetric, dynamicSettings.colorMetric, dynamicSettings.edgeMetric]
 	}
 
 	private adjustHeight(event) {
