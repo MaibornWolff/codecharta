@@ -6,7 +6,7 @@ export class NotesHelper {
 
 	static getNotesFromLocalStorage(key: string) {
 		const fileNotes: FileNote[] = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
-		return fileNotes.filter(file => file.path === key)
+		return fileNotes?.filter(file => file.path === key) || []
 	}
 
 	static updateNote(index: number, payload: FileNote) {

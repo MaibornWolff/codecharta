@@ -93,11 +93,12 @@
 			<div ng-repeat="note in $ctrl._viewModel.notes" class="metric-box notes-wrapper">
 				<p class="notes-header">Notes</p>
 				<textarea
-					id="node-input"
 					class="notes-text"
+					contentEditable
+					id="node-input"
 					ng-keyup="$ctrl.onKeyUpTextarea($event, $index)"
 					placeholder="Enter your notes here ..."
-					contentEditable
+					title="{{ $ctrl.getDataMetricsOf(note) }}"
 					>{{ note.text }}</textarea
 				>
 			</div>

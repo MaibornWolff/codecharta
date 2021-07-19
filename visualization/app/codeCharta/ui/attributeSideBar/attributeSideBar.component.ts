@@ -145,6 +145,10 @@ export class AttributeSideBarController
 		this.debounceNoteUpdate(event, index)
 	}
 
+	getDataMetricsOf(fileNote: FileNote) {
+		return `Selected metrics: ${fileNote?.metricData?.join(", ")}`
+	}
+
 	private getSelectedMetrics() {
 		const dynamicSettings = this.storeService.getState().dynamicSettings
 		return [dynamicSettings.areaMetric, dynamicSettings.heightMetric, dynamicSettings.colorMetric, dynamicSettings.edgeMetric]
