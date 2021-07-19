@@ -60,8 +60,8 @@ export class AttributeSideBarController
 		notes: []
 	}
 
-	private debounceNoteUpdate: (event, index) => void
-	private DEBOUNCE_TIME = 500
+	private readonly debounceNoteUpdate: (event, index) => void
+	private readonly DEBOUNCE_TIME = 250
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -141,7 +141,7 @@ export class AttributeSideBarController
 	}
 
 	onKeyUpTextarea(event, index) {
-		this.adjustHeight(event)
+		// this.adjustHeight(event)
 		this.debounceNoteUpdate(event, index)
 	}
 
@@ -154,10 +154,10 @@ export class AttributeSideBarController
 		return [dynamicSettings.areaMetric, dynamicSettings.heightMetric, dynamicSettings.colorMetric, dynamicSettings.edgeMetric]
 	}
 
-	private adjustHeight(event) {
-		const textarea = event.target
-		textarea.style.height = textarea.scrollHeight > textarea.clientHeight ? `${textarea.scrollHeight}px` : "42px"
-	}
+	// private adjustHeight(event) {
+	// 	const textarea = event.target
+	// 	textarea.style.height = textarea.scrollHeight > textarea.clientHeight ? `${textarea.scrollHeight}px` : "42px"
+	// }
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
 		if (this._viewModel.node) {
