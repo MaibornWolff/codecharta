@@ -52,7 +52,7 @@ describe("MetricDataService", () => {
 
 	describe("onEdgeMetricDataChanged", () => {
 		it("should notify that metric data is complete if node metric data exists", () => {
-			storeService["store"].dispatch(setNodeMetricData(METRIC_DATA))
+			storeService["originalDispatch"](setNodeMetricData(METRIC_DATA))
 
 			metricDataService.onEdgeMetricDataChanged()
 
@@ -60,7 +60,7 @@ describe("MetricDataService", () => {
 		})
 
 		it("should not notify if node metric data does not exist", () => {
-			storeService["store"].dispatch(setNodeMetricData())
+			storeService["originalDispatch"](setNodeMetricData())
 
 			metricDataService.onEdgeMetricDataChanged()
 
@@ -70,7 +70,7 @@ describe("MetricDataService", () => {
 
 	describe("onNodeMetricDataChanged", () => {
 		it("should notify that metric data is complete if edge metric data exists", () => {
-			storeService["store"].dispatch(setEdgeMetricData(EDGE_METRIC_DATA))
+			storeService["originalDispatch"](setEdgeMetricData(EDGE_METRIC_DATA))
 
 			metricDataService.onNodeMetricDataChanged()
 
@@ -78,8 +78,8 @@ describe("MetricDataService", () => {
 		})
 
 		it("should not notify if edge metric data does not exist and there are edges in the file", () => {
-			storeService["store"].dispatch(setEdges([VALID_EDGE]))
-			storeService["store"].dispatch(setEdgeMetricData())
+			storeService["originalDispatch"](setEdges([VALID_EDGE]))
+			storeService["originalDispatch"](setEdgeMetricData())
 
 			metricDataService.onNodeMetricDataChanged()
 
@@ -87,7 +87,7 @@ describe("MetricDataService", () => {
 		})
 
 		it("should notify if edges are not available in the files", () => {
-			storeService["store"].dispatch(setEdgeMetricData())
+			storeService["originalDispatch"](setEdgeMetricData())
 
 			metricDataService.onNodeMetricDataChanged()
 
