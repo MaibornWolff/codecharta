@@ -29,9 +29,18 @@ export class StoreService {
 	private static STORE_CHANGED_EVENT = "store-changed"
 	private static STORE_CHANGED_EXTENDED_EVENT = "store-changed-extended"
 	private store = Store.store
+	private originalDispatch: typeof Store.store.dispatch
 
 	constructor(private $rootScope: IRootScopeService) {
 		"ngInject"
+		// See issue #2292:
+		// Temporarily monkey patch so that store changes triggered by directly to store connected Angular's components
+		// also notify $rootScope and keep existing logic. After full migration to Angular,
+		// we still need to migrate the custom logic of `this.dispatch`. We could keep it through
+		// adding a custom middleware, or moving to a thunk middleware.
+		this.originalDispatch = Store.store.dispatch
+		// @ts-ignore
+		Store.store.dispatch = this.dispatch.bind(this)
 	}
 
 	dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {
@@ -53,7 +62,7 @@ export class StoreService {
 		}
 
 		for (const atomicAction of splitStateActions(action)) {
-			this.store.dispatch(atomicAction)
+			this.originalDispatch(atomicAction)
 			if (!options.silent) {
 				this.notify(atomicAction.type)
 				this.notifyExtended(atomicAction.type, atomicAction.payload)

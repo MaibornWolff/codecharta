@@ -1,5 +1,4 @@
 import angular from "angular"
-import "angular-mocks"
 
 import "../attributeSideBar.module"
 import { nodePathComponent } from "./nodePath.component"
