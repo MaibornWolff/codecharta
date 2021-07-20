@@ -96,6 +96,7 @@
 					<button class="add-notes-button" ng-click="$ctrl.onClickAddNote()">Add Note</button></span
 				>
 				<div ng-repeat="note in $ctrl._viewModel.notes" class="metric-box notes-wrapper">
+					<i class="remove-note-button close-icon fa fa-trash" ng-click="$ctrl.onClickRemoveNote($index)"></i>
 					<textarea
 						class="notes-text"
 						contentEditable

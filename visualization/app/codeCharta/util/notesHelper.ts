@@ -26,4 +26,19 @@ export class NotesHelper {
 		const fileNotes: FileNote[] = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
 		return fileNotes?.filter(file => file.path === path)?.[index] !== undefined
 	}
+
+	static removeNote(path, noteIndex) {
+		const fileNotes: FileNote[] = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
+		let counter = -1
+		for (let index = 0; index < fileNotes.length; index++) {
+			if (fileNotes[index].path === path) {
+				counter = counter + 1
+				if (counter === noteIndex) {
+					fileNotes.splice(index, 1)
+					break
+				}
+			}
+		}
+		return localStorage.setItem(this.NOTES_LOCAL_STORAGE_ELEMENT, JSON.stringify(fileNotes))
+	}
 }

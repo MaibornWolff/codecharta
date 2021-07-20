@@ -187,6 +187,16 @@ attribute-side-bar-component {
 					background-color: #444444;
 				}
 
+				.remove-note-button {
+					position: relative;
+					left: 280px;
+					color: grey;
+				}
+
+				.remove-note-button:hover {
+					color: #444444;
+				}
+
 				.notes-text {
 					background-color: #f0f0f0;
 					border-radius: 0px;

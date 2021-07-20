@@ -78,7 +78,7 @@ export class AttributeSideBarController
 		this.debounceNoteUpdate = debounce((event, index) => {
 			const path = this._viewModel.fileName + this._viewModel.node.path
 			const text = event.target.value || ""
-			const metricData = this.getSelectedMetrics()
+			const metricData = this._viewModel.notes[index].metricData
 			const fileNote = { path, text, metricData } as FileNote
 			if (NotesHelper.noteExists(path, index)) {
 				NotesHelper.updateNote(index, fileNote)
@@ -138,6 +138,12 @@ export class AttributeSideBarController
 			text: "",
 			metricData: this.getSelectedMetrics()
 		})
+	}
+
+	onClickRemoveNote(index) {
+		const path = this._viewModel.fileName + this._viewModel.node.path
+		NotesHelper.removeNote(path, index)
+		this._viewModel.notes.splice(index, 1)
 	}
 
 	onKeyUpTextarea(event, index) {
