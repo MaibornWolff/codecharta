@@ -55,4 +55,8 @@ export class NotesHelper {
 	static isFromSelectedFile(path: string, selectedFiles: FileState[]): boolean {
 		return selectedFiles.some(file => path.startsWith(file.file.fileMeta.fileName))
 	}
+
+	static deleteNotes() {
+		return localStorage.setItem(this.NOTES_LOCAL_STORAGE_ELEMENT, JSON.stringify([]))
+	}
 }

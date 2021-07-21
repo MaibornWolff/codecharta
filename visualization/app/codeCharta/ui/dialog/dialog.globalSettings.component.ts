@@ -32,6 +32,7 @@ import { CodeChartaStorage } from "../../util/codeChartaStorage"
 import { FileDownloader } from "../../util/fileDownloader"
 import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
 import { isStandalone } from "../../util/envDetector"
+import { NotesHelper } from "../../util/notesHelper"
 
 export class DialogGlobalSettingsController
 	implements
@@ -173,6 +174,10 @@ export class DialogGlobalSettingsController
 
 	changeGlobalSettingsInLocalStorage() {
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ ...this._viewModel })
+	}
+
+	deleteNotes() {
+		NotesHelper.deleteNotes()
 	}
 }
 

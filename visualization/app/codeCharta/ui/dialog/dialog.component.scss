@@ -105,3 +105,14 @@ reset-settings-button-component {
 		color: red;
 	}
 }
+
+.delete-notes-button {
+	border-radius: 4px;
+	margin-top: 20px;
+	background-color: #ff6161;
+	border: none;
+}
+
+.delete-notes-button:hover {
+	background-color: #ff2525;
+}
