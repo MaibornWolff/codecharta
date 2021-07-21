@@ -75,6 +75,7 @@ export class AttributeSideBarController
 		ColorMetricService.subscribe(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
+
 		this.debounceNoteUpdate = debounce((event, index) => {
 			const path = this._viewModel.fileName + this._viewModel.node.path
 			const text = event.target.value || ""
