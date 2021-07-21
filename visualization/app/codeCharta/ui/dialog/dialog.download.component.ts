@@ -71,7 +71,11 @@ export class DialogDownloadController {
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(BlacklistType.exclude))
 		this.pushFileContent(DownloadCheckboxNames.flattens, this.getFilteredBlacklistLength(BlacklistType.flatten))
-		this.pushFileContent(DownloadCheckboxNames.notes, NotesHelper.getNotesFromSelectedMaps(this.storeService.getState().files)?.length)
+		this.pushFileContent(
+			DownloadCheckboxNames.notes,
+			NotesHelper.getNotesFromSelectedMaps(this.storeService.getState().files)?.length,
+			false
+		)
 	}
 
 	private getFilteredBlacklistLength(blacklistType: BlacklistType) {
@@ -84,11 +88,11 @@ export class DialogDownloadController {
 		return count
 	}
 
-	private pushFileContent(name: string, numberOfListItems: number) {
+	private pushFileContent(name: string, numberOfListItems: number, isSelectedDefault?: boolean) {
 		this._viewModel.fileContent.push({
 			name,
 			numberOfListItems,
-			isSelected: numberOfListItems > 0,
+			isSelected: isSelectedDefault === false ? isSelectedDefault : numberOfListItems > 0,
 			isDisabled: !numberOfListItems
 		})
 	}
