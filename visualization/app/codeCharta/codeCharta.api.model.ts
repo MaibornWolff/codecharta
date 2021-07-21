@@ -1,4 +1,5 @@
 import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage, RecursivePartial, Settings } from "./codeCharta.model"
+import { FileNote } from "./ui/attributeSideBar/attributeSideBar.component"
 
 export interface ExportCCFile {
 	projectName: string
@@ -9,6 +10,7 @@ export interface ExportCCFile {
 	edges?: Edge[]
 	markedPackages?: MarkedPackage[]
 	blacklist?: ExportBlacklistItem[]
+	notes?: FileNote[]
 }
 
 export interface ExportBlacklistItem {

@@ -6,8 +6,7 @@ import { hierarchy } from "d3-hierarchy"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
-import { FileNote } from "../attributeSideBar/attributeSideBar.component"
-import { FileSelectionState, FileState } from "../../model/files/files"
+import { NotesHelper } from "../../util/notesHelper"
 
 interface FileDownloadContent {
 	name: string
@@ -36,7 +35,6 @@ export class DialogDownloadController {
 		amountOfAttributeTypes: null,
 		fileContent: []
 	}
-	private readonly NOTES_LOCAL_STORAGE_ELEMENT = "notes"
 
 	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private storeService: StoreService) {
 		"ngInject"
@@ -53,7 +51,8 @@ export class DialogDownloadController {
 			this.codeMapPreRenderService.getRenderFileMeta(),
 			this.storeService.getState().fileSettings,
 			this._viewModel.fileContent.filter(x => x.isSelected === true).map(x => x.name),
-			this._viewModel.fileName
+			this._viewModel.fileName,
+			this.storeService.getState().files
 		)
 		this.hide()
 	}
@@ -72,8 +71,7 @@ export class DialogDownloadController {
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(BlacklistType.exclude))
 		this.pushFileContent(DownloadCheckboxNames.flattens, this.getFilteredBlacklistLength(BlacklistType.flatten))
-		this.getNotesLength()
-		this.pushFileContent(DownloadCheckboxNames.notes, this.getNotesLength())
+		this.pushFileContent(DownloadCheckboxNames.notes, NotesHelper.getNotesFromSelectedMaps(this.storeService.getState().files)?.length)
 	}
 
 	private getFilteredBlacklistLength(blacklistType: BlacklistType) {
@@ -125,19 +123,6 @@ export class DialogDownloadController {
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
 		return a.isDisabled === b.isDisabled ? 0 : a.isDisabled ? 1 : -1
-	}
-
-	private getNotesLength() {
-		const fileNotes = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT)) as FileNote[]
-		const selectedFiles = this.storeService
-			.getState()
-			.files.filter(file => file.selectedAs === FileSelectionState.Single || file.selectedAs === FileSelectionState.Partial)
-		const currentMapFileNotes = fileNotes.filter(fileNote => this.isFromSelectedFile(fileNote.path, selectedFiles))
-		return currentMapFileNotes.length
-	}
-
-	private isFromSelectedFile(path: string, selectedFiles: FileState[]) {
-		return selectedFiles.some(file => path.startsWith(file.file.fileMeta.fileName))
 	}
 }
 

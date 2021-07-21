@@ -1,4 +1,5 @@
 import { FileNote } from "../ui/attributeSideBar/attributeSideBar.component"
+import { FileSelectionState, FileState } from "../model/files/files"
 
 export class NotesHelper {
 	// private static readonly NOTES_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -40,5 +41,18 @@ export class NotesHelper {
 			}
 		}
 		return localStorage.setItem(this.NOTES_LOCAL_STORAGE_ELEMENT, JSON.stringify(fileNotes))
+	}
+
+	static getNotesFromSelectedMaps(files: FileState[]): FileNote[] {
+		const fileNotes = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT)) as FileNote[]
+		const selectedFiles = files.filter(
+			file => file.selectedAs === FileSelectionState.Single || file.selectedAs === FileSelectionState.Partial
+		)
+		const currentMapFileNotes = fileNotes.filter(fileNote => this.isFromSelectedFile(fileNote.path, selectedFiles))
+		return currentMapFileNotes.length > 0 ? currentMapFileNotes : []
+	}
+
+	static isFromSelectedFile(path: string, selectedFiles: FileState[]): boolean {
+		return selectedFiles.some(file => path.startsWith(file.file.fileMeta.fileName))
 	}
 }

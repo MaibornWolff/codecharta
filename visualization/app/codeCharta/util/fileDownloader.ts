@@ -5,6 +5,8 @@ import { ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
+import { FileState } from "../model/files/files"
+import { NotesHelper } from "./notesHelper"
 
 export class FileDownloader {
 	static downloadCurrentMap(
@@ -12,9 +14,10 @@ export class FileDownloader {
 		fileMeta: FileMeta,
 		fileSettings: FileSettings,
 		downloadSettingsNames: string[],
-		fileName: string
+		fileName: string,
+		files: FileState[]
 	) {
-		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
+		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames, files)
 		const newFileNameWithExtension = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(JSON.stringify(exportCCFile), newFileNameWithExtension)
 	}
@@ -23,7 +26,8 @@ export class FileDownloader {
 		map: CodeMapNode,
 		fileMeta: FileMeta,
 		fileSettings: FileSettings,
-		downloadSettingsNames: string[]
+		downloadSettingsNames: string[],
+		files: FileState[]
 	): ExportCCFile {
 		return {
 			projectName: fileMeta.projectName,
@@ -33,7 +37,8 @@ export class FileDownloader {
 			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
 			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? this.undecorateEdges(fileSettings.edges) : [],
 			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? fileSettings.markedPackages : [],
-			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist)
+			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist),
+			notes: downloadSettingsNames.includes(DownloadCheckboxNames.notes) ? this.getNotesToDownload(files) : []
 		}
 	}
 
@@ -99,5 +104,9 @@ export class FileDownloader {
 		link.dataset.downloadurl = ["text/json", link.download, link.href].join(":")
 		mouseEvent.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
 		link.dispatchEvent(mouseEvent)
+	}
+
+	private static getNotesToDownload(files: FileState[]) {
+		return NotesHelper.getNotesFromSelectedMaps(files)
 	}
 }
