@@ -34,7 +34,7 @@ export interface FileNote {
 	notes: Note[]
 }
 
-interface Note {
+export interface Note {
 	nodePath: string
 	text: string
 	metricData: string[]
@@ -102,8 +102,7 @@ export class AttributeSideBarController
 
 		const fileName = this._viewModel.fileName
 		const nodePath = this._viewModel.node.path
-		const notes: Note[] = NotesHelper.getNotesFromLocalStorage(fileName, nodePath)
-		this._viewModel.notes = notes
+		this._viewModel.notes = NotesHelper.getNotesFromLocalStorage(fileName, nodePath)
 	}
 
 	onAreaMetricChanged(areaMetric: string) {
@@ -152,7 +151,7 @@ export class AttributeSideBarController
 	onClickRemoveNote(index) {
 		const fileName = this._viewModel.fileName
 		const nodePath = this._viewModel.node.path
-		NotesHelper.removeNote(fileName, nodePath, index)
+		NotesHelper.deleteNote(fileName, nodePath, index)
 		this._viewModel.notes.splice(index, 1)
 	}
 

@@ -51,8 +51,7 @@ export class DialogDownloadController {
 			this.codeMapPreRenderService.getRenderFileMeta(),
 			this.storeService.getState().fileSettings,
 			this._viewModel.fileContent.filter(x => x.isSelected === true).map(x => x.name),
-			this._viewModel.fileName,
-			this.storeService.getState().files
+			this._viewModel.fileName
 		)
 		this.hide()
 	}
@@ -67,15 +66,12 @@ export class DialogDownloadController {
 
 	private setFileContentList() {
 		const { fileSettings } = this.storeService.getState()
+		const fileMeta = this.codeMapPreRenderService.getRenderFileMeta()
 		this.pushFileContent(DownloadCheckboxNames.edges, fileSettings.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(BlacklistType.exclude))
 		this.pushFileContent(DownloadCheckboxNames.flattens, this.getFilteredBlacklistLength(BlacklistType.flatten))
-		this.pushFileContent(
-			DownloadCheckboxNames.notes,
-			NotesHelper.getNotesFromSelectedMaps(this.storeService.getState().files).flatMap(fileNote => fileNote.notes)?.length,
-			false
-		)
+		this.pushFileContent(DownloadCheckboxNames.notes, NotesHelper.getNotesFromFileName(fileMeta.fileName)?.length, false)
 	}
 
 	private getFilteredBlacklistLength(blacklistType: BlacklistType) {

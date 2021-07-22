@@ -177,7 +177,7 @@ export class DialogGlobalSettingsController
 	}
 
 	deleteNotes() {
-		NotesHelper.deleteNotes()
+		NotesHelper.deleteNotesFromLocalStorage()
 	}
 }
 

@@ -5,7 +5,6 @@ import { ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
-import { FileState } from "../model/files/files"
 import { NotesHelper } from "./notesHelper"
 
 export class FileDownloader {
@@ -14,10 +13,9 @@ export class FileDownloader {
 		fileMeta: FileMeta,
 		fileSettings: FileSettings,
 		downloadSettingsNames: string[],
-		fileName: string,
-		files: FileState[]
+		fileName: string
 	) {
-		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames, files)
+		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
 		const newFileNameWithExtension = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(JSON.stringify(exportCCFile), newFileNameWithExtension)
 	}
@@ -26,8 +24,7 @@ export class FileDownloader {
 		map: CodeMapNode,
 		fileMeta: FileMeta,
 		fileSettings: FileSettings,
-		downloadSettingsNames: string[],
-		files: FileState[]
+		downloadSettingsNames: string[]
 	): ExportCCFile {
 		return {
 			projectName: fileMeta.projectName,
@@ -38,7 +35,7 @@ export class FileDownloader {
 			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? this.undecorateEdges(fileSettings.edges) : [],
 			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? fileSettings.markedPackages : [],
 			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist),
-			notes: downloadSettingsNames.includes(DownloadCheckboxNames.notes) ? this.getNotesToDownload(files) : []
+			notes: downloadSettingsNames.includes(DownloadCheckboxNames.notes) ? this.getFileNotesToDownload(fileMeta.fileName) : []
 		}
 	}
 
@@ -106,7 +103,7 @@ export class FileDownloader {
 		link.dispatchEvent(mouseEvent)
 	}
 
-	private static getNotesToDownload(files: FileState[]) {
-		return NotesHelper.getNotesFromSelectedMaps(files)
+	private static getFileNotesToDownload(fileName: string) {
+		return NotesHelper.getFileNotesFromFileName(fileName)
 	}
 }
