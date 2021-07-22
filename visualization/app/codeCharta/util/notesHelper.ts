@@ -82,13 +82,13 @@ export class NotesHelper {
 
 	static getNotesFromFileName(fileName: string): Note[] {
 		const fileNotes = this.getFileNotesFromLocalStorage()
-		const fileNote: FileNote = fileNotes.find(fileNote => fileNote.fileName === fileName)
+		const fileNote: FileNote = fileNotes?.find(fileNote => fileNote.fileName === fileName)
 		return fileNote?.notes?.length > 0 ? fileNote.notes : []
 	}
 
 	static getFileNotesFromFileName(fileName: string): FileNote[] {
 		const fileNotes = this.getFileNotesFromLocalStorage()
-		const fileNote: FileNote = fileNotes.find(fileNote => fileNote.fileName === fileName)
+		const fileNote: FileNote = fileNotes?.find(fileNote => fileNote.fileName === fileName)
 		return fileNote ? [fileNote] : []
 	}
 

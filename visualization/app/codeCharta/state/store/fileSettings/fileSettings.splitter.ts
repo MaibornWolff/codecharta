@@ -1,15 +1,21 @@
 import { RecursivePartial, CCAction, FileSettings, AttributeTypes, MarkedPackage, Edge, BlacklistItem } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
+import { splitFileNotesAction } from "./fileNotes/fileNotes.splitter"
 import { splitMarkedPackagesAction } from "./markedPackages/markedPackages.splitter"
 import { splitEdgesAction } from "./edges/edges.splitter"
 import { splitAttributeTypesAction } from "./attributeTypes/attributeTypes.splitter"
 import { splitBlacklistAction } from "./blacklist/blacklist.splitter"
+import { FileNote } from "../../../ui/attributeSideBar/attributeSideBar.component"
 
 export function splitFileSettingsActions(payload: RecursivePartial<FileSettings>) {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.fileNotes !== undefined) {
+		actions.push(splitFileNotesAction(payload.fileNotes as FileNote[]))
+	}
+
 	if (payload.markedPackages !== undefined) {
 		actions.push(splitMarkedPackagesAction(payload.markedPackages as MarkedPackage[]))
 	}

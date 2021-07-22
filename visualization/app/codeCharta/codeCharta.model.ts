@@ -105,6 +105,7 @@ export interface Settings {
 }
 
 export interface FileSettings {
+	fileNotes: FileNote[]
 	attributeTypes: AttributeTypes
 	blacklist: Array<BlacklistItem>
 	edges: Edge[]

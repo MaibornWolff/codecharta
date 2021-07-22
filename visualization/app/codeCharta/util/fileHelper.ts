@@ -17,7 +17,8 @@ export function getCCFile(file: NameDataPair): CCFile {
 				edges: fileContent.edges || [],
 				attributeTypes: getAttributeTypes(fileContent.attributeTypes),
 				blacklist: potentiallyUpdateBlacklistTypes(fileContent.blacklist || []),
-				markedPackages: fileContent.markedPackages || []
+				markedPackages: fileContent.markedPackages || [],
+				fileNotes: []
 			}
 		},
 		map: fileContent.nodes[0]

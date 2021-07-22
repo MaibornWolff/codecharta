@@ -117,7 +117,8 @@ function initializeFileSettings(target: CustomConfig) {
 		attributeTypes: undefined,
 		blacklist: undefined,
 		edges: [],
-		markedPackages: []
+		markedPackages: [],
+		fileNotes: []
 	}
 }
 

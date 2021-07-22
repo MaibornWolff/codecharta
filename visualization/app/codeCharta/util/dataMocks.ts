@@ -686,7 +686,8 @@ export const TEST_FILE_DATA: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
-			markedPackages: []
+			markedPackages: [],
+			fileNotes: []
 		}
 	}
 }
@@ -892,7 +893,8 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: [],
-			markedPackages: []
+			markedPackages: [],
+			fileNotes: []
 		}
 	}
 }
@@ -994,7 +996,8 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: [],
-			markedPackages: []
+			markedPackages: [],
+			fileNotes: []
 		}
 	}
 }
@@ -1060,7 +1063,8 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
-			markedPackages: []
+			markedPackages: [],
+			fileNotes: []
 		}
 	}
 }
@@ -1312,7 +1316,8 @@ export const TEST_DELTA_MAP_A: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
-			markedPackages: []
+			markedPackages: [],
+			fileNotes: []
 		}
 	}
 }
@@ -1386,7 +1391,8 @@ export const TEST_DELTA_MAP_B: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
-			markedPackages: []
+			markedPackages: [],
+			fileNotes: []
 		}
 	}
 }
@@ -1460,7 +1466,8 @@ export const TEST_DELTA_MAP_C: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
-			markedPackages: []
+			markedPackages: [],
+			fileNotes: []
 		}
 	}
 }
@@ -1534,7 +1541,8 @@ export const TEST_DELTA_MAP_D: CCFile = {
 			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
-			markedPackages: []
+			markedPackages: [],
+			fileNotes: []
 		}
 	}
 }
@@ -1617,7 +1625,8 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	blacklist: [
 		{ path: "/root/bigLeaf.ts", type: "hide" },
 		{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
-	]
+	],
+	notes: []
 }
 
 export const FILE_STATES: FileState[] = [
@@ -1651,7 +1660,8 @@ export const STATE: State = {
 		},
 		blacklist: [],
 		edges: VALID_EDGES,
-		markedPackages: []
+		markedPackages: [],
+		fileNotes: []
 	},
 	dynamicSettings: {
 		areaMetric: "rloc",
@@ -1800,7 +1810,7 @@ export const DEFAULT_STATE: State = {
 		sortingOption: SortingOption.NAME,
 		recentFiles: []
 	},
-	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [], fileNotes: [] },
 	treeMap: { mapSize: 250 },
 	files: [],
 	lookUp: {

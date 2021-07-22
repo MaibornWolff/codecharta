@@ -110,7 +110,8 @@ describe("codeChartaService", () => {
 					attributeTypes: { nodes: {}, edges: {} },
 					blacklist: [],
 					edges: [],
-					markedPackages: []
+					markedPackages: [],
+					fileNotes: []
 				}
 			}
 		}
