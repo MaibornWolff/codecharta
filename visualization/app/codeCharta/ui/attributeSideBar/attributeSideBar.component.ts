@@ -30,7 +30,12 @@ export interface PrimaryMetrics {
 }
 
 export interface FileNote {
-	path: string
+	fileName: string
+	notes: Note[]
+}
+
+interface Note {
+	nodePath: string
 	text: string
 	metricData: string[]
 }
@@ -50,7 +55,7 @@ export class AttributeSideBarController
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
 		isSideBarVisible: boolean
-		notes: FileNote[]
+		notes: Note[]
 	} = {
 		node: null,
 		fileName: null,
@@ -77,14 +82,15 @@ export class AttributeSideBarController
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 
 		this.debounceNoteUpdate = debounce((event, index) => {
-			const path = this._viewModel.fileName + this._viewModel.node.path
+			const fileName = this._viewModel.fileName
+			const nodePath = this._viewModel.node.path
 			const text = event.target.value || ""
-			const metricData = this._viewModel.notes[index].metricData
-			const fileNote = { path, text, metricData } as FileNote
-			if (NotesHelper.noteExists(path, index)) {
-				NotesHelper.updateNote(index, fileNote)
+			const metricData = this._viewModel?.notes[this._viewModel.fileName]?.[index].metricData
+			const note = { nodePath, text, metricData } as Note
+			if (NotesHelper.noteExists(fileName, nodePath, index)) {
+				NotesHelper.updateNote(fileName, nodePath, index, text)
 			} else {
-				NotesHelper.addNewNote(fileNote)
+				NotesHelper.addNewNote(fileName, note)
 			}
 		}, this.DEBOUNCE_TIME)
 	}
@@ -94,8 +100,10 @@ export class AttributeSideBarController
 		this._viewModel.fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 
-		const path = this._viewModel.fileName + this._viewModel.node.path
-		this._viewModel.notes = NotesHelper.getNotesFromLocalStorage(path)
+		const fileName = this._viewModel.fileName
+		const nodePath = this._viewModel.node.path
+		const notes: Note[] = NotesHelper.getNotesFromLocalStorage(fileName, nodePath)
+		this._viewModel.notes = notes
 	}
 
 	onAreaMetricChanged(areaMetric: string) {
@@ -135,36 +143,31 @@ export class AttributeSideBarController
 
 	onClickAddNote() {
 		this._viewModel.notes.push({
-			path: this._viewModel.node.path,
+			nodePath: this._viewModel.node.path,
 			text: "",
 			metricData: this.getSelectedMetrics()
 		})
 	}
 
 	onClickRemoveNote(index) {
-		const path = this._viewModel.fileName + this._viewModel.node.path
-		NotesHelper.removeNote(path, index)
+		const fileName = this._viewModel.fileName
+		const nodePath = this._viewModel.node.path
+		NotesHelper.removeNote(fileName, nodePath, index)
 		this._viewModel.notes.splice(index, 1)
 	}
 
 	onKeyUpTextarea(event, index) {
-		// this.adjustHeight(event)
 		this.debounceNoteUpdate(event, index)
 	}
 
 	getDataMetricsOf(fileNote: FileNote) {
-		return `Selected metrics: ${fileNote?.metricData?.join(", ")}`
+		return `Selected metrics: ${fileNote?.[this._viewModel.fileName]?.metricData?.join(", ")}`
 	}
 
 	private getSelectedMetrics() {
 		const dynamicSettings = this.storeService.getState().dynamicSettings
 		return [dynamicSettings.areaMetric, dynamicSettings.heightMetric, dynamicSettings.colorMetric, dynamicSettings.edgeMetric]
 	}
-
-	// private adjustHeight(event) {
-	// 	const textarea = event.target
-	// 	textarea.style.height = textarea.scrollHeight > textarea.clientHeight ? `${textarea.scrollHeight}px` : "42px"
-	// }
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
 		if (this._viewModel.node) {

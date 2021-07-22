@@ -73,7 +73,7 @@ export class DialogDownloadController {
 		this.pushFileContent(DownloadCheckboxNames.flattens, this.getFilteredBlacklistLength(BlacklistType.flatten))
 		this.pushFileContent(
 			DownloadCheckboxNames.notes,
-			NotesHelper.getNotesFromSelectedMaps(this.storeService.getState().files)?.length,
+			NotesHelper.getNotesFromSelectedMaps(this.storeService.getState().files).flatMap(fileNote => fileNote.notes)?.length,
 			false
 		)
 	}

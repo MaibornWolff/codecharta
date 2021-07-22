@@ -5,37 +5,57 @@ export class NotesHelper {
 	// private static readonly NOTES_LOCAL_STORAGE_VERSION = "1.0.0"
 	private static readonly NOTES_LOCAL_STORAGE_ELEMENT = "notes"
 
-	static getNotesFromLocalStorage(key: string) {
+	static getNotesFromLocalStorage(fileName: string, nodePath: string) {
 		const fileNotes: FileNote[] = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
-		return fileNotes?.filter(file => file.path === key) || []
+		const fileNotesIndex = fileNotes?.findIndex(fileNote => fileNote.fileName === fileName)
+
+		return fileNotes?.[fileNotesIndex].notes.filter(note => note.nodePath === nodePath) || []
 	}
 
-	static updateNote(index: number, payload: FileNote) {
+	static updateNote(fileName: string, nodePath: string, index: number, newText: string) {
 		const fileNotes: FileNote[] = JSON.parse?.(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
-		const fileNote = fileNotes.filter(fileNote => fileNote.path === payload.path)?.[index]
-		fileNote.text = payload.text
+		const fileNotesIndex = fileNotes?.findIndex(fileNote => fileNote.fileName === fileName)
+		const note = fileNotes?.[fileNotesIndex].notes.filter(note => note.nodePath === nodePath)?.[index]
+		note.text = newText
 		localStorage.setItem(this.NOTES_LOCAL_STORAGE_ELEMENT, JSON.stringify(fileNotes))
 	}
 
-	static addNewNote(payload: FileNote) {
-		const fileNotes: FileNote[] = JSON.parse?.(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT)) || []
-		fileNotes.push(payload)
+	static addNewNote(fileName: string, note) {
+		let fileNotes: FileNote[] = JSON.parse?.(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
+
+		if (fileNotes === null) {
+			const notes = [note]
+			fileNotes = [{ fileName, notes }]
+		}
+
+		const index = fileNotes?.findIndex(fileNote => fileNote.fileName === fileName)
+		if (index !== -1) {
+			fileNotes?.[index].notes.push(note)
+		} else {
+			const fileNote: FileNote = { fileName, notes: [note] }
+			fileNotes.push(fileNote)
+		}
+
 		localStorage.setItem(this.NOTES_LOCAL_STORAGE_ELEMENT, JSON.stringify(fileNotes))
 	}
 
-	static noteExists(path: string, index: number): boolean {
+	static noteExists(fileName: string, nodePath: string, index: number): boolean {
 		const fileNotes: FileNote[] = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
-		return fileNotes?.filter(file => file.path === path)?.[index] !== undefined
+		const fileNoteIndex = fileNotes.findIndex(fileNote => fileNote.fileName === fileName)
+		return fileNotes?.[fileNoteIndex]?.notes.filter(note => note.nodePath === nodePath)?.[index] !== undefined
 	}
 
-	static removeNote(path, noteIndex) {
+	static removeNote(fileName, nodePath, noteIndex) {
 		const fileNotes: FileNote[] = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
+		const fileNoteIndex = fileNotes.findIndex(fileNote => fileNote.fileName === fileName)
+		const fileNote: FileNote = fileNotes?.[fileNoteIndex]
+		const notes = fileNote?.notes
 		let counter = -1
-		for (let index = 0; index < fileNotes.length; index++) {
-			if (fileNotes[index].path === path) {
+		for (let index = 0; index < notes?.length; index++) {
+			if (notes?.[index]?.nodePath === nodePath) {
 				counter = counter + 1
 				if (counter === noteIndex) {
-					fileNotes.splice(index, 1)
+					notes.splice(index, 1)
 					break
 				}
 			}
@@ -44,11 +64,11 @@ export class NotesHelper {
 	}
 
 	static getNotesFromSelectedMaps(files: FileState[]): FileNote[] {
-		const fileNotes = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT)) as FileNote[]
+		const fileNotes: FileNote[] = JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT)) as FileNote[]
 		const selectedFiles = files.filter(
 			file => file.selectedAs === FileSelectionState.Single || file.selectedAs === FileSelectionState.Partial
 		)
-		const currentMapFileNotes = fileNotes.filter(fileNote => this.isFromSelectedFile(fileNote.path, selectedFiles))
+		const currentMapFileNotes: FileNote[] = fileNotes.filter(fileNote => this.isFromSelectedFile(fileNote.fileName, selectedFiles))
 		return currentMapFileNotes.length > 0 ? currentMapFileNotes : []
 	}
 
