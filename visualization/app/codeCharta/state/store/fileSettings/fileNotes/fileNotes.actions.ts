@@ -1,5 +1,5 @@
 import { Action } from "redux"
-import { FileNote } from "../../../../ui/attributeSideBar/attributeSideBar.component"
+import { FileNote } from "./fileNotes.service"
 
 export enum FileNotesActions {
 	SET_FILE_NOTES = "SET_FILE_NOTES"

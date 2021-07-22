@@ -1,5 +1,5 @@
 import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage, RecursivePartial, Settings } from "./codeCharta.model"
-import { FileNote } from "./ui/attributeSideBar/attributeSideBar.component"
+import { FileNote } from "./state/store/fileSettings/fileNotes/fileNotes.service"
 
 export interface ExportCCFile {
 	projectName: string

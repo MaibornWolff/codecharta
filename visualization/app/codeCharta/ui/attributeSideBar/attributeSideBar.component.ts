@@ -17,6 +17,7 @@ import { closeAttributeSideBar } from "../../state/store/appSettings/isAttribute
 import { LazyLoader } from "../../util/lazyLoader"
 import { debounce } from "lodash"
 import { NotesHelper } from "../../util/notesHelper"
+import { FileNote, Note } from "../../state/store/fileSettings/fileNotes/fileNotes.service"
 
 export interface PrimaryMetrics {
 	node: {
@@ -27,17 +28,6 @@ export interface PrimaryMetrics {
 	edge: {
 		edge: string
 	}
-}
-
-export interface FileNote {
-	fileName: string
-	notes: Note[]
-}
-
-export interface Note {
-	nodePath: string
-	text: string
-	metricData: string[]
 }
 
 export class AttributeSideBarController

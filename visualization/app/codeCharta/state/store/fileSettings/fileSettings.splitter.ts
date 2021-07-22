@@ -6,7 +6,7 @@ import { splitMarkedPackagesAction } from "./markedPackages/markedPackages.split
 import { splitEdgesAction } from "./edges/edges.splitter"
 import { splitAttributeTypesAction } from "./attributeTypes/attributeTypes.splitter"
 import { splitBlacklistAction } from "./blacklist/blacklist.splitter"
-import { FileNote } from "../../../ui/attributeSideBar/attributeSideBar.component"
+import { FileNote } from "./fileNotes/fileNotes.service"
 
 export function splitFileSettingsActions(payload: RecursivePartial<FileSettings>) {
 	const actions: CCAction[] = []

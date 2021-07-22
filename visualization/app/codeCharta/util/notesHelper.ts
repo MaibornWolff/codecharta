@@ -1,4 +1,4 @@
-import { FileNote, Note } from "../ui/attributeSideBar/attributeSideBar.component"
+import { FileNote, Note } from "../state/store/fileSettings/fileNotes/fileNotes.service"
 
 export class NotesHelper {
 	// private static readonly NOTES_LOCAL_STORAGE_VERSION = "1.0.0"

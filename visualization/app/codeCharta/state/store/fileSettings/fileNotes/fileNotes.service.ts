@@ -2,7 +2,17 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FileNotesActions } from "./fileNotes.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { FileNote } from "../../../../ui/attributeSideBar/attributeSideBar.component"
+
+export interface FileNote {
+	fileName: string
+	notes: Note[]
+}
+
+export interface Note {
+	nodePath: string
+	text: string
+	metricData: string[]
+}
 
 export interface FileNotesSubscriber {
 	onFileNotesChanged(fileNotes: FileNote[])

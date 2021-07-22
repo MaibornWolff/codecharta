@@ -5,7 +5,7 @@ import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
-import { FileNote } from "./ui/attributeSideBar/attributeSideBar.component"
+import { FileNote } from "./state/store/fileSettings/fileNotes/fileNotes.service"
 
 export interface NameDataPair {
 	fileName: string
