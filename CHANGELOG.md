@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Custom metric scenarios which include the 'Color-Metric' (rloc) will now also save any changes made to the color scheme. ([#1557](https://github.com/maibornwolff/codecharta/issues/1557))
+-   The "Color Metric Options" panel and "Legend" panel display the maximum value of the selected metric instead of infinite. ([#1520](https://github.com/maibornwolff/codecharta/issues/1520))
+-   Custom metric scenarios which include the 'Color-Metric' (rloc) will now also save any changes made to the color scheme.
 
 ### Fixed 🐞
 
@@ -43,6 +44,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
     -   Already loaded files can be individually removed.
     -   The 'Multiple' view will select the latest files.
+
+### Changed
+
+-   Numbers/Percentages are always shown on distribution bar.
+-   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
+-   The old expanded distribution bar is
+    now accessible through a button.
 
 ### Fixed 🐞
 
