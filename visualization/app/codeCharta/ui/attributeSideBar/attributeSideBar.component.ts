@@ -17,6 +17,7 @@ import { closeAttributeSideBar } from "../../state/store/appSettings/isAttribute
 import { LazyLoader } from "../../util/lazyLoader"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { setSecondaryMetrics } from "../../state/store/appSettings/secondaryMetrics/secondaryMetrics.actions"
 
 export interface PrimaryMetrics {
 	node: {
@@ -136,7 +137,7 @@ export class AttributeSideBarController
 						: this.nodeMetricDataService.getAttributeTypeByMetric(metricKey)
 				secondaryMetrics.push({ name: metricKey, type: metricType } as SecondaryMetric)
 			}
-
+			this.storeService.dispatch(setSecondaryMetrics(secondaryMetrics))
 			this._viewModel.secondaryMetrics = secondaryMetrics
 		}
 	}
