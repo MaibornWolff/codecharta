@@ -7,21 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   The "Color Metric Options" panel and "Legend" panel display the maximum value of the selected metric instead of infinite. ([#1520](https://github.com/maibornwolff/codecharta/issues/1520))
+
 ### Changed
 
 -   Small ui improvements added. ([#1881](https://github.com/MaibornWolff/codecharta/issues/1881))
+
+-   Numbers/Percentages always show in the distribution bar([#1540](https://github.com/MaibornWolff/codecharta/issues/1540))
+    -   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
+    -   The old expanded distribution bar is now accessible through a button.
+
+### Fixed 🐞
+
+-   It is no longer possible to exclude all files on the map ([#901](https://github.com/MaibornWolff/codecharta/issues/901))
 
 ## [1.76.0] - 2021-07-13
 
 ### Added 🚀
 
--   The "Color Metric Options" panel and "Legend" panel display the maximum value of the selected metric instead of infinite. ([#1520](https://github.com/maibornwolff/codecharta/issues/1520))
 -   Custom metric scenarios which include the 'Color-Metric' (rloc) will now also save any changes made to the color scheme.
 
 ### Fixed 🐞
 
 -   Performance improvements when loading new files. ([#1312](https://github.com/maibornwolff/codecharta/issues/1312))
--   It is no longer possible to exclude all files on the map ([#901](https://github.com/MaibornWolff/codecharta/issues/901))
 
 ## [1.75.0] - 2021-07-05
 
