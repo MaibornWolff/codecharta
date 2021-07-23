@@ -77,27 +77,27 @@ export class AttributeSideBarController
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
 		this._viewModel.fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
-		this.updateSortedMetricKeysWithoutPrimaryMetrics()
+		this.updateSortedMetricKeysWithoutPrimaryMetrics(true)
 	}
 
 	onAreaMetricChanged(areaMetric: string) {
 		this._viewModel.primaryMetricKeys.node.area = areaMetric
-		this.updateSortedMetricKeysWithoutPrimaryMetrics()
+		this.updateSortedMetricKeysWithoutPrimaryMetrics(false)
 	}
 
 	onHeightMetricChanged(heightMetric: string) {
 		this._viewModel.primaryMetricKeys.node.height = heightMetric
-		this.updateSortedMetricKeysWithoutPrimaryMetrics()
+		this.updateSortedMetricKeysWithoutPrimaryMetrics(false)
 	}
 
 	onColorMetricChanged(colorMetric: string) {
 		this._viewModel.primaryMetricKeys.node.color = colorMetric
-		this.updateSortedMetricKeysWithoutPrimaryMetrics()
+		this.updateSortedMetricKeysWithoutPrimaryMetrics(false)
 	}
 
 	onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.primaryMetricKeys.edge.edge = edgeMetric
-		this.updateSortedMetricKeysWithoutPrimaryMetrics()
+		this.updateSortedMetricKeysWithoutPrimaryMetrics(false)
 	}
 
 	onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
@@ -115,7 +115,7 @@ export class AttributeSideBarController
 		LazyLoader.openFile(this._viewModel.fileName, this._viewModel.node.path)
 	}
 
-	private updateSortedMetricKeysWithoutPrimaryMetrics() {
+	private updateSortedMetricKeysWithoutPrimaryMetrics(buildingSelected: boolean) {
 		if (this._viewModel.node) {
 			const metricValues = new Set(Object.values(this._viewModel.primaryMetricKeys.node))
 
@@ -137,7 +137,9 @@ export class AttributeSideBarController
 						: this.nodeMetricDataService.getAttributeTypeByMetric(metricKey)
 				secondaryMetrics.push({ name: metricKey, type: metricType } as SecondaryMetric)
 			}
-			this.storeService.dispatch(setSecondaryMetrics(secondaryMetrics))
+			if (!buildingSelected) {
+				this.storeService.dispatch(setSecondaryMetrics(secondaryMetrics))
+			}
 			this._viewModel.secondaryMetrics = secondaryMetrics
 		}
 	}
