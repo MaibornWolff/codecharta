@@ -1671,10 +1671,7 @@ export const STATE: State = {
 		recentFiles: ["fileA", "fileB"]
 	},
 	appSettings: {
-		secondaryMetrics: [
-			{ name: "functions", type: "absolute" },
-			{ name: "loc", type: "relative" }
-		],
+		secondaryMetrics: [],
 		amountOfTopLabels: 31,
 		amountOfEdgePreviews: 5,
 		colorLabels: {
@@ -1739,10 +1736,7 @@ export const STATE: State = {
 
 export const DEFAULT_STATE: State = {
 	appSettings: {
-		secondaryMetrics: [
-			{ name: "functions", type: "absolute" },
-			{ name: "loc", type: "relative" }
-		],
+		secondaryMetrics: [],
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,
 		colorLabels: {
