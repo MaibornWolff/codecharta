@@ -2,11 +2,12 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
+import * as FilesHelper from "../../../../model/files/files.helper"
 import { BlacklistService } from "./blacklist.service"
 import { BlacklistAction, BlacklistActions } from "./blacklist.actions"
 import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 import { PresentationModeActions } from "../../appSettings/isPresentationMode/isPresentationMode.actions"
-import { withMockedEventMethods } from "../../../../util/dataMocks"
+import { FILE_STATES, withMockedEventMethods } from "../../../../util/dataMocks"
 import { FilesService } from "../../files/files.service"
 
 describe("BlacklistService", () => {
@@ -64,6 +65,23 @@ describe("BlacklistService", () => {
 			blacklistService.onStoreChanged(PresentationModeActions.SET_PRESENTATION_MODE)
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("resultsInEmptyMap", () => {
+		it("should return true when all files are empty", () => {
+			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue(FILE_STATES)
+			const blacklistItem: BlacklistItem[] = [{ path: "/root", type: BlacklistType.exclude }]
+
+			expect(blacklistService.resultsInEmptyMap(blacklistItem)).toBe(true)
+		})
+
+		it("should return false when files are left", () => {
+			blacklistService.isIncludedNode = jest.fn(() => true)
+			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue(FILE_STATES)
+			const blacklistItem: BlacklistItem[] = [{ path: "/root/Parent Leaf", type: BlacklistType.exclude }]
+
+			expect(blacklistService.resultsInEmptyMap(blacklistItem)).toBe(false)
 		})
 	})
 })

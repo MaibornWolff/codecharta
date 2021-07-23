@@ -5,7 +5,9 @@ import { hasValidHexLength } from "../colorHelper"
 export class NodeContextMenuColorPickerController {
 	private markFolder: ({ color: string }) => void
 
-	constructor(private $scope) {}
+	constructor(private $scope) {
+		"ngInject"
+	}
 
 	$onInit() {
 		this.$scope.color = "#FF0000" // without initial value the color-picker's popup would show a 100% transparent color initially
