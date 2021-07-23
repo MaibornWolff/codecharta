@@ -1,57 +1,32 @@
-import "./sortingButton.module"
-import { SortingButtonController } from "./sortingButton.component"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
-import { SortingOrderAscendingService } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
+import { fireEvent, render, screen } from "@testing-library/angular"
 
-describe("SortingButtonController", () => {
-	let sortingButtonController: SortingButtonController
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
+import { Store } from "../../state/store/store"
+import { sortingOrderAscendingSelector } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
+import { SortingButtonComponent } from "./sortingButton.component"
+import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 
+describe("SortingButtonComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
+		Store["initialize"]()
 	})
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.sortingButton")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-	}
+	it("should toggle SortingOrderAscending on click", async () => {
+		await render(SortingButtonComponent)
+		const initialSortingOrder = sortingOrderAscendingSelector(Store.store.getState())
 
-	function rebuildController() {
-		sortingButtonController = new SortingButtonController($rootScope, storeService)
-	}
+		const button = screen.getByRole("button")
+		fireEvent.click(button)
 
-	describe("constructor", () => {
-		it("should subscribe to SortingOrderAscendingService", () => {
-			SortingOrderAscendingService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(SortingOrderAscendingService.subscribe).toHaveBeenCalledWith($rootScope, sortingButtonController)
-		})
+		expect(sortingOrderAscendingSelector(Store.store.getState())).toBe(!initialSortingOrder)
 	})
 
-	describe("onSortingOrderAscendingChanged", () => {
-		it("should invert the sorting order", () => {
-			const sortingOrderAscendingValue = false
+	it("should set title of button according to current sorting order", async () => {
+		const { detectChanges } = await render(SortingButtonComponent)
+		expect(screen.getByTitle("Toggle sort order (currently descending)")).toBeTruthy()
 
-			sortingButtonController.onSortingOrderAscendingChanged(sortingOrderAscendingValue)
+		Store.store.dispatch(setSortingOrderAscending(true))
+		detectChanges()
 
-			expect(sortingButtonController["_viewModel"].orderAscending).toBeFalsy()
-		})
-	})
-
-	describe("onButtonClick", () => {
-		it("should change sortingOrderAscending in service", () => {
-			sortingButtonController["_viewModel"].orderAscending = false
-
-			sortingButtonController.onButtonClick()
-
-			expect(storeService.getState().appSettings.sortingOrderAscending).toBeTruthy()
-		})
+		expect(screen.getByTitle("Toggle sort order (currently ascending)")).toBeTruthy()
 	})
 })
