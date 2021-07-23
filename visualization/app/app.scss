@@ -30,3 +30,10 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
+/* replacement styles for ~angular-material/angular-material.scss */
+button {
+	/* .md-button */
+	border: 0;
+	margin: 6px 8px;
+}

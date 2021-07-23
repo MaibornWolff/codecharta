@@ -100,6 +100,10 @@ describe("codeChartaController", () => {
 		})
 
 		it("should call tryLoadingSampleFiles when data is an empty array", async () => {
+			// hot fix for issue #2294
+			rebuildController()
+			codeChartaController.tryLoadingSampleFiles = jest.fn()
+
 			await codeChartaController.loadFileOrSample()
 
 			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalledWith(new Error("Filename is missing"))
