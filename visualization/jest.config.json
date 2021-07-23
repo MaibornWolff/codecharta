@@ -1,7 +1,4 @@
 {
-	"coverageReporters": ["json", "text", "lcov"],
-	"setupFilesAfterEnv": ["jest-puppeteer-istanbul/lib/setup"],
-	"reporters": ["default", "jest-puppeteer-istanbul/lib/reporter"],
 	"collectCoverage": true,
 	"coverageDirectory": "<rootDir>/dist/coverage",
 	"collectCoverageFrom": ["<rootDir>/app/**/*.{ts,tsx}", "!**/node_modules/**"],
