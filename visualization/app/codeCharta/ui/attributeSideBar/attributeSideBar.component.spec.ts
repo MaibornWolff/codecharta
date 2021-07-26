@@ -279,7 +279,7 @@ describe("AttributeSideBarController", () => {
 				}
 			} as PrimaryMetrics
 
-			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]()
+			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"](false)
 
 			const expectedSecondaryMetrics = [
 				{ name: "b", type: undefined },
