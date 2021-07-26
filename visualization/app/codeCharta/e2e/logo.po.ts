@@ -1,17 +1,17 @@
 export class LogoPageObject {
 	async getVersion() {
-		await page.waitForSelector("#mw-logo > div > h2 > span")
-		const versionString = await page.$eval("#mw-logo > div > h2 > span", element => element["innerText"])
+		await page.waitForSelector(".logo > span.version")
+		const versionString = await page.$eval(".logo > span.version", element => element["innerText"])
 		return versionString.split(" ")[1]
 	}
 
 	async getLink() {
-		await page.waitForSelector("#mw-logo > div > a")
-		return page.$eval("#mw-logo > div > a", element => element["href"])
+		await page.waitForSelector(".logo > a")
+		return page.$eval(".logo > a", element => element["href"])
 	}
 
 	async getImageSrc() {
-		await page.waitForSelector("#mw-logo > div > a > img")
-		return page.$eval("#mw-logo > div > a > img", element => element["src"])
+		await page.waitForSelector(".logo > a > img")
+		return page.$eval(".logo > a > img", element => element["src"])
 	}
 }
