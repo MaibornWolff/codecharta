@@ -24,6 +24,8 @@ import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
+import { DialogService } from "../dialog/dialog.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -35,6 +37,8 @@ describe("nodeContextMenuController", () => {
 	let codeMapActionsService: CodeMapActionsService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let threeSceneService: ThreeSceneService
+	let dialogService: DialogService
+	let blacklistService: BlacklistService
 
 	beforeEach(() => {
 		restartSystem()
@@ -59,6 +63,8 @@ describe("nodeContextMenuController", () => {
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+		dialogService = getService<DialogService>("dialogService")
+		blacklistService = getService<BlacklistService>("blacklistService")
 	}
 
 	function mockElement() {
@@ -79,7 +85,9 @@ describe("nodeContextMenuController", () => {
 			storeService,
 			codeMapActionsService,
 			codeMapPreRenderService,
-			threeSceneService
+			threeSceneService,
+			dialogService,
+			blacklistService
 		)
 	}
 
@@ -394,11 +402,21 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should add exclude blacklistItem", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => false)
 			const expected = { attributes: {}, nodeType: "Folder", path: "/root/Parent Leaf", type: BlacklistType.exclude }
 
 			nodeContextMenuController.excludeNode()
 
 			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
+		})
+
+		it("should display error dialog when no files are left", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => true)
+			dialogService.showErrorDialog = jest.fn()
+
+			nodeContextMenuController.excludeNode()
+
+			expect(dialogService.showErrorDialog).toBeCalled()
 		})
 	})
 
