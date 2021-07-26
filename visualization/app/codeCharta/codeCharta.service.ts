@@ -10,6 +10,8 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { setRecentFiles } from "./state/store/dynamicSettings/recentFiles/recentFiles.actions"
+import { setFileNotes } from "./state/store/fileSettings/fileNotes/fileNotes.actions"
+import { NotesHelper } from "./util/notesHelper"
 
 export class CodeChartaService {
 	static ROOT_NAME = "root"
@@ -60,6 +62,7 @@ export class CodeChartaService {
 			this.storeService.dispatch(setSingleByName(recentFile))
 			CodeChartaService.updateRootData(rootName)
 			this.setDefaultScenario()
+			this.setFileNotes()
 		}
 	}
 
@@ -86,5 +89,9 @@ export class CodeChartaService {
 
 	private addRecentFile(fileName: string) {
 		this.recentFiles.push(fileName)
+	}
+
+	private setFileNotes() {
+		this.storeService.dispatch(setFileNotes(NotesHelper.getFileNotesFromLocalStorage()))
 	}
 }

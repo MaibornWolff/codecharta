@@ -17,7 +17,7 @@ import { closeAttributeSideBar } from "../../state/store/appSettings/isAttribute
 import { LazyLoader } from "../../util/lazyLoader"
 import { debounce } from "lodash"
 import { NotesHelper } from "../../util/notesHelper"
-import { FileNote, Note } from "../../state/store/fileSettings/fileNotes/fileNotes.service"
+import { FileNote, FileNotesService, Note } from "../../state/store/fileSettings/fileNotes/fileNotes.service"
 
 export interface PrimaryMetrics {
 	node: {
@@ -69,6 +69,7 @@ export class AttributeSideBarController
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
+		FileNotesService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 
 		this.debounceNoteUpdate = debounce((event, index) => {
@@ -83,6 +84,11 @@ export class AttributeSideBarController
 				NotesHelper.addNewNote(fileName, note)
 			}
 		}, this.DEBOUNCE_TIME)
+	}
+
+	onFileNotesChanged(fileNotes: FileNote[]) {
+		const fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
+		this._viewModel.notes = fileNotes?.find(fileNote => fileNote.fileName === fileName)?.notes || []
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {

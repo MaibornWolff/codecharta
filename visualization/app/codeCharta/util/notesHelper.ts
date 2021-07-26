@@ -76,7 +76,7 @@ export class NotesHelper {
 		return localStorage.setItem(this.NOTES_LOCAL_STORAGE_ELEMENT, JSON.stringify([]))
 	}
 
-	static getFileNotesFromLocalStorage() {
+	static getFileNotesFromLocalStorage(): FileNote[] {
 		return JSON.parse(localStorage.getItem(this.NOTES_LOCAL_STORAGE_ELEMENT))
 	}
 
