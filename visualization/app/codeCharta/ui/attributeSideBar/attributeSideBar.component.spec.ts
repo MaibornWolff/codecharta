@@ -227,7 +227,49 @@ describe("AttributeSideBarController", () => {
 		})
 	})
 
-	describe("updateSortedMetricKeysWithoutPrimaryMetrics", () => {
+	describe("onClickAddNote", () => {
+		beforeEach(() => {
+			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
+			codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue({ fileName: "my_fileName" })
+		})
+
+		it("should add a new FileNote", () => {
+			attributeSideBarController.onClickAddNote()
+
+			expect(storeService.getState().fileSettings.fileNotes.length).toBe(1)
+			expect(storeService.getState().fileSettings.fileNotes[0].notes.length).toBe(1)
+		})
+
+		it("should add a new note when filenote exists", () => {
+			attributeSideBarController.onClickAddNote()
+
+			expect(storeService.getState().fileSettings.fileNotes.length).toBe(1)
+			expect(storeService.getState().fileSettings.fileNotes[0].notes.length).toBe(1)
+
+			attributeSideBarController.onClickAddNote()
+
+			expect(storeService.getState().fileSettings.fileNotes.length).toBe(1)
+			expect(storeService.getState().fileSettings.fileNotes[0].notes.length).toBe(2)
+		})
+	})
+
+	describe("onClickRemoveNote", function () {
+		beforeEach(() => {
+			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
+			codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue({ fileName: "my_fileName" })
+		})
+
+		it("should remove the selected note", function () {
+			attributeSideBarController.onClickAddNote()
+			attributeSideBarController.onClickAddNote()
+			attributeSideBarController.onClickAddNote()
+			attributeSideBarController.onClickRemoveNote(1)
+
+			expect(storeService.getState().fileSettings.fileNotes[0].notes.length).toBe(2)
+		})
+	})
+
+	describe("updateSortedMetricKeysWithoutPrimaryMsetrics", () => {
 		beforeEach(() => {
 			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
 			attributeSideBarController["_viewModel"].node.attributes = {

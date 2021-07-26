@@ -22,19 +22,27 @@ export function fileNotes(state = setFileNotes().payload, action: FileNotesActio
 
 	function addNotesToFileNotes(state: FileNote[], newFileNote: FileNote) {
 		const fileNoteIndex = state.findIndex(fileNote => fileNote.fileName === newFileNote.fileName)
-		state[fileNoteIndex].notes = [...state[fileNoteIndex].notes, ...newFileNote.notes]
+		if (fileNoteIndex !== -1) {
+			state[fileNoteIndex].notes = [...state[fileNoteIndex].notes, ...newFileNote.notes]
+		}
 		return state
 	}
 
 	function removeNoteByIndex(state: FileNote[], payload) {
 		const fileNoteIndex = state.findIndex(fileNote => fileNote.fileName === payload.fileName)
-		state[fileNoteIndex].notes = state[fileNoteIndex].notes.filter(note => note.nodePath === payload.nodePath).splice(payload.index)
+		if (fileNoteIndex !== -1) {
+			const notes = state[fileNoteIndex].notes.filter(note => note.nodePath === payload.nodePath)
+			notes.splice(payload.index, 1)
+			state[fileNoteIndex].notes = notes
+		}
 		return state
 	}
 
 	function updateNoteByIndex(state: FileNote[], payload) {
 		const fileNoteIndex = state.findIndex(fileNote => fileNote.fileName === payload.fileName)
-		state[fileNoteIndex].notes[payload.index].text = payload.text
+		if (fileNoteIndex !== -1) {
+			state[fileNoteIndex].notes[payload.index].text = payload.text
+		}
 		return state
 	}
 }

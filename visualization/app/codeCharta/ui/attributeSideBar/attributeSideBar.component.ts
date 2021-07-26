@@ -15,9 +15,8 @@ import {
 import { StoreService } from "../../state/store.service"
 import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { LazyLoader } from "../../util/lazyLoader"
-import { debounce } from "lodash"
-import { NotesHelper } from "../../util/notesHelper"
 import { FileNote, FileNotesService, Note } from "../../state/store/fileSettings/fileNotes/fileNotes.service"
+import { addFileNote, addNotesToFileNotes, removeNoteByIndex } from "../../state/store/fileSettings/fileNotes/fileNotes.actions"
 
 export interface PrimaryMetrics {
 	node: {
@@ -55,8 +54,8 @@ export class AttributeSideBarController
 		notes: []
 	}
 
-	private readonly debounceNoteUpdate: (event, index) => void
-	private readonly DEBOUNCE_TIME = 250
+	// private readonly debounceNoteUpdate: (event, index) => void
+	// private readonly DEBOUNCE_TIME = 250
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -72,18 +71,18 @@ export class AttributeSideBarController
 		FileNotesService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 
-		this.debounceNoteUpdate = debounce((event, index) => {
-			const fileName = this._viewModel.fileName
-			const nodePath = this._viewModel.node.path
-			const text = event.target.value || ""
-			const metricData = this._viewModel?.notes[this._viewModel.fileName]?.[index].metricData
-			const note = { nodePath, text, metricData } as Note
-			if (NotesHelper.noteExists(fileName, nodePath, index)) {
-				NotesHelper.updateNote(fileName, nodePath, index, text)
-			} else {
-				NotesHelper.addNewNote(fileName, note)
-			}
-		}, this.DEBOUNCE_TIME)
+		// this.debounceNoteUpdate = debounce((event, index) => {
+		// 	const fileName = this._viewModel.fileName
+		// 	const nodePath = this._viewModel.node.path
+		// 	const text = event.target.value || ""
+		// 	const metricData = this._viewModel?.notes[this._viewModel.fileName]?.[index].metricData
+		// 	const note = { nodePath, text, metricData } as Note
+		// 	if (NotesHelper.noteExists(fileName, nodePath, index)) {
+		// 		NotesHelper.updateNote(fileName, nodePath, index, text)
+		// 	} else {
+		// 		NotesHelper.addNewNote(fileName, note)
+		// 	}
+		// }, this.DEBOUNCE_TIME)
 	}
 
 	onFileNotesChanged(fileNotes: FileNote[]) {
@@ -96,9 +95,9 @@ export class AttributeSideBarController
 		this._viewModel.fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 
-		const fileName = this._viewModel.fileName
-		const nodePath = this._viewModel.node.path
-		this._viewModel.notes = NotesHelper.getNotesFromLocalStorage(fileName, nodePath)
+		// const fileName = this._viewModel.fileName
+		// const nodePath = this._viewModel.node.path
+		// this._viewModel.notes = NotesHelper.getNotesFromLocalStorage(fileName, nodePath)
 	}
 
 	onAreaMetricChanged(areaMetric: string) {
@@ -137,23 +136,31 @@ export class AttributeSideBarController
 	}
 
 	onClickAddNote() {
-		this._viewModel.notes.push({
-			nodePath: this._viewModel.node.path,
-			text: "",
-			metricData: this.getSelectedMetrics()
-		})
+		const nodePath = this._viewModel.node.path
+		const fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
+		const notes: Note[] = [{ nodePath, text: "", metricData: this.getSelectedMetrics() }]
+		const fileNote: FileNote = { fileName, notes }
+
+		if (this.existsFileNote(fileName)) {
+			this.storeService.dispatch(addNotesToFileNotes(fileNote))
+		} else {
+			this.storeService.dispatch(addFileNote(fileNote))
+		}
+	}
+
+	private existsFileNote(fileName: string) {
+		return this.storeService.getState().fileSettings.fileNotes.some(fileNote => fileNote.fileName === fileName)
 	}
 
 	onClickRemoveNote(index) {
-		const fileName = this._viewModel.fileName
 		const nodePath = this._viewModel.node.path
-		NotesHelper.deleteNote(fileName, nodePath, index)
-		this._viewModel.notes.splice(index, 1)
+		const fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
+		this.storeService.dispatch(removeNoteByIndex(fileName, nodePath, index))
 	}
 
-	onKeyUpTextarea(event, index) {
-		this.debounceNoteUpdate(event, index)
-	}
+	// onKeyUpTextarea(event, index) {
+	// 	// this.debounceNoteUpdate(event, index)
+	// }
 
 	getDataMetricsOf(fileNote: FileNote) {
 		return `Selected metrics: ${fileNote?.[this._viewModel.fileName]?.metricData?.join(", ")}`
