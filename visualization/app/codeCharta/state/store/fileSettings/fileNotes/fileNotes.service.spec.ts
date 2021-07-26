@@ -2,16 +2,21 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { addFileNote, addNotesToFileNotes, FileNotesAction, FileNotesActions, removeFileNote, removeNoteByIndex } from "./fileNotes.actions"
+import {
+	addFileNote,
+	addNotesToFileNotes,
+	FileNotesAction,
+	FileNotesActions,
+	removeFileNote,
+	removeNoteByIndex,
+	updateNoteByIndex
+} from "./fileNotes.actions"
 import { FileNote, FileNotesService, Note } from "./fileNotes.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 const note1: Note = { nodePath: "/root/database.ts", text: "Nice work", metricData: ["rloc", "mcc"] }
 const note2: Note = { nodePath: "/root/database.ts", text: "Fix bugs!", metricData: ["rloc", "mcc"] }
 const note3: Note = { nodePath: "/root/database.ts", text: "Lets do this!", metricData: ["rloc", "mcc"] }
-// const note4 : Note = {nodePath: "/root/leaf2", text: "Nice work", metricData: ["rloc", "mcc"]}
-// const note5 : Note = {nodePath: "/root/leaf2", text: "Fix bugs!", metricData: ["rloc", "mcc"]}
-// const note6 : Note = {nodePath: "/root/leaf2", text: "Lets do this!", metricData: ["rloc", "mcc"]}
 
 const fileNote1: FileNote = { fileName: "sample1.cc.json", notes: [] }
 const fileNote2: FileNote = { fileName: "sample2.cc.json", notes: [] }
@@ -101,6 +106,20 @@ describe("FileNotesService", () => {
 			storeService.dispatch(removeNoteByIndex(fileName, nodePath, index))
 			expect(storeService.getState().fileSettings.fileNotes[0].notes.length).toBe(2)
 			expect(storeService.getState().fileSettings.fileNotes[0].notes[1]).toStrictEqual(note3)
+		})
+	})
+
+	describe("updateNoteByIndex", () => {
+		it("should update a note text by index", () => {
+			const nodePath = "/root/database.ts"
+			const newText = "Another note"
+			const index = 0
+
+			storeService.dispatch(addFileNote(fileNote1))
+			storeService.dispatch(addNotesToFileNotes({ fileName: fileNote1.fileName, notes: [note1] }))
+			storeService.dispatch(updateNoteByIndex(fileNote1.fileName, nodePath, index, newText))
+
+			expect(storeService.getState().fileSettings.fileNotes[0].notes[0].text).toBe(newText)
 		})
 	})
 

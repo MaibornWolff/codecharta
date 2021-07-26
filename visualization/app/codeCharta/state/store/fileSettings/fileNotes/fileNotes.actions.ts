@@ -6,7 +6,8 @@ export enum FileNotesActions {
 	ADD_FILE_NOTE = "ADD_FILE_NOTE",
 	REMOVE_FILE_NOTE = "REMOVE_FILE_NOTE",
 	ADD_NOTES_TO_FILE_NOTES = "ADD_NOTES_TO_FILE_NOTES",
-	REMOVE_NOTE_BY_INDEX = "REMOVE_NOTE_BY_INDEX"
+	REMOVE_NOTE_BY_INDEX = "REMOVE_NOTE_BY_INDEX",
+	UPDATE_NOTE_BY_INDEX = "UPDATE_NOTE_BY_INDEX"
 }
 
 export interface SetFileNotesAction extends CCAction {
@@ -34,12 +35,18 @@ export interface RemoveNoteByIndexAction extends CCAction {
 	payload: { fileName: string; nodePath: string; index: number }
 }
 
+export interface UpdateNoteByIndexAction extends CCAction {
+	type: FileNotesActions.UPDATE_NOTE_BY_INDEX
+	payload: { fileName: string; nodePath: string; index: number; text: string }
+}
+
 export type FileNotesAction =
 	| SetFileNotesAction
 	| AddFileNoteAction
 	| RemoveFileNoteAction
 	| AddNotesToFileNotesAction
 	| RemoveNoteByIndexAction
+	| UpdateNoteByIndexAction
 
 export function setFileNotes(fileNotes: FileNote[] = defaultFileNotes): SetFileNotesAction {
 	return {
@@ -73,6 +80,13 @@ export function removeNoteByIndex(fileName: string, nodePath: string, index: num
 	return {
 		type: FileNotesActions.REMOVE_NOTE_BY_INDEX,
 		payload: { fileName, nodePath, index }
+	}
+}
+
+export function updateNoteByIndex(fileName: string, nodePath: string, index: number, text: string) {
+	return {
+		type: FileNotesActions.UPDATE_NOTE_BY_INDEX,
+		payload: { fileName, nodePath, index, text }
 	}
 }
 
