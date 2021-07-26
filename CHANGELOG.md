@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Small ui improvements added. ([#1881](https://github.com/MaibornWolff/codecharta/issues/1881))
 
+    -   Added official CodeCharta Logo
+
 -   Numbers/Percentages always show in the distribution bar([#1540](https://github.com/MaibornWolff/codecharta/issues/1540))
     -   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
     -   The old expanded distribution bar is now accessible through a button.
