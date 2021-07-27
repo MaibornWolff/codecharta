@@ -7,6 +7,9 @@
 	},
 	"name": "codecharta",
 	"version": "0.0.2",
+	"engines": {
+		"node": ">=16"
+	},
 	"description": "MaibornWolff CodeCharta placeholder",
 	"license": "BSD-3-Clause",
 	"scripts": {

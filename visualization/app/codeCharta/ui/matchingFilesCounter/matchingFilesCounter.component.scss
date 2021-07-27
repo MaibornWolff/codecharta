@@ -27,10 +27,8 @@ matching-files-counter-component {
 		margin-left: 6px;
 	}
 
-	#sort-component-button .md-button {
-		min-height: unset;
-		margin-bottom: 0;
-		height: 23px;
+	cc-sorting-button button {
+		height: 25px;
 		background: #e6e6e6;
 		padding: 1px 8px;
 	}

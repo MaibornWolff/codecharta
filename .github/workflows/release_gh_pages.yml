@@ -19,9 +19,9 @@ jobs:
           java-version: '11'
           
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.4
+        uses: actions/setup-node@v2
         with:
-          node-version: '12'  
+          node-version: '16'  
           
       - name: Build analysis
         working-directory: ./analysis
@@ -33,7 +33,7 @@ jobs:
         working-directory: ./visualization
         run: | 
           rm -rf node_modules/nwjs-builder-phoenix/caches/*
-          npm install
+          npm ci
           npm run test
           npm run build:web
           npm run package
@@ -61,10 +61,10 @@ jobs:
           asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
           
       - name: Publish visualization npm package
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 12
-      - run: npm install
+          node-version: '16'
+      - run: npm ci
         working-directory: ./visualization
 
       - uses: JS-DevTools/npm-publish@v1
@@ -74,10 +74,10 @@ jobs:
           working-directory: ./visualization
 
       - name: Publish analysis npm package
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 12
-      - run: npm install
+          node-version: '16'
+      - run: npm ci
         working-directory: ./visualization
       - uses: JS-DevTools/npm-publish@v1
         with:

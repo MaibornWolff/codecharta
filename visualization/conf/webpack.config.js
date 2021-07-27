@@ -10,7 +10,7 @@ module.exports = env => {
 	return {
 		mode: "development",
 		target: JSON.parse(env.STANDALONE) ? "node" : "web",
-		entry: "./app/app.ts",
+		entry: "./app/app.module.ts",
 		output: {
 			filename: "bundle.js",
 			path: dist
