@@ -71,7 +71,7 @@ export class DialogDownloadController {
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(BlacklistType.exclude))
 		this.pushFileContent(DownloadCheckboxNames.flattens, this.getFilteredBlacklistLength(BlacklistType.flatten))
-		this.pushFileContent(DownloadCheckboxNames.notes, NotesHelper.getNotesFromFileName(fileMeta.fileName)?.length, false)
+		this.pushFileContent(DownloadCheckboxNames.notes, NotesHelper.getNotesOf(fileMeta.fileName)?.length, false)
 	}
 
 	private getFilteredBlacklistLength(blacklistType: BlacklistType) {

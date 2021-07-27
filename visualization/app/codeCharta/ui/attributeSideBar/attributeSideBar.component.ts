@@ -23,6 +23,7 @@ import {
 	updateNoteByIndex
 } from "../../state/store/fileSettings/fileNotes/fileNotes.actions"
 import { debounce } from "lodash"
+import { NotesHelper } from "../../util/notesHelper"
 
 export interface PrimaryMetrics {
 	node: {
@@ -88,6 +89,7 @@ export class AttributeSideBarController
 	onFileNotesChanged(fileNotes: FileNote[]) {
 		const fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
 		this.setNotes(fileName, fileNotes)
+		NotesHelper.saveFileNotesToLocalStorage(fileNotes)
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
@@ -175,7 +177,7 @@ export class AttributeSideBarController
 		this._viewModel.notes =
 			fileNotes
 				?.find(fileNote => fileNote.fileName === fileName)
-				?.notes?.filter(fileNote => fileNote.nodePath === this._viewModel.node.path) || []
+				?.notes?.filter(fileNote => fileNote?.nodePath === this._viewModel?.node?.path) || []
 	}
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {

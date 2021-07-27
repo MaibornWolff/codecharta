@@ -46,7 +46,9 @@ export function fileNotes(state = setFileNotes().payload, action: FileNotesActio
 	function updateNoteByIndex(state: FileNote[], payload) {
 		const fileNoteIndex = state.findIndex(fileNote => fileNote.fileName === payload.fileName)
 		const notes = state[fileNoteIndex].notes?.filter(note => note.nodePath === payload.nodePath)
-		notes[payload.index].text = payload.text
+		if (notes[payload.index] !== undefined) {
+			notes[payload.index].text = payload.text
+		}
 		return state
 	}
 }

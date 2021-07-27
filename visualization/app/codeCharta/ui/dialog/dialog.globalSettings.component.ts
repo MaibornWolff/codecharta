@@ -33,6 +33,7 @@ import { FileDownloader } from "../../util/fileDownloader"
 import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
 import { isStandalone } from "../../util/envDetector"
 import { NotesHelper } from "../../util/notesHelper"
+import { setFileNotes } from "../../state/store/fileSettings/fileNotes/fileNotes.actions"
 
 export class DialogGlobalSettingsController
 	implements
@@ -178,6 +179,7 @@ export class DialogGlobalSettingsController
 
 	deleteNotes() {
 		NotesHelper.deleteNotesFromLocalStorage()
+		this.storeService.dispatch(setFileNotes([]))
 	}
 }
 

@@ -104,6 +104,6 @@ export class FileDownloader {
 	}
 
 	private static getFileNotesToDownload(fileName: string) {
-		return NotesHelper.getFileNotesFromFileName(fileName)
+		return NotesHelper.getFileNotesOf(fileName)
 	}
 }
