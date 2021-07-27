@@ -21,6 +21,7 @@ describe("AttributeSideBarController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
+	const SOME_EXTRA_TIME = 100
 
 	beforeEach(() => {
 		restartSystem()
@@ -266,6 +267,43 @@ describe("AttributeSideBarController", () => {
 			attributeSideBarController.onClickRemoveNote(1)
 
 			expect(storeService.getState().fileSettings.fileNotes[0].notes.length).toBe(2)
+		})
+	})
+
+	describe("onKeyUpTextarea", function () {
+		beforeEach(() => {
+			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
+			codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue({ fileName: "my_fileName" })
+		})
+
+		it("should call debounceNoteUpdate", function () {
+			attributeSideBarController.debounceNoteUpdate = jest.fn()
+			const mockEvent = { target: { value: "Some new note text" } }
+
+			attributeSideBarController.onClickAddNote()
+			attributeSideBarController.onKeyUpTextarea(mockEvent, 0)
+
+			expect(attributeSideBarController.debounceNoteUpdate).toBeCalled()
+		})
+	})
+
+	describe("debounceNoteUpdate", function () {
+		beforeEach(() => {
+			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
+			codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue({ fileName: "my_fileName" })
+		})
+
+		it("should update the correct note", done => {
+			const mockEvent = { target: { value: "Some new note text" } }
+
+			attributeSideBarController.onClickAddNote()
+			attributeSideBarController.onClickAddNote()
+			attributeSideBarController.debounceNoteUpdate(mockEvent, 1)
+
+			setTimeout(() => {
+				expect(storeService.getState().fileSettings.fileNotes[0].notes[1].text).toBe(mockEvent.target.value)
+				done()
+			}, attributeSideBarController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 

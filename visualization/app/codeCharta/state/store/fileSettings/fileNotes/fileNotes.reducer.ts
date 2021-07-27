@@ -30,19 +30,23 @@ export function fileNotes(state = setFileNotes().payload, action: FileNotesActio
 
 	function removeNoteByIndex(state: FileNote[], payload) {
 		const fileNoteIndex = state.findIndex(fileNote => fileNote.fileName === payload.fileName)
-		if (fileNoteIndex !== -1) {
-			const notes = state[fileNoteIndex].notes.filter(note => note.nodePath === payload.nodePath)
-			notes.splice(payload.index, 1)
-			state[fileNoteIndex].notes = notes
+		const notes = state[fileNoteIndex].notes
+
+		let counter = -1
+		for (let index = 0; index < notes.length; index++) {
+			if (notes[index].nodePath === payload.nodePath) counter++
+			if (counter === payload.index) {
+				notes.splice(index, 1)
+				break
+			}
 		}
 		return state
 	}
 
 	function updateNoteByIndex(state: FileNote[], payload) {
 		const fileNoteIndex = state.findIndex(fileNote => fileNote.fileName === payload.fileName)
-		if (fileNoteIndex !== -1) {
-			state[fileNoteIndex].notes[payload.index].text = payload.text
-		}
+		const notes = state[fileNoteIndex].notes?.filter(note => note.nodePath === payload.nodePath)
+		notes[payload.index].text = payload.text
 		return state
 	}
 }

@@ -104,6 +104,7 @@ describe("FileNotesService", () => {
 			storeService.dispatch(addFileNote(fileNote1))
 			storeService.dispatch(addNotesToFileNotes({ fileName: fileNote1.fileName, notes: [note1, note2, note3] }))
 			storeService.dispatch(removeNoteByIndex(fileName, nodePath, index))
+
 			expect(storeService.getState().fileSettings.fileNotes[0].notes.length).toBe(2)
 			expect(storeService.getState().fileSettings.fileNotes[0].notes[1]).toStrictEqual(note3)
 		})
