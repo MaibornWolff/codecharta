@@ -1,3 +1,4 @@
+const RemarkHTML = require("remark-html");
 module.exports = {
 	rules: [
 		{
@@ -32,6 +33,22 @@ module.exports = {
 		{
 			test: /\.glsl$/,
 			use: ["webpack-glsl-loader"]
-		}
+		},
+    {
+      test: /\.md$/,
+      use: [
+        {
+          loader: "html-loader",
+        },
+        {
+          loader: "remark-loader",
+          options: {
+            remarkOptions: {
+              plugins: [RemarkHTML],
+            },
+          },
+        },
+      ],
+    }
 	]
 }

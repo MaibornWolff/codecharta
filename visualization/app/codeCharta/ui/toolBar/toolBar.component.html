@@ -2,7 +2,9 @@
 	<file-chooser-directive></file-chooser-directive>
 	<download-button-component ng-show="!$ctrl._viewModel.experimentalFeaturesEnabled"></download-button-component>
 	<screenshot-button-component></screenshot-button-component>
-
+  <md-button ng-click="$ctrl.showAddCustomConfigSettings()" class="action-button" title="Create new Custom Config">
+    <i class="fa fa-plus" aria-hidden="true"></i>
+  </md-button>
 	<file-panel-component ng-class="{ hidden: $ctrl._viewModel.isNodeHovered }"></file-panel-component>
 	<node-path-panel-component ng-class="{ hidden: !$ctrl._viewModel.isNodeHovered }"></node-path-panel-component>
 
