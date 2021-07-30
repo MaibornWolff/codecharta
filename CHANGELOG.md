@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   The "Color Metric Options" panel and "Legend" panel display the maximum value of the selected metric instead of infinite. ([#1520](https://github.com/maibornwolff/codecharta/issues/1520))
+-   Mark color-section as unimportant in delta mode ([#769](https://github.com/maibornwolff/codecharta/issues/769))
 
 ### Changed
 
