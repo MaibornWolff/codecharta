@@ -119,9 +119,10 @@ jobs:
       run: |
         npm run build:web
         npm run e2e:ci
+        nyc report --reporter=text
       working-directory: ${{env.working-directory}}
-      
-      
+
+
  test_and_sonar_analysis:
     if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     name: "Build, Test and Publish Analysis Sonar Results"
