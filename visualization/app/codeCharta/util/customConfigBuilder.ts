@@ -42,6 +42,7 @@ export function buildCustomConfigFromState(configName: string, state: State): Cu
 
 function initializeAppSettings(target: CustomConfig) {
 	target.stateSettings.appSettings = {
+		secondaryMetrics: [],
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: false,
 		colorLabels: {
