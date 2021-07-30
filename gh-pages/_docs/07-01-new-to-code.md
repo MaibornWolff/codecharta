@@ -11,27 +11,33 @@ Finally, it would be great if you looked at how we give and receive [feedback]({
 
 We create Pull Requests to the `main` branch after implementing a feature or fixing a bug. There is no release or development branch. We never push on `main` directly. Please take a look at our [contributing guidelines](https://github.com/MaibornWolff/codecharta/blob/main/CONTRIBUTING.md) before you start comitting.
 
-# Travis CI
+# Github Actions
 
-In Travis CI, we defined stages, which group different jobs. Inside a stage, all jobs run in parallel. There is no data persistence between stages, so we have to rebuild our application in each stage. The CI consists of the following stages:
+In Github Actions, we defined stages, which group different jobs. Inside a stage, all jobs run in parallel. There is no data persistence between stages, so we have to rebuild our application in each stage. The CI consists of the following stages:
 
--   Testing (which runs all the time)
--   Sonar (only run when a PR is merged into `main`)
+-   Testing (which runs on every push on an active PR)
+-   Sonar Analysis(which runs on every push on an active PR after testing to ensure code quality metrics are met)
 -   Deploy (run by `make_release.py`)
+
+All workflow files can be found under `.github/workflows`
 
 ### Testing
 
 -   Runs Unit and E2E/UI-Tests
+-   Workflow: `test.yml`
 
 ### Sonar
 
--   Publishes Sonar-Analysis-Results to [Sonarcloud.io](https://sonarcloud.io)
+-   Publishes Sonar-Analysis-Results to [Sonarcloud.io](https://sonarcloud.io) and displays code-quality of the current PR
+-   Workflow: `test.yml`
 
 ### Deploy
 
 -   Deploys the application in a docker container to the github-pages
 -   Publishes the new version on npm
 -   Publishes a docker container on [Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization)
+
+-   Workflow: `release_gh_pages.yml`
 
 # Analysis
 

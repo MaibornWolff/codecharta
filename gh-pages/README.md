@@ -4,7 +4,7 @@ The CodeCharta docs use [Jekyll](https://jekyllrb.com) and the [Minimal Mistakes
 
 ## Usage
 
-The generated docs can be viewed locally before being pushed to Github (see below). Please note that some files like the web version of CodeCharta are **generated** by `.travis.yml` with the help of the `script/build_gh_pages.sh`. They won't show up locally unless you call that script. If you run the script you should find a new folder called `gh-pages/visualization` though.
+The generated docs can be viewed locally before being pushed to Github (see below). Please note that some files like the web version of CodeCharta are **generated** by `release_gh_pages.yml` with the help of the `script/build_gh_pages.sh`. They won't show up locally unless you call that script. If you run the script you should find a new folder called `gh-pages/visualization` though.
 
 ### Local
 

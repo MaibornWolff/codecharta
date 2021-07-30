@@ -48,6 +48,8 @@ docs:
             url: /docs/raw-text-parser
           - title: "SCM Log Parser"
             url: /docs/scm-log-parser
+          - title: "SCM Log Parser V2"
+            url: /docs/scm-log-parser-2
           - title: "Sonar Importer"
             url: /docs/sonar-importer
           - title: "Tokei Importer"
