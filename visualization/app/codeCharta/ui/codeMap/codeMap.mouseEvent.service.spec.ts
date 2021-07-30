@@ -887,5 +887,24 @@ describe("codeMapMouseEventService", () => {
 				0
 			)
 		})
+
+		it("should not generate names in temporary Label when metric option is set to true and name is set to false", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			codeMapLabelService.addLabel = jest.fn()
+			storeService.dispatch(setShowMetricLabelNameValue(true))
+			storeService.dispatch(setShowMetricLabelNodeName(false))
+
+			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
+
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
+				codeMapBuilding.node,
+				{
+					showNodeName: false,
+					showNodeMetric: true
+				},
+				0
+			)
+		})
 	})
 })
