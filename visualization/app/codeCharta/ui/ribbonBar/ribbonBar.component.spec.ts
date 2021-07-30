@@ -9,6 +9,8 @@ import { setPanelSelection } from "../../state/store/appSettings/panelSelection/
 import { RibbonBarController } from "./ribbonBar.component"
 import { PanelSelectionService } from "../../state/store/appSettings/panelSelection/panelSelection.service"
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
+import { addFile, resetFiles, setDelta } from "../../state/store/files/files.actions"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 
 describe("RibbonBarController", () => {
 	let ribbonBarController: RibbonBarController
@@ -93,6 +95,19 @@ describe("RibbonBarController", () => {
 
 			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 			expect(appSettings.panelSelection).toEqual(PanelSelection.COLOR_PANEL_OPEN)
+		})
+	})
+
+	describe("onFilesSelectionChanged", () => {
+		it("should detect delta mode selection", () => {
+			storeService.dispatch(resetFiles())
+			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
+			storeService.dispatch(addFile(TEST_DELTA_MAP_B))
+			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
+			ribbonBarController.onFilesSelectionChanged(storeService.getState().files)
+
+			expect(ribbonBarController["_viewModel"].files).toEqual(storeService.getState().files)
+			expect(ribbonBarController["_viewModel"].isDeltaState).toEqual(true)
 		})
 	})
 })
