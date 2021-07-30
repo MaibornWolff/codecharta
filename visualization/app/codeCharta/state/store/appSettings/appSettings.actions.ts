@@ -1,6 +1,7 @@
 import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append default property import here
+import { defaultSecondaryMetrics } from "./secondaryMetrics/secondaryMetrics.actions"
 import { defaultColorLabels } from "./colorLabels/colorLabels.actions"
 import { defaultShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { defaultShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
@@ -49,6 +50,7 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 
 export const defaultAppSettings: AppSettings = {
 	// Plop: Append default property here
+	secondaryMetrics: defaultSecondaryMetrics,
 	colorLabels: defaultColorLabels,
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
