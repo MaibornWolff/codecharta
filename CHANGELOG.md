@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Empty temporary label during hovering ([#2328](https://github.com/maibornwolff/codecharta/issues/2328))
+
 ## [1.77.0] - 2021-07-30
 
 ### Added 🚀
