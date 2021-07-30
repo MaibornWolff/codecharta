@@ -12,9 +12,9 @@ describe("CodeCharta logo", () => {
 		await goto()
 	})
 
-	afterEach(async () => {
+	afterAll(async () => {
 		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
+		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/coverage/e2eCoverage" })
 	})
 
 	it("should have correct version", async () => {

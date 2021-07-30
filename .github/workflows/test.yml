@@ -89,7 +89,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: e2eCoverage
-        path: ./visualization/dist/
+        path: ./visualization/dist/coverage
 
  build_visualization_e2e:
     if: "!contains(github.event.head_commit.message, 'Deploying to main')"
@@ -182,7 +182,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: e2eCoverage
-          path: ./visualization/dist/
+          path: ./visualization/dist/coverage
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
