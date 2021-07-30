@@ -1,9 +1,7 @@
 attribute-type-selector-component {
-	.small-action-button {
-		margin: -3px 5px 0px 5px;
-		position: absolute;
-		right: 0;
-
+	& .small-action-button {
+		background-color: white;
+		border-radius: 16px;
 		display: inline-block;
 		height: 24px;
 		width: 24px;

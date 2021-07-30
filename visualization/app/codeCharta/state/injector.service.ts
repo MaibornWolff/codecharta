@@ -1,6 +1,7 @@
 //@ts-nocheck
 
 // Plop: Append service import here
+import { SecondaryMetricsService } from "./store/appSettings/secondaryMetrics/secondaryMetrics.service"
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
@@ -56,6 +57,7 @@ export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private secondaryMetricsService: SecondaryMetricsService,
 		private recentFilesService: RecentFilesService,
 		private colorLabelsService: ColorLabelsService,
 		private labelShowMetricValueService: LabelShowMetricValueService,
