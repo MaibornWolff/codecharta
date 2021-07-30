@@ -1,7 +1,7 @@
 export class LogoPageObject {
 	async getVersion() {
 		await page.waitForSelector("#logo > div.code-charta-logo > .version")
-		const versionString = await page.$eval("#logo > div.code-charta-logo > .version", element => element["innerText"])
+		const versionString = await page.$eval("#logo > div.code-charta-logo > .version", element => element["innerHtml"])
 		return versionString.split(" ")[1]
 	}
 
