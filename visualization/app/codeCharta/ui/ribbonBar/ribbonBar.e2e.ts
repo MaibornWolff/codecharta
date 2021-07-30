@@ -2,6 +2,7 @@ import { goto } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { AreaSettingsPanelPageObject } from "../areaSettingsPanel/areaSettingsPanel.po"
+import pti from "puppeteer-to-istanbul"
 
 //Commented out flaky test
 
@@ -18,8 +19,14 @@ describe("RibbonBar", () => {
 		ribbonBar = new RibbonBarPageObject()
 		//metricChooser = new MetricChooserPageObject()
 		//mapTreeViewLevel = new MapTreeViewLevelPageObject()
+		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
+		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	/*it("hovering over a folder should display the sum of metric of all children", async () => {

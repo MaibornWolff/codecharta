@@ -3,6 +3,7 @@ import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import sample1 from "../assets/sample1.cc.json"
 import sample3 from "../assets/sample3.cc.json"
+import pti from "puppeteer-to-istanbul"
 
 async function mockResponses() {
 	await page.setRequestInterception(true)
@@ -32,8 +33,14 @@ describe("codecharta", () => {
 	beforeEach(async () => {
 		dialogError = new DialogErrorPageObject()
 		filePanel = new FilePanelPageObject()
+		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
+		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	async function handleErrorDialog() {

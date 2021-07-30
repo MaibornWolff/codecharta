@@ -8,36 +8,26 @@ describe("CodeCharta logo", () => {
 
 	beforeEach(async () => {
 		logo = new LogoPageObject()
-
+		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 		await goto()
 	})
 
-	it("should have correct version", async () => {
-		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
-
-		expect(await logo.getVersion()).toBe(packageJson.version)
-
+	afterEach(async () => {
 		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./.nyc_output" })
+		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
+	})
+
+	it("should have correct version", async () => {
+		expect(await logo.getVersion()).toBe(packageJson.version)
 	})
 
 	it("should have correct link", async () => {
-		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
-
 		expect(await logo.getLink()).toContain("maibornwolff.de")
-
-		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./.nyc_output" })
 	})
 
 	it("should have correct image as logo", async () => {
-		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
-
 		const source = await logo.getImageSrc()
 		const viewSource = await page.goto(source)
 		expect(await viewSource.buffer()).toMatchSnapshot()
-
-		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./.nyc_output" })
 	})
 })

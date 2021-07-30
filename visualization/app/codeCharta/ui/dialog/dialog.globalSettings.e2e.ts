@@ -2,6 +2,7 @@ import { goto } from "../../../puppeteer.helper"
 import { SharpnessMode } from "../../codeCharta.model"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 import { DialogGlobalSettingsPageObject } from "./dialog.globalSettings.po"
+import pti from "puppeteer-to-istanbul"
 
 describe("DialogGlobalSettings", () => {
 	let globalSettingsPageObject: DialogGlobalSettingsPageObject
@@ -10,9 +11,15 @@ describe("DialogGlobalSettings", () => {
 	beforeEach(async () => {
 		globalSettingsPageObject = new DialogGlobalSettingsPageObject()
 		fileChooser = new FileChooserPageObject()
+		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 
 		await goto()
 		await setupTest()
+	})
+
+	afterEach(async () => {
+		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
+		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	async function setupTest() {

@@ -3,6 +3,7 @@ import { FileChooserPageObject } from "./fileChooser.po"
 import { FilePanelPageObject } from "../filePanel/filePanel.po"
 import { DialogErrorPageObject } from "../dialog/dialog.error.po"
 import { ERROR_MESSAGES } from "../../util/fileValidator"
+import pti from "puppeteer-to-istanbul"
 
 describe("FileChooser", () => {
 	let fileChooser: FileChooserPageObject
@@ -13,8 +14,14 @@ describe("FileChooser", () => {
 		fileChooser = new FileChooserPageObject()
 		filePanel = new FilePanelPageObject()
 		dialogError = new DialogErrorPageObject()
+		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
+		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	it("should load another cc.json", async () => {

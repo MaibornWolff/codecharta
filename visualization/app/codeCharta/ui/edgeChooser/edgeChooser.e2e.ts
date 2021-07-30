@@ -3,6 +3,7 @@ import { EdgeChooserPageObject } from "./edgeChooser.po"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
+import pti from "puppeteer-to-istanbul"
 
 describe("MapTreeViewLevel", () => {
 	let edgeChooser: EdgeChooserPageObject
@@ -15,8 +16,13 @@ describe("MapTreeViewLevel", () => {
 		fileChooser = new FileChooserPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanel = new SearchPanelPageObject()
-
+		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 		await goto()
+	})
+
+	afterEach(async () => {
+		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
+		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	describe("EdgeChooser", () => {
