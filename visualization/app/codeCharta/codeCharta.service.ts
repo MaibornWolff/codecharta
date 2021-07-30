@@ -24,23 +24,22 @@ export class CodeChartaService {
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
 		this.fileStates = this.storeService.getState().files
+		console.log(this.fileStates)
+		console.log(this.recentFiles)
 		for (const nameDataPair of nameDataPairs) {
+			this.addFile(nameDataPair)
+			this.addRecentFile(nameDataPair.fileName)
 			try {
 				validate(nameDataPair, this.storeService)
-				this.addFile(nameDataPair)
-				this.addRecentFile(nameDataPair.fileName)
 			} catch (error) {
 				if (error.error.length > 0) {
-					this.fileStates = []
-					this.recentFiles = []
+					this.fileStates.filter(file => getCCFile(nameDataPair) !== file.file)
+					this.recentFiles.filter(fileName => fileName !== nameDataPair.fileName)
 					this.storeService.dispatch(setIsLoadingFile(false))
 					await this.dialogService.showValidationErrorDialog(error)
-					break
 				}
 
 				if (error.warning.length > 0) {
-					this.addFile(nameDataPair)
-					this.addRecentFile(nameDataPair.fileName)
 					this.storeService.dispatch(setIsLoadingFile(false))
 					await this.dialogService.showValidationWarningDialog(error)
 				}
