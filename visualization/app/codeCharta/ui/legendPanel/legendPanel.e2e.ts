@@ -3,7 +3,6 @@ import { LegendPanelObject } from "./legendPanel.po"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
-import pti from "puppeteer-to-istanbul"
 
 describe("LegendPanel", () => {
 	let legendPanelObject: LegendPanelObject
@@ -16,15 +15,9 @@ describe("LegendPanel", () => {
 		fileChooser = new FileChooserPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
-		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 
 		await goto()
 		await setupTest()
-	})
-
-	afterEach(async () => {
-		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	async function setupTest() {

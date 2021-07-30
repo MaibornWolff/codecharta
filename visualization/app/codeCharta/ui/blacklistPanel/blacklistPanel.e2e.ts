@@ -4,7 +4,6 @@ import { SearchBarPageObject } from "../searchBar/searchBar.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { ERROR_MESSAGES } from "../../util/fileValidator"
 import { DialogErrorPageObject } from "../dialog/dialog.error.po"
-import pti from "puppeteer-to-istanbul"
 
 describe("Blacklist(TrackByEvaluation)", () => {
 	let searchBar: SearchBarPageObject
@@ -17,13 +16,7 @@ describe("Blacklist(TrackByEvaluation)", () => {
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		blacklistPanelPageObject = new BlacklistPanelPageObject()
 		dialogError = new DialogErrorPageObject()
-		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 		await goto()
-	})
-
-	afterEach(async () => {
-		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	it("should display error when all files are excluded", async () => {

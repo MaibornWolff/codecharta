@@ -1,20 +1,13 @@
 import { goto } from "../../../puppeteer.helper"
 import { CustomConfigsPageObject } from "./customConfigs.po"
-import pti from "puppeteer-to-istanbul"
 
 describe("CustomConfigs", () => {
 	let customConfigs: CustomConfigsPageObject
 
 	beforeEach(async () => {
 		customConfigs = new CustomConfigsPageObject()
-		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 
 		await goto()
-	})
-
-	afterEach(async () => {
-		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	it("CustomConfig Feature will not be shown by default due to it's experimental status", async () => {

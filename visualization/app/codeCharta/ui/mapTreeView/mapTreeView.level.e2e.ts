@@ -2,7 +2,6 @@ import { goto } from "../../../puppeteer.helper"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { NodeContextMenuPageObject } from "../nodeContextMenu/nodeContextMenu.po"
-import pti from "puppeteer-to-istanbul"
 
 //Commented out flaky test
 
@@ -15,14 +14,7 @@ describe("MapTreeViewLevel", () => {
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		nodeContextMenu = new NodeContextMenuPageObject()
-		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
-
 		await goto()
-	})
-
-	afterEach(async () => {
-		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	describe("Blacklist", () => {

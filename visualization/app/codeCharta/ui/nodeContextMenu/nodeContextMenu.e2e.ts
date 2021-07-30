@@ -5,7 +5,6 @@ import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 import { CodeMapPageObject } from "../codeMap/codeMap.po"
 import { ERROR_MESSAGES } from "../../util/fileValidator"
 import { DialogErrorPageObject } from "../dialog/dialog.error.po"
-import pti from "puppeteer-to-istanbul"
 
 describe("NodeContextMenu", () => {
 	let contextMenu: NodeContextMenuPageObject
@@ -20,14 +19,8 @@ describe("NodeContextMenu", () => {
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		codeMap = new CodeMapPageObject()
 		dialogError = new DialogErrorPageObject()
-		await Promise.all([page.coverage.startJSCoverage(), page.coverage.startCSSCoverage()])
 
 		await goto()
-	})
-
-	afterEach(async () => {
-		const [jsCoverage, cssCoverage] = await Promise.all([page.coverage.stopJSCoverage(), page.coverage.stopCSSCoverage()])
-		pti.write([...jsCoverage, ...cssCoverage], { includeHostname: true, storagePath: "./dist/e2eCoverage" })
 	})
 
 	it("should show error message when user excludes all files", async () => {
