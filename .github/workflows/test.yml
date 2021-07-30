@@ -85,6 +85,12 @@ jobs:
           name: coverage
           path: ./visualization/dist/
 
+    - name: Upload artifact e2e
+      uses: actions/upload-artifact@v2
+      with:
+        name: e2eCoverage
+        path: ./visualization/dist/
+
  build_visualization_e2e:
     if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     name: Visualization E2E
@@ -171,6 +177,11 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: coverage
+          path: ./visualization/dist/
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: e2eCoverage
           path: ./visualization/dist/
 
       - name: SonarCloud Scan
