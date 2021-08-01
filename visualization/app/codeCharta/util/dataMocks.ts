@@ -1790,7 +1790,8 @@ export const STATE: State = {
 	files: [],
 	lookUp: {
 		idToNode: new Map(),
-		idToBuilding: new Map()
+		idToBuilding: new Map(),
+		selectedBuildingId: null
 	},
 	metricData: {
 		nodeMetricData: METRIC_DATA,
@@ -1871,7 +1872,8 @@ export const DEFAULT_STATE: State = {
 	files: [],
 	lookUp: {
 		idToBuilding: new Map(),
-		idToNode: new Map()
+		idToNode: new Map(),
+		selectedBuildingId: null
 	},
 	metricData: {
 		nodeMetricData: [],

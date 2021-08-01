@@ -8,6 +8,7 @@ import { CodeMapNode, MapColors } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { setSelectedBuildingId } from "../../../state/store/lookUp/selectedBuildingId/selectedBuildingId.actions"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -163,6 +164,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.selected = building
 		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
+		// after clean up of custom broadcast hell through $rootScope we can probably remove this if condition
+		if (building.id !== this.selected?.id) this.storeService.dispatch(setSelectedBuildingId(building.id))
+
 		if (this.mapGeometry.children[0]) {
 			this.selectMaterial(this.mapGeometry.children[0]["material"])
 		}
@@ -342,6 +346,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
+			this.storeService.dispatch(setSelectedBuildingId(null))
 		}
 		if (this.highlighted.length > 0) {
 			this.highlightBuildings()
@@ -384,6 +389,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		return this.mapMesh
 	}
 
+	/** @deprecated - connect to store instead */
 	getSelectedBuilding() {
 		return this.selected
 	}
@@ -422,6 +428,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		})
 	}
 
+	/** @deprecated - connect to store instead */
 	static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (_event, selectedBuilding: CodeMapBuilding) => {
 			subscriber.onBuildingSelected(selectedBuilding)
