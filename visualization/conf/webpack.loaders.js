@@ -1,4 +1,5 @@
 const RemarkHTML = require("remark-html");
+
 module.exports = {
 	rules: [
 		{
@@ -36,15 +37,16 @@ module.exports = {
 		},
     {
       test: /\.md$/,
+
       use: [
-        {
-          loader: "html-loader",
+        {loader: "html-loader"
         },
         {
           loader: "remark-loader",
           options: {
+            removeFrontMatter: false,
             remarkOptions: {
-              plugins: [RemarkHTML],
+              plugins: [RemarkFrontmatter,RemarkHTML],
             },
           },
         },
