@@ -1,4 +1,4 @@
-const RemarkHTML = require("remark-html");
+const RemarkHTML = require("remark-html")
 
 module.exports = {
 	rules: [
@@ -35,22 +35,21 @@ module.exports = {
 			test: /\.glsl$/,
 			use: ["webpack-glsl-loader"]
 		},
-    {
-      test: /\.md$/,
+		{
+			test: /\.md$/,
 
-      use: [
-        {loader: "html-loader"
-        },
-        {
-          loader: "remark-loader",
-          options: {
-            removeFrontMatter: false,
-            remarkOptions: {
-              plugins: [RemarkFrontmatter,RemarkHTML],
-            },
-          },
-        },
-      ],
-    }
+			use: [
+				{ loader: "html-loader" },
+				{
+					loader: "remark-loader",
+					options: {
+						removeFrontMatter: false,
+						remarkOptions: {
+							plugins: [RemarkHTML]
+						}
+					}
+				}
+			]
+		}
 	]
 }
