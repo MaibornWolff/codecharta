@@ -1,65 +1,26 @@
-import "./metricDeltaSelected.component.scss"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { IRootScopeService, ITimeoutService } from "angular"
-import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { StoreService } from "../../state/store.service"
-import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
+import { Component, Input } from "@angular/core"
+import { connect } from "../../state/angular-redux/connect"
+import { selectedBuildingIdSelector } from "../../state/store/lookUp/selectedBuildingId/selectedBuildingId.selector"
+import { CcState } from "../../state/store/store"
 
-export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, MapColorsSubscriber {
-	private static TIME_TO_INIT_BINDING = 50
-	private attributekey: string // angular bindings do not accept camelCase
+const ConnectedClass = connect((state: CcState, that: { attributeKey: string }) => {
+	if (that.attributeKey === undefined) return { deltaValue: undefined, color: "" }
 
-	private _viewModel: {
-		deltaValue: number
-		attributeKey: string
-		style: { color: string }
-	} = {
-		deltaValue: null,
-		attributeKey: null,
-		style: { color: null }
-	}
+	const selectedBuildingId = selectedBuildingIdSelector(state)
+	const selectedBuildingNode = state.lookUp.idToBuilding.get(selectedBuildingId)
+	const deltaValue = selectedBuildingNode?.node.deltas?.[that.attributeKey]
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
-		private threeSceneService: ThreeSceneService,
-		private storeService: StoreService
-	) {
-		"ngInject"
-		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		MapColorsService.subscribe(this.$rootScope, this)
-		this.$timeout(() => {
-			this.onBuildingSelected(this.threeSceneService.getSelectedBuilding())
-		}, MetricDeltaSelectedController.TIME_TO_INIT_BINDING)
-	}
+	const mapColors = state.appSettings.mapColors
+	const color = deltaValue > 0 ? mapColors.positiveDelta : mapColors.negativeDelta
 
-	onMapColorsChanged() {
-		this.setDeltaColorClass()
-	}
+	return { deltaValue, color }
+})
 
-	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
-		this.setDeltaValue(selectedBuilding)
-		this.setDeltaColorClass()
-	}
-
-	private setDeltaValue(selectedBuilding?: CodeMapBuilding) {
-		if (selectedBuilding) {
-			this._viewModel.deltaValue = selectedBuilding.node.deltas?.[this.attributekey]
-		}
-	}
-
-	private setDeltaColorClass() {
-		const mapColors = this.storeService.getState().appSettings.mapColors
-		const color = this._viewModel.deltaValue > 0 ? mapColors.positiveDelta : mapColors.negativeDelta
-		this._viewModel.style = { color }
-	}
-}
-
-export const metricDeltaSelectedComponent = {
-	selector: "metricDeltaSelectedComponent",
-	template: require("./metricDeltaSelected.component.html"),
-	controller: MetricDeltaSelectedController,
-	bindings: {
-		attributekey: "="
-	}
+@Component({
+	selector: "cc-metric-delta-selected",
+	template: require("./metricDeltaSelected.component.html")
+})
+export class MetricDeltaSelectedComponent extends ConnectedClass {
+	// @ts-ignore - used within connect
+	@Input() private attributeKey
 }

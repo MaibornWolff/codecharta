@@ -161,11 +161,13 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	selectBuilding(building: CodeMapBuilding) {
 		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
+
+		// after clean up of custom broadcast fun through $rootScope we can probably remove this if condition
+		if (building.id !== this.selected?.id) this.storeService.dispatch(setSelectedBuildingId(building.id))
+
 		this.selected = building
 		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
-		// after clean up of custom broadcast hell through $rootScope we can probably remove this if condition
-		if (building.id !== this.selected?.id) this.storeService.dispatch(setSelectedBuildingId(building.id))
 
 		if (this.mapGeometry.children[0]) {
 			this.selectMaterial(this.mapGeometry.children[0]["material"])

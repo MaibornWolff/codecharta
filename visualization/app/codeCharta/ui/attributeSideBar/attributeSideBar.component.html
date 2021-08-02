@@ -36,9 +36,7 @@
 								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
 							</span>
 						</div>
-						<metric-delta-selected-component
-							attributekey="$ctrl._viewModel.primaryMetricKeys.node.area"
-						></metric-delta-selected-component>
+						<cc-metric-delta-selected [attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.area"></cc-metric-delta-selected>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</p>
 					</td>
 
