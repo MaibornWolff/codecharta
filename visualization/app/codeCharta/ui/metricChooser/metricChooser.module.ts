@@ -4,7 +4,8 @@ import {
 	areaMetricChooserComponent,
 	colorMetricChooserComponent,
 	heightMetricChooserComponent,
-	distribitionMetricChooserComponent
+	distribitionMetricChooserComponent,
+	rlocMetricChooserComponent
 } from "./metricChooser.component"
 
 angular.module("app.codeCharta.ui.metricChooser", ["app.codeCharta.state"])
@@ -15,3 +16,4 @@ angular
 	.component(heightMetricChooserComponent.selector, heightMetricChooserComponent)
 	.component(colorMetricChooserComponent.selector, colorMetricChooserComponent)
 	.component(distribitionMetricChooserComponent.selector, distribitionMetricChooserComponent)
+	.component(rlocMetricChooserComponent.selector, rlocMetricChooserComponent)

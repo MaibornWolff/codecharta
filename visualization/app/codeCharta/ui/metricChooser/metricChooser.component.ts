@@ -123,3 +123,9 @@ export const distribitionMetricChooserComponent = {
 	template: require("./metricChooser.distribution.component.html"),
 	controller: MetricChooserController
 }
+
+export const rlocMetricChooserComponent = {
+	selector: "rlocMetricChooserComponent",
+	template: require("./metricChooser.rloc.component.html"),
+	controller: MetricChooserController
+}

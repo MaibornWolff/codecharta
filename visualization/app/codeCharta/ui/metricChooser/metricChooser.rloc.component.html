@@ -1,0 +1,9 @@
+<md-input-container title="Area metric">
+	<md-content
+	   ng-model="$ctrl._viewModel.areaMetric"
+	   ></md-content>
+	<div ng-repeat="metric in $ctrl._viewModel.metricData track by metric.name"  ng-if="metric.name == 'rloc'">
+	   {{::metric.name}}
+	</div>
+	<area-metric-value-hovered-component></area-metric-value-hovered-component>
+ </md-input-container>
