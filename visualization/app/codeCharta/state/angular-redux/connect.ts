@@ -19,6 +19,7 @@ type ActionCreator = (...args: unknown[]) => Action
  *    By `mapStateToThis` returned `MappedState` is added to properties of returned class and reflects store's state automatically.
  *    By `mapDispatchToThis` returned `MappedDispatch` is added to properties of returned class but actual dispatches to store.
  */
+/* eslint-disable-next-line @typescript-eslint/ban-types */ // we actual want to infer nothing if `MappedDispatch` is not given
 export const connect = <MappedState extends Record<string, unknown>, MappedDispatch extends Record<string, ActionCreator> = {}>(
 	mapStateToThis?: (state: CcState, that?: This) => MappedState,
 	mapDispatchToThis?: MappedDispatch
@@ -31,6 +32,7 @@ export const connect = <MappedState extends Record<string, unknown>, MappedDispa
 
 	const setDispatchToThis = (that: This, keys: string[]) => {
 		for (const key of keys) {
+			// todo think about using Observerables
 			that[key] = (...args: unknown[]) => Store.store.dispatch(mapDispatchToThis[key](...args))
 		}
 	}
