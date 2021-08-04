@@ -40,4 +40,15 @@ describe("connect", () => {
 
 		expect(mockedUnsubscribe).toHaveBeenCalled()
 	})
+
+	it("should allow extending class to add properties, when `mapDispatchToThis` is not given", () => {
+		const Connected = connect(() => ({}))
+		class ExtendingClass extends Connected {
+			someCustomFunction() {
+				/* just be here as prove, that it is possible */
+			}
+		}
+
+		expect(ExtendingClass).toBeTruthy()
+	})
 })
