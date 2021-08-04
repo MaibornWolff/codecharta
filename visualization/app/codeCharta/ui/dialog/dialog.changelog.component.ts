@@ -1,8 +1,7 @@
 import "./dialog.changelog.component.scss"
 // @ts-ignore
 import md from "../../../../../CHANGELOG.md"
-
-// import parseChangelog from 'changelog-parser'
+import packageJson from "../../../../package.json"
 
 export class DialogChangelogController {
 	private _viewModel: {
@@ -15,18 +14,10 @@ export class DialogChangelogController {
 
 	constructor(private $mdDialog) {
 		"ngInject"
-
-		// parseChangelog({
-		// 	text: ""
-		// }).then(function (result) {
-		// 	// changelog object
-		// 	console.log(result)
-		// }).catch(function (err) {
-		// 	// Whoops, something went wrong!
-		// 	console.error(err)
-		// })
-		// console.log(angular.element(document.querySelector('#change')));
 		const changelogLines = md.split("\n")
+		// Get current version
+		this._viewModel.version = packageJson.version
+		// Get the Changelog just for the newest version
 		const newVersionLine = this.findVersionLine(changelogLines)
 		const endVersionLine = this.findEndVersionLine(changelogLines, newVersionLine)
 		this._viewModel.md = changelogLines.slice(newVersionLine, endVersionLine).join("\n")
@@ -37,7 +28,8 @@ export class DialogChangelogController {
 	}
 
 	findVersionLine(lines) {
-		return lines.findIndex(element => element.search(/1\.73\.0/) > -1)
+		const versionPattern = new RegExp(this._viewModel.version.replace(".", "\\."))
+		return lines.findIndex(element => element.search(versionPattern) > -1)
 	}
 
 	findEndVersionLine(lines, newVersionLine) {

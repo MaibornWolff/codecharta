@@ -39,6 +39,7 @@ export class CodeChartaController {
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
+		this.showChangelog()
 	}
 
 	async loadFileOrSample() {
@@ -84,6 +85,15 @@ export class CodeChartaController {
 			this.storeService.dispatch(setMultiple(files))
 		} else {
 			this.storeService.dispatch(setSingle(files[0]))
+		}
+	}
+
+	private showChangelog() {
+		const savedVersion = localStorage.getItem("codeChartaVersion")
+		if (savedVersion !== packageJson.version) {
+			//Version Changed
+			this.dialogService.showChangelogDialog()
+			localStorage.setItem("codeChartaVersion", packageJson.version)
 		}
 	}
 }
