@@ -250,10 +250,16 @@ export class CodeMapMouseEventService
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 
+		let displayLabelMetricName = true
+
+		if (showLabelNodeMetric && !showLabelNodeName) {
+			displayLabelMetricName = false
+		}
+
 		this.codeMapLabelService.addLabel(
 			codeMapBuilding.node,
 			{
-				showNodeName: showLabelNodeName,
+				showNodeName: displayLabelMetricName,
 				showNodeMetric: showLabelNodeMetric
 			},
 			0
