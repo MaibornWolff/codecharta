@@ -6,7 +6,6 @@ import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { DialogService } from "../dialog/dialog.service"
 
 export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, ExperimentalFeaturesEnabledSubscriber {
 	private _viewModel: {
@@ -17,11 +16,7 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 		experimentalFeaturesEnabled: false
 	}
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private codeChartaMouseEventService: CodeChartaMouseEventService,
-		private dialogService: DialogService
-	) {
+	constructor(private $rootScope: IRootScopeService, private codeChartaMouseEventService: CodeChartaMouseEventService) {
 		"ngInject"
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
@@ -42,9 +37,6 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 
 	onClick() {
 		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
-	}
-	showChangelogDialog() {
-		this.dialogService.showChangelogDialog()
 	}
 }
 
