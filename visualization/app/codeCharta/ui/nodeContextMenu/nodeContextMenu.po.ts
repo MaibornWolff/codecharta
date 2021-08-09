@@ -19,4 +19,8 @@ export class NodeContextMenuPageObject {
 	async isClosed() {
 		await page.waitForSelector("#codemap-context-menu", { hidden: true })
 	}
+
+	async clickOnExclude() {
+		await clickButtonOnPageElement(`[id='exclude-button']`, { button: "left" })
+	}
 }

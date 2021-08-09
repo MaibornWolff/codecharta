@@ -36,6 +36,7 @@ import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetri
 import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { SecondaryMetricsActions } from "../../state/store/appSettings/secondaryMetrics/secondaryMetrics.actions"
 import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
 
 export interface CodeMapPreRenderServiceSubscriber {
@@ -114,7 +115,8 @@ export class CodeMapPreRenderService
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
 			!isActionOfType(actionType, PanelSelectionActions) &&
 			!isActionOfType(actionType, PresentationModeActions) &&
-			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
+			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions) &&
+			!isActionOfType(actionType, SecondaryMetricsActions)
 		) {
 			this.debounceRendering()
 			this.debounceTracking(actionType)

@@ -9,7 +9,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Custom metric scenarios which include the 'Color-Metric' (rloc) will now also save any changes made to the color scheme. ([#1557](https://github.com/maibornwolff/codecharta/issues/1557))
+-   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/issues/1315))
+
+### Fixed 🐞
+
+-   Empty temporary label during hovering ([#2328](https://github.com/maibornwolff/codecharta/issues/2328))
+
+## [1.77.0] - 2021-07-30
+
+### Added 🚀
+
+-   The "Color Metric Options" panel and "Legend" panel display the maximum value of the selected metric instead of infinite. ([#1520](https://github.com/maibornwolff/codecharta/issues/1520))
+-   Mark color-section as unimportant in delta mode ([#769](https://github.com/maibornwolff/codecharta/issues/769))
+
+### Changed
+
+-   Small ui improvements added. ([#1881](https://github.com/MaibornWolff/codecharta/issues/1881))
+
+-   Numbers/Percentages always show in the distribution bar([#1540](https://github.com/MaibornWolff/codecharta/issues/1540))
+    -   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
+    -   The old expanded distribution bar is now accessible through a button.
+
+### Fixed 🐞
+
+-   It is no longer possible to exclude all files on the map ([#901](https://github.com/MaibornWolff/codecharta/issues/901))
+
+## [1.76.0] - 2021-07-13
+
+### Added 🚀
+
+-   Custom metric scenarios which include the 'Color-Metric' (rloc) will now also save any changes made to the color scheme.
 
 ### Fixed 🐞
 
@@ -24,7 +53,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
 -   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613))
 
-    <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350">
+    <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350" alt="Updated menu">
+
+### Changed
+
+-   Metric aggregations now work as intended and are available from the sidebar when selecting folders ([#1953](https://github.com/MaibornWolff/codecharta/issues/1953))
 
 -   Opening new files does no longer remove old ones.
 
@@ -32,6 +65,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
     -   Already loaded files can be individually removed.
     -   The 'Multiple' view will select the latest files.
+
+### Changed
+
+-   Numbers/Percentages are always shown on distribution bar.
+-   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
+-   The old expanded distribution bar is
+    now accessible through a button.
 
 ### Fixed 🐞
 
