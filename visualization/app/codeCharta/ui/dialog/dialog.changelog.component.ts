@@ -25,13 +25,13 @@ export class DialogChangelogController {
 		this.$mdDialog.hide()
 	}
 
-	findVersionLine(lines) {
+	private findVersionLine(lines: string[]): number {
 		const versionPattern = new RegExp(this._viewModel.version.replace(".", "\\."))
 		return lines.findIndex(element => element.search(versionPattern) > -1)
 	}
 
-	findEndVersionLine(lines, newVersionLine) {
-		return newVersionLine + lines.slice(newVersionLine + 1).findIndex(element => element.search(/<h2>/) > -1)
+	private findEndVersionLine(lines: string[], versionLine: number): number {
+		return versionLine + lines.slice(versionLine + 1).findIndex(element => element.search(/<h2>/) > -1)
 	}
 }
 
