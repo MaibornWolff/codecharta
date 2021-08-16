@@ -1,4 +1,3 @@
-import "./dialog.changelog.component.scss"
 // @ts-ignore
 import md from "../../../../../CHANGELOG.md"
 import packageJson from "../../../../package.json"
