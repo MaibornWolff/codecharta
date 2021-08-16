@@ -1,25 +1,24 @@
-// @ts-ignore
-import md from "../../../../../CHANGELOG.md"
+import markdownFile from "../../../../../CHANGELOG.md"
 import packageJson from "../../../../package.json"
 
 export class DialogChangelogController {
 	private _viewModel: {
 		version: string
-		md: any
+		changelogMarkdown: any
 	} = {
 		version: "",
-		md: null
+		changelogMarkdown: null
 	}
 
 	constructor(private $mdDialog) {
 		"ngInject"
-		const changelogLines = md.split("\n")
+		const changelogLines = markdownFile.split("\n")
 		// Get current version
 		this._viewModel.version = packageJson.version
 		// Get the Changelog just for the newest version
 		const newVersionLine = this.findVersionLine(changelogLines)
 		const endVersionLine = this.findEndVersionLine(changelogLines, newVersionLine)
-		this._viewModel.md = changelogLines.slice(newVersionLine, endVersionLine).join("\n")
+		this._viewModel.changelogMarkdown = changelogLines.slice(newVersionLine, endVersionLine).join("\n")
 	}
 
 	hide() {
