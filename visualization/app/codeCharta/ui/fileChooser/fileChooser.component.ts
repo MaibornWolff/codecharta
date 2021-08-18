@@ -12,8 +12,9 @@ import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/cus
 export class FileChooserController {
 	private files: NameDataPair[] = []
 
-	/* @ngInject */
-	constructor(private $scope, private codeChartaService: CodeChartaService, private storeService: StoreService) {}
+	constructor(private $scope, private codeChartaService: CodeChartaService, private storeService: StoreService) {
+		"ngInject"
+	}
 
 	onImportNewFiles(element) {
 		this.$scope.$apply(() => {

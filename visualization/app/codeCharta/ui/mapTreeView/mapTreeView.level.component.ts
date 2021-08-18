@@ -31,12 +31,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		isFolderOpened: false
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
 		private storeService: StoreService
 	) {
+		"ngInject"
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)

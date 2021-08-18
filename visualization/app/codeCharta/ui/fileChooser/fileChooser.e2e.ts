@@ -24,12 +24,14 @@ describe("FileChooser", () => {
 	})
 
 	it("should load multiple cc.json files", async () => {
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json", "./app/codeCharta/assets/sample2.cc.json"])
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json", "./app/codeCharta/assets/sample4.cc.json"])
 
 		const loadedMapsName = await filePanel.getAllNames()
 
-		expect(loadedMapsName[0]).toEqual("sample3.cc.json")
+		expect(loadedMapsName[0]).toEqual("sample1.cc.json")
 		expect(loadedMapsName[1]).toEqual("sample2.cc.json")
+		expect(loadedMapsName[2]).toEqual("sample3.cc.json")
+		expect(loadedMapsName[3]).toEqual("sample4.cc.json")
 	})
 
 	it("should keep the old map if opening a file was cancelled", async () => {

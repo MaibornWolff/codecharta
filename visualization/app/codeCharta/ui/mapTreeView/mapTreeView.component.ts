@@ -23,8 +23,8 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		rootNode: null
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
+		"ngInject"
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 		SortingOptionService.subscribe(this.$rootScope, this)
 		SortingOrderAscendingService.subscribe(this.$rootScope, this)

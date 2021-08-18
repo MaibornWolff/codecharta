@@ -34,16 +34,24 @@ import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { InvertColorRangeActions } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { SecondaryMetricsActions } from "../../state/store/appSettings/secondaryMetrics/secondaryMetrics.actions"
+import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
 export class CodeMapPreRenderService
-	implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber
+	implements
+		StoreSubscriber,
+		StoreExtendedSubscriber,
+		MetricDataSubscriber,
+		ScalingSubscriber,
+		LayoutAlgorithmSubscriber,
+		ColorRangeFromSubscriber,
+		ColorRangeToSubscriber
 {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
@@ -51,6 +59,7 @@ export class CodeMapPreRenderService
 	private unifiedFileMeta: FileMeta
 
 	private readonly debounceRendering: () => void
+	private readonly debounceDecorate: () => void
 	private readonly debounceTracking: (actionType: string, payload?: unknown) => void
 	private DEBOUNCE_TIME = 0
 
@@ -61,14 +70,24 @@ export class CodeMapPreRenderService
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
+		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		StoreService.subscribeDetailedData(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+		RangeSliderController.subscribeToColorRangeFromUpdated(this.$rootScope, this)
+		RangeSliderController.subscribeToColorRangeToUpdated(this.$rootScope, this)
 
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
+		}, this.DEBOUNCE_TIME)
+
+		this.debounceDecorate = debounce(() => {
+			this.decorateIfPossible()
+			if (this.allNecessaryRenderDataAvailable()) {
+				this.renderAndNotify()
+			}
 		}, this.DEBOUNCE_TIME)
 
 		this.debounceTracking = debounce(() => {
@@ -96,7 +115,8 @@ export class CodeMapPreRenderService
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
 			!isActionOfType(actionType, PanelSelectionActions) &&
 			!isActionOfType(actionType, PresentationModeActions) &&
-			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
+			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions) &&
+			!isActionOfType(actionType, SecondaryMetricsActions)
 		) {
 			this.debounceRendering()
 			this.debounceTracking(actionType)
@@ -112,13 +132,20 @@ export class CodeMapPreRenderService
 				isActionOfType(actionType, HeightMetricActions) ||
 				isActionOfType(actionType, ColorMetricActions) ||
 				isActionOfType(actionType, ColorRangeActions) ||
-				isActionOfType(actionType, InvertColorRangeActions) ||
 				isActionOfType(actionType, BlacklistActions) ||
 				isActionOfType(actionType, FocusedNodePathActions))
 		) {
 			// Track event usage data only on certain events
 			trackEventUsageData(actionType, this.storeService.getState(), payload)
 		}
+	}
+
+	onColorRangeFromUpdated(colorMetric: string, fromValue: number) {
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_FROM_UPDATED, this.storeService.getState(), { colorMetric, fromValue })
+	}
+
+	onColorRangeToUpdated(colorMetric: string, toValue: number) {
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_TO_UPDATED, this.storeService.getState(), { colorMetric, toValue })
 	}
 
 	onLayoutAlgorithmChanged() {
@@ -134,10 +161,7 @@ export class CodeMapPreRenderService
 	onMetricDataChanged() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
-			this.decorateIfPossible()
-			if (this.allNecessaryRenderDataAvailable()) {
-				this.debounceRendering()
-			}
+			this.debounceDecorate()
 		}
 	}
 

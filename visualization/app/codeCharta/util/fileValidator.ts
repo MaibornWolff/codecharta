@@ -1,9 +1,10 @@
-import { CodeMapNode, FixedPosition } from "../codeCharta.model"
+import { CodeMapNode, FixedPosition, NameDataPair } from "../codeCharta.model"
 import Ajv from "ajv"
 import packageJson from "../../../package.json"
 import { ExportCCFile } from "../codeCharta.api.model"
 import jsonSchema from "./generatedSchema.json"
 import { isLeaf } from "./codeMapHelper"
+import { StoreService } from "../state/store.service"
 
 const latestApiVersion = packageJson.codecharta.apiVersion
 
@@ -27,12 +28,15 @@ export const ERROR_MESSAGES = {
 	notAllFoldersAreFixed: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed.",
 	fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
 	fixedFoldersOverlapped: "Folders may not overlap.",
-	fixedFoldersNotAllowed: "Fixated folders may not be defined in API-Version < 1.2."
+	fixedFoldersNotAllowed: "Fixated folders may not be defined in API-Version < 1.2.",
+	fileAlreadyExists: "File already exists.",
+	blacklistError: "Excluding all buildings is not possible."
 }
 
-export function validate(file: ExportCCFile) {
+export function validate(nameDataPair: NameDataPair, storeService: StoreService) {
+	const file = nameDataPair?.content
+	const fileName = nameDataPair?.fileName
 	const result: CCValidationResult = { error: [], warning: [] }
-
 	switch (true) {
 		case !file:
 			result.error.push(ERROR_MESSAGES.fileIsInvalid)
@@ -45,6 +49,10 @@ export function validate(file: ExportCCFile) {
 			break
 		case fileHasHigherMinorVersion(file):
 			result.warning.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
+			break
+		case fileAlreadyExists(fileName, storeService):
+			result.error.push(ERROR_MESSAGES.fileAlreadyExists)
+			break
 	}
 
 	if (result.error.length === 0) {
@@ -83,6 +91,11 @@ function fileHasHigherMajorVersion(file: ExportCCFile) {
 function fileHasHigherMinorVersion(file: ExportCCFile) {
 	const apiVersion = getAsApiVersion(file.apiVersion)
 	return apiVersion.minor > getAsApiVersion(latestApiVersion).minor
+}
+
+function fileAlreadyExists(fileName: string, storeService: StoreService) {
+	const recentFiles = storeService.getState().dynamicSettings.recentFiles
+	return recentFiles.includes(fileName)
 }
 
 export function getAsApiVersion(version: string): ApiVersion {

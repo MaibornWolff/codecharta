@@ -19,6 +19,7 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		AreaMetricService.subscribe(this.$rootScope, this)
 		DynamicMarginService.subscribe(this.$rootScope, this)

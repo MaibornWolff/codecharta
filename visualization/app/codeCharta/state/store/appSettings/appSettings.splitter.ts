@@ -1,7 +1,9 @@
-import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
+import { AppSettings, CCAction, colorLabelOptions, MapColors, RecursivePartial } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 
 // Plop: Append action splitter import here
+import { splitSecondaryMetricsAction } from "./secondaryMetrics/secondaryMetrics.splitter"
+import { splitColorLabelsAction } from "./colorLabels/colorLabels.splitter"
 import { splitShowMetricLabelNodeNameAction } from "./showMetricLabelNodeName/showMetricLabelNodeName.splitter"
 import { splitShowMetricLabelNameValueAction } from "./showMetricLabelNameValue/showMetricLabelNameValue.splitter"
 import { splitPanelSelectionAction } from "./panelSelection/panelSelection.splitter"
@@ -14,12 +16,9 @@ import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
 import { splitMapColorsAction } from "./mapColors/mapColors.splitter"
 import { splitResetCameraIfNewFileIsLoadedAction } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.splitter"
 import { splitShowOnlyBuildingsWithEdgesAction } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.splitter"
-import { splitWhiteColorBuildingsAction } from "./whiteColorBuildings/whiteColorBuildings.splitter"
 import { splitIsWhiteBackgroundAction } from "./isWhiteBackground/isWhiteBackground.splitter"
 import { splitDynamicMarginAction } from "./dynamicMargin/dynamicMargin.splitter"
 import { splitInvertHeightAction } from "./invertHeight/invertHeight.splitter"
-import { splitInvertDeltaColorsAction } from "./invertDeltaColors/invertDeltaColors.splitter"
-import { splitInvertColorRangeAction } from "./invertColorRange/invertColorRange.splitter"
 import { splitHideFlatBuildingsAction } from "./hideFlatBuildings/hideFlatBuildings.splitter"
 import { splitCameraAction } from "./camera/camera.splitter"
 import { splitScalingAction } from "./scaling/scaling.splitter"
@@ -31,11 +30,16 @@ import { splitExperimentalFeaturesEnabledAction } from "./enableExperimentalFeat
 import { splitLayoutAlgorithmAction } from "./layoutAlgorithm/layoutAlgorithm.splitter"
 import { splitMaxTreeMapFilesAction } from "./maxTreeMapFiles/maxTreeMapFiles.splitter"
 import { splitSharpnessAction } from "./sharpnessMode/sharpnessMode.splitter"
+import { SecondaryMetric } from "../../../ui/attributeSideBar/attributeSideBar.component"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.secondaryMetrics !== undefined) {
+		actions.push(splitSecondaryMetricsAction(payload.secondaryMetrics as SecondaryMetric[]))
+	}
+
 	if (payload.showMetricLabelNodeName !== undefined) {
 		actions.push(splitShowMetricLabelNodeNameAction(payload.showMetricLabelNodeName))
 	}
@@ -84,10 +88,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 		actions.push(splitShowOnlyBuildingsWithEdgesAction(payload.showOnlyBuildingsWithEdges))
 	}
 
-	if (payload.whiteColorBuildings !== undefined) {
-		actions.push(splitWhiteColorBuildingsAction(payload.whiteColorBuildings))
-	}
-
 	if (payload.isWhiteBackground !== undefined) {
 		actions.push(splitIsWhiteBackgroundAction(payload.isWhiteBackground))
 	}
@@ -98,14 +98,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.invertHeight !== undefined) {
 		actions.push(splitInvertHeightAction(payload.invertHeight))
-	}
-
-	if (payload.invertDeltaColors !== undefined) {
-		actions.push(splitInvertDeltaColorsAction(payload.invertDeltaColors))
-	}
-
-	if (payload.invertColorRange !== undefined) {
-		actions.push(splitInvertColorRangeAction(payload.invertColorRange))
 	}
 
 	if (payload.hideFlatBuildings !== undefined) {
@@ -150,6 +142,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.sharpnessMode !== undefined) {
 		actions.push(splitSharpnessAction(payload.sharpnessMode))
+	}
+
+	if (payload.colorLabels !== undefined) {
+		actions.push(splitColorLabelsAction(payload.colorLabels as colorLabelOptions))
 	}
 
 	return actions

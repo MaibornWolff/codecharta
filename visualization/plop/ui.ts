@@ -15,12 +15,12 @@ export const PLOP_UI_FILE_ACTIONS = [
 	createFileAction(TEMPLATE_DIR, DESTINATION_DIR, ["component", "spec", "ts"]),
 	modifyFileAction({
 		path: "ui/ui.ts",
-		pattern: /(\/\/ Plop: Append component name here)/gi,
+		pattern: /(\/\/ plop: append component name here)/gi,
 		template: '$1\r\n\t\t"app.codeCharta.ui.{{camelCase name}}",'
 	}),
 	modifyFileAction({
 		path: "ui/ui.ts",
-		pattern: /(\/\/ Plop: Append module import here)/gi,
+		pattern: /(\/\/ plop: append module import here)/gi,
 		template: '$1\r\nimport "./{{camelCase name}}/{{camelCase name}}.module";'
 	})
 ]

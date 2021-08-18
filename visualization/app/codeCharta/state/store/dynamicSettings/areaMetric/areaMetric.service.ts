@@ -14,6 +14,7 @@ export class AreaMetricService implements StoreSubscriber, NodeMetricDataSubscri
 	private static AREA_METRIC_CHANGED_EVENT = "area-metric-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}

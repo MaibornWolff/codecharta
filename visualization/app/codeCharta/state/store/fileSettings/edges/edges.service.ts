@@ -16,6 +16,7 @@ export class EdgesService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static EDGES_CHANGED_EVENT = "edges-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 	}

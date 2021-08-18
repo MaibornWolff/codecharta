@@ -36,18 +36,20 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService
 	) {
+		"ngInject"
 		this.labels = new Array<InternalLabel>()
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
 	//labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNodeInSet: number) {
 		const state = this.storeService.getState()
 
 		const { scaling, layoutAlgorithm } = state.appSettings
 		const { margin, heightMetric } = state.dynamicSettings
 
-		const newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
+		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
+		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
 
 		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
 		// todo: tk rename to addLeafLabel
@@ -107,6 +109,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	clearLabels() {
+		this.threeSceneService.resetLabel()
+		this.threeSceneService.resetLineHighlight()
 		this.dispose(this.labels)
 
 		this.labels = []
@@ -197,9 +201,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const canvas = document.createElement("canvas")
 		const context = canvas.getContext("2d")
 
-		context.font = `${fontsize}px Helvetica Neue`
+		context.font = `${fontsize}px Roboto`
 
-		const margin = 20
+		const margin = 25
 		const multiLineContext = message.split("\n")
 
 		// setting canvas width/height before ctx draw, else canvas is empty
@@ -212,7 +216,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		canvas.height = margin + fontsize * multiLineContext.length
 
 		// bg
-		context.font = `${fontsize}px Helvetica Neue`
+		context.font = `${fontsize}px Roboto`
 		context.fillStyle = "rgba(255,255,255,1)"
 		context.lineJoin = "round"
 		context.lineCap = "round"

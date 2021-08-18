@@ -2,20 +2,13 @@ import "./customConfigs.component.scss"
 import { DialogService } from "../dialog/dialog.service"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
-import { setState } from "../../state/store/state.actions"
-import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { ColorRange } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import { FileState } from "../../model/files/files"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { IRootScopeService } from "angular"
 import { CustomConfigFileStateConnector } from "./customConfigFileStateConnector"
 import { CustomConfig, CustomConfigMapSelectionMode, ExportCustomConfig } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
-import { setCamera } from "../../state/store/appSettings/camera/camera.actions"
-import { setCameraTarget } from "../../state/store/appSettings/cameraTarget/cameraTarget.actions"
-import { Vector3 } from "three"
 
 export interface CustomConfigItem {
 	id: string
@@ -51,6 +44,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService
 	) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
@@ -77,30 +71,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	applyCustomConfig(configId: string) {
-		const customConfig = CustomConfigHelper.getCustomConfigSettings(configId)
-
-		// TODO: Setting state from loaded CustomConfig not working at the moment
-		//  due to issues of the event architecture.
-
-		// TODO: Check if state properties differ
-		// Create new partial State (updates) for changed values only
-		this.storeService.dispatch(setState(customConfig.stateSettings))
-
-		// Should we fire another event "ResettingStateFinishedEvent"
-		// We could add a listener then to reset the camera
-
-		this.storeService.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange as ColorRange))
-		this.storeService.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
-
-		// TODO: remove this dirty timeout and set camera settings properly
-		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
-		setTimeout(() => {
-			this.threeCameraService.setPosition()
-			this.threeOrbitControlsService.setControlTarget()
-
-			this.storeService.dispatch(setCamera(customConfig.stateSettings.appSettings.camera as Vector3))
-			this.storeService.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget as Vector3))
-		}, 100)
+		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
 	}
 
 	removeCustomConfig(configId, configName) {

@@ -4,6 +4,8 @@ import { AttributeTypeValue } from "../../codeCharta.model"
 import { updateAttributeType } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { IRootScopeService } from "angular"
+import { AttributeTypesService } from "../../state/store/fileSettings/attributeTypes/attributeTypes.service"
 
 export class AttributeTypeSelectorController {
 	private _viewModel: {
@@ -15,12 +17,19 @@ export class AttributeTypeSelectorController {
 	private type: string
 	private metric: string
 
-	/* @ngInject */
 	constructor(
+		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService
-	) {}
+	) {
+		"ngInject"
+		AttributeTypesService.subscribe(this.$rootScope, this)
+	}
+
+	onAttributeTypesChanged() {
+		this.setAggregationSymbol()
+	}
 
 	$onInit() {
 		this.setAggregationSymbol()

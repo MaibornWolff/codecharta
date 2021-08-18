@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.sonar
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
+import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarVersionAPIDatasource
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
@@ -49,8 +50,8 @@ class SonarImporterMain(
     @CommandLine.Option(names = ["-u", "--user"], description = ["user token for connecting to remote sonar instance"])
     private var user = ""
 
-    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
-    private var compress = false
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    private var compress = true
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
     private var usePath = false
@@ -63,20 +64,21 @@ class SonarImporterMain(
         }
     }
 
-    private fun createMesauresAPIImporter(): SonarMeasuresAPIImporter {
+    private fun createMeasuresAPIImporter(): SonarMeasuresAPIImporter {
         if (url.endsWith("/")) url = url.substring(0, url.length - 1)
         val baseUrl = URL(url)
-        val ds = SonarMeasuresAPIDatasource(user, baseUrl)
-        val metricsDS = SonarMetricsAPIDatasource(user, baseUrl)
+        val version = SonarVersionAPIDatasource(user, baseUrl).getSonarqubeVersion()
+        val measuresDatasource = SonarMeasuresAPIDatasource(user, baseUrl, version)
+        val metricsDatasource = SonarMetricsAPIDatasource(user, baseUrl)
         val sonarCodeURLLinker = SonarCodeURLLinker(baseUrl)
         val translator = SonarMetricTranslatorFactory.createMetricTranslator()
 
-        return SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator, usePath)
+        return SonarMeasuresAPIImporter(measuresDatasource, metricsDatasource, sonarCodeURLLinker, translator, usePath)
     }
 
     override fun call(): Void? {
         print(" ")
-        val importer = createMesauresAPIImporter()
+        val importer = createMeasuresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, metrics)
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)

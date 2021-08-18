@@ -18,12 +18,12 @@
 	</div>
 </md-card>
 
-<md-card ng-show="false" ng-attr-id="ai-card">
+<md-card ng-show="$ctrl._viewModel.experimentalFeaturesEnabled" ng-attr-id="ai-card">
 	<div class="section">
 		<div class="section-header">
 			<artificial-intelligence-component></artificial-intelligence-component>
 		</div>
-		<span class="section-title no-hover">AI</span>
+		<span class="section-title no-hover">Suspicious Metrics</span>
 	</div>
 </md-card>
 
@@ -83,6 +83,7 @@
 	ng-class="{
 		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN
 	}"
+	ng-show="!$ctrl._viewModel.isDeltaState"
 >
 	<div class="section">
 		<div class="section-header">
@@ -108,6 +109,7 @@
 	ng-class="{
 		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN
 	}"
+	ng-show="!$ctrl._viewModel.isDeltaState"
 >
 	<div class="section">
 		<div class="section-header">
@@ -126,4 +128,25 @@
 			}"
 		></edge-settings-panel-component>
 	</div>
+</md-card>
+
+<md-card ng-attr-id="color-settings-card" class="color-settings-card" ng-show="$ctrl._viewModel.isDeltaState">
+	<div
+		class="color-section"
+		layout="row"
+		layout-align="space-between center"
+		ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN)"
+		title="Show color settings"
+	>
+		<span>
+			<i class="fa fa-paint-brush color-icon"></i>
+			Color Settings
+		</span>
+		<i class="fa fa-sort-down color-dropdown-icon"></i>
+	</div>
+	<color-settings-panel-component
+		ng-class="{
+			hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN
+		}"
+	></color-settings-panel-component>
 </md-card>

@@ -11,6 +11,9 @@ import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from ".
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { DialogService } from "../dialog/dialog.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { ERROR_MESSAGES } from "../../util/fileValidator"
 
 export enum ClickType {
 	RightClick = 2
@@ -44,7 +47,6 @@ export class NodeContextMenuController
 		lastPartOfNodePath: ""
 	}
 
-	/* @ngInject */
 	constructor(
 		private $element: Element,
 		private $timeout: ITimeoutService,
@@ -53,8 +55,11 @@ export class NodeContextMenuController
 		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
-		private threeSceneService: ThreeSceneService
+		private threeSceneService: ThreeSceneService,
+		private dialogService: DialogService,
+		private blacklistService: BlacklistService
 	) {
+		"ngInject"
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
@@ -158,14 +163,18 @@ export class NodeContextMenuController
 
 	excludeNode() {
 		const codeMapNode = this._viewModel.codeMapNode
-		this.storeService.dispatch(
-			addBlacklistItem({
-				path: codeMapNode.path,
-				type: BlacklistType.exclude,
-				nodeType: codeMapNode.type,
-				attributes: codeMapNode.attributes
-			})
-		)
+		const blacklistItem: BlacklistItem = {
+			path: codeMapNode.path,
+			type: BlacklistType.exclude,
+			nodeType: codeMapNode.type,
+			attributes: codeMapNode.attributes
+		}
+
+		if (this.blacklistService.resultsInEmptyMap([blacklistItem])) {
+			this.dialogService.showErrorDialog(ERROR_MESSAGES.blacklistError, "Blacklist Error")
+		} else {
+			this.storeService.dispatch(addBlacklistItem(blacklistItem))
+		}
 	}
 
 	addNodeToConstantHighlight() {

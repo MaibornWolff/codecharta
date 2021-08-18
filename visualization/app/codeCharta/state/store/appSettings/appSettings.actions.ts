@@ -1,6 +1,8 @@
 import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append default property import here
+import { defaultSecondaryMetrics } from "./secondaryMetrics/secondaryMetrics.actions"
+import { defaultColorLabels } from "./colorLabels/colorLabels.actions"
 import { defaultShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { defaultShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { defaultPanelSelection } from "./panelSelection/panelSelection.actions"
@@ -11,12 +13,9 @@ import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
 import { defaultScaling } from "./scaling/scaling.actions"
 import { defaultCamera } from "./camera/camera.actions"
 import { defaultHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
-import { defaultInvertColorRange } from "./invertColorRange/invertColorRange.actions"
-import { defaultInvertDeltaColors } from "./invertDeltaColors/invertDeltaColors.actions"
 import { defaultInvertHeight } from "./invertHeight/invertHeight.actions"
 import { defaultDynamicMargin } from "./dynamicMargin/dynamicMargin.actions"
 import { defaultIsWhiteBackground } from "./isWhiteBackground/isWhiteBackground.actions"
-import { defaultWhiteColorBuildings } from "./whiteColorBuildings/whiteColorBuildings.actions"
 import { defaultMapColors } from "./mapColors/mapColors.actions"
 import { defaultIsPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 import { defaultShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
@@ -51,6 +50,8 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 
 export const defaultAppSettings: AppSettings = {
 	// Plop: Append default property here
+	secondaryMetrics: defaultSecondaryMetrics,
+	colorLabels: defaultColorLabels,
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
 	panelSelection: defaultPanelSelection,
@@ -62,12 +63,9 @@ export const defaultAppSettings: AppSettings = {
 	camera: defaultCamera,
 	cameraTarget: defaultCameraTarget,
 	hideFlatBuildings: defaultHideFlatBuildings,
-	invertColorRange: defaultInvertColorRange,
-	invertDeltaColors: defaultInvertDeltaColors,
 	invertHeight: defaultInvertHeight,
 	dynamicMargin: defaultDynamicMargin,
 	isWhiteBackground: defaultIsWhiteBackground,
-	whiteColorBuildings: defaultWhiteColorBuildings,
 	mapColors: defaultMapColors,
 	isPresentationMode: defaultIsPresentationMode,
 	showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,

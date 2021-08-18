@@ -19,6 +19,7 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 	threeCameraService: jest.Mock
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		this.throttledCameraChange = throttle(() => {
 			this.storeService.dispatch(setCamera(this.camera.position), { silent: true })
 		}, ThreeCameraService.DEBOUNCE_TIME)

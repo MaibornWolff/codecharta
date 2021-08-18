@@ -2,7 +2,7 @@ import "./filePanel.module"
 import { FilePanelController } from "./filePanel.component"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { addFile, resetFiles, resetSelection, setDelta, setMultiple, setSingle } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
@@ -36,6 +36,8 @@ describe("filePanelController", () => {
 		storeService.dispatch(resetFiles())
 		storeService.dispatch(addFile(TEST_DELTA_MAP_A))
 		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
+		storeService.dispatch(addFile(TEST_DELTA_MAP_C))
+		storeService.dispatch(addFile(TEST_DELTA_MAP_D))
 		storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 	}
 
@@ -239,12 +241,12 @@ describe("filePanelController", () => {
 			expect(filePanelController.onSingleFileChange).toHaveBeenCalledWith("fileA")
 		})
 
-		it("should update the viewModel with the last visible filename and call Files if partial mode is active", () => {
-			filePanelController.selectAllPartialFiles = jest.fn()
+		it("should update the viewModel with the first recently loaded filename and call Files if partial mode is active", () => {
+			filePanelController.selectRecentPartialFiles = jest.fn()
 
 			filePanelController.onPartialStateSelected()
 
-			expect(filePanelController.selectAllPartialFiles).toHaveBeenCalled()
+			expect(filePanelController.selectRecentPartialFiles).toHaveBeenCalled()
 		})
 
 		it("should update the viewModel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
@@ -257,6 +259,129 @@ describe("filePanelController", () => {
 
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual("fileA")
 			expect(filePanelController.onDeltaComparisonFileChange).toHaveBeenCalledWith(null)
+		})
+	})
+
+	describe("onRemoveFile in single state", () => {
+		beforeEach(() => {
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Single
+				},
+				{
+					file: TEST_DELTA_MAP_C,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_D,
+					selectedAs: FileSelectionState.None
+				}
+			]
+		})
+
+		it("should call onSingleFileChange when single state", () => {
+			filePanelController.singleStateFileRemove = jest.fn()
+
+			filePanelController.onRemoveFile("fileA", FileSelectionState.Single, new Event("mouseEvent"))
+
+			expect(filePanelController.singleStateFileRemove).toHaveBeenCalled()
+		})
+
+		it("should call onPartialFilesChange when not in single state", () => {
+			filePanelController.onPartialFilesChange = jest.fn()
+
+			filePanelController.onRemoveFile("fileA", FileSelectionState.None, new Event("mouseEvent"))
+
+			expect(filePanelController.onPartialFilesChange).toHaveBeenCalled()
+		})
+
+		it("should keep selection when a non-selected file is removed", () => {
+			storeService.dispatch(setSingle(TEST_DELTA_MAP_B))
+			filePanelController.onRemoveFile("fileA", FileSelectionState.Single, new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			expect(remainingFiles[0].selectedAs).toEqual(FileSelectionState.Single)
+			expect(remainingFiles[1].selectedAs).toEqual(FileSelectionState.None)
+		})
+
+		it("should select most recent file when a selected file is removed", () => {
+			storeService.dispatch(setSingle(TEST_DELTA_MAP_B))
+			filePanelController.onRemoveFile("fileB", FileSelectionState.Single, new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			const fileA = remainingFiles[0]
+			const fileD = remainingFiles[2]
+			expect(fileA.selectedAs).toEqual(FileSelectionState.None)
+			expect(fileD.selectedAs).toEqual(FileSelectionState.Single)
+		})
+	})
+
+	describe("onRemoveFile in partial state", () => {
+		beforeEach(() => {
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Partial
+				},
+				{
+					file: TEST_DELTA_MAP_C,
+					selectedAs: FileSelectionState.Partial
+				},
+				{
+					file: TEST_DELTA_MAP_D,
+					selectedAs: FileSelectionState.None
+				}
+			]
+		})
+
+		it("should not change selection when partially selected files still exist", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+
+			filePanelController.onRemoveFile("fileB", FileSelectionState.Partial, new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			const fileA = remainingFiles[0]
+			const fileC = remainingFiles[1]
+			const fileD = remainingFiles[2]
+			expect(fileA.selectedAs).toEqual(FileSelectionState.None)
+			expect(fileC.selectedAs).toEqual(FileSelectionState.Partial)
+			expect(fileD.selectedAs).toEqual(FileSelectionState.None)
+		})
+
+		it("should select most recent file when no partially selected file exists", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+
+			filePanelController.onRemoveFile("fileB", FileSelectionState.Partial, new Event("mouseEvent"))
+			filePanelController.onRemoveFile("fileC", FileSelectionState.Partial, new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			const fileA = remainingFiles[0]
+			const fileD = remainingFiles[1]
+			expect(fileA.selectedAs).toEqual(FileSelectionState.None)
+			expect(fileD.selectedAs).toEqual(FileSelectionState.Partial)
+		})
+
+		it("should not change selection when non-selected file is removed", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+
+			filePanelController.onRemoveFile("fileA", FileSelectionState.Partial, new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			const fileB = remainingFiles[0]
+			const fileC = remainingFiles[1]
+			const fileD = remainingFiles[2]
+			expect(fileB.selectedAs).toEqual(FileSelectionState.Partial)
+			expect(fileC.selectedAs).toEqual(FileSelectionState.Partial)
+			expect(fileD.selectedAs).toEqual(FileSelectionState.None)
 		})
 	})
 

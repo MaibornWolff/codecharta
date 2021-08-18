@@ -3,17 +3,19 @@ import "./colorSettingsPanel.module"
 import { ColorSettingsPanelController } from "./colorSettingsPanel.component"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
-import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
-import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
+import { colorLabelOptions } from "../../codeCharta.model"
+import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
+	let nodeMetricDataService: NodeMetricDataService
 
 	beforeEach(() => {
 		restartSystem()
@@ -26,10 +28,11 @@ describe("ColorSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 	}
 
 	function rebuildController() {
-		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, storeService)
+		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, storeService, nodeMetricDataService)
 	}
 
 	function initFiles() {
@@ -46,49 +49,40 @@ describe("ColorSettingsPanelController", () => {
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
-
-		it("should subscribe to InvertDeltaColorsService", () => {
-			InvertDeltaColorsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
-		})
-
-		it("should subscribe to InvertColorRangeService", () => {
-			InvertColorRangeService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
-		})
 	})
 
-	describe("onInvertDeltaColorsChanged", () => {
-		it("should set invertDeltaColors flag to true", () => {
-			colorSettingsPanelController.onInvertDeltaColorsChanged(true)
+	describe("swapColorLabelsPositive", () => {
+		let colorLabels: colorLabelOptions = null
 
-			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBeTruthy()
+		beforeEach(() => {
+			colorLabels = {
+				positive: false,
+				negative: false,
+				neutral: false
+			}
 		})
 
-		it("should set invertDeltaColors flag to false", () => {
-			colorSettingsPanelController.onInvertDeltaColorsChanged(false)
+		it("should swap positive value of colorLabels", () => {
+			storeService.dispatch(setColorLabels(colorLabels))
+			colorSettingsPanelController.swapColorLabelsPositive()
 
-			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBeFalsy()
-		})
-	})
-
-	describe("onInvertColorRangeChanged", () => {
-		it("should set invertColorRange flag to true", () => {
-			colorSettingsPanelController.onInvertColorRangeChanged(true)
-
-			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeTruthy()
+			expect(storeService.getState().appSettings.colorLabels.positive).toBe(true)
 		})
 
-		it("should set invertColorRange flag to false", () => {
-			colorSettingsPanelController.onInvertColorRangeChanged(false)
+		it("should swap negative value of colorLabels", () => {
+			colorLabels.negative = true
 
-			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeFalsy()
+			storeService.dispatch(setColorLabels(colorLabels))
+			colorSettingsPanelController.swapColorLabelsNegative()
+
+			expect(storeService.getState().appSettings.colorLabels.negative).toBe(false)
+		})
+
+		it("should swap neutral value of colorLabels", () => {
+			storeService.dispatch(setColorLabels(colorLabels))
+			colorSettingsPanelController.swapColorLabelsNeutral()
+
+			expect(storeService.getState().appSettings.colorLabels.neutral).toBe(true)
 		})
 	})
 
@@ -102,33 +96,66 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should detect not delta mode selection", () => {
-			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
+			nodeMetricDataService.getMaxMetricByMetricName = jest.fn()
 
+			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
 		})
+
+		it("should update _viewModel.maxMetricValue", () => {
+			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+
+			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
+
+			expect(colorSettingsPanelController["_viewModel"].maxMetricValue).toBe(34)
+		})
+	})
+
+	describe("onBlackListChanged", () => {
+		it("should update _viewModel.maxMetricValue", () => {
+			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+
+			colorSettingsPanelController.onBlacklistChanged()
+
+			expect(colorSettingsPanelController["_viewModel"].maxMetricValue).toBe(34)
+		})
+	})
+
+	describe("onColorMetricChanged", () => {
+		it("should update _viewModel.maxMetricValue", () => {
+			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+
+			colorSettingsPanelController.onColorMetricChanged()
+
+			expect(colorSettingsPanelController["_viewModel"].maxMetricValue).toBe(34)
+		})
 	})
 
 	describe("invertColorRange", () => {
-		it("should call update settings correctly", () => {
-			colorSettingsPanelController["_viewModel"].invertColorRange = false
+		it("should switch positive and negative map colors in store", () => {
+			const { positive: previousPositiveColor, negative: previousNegativeColor } = storeService.getState().appSettings.mapColors
 
 			colorSettingsPanelController.invertColorRange()
 
-			expect(storeService.getState().appSettings.invertColorRange).toBeFalsy()
+			const { positive: newPositiveColor, negative: newNegativeColor } = storeService.getState().appSettings.mapColors
+			expect(newPositiveColor).toBe(previousNegativeColor)
+			expect(newNegativeColor).toBe(previousPositiveColor)
 		})
 	})
 
 	describe("invertDeltaColors", () => {
-		it("should call update settings correctly", () => {
-			colorSettingsPanelController["_viewModel"].invertDeltaColors = false
+		it("should switch positive and negative map colors in store", () => {
+			const { positiveDelta: previousPositiveDeltaColor, negativeDelta: previousNegativeDeltaColor } =
+				storeService.getState().appSettings.mapColors
 
 			colorSettingsPanelController.invertDeltaColors()
 
-			expect(storeService.getState().appSettings.invertDeltaColors).toBeFalsy()
-			expect(storeService.getState().appSettings.mapColors.positiveDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.negativeDelta)
-			expect(storeService.getState().appSettings.mapColors.negativeDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.positiveDelta)
+			const { positiveDelta: newPositiveDeltaColor, negativeDelta: newNegativeDeltaColor } =
+				storeService.getState().appSettings.mapColors
+			expect(newPositiveDeltaColor).toBe(previousNegativeDeltaColor)
+			expect(newNegativeDeltaColor).toBe(previousPositiveDeltaColor)
 		})
 	})
 })

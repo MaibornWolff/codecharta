@@ -1,6 +1,5 @@
-"use strict"
-
 import angular from "angular"
+import { downgradeComponent } from "@angular/upgrade/static"
 
 // Plop: Append module import here
 import "./artificialIntelligence/artificialIntelligence.module"
@@ -8,10 +7,10 @@ import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
 import "./attributeTypeSelector/attributeTypeSelector.module"
 import "./sortingOption/sortingOption.module"
-import "./sortingButton/sortingButton.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
 import "./downloadButton/downloadButton.module"
+import "./screenshotButton/screenshotButton.module"
 import "./globalSettingsButton/globalSettingsButton.module"
 import "./metricDeltaSelected/metricDeltaSelected.module"
 import "./nodePathPanel/nodePathPanel.module"
@@ -48,53 +47,56 @@ import "./viewCube/viewCube.module"
 import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
+import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 
-angular.module("app.codeCharta.ui", [
-	// Plop: Append component name here
-	"app.codeCharta.ui.artificialIntelligence",
-	"app.codeCharta.ui.customColorPicker",
-	"app.codeCharta.ui.customConfigs",
-	"app.codeCharta.ui.sortingOptionDialog",
-	"app.codeCharta.ui.sortingButton",
-	"app.codeCharta.ui.attributeTypeSelector",
-	"app.codeCharta.ui.unfocusButton",
-	"app.codeCharta.ui.metricValueHovered",
-	"app.codeCharta.ui.downloadButton",
-	"app.codeCharta.ui.globalSettingsButton",
-	"app.codeCharta.ui.metricDeltaSelected",
-	"app.codeCharta.ui.nodePathPanel",
-	"app.codeCharta.ui.attributeSideBar",
-	"app.codeCharta.ui.edgeSettingsPanel",
-	"app.codeCharta.ui.edgeChooser",
-	"app.codeCharta.ui.presentationModeButton",
-	"app.codeCharta.ui.centerMapButton",
-	"app.codeCharta.ui.matchingFilesCounter",
-	"app.codeCharta.ui.searchPanel",
-	"app.codeCharta.ui.searchPanelModeSelector",
-	"app.codeCharta.ui.searchBar",
-	"app.codeCharta.ui.metricType",
-	"app.codeCharta.ui.areaSettingsPanel",
-	"app.codeCharta.ui.blacklistPanel",
-	"app.codeCharta.ui.codeMap",
-	"app.codeCharta.ui.colorSettingsPanel",
-	"app.codeCharta.ui.dialog",
-	"app.codeCharta.ui.fileChooser",
-	"app.codeCharta.ui.fileExtensionBar",
-	"app.codeCharta.ui.filePanel",
-	"app.codeCharta.ui.heightSettingsPanel",
-	"app.codeCharta.ui.legendPanel",
-	"app.codeCharta.ui.loadingGif",
-	"app.codeCharta.ui.mapTreeView",
-	"app.codeCharta.ui.metricChooser",
-	"app.codeCharta.ui.metricType",
-	"app.codeCharta.ui.nodeContextMenu",
-	"app.codeCharta.ui.rangeSlider",
-	"app.codeCharta.ui.resetSettingsButton",
-	"app.codeCharta.ui.ribbonBar",
-	"app.codeCharta.ui.scenarioDropDown",
-	"app.codeCharta.ui.toolBar",
-	"app.codeCharta.ui.viewCube",
-	"app.codeCharta.ui.layoutSelection",
-	"app.codeCharta.ui.sharpnessModeSelector",
-	"app.codeCharta.ui.maxTreeMapFiles"
-])
+angular
+	.module("app.codeCharta.ui", [
+		// Plop: Append component name here
+		"app.codeCharta.ui.artificialIntelligence",
+		"app.codeCharta.ui.customColorPicker",
+		"app.codeCharta.ui.customConfigs",
+		"app.codeCharta.ui.sortingOptionDialog",
+		"app.codeCharta.ui.attributeTypeSelector",
+		"app.codeCharta.ui.unfocusButton",
+		"app.codeCharta.ui.metricValueHovered",
+		"app.codeCharta.ui.downloadButton",
+		"app.codeCharta.ui.screenshotButton",
+		"app.codeCharta.ui.globalSettingsButton",
+		"app.codeCharta.ui.metricDeltaSelected",
+		"app.codeCharta.ui.nodePathPanel",
+		"app.codeCharta.ui.attributeSideBar",
+		"app.codeCharta.ui.edgeSettingsPanel",
+		"app.codeCharta.ui.edgeChooser",
+		"app.codeCharta.ui.presentationModeButton",
+		"app.codeCharta.ui.centerMapButton",
+		"app.codeCharta.ui.matchingFilesCounter",
+		"app.codeCharta.ui.searchPanel",
+		"app.codeCharta.ui.searchPanelModeSelector",
+		"app.codeCharta.ui.searchBar",
+		"app.codeCharta.ui.metricType",
+		"app.codeCharta.ui.areaSettingsPanel",
+		"app.codeCharta.ui.blacklistPanel",
+		"app.codeCharta.ui.codeMap",
+		"app.codeCharta.ui.colorSettingsPanel",
+		"app.codeCharta.ui.dialog",
+		"app.codeCharta.ui.fileChooser",
+		"app.codeCharta.ui.fileExtensionBar",
+		"app.codeCharta.ui.filePanel",
+		"app.codeCharta.ui.heightSettingsPanel",
+		"app.codeCharta.ui.legendPanel",
+		"app.codeCharta.ui.loadingGif",
+		"app.codeCharta.ui.mapTreeView",
+		"app.codeCharta.ui.metricChooser",
+		"app.codeCharta.ui.metricType",
+		"app.codeCharta.ui.nodeContextMenu",
+		"app.codeCharta.ui.rangeSlider",
+		"app.codeCharta.ui.resetSettingsButton",
+		"app.codeCharta.ui.ribbonBar",
+		"app.codeCharta.ui.scenarioDropDown",
+		"app.codeCharta.ui.toolBar",
+		"app.codeCharta.ui.viewCube",
+		"app.codeCharta.ui.layoutSelection",
+		"app.codeCharta.ui.sharpnessModeSelector",
+		"app.codeCharta.ui.maxTreeMapFiles"
+	])
+	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))

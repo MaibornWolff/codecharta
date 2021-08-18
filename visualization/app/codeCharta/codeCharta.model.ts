@@ -5,6 +5,7 @@ import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
+import { SecondaryMetric } from "./ui/attributeSideBar/attributeSideBar.component"
 
 export interface NameDataPair {
 	fileName: string
@@ -82,12 +83,19 @@ export enum SortingOption {
 	NUMBER_OF_FILES = "Number of Files"
 }
 
+export interface colorLabelOptions {
+	positive: boolean
+	negative: boolean
+	neutral: boolean
+}
+
 export interface FileMeta {
 	fileName: string
 	fileChecksum: string
 	apiVersion: string
 	projectName: string
 	exportedFileSize: number
+	repoCreationDate?: string
 }
 
 export interface Settings {
@@ -116,9 +124,11 @@ export interface DynamicSettings {
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
+	recentFiles: string[]
 }
 
 export interface AppSettings {
+	secondaryMetrics: SecondaryMetric[]
 	amountOfTopLabels: number
 	amountOfEdgePreviews: number
 	edgeHeight: number
@@ -126,13 +136,10 @@ export interface AppSettings {
 	camera: Vector3
 	cameraTarget: Vector3
 	hideFlatBuildings: boolean
-	invertColorRange: boolean
-	invertDeltaColors: boolean
 	invertHeight: boolean
 	dynamicMargin: boolean
 	isWhiteBackground: boolean
 	mapColors: MapColors
-	whiteColorBuildings: boolean
 	isPresentationMode: boolean
 	showOnlyBuildingsWithEdges: boolean
 	resetCameraIfNewFileIsLoaded: boolean
@@ -148,6 +155,7 @@ export interface AppSettings {
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
+	colorLabels: colorLabelOptions
 }
 
 export interface TreeMapSettings {
@@ -279,6 +287,7 @@ export interface Scenario {
 	color: {
 		colorMetric: string
 		colorRange: ColorRange
+		mapColors: MapColors
 	}
 	camera: {
 		camera: Vector3
