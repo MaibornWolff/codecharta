@@ -7,6 +7,7 @@ import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererService"
 import { Scene, WebGLRenderer } from "three"
+import { IRootScopeService } from "angular"
 
 describe("resetSettingsButtonController", () => {
 	let screenshotButtonController: ScreenshotButtonController
@@ -14,6 +15,7 @@ describe("resetSettingsButtonController", () => {
 	let threeSceneService: ThreeSceneService
 	let threeCameraService: ThreeCameraService
 	let threeRendererService: ThreeRendererService
+	let $rootScope: IRootScopeService
 
 	function mockLoadScript() {
 		threeRendererService.renderer = { domElement: { height: 1, width: 1 } } as WebGLRenderer
@@ -35,6 +37,7 @@ describe("resetSettingsButtonController", () => {
 		instantiateModule("app.codeCharta.ui.screenshotButton")
 
 		storeService = getService<StoreService>("storeService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeSceneService = getService<ThreeSceneService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("storeService")
 		threeRendererService = getService<ThreeRendererService>("storeService")
@@ -45,7 +48,8 @@ describe("resetSettingsButtonController", () => {
 			threeSceneService,
 			threeCameraService,
 			threeRendererService,
-			storeService
+			storeService,
+			$rootScope
 		)
 	}
 

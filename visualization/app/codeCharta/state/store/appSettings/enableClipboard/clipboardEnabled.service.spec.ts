@@ -1,3 +1,5 @@
+import "../../../state.module"
+
 import { ClipboardEnabledService } from "./clipboardEnabled.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
