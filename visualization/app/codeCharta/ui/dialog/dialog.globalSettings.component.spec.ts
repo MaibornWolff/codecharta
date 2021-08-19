@@ -13,6 +13,8 @@ import { ResetCameraIfNewFileIsLoadedService } from "../../state/store/appSettin
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithm, SharpnessMode } from "../../codeCharta.model"
+import { ClipboardEnabledService } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.service"
+import { setClipboardEnabled } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.actions"
 
 describe("DialogGlobalSettingsController", () => {
 	let dialogGlobalSettingsController: DialogGlobalSettingsController
@@ -54,6 +56,14 @@ describe("DialogGlobalSettingsController", () => {
 			expect(IsWhiteBackgroundService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
+		it("should subscribe to clipboardEnabled", () => {
+			ClipboardEnabledService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ClipboardEnabledService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
+		})
+
 		it("should subscribe to ResetCameraIfNewFileIsLoadedService", () => {
 			ResetCameraIfNewFileIsLoadedService.subscribe = jest.fn()
 
@@ -87,6 +97,14 @@ describe("DialogGlobalSettingsController", () => {
 				expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBe(setting)
 			})
 
+			it(`should update viewModel.isWhiteBackground to ${setting}`, () => {
+				storeService.dispatch(setClipboardEnabled(setting))
+
+				rebuildController()
+
+				expect(dialogGlobalSettingsController["_viewModel"].clipboardEnabled).toBe(setting)
+			})
+
 			it(`should update viewModel.resetCameraIfNewFileIsLoaded to ${setting}`, () => {
 				storeService.dispatch(setResetCameraIfNewFileIsLoaded(setting))
 
@@ -118,6 +136,14 @@ describe("DialogGlobalSettingsController", () => {
 			dialogGlobalSettingsController.onIsWhiteBackgroundChanged(true)
 
 			expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBeTruthy()
+		})
+	})
+
+	describe("onClipboardEnabledChanged", () => {
+		it("should update viewModel.clipboardEnabled", () => {
+			dialogGlobalSettingsController.onClipboardEnabledChanged(true)
+
+			expect(dialogGlobalSettingsController["_viewModel"].clipboardEnabled).toBeTruthy()
 		})
 	})
 
@@ -164,6 +190,16 @@ describe("DialogGlobalSettingsController", () => {
 			dialogGlobalSettingsController.applySettingsIsWhiteBackground()
 
 			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
+		})
+	})
+
+	describe("applySettingsClipboardEnabled", () => {
+		it("should update clipboardEnabled in store", () => {
+			dialogGlobalSettingsController["_viewModel"].clipboardEnabled = false
+
+			dialogGlobalSettingsController.applySettingsIsWhiteBackground()
+
+			expect(storeService.getState().appSettings.clipboardEnabled).toBeFalsy()
 		})
 	})
 

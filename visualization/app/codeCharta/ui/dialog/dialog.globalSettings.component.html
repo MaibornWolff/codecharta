@@ -62,21 +62,14 @@
 			</md-input-container>
 
 			<md-input-container class="input-container md-block">
-				<!--
-        <md-switch class="md-primary" aria-label="Switch 6"
-                   ng-model="$ctrl._viewModel.clipboardEnabled"
-                   ng-change="$ctrl.applySettingsEnableClipboardFeatures()">
-          Screenshot to clipboard
-        </md-switch>
--->
-
-				<md-checkbox
+				<md-switch
 					class="md-primary"
+					aria-label="Switch 6"
 					ng-model="$ctrl._viewModel.clipboardEnabled"
 					ng-change="$ctrl.applySettingsEnableClipboardFeatures()"
 				>
 					Screenshot to clipboard
-				</md-checkbox>
+				</md-switch>
 			</md-input-container>
 
 			<a
