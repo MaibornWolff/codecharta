@@ -32,8 +32,8 @@ import { CodeChartaStorage } from "../../util/codeChartaStorage"
 import { FileDownloader } from "../../util/fileDownloader"
 import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
 import { isStandalone } from "../../util/envDetector"
-import { setClipboardEnabled } from "../screenshotButton/clipboardEnabled.actions"
-import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "../screenshotButton/clipboardEnabled.service"
+import { setClipboardEnabled } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.actions"
+import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.service"
 
 export class DialogGlobalSettingsController
 	implements

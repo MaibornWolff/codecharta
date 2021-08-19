@@ -29,7 +29,7 @@ import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures
 import { defaultLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
 import { defaultMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
 import { defaultSharpnessMode } from "./sharpnessMode/sharpnessMode.actions"
-import { defaultClipboardEnabled } from "../../../ui/screenshotButton/clipboardEnabled.actions"
+import { defaultClipboardEnabled } from "./enableClipboard/clipboardEnabled.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"

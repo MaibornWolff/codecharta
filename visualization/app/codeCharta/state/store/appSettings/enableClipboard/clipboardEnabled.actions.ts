@@ -1,4 +1,4 @@
-import { CCAction } from "../../codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum ClipboardEnabledActions {
 	SET_CLIPBOARD_ENABLED = "SET_CLIPBOARD_ENABLED"

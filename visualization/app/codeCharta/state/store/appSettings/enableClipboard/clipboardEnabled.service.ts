@@ -1,6 +1,6 @@
 import { IRootScopeService } from "angular"
-import { StoreService, StoreSubscriber } from "../../state/store.service"
-import { isActionOfType } from "../../util/reduxHelper"
+import { StoreService, StoreSubscriber } from "../../../store.service"
+import { isActionOfType } from "../../../../util/reduxHelper"
 import { ClipboardEnabledActions } from "./clipboardEnabled.actions"
 
 export interface ClipboardEnabledSubscriber {

@@ -1,8 +1,8 @@
 import { ClipboardEnabledService } from "./clipboardEnabled.service"
 import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
-import { withMockedEventMethods } from "../../util/dataMocks"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { StoreService } from "../../../store.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
+import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { ClipboardEnabledAction, ClipboardEnabledActions } from "./clipboardEnabled.actions"
 
 describe("ClipboardEnabledService", () => {

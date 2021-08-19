@@ -28,7 +28,7 @@ import { experimentalFeaturesEnabled } from "./enableExperimentalFeatures/experi
 import { layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
 import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
 import { sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
-import { clipboardEnabled } from "../../../ui/screenshotButton/clipboardEnabled.reducer"
+import { clipboardEnabled } from "./enableClipboard/clipboardEnabled.reducer"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here

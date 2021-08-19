@@ -7,7 +7,7 @@ import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 import "./screenshotButton.component.scss"
 import copyImg from "copy-image-clipboard"
-import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "./clipboardEnabled.service"
+import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.service"
 import { IRootScopeService } from "angular"
 
 export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
