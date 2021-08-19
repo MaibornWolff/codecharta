@@ -6,7 +6,6 @@ import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererServic
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 import "./screenshotButton.component.scss"
-import copyImg from "copy-image-clipboard"
 import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.service"
 import { IRootScopeService } from "angular"
 
@@ -77,19 +76,7 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 	}
 
 	private makeScreenshotToClipBoard() {
-		const renderer = this.threeRendererService.renderer
-		const currentClearColor = new Color()
-		renderer.setPixelRatio(window.devicePixelRatio)
-		renderer.getClearColor(currentClearColor)
-
-		renderer.setClearColor(0x000000, 0)
-		this.threeSceneService.scene.background = null
-		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
-		renderer.setClearColor(currentClearColor)
-		const img = new Image()
-		img.src = renderer.domElement.toDataURL()
-		copyImg(img.src)
-		renderer.setPixelRatio(1)
+		// TODO: Clipboard function
 	}
 }
 
