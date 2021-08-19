@@ -44,6 +44,18 @@ ribbon-bar-component {
 			}
 		}
 
+		&#ai-card {
+			.section {
+				.section-header {
+					overflow: visible;
+					text-align: center;
+				}
+				.section-title {
+					padding: 1px 5px;
+				}
+			}
+		}
+
 		.section {
 			display: inline-block;
 			height: 100%;
