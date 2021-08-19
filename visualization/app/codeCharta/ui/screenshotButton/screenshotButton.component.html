@@ -1,3 +1,18 @@
-<md-button id="scrBtn" class="toolbar-button" ng-click="$ctrl.makeScreenshot()" title="ScreenShot ({{ SCREENSHOT_HOTKEY }})">
+<md-button
+	id="scrBtn"
+	class="toolbar-button"
+	ng-show="!$ctrl._viewModel.clipboardEnabled"
+	ng-click="$ctrl.makeScreenshotToFile()"
+	title="ScreenShot ({{ $ctrl.SCREENSHOT_HOTKEY_TO_FILE }})"
+>
+	<i class="fa fa-camera"></i>
+</md-button>
+<md-button
+	id="read"
+	class="toolbar-button"
+	ng-show="$ctrl._viewModel.clipboardEnabled"
+	ng-click="$ctrl.makeScreenshotToClipBoard()"
+	title="Copy to clipboard ({{ $ctrl.SCREENSHOT_HOTKEY_TO_FILE }})"
+>
 	<i class="fa fa-camera"></i>
 </md-button>

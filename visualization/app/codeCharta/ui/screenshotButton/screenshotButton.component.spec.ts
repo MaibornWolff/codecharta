@@ -52,12 +52,12 @@ describe("resetSettingsButtonController", () => {
 	describe("makeScreenshot", () => {
 		it("should call loadScript", () => {
 			screenshotButtonController["loadScript"] = jest.fn()
-			screenshotButtonController.makeScreenshot()
+			screenshotButtonController.makeScreenshotToFile()
 			expect(screenshotButtonController["loadScript"]).toBeCalled()
 		})
 		it("should call makePNGFileName", () => {
 			screenshotButtonController["makePNGFileName"] = jest.fn()
-			screenshotButtonController.makeScreenshot()
+			screenshotButtonController.makeScreenshotToFile()
 			expect(screenshotButtonController["makePNGFileName"]).toBeCalled()
 		})
 	})

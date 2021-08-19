@@ -6,22 +6,44 @@ import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererServic
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 import "./screenshotButton.component.scss"
+import copyImg from "copy-image-clipboard"
+import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "./clipboardEnabled.service"
+import { IRootScopeService } from "angular"
 
-export class ScreenshotButtonController {
-	private static SCREENSHOT_HOTKEY = "Ctrl+Alt+S"
+export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
+	private SCREENSHOT_HOTKEY_TO_FILE = "Ctrl+Alt+S"
+	private SCREENSHOT_HOTKEY_TO_CLIPBOARD = "Ctrl+Alt+F"
+
+	private _viewModel: {
+		clipboardEnabled: boolean
+	} = {
+		clipboardEnabled: false
+	}
+
 	constructor(
 		private threeSceneService: ThreeSceneService,
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
-		private storeService: StoreService
+		private storeService: StoreService,
+		private $rootScope: IRootScopeService
 	) {
 		"ngInject"
-		hotkeys(ScreenshotButtonController.SCREENSHOT_HOTKEY, () => {
-			this.makeScreenshot()
+		hotkeys(this.SCREENSHOT_HOTKEY_TO_FILE, () => {
+			this.makeScreenshotToFile()
 		})
+
+		hotkeys(this.SCREENSHOT_HOTKEY_TO_CLIPBOARD, () => {
+			this.makeScreenshotToClipBoard()
+		})
+
+		ClipboardEnabledService.subscribe(this.$rootScope, this)
 	}
 
-	makeScreenshot() {
+	onClipboardEnabledChanged(clipboardEnabled: boolean) {
+		this._viewModel.clipboardEnabled = clipboardEnabled
+	}
+
+	makeScreenshotToFile() {
 		const link = document.createElement("a")
 		link.download = this.makePNGFileName()
 		link.onclick = () => this.loadScript(link, this.threeRendererService.renderer)
@@ -51,6 +73,22 @@ export class ScreenshotButtonController {
 		renderer.setClearColor(currentClearColor)
 
 		link.href = renderer.domElement.toDataURL()
+		renderer.setPixelRatio(1)
+	}
+
+	private makeScreenshotToClipBoard() {
+		const renderer = this.threeRendererService.renderer
+		const currentClearColor = new Color()
+		renderer.setPixelRatio(window.devicePixelRatio)
+		renderer.getClearColor(currentClearColor)
+
+		renderer.setClearColor(0x000000, 0)
+		this.threeSceneService.scene.background = null
+		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
+		renderer.setClearColor(currentClearColor)
+		const img = new Image()
+		img.src = renderer.domElement.toDataURL()
+		copyImg(img.src)
 		renderer.setPixelRatio(1)
 	}
 }

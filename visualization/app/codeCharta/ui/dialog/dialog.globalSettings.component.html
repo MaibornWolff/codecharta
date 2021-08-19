@@ -61,6 +61,24 @@
 				</md-checkbox>
 			</md-input-container>
 
+			<md-input-container class="input-container md-block">
+				<!--
+        <md-switch class="md-primary" aria-label="Switch 6"
+                   ng-model="$ctrl._viewModel.clipboardEnabled"
+                   ng-change="$ctrl.applySettingsEnableClipboardFeatures()">
+          Screenshot to clipboard
+        </md-switch>
+-->
+
+				<md-checkbox
+					class="md-primary"
+					ng-model="$ctrl._viewModel.clipboardEnabled"
+					ng-change="$ctrl.applySettingsEnableClipboardFeatures()"
+				>
+					Screenshot to clipboard
+				</md-checkbox>
+			</md-input-container>
+
 			<a
 				ng-show="$ctrl.mapTrackingDataAvailable() && $ctrl._viewModel.experimentalFeaturesEnabled"
 				ng-click="$ctrl.downloadTrackingData()"
