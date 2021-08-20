@@ -93,7 +93,7 @@ export class CodeChartaController {
 		const savedVersion = localStorage.getItem("codeChartaVersion")
 		//First time opening CodeCharta
 		if (savedVersion === null) {
-			//localStorage.setItem("codeChartaVersion", packageJson.version)
+			localStorage.setItem("codeChartaVersion", packageJson.version)
 			return
 		}
 		//Version change, show changelog
