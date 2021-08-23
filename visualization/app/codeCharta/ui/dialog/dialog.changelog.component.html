@@ -5,12 +5,14 @@
 
 	<md-dialog-content class="md-dialog-content">
 		<h1>What is new in CodeCharta</h1>
-		<ul>
+		<div class="content">
 			<div ng-repeat="(key, value) in $ctrl._viewModel.changeTypes | fromMap">
-				<h2>{{ key }}</h2>
-				<div ng-bind-html='value.changes.join("\n")'></div>
+				<div ng-if="value.changes.join('\n') !== ''">
+					<h2>{{ key }}</h2>
+					<div ng-bind-html='value.changes.join("\n")'></div>
+				</div>
 			</div>
-		</ul>
+		</div>
 	</md-dialog-content>
 
 	<md-dialog-actions>

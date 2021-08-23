@@ -19,11 +19,10 @@ export class DialogChangelogController {
 		"ngInject"
 
 		let changelogLines = markdownFile.split("\n")
-
 		// Get current and last saved version
 		this._viewModel.version = packageJson.version
 		const savedVersion = localStorage.getItem("codeChartaVersion")
-		//localStorage.setItem("codeChartaVersion", packageJson.version)
+		localStorage.setItem("codeChartaVersion", packageJson.version)
 		// Get the current version first line
 		const newVersionLine = this.findVersionLine(changelogLines, this._viewModel.version)
 		// Get last line of the last opened/saved version
@@ -38,6 +37,12 @@ export class DialogChangelogController {
 		changeTypes.set("Added 🚀", addedChangeType)
 		const fixedChangeType: changeType = { discoverPattern: /Fixed 🐞/, changes: [] }
 		changeTypes.set("Fixed 🐞", fixedChangeType)
+		const changedChangeType: changeType = { discoverPattern: /Changed/, changes: [] }
+		changeTypes.set("Changed", changedChangeType)
+		const removedChangeType: changeType = { discoverPattern: /Removed 🗑/, changes: [] }
+		changeTypes.set("Removed 🗑", removedChangeType)
+		const choreChangeType: changeType = { discoverPattern: /Chore 👨‍💻 👩‍💻/, changes: [] }
+		changeTypes.set("Chore 👨‍💻 👩‍💻", choreChangeType)
 
 		for (const changeTypeName of changeTypes.keys()) {
 			const changesLines = this.getAllIndexes(changelogLines, changeTypes.get(changeTypeName).discoverPattern)
