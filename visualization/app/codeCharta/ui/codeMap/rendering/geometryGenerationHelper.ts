@@ -200,64 +200,22 @@ function setPositions(positions: Float32Array, measures: BoxMeasures, index: num
 
 const uvArray = [
 	// Left x, y
-	1,
-	0,
-	1,
-	1,
-	0,
-	1,
-	0,
-	0,
+	1, 0, 1, 1, 0, 1, 0, 0,
 
 	// Right x, y
-	0,
-	0,
-	0,
-	1,
-	1,
-	1,
-	1,
-	0,
+	0, 0, 0, 1, 1, 1, 1, 0,
 
 	// Bottom x, y
-	0,
-	1,
-	1,
-	1,
-	1,
-	0,
-	0,
-	0,
+	0, 1, 1, 1, 1, 0, 0, 0,
 
 	// Top x, y
-	0,
-	1,
-	1,
-	1,
-	1,
-	0,
-	0,
-	0,
+	0, 1, 1, 1, 1, 0, 0, 0,
 
 	// Back x, y
-	0,
-	0,
-	1,
-	0,
-	1,
-	1,
-	0,
-	1,
+	0, 0, 1, 0, 1, 1, 0, 1,
 
 	// Front x, y
-	1,
-	0,
-	0,
-	0,
-	0,
-	1,
-	1,
-	1
+	1, 0, 0, 0, 0, 1, 1, 1
 ]
 
 function setUVs(uvs: Float32Array, index: number) {

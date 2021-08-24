@@ -28,9 +28,9 @@ describe("nodeDecorator", () => {
 		map = file.map
 		deltaMap = clone(VALID_NODE_WITH_PATH_AND_DELTAS)
 		nodeMetricData = [
-			{ name: "rloc", maxValue: 999999 },
-			{ name: "functions", maxValue: 999999 },
-			{ name: "mcc", maxValue: 999999 }
+			{ name: "rloc", maxValue: 999_999 },
+			{ name: "functions", maxValue: 999_999 },
+			{ name: "mcc", maxValue: 999_999 }
 		]
 		edgeMetricData = [
 			{ name: "pairingRate", maxValue: 999 },
@@ -56,7 +56,7 @@ describe("nodeDecorator", () => {
 
 	describe("decorateMap", () => {
 		it("nodes should have all metrics", () => {
-			nodeMetricData.push({ name: "some", maxValue: 999999 })
+			nodeMetricData.push({ name: "some", maxValue: 999_999 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			hierarchy(map).each(node => {
@@ -70,7 +70,7 @@ describe("nodeDecorator", () => {
 
 		it("nodes should have all metrics even if some attributesLists are undefined", () => {
 			map.children[0].attributes = undefined
-			nodeMetricData.push({ name: "some", maxValue: 999999 })
+			nodeMetricData.push({ name: "some", maxValue: 999_999 })
 
 			NodeDecorator.decorateMap(map, metricData, [])
 
@@ -326,7 +326,7 @@ describe("nodeDecorator", () => {
 		it("all nodes should have an attribute list with all possible metrics", () => {
 			map.children[0].attributes = undefined
 			map.children[1].attributes = { some: 1 }
-			nodeMetricData.push({ name: "some", maxValue: 999999 })
+			nodeMetricData.push({ name: "some", maxValue: 999_999 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, attributeTypes)
@@ -430,7 +430,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should aggregate missing metrics correctly", () => {
-			nodeMetricData.push({ name: "some", maxValue: 999999 })
+			nodeMetricData.push({ name: "some", maxValue: 999_999 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, attributeTypes)

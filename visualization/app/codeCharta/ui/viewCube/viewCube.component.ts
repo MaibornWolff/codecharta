@@ -72,7 +72,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.cubeDefinition.middle = middle
 		this.cubeDefinition.back = back
 
-		const cubeBoundingBox = new BoxHelper(this.cubeGroup, new Color(0x000000))
+		const cubeBoundingBox = new BoxHelper(this.cubeGroup, new Color(0x00_00_00))
 
 		this.scene.add(this.cubeGroup)
 		this.scene.add(cubeBoundingBox)
@@ -124,12 +124,12 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 			cube,
 			originalMaterial: cube.material
 		}
-		this.hoverInfo.cube.material.emissive = new Color(0xffffff)
+		this.hoverInfo.cube.material.emissive = new Color(0xff_ff_ff)
 		this.updateRenderFrame()
 	}
 
 	onCubeUnhovered() {
-		this.hoverInfo.cube.material.emissive = new Color(0x000000) //? NOTE why is this needed
+		this.hoverInfo.cube.material.emissive = new Color(0x00_00_00) //? NOTE why is this needed
 		this.hoverInfo.cube = null
 		this.updateRenderFrame()
 	}
@@ -227,11 +227,11 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 
 	private initLights() {
 		this.lights = new Group()
-		const ambilight = new AmbientLight(0x707070, 1.2) // soft white light
-		const light1 = new DirectionalLight(0xe0e0e0, 0.4)
+		const ambilight = new AmbientLight(0x70_70_70, 1.2) // soft white light
+		const light1 = new DirectionalLight(0xe0_e0_e0, 0.4)
 		light1.position.set(50, 10, 8).normalize()
 
-		const light2 = new DirectionalLight(0xe0e0e0, 0.4)
+		const light2 = new DirectionalLight(0xe0_e0_e0, 0.4)
 		light2.position.set(-50, 10, -8).normalize()
 
 		this.lights.add(ambilight)

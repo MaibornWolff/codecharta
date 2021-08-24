@@ -57,9 +57,9 @@ export class CustomComposer extends EffectComposer {
 					const context = this.renderer.getContext()
 					const stencil = this.renderer.state.buffers.stencil
 
-					stencil.setFunc(context.NOTEQUAL, 1, 0xffffffff)
+					stencil.setFunc(context.NOTEQUAL, 1, 0xff_ff_ff_ff)
 					this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer, deltaTime, false)
-					stencil.setFunc(context.EQUAL, 1, 0xffffffff)
+					stencil.setFunc(context.EQUAL, 1, 0xff_ff_ff_ff)
 				}
 				this.swapBuffers()
 			}
