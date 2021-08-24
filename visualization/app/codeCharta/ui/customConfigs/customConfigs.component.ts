@@ -80,7 +80,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	downloadPreloadedCustomConfigs() {
-		if (!this.downloadableConfigs.size) {
+		if (this.downloadableConfigs.size === 0) {
 			return
 		}
 

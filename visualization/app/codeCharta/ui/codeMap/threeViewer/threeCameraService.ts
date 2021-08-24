@@ -11,7 +11,7 @@ import { CameraService, CameraSubscriber } from "../../../state/store/appSetting
 export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscriber {
 	static VIEW_ANGLE = 45
 	static NEAR = 50
-	static FAR = 200000 //TODO optimize renderer for far objects
+	static FAR = 200_000 //TODO optimize renderer for far objects
 	private static DEBOUNCE_TIME = 400
 	private readonly throttledCameraChange: () => void
 

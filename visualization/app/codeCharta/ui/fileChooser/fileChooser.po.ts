@@ -3,7 +3,7 @@ import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 export class FileChooserPageObject {
 	async openFiles(paths: string[], clickOnFileChooser = true) {
 		const [fileChooser] = await Promise.all([
-			page.waitForFileChooser({ timeout: 60000 }),
+			page.waitForFileChooser({ timeout: 60_000 }),
 			clickOnFileChooser && clickButtonOnPageElement("file-chooser-directive .toolbar-button")
 		])
 

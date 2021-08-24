@@ -95,7 +95,7 @@ export class GeometryGenerator {
 	private getMarkingColorWithGradient(node: Node) {
 		if (node.markingColor) {
 			const markingColorAsNumber = ColorConverter.getNumber(node.markingColor)
-			const markingColorWithGradient = markingColorAsNumber & (node.depth % 2 === 0 ? 0xdddddd : 0xffffff)
+			const markingColorWithGradient = markingColorAsNumber & (node.depth % 2 === 0 ? 0xdd_dd_dd : 0xff_ff_ff)
 			return ColorConverter.convertNumberToHex(markingColorWithGradient)
 		}
 		return this.floorGradient[node.depth]
