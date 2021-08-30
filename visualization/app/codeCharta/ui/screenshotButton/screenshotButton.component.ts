@@ -22,7 +22,7 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 	} = {
 		clipboardEnabled: false
 	}
-
+  
 	constructor(
 		private threeSceneService: ThreeSceneService,
 		private threeCameraService: ThreeCameraService,

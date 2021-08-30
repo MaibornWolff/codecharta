@@ -18,7 +18,7 @@ while read -r line; do
   if [[ "$line" =~ ^Author.*\<.*\>$ ]]; then
     aliasLine=$(grep -A1 "$line" ${HASHMAP_FILE} -m1 | tail -n 1)
     if [ -z "$aliasLine" ]; then
-      aliasLine="Author: anon$COUNTER <anon$COUNTER@email.com>"
+      aliasLine="Author: anon$COUNTER <anon$COUNTER@example.org>"
       echo -e "$line\n$aliasLine" >> ${HASHMAP_FILE}
       ((COUNTER++))
     fi
