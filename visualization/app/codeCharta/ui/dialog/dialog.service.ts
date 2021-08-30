@@ -3,7 +3,7 @@ import { dialogGlobalSettingsComponent } from "./dialog.globalSettings.component
 import { addScenarioSettingsComponent } from "./dialog.addScenarioSettings.component"
 import { addCustomConfigSettingsComponent } from "./dialog.addCustomConfigSettings.component"
 import { CCValidationResult } from "../../util/fileValidator"
-import {dialogChangelogComponent} from "./dialog.changelog.component";
+import { dialogChangelogComponent } from "./dialog.changelog.component"
 
 export class DialogService {
 	constructor(private $mdDialog) {
