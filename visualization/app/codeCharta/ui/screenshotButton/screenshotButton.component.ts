@@ -27,6 +27,7 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 		private $rootScope: IRootScopeService
 	) {
 		"ngInject"
+      
 		hotkeys(this.SCREENSHOT_HOTKEY_TO_FILE, () => {
 			this.makeScreenshotToFile()
 		})
