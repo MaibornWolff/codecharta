@@ -1692,14 +1692,14 @@ export const FILE_STATES_JAVA: FileState[] = [
 ]
 
 export const METRIC_DATA: NodeMetricData[] = [
-	{ name: "mcc", maxValue: 1 },
-	{ name: "rloc", maxValue: 2 },
-	{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1 }
+	{ name: "mcc", maxValue: 1, minValue: 1 },
+	{ name: "rloc", maxValue: 2, minValue: 1 },
+	{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1, minValue: 1 }
 ]
 
 export const EDGE_METRIC_DATA: EdgeMetricData[] = [
-	{ name: "pairing_rate", maxValue: 10 },
-	{ name: "average_commits", maxValue: 20 }
+	{ name: "pairing_rate", maxValue: 10, minValue: 0 },
+	{ name: "average_commits", maxValue: 20, minValue: 0 }
 ]
 
 export const STATE: State = {
@@ -1729,7 +1729,9 @@ export const STATE: State = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			min: 1,
+			max: 100
 		},
 		sortingOption: SortingOption.NAME,
 		recentFiles: ["fileA", "fileB"]
@@ -1859,7 +1861,9 @@ export const DEFAULT_STATE: State = {
 		margin: null,
 		colorRange: {
 			from: null,
-			to: null
+			to: null,
+			min: null,
+			max: null
 		},
 		searchPattern: "",
 		searchedNodePaths: new Set(),

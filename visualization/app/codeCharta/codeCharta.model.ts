@@ -183,6 +183,8 @@ export interface MapColors {
 export interface ColorRange {
 	from: number
 	to: number
+	min: number
+	max: number
 }
 
 export interface AttributeTypes {
@@ -236,11 +238,13 @@ export interface MarkedPackage {
 export interface EdgeMetricData {
 	name: string
 	maxValue: number
+	minValue: number
 }
 
 export interface NodeMetricData {
 	name: string
 	maxValue: number
+	minValue: number
 }
 
 export interface MetricData {

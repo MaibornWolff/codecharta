@@ -160,7 +160,9 @@ export class RangeSliderController
 		this.applyDebouncedColorRange(
 			setColorRange({
 				to: this._viewModel.colorRangeTo,
-				from: this._viewModel.colorRangeFrom
+				from: this._viewModel.colorRangeFrom,
+				min: this._viewModel.sliderOptions.floor,
+				max: this._viewModel.sliderOptions.ceil
 			})
 		)
 	}

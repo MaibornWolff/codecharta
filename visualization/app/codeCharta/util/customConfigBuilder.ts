@@ -107,7 +107,9 @@ function initializeDynamicSettings(target: CustomConfig) {
 		sortingOption: undefined,
 		colorRange: {
 			from: 0,
-			to: 0
+			to: 0,
+			min: 0,
+			max: 0
 		},
 		recentFiles: []
 	}

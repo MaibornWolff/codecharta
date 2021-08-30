@@ -57,6 +57,11 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 		return metric?.maxValue
 	}
 
+	getMinMetricByMetricName(metricName: string) {
+		const metric = this.storeService.getState().metricData.nodeMetricData.find(x => x.name === metricName)
+		return metric?.minValue
+	}
+
 	getAttributeTypeByMetric(metricName: string) {
 		return this.storeService.getState().fileSettings.attributeTypes.nodes[metricName]
 	}

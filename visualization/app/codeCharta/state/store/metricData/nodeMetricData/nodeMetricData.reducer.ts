@@ -20,12 +20,18 @@ export function nodeMetricData(state = setNodeMetricData().payload, action: Node
 
 function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	const hashMap: Map<string, number> = new Map()
+	const secondMap: Map<string, number> = new Map()
 
 	for (const { file } of getVisibleFileStates(fileStates)) {
 		for (const node of hierarchy(file.map)) {
 			if (isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)) {
 				for (const metric of Object.keys(node.data.attributes)) {
 					const maxValue = hashMap.get(metric)
+					const minValue = secondMap.get(metric)
+
+					if (minValue === undefined || minValue >= node.data.attributes[metric]) {
+						secondMap.set(metric, node.data.attributes[metric])
+					}
 
 					if (maxValue === undefined || maxValue <= node.data.attributes[metric]) {
 						hashMap.set(metric, node.data.attributes[metric])
@@ -43,9 +49,11 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	for (const [key, value] of hashMap) {
 		metricData.push({
 			name: key,
-			maxValue: value
+			maxValue: value,
+			minValue: secondMap.get(key)
 		})
 	}
+
 	sortByMetricName(metricData)
 	return metricData
 }

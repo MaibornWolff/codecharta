@@ -141,7 +141,9 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			if (maxMetricValue > thresholdConfig.percentile70) {
 				metricAssessmentResults.suspiciousMetrics.set(metricName, {
 					from: thresholdConfig.percentile70,
-					to: thresholdConfig.percentile80
+					to: thresholdConfig.percentile80,
+					max: 0,
+					min: 0
 				})
 
 				if (maxMetricValue > thresholdConfig.percentile90) {

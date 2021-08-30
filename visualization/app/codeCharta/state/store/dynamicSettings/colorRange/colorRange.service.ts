@@ -52,8 +52,9 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 	reset() {
 		const { colorMetric } = this.storeService.getState().dynamicSettings
 		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
+		const minMetricValue = this.nodeMetricDataService.getMinMetricByMetricName(colorMetric)
 
-		const newColorRange = getResetColorRange(maxMetricValue)
+		const newColorRange = getResetColorRange(maxMetricValue, minMetricValue)
 		this.storeService.dispatch(setColorRange(newColorRange))
 	}
 

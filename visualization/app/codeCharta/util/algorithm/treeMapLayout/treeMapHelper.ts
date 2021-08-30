@@ -8,6 +8,12 @@ const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
 const HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
 
+abstract class Color {
+	r: number
+	g: number
+	b: number
+}
+
 function countNodes(node: { children?: CodeMapNode[] }) {
 	let count = 1
 	if (node.children) {
@@ -203,13 +209,101 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 		return mapColors.flat
 	}
 
-	if (metricValue < dynamicSettings.colorRange.from) {
-		return mapColors.positive
+	const x = hexToRgb(mapColors.positive)
+	const y = hexToRgb(mapColors.neutral)
+	const z = hexToRgb(mapColors.negative)
+	const colorMode = "WeightedGradient"
+
+	/*const middle = (dynamicSettings.colorRange.from + dynamicSettings.colorRange.to) / 2
+
+	if (colorMode === "TrueGradient") {
+
+		if (metricValue <= middle) {
+			const factor = 1 - (metricValue / middle)
+			return rgbToHex(mixColors(x, y, factor))
+		}
+
+		if (metricValue <= dynamicSettings.colorRange.max && metricValue > middle) {
+			const factor = 1 - ((metricValue - middle) / (dynamicSettings.colorRange.max - middle))
+			return rgbToHex(mixColors(y, z, factor))
+		}
+
+	} else*/ if (colorMode === "WeightedGradient") {
+		const greenStart = Math.min(
+			dynamicSettings.colorRange.from / 2,
+			(dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
+		)
+		const yellowStart = greenStart * 3
+		const redStart =
+			dynamicSettings.colorRange.to -
+			Math.min(
+				(dynamicSettings.colorRange.max - dynamicSettings.colorRange.to) / 2,
+				(dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
+			)
+		const redEnd = dynamicSettings.colorRange.to
+
+		if (metricValue <= greenStart) {
+			return mapColors.positive
+		}
+
+		if (metricValue >= greenStart && metricValue <= yellowStart) {
+			const factor = 1 - (metricValue - greenStart) / (yellowStart - greenStart)
+			return rgbToHex(mixColors(x, y, factor))
+		}
+
+		if (metricValue >= yellowStart && metricValue <= redStart) {
+			return mapColors.neutral
+		}
+
+		if (metricValue >= redStart && metricValue <= redEnd) {
+			const factor = 1 - (metricValue - redStart) / (redEnd - redStart)
+			return rgbToHex(mixColors(y, z, factor))
+		}
+
+		if (metricValue >= redEnd) {
+			return mapColors.negative
+		}
+	} else {
+		if (metricValue < dynamicSettings.colorRange.from) {
+			return mapColors.positive
+		}
+
+		if (metricValue > dynamicSettings.colorRange.to) {
+			return mapColors.negative
+		}
 	}
-	if (metricValue > dynamicSettings.colorRange.to) {
-		return mapColors.negative
-	}
+
 	return mapColors.neutral
+}
+
+function hexToRgb(hex) {
+	const [r, g, b] = hex.match(/\w\w/g).map(x => Number.parseInt(x, 16))
+	return { r, g, b } as Color
+}
+
+function mixColors(firstColor: Color, secondColor: Color, firstColorFactor: number) {
+	firstColorFactor = Math.max(0, firstColorFactor)
+	firstColorFactor = Math.min(1, firstColorFactor)
+
+	const result = {} as Color
+
+	for (const key in firstColor) {
+		result[key] = Math.floor(firstColor[key] * firstColorFactor + secondColor[key] * (1 - firstColorFactor))
+	}
+
+	return result
+}
+
+function rgbToHex(color: Color) {
+	const parts = [color.r.toString(16), color.g.toString(16), color.b.toString(16)]
+
+	for (const [index, part] of parts.entries()) {
+		if (part.length === 1) {
+			parts[index] = `0${part}`
+		}
+	}
+
+	return `#${parts.join("")}`
 }
 
 export const TreeMapHelper = {
