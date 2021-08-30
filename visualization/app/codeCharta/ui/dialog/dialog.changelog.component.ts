@@ -2,16 +2,16 @@ import markdownFile from "../../../../../CHANGELOG.md"
 import packageJson from "../../../../package.json"
 interface changeType {
 	discoverPattern: RegExp
-	changes: string[]
+	changes: Set<string>
 }
 export class DialogChangelogController {
 	private _viewModel: {
-		version: string
-		changelogMarkdown: any
-		changeTypes: Map<any, any>
+		currentVersion: string
+		lastOpenedVersion: string
+		changeTypes: Map<string, changeType>
 	} = {
-		version: "",
-		changelogMarkdown: null,
+		currentVersion: "",
+		lastOpenedVersion: "",
 		changeTypes: null
 	}
 
@@ -20,28 +20,28 @@ export class DialogChangelogController {
 
 		let changelogLines = markdownFile.split("\n")
 		// Get current and last saved version
-		this._viewModel.version = packageJson.version
-		const savedVersion = localStorage.getItem("codeChartaVersion")
+		this._viewModel.currentVersion = packageJson.version
+		this._viewModel.lastOpenedVersion = localStorage.getItem("codeChartaVersion")
 		localStorage.setItem("codeChartaVersion", packageJson.version)
-		// Get the current version first line
-		const newVersionLine = this.findVersionLine(changelogLines, this._viewModel.version)
+		// Get the current version's first line
+		const newVersionLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
 		// Get last line of the last opened/saved version
-		const savedVersionLine = this.findVersionLine(changelogLines, savedVersion)
+		const savedVersionLine = this.findVersionLine(changelogLines, this._viewModel.lastOpenedVersion)
 		const endVersionLine = this.findEndVersionLine(changelogLines, savedVersionLine)
-		this._viewModel.changelogMarkdown = changelogLines.slice(newVersionLine, endVersionLine).join("\n")
+		// Limit the changelog to only the new versions since last visit
 		changelogLines = changelogLines.slice(newVersionLine, endVersionLine)
 
+		// Set the change types to be extracted (Added, Fixed...)
 		const changeTypes = new Map()
-
-		const addedChangeType: changeType = { discoverPattern: /Added 🚀/, changes: [] }
+		const addedChangeType: changeType = { discoverPattern: /Added 🚀/, changes: new Set() }
 		changeTypes.set("Added 🚀", addedChangeType)
-		const fixedChangeType: changeType = { discoverPattern: /Fixed 🐞/, changes: [] }
+		const fixedChangeType: changeType = { discoverPattern: /Fixed 🐞/, changes: new Set() }
 		changeTypes.set("Fixed 🐞", fixedChangeType)
-		const changedChangeType: changeType = { discoverPattern: /Changed/, changes: [] }
+		const changedChangeType: changeType = { discoverPattern: /Changed/, changes: new Set() }
 		changeTypes.set("Changed", changedChangeType)
-		const removedChangeType: changeType = { discoverPattern: /Removed 🗑/, changes: [] }
+		const removedChangeType: changeType = { discoverPattern: /Removed 🗑/, changes: new Set() }
 		changeTypes.set("Removed 🗑", removedChangeType)
-		const choreChangeType: changeType = { discoverPattern: /Chore 👨‍💻 👩‍💻/, changes: [] }
+		const choreChangeType: changeType = { discoverPattern: /Chore 👨‍💻 👩‍💻/, changes: new Set() }
 		changeTypes.set("Chore 👨‍💻 👩‍💻", choreChangeType)
 
 		for (const changeTypeName of changeTypes.keys()) {
@@ -50,12 +50,17 @@ export class DialogChangelogController {
 				// Add 2 to remove the headline and the <ul> tag
 				const start = change + 2
 				const end = this.findEndChangesLine(changelogLines, change)
-				changeTypes.get(changeTypeName).changes.push(...changelogLines.slice(start, end))
+				for (const changeLine in changelogLines.slice(start, end)) {
+					changeTypes.get(changeTypeName).changes.add(changelogLines.slice(start, end)[changeLine])
+				}
 			}
 		}
 		this._viewModel.changeTypes = changeTypes
 	}
-
+	setToArray(set) {
+		if (set === undefined) return
+		return [...set]
+	}
 	hide() {
 		this.$mdDialog.hide()
 	}

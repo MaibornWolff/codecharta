@@ -4,12 +4,13 @@
 	</md-toolbar>
 
 	<md-dialog-content class="md-dialog-content">
-		<h1>What is new in CodeCharta</h1>
+		<h1>What is new in CodeCharta?</h1>
+		<h2>{{ $ctrl._viewModel.lastOpenedVersion }} -> {{ $ctrl._viewModel.currentVersion }}</h2>
 		<div class="content">
 			<div ng-repeat="(key, value) in $ctrl._viewModel.changeTypes | fromMap">
-				<div ng-if="value.changes.join('\n') !== ''">
+				<div ng-if="$ctrl.setToArray(value.changes).length > 0">
 					<h2>{{ key }}</h2>
-					<div ng-bind-html='value.changes.join("\n")'></div>
+					<ul ng-bind-html="$ctrl.setToArray(value.changes).join('\n')"></ul>
 				</div>
 			</div>
 		</div>
