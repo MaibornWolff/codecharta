@@ -1,18 +1,13 @@
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { CodeMapNode, ColorMode, Node, State } from "../../../codeCharta.model"
-import { Vector3 } from "three"
+import { Color, Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
+import { ColorConverter } from "../../color/colorConverter"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
 const HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
-
-abstract class Color {
-	r: number
-	g: number
-	b: number
-}
 
 function countNodes(node: { children?: CodeMapNode[] }) {
 	let count = 1
@@ -209,9 +204,9 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 		return mapColors.flat
 	}
 
-	const positiveColorRGB = hexToRgb(mapColors.positive)
-	const neutralColorRGB = hexToRgb(mapColors.neutral)
-	const negativeColorRGB = hexToRgb(mapColors.negative)
+	const positiveColorRGB = ColorConverter.convertHexToColorObject(mapColors.positive)
+	const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
+	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
 
 	switch (dynamicSettings.colorMode) {
 		case ColorMode.trueGradient: {
@@ -219,12 +214,12 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 
 			if (metricValue <= middle) {
 				const factor = 1 - metricValue / middle
-				return rgbToHex(mixColors(positiveColorRGB, neutralColorRGB, factor))
+				return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
 			}
 
 			if (metricValue <= dynamicSettings.colorRange.max && metricValue > middle) {
 				const factor = 1 - (metricValue - middle) / (dynamicSettings.colorRange.max - middle)
-				return rgbToHex(mixColors(neutralColorRGB, negativeColorRGB, factor))
+				return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
 			}
 			break
 		}
@@ -251,7 +246,7 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 
 			if (metricValue >= greenStart && metricValue <= yellowStart) {
 				const factor = 1 - (metricValue - greenStart) / (yellowStart - greenStart)
-				return rgbToHex(mixColors(positiveColorRGB, neutralColorRGB, factor))
+				return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
 			}
 
 			if (metricValue >= yellowStart && metricValue <= redStart) {
@@ -260,7 +255,7 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 
 			if (metricValue >= redStart && metricValue <= redEnd) {
 				const factor = 1 - (metricValue - redStart) / (redEnd - redStart)
-				return rgbToHex(mixColors(neutralColorRGB, negativeColorRGB, factor))
+				return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
 			}
 
 			if (metricValue >= redEnd) {
@@ -280,36 +275,6 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 			return mapColors.neutral
 			break
 	}
-}
-
-function hexToRgb(hex) {
-	const [r, g, b] = hex.match(/\w\w/g).map(x => Number.parseInt(x, 16))
-	return { r, g, b } as Color
-}
-
-function mixColors(firstColor: Color, secondColor: Color, firstColorFactor: number) {
-	firstColorFactor = Math.max(0, firstColorFactor)
-	firstColorFactor = Math.min(1, firstColorFactor)
-
-	const result = {} as Color
-
-	for (const key in firstColor) {
-		result[key] = Math.floor(firstColor[key] * firstColorFactor + secondColor[key] * (1 - firstColorFactor))
-	}
-
-	return result
-}
-
-function rgbToHex(color: Color) {
-	const parts = [color.r.toString(16), color.g.toString(16), color.b.toString(16)]
-
-	for (const [index, part] of parts.entries()) {
-		if (part.length === 1) {
-			parts[index] = `0${part}`
-		}
-	}
-
-	return `#${parts.join("")}`
 }
 
 export const TreeMapHelper = {

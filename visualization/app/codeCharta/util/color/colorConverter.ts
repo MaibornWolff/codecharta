@@ -47,10 +47,20 @@ export class ColorConverter {
 	}
 
 	static convertColorToHex(colorObject: Color) {
-		return (
-			String(String(`#${Math.round(colorObject.r).toString(16)}`) + Math.round(colorObject.g).toString(16)) +
+		const parts = [
+			Math.round(colorObject.r).toString(16),
+			Math.round(colorObject.g).toString(16),
 			Math.round(colorObject.b).toString(16)
-		)
+		]
+
+		/* adds padding to single digit values */
+		for (const [index, part] of parts.entries()) {
+			if (part.length === 1) {
+				parts[index] = `0${part}`
+			}
+		}
+
+		return `#${parts.join("")}`
 	}
 
 	static hexToHSL(hex: string) {
