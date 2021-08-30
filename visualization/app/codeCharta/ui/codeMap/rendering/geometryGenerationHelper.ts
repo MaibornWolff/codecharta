@@ -44,21 +44,39 @@ enum sides {
 	front = 5
 }
 
+// Vector 3: x, y, z
 const normals = [
-	new Vector3(-1, 0, 0),
-	new Vector3(1, 0, 0),
-	new Vector3(0, -1, 0),
-	new Vector3(0, 1, 0),
-	new Vector3(0, 0, -1),
-	new Vector3(0, 0, 1)
+	[-1, 0, 0],
+	[1, 0, 0],
+	[0, -1, 0],
+	[0, 1, 0],
+	[0, 0, -1],
+	[0, 0, 1]
+]
+
+const uvArray = [
+	// Left x, y
+	1, 0, 1, 1, 0, 1, 0, 0,
+
+	// Right x, y
+	0, 0, 0, 1, 1, 1, 1, 0,
+
+	// Bottom x, y
+	0, 1, 1, 1, 1, 0, 0, 0,
+
+	// Top x, y
+	0, 1, 1, 1, 1, 0, 0, 0,
+
+	// Back x, y
+	0, 0, 1, 0, 1, 1, 0, 1,
+
+	// Front x, y
+	1, 0, 0, 0, 0, 1, 1, 1
 ]
 
 const numberSides = 6
 const verticesPerSide = 4
 const threeDimensions = 3
-const twoDimensions = 2
-
-// Helper functions
 
 export function addBoxToVertexData(
 	data: IntermediateVertexData,
@@ -82,8 +100,9 @@ export function addBoxToVertexData(
 		)
 	)
 
+	data.uvs.set(uvArray, subGeomIndex * uvArray.length)
+
 	setPositions(data.positions, measures, subGeomIndex)
-	setUVs(data.uvs, subGeomIndex)
 	setVerticesAndFaces(node, measures, color, delta, subGeomIndex, data, addingFloor)
 }
 
@@ -95,133 +114,113 @@ function setPositions(positions: Float32Array, measures: BoxMeasures, index: num
 
 	let positionIndex = index * verticesPerSide * numberSides * threeDimensions
 
-	// left // 0
+	// Left
+	// Bottom left
 	positions[positionIndex++] = minPosX
 	positions[positionIndex++] = minPosY
 	positions[positionIndex++] = minPosZ
-
-	positions[positionIndex++] = minPosX
-	positions[positionIndex++] = maxPosY
-	positions[positionIndex++] = minPosZ
-
+	// Top left
 	positions[positionIndex++] = minPosX
 	positions[positionIndex++] = maxPosY
-	positions[positionIndex++] = maxPosZ
-
+	positions[positionIndex++] = minPosZ
+	// Top right
 	positions[positionIndex++] = minPosX
-	positions[positionIndex++] = minPosY
-	positions[positionIndex++] = maxPosZ
-
-	// right // 1
-	positions[positionIndex++] = maxPosX
-	positions[positionIndex++] = minPosY
-	positions[positionIndex++] = minPosZ
-
-	positions[positionIndex++] = maxPosX
-	positions[positionIndex++] = maxPosY
-	positions[positionIndex++] = minPosZ
-
-	positions[positionIndex++] = maxPosX
 	positions[positionIndex++] = maxPosY
 	positions[positionIndex++] = maxPosZ
-
-	positions[positionIndex++] = maxPosX
-	positions[positionIndex++] = minPosY
-	positions[positionIndex++] = maxPosZ
-
-	// bottom // 2
-	positions[positionIndex++] = minPosX
-	positions[positionIndex++] = minPosY
-	positions[positionIndex++] = minPosZ
-
+	// Bottom right
 	positions[positionIndex++] = minPosX
 	positions[positionIndex++] = minPosY
 	positions[positionIndex++] = maxPosZ
 
+	// Right
+	// Bottom left
+	positions[positionIndex++] = maxPosX
+	positions[positionIndex++] = minPosY
+	positions[positionIndex++] = minPosZ
+	// Top left
+	positions[positionIndex++] = maxPosX
+	positions[positionIndex++] = maxPosY
+	positions[positionIndex++] = minPosZ
+	// Top right
+	positions[positionIndex++] = maxPosX
+	positions[positionIndex++] = maxPosY
+	positions[positionIndex++] = maxPosZ
+	// Bottom right
 	positions[positionIndex++] = maxPosX
 	positions[positionIndex++] = minPosY
 	positions[positionIndex++] = maxPosZ
 
+	// Bottom
+	// Bottom left
+	positions[positionIndex++] = minPosX
+	positions[positionIndex++] = minPosY
+	positions[positionIndex++] = minPosZ
+	// Top left
+	positions[positionIndex++] = minPosX
+	positions[positionIndex++] = minPosY
+	positions[positionIndex++] = maxPosZ
+	// Top right
+	positions[positionIndex++] = maxPosX
+	positions[positionIndex++] = minPosY
+	positions[positionIndex++] = maxPosZ
+	// Bottom right
 	positions[positionIndex++] = maxPosX
 	positions[positionIndex++] = minPosY
 	positions[positionIndex++] = minPosZ
 
-	// top // 3
+	// Top
+	// Bottom left
 	positions[positionIndex++] = minPosX
 	positions[positionIndex++] = maxPosY
 	positions[positionIndex++] = minPosZ
-
+	// Top left
 	positions[positionIndex++] = minPosX
 	positions[positionIndex++] = maxPosY
 	positions[positionIndex++] = maxPosZ
-
+	// Top right
 	positions[positionIndex++] = maxPosX
 	positions[positionIndex++] = maxPosY
 	positions[positionIndex++] = maxPosZ
-
+	// Bottom right
 	positions[positionIndex++] = maxPosX
 	positions[positionIndex++] = maxPosY
 	positions[positionIndex++] = minPosZ
 
-	// back // 4
-	positions[positionIndex++] = maxPosX
-	positions[positionIndex++] = minPosY
-	positions[positionIndex++] = maxPosZ
-
-	positions[positionIndex++] = minPosX
-	positions[positionIndex++] = minPosY
-	positions[positionIndex++] = maxPosZ
-
-	positions[positionIndex++] = minPosX
-	positions[positionIndex++] = maxPosY
-	positions[positionIndex++] = maxPosZ
-
-	positions[positionIndex++] = maxPosX
-	positions[positionIndex++] = maxPosY
-	positions[positionIndex++] = maxPosZ
-
-	// front // 5
+	// Back
+	// Bottom left
 	positions[positionIndex++] = maxPosX
 	positions[positionIndex++] = minPosY
-	positions[positionIndex++] = minPosZ
+	positions[positionIndex++] = maxPosZ
+	// Top left
+	positions[positionIndex++] = minPosX
+	positions[positionIndex++] = minPosY
+	positions[positionIndex++] = maxPosZ
+	// Top right
+	positions[positionIndex++] = minPosX
+	positions[positionIndex++] = maxPosY
+	positions[positionIndex++] = maxPosZ
+	// Bottom right
+	positions[positionIndex++] = maxPosX
+	positions[positionIndex++] = maxPosY
+	positions[positionIndex++] = maxPosZ
 
+	// Front
+	// Bottom left
+	positions[positionIndex++] = maxPosX
+	positions[positionIndex++] = minPosY
+	positions[positionIndex++] = minPosZ
+	// Top left
 	positions[positionIndex++] = minPosX
 	positions[positionIndex++] = minPosY
 	positions[positionIndex++] = minPosZ
-
+	// Top right
 	positions[positionIndex++] = minPosX
 	positions[positionIndex++] = maxPosY
 	positions[positionIndex++] = minPosZ
-
+	// Bottom right
 	positions[positionIndex++] = maxPosX
 	positions[positionIndex++] = maxPosY
 	positions[positionIndex++] = minPosZ
-}
-
-const uvArray = [
-	// Left x, y
-	1, 0, 1, 1, 0, 1, 0, 0,
-
-	// Right x, y
-	0, 0, 0, 1, 1, 1, 1, 0,
-
-	// Bottom x, y
-	0, 1, 1, 1, 1, 0, 0, 0,
-
-	// Top x, y
-	0, 1, 1, 1, 1, 0, 0, 0,
-
-	// Back x, y
-	0, 0, 1, 0, 1, 1, 0, 1,
-
-	// Front x, y
-	1, 0, 0, 0, 0, 1, 1, 1
-]
-
-function setUVs(uvs: Float32Array, index: number) {
-	const uvIndex = index * verticesPerSide * numberSides * twoDimensions
-
-	uvs.set(uvArray, uvIndex)
 }
 
 function isTopSide(side: number, node: Node) {
@@ -257,7 +256,7 @@ function setVerticesAndFaces(
 	let vector3Index = index * threeDimensions
 	let surfaceStartIndex = subGeomIndex * numberSides * numberSides
 
-	const colorVector = ColorConverter.getVector3(color)
+	const colors = ColorConverter.getVector3Array(color)
 
 	for (let side = 0; side < numberSides; side++) {
 		const topSides = isTopSide(side, node)
@@ -269,30 +268,18 @@ function setVerticesAndFaces(
 
 		data.isHeight.set(topSides, index)
 
-		for (let vertice = 0; vertice < verticesPerSide; vertice++) {
-			data.colors[vector3Index] = colorVector.x
-			data.normals[vector3Index] = normal.x
+		for (const end = index + verticesPerSide; index < end; index++) {
+			data.normals.set(normal, vector3Index)
+			data.colors.set(colors, vector3Index)
 
-			vector3Index += 1
-
-			data.colors[vector3Index] = colorVector.y
-			data.normals[vector3Index] = normal.y
-
-			vector3Index += 1
-
-			data.colors[vector3Index] = colorVector.z
-			data.normals[vector3Index] = normal.z
-
-			vector3Index += 1
+			vector3Index += threeDimensions
 
 			data.ids[index] = subGeomIndex
 			data.deltas[index] = deltaRelativeToHeight
-
-			index += 1
 		}
 
 		const dimension = Math.floor(side / 2)
-		const positiveFacing = normal.getComponent(dimension) > 0
+		const positiveFacing = normal[dimension] === 1
 
 		if (positiveFacing) {
 			// Collect floors from a depth of 0 until a depth of 3 to be stamped with the folder name as a label
