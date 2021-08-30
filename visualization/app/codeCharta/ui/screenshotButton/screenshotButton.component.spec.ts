@@ -8,6 +8,7 @@ import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererService"
 import { Scene, WebGLRenderer } from "three"
 import { IRootScopeService } from "angular"
+import { setClipboardEnabled } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.actions"
 
 describe("resetSettingsButtonController", () => {
 	let screenshotButtonController: ScreenshotButtonController
@@ -63,6 +64,22 @@ describe("resetSettingsButtonController", () => {
 			screenshotButtonController["makePNGFileName"] = jest.fn()
 			screenshotButtonController.makeScreenshotToFile()
 			expect(screenshotButtonController["makePNGFileName"]).toBeCalled()
+		})
+
+		it("should call buildScreenShotCanvas", () => {
+			screenshotButtonController["buildScreenShotCanvas"] = jest.fn()
+			screenshotButtonController.makeScreenshotToFile()
+			expect(screenshotButtonController["buildScreenShotCanvas"]).toBeCalled()
+		})
+	})
+
+	describe("onClipboardEnabledChanged", () => {
+		it("should set clipboardEnabled in viewModel", () => {
+			storeService.dispatch(setClipboardEnabled(true))
+
+			screenshotButtonController.onClipboardEnabledChanged(storeService.getState().appSettings.clipboardEnabled)
+
+			expect(screenshotButtonController["_viewModel"].clipboardEnabled).toBe(true)
 		})
 	})
 })

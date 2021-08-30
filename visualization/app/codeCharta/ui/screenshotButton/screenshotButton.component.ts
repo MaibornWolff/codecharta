@@ -9,6 +9,10 @@ import "./screenshotButton.component.scss"
 import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.service"
 import { IRootScopeService } from "angular"
 
+declare class ClipboardItem {
+	constructor(data: { [mimeType: string]: Blob })
+}
+
 export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 	private SCREENSHOT_HOTKEY_TO_FILE = "Ctrl+Alt+S"
 	private SCREENSHOT_HOTKEY_TO_CLIPBOARD = "Ctrl+Alt+F"
@@ -62,6 +66,25 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 	}
 
 	private loadScript(link: HTMLAnchorElement, renderer: WebGLRenderer) {
+		this.buildScreenShotCanvas(renderer)
+
+		link.href = renderer.domElement.toDataURL()
+		renderer.setPixelRatio(1)
+	}
+
+	makeScreenshotToClipBoard() {
+		const renderer = this.threeRendererService.renderer
+		this.buildScreenShotCanvas(renderer)
+
+		renderer.domElement.toBlob(async function (blob) {
+			const clipboardItem = new ClipboardItem({ [blob.type]: blob })
+			// @ts-ignore
+			navigator.clipboard.write([clipboardItem])
+		})
+		renderer.setPixelRatio(1)
+	}
+
+	private buildScreenShotCanvas(renderer: WebGLRenderer) {
 		const currentClearColor = new Color()
 		renderer.setPixelRatio(window.devicePixelRatio)
 		renderer.getClearColor(currentClearColor)
@@ -70,13 +93,6 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 		this.threeSceneService.scene.background = null
 		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 		renderer.setClearColor(currentClearColor)
-
-		link.href = renderer.domElement.toDataURL()
-		renderer.setPixelRatio(1)
-	}
-
-	private makeScreenshotToClipBoard() {
-		// TODO: Clipboard function
 	}
 }
 

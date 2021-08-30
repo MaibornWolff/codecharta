@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/issues/1315))
+-   An option has been added to the global configuration to enable coping screenshot to clipboard instead of saving it in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326))
+    ![Screenshot 2021-08-30 at 14 59 21](https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png)
 
 ### Fixed 🐞
 
