@@ -16,7 +16,7 @@ We create Pull Requests to the `main` branch after implementing a feature or fix
 In Github Actions, we defined stages, which group different jobs. Inside a stage, all jobs run in parallel. There is no data persistence between stages, so we have to rebuild our application in each stage. The CI consists of the following stages:
 
 -   Testing (which runs on every push on an active PR)
--   Sonar Analysis(which runs on every push on an active PR after testing to ensure code quality metrics are met)
+-   Sonar Analysis (which runs on every push on an active PR after testing to ensure code quality metrics are met)
 -   Deploy (run by `make_release.py`)
 
 All workflow files can be found under `.github/workflows`

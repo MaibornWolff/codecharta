@@ -48,7 +48,7 @@ You can also use the bash script anongit which generates an anonymous git log wi
 
 ### Creating the git files list of the repository for metric generation
 
-> `git ls-files > file-name-list.txt`
+> `git ls-files > file-name-list.tmp`
 
 ### Executing the SCMLogParser
 
@@ -64,7 +64,7 @@ The resulting project has the project name specified for the SCMLogParser.
 ### Example using Git
 
 -   `cd <my_git_project>`
--   `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
--   `git ls-files > file-name-list.txt`
--   `./ccsh scmlogparserv2 git.log -o output.cc.json -n file-name-list.txt`
+-   `git log --numstat --raw --topo-order --reverse -m > gitlog.tmp` (or `anongit --reverse > gitlog.tmp`)
+-   `git ls-files > file-name-list.tmp`
+-   `./ccsh scmlogparserv2 gitlog.tmp -o output.cc.json -n file-name-list.tmp`
 -   load `output.cc.json` in visualization
