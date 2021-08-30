@@ -34,6 +34,8 @@ import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LazyLoader } from "../../util/lazyLoader"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
+import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -865,6 +867,44 @@ describe("codeMapMouseEventService", () => {
 				0
 			)
 			expect(nodeHeight).toBeGreaterThan(0)
+		})
+
+		it("should call addLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			codeMapLabelService.addLabel = jest.fn()
+			storeService.dispatch(setShowMetricLabelNameValue(false))
+			storeService.dispatch(setShowMetricLabelNodeName(false))
+
+			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
+
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
+				codeMapBuilding.node,
+				{
+					showNodeName: true,
+					showNodeMetric: false
+				},
+				0
+			)
+		})
+
+		it("should not generate names in temporary Label when metric option is set to true and name is set to false", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			codeMapLabelService.addLabel = jest.fn()
+			storeService.dispatch(setShowMetricLabelNameValue(true))
+			storeService.dispatch(setShowMetricLabelNodeName(false))
+
+			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
+
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
+				codeMapBuilding.node,
+				{
+					showNodeName: false,
+					showNodeMetric: true
+				},
+				0
+			)
 		})
 	})
 })

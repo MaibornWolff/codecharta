@@ -13,13 +13,14 @@ type ActionCreator = (...args: unknown[]) => Action
 // - Instead of a mixin a class decorator would be nice, but it is not yet possible (https://github.com/Microsoft/TypeScript/issues/4881).
 
 /**
- * Connect an Angular Component to a store similar to [react-redux's connect](https://react-redux.js.org/api/connect).
+ * Connects an Angular Component to a store similar to [react-redux's connect](https://react-redux.js.org/api/connect).
  *
  * @returns a class which is connected to redux store in visualization/app/codeCharta/state/store/store.ts.
  *    By `mapStateToThis` returned `MappedState` is added to properties of returned class and reflects store's state automatically.
  *    By `mapDispatchToThis` returned `MappedDispatch` is added to properties of returned class but actual dispatches to store.
  */
-export const connect = <MappedState extends Record<string, unknown>, MappedDispatch extends Record<string, ActionCreator>>(
+// eslint-disable-next-line @typescript-eslint/ban-types
+export const connect = <MappedState extends Record<string, unknown>, MappedDispatch extends Record<string, ActionCreator> = {}>(
 	mapStateToThis?: (state: CcState) => MappedState,
 	mapDispatchToThis?: MappedDispatch
 ): Constructor<ReturnType<typeof mapStateToThis> & MappedDispatch & { ngOnDestroy: () => void }> => {

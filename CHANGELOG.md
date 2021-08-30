@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/issues/1315))
+-   Add documentation for SCMLogParserV2 ([#1349](https://github.com/maibornwolff/codecharta/issues/1349))
+
+### Fixed 🐞
+
+-   Empty temporary label during hovering ([#2328](https://github.com/maibornwolff/codecharta/issues/2328))
+-   Show the screenshot hotkey in the screenshot title ([#2323](https://github.com/maibornwolff/codecharta/issues/2323))
+
 ## [1.77.0] - 2021-07-30
 
 ### Added 🚀
