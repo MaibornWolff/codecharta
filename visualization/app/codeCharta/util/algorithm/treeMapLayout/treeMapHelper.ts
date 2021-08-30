@@ -209,9 +209,9 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 		return mapColors.flat
 	}
 
-	const x = hexToRgb(mapColors.positive)
-	const y = hexToRgb(mapColors.neutral)
-	const z = hexToRgb(mapColors.negative)
+	const positiveColorRGB = hexToRgb(mapColors.positive)
+	const neutralColorRGB = hexToRgb(mapColors.neutral)
+	const negativeColorRGB = hexToRgb(mapColors.negative)
 
 	switch (dynamicSettings.colorMode) {
 		case ColorMode.trueGradient: {
@@ -219,12 +219,12 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 
 			if (metricValue <= middle) {
 				const factor = 1 - metricValue / middle
-				return rgbToHex(mixColors(x, y, factor))
+				return rgbToHex(mixColors(positiveColorRGB, neutralColorRGB, factor))
 			}
 
 			if (metricValue <= dynamicSettings.colorRange.max && metricValue > middle) {
 				const factor = 1 - (metricValue - middle) / (dynamicSettings.colorRange.max - middle)
-				return rgbToHex(mixColors(y, z, factor))
+				return rgbToHex(mixColors(neutralColorRGB, negativeColorRGB, factor))
 			}
 			break
 		}
@@ -234,7 +234,9 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 				dynamicSettings.colorRange.from / 2,
 				(dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
 			)
+
 			const yellowStart = greenStart * 3
+
 			const redStart =
 				dynamicSettings.colorRange.to -
 				Math.min(
@@ -249,7 +251,7 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 
 			if (metricValue >= greenStart && metricValue <= yellowStart) {
 				const factor = 1 - (metricValue - greenStart) / (yellowStart - greenStart)
-				return rgbToHex(mixColors(x, y, factor))
+				return rgbToHex(mixColors(positiveColorRGB, neutralColorRGB, factor))
 			}
 
 			if (metricValue >= yellowStart && metricValue <= redStart) {
@@ -258,7 +260,7 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 
 			if (metricValue >= redStart && metricValue <= redEnd) {
 				const factor = 1 - (metricValue - redStart) / (redEnd - redStart)
-				return rgbToHex(mixColors(y, z, factor))
+				return rgbToHex(mixColors(neutralColorRGB, negativeColorRGB, factor))
 			}
 
 			if (metricValue >= redEnd) {
