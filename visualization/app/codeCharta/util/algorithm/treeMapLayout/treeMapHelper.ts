@@ -213,12 +213,12 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 			const middle = (dynamicSettings.colorRange.from + dynamicSettings.colorRange.to) / 2
 
 			if (metricValue <= middle) {
-				const factor = 1 - metricValue / middle
+				const factor = metricValue / middle
 				return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
 			}
 
 			if (metricValue <= dynamicSettings.colorRange.max && metricValue > middle) {
-				const factor = 1 - (metricValue - middle) / (dynamicSettings.colorRange.max - middle)
+				const factor = (metricValue - middle) / (dynamicSettings.colorRange.max - middle)
 				return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
 			}
 			break
