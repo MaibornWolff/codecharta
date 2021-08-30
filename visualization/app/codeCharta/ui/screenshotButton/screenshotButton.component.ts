@@ -89,7 +89,7 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 		renderer.setPixelRatio(window.devicePixelRatio)
 		renderer.getClearColor(currentClearColor)
 
-		renderer.setClearColor(0x000000, 0)
+		renderer.setClearColor(0x00_00_00, 0)
 		this.threeSceneService.scene.background = null
 		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 		renderer.setClearColor(currentClearColor)

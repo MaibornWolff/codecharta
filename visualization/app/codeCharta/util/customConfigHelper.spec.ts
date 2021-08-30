@@ -519,7 +519,7 @@ describe("CustomConfigHelper", () => {
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["exampleMap1.cc.json", "exampleMap2cc.json"],
 				// Timestamp of 2020-11-20_13-19
-				creationTime: 1605878386493
+				creationTime: 1_605_878_386_493
 			} as ExportCustomConfig
 
 			const exportedCustomConfigs: Map<string, ExportCustomConfig> = new Map()
