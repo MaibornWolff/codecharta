@@ -1,4 +1,4 @@
-import "./dialog.changelog.module"
+import "./dialog.module.ts"
 //import { DialogChangelogController } from "./dialog.changelog.component"
 //import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 //import { SCENARIO_ATTRIBUTE_CONTENT } from "../../util/dataMocks"

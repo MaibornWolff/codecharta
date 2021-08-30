@@ -1,4 +1,4 @@
-import markdownFile from "../../../../../CHANGELOG.md"
+import markdownFile from "q../../../../../CHANGELOG.md"
 import packageJson from "../../../../package.json"
 interface changeType {
 	discoverPattern: RegExp
