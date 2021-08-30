@@ -1,5 +1,5 @@
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
-import { Node, CodeMapNode, State } from "../../../codeCharta.model"
+import { CodeMapNode, ColorMode, Node, State } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
@@ -212,68 +212,72 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 	const x = hexToRgb(mapColors.positive)
 	const y = hexToRgb(mapColors.neutral)
 	const z = hexToRgb(mapColors.negative)
-	const colorMode = "WeightedGradient"
 
-	/*const middle = (dynamicSettings.colorRange.from + dynamicSettings.colorRange.to) / 2
+	switch (dynamicSettings.colorMode) {
+		case ColorMode.trueGradient: {
+			const middle = (dynamicSettings.colorRange.from + dynamicSettings.colorRange.to) / 2
 
-	if (colorMode === "TrueGradient") {
+			if (metricValue <= middle) {
+				const factor = 1 - metricValue / middle
+				return rgbToHex(mixColors(x, y, factor))
+			}
 
-		if (metricValue <= middle) {
-			const factor = 1 - (metricValue / middle)
-			return rgbToHex(mixColors(x, y, factor))
+			if (metricValue <= dynamicSettings.colorRange.max && metricValue > middle) {
+				const factor = 1 - (metricValue - middle) / (dynamicSettings.colorRange.max - middle)
+				return rgbToHex(mixColors(y, z, factor))
+			}
+			break
 		}
 
-		if (metricValue <= dynamicSettings.colorRange.max && metricValue > middle) {
-			const factor = 1 - ((metricValue - middle) / (dynamicSettings.colorRange.max - middle))
-			return rgbToHex(mixColors(y, z, factor))
-		}
-
-	} else*/ if (colorMode === "WeightedGradient") {
-		const greenStart = Math.min(
-			dynamicSettings.colorRange.from / 2,
-			(dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
-		)
-		const yellowStart = greenStart * 3
-		const redStart =
-			dynamicSettings.colorRange.to -
-			Math.min(
-				(dynamicSettings.colorRange.max - dynamicSettings.colorRange.to) / 2,
+		case ColorMode.weightedGradient: {
+			const greenStart = Math.min(
+				dynamicSettings.colorRange.from / 2,
 				(dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
 			)
-		const redEnd = dynamicSettings.colorRange.to
+			const yellowStart = greenStart * 3
+			const redStart =
+				dynamicSettings.colorRange.to -
+				Math.min(
+					(dynamicSettings.colorRange.max - dynamicSettings.colorRange.to) / 2,
+					(dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
+				)
+			const redEnd = dynamicSettings.colorRange.to
 
-		if (metricValue <= greenStart) {
-			return mapColors.positive
+			if (metricValue <= greenStart) {
+				return mapColors.positive
+			}
+
+			if (metricValue >= greenStart && metricValue <= yellowStart) {
+				const factor = 1 - (metricValue - greenStart) / (yellowStart - greenStart)
+				return rgbToHex(mixColors(x, y, factor))
+			}
+
+			if (metricValue >= yellowStart && metricValue <= redStart) {
+				return mapColors.neutral
+			}
+
+			if (metricValue >= redStart && metricValue <= redEnd) {
+				const factor = 1 - (metricValue - redStart) / (redEnd - redStart)
+				return rgbToHex(mixColors(y, z, factor))
+			}
+
+			if (metricValue >= redEnd) {
+				return mapColors.negative
+			}
+			break
 		}
 
-		if (metricValue >= greenStart && metricValue <= yellowStart) {
-			const factor = 1 - (metricValue - greenStart) / (yellowStart - greenStart)
-			return rgbToHex(mixColors(x, y, factor))
-		}
+		case ColorMode.absolute:
+			if (metricValue < dynamicSettings.colorRange.from) {
+				return mapColors.positive
+			}
 
-		if (metricValue >= yellowStart && metricValue <= redStart) {
+			if (metricValue > dynamicSettings.colorRange.to) {
+				return mapColors.negative
+			}
 			return mapColors.neutral
-		}
-
-		if (metricValue >= redStart && metricValue <= redEnd) {
-			const factor = 1 - (metricValue - redStart) / (redEnd - redStart)
-			return rgbToHex(mixColors(y, z, factor))
-		}
-
-		if (metricValue >= redEnd) {
-			return mapColors.negative
-		}
-	} else {
-		if (metricValue < dynamicSettings.colorRange.from) {
-			return mapColors.positive
-		}
-
-		if (metricValue > dynamicSettings.colorRange.to) {
-			return mapColors.negative
-		}
+			break
 	}
-
-	return mapColors.neutral
 }
 
 function hexToRgb(hex) {

@@ -21,7 +21,8 @@ import {
 	State,
 	LayoutAlgorithm,
 	GlobalSettings,
-	SharpnessMode
+	SharpnessMode,
+	ColorMode
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -1733,6 +1734,7 @@ export const STATE: State = {
 			min: 1,
 			max: 100
 		},
+		colorMode: ColorMode.weightedGradient,
 		sortingOption: SortingOption.NAME,
 		recentFiles: ["fileA", "fileB"]
 	},
@@ -1865,6 +1867,7 @@ export const DEFAULT_STATE: State = {
 			min: null,
 			max: null
 		},
+		colorMode: null,
 		searchPattern: "",
 		searchedNodePaths: new Set(),
 		sortingOption: SortingOption.NAME,

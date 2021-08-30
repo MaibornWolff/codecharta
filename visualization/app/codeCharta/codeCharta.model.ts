@@ -113,6 +113,7 @@ export interface FileSettings {
 }
 
 export interface DynamicSettings {
+	colorMode: ColorMode
 	sortingOption: SortingOption
 	areaMetric: string
 	heightMetric: string
@@ -195,6 +196,12 @@ export interface AttributeTypes {
 export enum AttributeTypeValue {
 	absolute = "absolute",
 	relative = "relative"
+}
+
+export enum ColorMode {
+	trueGradient = "trueGradient",
+	weightedGradient = "weightedGradient",
+	absolute = "absolute"
 }
 
 export interface Edge {

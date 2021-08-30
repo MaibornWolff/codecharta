@@ -7,17 +7,20 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { ColorRange } from "../../codeCharta.model"
+import { ColorMode, ColorRange } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { ColorModeService, ColorModeSubscriber } from "../../state/store/dynamicSettings/colorMode/colorMode.service"
+import { defaultColorMode, setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
 
-export class ColorSettingsPanelController implements FilesSelectionSubscriber, ColorRangeSubscriber {
+export class ColorSettingsPanelController implements FilesSelectionSubscriber, ColorRangeSubscriber, ColorModeSubscriber {
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean
 		isDeltaState: boolean
 		colorRange: { from: number; to: number }
+		colorMode: ColorMode
 		colorLabels: { positive: boolean; negative: boolean; neutral: boolean }
 		maxMetricValue: number
 	} = {
@@ -25,6 +28,7 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 		invertDeltaColors: null,
 		isDeltaState: null,
 		colorRange: { from: null, to: null },
+		colorMode: defaultColorMode,
 		colorLabels: { positive: false, negative: false, neutral: false },
 		maxMetricValue: null
 	}
@@ -39,6 +43,7 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 		ColorRangeService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
+		ColorModeService.subscribe(this.$rootScope, this)
 	}
 
 	onBlacklistChanged() {
@@ -49,6 +54,10 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 		this._viewModel.colorRange = colorRange
 	}
 
+	onColorModeChanged(colorMode: ColorMode) {
+		this._viewModel.colorMode = colorMode
+	}
+
 	onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.isDeltaState = isDeltaState(files)
 		this.updateMaxMetricValue()
@@ -56,6 +65,10 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 
 	onColorMetricChanged() {
 		this.updateMaxMetricValue()
+	}
+
+	applyColorMode() {
+		this.storeService.dispatch(setColorMode(this._viewModel.colorMode))
 	}
 
 	swapColorLabelsPositive() {
