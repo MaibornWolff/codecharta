@@ -51,7 +51,8 @@ export class CodeMapPreRenderService
 		ScalingSubscriber,
 		LayoutAlgorithmSubscriber,
 		ColorRangeFromSubscriber,
-		ColorRangeToSubscriber {
+		ColorRangeToSubscriber
+{
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode

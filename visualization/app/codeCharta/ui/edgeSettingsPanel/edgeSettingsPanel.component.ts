@@ -21,7 +21,8 @@ import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynam
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export class EdgeSettingsPanelController
-	implements EdgeMetricSubscriber, AmountOfEdgePreviewsSubscriber, EdgeHeightSubscriber, ShowOnlyBuildingsWithEdgesSubscriber {
+	implements EdgeMetricSubscriber, AmountOfEdgePreviewsSubscriber, EdgeHeightSubscriber, ShowOnlyBuildingsWithEdgesSubscriber
+{
 	private _viewModel: {
 		amountOfEdgePreviews: number
 		totalAffectedBuildings: number
