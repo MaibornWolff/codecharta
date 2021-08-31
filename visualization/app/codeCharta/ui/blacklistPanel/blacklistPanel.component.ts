@@ -9,9 +9,11 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 	private _viewModel: {
 		flatten: Array<BlacklistItem>
 		exclude: Array<BlacklistItem>
+		temp: Array<BlacklistItem>
 	} = {
 		flatten: [],
-		exclude: []
+		exclude: [],
+		temp: []
 	}
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -32,7 +34,15 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 		}
 		this._viewModel.flatten = flattened
 		this._viewModel.exclude = excluded
+
+		this.temporaryNewFunction()
 	}
+
+	temporaryNewFunction() {
+		const temporary: BlacklistItem[] = []
+		this._viewModel.temp = temporary
+	}
+
 
 	removeBlacklistEntry(entry: BlacklistItem) {
 		this.storeService.dispatch(removeBlacklistItem(entry))
