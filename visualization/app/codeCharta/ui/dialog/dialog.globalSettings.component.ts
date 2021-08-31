@@ -41,8 +41,7 @@ export class DialogGlobalSettingsController
 		ExperimentalFeaturesEnabledSubscriber,
 		LayoutAlgorithmSubscriber,
 		SharpnessModeSubscriber,
-		MaxTreeMapFilesSubscriber
-{
+		MaxTreeMapFilesSubscriber {
 	private _viewModel: {
 		hideFlatBuildings: boolean
 		isWhiteBackground: boolean

@@ -229,7 +229,7 @@ describe("codeChartaService", () => {
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, fileSize: 42, content: "string" as unknown as ExportCCFile }])
+			codeChartaService.loadFiles([{ fileName, fileSize: 42, content: ("string" as unknown) as ExportCCFile }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)

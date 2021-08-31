@@ -129,7 +129,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	private disposeLine(element: Line) {
-		const lineBasicMaterial = element.material as unknown as LineBasicMaterial
+		const lineBasicMaterial = (element.material as unknown) as LineBasicMaterial
 		lineBasicMaterial.dispose()
 		element.geometry.dispose()
 	}

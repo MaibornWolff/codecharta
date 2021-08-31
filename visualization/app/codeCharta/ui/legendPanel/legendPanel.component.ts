@@ -15,8 +15,7 @@ import { StoreService } from "../../state/store.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class LegendPanelController
-	implements IsAttributeSideBarVisibleSubscriber, ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber
-{
+	implements IsAttributeSideBarVisibleSubscriber, ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber {
 	private _viewModel: {
 		isLegendVisible: boolean
 		isSideBarVisible: boolean

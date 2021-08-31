@@ -36,8 +36,7 @@ export class HeightSettingsPanelController
 		InvertHeightSubscriber,
 		ShowMetricLabelNameValueSubscriber,
 		ShowMetricLabelNodeNameSubscriber,
-		ColorLabelsSubscriber
-{
+		ColorLabelsSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedTopLabels: () => void
 	private readonly applyDebouncedScaling: (newScaling: Vector3) => void

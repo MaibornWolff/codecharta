@@ -8,7 +8,7 @@ describe("CustomComposer", () => {
 	let customComposer: CustomComposer
 
 	const mockGL = () => {
-		renderer = {
+		renderer = ({
 			render: jest.fn(),
 			getRenderTarget: jest.fn(),
 			setRenderTarget: jest.fn(),
@@ -16,15 +16,15 @@ describe("CustomComposer", () => {
 				render: {},
 				memory: {}
 			}
-		} as unknown as WebGLRenderer
+		} as unknown) as WebGLRenderer
 
-		renderTarget = {
+		renderTarget = ({
 			clone: jest.fn().mockReturnValue({
 				texture: {
 					name: null
 				}
 			})
-		} as unknown as WebGLRenderTarget
+		} as unknown) as WebGLRenderTarget
 
 		customComposer = new CustomComposer(renderer, renderTarget)
 	}
@@ -81,9 +81,9 @@ describe("CustomComposer", () => {
 
 	describe("render", () => {
 		beforeEach(() => {
-			customComposer.clock = {
+			customComposer.clock = ({
 				getDelta: jest.fn()
-			} as unknown as Clock
+			} as unknown) as Clock
 
 			customComposer.swapBuffers = jest.fn()
 		})
@@ -158,7 +158,7 @@ describe("CustomComposer", () => {
 				{
 					enabled: true
 				} as Pass,
-				fullScreenQuad as unknown as Pass
+				(fullScreenQuad as unknown) as Pass
 			]
 
 			customComposer.dispose()

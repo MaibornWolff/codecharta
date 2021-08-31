@@ -147,13 +147,17 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("invertDeltaColors", () => {
 		it("should switch positive and negative map colors in store", () => {
-			const { positiveDelta: previousPositiveDeltaColor, negativeDelta: previousNegativeDeltaColor } =
-				storeService.getState().appSettings.mapColors
+			const {
+				positiveDelta: previousPositiveDeltaColor,
+				negativeDelta: previousNegativeDeltaColor
+			} = storeService.getState().appSettings.mapColors
 
 			colorSettingsPanelController.invertDeltaColors()
 
-			const { positiveDelta: newPositiveDeltaColor, negativeDelta: newNegativeDeltaColor } =
-				storeService.getState().appSettings.mapColors
+			const {
+				positiveDelta: newPositiveDeltaColor,
+				negativeDelta: newNegativeDeltaColor
+			} = storeService.getState().appSettings.mapColors
 			expect(newPositiveDeltaColor).toBe(previousNegativeDeltaColor)
 			expect(newNegativeDeltaColor).toBe(previousPositiveDeltaColor)
 		})

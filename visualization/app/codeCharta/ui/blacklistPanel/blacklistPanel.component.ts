@@ -43,7 +43,6 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 		this._viewModel.temp = temporary
 	}
 
-
 	removeBlacklistEntry(entry: BlacklistItem) {
 		this.storeService.dispatch(removeBlacklistItem(entry))
 	}

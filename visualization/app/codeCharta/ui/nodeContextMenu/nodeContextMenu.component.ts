@@ -28,8 +28,7 @@ export interface HideNodeContextMenuSubscriber {
 }
 
 export class NodeContextMenuController
-	implements BuildingRightClickedEventSubscriber, ShowNodeContextMenuSubscriber, HideNodeContextMenuSubscriber, MapColorsSubscriber
-{
+	implements BuildingRightClickedEventSubscriber, ShowNodeContextMenuSubscriber, HideNodeContextMenuSubscriber, MapColorsSubscriber {
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
 	private static HIDE_NODE_CONTEXT_MENU_EVENT = "hide-node-context-menu"
 
