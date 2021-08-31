@@ -719,7 +719,7 @@ export const FILE_META: FileMeta = {
 	fileChecksum: "md5-fileA",
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
-	exportedFileSize: 300000
+	exportedFileSize: 300_000
 }
 
 export const TEST_FILE_DATA: CCFile = {
@@ -1322,7 +1322,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 		fileChecksum: "md5-delta-fileA",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1380,7 +1380,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1454,7 +1454,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1528,7 +1528,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",

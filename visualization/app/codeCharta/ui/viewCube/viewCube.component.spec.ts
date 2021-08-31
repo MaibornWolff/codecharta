@@ -42,7 +42,7 @@ describe("ViewCubeController", () => {
 	}
 
 	function mockElement() {
-		$element = [] as unknown as Element
+		$element = ([] as unknown) as Element
 	}
 
 	describe("constructor", () => {
@@ -66,9 +66,9 @@ describe("ViewCubeController", () => {
 	describe("onCameraChanged", () => {
 		it("should call setCameraPosition", () => {
 			viewCubeController["setCameraPosition"] = jest.fn()
-			viewCubeController["renderer"] = {
+			viewCubeController["renderer"] = ({
 				render: jest.fn()
-			} as unknown as WebGLRenderer
+			} as unknown) as WebGLRenderer
 			const perspectiveCamera = new PerspectiveCamera(
 				ThreeCameraService.VIEW_ANGLE,
 				1,
@@ -79,21 +79,21 @@ describe("ViewCubeController", () => {
 			viewCubeController.onCameraChanged(perspectiveCamera)
 
 			expect(viewCubeController["setCameraPosition"]).toHaveBeenCalledWith({
-				x: -0.8017837257372732,
-				y: -1.6035674514745464,
-				z: -2.4053511772118195
+				x: -0.801_783_725_737_273_2,
+				y: -1.603_567_451_474_546_4,
+				z: -2.405_351_177_211_819_5
 			})
 		})
 	})
 
 	describe("onCubeHovered", () => {
 		it("should set hover info cube emmisive color to white", () => {
-			viewCubeController["renderer"] = {
+			viewCubeController["renderer"] = ({
 				render: jest.fn()
-			} as unknown as WebGLRenderer
+			} as unknown) as WebGLRenderer
 			viewCubeController.onCubeHovered(new Mesh())
 
-			expect(viewCubeController["hoverInfo"].cube.material.emissive).toStrictEqual(new Color(0xffffff))
+			expect(viewCubeController["hoverInfo"].cube.material.emissive).toStrictEqual(new Color(0xff_ff_ff))
 		})
 	})
 
@@ -101,12 +101,12 @@ describe("ViewCubeController", () => {
 		it("should set cube to null", () => {
 			viewCubeController["hoverInfo"].cube = {
 				material: {
-					emissive: new Color(0xffffff)
+					emissive: new Color(0xff_ff_ff)
 				}
 			}
-			viewCubeController["renderer"] = {
+			viewCubeController["renderer"] = ({
 				render: jest.fn()
-			} as unknown as WebGLRenderer
+			} as unknown) as WebGLRenderer
 			viewCubeController.onCubeUnhovered()
 
 			expect(viewCubeController["hoverInfo"].cube).toBe(null)
