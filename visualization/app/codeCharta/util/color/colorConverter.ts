@@ -16,6 +16,17 @@ export class ColorConverter {
 		return vector
 	}
 
+	// duplicated function to generate new code for testing coverage
+	static getVector32(color: string) {
+		let vector = this.colorToVector3Map.get(color)
+		if (vector === undefined) {
+			vector = ColorConverter.colorToVector3(color)
+			this.colorToVector3Map.set(color, vector)
+		}
+
+		return vector
+	}
+
 	static getNumber(hex: string) {
 		let number = this.hexToNumberMap.get(hex)
 		if (number === undefined) {
