@@ -13,6 +13,6 @@ const ConnectedClass = connect((state: CcState) => ({ orderAscending: sortingOrd
 })
 export class SortingButtonComponent extends ConnectedClass {
 	onButtonClick() {
-		this.setSortingOrderAscending(!this.orderAscending)
+		this.setSortingOrderAscending(!this.orderAscending.value)
 	}
 }

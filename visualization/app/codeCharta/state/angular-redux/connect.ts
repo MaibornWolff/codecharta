@@ -2,12 +2,22 @@
 
 import { OnChanges, OnDestroy, SimpleChanges } from "@angular/core"
 import { Action } from "redux"
+import { BehaviorSubject } from "rxjs"
 
 import { CcState, Store } from "../store/store"
 
 type Constructor<T = unknown> = new (...args: unknown[]) => T
 type This = InstanceType<Constructor>
 type ActionCreator = (...args: unknown[]) => Action
+type MapStateToThis<T extends Record<string, unknown>> = (state: CcState, that?: This) => T
+type ConnectedProps<T extends Record<string, unknown>> = { [key in keyof T]: BehaviorSubject<T[key]> }
+
+// todo
+// @Matthias: should use Observerable / BehaviorSubject?
+// tests
+// error handling
+// call .complete
+// next only if != last value
 
 // - We could make an own useful standalone npm module out of this class.
 // - Instead of a mixin a class decorator would be nice, but it is not yet possible (https://github.com/Microsoft/TypeScript/issues/4881).
@@ -21,19 +31,23 @@ type ActionCreator = (...args: unknown[]) => Action
  */
 /* eslint-disable-next-line @typescript-eslint/ban-types */ // we actual want to infer nothing if `MappedDispatch` is not given
 export const connect = <MappedState extends Record<string, unknown>, MappedDispatch extends Record<string, ActionCreator> = {}>(
-	mapStateToThis?: (state: CcState, that?: This) => MappedState,
+	mapStateToThis?: MapStateToThis<MappedState>,
 	mapDispatchToThis?: MappedDispatch
-): Constructor<ReturnType<typeof mapStateToThis> & MappedDispatch & { ngOnDestroy: () => void }> => {
-	const setStateToThis = (that: This, keys: string[], mappedState: ReturnType<typeof mapStateToThis>) => {
-		// always assigning no matter if changed should be fine as Angular has its own update mechanism anyway
-		for (const key of keys) that[key] = mappedState[key]
+): Constructor<ConnectedProps<MappedState> & MappedDispatch & { ngOnDestroy: () => void }> => {
+	let keysToTrack
+	const updateState = (that: This, mappedState: MappedState) => {
+		//	check last value equal
+		for (const key of keysToTrack) {
+			that[key].next(mappedState[key])
+		}
 	}
 	let unsubscribe: () => void
 
 	const setDispatchToThis = (that: This, keys: string[]) => {
 		for (const key of keys) {
-			// todo think about using Observerables
-			that[key] = (...args: unknown[]) => Store.store.dispatch(mapDispatchToThis[key](...args))
+			that[key] = (...args: unknown[]) => {
+				Store.store.dispatch(mapDispatchToThis[key](...args))
+			}
 		}
 	}
 
@@ -43,10 +57,11 @@ export const connect = <MappedState extends Record<string, unknown>, MappedDispa
 		constructor() {
 			if (mapStateToThis) {
 				const initialMappedState = mapStateToThis(Store.store.getState(), this)
-				const keysToTrack = Object.keys(initialMappedState)
-				setStateToThis(this, keysToTrack, initialMappedState)
+				keysToTrack = Object.keys(initialMappedState)
+				for (const key of keysToTrack) this[key] = new BehaviorSubject(initialMappedState[key])
+
 				unsubscribe = Store.store.subscribe(() => {
-					setStateToThis(this, keysToTrack, mapStateToThis(Store.store.getState(), this))
+					updateState(this, mapStateToThis(Store.store.getState(), this))
 				})
 
 				// todo add unit test for this
@@ -64,7 +79,7 @@ export const connect = <MappedState extends Record<string, unknown>, MappedDispa
 					this.ngOnChanges = (changes: SimpleChanges) => {
 						Reflect.apply(actualNgOnChanges, this, [changes])
 						if (hasChangeOtherThanKeysToTrack(changes)) {
-							setStateToThis(this, keysToTrack, mapStateToThis(Store.store.getState(), this))
+							updateState(this, mapStateToThis(Store.store.getState(), this))
 						}
 					}
 				}
