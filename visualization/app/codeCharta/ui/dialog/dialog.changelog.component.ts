@@ -1,84 +1,72 @@
 import markdownFile from "../../../../../CHANGELOG.md"
 import packageJson from "../../../../package.json"
-interface changeType {
-	discoverPattern: RegExp
-	changes: Set<string>
-}
+
 export class DialogChangelogController {
 	private _viewModel: {
 		currentVersion: string
 		lastOpenedVersion: string
-		changeTypes: Map<string, changeType>
+		changes: Record<string, string>
 	} = {
 		currentVersion: "",
 		lastOpenedVersion: "",
-		changeTypes: null
+		changes: null
 	}
 
 	constructor(private $mdDialog) {
 		"ngInject"
+		localStorage.setItem("codeChartaVersion", packageJson.version)
 
-		let changelogLines = markdownFile.split("\n")
-		// Get current and last saved version
 		this._viewModel.currentVersion = packageJson.version
 		this._viewModel.lastOpenedVersion = localStorage.getItem("codeChartaVersion")
-		localStorage.setItem("codeChartaVersion", packageJson.version)
-		// Get the current version's first line
-		const newVersionLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
-		// Get last line of the last opened/saved version
-		const savedVersionLine = this.findVersionLine(changelogLines, this._viewModel.lastOpenedVersion)
-		const endVersionLine = this.findEndVersionLine(changelogLines, savedVersionLine)
-		// Limit the changelog to only the new versions since last visit
-		changelogLines = changelogLines.slice(newVersionLine, endVersionLine)
 
-		// Set the change types to be extracted (Added, Fixed...)
-		const changeTypes = new Map()
-		const addedChangeType: changeType = { discoverPattern: /Added 🚀/, changes: new Set() }
-		changeTypes.set("Added 🚀", addedChangeType)
-		const fixedChangeType: changeType = { discoverPattern: /Fixed 🐞/, changes: new Set() }
-		changeTypes.set("Fixed 🐞", fixedChangeType)
-		const changedChangeType: changeType = { discoverPattern: /Changed/, changes: new Set() }
-		changeTypes.set("Changed", changedChangeType)
-		const removedChangeType: changeType = { discoverPattern: /Removed 🗑/, changes: new Set() }
-		changeTypes.set("Removed 🗑", removedChangeType)
-		const choreChangeType: changeType = { discoverPattern: /Chore 👨‍💻 👩‍💻/, changes: new Set() }
-		changeTypes.set("Chore 👨‍💻 👩‍💻", choreChangeType)
+		let changelogLines = markdownFile.split("\n")
+		const currentVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
+		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.lastOpenedVersion)
+		const lastOpenedVersionLastLine = this.findEndVersionLine(changelogLines, lastOpenedVersionFirstLine)
 
-		for (const changeTypeName of changeTypes.keys()) {
-			const changesLines = this.getAllIndexes(changelogLines, changeTypes.get(changeTypeName).discoverPattern)
-			for (const change of changesLines) {
+		changelogLines = changelogLines.slice(currentVersionFirstLine, lastOpenedVersionLastLine)
+
+		const titles = ["Added 🚀", "Fixed 🐞", "Changed", "Removed 🗑", "Chore 👨‍💻 👩‍💻"]
+		const changes = {}
+		for (const title of titles) {
+			const titlePattern = new RegExp(`<h3>${title}</h3>`)
+			const titleLinesIndexes = this.getAllIndexes(changelogLines, titlePattern)
+			const changelogTypesSet = new Set()
+			for (const lineIndex of titleLinesIndexes) {
 				// Add 2 to remove the headline and the <ul> tag
-				const start = change + 2
-				const end = this.findEndChangesLine(changelogLines, change)
-				for (const changeLine in changelogLines.slice(start, end)) {
-					changeTypes.get(changeTypeName).changes.add(changelogLines.slice(start, end)[changeLine])
+				const start = lineIndex + 2
+				const end = this.findEndChangesLine(changelogLines, lineIndex)
+				for (const changeLine of changelogLines.slice(start, end)) {
+					changelogTypesSet.add(changeLine)
 				}
 			}
+			if (changelogTypesSet.size > 0) changes[title] = [...changelogTypesSet.values()].join("\n")
 		}
-		this._viewModel.changeTypes = changeTypes
+		this._viewModel.changes = changes
 	}
-	setToArray(set) {
-		if (set === undefined) return
-		return [...set]
-	}
+
 	hide() {
 		this.$mdDialog.hide()
 	}
-	private getAllIndexes(array, pattern) {
-		const indexes = []
-		let index
-		for (index = 0; index < array.length; index++) if (array[index].search(pattern) > -1) indexes.push(index)
-		return indexes
+
+	private getAllIndexes(titles: string[], pattern: RegExp) {
+		return titles.reduce((matchingTitleIndexes, title, index) => {
+			if (pattern.test(title)) matchingTitleIndexes.push(index)
+			return matchingTitleIndexes
+		}, [])
 	}
+
 	private findVersionLine(lines: string[], version: string): number {
 		const versionPattern = new RegExp(version.replace(".", "\\."))
-		return lines.findIndex(element => element.search(versionPattern) > -1)
+		return lines.findIndex(element => versionPattern.test(element))
 	}
+
 	private findEndChangesLine(lines: string[], startLine: number): number {
-		return startLine + lines.slice(startLine + 1).findIndex(element => element.search(/<h3>/) > -1)
+		return startLine + lines.slice(startLine + 1).findIndex(element => /<h3>/.test(element))
 	}
+
 	private findEndVersionLine(lines: string[], versionLine: number): number {
-		return versionLine + lines.slice(versionLine + 1).findIndex(element => element.search(/<h2>/) > -1)
+		return versionLine + lines.slice(versionLine + 1).findIndex(element => /<h2>/.test(element))
 	}
 }
 

@@ -7,11 +7,9 @@
 		<h1>What is new in CodeCharta?</h1>
 		<h2>{{ $ctrl._viewModel.lastOpenedVersion }} -> {{ $ctrl._viewModel.currentVersion }}</h2>
 		<div class="content">
-			<div ng-repeat="(key, value) in $ctrl._viewModel.changeTypes | fromMap">
-				<div ng-if="$ctrl.setToArray(value.changes).length > 0">
-					<h2>{{ key }}</h2>
-					<ul ng-bind-html="$ctrl.setToArray(value.changes).join('\n')"></ul>
-				</div>
+			<div ng-repeat="(key, value) in $ctrl._viewModel.changes">
+				<h2>{{ key }}</h2>
+				<ul ng-bind-html="value"></ul>
 			</div>
 		</div>
 	</md-dialog-content>
