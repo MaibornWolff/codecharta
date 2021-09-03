@@ -17,7 +17,7 @@ describe("colorConverter", () => {
 
 		it("should replace the first occurences of # with 0x and return a number", () => {
 			const result = ColorConverter.convertHexToNumber("#ABCDEF")
-			const expected = 0xabcdef
+			const expected = 0xab_cd_ef
 
 			expect(result).toBe(expected)
 		})
@@ -25,7 +25,7 @@ describe("colorConverter", () => {
 
 	describe("convertNumberToHex", () => {
 		it("should not create any 0s after # and convert", () => {
-			const result = ColorConverter.convertNumberToHex(16777215)
+			const result = ColorConverter.convertNumberToHex(16_777_215)
 			const expected = "#ffffff"
 
 			expect(result).toBe(expected)
@@ -134,7 +134,7 @@ describe("colorConverter", () => {
 
 	describe("getVector3", () => {
 		it("should return the vector3 from a color", () => {
-			const expected = new Vector3(0.5098039215686274, 0.054901960784313725, 0.054901960784313725)
+			const expected = new Vector3(0.509_803_921_568_627_4, 0.054_901_960_784_313_725, 0.054_901_960_784_313_725)
 			ColorConverter["colorToVector3Map"].set("#820E0E", expected)
 
 			const actual = ColorConverter.getVector3("#820E0E")
@@ -147,14 +147,14 @@ describe("colorConverter", () => {
 
 			const actual = ColorConverter.getVector3("#820E0E")
 
-			expect(actual).toEqual(new Vector3(0.5098039215686274, 0.054901960784313725, 0.054901960784313725))
+			expect(actual).toEqual(new Vector3(0.509_803_921_568_627_4, 0.054_901_960_784_313_725, 0.054_901_960_784_313_725))
 			expect(ColorConverter["colorToVector3Map"].size).toBe(1)
 		})
 	})
 
 	describe("getNumber", () => {
 		it("should return the number from a hex", () => {
-			const expected = 8523278
+			const expected = 8_523_278
 			ColorConverter["hexToNumberMap"].set("#820E0E", expected)
 
 			const actual = ColorConverter.getNumber("#820E0E")
@@ -167,7 +167,7 @@ describe("colorConverter", () => {
 
 			const actual = ColorConverter.getNumber("#820E0E")
 
-			expect(actual).toEqual(8523278)
+			expect(actual).toEqual(8_523_278)
 			expect(ColorConverter["hexToNumberMap"].size).toBe(1)
 		})
 	})
