@@ -12,13 +12,6 @@ import { dialogChangelogComponent } from "./dialog.changelog.component"
 
 angular
 	.module("app.codeCharta.ui.dialog", ["ngMaterial", "app.codeCharta.state"])
-	.filter("fromMap", function () {
-		return function (input) {
-			const out = {}
-			for (const [k, v] of input.entries()) out[k] = v
-			return out
-		}
-	})
 	.service(camelCase(DialogService.name), DialogService)
 	.component(dialogDownloadComponent.selector, dialogDownloadComponent)
 	.component(dialogGlobalSettingsComponent.selector, dialogGlobalSettingsComponent)
