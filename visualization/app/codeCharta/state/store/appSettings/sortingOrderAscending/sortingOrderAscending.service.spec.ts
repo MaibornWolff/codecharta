@@ -41,12 +41,11 @@ describe("SortingOrderAscendingService", () => {
 	describe("onStoreChanged", () => {
 		it("should notify all subscribers with the new sortingOrderAscending value", () => {
 			const action: SortingOrderAscendingAction = {
-				type: SortingOrderAscendingActions.SET_SORTING_ORDER_ASCENDING,
-				payload: true
+				type: SortingOrderAscendingActions.TOGGLE_SORTING_ORDER_ASCENDING
 			}
 			storeService["store"].dispatch(action)
 
-			sortingOrderAscendingService.onStoreChanged(SortingOrderAscendingActions.SET_SORTING_ORDER_ASCENDING)
+			sortingOrderAscendingService.onStoreChanged(SortingOrderAscendingActions.TOGGLE_SORTING_ORDER_ASCENDING)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("sorting-order-ascending-changed", {
 				sortingOrderAscending: true

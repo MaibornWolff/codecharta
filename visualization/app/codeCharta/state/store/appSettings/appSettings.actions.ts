@@ -22,7 +22,7 @@ import { defaultShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/
 import { defaultResetIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
-import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
+import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
 import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
 import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"

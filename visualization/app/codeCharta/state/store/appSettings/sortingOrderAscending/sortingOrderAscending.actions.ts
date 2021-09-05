@@ -1,21 +1,17 @@
 import { Action } from "redux"
 
 export enum SortingOrderAscendingActions {
-	SET_SORTING_ORDER_ASCENDING = "SET_SORTING_ORDER_ASCENDING"
+	TOGGLE_SORTING_ORDER_ASCENDING = "TOGGLE_SORTING_ORDER_ASCENDING"
 }
 
-export interface SetSortingOrderAscendingAction extends Action {
-	type: SortingOrderAscendingActions.SET_SORTING_ORDER_ASCENDING
-	payload: boolean
+export interface ToggleSortingOrderAscendingAction extends Action {
+	type: SortingOrderAscendingActions.TOGGLE_SORTING_ORDER_ASCENDING
 }
 
-export type SortingOrderAscendingAction = SetSortingOrderAscendingAction
+export type SortingOrderAscendingAction = ToggleSortingOrderAscendingAction
 
-export function setSortingOrderAscending(sortingOrderAscending: boolean = defaultSortingOrderAscending): SetSortingOrderAscendingAction {
+export function toggleSortingOrderAscending(): ToggleSortingOrderAscendingAction {
 	return {
-		type: SortingOrderAscendingActions.SET_SORTING_ORDER_ASCENDING,
-		payload: sortingOrderAscending
+		type: SortingOrderAscendingActions.TOGGLE_SORTING_ORDER_ASCENDING
 	}
 }
-
-export const defaultSortingOrderAscending = false

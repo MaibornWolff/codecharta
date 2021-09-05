@@ -1,9 +1,11 @@
-import { SortingOrderAscendingAction, SortingOrderAscendingActions, setSortingOrderAscending } from "./sortingOrderAscending.actions"
+import { SortingOrderAscendingAction, SortingOrderAscendingActions } from "./sortingOrderAscending.actions"
 
-export function sortingOrderAscending(state = setSortingOrderAscending().payload, action: SortingOrderAscendingAction) {
+export const defaultSortingOrderAscending = false
+
+export function sortingOrderAscending(state = defaultSortingOrderAscending, action: SortingOrderAscendingAction) {
 	switch (action.type) {
-		case SortingOrderAscendingActions.SET_SORTING_ORDER_ASCENDING:
-			return action.payload
+		case SortingOrderAscendingActions.TOGGLE_SORTING_ORDER_ASCENDING:
+			return !state
 		default:
 			return state
 	}

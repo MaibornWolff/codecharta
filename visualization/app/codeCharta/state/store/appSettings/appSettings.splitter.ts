@@ -9,7 +9,6 @@ import { splitShowMetricLabelNameValueAction } from "./showMetricLabelNameValue/
 import { splitPanelSelectionAction } from "./panelSelection/panelSelection.splitter"
 import { splitCameraTargetAction } from "./cameraTarget/cameraTarget.splitter"
 import { splitIsAttributeSideBarVisibleAction } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.splitter"
-import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
 import { splitSearchPanelModeAction } from "./searchPanelMode/searchPanelMode.splitter"
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
 import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
@@ -58,10 +57,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.isAttributeSideBarVisible !== undefined) {
 		actions.push(splitIsAttributeSideBarVisibleAction(payload.isAttributeSideBarVisible))
-	}
-
-	if (payload.sortingOrderAscending !== undefined) {
-		actions.push(splitSortingOrderAscendingAction(payload.sortingOrderAscending))
 	}
 
 	if (payload.searchPanelMode !== undefined) {

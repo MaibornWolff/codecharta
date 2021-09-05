@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { Store } from "../../state/store/store"
 import { sortingOrderAscendingSelector } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
 import { SortingButtonComponent } from "./sortingButton.component"
-import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { toggleSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 
 describe("SortingButtonComponent", () => {
 	beforeEach(() => {
@@ -24,7 +24,7 @@ describe("SortingButtonComponent", () => {
 		const { detectChanges } = await render(SortingButtonComponent)
 		expect(screen.getByTitle("Toggle sort order (currently descending)")).toBeTruthy()
 
-		Store.store.dispatch(setSortingOrderAscending(true))
+		Store.store.dispatch(toggleSortingOrderAscending())
 		detectChanges()
 
 		expect(screen.getByTitle("Toggle sort order (currently ascending)")).toBeTruthy()
