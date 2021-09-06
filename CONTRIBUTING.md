@@ -79,3 +79,44 @@ To unify the appearance of all commit messages we only accept commit messages us
 -   Name the PR like its branch name (e.x. `Tech/123/my branch name`). The name is usually created by GitHub automatically
 -   Add the correct labels
 -   The PR Assignee is only used by the reviewer to see who is reviewing it
+
+## Changelog Guidelines
+
+###Why should you we write a changelog?
+
+-   A changelog is vital for the developers to keep track of their work. But most importantly now that it appears on every version update to every user, we should make sure that it is also user-friendly. And for that, we need guidelines to help us.
+
+###When should you add to the changelog file?
+
+-   You should only add a changelog entry after the merge (or approval) of your feature/fix not before.
+    (so that we ensure in every release the entries in the Changelog match the changes in that version)
+
+###How should you format a changelog entry?
+
+-   [Description of what you changed] [Link to the pull request]
+    [One picture (specify the width and/or height)]<br/>
+    Example:<br/>
+    `- Add a changelog dialog with the latest additions to CodeCharta that appears on version update ([#1315](pull-request-linkl)) <img src="image-link" width="350px">`
+    The image should always have a width and/or a height attribute.
+    Example: width=”500px”
+
+###How to write a good description?
+
+-   The description should be precise and short. Please keep it in one sentence (Max. 2).
+-   One changelog entry should describe one change.
+-   Avoid writing technical descriptions
+-   Start with a verb in the present tense
+    -   Example: Add, Improve, Enable, Allow, Switch...
+    -   Don’t: this feature added the ability to enable dark mode
+    -   Do: Add dark mode
+-   Avoid writing ambiguous descriptions
+    -   Don’t: Fix some UI problems
+    -   Do: Fix the distribution bar not showing correctly
+-   Write in terms of features. Focus on the "what" not the "how".
+    -   Don’t: Minify JS and CSS
+    -   Do: Make page load faster by reducing size of JavaScript and CSS files
+
+###Notes
+
+-   Link to the image can be copied from an image uploaded to the Pull Request
+-   If there are no Pull Requests associated to your change, link an issue.
