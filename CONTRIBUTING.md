@@ -88,8 +88,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 
 ###When should you add to the changelog file?
 
--   You should only add a changelog entry after the merge (or approval) of your feature/fix not before.
-    (so that we ensure in every release the entries in the Changelog match the changes in that version)
+-   You should always make sure that a changelog entry has been added before merging your work.
 
 ###How should you format a changelog entry?
 
