@@ -29,35 +29,29 @@ def confirm(message, printMessage):
     quit()
 
 
-def getLatestChangelogEntry(path):
-  release_post_content = ""
+def getLatestChangelogEntries(path):
   with open(path, "r", encoding="utf-8") as fp:
     line_number = 0
-    section = None
+    new_changelog_section = ""
+
     for line in fp:
-      if line_number > 20:
+      if line_number > 10:
+
+        # break on headline for already released log entries
         if "## [" in line:
           break
 
-        if "###" in line and section != None:
-          if len(section.split("\n")) > 3:
-            release_post_content = release_post_content + section
-          section = None
-
-        if section != None:
-          section = section + line
-
-        if "###" in line and section == None:
-          section = line
+        new_changelog_section += line
 
       line_number = line_number + 1
-  return release_post_content
+
+  return new_changelog_section
 
 
 def getReleasePost(version, path):
   release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n\ntitle: {version}\n---\n\n"
   release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
-  release_post_content = getLatestChangelogEntry(path)
+  release_post_content = getLatestChangelogEntries(path)
   return release_post_header + release_post_headline + release_post_content
 
 
@@ -193,14 +187,7 @@ release_post = f"{date_formatted}-v{new_version_formatted}.md"
 release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
 
 with open(release_post_path, "w", encoding="utf-8") as fp:
-  pass
-  fp.write("\n")
-
-with in_place.InPlace(release_post_path, encoding="utf-8") as fp:
-  for line in fp:
-    fp.write(getReleasePost(new_version, changelog_path))
-    break
-
+  fp.write(getReleasePost(new_version, changelog_path))
 
 # confirm and make a commit and tag it correctly
 message = "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
