@@ -3,7 +3,7 @@ import { ScalingActions } from "../state/store/appSettings/scaling/scaling.actio
 import { IsLoadingFileActions } from "../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 function mutateObject(object: Record<string, number>) {
-	object.x = 10000
+	object.x = 10_000
 }
 
 describe("reduxHelper", () => {
@@ -37,7 +37,7 @@ describe("reduxHelper", () => {
 			mutateObject(object2)
 
 			expect(result).toEqual([
-				{ x: 10000, y: 2 },
+				{ x: 10_000, y: 2 },
 				{ x: 3, y: 4 }
 			])
 		})

@@ -119,7 +119,7 @@ describe("UsageDataTracker", () => {
 
 		function assertMetaDataSnapshot() {
 			mockTrackingToBeAllowed()
-			jest.spyOn(Date, "now").mockReturnValue(1612369999999)
+			jest.spyOn(Date, "now").mockReturnValue(1_612_369_999_999)
 
 			const expectSetItemSnapshot = (CodeChartaStorage.prototype.setItem = jest.fn().mockImplementation((_, value) => {
 				expect(value).toMatchSnapshot()
@@ -144,7 +144,7 @@ describe("UsageDataTracker", () => {
 			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
-			jest.spyOn(Date, "now").mockReturnValue(1612428357566)
+			jest.spyOn(Date, "now").mockReturnValue(1_612_428_357_566)
 
 			getItemMock = CodeChartaStorage.prototype.getItem = jest.fn().mockReturnValue("some-already-tracked-events-from-file-storage")
 			expectSetItemSnapshot = CodeChartaStorage.prototype.setItem = jest.fn().mockImplementation((_, value) => {

@@ -13,8 +13,8 @@ import { WEBGL } from "three/examples/jsm/WebGL"
 import { SharpnessMode } from "../../../codeCharta.model"
 export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	static BACKGROUND_COLOR = {
-		white: 0xffffff,
-		normal: 0xeeeedd
+		white: 0xff_ff_ff,
+		normal: 0xee_ee_dd
 	}
 
 	static CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal

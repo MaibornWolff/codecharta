@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Empty temporary label during hovering ([#2328](https://github.com/maibornwolff/codecharta/issues/2328))
 -   Show the screenshot hotkey in the screenshot title ([#2323](https://github.com/maibornwolff/codecharta/issues/2323))
+-   Improved rendering performance ([#2345](https://github.com/MaibornWolff/codecharta/pull/2345))
+
+### Chore 👨‍💻 👩‍💻
+
+-   Update GH-Pages and visualization dependencies ([#2356](https://github.com/maibornwolff/codecharta/issues/2356))
 
 ## [1.77.0] - 2021-07-30
 

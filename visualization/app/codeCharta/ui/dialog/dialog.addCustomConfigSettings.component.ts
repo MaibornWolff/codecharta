@@ -84,7 +84,7 @@ export class DialogAddCustomConfigSettingsComponent implements FilesSelectionSub
 	}
 
 	purgeOldConfigs() {
-		if (!this.purgeableConfigs.size) {
+		if (this.purgeableConfigs.size === 0) {
 			return
 		}
 

@@ -22,5 +22,5 @@ export function getMetricNameFromIndexOrLast(metricData: NodeMetricData[], index
 }
 
 export function resetToDefaultDistribution(metricData: NodeMetricData[]) {
-	return metricData.filter(element => element.name === "rloc").length > 0 ? "rloc" : "unary"
+	return metricData.some(element => element.name === "rloc") ? "rloc" : "unary"
 }
