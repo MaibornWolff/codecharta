@@ -14,10 +14,10 @@ export class DialogChangelogController {
 
 	constructor(private $mdDialog) {
 		"ngInject"
-		localStorage.setItem("codeChartaVersion", packageJson.version)
-
 		this._viewModel.currentVersion = packageJson.version
 		this._viewModel.lastOpenedVersion = localStorage.getItem("codeChartaVersion")
+
+		localStorage.setItem("codeChartaVersion", packageJson.version)
 
 		let changelogLines = markdownFile.split("\n")
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
