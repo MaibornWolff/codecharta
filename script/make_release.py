@@ -43,7 +43,7 @@ def getLatestChangelogEntries(path):
 
         new_changelog_section += line
 
-      line_number = line_number + 1
+      line_number += 1
 
   return new_changelog_section
 
