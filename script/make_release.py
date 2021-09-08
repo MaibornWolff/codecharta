@@ -38,7 +38,7 @@ def getLatestChangelogEntries(path):
       if line_number > 10:
 
         # break on headline for already released log entries
-        if line.startswith("## [")
+        if line.startswith("## ["):
           break
 
         new_changelog_section += line
