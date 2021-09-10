@@ -1,7 +1,4 @@
-<div
-	class="block-wrapper cc-shadow"
-	ng-class="{ visible: $ctrl._viewModel.isLegendVisible, sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
->
+<div class="block-wrapper" ng-class="{ visible: $ctrl._viewModel.isLegendVisible, sideBarVisible: $ctrl._viewModel.isSideBarVisible }">
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="legend-block bold">{{ $ctrl._viewModel.colorMetric }}:</div>
 		<cc-store-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
