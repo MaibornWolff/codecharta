@@ -1,26 +1,27 @@
-import { Component, Input } from "@angular/core"
-import { connect } from "../../state/angular-redux/connect"
+import { Component, Inject, Input } from "@angular/core"
+import { Observable } from "rxjs"
+import { MapColors } from "../../codeCharta.model"
+import { Store } from "../../state/angular-redux/store"
 import { selectedBuildingIdSelector } from "../../state/store/lookUp/selectedBuildingId/selectedBuildingId.selector"
 import { CcState } from "../../state/store/store"
-
-const ConnectedClass = connect((state: CcState, that: { attributeKey: string }) => {
-	if (that.attributeKey === undefined) return { deltaValue: undefined, color: "" }
-
-	const selectedBuildingId = selectedBuildingIdSelector(state)
-	const selectedBuildingNode = state.lookUp.idToBuilding.get(selectedBuildingId)
-	const deltaValue = selectedBuildingNode?.node.deltas?.[that.attributeKey]
-
-	const mapColors = state.appSettings.mapColors
-	const color = deltaValue > 0 ? mapColors.positiveDelta : mapColors.negativeDelta
-
-	return { deltaValue, color }
-})
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 @Component({
 	selector: "cc-metric-delta-selected",
 	template: require("./metricDeltaSelected.component.html")
 })
-export class MetricDeltaSelectedComponent extends ConnectedClass {
-	// @ts-ignore - used within connect
-	@Input() private attributeKey
+export class MetricDeltaSelectedComponent {
+	// @ts-ignore - used within its template
+	@Input() attributeKey
+
+	selectedBuilding$: Observable<CodeMapBuilding>
+	mapColors$: Observable<MapColors>
+
+	constructor(@Inject(Store) private store: Store) {
+		this.selectedBuilding$ = this.store.select((state: CcState) => {
+			const selectedBuildingId = selectedBuildingIdSelector(state)
+			return state.lookUp.idToBuilding.get(selectedBuildingId)
+		})
+		this.mapColors$ = this.store.select((state: CcState) => state.appSettings.mapColors)
+	}
 }

@@ -1,1 +1,5 @@
-<span class="metric-delta" [hidden]="!deltaValue" [style.color]="color">&Delta;{{ deltaValue }}</span>
+<ng-container *ngIf="(selectedBuilding$ | async )?.node.deltas?.[attributeKey] as deltaValue">
+	<span [style.color]="(mapColors$ | async)[deltaValue > 0 ? 'positiveDelta' : 'negativeDelta']" class="metric-delta">
+		&Delta;{{ deltaValue }}
+	</span>
+</ng-container>

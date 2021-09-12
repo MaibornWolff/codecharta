@@ -1,126 +1,68 @@
-import "./metricDeltaSelected.module"
-import { MetricDeltaSelectedController } from "./metricDeltaSelected.component"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
-import { CODE_MAP_BUILDING } from "../../util/dataMocks"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { StoreService } from "../../state/store.service"
-import { klona } from "klona"
-import { MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
-import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { render, screen } from "@testing-library/angular"
 
-describe("MetricDeltaSelectedController", () => {
-	let metricDeltaSelectedController: MetricDeltaSelectedController
-	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
-	let storeService: StoreService
-	let threeSceneService: ThreeSceneService
-	let codeMapBuilding: CodeMapBuilding
+import { Store } from "../../state/store/store"
+import { ColorConverter } from "../../util/color/colorConverter"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { MetricDeltaSelectedComponent } from "./metricDeltaSelected.component"
+
+describe("MetricDeltaSelectedComponent", () => {
+	const areColorsEqual = (hex: string, styleColor: string) => {
+		const formattedHex = ColorConverter.convertHexToRgba(hex).replace(/,1\)$/, ")").replace("a", "")
+		const formattedStyleColor = styleColor.replace(/ /g, "")
+		return formattedHex === formattedStyleColor
+	}
 
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-		withMockedThreeSceneService()
+		Store["initialize"]()
 	})
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.metricDeltaSelected")
-
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
-		storeService = getService<StoreService>("storeService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-
-		codeMapBuilding = klona(CODE_MAP_BUILDING)
-	}
-
-	function rebuildController() {
-		metricDeltaSelectedController = new MetricDeltaSelectedController($rootScope, $timeout, threeSceneService, storeService)
-	}
-
-	function withMockedThreeSceneService() {
-		threeSceneService = jest.fn().mockReturnValue({
-			getSelectedBuilding: jest.fn()
-		})()
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to Node Selected Events", () => {
-			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
-
-			rebuildController()
-
-			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, metricDeltaSelectedController)
-		})
-
-		it("should subscribe to MapColorsServiceService", () => {
-			MapColorsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(MapColorsService.subscribe).toHaveBeenCalledWith($rootScope, metricDeltaSelectedController)
-		})
+	it("should not show, if there is no delta value", async () => {
+		await render(MetricDeltaSelectedComponent)
+		expect(screen.queryByText(/Δ/)).toBe(null)
 	})
 
-	describe("onBuildingSelected", () => {
-		it("should set color to positiveDeltaColor if deltaValue is positive", () => {
-			const positiveDeltaColor = storeService.getState().appSettings.mapColors.positiveDelta
-			metricDeltaSelectedController["_viewModel"].deltaValue = 1
+	it("should show in positive delta color when selected building has a positive delta value", async () => {
+		const fakeCodeMapBuilding = { node: { deltas: { rloc: 2 } } } as unknown as CodeMapBuilding
+		const state = Store.store.getState()
+		state.lookUp.selectedBuildingId = 0
+		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
 
-			metricDeltaSelectedController.onBuildingSelected()
-
-			expect(metricDeltaSelectedController["_viewModel"].style.color).toEqual(positiveDeltaColor)
+		await render(MetricDeltaSelectedComponent, {
+			componentProperties: { attributeKey: "rloc" }
 		})
 
-		it("should set color to negativeDeltaColor if deltaValue is negative", () => {
-			const negativeDeltaColor = storeService.getState().appSettings.mapColors.negativeDelta
-			metricDeltaSelectedController["_viewModel"].deltaValue = -1
-
-			metricDeltaSelectedController.onBuildingSelected()
-
-			expect(metricDeltaSelectedController["_viewModel"].style.color).toEqual(negativeDeltaColor)
-		})
-
-		it("should set deltaValue to null", () => {
-			codeMapBuilding.node.deltas = undefined
-
-			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
-
-			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(undefined)
-		})
-
-		it("should set deltaValue to existing metric value", () => {
-			codeMapBuilding.node.deltas = { rloc: 42 }
-			metricDeltaSelectedController["attributekey"] = "rloc"
-
-			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
-
-			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(42)
-		})
-
-		it("should not change viewModel", () => {
-			metricDeltaSelectedController["_viewModel"].deltaValue = 17
-
-			metricDeltaSelectedController.onBuildingSelected()
-
-			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(17)
-		})
+		const metricDeltaSelectedDomNode = screen.queryByText(/Δ2/)
+		expect(metricDeltaSelectedDomNode).toBeTruthy()
+		expect(areColorsEqual(state.appSettings.mapColors.positiveDelta, metricDeltaSelectedDomNode.style.color)).toBe(true)
 	})
 
-	describe("onMapColorsChanged", () => {
-		it("should set color to new positiveDelta color", () => {
-			storeService.dispatch(
-				setMapColors({
-					...storeService.getState().appSettings.mapColors,
-					positiveDelta: "#666666"
-				})
-			)
-			metricDeltaSelectedController["_viewModel"].deltaValue = 1
+	it("should show in negative delta color when selected building has a negative delta value", async () => {
+		const fakeCodeMapBuilding = { node: { deltas: { rloc: -2 } } } as unknown as CodeMapBuilding
+		const state = Store.store.getState()
+		state.lookUp.selectedBuildingId = 0
+		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
 
-			metricDeltaSelectedController.onBuildingSelected()
-
-			expect(metricDeltaSelectedController["_viewModel"].style.color).toEqual("#666666")
+		await render(MetricDeltaSelectedComponent, {
+			componentProperties: { attributeKey: "rloc" }
 		})
+
+		const metricDeltaSelectedDomNode = screen.queryByText(/Δ-2/)
+		expect(metricDeltaSelectedDomNode).toBeTruthy()
+		expect(areColorsEqual(state.appSettings.mapColors.negativeDelta, metricDeltaSelectedDomNode.style.color)).toBe(true)
+	})
+
+	it("should update when its attributeKey changes", async () => {
+		const fakeCodeMapBuilding = { node: { deltas: { rloc: 2, mcc: 4 } } } as unknown as CodeMapBuilding
+		const state = Store.store.getState()
+		state.lookUp.selectedBuildingId = 0
+		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
+
+		const { rerender } = await render(MetricDeltaSelectedComponent, {
+			componentProperties: { attributeKey: "rloc" }
+		})
+		expect(screen.queryByText(/Δ2/)).toBeTruthy()
+
+		await rerender({ attributeKey: "mcc" })
+		expect(screen.queryByText(/Δ4/)).toBeTruthy()
 	})
 })
