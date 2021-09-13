@@ -37,7 +37,11 @@ export class DialogGlobalSettingsPageObject {
 
 	async changedDisplayQuality() {
 		await page.click("div.md-dialog-content sharpness-mode-selector-component div md-input-container md-select")
-		await page.waitForSelector(".md-select-menu-container.md-active", { visible: true })
+		try {
+			await page.waitForSelector(".md-select-menu-container.md-active", { visible: true })
+		} catch {
+			await page.click("div.md-dialog-content sharpness-mode-selector-component div md-input-container md-select")
+		}
 		await page.click('md-select-menu md-content [value="Pixel Ratio without Antialiasing"]')
 		// Switching settings that have influence on the rendered map has a
 		// debounce time of at least one millisecond.
