@@ -1,11 +1,12 @@
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
-import { ColorRange } from "../../codeCharta.model"
+import { ColorRange, EdgeMetricData } from "../../codeCharta.model"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
+import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
@@ -15,7 +16,12 @@ import { StoreService } from "../../state/store.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class LegendPanelController
-	implements IsAttributeSideBarVisibleSubscriber, ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber
+	implements
+		IsAttributeSideBarVisibleSubscriber,
+		ColorMetricSubscriber,
+		ColorRangeSubscriber,
+		FilesSelectionSubscriber,
+		EdgeMetricSubscriber
 {
 	private _viewModel: {
 		isLegendVisible: boolean
@@ -23,6 +29,9 @@ export class LegendPanelController
 		isDeltaState: boolean
 		colorMetric: string
 		colorRange: ColorRange
+		edge: string
+		edgeMetricData: EdgeMetricData[]
+		edgeMetricHasEdge: boolean
 		maxMetricValue: number
 	} = {
 		isLegendVisible: false,
@@ -30,6 +39,9 @@ export class LegendPanelController
 		isDeltaState: null,
 		colorMetric: null,
 		colorRange: null,
+		edge: null,
+		edgeMetricData: null,
+		edgeMetricHasEdge: false,
 		maxMetricValue: null
 	}
 
@@ -41,6 +53,7 @@ export class LegendPanelController
 		"ngInject"
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
+		EdgeMetricService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
@@ -54,6 +67,17 @@ export class LegendPanelController
 	onColorMetricChanged(colorMetric: string) {
 		this._viewModel.colorMetric = colorMetric
 		this.updateMaxMetricValue()
+	}
+
+	onEdgeMetricChanged(edgeMetric: string) {
+		this._viewModel.edge = edgeMetric
+		this._viewModel.edgeMetricData = this.storeService.getState().metricData.edgeMetricData
+		const result = this._viewModel.edgeMetricData.find(object => {
+			return object.name === this._viewModel.edge
+		})
+		if (result["maxValue"] > 0) {
+			this._viewModel.edgeMetricHasEdge = true
+		}
 	}
 
 	onColorRangeChanged(colorRange: ColorRange) {
