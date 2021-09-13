@@ -16,6 +16,7 @@ import { FileState } from "../../model/files/files"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { getMetricDescriptions } from "../../util/metric/metricDescriptions"
 
 export class LegendPanelController
 	implements
@@ -32,25 +33,35 @@ export class LegendPanelController
 		isSideBarVisible: boolean
 		isDeltaState: boolean
 		colorMetric: string
+		colorMetricDescription: string
 		heightMetric: string
+		heightMetricDescription: string
 		areaMetric: string
+		areaMetricDescription: string
 		colorRange: ColorRange
 		edge: string
+		edgeDescription: string
 		edgeMetricData: EdgeMetricData[]
 		edgeMetricHasEdge: boolean
 		maxMetricValue: number
+		metricDescriptions: Map<string, string>
 	} = {
 		isLegendVisible: false,
 		isSideBarVisible: null,
 		isDeltaState: null,
 		colorMetric: null,
+		colorMetricDescription: null,
 		heightMetric: null,
+		heightMetricDescription: null,
 		areaMetric: null,
+		areaMetricDescription: null,
 		colorRange: null,
 		edge: null,
+		edgeDescription: null,
 		edgeMetricData: null,
-		edgeMetricHasEdge: false,
-		maxMetricValue: null
+		edgeMetricHasEdge: null,
+		maxMetricValue: null,
+		metricDescriptions: null
 	}
 
 	constructor(
@@ -76,15 +87,18 @@ export class LegendPanelController
 
 	onColorMetricChanged(colorMetric: string) {
 		this._viewModel.colorMetric = colorMetric
+		this._viewModel.colorMetricDescription = getMetricDescriptions().get(this._viewModel.colorMetric)
 		this.updateMaxMetricValue()
 	}
 
 	onHeightMetricChanged(heightMetric: string) {
 		this._viewModel.heightMetric = heightMetric
+		this._viewModel.heightMetricDescription = getMetricDescriptions().get(this._viewModel.heightMetric)
 	}
 
 	onAreaMetricChanged(areaMetric: string) {
 		this._viewModel.areaMetric = areaMetric
+		this._viewModel.areaMetricDescription = getMetricDescriptions().get(this._viewModel.areaMetric)
 	}
 
 	onEdgeMetricChanged(edgeMetric: string) {
@@ -93,9 +107,8 @@ export class LegendPanelController
 		const result = this._viewModel.edgeMetricData.find(object => {
 			return object.name === this._viewModel.edge
 		})
-		if (result["maxValue"] > 0) {
-			this._viewModel.edgeMetricHasEdge = true
-		}
+		this._viewModel.edgeMetricHasEdge = result["maxValue"] > 0 ? true : false
+		this._viewModel.edgeDescription = getMetricDescriptions().get(this._viewModel.edge)
 	}
 
 	onColorRangeChanged(colorRange: ColorRange) {
