@@ -225,19 +225,15 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 		}
 
 		case ColorMode.weightedGradient: {
-			const greenStart = Math.min(
-				dynamicSettings.colorRange.from / 2,
-				(dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
+			const greenStart = Math.max(
+				dynamicSettings.colorRange.from - (dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2,
+				dynamicSettings.colorRange.from / 2
 			)
 
-			const yellowStart = greenStart * 3
+			const yellowStart = 2 * dynamicSettings.colorRange.from - greenStart
 
-			const redStart =
-				dynamicSettings.colorRange.to -
-				Math.min(
-					(dynamicSettings.colorRange.max - dynamicSettings.colorRange.to) / 2,
-					(dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
-				)
+			const redStart = dynamicSettings.colorRange.to - (dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
+
 			const redEnd = dynamicSettings.colorRange.to
 
 			if (metricValue <= greenStart) {
@@ -245,7 +241,7 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 			}
 
 			if (metricValue >= greenStart && metricValue <= yellowStart) {
-				const factor = 1 - (metricValue - greenStart) / (yellowStart - greenStart)
+				const factor = (metricValue - greenStart) / (yellowStart - greenStart)
 				return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
 			}
 
@@ -254,7 +250,7 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 			}
 
 			if (metricValue >= redStart && metricValue <= redEnd) {
-				const factor = 1 - (metricValue - redStart) / (redEnd - redStart)
+				const factor = (metricValue - redStart) / (redEnd - redStart)
 				return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
 			}
 
