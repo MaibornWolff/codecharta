@@ -13,23 +13,10 @@
 		ng-click="$ctrl.onClickNode()"
 		id="{{ ::$ctrl.node.path }}"
 	>
-		<span class="node-type-icon">
-			<span
-				role="img"
-				ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.isFolderOpened"
-				class="fa fa-folder"
-				ng-style="{ color: $ctrl.getMarkingColor() }"
-				aria-hidden="true"
-			></span>
-			<span
-				role="img"
-				ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.isFolderOpened"
-				class="fa fa-folder-open"
-				ng-style="{ color: $ctrl.getMarkingColor() }"
-				aria-hidden="true"
-			></span>
-			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
-		</span>
+		<cc-map-tree-view-level-item-icon
+			[node]="$ctrl.node"
+			[is-folder-open]="$ctrl._viewModel.isFolderOpened"
+		></cc-map-tree-view-level-item-icon>
 
 		<span class="node-name" ng-class="{ flattened: $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched() }">
 			{{::$ctrl.node.name}}

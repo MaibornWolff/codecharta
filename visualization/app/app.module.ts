@@ -7,11 +7,20 @@ import { UpgradeModule } from "@angular/upgrade/static"
 
 import { SortingButtonComponent } from "./codeCharta/ui/sortingButton/sortingButton.component"
 import { MetricDeltaSelectedComponent } from "./codeCharta/ui/metricDeltaSelected/metricDeltaSelected.component"
+import { MapTreeViewLevelItemIcon } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemIcon/mapTreeViewLevelItemIcon.component"
+import { MapTreeViewLevelItemIconClassPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemIcon/mapTreeViewLevelItemIconClass.pipe"
+import { MapTreeViewLevelItemIconColorPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemIcon/mapTreeViewLevelItemIconColor.pipe"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule],
-	declarations: [SortingButtonComponent, MetricDeltaSelectedComponent],
-	entryComponents: [SortingButtonComponent, MetricDeltaSelectedComponent]
+	declarations: [
+		SortingButtonComponent,
+		MetricDeltaSelectedComponent,
+		MapTreeViewLevelItemIcon,
+		MapTreeViewLevelItemIconClassPipe,
+		MapTreeViewLevelItemIconColorPipe
+	],
+	entryComponents: [SortingButtonComponent, MetricDeltaSelectedComponent, MapTreeViewLevelItemIcon]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}

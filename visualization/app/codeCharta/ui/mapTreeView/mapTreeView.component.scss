@@ -46,12 +46,6 @@ map-tree-view-component {
 			margin-top: 1px;
 		}
 
-		.node-type-icon {
-			display: inline-block;
-			width: 14px;
-			margin-left: 2px;
-		}
-
 		.node-name.flattened {
 			color: gray;
 		}
@@ -81,4 +75,10 @@ map-tree-view-component {
 			}
 		}
 	}
+}
+
+cc-map-tree-view-level-item-icon {
+	display: inline-block;
+	width: 14px;
+	margin-left: 2px;
 }
