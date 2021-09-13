@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342))
     <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="450px"/>
+
+## [1.78.0] - 2021-09-06
+
+### Added 🚀
+
 -   Add documentation for SCMLogParserV2 ([#1349](https://github.com/maibornwolff/codecharta/issues/1349))
 
 ### Fixed 🐞
