@@ -9,6 +9,8 @@ import {
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { FileState } from "../../model/files/files"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
@@ -19,6 +21,8 @@ export class LegendPanelController
 	implements
 		IsAttributeSideBarVisibleSubscriber,
 		ColorMetricSubscriber,
+		HeightMetricSubscriber,
+		AreaMetricSubscriber,
 		ColorRangeSubscriber,
 		FilesSelectionSubscriber,
 		EdgeMetricSubscriber
@@ -28,6 +32,8 @@ export class LegendPanelController
 		isSideBarVisible: boolean
 		isDeltaState: boolean
 		colorMetric: string
+		heightMetric: string
+		areaMetric: string
 		colorRange: ColorRange
 		edge: string
 		edgeMetricData: EdgeMetricData[]
@@ -38,6 +44,8 @@ export class LegendPanelController
 		isSideBarVisible: null,
 		isDeltaState: null,
 		colorMetric: null,
+		heightMetric: null,
+		areaMetric: null,
 		colorRange: null,
 		edge: null,
 		edgeMetricData: null,
@@ -52,6 +60,8 @@ export class LegendPanelController
 	) {
 		"ngInject"
 		ColorMetricService.subscribe(this.$rootScope, this)
+		HeightMetricService.subscribe(this.$rootScope, this)
+		AreaMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
@@ -67,6 +77,14 @@ export class LegendPanelController
 	onColorMetricChanged(colorMetric: string) {
 		this._viewModel.colorMetric = colorMetric
 		this.updateMaxMetricValue()
+	}
+
+	onHeightMetricChanged(heightMetric: string) {
+		this._viewModel.heightMetric = heightMetric
+	}
+
+	onAreaMetricChanged(areaMetric: string) {
+		this._viewModel.areaMetric = areaMetric
 	}
 
 	onEdgeMetricChanged(edgeMetric: string) {
