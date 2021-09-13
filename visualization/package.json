@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.77.0",
+	"version": "1.78.0",
 	"engines": {
 		"node": ">=16"
 	},
@@ -122,7 +122,7 @@
 		"lodash.throttle": "^4.1.1",
 		"md5": "^2.3.0",
 		"nouislider": "^15.0.0",
-		"nw": "^0.54.0",
+		"nw": "^0.55.0",
 		"open": "^8.0.6",
 		"redux": "^4.0.5",
 		"shelljs": "^0.8.4",

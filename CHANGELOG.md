@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.78.0] - 2021-09-06
+
 ### Added 🚀
 
--   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/issues/1315))
 -   Add documentation for SCMLogParserV2 ([#1349](https://github.com/maibornwolff/codecharta/issues/1349))
 
 ### Fixed 🐞
