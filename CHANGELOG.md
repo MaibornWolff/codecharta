@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not applicable.
+    Metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
+    ![Bildschirmfoto 2021-09-13 um 15 34 31](https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png)
+
 ## [1.78.0] - 2021-09-06
 
 ### Added 🚀
