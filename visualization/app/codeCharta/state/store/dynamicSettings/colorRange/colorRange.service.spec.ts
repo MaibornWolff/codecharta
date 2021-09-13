@@ -59,14 +59,14 @@ describe("ColorRangeService", () => {
 		it("should notify all subscribers with the new colorRange value", () => {
 			const action: ColorRangeAction = {
 				type: ColorRangeActions.SET_COLOR_RANGE,
-				payload: { from: 33, to: 66 }
+				payload: { from: 33, to: 66, min: 1, max: 100 }
 			}
 			storeService["store"].dispatch(action)
 
 			colorRangeService.onStoreChanged(ColorRangeActions.SET_COLOR_RANGE)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("color-range-changed", {
-				colorRange: { from: 33, to: 66 }
+				colorRange: { from: 33, to: 66, min: 1, max: 100 }
 			})
 		})
 
@@ -81,7 +81,7 @@ describe("ColorRangeService", () => {
 		it("should reset the color range", () => {
 			colorRangeService.onFilesSelectionChanged()
 
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66, max: 100, min: 1 })
 		})
 	})
 })

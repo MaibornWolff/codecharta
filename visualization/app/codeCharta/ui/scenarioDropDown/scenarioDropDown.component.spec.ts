@@ -80,7 +80,7 @@ describe("ScenarioDropDownController", () => {
 			scenarioButtonsController.applyScenario("Scenario1")
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setState(PARTIAL_SETTINGS))
-			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange({ from: 19, to: 67 }))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange({ from: 19, to: 67, min: 1, max: 100 }))
 			expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalled()
 		})
 	})

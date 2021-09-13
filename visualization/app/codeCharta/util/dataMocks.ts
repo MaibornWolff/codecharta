@@ -4,40 +4,40 @@ import {
 	BlacklistType,
 	CCFile,
 	CodeMapNode,
+	ColorMode,
 	Edge,
+	EdgeMetricData,
 	EdgeVisibility,
 	FileMeta,
+	GlobalSettings,
+	LayoutAlgorithm,
 	MarkedPackage,
 	Node,
+	NodeMetricData,
 	NodeType,
 	PanelSelection,
 	RecursivePartial,
 	Scenario,
-	NodeMetricData,
-	EdgeMetricData,
 	SearchPanelMode,
 	Settings,
-	SortingOption,
-	State,
-	LayoutAlgorithm,
-	GlobalSettings,
 	SharpnessMode,
-	ColorMode
+	SortingOption,
+	State
 } from "../codeCharta.model"
-import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import { MetricDistribution } from "./fileExtensionCalculator"
-import { Box3, Vector3 } from "three"
-import { IRootScopeService } from "angular"
-import { hierarchy } from "d3-hierarchy"
-import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
-import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
-import { FileSelectionState, FileState } from "../model/files/files"
-import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import {CodeMapBuilding} from "../ui/codeMap/rendering/codeMapBuilding"
+import {MetricDistribution} from "./fileExtensionCalculator"
+import {Box3, Vector3} from "three"
+import {IRootScopeService} from "angular"
+import {hierarchy} from "d3-hierarchy"
+import {AddScenarioContent, ScenarioMetricType} from "../ui/dialog/dialog.addScenarioSettings.component"
+import {ScenarioItem} from "../ui/scenarioDropDown/scenarioDropDown.component"
+import {FileSelectionState, FileState} from "../model/files/files"
+import {APIVersions, ExportCCFile} from "../codeCharta.api.model"
+import {NodeMetricDataService} from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
-import { isLeaf } from "./codeMapHelper"
-import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
-import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+import {isLeaf} from "./codeMapHelper"
+import {CustomConfigItemGroup} from "../ui/customConfigs/customConfigs.component"
+import {CustomConfigMapSelectionMode} from "../model/customConfig/customConfig.api.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -1867,7 +1867,7 @@ export const DEFAULT_STATE: State = {
 			min: null,
 			max: null
 		},
-		colorMode: null,
+		colorMode: ColorMode.weightedGradient,
 		searchPattern: "",
 		searchedNodePaths: new Set(),
 		sortingOption: SortingOption.NAME,
@@ -1990,7 +1990,7 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.COLOR_METRIC,
 		metricName: "mcc",
-		savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+		savedValues: { colorRange: { from: 19, to: 67, min: 1, max: 100 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},

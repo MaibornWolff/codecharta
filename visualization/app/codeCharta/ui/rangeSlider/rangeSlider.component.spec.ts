@@ -131,7 +131,7 @@ describe("RangeSliderController", () => {
 
 	describe("onColorRangeChanged", () => {
 		it("should update the viewModel", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(10)
 			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(30)
@@ -158,7 +158,7 @@ describe("RangeSliderController", () => {
 			rangeSliderController["applyCssColors"] = jest.fn()
 			const expected = { left: mapColors.lightGrey, middle: mapColors.lightGrey, right: mapColors.lightGrey }
 
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 			setTimeout(() => {
 				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
@@ -169,7 +169,7 @@ describe("RangeSliderController", () => {
 			rangeSliderController["applyCssColors"] = jest.fn()
 			const expected = { left: mapColors.positive, middle: mapColors.neutral, right: mapColors.negative }
 
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 			setTimeout(() => {
 				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
@@ -177,7 +177,7 @@ describe("RangeSliderController", () => {
 		})
 
 		it("should call applySliderUpdateDone", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 			setTimeout(() => {
 				expect(rangeSliderController["applySliderUpdateDone"]).toBeCalled()
@@ -185,7 +185,7 @@ describe("RangeSliderController", () => {
 		})
 
 		it("should call initSliderOptions", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 			setTimeout(() => {
 				expect(rangeSliderController["initSliderOptions"]).toBeCalled()
@@ -201,7 +201,7 @@ describe("RangeSliderController", () => {
 
 			describe("single state", () => {
 				it("should set sliderOptions.disabled to false", () => {
-					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+					rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 					setTimeout(() => {
 						expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeFalsy()
@@ -209,7 +209,7 @@ describe("RangeSliderController", () => {
 				})
 
 				it("should set sliders with range colors", () => {
-					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+					rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 					setTimeout(() => {
 						expect(rangeSliderController["getColoredRangeColors"]).toHaveBeenCalled()
@@ -224,7 +224,7 @@ describe("RangeSliderController", () => {
 				})
 
 				it("should set sliderOptions.disabled to true", () => {
-					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+					rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 					setTimeout(() => {
 						expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeTruthy()
@@ -232,7 +232,7 @@ describe("RangeSliderController", () => {
 				})
 
 				it("should set sliders with grey colors", () => {
-					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+					rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 					setTimeout(() => {
 						expect(rangeSliderController["getColoredRangeColors"]).not.toHaveBeenCalled()
@@ -265,7 +265,7 @@ describe("RangeSliderController", () => {
 
 	describe("applySliderChange", () => {
 		it("should call applyColorRange", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 			setTimeout(() => {
 				expect(rangeSliderController["applyColorRange"]).toBeCalled()
@@ -273,7 +273,7 @@ describe("RangeSliderController", () => {
 		})
 
 		it("should call updateSliderColors", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 			setTimeout(() => {
 				expect(rangeSliderController["updateSliderColors"]).toBeCalled()

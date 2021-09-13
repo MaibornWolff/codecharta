@@ -17,9 +17,9 @@ describe("NodeMetricDataService", () => {
 	let $rootScope: IRootScopeService
 
 	const metricData: NodeMetricData[] = [
-		{ name: "rloc", maxValue: 999999 },
-		{ name: "functions", maxValue: 999999 },
-		{ name: "mcc", maxValue: 999999 }
+		{ name: "rloc", maxValue: 999999, minValue: 1 },
+		{ name: "functions", maxValue: 999999, minValue: 1 },
+		{ name: "mcc", maxValue: 999999, minValue: 1 }
 	]
 
 	beforeEach(() => {

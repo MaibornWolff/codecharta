@@ -124,7 +124,7 @@ describe("LegendPanelController", () => {
 
 	describe("onColorRangeChanged", () => {
 		it("should update the ColorRange when it is changed", () => {
-			const newColorRange: ColorRange = { from: 13, to: 33 }
+			const newColorRange: ColorRange = { from: 13, to: 33, min: 1, max: 10 }
 
 			legendPanelController.onColorRangeChanged(newColorRange)
 

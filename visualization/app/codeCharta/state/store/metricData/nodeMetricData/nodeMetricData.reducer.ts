@@ -45,6 +45,7 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 
 	// TODO: Remove the unary metric.
 	hashMap.set(NodeMetricDataService.UNARY_METRIC, 1)
+	secondMap.set(NodeMetricDataService.UNARY_METRIC, 1)
 
 	for (const [key, value] of hashMap) {
 		metricData.push({
