@@ -122,13 +122,12 @@ export class CodeMapMouseEventService
 
 	onShouldHoverNode({ path }: CodeMapNode) {
 		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
-		for (const building of buildings) {
-			if (building.node.path === path) {
-				this.hoverBuilding(building)
-				this.highlightedInTreeView = building
-			}
+		const building = buildings.find(building => building.node.path === path)
+		if (building) {
+			this.hoverBuildingAndChildren(building)
+			this.highlightedInTreeView = building
+			this.threeUpdateCycleService.update()
 		}
-		this.threeUpdateCycleService.update()
 	}
 
 	onShouldUnhoverNode() {
