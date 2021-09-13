@@ -38,7 +38,7 @@ export class DialogGlobalSettingsPageObject {
 	async changedDisplayQuality() {
 		await page.click("div.md-dialog-content sharpness-mode-selector-component div md-input-container md-select")
 		try {
-			await page.waitForSelector(".md-select-menu-container.md-active", { visible: true })
+			await page.waitForSelector(".md-select-menu-container.md-active", { visible: true, timeout: 100 })
 		} catch {
 			await page.click("div.md-dialog-content sharpness-mode-selector-component div md-input-container md-select")
 		}

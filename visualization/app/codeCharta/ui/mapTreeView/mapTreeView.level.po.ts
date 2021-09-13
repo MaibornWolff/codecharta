@@ -4,8 +4,8 @@ export class MapTreeViewLevelPageObject {
 	async openContextMenu(path: string) {
 		await clickButtonOnPageElement(`[id='${path}']`, { button: "right" })
 		try {
-			await page.waitForSelector("node-context-menu-component", { visible: true })
-			await page.waitForSelector(".tree-element-label.marked")
+			await page.waitForSelector("node-context-menu-component", { timeout: 100 })
+			await page.waitForSelector(".tree-element-label.marked", { timeout: 100 })
 		} catch {
 			await clickButtonOnPageElement(`[id='${path}']`, { button: "right" })
 		}
@@ -14,7 +14,7 @@ export class MapTreeViewLevelPageObject {
 	async openFolder(path: string) {
 		await clickButtonOnPageElement(`[id='${path}']`)
 		try {
-			await page.waitForSelector(`[id='${path}'] span.fa.fa-folder-open`)
+			await page.waitForSelector(`[id='${path}'] span.fa.fa-folder-open`, { timeout: 100 })
 		} catch {
 			await clickButtonOnPageElement(`[id='${path}']`)
 		}
