@@ -11,8 +11,7 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 	template: require("./metricDeltaSelected.component.html")
 })
 export class MetricDeltaSelectedComponent {
-	// @ts-ignore - used within its template
-	@Input() attributeKey
+	@Input() attributeKey: string
 
 	selectedBuilding$: Observable<CodeMapBuilding>
 	mapColors$: Observable<MapColors>
