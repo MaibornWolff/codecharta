@@ -71,15 +71,26 @@ describe("codeChartaController", () => {
 		threeCameraService.init(1536, 754)
 	}
 
+	function initialize() {
+		restartSystem()
+		rebuildController()
+		initThreeCameraService()
+		withMockedUrlUtils()
+		withMockedCodeChartaService()
+		withMockedDialogService()
+		localStorage.clear()
+	}
+
+	function initControllerChangelog() {
+		rebuildController()
+		initThreeCameraService()
+		withMockedUrlUtils()
+		withMockedCodeChartaService()
+	}
+
 	describe("constructor", () => {
 		beforeEach(() => {
-			restartSystem()
-			rebuildController()
-			initThreeCameraService()
-			withMockedUrlUtils()
-			withMockedCodeChartaService()
-			withMockedDialogService()
-			localStorage.clear()
+			initialize()
 		})
 		it("should set urlUtils", () => {
 			rebuildController()
@@ -96,13 +107,7 @@ describe("codeChartaController", () => {
 
 	describe("loadFileOrSample", () => {
 		beforeEach(() => {
-			restartSystem()
-			rebuildController()
-			initThreeCameraService()
-			withMockedUrlUtils()
-			withMockedCodeChartaService()
-			withMockedDialogService()
-			localStorage.clear()
+			initialize()
 			codeChartaController.tryLoadingSampleFiles = jest.fn()
 		})
 
@@ -163,12 +168,7 @@ describe("codeChartaController", () => {
 
 	describe("tryLoadingSampleFiles", () => {
 		beforeEach(() => {
-			restartSystem()
-			rebuildController()
-			initThreeCameraService()
-			withMockedUrlUtils()
-			withMockedCodeChartaService()
-			withMockedDialogService()
+			initialize()
 			localStorage.clear()
 		})
 		it("should call getParameterByName with 'file'", () => {
@@ -243,18 +243,12 @@ describe("codeChartaController", () => {
 
 		it("should call changelog dialog on version update", () => {
 			Storage.prototype.getItem = jest.fn(() => "1.70.0")
-			rebuildController()
-			initThreeCameraService()
-			withMockedUrlUtils()
-			withMockedCodeChartaService()
+			initControllerChangelog()
 			expect(dialogService.showChangelogDialog).toHaveBeenCalled()
 		})
 		it("should not call changelog dialog", () => {
 			Storage.prototype.getItem = jest.fn().mockReturnValue(packageJson.version)
-			rebuildController()
-			initThreeCameraService()
-			withMockedUrlUtils()
-			withMockedCodeChartaService()
+			initControllerChangelog()
 			expect(dialogService.showChangelogDialog).not.toHaveBeenCalled()
 		})
 	})
