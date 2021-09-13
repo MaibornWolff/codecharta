@@ -18,8 +18,8 @@ export class DialogChangelogController {
 		this._viewModel.lastOpenedVersion = localStorage.getItem("codeChartaVersion")
 
 		localStorage.setItem("codeChartaVersion", packageJson.version)
-
 		let changelogLines = markdownFile.split("\n")
+
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
 		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.lastOpenedVersion)
 		const lastOpenedVersionLastLine = this.findEndVersionLine(changelogLines, lastOpenedVersionFirstLine)
