@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, OnInit } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { Store } from "../../state/angular-redux/store"
@@ -9,10 +9,12 @@ import { sortingOrderAscendingSelector } from "../../state/store/appSettings/sor
 	selector: "cc-sorting-button",
 	template: require("./sortingButton.component.html")
 })
-export class SortingButtonComponent {
+export class SortingButtonComponent implements OnInit {
 	orderAscending$: Observable<boolean>
 
-	constructor(@Inject(Store) private store: Store) {
+	constructor(@Inject(Store) private store: Store) {}
+
+	ngOnInit(): void {
 		this.orderAscending$ = this.store.select(sortingOrderAscendingSelector)
 	}
 

@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Inject, Input, OnInit } from "@angular/core"
 import { Observable } from "rxjs"
 import { MapColors } from "../../codeCharta.model"
 import { Store } from "../../state/angular-redux/store"
@@ -10,13 +10,15 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 	selector: "cc-metric-delta-selected",
 	template: require("./metricDeltaSelected.component.html")
 })
-export class MetricDeltaSelectedComponent {
+export class MetricDeltaSelectedComponent implements OnInit {
 	@Input() attributeKey: string
 
 	selectedBuilding$: Observable<CodeMapBuilding>
 	mapColors$: Observable<MapColors>
 
-	constructor(@Inject(Store) private store: Store) {
+	constructor(@Inject(Store) private store: Store) {}
+
+	ngOnInit(): void {
 		this.selectedBuilding$ = this.store.select((state: CcState) => {
 			const selectedBuildingId = selectedBuildingIdSelector(state)
 			return state.lookUp.idToBuilding.get(selectedBuildingId)
