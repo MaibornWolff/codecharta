@@ -19,6 +19,7 @@ import { setCameraTarget } from "../state/store/appSettings/cameraTarget/cameraT
 import { StoreService } from "../state/store.service"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCameraService"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
+import { CodeChartaStorage } from "./codeChartaStorage"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -27,6 +28,14 @@ export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
 	private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigs()
+	private static storage: Storage
+
+	static getStorage() {
+		if (CustomConfigHelper.storage === undefined) {
+			CustomConfigHelper.storage = new CodeChartaStorage()
+		}
+		return CustomConfigHelper.storage
+	}
 
 	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): Map<string, CustomConfigItemGroup> {
 		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
@@ -68,18 +77,21 @@ export class CustomConfigHelper {
 		)
 	}
 
-	private static setCustomConfigsToLocalStorage() {
-		// TODO: #684 adapt storing Configs and Scenarios for standalone version
+	static setCustomConfigsToLocalStorage() {
 		const newLocalStorageElement: LocalStorageCustomConfigs = {
 			version: CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION,
 			customConfigs: [...CustomConfigHelper.customConfigs]
 		}
-		localStorage.setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement, stateObjectReplacer))
+
+		CustomConfigHelper.getStorage().setItem(
+			CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT,
+			JSON.stringify(newLocalStorageElement, stateObjectReplacer)
+		)
 	}
 
 	private static loadCustomConfigs() {
 		const ccLocalStorage: LocalStorageCustomConfigs = JSON.parse(
-			localStorage.getItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT),
+			CustomConfigHelper.getStorage().getItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT),
 			stateObjectReviver
 		)
 		return new Map(ccLocalStorage?.customConfigs)
@@ -87,7 +99,7 @@ export class CustomConfigHelper {
 
 	static addCustomConfig(newCustomConfig: CustomConfig) {
 		CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
-		CustomConfigHelper.setCustomConfigsToLocalStorage()
+		//CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
 	static getCustomConfigSettings(configId: string): CustomConfig | undefined {
