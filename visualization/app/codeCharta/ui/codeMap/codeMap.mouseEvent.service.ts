@@ -3,6 +3,7 @@ import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
+
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -236,7 +237,7 @@ export class CodeMapMouseEventService
 								this.threeSceneService.getLabelForHoveredNode(to, labels) ?? this.drawTemporaryLabelFor(to, labels)
 							this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
 						}
-						this.hoverBuilding(to)
+						this.hoverBuildingAndChildren(to)
 					}
 				}
 			}
@@ -371,7 +372,7 @@ export class CodeMapMouseEventService
 				x: this.mouse.x,
 				y: this.mouse.y
 			})
-			this.hoverBuilding(building)
+			this.hoverBuildingAndChildren(building)
 		}
 		this.threeUpdateCycleService.update()
 	}
@@ -397,12 +398,6 @@ export class CodeMapMouseEventService
 
 	private hasMouseMoved({ x, y }: Coordinates) {
 		return this.mouse.x !== x || this.mouse.y !== y
-	}
-
-	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {
-		if (hoveredBuilding) {
-			this.hoverBuildingAndChildren(hoveredBuilding)
-		}
 	}
 
 	private transformHTMLToSceneCoordinates(): Coordinates {
