@@ -7,16 +7,9 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-
-export interface MapTreeViewHoverEventSubscriber {
-	onShouldHoverNode(node: CodeMapNode)
-	onShouldUnhoverNode(node: CodeMapNode)
-}
+import { setHoveredBuildingPath } from "../../state/store/lookUp/hoveredBuildingPath/hoveredBuildingPath.actions"
 
 export class MapTreeViewLevelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, HideNodeContextMenuSubscriber {
-	private static MAP_TREE_VIEW_HOVER_NODE_EVENT = "should-hover-node"
-	private static MAP_TREE_VIEW_UNHOVER_NODE_EVENT = "should-unhover-node"
-
 	private node: CodeMapNode = null
 
 	private _viewModel: {
@@ -55,12 +48,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	onMouseEnter() {
-		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, this.node)
+		this.storeService.dispatch(setHoveredBuildingPath(this.node.path))
 		this._viewModel.isHoveredInTreeView = true
 	}
 
 	onMouseLeave() {
-		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_UNHOVER_NODE_EVENT, this.node)
+		this.storeService.dispatch(setHoveredBuildingPath(null))
 		this._viewModel.isHoveredInTreeView = false
 	}
 
@@ -99,15 +92,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	getUnaryPercentage() {
 		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[NodeMetricDataService.UNARY_METRIC]
 		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
-	}
-
-	static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
-		$rootScope.$on(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, (_event, data) => {
-			subscriber.onShouldHoverNode(data)
-		})
-		$rootScope.$on(MapTreeViewLevelController.MAP_TREE_VIEW_UNHOVER_NODE_EVENT, (_event, data) => {
-			subscriber.onShouldUnhoverNode(data)
-		})
 	}
 
 	private scrollFunction = () => {

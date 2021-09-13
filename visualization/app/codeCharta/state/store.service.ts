@@ -28,7 +28,7 @@ export interface DispatchOptions {
 export class StoreService {
 	static STORE_CHANGED_EVENT = "store-changed"
 	private static STORE_CHANGED_EXTENDED_EVENT = "store-changed-extended"
-	private store = Store.store
+	store = Store.store
 	private originalDispatch: typeof Store.store.dispatch
 
 	constructor(private $rootScope: IRootScopeService) {

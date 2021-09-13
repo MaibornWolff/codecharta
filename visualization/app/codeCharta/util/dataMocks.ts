@@ -1791,7 +1791,8 @@ export const STATE: State = {
 	lookUp: {
 		idToNode: new Map(),
 		idToBuilding: new Map(),
-		selectedBuildingId: null
+		selectedBuildingId: null,
+		hoveredBuildingPath: null
 	},
 	metricData: {
 		nodeMetricData: METRIC_DATA,
@@ -1873,7 +1874,8 @@ export const DEFAULT_STATE: State = {
 	lookUp: {
 		idToBuilding: new Map(),
 		idToNode: new Map(),
-		selectedBuildingId: null
+		selectedBuildingId: null,
+		hoveredBuildingPath: null
 	},
 	metricData: {
 		nodeMetricData: [],

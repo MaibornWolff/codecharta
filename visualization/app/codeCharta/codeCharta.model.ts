@@ -7,6 +7,7 @@ import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
 import { SecondaryMetric } from "./ui/attributeSideBar/attributeSideBar.component"
 import { SetSelectedBuildingIdPayload } from "./state/store/lookUp/selectedBuildingId/selectedBuildingId.actions"
+import { SetHoveredBuildingPathPayload } from "./state/store/lookUp/hoveredBuildingPath/hoveredBuildingPath.actions"
 
 export interface NameDataPair {
 	fileName: string
@@ -393,6 +394,7 @@ export interface LookUp {
 	idToNode: Map<number, CodeMapNode>
 	idToBuilding: Map<number, CodeMapBuilding>
 	selectedBuildingId: SetSelectedBuildingIdPayload
+	hoveredBuildingPath: SetHoveredBuildingPathPayload
 }
 
 export enum PanelSelection {

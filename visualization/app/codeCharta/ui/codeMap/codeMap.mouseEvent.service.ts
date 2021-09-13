@@ -1,11 +1,10 @@
-import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
+import { BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
@@ -19,6 +18,7 @@ import { CodeMapLabelService } from "./codeMap.label.service"
 import { LazyLoader } from "../../util/lazyLoader"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
+import { hoveredBuildingPathSelector } from "../../state/store/lookUp/hoveredBuildingPath/hoveredBuildingPath.selector"
 
 interface Coordinates {
 	x: number
@@ -49,9 +49,7 @@ export enum CursorType {
 	Moving = "move"
 }
 
-export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber
-{
+export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -67,6 +65,7 @@ export class CodeMapMouseEventService
 	private isMoving = false
 	private raycaster = new Raycaster()
 	private temporaryLabelForBuilding = null
+	private hoveredBuildingPath: string | null = null
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -83,9 +82,17 @@ export class CodeMapMouseEventService
 	) {
 		"ngInject"
 		this.threeUpdateCycleService.register(() => this.threeRendererService.render())
-		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
+
+		this.storeService.store.subscribe(() => {
+			const hoveredBuildingPath = hoveredBuildingPathSelector(this.storeService.getState())
+			if (this.hoveredBuildingPath === hoveredBuildingPath) return
+
+			this.hoveredBuildingPath = hoveredBuildingPath
+			if (this.hoveredBuildingPath === null) this.unhoverBuildingPath()
+			else this.hoverBuildingPath(hoveredBuildingPath)
+		})
 	}
 
 	static changeCursorIndicator(cursorIcon: CursorType) {
@@ -121,7 +128,7 @@ export class CodeMapMouseEventService
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
-	onShouldHoverNode({ path }: CodeMapNode) {
+	hoverBuildingPath(path: string) {
 		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 		const building = buildings.find(building => building.node.path === path)
 		if (building) {
@@ -131,7 +138,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	onShouldUnhoverNode() {
+	unhoverBuildingPath() {
 		this.unhoverBuilding()
 		this.highlightedInTreeView = null
 		this.threeUpdateCycleService.update()
