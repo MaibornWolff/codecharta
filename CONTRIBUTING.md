@@ -101,7 +101,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 
 ###How to write a good description?
 
--   The description should be precise and short. Please keep it in one sentence (Max. 2).
+-   The description should be precise and short to provide the user with all necessary information. If it is needed, add some precise notes about the usage of the new feature.
 -   One changelog entry should describe one change.
 -   Avoid writing technical descriptions
 -   Start with a verb in the present tense
