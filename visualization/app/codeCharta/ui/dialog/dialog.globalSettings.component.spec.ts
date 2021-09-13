@@ -13,8 +13,8 @@ import { ResetCameraIfNewFileIsLoadedService } from "../../state/store/appSettin
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithm, SharpnessMode } from "../../codeCharta.model"
-import { ClipboardEnabledService } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.service"
-import { setClipboardEnabled } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.actions"
+import { ScreenshotToClipboardEnabledService } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
+import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 
 describe("DialogGlobalSettingsController", () => {
 	let dialogGlobalSettingsController: DialogGlobalSettingsController
@@ -56,12 +56,12 @@ describe("DialogGlobalSettingsController", () => {
 			expect(IsWhiteBackgroundService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
-		it("should subscribe to clipboardEnabled", () => {
-			ClipboardEnabledService.subscribe = jest.fn()
+		it("should subscribe to screenshotToClipboardEnabled", () => {
+			ScreenshotToClipboardEnabledService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(ClipboardEnabledService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
+			expect(ScreenshotToClipboardEnabledService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
 		it("should subscribe to ResetCameraIfNewFileIsLoadedService", () => {
@@ -97,12 +97,12 @@ describe("DialogGlobalSettingsController", () => {
 				expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBe(setting)
 			})
 
-			it(`should update viewModel.isWhiteBackground to ${setting}`, () => {
-				storeService.dispatch(setClipboardEnabled(setting))
+			it(`should update viewModel.screenshotToClipboardEnabled to ${setting}`, () => {
+				storeService.dispatch(setScreenshotToClipboardEnabled(setting))
 
 				rebuildController()
 
-				expect(dialogGlobalSettingsController["_viewModel"].clipboardEnabled).toBe(setting)
+				expect(dialogGlobalSettingsController["_viewModel"].screenshotToClipboardEnabled).toBe(setting)
 			})
 
 			it(`should update viewModel.resetCameraIfNewFileIsLoaded to ${setting}`, () => {
@@ -139,11 +139,11 @@ describe("DialogGlobalSettingsController", () => {
 		})
 	})
 
-	describe("onClipboardEnabledChanged", () => {
-		it("should update viewModel.clipboardEnabled", () => {
-			dialogGlobalSettingsController.onClipboardEnabledChanged(true)
+	describe("onScreenshotToClipboardEnabledChanged", () => {
+		it("should update viewModel.screenshotToClipboardEnabled", () => {
+			dialogGlobalSettingsController.onScreenshotToClipboardEnabledChanged(true)
 
-			expect(dialogGlobalSettingsController["_viewModel"].clipboardEnabled).toBeTruthy()
+			expect(dialogGlobalSettingsController["_viewModel"].screenshotToClipboardEnabled).toBeTruthy()
 		})
 	})
 
@@ -193,13 +193,13 @@ describe("DialogGlobalSettingsController", () => {
 		})
 	})
 
-	describe("applySettingsClipboardEnabled", () => {
-		it("should update clipboardEnabled in store", () => {
-			dialogGlobalSettingsController["_viewModel"].clipboardEnabled = false
+	describe("applySettingsScreenshotToClipboardEnabled", () => {
+		it("should update screenshotToClipboardEnabled in store", () => {
+			dialogGlobalSettingsController["_viewModel"].screenshotToClipboardEnabled = false
 
-			dialogGlobalSettingsController.applySettingsIsWhiteBackground()
+			dialogGlobalSettingsController.applySettingsEnableScreenshotToClipboardFeatures()
 
-			expect(storeService.getState().appSettings.clipboardEnabled).toBeFalsy()
+			expect(storeService.getState().appSettings.screenshotToClipboardEnabled).toBeFalsy()
 		})
 	})
 

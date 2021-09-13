@@ -6,21 +6,24 @@ import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererServic
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 import "./screenshotButton.component.scss"
-import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.service"
+import {
+	ScreenshotToClipboardEnabledService,
+	ScreenshotToClipboardEnabledSubscriber
+} from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 import { IRootScopeService } from "angular"
 
 declare class ClipboardItem {
 	constructor(data: { [mimeType: string]: Blob })
 }
 
-export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
+export class ScreenshotButtonController implements ScreenshotToClipboardEnabledSubscriber {
 	private SCREENSHOT_HOTKEY_TO_FILE = "Ctrl+Alt+S"
 	private SCREENSHOT_HOTKEY_TO_CLIPBOARD = "Ctrl+Alt+F"
 
 	private _viewModel: {
-		clipboardEnabled: boolean
+		screenshotToClipboardEnabled: boolean
 	} = {
-		clipboardEnabled: false
+		screenshotToClipboardEnabled: false
 	}
 
 	constructor(
@@ -39,11 +42,11 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 			this.makeScreenshotToClipBoard()
 		})
 
-		ClipboardEnabledService.subscribe(this.$rootScope, this)
+		ScreenshotToClipboardEnabledService.subscribe(this.$rootScope, this)
 	}
 
-	onClipboardEnabledChanged(clipboardEnabled: boolean) {
-		this._viewModel.clipboardEnabled = clipboardEnabled
+	onScreenshotToClipboardEnabledChanged(screenshotToClipboardEnabled: boolean) {
+		this._viewModel.screenshotToClipboardEnabled = screenshotToClipboardEnabled
 	}
 
 	makeScreenshotToFile() {
@@ -69,7 +72,7 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 		this.buildScreenShotCanvas(renderer)
 
 		link.href = renderer.domElement.toDataURL()
-		renderer.setPixelRatio(1)
+		//
 	}
 
 	makeScreenshotToClipBoard() {
@@ -81,7 +84,6 @@ export class ScreenshotButtonController implements ClipboardEnabledSubscriber {
 			// @ts-ignore
 			navigator.clipboard.write([clipboardItem])
 		})
-		renderer.setPixelRatio(1)
 	}
 
 	private buildScreenShotCanvas(renderer: WebGLRenderer) {

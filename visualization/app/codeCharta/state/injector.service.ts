@@ -53,7 +53,7 @@ import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableEx
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
-import { ClipboardEnabledService } from "./store/appSettings/enableClipboard/clipboardEnabled.service"
+import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
@@ -110,7 +110,7 @@ export class InjectorService {
 		private maxTreeMapFilesService: MaxTreeMapFilesService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService,
-		private clipboardEnabledService: ClipboardEnabledService
+		private screenshotToClipboardEnabledService: ScreenshotToClipboardEnabledService
 	) {
 		"ngInject"
 	}

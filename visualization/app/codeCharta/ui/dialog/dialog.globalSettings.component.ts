@@ -32,8 +32,11 @@ import { CodeChartaStorage } from "../../util/codeChartaStorage"
 import { FileDownloader } from "../../util/fileDownloader"
 import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
 import { isStandalone } from "../../util/envDetector"
-import { setClipboardEnabled } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.actions"
-import { ClipboardEnabledService, ClipboardEnabledSubscriber } from "../../state/store/appSettings/enableClipboard/clipboardEnabled.service"
+import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import {
+	ScreenshotToClipboardEnabledService,
+	ScreenshotToClipboardEnabledSubscriber
+} from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 
 export class DialogGlobalSettingsController
 	implements
@@ -41,7 +44,7 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundSubscriber,
 		ResetCameraIfNewFileIsLoadedSubscriber,
 		ExperimentalFeaturesEnabledSubscriber,
-		ClipboardEnabledSubscriber,
+		ScreenshotToClipboardEnabledSubscriber,
 		LayoutAlgorithmSubscriber,
 		SharpnessModeSubscriber,
 		MaxTreeMapFilesSubscriber
@@ -51,7 +54,7 @@ export class DialogGlobalSettingsController
 		isWhiteBackground: boolean
 		resetCameraIfNewFileIsLoaded: boolean
 		experimentalFeaturesEnabled: boolean
-		clipboardEnabled: boolean
+		screenshotToClipboardEnabled: boolean
 		layoutAlgorithm: LayoutAlgorithm
 		maxTreeMapFiles: number
 		sharpnessMode: SharpnessMode
@@ -60,7 +63,7 @@ export class DialogGlobalSettingsController
 		isWhiteBackground: null,
 		resetCameraIfNewFileIsLoaded: null,
 		experimentalFeaturesEnabled: false,
-		clipboardEnabled: null,
+		screenshotToClipboardEnabled: null,
 		layoutAlgorithm: null,
 		maxTreeMapFiles: null,
 		sharpnessMode: null
@@ -72,7 +75,7 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
-		ClipboardEnabledService.subscribe(this.$rootScope, this)
+		ScreenshotToClipboardEnabledService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
 		SharpnessModeService.subscribe(this.$rootScope, this)
@@ -84,7 +87,7 @@ export class DialogGlobalSettingsController
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
 		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
-		this.onClipboardEnabledChanged(appSettings.clipboardEnabled)
+		this.onScreenshotToClipboardEnabledChanged(appSettings.screenshotToClipboardEnabled)
 		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
 		this.onSharpnessModeChanged(appSettings.sharpnessMode)
 	}
@@ -119,8 +122,8 @@ export class DialogGlobalSettingsController
 		this.changeGlobalSettingsInLocalStorage()
 	}
 
-	onClipboardEnabledChanged(clipboardEnabled: boolean) {
-		this._viewModel.clipboardEnabled = clipboardEnabled
+	onScreenshotToClipboardEnabledChanged(screenshotToClipboardEnabled: boolean) {
+		this._viewModel.screenshotToClipboardEnabled = screenshotToClipboardEnabled
 		this.changeGlobalSettingsInLocalStorage()
 	}
 
@@ -145,8 +148,8 @@ export class DialogGlobalSettingsController
 		this.storeService.dispatch(setExperimentalFeaturesEnabled(this._viewModel.experimentalFeaturesEnabled))
 	}
 
-	applySettingsEnableClipboardFeatures() {
-		this.storeService.dispatch(setClipboardEnabled(this._viewModel.clipboardEnabled))
+	applySettingsEnableScreenshotToClipboardFeatures() {
+		this.storeService.dispatch(setScreenshotToClipboardEnabled(this._viewModel.screenshotToClipboardEnabled))
 	}
 
 	applySettingsAlgorithm() {

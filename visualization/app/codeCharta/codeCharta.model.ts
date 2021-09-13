@@ -155,7 +155,7 @@ export interface AppSettings {
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
-	clipboardEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	colorLabels: colorLabelOptions
 }
 
@@ -269,7 +269,7 @@ export interface GlobalSettings {
 	isWhiteBackground: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	experimentalFeaturesEnabled: boolean
-	clipboardEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	layoutAlgorithm: LayoutAlgorithm
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode

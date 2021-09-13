@@ -1,14 +1,14 @@
 import "../../../state.module"
 
-import { ClipboardEnabledService } from "./clipboardEnabled.service"
+import { ScreenshotToClipboardEnabledService } from "./screenshotToClipboardEnabled.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { ClipboardEnabledAction, ClipboardEnabledActions } from "./clipboardEnabled.actions"
+import { ScreenshotToClipboardEnabledAction, ScreenshotToClipboardEnabledActions } from "./screenshotToClipboardEnabled.actions"
 
-describe("ClipboardEnabledService", () => {
-	let clipboardEnabledService: ClipboardEnabledService
+describe("ScreenshotToClipboardEnabledService", () => {
+	let screenshotToClipboardEnabledService: ScreenshotToClipboardEnabledService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
 
@@ -26,7 +26,7 @@ describe("ClipboardEnabledService", () => {
 	}
 
 	function rebuildService() {
-		clipboardEnabledService = new ClipboardEnabledService($rootScope, storeService)
+		screenshotToClipboardEnabledService = new ScreenshotToClipboardEnabledService($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -35,27 +35,27 @@ describe("ClipboardEnabledService", () => {
 
 			rebuildService()
 
-			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, clipboardEnabledService)
+			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, screenshotToClipboardEnabledService)
 		})
 	})
 
 	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new clipboardEnabled value", () => {
-			const action: ClipboardEnabledAction = {
-				type: ClipboardEnabledActions.SET_CLIPBOARD_ENABLED,
+		it("should notify all subscribers with the new screenshotToClipboardEnabled value", () => {
+			const action: ScreenshotToClipboardEnabledAction = {
+				type: ScreenshotToClipboardEnabledActions.SET_SCREENSHOT_TO_CLIPBOARD_ENABLED,
 				payload: true
 			}
 			storeService["store"].dispatch(action)
 
-			clipboardEnabledService.onStoreChanged(ClipboardEnabledActions.SET_CLIPBOARD_ENABLED)
+			screenshotToClipboardEnabledService.onStoreChanged(ScreenshotToClipboardEnabledActions.SET_SCREENSHOT_TO_CLIPBOARD_ENABLED)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("clipboard-enabled-changed", {
-				clipboardEnabled: true
+				screenshotToClipboardEnabled: true
 			})
 		})
 
 		it("should not notify anything on non-clipboard-enabled-events", () => {
-			clipboardEnabledService.onStoreChanged("ANOTHER_ACTION")
+			screenshotToClipboardEnabledService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
