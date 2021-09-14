@@ -1,6 +1,6 @@
 import { Node } from "../../../codeCharta.model"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { Box3, Vector3, Vector2 } from "three"
+import { Box3, Vector3 } from "three"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { ColorConverter } from "../../../util/color/colorConverter"
 
@@ -16,8 +16,8 @@ export interface BoxMeasures {
 export interface SurfaceInformation {
 	node: Node
 	surfaceStartIndex: number
-	minPos: Vector2
-	maxPos: Vector2
+	minPos: { x: number; y: number }
+	maxPos: { x: number; y: number }
 }
 
 export interface IntermediateVertexData {
@@ -290,8 +290,8 @@ function setVerticesAndFaces(
 					// The starting index of the vertices of the floors top surface must be known.
 					// It is used to render the floor surface with a different (label) texture
 					surfaceStartIndex,
-					minPos: new Vector2(minPosX, minPosZ),
-					maxPos: new Vector2(maxPosX, maxPosZ)
+					minPos: { x: minPosZ, y: minPosX },
+					maxPos: { x: maxPosZ, y: maxPosX }
 				}
 				data.floorSurfaceInformation.push(surfaceInformation)
 			}
