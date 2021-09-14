@@ -6,7 +6,7 @@ import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
 import { klona } from "klona"
-import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
+import { CustomConfig, CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { pushSorted } from "../../util/nodeDecorator"
 import { CodeMapNode, ColorRange, NodeType, State } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
@@ -147,32 +147,38 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
 
 		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
+		const newCustomConfigs: CustomConfig[] = []
 
 		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
-			const overviewConfigState = this.prepareOverviewConfigState(metricName, colorRange.from, colorRange.to)
-			const overviewConfigName = `Suspicious Files - Metric ${metricName.toUpperCase()} - (AI)`
-			const overviewConfig = this.createAndAddCustomConfig(overviewConfigName, overviewConfigState, fileState)
+			const suspiciousMetricConfig = this.createOrUpdateCustomConfig(
+				`Suspicious Files - Metric ${metricName.toUpperCase()} - (AI)`,
+				this.prepareOverviewConfigState(metricName, colorRange.from, colorRange.to),
+				fileState
+			)
+
+			newCustomConfigs.push(suspiciousMetricConfig)
 
 			noticeableMetricSuggestionLinks.set(metricName, {
 				metric: metricName,
 				...colorRange,
-				generalCustomConfigId: overviewConfig.id
+				generalCustomConfigId: suspiciousMetricConfig.id
 			})
 
 			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
 			if (outlierThreshold > 0) {
-				const outlierToValue = outlierThreshold
-				const outlierFromValue = outlierToValue - 1
+				const highRiskMetricConfig = this.createOrUpdateCustomConfig(
+					`Very High Risk Files - Metric ${metricName.toUpperCase()} - (AI)`,
+					this.prepareOutlierConfigState(metricName, outlierThreshold - 1, outlierThreshold),
+					fileState
+				)
 
-				const outlierConfigState = this.prepareOutlierConfigState(metricName, outlierFromValue, outlierToValue)
-				const outlierConfigName = `Very High Risk Files - Metric ${metricName.toUpperCase()} - (AI)`
-				const outlierConfig = this.createAndAddCustomConfig(outlierConfigName, outlierConfigState, fileState)
+				newCustomConfigs.push(highRiskMetricConfig)
 
-				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = outlierConfig.id
+				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = highRiskMetricConfig.id
 			}
 		}
 
-		CustomConfigHelper.setCustomConfigsToLocalStorage()
+		CustomConfigHelper.addCustomConfigs(newCustomConfigs)
 
 		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()]
 		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
@@ -213,8 +219,8 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		return metricAssessmentResults
 	}
 
-	private createAndAddCustomConfig(configName: string, state: State, fileState: FileState) {
-		let customConfig = CustomConfigHelper.getCustomConfigByName(
+	private createOrUpdateCustomConfig(configName: string, state: State, fileState: FileState) {
+		const customConfig = CustomConfigHelper.getCustomConfigByName(
 			CustomConfigMapSelectionMode.SINGLE,
 			[fileState.file.fileMeta.fileName],
 			configName
@@ -225,10 +231,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			CustomConfigHelper.deleteCustomConfig(customConfig.id)
 		}
 
-		customConfig = buildCustomConfigFromState(configName, state)
-		CustomConfigHelper.addCustomConfig(customConfig)
-
-		return customConfig
+		return buildCustomConfigFromState(configName, state)
 	}
 
 	private prepareOverviewConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {

@@ -97,6 +97,13 @@ export class CustomConfigHelper {
 		return new Map(ccLocalStorage?.customConfigs)
 	}
 
+	static addCustomConfigs(newCustomConfigs: CustomConfig[]) {
+		for (const newCustomConfig of newCustomConfigs) {
+			CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
+		}
+		CustomConfigHelper.setCustomConfigsToLocalStorage()
+	}
+
 	static addCustomConfig(newCustomConfig: CustomConfig) {
 		CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
 		CustomConfigHelper.setCustomConfigsToLocalStorage()

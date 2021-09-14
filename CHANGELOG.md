@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
+-   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362))
 
 ## [1.78.0] - 2021-09-06
 
