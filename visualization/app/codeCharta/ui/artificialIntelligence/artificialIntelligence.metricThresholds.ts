@@ -69,52 +69,52 @@ export const metricThresholds = {
 			percentile95: 190
 		},
 		rloc: {
-			percentile70: 365,
-			percentile80: 554,
-			percentile90: 1001,
-			percentile95: 1665
+			percentile70: 370,
+			percentile80: 560,
+			percentile90: 1011,
+			percentile95: 1670
 		},
 		loc: {
-			percentile70: 365,
-			percentile80: 554,
-			percentile90: 1001,
-			percentile95: 1665
+			percentile70: 370,
+			percentile80: 560,
+			percentile90: 1010,
+			percentile95: 1670
 		},
 		cognitive_complexity: {
-			percentile70: 30,
-			percentile80: 56,
-			percentile90: 124,
-			percentile95: 226
+			percentile70: 35,
+			percentile80: 60,
+			percentile90: 130,
+			percentile95: 230
 		},
 		code_smell: {
-			percentile70: 5,
-			percentile80: 9,
-			percentile90: 22,
-			percentile95: 50
+			percentile70: 6,
+			percentile80: 10,
+			percentile90: 25,
+			percentile95: 55
 		},
 		comment_lines: {
-			percentile70: 35,
-			percentile80: 62,
-			percentile90: 135,
-			percentile95: 273
+			percentile70: 40,
+			percentile80: 65,
+			percentile90: 140,
+			percentile95: 275
 		},
 		max_nesting_level: {
-			percentile70: 2,
-			percentile80: 3,
-			percentile90: 4,
-			percentile95: 5
+			percentile70: 3,
+			percentile80: 4,
+			percentile90: 5,
+			percentile95: 6
 		},
 		functions: {
-			percentile70: 29,
-			percentile80: 44,
-			percentile90: 75,
-			percentile95: 126
+			percentile70: 30,
+			percentile80: 50,
+			percentile90: 80,
+			percentile95: 130
 		},
 		statements: {
-			percentile70: 157,
-			percentile80: 245,
-			percentile90: 439,
-			percentile95: 727
+			percentile70: 160,
+			percentile80: 260,
+			percentile90: 440,
+			percentile95: 730
 		}
 	}
 }
