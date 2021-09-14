@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.filter.mergefilter
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.`is`
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
