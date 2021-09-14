@@ -99,7 +99,7 @@ export class CustomConfigHelper {
 
 	static addCustomConfig(newCustomConfig: CustomConfig) {
 		CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
-		//CustomConfigHelper.setCustomConfigsToLocalStorage()
+		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
 	static getCustomConfigSettings(configId: string): CustomConfig | undefined {
