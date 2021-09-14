@@ -63,10 +63,10 @@ export const metricThresholds = {
 		// No derived Thresholds for other programming languages than java
 		// Just use empirical thresholds
 		mcc: {
-			percentile70: 48,
-			percentile80: 71,
-			percentile90: 117,
-			percentile95: 191
+			percentile70: 50,
+			percentile80: 70,
+			percentile90: 120,
+			percentile95: 190
 		},
 		rloc: {
 			percentile70: 365,
