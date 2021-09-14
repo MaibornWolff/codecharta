@@ -103,6 +103,12 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					path: "/root/src/main/file2.java",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100 }
+				},
+				{
+					name: "readme",
+					path: "/root/src/main/readme",
+					type: NodeType.FILE,
+					attributes: { rloc: 200, functions: 1, mcc: 1 }
 				}
 			]
 		},
@@ -1681,6 +1687,13 @@ export const FILE_STATES: FileState[] = [
 	{
 		file: TEST_FILE_DATA,
 		selectedAs: FileSelectionState.Single
+	}
+]
+
+export const FILE_STATES_UNSELECTED: FileState[] = [
+	{
+		file: TEST_FILE_DATA,
+		selectedAs: FileSelectionState.None
 	}
 ]
 

@@ -8,7 +8,7 @@ import { StoreService } from "../../state/store.service"
 import { klona } from "klona"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { pushSorted } from "../../util/nodeDecorator"
-import { ColorRange, NodeType, State } from "../../codeCharta.model"
+import { CodeMapNode, ColorRange, NodeType, State } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { getVisibleFileStates } from "../../model/files/files.helper"
 import { metricThresholds } from "./artificialIntelligence.metricThresholds"
@@ -80,8 +80,11 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		this.mainProgrammingLanguage = this.getMostFrequentLanguage(fileState.file.map)
 
 		this.clearRiskProfile()
-		this.calculateRiskProfile(fileState, this.mainProgrammingLanguage, "mcc")
-		this.createCustomConfigSuggestions(fileState, this.mainProgrammingLanguage)
+
+		if (this.mainProgrammingLanguage !== undefined) {
+			this.calculateRiskProfile(fileState, this.mainProgrammingLanguage, "mcc")
+			this.createCustomConfigSuggestions(fileState, this.mainProgrammingLanguage)
+		}
 	}
 
 	private clearRiskProfile() {
@@ -98,12 +101,14 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		const languageSpecificThresholds = this.getAssociatedMetricThresholds(programmingLanguage)
 
 		for (const { data } of hierarchy(fileState.file.map)) {
-			// TODO calculate risk profile only for focused, not excluded files.
-			if (data.type !== NodeType.FILE || data.isExcluded) {
-				continue
-			}
-
-			if (data.attributes[metricName] === undefined || data.attributes["rloc"] === undefined) {
+			// TODO calculate risk profile only for focused or currently visible but not excluded files.
+			if (
+				data.type !== NodeType.FILE ||
+				data.isExcluded ||
+				data.attributes[metricName] === undefined ||
+				data.attributes["rloc"] === undefined ||
+				this.getFileExtension(data.name) !== programmingLanguage
+			) {
 				continue
 			}
 
@@ -271,16 +276,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		const metricValues: MetricValues = {}
 
 		for (const { data } of hierarchy(fileState.file.map)) {
-			if (data.type !== NodeType.FILE || data.isExcluded) {
-				continue
-			}
-
-			if (!data.name.includes(".")) {
-				continue
-			}
-
-			const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
-			if (fileExtension !== programmingLanguage) {
+			if (data.type !== NodeType.FILE || data.isExcluded || this.getFileExtension(data.name) !== programmingLanguage) {
 				continue
 			}
 
@@ -298,7 +294,11 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		return metricValues
 	}
 
-	private getMostFrequentLanguage(map) {
+	private getFileExtension(fileName: string) {
+		return fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : undefined
+	}
+
+	private getMostFrequentLanguage(map: CodeMapNode) {
 		const numberOfFilesPerLanguage = []
 
 		for (const { data } of hierarchy(map)) {
@@ -310,6 +310,10 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 				const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
 				numberOfFilesPerLanguage[fileExtension] = numberOfFilesPerLanguage[fileExtension] + 1 || 1
 			}
+		}
+
+		if (Object.keys(numberOfFilesPerLanguage).length === 0) {
+			return
 		}
 
 		return Object.keys(numberOfFilesPerLanguage).reduce((a, b) => {
