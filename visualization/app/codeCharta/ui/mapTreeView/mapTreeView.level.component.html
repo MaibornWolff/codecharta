@@ -18,6 +18,8 @@
 			[is-folder-open]="$ctrl._viewModel.isFolderOpened"
 		></cc-map-tree-view-level-item-icon>
 
+		<cc-map-tree-view-level-item-content></cc-map-tree-view-level-item-content>
+
 		<span class="node-name" ng-class="{ flattened: $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched() }">
 			{{::$ctrl.node.name}}
 		</span>

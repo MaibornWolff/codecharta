@@ -9,7 +9,8 @@ export class Store {
 	private static _store: CcStore
 
 	private static createStore() {
-		return createStore(rootReducer)
+		// @ts-ignore
+		return createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__?.())
 	}
 
 	private static initialize() {
