@@ -120,8 +120,8 @@ jobs:
         npm run build:web
         npm run e2e:ci
       working-directory: ${{env.working-directory}}
-      
-      
+
+
  test_and_sonar_analysis:
     if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     name: "Build, Test and Publish Analysis Sonar Results"
@@ -178,6 +178,8 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v1.5
         with:
           projectBaseDir: ./visualization
+          args: >
+            -Dsonar.javascript.lcov.reportPaths=./visualization/dist/coverage/lcov.info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

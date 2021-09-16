@@ -2,9 +2,9 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.model.NodeMatcher.hasNodeAtPath
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.`is`
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 

@@ -15,6 +15,7 @@ import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { GlobalSettingsHelper } from "./util/globalSettingsHelper"
+import { compareSemver, parseSemver } from "./util/semverParser"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -39,6 +40,7 @@ export class CodeChartaController {
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
+		this.showChangelog()
 	}
 
 	async loadFileOrSample() {
@@ -84,6 +86,19 @@ export class CodeChartaController {
 			this.storeService.dispatch(setMultiple(files))
 		} else {
 			this.storeService.dispatch(setSingle(files[0]))
+		}
+	}
+
+	private showChangelog() {
+		const savedVersion = localStorage.getItem("codeChartaVersion")
+		//First time opening CodeCharta
+		if (savedVersion === null) {
+			localStorage.setItem("codeChartaVersion", packageJson.version)
+			return
+		}
+		//Version change, show changelog
+		if (compareSemver(parseSemver(savedVersion), parseSemver(packageJson.version)) < 0) {
+			this.dialogService.showChangelogDialog()
 		}
 	}
 }

@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.model.Path
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat

@@ -3,7 +3,6 @@ const path = require("path")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const { DefinePlugin } = require("webpack")
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
-
 const dist = path.resolve(__dirname, "../dist/webpack")
 
 module.exports = env => {
