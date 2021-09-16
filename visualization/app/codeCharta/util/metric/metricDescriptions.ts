@@ -2,6 +2,7 @@
 This file contains descriptions of the metrics
 */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const metricDescriptions: Map<string, string> = new Map([
 	["rloc", "real lines of code"],
 	["mcc", "cyclomatic complexity"],
@@ -14,7 +15,3 @@ const metricDescriptions: Map<string, string> = new Map([
 	["avg_code_churn", "average number of lines added or removed from this file"],
 	["number_of_authors", "number of authors that have edited this file"]
 ])
-
-export function getMetricDescriptions() {
-	return metricDescriptions
-}
