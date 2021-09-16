@@ -13,6 +13,7 @@ import { FILE_STATES, FILE_STATES_JAVA, FILE_STATES_UNSELECTED } from "../../uti
 import { setState } from "../../state/store/state.actions"
 import { klona } from "klona"
 import { BlacklistType } from "../../codeCharta.model"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("ArtificialIntelligenceController", () => {
 	let artificialIntelligenceController: ArtificialIntelligenceController
@@ -56,6 +57,14 @@ describe("ArtificialIntelligenceController", () => {
 			rebuildController()
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, artificialIntelligenceController)
+		})
+
+		it("should subscribe to blacklist service", () => {
+			BlacklistService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, artificialIntelligenceController)
 		})
 	})
 
@@ -181,6 +190,24 @@ describe("ArtificialIntelligenceController", () => {
 			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("other")
 			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("on blacklist changed", () => {
+		it("should do nothing on blacklist change if no file is selected", () => {
+			storeService.dispatch(setFiles(FILE_STATES_UNSELECTED))
+			artificialIntelligenceController["debounceCalculation"] = jest.fn()
+
+			artificialIntelligenceController.onBlacklistChanged([])
+			expect(artificialIntelligenceController["debounceCalculation"]).not.toHaveBeenCalled()
+		})
+
+		it("should calculate risk profile on blacklist changed", () => {
+			storeService.dispatch(setFiles(FILE_STATES_JAVA))
+			artificialIntelligenceController["debounceCalculation"] = jest.fn()
+
+			artificialIntelligenceController.onBlacklistChanged([])
+			expect(artificialIntelligenceController["debounceCalculation"]).toHaveBeenCalled()
 		})
 	})
 })
