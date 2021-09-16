@@ -16,6 +16,7 @@ import { FileState } from "../../model/files/files"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { metricDescriptions } from "../../util/metric/metricDescriptions"
 
 export class LegendPanelController
 	implements

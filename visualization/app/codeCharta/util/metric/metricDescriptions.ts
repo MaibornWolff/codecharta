@@ -3,7 +3,7 @@ This file contains descriptions of the metrics
 */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const metricDescriptions: Map<string, string> = new Map([
+export const metricDescriptions: Map<string, string> = new Map([
 	["rloc", "real lines of code"],
 	["mcc", "cyclomatic complexity"],
 	["avgCommits", "average number of commits from this file"],
