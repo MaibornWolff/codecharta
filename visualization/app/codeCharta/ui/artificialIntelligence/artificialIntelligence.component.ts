@@ -116,15 +116,15 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			const nodeMetricValue = data.attributes[metricName]
 			const nodeRlocValue = data.attributes["rloc"]
 
-			const metricThresholds = languageSpecificThresholds[metricName]
+			const thresholds = languageSpecificThresholds[metricName]
 			totalRloc += nodeRlocValue
 
 			// Idea: We could calculate risk profiles per directory in the future.
-			if (nodeMetricValue <= metricThresholds.percentile70) {
+			if (nodeMetricValue <= thresholds.percentile70) {
 				numberOfRlocLowRisk += nodeRlocValue
-			} else if (nodeMetricValue <= metricThresholds.percentile80) {
+			} else if (nodeMetricValue <= thresholds.percentile80) {
 				numberOfRlocModerateRisk += nodeRlocValue
-			} else if (nodeMetricValue <= metricThresholds.percentile90) {
+			} else if (nodeMetricValue <= thresholds.percentile90) {
 				numberOfRlocHighRisk += nodeRlocValue
 			} else {
 				numberOfRlocVeryHighRisk += nodeRlocValue
