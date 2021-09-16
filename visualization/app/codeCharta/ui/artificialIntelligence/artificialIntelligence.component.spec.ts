@@ -101,7 +101,7 @@ describe("ArtificialIntelligenceController", () => {
 
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
 
-			expect(artificialIntelligenceController["mainProgrammingLanguage"]).toBe("java")
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
 			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
 			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
@@ -113,7 +113,7 @@ describe("ArtificialIntelligenceController", () => {
 
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
 
-			expect(artificialIntelligenceController["mainProgrammingLanguage"]).toBe("java")
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
 			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
 
@@ -133,7 +133,7 @@ describe("ArtificialIntelligenceController", () => {
 
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATE_WITH_EXCLUDED_FILES)
 
-			expect(artificialIntelligenceController["mainProgrammingLanguage"]).toBe("java")
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
 			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
 			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
 		})
@@ -150,7 +150,7 @@ describe("ArtificialIntelligenceController", () => {
 
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_MISSING_METRICS)
 
-			expect(artificialIntelligenceController["mainProgrammingLanguage"]).toBe("java")
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
 			expect(artificialIntelligenceController["_viewModel"].riskProfile).toBeUndefined()
 			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
 		})
@@ -168,7 +168,7 @@ describe("ArtificialIntelligenceController", () => {
 
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_OTHER)
 
-			expect(artificialIntelligenceController["mainProgrammingLanguage"]).toBe("other")
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("other")
 			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
 		})
