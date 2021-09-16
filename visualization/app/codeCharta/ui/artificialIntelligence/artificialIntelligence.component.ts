@@ -36,6 +36,7 @@ interface MetricSuggestionParameters {
 
 export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
 	private _viewModel: {
+		analyzedProgrammingLanguage: string
 		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
 		unsuspiciousMetrics: string[]
 		riskProfile: {
@@ -45,6 +46,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			veryHighRisk: number
 		}
 	} = {
+		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
 		riskProfile: {
@@ -54,8 +56,6 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			veryHighRisk: 0
 		}
 	}
-
-	private mainProgrammingLanguage: string
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -77,13 +77,14 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			return
 		}
 
-		this.mainProgrammingLanguage = this.getMostFrequentLanguage(fileState.file.map)
+		const mainProgrammingLanguage = this.getMostFrequentLanguage(fileState.file.map)
+		this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
 
 		this.clearRiskProfile()
 
-		if (this.mainProgrammingLanguage !== undefined) {
-			this.calculateRiskProfile(fileState, this.mainProgrammingLanguage, "mcc")
-			this.createCustomConfigSuggestions(fileState, this.mainProgrammingLanguage)
+		if (mainProgrammingLanguage !== undefined) {
+			this.calculateRiskProfile(fileState, mainProgrammingLanguage, "mcc")
+			this.createCustomConfigSuggestions(fileState, mainProgrammingLanguage)
 		}
 	}
 
