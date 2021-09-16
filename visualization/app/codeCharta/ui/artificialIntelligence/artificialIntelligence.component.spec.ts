@@ -12,6 +12,7 @@ import { setFiles } from "../../state/store/files/files.actions"
 import { FILE_STATES, FILE_STATES_JAVA, FILE_STATES_UNSELECTED } from "../../util/dataMocks"
 import { setState } from "../../state/store/state.actions"
 import { klona } from "klona"
+import { BlacklistType } from "../../codeCharta.model"
 
 describe("ArtificialIntelligenceController", () => {
 	let artificialIntelligenceController: ArtificialIntelligenceController
@@ -43,6 +44,9 @@ describe("ArtificialIntelligenceController", () => {
 			threeOrbitControlsService,
 			threeCameraService
 		)
+
+		// Overwrite debounce with original function, otherwise calculate() will not be called
+		artificialIntelligenceController["debounceCalculation"] = artificialIntelligenceController["calculate"]
 	}
 
 	describe("constructor", () => {
@@ -128,10 +132,16 @@ describe("ArtificialIntelligenceController", () => {
 		it("should calculate risk profile for not excluded files only", () => {
 			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
 
-			const FILE_STATE_WITH_EXCLUDED_FILES = klona(FILE_STATES_JAVA)
-			FILE_STATE_WITH_EXCLUDED_FILES[0].file.map.children[0].children[0].isExcluded = true
+			const codeMapNodeToExclude = FILE_STATES_JAVA[0].file.map.children[0].children[0]
 
-			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATE_WITH_EXCLUDED_FILES)
+			artificialIntelligenceController["blacklist"] = [
+				{
+					path: codeMapNodeToExclude.path,
+					type: BlacklistType.exclude
+				}
+			]
+
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
 
 			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
 			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()

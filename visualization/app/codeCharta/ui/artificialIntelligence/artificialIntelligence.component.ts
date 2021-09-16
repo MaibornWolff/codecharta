@@ -1,4 +1,5 @@
 import "./artificialIntelligence.component.scss"
+import debounce from "lodash.debounce"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
@@ -8,13 +9,15 @@ import { StoreService } from "../../state/store.service"
 import { klona } from "klona"
 import { CustomConfig, CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { pushSorted } from "../../util/nodeDecorator"
-import { CodeMapNode, ColorRange, NodeType, State } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange, NodeType, State } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { getVisibleFileStates } from "../../model/files/files.helper"
 import { metricThresholds } from "./artificialIntelligence.metricThresholds"
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { isPathBlacklisted } from "../../util/codeMapHelper"
 
 interface MetricValues {
 	[metric: string]: number[]
@@ -34,7 +37,7 @@ interface MetricSuggestionParameters {
 	outlierCustomConfigId?: string
 }
 
-export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
+export class ArtificialIntelligenceController implements FilesSelectionSubscriber, BlacklistSubscriber {
 	private _viewModel: {
 		analyzedProgrammingLanguage: string
 		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
@@ -57,6 +60,10 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}
 	}
 
+	private debounceCalculation: () => void
+	private fileState: FileState
+	private blacklist: BlacklistItem[] = []
+
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
@@ -65,10 +72,24 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
+
+		this.debounceCalculation = debounce(() => {
+			this.calculate()
+		}, 10)
 	}
 
 	applyCustomConfig(configId: string) {
 		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
+	}
+
+	onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.blacklist = blacklist
+		this.fileState = getVisibleFileStates(this.storeService.getState().files)[0]
+
+		if (this.fileState !== undefined) {
+			this.debounceCalculation()
+		}
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
@@ -77,14 +98,19 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			return
 		}
 
-		const mainProgrammingLanguage = this.getMostFrequentLanguage(fileState.file.map)
+		this.fileState = fileState
+		this.debounceCalculation()
+	}
+
+	private calculate() {
+		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState.file.map)
 		this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
 
 		this.clearRiskProfile()
 
 		if (mainProgrammingLanguage !== undefined) {
-			this.calculateRiskProfile(fileState, mainProgrammingLanguage, "mcc")
-			this.createCustomConfigSuggestions(fileState, mainProgrammingLanguage)
+			this.calculateRiskProfile(this.fileState, mainProgrammingLanguage, "mcc")
+			this.createCustomConfigSuggestions(this.fileState, mainProgrammingLanguage)
 		}
 	}
 
@@ -100,12 +126,13 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		let numberOfRlocVeryHighRisk = 0
 
 		const languageSpecificThresholds = this.getAssociatedMetricThresholds(programmingLanguage)
+		const thresholds = languageSpecificThresholds[metricName]
 
 		for (const { data } of hierarchy(fileState.file.map)) {
 			// TODO calculate risk profile only for focused or currently visible but not excluded files.
 			if (
 				data.type !== NodeType.FILE ||
-				data.isExcluded ||
+				isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
 				data.attributes[metricName] === undefined ||
 				data.attributes["rloc"] === undefined ||
 				this.getFileExtension(data.name) !== programmingLanguage
@@ -116,7 +143,6 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			const nodeMetricValue = data.attributes[metricName]
 			const nodeRlocValue = data.attributes["rloc"]
 
-			const thresholds = languageSpecificThresholds[metricName]
 			totalRloc += nodeRlocValue
 
 			// Idea: We could calculate risk profiles per directory in the future.
