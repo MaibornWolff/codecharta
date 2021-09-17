@@ -2,8 +2,8 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.model.TreeCreator.createTree
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.`is`
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
