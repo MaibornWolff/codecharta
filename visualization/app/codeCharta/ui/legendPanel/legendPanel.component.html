@@ -1,9 +1,24 @@
-<div
-	class="block-wrapper cc-shadow"
-	ng-class="{ visible: $ctrl._viewModel.isLegendVisible, sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
->
+<div class="block-wrapper" ng-class="{ visible: $ctrl._viewModel.isLegendVisible, sideBarVisible: $ctrl._viewModel.isSideBarVisible }">
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
-		<div class="legend-block bold">{{ $ctrl._viewModel.colorMetric }}:</div>
+		<div class="legend-block">
+			Size metric (<span class="bold">{{ $ctrl._viewModel.areaMetric }}</span
+			>: {{ $ctrl._viewModel.areaMetricDescription }})
+		</div>
+		<div class="legend-block">
+			Height metric (<span class="bold">{{ $ctrl._viewModel.heightMetric }}</span
+			>: {{ $ctrl._viewModel.heightMetricDescription }})
+		</div>
+		<div ng-if="$ctrl._viewModel.edgeMetricHasEdge">
+			<div class="legend-block">
+				Edge metric (<span class="bold">{{ $ctrl._viewModel.edge }}</span
+				>: {{ $ctrl._viewModel.edgeDescription }})
+			</div>
+		</div>
+		<hr />
+		<div class="legend-block">
+			Color metric (<span class="bold">{{ $ctrl._viewModel.colorMetric }}</span
+			>: {{ $ctrl._viewModel.colorMetricDescription }})
+		</div>
 		<cc-store-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
 		</cc-store-color-picker>
 		<cc-store-color-picker
@@ -17,7 +32,6 @@
 		>
 		</cc-store-color-picker>
 	</div>
-
 	<div ng-if="$ctrl._viewModel.isDeltaState">
 		<cc-store-color-picker map-color-for="positiveDelta" label="+&Delta; positive delta"> </cc-store-color-picker>
 		<cc-store-color-picker map-color-for="negativeDelta" label="&ndash;&Delta; negative delta"> </cc-store-color-picker>
@@ -25,9 +39,10 @@
 	<hr />
 	<cc-store-color-picker map-color-for="selected" label="selected"> </cc-store-color-picker>
 	<hr />
-	<cc-store-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-store-color-picker>
-	<cc-store-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-store-color-picker>
-
+	<div ng-if="$ctrl._viewModel.edgeMetricHasEdge">
+		<cc-store-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-store-color-picker>
+		<cc-store-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-store-color-picker>
+	</div>
 	<cc-legend-marked-packages-component></cc-legend-marked-packages-component>
 </div>
 

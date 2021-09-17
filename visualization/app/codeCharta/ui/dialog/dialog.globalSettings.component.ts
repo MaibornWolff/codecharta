@@ -32,6 +32,11 @@ import { CodeChartaStorage } from "../../util/codeChartaStorage"
 import { FileDownloader } from "../../util/fileDownloader"
 import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
 import { isStandalone } from "../../util/envDetector"
+import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import {
+	ScreenshotToClipboardEnabledService,
+	ScreenshotToClipboardEnabledSubscriber
+} from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 
 export class DialogGlobalSettingsController
 	implements
@@ -39,6 +44,7 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundSubscriber,
 		ResetCameraIfNewFileIsLoadedSubscriber,
 		ExperimentalFeaturesEnabledSubscriber,
+		ScreenshotToClipboardEnabledSubscriber,
 		LayoutAlgorithmSubscriber,
 		SharpnessModeSubscriber,
 		MaxTreeMapFilesSubscriber
@@ -48,6 +54,7 @@ export class DialogGlobalSettingsController
 		isWhiteBackground: boolean
 		resetCameraIfNewFileIsLoaded: boolean
 		experimentalFeaturesEnabled: boolean
+		screenshotToClipboardEnabled: boolean
 		layoutAlgorithm: LayoutAlgorithm
 		maxTreeMapFiles: number
 		sharpnessMode: SharpnessMode
@@ -56,6 +63,7 @@ export class DialogGlobalSettingsController
 		isWhiteBackground: null,
 		resetCameraIfNewFileIsLoaded: null,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: null,
 		layoutAlgorithm: null,
 		maxTreeMapFiles: null,
 		sharpnessMode: null
@@ -67,6 +75,7 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
+		ScreenshotToClipboardEnabledService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
 		SharpnessModeService.subscribe(this.$rootScope, this)
@@ -78,6 +87,7 @@ export class DialogGlobalSettingsController
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
 		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
+		this.onScreenshotToClipboardEnabledChanged(appSettings.screenshotToClipboardEnabled)
 		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
 		this.onSharpnessModeChanged(appSettings.sharpnessMode)
 	}
@@ -112,6 +122,11 @@ export class DialogGlobalSettingsController
 		this.changeGlobalSettingsInLocalStorage()
 	}
 
+	onScreenshotToClipboardEnabledChanged(screenshotToClipboardEnabled: boolean) {
+		this._viewModel.screenshotToClipboardEnabled = screenshotToClipboardEnabled
+		this.changeGlobalSettingsInLocalStorage()
+	}
+
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
 		this.changeGlobalSettingsInLocalStorage()
@@ -131,6 +146,10 @@ export class DialogGlobalSettingsController
 
 	applySettingsEnableExperimentalFeatures() {
 		this.storeService.dispatch(setExperimentalFeaturesEnabled(this._viewModel.experimentalFeaturesEnabled))
+	}
+
+	applySettingsEnableScreenshotToClipboardFeatures() {
+		this.storeService.dispatch(setScreenshotToClipboardEnabled(this._viewModel.screenshotToClipboardEnabled))
 	}
 
 	applySettingsAlgorithm() {
