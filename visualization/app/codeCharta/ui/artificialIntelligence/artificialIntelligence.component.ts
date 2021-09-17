@@ -306,7 +306,11 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		const metricValues: MetricValues = {}
 
 		for (const { data } of hierarchy(fileState.file.map)) {
-			if (data.type !== NodeType.FILE || data.isExcluded || this.getFileExtension(data.name) !== programmingLanguage) {
+			if (
+				data.type !== NodeType.FILE ||
+				isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
+				this.getFileExtension(data.name) !== programmingLanguage
+			) {
 				continue
 			}
 
