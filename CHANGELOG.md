@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
+    ![Bildschirmfoto 2021-09-13 um 15 34 31](https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png)
+
+### Changed
+
+-   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not applicable ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
 -   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
 -   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342))
     <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="450px"/>
