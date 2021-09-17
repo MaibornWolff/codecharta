@@ -24,7 +24,11 @@ export class CodeChartaStorage implements Storage {
 	}
 
 	setItem(key: string, value: string): void {
-		this.storageEngine.setItem(key, value)
+		try {
+			this.storageEngine.setItem(key, value)
+		} catch {
+			alert("Browser local storage memory limit exceeded. Some functions of the application may not longer work.")
+		}
 	}
 }
 

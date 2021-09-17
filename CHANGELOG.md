@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
 -   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342))
     <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="450px"/>
+-   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362))
+    <img src="https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png" width="450px"/>
 
 ## [1.78.0] - 2021-09-06
 

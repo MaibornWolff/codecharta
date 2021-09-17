@@ -9,11 +9,14 @@ import { FilesService } from "../../state/store/files/files.service"
 import { CustomConfig } from "../../model/customConfig/customConfig.api.model"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { setFiles } from "../../state/store/files/files.actions"
-import { FILE_STATES, FILE_STATES_JAVA } from "../../util/dataMocks"
+import { FILE_STATES, FILE_STATES_JAVA, FILE_STATES_UNSELECTED } from "../../util/dataMocks"
 import { setState } from "../../state/store/state.actions"
+import { klona } from "klona"
+import { BlacklistType } from "../../codeCharta.model"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("ArtificialIntelligenceController", () => {
-	let artificialIntelligenceCobtroller: ArtificialIntelligenceController
+	let artificialIntelligenceController: ArtificialIntelligenceController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -36,12 +39,15 @@ describe("ArtificialIntelligenceController", () => {
 	}
 
 	function rebuildController() {
-		artificialIntelligenceCobtroller = new ArtificialIntelligenceController(
+		artificialIntelligenceController = new ArtificialIntelligenceController(
 			$rootScope,
 			storeService,
 			threeOrbitControlsService,
 			threeCameraService
 		)
+
+		// Overwrite debounce with original function, otherwise calculate() will not be called
+		artificialIntelligenceController["debounceCalculation"] = artificialIntelligenceController["calculate"]
 	}
 
 	describe("constructor", () => {
@@ -50,7 +56,15 @@ describe("ArtificialIntelligenceController", () => {
 
 			rebuildController()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, artificialIntelligenceCobtroller)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, artificialIntelligenceController)
+		})
+
+		it("should subscribe to blacklist service", () => {
+			BlacklistService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, artificialIntelligenceController)
 		})
 	})
 
@@ -69,28 +83,131 @@ describe("ArtificialIntelligenceController", () => {
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
 
-			artificialIntelligenceCobtroller.applyCustomConfig("CustomConfig1")
+			artificialIntelligenceController.applyCustomConfig("CustomConfig1")
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setState(customConfigStub.stateSettings))
 		})
 	})
 
 	describe("on files selection changed", () => {
-		it("should not call function createCustomConfigSuggestions", () => {
-			artificialIntelligenceCobtroller["createCustomConfigSuggestions"] = jest.fn()
-			artificialIntelligenceCobtroller.onFilesSelectionChanged(FILE_STATES)
-			expect(artificialIntelligenceCobtroller["createCustomConfigSuggestions"]).not.toHaveBeenCalled()
-		})
-		it("should call function createCustomConfigSuggestions", () => {
-			artificialIntelligenceCobtroller["createCustomConfigSuggestions"] = jest.fn()
-			artificialIntelligenceCobtroller.onFilesSelectionChanged(FILE_STATES_JAVA)
-			expect(artificialIntelligenceCobtroller["createCustomConfigSuggestions"]).toHaveBeenCalled()
+		it("should do nothing if no file is selected", () => {
+			artificialIntelligenceController["getMostFrequentLanguage"] = jest.fn()
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_UNSELECTED)
+			expect(artificialIntelligenceController["getMostFrequentLanguage"]).not.toHaveBeenCalled()
 		})
 
-		it("should call function calculateRiskProfile", () => {
-			artificialIntelligenceCobtroller["calculateRiskProfile"] = jest.fn()
-			artificialIntelligenceCobtroller.onFilesSelectionChanged(FILE_STATES_JAVA)
-			expect(artificialIntelligenceCobtroller["calculateRiskProfile"]).toHaveBeenCalled()
+		it("should not calculate risk profile and suggest custom configs on empty main programming language", () => {
+			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
+			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
+			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
+
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES)
+
+			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["calculateRiskProfile"]).not.toHaveBeenCalled()
+			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).not.toHaveBeenCalled()
+		})
+
+		it("should clear and calculate risk profile for Java map", () => {
+			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
+			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
+
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
+
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
+			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
+			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
+		})
+
+		it("should create custom config suggestions", () => {
+			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
+			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
+
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
+
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
+			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
+
+			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[0].generalCustomConfigId = "mocked"
+			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[1].generalCustomConfigId = "mocked"
+			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[1].outlierCustomConfigId = "mocked"
+
+			expect(artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks).toMatchSnapshot()
+			expect(artificialIntelligenceController["_viewModel"].unsuspiciousMetrics).toMatchSnapshot()
+		})
+
+		it("should calculate risk profile for not excluded files only", () => {
+			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
+
+			const codeMapNodeToExclude = FILE_STATES_JAVA[0].file.map.children[0].children[0]
+
+			artificialIntelligenceController["blacklist"] = [
+				{
+					path: codeMapNodeToExclude.path,
+					type: BlacklistType.exclude
+				}
+			]
+
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
+
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
+			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
+		})
+
+		it("should calculate risk profile but skip files with missing metrics", () => {
+			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
+
+			const FILE_STATES_MISSING_METRICS = klona(FILE_STATES_JAVA)
+			for (const codeMapNode of FILE_STATES_MISSING_METRICS[0].file.map.children) {
+				codeMapNode.children.map(childCodeMapNode => {
+					childCodeMapNode.attributes = {}
+				})
+			}
+
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_MISSING_METRICS)
+
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toBeUndefined()
+			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
+		})
+
+		it("should calculate risk profile and add custom configs for maps with other programming languages", () => {
+			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
+			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
+
+			const FILE_STATES_OTHER = klona(FILE_STATES_JAVA)
+			for (const codeMapNode of FILE_STATES_OTHER[0].file.map.children) {
+				codeMapNode.children.map(childCodeMapNode => {
+					childCodeMapNode.name = childCodeMapNode.name.replace(/\.java/, ".other")
+				})
+			}
+
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_OTHER)
+
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("other")
+			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("on blacklist changed", () => {
+		it("should do nothing on blacklist change if no file is selected", () => {
+			storeService.dispatch(setFiles(FILE_STATES_UNSELECTED))
+			artificialIntelligenceController["debounceCalculation"] = jest.fn()
+
+			artificialIntelligenceController.onBlacklistChanged([])
+			expect(artificialIntelligenceController["debounceCalculation"]).not.toHaveBeenCalled()
+		})
+
+		it("should calculate risk profile on blacklist changed", () => {
+			storeService.dispatch(setFiles(FILE_STATES_JAVA))
+			artificialIntelligenceController["debounceCalculation"] = jest.fn()
+
+			artificialIntelligenceController.onBlacklistChanged([])
+			expect(artificialIntelligenceController["debounceCalculation"]).toHaveBeenCalled()
 		})
 	})
 })
