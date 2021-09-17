@@ -29,8 +29,8 @@
 		>
 
 		<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length">
-			<ul ng-repeat="inconspicuousMetric in $ctrl._viewModel.unsuspiciousMetrics">
-				<li>{{ inconspicuousMetric }}</li>
+			<ul>
+				<li ng-repeat="inconspicuousMetric in $ctrl._viewModel.unsuspiciousMetrics">{{ inconspicuousMetric }}</li>
 			</ul>
 		</md-menu-item>
 
@@ -44,9 +44,7 @@
 		>
 
 		<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.riskProfile === undefined">
-			<ul>
-				<li>Could not calculate Risk Profile. Metrics rloc and mcc not available.</li>
-			</ul>
+			<span>Could not calculate Risk Profile. Metrics rloc and mcc not available.</span>
 		</md-menu-item>
 
 		<md-menu-item
