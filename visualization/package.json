@@ -161,7 +161,7 @@
 		"babel-plugin-angularjs-annotate": "^0.10.0",
 		"bestzip": "^2.2.0",
 		"canvas": "^2.7.0",
-		"clean-webpack-plugin": "^3.0.0",
+		"clean-webpack-plugin": "^4.0.0",
 		"cross-env": "^7.0.3",
 		"css-loader": "^5.2.1",
 		"es6-shim": "^0.35.6",
