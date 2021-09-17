@@ -13,6 +13,8 @@ import { ResetCameraIfNewFileIsLoadedService } from "../../state/store/appSettin
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithm, SharpnessMode } from "../../codeCharta.model"
+import { ScreenshotToClipboardEnabledService } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
+import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 
 describe("DialogGlobalSettingsController", () => {
 	let dialogGlobalSettingsController: DialogGlobalSettingsController
@@ -54,6 +56,14 @@ describe("DialogGlobalSettingsController", () => {
 			expect(IsWhiteBackgroundService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
+		it("should subscribe to screenshotToClipboardEnabled", () => {
+			ScreenshotToClipboardEnabledService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ScreenshotToClipboardEnabledService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
+		})
+
 		it("should subscribe to ResetCameraIfNewFileIsLoadedService", () => {
 			ResetCameraIfNewFileIsLoadedService.subscribe = jest.fn()
 
@@ -87,6 +97,14 @@ describe("DialogGlobalSettingsController", () => {
 				expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBe(setting)
 			})
 
+			it(`should update viewModel.screenshotToClipboardEnabled to ${setting}`, () => {
+				storeService.dispatch(setScreenshotToClipboardEnabled(setting))
+
+				rebuildController()
+
+				expect(dialogGlobalSettingsController["_viewModel"].screenshotToClipboardEnabled).toBe(setting)
+			})
+
 			it(`should update viewModel.resetCameraIfNewFileIsLoaded to ${setting}`, () => {
 				storeService.dispatch(setResetCameraIfNewFileIsLoaded(setting))
 
@@ -118,6 +136,14 @@ describe("DialogGlobalSettingsController", () => {
 			dialogGlobalSettingsController.onIsWhiteBackgroundChanged(true)
 
 			expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBeTruthy()
+		})
+	})
+
+	describe("onScreenshotToClipboardEnabledChanged", () => {
+		it("should update viewModel.screenshotToClipboardEnabled", () => {
+			dialogGlobalSettingsController.onScreenshotToClipboardEnabledChanged(true)
+
+			expect(dialogGlobalSettingsController["_viewModel"].screenshotToClipboardEnabled).toBeTruthy()
 		})
 	})
 
@@ -164,6 +190,16 @@ describe("DialogGlobalSettingsController", () => {
 			dialogGlobalSettingsController.applySettingsIsWhiteBackground()
 
 			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
+		})
+	})
+
+	describe("applySettingsScreenshotToClipboardEnabled", () => {
+		it("should update screenshotToClipboardEnabled in store", () => {
+			dialogGlobalSettingsController["_viewModel"].screenshotToClipboardEnabled = false
+
+			dialogGlobalSettingsController.applySettingsEnableScreenshotToClipboardFeatures()
+
+			expect(storeService.getState().appSettings.screenshotToClipboardEnabled).toBeFalsy()
 		})
 	})
 

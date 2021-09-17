@@ -9,6 +9,7 @@ import { setSharpnessMode } from "../state/store/appSettings/sharpnessMode/sharp
 import { setMaxTreeMapFiles } from "../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setResetCameraIfNewFileIsLoaded } from "../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import packageJson from "../../../package.json"
+import { setScreenshotToClipboardEnabled } from "../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 
 export class GlobalSettingsHelper {
 	static readonly GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT = "globalSettings"
@@ -39,6 +40,9 @@ export class GlobalSettingsHelper {
 			}
 			if (appSettings.experimentalFeaturesEnabled !== globalSettings.experimentalFeaturesEnabled) {
 				storeService.dispatch(setExperimentalFeaturesEnabled(globalSettings.experimentalFeaturesEnabled))
+			}
+			if (appSettings.screenshotToClipboardEnabled !== globalSettings.screenshotToClipboardEnabled) {
+				storeService.dispatch(setScreenshotToClipboardEnabled(globalSettings.screenshotToClipboardEnabled))
 			}
 			if (appSettings.layoutAlgorithm !== globalSettings.layoutAlgorithm) {
 				storeService.dispatch(setLayoutAlgorithm(globalSettings.layoutAlgorithm))

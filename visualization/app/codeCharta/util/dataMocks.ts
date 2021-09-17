@@ -1154,6 +1154,7 @@ export const GLOBAL_SETTINGS: GlobalSettings = {
 	isWhiteBackground: true,
 	resetCameraIfNewFileIsLoaded: true,
 	experimentalFeaturesEnabled: true,
+	screenshotToClipboardEnabled: false,
 	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 	maxTreeMapFiles: 50,
 	sharpnessMode: SharpnessMode.Standard
@@ -1780,6 +1781,7 @@ export const STATE: State = {
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
@@ -1845,6 +1847,7 @@ export const DEFAULT_STATE: State = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 100
