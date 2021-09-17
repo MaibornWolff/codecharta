@@ -6,22 +6,50 @@ import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererServic
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 import "./screenshotButton.component.scss"
+import {
+	ScreenshotToClipboardEnabledService,
+	ScreenshotToClipboardEnabledSubscriber
+} from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
+import { IRootScopeService } from "angular"
 
-export class ScreenshotButtonController {
-	SCREENSHOT_HOTKEY = "Ctrl+Alt+S"
+declare class ClipboardItem {
+	constructor(data: { [mimeType: string]: Blob })
+}
+
+export class ScreenshotButtonController implements ScreenshotToClipboardEnabledSubscriber {
+	private SCREENSHOT_HOTKEY_TO_FILE = "Ctrl+Alt+S"
+	private SCREENSHOT_HOTKEY_TO_CLIPBOARD = "Ctrl+Alt+F"
+
+	private _viewModel: {
+		screenshotToClipboardEnabled: boolean
+	} = {
+		screenshotToClipboardEnabled: false
+	}
+
 	constructor(
 		private threeSceneService: ThreeSceneService,
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
-		private storeService: StoreService
+		private storeService: StoreService,
+		private $rootScope: IRootScopeService
 	) {
 		"ngInject"
-		hotkeys(this.SCREENSHOT_HOTKEY, () => {
-			this.makeScreenshot()
+		hotkeys(this.SCREENSHOT_HOTKEY_TO_FILE, () => {
+			this.makeScreenshotToFile()
 		})
+
+		hotkeys(this.SCREENSHOT_HOTKEY_TO_CLIPBOARD, () => {
+			this.makeScreenshotToClipBoard()
+		})
+
+		ScreenshotToClipboardEnabledService.subscribe(this.$rootScope, this)
 	}
 
-	makeScreenshot() {
+	onScreenshotToClipboardEnabledChanged(screenshotToClipboardEnabled: boolean) {
+		this._viewModel.screenshotToClipboardEnabled = screenshotToClipboardEnabled
+	}
+
+	makeScreenshotToFile() {
 		const link = document.createElement("a")
 		link.download = this.makePNGFileName()
 		link.onclick = () => this.loadScript(link, this.threeRendererService.renderer)
@@ -41,6 +69,24 @@ export class ScreenshotButtonController {
 	}
 
 	private loadScript(link: HTMLAnchorElement, renderer: WebGLRenderer) {
+		this.buildScreenShotCanvas(renderer)
+
+		link.href = renderer.domElement.toDataURL()
+		//
+	}
+
+	makeScreenshotToClipBoard() {
+		const renderer = this.threeRendererService.renderer
+		this.buildScreenShotCanvas(renderer)
+
+		renderer.domElement.toBlob(async function (blob) {
+			const clipboardItem = new ClipboardItem({ [blob.type]: blob })
+			// @ts-ignore
+			navigator.clipboard.write([clipboardItem])
+		})
+	}
+
+	private buildScreenShotCanvas(renderer: WebGLRenderer) {
 		const currentClearColor = new Color()
 		renderer.setPixelRatio(window.devicePixelRatio)
 		renderer.getClearColor(currentClearColor)
@@ -49,9 +95,6 @@ export class ScreenshotButtonController {
 		this.threeSceneService.scene.background = null
 		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 		renderer.setClearColor(currentClearColor)
-
-		link.href = renderer.domElement.toDataURL()
-		renderer.setPixelRatio(1)
 	}
 }
 
