@@ -95,6 +95,7 @@ export interface FileMeta {
 	apiVersion: string
 	projectName: string
 	exportedFileSize: number
+	repoCreationDate?: string
 }
 
 export interface Settings {
@@ -154,6 +155,7 @@ export interface AppSettings {
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	colorLabels: colorLabelOptions
 }
 
@@ -267,6 +269,7 @@ export interface GlobalSettings {
 	isWhiteBackground: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	experimentalFeaturesEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	layoutAlgorithm: LayoutAlgorithm
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode

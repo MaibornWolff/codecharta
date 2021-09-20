@@ -519,7 +519,7 @@ describe("CustomConfigHelper", () => {
 				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 				assignedMaps: ["exampleMap1.cc.json", "exampleMap2cc.json"],
 				// Timestamp of 2020-11-20_13-19
-				creationTime: 1605878386493
+				creationTime: 1_605_878_386_493
 			} as ExportCustomConfig
 
 			const exportedCustomConfigs: Map<string, ExportCustomConfig> = new Map()
@@ -589,6 +589,36 @@ describe("CustomConfigHelper", () => {
 				"mock_serialized_config_to_be_downloaded",
 				`mocked_currently_uploaded_map_${newDate}.cc.config.json`
 			)
+		})
+	})
+	describe("get custom config by name", () => {
+		it("should return null when config name is invalid", () => {
+			const result = CustomConfigHelper.getCustomConfigByName(CustomConfigMapSelectionMode.SINGLE, [], "invalidConfig")
+			expect(result).toEqual(null)
+		})
+		it("should return custom config", () => {
+			const customConfigStub = {
+				id: "invalid-md5-checksum",
+				name: "stubbedConfig1",
+				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+				assignedMaps: ["test.cc.json"],
+				stateSettings: {}
+			} as CustomConfig
+
+			CustomConfigHelper.addCustomConfig(customConfigStub)
+			expect(
+				CustomConfigHelper.hasCustomConfigByName(
+					customConfigStub.mapSelectionMode,
+					customConfigStub.assignedMaps,
+					customConfigStub.name
+				)
+			).toBe(true)
+			const result = CustomConfigHelper.getCustomConfigByName(
+				customConfigStub.mapSelectionMode,
+				customConfigStub.assignedMaps,
+				customConfigStub.name
+			)
+			expect(result).toEqual(customConfigStub)
 		})
 	})
 })

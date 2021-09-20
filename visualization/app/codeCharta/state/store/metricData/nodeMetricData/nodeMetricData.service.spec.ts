@@ -17,9 +17,9 @@ describe("NodeMetricDataService", () => {
 	let $rootScope: IRootScopeService
 
 	const metricData: NodeMetricData[] = [
-		{ name: "rloc", maxValue: 999999 },
-		{ name: "functions", maxValue: 999999 },
-		{ name: "mcc", maxValue: 999999 }
+		{ name: "rloc", maxValue: 999_999 },
+		{ name: "functions", maxValue: 999_999 },
+		{ name: "mcc", maxValue: 999_999 }
 	]
 
 	beforeEach(() => {
@@ -138,7 +138,7 @@ describe("NodeMetricDataService", () => {
 	describe("getMaxMetricByMetricName", () => {
 		it("should return the possible maxValue of a metric by name", () => {
 			const result = nodeMetricDataService.getMaxMetricByMetricName("rloc")
-			const expected = 999999
+			const expected = 999_999
 
 			expect(result).toBe(expected)
 		})

@@ -4,6 +4,7 @@ import { HSL } from "./hsl"
 
 export class ColorConverter {
 	private static colorToVector3Map = new Map<string, Vector3>()
+	private static colorToVector3ArrayMap = new Map<string, number[]>()
 	private static hexToNumberMap = new Map<string, number>()
 
 	static getVector3(color: string) {
@@ -14,6 +15,16 @@ export class ColorConverter {
 		}
 
 		return vector
+	}
+
+	static getVector3Array(color: string) {
+		let array = this.colorToVector3ArrayMap.get(color)
+		if (array === undefined) {
+			array = ColorConverter.colorToVector3Array(color)
+			this.colorToVector3ArrayMap.set(color, array)
+		}
+
+		return array
 	}
 
 	static getNumber(hex: string) {
@@ -61,6 +72,11 @@ export class ColorConverter {
 	static colorToVector3(color: string) {
 		const convertedColor = ColorConverter.convertHexToNumber(color)
 		return new Vector3(((convertedColor >> 16) & 0xff) / 255, ((convertedColor >> 8) & 0xff) / 255, (convertedColor & 0xff) / 255)
+	}
+
+	static colorToVector3Array(color: string) {
+		const convertedColor = ColorConverter.convertHexToNumber(color)
+		return [((convertedColor >> 16) & 0xff) / 255, ((convertedColor >> 8) & 0xff) / 255, (convertedColor & 0xff) / 255]
 	}
 
 	static vector3ToRGB(vector: Vector3) {

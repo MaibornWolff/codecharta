@@ -79,6 +79,56 @@ export const VALID_NODE: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_JAVA: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "main",
+			path: "/root/src/main",
+			type: NodeType.FOLDER,
+			attributes: {},
+			children: [
+				{
+					name: "file1.java",
+					path: "/root/src/main/file1.java",
+					type: NodeType.FILE,
+					attributes: { rloc: 70, functions: 1000, mcc: 10 }
+				},
+				{
+					name: "file2.java",
+					path: "/root/src/main/file2.java",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100 }
+				},
+				{
+					name: "readme",
+					path: "/root/src/main/readme",
+					type: NodeType.FILE,
+					attributes: { rloc: 200, functions: 1, mcc: 1 }
+				}
+			]
+		},
+		{
+			name: "test",
+			path: "/root/src/test",
+			type: NodeType.FOLDER,
+			attributes: {},
+			children: [
+				{
+					name: "otherFile.java",
+					path: "/root/src/test/otherFile.java",
+					type: NodeType.FILE,
+					attributes: { rloc: 100, functions: 10, mcc: 1 }
+				}
+			]
+		}
+	]
+}
+
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 	name: "root",
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
@@ -675,12 +725,25 @@ export const FILE_META: FileMeta = {
 	fileChecksum: "md5-fileA",
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
-	exportedFileSize: 300000
+	exportedFileSize: 300_000
 }
 
 export const TEST_FILE_DATA: CCFile = {
 	fileMeta: FILE_META,
 	map: VALID_NODE,
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
+	}
+}
+
+export const TEST_FILE_DATA_JAVA: CCFile = {
+	fileMeta: FILE_META,
+	map: VALID_NODE_JAVA,
 	settings: {
 		fileSettings: {
 			attributeTypes: { nodes: {}, edges: {} },
@@ -1097,6 +1160,7 @@ export const GLOBAL_SETTINGS: GlobalSettings = {
 	isWhiteBackground: true,
 	resetCameraIfNewFileIsLoaded: true,
 	experimentalFeaturesEnabled: true,
+	screenshotToClipboardEnabled: false,
 	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 	maxTreeMapFiles: 50,
 	sharpnessMode: SharpnessMode.Standard
@@ -1265,7 +1329,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 		fileChecksum: "md5-delta-fileA",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1323,7 +1387,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1397,7 +1461,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1471,7 +1535,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1627,6 +1691,20 @@ export const FILE_STATES: FileState[] = [
 	}
 ]
 
+export const FILE_STATES_UNSELECTED: FileState[] = [
+	{
+		file: TEST_FILE_DATA,
+		selectedAs: FileSelectionState.None
+	}
+]
+
+export const FILE_STATES_JAVA: FileState[] = [
+	{
+		file: TEST_FILE_DATA_JAVA,
+		selectedAs: FileSelectionState.Single
+	}
+]
+
 export const METRIC_DATA: NodeMetricData[] = [
 	{ name: "mcc", maxValue: 1 },
 	{ name: "rloc", maxValue: 2 },
@@ -1716,6 +1794,7 @@ export const STATE: State = {
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
@@ -1781,6 +1860,7 @@ export const DEFAULT_STATE: State = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 100

@@ -1,4 +1,5 @@
 import "./artificialIntelligence.component.scss"
+import debounce from "lodash.debounce"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
@@ -6,86 +7,310 @@ import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
 import { klona } from "klona"
-import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
-import { getMedian, pushSorted } from "../../util/nodeDecorator"
-import { NodeType } from "../../codeCharta.model"
+import { CustomConfig, CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
+import { pushSorted } from "../../util/nodeDecorator"
+import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange, NodeType, State } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { getVisibleFileStates } from "../../model/files/files.helper"
-
-type OutlierConfig = {
-	threshold: number
-}
+import { metricThresholds } from "./artificialIntelligence.metricThresholds"
+import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { isPathBlacklisted } from "../../util/codeMapHelper"
 
 interface MetricValues {
 	[metric: string]: number[]
 }
 
-export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
-	private metricsOutlierConfig: Map<string, OutlierConfig> = new Map([
-		["mcc", { threshold: 15 }],
-		["loc", { threshold: 1000 }],
-		["rloc", { threshold: 1000 }],
-		["cognitive_complexity", { threshold: 10 }],
-		["code_smell", { threshold: 25 }],
-		["bug", { threshold: 10 }],
-		["functions", { threshold: 20 }],
-		["statements", { threshold: 150 }]
-	])
+interface MetricAssessmentResults {
+	suspiciousMetrics: Map<string, ColorRange>
+	unsuspiciousMetrics: string[]
+	outliersThresholds: Map<string, number>
+}
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+interface MetricSuggestionParameters {
+	metric: string
+	from: number
+	to: number
+	generalCustomConfigId: string
+	outlierCustomConfigId?: string
+}
+
+export class ArtificialIntelligenceController implements FilesSelectionSubscriber, BlacklistSubscriber {
+	private _viewModel: {
+		analyzedProgrammingLanguage: string
+		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
+		unsuspiciousMetrics: string[]
+		riskProfile: {
+			lowRisk: number
+			moderateRisk: number
+			highRisk: number
+			veryHighRisk: number
+		}
+	} = {
+		analyzedProgrammingLanguage: undefined,
+		suspiciousMetricSuggestionLinks: [],
+		unsuspiciousMetrics: [],
+		riskProfile: {
+			lowRisk: 0,
+			moderateRisk: 0,
+			highRisk: 0,
+			veryHighRisk: 0
+		}
+	}
+
+	private debounceCalculation: () => void
+	private fileState: FileState
+	private blacklist: BlacklistItem[] = []
+
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private threeCameraService: ThreeCameraService
+	) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
+
+		this.debounceCalculation = debounce(() => {
+			this.calculate()
+		}, 10)
+	}
+
+	applyCustomConfig(configId: string) {
+		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
+	}
+
+	onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.blacklist = blacklist
+		this.fileState = getVisibleFileStates(this.storeService.getState().files)[0]
+
+		if (this.fileState !== undefined) {
+			this.debounceCalculation()
+		}
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
-		const outliersFound = new Map<string, number>()
-
-		for (const fileState of getVisibleFileStates(files)) {
-			const metricValues = this.getMetricValues(fileState)
-
-			for (const [metricName, outlierConfig] of this.metricsOutlierConfig) {
-				if (metricValues[metricName] === undefined) {
-					continue
-				}
-
-				const outliers = this.detectOutliers(metricValues[metricName], outlierConfig)
-				if (outliers.length > 0) {
-					outliersFound.set(metricName, Math.min(...outliers) - 1)
-				}
-			}
+		const fileState = getVisibleFileStates(files)[0]
+		if (fileState === undefined) {
+			return
 		}
 
-		// Make one single static suggestion for the first version of the algorithm
-		const mccOutlier = outliersFound.get("mcc")
-		const bugOutlier = outliersFound.get("bug")
+		this.fileState = fileState
+		this.debounceCalculation()
+	}
 
-		if (mccOutlier && bugOutlier) {
-			const state = klona(this.storeService.getState())
-			state.dynamicSettings.areaMetric = "mcc"
-			state.dynamicSettings.heightMetric = "bug"
-			state.dynamicSettings.colorMetric = "bug"
-			state.dynamicSettings.colorRange.from = bugOutlier.valueOf() / 2
-			state.dynamicSettings.colorRange.to = bugOutlier.valueOf()
+	private calculate() {
+		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState.file.map)
+		this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
 
-			const configName = "Buggy Classes (AI)"
-			const customConfig = buildCustomConfigFromState(configName, state)
-			if (
-				!CustomConfigHelper.hasCustomConfigByName(
-					CustomConfigMapSelectionMode.SINGLE,
-					[state.files[0].file.fileMeta.fileName],
-					configName
-				)
-			) {
-				CustomConfigHelper.addCustomConfig(customConfig)
-			}
+		this.clearRiskProfile()
+
+		if (mainProgrammingLanguage !== undefined) {
+			this.calculateRiskProfile(this.fileState, mainProgrammingLanguage, "mcc")
+			this.createCustomConfigSuggestions(this.fileState, mainProgrammingLanguage)
 		}
 	}
 
-	private getMetricValues(fileState: FileState): MetricValues {
+	private clearRiskProfile() {
+		this._viewModel.riskProfile = undefined
+	}
+
+	private calculateRiskProfile(fileState: FileState, programmingLanguage, metricName) {
+		let totalRloc = 0
+		let numberOfRlocLowRisk = 0
+		let numberOfRlocModerateRisk = 0
+		let numberOfRlocHighRisk = 0
+		let numberOfRlocVeryHighRisk = 0
+
+		const languageSpecificThresholds = this.getAssociatedMetricThresholds(programmingLanguage)
+		const thresholds = languageSpecificThresholds[metricName]
+
+		for (const { data } of hierarchy(fileState.file.map)) {
+			// TODO calculate risk profile only for focused or currently visible but not excluded files.
+			if (
+				data.type !== NodeType.FILE ||
+				isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
+				data.attributes[metricName] === undefined ||
+				data.attributes["rloc"] === undefined ||
+				this.getFileExtension(data.name) !== programmingLanguage
+			) {
+				continue
+			}
+
+			const nodeMetricValue = data.attributes[metricName]
+			const nodeRlocValue = data.attributes["rloc"]
+
+			totalRloc += nodeRlocValue
+
+			// Idea: We could calculate risk profiles per directory in the future.
+			if (nodeMetricValue <= thresholds.percentile70) {
+				numberOfRlocLowRisk += nodeRlocValue
+			} else if (nodeMetricValue <= thresholds.percentile80) {
+				numberOfRlocModerateRisk += nodeRlocValue
+			} else if (nodeMetricValue <= thresholds.percentile90) {
+				numberOfRlocHighRisk += nodeRlocValue
+			} else {
+				numberOfRlocVeryHighRisk += nodeRlocValue
+			}
+		}
+
+		if (totalRloc === 0) {
+			return
+		}
+
+		this._viewModel.riskProfile = {
+			lowRisk: Math.ceil((numberOfRlocLowRisk / totalRloc) * 100),
+			moderateRisk: Math.ceil((numberOfRlocModerateRisk / totalRloc) * 100),
+			highRisk: Math.ceil((numberOfRlocHighRisk / totalRloc) * 100),
+			veryHighRisk: Math.ceil((numberOfRlocVeryHighRisk / totalRloc) * 100)
+		}
+	}
+
+	private createCustomConfigSuggestions(fileState: FileState, programmingLanguage) {
+		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
+		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
+
+		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
+		const newCustomConfigs: CustomConfig[] = []
+
+		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
+			const suspiciousMetricConfig = this.createOrUpdateCustomConfig(
+				`Suspicious Files - Metric ${metricName.toUpperCase()} - (AI)`,
+				this.prepareOverviewConfigState(metricName, colorRange.from, colorRange.to),
+				fileState
+			)
+
+			newCustomConfigs.push(suspiciousMetricConfig)
+
+			noticeableMetricSuggestionLinks.set(metricName, {
+				metric: metricName,
+				...colorRange,
+				generalCustomConfigId: suspiciousMetricConfig.id
+			})
+
+			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
+			if (outlierThreshold > 0) {
+				const highRiskMetricConfig = this.createOrUpdateCustomConfig(
+					`Very High Risk Files - Metric ${metricName.toUpperCase()} - (AI)`,
+					this.prepareOutlierConfigState(metricName, outlierThreshold - 1, outlierThreshold),
+					fileState
+				)
+
+				newCustomConfigs.push(highRiskMetricConfig)
+
+				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = highRiskMetricConfig.id
+			}
+		}
+
+		CustomConfigHelper.addCustomConfigs(newCustomConfigs)
+
+		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()]
+		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+	}
+
+	private findGoodAndBadMetrics(metricValues, programmingLanguage): MetricAssessmentResults {
+		const metricAssessmentResults: MetricAssessmentResults = {
+			suspiciousMetrics: new Map<string, ColorRange>(),
+			unsuspiciousMetrics: [],
+			outliersThresholds: new Map<string, number>()
+		}
+
+		const languageSpecificMetricThresholds = this.getAssociatedMetricThresholds(programmingLanguage)
+
+		for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
+			const valuesOfMetric = metricValues[metricName]
+			if (valuesOfMetric === undefined) {
+				continue
+			}
+
+			const thresholdConfig = languageSpecificMetricThresholds[metricName]
+			const maxMetricValue = Math.max(...valuesOfMetric)
+
+			if (maxMetricValue <= thresholdConfig.percentile70) {
+				metricAssessmentResults.unsuspiciousMetrics.push(metricName)
+			} else if (maxMetricValue > thresholdConfig.percentile70) {
+				metricAssessmentResults.suspiciousMetrics.set(metricName, {
+					from: thresholdConfig.percentile70,
+					to: thresholdConfig.percentile80
+				})
+
+				if (maxMetricValue > thresholdConfig.percentile90) {
+					metricAssessmentResults.outliersThresholds.set(metricName, thresholdConfig.percentile90)
+				}
+			}
+		}
+
+		return metricAssessmentResults
+	}
+
+	private createOrUpdateCustomConfig(configName: string, state: State, fileState: FileState) {
+		const customConfig = CustomConfigHelper.getCustomConfigByName(
+			CustomConfigMapSelectionMode.SINGLE,
+			[fileState.file.fileMeta.fileName],
+			configName
+		)
+
+		// If it exists, create a fresh one with current thresholds
+		if (customConfig !== null) {
+			CustomConfigHelper.deleteCustomConfig(customConfig.id)
+		}
+
+		return buildCustomConfigFromState(configName, state)
+	}
+
+	private prepareOverviewConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {
+		const state = klona(this.storeService.getState())
+
+		// just use rloc as area metric
+		state.dynamicSettings.areaMetric = "rloc"
+
+		// use bad metric as height and color metric
+		state.dynamicSettings.heightMetric = metricName
+		state.dynamicSettings.colorMetric = metricName
+		//state.dynamicSettings.colorRange.from = bugOutlier.valueOf() / 2
+		//state.dynamicSettings.colorRange.to = bugOutlier.valueOf()
+		state.dynamicSettings.colorRange.from = colorRangeFrom
+		state.dynamicSettings.colorRange.to = colorRangeTo
+
+		state.appSettings.mapColors.positive = defaultMapColors.positive
+		state.appSettings.mapColors.neutral = defaultMapColors.neutral
+		state.appSettings.mapColors.negative = defaultMapColors.negative
+
+		return state
+	}
+
+	private prepareOutlierConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {
+		const state = klona(this.storeService.getState())
+
+		// just use rloc as area metric
+		state.dynamicSettings.areaMetric = "rloc"
+
+		// use bad metric as height and color metric
+		state.dynamicSettings.heightMetric = metricName
+		state.dynamicSettings.colorMetric = metricName
+
+		state.dynamicSettings.colorRange.to = colorRangeTo
+		state.dynamicSettings.colorRange.from = colorRangeFrom
+
+		state.appSettings.mapColors.positive = "#ffffff"
+		state.appSettings.mapColors.neutral = "#ffffff"
+		state.appSettings.mapColors.negative = "#A900C0"
+
+		return state
+	}
+
+	private getSortedMetricValues(fileState: FileState, programmingLanguage): MetricValues {
 		const metricValues: MetricValues = {}
 
 		for (const { data } of hierarchy(fileState.file.map)) {
-			if (data.type !== NodeType.FILE) {
+			if (
+				data.type !== NodeType.FILE ||
+				isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
+				this.getFileExtension(data.name) !== programmingLanguage
+			) {
 				continue
 			}
 
@@ -103,28 +328,35 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		return metricValues
 	}
 
-	private detectOutliers(metricValues: number[], outlierConfig: OutlierConfig): number[] {
-		let valuesFirstHalf: number[]
-		let valuesSecondHalf: number[]
+	private getFileExtension(fileName: string) {
+		return fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : undefined
+	}
 
-		if (metricValues.length % 2 === 0) {
-			valuesFirstHalf = metricValues.slice(0, metricValues.length / 2)
-			valuesSecondHalf = metricValues.slice(metricValues.length / 2, metricValues.length)
-		} else {
-			valuesFirstHalf = metricValues.slice(0, metricValues.length / 2)
-			valuesSecondHalf = metricValues.slice(metricValues.length / 2 + 1, metricValues.length)
+	private getMostFrequentLanguage(map: CodeMapNode) {
+		const numberOfFilesPerLanguage = []
+
+		for (const { data } of hierarchy(map)) {
+			if (!data.name.includes(".")) {
+				continue
+			}
+
+			if (data.type === NodeType.FILE) {
+				const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
+				numberOfFilesPerLanguage[fileExtension] = numberOfFilesPerLanguage[fileExtension] + 1 || 1
+			}
 		}
 
-		const firstQuartil = getMedian(valuesFirstHalf)
-		//const median_second_quartil = getMedian(metricValues)
-		const thirdQuartil = getMedian(valuesSecondHalf)
+		if (Object.keys(numberOfFilesPerLanguage).length === 0) {
+			return
+		}
 
-		const interQuartilRange = thirdQuartil - firstQuartil
-		const upperOutlierBound = thirdQuartil + 1.5 * interQuartilRange
-
-		return metricValues.filter(function (value) {
-			return value > upperOutlierBound || value > outlierConfig.threshold
+		return Object.keys(numberOfFilesPerLanguage).reduce((a, b) => {
+			return numberOfFilesPerLanguage[a] > numberOfFilesPerLanguage[b] ? a : b
 		})
+	}
+
+	private getAssociatedMetricThresholds(programmingLanguage) {
+		return programmingLanguage === "java" ? metricThresholds["java"] : metricThresholds["miscellaneous"]
 	}
 }
 

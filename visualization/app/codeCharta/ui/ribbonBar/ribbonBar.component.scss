@@ -44,6 +44,18 @@ ribbon-bar-component {
 			}
 		}
 
+		&#ai-card {
+			.section {
+				.section-header {
+					overflow: visible;
+					text-align: center;
+				}
+				.section-title {
+					padding: 1px 5px;
+				}
+			}
+		}
+
 		.section {
 			display: inline-block;
 			height: 100%;
@@ -115,7 +127,8 @@ ribbon-bar-component {
 		margin: 0;
 	}
 
-	md-card.custom-configs-card {
+	md-card.custom-configs-card,
+	md-card.ai-card {
 		max-width: 120px;
 		min-width: 120px;
 	}

@@ -58,7 +58,8 @@ describe("codeChartaService", () => {
 				fileName,
 				projectName: "Sample Map",
 				fileChecksum: "invalid-md5-sample",
-				exportedFileSize: 42
+				exportedFileSize: 42,
+				repoCreationDate: ""
 			},
 			map: {
 				attributes: {},

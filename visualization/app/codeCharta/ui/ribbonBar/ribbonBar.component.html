@@ -18,12 +18,12 @@
 	</div>
 </md-card>
 
-<md-card ng-show="false" ng-attr-id="ai-card">
+<md-card class="ai-card" ng-show="$ctrl._viewModel.experimentalFeaturesEnabled" ng-attr-id="ai-card">
 	<div class="section">
 		<div class="section-header">
 			<artificial-intelligence-component></artificial-intelligence-component>
 		</div>
-		<span class="section-title no-hover">AI</span>
+		<span class="section-title no-hover">Suspicious Metrics</span>
 	</div>
 </md-card>
 

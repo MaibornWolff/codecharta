@@ -9,6 +9,45 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
+    ![Bildschirmfoto 2021-09-13 um 15 34 31](https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png)
+-   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326)) ![Screenshot 2021-08-30 at 14 59 21](https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png)
+-   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
+-   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342))
+    <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="450px"/>
+
+### Fixed 🐞
+
+-   Fix broken methode call in screenshot feature
+-   Improve changelog entries
+
+### Changed
+
+-   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not applicable ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
+-   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362))
+    <img src="https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png" width="450px"/>
+
+## [1.78.0] - 2021-09-06
+
+### Added 🚀
+
+-   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/issues/1315))
+-   Add documentation for SCMLogParserV2 ([#1349](https://github.com/maibornwolff/codecharta/issues/1349))
+
+### Fixed 🐞
+
+-   Empty temporary label during hovering ([#2328](https://github.com/maibornwolff/codecharta/issues/2328))
+-   Show the screenshot hotkey in the screenshot title ([#2323](https://github.com/maibornwolff/codecharta/issues/2323))
+-   Improved rendering performance ([#2345](https://github.com/MaibornWolff/codecharta/pull/2345))
+
+### Chore 👨‍💻 👩‍💻
+
+-   Update GH-Pages and visualization dependencies ([#2356](https://github.com/maibornwolff/codecharta/issues/2356))
+
+## [1.77.0] - 2021-07-30
+
+### Added 🚀
+
 -   The "Color Metric Options" panel and "Legend" panel display the maximum value of the selected metric instead of infinite. ([#1520](https://github.com/maibornwolff/codecharta/issues/1520))
 -   Mark color-section as unimportant in delta mode ([#769](https://github.com/maibornwolff/codecharta/issues/769))
 

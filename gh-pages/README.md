@@ -4,20 +4,20 @@ The CodeCharta docs use [Jekyll](https://jekyllrb.com) and the [Minimal Mistakes
 
 ## Usage
 
-The generated docs can be viewed locally before being pushed to Github (see below). Please note that some files like the web version of CodeCharta are **generated** by `.travis.yml` with the help of the `script/build_gh_pages.sh`. They won't show up locally unless you call that script. If you run the script you should find a new folder called `gh-pages/visualization` though.
+The generated docs can be viewed locally before being pushed to Github (see below). Please note that some files like the web version of CodeCharta are **generated** by `release_gh_pages.yml` with the help of the `script/build_gh_pages.sh`. They won't show up locally unless you call that script. If you run the script you should find a new folder called `gh-pages/visualization` though.
 
 ### Local
 
-1. [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/) version 2.4.0 or above (check with `ruby -v`). I had a lot of fun with this one because macOS comes with an old Ruby version. [Rubyenv](https://github.com/rbenv/rbenv#installation) did wonders for me (you can skip these steps if you use rbenv already or have some other way to aquire ruby):
+1. [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/) version 2.7.0 or above (check with `ruby -v`). Please be aware, that some OS come with an old Ruby version. [Rubyenv](https://github.com/rbenv/rbenv#installation) did wonders for me (you can skip these steps if you use rbenv already or have some other way to aquire ruby):
     - `brew install rbenv`
     - Add `eval "$(rbenv init -)"` to the `~/.bash_profile`
     - Close terminal
     - `which ruby` should now point to _~/.rbenv/shims/ruby_
-    - `rbenv install -v 2.6.3`
+    - `rbenv install -v 2.7.4`
     - OPTIONAL to create a `.ruby-version` in `gh-pages`
     - `cd gh-pages` to go into the docs directory
-    - `rbenv local 2.6.3`
-    - `ruby -v` should now be 2.6.3 for this directory
+    - `rbenv local 2.7.4`
+    - `ruby -v` should now be 2.7.4 for this directory
     - `bundle` to install all gems
         - `gem install bundler:2.0.2` and `bundle update --bundler` in case the bundler needs to be updated first
     - `bundle exec jekyll serve` to build the site and make it available on a local server
