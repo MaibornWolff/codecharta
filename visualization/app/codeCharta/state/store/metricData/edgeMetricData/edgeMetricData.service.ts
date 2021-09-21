@@ -10,6 +10,8 @@ import { FilesSelectionSubscriber, FilesService } from "../../files/files.servic
 import { EdgeMetricCountMap, nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
 
+// TODO Refactor this file with selector usage (getMetricValuesForNodeSelector ect)
+
 export interface EdgeMetricDataSubscriber {
 	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[])
 }
