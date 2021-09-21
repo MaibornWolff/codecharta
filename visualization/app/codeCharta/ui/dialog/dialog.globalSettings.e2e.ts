@@ -43,12 +43,11 @@ describe("DialogGlobalSettings", () => {
 	})
 
 	describe("Display Quality", () => {
-		//Flaky since node 16; disabled for now
-		/*it("should should maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
+		it("should should maximum-tree-map slider when TreeMapStreet is chosen as layout", async () => {
 			await globalSettingsPageObject.changeLayoutToTreeMapStreet()
 
 			await globalSettingsPageObject.isTreeMapFilesComponentVisible()
-		})*/
+		})
 
 		it("should change the display quality to Pixel Ratio without Antialiasing", async () => {
 			await globalSettingsPageObject.changedDisplayQuality()
