@@ -1,0 +1,10 @@
+<!-- Todo angular-green: isSearched -->
+<span ngClass="{'node-name': true, 'flattened': node.isFlattened, 'angular-green': true}" [class.flattened]="node.isFlattened">
+	{{ node.name }}
+</span>
+
+<span class="unary-number" *ngIf="!(node | isLeaf)">
+	<ng-container *ngIf="node | isHoveredBuilding: (hoveredBuildingId$ | async); then unaryValue; else unaryPercentage"></ng-container>
+	<ng-template #unaryValue>{{ node.attributes.unary }} File<span *ngIf="node.attributes.unary !== 1">s</span></ng-template>
+	<ng-template #unaryPercentage>{{ (100 * node.attributes.unary) / (totalUnary$ | async) }}%</ng-template>
+</span>

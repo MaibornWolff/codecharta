@@ -10,7 +10,9 @@ import { MetricDeltaSelectedComponent } from "./codeCharta/ui/metricDeltaSelecte
 import { MapTreeViewLevelItemIcon } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemIcon/mapTreeViewLevelItemIcon.component"
 import { MapTreeViewLevelItemIconClassPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemIcon/mapTreeViewLevelItemIconClass.pipe"
 import { MapTreeViewLevelItemIconColorPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemIcon/mapTreeViewLevelItemIconColor.pipe"
-import { MapTreeViewLevelItemContent } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemIcon/mapTreeViewLevelItemContent.component"
+import { MapTreeViewLevelItemContent } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemContent/mapTreeViewLevelItemContent.component"
+import { IsLeafPipe } from "./codeCharta/ui/mapTreeView/pipes/isLeaf.pipe"
+import { IsHoveredBuildingPipe } from "./codeCharta/ui/mapTreeView/pipes/isBuildingHovered.pipe"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule],
@@ -20,7 +22,9 @@ import { MapTreeViewLevelItemContent } from "./codeCharta/ui/mapTreeView/mapTree
 		MapTreeViewLevelItemIcon,
 		MapTreeViewLevelItemContent,
 		MapTreeViewLevelItemIconClassPipe,
-		MapTreeViewLevelItemIconColorPipe
+		MapTreeViewLevelItemIconColorPipe,
+		IsLeafPipe,
+		IsHoveredBuildingPipe
 	],
 	entryComponents: [SortingButtonComponent, MetricDeltaSelectedComponent, MapTreeViewLevelItemIcon, MapTreeViewLevelItemContent]
 })

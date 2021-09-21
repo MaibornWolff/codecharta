@@ -1,6 +1,8 @@
-import { Component, Inject, OnInit } from "@angular/core"
+import { Component, Inject, Input, OnInit } from "@angular/core"
 import { Observable } from "rxjs"
+import { CodeMapNode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
+import { totalUnarySelector } from "../../../state/selectors/totalUnary.selector"
 import { hoveredBuildingPathSelector } from "../../../state/store/lookUp/hoveredBuildingPath/hoveredBuildingPath.selector"
 
 @Component({
@@ -8,12 +10,14 @@ import { hoveredBuildingPathSelector } from "../../../state/store/lookUp/hovered
 	template: require("./mapTreeViewLevelItemContent.component.html")
 })
 export class MapTreeViewLevelItemContent implements OnInit {
+	@Input() node: CodeMapNode
 	hoveredBuildingId$: Observable<string | null>
+	totalUnary$
 
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit() {
 		this.hoveredBuildingId$ = this.store.select(hoveredBuildingPathSelector)
-		// this.hoveredBuildingId$.subscribe(v => console.log(v))
+		this.totalUnary$ = this.store.select(totalUnarySelector)
 	}
 }

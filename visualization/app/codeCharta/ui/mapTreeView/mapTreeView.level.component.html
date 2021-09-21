@@ -18,18 +18,7 @@
 			[is-folder-open]="$ctrl._viewModel.isFolderOpened"
 		></cc-map-tree-view-level-item-icon>
 
-		<cc-map-tree-view-level-item-content></cc-map-tree-view-level-item-content>
-
-		<span class="node-name" ng-class="{ flattened: $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched() }">
-			{{::$ctrl.node.name}}
-		</span>
-
-		<span class="unary-number" ng-if="!$ctrl.isLeaf()">
-			<span ng-if="!$ctrl._viewModel.isHoveredInCodeMap">{{ ::$ctrl.getUnaryPercentage() }}%</span>
-			<span ng-if="$ctrl._viewModel.isHoveredInCodeMap">
-				{{ ::$ctrl.getNodeUnaryValue() }} File<span ng-if="$ctrl.getNodeUnaryValue() !== 1">s</span>
-			</span>
-		</span>
+		<cc-map-tree-view-level-item-content [node]="$ctrl.node"></cc-map-tree-view-level-item-content>
 
 		<span class="right-aligned" ng-if="$ctrl._viewModel.isHoveredInTreeView || $ctrl._viewModel.isHoveredInCodeMap">
 			<i class="flattened fa fa-eye-slash" ng-if="$ctrl.node.isFlattened" title="Flattened"></i>
