@@ -43,6 +43,8 @@ export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
+// Todo refcator to memorized selectors
+
 export class CodeMapPreRenderService
 	implements
 		StoreSubscriber,
