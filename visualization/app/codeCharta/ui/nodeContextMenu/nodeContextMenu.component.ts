@@ -33,6 +33,8 @@ export class NodeContextMenuController
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
 	private static HIDE_NODE_CONTEXT_MENU_EVENT = "hide-node-context-menu"
 
+	private static instance: NodeContextMenuController
+
 	private _viewModel: {
 		codeMapNode: CodeMapNode
 		showNodeContextMenu: boolean
@@ -64,6 +66,8 @@ export class NodeContextMenuController
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
 		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
+
+		NodeContextMenuController.instance = this
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
@@ -290,6 +294,21 @@ export class NodeContextMenuController
 			x,
 			y
 		})
+	}
+
+	/** Until we have migrated the context menu to Angular, we use $rootScope from the instance here. */
+	static broadcastShowEvent2(path: string, type: string, x, y) {
+		NodeContextMenuController.instance.$rootScope.$broadcast(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, {
+			path,
+			type,
+			x,
+			y
+		})
+	}
+
+	/** Until we have migrated the context menu to Angular, we use $rootScope from the instance here. */
+	static broadcastHideEvent2() {
+		NodeContextMenuController.instance.$rootScope.$broadcast(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT)
 	}
 
 	static broadcastHideEvent($rootScope: IRootScopeService) {

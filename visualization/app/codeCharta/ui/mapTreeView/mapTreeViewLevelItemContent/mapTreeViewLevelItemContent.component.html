@@ -8,3 +8,13 @@
 	<ng-template #unaryValue>{{ node.attributes.unary }} File<span *ngIf="node.attributes.unary !== 1">s</span></ng-template>
 	<ng-template #unaryPercentage>{{ (100 * node.attributes.unary) / (totalUnary$ | async) }}%</ng-template>
 </span>
+
+<span class="right-aligned" *ngIf="node | isHoveredBuilding: (hoveredBuildingId$ | async)">
+	<i class="flattened fa fa-eye-slash" *ngIf="node.isFlattened" title="Flattened"></i>
+
+	<div class="small-action-button transparent">
+		<button class="md-fab" (click)="openNodeContextMenu($event)" title="Open Node-Context-Menu">
+			<i class="fa fa-ellipsis-h"></i>
+		</button>
+	</div>
+</span>
