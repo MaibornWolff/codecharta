@@ -26,7 +26,7 @@ buildscript {
         hamkrest_version = '1.8.0.1'
         junit4_version = '4.12'
         junit5_version = '5.8.0'
-        junit_platform_version = '1.8.0'
+        junit_platform_version = '1.8.1'
         ktlint_version = '10.2.0'
 
         mockito_core_version = '3.5.7'
