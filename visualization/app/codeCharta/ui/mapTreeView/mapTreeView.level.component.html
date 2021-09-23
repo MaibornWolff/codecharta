@@ -1,29 +1,29 @@
 <div
-	ng-if="!$ctrl.node.isExcluded"
-	class="tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
-	ng-init="$ctrl.openRootFolderByDefault($ctrl.depth)"
-	id="{{::$ctrl.depth?'':'tree-root'}}"
+	*ngIf="!node.isExcluded"
+	class="tree-element-{{ depth }} {{ (node | isLeaf) ? 'tree-leaf' : 'tree-parent' }}"
+	id="{{ depth ? '' : 'tree-root' }}"
 >
 	<div
-		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label"
-		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap, marked: $ctrl._viewModel.isMarked }"
-		ng-mouseenter="$ctrl.onMouseEnter()"
-		ng-mouseleave="$ctrl.onMouseLeave()"
-		ng-right-click="$ctrl.openNodeContextMenu($event)"
-		ng-click="$ctrl.onClickNode()"
-		id="{{ ::$ctrl.node.path }}"
+		class="tree-element-label-{{ depth }} tree-element-label"
+		[ngClass]="{ hovered: node | isHoveredBuilding: (hoveredBuildingId$ | async), marked: isMarked }"
+		(mouseenter)="onMouseEnter()"
+		(mouseleave)="onMouseLeave()"
+		(contextmenu)="openNodeContextMenu($event)"
+		(click)="onClickNode()"
+		id="{{ node.path }}"
 	>
-		<cc-map-tree-view-level-item-icon
-			[node]="$ctrl.node"
-			[is-folder-open]="$ctrl._viewModel.isFolderOpened"
-		></cc-map-tree-view-level-item-icon>
+		<cc-map-tree-view-level-item-icon [node]="node" [isFolderOpen]="isFolderOpened"></cc-map-tree-view-level-item-icon>
 
-		<cc-map-tree-view-level-item-content [node]="$ctrl.node"></cc-map-tree-view-level-item-content>
+		<cc-map-tree-view-level-item-content
+			[node]="node"
+			[openNodeContextMenu]="openNodeContextMenu"
+		></cc-map-tree-view-level-item-content>
 	</div>
 
-	<div class="tree-element-children tree-element-children-{{::$ctrl.depth?$ctrl.depth:0}}">
-		<div ng-if="$ctrl._viewModel.isFolderOpened" ng-repeat="node in $ctrl.node.children">
-			<map-tree-view-level-component node="::node" depth="::$ctrl.depth+1"></map-tree-view-level-component>
+	<div class="tree-element-children tree-element-children-{{ depth }}">
+		<ng-container *ngIf="isFolderOpened"></ng-container>
+		<div *ngFor="let node of node.children">
+			<cc-map-tree-view-level [node]="node" [depth]="depth + 1"></cc-map-tree-view-level>
 		</div>
 	</div>
 </div>

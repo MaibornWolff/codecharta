@@ -13,6 +13,7 @@ import { MapTreeViewLevelItemIconColorPipe } from "./codeCharta/ui/mapTreeView/m
 import { MapTreeViewLevelItemContent } from "./codeCharta/ui/mapTreeView/mapTreeViewLevelItemContent/mapTreeViewLevelItemContent.component"
 import { IsLeafPipe } from "./codeCharta/ui/mapTreeView/pipes/isLeaf.pipe"
 import { IsHoveredBuildingPipe } from "./codeCharta/ui/mapTreeView/pipes/isBuildingHovered.pipe"
+import { MapTreeViewLevel } from "./codeCharta/ui/mapTreeView/mapTreeView.level.component"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule],
@@ -21,12 +22,19 @@ import { IsHoveredBuildingPipe } from "./codeCharta/ui/mapTreeView/pipes/isBuild
 		MetricDeltaSelectedComponent,
 		MapTreeViewLevelItemIcon,
 		MapTreeViewLevelItemContent,
+		MapTreeViewLevel,
 		MapTreeViewLevelItemIconClassPipe,
 		MapTreeViewLevelItemIconColorPipe,
 		IsLeafPipe,
 		IsHoveredBuildingPipe
 	],
-	entryComponents: [SortingButtonComponent, MetricDeltaSelectedComponent, MapTreeViewLevelItemIcon, MapTreeViewLevelItemContent]
+	entryComponents: [
+		SortingButtonComponent,
+		MetricDeltaSelectedComponent,
+		MapTreeViewLevelItemIcon,
+		MapTreeViewLevelItemContent,
+		MapTreeViewLevel
+	]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}

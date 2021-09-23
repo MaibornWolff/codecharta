@@ -4,7 +4,6 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
 import { totalUnarySelector } from "../../../state/selectors/totalUnary.selector"
 import { hoveredBuildingPathSelector } from "../../../state/store/lookUp/hoveredBuildingPath/hoveredBuildingPath.selector"
-import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu.component"
 
 @Component({
 	selector: "cc-map-tree-view-level-item-content",
@@ -12,6 +11,7 @@ import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu
 })
 export class MapTreeViewLevelItemContent implements OnInit {
 	@Input() node: CodeMapNode
+	@Input() openNodeContextMenu // todo type of click handler
 	hoveredBuildingId$: Observable<string | null>
 	totalUnary$
 
@@ -20,17 +20,5 @@ export class MapTreeViewLevelItemContent implements OnInit {
 	ngOnInit() {
 		this.hoveredBuildingId$ = this.store.select(hoveredBuildingPathSelector)
 		this.totalUnary$ = this.store.select(totalUnarySelector)
-	}
-
-	openNodeContextMenu($event) {
-		$event.stopPropagation()
-		NodeContextMenuController.broadcastShowEvent2(this.node.path, this.node.type, $event.clientX, $event.clientY)
-		// this._viewModel.isMarked = true
-		document.getElementById("tree-root").addEventListener("scroll", this.hideContextMenuOnceOnScroll)
-	}
-
-	private hideContextMenuOnceOnScroll = () => {
-		NodeContextMenuController.broadcastHideEvent2()
-		document.getElementById("tree-root").removeEventListener("scroll", this.hideContextMenuOnceOnScroll)
 	}
 }

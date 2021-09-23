@@ -1,111 +1,65 @@
-import { IRootScopeService } from "angular"
-import { HideNodeContextMenuSubscriber, NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
-import { isLeaf } from "../../util/codeMapHelper"
-import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapNode } from "../../codeCharta.model"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { StoreService } from "../../state/store.service"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { setHoveredBuildingPath } from "../../state/store/lookUp/hoveredBuildingPath/hoveredBuildingPath.actions"
+import { Component, Inject, Input, OnInit } from "@angular/core"
+import { Store } from "../../state/angular-redux/store"
+import { Observable } from "rxjs"
+import { hoveredBuildingPathSelector } from "../../state/store/lookUp/hoveredBuildingPath/hoveredBuildingPath.selector"
 
-export class MapTreeViewLevelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, HideNodeContextMenuSubscriber {
-	private node: CodeMapNode = null
+@Component({
+	selector: "cc-map-tree-view-level",
+	template: require("./mapTreeView.level.component.html")
+})
+export class MapTreeViewLevel implements OnInit {
+	@Input() node: CodeMapNode
+	@Input() depth: number
+	hoveredBuildingId$: Observable<string | null>
+	isMarked = false
+	isFolderOpen = false
 
-	private _viewModel: {
-		isHoveredInCodeMap: boolean
-		isHoveredInTreeView: boolean
-		isMarked: boolean
-		isFolderOpened: boolean
-	} = {
-		isHoveredInCodeMap: false,
-		isHoveredInTreeView: false,
-		isMarked: false,
-		isFolderOpened: false
+	constructor(@Inject(Store) private store: Store) {
+		this.hoveredBuildingId$ = this.store.select(hoveredBuildingPathSelector)
 	}
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private codeMapPreRenderService: CodeMapPreRenderService,
-		private storeService: StoreService
-	) {
-		"ngInject"
-		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
+	ngOnInit() {
+		if (this.depth === 0) this.isFolderOpen = true
 	}
 
+	// todo
 	onHideNodeContextMenu() {
-		this._viewModel.isMarked = false
-	}
-
-	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		this._viewModel.isHoveredInCodeMap = Boolean(this.node?.path && hoveredBuilding.node?.path === this.node.path)
-	}
-
-	onBuildingUnhovered() {
-		this._viewModel.isHoveredInCodeMap = false
+		this.isMarked = false
 	}
 
 	onMouseEnter() {
-		this.storeService.dispatch(setHoveredBuildingPath(this.node.path))
-		this._viewModel.isHoveredInTreeView = true
+		this.store.dispatch(setHoveredBuildingPath(this.node.path))
 	}
 
 	onMouseLeave() {
-		this.storeService.dispatch(setHoveredBuildingPath(null))
-		this._viewModel.isHoveredInTreeView = false
+		this.store.dispatch(setHoveredBuildingPath(null))
 	}
 
 	openNodeContextMenu($event) {
+		// console.log("hi from openNodeContextMenu")
 		$event.stopPropagation()
-		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
-		this._viewModel.isMarked = true
-		document.getElementById("tree-root").addEventListener("scroll", this.scrollFunction)
+		NodeContextMenuController.broadcastShowEvent2(this.node.path, this.node.type, $event.clientX, $event.clientY)
+		this.isMarked = true
+		document.getElementById("tree-root").addEventListener("scroll", this.hideContextMenuOnceOnScroll)
+	}
+
+	private hideContextMenuOnceOnScroll = () => {
+		NodeContextMenuController.broadcastHideEvent2()
+		document.getElementById("tree-root").removeEventListener("scroll", this.hideContextMenuOnceOnScroll)
 	}
 
 	onClickNode() {
-		this._viewModel.isFolderOpened = !this._viewModel.isFolderOpened
-	}
-
-	isLeaf(node: CodeMapNode = this.node) {
-		return isLeaf(node)
+		this.isFolderOpen = !this.isFolderOpen
 	}
 
 	isSearched() {
-		if (this.node && this.storeService.getState().dynamicSettings.searchedNodePaths) {
-			return this.storeService.getState().dynamicSettings.searchedNodePaths.has(this.node.path)
-		}
+		// todo
+		// if (this.node && this.storeService.getState().dynamicSettings.searchedNodePaths) {
+		// 	return this.storeService.getState().dynamicSettings.searchedNodePaths.has(this.node.path)
+		// }
 		return false
-	}
-
-	openRootFolderByDefault(depth: number) {
-		if (depth === 0) {
-			this._viewModel.isFolderOpened = true
-		}
-	}
-
-	getNodeUnaryValue() {
-		return this.node.attributes[NodeMetricDataService.UNARY_METRIC]
-	}
-
-	getUnaryPercentage() {
-		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[NodeMetricDataService.UNARY_METRIC]
-		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
-	}
-
-	private scrollFunction = () => {
-		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-		document.getElementById("tree-root").removeEventListener("scroll", this.scrollFunction)
-	}
-}
-
-export const mapTreeViewLevelComponent = {
-	selector: "mapTreeViewLevelComponent",
-	template: require("./mapTreeView.level.component.html"),
-	controller: MapTreeViewLevelController,
-	bindings: {
-		node: "<",
-		depth: "<"
 	}
 }
