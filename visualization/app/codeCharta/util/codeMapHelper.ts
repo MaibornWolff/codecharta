@@ -98,7 +98,7 @@ export function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>,
 	return ig.ignores(transformPath(path))
 }
 
-export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]) {
+export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string | void {
 	if (markedPackages) {
 		let longestPathParentPackage: MarkedPackage
 		for (const markedPackage of markedPackages) {
