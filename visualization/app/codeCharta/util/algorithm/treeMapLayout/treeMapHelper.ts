@@ -208,68 +208,76 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 	const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
 	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
 
-	switch (dynamicSettings.colorMode) {
+	const {colorRange, colorMode} = dynamicSettings
+
+	switch (colorMode) {
 		case ColorMode.trueGradient: {
-			const middle = (dynamicSettings.colorRange.from + dynamicSettings.colorRange.to) / 2
-
-			if (metricValue <= middle) {
-				const factor = metricValue / middle
-				return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
-			}
-
-			if (metricValue <= dynamicSettings.colorRange.max && metricValue > middle) {
-				const factor = (metricValue - middle) / (dynamicSettings.colorRange.max - middle)
-				return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
-			}
+			return calculateTrueGradient(colorRange, metricValue, positiveColorRGB, neutralColorRGB, negativeColorRGB);
 			break
 		}
 
 		case ColorMode.weightedGradient: {
-			const greenStart = Math.max(
-				dynamicSettings.colorRange.from - (dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2,
-				dynamicSettings.colorRange.from / 2
-			)
-
-			const yellowStart = 2 * dynamicSettings.colorRange.from - greenStart
-
-			const redStart = dynamicSettings.colorRange.to - (dynamicSettings.colorRange.to - dynamicSettings.colorRange.from) / 2
-
-			const redEnd = dynamicSettings.colorRange.to
-
-			if (metricValue <= greenStart) {
-				return mapColors.positive
-			}
-
-			if (metricValue >= greenStart && metricValue <= yellowStart) {
-				const factor = (metricValue - greenStart) / (yellowStart - greenStart)
-				return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
-			}
-
-			if (metricValue >= yellowStart && metricValue <= redStart) {
-				return mapColors.neutral
-			}
-
-			if (metricValue >= redStart && metricValue <= redEnd) {
-				const factor = (metricValue - redStart) / (redEnd - redStart)
-				return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
-			}
-
-			if (metricValue >= redEnd) {
-				return mapColors.negative
-			}
+			return calculateWeightedGradient(mapColors, colorRange, metricValue, positiveColorRGB, neutralColorRGB, negativeColorRGB)
 			break
 		}
 
 		case ColorMode.absolute:
-			if (metricValue < dynamicSettings.colorRange.from) {
+			if (metricValue < colorRange.from) {
 				return mapColors.positive
 			}
-
-			if (metricValue > dynamicSettings.colorRange.to) {
+			if (metricValue > colorRange.to) {
 				return mapColors.negative
 			}
 			return mapColors.neutral
-			break
+	}
+}
+
+function calculateTrueGradient(colorRange: { from: any; to: any; max: number }, metricValue: number, positiveColorRGB: Color, neutralColorRGB: Color, negativeColorRGB: Color) {
+	const middle = (colorRange.from + colorRange.to) / 2
+
+	if (metricValue <= middle) {
+		const factor = metricValue / middle
+		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
+	}
+
+	if (metricValue <= colorRange.max && metricValue > middle) {
+		const factor = (metricValue - middle) / (colorRange.max - middle)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
+	}
+}
+
+function calculateWeightedGradient(mapColors: { positive: any; neutral: any; negative: any } ,colorRange: { from: any; to: any; max: number }, metricValue: number, positiveColorRGB: Color, neutralColorRGB: Color, negativeColorRGB: Color) {
+	const startValuePositiveToNeutralGradient = Math.max(
+		colorRange.from - (colorRange.to - colorRange.from) / 2,
+		colorRange.from / 2
+	)
+
+	const endValuePositiveToNeutralGradient = 2 * colorRange.from - startValuePositiveToNeutralGradient
+
+	const startValueNeutralToNegativeGradient = colorRange.to - (colorRange.to - colorRange.from) / 2
+
+	const endValueNeutralToNegativeGradient = colorRange.to
+
+	if (metricValue <= startValuePositiveToNeutralGradient) {
+		return mapColors.positive
+	}
+
+	if (metricValue >= startValuePositiveToNeutralGradient && metricValue <= endValuePositiveToNeutralGradient) {
+		const factor = (metricValue - startValuePositiveToNeutralGradient) / (endValuePositiveToNeutralGradient - startValuePositiveToNeutralGradient)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
+	}
+
+	if (metricValue >= endValuePositiveToNeutralGradient && metricValue <= startValueNeutralToNegativeGradient) {
+		return mapColors.neutral
+	}
+
+	if (metricValue >= startValueNeutralToNegativeGradient && metricValue <= endValueNeutralToNegativeGradient) {
+		const factor = (metricValue - startValueNeutralToNegativeGradient) / (endValueNeutralToNegativeGradient - startValueNeutralToNegativeGradient)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
+	}
+
+	if (metricValue >= endValueNeutralToNegativeGradient) {
+		return mapColors.negative
 	}
 }
 

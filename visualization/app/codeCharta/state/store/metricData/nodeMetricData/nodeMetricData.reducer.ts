@@ -19,22 +19,22 @@ export function nodeMetricData(state = setNodeMetricData().payload, action: Node
 }
 
 function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
-	const hashMap: Map<string, number> = new Map()
-	const secondMap: Map<string, number> = new Map()
+	const metricMaxValues: Map<string, number> = new Map()
+	const metricMinValues: Map<string, number> = new Map()
 
 	for (const { file } of getVisibleFileStates(fileStates)) {
 		for (const node of hierarchy(file.map)) {
 			if (isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)) {
 				for (const metric of Object.keys(node.data.attributes)) {
-					const maxValue = hashMap.get(metric)
-					const minValue = secondMap.get(metric)
+					const maxValue = metricMaxValues.get(metric)
+					const minValue = metricMinValues.get(metric)
 
 					if (minValue === undefined || minValue >= node.data.attributes[metric]) {
-						secondMap.set(metric, node.data.attributes[metric])
+						metricMinValues.set(metric, node.data.attributes[metric])
 					}
 
 					if (maxValue === undefined || maxValue <= node.data.attributes[metric]) {
-						hashMap.set(metric, node.data.attributes[metric])
+						metricMaxValues.set(metric, node.data.attributes[metric])
 					}
 				}
 			}
@@ -44,14 +44,14 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	const metricData: NodeMetricData[] = []
 
 	// TODO: Remove the unary metric.
-	hashMap.set(NodeMetricDataService.UNARY_METRIC, 1)
-	secondMap.set(NodeMetricDataService.UNARY_METRIC, 1)
+	metricMaxValues.set(NodeMetricDataService.UNARY_METRIC, 1)
+	metricMinValues.set(NodeMetricDataService.UNARY_METRIC, 1)
 
-	for (const [key, value] of hashMap) {
+	for (const [key, value] of metricMaxValues) {
 		metricData.push({
 			name: key,
 			maxValue: value,
-			minValue: secondMap.get(key)
+			minValue: metricMinValues.get(key)
 		})
 	}
 
