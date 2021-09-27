@@ -64,7 +64,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		this._viewModel.isHoveredInTreeView = false
 	}
 
-	openNodeContextMenu($event) {
+	openNodeContextMenu = $event => {
 		$event.stopPropagation()
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
 		this._viewModel.isMarked = true
