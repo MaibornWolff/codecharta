@@ -127,7 +127,7 @@
 		"open": "^8.0.6",
 		"redux": "^4.0.5",
 		"remark": "^13.0.0",
-		"remark-html": "^13.0.1",
+		"remark-html": "^14.0.1",
 		"remark-loader": "^4.0.0",
 		"shelljs": "^0.8.4",
 		"three": "^0.126.1",
