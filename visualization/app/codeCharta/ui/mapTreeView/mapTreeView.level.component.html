@@ -14,10 +14,7 @@
 		id="{{ ::$ctrl.node.path }}"
 	>
 		<cc-map-tree-view-item-icon [node]="$ctrl.node" [is-folder-open]="$ctrl._viewModel.isFolderOpened"></cc-map-tree-view-item-icon>
-
-		<span class="node-name" ng-class="{ flattened: $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched() }">
-			{{::$ctrl.node.name}}
-		</span>
+    <cc-map-tree-view-item-name [node]="$ctrl.node"></cc-map-tree-view-item-name>
 
 		<span class="unary-number" ng-if="!$ctrl.isLeaf()">
 			<span ng-if="!$ctrl._viewModel.isHoveredInCodeMap">{{ ::$ctrl.getUnaryPercentage() }}%</span>

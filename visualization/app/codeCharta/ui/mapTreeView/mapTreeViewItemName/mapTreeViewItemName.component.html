@@ -1,0 +1,15 @@
+<!---
+<span class="unary-number" ng-if="!$ctrl.isLeaf()">
+  <span ng-if="!$ctrl._viewModel.isHoveredInCodeMap">{{ ::$ctrl.getUnaryPercentage() }}%</span>
+  <span ng-if="$ctrl._viewModel.isHoveredInCodeMap">
+    {{ ::$ctrl.getNodeUnaryValue() }} File<span ng-if="$ctrl.getNodeUnaryValue() !== 1">s</span>
+  </span>
+</span> --->
+
+<span
+	class="node-name"
+	[class.flattened]="node.isFlattened"
+	[class.angular-green]="searchedNodePaths$ | async | mapTreeViewItemSearchedNameHighlight: node.path"
+>
+	{{ node.name }}
+</span>

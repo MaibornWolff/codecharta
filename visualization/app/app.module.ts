@@ -10,6 +10,8 @@ import { MapTreeViewItemIcon } from "./codeCharta/ui/mapTreeView/mapTreeViewItem
 import { MapTreeViewItemIconClassPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemIcon/mapTreeViewItemIconClass.pipe"
 import { MapTreeViewItemIconColorPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemIcon/mapTreeViewItemIconColor.pipe"
 import { MapTreeViewItemOptionButtonsComponent } from "./codeCharta/ui/mapTreeView/mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
+import { MapTreeViewItemName } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/mapTreeViewItemName.component"
+import { MapTreeViewItemSearchedNameHighlightPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/mapTreeViewItemSearchedNameHighlight.pipe"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule],
@@ -18,9 +20,11 @@ import { MapTreeViewItemOptionButtonsComponent } from "./codeCharta/ui/mapTreeVi
 		MapTreeViewItemIcon,
 		MapTreeViewItemIconClassPipe,
 		MapTreeViewItemIconColorPipe,
-		MapTreeViewItemOptionButtonsComponent
+		MapTreeViewItemOptionButtonsComponent,
+		MapTreeViewItemName,
+		MapTreeViewItemSearchedNameHighlightPipe
 	],
-	entryComponents: [SortingButtonComponent, MapTreeViewItemIcon, MapTreeViewItemOptionButtonsComponent]
+	entryComponents: [SortingButtonComponent, MapTreeViewItemIcon, MapTreeViewItemOptionButtonsComponent, MapTreeViewItemName]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}
