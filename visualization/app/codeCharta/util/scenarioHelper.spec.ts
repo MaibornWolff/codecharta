@@ -187,7 +187,7 @@ describe("scenarioHelper", () => {
 			{
 				metricType: ScenarioMetricType.COLOR_METRIC,
 				metricName: "mcc",
-				savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+				savedValues: { colorRange: { from: 19, to: 67, max: 100, min: 1 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 				isSelected: true,
 				isDisabled: false
 			},

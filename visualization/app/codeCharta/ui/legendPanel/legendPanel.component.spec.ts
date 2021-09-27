@@ -164,13 +164,13 @@ describe("LegendPanelController", () => {
 		it("should update the edge metric and determine if edges exist", () => {
 			const newEdgeMetric = "new_edge_metric"
 
-			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 0 }]))
+			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 0, minValue: 0 }]))
 			legendPanelController.onEdgeMetricChanged(newEdgeMetric)
 
 			expect(legendPanelController["_viewModel"].edge).toEqual(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edgeMetricHasEdge).toBeFalsy()
 
-			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 3 }]))
+			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 3, minValue: 1 }]))
 			legendPanelController.onEdgeMetricChanged(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edge).toEqual(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edgeMetricHasEdge).toBeTruthy()

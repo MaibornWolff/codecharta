@@ -1917,7 +1917,9 @@ export const SCENARIO: RecursivePartial<Scenario> = {
 		colorMetric: "mcc",
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			max: 100,
+			min: 1
 		},
 		mapColors: DEFAULT_STATE.appSettings.mapColors
 	},
@@ -1941,7 +1943,9 @@ export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			max: 100,
+			min: 1
 		}
 	},
 	appSettings: {

@@ -59,7 +59,7 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 
 	getMinMetricByMetricName(metricName: string) {
 		const metric = this.storeService.getState().metricData.nodeMetricData.find(x => x.name === metricName)
-		return metric?.minValue
+		return metric ? metric.minValue : 0
 	}
 
 	getAttributeTypeByMetric(metricName: string) {

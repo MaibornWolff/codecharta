@@ -8,10 +8,10 @@ import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
 import { METRIC_DATA, PARTIAL_SETTINGS, SCENARIO_ITEMS } from "../../util/dataMocks"
-import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
+import {setColorRange} from "../../state/store/dynamicSettings/colorRange/colorRange.actions";
 
 describe("ScenarioDropDownController", () => {
 	let scenarioButtonsController: ScenarioDropDownController

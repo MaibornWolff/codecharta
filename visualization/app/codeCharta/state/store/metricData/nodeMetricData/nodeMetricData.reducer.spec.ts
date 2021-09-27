@@ -44,9 +44,9 @@ describe("nodeMetricData", () => {
 	describe("Action: CALCULATE_NEW_METRIC_DATA", () => {
 		it("should return a sorted array of metricData sorted by name calculated from visibleFileStates", () => {
 			const expected = [
-				{ maxValue: 1000, minValue: 100, name: "functions" },
-				{ maxValue: 100, minValue: 10, name: "mcc" },
-				{ maxValue: 70, minValue: 30, name: "rloc" },
+				{ maxValue: 1000, minValue: 10, name: "functions" },
+				{ maxValue: 100, minValue: 1, name: "mcc" },
+				{ maxValue: 100, minValue: 30, name: "rloc" },
 				{ maxValue: 1, minValue: 1, name: NodeMetricDataService.UNARY_METRIC }
 			]
 

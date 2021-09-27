@@ -1,7 +1,7 @@
-import { TreeMapHelper } from "./treeMapHelper"
-import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../../../codeCharta.model"
-import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
-import { HierarchyRectangularNode } from "d3-hierarchy"
+import {TreeMapHelper} from "./treeMapHelper"
+import {BlacklistType, CodeMapNode, ColorMode, EdgeVisibility, NodeType, State} from "../../../codeCharta.model"
+import {CODE_MAP_BUILDING, STATE} from "../../dataMocks"
+import {HierarchyRectangularNode} from "d3-hierarchy"
 
 describe("TreeMapHelper", () => {
 	describe("build node", () => {
@@ -225,6 +225,7 @@ describe("TreeMapHelper", () => {
 				state.dynamicSettings.colorRange.from = 5
 				state.dynamicSettings.colorRange.to = 10
 				state.dynamicSettings.colorMetric = "validMetricName"
+				state.dynamicSettings.colorMode = ColorMode.absolute
 			})
 
 			it("creates grey building for undefined colorMetric", () => {

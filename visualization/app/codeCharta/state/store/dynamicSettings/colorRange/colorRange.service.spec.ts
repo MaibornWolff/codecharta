@@ -81,7 +81,7 @@ describe("ColorRangeService", () => {
 		it("should reset the color range", () => {
 			colorRangeService.onFilesSelectionChanged()
 
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66, max: 100, min: 1 })
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66, max: 100, min: 0 })
 		})
 	})
 })
