@@ -24,20 +24,20 @@ import {
 	SortingOption,
 	State
 } from "../codeCharta.model"
-import {CodeMapBuilding} from "../ui/codeMap/rendering/codeMapBuilding"
-import {MetricDistribution} from "./fileExtensionCalculator"
-import {Box3, Vector3} from "three"
-import {IRootScopeService} from "angular"
-import {hierarchy} from "d3-hierarchy"
-import {AddScenarioContent, ScenarioMetricType} from "../ui/dialog/dialog.addScenarioSettings.component"
-import {ScenarioItem} from "../ui/scenarioDropDown/scenarioDropDown.component"
-import {FileSelectionState, FileState} from "../model/files/files"
-import {APIVersions, ExportCCFile} from "../codeCharta.api.model"
-import {NodeMetricDataService} from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
+import { MetricDistribution } from "./fileExtensionCalculator"
+import { Box3, Vector3 } from "three"
+import { IRootScopeService } from "angular"
+import { hierarchy } from "d3-hierarchy"
+import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
+import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import { FileSelectionState, FileState } from "../model/files/files"
+import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
-import {isLeaf} from "./codeMapHelper"
-import {CustomConfigItemGroup} from "../ui/customConfigs/customConfigs.component"
-import {CustomConfigMapSelectionMode} from "../model/customConfig/customConfig.api.model"
+import { isLeaf } from "./codeMapHelper"
+import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
+import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",

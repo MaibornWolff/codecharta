@@ -59,9 +59,9 @@ export class ColorConverter {
 
 	static convertColorToHex(colorObject: Color) {
 		return [colorObject.r, colorObject.g, colorObject.b].reduce((string, color) => {
-			string += Math.round(color).toString(16).padStart(2, '0')
+			string += Math.round(color).toString(16).padStart(2, "0")
 			return string
-		}, '#')
+		}, "#")
 	}
 
 	static hexToHSL(hex: string) {

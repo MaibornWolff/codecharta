@@ -115,7 +115,7 @@ describe("scenarioHelper", () => {
 			]
 
 			const result = ScenarioHelper.getScenarioItems({
-				nodeMetricData: [{ name: "mcc", maxValue: 56, minValue: 1}],
+				nodeMetricData: [{ name: "mcc", maxValue: 56, minValue: 1 }],
 				edgeMetricData: [{ name: "None", maxValue: 0, minValue: 1 }]
 			})
 

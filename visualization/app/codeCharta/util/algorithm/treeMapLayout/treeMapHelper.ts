@@ -208,11 +208,11 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 	const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
 	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
 
-	const {colorRange, colorMode} = dynamicSettings
+	const { colorRange, colorMode } = dynamicSettings
 
 	switch (colorMode) {
 		case ColorMode.trueGradient: {
-			return calculateTrueGradient(colorRange, metricValue, positiveColorRGB, neutralColorRGB, negativeColorRGB);
+			return calculateTrueGradient(colorRange, metricValue, positiveColorRGB, neutralColorRGB, negativeColorRGB)
 			break
 		}
 
@@ -232,7 +232,13 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 	}
 }
 
-function calculateTrueGradient(colorRange: { from: any; to: any; max: number }, metricValue: number, positiveColorRGB: Color, neutralColorRGB: Color, negativeColorRGB: Color) {
+function calculateTrueGradient(
+	colorRange: { from: any; to: any; max: number },
+	metricValue: number,
+	positiveColorRGB: Color,
+	neutralColorRGB: Color,
+	negativeColorRGB: Color
+) {
 	const middle = (colorRange.from + colorRange.to) / 2
 
 	if (metricValue <= middle) {
@@ -246,11 +252,15 @@ function calculateTrueGradient(colorRange: { from: any; to: any; max: number }, 
 	}
 }
 
-function calculateWeightedGradient(mapColors: { positive: any; neutral: any; negative: any } ,colorRange: { from: any; to: any; max: number }, metricValue: number, positiveColorRGB: Color, neutralColorRGB: Color, negativeColorRGB: Color) {
-	const startValuePositiveToNeutralGradient = Math.max(
-		colorRange.from - (colorRange.to - colorRange.from) / 2,
-		colorRange.from / 2
-	)
+function calculateWeightedGradient(
+	mapColors: { positive: any; neutral: any; negative: any },
+	colorRange: { from: any; to: any; max: number },
+	metricValue: number,
+	positiveColorRGB: Color,
+	neutralColorRGB: Color,
+	negativeColorRGB: Color
+) {
+	const startValuePositiveToNeutralGradient = Math.max(colorRange.from - (colorRange.to - colorRange.from) / 2, colorRange.from / 2)
 
 	const endValuePositiveToNeutralGradient = 2 * colorRange.from - startValuePositiveToNeutralGradient
 
@@ -263,7 +273,8 @@ function calculateWeightedGradient(mapColors: { positive: any; neutral: any; neg
 	}
 
 	if (metricValue >= startValuePositiveToNeutralGradient && metricValue <= endValuePositiveToNeutralGradient) {
-		const factor = (metricValue - startValuePositiveToNeutralGradient) / (endValuePositiveToNeutralGradient - startValuePositiveToNeutralGradient)
+		const factor =
+			(metricValue - startValuePositiveToNeutralGradient) / (endValuePositiveToNeutralGradient - startValuePositiveToNeutralGradient)
 		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
 	}
 
@@ -272,7 +283,8 @@ function calculateWeightedGradient(mapColors: { positive: any; neutral: any; neg
 	}
 
 	if (metricValue >= startValueNeutralToNegativeGradient && metricValue <= endValueNeutralToNegativeGradient) {
-		const factor = (metricValue - startValueNeutralToNegativeGradient) / (endValueNeutralToNegativeGradient - startValueNeutralToNegativeGradient)
+		const factor =
+			(metricValue - startValueNeutralToNegativeGradient) / (endValueNeutralToNegativeGradient - startValueNeutralToNegativeGradient)
 		return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
 	}
 

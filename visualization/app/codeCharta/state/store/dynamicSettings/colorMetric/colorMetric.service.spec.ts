@@ -72,7 +72,7 @@ describe("ColorMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update colorMetric if current colorMetric is not available", () => {
 			const metricData = [
-				{ name: "a", maxValue: 1, minValue: 1},
+				{ name: "a", maxValue: 1, minValue: 1 },
 				{ name: "b", maxValue: 2, minValue: 1 },
 				{ name: "c", maxValue: 2, minValue: 1 },
 				{ name: "d", maxValue: 2, minValue: 1 }

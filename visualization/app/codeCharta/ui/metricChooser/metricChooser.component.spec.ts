@@ -201,7 +201,7 @@ describe("MetricChooserController", () => {
 		it("should return rloc metric when searchTerm is only 'rl'", () => {
 			const metricData = [
 				{ name: "rloc", maxValue: 1, minValue: 1 },
-				{ name: "mcc", maxValue: 2, minValue: 1}
+				{ name: "mcc", maxValue: 2, minValue: 1 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rl"
