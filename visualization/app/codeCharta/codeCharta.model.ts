@@ -329,7 +329,7 @@ export interface Node {
 	visible: boolean
 	path: string
 	link: string
-	markingColor: string
+	markingColor: string | void
 	flat: boolean
 	color: string
 	incomingEdgePoint: Vector3
