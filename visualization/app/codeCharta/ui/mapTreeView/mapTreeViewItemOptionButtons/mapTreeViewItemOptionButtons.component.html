@@ -1,0 +1,9 @@
+<span role="button" class="right-aligned" *ngIf="isHoveredInTreeView || isHoveredInCodeMap" aria-hidden="true">
+	<i class="flattened fa fa-eye-slash" *ngIf="isFlattened" title="Flattened"></i>
+
+	<div class="small-action-button transparent">
+		<button class="md-fab" (click)="openNodeContextMenu($event)" title="Open Node-Context-Menu">
+			<i class="fa fa-ellipsis-h"></i>
+		</button>
+	</div>
+</span>
