@@ -12,6 +12,7 @@ import { PanelSelectionActions } from "./store/appSettings/panelSelection/panelS
 import { PresentationModeActions } from "./store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { ExperimentalFeaturesEnabledActions } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { Store } from "./store/store"
+import { ScreenshotToClipboardEnabledActions } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -55,6 +56,7 @@ export class StoreService {
 				isActionOfType(action.type, PanelSelectionActions) ||
 				isActionOfType(action.type, PresentationModeActions) ||
 				isActionOfType(action.type, ExperimentalFeaturesEnabledActions) ||
+				isActionOfType(action.type, ScreenshotToClipboardEnabledActions) ||
 				options.silent
 			)
 		) {

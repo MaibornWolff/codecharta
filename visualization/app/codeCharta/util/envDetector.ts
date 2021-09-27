@@ -1,5 +1,5 @@
 export function isStandalone(): boolean {
-	return JSON.parse(process.env.STANDALONE)
+	return process.env.STANDALONE === undefined ? false : JSON.parse(process.env.STANDALONE)
 }
 
 export function isDevelopment(): boolean {

@@ -156,6 +156,7 @@ export interface AppSettings {
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	colorLabels: colorLabelOptions
 }
 
@@ -279,6 +280,7 @@ export interface GlobalSettings {
 	isWhiteBackground: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	experimentalFeaturesEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	layoutAlgorithm: LayoutAlgorithm
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
@@ -338,7 +340,7 @@ export interface Node {
 	visible: boolean
 	path: string
 	link: string
-	markingColor: string
+	markingColor: string | void
 	flat: boolean
 	color: string
 	incomingEdgePoint: Vector3

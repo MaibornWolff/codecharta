@@ -6,8 +6,8 @@ import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Test

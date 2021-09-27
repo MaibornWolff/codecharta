@@ -70,6 +70,7 @@ function initializeAppSettings(target: CustomConfig) {
 		showOnlyBuildingsWithEdges: false,
 		sortingOrderAscending: false,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: undefined,
 		maxTreeMapFiles: 0,
 		sharpnessMode: undefined,

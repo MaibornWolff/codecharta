@@ -104,6 +104,12 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					path: "/root/src/main/file2.java",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100 }
+				},
+				{
+					name: "readme",
+					path: "/root/src/main/readme",
+					type: NodeType.FILE,
+					attributes: { rloc: 200, functions: 1, mcc: 1 }
 				}
 			]
 		},
@@ -720,7 +726,7 @@ export const FILE_META: FileMeta = {
 	fileChecksum: "md5-fileA",
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
-	exportedFileSize: 300000
+	exportedFileSize: 300_000
 }
 
 export const TEST_FILE_DATA: CCFile = {
@@ -1155,6 +1161,7 @@ export const GLOBAL_SETTINGS: GlobalSettings = {
 	isWhiteBackground: true,
 	resetCameraIfNewFileIsLoaded: true,
 	experimentalFeaturesEnabled: true,
+	screenshotToClipboardEnabled: false,
 	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 	maxTreeMapFiles: 50,
 	sharpnessMode: SharpnessMode.Standard
@@ -1323,7 +1330,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 		fileChecksum: "md5-delta-fileA",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1381,7 +1388,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1455,7 +1462,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1529,7 +1536,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300000
+		exportedFileSize: 300_000
 	},
 	map: {
 		name: "root",
@@ -1685,6 +1692,13 @@ export const FILE_STATES: FileState[] = [
 	}
 ]
 
+export const FILE_STATES_UNSELECTED: FileState[] = [
+	{
+		file: TEST_FILE_DATA,
+		selectedAs: FileSelectionState.None
+	}
+]
+
 export const FILE_STATES_JAVA: FileState[] = [
 	{
 		file: TEST_FILE_DATA_JAVA,
@@ -1784,6 +1798,7 @@ export const STATE: State = {
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
@@ -1849,6 +1864,7 @@ export const DEFAULT_STATE: State = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 100
