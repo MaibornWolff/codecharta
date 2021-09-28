@@ -127,19 +127,19 @@ export class RangeSliderController
 	}
 
 	private updateMaxMetricValue() {
-		this._viewModel.sliderOptions.ceil = this.nodeMetricDataService.getMaxMetricByMetricName(
+		this._viewModel.sliderOptions.ceil = this.nodeMetricDataService.getMaxValueOfMetric(
 			this.storeService.getState().dynamicSettings.colorMetric
 		)
 	}
 
 	private isMaxMetricValueChanged() {
-		const newMaxValue = this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
+		const newMaxValue = this.nodeMetricDataService.getMaxValueOfMetric(this.storeService.getState().dynamicSettings.colorMetric)
 		return this._viewModel.sliderOptions.ceil !== newMaxValue
 	}
 
 	private initSliderOptions() {
 		this._viewModel.sliderOptions = {
-			ceil: this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
+			ceil: this.nodeMetricDataService.getMaxValueOfMetric(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
 			onEnd: (_, modelValue, highValue, pointerType) => this.applySliderUpdateDone(modelValue, highValue, pointerType),
 			pushRange: true,

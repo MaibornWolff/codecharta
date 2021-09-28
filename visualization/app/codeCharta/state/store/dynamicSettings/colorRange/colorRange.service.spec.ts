@@ -34,7 +34,7 @@ describe("ColorRangeService", () => {
 	}
 
 	function withMockedMetricService() {
-		nodeMetricDataService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
+		nodeMetricDataService.getMaxValueOfMetric = jest.fn().mockReturnValue(100)
 	}
 
 	describe("constructor", () => {

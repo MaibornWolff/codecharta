@@ -46,7 +46,7 @@ describe("RangeSliderController", () => {
 	})
 
 	function withMockedMetricService() {
-		nodeMetricDataService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
+		nodeMetricDataService.getMaxValueOfMetric = jest.fn().mockReturnValue(100)
 	}
 
 	function initFiles() {

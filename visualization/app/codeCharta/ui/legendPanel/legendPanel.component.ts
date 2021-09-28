@@ -126,7 +126,7 @@ export class LegendPanelController
 	}
 
 	private updateMaxMetricValue() {
-		this._viewModel.maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(
+		this._viewModel.maxMetricValue = this.nodeMetricDataService.getMaxValueOfMetric(
 			this.storeService.getState().dynamicSettings.colorMetric
 		)
 	}

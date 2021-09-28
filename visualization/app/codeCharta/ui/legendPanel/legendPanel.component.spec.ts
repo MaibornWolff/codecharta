@@ -114,7 +114,7 @@ describe("LegendPanelController", () => {
 		})
 
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			legendPanelController.onFilesSelectionChanged([])
 
@@ -132,7 +132,7 @@ describe("LegendPanelController", () => {
 		})
 
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			legendPanelController.onFilesSelectionChanged([])
 
@@ -179,7 +179,7 @@ describe("LegendPanelController", () => {
 
 	describe("onBlackListChanged", () => {
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			legendPanelController.onBlacklistChanged()
 

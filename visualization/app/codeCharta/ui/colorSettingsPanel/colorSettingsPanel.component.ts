@@ -106,7 +106,7 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 	}
 
 	private updateMaxMetricValue() {
-		this._viewModel.maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(
+		this._viewModel.maxMetricValue = this.nodeMetricDataService.getMaxValueOfMetric(
 			this.storeService.getState().dynamicSettings.colorMetric
 		)
 	}
