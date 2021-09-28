@@ -213,12 +213,10 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 	switch (colorMode) {
 		case ColorMode.trueGradient: {
 			return calculateTrueGradient(colorRange, metricValue, positiveColorRGB, neutralColorRGB, negativeColorRGB)
-			break
 		}
 
 		case ColorMode.weightedGradient: {
 			return calculateWeightedGradient(mapColors, colorRange, metricValue, positiveColorRGB, neutralColorRGB, negativeColorRGB)
-			break
 		}
 
 		case ColorMode.absolute:
