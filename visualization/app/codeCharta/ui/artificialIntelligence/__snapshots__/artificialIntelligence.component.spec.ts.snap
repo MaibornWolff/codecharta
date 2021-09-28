@@ -23,13 +23,17 @@ Array [
   Object {
     "from": 48,
     "generalCustomConfigId": "mocked",
+    "max": 0,
     "metric": "mcc",
+    "min": 0,
     "to": 71,
   },
   Object {
     "from": 29,
     "generalCustomConfigId": "mocked",
+    "max": 0,
     "metric": "functions",
+    "min": 0,
     "outlierCustomConfigId": "mocked",
     "to": 44,
   },

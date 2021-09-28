@@ -77,8 +77,8 @@ describe("EdgeChooserController", () => {
 	describe("onEdgeMetricDataUpdated", () => {
 		it("should store edge data", () => {
 			const metricData = [
-				{ name: "metric1", maxValue: 22 },
-				{ name: "metric2", maxValue: 1 }
+				{ name: "metric1", maxValue: 22, minValue: 1 },
+				{ name: "metric2", maxValue: 1, minValue: 1 }
 			]
 
 			edgeChooserController.onEdgeMetricDataChanged(metricData)
@@ -164,8 +164,8 @@ describe("EdgeChooserController", () => {
 	describe("filterMetricData()", () => {
 		it("should return the all entries if search term is empty", () => {
 			const metricData = [
-				{ name: "metric1", maxValue: 1 },
-				{ name: "metric2", maxValue: 2 }
+				{ name: "metric1", maxValue: 1, minValue: 1 },
+				{ name: "metric2", maxValue: 2, minValue: 1 }
 			]
 			edgeChooserController["_viewModel"].searchTerm = ""
 			edgeChooserController.onEdgeMetricDataChanged(metricData)
@@ -177,21 +177,21 @@ describe("EdgeChooserController", () => {
 
 		it("should return only metrics that include search term", () => {
 			const metricData = [
-				{ name: "metric1", maxValue: 1 },
-				{ name: "metric2", maxValue: 2 }
+				{ name: "metric1", maxValue: 1, minValue: 1 },
+				{ name: "metric2", maxValue: 2, minValue: 1 }
 			]
 			edgeChooserController["_viewModel"].searchTerm = "ic2"
 			edgeChooserController.onEdgeMetricDataChanged(metricData)
 
 			edgeChooserController.filterMetricData()
 
-			expect(edgeChooserController["_viewModel"].edgeMetricData).toEqual([{ name: "metric2", maxValue: 2 }])
+			expect(edgeChooserController["_viewModel"].edgeMetricData).toEqual([{ name: "metric2", maxValue: 2, minValue: 1 }])
 		})
 
 		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
 			const metricData = [
-				{ name: "metric1", maxValue: 1 },
-				{ name: "metric2", maxValue: 2 }
+				{ name: "metric1", maxValue: 1, minValue: 1 },
+				{ name: "metric2", maxValue: 2, minValue: 1 }
 			]
 			edgeChooserController["_viewModel"].searchTerm = "fooBar"
 			edgeChooserController.onEdgeMetricDataChanged(metricData)
@@ -211,7 +211,7 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should return the the metricData Array with all Elements, when function is called", () => {
-			const metricData = [{ name: "metric1", maxValue: 1 }]
+			const metricData = [{ name: "metric1", maxValue: 1, minValue: 1 }]
 			edgeChooserController["_viewModel"].searchTerm = "rlo"
 			edgeChooserController.onEdgeMetricDataChanged(metricData)
 

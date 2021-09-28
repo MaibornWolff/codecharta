@@ -70,8 +70,8 @@ describe("EdgeMetricService", () => {
 	describe("onEdgeMetricDataUpdated", () => {
 		it("should not reset edgeMetric because current edgeMetric exists in metricData", () => {
 			const metricData = [
-				{ name: "validEdgeMetric", maxValue: 22 },
-				{ name: "None", maxValue: 1 }
+				{ name: "validEdgeMetric", maxValue: 22, minValue: 1 },
+				{ name: "None", maxValue: 1, minValue: 1 }
 			]
 			storeService.dispatch(setEdgeMetric("validEdgeMetric"))
 
@@ -81,8 +81,8 @@ describe("EdgeMetricService", () => {
 		})
 		it("should reset edgeMetric because current edgeMetric does not exists in metricData", () => {
 			const metricData = [
-				{ name: "someNewMetric", maxValue: 22 },
-				{ name: "None", maxValue: 1 }
+				{ name: "someNewMetric", maxValue: 22, minValue: 1 },
+				{ name: "None", maxValue: 1, minValue: 1 }
 			]
 			storeService.dispatch(setEdgeMetric("invalidEdgeMetric"))
 

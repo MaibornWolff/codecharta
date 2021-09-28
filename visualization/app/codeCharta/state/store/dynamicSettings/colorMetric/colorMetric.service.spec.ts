@@ -72,10 +72,10 @@ describe("ColorMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update colorMetric if current colorMetric is not available", () => {
 			const metricData = [
-				{ name: "a", maxValue: 1 },
-				{ name: "b", maxValue: 2 },
-				{ name: "c", maxValue: 2 },
-				{ name: "d", maxValue: 2 }
+				{ name: "a", maxValue: 1, minValue: 1 },
+				{ name: "b", maxValue: 2, minValue: 1 },
+				{ name: "c", maxValue: 2, minValue: 1 },
+				{ name: "d", maxValue: 2, minValue: 1 }
 			]
 
 			colorMetricService.onNodeMetricDataChanged(metricData)
@@ -84,7 +84,7 @@ describe("ColorMetricService", () => {
 		})
 
 		it("should use first available metric, if less than 2 metrics are available", () => {
-			const metricData = [{ name: "a", maxValue: 1 }]
+			const metricData = [{ name: "a", maxValue: 1, minValue: 1 }]
 
 			colorMetricService.onNodeMetricDataChanged(metricData)
 
@@ -95,8 +95,8 @@ describe("ColorMetricService", () => {
 			storeService.dispatch(setColorMetric("mcc"))
 			storeService.dispatch = jest.fn()
 			const metricData = [
-				{ name: "mcc", maxValue: 1 },
-				{ name: "rloc", maxValue: 2 }
+				{ name: "mcc", maxValue: 1, minValue: 1 },
+				{ name: "rloc", maxValue: 2, minValue: 1 }
 			]
 
 			colorMetricService.onNodeMetricDataChanged(metricData)
