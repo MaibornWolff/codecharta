@@ -1,4 +1,22 @@
-import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3, Line, BufferGeometry } from "three"
+import {
+	AmbientLight,
+	DirectionalLight,
+	Scene,
+	Group,
+	Material,
+	Raycaster,
+	Vector3,
+	Object3D,
+	Box3,
+	Line,
+	BufferGeometry,
+	PlaneGeometry,
+	MeshBasicMaterial,
+	Mesh,
+	DoubleSide,
+	CanvasTexture,
+	RepeatWrapping
+} from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
@@ -28,6 +46,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	scene: Scene
 	labels: Group
+	floorLabels: Group
 	edgeArrows: Group
 	mapGeometry: Group
 	private readonly lights: Group
@@ -57,6 +76,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.mapGeometry = new Group()
 		this.lights = new Group()
 		this.labels = new Group()
+		this.floorLabels = new Group()
 		this.edgeArrows = new Group()
 
 		this.initLights()
@@ -65,6 +85,92 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+		this.scene.add(this.floorLabels)
+	}
+
+	private initFloorLabels() {
+		this.floorLabels.clear()
+
+		const floorSurfaceInformation = new Map([
+			[0, []],
+			[1, []],
+			[2, []]
+		])
+
+		for (const node of this.mapMesh.getNodes().values()) {
+			if (!node.isLeaf && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
+				floorSurfaceInformation.get(node.mapNodeDepth).push(node)
+			}
+			//console.log("DEPTH: " + node.mapNodeDepth, node.name, index)
+		}
+
+		//const canvases = document.getElementsByTagName("canvas")
+		//const mapCanvas = canvases[canvases.length - 1]
+		//console.log(canvases, mapCanvas)
+
+		const rootNode = floorSurfaceInformation.get(0).values().next().value
+		//console.log(rootNode)
+
+		const mapWidth = rootNode.width
+		const mapHeight = rootNode.length
+
+		const { mapSize } = this.storeService.getState().treeMap
+		const scale = this.storeService.getState().appSettings.scaling
+
+		//console.log(floorSurfaceInformation)
+
+		for (const [key, value] of floorSurfaceInformation.entries()) {
+			const surfacesPerLevel = value
+
+			const textCanvas = document.createElement("canvas")
+			textCanvas.height = mapHeight
+			textCanvas.width = mapWidth
+
+			const context = textCanvas.getContext("2d")
+
+			context.fillStyle = "white"
+			context.textAlign = "center"
+			context.textBaseline = "middle"
+			const fontSize = 36
+			context.font = "36px Arial"
+
+			for (const surfaceNode of surfacesPerLevel) {
+				//console.log(surfaceNode)
+
+				context.fillText(
+					surfaceNode.name,
+					//rootNode.width - surfaceNode.mapNodeDepth * 20 - surfaceNode.length / 2,
+					rootNode.length - surfaceNode.y0 - surfaceNode.length / 2,
+					surfaceNode.x0 + surfaceNode.width - fontSize / 2
+				)
+			}
+
+			const labelTexture = new CanvasTexture(textCanvas)
+			labelTexture.wrapS = RepeatWrapping
+			labelTexture.wrapT = RepeatWrapping
+			labelTexture.repeat.x = -1
+			labelTexture.needsUpdate = true
+			labelTexture.rotation = (90 * Math.PI) / 180
+
+			const plane = new PlaneGeometry(mapWidth, mapHeight, 1, 1)
+			const material = new MeshBasicMaterial({
+				side: DoubleSide,
+				map: labelTexture,
+				transparent: true
+			})
+
+			const planeMesh = new Mesh(plane, material)
+			planeMesh.rotateX((90 * Math.PI) / 180)
+			plane.translate(mapWidth / 2, mapHeight / 2, -2.01 * (key + 1) - 4)
+			//planeMesh.position.z += 50;
+			//planeMesh.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI);
+
+			planeMesh.scale.set(scale.x, scale.y, scale.z)
+			planeMesh.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
+
+			this.floorLabels.add(planeMesh)
+			this.scene.add(this.floorLabels)
+		}
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
@@ -252,6 +358,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private isOverlapping(a: Box3, b: Box3, dimension: string) {
 		return Number(a.max[dimension] >= b.min[dimension] && b.max[dimension] >= a.min[dimension])
 	}
+
 	private getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
 		normedVector.multiplyScalar(distance)
 		bboxHoveredLabel.translate(normedVector)
@@ -368,6 +475,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	setMapMesh(mesh: CodeMapMesh) {
 		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
+
+		this.initFloorLabels()
 
 		// Reset children
 		this.mapGeometry.children.length = 0

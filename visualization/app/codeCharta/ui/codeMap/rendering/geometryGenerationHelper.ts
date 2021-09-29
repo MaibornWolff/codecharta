@@ -16,8 +16,8 @@ export interface BoxMeasures {
 export interface SurfaceInformation {
 	node: Node
 	surfaceStartIndex: number
-	minPos: { x: number; y: number }
-	maxPos: { x: number; y: number }
+	minPos: { z: number; x: number }
+	maxPos: { z: number; x: number }
 }
 
 export interface IntermediateVertexData {
@@ -31,8 +31,6 @@ export interface IntermediateVertexData {
 
 	deltas: Float32Array
 	isHeight: Float32Array
-
-	floorSurfaceInformation: SurfaceInformation[]
 }
 
 enum sides {
@@ -85,8 +83,7 @@ export function addBoxToVertexData(
 	color: string,
 	subGeomIndex: number,
 	desc: CodeMapGeometricDescription,
-	delta: number,
-	addingFloor: boolean
+	delta: number
 ) {
 	desc.add(
 		new CodeMapBuilding(
@@ -103,7 +100,7 @@ export function addBoxToVertexData(
 	data.uvs.set(uvArray, subGeomIndex * uvArray.length)
 
 	setPositions(data.positions, measures, subGeomIndex)
-	setVerticesAndFaces(node, measures, color, delta, subGeomIndex, data, addingFloor)
+	setVerticesAndFaces(node, measures, color, delta, subGeomIndex, data)
 }
 
 function setPositions(positions: Float32Array, measures: BoxMeasures, index: number) {
@@ -242,14 +239,10 @@ function setVerticesAndFaces(
 	color: string,
 	delta: number,
 	subGeomIndex: number,
-	data: IntermediateVertexData,
-	addingFloor: boolean
+	data: IntermediateVertexData
 ) {
-	const { x: minPosX, y: minPosY, z: minPosZ, width, height, depth } = measures
-	const maxPosX = minPosX + width
+	const { y: minPosY, height } = measures
 	const maxPosY = minPosY + height
-	const maxPosZ = minPosZ + depth
-
 	const deltaRelativeToHeight = delta / (maxPosY - minPosY)
 
 	let index = subGeomIndex * numberSides * verticesPerSide
@@ -284,17 +277,21 @@ function setVerticesAndFaces(
 		if (positiveFacing) {
 			// Collect floors from a depth of 0 until a depth of 3 to be stamped with the folder name as a label
 			// TODO provide conditions centrally for checking if a floor has to be labeled.
-			if (addingFloor && side === sides.top && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
-				const surfaceInformation: SurfaceInformation = {
-					node,
-					// The starting index of the vertices of the floors top surface must be known.
-					// It is used to render the floor surface with a different (label) texture
-					surfaceStartIndex,
-					minPos: { x: minPosZ, y: minPosX },
-					maxPos: { x: maxPosZ, y: maxPosX }
-				}
-				data.floorSurfaceInformation.push(surfaceInformation)
-			}
+			// if (addingFloor && side === sides.top && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
+			// 	//console.log("X", minPosX, maxPosX)
+			// 	//console.log("Y", minPosY, maxPosY)
+			// 	//console.log("Z", minPosZ, maxPosZ)
+			// 	const surfaceInformation: SurfaceInformation = {
+			// 		node,
+			// 		// The starting index of the vertices of the floors top surface must be known.
+			// 		// It is used to render the floor surface with a different (label) texture
+			// 		surfaceStartIndex,
+			// 		minPos: { z: minPosZ, x: minPosX },
+			// 		maxPos: { z: maxPosZ, x: maxPosX }
+			// 	}
+			//
+			// 	data.floorSurfaceInformation.get(node.mapNodeDepth).push(surfaceInformation)
+			// }
 
 			data.indices.set(
 				[indexBottomLeft, indexTopLeft, indexTopRight, indexBottomLeft, indexTopRight, indexBottomRight],
