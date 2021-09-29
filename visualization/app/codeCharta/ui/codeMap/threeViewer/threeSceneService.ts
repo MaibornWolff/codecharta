@@ -101,27 +101,44 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			if (!node.isLeaf && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
 				floorSurfaceInformation.get(node.mapNodeDepth).push(node)
 			}
-			//console.log("DEPTH: " + node.mapNodeDepth, node.name, index)
 		}
 
-		//const canvases = document.getElementsByTagName("canvas")
-		//const mapCanvas = canvases[canvases.length - 1]
-		//console.log(canvases, mapCanvas)
+		const canvases = document.getElementsByTagName("canvas")
+		const mapCanvas = canvases[canvases.length - 1]
+		const displayWidth = mapCanvas.width
+		const displayHeight = mapCanvas.height
 
-		const rootNode = floorSurfaceInformation.get(0).values().next().value
+		//console.log(displayWidth, displayHeight)
+
+		const rootNode = floorSurfaceInformation.get(0)[0]
+		if (!rootNode) {
+			return
+		}
 		//console.log(rootNode)
 
-		const mapWidth = rootNode.width
-		const mapHeight = rootNode.length
+		let mapWidthResolutionScaling = 1
+		let mapHeightResolutionScaling = 1
+
+		let mapWidth = rootNode.width
+		let mapHeight = rootNode.length
+
+		const widthScalingThreshold = displayWidth * 2
+		const heightScalingThreshold = displayHeight * 2
+
+		if (mapWidth >= widthScalingThreshold || mapHeight >= heightScalingThreshold) {
+			mapWidthResolutionScaling = widthScalingThreshold / mapWidth
+			mapHeightResolutionScaling = heightScalingThreshold / mapHeight
+		}
+
+		mapWidth = mapWidth * mapWidthResolutionScaling
+		mapHeight = mapHeight * mapHeightResolutionScaling
 
 		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
 
 		//console.log(floorSurfaceInformation)
 
-		for (const [key, value] of floorSurfaceInformation.entries()) {
-			const surfacesPerLevel = value
-
+		for (const [floorLevel, surfaceNodesPerLevel] of floorSurfaceInformation.entries()) {
 			const textCanvas = document.createElement("canvas")
 			textCanvas.height = mapHeight
 			textCanvas.width = mapWidth
@@ -131,17 +148,18 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			context.fillStyle = "white"
 			context.textAlign = "center"
 			context.textBaseline = "middle"
-			const fontSize = 36
-			context.font = "36px Arial"
 
-			for (const surfaceNode of surfacesPerLevel) {
+			const fontSize = 48
+			context.font = `${fontSize * mapHeightResolutionScaling}px Arial`
+
+			for (const surfaceNode of surfaceNodesPerLevel) {
 				//console.log(surfaceNode)
 
 				context.fillText(
 					surfaceNode.name,
 					//rootNode.width - surfaceNode.mapNodeDepth * 20 - surfaceNode.length / 2,
-					rootNode.length - surfaceNode.y0 - surfaceNode.length / 2,
-					surfaceNode.x0 + surfaceNode.width - fontSize / 2
+					(rootNode.length - surfaceNode.y0 - surfaceNode.length / 2) * mapWidthResolutionScaling,
+					(surfaceNode.x0 + surfaceNode.width - fontSize / 2) * mapHeightResolutionScaling
 				)
 			}
 
@@ -156,20 +174,22 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			const material = new MeshBasicMaterial({
 				side: DoubleSide,
 				map: labelTexture,
-				transparent: true
+				transparent: true,
+				precision: "highp"
 			})
 
 			const planeMesh = new Mesh(plane, material)
-			planeMesh.rotateX((90 * Math.PI) / 180)
-			plane.translate(mapWidth / 2, mapHeight / 2, -2.01 * (key + 1) - 4)
-			//planeMesh.position.z += 50;
-			//planeMesh.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI);
-
-			planeMesh.scale.set(scale.x, scale.y, scale.z)
-			planeMesh.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
 
 			this.floorLabels.add(planeMesh)
 			this.scene.add(this.floorLabels)
+
+			planeMesh.rotateX((90 * Math.PI) / 180)
+			plane.translate(mapWidth / 2, mapHeight / 2, -2.01 * (floorLevel + 1) - 4)
+			//planeMesh.position.z += 50;
+			//planeMesh.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI);
+
+			planeMesh.scale.set(scale.x / mapWidthResolutionScaling, scale.y / mapHeightResolutionScaling, scale.z)
+			planeMesh.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
 		}
 	}
 
