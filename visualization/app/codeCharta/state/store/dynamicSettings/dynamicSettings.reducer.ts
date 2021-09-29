@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { colorMode } from "./colorMode/colorMode.reducer"
 import { recentFiles } from "./recentFiles/recentFiles.reducer"
 import { sortingOption } from "./sortingOption/sortingOption.reducer"
 import { edgeMetric } from "./edgeMetric/edgeMetric.reducer"
@@ -15,6 +16,7 @@ import { combineReducers } from "redux"
 
 const dynamicSettings = combineReducers({
 	// Plop: Append sub-reducer here
+	colorMode,
 	recentFiles,
 	sortingOption,
 	edgeMetric,

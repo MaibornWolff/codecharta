@@ -5,7 +5,7 @@ import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { CodeMapNode, MarkedPackage, NodeType } from "../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../codeCharta.model"
 import {
 	VALID_NODE_WITH_PATH,
 	CODE_MAP_BUILDING,
@@ -15,7 +15,6 @@ import {
 } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { klona } from "klona"
@@ -89,40 +88,6 @@ describe("MapTreeViewLevelController", () => {
 			mapTreeViewLevelController.onBuildingUnhovered()
 
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
-		})
-	})
-
-	describe("getMarkingColor", () => {
-		it("should return black color if no folder", () => {
-			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: NodeType.FILE } as CodeMapNode
-
-			const result = mapTreeViewLevelController.getMarkingColor()
-
-			expect(result).toBe("#000000")
-		})
-
-		it("should return the markingColor if the matching markedPackage", () => {
-			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: NodeType.FOLDER } as CodeMapNode
-			const markedMackages = [
-				{
-					path: "/root/node/path",
-					color: "#123FDE"
-				} as MarkedPackage
-			]
-			storeService.dispatch(setMarkedPackages(markedMackages))
-
-			const result = mapTreeViewLevelController.getMarkingColor()
-
-			expect(result).toBe("#123FDE")
-		})
-
-		it("should return black if no markingColor in node", () => {
-			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: NodeType.FOLDER } as CodeMapNode
-			storeService.dispatch(setMarkedPackages([]))
-
-			const result = mapTreeViewLevelController.getMarkingColor()
-
-			expect(result).toBe("#000000")
 		})
 	})
 

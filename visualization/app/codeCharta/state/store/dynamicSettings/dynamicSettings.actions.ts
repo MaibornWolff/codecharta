@@ -1,6 +1,7 @@
 import { CCAction, DynamicSettings, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append default property import here
+import { defaultColorMode } from "./colorMode/colorMode.actions"
 import { defaultRecentFiles } from "./recentFiles/recentFiles.actions"
 import { defaultSortingOption } from "./sortingOption/sortingOption.actions"
 import { defaultAreaMetric } from "./areaMetric/areaMetric.actions"
@@ -34,6 +35,7 @@ export function setDynamicSettings(dynamicSettings: RecursivePartial<DynamicSett
 
 export const defaultDynamicSettings: DynamicSettings = {
 	// Plop: Append default property here
+	colorMode: defaultColorMode,
 	recentFiles: defaultRecentFiles,
 	sortingOption: defaultSortingOption,
 	areaMetric: defaultAreaMetric,

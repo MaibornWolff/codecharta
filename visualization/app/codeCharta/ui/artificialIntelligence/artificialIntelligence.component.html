@@ -3,33 +3,64 @@
 		<i class="fa fa-cogs"></i>
 		<span
 			id="ai-badge"
-			ng-show="!hideBadge && ($ctrl._viewModel.suspiciousMetricSuggestionLinks.length || $ctrl._viewModel.unsuspiciousMetrics.length)"
+			ng-show="
+				!hideBadge &&
+				($ctrl._viewModel.riskProfile !== undefined ||
+					$ctrl._viewModel.suspiciousMetricSuggestionLinks.length ||
+					$ctrl._viewModel.unsuspiciousMetrics.length)
+			"
 		>
-			{{ ($ctrl._viewModel.suspiciousMetricSuggestionLinks.length ? 1 : 0) + ($ctrl._viewModel.unsuspiciousMetrics.length ? 1 : 0) }}
+			{{
+				($ctrl._viewModel.riskProfile !== undefined ? 1 : 0) +
+					($ctrl._viewModel.suspiciousMetricSuggestionLinks.length ? 1 : 0) +
+					($ctrl._viewModel.unsuspiciousMetrics.length ? 1 : 0)
+			}}
 		</span>
 	</md-button>
 
 	<md-menu-content class="ai-drop-down" width="7">
-		<md-menu-item class="ai-item" ng-show="!$ctrl._viewModel.isFeatureApplicable">
-			<md-button ng-disabled="true">Suspicious Metrics can currently be found within JAVA maps only.</md-button>
-		</md-menu-item>
-
 		<md-menu-item class="ai-item" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length"
-			><md-button ng-disabled="true">Unsuspicious Metrics</md-button></md-menu-item
+			><md-button ng-disabled="true">
+				<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
+					>Unsuspicious Metrics in {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code</span
+				>
+				<span ng-show="!$ctrl._viewModel.analyzedProgrammingLanguage.length">Unsuspicious Metrics</span>
+			</md-button></md-menu-item
 		>
 
-		<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.isFeatureApplicable && $ctrl._viewModel.unsuspiciousMetrics.length">
-			<ul ng-repeat="inconspicuousMetric in $ctrl._viewModel.unsuspiciousMetrics">
-				<li>{{ inconspicuousMetric }}</li>
+		<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length">
+			<ul>
+				<li ng-repeat="inconspicuousMetric in $ctrl._viewModel.unsuspiciousMetrics">{{ inconspicuousMetric }}</li>
 			</ul>
 		</md-menu-item>
 
-		<md-menu-item class="ai-item"
-			><md-button ng-disabled="true" ng-show="$ctrl._viewModel.isFeatureApplicable"
-				>Risk Profile (based on mcc)</md-button
-			></md-menu-item
+		<md-menu-item class="ai-item">
+			<md-button ng-disabled="true">
+				<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
+					>Risk Profile (for {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code, based on mcc)</span
+				>
+				<span ng-show="!$ctrl._viewModel.analyzedProgrammingLanguage.length">Risk Profile (based on mcc)</span>
+			</md-button></md-menu-item
 		>
-		<md-menu-item class="ai-item risk-profile">
+
+		<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.riskProfile === undefined">
+			<span>Could not calculate Risk Profile. Metrics rloc and mcc not available.</span>
+		</md-menu-item>
+
+		<md-menu-item
+			class="ai-list-item"
+			ng-show="$ctrl._viewModel.riskProfile !== undefined"
+			style="height: auto; min-height: unset; margin-bottom: 10px"
+		>
+			<ul>
+				<li>{{ $ctrl._viewModel.riskProfile.lowRisk }}% of overall code is placed in files with low complexity.</li>
+				<li>{{ $ctrl._viewModel.riskProfile.moderateRisk }}% of overall code is placed in files with moderate complexity.</li>
+				<li>{{ $ctrl._viewModel.riskProfile.highRisk }}% of overall code is placed in files with high complexity.</li>
+				<li>{{ $ctrl._viewModel.riskProfile.veryHighRisk }}% of overall code is placed in files with extreme complexity.</li>
+			</ul>
+		</md-menu-item>
+
+		<md-menu-item class="ai-item risk-profile" ng-show="$ctrl._viewModel.riskProfile !== undefined">
 			<md-button
 				ng-if="$ctrl._viewModel.riskProfile.lowRisk > 0"
 				title="Low Risk ({{ $ctrl._viewModel.riskProfile.lowRisk }}% of code)"
@@ -60,17 +91,20 @@
 			></md-button>
 		</md-menu-item>
 
-		<md-menu-item
-			class="ai-item"
-			ng-show="$ctrl._viewModel.isFeatureApplicable && $ctrl._viewModel.suspiciousMetricSuggestionLinks.length"
-			><md-button ng-disabled="true">Suspicious Metrics</md-button></md-menu-item
+		<md-menu-item class="ai-item" ng-show="$ctrl._viewModel.suspiciousMetricSuggestionLinks.length"
+			><md-button ng-disabled="true">
+				<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
+					>Suspicious Metrics in {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (click below to view)</span
+				>
+				<span ng-show="!$ctrl._viewModel.analyzedProgrammingLanguage.length">Suspicious Metrics (click below to view)</span>
+			</md-button></md-menu-item
 		>
 
 		<md-menu-item class="custom-configs-item" ng-repeat="item in $ctrl._viewModel.suspiciousMetricSuggestionLinks">
 			<md-button
 				class="button-hovering"
 				ng-click="$ctrl.applyCustomConfig(item.generalCustomConfigId)"
-				title="Apply Map Configuration to highlight suspicious files"
+				title="Click to apply Map Configuration to show files with suspicious metric {{ item.metric }} and high risk"
 			>
 				Suspicious {{ item.metric.toUpperCase() }} Files
 			</md-button>
@@ -78,7 +112,7 @@
 				class="button-hovering"
 				ng-if="item.outlierCustomConfigId.length > 0"
 				ng-click="$ctrl.applyCustomConfig(item.outlierCustomConfigId)"
-				title="Apply Map Configuration to highlight Very High Risk files"
+				title="Click to apply Map Configuration to show files with very high risk and metric values of {{ item.metric }}"
 			>
 				Very High Risk {{ item.metric.toUpperCase() }} Files
 			</md-button>

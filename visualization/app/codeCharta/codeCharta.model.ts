@@ -113,6 +113,7 @@ export interface FileSettings {
 }
 
 export interface DynamicSettings {
+	colorMode: ColorMode
 	sortingOption: SortingOption
 	areaMetric: string
 	heightMetric: string
@@ -155,6 +156,7 @@ export interface AppSettings {
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	colorLabels: colorLabelOptions
 }
 
@@ -183,6 +185,8 @@ export interface MapColors {
 export interface ColorRange {
 	from: number
 	to: number
+	min: number
+	max: number
 }
 
 export interface AttributeTypes {
@@ -193,6 +197,12 @@ export interface AttributeTypes {
 export enum AttributeTypeValue {
 	absolute = "absolute",
 	relative = "relative"
+}
+
+export enum ColorMode {
+	trueGradient = "trueGradient",
+	weightedGradient = "weightedGradient",
+	absolute = "absolute"
 }
 
 export interface Edge {
@@ -236,11 +246,13 @@ export interface MarkedPackage {
 export interface EdgeMetricData {
 	name: string
 	maxValue: number
+	minValue: number
 }
 
 export interface NodeMetricData {
 	name: string
 	maxValue: number
+	minValue: number
 }
 
 export interface MetricData {
@@ -268,6 +280,7 @@ export interface GlobalSettings {
 	isWhiteBackground: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	experimentalFeaturesEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	layoutAlgorithm: LayoutAlgorithm
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
@@ -327,7 +340,7 @@ export interface Node {
 	visible: boolean
 	path: string
 	link: string
-	markingColor: string
+	markingColor: string | void
 	flat: boolean
 	color: string
 	incomingEdgePoint: Vector3

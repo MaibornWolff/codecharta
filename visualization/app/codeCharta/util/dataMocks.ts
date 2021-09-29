@@ -4,24 +4,25 @@ import {
 	BlacklistType,
 	CCFile,
 	CodeMapNode,
+	ColorMode,
 	Edge,
+	EdgeMetricData,
 	EdgeVisibility,
 	FileMeta,
+	GlobalSettings,
+	LayoutAlgorithm,
 	MarkedPackage,
 	Node,
+	NodeMetricData,
 	NodeType,
 	PanelSelection,
 	RecursivePartial,
 	Scenario,
-	NodeMetricData,
-	EdgeMetricData,
 	SearchPanelMode,
 	Settings,
+	SharpnessMode,
 	SortingOption,
-	State,
-	LayoutAlgorithm,
-	GlobalSettings,
-	SharpnessMode
+	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -103,6 +104,12 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					path: "/root/src/main/file2.java",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100 }
+				},
+				{
+					name: "readme",
+					path: "/root/src/main/readme",
+					type: NodeType.FILE,
+					attributes: { rloc: 200, functions: 1, mcc: 1 }
 				}
 			]
 		},
@@ -1154,6 +1161,7 @@ export const GLOBAL_SETTINGS: GlobalSettings = {
 	isWhiteBackground: true,
 	resetCameraIfNewFileIsLoaded: true,
 	experimentalFeaturesEnabled: true,
+	screenshotToClipboardEnabled: false,
 	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 	maxTreeMapFiles: 50,
 	sharpnessMode: SharpnessMode.Standard
@@ -1684,6 +1692,13 @@ export const FILE_STATES: FileState[] = [
 	}
 ]
 
+export const FILE_STATES_UNSELECTED: FileState[] = [
+	{
+		file: TEST_FILE_DATA,
+		selectedAs: FileSelectionState.None
+	}
+]
+
 export const FILE_STATES_JAVA: FileState[] = [
 	{
 		file: TEST_FILE_DATA_JAVA,
@@ -1692,14 +1707,14 @@ export const FILE_STATES_JAVA: FileState[] = [
 ]
 
 export const METRIC_DATA: NodeMetricData[] = [
-	{ name: "mcc", maxValue: 1 },
-	{ name: "rloc", maxValue: 2 },
-	{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1 }
+	{ name: "mcc", maxValue: 1, minValue: 1 },
+	{ name: "rloc", maxValue: 2, minValue: 1 },
+	{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1, minValue: 1 }
 ]
 
 export const EDGE_METRIC_DATA: EdgeMetricData[] = [
-	{ name: "pairing_rate", maxValue: 10 },
-	{ name: "average_commits", maxValue: 20 }
+	{ name: "pairing_rate", maxValue: 10, minValue: 0 },
+	{ name: "average_commits", maxValue: 20, minValue: 0 }
 ]
 
 export const STATE: State = {
@@ -1729,8 +1744,11 @@ export const STATE: State = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			min: 1,
+			max: 100
 		},
+		colorMode: ColorMode.weightedGradient,
 		sortingOption: SortingOption.NAME,
 		recentFiles: ["fileA", "fileB"]
 	},
@@ -1780,6 +1798,7 @@ export const STATE: State = {
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
@@ -1845,6 +1864,7 @@ export const DEFAULT_STATE: State = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 100
@@ -1859,8 +1879,11 @@ export const DEFAULT_STATE: State = {
 		margin: null,
 		colorRange: {
 			from: null,
-			to: null
+			to: null,
+			min: null,
+			max: null
 		},
+		colorMode: ColorMode.weightedGradient,
 		searchPattern: "",
 		searchedNodePaths: new Set(),
 		sortingOption: SortingOption.NAME,
@@ -1894,7 +1917,9 @@ export const SCENARIO: RecursivePartial<Scenario> = {
 		colorMetric: "mcc",
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			max: 100,
+			min: 1
 		},
 		mapColors: DEFAULT_STATE.appSettings.mapColors
 	},
@@ -1918,7 +1943,9 @@ export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			max: 100,
+			min: 1
 		}
 	},
 	appSettings: {
@@ -1983,7 +2010,7 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.COLOR_METRIC,
 		metricName: "mcc",
-		savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+		savedValues: { colorRange: { from: 19, to: 67, min: 1, max: 100 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},

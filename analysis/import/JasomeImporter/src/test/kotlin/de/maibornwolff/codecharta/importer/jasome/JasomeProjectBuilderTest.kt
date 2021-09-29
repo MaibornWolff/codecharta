@@ -6,8 +6,8 @@ import de.maibornwolff.codecharta.importer.jasome.model.Package
 import de.maibornwolff.codecharta.importer.jasome.model.Project
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe

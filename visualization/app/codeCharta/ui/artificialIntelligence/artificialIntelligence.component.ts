@@ -1,4 +1,5 @@
 import "./artificialIntelligence.component.scss"
+import debounce from "lodash.debounce"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
@@ -6,15 +7,17 @@ import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
 import { klona } from "klona"
-import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
+import { CustomConfig, CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { pushSorted } from "../../util/nodeDecorator"
-import { ColorRange, NodeType, State } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange, NodeType, State } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { getVisibleFileStates } from "../../model/files/files.helper"
-import { clusterMetricThresholds } from "./artificialIntelligence.clusterMetricThresholds"
+import { metricThresholds } from "./artificialIntelligence.metricThresholds"
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { isPathBlacklisted } from "../../util/codeMapHelper"
 
 interface MetricValues {
 	[metric: string]: number[]
@@ -34,9 +37,9 @@ interface MetricSuggestionParameters {
 	outlierCustomConfigId?: string
 }
 
-export class ArtificialIntelligenceController implements FilesSelectionSubscriber {
+export class ArtificialIntelligenceController implements FilesSelectionSubscriber, BlacklistSubscriber {
 	private _viewModel: {
-		isFeatureApplicable: boolean
+		analyzedProgrammingLanguage: string
 		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
 		unsuspiciousMetrics: string[]
 		riskProfile: {
@@ -46,7 +49,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			veryHighRisk: number
 		}
 	} = {
-		isFeatureApplicable: false,
+		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
 		riskProfile: {
@@ -57,6 +60,10 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}
 	}
 
+	private debounceCalculation: () => void
+	private fileState: FileState
+	private blacklist: BlacklistItem[] = []
+
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
@@ -65,10 +72,24 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
+
+		this.debounceCalculation = debounce(() => {
+			this.calculate()
+		}, 10)
 	}
 
 	applyCustomConfig(configId: string) {
 		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
+	}
+
+	onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.blacklist = blacklist
+		this.fileState = getVisibleFileStates(this.storeService.getState().files)[0]
+
+		if (this.fileState !== undefined) {
+			this.debounceCalculation()
+		}
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
@@ -77,120 +98,67 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			return
 		}
 
-		// Thresholds are derived for Java maps only (currently)
-		if (!this.hasJavaFiles(fileState.file.map)) {
-			return
-		}
-
-		this._viewModel.isFeatureApplicable = true
-
-		this.calculateRiskProfile(fileState, "mcc")
-		this.createCustomConfigSuggestions(fileState)
+		this.fileState = fileState
+		this.debounceCalculation()
 	}
 
-	private createCustomConfigSuggestions(fileState: FileState) {
-		const metricValues = this.getMetricValues(fileState)
-		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues)
+	private calculate() {
+		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState.file.map)
+		this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
 
-		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
+		this.clearRiskProfile()
 
-		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
-			const overviewConfigState = this.prepareOverviewConfigState(metricName, colorRange.from, colorRange.to)
-			const overviewConfigName = `Suspicious ${metricName.toUpperCase()} Files (AI)`
-			const overviewConfig = this.createAndAddCustomConfig(overviewConfigName, overviewConfigState, fileState)
-
-			noticeableMetricSuggestionLinks.set(metricName, {
-				metric: metricName,
-				...colorRange,
-				generalCustomConfigId: overviewConfig.id
-			})
-
-			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
-			if (outlierThreshold > 0) {
-				const outlierToValue = outlierThreshold
-				const outlierFromValue = outlierToValue - 1
-
-				const outlierConfigState = this.prepareOutlierConfigState(metricName, outlierFromValue, outlierToValue)
-				const outlierConfigName = `Very High Risk ${metricName.toUpperCase()} Files (AI)`
-				const outlierConfig = this.createAndAddCustomConfig(outlierConfigName, outlierConfigState, fileState)
-
-				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = outlierConfig.id
-			}
+		if (mainProgrammingLanguage !== undefined) {
+			this.calculateRiskProfile(this.fileState, mainProgrammingLanguage, "mcc")
+			this.createCustomConfigSuggestions(this.fileState, mainProgrammingLanguage)
 		}
-
-		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()]
-		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
 	}
 
-	private findGoodAndBadMetrics(metricValues): MetricAssessmentResults {
-		const metricAssessmentResults: MetricAssessmentResults = {
-			suspiciousMetrics: new Map<string, ColorRange>(),
-			unsuspiciousMetrics: [],
-			outliersThresholds: new Map<string, number>()
-		}
-
-		for (const metricName of Object.keys(clusterMetricThresholds["java"]["notClustered"])) {
-			const valuesOfMetric = metricValues[metricName]
-			if (valuesOfMetric === undefined) {
-				continue
-			}
-
-			const thresholdConfig = clusterMetricThresholds["java"]["notClustered"][metricName]
-			const maxMetricValue = Math.max(...valuesOfMetric)
-
-			if (maxMetricValue > thresholdConfig.percentile70) {
-				metricAssessmentResults.suspiciousMetrics.set(metricName, {
-					from: thresholdConfig.percentile70,
-					to: thresholdConfig.percentile80
-				})
-
-				if (maxMetricValue > thresholdConfig.percentile90) {
-					metricAssessmentResults.outliersThresholds.set(metricName, thresholdConfig.percentile90)
-				}
-			} else {
-				metricAssessmentResults.unsuspiciousMetrics.push(metricName)
-			}
-		}
-
-		return metricAssessmentResults
+	private clearRiskProfile() {
+		this._viewModel.riskProfile = undefined
 	}
 
-	private calculateRiskProfile(fileState: FileState, metricName) {
+	private calculateRiskProfile(fileState: FileState, programmingLanguage, metricName) {
 		let totalRloc = 0
 		let numberOfRlocLowRisk = 0
 		let numberOfRlocModerateRisk = 0
 		let numberOfRlocHighRisk = 0
 		let numberOfRlocVeryHighRisk = 0
 
+		const languageSpecificThresholds = this.getAssociatedMetricThresholds(programmingLanguage)
+		const thresholds = languageSpecificThresholds[metricName]
+
 		for (const { data } of hierarchy(fileState.file.map)) {
-			if (data.type !== NodeType.FILE) {
+			// TODO calculate risk profile only for focused or currently visible but not excluded files.
+			if (
+				data.type !== NodeType.FILE ||
+				isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
+				data.attributes[metricName] === undefined ||
+				data.attributes["rloc"] === undefined ||
+				this.getFileExtension(data.name) !== programmingLanguage
+			) {
 				continue
 			}
 
 			const nodeMetricValue = data.attributes[metricName]
 			const nodeRlocValue = data.attributes["rloc"]
 
-			if (
-				nodeMetricValue === undefined ||
-				nodeRlocValue === undefined ||
-				!(metricName in clusterMetricThresholds["java"]["notClustered"])
-			) {
-				continue
-			}
-
-			const clusteredMetricThresholds = clusterMetricThresholds["java"]["notClustered"][metricName]
 			totalRloc += nodeRlocValue
 
 			// Idea: We could calculate risk profiles per directory in the future.
-			if (nodeMetricValue <= clusteredMetricThresholds.percentile70) {
+			if (nodeMetricValue <= thresholds.percentile70) {
 				numberOfRlocLowRisk += nodeRlocValue
-			} else if (nodeMetricValue <= clusteredMetricThresholds.percentile80) {
+			} else if (nodeMetricValue <= thresholds.percentile80) {
 				numberOfRlocModerateRisk += nodeRlocValue
-			} else if (nodeMetricValue <= clusteredMetricThresholds.percentile90) {
+			} else if (nodeMetricValue <= thresholds.percentile90) {
 				numberOfRlocHighRisk += nodeRlocValue
 			} else {
 				numberOfRlocVeryHighRisk += nodeRlocValue
 			}
+		}
+
+		if (totalRloc === 0) {
+			return
 		}
 
 		this._viewModel.riskProfile = {
@@ -201,8 +169,87 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}
 	}
 
-	private createAndAddCustomConfig(configName: string, state: State, fileState: FileState) {
-		let customConfig = CustomConfigHelper.getCustomConfigByName(
+	private createCustomConfigSuggestions(fileState: FileState, programmingLanguage) {
+		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
+		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
+
+		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
+		const newCustomConfigs: CustomConfig[] = []
+
+		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
+			const suspiciousMetricConfig = this.createOrUpdateCustomConfig(
+				`Suspicious Files - Metric ${metricName.toUpperCase()} - (AI)`,
+				this.prepareOverviewConfigState(metricName, colorRange.from, colorRange.to),
+				fileState
+			)
+
+			newCustomConfigs.push(suspiciousMetricConfig)
+
+			noticeableMetricSuggestionLinks.set(metricName, {
+				metric: metricName,
+				...colorRange,
+				generalCustomConfigId: suspiciousMetricConfig.id
+			})
+
+			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
+			if (outlierThreshold > 0) {
+				const highRiskMetricConfig = this.createOrUpdateCustomConfig(
+					`Very High Risk Files - Metric ${metricName.toUpperCase()} - (AI)`,
+					this.prepareOutlierConfigState(metricName, outlierThreshold - 1, outlierThreshold),
+					fileState
+				)
+
+				newCustomConfigs.push(highRiskMetricConfig)
+
+				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = highRiskMetricConfig.id
+			}
+		}
+
+		CustomConfigHelper.addCustomConfigs(newCustomConfigs)
+
+		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()]
+		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+	}
+
+	private findGoodAndBadMetrics(metricValues, programmingLanguage): MetricAssessmentResults {
+		const metricAssessmentResults: MetricAssessmentResults = {
+			suspiciousMetrics: new Map<string, ColorRange>(),
+			unsuspiciousMetrics: [],
+			outliersThresholds: new Map<string, number>()
+		}
+
+		const languageSpecificMetricThresholds = this.getAssociatedMetricThresholds(programmingLanguage)
+
+		for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
+			const valuesOfMetric = metricValues[metricName]
+			if (valuesOfMetric === undefined) {
+				continue
+			}
+
+			const thresholdConfig = languageSpecificMetricThresholds[metricName]
+			const maxMetricValue = Math.max(...valuesOfMetric)
+
+			if (maxMetricValue <= thresholdConfig.percentile70) {
+				metricAssessmentResults.unsuspiciousMetrics.push(metricName)
+			} else if (maxMetricValue > thresholdConfig.percentile70) {
+				metricAssessmentResults.suspiciousMetrics.set(metricName, {
+					from: thresholdConfig.percentile70,
+					to: thresholdConfig.percentile80,
+					max: 0,
+					min: 0
+				})
+
+				if (maxMetricValue > thresholdConfig.percentile90) {
+					metricAssessmentResults.outliersThresholds.set(metricName, thresholdConfig.percentile90)
+				}
+			}
+		}
+
+		return metricAssessmentResults
+	}
+
+	private createOrUpdateCustomConfig(configName: string, state: State, fileState: FileState) {
+		const customConfig = CustomConfigHelper.getCustomConfigByName(
 			CustomConfigMapSelectionMode.SINGLE,
 			[fileState.file.fileMeta.fileName],
 			configName
@@ -213,10 +260,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			CustomConfigHelper.deleteCustomConfig(customConfig.id)
 		}
 
-		customConfig = buildCustomConfigFromState(configName, state)
-		CustomConfigHelper.addCustomConfig(customConfig)
-
-		return customConfig
+		return buildCustomConfigFromState(configName, state)
 	}
 
 	private prepareOverviewConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {
@@ -260,11 +304,15 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		return state
 	}
 
-	private getMetricValues(fileState: FileState): MetricValues {
+	private getSortedMetricValues(fileState: FileState, programmingLanguage): MetricValues {
 		const metricValues: MetricValues = {}
 
 		for (const { data } of hierarchy(fileState.file.map)) {
-			if (data.type !== NodeType.FILE) {
+			if (
+				data.type !== NodeType.FILE ||
+				isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
+				this.getFileExtension(data.name) !== programmingLanguage
+			) {
 				continue
 			}
 
@@ -282,13 +330,35 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		return metricValues
 	}
 
-	private hasJavaFiles(map) {
+	private getFileExtension(fileName: string) {
+		return fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : undefined
+	}
+
+	private getMostFrequentLanguage(map: CodeMapNode) {
+		const numberOfFilesPerLanguage = []
+
 		for (const { data } of hierarchy(map)) {
-			if (data.type === NodeType.FILE && data.name.includes(".java")) {
-				return true
+			if (!data.name.includes(".")) {
+				continue
+			}
+
+			if (data.type === NodeType.FILE) {
+				const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
+				numberOfFilesPerLanguage[fileExtension] = numberOfFilesPerLanguage[fileExtension] + 1 || 1
 			}
 		}
-		return false
+
+		if (Object.keys(numberOfFilesPerLanguage).length === 0) {
+			return
+		}
+
+		return Object.keys(numberOfFilesPerLanguage).reduce((a, b) => {
+			return numberOfFilesPerLanguage[a] > numberOfFilesPerLanguage[b] ? a : b
+		})
+	}
+
+	private getAssociatedMetricThresholds(programmingLanguage) {
+		return programmingLanguage === "java" ? metricThresholds["java"] : metricThresholds["miscellaneous"]
 	}
 }
 

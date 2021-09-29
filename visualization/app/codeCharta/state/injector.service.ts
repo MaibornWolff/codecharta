@@ -1,6 +1,7 @@
 //@ts-nocheck
 
 // Plop: Append service import here
+import { ColorModeService } from "./store/dynamicSettings/colorMode/colorMode.service"
 import { SecondaryMetricsService } from "./store/appSettings/secondaryMetrics/secondaryMetrics.service"
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
@@ -53,10 +54,12 @@ import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableEx
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
+import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private colorModeService: ColorModeService,
 		private secondaryMetricsService: SecondaryMetricsService,
 		private recentFilesService: RecentFilesService,
 		private colorLabelsService: ColorLabelsService,
@@ -108,7 +111,8 @@ export class InjectorService {
 		private layoutAlgorithmService: LayoutAlgorithmService,
 		private maxTreeMapFilesService: MaxTreeMapFilesService,
 		private sharpnessModeService: SharpnessModeService,
-		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService
+		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService,
+		private screenshotToClipboardEnabledService: ScreenshotToClipboardEnabledService
 	) {
 		"ngInject"
 	}

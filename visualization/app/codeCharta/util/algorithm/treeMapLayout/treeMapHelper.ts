@@ -1,8 +1,9 @@
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
-import { Node, CodeMapNode, State } from "../../../codeCharta.model"
-import { Vector3 } from "three"
+import { CodeMapNode, ColorMode, Node, State } from "../../../codeCharta.model"
+import { Color, Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
+import { ColorConverter } from "../../color/colorConverter"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
@@ -203,13 +204,91 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 		return mapColors.flat
 	}
 
-	if (metricValue < dynamicSettings.colorRange.from) {
+	const positiveColorRGB = ColorConverter.convertHexToColorObject(mapColors.positive)
+	const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
+	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
+
+	const { colorRange, colorMode } = dynamicSettings
+
+	switch (colorMode) {
+		case ColorMode.trueGradient: {
+			return calculateTrueGradient(colorRange, metricValue, positiveColorRGB, neutralColorRGB, negativeColorRGB)
+		}
+
+		case ColorMode.weightedGradient: {
+			return calculateWeightedGradient(mapColors, colorRange, metricValue, positiveColorRGB, neutralColorRGB, negativeColorRGB)
+		}
+
+		case ColorMode.absolute:
+			if (metricValue < colorRange.from) {
+				return mapColors.positive
+			}
+			if (metricValue > colorRange.to) {
+				return mapColors.negative
+			}
+			return mapColors.neutral
+	}
+}
+
+function calculateTrueGradient(
+	colorRange: { from: any; to: any; max: number },
+	metricValue: number,
+	positiveColorRGB: Color,
+	neutralColorRGB: Color,
+	negativeColorRGB: Color
+) {
+	const middle = (colorRange.from + colorRange.to) / 2
+
+	if (metricValue <= middle) {
+		const factor = metricValue / middle
+		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
+	}
+
+	if (metricValue <= colorRange.max && metricValue > middle) {
+		const factor = (metricValue - middle) / (colorRange.max - middle)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
+	}
+}
+
+function calculateWeightedGradient(
+	mapColors: { positive: any; neutral: any; negative: any },
+	colorRange: { from: any; to: any; max: number },
+	metricValue: number,
+	positiveColorRGB: Color,
+	neutralColorRGB: Color,
+	negativeColorRGB: Color
+) {
+	const startValuePositiveToNeutralGradient = Math.max(colorRange.from - (colorRange.to - colorRange.from) / 2, colorRange.from / 2)
+
+	const endValuePositiveToNeutralGradient = 2 * colorRange.from - startValuePositiveToNeutralGradient
+
+	const startValueNeutralToNegativeGradient = colorRange.to - (colorRange.to - colorRange.from) / 2
+
+	const endValueNeutralToNegativeGradient = colorRange.to
+
+	if (metricValue <= startValuePositiveToNeutralGradient) {
 		return mapColors.positive
 	}
-	if (metricValue > dynamicSettings.colorRange.to) {
+
+	if (metricValue >= startValuePositiveToNeutralGradient && metricValue <= endValuePositiveToNeutralGradient) {
+		const factor =
+			(metricValue - startValuePositiveToNeutralGradient) / (endValuePositiveToNeutralGradient - startValuePositiveToNeutralGradient)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
+	}
+
+	if (metricValue >= endValuePositiveToNeutralGradient && metricValue <= startValueNeutralToNegativeGradient) {
+		return mapColors.neutral
+	}
+
+	if (metricValue >= startValueNeutralToNegativeGradient && metricValue <= endValueNeutralToNegativeGradient) {
+		const factor =
+			(metricValue - startValueNeutralToNegativeGradient) / (endValueNeutralToNegativeGradient - startValueNeutralToNegativeGradient)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
+	}
+
+	if (metricValue >= endValueNeutralToNegativeGradient) {
 		return mapColors.negative
 	}
-	return mapColors.neutral
 }
 
 export const TreeMapHelper = {

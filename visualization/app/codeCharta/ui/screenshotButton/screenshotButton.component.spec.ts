@@ -7,6 +7,8 @@ import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererService"
 import { Scene, WebGLRenderer } from "three"
+import { IRootScopeService } from "angular"
+import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 
 describe("resetSettingsButtonController", () => {
 	let screenshotButtonController: ScreenshotButtonController
@@ -14,6 +16,7 @@ describe("resetSettingsButtonController", () => {
 	let threeSceneService: ThreeSceneService
 	let threeCameraService: ThreeCameraService
 	let threeRendererService: ThreeRendererService
+	let $rootScope: IRootScopeService
 
 	function mockLoadScript() {
 		threeRendererService.renderer = { domElement: { height: 1, width: 1 } } as WebGLRenderer
@@ -35,6 +38,7 @@ describe("resetSettingsButtonController", () => {
 		instantiateModule("app.codeCharta.ui.screenshotButton")
 
 		storeService = getService<StoreService>("storeService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeSceneService = getService<ThreeSceneService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("storeService")
 		threeRendererService = getService<ThreeRendererService>("storeService")
@@ -45,20 +49,47 @@ describe("resetSettingsButtonController", () => {
 			threeSceneService,
 			threeCameraService,
 			threeRendererService,
-			storeService
+			storeService,
+			$rootScope
 		)
 	}
 
 	describe("makeScreenshot", () => {
 		it("should call loadScript", () => {
 			screenshotButtonController["loadScript"] = jest.fn()
-			screenshotButtonController.makeScreenshot()
+			screenshotButtonController.makeScreenshotToFile()
 			expect(screenshotButtonController["loadScript"]).toBeCalled()
 		})
 		it("should call makePNGFileName", () => {
 			screenshotButtonController["makePNGFileName"] = jest.fn()
-			screenshotButtonController.makeScreenshot()
+			screenshotButtonController.makeScreenshotToFile()
 			expect(screenshotButtonController["makePNGFileName"]).toBeCalled()
+		})
+
+		it("should call buildScreenShotCanvas", () => {
+			screenshotButtonController["buildScreenShotCanvas"] = jest.fn()
+			screenshotButtonController.makeScreenshotToFile()
+			expect(screenshotButtonController["buildScreenShotCanvas"]).toBeCalled()
+		})
+	})
+
+	describe("onScreenshotToClipboardEnabledChanged", () => {
+		it("should set screenshotToClipboardEnabled in viewModel", () => {
+			storeService.dispatch(setScreenshotToClipboardEnabled(true))
+
+			screenshotButtonController.onScreenshotToClipboardEnabledChanged(
+				storeService.getState().appSettings.screenshotToClipboardEnabled
+			)
+
+			expect(screenshotButtonController["_viewModel"].screenshotToClipboardEnabled).toBe(true)
+		})
+	})
+
+	describe("makeScreenshotToClipBoard", () => {
+		it("should call buildScreenShotCanvas", () => {
+			screenshotButtonController["buildScreenShotCanvas"] = jest.fn()
+			screenshotButtonController.makeScreenshotToFile()
+			expect(screenshotButtonController["buildScreenShotCanvas"]).toBeCalled()
 		})
 	})
 })

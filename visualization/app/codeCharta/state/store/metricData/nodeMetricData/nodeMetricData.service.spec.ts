@@ -17,9 +17,9 @@ describe("NodeMetricDataService", () => {
 	let $rootScope: IRootScopeService
 
 	const metricData: NodeMetricData[] = [
-		{ name: "rloc", maxValue: 999_999 },
-		{ name: "functions", maxValue: 999_999 },
-		{ name: "mcc", maxValue: 999_999 }
+		{ name: "rloc", maxValue: 999_999, minValue: 1 },
+		{ name: "functions", maxValue: 999_999, minValue: 1 },
+		{ name: "mcc", maxValue: 999_999, minValue: 1 }
 	]
 
 	beforeEach(() => {
@@ -137,14 +137,14 @@ describe("NodeMetricDataService", () => {
 
 	describe("getMaxMetricByMetricName", () => {
 		it("should return the possible maxValue of a metric by name", () => {
-			const result = nodeMetricDataService.getMaxMetricByMetricName("rloc")
+			const result = nodeMetricDataService.getMaxValueOfMetric("rloc")
 			const expected = 999_999
 
 			expect(result).toBe(expected)
 		})
 
 		it("should return undefined if metric doesn't exist in metricData", () => {
-			const result = nodeMetricDataService.getMaxMetricByMetricName("some metric")
+			const result = nodeMetricDataService.getMaxValueOfMetric("some metric")
 
 			expect(result).not.toBeDefined()
 		})
