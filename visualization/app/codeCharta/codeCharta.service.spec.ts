@@ -28,8 +28,8 @@ describe("codeChartaService", () => {
 
 		validFileContent = clone(TEST_FILE_CONTENT)
 		metricData = clone([
-			{ name: "mcc", maxValue: 1 },
-			{ name: "rloc", maxValue: 2 }
+			{ name: "mcc", maxValue: 1, minValue: 1 },
+			{ name: "rloc", maxValue: 2, minValue: 1 }
 		])
 		storeService.dispatch(resetFiles())
 	})

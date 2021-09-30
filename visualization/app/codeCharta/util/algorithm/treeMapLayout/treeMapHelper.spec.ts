@@ -1,5 +1,5 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../../../codeCharta.model"
+import { BlacklistType, CodeMapNode, ColorMode, EdgeVisibility, NodeType, State } from "../../../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 
@@ -225,6 +225,7 @@ describe("TreeMapHelper", () => {
 				state.dynamicSettings.colorRange.from = 5
 				state.dynamicSettings.colorRange.to = 10
 				state.dynamicSettings.colorMetric = "validMetricName"
+				state.dynamicSettings.colorMode = ColorMode.absolute
 			})
 
 			it("creates grey building for undefined colorMetric", () => {
@@ -253,6 +254,55 @@ describe("TreeMapHelper", () => {
 				node.attributes = { validMetricName: 7 }
 
 				expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+			})
+
+			it("colors green according to weighted gradient", () => {
+				node.attributes = { validMetricName: 1 }
+				state.dynamicSettings.colorMode = ColorMode.weightedGradient
+
+				expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
+			})
+
+			it("colors a even mix of green and yellow according to weighted gradient", () => {
+				node.attributes = { validMetricName: 3 }
+				state.dynamicSettings.colorMode = ColorMode.weightedGradient
+
+				expect(buildNode().color).toBe("#75b13a")
+			})
+
+			it("colors a even mix of yellow and red according to weighted gradient", () => {
+				node.attributes = { validMetricName: 7 }
+				state.dynamicSettings.colorMode = ColorMode.weightedGradient
+
+				expect(buildNode().color).toBe("#d1c906")
+			})
+
+			it("colors red according to weighted gradient", () => {
+				node.attributes = { validMetricName: 11 }
+				state.dynamicSettings.colorMode = ColorMode.weightedGradient
+
+				expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
+			})
+
+			it("colors a greenish color according to true gradient", () => {
+				node.attributes = { validMetricName: 1 }
+				state.dynamicSettings.colorMode = ColorMode.trueGradient
+
+				expect(buildNode().color).toBe("#78b237")
+			})
+
+			it("colors a yellow color according to true gradient", () => {
+				node.attributes = { validMetricName: 7.5 }
+				state.dynamicSettings.colorMode = ColorMode.trueGradient
+
+				expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+			})
+
+			it("colors a reddish color according to true gradient", () => {
+				node.attributes = { validMetricName: 11 }
+				state.dynamicSettings.colorMode = ColorMode.trueGradient
+
+				expect(buildNode().color).toBe("#dac501")
 			})
 		})
 	})

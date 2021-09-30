@@ -114,7 +114,7 @@ describe("LegendPanelController", () => {
 		})
 
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			legendPanelController.onFilesSelectionChanged([])
 
@@ -132,7 +132,7 @@ describe("LegendPanelController", () => {
 		})
 
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			legendPanelController.onFilesSelectionChanged([])
 
@@ -164,13 +164,13 @@ describe("LegendPanelController", () => {
 		it("should update the edge metric and determine if edges exist", () => {
 			const newEdgeMetric = "new_edge_metric"
 
-			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 0 }]))
+			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 0, minValue: 0 }]))
 			legendPanelController.onEdgeMetricChanged(newEdgeMetric)
 
 			expect(legendPanelController["_viewModel"].edge).toEqual(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edgeMetricHasEdge).toBeFalsy()
 
-			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 3 }]))
+			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 3, minValue: 1 }]))
 			legendPanelController.onEdgeMetricChanged(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edge).toEqual(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edgeMetricHasEdge).toBeTruthy()
@@ -179,7 +179,7 @@ describe("LegendPanelController", () => {
 
 	describe("onBlackListChanged", () => {
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			legendPanelController.onBlacklistChanged()
 
@@ -189,7 +189,7 @@ describe("LegendPanelController", () => {
 
 	describe("onColorRangeChanged", () => {
 		it("should update the ColorRange when it is changed", () => {
-			const newColorRange: ColorRange = { from: 13, to: 33 }
+			const newColorRange: ColorRange = { from: 13, to: 33, min: 1, max: 10 }
 
 			legendPanelController.onColorRangeChanged(newColorRange)
 

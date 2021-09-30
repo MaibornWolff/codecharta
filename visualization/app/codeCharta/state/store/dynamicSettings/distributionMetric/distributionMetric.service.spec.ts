@@ -72,10 +72,10 @@ describe("DistributionMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update distributionMetric if current distributionMetric is not available", () => {
 			const metricData = [
-				{ name: "unary", maxValue: 1 },
-				{ name: "loc", maxValue: 2 },
-				{ name: "comment_lines", maxValue: 2 },
-				{ name: "blank_lines", maxValue: 2 }
+				{ name: "unary", maxValue: 1, minValue: 1 },
+				{ name: "loc", maxValue: 2, minValue: 1 },
+				{ name: "comment_lines", maxValue: 2, minValue: 1 },
+				{ name: "blank_lines", maxValue: 2, minValue: 1 }
 			]
 
 			distributionMetricService.onNodeMetricDataChanged(metricData)
@@ -87,8 +87,8 @@ describe("DistributionMetricService", () => {
 			storeService.dispatch(setDistributionMetric("mcc"))
 			storeService.dispatch = jest.fn()
 			const metricData = [
-				{ name: "mcc", maxValue: 1 },
-				{ name: "rloc", maxValue: 2 }
+				{ name: "mcc", maxValue: 1, minValue: 1 },
+				{ name: "rloc", maxValue: 2, minValue: 1 }
 			]
 
 			distributionMetricService.onNodeMetricDataChanged(metricData)
@@ -109,10 +109,10 @@ describe("DistributionMetricService", () => {
 	describe("reset", () => {
 		it("should reset to rloc if available", () => {
 			const metricData = [
-				{ name: "loc", maxValue: 11 },
-				{ name: "rloc", maxValue: 4 },
-				{ name: "unary", maxValue: 1 },
-				{ name: "comment_lines", maxValue: 7 }
+				{ name: "loc", maxValue: 11, minValue: 1 },
+				{ name: "rloc", maxValue: 4, minValue: 1 },
+				{ name: "unary", maxValue: 1, minValue: 1 },
+				{ name: "comment_lines", maxValue: 7, minValue: 1 }
 			]
 
 			distributionMetricService.reset(metricData)
@@ -122,10 +122,10 @@ describe("DistributionMetricService", () => {
 
 		it("should reset to unary if rloc unavailable", () => {
 			const metricData = [
-				{ name: "loc", maxValue: 21 },
-				{ name: "empty_lines", maxValue: 11 },
-				{ name: "unary", maxValue: 1 },
-				{ name: "comment_lines", maxValue: 7 }
+				{ name: "loc", maxValue: 21, minValue: 1 },
+				{ name: "empty_lines", maxValue: 11, minValue: 1 },
+				{ name: "unary", maxValue: 1, minValue: 1 },
+				{ name: "comment_lines", maxValue: 7, minValue: 1 }
 			]
 
 			distributionMetricService.reset(metricData)

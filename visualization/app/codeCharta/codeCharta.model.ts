@@ -113,6 +113,7 @@ export interface FileSettings {
 }
 
 export interface DynamicSettings {
+	colorMode: ColorMode
 	sortingOption: SortingOption
 	areaMetric: string
 	heightMetric: string
@@ -184,6 +185,8 @@ export interface MapColors {
 export interface ColorRange {
 	from: number
 	to: number
+	min: number
+	max: number
 }
 
 export interface AttributeTypes {
@@ -194,6 +197,12 @@ export interface AttributeTypes {
 export enum AttributeTypeValue {
 	absolute = "absolute",
 	relative = "relative"
+}
+
+export enum ColorMode {
+	trueGradient = "trueGradient",
+	weightedGradient = "weightedGradient",
+	absolute = "absolute"
 }
 
 export interface Edge {
@@ -237,11 +246,13 @@ export interface MarkedPackage {
 export interface EdgeMetricData {
 	name: string
 	maxValue: number
+	minValue: number
 }
 
 export interface NodeMetricData {
 	name: string
 	maxValue: number
+	minValue: number
 }
 
 export interface MetricData {

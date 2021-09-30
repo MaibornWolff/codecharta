@@ -92,13 +92,17 @@ function getMetricDataFromMap() {
 
 	for (const [edgeMetric, occurrences] of nodeEdgeMetricsMap) {
 		let maximumMetricValue = 0
+		let minimumMetricValue = Number.MIN_SAFE_INTEGER
 		for (const value of occurrences.values()) {
 			const combinedValue = value.incoming + value.outgoing
 			if (combinedValue > maximumMetricValue) {
 				maximumMetricValue = combinedValue
 			}
+			if (combinedValue <= minimumMetricValue) {
+				minimumMetricValue = combinedValue
+			}
 		}
-		metricData.push({ name: edgeMetric, maxValue: maximumMetricValue })
+		metricData.push({ name: edgeMetric, maxValue: maximumMetricValue, minValue: minimumMetricValue })
 	}
 
 	return metricData

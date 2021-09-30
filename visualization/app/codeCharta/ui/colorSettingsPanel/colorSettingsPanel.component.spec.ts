@@ -96,7 +96,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should detect not delta mode selection", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn()
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn()
 
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
@@ -105,7 +105,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
 
@@ -115,7 +115,7 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onBlackListChanged", () => {
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			colorSettingsPanelController.onBlacklistChanged()
 
@@ -125,7 +125,7 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onColorMetricChanged", () => {
 		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxMetricByMetricName = jest.fn(() => 34)
+			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
 
 			colorSettingsPanelController.onColorMetricChanged()
 
