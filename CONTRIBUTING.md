@@ -95,9 +95,10 @@ To unify the appearance of all commit messages we only accept commit messages us
 -   [Description of what you changed] [Link to the pull request]
     [One picture (specify the width and/or height)]<br/>
     Example:<br/>
-    `- Add a changelog dialog with the latest additions to CodeCharta that appears on version update ([#1315](pull-request-linkl)) <img src="image-link" width="350px">`
-    The image should always have a width and/or a height attribute.
-    Example: width=”500px”
+    `- Add a changelog dialog with the latest additions to CodeCharta that appears on version update ([#1315](pull-request-link))`<br/>
+    _new line_<br/>
+    `<img src="image-link" width="350px">`<br/>
+    _new line_<br/>
 
 ###How to write a good description?
 
@@ -119,3 +120,6 @@ To unify the appearance of all commit messages we only accept commit messages us
 
 -   Link to the image can be copied from an image uploaded to the Pull Request
 -   If there are no Pull Requests associated to your change, link an issue.
+-   The image should always have a width and/or a height attribute.
+    -   Example: width=”350px”
+-   Please leave an empty line before and after the image tag so that prettier doesn't interfere with the formatting.

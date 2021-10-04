@@ -26,14 +26,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
-    <img src="https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png" width="250px"/>
+
+<img src="https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png" width="250px"/>
 
 -   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326))
-    <img src="https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png" width="450px"/>
+
+<img src="https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png" width="450px"/>
 
 -   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
 -   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342))
-    <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="350px"/>
+
+<img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="350px"/>
 
 ### Fixed 🐞
 
@@ -45,7 +48,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not applicable ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
 -   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362))
 
-      <img src="https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png" width="350px" alt=""/>
+       <img src="https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png" width="350px" alt=""/>
 
 ## [1.78.0] - 2021-09-06
 
