@@ -11,8 +11,8 @@ import { Store } from "../../../state/angular-redux/store"
 export class MapTreeViewItemName {
 	@Input() node: CodeMapNode
 	@Input() isHovered: boolean
-	@Input() unaryValue: string
-	@Input() unaryPercentage: string
+	@Input() unaryValue: number
+	@Input() unaryPercentage: number
 
 	searchedNodePaths$: Observable<Set<string>>
 

@@ -8,5 +8,9 @@
 
 <span class="unary-number" *ngIf="!(node | isNodeLeaf)">
 	<span *ngIf="!isHovered">{{ unaryPercentage }}%</span>
-	<span *ngIf="isHovered"> {{ unaryValue }} File </span>
+	<span *ngIf="isHovered" [ngPlural]="unaryValue">
+		{{ unaryValue }}
+		<ng-template ngPluralCase="=1">File</ng-template>
+		<ng-template ngPluralCase="other">Files</ng-template>
+	</span>
 </span>
