@@ -10,6 +10,7 @@ import { Store } from "../../../state/angular-redux/store"
 })
 export class MapTreeViewItemName {
 	@Input() node: CodeMapNode
+	@Input() isHovered: boolean
 	searchedNodePaths$: Observable<Set<string>>
 
 	constructor(@Inject(Store) store: Store) {

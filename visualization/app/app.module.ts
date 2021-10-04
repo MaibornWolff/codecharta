@@ -12,6 +12,7 @@ import { MapTreeViewItemIconColorPipe } from "./codeCharta/ui/mapTreeView/mapTre
 import { MapTreeViewItemOptionButtonsComponent } from "./codeCharta/ui/mapTreeView/mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
 import { MapTreeViewItemName } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/mapTreeViewItemName.component"
 import { MapTreeViewItemSearchedNameHighlightPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/mapTreeViewItemSearchedNameHighlight.pipe"
+import { IsNodeLeafPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/isNodeLeaf.pipe"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule],
@@ -22,7 +23,8 @@ import { MapTreeViewItemSearchedNameHighlightPipe } from "./codeCharta/ui/mapTre
 		MapTreeViewItemIconColorPipe,
 		MapTreeViewItemOptionButtonsComponent,
 		MapTreeViewItemName,
-		MapTreeViewItemSearchedNameHighlightPipe
+		MapTreeViewItemSearchedNameHighlightPipe,
+		IsNodeLeafPipe
 	],
 	entryComponents: [SortingButtonComponent, MapTreeViewItemIcon, MapTreeViewItemOptionButtonsComponent, MapTreeViewItemName]
 })
