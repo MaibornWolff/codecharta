@@ -1,7 +1,7 @@
 import { IsNodeLeafPipe } from "./isNodeLeaf.pipe"
 import { CodeMapNode } from "../../../codeCharta.model"
 
-describe("MapTreeViewItemIsNodeLeaf", () => {
+describe("IsNodeLeafPipe", () => {
 	it("should be true if node is a leaf", () => {
 		const fakeNode = {} as unknown as CodeMapNode
 		expect(new IsNodeLeafPipe().transform(fakeNode)).toBeTruthy()
