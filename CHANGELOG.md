@@ -12,14 +12,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Adds feature to display building colors as a gradients ([#2327](https://github.com/MaibornWolff/codecharta/issues/2327)).
+
     -   "Weighted Gradient" only mixes colors in a small interval around the preset values.
     -   "True Gradient" mixes colors from the 0 to the highest value, the two preset color range values determine the balance.
     -   "Absolute" represents the old behaviour without gradients.
-        <img src="https://user-images.githubusercontent.com/42114276/134924267-245c65c9-2893-43a8-9a0a-17e3182bf15a.JPG" width="350px"/>
+
+    <img src="https://user-images.githubusercontent.com/42114276/134924267-245c65c9-2893-43a8-9a0a-17e3182bf15a.JPG" width="350px"/>
 
 ### Fixed 🐞
 
 -   Fix broken file/node search #2389
+-   Fix changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425))
 
 ## [1.79.0] - 2021-09-20
 
@@ -35,8 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
 -   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342))
-
-<img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="350px"/>
+    <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="350px"/>
 
 ### Fixed 🐞
 
