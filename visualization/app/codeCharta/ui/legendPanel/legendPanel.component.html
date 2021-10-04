@@ -1,21 +1,21 @@
 <div class="block-wrapper" ng-class="{ visible: $ctrl._viewModel.isLegendVisible, sideBarVisible: $ctrl._viewModel.isSideBarVisible }">
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
-		<div class="legend-block">
+		<div ng-if="$ctrl._viewModel.areaMetricDescription" class="legend-block">
 			Size metric (<span class="bold">{{ $ctrl._viewModel.areaMetric }}</span
 			>: {{ $ctrl._viewModel.areaMetricDescription }})
 		</div>
-		<div class="legend-block">
+		<div ng-if="$ctrl._viewModel.heightMetricDescription" class="legend-block">
 			Height metric (<span class="bold">{{ $ctrl._viewModel.heightMetric }}</span
 			>: {{ $ctrl._viewModel.heightMetricDescription }})
 		</div>
 		<div ng-if="$ctrl._viewModel.edgeMetricHasEdge">
-			<div class="legend-block">
+			<div ng-if="$ctrl._viewModel.edgeDescription" class="legend-block">
 				Edge metric (<span class="bold">{{ $ctrl._viewModel.edge }}</span
 				>: {{ $ctrl._viewModel.edgeDescription }})
 			</div>
 		</div>
 		<hr />
-		<div class="legend-block">
+		<div ng-if="$ctrl._viewModel.colorMetricDescription" class="legend-block">
 			Color metric (<span class="bold">{{ $ctrl._viewModel.colorMetric }}</span
 			>: {{ $ctrl._viewModel.colorMetricDescription }})
 		</div>
