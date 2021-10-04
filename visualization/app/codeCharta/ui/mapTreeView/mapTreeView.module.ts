@@ -10,6 +10,7 @@ import { mapTreeViewLevelComponent } from "./mapTreeView.level.component"
 import { downgradeComponent } from "@angular/upgrade/static"
 import { MapTreeViewItemIcon } from "./mapTreeViewItemIcon/mapTreeViewItemIcon.component"
 import { MapTreeViewItemOptionButtonsComponent } from "./mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
+import { MapTreeViewItemName } from "./mapTreeViewItemName/mapTreeViewItemName.component"
 
 angular
 	.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.state", "app.codeCharta.ui.codeMap", "app.codeCharta"])
@@ -28,3 +29,4 @@ angular
 	})
 	.directive("ccMapTreeViewItemIcon", downgradeComponent({ component: MapTreeViewItemIcon }))
 	.directive("ccMapTreeViewItemOptionButtons", downgradeComponent({ component: MapTreeViewItemOptionButtonsComponent }))
+	.directive("ccMapTreeViewItemName", downgradeComponent({ component: MapTreeViewItemName }))
