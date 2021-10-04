@@ -223,6 +223,13 @@ describe("codeMapRenderService", () => {
 			sortedNodes = TEST_NODES
 		})
 
+		it("should only call clearLabels for empty nodes", () => {
+			codeMapRenderService["setLabels"]([])
+
+			expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
+			expect(codeMapLabelService.addLabel).not.toHaveBeenCalled()
+		})
+
 		it("should call codeMapLabelService.clearLabels", () => {
 			codeMapRenderService["setLabels"](sortedNodes)
 

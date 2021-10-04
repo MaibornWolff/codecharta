@@ -120,12 +120,16 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	private setLabels(sortedNodes: Node[]) {
+		this.codeMapLabelService.clearLabels()
+
+		if (sortedNodes.length === 0) {
+			return
+		}
+
 		const appSettings = this.storeService.getState().appSettings
 		const showLabelNodeName = appSettings.showMetricLabelNodeName
 		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
 		const colorLabelOptions = appSettings.colorLabels
-
-		this.codeMapLabelService.clearLabels()
 
 		if (showLabelNodeName || showLabelNodeMetric) {
 			const highestNodeInSet = sortedNodes[0].height
