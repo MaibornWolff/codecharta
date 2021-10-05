@@ -3,7 +3,7 @@
 	"packageRules": [
 		{
 			"matchManagers": ["gradle"],
-			"matchPaths": ["build.gradle"],
+			"matchPaths": ["analysis/build.gradle"],
 			"groupName": "gradle dependencies update",
 			"enabled": true
 		},
