@@ -3,9 +3,7 @@
 	"enabledManagers": ["gradle", "npm"],
 	"packageRules": [
 		{
-			"packagePatterns": ["*"],
-			"excludePackagePatterns": ["debug"],
-			"enabled": false
+			"packagePatterns": ["*"]
 		}
 	],
 	"timezone": "Europe/Berlin",
