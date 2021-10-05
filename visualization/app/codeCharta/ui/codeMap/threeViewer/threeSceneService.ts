@@ -1,22 +1,4 @@
-import {
-	AmbientLight,
-	DirectionalLight,
-	Scene,
-	Group,
-	Material,
-	Raycaster,
-	Vector3,
-	Object3D,
-	Box3,
-	Line,
-	BufferGeometry,
-	PlaneGeometry,
-	MeshBasicMaterial,
-	Mesh,
-	DoubleSide,
-	CanvasTexture,
-	RepeatWrapping
-} from "three"
+import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3, Line, BufferGeometry } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
@@ -26,7 +8,7 @@ import { CodeMapNode, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
-import { FloorLabelCollector, FloorLabelHelper } from "../../../util/floorLabelHelper"
+import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -92,133 +74,27 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private initFloorLabels() {
 		this.floorLabels.clear()
 
-		let rootNode
-		for (const node of this.mapMesh.getNodes().values()) {
-			if (node.id === 0) {
-				rootNode = node
-				break
-			}
-		}
-
+		const rootNode = this.extractRootNode(this.mapMesh.getNodes().values())
 		if (!rootNode) {
 			return
 		}
 
-		const floorLabelCollector = new FloorLabelCollector(this.mapMesh.getNodes().values())
-
-		const { width: rootNodeWidth, length: rootNodeHeight } = rootNode
-		const mapResolutionScaling = FloorLabelHelper.getMapResolutionScaling(rootNodeWidth)
-
-		const scaledMapWidth = rootNodeWidth * mapResolutionScaling
-		const scaledMapHeight = rootNodeHeight * mapResolutionScaling
-
 		const { mapSize } = this.storeService.getState().treeMap
-		const scale = this.storeService.getState().appSettings.scaling
+		const scaling = this.storeService.getState().appSettings.scaling
 
-		for (const [floorLevel, surfaceNodesPerLevel] of floorLabelCollector.getLabeledFloorNodes()) {
-			const textCanvas = document.createElement("canvas")
-			textCanvas.height = scaledMapHeight
-			textCanvas.width = scaledMapWidth
+		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes().values(), rootNode, mapSize, scaling)
+		const floorLabels = floorLabelDrawer.draw()
 
-			const context = textCanvas.getContext("2d")
-
-			context.fillStyle = "white"
-			context.textAlign = "center"
-			context.textBaseline = "middle"
-
-			for (const surfaceNode of surfaceNodesPerLevel) {
-				let fontSize =
-					surfaceNode.depth === 0
-						? Math.max(Math.floor(rootNodeWidth * 0.03), 120)
-						: Math.max(Math.floor(rootNodeWidth * 0.023), 95)
-				fontSize = Math.floor(fontSize * mapResolutionScaling)
-
-				context.font = `${fontSize}px Arial`
-
-				const textToFill = this.getLabelAndSetContextFont(surfaceNode, context, mapResolutionScaling, fontSize)
-
-				context.fillText(
-					textToFill.labelText,
-					(rootNodeHeight - surfaceNode.y0 - surfaceNode.length / 2) * mapResolutionScaling,
-					(surfaceNode.x0 + surfaceNode.width) * mapResolutionScaling - textToFill.fontSize / 2
-				)
-			}
-
-			const labelTexture = new CanvasTexture(textCanvas)
-			labelTexture.wrapS = RepeatWrapping
-			labelTexture.wrapT = RepeatWrapping
-			labelTexture.repeat.x = -1
-			labelTexture.needsUpdate = true
-			labelTexture.rotation = (90 * Math.PI) / 180
-
-			const plane = new PlaneGeometry(scaledMapWidth, scaledMapHeight)
-			const material = new MeshBasicMaterial({
-				side: DoubleSide,
-				map: labelTexture,
-				transparent: true
-			})
-
-			const planeMesh = new Mesh(plane, material)
-
-			this.floorLabels.add(planeMesh)
-
-			planeMesh.rotateX((90 * Math.PI) / 180)
-			// TODO Check if we can replace the lift of -10 (z-axis) to prevent z-buffer-fighting by the highest z value of all nodes.
-			plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -2.01 * (floorLevel + 1) - 10)
-
-			planeMesh.scale.set(scale.x / mapResolutionScaling, scale.y / mapResolutionScaling, scale.z)
-			planeMesh.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
-		}
-
+		this.floorLabels.add(...floorLabels)
 		this.scene.add(this.floorLabels)
 	}
 
-	private getLabelAndSetContextFont(
-		surfaceNode: Node,
-		context: CanvasRenderingContext2D,
-		mapResolutionScaling: number,
-		fontSize: number
-	) {
-		const labelText = surfaceNode.name
-		const surfaceWidth = surfaceNode.length * mapResolutionScaling
-
-		context.font = `${fontSize}px Arial`
-
-		const textMetrics = context.measureText(labelText)
-		const fontScaleFactor = this.getFontScaleFactor(surfaceWidth, textMetrics.width)
-		if (fontScaleFactor <= 0.5) {
-			// Font will be to small.
-			// So scale text not smaller than 0.5 and shorten it as well
-			fontSize = fontSize * 0.5
-			fontSize = Math.floor(Math.min(fontSize, surfaceNode.width * mapResolutionScaling))
-			context.font = `${fontSize}px Arial`
-			return {
-				labelText: this.getFittingLabelText(context, surfaceWidth, labelText),
-				fontSize
+	private extractRootNode(nodeIterator: IterableIterator<Node>) {
+		for (const node of nodeIterator) {
+			if (node.id === 0) {
+				return node
 			}
 		}
-		fontSize = Math.floor(Math.min(fontSize * fontScaleFactor, surfaceNode.width * mapResolutionScaling))
-		context.font = `${fontSize}px Arial`
-		return { labelText, fontSize }
-	}
-
-	private getFontScaleFactor(canvasWidth: number, widthOfText: number) {
-		return widthOfText < canvasWidth ? 1 : canvasWidth / widthOfText
-	}
-
-	private getFittingLabelText(context: CanvasRenderingContext2D, canvasWidth: number, labelText: string) {
-		const { width } = context.measureText(labelText)
-		let textSplitIndex = Math.floor((labelText.length * canvasWidth) / width)
-		let abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
-
-		// TODO: Check if this is expensive. If it is, let's use a logarithmic algorithm instead.
-		while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
-			// textSplitIndex > 1 to ensure it contains at least one char
-			textSplitIndex -= 1
-			abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
-		}
-
-		return abbreviatedText
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
