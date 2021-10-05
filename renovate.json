@@ -2,7 +2,7 @@
 	"extends": ["config:base"],
 	"packageRules": [
 		{
-			"updateTypes": ["minor"]
+			"matchDepTypes": ["devDependencies", "dependencies"]
 		}
 	],
 	"timezone": "Europe/Berlin",
