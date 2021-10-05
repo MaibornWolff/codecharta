@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.80.0] - 2021-10-04
+
 ### Added 🚀
 
 -   Adds feature to display building colors as a gradients ([#2327](https://github.com/MaibornWolff/codecharta/issues/2327)).
@@ -14,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   "True Gradient" mixes colors from the 0 to the highest value, the two preset color range values determine the balance.
     -   "Absolute" represents the old behaviour without gradients.
         <img src="https://user-images.githubusercontent.com/42114276/134924267-245c65c9-2893-43a8-9a0a-17e3182bf15a.JPG" width="450px"/>
+
+### Fixed 🐞
+
+-   Fix broken file/node search #2389
 
 ## [1.79.0] - 2021-09-20
 
