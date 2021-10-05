@@ -406,6 +406,10 @@ export interface LookUp {
 	idToBuilding: Map<number, CodeMapBuilding>
 }
 
+export interface AppStatus {
+	hoveredBuildingPath: string | undefined
+}
+
 export enum PanelSelection {
 	AREA_PANEL_OPEN = "AREA_PANEL_OPEN",
 	HEIGHT_PANEL_OPEN = "HEIGHT_PANEL_OPEN",

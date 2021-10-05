@@ -38,6 +38,7 @@ import { BlacklistActions } from "../../state/store/fileSettings/blacklist/black
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { SecondaryMetricsActions } from "../../state/store/appSettings/secondaryMetrics/secondaryMetrics.actions"
 import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
+import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -104,6 +105,13 @@ export class CodeMapPreRenderService
 	}
 
 	onStoreChanged(actionType: string) {
+		if (isActionOfType(actionType, HoveredBuildingPathActions)) {
+			// temporary hack:
+			// this.debounceRendering() leads to a new MapMesh, which leads to a new render, which would revert hover
+			// We definitely need to improve this
+			return
+		}
+
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&

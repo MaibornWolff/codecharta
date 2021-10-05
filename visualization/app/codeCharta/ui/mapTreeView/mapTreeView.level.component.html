@@ -6,7 +6,7 @@
 >
 	<div
 		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label"
-		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap, marked: $ctrl._viewModel.isMarked }"
+		ng-class="{ hovered: $ctrl._viewModel.isHovered, marked: $ctrl._viewModel.isMarked }"
 		ng-mouseenter="$ctrl.onMouseEnter()"
 		ng-mouseleave="$ctrl.onMouseLeave()"
 		ng-right-click="$ctrl.openNodeContextMenu($event)"
@@ -16,7 +16,7 @@
 		<cc-map-tree-view-item-icon [node]="$ctrl.node" [is-folder-open]="$ctrl._viewModel.isFolderOpened"></cc-map-tree-view-item-icon>
 		<cc-map-tree-view-item-name
 			[node]="$ctrl.node"
-			[is-hovered]="$ctrl._viewModel.isHoveredInCodeMap"
+			[is-hovered]="$ctrl._viewModel.isHovered"
 			[unary-value]="$ctrl.getNodeUnaryValue()"
 			[unary-percentage]="$ctrl.getUnaryPercentage()"
 		>
@@ -24,8 +24,7 @@
 
 		<cc-map-tree-view-item-option-buttons
 			[is-flattened]="$ctrl.node.isFlattened"
-			[is-hovered-in-code-map]="$ctrl._viewModel.isHoveredInCodeMap"
-			[is-hovered-in-tree-view]="$ctrl._viewModel.isHoveredInTreeView"
+			[is-hovered]="$ctrl._viewModel.isHovered"
 			[open-node-context-menu]="$ctrl.openNodeContextMenu"
 		></cc-map-tree-view-item-option-buttons>
 	</div>
