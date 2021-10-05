@@ -2,17 +2,15 @@
 	"extends": ["config:base", "group:all"],
 	"packageRules": [
 		{
-			"matchManagers": ["npm"],
-			"matchPaths": ["package.json"],
-			"groupName": "npm dependencies update",
-			"enabled": true
-		}
-	],
-	"packageRules": [
-		{
 			"matchManagers": ["gradle"],
 			"matchPaths": ["build.gradle"],
 			"groupName": "gradle dependencies update",
+			"enabled": true
+		},
+		{
+			"matchManagers": ["npm"],
+			"matchPaths": ["package.json"],
+			"groupName": "npm dependencies update",
 			"enabled": true
 		}
 	],
