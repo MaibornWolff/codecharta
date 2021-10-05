@@ -26,6 +26,7 @@ import { CodeMapNode, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { FloorLabelHelper } from "../../../util/floorLabelHelper"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -111,32 +112,19 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			return
 		}
 
-		const canvases = document.getElementsByTagName("canvas")
-		const mapCanvas = canvases[canvases.length - 1]
-		const displayWidth = mapCanvas.width
+		const { width: rootNodeWidth, length: rootNodeHeight } = rootNode
+		const mapResolutionScaling = FloorLabelHelper.getMapResolutionScaling(rootNodeWidth)
 
-		let mapResolutionScaling = 1
-
-		let mapWidth = rootNode.width
-		let mapHeight = rootNode.length
-
-		const fullHdPlusWidth = 2560
-		const scalingThreshold = Math.min(displayWidth * 4, fullHdPlusWidth * 4)
-
-		if (mapWidth >= scalingThreshold || mapHeight >= scalingThreshold) {
-			mapResolutionScaling = scalingThreshold / mapWidth
-		}
-
-		mapWidth = mapWidth * mapResolutionScaling
-		mapHeight = mapHeight * mapResolutionScaling
+		const scaledMapWidth = rootNodeWidth * mapResolutionScaling
+		const scaledMapHeight = rootNodeHeight * mapResolutionScaling
 
 		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
 
 		for (const [floorLevel, surfaceNodesPerLevel] of floorSurfaceInformation.entries()) {
 			const textCanvas = document.createElement("canvas")
-			textCanvas.height = mapHeight
-			textCanvas.width = mapWidth
+			textCanvas.height = scaledMapHeight
+			textCanvas.width = scaledMapWidth
 
 			const context = textCanvas.getContext("2d")
 
@@ -147,8 +135,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			for (const surfaceNode of surfaceNodesPerLevel) {
 				let fontSize =
 					surfaceNode.depth === 0
-						? Math.max(Math.floor(rootNode.width * 0.03), 120)
-						: Math.max(Math.floor(rootNode.width * 0.023), 95)
+						? Math.max(Math.floor(rootNodeWidth * 0.03), 120)
+						: Math.max(Math.floor(rootNodeWidth * 0.023), 95)
 				fontSize = Math.floor(fontSize * mapResolutionScaling)
 
 				context.font = `${fontSize}px Arial`
@@ -157,7 +145,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 				context.fillText(
 					textToFill.labelText,
-					(rootNode.length - surfaceNode.y0 - surfaceNode.length / 2) * mapResolutionScaling,
+					(rootNodeHeight - surfaceNode.y0 - surfaceNode.length / 2) * mapResolutionScaling,
 					(surfaceNode.x0 + surfaceNode.width) * mapResolutionScaling - textToFill.fontSize / 2
 				)
 			}
@@ -169,7 +157,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			labelTexture.needsUpdate = true
 			labelTexture.rotation = (90 * Math.PI) / 180
 
-			const plane = new PlaneGeometry(mapWidth, mapHeight)
+			const plane = new PlaneGeometry(scaledMapWidth, scaledMapHeight)
 			const material = new MeshBasicMaterial({
 				side: DoubleSide,
 				map: labelTexture,
@@ -182,7 +170,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 			planeMesh.rotateX((90 * Math.PI) / 180)
 			// TODO Check if we can replace the lift of -10 (z-axis) to prevent z-buffer-fighting by the highest z value of all nodes.
-			plane.translate(mapWidth / 2, mapHeight / 2, -2.01 * (floorLevel + 1) - 10)
+			plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -2.01 * (floorLevel + 1) - 10)
 
 			planeMesh.scale.set(scale.x / mapResolutionScaling, scale.y / mapResolutionScaling, scale.z)
 			planeMesh.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
