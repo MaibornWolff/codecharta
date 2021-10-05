@@ -153,7 +153,7 @@
 		"@types/lodash": "^4.14.168",
 		"@types/node": "^15.12.2",
 		"@types/puppeteer": "^5.4.3",
-		"@types/three": "^0.126.0",
+		"@types/three": "^0.132.2",
 		"@typescript-eslint/eslint-plugin": "^4.22.0",
 		"@typescript-eslint/parser": "^4.22.0",
 		"angularjs-color-picker": "^3.4.8",
