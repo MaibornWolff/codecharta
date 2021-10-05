@@ -1,11 +1,13 @@
 {
 	"extends": ["config:base"],
+	"enabledManagers": ["gradle", "npm"],
 	"packageRules": [
 		{
-			"matchDepTypes": ["devDependencies", "dependencies"],
-			"groupName": "dependencies update"
+			"packagePatterns": ["*"],
+			"excludePackagePatterns": ["debug"],
+			"enabled": false
 		}
 	],
 	"timezone": "Europe/Berlin",
-	"schedule": ["after 9pm"]
+	"schedule": ["on the 2nd and 4th day instance on sunday after 9pm"]
 }
