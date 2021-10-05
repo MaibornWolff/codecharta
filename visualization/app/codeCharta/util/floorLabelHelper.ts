@@ -1,4 +1,29 @@
 "use strict"
+import { Node } from "../codeCharta.model"
+
+export class FloorLabelCollector {
+	private floorLabelMap = new Map([
+		[0, []],
+		[1, []],
+		[2, []]
+	])
+
+	constructor(nodes: IterableIterator<Node>) {
+		this.collect(nodes)
+	}
+
+	private collect(nodes: IterableIterator<Node>) {
+		for (const node of nodes) {
+			if (!node.isLeaf && node.mapNodeDepth !== undefined && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
+				this.floorLabelMap.get(node.mapNodeDepth).push(node)
+			}
+		}
+	}
+
+	getLabeledFloorNodes() {
+		return this.floorLabelMap
+	}
+}
 
 export class FloorLabelHelper {
 	static getMapResolutionScaling(mapWidth: number) {
@@ -20,4 +45,6 @@ export class FloorLabelHelper {
 		const fullHdPlusWidth = 2560
 		return Math.min(displayWidth * 4, fullHdPlusWidth * 4)
 	}
+
+	static getFloorSurfaceInformation
 }

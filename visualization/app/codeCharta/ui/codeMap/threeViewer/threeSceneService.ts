@@ -26,7 +26,7 @@ import { CodeMapNode, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
-import { FloorLabelHelper } from "../../../util/floorLabelHelper"
+import { FloorLabelCollector, FloorLabelHelper } from "../../../util/floorLabelHelper"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -92,25 +92,19 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private initFloorLabels() {
 		this.floorLabels.clear()
 
-		const floorSurfaceInformation = new Map([
-			[0, []],
-			[1, []],
-			[2, []]
-		])
-
 		let rootNode
 		for (const node of this.mapMesh.getNodes().values()) {
 			if (node.id === 0) {
 				rootNode = node
-			}
-			if (!node.isLeaf && node.mapNodeDepth !== undefined && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
-				floorSurfaceInformation.get(node.mapNodeDepth).push(node)
+				break
 			}
 		}
 
-		if (rootNode === undefined) {
+		if (!rootNode) {
 			return
 		}
+
+		const floorLabelCollector = new FloorLabelCollector(this.mapMesh.getNodes().values())
 
 		const { width: rootNodeWidth, length: rootNodeHeight } = rootNode
 		const mapResolutionScaling = FloorLabelHelper.getMapResolutionScaling(rootNodeWidth)
@@ -121,7 +115,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
 
-		for (const [floorLevel, surfaceNodesPerLevel] of floorSurfaceInformation.entries()) {
+		for (const [floorLevel, surfaceNodesPerLevel] of floorLabelCollector.getLabeledFloorNodes()) {
 			const textCanvas = document.createElement("canvas")
 			textCanvas.height = scaledMapHeight
 			textCanvas.width = scaledMapWidth
