@@ -2,9 +2,10 @@
 	"extends": ["config:base"],
 	"packageRules": [
 		{
-			"matchDepTypes": ["devDependencies", "dependencies"]
+			"matchDepTypes": ["devDependencies", "dependencies"],
+			"groupName": "dependencies update"
 		}
 	],
 	"timezone": "Europe/Berlin",
-	"schedule": ["after 10pm every weekday"]
+	"schedule": ["after 9pm"]
 }
