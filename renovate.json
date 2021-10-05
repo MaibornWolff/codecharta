@@ -3,14 +3,8 @@
 	"packageRules": [
 		{
 			"matchManagers": ["npm"],
-			"matchFiles": ["package.json"],
+			"matchPaths": ["package.json"],
 			"groupName": "npm dependencies update",
-			"enabled": true
-		},
-		{
-			"matchManagers": ["gradle"],
-			"matchFiles": ["build.gradle"],
-			"groupName": "gradle dependencies update",
 			"enabled": true
 		}
 	],
