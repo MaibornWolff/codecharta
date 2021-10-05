@@ -1,7 +1,7 @@
 <button
 	class="box-rounded"
-	(click)="onButtonClick()"
-	title="Toggle sort order (currently {{ orderAscending ? 'ascending' : 'descending' }})"
+	(click)="onClick()"
+	title="Toggle sort order (currently {{ (sortingOrderAscending$ | async) ? 'ascending' : 'descending' }})"
 >
-	<i [className]="orderAscending ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc'"></i>
+	<i [className]="(sortingOrderAscending$ | async) ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc'"></i>
 </button>
