@@ -4,20 +4,32 @@
 			Size metric (<span class="bold">{{ $ctrl._viewModel.areaMetric }}</span
 			>: {{ $ctrl._viewModel.areaMetricDescription }})
 		</div>
+		<div ng-if="!$ctrl._viewModel.areaMetricDescription" class="legend-block">
+			Size metric: <span class="bold">{{ $ctrl._viewModel.areaMetric }}</span>
+		</div>
 		<div ng-if="$ctrl._viewModel.heightMetricDescription" class="legend-block">
 			Height metric (<span class="bold">{{ $ctrl._viewModel.heightMetric }}</span
 			>: {{ $ctrl._viewModel.heightMetricDescription }})
+		</div>
+		<div ng-if="!$ctrl._viewModel.heightMetricDescription" class="legend-block">
+			Height metric: <span class="bold">{{ $ctrl._viewModel.heightMetric }}</span>
 		</div>
 		<div ng-if="$ctrl._viewModel.edgeMetricHasEdge">
 			<div ng-if="$ctrl._viewModel.edgeDescription" class="legend-block">
 				Edge metric (<span class="bold">{{ $ctrl._viewModel.edge }}</span
 				>: {{ $ctrl._viewModel.edgeDescription }})
 			</div>
+			<div ng-if="!$ctrl._viewModel.edgeDescription" class="legend-block">
+				Edge metric: <span class="bold">{{ $ctrl._viewModel.edge }}</span>
+			</div>
 		</div>
 		<hr />
 		<div ng-if="$ctrl._viewModel.colorMetricDescription" class="legend-block">
 			Color metric (<span class="bold">{{ $ctrl._viewModel.colorMetric }}</span
 			>: {{ $ctrl._viewModel.colorMetricDescription }})
+		</div>
+		<div ng-if="!$ctrl._viewModel.colorMetricDescription" class="legend-block">
+			Color metric: <span class="bold">{{ $ctrl._viewModel.colorMetric }}</span>
 		</div>
 		<cc-store-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
 		</cc-store-color-picker>
