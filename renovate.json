@@ -2,14 +2,12 @@
 	"extends": ["config:base"],
 	"packageRules": [
 		{
-			"matchManagers": ["npm"],
-			"groupName": "dependencies update",
-			"enabled": true
+			"matchPackageNames": "package",
+			"groupName": ["npm"]
 		},
 		{
-			"matchManagers": ["gradle"],
-			"groupName": "dependencies update",
-			"enabled": true
+			"matchPackageNames": "build",
+			"groupName": ["gradle"]
 		}
 	],
 	"timezone": "Europe/Berlin",
