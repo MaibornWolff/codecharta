@@ -275,24 +275,6 @@ function setVerticesAndFaces(
 		const positiveFacing = normal[dimension] === 1
 
 		if (positiveFacing) {
-			// Collect floors from a depth of 0 until a depth of 3 to be stamped with the folder name as a label
-			// TODO provide conditions centrally for checking if a floor has to be labeled.
-			// if (addingFloor && side === sides.top && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
-			// 	//console.log("X", minPosX, maxPosX)
-			// 	//console.log("Y", minPosY, maxPosY)
-			// 	//console.log("Z", minPosZ, maxPosZ)
-			// 	const surfaceInformation: SurfaceInformation = {
-			// 		node,
-			// 		// The starting index of the vertices of the floors top surface must be known.
-			// 		// It is used to render the floor surface with a different (label) texture
-			// 		surfaceStartIndex,
-			// 		minPos: { z: minPosZ, x: minPosX },
-			// 		maxPos: { z: maxPosZ, x: maxPosX }
-			// 	}
-			//
-			// 	data.floorSurfaceInformation.get(node.mapNodeDepth).push(surfaceInformation)
-			// }
-
 			data.indices.set(
 				[indexBottomLeft, indexTopLeft, indexTopRight, indexBottomLeft, indexTopRight, indexBottomRight],
 				surfaceStartIndex

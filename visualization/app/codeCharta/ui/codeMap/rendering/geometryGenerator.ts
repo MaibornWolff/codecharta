@@ -2,17 +2,7 @@ import { Node, State } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { addBoxToVertexData, IntermediateVertexData, BoxMeasures } from "./geometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import {
-	Mesh,
-	BufferGeometry,
-	Material,
-	BufferAttribute
-	//MeshBasicMaterial,
-	//CanvasTexture,
-	//DoubleSide,
-	//RepeatWrapping
-} from "three"
-// import { getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "../../../util/codeMapHelper"
+import { Mesh, BufferGeometry, Material, BufferAttribute } from "three"
 
 export interface BuildResult {
 	mesh: Mesh
@@ -24,16 +14,9 @@ export class GeometryGenerator {
 
 	private floorGradient: string[]
 	private materials: Material[]
-	// private floorSurfaceLabelFontSizes = new Map([
-	// 	[MAP_RESOLUTION_SCALE.SMALL_MAP, [54, 54, 54]],
-	// 	[MAP_RESOLUTION_SCALE.MEDIUM_MAP, [72, 54, 54]],
-	// 	[MAP_RESOLUTION_SCALE.BIG_MAP, [108, 72, 72]]
-	// ])
-	// private mapSizeResolutionScaling = MAP_RESOLUTION_SCALE.SMALL_MAP
 
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
-		// this.mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 		this.materials = [material]
@@ -152,142 +135,7 @@ export class GeometryGenerator {
 		geometry.setIndex(new BufferAttribute(data.indices, 1))
 
 		geometry.addGroup(0, Number.POSITIVE_INFINITY, 0)
-		//this.addMaterialGroups(data, geometry)
 
 		return new Mesh(geometry, this.materials)
 	}
-
-	// private addMaterialGroups(data: IntermediateVertexData, geometry: BufferGeometry) {
-	// 	const topSurfaceInfos = data.floorSurfaceInformation
-	//
-	// 	// Render with default material until first floor surface
-	// 	geometry.addGroup(0, Number.POSITIVE_INFINITY, 0)
-	//
-	// 	this.createAndAssignFloorLabelTextureMaterial(topSurfaceInfos)
-	//
-	// 	//const levelThreeSurfaces = topSurfaceInfos.get(2).values()
-	//
-	// 	const uvAttribute = geometry.attributes.uv
-	// 	console.log("BLUB", uvAttribute)
-	//
-	// 	const u = uvAttribute.getX(361)
-	// 	const v = uvAttribute.getY(361)
-	// 	for (let i = 361; i < 365; i++) {
-	// 		uvAttribute.setXY(i, 1 +  0.5, 1 + 0.5)
-	// 		uvAttribute.needsUpdate = true
-	// 	}
-	//
-	// 	console.log(u,v)
-	//
-	// 	geometry.addGroup(topSurfaceInfos.get(0).values().next().value.surfaceStartIndex, 6, 1)
-	// 	geometry.addGroup(topSurfaceInfos.get(1).values().next().value.surfaceStartIndex, 6, 2)
-	// 	geometry.addGroup(342, 6, 3)
-	//
-	// 	//geometry.addGroup(levelThreeSurfaces.next().value.surfaceStartIndex, 6, 3)
-	// 	//geometry.addGroup(levelThreeSurfaces.next().value.surfaceStartIndex, 6, 3)
-	//
-	// 	// geometry.addGroup(0, topSurfaceInfos[0].surfaceStartIndex, 1)
-	//
-	// 	// // In general, a plane is rendered by 2 triangles, each with 3 vertices.
-	// 	// const verticesPerPlane = 6
-	//
-	// 	// for (let surfaceIndex = 0; surfaceIndex < topSurfaceInfos.length; surfaceIndex++) {
-	// 	// 	const currentSurfaceInfo = topSurfaceInfos[surfaceIndex]
-	// 	// 	// Render the floors surface with the text label texture
-	// 	// 	geometry.addGroup(currentSurfaceInfo.surfaceStartIndex, verticesPerPlane, surfaceIndex + 1)
-	//
-	// 	// 	this.createAndAssignFloorLabelTextureMaterial(topSurfaceInfos)
-	//
-	// 	// 	let verticesCountUntilNextFloorLabelRenderer = Number.POSITIVE_INFINITY
-	// 	// 	const startOfNextDefaultRenderer = currentSurfaceInfo.surfaceStartIndex + verticesPerPlane
-	// 	// 	const nextSurfaceInfo = topSurfaceInfos[surfaceIndex + 1]
-	//
-	// 	// 	if (nextSurfaceInfo) {
-	// 	// 		verticesCountUntilNextFloorLabelRenderer = nextSurfaceInfo.surfaceStartIndex - startOfNextDefaultRenderer
-	// 	// 	}
-	//
-	// 	// 	// Render the remaining planes (sides, bottom) with the default material
-	// 	// 	geometry.addGroup(startOfNextDefaultRenderer, verticesCountUntilNextFloorLabelRenderer, 0)
-	// 	// }
-	// }
-
-	// private createAndAssignFloorLabelTextureMaterial(surfaceInfos: Map<number, SurfaceInformation[]>) {
-	// 	//// @ts-expect-error no TypeScript information available.
-	// 	const canvases = document.getElementsByTagName("canvas")
-	// 	//const { height, width } = canvases[canvases.length - 1]
-	//
-	// 	console.log(canvases[canvases.length - 1].width, canvases[canvases.length - 1].height)
-	// 	console.log(canvases[canvases.length - 1], canvases.length)
-	//
-	// 	const codeMapCanvas = canvases[canvases.length - 1]
-	//
-	// 	console.log(surfaceInfos.values())
-	// 	for (const surfacesPerLevel of surfaceInfos.values()) {
-	// 		const textCanvas = document.createElement("canvas")
-	// 		textCanvas.height = codeMapCanvas.height
-	// 		textCanvas.width = codeMapCanvas.width
-	//
-	//
-	// 		const context = textCanvas.getContext("2d")
-	// 		// context.fillStyle = this.getMarkingColorWithGradient(surfaceInfos[0].node)
-	// 		// context.fillRect(0, 0, textCanvas.width, textCanvas.height)
-	//
-	// 		context.fillStyle = "black"
-	// 		context.textAlign = "center"
-	// 		context.textBaseline = "middle"
-	// 		// context.rotate(Math.PI);
-	//
-	// 		for (const {
-	// 			node,
-	// 			minPos,
-	// 			maxPos
-	// 		} of surfacesPerLevel) {
-	// 			const surfaceWidth = maxPos.z - minPos.z
-	//
-	// 			const {labelText, fontSize} = this.getLabelAndSetContextFont(node.name, context, surfaceWidth)
-	//
-	// 			context.font = `${fontSize}px Arial`
-	//
-	// 			//const textPositionY = maxPos.x - 5
-	//
-	// 			console.log(node)
-	// 			const textPositionX = node.y0
-	// 			const textPositionY = node.x0
-	//
-	// 			// Consider font size for y position
-	// 			//const textWidth = maxPos.y - minPos.y
-	// 		//const textPositionX = (maxPos.z - minPos.z) / 2
-	// 			//const textPositionX = textWidth / 2 + minPos.y
-	//
-	//
-	// 			// ctx.translate(150, 75);
-	// 			// ctx.rotate(Math.PI / 2);
-	// 			// ctx.translate(-150, -75);
-	//
-	// 			// TODO: Consider using the 4th argument (maxWidth to limit the labelText instead of changing the font size etc.)
-	// 			context.fillText(labelText, textPositionX, textPositionY)
-	// 		}
-	//
-	// 		const labelTexture = new CanvasTexture(textCanvas)
-	// 		labelTexture.wrapS = RepeatWrapping
-	// 		labelTexture.wrapT = RepeatWrapping
-	// 		labelTexture.needsUpdate = true
-	//
-	// 		// Texture is mirrored (spiegelverkehrt)
-	// 		// Mirror it horizontally to fix that
-	// 		// TODO: Fix this. It should be possible to rotate the context appropriately.
-	// 		//labelTexture.wrapS = RepeatWrapping
-	// 		//labelTexture.repeat.set(1, 1);
-	//
-	// 		const floorSurfaceLabelMaterial = new MeshBasicMaterial({ map: labelTexture })
-	// 		// floorSurfaceLabelMaterial.needsUpdate = true
-	// 		floorSurfaceLabelMaterial.side = DoubleSide
-	// 		floorSurfaceLabelMaterial.transparent = true
-	// 		// floorSurfaceLabelMaterial.userData = surfaceInfo.node
-	//
-	// 		//document.body.prepend(textCanvas)
-	// 		console.log("TEXTCANVAS", textCanvas)
-	// 		this.materials.push(floorSurfaceLabelMaterial)
-	// 	}
-	// }
 }

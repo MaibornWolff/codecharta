@@ -29,7 +29,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	scene: Scene
 	labels: Group
-	floorLabels: Group
+	floorLabelPlanes: Group
 	edgeArrows: Group
 	mapGeometry: Group
 	private readonly lights: Group
@@ -59,7 +59,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.mapGeometry = new Group()
 		this.lights = new Group()
 		this.labels = new Group()
-		this.floorLabels = new Group()
+		this.floorLabelPlanes = new Group()
 		this.edgeArrows = new Group()
 
 		this.initLights()
@@ -68,11 +68,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
-		this.scene.add(this.floorLabels)
+		this.scene.add(this.floorLabelPlanes)
 	}
 
 	private initFloorLabels() {
-		this.floorLabels.clear()
+		this.floorLabelPlanes.clear()
 
 		const rootNode = this.extractRootNode(this.mapMesh.getNodes().values())
 		if (!rootNode) {
@@ -85,8 +85,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes().values(), rootNode, mapSize, scaling)
 		const floorLabels = floorLabelDrawer.draw()
 
-		this.floorLabels.add(...floorLabels)
-		this.scene.add(this.floorLabels)
+		this.floorLabelPlanes.add(...floorLabels)
+		this.scene.add(this.floorLabelPlanes)
 	}
 
 	private extractRootNode(nodeIterator: IterableIterator<Node>) {

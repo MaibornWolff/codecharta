@@ -5,10 +5,10 @@ import { CanvasTexture, DoubleSide, Mesh, MeshBasicMaterial, PlaneGeometry, Repe
 import { FloorLabelHelper } from "./floorLabelHelper"
 
 export class FloorLabelDrawer {
-	private floorLabels: Mesh[] = []
-	private rootNode: Node
-	private mapSize: number
-	private scaling: Vector3
+	private floorLabelPlanes: Mesh[] = []
+	private readonly rootNode: Node
+	private readonly mapSize: number
+	private readonly scaling: Vector3
 
 	private floorLabelsPerLevel = new Map([
 		[0, []],
@@ -44,7 +44,7 @@ export class FloorLabelDrawer {
 			this.drawLevelPlaneGeometry(textCanvas, scaledMapWidth, scaledMapHeight, floorLevel, mapResolutionScaling)
 		}
 
-		return this.floorLabels
+		return this.floorLabelPlanes
 	}
 
 	private createLabelPlaneCanvas(scaledMapWidth, scaledMapHeight) {
@@ -109,7 +109,7 @@ export class FloorLabelDrawer {
 		planeMesh.scale.set(this.scaling.x / mapResolutionScaling, this.scaling.y / mapResolutionScaling, this.scaling.z)
 		planeMesh.position.set(-this.mapSize * this.scaling.x, 0, -this.mapSize * this.scaling.z)
 
-		this.floorLabels.push(planeMesh)
+		this.floorLabelPlanes.push(planeMesh)
 	}
 
 	private getLabelAndSetContextFont(labelNode: Node, context: CanvasRenderingContext2D, mapResolutionScaling: number, fontSize: number) {
