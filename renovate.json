@@ -1,9 +1,10 @@
 {
-	"extends": ["config:base"],
+	"extends": ["config:base", "group:all"],
 	"enabledManagers": ["gradle", "npm"],
 	"packageRules": [
 		{
-			"packagePatterns": ["*"]
+			"packagePatterns": ["*"],
+			"groupName": "dependencies update"
 		}
 	],
 	"timezone": "Europe/Berlin",
