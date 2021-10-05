@@ -22,7 +22,7 @@ import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
-import { CodeMapNode, MapColors } from "../../../codeCharta.model"
+import { CodeMapNode, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
@@ -97,46 +97,41 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			[2, []]
 		])
 
+		let rootNode
 		for (const node of this.mapMesh.getNodes().values()) {
-			if (!node.isLeaf && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
+			if (node.id === 0) {
+				rootNode = node
+			}
+			if (!node.isLeaf && node.mapNodeDepth !== undefined && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
 				floorSurfaceInformation.get(node.mapNodeDepth).push(node)
 			}
+		}
+
+		if (rootNode === undefined) {
+			return
 		}
 
 		const canvases = document.getElementsByTagName("canvas")
 		const mapCanvas = canvases[canvases.length - 1]
 		const displayWidth = mapCanvas.width
-		const displayHeight = mapCanvas.height
 
-		//console.log(displayWidth, displayHeight)
-
-		const rootNode = floorSurfaceInformation.get(0)[0]
-		if (!rootNode) {
-			return
-		}
-		//console.log(rootNode)
-
-		let mapWidthResolutionScaling = 1
-		let mapHeightResolutionScaling = 1
+		let mapResolutionScaling = 1
 
 		let mapWidth = rootNode.width
 		let mapHeight = rootNode.length
 
-		const widthScalingThreshold = displayWidth * 2
-		const heightScalingThreshold = displayHeight * 2
+		const fullHdPlusWidth = 2560
+		const scalingThreshold = Math.min(displayWidth * 4, fullHdPlusWidth * 4)
 
-		if (mapWidth >= widthScalingThreshold || mapHeight >= heightScalingThreshold) {
-			mapWidthResolutionScaling = widthScalingThreshold / mapWidth
-			mapHeightResolutionScaling = heightScalingThreshold / mapHeight
+		if (mapWidth >= scalingThreshold || mapHeight >= scalingThreshold) {
+			mapResolutionScaling = scalingThreshold / mapWidth
 		}
 
-		mapWidth = mapWidth * mapWidthResolutionScaling
-		mapHeight = mapHeight * mapHeightResolutionScaling
+		mapWidth = mapWidth * mapResolutionScaling
+		mapHeight = mapHeight * mapResolutionScaling
 
 		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
-
-		//console.log(floorSurfaceInformation)
 
 		for (const [floorLevel, surfaceNodesPerLevel] of floorSurfaceInformation.entries()) {
 			const textCanvas = document.createElement("canvas")
@@ -149,17 +144,21 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			context.textAlign = "center"
 			context.textBaseline = "middle"
 
-			const fontSize = 48
-			context.font = `${fontSize * mapHeightResolutionScaling}px Arial`
-
 			for (const surfaceNode of surfaceNodesPerLevel) {
-				//console.log(surfaceNode)
+				let fontSize =
+					surfaceNode.depth === 0
+						? Math.max(Math.floor(rootNode.width * 0.03), 120)
+						: Math.max(Math.floor(rootNode.width * 0.023), 95)
+				fontSize = Math.floor(fontSize * mapResolutionScaling)
+
+				context.font = `${fontSize}px Arial`
+
+				const textToFill = this.getLabelAndSetContextFont(surfaceNode, context, mapResolutionScaling, fontSize)
 
 				context.fillText(
-					surfaceNode.name,
-					//rootNode.width - surfaceNode.mapNodeDepth * 20 - surfaceNode.length / 2,
-					(rootNode.length - surfaceNode.y0 - surfaceNode.length / 2) * mapWidthResolutionScaling,
-					(surfaceNode.x0 + surfaceNode.width - fontSize / 2) * mapHeightResolutionScaling
+					textToFill.labelText,
+					(rootNode.length - surfaceNode.y0 - surfaceNode.length / 2) * mapResolutionScaling,
+					(surfaceNode.x0 + surfaceNode.width) * mapResolutionScaling - textToFill.fontSize / 2
 				)
 			}
 
@@ -170,27 +169,74 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			labelTexture.needsUpdate = true
 			labelTexture.rotation = (90 * Math.PI) / 180
 
-			const plane = new PlaneGeometry(mapWidth, mapHeight, 1, 1)
+			const plane = new PlaneGeometry(mapWidth, mapHeight)
 			const material = new MeshBasicMaterial({
 				side: DoubleSide,
 				map: labelTexture,
-				transparent: true,
-				precision: "highp"
+				transparent: true
 			})
 
 			const planeMesh = new Mesh(plane, material)
 
 			this.floorLabels.add(planeMesh)
-			this.scene.add(this.floorLabels)
 
 			planeMesh.rotateX((90 * Math.PI) / 180)
-			plane.translate(mapWidth / 2, mapHeight / 2, -2.01 * (floorLevel + 1) - 4)
-			//planeMesh.position.z += 50;
-			//planeMesh.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI);
+			// TODO Check if we can replace the lift of -10 (z-axis) to prevent z-buffer-fighting by the highest z value of all nodes.
+			plane.translate(mapWidth / 2, mapHeight / 2, -2.01 * (floorLevel + 1) - 10)
 
-			planeMesh.scale.set(scale.x / mapWidthResolutionScaling, scale.y / mapHeightResolutionScaling, scale.z)
+			planeMesh.scale.set(scale.x / mapResolutionScaling, scale.y / mapResolutionScaling, scale.z)
 			planeMesh.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
 		}
+
+		this.scene.add(this.floorLabels)
+	}
+
+	private getLabelAndSetContextFont(
+		surfaceNode: Node,
+		context: CanvasRenderingContext2D,
+		mapResolutionScaling: number,
+		fontSize: number
+	) {
+		const labelText = surfaceNode.name
+		const surfaceWidth = surfaceNode.length * mapResolutionScaling
+
+		context.font = `${fontSize}px Arial`
+
+		const textMetrics = context.measureText(labelText)
+		const fontScaleFactor = this.getFontScaleFactor(surfaceWidth, textMetrics.width)
+		if (fontScaleFactor <= 0.5) {
+			// Font will be to small.
+			// So scale text not smaller than 0.5 and shorten it as well
+			fontSize = fontSize * 0.5
+			fontSize = Math.floor(Math.min(fontSize, surfaceNode.width * mapResolutionScaling))
+			context.font = `${fontSize}px Arial`
+			return {
+				labelText: this.getFittingLabelText(context, surfaceWidth, labelText),
+				fontSize
+			}
+		}
+		fontSize = Math.floor(Math.min(fontSize * fontScaleFactor, surfaceNode.width * mapResolutionScaling))
+		context.font = `${fontSize}px Arial`
+		return { labelText, fontSize }
+	}
+
+	private getFontScaleFactor(canvasWidth: number, widthOfText: number) {
+		return widthOfText < canvasWidth ? 1 : canvasWidth / widthOfText
+	}
+
+	private getFittingLabelText(context: CanvasRenderingContext2D, canvasWidth: number, labelText: string) {
+		const { width } = context.measureText(labelText)
+		let textSplitIndex = Math.floor((labelText.length * canvasWidth) / width)
+		let abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
+
+		// TODO: Check if this is expensive. If it is, let's use a logarithmic algorithm instead.
+		while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
+			// textSplitIndex > 1 to ensure it contains at least one char
+			textSplitIndex -= 1
+			abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
+		}
+
+		return abbreviatedText
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {

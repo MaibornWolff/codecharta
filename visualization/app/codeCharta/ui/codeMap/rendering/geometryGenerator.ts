@@ -290,47 +290,4 @@ export class GeometryGenerator {
 	// 		this.materials.push(floorSurfaceLabelMaterial)
 	// 	}
 	// }
-
-	// private getLabelAndSetContextFont(labelText: string, context: CanvasRenderingContext2D, surfaceWidth: number) {
-	// 	return {
-	// 		fontSize: 24,
-	// 		labelText
-	// 	}
-	//
-	// 	let fontSize = 72
-	// 	context.font = `${fontSize}px Arial`
-	// 	const textMetrics = context.measureText(labelText)
-	// 	const fontScaleFactor = this.getFontScaleFactor(surfaceWidth, textMetrics.width)
-	// 	if (fontScaleFactor <= 0.5) {
-	// 		// Font will be to small.
-	// 		// So scale text not smaller than 0.5 and shorten it as well
-	// 		fontSize = fontSize * 0.5
-	// 		context.font = `${fontSize}px Arial`
-	// 		return {
-	// 			labelText: this.getFittingLabelText(context, surfaceWidth, labelText),
-	// 			fontSize
-	// 		}
-	// 	}
-	// 	context.font = `${fontSize * fontScaleFactor}px Arial`
-	// 	return { labelText, fontSize: fontSize * fontScaleFactor }
-	// }
-
-	// private getFontScaleFactor(canvasWidth: number, widthOfText: number) {
-	// 	return widthOfText < canvasWidth ? 1 : canvasWidth / widthOfText
-	// }
-	//
-	// private getFittingLabelText(context: CanvasRenderingContext2D, canvasWidth: number, labelText: string) {
-	// 	const { width } = context.measureText(labelText)
-	// 	let textSplitIndex = Math.floor((labelText.length * canvasWidth) / width)
-	// 	let abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
-	//
-	// 	// TODO: Check if this is expensive. If it is, let's use a logarithmic algorithm instead.
-	// 	while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
-	// 		// textSplitIndex > 1 to ensure it contains at least one char
-	// 		textSplitIndex -= 1
-	// 		abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
-	// 	}
-	//
-	// 	return abbreviatedText
-	// }
 }
