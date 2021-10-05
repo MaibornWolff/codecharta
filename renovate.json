@@ -1,10 +1,15 @@
 {
-	"extends": ["config:base", "group:all"],
-	"enabledManagers": ["gradle", "npm"],
+	"extends": ["config:base"],
 	"packageRules": [
 		{
-			"packagePatterns": ["*"],
-			"groupName": "dependencies update"
+			"matchManagers": ["npm"],
+			"groupName": "dependencies update",
+			"enabled": true
+		},
+		{
+			"matchManagers": ["gradle"],
+			"groupName": "dependencies update",
+			"enabled": true
 		}
 	],
 	"timezone": "Europe/Berlin",
