@@ -14,21 +14,17 @@
 		id="{{ ::$ctrl.node.path }}"
 	>
 		<cc-map-tree-view-item-icon [node]="$ctrl.node" [is-folder-open]="$ctrl._viewModel.isFolderOpened"></cc-map-tree-view-item-icon>
-
-		<span class="node-name" ng-class="{ flattened: $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched() }">
-			{{::$ctrl.node.name}}
-		</span>
-
-		<span class="unary-number" ng-if="!$ctrl.isLeaf()">
-			<span ng-if="!$ctrl._viewModel.isHoveredInCodeMap">{{ ::$ctrl.getUnaryPercentage() }}%</span>
-			<span ng-if="$ctrl._viewModel.isHoveredInCodeMap">
-				{{ ::$ctrl.getNodeUnaryValue() }} File<span ng-if="$ctrl.getNodeUnaryValue() !== 1">s</span>
-			</span>
-		</span>
+		<cc-map-tree-view-item-name
+			[node]="$ctrl.node"
+			[is-hovered]="$ctrl._viewModel.isHoveredInCodeMap"
+			[unary-value]="$ctrl.getNodeUnaryValue()"
+			[unary-percentage]="$ctrl.getUnaryPercentage()"
+		>
+		</cc-map-tree-view-item-name>
 
 		<cc-map-tree-view-item-option-buttons
 			[is-flattened]="$ctrl.node.isFlattened"
-			[is-hovered-in-code-map]="$ctrl._viewModel.ishoveredInCodeMap"
+			[is-hovered-in-code-map]="$ctrl._viewModel.isHoveredInCodeMap"
 			[is-hovered-in-tree-view]="$ctrl._viewModel.isHoveredInTreeView"
 			[open-node-context-menu]="$ctrl.openNodeContextMenu"
 		></cc-map-tree-view-item-option-buttons>
