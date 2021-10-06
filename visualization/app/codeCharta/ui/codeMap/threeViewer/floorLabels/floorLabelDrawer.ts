@@ -101,9 +101,9 @@ export class FloorLabelDrawer {
 		// Rotate plane to be horizontally
 		planeMesh.rotateX((90 * Math.PI) / 180)
 
-		// TODO Check if we can replace the lift of -10 (z-axis) to prevent z-buffer-fighting by the highest z value of all nodes.
 		// Position plane over the map
-		plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -2.01 * (floorLevel + 1) - 10)
+		const liftToPreventZFighting = 10
+		plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -2.01 * (floorLevel + 1) - liftToPreventZFighting)
 
 		// Apply default scaling
 		planeMesh.scale.set(this.scaling.x / mapResolutionScaling, this.scaling.y / mapResolutionScaling, this.scaling.z)
