@@ -19,7 +19,6 @@ export class DialogChangelogController {
 
 		localStorage.setItem("codeChartaVersion", packageJson.version)
 		let changelogLines = markdownFile.split("\n")
-
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
 		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.lastOpenedVersion)
 		const lastOpenedVersionLastLine = this.findEndVersionLine(changelogLines, lastOpenedVersionFirstLine)
@@ -31,16 +30,16 @@ export class DialogChangelogController {
 		for (const title of titles) {
 			const titlePattern = new RegExp(`<h3>${title}</h3>`)
 			const titleLinesIndexes = this.getAllIndexes(changelogLines, titlePattern)
-			const changelogTypesSet = new Set()
+			const changelogTypesSet = []
 			for (const lineIndex of titleLinesIndexes) {
 				// Add 2 to remove the headline and the <ul> tag
 				const start = lineIndex + 2
 				const end = this.findEndChangesLine(changelogLines, lineIndex)
 				for (const changeLine of changelogLines.slice(start, end)) {
-					changelogTypesSet.add(changeLine)
+					changelogTypesSet.push(changeLine)
 				}
 			}
-			if (changelogTypesSet.size > 0) changes[title] = [...changelogTypesSet.values()].join("\n")
+			if (changelogTypesSet.length > 0) changes[title] = [...changelogTypesSet.values()].join("\n")
 		}
 		this._viewModel.changes = changes
 	}
