@@ -195,7 +195,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 			// TODO This will not work for FixedFolders, but its ok because depth properties are not included in CodeMapNode in this case.
 			//  so the default padding will be added, which is fine.
 			//  Let's improve this a bit.
-			if (!rootNode) {
+			if (!rootNode && node.data.name === "root") {
 				rootNode = node
 			}
 			// Start the labels at level 1 not 0 because the root folder should not be labeled

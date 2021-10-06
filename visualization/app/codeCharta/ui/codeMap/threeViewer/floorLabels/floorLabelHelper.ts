@@ -1,5 +1,7 @@
 "use strict"
 
+import { Node } from "../../../../codeCharta.model"
+
 export class FloorLabelHelper {
 	static getMapResolutionScaling(mapWidth: number) {
 		const canvases = document.getElementsByTagName("canvas")
@@ -15,5 +17,9 @@ export class FloorLabelHelper {
 	private static getScalingThreshold(displayWidth: number) {
 		const fullHdPlusWidth = 2560
 		return Math.min(displayWidth * 4, fullHdPlusWidth * 4)
+	}
+
+	static isLabelNode(node: Node) {
+		return !node.isLeaf && node.mapNodeDepth !== undefined && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3
 	}
 }

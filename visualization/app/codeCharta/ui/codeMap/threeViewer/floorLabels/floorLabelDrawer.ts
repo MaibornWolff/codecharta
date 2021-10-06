@@ -25,7 +25,7 @@ export class FloorLabelDrawer {
 
 	private collectLabelsPerLevel(nodes: IterableIterator<Node>) {
 		for (const node of nodes) {
-			if (!node.isLeaf && node.mapNodeDepth !== undefined && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3) {
+			if (FloorLabelHelper.isLabelNode(node)) {
 				this.floorLabelsPerLevel.get(node.mapNodeDepth).push(node)
 			}
 		}
