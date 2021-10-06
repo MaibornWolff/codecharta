@@ -82,7 +82,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		const { mapSize } = this.storeService.getState().treeMap
 		const scaling = this.storeService.getState().appSettings.scaling
 
-		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes().values(), rootNode, mapSize, scaling)
+		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
 		const floorLabels = floorLabelDrawer.draw()
 
 		this.floorLabelPlanes.add(...floorLabels)

@@ -16,8 +16,8 @@ export class FloorLabelDrawer {
 		[2, []]
 	])
 
-	constructor(nodes: IterableIterator<Node>, rootNode: Node, mapSize: number, scaling: Vector3) {
-		this.collectLabelsPerLevel(nodes)
+	constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3) {
+		this.collectLabelsPerLevel(nodes.values())
 		this.rootNode = rootNode
 		this.mapSize = mapSize
 		this.scaling = scaling
