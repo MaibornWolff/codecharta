@@ -355,6 +355,7 @@ export interface State {
 	files: FileState[]
 	lookUp: LookUp
 	metricData: MetricData
+	appStatus: AppStatus
 }
 
 export function stateObjectReplacer(_, valueToReplace) {

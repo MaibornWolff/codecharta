@@ -32,7 +32,7 @@ export class MapTreeViewLevelController implements HideNodeContextMenuSubscriber
 		this.storeService["store"].subscribe(() => {
 			const state = this.storeService["store"].getState()
 			const hoveredBuildingPath = hoveredBuildingPathSelector(state)
-			const isHovered = Boolean(this.node?.path && hoveredBuildingPath === this.node.path)
+			const isHovered = Boolean(this.node.path && hoveredBuildingPath === this.node.path)
 			if (isHovered !== this._viewModel.isHovered) this._viewModel.isHovered = isHovered
 		})
 	}
@@ -42,7 +42,7 @@ export class MapTreeViewLevelController implements HideNodeContextMenuSubscriber
 	}
 
 	onMouseEnter() {
-		this.storeService.dispatch(setHoveredBuildingPath(this.node?.path))
+		this.storeService.dispatch(setHoveredBuildingPath(this.node.path))
 	}
 
 	onMouseLeave() {
