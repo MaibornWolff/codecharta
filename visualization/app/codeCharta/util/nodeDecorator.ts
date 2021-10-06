@@ -68,19 +68,7 @@ export const NodeDecorator = {
 				}
 			}
 
-			// TODO outsource to separate method
-			// Nodes with only one child which also have children are merged into one node
-			// e.g. a /folder which includes anotherFolder that includes other files or folders
-			// will be merged to a node with path /folder/anotherFolder and children are set accordingly
-			if (data.children?.length === 1 && data.children[0].children?.length > 0) {
-				const [child] = data.children
-				data.children = child.children
-				data.name += `/${child.name}`
-				data.path += `/${child.name}`
-				if (child.link) {
-					data.link = child.link
-				}
-			}
+			mergeFolderChain(data)
 		}
 	},
 
@@ -181,6 +169,22 @@ export const NodeDecorator = {
 					map.deltas[name] = getMedian(medians.get(`${MedianSelectors.DELTA}${name}${map.path}`))
 				}
 			}
+		}
+	}
+}
+
+function mergeFolderChain(data: CodeMapNode) {
+	// Nodes with only one child which also have children are merged into one node
+	// e.g. a /folder which includes anotherFolder that includes other files or folders
+	// will be merged to a node with path /folder/anotherFolder and children are set accordingly
+
+	if (data.children?.length === 1 && data.children[0].children?.length > 0) {
+		const [child] = data.children
+		data.children = child.children
+		data.name += `/${child.name}`
+		data.path += `/${child.name}`
+		if (child.link) {
+			data.link = child.link
 		}
 	}
 }
