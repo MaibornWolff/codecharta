@@ -168,6 +168,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 	let addedLabelSpace = 0
 	hierarchyNode.eachAfter(node => {
 		// Precalculate the needed paddings for the floor folder labels to be able to expand the default map size
+		// TODO fix estimation, estimation of added label space is inaccurate
 		if (!isLeaf(node)) {
 			if (node.depth === 0) {
 				addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
@@ -192,13 +193,13 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 		.paddingOuter(padding)
 		.paddingInner(padding)
 		.paddingRight(node => {
-			// TODO This will not work for FixedFolders, but its ok because depth properties are not included in CodeMapNode in this case.
-			//  so the default padding will be added, which is fine.
-			//  Let's improve this a bit.
 			if (!rootNode && node.parent === null) {
 				rootNode = node
 			}
 
+			// TODO This will not work for FixedFolders
+			// it seems that depth property is missing in that case
+			// so the default padding will be added, which is fine though.
 			if (rootNode) {
 				// Start the labels at level 1 not 0 because the root folder should not be labeled
 				if (node.depth === 0) {
