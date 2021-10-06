@@ -4,7 +4,12 @@ import { Vector3 } from "three"
 
 describe("FloorLabelDrawer", () => {
 	describe("draw", () => {
-		function createNode(name: string, width: number, length: number, isLeaf: boolean, mapNodeDepth?: number): Node {
+		let createElementOrigin
+		afterEach(() => {
+			document.createElement = createElementOrigin
+		})
+
+		function createFakeNode(name: string, width: number, length: number, isLeaf: boolean, mapNodeDepth?: number): Node {
 			return {
 				attributes: undefined,
 				color: "",
@@ -31,16 +36,17 @@ describe("FloorLabelDrawer", () => {
 			}
 		}
 
-		document.body.appendChild(document.createElement("canvas"))
+		function initMapCanvas() {
+			document.body.appendChild(document.createElement("canvas"))
+		}
 
 		function createCanvasMock() {
 			const canvasContextMock = {
 				font: "",
 				measureText: jest.fn((labelText: string) => {
-					if (labelText === "text_to_be_shortened_to_fit_onto_the_floor") {
-						return { width: 500 } as TextMetrics
-					}
-					return { width: 40 } as TextMetrics
+					return labelText === "text_to_be_shortened_to_fit_onto_the_floor"
+						? ({ width: 500 } as TextMetrics)
+						: ({ width: 40 } as TextMetrics)
 				}),
 				fillText: jest.fn(),
 				fillStyle: undefined,
@@ -51,13 +57,13 @@ describe("FloorLabelDrawer", () => {
 				fill: jest.fn()
 			}
 
-			const canvasMock = jest.fn().mockReturnValue({
+			createElementOrigin = document.createElement
+
+			document.createElement = jest.fn().mockReturnValue({
 				getContext: () => {
 					return canvasContextMock
 				}
 			})
-
-			document.createElement = canvasMock
 
 			return canvasContextMock
 		}
@@ -66,15 +72,15 @@ describe("FloorLabelDrawer", () => {
 		const scaling: Vector3 = { x: 1, y: 1, z: 1 } as Vector3
 
 		it("should draw simple and shortened labels on three levels", () => {
-			document.body.appendChild(document.createElement("canvas"))
+			initMapCanvas()
 
-			const rootNode = createNode("root", 500, 500, false, 0)
+			const rootNode = createFakeNode("root", 500, 500, false, 0)
 			const nodes = [
 				rootNode,
-				createNode("simpleLabelNode1", 400, 400, false, 1),
-				createNode("simpleLabelNode2", 200, 200, false, 2),
-				createNode("simpleLabelNode3", 150, 150, false, 2),
-				createNode("text_to_be_shortened_to_fit_onto_the_floor", 50, 50, false, 2)
+				createFakeNode("simpleLabelNode1", 400, 400, false, 1),
+				createFakeNode("simpleLabelNode2", 200, 200, false, 2),
+				createFakeNode("simpleLabelNode3", 150, 150, false, 2),
+				createFakeNode("text_to_be_shortened_to_fit_onto_the_floor", 50, 50, false, 2)
 			]
 
 			const canvasContextMock = createCanvasMock()
@@ -93,14 +99,16 @@ describe("FloorLabelDrawer", () => {
 		})
 
 		it("should not draw on more than three levels'", () => {
-			const rootNode = createNode("root", 500, 500, false, 0)
+			initMapCanvas()
+
+			const rootNode = createFakeNode("root", 500, 500, false, 0)
 			const nodes = [
 				rootNode,
-				createNode("simpleLabelNode1", 400, 400, false, 1),
-				createNode("simpleLabelNode2", 200, 200, false, 2),
-				createNode("simpleLabelNode3", 150, 150, false, 2),
-				createNode("simpleLabelNode4", 50, 50, false, 3),
-				createNode("simpleLabelNode5", 25, 25, false, 4)
+				createFakeNode("simpleLabelNode1", 400, 400, false, 1),
+				createFakeNode("simpleLabelNode2", 200, 200, false, 2),
+				createFakeNode("simpleLabelNode3", 150, 150, false, 2),
+				createFakeNode("simpleLabelNode4", 50, 50, false, 3),
+				createFakeNode("simpleLabelNode5", 25, 25, false, 4)
 			]
 
 			const canvasContextMock = createCanvasMock()
@@ -113,8 +121,14 @@ describe("FloorLabelDrawer", () => {
 		})
 
 		it("should not draw on more levels than needed'", () => {
-			const rootNode = createNode("root", 500, 500, false, 0)
-			const nodes = [rootNode, createNode("simpleLabelNode1", 400, 400, false, 1), createNode("unlabeledNode", 100, 100, true, 1)]
+			initMapCanvas()
+
+			const rootNode = createFakeNode("root", 500, 500, false, 0)
+			const nodes = [
+				rootNode,
+				createFakeNode("simpleLabelNode1", 400, 400, false, 1),
+				createFakeNode("unlabeledNode", 100, 100, true, 1)
+			]
 
 			const canvasContextMock = createCanvasMock()
 
