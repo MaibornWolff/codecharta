@@ -2,8 +2,8 @@ import { HierarchyNode } from "d3-hierarchy"
 import { getAreaValue } from "./treeMapGenerator"
 import { State } from "../../../codeCharta.model"
 import { getParent } from "../../nodePathHelper"
-import {isLeaf} from "../../codeMapHelper";
-import {inspect} from "util";
+import { isLeaf } from "../../codeMapHelper"
+//import {inspect} from "util";
 
 export function calculateTotalNodeArea(
 	buildingAreasIncludingPadding: number[],
@@ -52,30 +52,28 @@ export function calculateTotalNodeArea(
 		}
 	}
 
-	console.log(inspect(nodeAreaMap))
-
-
-	// == Up to here it reproduces the old functionality ==
-
+	let proportionMax = 0
 	for (const nodePath of paths) {
 		if (nodeKeyMap.get(nodePath)?.data.type === "File") {
 			const parent = getParent(nodeKeyMap, nodePath)
 			const parentPath = parent?.data.path
 			const parentArea = addPaddingToArea(nodeAreaMap[parentPath], padding)
-			const proportion =  parentArea / nodeAreaMap[parentPath]
-
-			nodeAreaMap[nodePath] = Math.round(nodeAreaMap[nodePath] * proportion)
-		}
-
-		else{
-			nodeAreaMap[nodePath] = addPaddingToArea(nodeAreaMap[nodePath], padding)
+			const proportion = parentArea / nodeAreaMap[parentPath]
+			proportionMax = proportionMax > proportion ? proportionMax : proportion
 		}
 	}
 
-	console.log(nodeAreaMap)
+	// == Up to here it reproduces the old functionality ==
 
+	for (const nodePath of paths) {
+		if (nodeKeyMap.get(nodePath)?.data.type === "File") {
+			nodeAreaMap[nodePath] = Math.round(nodeAreaMap[nodePath] * proportionMax)
+		} else {
+			nodeAreaMap[nodePath] = 0
+		}
+	}
 
-
+	//	console.log(inspect(nodeAreaMap))
 
 	// iterate paths array
 	// if file:
@@ -83,7 +81,6 @@ export function calculateTotalNodeArea(
 	// calculate proportion and scale file value
 	//if folder:
 	// due to traversing order we can now increase value by padding
-
 
 	const metricSum = hierarchyNode.sum(node => {
 		return nodeAreaMap[node.path]
@@ -102,5 +99,5 @@ export function calculateTotalNodeArea(
 }
 
 function addPaddingToArea(area: number, padding: number) {
-	return Math.round((Math.sqrt(area) + padding) ** 2)
+	return Math.round((Math.sqrt(area) + padding * 2) ** 2)
 }

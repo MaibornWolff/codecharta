@@ -42,7 +42,7 @@
               "attributes": {
                 "rloc": 70,
                 "functions": 1000,
-                "mcc": 10,
+                "mcc": 50,
                 "pairingRate": 65,
                 "avgCommits": 22
               }
