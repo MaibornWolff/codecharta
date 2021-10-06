@@ -2,17 +2,17 @@ import { FloorLabelHelper } from "./floorLabelHelper"
 import { Node } from "../../../../codeCharta.model"
 
 describe("FloorLabelHelper", () => {
-	function appendMapCanvas(mapCanvasWidth) {
-		const fakeMapCanvas = document.createElement("canvas")
-		fakeMapCanvas.width = fakeMapCanvas.height = mapCanvasWidth
-
-		const fragment = document.createDocumentFragment()
-		fragment.appendChild(fakeMapCanvas)
-
-		document.getElementsByTagName = jest.fn().mockReturnValue(fragment.children)
-	}
-
 	describe("getMapResolutionScaling", () => {
+		function appendMapCanvas(mapCanvasWidth) {
+			const fakeMapCanvas = document.createElement("canvas")
+			fakeMapCanvas.width = fakeMapCanvas.height = mapCanvasWidth
+
+			const fragment = document.createDocumentFragment()
+			fragment.appendChild(fakeMapCanvas)
+
+			document.getElementsByTagName = jest.fn().mockReturnValue(fragment.children)
+		}
+
 		it("should not scale since map width is smaller than scaling threshold (four times the display width)", () => {
 			appendMapCanvas(500)
 

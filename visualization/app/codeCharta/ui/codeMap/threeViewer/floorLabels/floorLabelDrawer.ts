@@ -39,6 +39,9 @@ export class FloorLabelDrawer {
 		const scaledMapHeight = rootNodeHeight * mapResolutionScaling
 
 		for (const [floorLevel, floorNodesPerLevel] of this.floorLabelsPerLevel) {
+			if (floorNodesPerLevel.length === 0) {
+				continue
+			}
 			const { textCanvas, context } = this.createLabelPlaneCanvas(scaledMapWidth, scaledMapHeight)
 			this.writeLabelsOnCanvas(context, floorNodesPerLevel, mapResolutionScaling)
 			this.drawLevelPlaneGeometry(textCanvas, scaledMapWidth, scaledMapHeight, floorLevel, mapResolutionScaling)
@@ -143,13 +146,14 @@ export class FloorLabelDrawer {
 	private getFittingLabelText(context: CanvasRenderingContext2D, canvasWidth: number, labelText: string) {
 		const { width } = context.measureText(labelText)
 		let textSplitIndex = Math.floor((labelText.length * canvasWidth) / width)
-		let abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
+		let abbreviatedText = `${labelText.slice(0, textSplitIndex)}…`
 
 		// TODO: Check if this is expensive. If it is, let's use a logarithmic algorithm instead.
+		// This is needed for non monospaced fonts, imagine the following example in a non monospaced font: "WWWIII"
 		while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
 			// textSplitIndex > 1 to ensure it contains at least one char
 			textSplitIndex -= 1
-			abbreviatedText = `${labelText.slice(0, textSplitIndex)}...`
+			abbreviatedText = `${labelText.slice(0, textSplitIndex)}…`
 		}
 
 		return abbreviatedText
