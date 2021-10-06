@@ -61,22 +61,22 @@ export class FloorLabelDrawer {
 		return { textCanvas, context }
 	}
 
-	private writeLabelsOnCanvas(context: CanvasRenderingContext2D, floorNodesPerLevel: Node[], mapResolutionScaling: number) {
+	private writeLabelsOnCanvas(context: CanvasRenderingContext2D, floorNodesOfCurrentLevel: Node[], mapResolutionScaling: number) {
 		const { width: rootNodeWidth, length: rootNodeHeight } = this.rootNode
 
-		for (const surfaceNode of floorNodesPerLevel) {
+		for (const floorNode of floorNodesOfCurrentLevel) {
 			let fontSize =
-				surfaceNode.depth === 0 ? Math.max(Math.floor(rootNodeWidth * 0.03), 120) : Math.max(Math.floor(rootNodeWidth * 0.023), 95)
+				floorNode.depth === 0 ? Math.max(Math.floor(rootNodeWidth * 0.03), 120) : Math.max(Math.floor(rootNodeWidth * 0.023), 95)
 			fontSize = fontSize * mapResolutionScaling
 
 			context.font = `${fontSize}px Arial`
 
-			const textToFill = this.getLabelAndSetContextFont(surfaceNode, context, mapResolutionScaling, fontSize)
+			const textToFill = this.getLabelAndSetContextFont(floorNode, context, mapResolutionScaling, fontSize)
 
 			context.fillText(
 				textToFill.labelText,
-				(rootNodeHeight - surfaceNode.y0 - surfaceNode.length / 2) * mapResolutionScaling,
-				(surfaceNode.x0 + surfaceNode.width) * mapResolutionScaling - textToFill.fontSize / 2
+				(rootNodeHeight - floorNode.y0 - floorNode.length / 2) * mapResolutionScaling,
+				(floorNode.x0 + floorNode.width) * mapResolutionScaling - textToFill.fontSize / 2
 			)
 		}
 	}
