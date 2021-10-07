@@ -1,3 +1,5 @@
+import { combineReducers } from "redux"
+
 // Plop: Import sub-reducer here
 import metricData from "./metricData/metricData.reducer"
 import lookUp from "./lookUp/lookUp.reducer"
@@ -6,7 +8,7 @@ import fileSettings from "./fileSettings/fileSettings.reducer"
 import dynamicSettings from "./dynamicSettings/dynamicSettings.reducer"
 import treeMap from "./treeMap/treeMap.reducer"
 import files from "./files/files.reducer"
-import { combineReducers } from "redux"
+import appStatus from "./appStatus/appStatus.reducer"
 
 const rootReducer = combineReducers({
 	// Plop: Append sub-reducer here
@@ -16,7 +18,8 @@ const rootReducer = combineReducers({
 	appSettings,
 	dynamicSettings,
 	treeMap,
-	files
+	files,
+	appStatus
 })
 
 export default rootReducer
