@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix performance issues of drawing labels on floors/folders ([#2348](https://github.com/MaibornWolff/codecharta/issues/2348)).
+-   Hides legend block if label description is not available and adds new metric descriptions ([#2377](https://github.com/maibornwolff/codecharta/issues/2377)).
 
 ## [1.80.0] - 2021-10-04
 

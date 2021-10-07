@@ -3,7 +3,9 @@ This file contains descriptions of the metrics
 */
 
 export const metricDescriptions: Map<string, string> = new Map([
+	["loc", "lines of code"],
 	["rloc", "real lines of code"],
+	["comment_lines", "number of code lines with comments"],
 	["mcc", "cyclomatic complexity"],
 	["avgCommits", "average number of commits from this file"],
 	["functions", "number of files from this file"],
