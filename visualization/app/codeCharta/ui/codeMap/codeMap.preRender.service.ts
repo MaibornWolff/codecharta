@@ -108,7 +108,7 @@ export class CodeMapPreRenderService
 		if (isActionOfType(actionType, HoveredBuildingPathActions)) {
 			// temporary hack:
 			// this.debounceRendering() leads to a new MapMesh, which leads to a new render, which would revert hover
-			// We definitely need to improve this
+			// TODO We definitely need to improve this
 			return
 		}
 
