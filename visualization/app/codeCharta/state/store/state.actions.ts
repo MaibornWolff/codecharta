@@ -8,6 +8,7 @@ import { defaultFileSettings } from "./fileSettings/fileSettings.actions"
 import { defaultDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
 import { defaultTreeMapSettings } from "./treeMap/treeMap.actions"
 import { defaultFiles } from "./files/files.actions"
+import { defaultHoveredBuildingPath } from "./appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 
 export enum StateActions {
 	SET_STATE = "SET_STATE"
@@ -35,5 +36,8 @@ export const defaultState: State = {
 	fileSettings: defaultFileSettings,
 	dynamicSettings: defaultDynamicSettings,
 	treeMap: defaultTreeMapSettings,
-	files: defaultFiles
+	files: defaultFiles,
+	appStatus: {
+		hoveredBuildingPath: defaultHoveredBuildingPath
+	}
 }

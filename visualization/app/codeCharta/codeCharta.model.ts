@@ -355,6 +355,7 @@ export interface State {
 	files: FileState[]
 	lookUp: LookUp
 	metricData: MetricData
+	appStatus: AppStatus
 }
 
 export function stateObjectReplacer(_, valueToReplace) {
@@ -404,6 +405,10 @@ export interface CCAction extends Action {
 export interface LookUp {
 	idToNode: Map<number, CodeMapNode>
 	idToBuilding: Map<number, CodeMapBuilding>
+}
+
+export interface AppStatus {
+	hoveredBuildingPath: string | undefined
 }
 
 export enum PanelSelection {
