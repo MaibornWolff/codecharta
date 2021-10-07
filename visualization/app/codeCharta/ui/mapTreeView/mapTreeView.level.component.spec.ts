@@ -4,20 +4,12 @@ import { MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { CodeMapNode, NodeType } from "../../codeCharta.model"
-import {
-	VALID_NODE_WITH_PATH,
-	CODE_MAP_BUILDING,
-	VALID_NODE_WITH_METRICS,
-	VALID_NODE_WITH_ROOT_UNARY,
-	withMockedEventMethods
-} from "../../util/dataMocks"
+import { NodeType } from "../../codeCharta.model"
+import { VALID_NODE_WITH_PATH, VALID_NODE_WITH_METRICS, VALID_NODE_WITH_ROOT_UNARY, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { klona } from "klona"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -53,59 +45,6 @@ describe("MapTreeViewLevelController", () => {
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_UNARY)
 	}
-
-	describe("onBuildingHovered", () => {
-		let codeMapBuilding: CodeMapBuilding
-		let codeMapNode: CodeMapNode
-
-		beforeEach(() => {
-			codeMapBuilding = klona(CODE_MAP_BUILDING)
-			codeMapBuilding.node.path = "somePath"
-
-			codeMapNode = klona(VALID_NODE_WITH_PATH)
-			codeMapNode.path = "somePath"
-		})
-
-		it("should set _isHoveredInCodeMap to true if hovered node path from the event is the same as the node path assigned to this controller", () => {
-			mapTreeViewLevelController["node"] = codeMapNode
-
-			mapTreeViewLevelController.onBuildingHovered(codeMapBuilding)
-
-			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(true)
-		})
-
-		it("should set _isHoveredInCodeMap to false if hovered node path from the event is not the same as the node path assigned to this controller", () => {
-			const differentCodeMapBuilding = klona(CODE_MAP_BUILDING)
-			differentCodeMapBuilding.node.path = "someOtherPath"
-			mapTreeViewLevelController["node"] = codeMapNode
-
-			mapTreeViewLevelController.onBuildingHovered(differentCodeMapBuilding)
-
-			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
-		})
-
-		it("should set _isHoveredInCodeMap to false if unhovered", () => {
-			mapTreeViewLevelController.onBuildingUnhovered()
-
-			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
-		})
-	})
-
-	describe("onMouseEnter", () => {
-		it("should broadcast should-hover-node", () => {
-			mapTreeViewLevelController.onMouseEnter()
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-hover-node", mapTreeViewLevelController["node"])
-		})
-	})
-
-	describe("onMouseLeave", () => {
-		it("should broadcast should-unhover-node", () => {
-			mapTreeViewLevelController.onMouseLeave()
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-unhover-node", mapTreeViewLevelController["node"])
-		})
-	})
 
 	describe("openNodeContextMenu", () => {
 		it("should open NodeContextMenu and mark the folder", () => {
