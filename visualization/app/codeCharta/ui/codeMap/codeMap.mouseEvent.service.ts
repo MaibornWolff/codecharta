@@ -92,8 +92,11 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 
 			this.hoveredBuildingPath = hoveredBuildingPath
 
-			if (this.hoveredBuildingPath) this.hoverNode(this.hoveredBuildingPath)
-			else this.unhoverNode()
+			if (this.hoveredBuildingPath) {
+						this.hoverNode(this.hoveredBuildingPath)
+			} else {
+						this.unhoverNode()
+			}
 		})
 	}
 
