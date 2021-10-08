@@ -95,8 +95,9 @@ To unify the appearance of all commit messages we only accept commit messages us
 -   [Description of what you changed] [Link to the pull request]
     [One picture (specify the width and/or height)]<br/>
     Example:<br/>
-    `- Description ([#1315](pull-request-link)) \ `<br/>
+    `- Description ([#1315](pull-request-link)) <br>`<br/>
     `<img src="image-link" width="350px" alt="pull-request-1315">`<br/>
+-   Please do not forget the `_<br>` at the end before the img tag (with a space). This breaks the two lines and is compatible with our parsers.
 
 ### How to write a good description?
 
@@ -120,4 +121,3 @@ To unify the appearance of all commit messages we only accept commit messages us
 -   If there are no Pull Requests associated to your change, link an issue.
 -   The image should always have a width and/or a height attribute.
     -   Example: width=”350px”
--   Please do not forget the \ on the line before the img tag. This breaks the two lines and is compatible with our parser.

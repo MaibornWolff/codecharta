@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix Changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425)) \
+-   Fix Changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425)) <br>
     <img src="https://user-images.githubusercontent.com/48621967/135866024-ee06119a-1a62-4912-90df-ac3aa9216608.PNG" width="350px" alt="consistent changelog images"/>
 
 ## [1.80.0] - 2021-10-04
@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Adds feature to display building colors as a gradients ([#2327](https://github.com/MaibornWolff/codecharta/issues/2327)).
     -   "Weighted Gradient" only mixes colors in a small interval around the preset values.
     -   "True Gradient" mixes colors from the 0 to the highest value, the two preset color range values determine the balance.
-    -   "Absolute" represents the old behaviour without gradients.\
+    -   "Absolute" represents the old behaviour without gradients. <br>
         <img src="https://user-images.githubusercontent.com/42114276/134924267-245c65c9-2893-43a8-9a0a-17e3182bf15a.JPG" width="350px"/>
 
 ### Fixed 🐞
@@ -31,12 +31,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330)) \
+-   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330)) <br>
     <img src="https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png" width="250px"/>
--   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326)) \
+-   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326)) <br>
     <img src="https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png" width="450px"/>
 -   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
--   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342)) \
+-   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342)) <br>
     <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="350px"/>
 
 ### Fixed 🐞
@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not applicable ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
--   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362)) \
+-   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362)) <br>
     <img src="https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png" width="350px" alt=""/>
 
 ## [1.78.0] - 2021-09-06
@@ -102,7 +102,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Imported files are now compressed by default. Use the -nc parameter to uncompress the files. ([#1702](https://github.com/maibornwolff/codecharta/issues/1702))
 -   Export the current view as a png image by using "Ctrl+Alt+S" or clicking the corresponding button ([#674](https://github.com/MaibornWolff/codecharta/issues/674))
 -   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
--   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613)) \
+-   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613)) <br>
     <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350" alt="Updated menu">
 
 ### Changed
@@ -110,7 +110,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Metric aggregations now work as intended and are available from the sidebar when selecting folders ([#1953](https://github.com/MaibornWolff/codecharta/issues/1953))
 -   Opening new files does no longer remove old ones.
     -   Already loaded files can be individually removed.
-    -   The 'Multiple' view will select the latest files. \
+    -   The 'Multiple' view will select the latest files. <br>
         <img src="https://user-images.githubusercontent.com/50167165/123071234-c6856f00-d414-11eb-8326-e25f614e75d7.png" width="350">
 
 ### Fixed 🐞
