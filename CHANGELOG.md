@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fixes color picker not being usable ([#2035](https://github.com/MaibornWolff/codecharta/issues/2035))
+
 ## [1.80.0] - 2021-10-04
 
 ### Added 🚀
