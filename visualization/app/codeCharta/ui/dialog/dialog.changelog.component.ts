@@ -39,7 +39,7 @@ export class DialogChangelogController {
 					changelogTypes.push(changeLine)
 				}
 			}
-			if (changelogTypes.length > 0) changes[title] = [...changelogTypes.values()].join("\n")
+			if (changelogTypes.length > 0) changes[title] = changelogTypes.join("\n")
 		}
 		this._viewModel.changes = changes
 	}
