@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix Changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425)) \
+    <img src="https://user-images.githubusercontent.com/48621967/135866024-ee06119a-1a62-4912-90df-ac3aa9216608.PNG" width="350px" alt="consistent changelog images"/>
+
 ## [1.80.0] - 2021-10-04
 
 ### Added 🚀
