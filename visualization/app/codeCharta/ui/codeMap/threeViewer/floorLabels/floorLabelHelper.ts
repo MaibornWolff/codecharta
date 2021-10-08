@@ -10,7 +10,6 @@ export class FloorLabelHelper {
 
 		const scalingThreshold = FloorLabelHelper.getScalingThreshold(displayWidth)
 
-		// TODO should we scale by mapWidth only? What is happening for mobile devices?
 		return mapWidth > scalingThreshold ? scalingThreshold / mapWidth : 1
 	}
 
