@@ -171,7 +171,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 
 	const smallestDelta = getSmallestDifference(childrenAreaValues)
 
-	const minBuildingSize = 100
+	const minBuildingSize = 10
 
 	padding = calculatePadding(childrenAreaValues, smallestDelta, minBuildingSize, padding)
 	//console.log("Padding ", padding)
