@@ -24,6 +24,7 @@ export function calculateTotalNodeArea(
 	const nodeAreaMap = new Map()
 	hierarchyNode.each(node => {
 		nodeKeyMap.set(node.data.path, node)
+		// TODO: Refactor to JSON object in one map
 		nodeAreaMap.set(node.data.path, 0)
 	})
 
@@ -52,6 +53,16 @@ export function calculateTotalNodeArea(
 		}
 	}
 
+	// == Up to here it reproduces the old functionality ==
+
+	// iterate paths array
+	// if file:
+	// get Parent and calculate its new size using padding
+	// calculate proportion and scale file value
+	//if folder:
+	// due to traversing order we can now increase value by padding
+
+	//Calculate the scaling factor
 	let proportionMax = 0
 	for (const nodePath of paths) {
 		if (nodeKeyMap.get(nodePath)?.data.type === "File") {
@@ -62,25 +73,15 @@ export function calculateTotalNodeArea(
 			proportionMax = proportionMax > proportion ? proportionMax : proportion
 		}
 	}
-
-	// == Up to here it reproduces the old functionality ==
-
+	// Apply scaling factor to files only
 	for (const nodePath of paths) {
 		if (nodeKeyMap.get(nodePath)?.data.type === "File") {
 			nodeAreaMap[nodePath] = Math.round(nodeAreaMap[nodePath] * proportionMax)
 		} else {
+			// The folders area are set to 0; because of D3
 			nodeAreaMap[nodePath] = 0
 		}
 	}
-
-	//	console.log(inspect(nodeAreaMap))
-
-	// iterate paths array
-	// if file:
-	// get Parent and calculate its new size using padding
-	// calculate proportion and scale file value
-	//if folder:
-	// due to traversing order we can now increase value by padding
 
 	const metricSum = hierarchyNode.sum(node => {
 		return nodeAreaMap[node.path]

@@ -152,12 +152,12 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 }
 
 function getBuildingAreasWithProportionalPadding(
-	childrenAreaValue: any[],
+	childrenAreaValues: any[],
 	smallestDelta: number,
 	minimumBuildingSize: number,
 	padding: number
 ) {
-	return childrenAreaValue.map(element => {
+	return childrenAreaValues.map(element => {
 		const buildingArea = (element / smallestDelta) * minimumBuildingSize
 		return (Math.sqrt(buildingArea) + padding) ** 2
 	})
@@ -166,7 +166,7 @@ function getBuildingAreasWithProportionalPadding(
 function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
 	const hierarchyNode = hierarchy(map)
 	let padding = state.dynamicSettings.margin
-
+	// from hierarchy Node to areas
 	const childrenAreaValues = getChildrenAreaValues(hierarchyNode, state)
 
 	const smallestDelta = getSmallestDifference(childrenAreaValues)
