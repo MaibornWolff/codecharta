@@ -30,16 +30,16 @@ export class DialogChangelogController {
 		for (const title of titles) {
 			const titlePattern = new RegExp(`<h3>${title}</h3>`)
 			const titleLinesIndexes = this.getAllIndexes(changelogLines, titlePattern)
-			const changelogTypesSet = []
+			const changelogTypes = []
 			for (const lineIndex of titleLinesIndexes) {
 				// Add 2 to remove the headline and the <ul> tag
 				const start = lineIndex + 2
 				const end = this.findEndChangesLine(changelogLines, lineIndex)
 				for (const changeLine of changelogLines.slice(start, end)) {
-					changelogTypesSet.push(changeLine)
+					changelogTypes.push(changeLine)
 				}
 			}
-			if (changelogTypesSet.length > 0) changes[title] = [...changelogTypesSet.values()].join("\n")
+			if (changelogTypes.length > 0) changes[title] = [...changelogTypes.values()].join("\n")
 		}
 		this._viewModel.changes = changes
 	}
