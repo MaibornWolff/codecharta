@@ -82,24 +82,24 @@ To unify the appearance of all commit messages we only accept commit messages us
 
 ## Changelog Guidelines
 
-###Why should you we write a changelog?
+### Why should you we write a changelog?
 
 -   A changelog is vital for the developers to keep track of their work. But most importantly now that it appears on every version update to every user, we should make sure that it is also user-friendly. And for that, we need guidelines to help us.
 
-###When should you add to the changelog file?
+### When should you add to the changelog file?
 
 -   You should always make sure that a changelog entry has been added before merging your work.
 
-###How should you format a changelog entry?
+### How should you format a changelog entry?
 
 -   [Description of what you changed] [Link to the pull request]
     [One picture (specify the width and/or height)]<br/>
     Example:<br/>
-    `- Add a changelog dialog with the latest additions to CodeCharta that appears on version update ([#1315](pull-request-linkl)) <img src="image-link" width="350px">`
-    The image should always have a width and/or a height attribute.
-    Example: width=”500px”
+    `- Description ([#1315](pull-request-link)) <br>`<br/>
+    `<img src="image-link" width="350px" alt="pull-request-1315">`<br/>
+-   Please do not forget the `_<br>` at the end before the img tag (with a space). This breaks the two lines and is compatible with our parsers.
 
-###How to write a good description?
+### How to write a good description?
 
 -   The description should be precise and short to provide the user with all necessary information. If it is needed, add some precise notes about the usage of the new feature.
 -   One changelog entry should describe one change.
@@ -115,7 +115,9 @@ To unify the appearance of all commit messages we only accept commit messages us
     -   Don’t: Minify JS and CSS
     -   Do: Make page load faster by reducing size of JavaScript and CSS files
 
-###Notes
+### Notes
 
 -   Link to the image can be copied from an image uploaded to the Pull Request
 -   If there are no Pull Requests associated to your change, link an issue.
+-   The image should always have a width and/or a height attribute.
+    -   Example: width=”350px”
