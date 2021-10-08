@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix Changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425)) \
     <img src="https://user-images.githubusercontent.com/48621967/135866024-ee06119a-1a62-4912-90df-ac3aa9216608.PNG" width="350px" alt="consistent changelog images"/>
+-   Hides legend block if label description is not available and adds new metric descriptions ([#2377](https://github.com/maibornwolff/codecharta/issues/2377)).
 
 ## [1.80.0] - 2021-10-04
 

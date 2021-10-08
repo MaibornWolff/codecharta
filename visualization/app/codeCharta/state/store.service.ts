@@ -13,6 +13,7 @@ import { PresentationModeActions } from "./store/appSettings/isPresentationMode/
 import { ExperimentalFeaturesEnabledActions } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { Store } from "./store/store"
 import { ScreenshotToClipboardEnabledActions } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import { HoveredBuildingPathActions } from "./store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -57,6 +58,7 @@ export class StoreService {
 				isActionOfType(action.type, PresentationModeActions) ||
 				isActionOfType(action.type, ExperimentalFeaturesEnabledActions) ||
 				isActionOfType(action.type, ScreenshotToClipboardEnabledActions) ||
+				isActionOfType(action.type, HoveredBuildingPathActions) ||
 				options.silent
 			)
 		) {

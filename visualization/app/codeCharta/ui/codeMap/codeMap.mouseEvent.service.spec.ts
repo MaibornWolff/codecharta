@@ -7,7 +7,6 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import {
@@ -173,14 +172,6 @@ describe("codeMapMouseEventService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to hoverEvents", () => {
-			MapTreeViewLevelController.subscribeToHoverEvents = jest.fn()
-
-			rebuildService()
-
-			expect(MapTreeViewLevelController.subscribeToHoverEvents).toHaveBeenCalled()
-		})
-
 		it("should call register on threeUpdateCycleService", () => {
 			rebuildService()
 
@@ -814,38 +805,6 @@ describe("codeMapMouseEventService", () => {
 			const result = codeMapMouseEventService["transformHTMLToSceneCoordinates"]()
 
 			expect(result).toStrictEqual({ x: -1, y: 1 })
-		})
-	})
-
-	describe("onShouldHoverNode", () => {
-		beforeEach(() => {
-			codeMapMouseEventService["hoverBuilding"] = jest.fn()
-		})
-
-		it("should call threeSceneService.getMapDescription", () => {
-			codeMapMouseEventService.onShouldHoverNode(file.map)
-
-			expect(threeSceneService.getMapMesh().getMeshDescription).toHaveBeenCalled()
-		})
-
-		it("should call onBuildingHovered", () => {
-			codeMapBuilding.node.path = file.map.path
-			threeSceneService.getHighlightedBuilding = jest.fn()
-
-			codeMapMouseEventService.onShouldHoverNode(file.map)
-
-			expect(codeMapMouseEventService["hoverBuilding"]).toHaveBeenCalledWith(codeMapBuilding)
-		})
-	})
-
-	describe("onShouldUnhoverNode", () => {
-		it("should call onBuildingHovered", () => {
-			codeMapMouseEventService["unhoverBuilding"] = jest.fn()
-			codeMapMouseEventService["highlightedInTreeView"] = codeMapBuilding
-
-			codeMapMouseEventService.onShouldUnhoverNode()
-
-			expect(codeMapMouseEventService["unhoverBuilding"]).toHaveBeenCalled()
 		})
 	})
 
