@@ -10,6 +10,7 @@ import { hierarchy } from "d3-hierarchy"
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 // Required for performance improvements
+// TODO move this into store or create a selector for it, to prevent random access / non unidirectional data flow
 export let nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
 export function edgeMetricData(state = setEdgeMetricData().payload, action: EdgeMetricDataAction) {
