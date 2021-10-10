@@ -5,6 +5,7 @@ import { Store } from "../../../state/angular-redux/store"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { hoveredBuildingPathSelector } from "../../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
 import { setHoveredBuildingPath } from "../../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
+import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu.component"
 
 @Component({
 	selector: "cc-map-tree-view-level",
@@ -22,10 +23,7 @@ export class MapTreeViewLevel implements OnInit {
 	constructor(@Inject(Store) private store: Store) {
 		this.hoveredBuildingPath$ = this.store.select(hoveredBuildingPathSelector)
 
-		// NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
-		// onHideNodeContextMenu() {
-		// 	this._viewModel.isMarked = false
-		// }
+		NodeContextMenuController.subscribeToHideNodeContextMenu(undefined, this)
 	}
 
 	ngOnInit(): void {
@@ -33,6 +31,10 @@ export class MapTreeViewLevel implements OnInit {
 		if (this.depth === 0) {
 			this.isOpen = true
 		}
+	}
+
+	onHideNodeContextMenu() {
+		this.isContextMenuOpenForNode = false
 	}
 
 	onMouseEnter() {
@@ -46,9 +48,11 @@ export class MapTreeViewLevel implements OnInit {
 	openNodeContextMenu($event) {
 		$event.stopPropagation()
 		$event.preventDefault()
-		// NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
+
 		this.isContextMenuOpenForNode = true
-		document.getElementById("tree-root").addEventListener("scroll", this.scrollFunction)
+		NodeContextMenuController.broadcastShowEvent(undefined, this.node.path, this.node.type, $event.clientX, $event.clientY)
+
+		document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
 	}
 
 	toggleOpen() {
@@ -56,7 +60,7 @@ export class MapTreeViewLevel implements OnInit {
 	}
 
 	private scrollFunction = () => {
-		// NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-		document.getElementById("tree-root").removeEventListener("scroll", this.scrollFunction)
+		NodeContextMenuController.broadcastHideEvent()
+		document.querySelector(".tree-element-0").removeEventListener("scroll", this.scrollFunction)
 	}
 }
