@@ -6,27 +6,10 @@ import "../../codeCharta.module"
 import "./mapTreeView.component.scss"
 
 import { mapTreeViewComponent } from "./mapTreeView.component"
-import { mapTreeViewLevelComponent } from "./mapTreeView.level.component"
 import { downgradeComponent } from "@angular/upgrade/static"
-import { MapTreeViewItemIcon } from "./mapTreeViewItemIcon/mapTreeViewItemIcon.component"
-import { MapTreeViewItemOptionButtonsComponent } from "./mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
-import { MapTreeViewItemName } from "./mapTreeViewItemName/mapTreeViewItemName.component"
+import { MapTreeViewLevel } from "./mapTreeViewLevel/mapTreeViewLevel.component"
 
 angular
 	.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.state", "app.codeCharta.ui.codeMap", "app.codeCharta"])
 	.component(mapTreeViewComponent.selector, mapTreeViewComponent)
-	.component(mapTreeViewLevelComponent.selector, mapTreeViewLevelComponent)
-	.directive("ngRightClick", $parse => {
-		return (scope, element, attributes) => {
-			const parseFunction = $parse(attributes.ngRightClick)
-			element.bind("contextmenu", event => {
-				scope.$apply(() => {
-					event.preventDefault()
-					parseFunction(scope, { $event: event })
-				})
-			})
-		}
-	})
-	.directive("ccMapTreeViewItemIcon", downgradeComponent({ component: MapTreeViewItemIcon }))
-	.directive("ccMapTreeViewItemOptionButtons", downgradeComponent({ component: MapTreeViewItemOptionButtonsComponent }))
-	.directive("ccMapTreeViewItemName", downgradeComponent({ component: MapTreeViewItemName }))
+	.directive("ccMapTreeViewLevel", downgradeComponent({ component: MapTreeViewLevel }))

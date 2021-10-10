@@ -13,6 +13,7 @@ import { MapTreeViewItemOptionButtonsComponent } from "./codeCharta/ui/mapTreeVi
 import { MapTreeViewItemName } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/mapTreeViewItemName.component"
 import { MapTreeViewItemSearchedNameHighlightPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/mapTreeViewItemSearchedNameHighlight.pipe"
 import { IsNodeLeafPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/isNodeLeaf.pipe"
+import { MapTreeViewLevel } from "./codeCharta/ui/mapTreeView/mapTreeViewLevel/mapTreeViewLevel.component"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule],
@@ -23,10 +24,17 @@ import { IsNodeLeafPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/
 		MapTreeViewItemIconColorPipe,
 		MapTreeViewItemOptionButtonsComponent,
 		MapTreeViewItemName,
+		MapTreeViewLevel,
 		MapTreeViewItemSearchedNameHighlightPipe,
 		IsNodeLeafPipe
 	],
-	entryComponents: [SortingButtonComponent, MapTreeViewItemIcon, MapTreeViewItemOptionButtonsComponent, MapTreeViewItemName]
+	entryComponents: [
+		SortingButtonComponent,
+		MapTreeViewItemIcon,
+		MapTreeViewItemOptionButtonsComponent,
+		MapTreeViewItemName,
+		MapTreeViewLevel
+	]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}
