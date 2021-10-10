@@ -14,7 +14,6 @@
 			[node]="node"
 			[isHovered]="(hoveredBuildingPath$ | async) === node.path"
 			[unaryValue]="node.attributes.unary"
-			[unaryPercentage]="((100 * node.attributes.unary) / (rootUnary$ | async)).toFixed(0)"
 		>
 		</cc-map-tree-view-item-name>
 

@@ -5,7 +5,6 @@ import { Store } from "../../../state/angular-redux/store"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { hoveredBuildingPathSelector } from "../../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
 import { setHoveredBuildingPath } from "../../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
-import { rootUnarySelector } from "../../../state/selectors/accumulatedData/rootUnarySelector"
 
 @Component({
 	selector: "cc-map-tree-view-level",
@@ -16,14 +15,12 @@ export class MapTreeViewLevel implements OnInit {
 	@Input() depth: number
 
 	hoveredBuildingPath$: Observable<string | null>
-	rootUnary$: Observable<number>
 
 	isOpen = false
 	isContextMenuOpenForNode = false
 
 	constructor(@Inject(Store) private store: Store) {
 		this.hoveredBuildingPath$ = this.store.select(hoveredBuildingPathSelector)
-		this.rootUnary$ = this.store.select(rootUnarySelector)
 
 		// NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
 		// onHideNodeContextMenu() {
