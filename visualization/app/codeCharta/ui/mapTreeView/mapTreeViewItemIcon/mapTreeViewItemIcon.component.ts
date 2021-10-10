@@ -7,5 +7,5 @@ import { CodeMapNode } from "../../../codeCharta.model"
 })
 export class MapTreeViewItemIcon {
 	@Input() node: CodeMapNode
-	@Input() isFolderOpen: boolean
+	@Input() isOpen: boolean
 }

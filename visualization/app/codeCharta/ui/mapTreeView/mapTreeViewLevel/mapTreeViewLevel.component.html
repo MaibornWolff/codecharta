@@ -9,7 +9,7 @@
 		(click)="toggleOpen()"
 		(contextmenu)="openNodeContextMenu($event)"
 	>
-		<cc-map-tree-view-item-icon [node]="node" [isFolderOpen]="isOpen"></cc-map-tree-view-item-icon>
+		<cc-map-tree-view-item-icon [node]="node" [isOpen]="isOpen"></cc-map-tree-view-item-icon>
 		<cc-map-tree-view-item-name
 			[node]="node"
 			[isHovered]="(hoveredBuildingPath$ | async) === node.path"
