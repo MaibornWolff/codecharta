@@ -37,7 +37,9 @@ describe("FloorLabelDrawer", () => {
 		}
 
 		function initMapCanvas() {
-			document.body.appendChild(document.createElement("canvas"))
+			const mapCanvas = document.createElement("canvas")
+			mapCanvas.id = "codeMapScene"
+			document.body.appendChild(mapCanvas)
 		}
 
 		function createCanvasMock() {
