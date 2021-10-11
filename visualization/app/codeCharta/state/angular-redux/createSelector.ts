@@ -7,7 +7,7 @@ export function createSelector<S1, S2, P, State = CcState>(
 	selectors: [Selector<S1, State>, Selector<S2, State>?],
 	projector: (s1: S1, s2: S2) => P
 ): (state: State) => P
-export function createSelector<S1, S2, S3,  P, State = CcState>(
+export function createSelector<S1, S2, S3, P, State = CcState>(
 	selectors: [Selector<S1, State>, Selector<S2, State>?, Selector<S3, State>?],
 	projector: (s1: S1, s2?: S2, s3?: S3) => P
 ): (state: State) => P
