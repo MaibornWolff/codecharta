@@ -2,7 +2,7 @@ import { NodeType } from "../../../codeCharta.model"
 
 export const rootNode = {
 	name: "root",
-	attributes: { unary: 3 },
+	attributes: { unary: 2 },
 	type: NodeType.FOLDER,
 	isExcluded: false,
 	isFlattened: false,
@@ -10,29 +10,21 @@ export const rootNode = {
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			attributes: {},
 			isExcluded: false,
-			isFlattened: false,
-			link: "http://www.google.de"
+			isFlattened: false
 		},
 		{
 			name: "Parent Leaf",
 			type: NodeType.FOLDER,
-			attributes: { unary: 2 },
+			attributes: { unary: 1 },
 			isExcluded: false,
 			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100 },
-					isExcluded: false,
-					isFlattened: false
-				},
-				{
-					name: "other small leaf",
-					type: NodeType.FILE,
-					attributes: { rloc: 70, functions: 1000, mcc: 10 },
+					attributes: {},
 					isExcluded: false,
 					isFlattened: false
 				}
