@@ -18,8 +18,8 @@
 		</cc-map-tree-view-item-name>
 
 		<cc-map-tree-view-item-option-buttons
+			*ngIf="(hoveredBuildingPath$ | async) === node.path"
 			[isFlattened]="node.isFlattened"
-			[isHovered]="(hoveredBuildingPath$ | async) === node.path"
 			[openNodeContextMenu]="openNodeContextMenu"
 		></cc-map-tree-view-item-option-buttons>
 	</div>

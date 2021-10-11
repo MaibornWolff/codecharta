@@ -5,7 +5,6 @@ import { Component, Input } from "@angular/core"
 	template: require("./mapTreeViewItemOptionButtons.component.html")
 })
 export class MapTreeViewItemOptionButtons {
-	@Input() isHovered: boolean
 	@Input() isFlattened: boolean
 	@Input() openNodeContextMenu: (event: MouseEvent) => unknown
 }
