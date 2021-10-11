@@ -1,8 +1,4 @@
-<span
-	class="node-name"
-	[class.flattened]="node.isFlattened"
-	[class.angular-green]="searchedNodePaths$ | async | mapTreeViewItemSearchedNameHighlight: node.path"
->
+<span class="node-name" [class.flattened]="node.isFlattened" [class.angular-green]="(searchedNodePaths$ | async).has(node.path)">
 	{{ node.name }}
 </span>
 
