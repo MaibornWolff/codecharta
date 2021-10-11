@@ -28,7 +28,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 		const scaleLength = totalMapSize / nodes[0].width
 		const scaleWidth = totalMapSize / nodes[0].length
 
-		// Scale the 100x100 root folder to a bigger map
+		// Scale the 100x100 root folder to be bigger and to match fixed/estimated totalMapSize
 		scaleRoot(nodes[0], scaleLength, scaleWidth)
 
 		return [
@@ -168,6 +168,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 	let addedLabelSpace = 0
 	hierarchyNode.eachAfter(node => {
 		// Precalculate the needed paddings for the floor folder labels to be able to expand the default map size
+		// TODO fix estimation, estimation of added label space is inaccurate
 		if (!isLeaf(node)) {
 			if (node.depth === 0) {
 				addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
@@ -186,19 +187,31 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 	const width = (mapWidth + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace) * mapSizeResolutionScaling
 	const height = (mapHeight + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace) * mapSizeResolutionScaling
 
+	let rootNode
 	const treeMap = treemap<CodeMapNode>()
 		.size([width, height])
 		.paddingOuter(padding)
 		.paddingInner(padding)
 		.paddingRight(node => {
-			// Start the labels at level 1 not 0 because the root folder should not be labeled
-			if (node.depth === 0) {
-				// Add a big padding for the first folder level (the font is bigger than in deeper levels)
-				return DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
+			if (!rootNode && node.parent === null) {
+				rootNode = node
 			}
-			if (node.depth > 0 && node.depth < 3) {
-				return DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2
+
+			// TODO This will not work for FixedFolders
+			// it seems that depth property is missing in that case
+			// so the default padding will be added, which is fine though.
+			if (rootNode) {
+				// Start the labels at level 1 not 0 because the root folder should not be labeled
+				if (node.depth === 0) {
+					// Add a big padding for the first folder level (the font is bigger than in deeper levels)
+					// TODO Add constants for magic numbers
+					return Math.max((rootNode.x1 - rootNode.x0) * 0.035, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1)
+				}
+				if (node.depth > 0 && node.depth < 3) {
+					return Math.max((rootNode.x1 - rootNode.x0) * 0.028, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
+				}
 			}
+
 			// add treemap algorithm default padding otherwise
 			return padding
 		})

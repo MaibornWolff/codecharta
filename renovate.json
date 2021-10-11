@@ -1,0 +1,19 @@
+{
+	"extends": ["config:base", "group:all"],
+	"packageRules": [
+		{
+			"matchManagers": ["gradle"],
+			"matchPaths": ["build.gradle"],
+			"groupName": "gradle dependencies update",
+			"enabled": true
+		},
+		{
+			"matchManagers": ["npm"],
+			"matchPaths": ["package.json"],
+			"groupName": "npm dependencies update",
+			"enabled": true
+		}
+	],
+	"timezone": "Europe/Berlin",
+	"schedule": ["on the 2nd and 4th day instance on sunday after 9pm"]
+}

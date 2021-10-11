@@ -31,3 +31,5 @@ export class Store {
 		PlainStore.store.dispatch(action)
 	}
 }
+
+export { createSelector } from "./createSelector"

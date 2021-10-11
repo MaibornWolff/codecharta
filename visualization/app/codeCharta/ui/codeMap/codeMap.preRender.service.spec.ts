@@ -16,7 +16,6 @@ import { addFile, resetFiles, setDelta, setMultiple, setSingleByName } from "../
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3-hierarchy"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
 import { calculateNewNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { getCCFiles } from "../../model/files/files.helper"
@@ -30,7 +29,6 @@ describe("codeMapPreRenderService", () => {
 	let storeService: StoreService
 	let nodeMetricDataService: NodeMetricDataService
 	let codeMapRenderService: CodeMapRenderService
-	let edgeMetricDataService: EdgeMetricDataService
 
 	let fileMeta: FileMeta
 	let map: CodeMapNode
@@ -52,7 +50,6 @@ describe("codeMapPreRenderService", () => {
 		storeService = getService<StoreService>("storeService")
 		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
-		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
 		fileMeta = clone(FILE_STATES[0].file.fileMeta)
 		map = clone(TEST_FILE_WITH_PATHS.map)
@@ -74,13 +71,7 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapPreRenderService = new CodeMapPreRenderService(
-			$rootScope,
-			storeService,
-			nodeMetricDataService,
-			codeMapRenderService,
-			edgeMetricDataService
-		)
+		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, storeService, nodeMetricDataService, codeMapRenderService)
 	}
 
 	function withMockedCodeMapRenderService() {

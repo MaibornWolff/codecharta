@@ -2,12 +2,11 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { calculateNewEdgeMetricData, EdgeMetricDataActions } from "./edgeMetricData.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { BlacklistItem, CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
+import { BlacklistItem, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
-import { HierarchyNode } from "d3-hierarchy"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
-import { EdgeMetricCountMap, nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
+import { nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
 
 export interface EdgeMetricDataSubscriber {
@@ -46,10 +45,6 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		)
 	}
 
-	getMetricNames() {
-		return this.storeService.getState().metricData.edgeMetricData.map(x => x.name)
-	}
-
 	getAmountOfAffectedBuildings(metricName: string) {
 		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
 		return nodeEdgeMetrics === undefined ? 0 : nodeEdgeMetrics.size
@@ -75,19 +70,6 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 			}
 		}
 		return keys
-	}
-
-	getMetricValuesForNode(node: HierarchyNode<CodeMapNode>, metricNames: string[]) {
-		const nodeEdgeMetrics: EdgeMetricCountMap = new Map()
-
-		for (const metricName of metricNames) {
-			const edgeMetricCount = nodeEdgeMetricsMap.get(metricName)
-			if (edgeMetricCount) {
-				nodeEdgeMetrics.set(metricName, edgeMetricCount.get(node.data.path))
-			}
-		}
-
-		return nodeEdgeMetrics
 	}
 
 	getAttributeTypeByMetric(metricName: string) {
