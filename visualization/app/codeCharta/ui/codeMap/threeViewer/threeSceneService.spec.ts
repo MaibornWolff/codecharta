@@ -428,12 +428,17 @@ describe("ThreeSceneService", () => {
 	})
 
 	describe("initFloorLabels", () => {
+		const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
+
+		afterEach(() => {
+			floorLabelDrawerSpy.mockReset()
+		})
+
 		it("should not add floor labels for StreetMap and TreeMapStreet algorithms", () => {
 			threeSceneService["notifyMapMeshChanged"] = jest.fn()
 			const getRootNodeMock = jest.fn()
 			const originalGetRootNode = threeSceneService["getRootNode"]
 			threeSceneService["getRootNode"] = getRootNodeMock
-			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
 
 			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.StreetMap))
 			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, storeService.getState(), false))
@@ -454,7 +459,7 @@ describe("ThreeSceneService", () => {
 
 		it("should not add floor labels if no root node was found", () => {
 			threeSceneService["notifyMapMeshChanged"] = jest.fn()
-			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw")
+			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
 
 			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
 			threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, storeService.getState(), false))
