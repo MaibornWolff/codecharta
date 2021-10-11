@@ -1,6 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen, fireEvent } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { setSearchedNodePaths } from "../../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
+import { Store } from "../../../state/store/store"
 
 import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu.component"
 import { MapTreeViewLevelModule } from "../mapTreeViewLevel.module"
@@ -24,9 +26,11 @@ describe("mapTreeViewLevel", () => {
 		TestBed.configureTestingModule({
 			imports: [MapTreeViewLevelModule]
 		})
+
+		Store["initialize"]()
 	})
 
-	it("should show root and first level items initially", async () => {
+	it("should show root and first level folder and files initially", async () => {
 		const { container } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
 
 		expect(container.getElementsByClassName("tree-element-0").length).toBe(1)
@@ -35,6 +39,11 @@ describe("mapTreeViewLevel", () => {
 		expect(container.getElementsByClassName("tree-element-1").length).toBe(2)
 		expect(screen.getByText("bigLeaf")).toBeTruthy()
 		expect(screen.getByText("ParentLeaf")).toBeTruthy()
+
+		const isBigLeafRenderedAsFile = container.querySelector("#\\/root\\/bigLeaf .fa-file-o")
+		expect(isBigLeafRenderedAsFile).toBeTruthy()
+		const isParentLeafRenderedAsFolder = container.querySelector("#\\/root\\/ParentLeaf .fa-folder")
+		expect(isParentLeafRenderedAsFolder).toBeTruthy()
 	})
 
 	it("should render first level folder closed initially and open it on click", async () => {
@@ -66,8 +75,9 @@ describe("mapTreeViewLevel", () => {
 
 		const { container } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
-		const optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
+
 		userEvent.hover(firstLevelFolder)
+		const optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
 		fireEvent.click(optionsButton.querySelector("[title='Open Node-Context-Menu']"))
 
 		expect(nodeContextMenuSpy).toHaveBeenCalled()
@@ -77,5 +87,29 @@ describe("mapTreeViewLevel", () => {
 
 		const isMarked = container.querySelector("#\\/root\\/ParentLeaf.marked")
 		expect(isMarked).toBeTruthy()
+	})
+
+	it("should display root unary percentage for folders and toggle to total unary on hover", async () => {
+		const { container } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
+		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+
+		const showsPercentage = firstLevelFolder.textContent.includes("%")
+		expect(showsPercentage).toBe(true)
+
+		userEvent.hover(firstLevelFolder)
+
+		const showsPercentageAfterHover = firstLevelFolder.textContent.includes("%")
+		expect(showsPercentageAfterHover).toBe(false)
+	})
+
+	it("should make searched items 'angular-green'", async () => {
+		const { container, detectChanges } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
+
+		Store.store.dispatch(setSearchedNodePaths(new Set(["/root/bigLeaf"])))
+		detectChanges()
+
+		const bigLeaf = container.querySelector("#\\/root\\/bigLeaf")
+		const isAngularGreen = bigLeaf.querySelector(".angular-green")
+		expect(isAngularGreen).toBeTruthy()
 	})
 })
