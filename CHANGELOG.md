@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fixes color picker not being usable ([#2035](https://github.com/MaibornWolff/codecharta/issues/2035))
+-   Fix color picker not being usable ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
 -   Hides legend block if label description is not available and adds new metric descriptions ([#2377](https://github.com/maibornwolff/codecharta/issues/2377)).
 
 ## [1.80.0] - 2021-10-04
