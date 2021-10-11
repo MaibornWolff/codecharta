@@ -76,7 +76,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 		const { layoutAlgorithm } = this.storeService.getState().appSettings
 		if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap) {
-			return true
+			return
 		}
 
 		const rootNode = this.getRootNode(nodes)
