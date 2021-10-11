@@ -139,35 +139,18 @@ describe("codeMapRenderService", () => {
 	})
 
 	describe("render", () => {
-		let sortedNodes: Node[]
-		beforeEach(() => {
-			sortedNodes = codeMapRenderService["getSortedNodes"](map)
-		})
-		it("should call setNewMapMesh", () => {
-			codeMapRenderService["setNewMapMesh"] = jest.fn().mockReturnValue(sortedNodes)
-			codeMapRenderService.render(map)
-
-			expect(codeMapRenderService["setNewMapMesh"]).toHaveBeenCalledWith(sortedNodes)
-		})
-
-		it("should call setLabels", () => {
-			codeMapRenderService["setLabels"] = jest.fn().mockReturnValue(sortedNodes)
-			codeMapRenderService.render(map)
-
-			expect(codeMapRenderService["setLabels"]).toHaveBeenCalledWith(sortedNodes)
-		})
-
-		it("should call setArrows", () => {
-			codeMapRenderService["setArrows"] = jest.fn().mockReturnValue(sortedNodes)
-			codeMapRenderService.render(map)
-
-			expect(codeMapRenderService["setArrows"]).toHaveBeenCalledWith(sortedNodes)
-		})
-
-		it("should call scaleMap", () => {
+		it("should call all render specific methods", () => {
+			codeMapRenderService["setNewMapMesh"] = jest.fn()
+			codeMapRenderService["setLabels"] = jest.fn()
+			codeMapRenderService["setArrows"] = jest.fn()
 			codeMapRenderService["scaleMap"] = jest.fn()
 			codeMapRenderService.render(map)
 
+			const nodes = codeMapRenderService["getNodes"](map)
+
+			expect(codeMapRenderService["setNewMapMesh"]).toHaveBeenCalledWith(nodes, expect.any(Array))
+			expect(codeMapRenderService["setLabels"]).toHaveBeenCalled()
+			expect(codeMapRenderService["setArrows"]).toHaveBeenCalled()
 			expect(codeMapRenderService["scaleMap"]).toHaveBeenCalled()
 		})
 
@@ -202,25 +185,25 @@ describe("codeMapRenderService", () => {
 
 	describe("setNewMapMesh", () => {
 		it("should call threeSceneService.setMapMesh", () => {
-			codeMapRenderService["setNewMapMesh"](TEST_NODES)
+			codeMapRenderService["setNewMapMesh"](TEST_NODES, TEST_NODES)
 
 			expect(threeSceneService.setMapMesh).toHaveBeenCalled()
 		})
 	})
 
-	describe("getSortedNodes", () => {
-		it("should get sorted Nodes as array", () => {
-			const sortedNodes: Node[] = codeMapRenderService["getSortedNodes"](map)
+	describe("getNodes", () => {
+		it("should get Nodes as array", () => {
+			const sortedNodes: Node[] = codeMapRenderService["getNodes"](map)
 
 			expect(sortedNodes).toMatchSnapshot()
 		})
 	})
 
 	describe("setLabels", () => {
-		let sortedNodes: Node[]
+		let nodes: Node[]
 
 		beforeEach(() => {
-			sortedNodes = TEST_NODES
+			nodes = TEST_NODES
 		})
 
 		it("should only call clearLabels for empty nodes", () => {
@@ -231,13 +214,13 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should call codeMapLabelService.clearLabels", () => {
-			codeMapRenderService["setLabels"](sortedNodes)
+			codeMapRenderService["setLabels"](nodes)
 
 			expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
 		})
 
 		it("should call codeMapLabelService.addLabels for each shown leaf label", () => {
-			codeMapRenderService["setLabels"](sortedNodes)
+			codeMapRenderService["setLabels"](nodes)
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(2)
 		})
@@ -246,15 +229,15 @@ describe("codeMapRenderService", () => {
 			storeService.dispatch(setShowMetricLabelNodeName(false))
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 
-			codeMapRenderService["setLabels"](sortedNodes)
+			codeMapRenderService["setLabels"](nodes)
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(0)
 		})
 
 		it("should not generate labels for flattened nodes", () => {
-			sortedNodes[0].flat = true
+			nodes[0].flat = true
 
-			codeMapRenderService["getSortedNodes"] = jest.fn().mockReturnValue(sortedNodes)
+			codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
 			codeMapRenderService.render(null)
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(1)

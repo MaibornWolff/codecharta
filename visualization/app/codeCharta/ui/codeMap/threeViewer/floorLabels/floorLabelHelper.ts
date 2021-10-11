@@ -19,6 +19,6 @@ export class FloorLabelHelper {
 	}
 
 	static isLabelNode(node: Node) {
-		return !node.isLeaf && node.mapNodeDepth !== undefined && node.mapNodeDepth >= 0 && node.mapNodeDepth < 3
+		return !node.isLeaf && node.mapNodeDepth < 3
 	}
 }

@@ -1,7 +1,7 @@
 "use strict"
 
 import { Node } from "../../../../codeCharta.model"
-import { CanvasTexture, DoubleSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
+import { CanvasTexture, BackSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
 import { FloorLabelHelper } from "./floorLabelHelper"
 
 export class FloorLabelDrawer {
@@ -10,22 +10,21 @@ export class FloorLabelDrawer {
 	private readonly mapSize: number
 	private readonly scaling: Vector3
 
-	private floorLabelsPerLevel = new Map([
-		[0, []],
-		[1, []],
-		[2, []]
-	])
+	private floorLabelsPerLevel = new Map()
 
 	constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3) {
-		this.collectLabelsPerLevel(nodes.values())
+		this.collectLabelsPerLevel(nodes)
 		this.rootNode = rootNode
 		this.mapSize = mapSize
 		this.scaling = scaling
 	}
 
-	private collectLabelsPerLevel(nodes: IterableIterator<Node>) {
+	private collectLabelsPerLevel(nodes: Node[]) {
 		for (const node of nodes) {
 			if (FloorLabelHelper.isLabelNode(node)) {
+				if (!this.floorLabelsPerLevel.has(node.mapNodeDepth)) {
+					this.floorLabelsPerLevel.set(node.mapNodeDepth, [])
+				}
 				this.floorLabelsPerLevel.get(node.mapNodeDepth).push(node)
 			}
 		}
@@ -39,9 +38,6 @@ export class FloorLabelDrawer {
 		const scaledMapHeight = rootNodeHeight * mapResolutionScaling
 
 		for (const [floorLevel, floorNodesPerLevel] of this.floorLabelsPerLevel) {
-			if (floorNodesPerLevel.length === 0) {
-				continue
-			}
 			const { textCanvas, context } = this.createLabelPlaneCanvas(scaledMapWidth, scaledMapHeight)
 			this.writeLabelsOnCanvas(context, floorNodesPerLevel, mapResolutionScaling)
 			this.drawLevelPlaneGeometry(textCanvas, scaledMapWidth, scaledMapHeight, floorLevel, mapResolutionScaling)
@@ -50,10 +46,20 @@ export class FloorLabelDrawer {
 		return this.floorLabelPlanes
 	}
 
-	private createLabelPlaneCanvas(scaledMapWidth, scaledMapHeight) {
+	private createLabelPlaneCanvas(scaledMapWidth: number, scaledMapHeight: number) {
 		const textCanvas = document.createElement("canvas")
-		textCanvas.width = scaledMapWidth
-		textCanvas.height = scaledMapHeight
+
+		// Flip map width and height to support non squarified maps (e.g. if a rectangular subfolder is focused)
+		let textCanvasWidth = scaledMapWidth
+		let textCanvasHeight = scaledMapHeight
+
+		if (scaledMapWidth > scaledMapHeight) {
+			textCanvasWidth = scaledMapHeight
+			textCanvasHeight = scaledMapWidth
+		}
+
+		textCanvas.width = textCanvasWidth
+		textCanvas.height = textCanvasHeight
 
 		const context = textCanvas.getContext("2d")
 
@@ -94,7 +100,7 @@ export class FloorLabelDrawer {
 
 		const plane = new PlaneGeometry(scaledMapWidth, scaledMapHeight)
 		const material = new MeshBasicMaterial({
-			side: DoubleSide,
+			side: BackSide,
 			map: labelTexture,
 			transparent: true
 		})
@@ -108,7 +114,7 @@ export class FloorLabelDrawer {
 		const liftToPreventZFighting = 10
 		plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -2.01 * (floorLevel + 1) - liftToPreventZFighting)
 
-		// Apply default scaling
+		// Move and scale plane mesh exactly like the squarified map
 		planeMesh.scale.set(this.scaling.x / mapResolutionScaling, this.scaling.y / mapResolutionScaling, this.scaling.z)
 		planeMesh.position.set(-this.mapSize * this.scaling.x, 0, -this.mapSize * this.scaling.z)
 

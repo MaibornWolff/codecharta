@@ -71,10 +71,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.scene.add(this.floorLabelPlanes)
 	}
 
-	private initFloorLabels() {
+	private initFloorLabels(nodes: Node[]) {
 		this.floorLabelPlanes.clear()
 
-		const rootNode = this.extractRootNode(this.mapMesh.getNodes().values())
+		const rootNode = this.getRootNode(nodes)
 		if (!rootNode) {
 			return
 		}
@@ -89,12 +89,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.scene.add(this.floorLabelPlanes)
 	}
 
-	private extractRootNode(nodeIterator: IterableIterator<Node>) {
-		for (const node of nodeIterator) {
-			if (node.id === 0) {
-				return node
-			}
-		}
+	private getRootNode(nodes: Node[]) {
+		return nodes.find(node => node.id === 0)
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
@@ -396,11 +392,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.lights.add(light2)
 	}
 
-	setMapMesh(mesh: CodeMapMesh) {
+	setMapMesh(nodes: Node[], mesh: CodeMapMesh) {
 		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
 
-		this.initFloorLabels()
+		this.initFloorLabels(nodes)
 
 		// Reset children
 		this.mapGeometry.children.length = 0
