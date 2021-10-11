@@ -90,8 +90,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
 		const floorLabels = floorLabelDrawer.draw()
 
-		this.floorLabelPlanes.add(...floorLabels)
-		this.scene.add(this.floorLabelPlanes)
+		if (floorLabels.length > 0) {
+			this.floorLabelPlanes.add(...floorLabels)
+			this.scene.add(this.floorLabelPlanes)
+		}
 	}
 
 	private getRootNode(nodes: Node[]) {
