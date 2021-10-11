@@ -10,7 +10,7 @@ describe("FloorLabelHelper", () => {
 			const fragment = document.createDocumentFragment()
 			fragment.appendChild(fakeMapCanvas)
 
-			document.getElementsByTagName = jest.fn().mockReturnValue(fragment.children)
+			document.getElementById = jest.fn().mockReturnValue(fragment.children)
 		}
 
 		it("should not scale since map width is smaller than scaling threshold (four times the display width)", () => {
