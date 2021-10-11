@@ -5,8 +5,6 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { calculateNewEdgeMetricData, EdgeMetricDataAction, EdgeMetricDataActions } from "./edgeMetricData.actions"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { EDGE_METRIC_DATA, FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../../../util/dataMocks"
-import { CodeMapNode } from "../../../../codeCharta.model"
-import { HierarchyNode } from "d3-hierarchy"
 import { FilesService } from "../../files/files.service"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
@@ -97,14 +95,6 @@ describe("EdgeMetricDataService", () => {
 		})
 	})
 
-	describe("getMetricNames", () => {
-		it("should return metric names", () => {
-			const metricNames = edgeMetricDataService.getMetricNames()
-
-			expect(metricNames).toEqual(["avgCommits", EdgeMetricDataService.NONE_METRIC, "otherMetric", "pairingRate"])
-		})
-	})
-
 	describe("getAmountOfAffectedBuildings", () => {
 		it("should return 0 if metric is non-existent", () => {
 			const affectedNodes = edgeMetricDataService.getAmountOfAffectedBuildings("bar")
@@ -136,17 +126,6 @@ describe("EdgeMetricDataService", () => {
 			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("pairingRate", 0)
 
 			expect(nodePaths).toEqual([])
-		})
-	})
-
-	describe("getMetricValuesForNode", () => {
-		it("should return Edge Metric counts for node", () => {
-			const metricNames = ["pairingRate"]
-			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
-
-			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node, metricNames)
-
-			expect(metricsForNode.get(metricNames[0])).toEqual({ incoming: 0, outgoing: 1 })
 		})
 	})
 })
