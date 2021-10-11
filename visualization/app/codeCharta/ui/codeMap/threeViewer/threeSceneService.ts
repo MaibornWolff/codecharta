@@ -1,13 +1,13 @@
-import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3, Line, BufferGeometry } from "three"
+import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
+import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
-import { CodeMapNode, MapColors, Node } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { MapColorsService, MapColorsSubscriber } from "../../../state/store/appSettings/mapColors/mapColors.service"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 
 export interface BuildingSelectedEventSubscriber {
@@ -73,6 +73,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	private initFloorLabels(nodes: Node[]) {
 		this.floorLabelPlanes.clear()
+
+		const { layoutAlgorithm } = this.storeService.getState().appSettings
+		if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap) {
+			return true
+		}
 
 		const rootNode = this.getRootNode(nodes)
 		if (!rootNode) {
