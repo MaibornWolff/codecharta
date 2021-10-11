@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix color picker not being usable ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
 -   Fix Changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425)) <br>
     <img src="https://user-images.githubusercontent.com/48621967/135866024-ee06119a-1a62-4912-90df-ac3aa9216608.PNG" width="350px" alt="consistent changelog images"/>
 -   Fix memory and performance issues related to drawing labels on floors/folders ([#2348](https://github.com/MaibornWolff/codecharta/issues/2348)).
