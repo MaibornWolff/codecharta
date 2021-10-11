@@ -4,10 +4,11 @@ import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
-import { CodeMapNode, MapColors } from "../../../codeCharta.model"
+import { CodeMapNode, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -28,6 +29,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	scene: Scene
 	labels: Group
+	floorLabelPlanes: Group
 	edgeArrows: Group
 	mapGeometry: Group
 	private readonly lights: Group
@@ -57,6 +59,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.mapGeometry = new Group()
 		this.lights = new Group()
 		this.labels = new Group()
+		this.floorLabelPlanes = new Group()
 		this.edgeArrows = new Group()
 
 		this.initLights()
@@ -65,6 +68,29 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+		this.scene.add(this.floorLabelPlanes)
+	}
+
+	private initFloorLabels(nodes: Node[]) {
+		this.floorLabelPlanes.clear()
+
+		const rootNode = this.getRootNode(nodes)
+		if (!rootNode) {
+			return
+		}
+
+		const { mapSize } = this.storeService.getState().treeMap
+		const scaling = this.storeService.getState().appSettings.scaling
+
+		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
+		const floorLabels = floorLabelDrawer.draw()
+
+		this.floorLabelPlanes.add(...floorLabels)
+		this.scene.add(this.floorLabelPlanes)
+	}
+
+	private getRootNode(nodes: Node[]) {
+		return nodes.find(node => node.id === 0)
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
@@ -252,6 +278,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private isOverlapping(a: Box3, b: Box3, dimension: string) {
 		return Number(a.max[dimension] >= b.min[dimension] && b.max[dimension] >= a.min[dimension])
 	}
+
 	private getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
 		normedVector.multiplyScalar(distance)
 		bboxHoveredLabel.translate(normedVector)
@@ -365,9 +392,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.lights.add(light2)
 	}
 
-	setMapMesh(mesh: CodeMapMesh) {
+	setMapMesh(nodes: Node[], mesh: CodeMapMesh) {
 		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
+
+		this.initFloorLabels(nodes)
 
 		// Reset children
 		this.mapGeometry.children.length = 0

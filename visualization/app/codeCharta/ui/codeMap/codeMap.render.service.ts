@@ -46,20 +46,23 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	render(map: CodeMapNode) {
-		const sortedNodes = this.getSortedNodes(map)
-		const filteredSortedNodes = sortedNodes.filter(({ flat }) => !flat)
+		const nodes = this.getNodes(map)
+		const visibleSortedNodes = nodes
+			.filter(node => node.visible && node.length > 0 && node.width > 0)
+			.sort((a, b) => b.height - a.height)
+		const unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
-		this.setNewMapMesh(sortedNodes)
-		this.getNodesMatchingColorSelector(filteredSortedNodes)
-		this.setLabels(filteredSortedNodes)
-		this.setArrows(sortedNodes)
+		this.setNewMapMesh(nodes, visibleSortedNodes)
+		this.getNodesMatchingColorSelector(unflattenedNodes)
+		this.setLabels(unflattenedNodes)
+		this.setArrows(visibleSortedNodes)
 		this.scaleMap()
 	}
 
-	private setNewMapMesh(sortedNodes) {
+	private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
 		const state = this.storeService.getState()
-		const mapMesh = new CodeMapMesh(sortedNodes, state, isDeltaState(state.files))
-		this.threeSceneService.setMapMesh(mapMesh)
+		const mapMesh = new CodeMapMesh(visibleSortedNodes, state, isDeltaState(state.files))
+		this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
 	}
 
 	scaleMap() {
@@ -68,27 +71,23 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		this.threeSceneService.scaleHeight()
 	}
 
-	private getSortedNodes(map: CodeMapNode) {
+	private getNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
 		const {
 			appSettings: { layoutAlgorithm },
 			metricData: { nodeMetricData },
 			files
 		} = state
-		let nodes: Node[] = []
 		const deltaState = isDeltaState(files)
 		switch (layoutAlgorithm) {
 			case LayoutAlgorithm.StreetMap:
 			case LayoutAlgorithm.TreeMapStreet:
-				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, deltaState)
-				break
+				return StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, deltaState)
 			case LayoutAlgorithm.SquarifiedTreeMap:
-				nodes = createTreemapNodes(map, state, nodeMetricData, deltaState)
-				break
+				return createTreemapNodes(map, state, nodeMetricData, deltaState)
+			default:
+				return []
 		}
-		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
-		// prevent multiple steps if the visibility is checked first.
-		return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
 	}
 
 	private getNodesMatchingColorSelector(sortedNodes: Node[]) {
