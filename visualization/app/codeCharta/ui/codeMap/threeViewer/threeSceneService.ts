@@ -9,6 +9,7 @@ import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsService, MapColorsSubscriber } from "../../../state/store/appSettings/mapColors/mapColors.service"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
+import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -192,9 +193,13 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	selectBuilding(building: CodeMapBuilding) {
+		// TODO this check shouldn't be necessary. When investing into model wie should investigate why and remove the need.
+		if (building.id !== this.selected?.id) this.storeService.dispatch(setSelectedBuildingId(building.id))
+
 		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
 		this.selected = building
 		this.highlightBuildings()
+
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
 		if (this.mapGeometry.children[0]) {
 			this.selectMaterial(this.mapGeometry.children[0]["material"])
@@ -375,6 +380,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
+			this.storeService.dispatch(setSelectedBuildingId(null))
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
 		if (this.highlighted.length > 0) {
