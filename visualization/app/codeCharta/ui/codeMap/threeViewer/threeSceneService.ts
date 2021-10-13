@@ -193,8 +193,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	selectBuilding(building: CodeMapBuilding) {
-		// TODO this check shouldn't be necessary. When investing into model wie should investigate why and remove the need.
-		if (building.id !== this.selected?.id) this.storeService.dispatch(setSelectedBuildingId(building.id))
+		// TODO this check shouldn't be necessary. When investing into model we should investigate why and remove the need.
+		if (building.id !== this.selected?.id) {
+			this.storeService.dispatch(setSelectedBuildingId(building.id))
+		}
 
 		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
 		this.selected = building
