@@ -11,6 +11,7 @@ class ProjectWrapper(
     private val checksum: String
 
     init {
+        if (data == null) throw IllegalStateException("no project data present")
         checksum = md5(projectJson)
     }
 

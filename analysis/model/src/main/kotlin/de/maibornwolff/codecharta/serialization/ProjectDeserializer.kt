@@ -15,6 +15,7 @@ object ProjectDeserializer {
     private val GSON = GsonBuilder()
         .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
         .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
+            .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer())
         .create()
 
     fun deserializeProject(reader: Reader): Project {
