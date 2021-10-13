@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectWrapper
 import model.src.main.kotlin.de.maibornwolff.codecharta.serialization.NodeJsonDeserializer
 import mu.KotlinLogging
 import java.io.InputStream
@@ -21,7 +22,9 @@ object ProjectDeserializer {
     }
 
     fun deserializeProject(projectString: String): Project {
-        return GSON.fromJson(projectString, Project::class.java)
+        // TODO support two cases: first case - old json structure, second case - new json structure
+        val projectWrapper = GSON.fromJson(projectString, ProjectWrapper::class.java)
+        return projectWrapper.data
     }
 
     fun deserializeProject(input: InputStream): Project? {

@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectWrapper
 import java.io.BufferedWriter
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -42,7 +43,12 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer) {
-        GSON.toJson(project, Project::class.java, out)
+        val projectJsonString = GSON.toJson(project, Project::class.java)
+        // TODO we must improve this
+        val wrapper = ProjectWrapper(project, projectJsonString.toString())
+
+        GSON.toJson(wrapper, out)
+
         out.flush()
         out.close()
     }

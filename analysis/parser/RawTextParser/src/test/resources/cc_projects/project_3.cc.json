@@ -1,32 +1,35 @@
 {
-  "projectName": "",
-  "nodes": [
-    {
-      "name": "root",
-      "type": "Folder",
-      "attributes": {},
-      "link": "",
-      "children": [
-        {
-          "name": "tabs.xyz",
-          "type": "File",
-          "attributes": {
-            "indentation_level_0+": 6,
-            "indentation_level_1+": 3,
-            "indentation_level_2+": 1,
-            "indentation_level_3+": 1,
-            "indentation_level_4+": 0,
-            "indentation_level_5+": 0,
-            "indentation_level_6+": 0
-          },
-          "link": "",
-          "children": []
-        }
-      ]
-    }
-  ],
-  "apiVersion": "1.2",
-  "edges": [],
-  "attributeTypes": {},
-  "blacklist": []
+  "checksum": "932a3a280c85b28d17ff78a7807fcf01",
+  "data": {
+    "projectName": "",
+    "nodes": [
+      {
+        "name": "root",
+        "type": "Folder",
+        "attributes": {},
+        "link": "",
+        "children": [
+          {
+            "name": "tabs.xyz",
+            "type": "File",
+            "attributes": {
+              "indentation_level_0+": 6,
+              "indentation_level_1+": 3,
+              "indentation_level_2+": 1,
+              "indentation_level_3+": 1,
+              "indentation_level_4+": 0,
+              "indentation_level_5+": 0,
+              "indentation_level_6+": 0
+            },
+            "link": "",
+            "children": []
+          }
+        ]
+      }
+    ],
+    "apiVersion": "1.2",
+    "edges": [],
+    "attributeTypes": {},
+    "blacklist": []
+  }
 }
