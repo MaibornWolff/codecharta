@@ -1,65 +1,25 @@
-import "./metricDeltaSelected.component.scss"
+import { Component, Inject, Input, OnInit } from "@angular/core"
+import { Observable } from "rxjs"
+import { MapColors } from "../../codeCharta.model"
+import { Store } from "../../state/angular-redux/store"
+import { selectedBuildingSelector } from "../../state/selectors/selectedBuildingSelector"
+import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { IRootScopeService, ITimeoutService } from "angular"
-import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { StoreService } from "../../state/store.service"
-import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 
-export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, MapColorsSubscriber {
-	private static TIME_TO_INIT_BINDING = 50
-	private attributekey: string // angular bindings do not accept camelCase
+@Component({
+	selector: "cc-metric-delta-selected",
+	template: require("./metricDeltaSelected.component.html")
+})
+export class MetricDeltaSelectedComponent implements OnInit {
+	@Input() attributeKey: string
 
-	private _viewModel: {
-		deltaValue: number
-		attributeKey: string
-		style: { color: string }
-	} = {
-		deltaValue: null,
-		attributeKey: null,
-		style: { color: null }
-	}
+	selectedBuilding$: Observable<CodeMapBuilding>
+	mapColors$: Observable<MapColors>
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
-		private threeSceneService: ThreeSceneService,
-		private storeService: StoreService
-	) {
-		"ngInject"
-		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		MapColorsService.subscribe(this.$rootScope, this)
-		this.$timeout(() => {
-			this.onBuildingSelected(this.threeSceneService.getSelectedBuilding())
-		}, MetricDeltaSelectedController.TIME_TO_INIT_BINDING)
-	}
+	constructor(@Inject(Store) private store: Store) {}
 
-	onMapColorsChanged() {
-		this.setDeltaColorClass()
-	}
-
-	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
-		this.setDeltaValue(selectedBuilding)
-		this.setDeltaColorClass()
-	}
-
-	private setDeltaValue(selectedBuilding?: CodeMapBuilding) {
-		if (selectedBuilding) {
-			this._viewModel.deltaValue = selectedBuilding.node.deltas?.[this.attributekey]
-		}
-	}
-
-	private setDeltaColorClass() {
-		const mapColors = this.storeService.getState().appSettings.mapColors
-		const color = this._viewModel.deltaValue > 0 ? mapColors.positiveDelta : mapColors.negativeDelta
-		this._viewModel.style = { color }
-	}
-}
-
-export const metricDeltaSelectedComponent = {
-	selector: "metricDeltaSelectedComponent",
-	template: require("./metricDeltaSelected.component.html"),
-	controller: MetricDeltaSelectedController,
-	bindings: {
-		attributekey: "="
+	ngOnInit(): void {
+		this.selectedBuilding$ = this.store.select(selectedBuildingSelector)
+		this.mapColors$ = this.store.select(mapColorsSelector)
 	}
 }
