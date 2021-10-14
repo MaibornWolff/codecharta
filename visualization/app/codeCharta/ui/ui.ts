@@ -12,7 +12,6 @@ import "./metricValueHovered/metricValueHovered.module"
 import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
 import "./globalSettingsButton/globalSettingsButton.module"
-import "./metricDeltaSelected/metricDeltaSelected.module"
 import "./nodePathPanel/nodePathPanel.module"
 import "./attributeSideBar/attributeSideBar.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
@@ -48,6 +47,7 @@ import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
+import { MetricDeltaSelectedComponent } from "./metricDeltaSelected/metricDeltaSelected.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -62,7 +62,6 @@ angular
 		"app.codeCharta.ui.downloadButton",
 		"app.codeCharta.ui.screenshotButton",
 		"app.codeCharta.ui.globalSettingsButton",
-		"app.codeCharta.ui.metricDeltaSelected",
 		"app.codeCharta.ui.nodePathPanel",
 		"app.codeCharta.ui.attributeSideBar",
 		"app.codeCharta.ui.edgeSettingsPanel",
@@ -100,3 +99,4 @@ angular
 		"app.codeCharta.ui.maxTreeMapFiles"
 	])
 	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))
+	.directive("ccMetricDeltaSelected", downgradeComponent({ component: MetricDeltaSelectedComponent }))

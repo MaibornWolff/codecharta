@@ -1816,7 +1816,8 @@ export const STATE: State = {
 		edgeMetricData: EDGE_METRIC_DATA
 	},
 	appStatus: {
-		hoveredBuildingPath: null
+		hoveredBuildingPath: null,
+		selectedBuildingId: null
 	}
 }
 
@@ -1904,7 +1905,8 @@ export const DEFAULT_STATE: State = {
 		edgeMetricData: []
 	},
 	appStatus: {
-		hoveredBuildingPath: null
+		hoveredBuildingPath: null,
+		selectedBuildingId: null
 	}
 }
 

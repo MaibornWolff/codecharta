@@ -32,6 +32,7 @@ export class NodeContextMenuController
 {
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
 	private static HIDE_NODE_CONTEXT_MENU_EVENT = "hide-node-context-menu"
+	private static instance: NodeContextMenuController
 
 	private _viewModel: {
 		codeMapNode: CodeMapNode
@@ -55,7 +56,7 @@ export class NodeContextMenuController
 		private $element: Element,
 		private $timeout: ITimeoutService,
 		private $window,
-		private $rootScope: IRootScopeService,
+		public $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
@@ -64,6 +65,7 @@ export class NodeContextMenuController
 		private blacklistService: BlacklistService
 	) {
 		"ngInject"
+		NodeContextMenuController.instance = this
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
@@ -294,7 +296,8 @@ export class NodeContextMenuController
 	}
 
 	static broadcastShowEvent($rootScope, path: string, type: string, x, y) {
-		$rootScope.$broadcast(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, {
+		const rootScope = $rootScope || NodeContextMenuController.instance.$rootScope
+		rootScope.$broadcast(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, {
 			path,
 			type,
 			x,
@@ -302,8 +305,9 @@ export class NodeContextMenuController
 		})
 	}
 
-	static broadcastHideEvent($rootScope: IRootScopeService) {
-		$rootScope.$broadcast(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT)
+	static broadcastHideEvent($rootScope?: IRootScopeService) {
+		const rootScope = $rootScope || NodeContextMenuController.instance.$rootScope
+		rootScope.$broadcast(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT)
 	}
 
 	static subscribeToShowNodeContextMenu($rootScope: IRootScopeService, subscriber: ShowNodeContextMenuSubscriber) {
@@ -313,7 +317,8 @@ export class NodeContextMenuController
 	}
 
 	static subscribeToHideNodeContextMenu($rootScope: IRootScopeService, subscriber: HideNodeContextMenuSubscriber) {
-		$rootScope.$on(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT, () => {
+		const rootScope = $rootScope || NodeContextMenuController.instance.$rootScope
+		rootScope.$on(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT, () => {
 			subscriber.onHideNodeContextMenu()
 		})
 	}

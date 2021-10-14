@@ -36,9 +36,7 @@
 								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
 							</span>
 						</div>
-						<metric-delta-selected-component
-							attributekey="$ctrl._viewModel.primaryMetricKeys.node.area"
-						></metric-delta-selected-component>
+						<cc-metric-delta-selected [attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.area"></cc-metric-delta-selected>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</p>
 					</td>
 
@@ -56,9 +54,9 @@
 								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number: 0 }}
 							</span>
 						</div>
-						<metric-delta-selected-component
-							attributekey="$ctrl._viewModel.primaryMetricKeys.node.height"
-						></metric-delta-selected-component>
+						<cc-metric-delta-selected
+							[attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.height"
+						></cc-metric-delta-selected>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.height }}</p>
 					</td>
 				</tr>
@@ -78,9 +76,9 @@
 								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number: 0 }}
 							</span>
 						</div>
-						<metric-delta-selected-component
-							attributekey="$ctrl._viewModel.primaryMetricKeys.node.color"
-						></metric-delta-selected-component>
+						<cc-metric-delta-selected
+							[attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.color"
+						></cc-metric-delta-selected>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</p>
 					</td>
 
@@ -119,7 +117,7 @@
 							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey.name] | number: 0 }}</span>
 						</td>
 						<td ng-show="$ctrl._viewModel.node.deltas">
-							<metric-delta-selected-component attributekey="::attributeKey"></metric-delta-selected-component>
+							<cc-metric-delta-selected [attribute-key]="::attributeKey"></cc-metric-delta-selected>
 						</td>
 						<td class="metric-name">{{ attributeKey.name }}</td>
 					</tr>

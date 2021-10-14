@@ -408,7 +408,8 @@ export interface LookUp {
 }
 
 export interface AppStatus {
-	hoveredBuildingPath: string | undefined
+	hoveredBuildingPath: string | null
+	selectedBuildingId: number | null
 }
 
 export enum PanelSelection {

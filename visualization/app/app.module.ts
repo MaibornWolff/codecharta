@@ -6,27 +6,14 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
 
 import { SortingButtonComponent } from "./codeCharta/ui/sortingButton/sortingButton.component"
-import { MapTreeViewItemIcon } from "./codeCharta/ui/mapTreeView/mapTreeViewItemIcon/mapTreeViewItemIcon.component"
-import { MapTreeViewItemIconClassPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemIcon/mapTreeViewItemIconClass.pipe"
-import { MapTreeViewItemIconColorPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemIcon/mapTreeViewItemIconColor.pipe"
-import { MapTreeViewItemOptionButtonsComponent } from "./codeCharta/ui/mapTreeView/mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
-import { MapTreeViewItemName } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/mapTreeViewItemName.component"
-import { MapTreeViewItemSearchedNameHighlightPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/mapTreeViewItemSearchedNameHighlight.pipe"
-import { IsNodeLeafPipe } from "./codeCharta/ui/mapTreeView/mapTreeViewItemName/isNodeLeaf.pipe"
+import { MapTreeViewLevel } from "./codeCharta/ui/mapTreeView/mapTreeViewLevel/mapTreeViewLevel.component"
+import { MapTreeViewLevelModule } from "./codeCharta/ui/mapTreeView/mapTreeViewLevel.module"
+import { MetricDeltaSelectedComponent } from "./codeCharta/ui/metricDeltaSelected/metricDeltaSelected.component"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule],
-	declarations: [
-		SortingButtonComponent,
-		MapTreeViewItemIcon,
-		MapTreeViewItemIconClassPipe,
-		MapTreeViewItemIconColorPipe,
-		MapTreeViewItemOptionButtonsComponent,
-		MapTreeViewItemName,
-		MapTreeViewItemSearchedNameHighlightPipe,
-		IsNodeLeafPipe
-	],
-	entryComponents: [SortingButtonComponent, MapTreeViewItemIcon, MapTreeViewItemOptionButtonsComponent, MapTreeViewItemName]
+	imports: [BrowserModule, UpgradeModule, MapTreeViewLevelModule],
+	declarations: [SortingButtonComponent, MetricDeltaSelectedComponent],
+	entryComponents: [SortingButtonComponent, MapTreeViewLevel, MetricDeltaSelectedComponent]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}
