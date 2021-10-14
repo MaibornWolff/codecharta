@@ -1814,6 +1814,10 @@ export const STATE: State = {
 	metricData: {
 		nodeMetricData: METRIC_DATA,
 		edgeMetricData: EDGE_METRIC_DATA
+	},
+	appStatus: {
+		hoveredBuildingPath: null,
+		selectedBuildingId: null
 	}
 }
 
@@ -1899,6 +1903,10 @@ export const DEFAULT_STATE: State = {
 	metricData: {
 		nodeMetricData: [],
 		edgeMetricData: []
+	},
+	appStatus: {
+		hoveredBuildingPath: null,
+		selectedBuildingId: null
 	}
 }
 

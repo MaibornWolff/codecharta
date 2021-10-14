@@ -65,6 +65,8 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 			}
 		}
 		this.renderer.setSize(containerWidth, containerHeight)
+		this.renderer.domElement.id = "codeMapScene"
+
 		if (ThreeRendererService.enableFXAA) {
 			this.initComposer()
 		}

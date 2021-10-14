@@ -1,5 +1,5 @@
+import { CodeMapNode } from "../../codeCharta.model"
 import { IsNodeLeafPipe } from "./isNodeLeaf.pipe"
-import { CodeMapNode } from "../../../codeCharta.model"
 
 describe("IsNodeLeafPipe", () => {
 	it("should be true if node is a leaf", () => {

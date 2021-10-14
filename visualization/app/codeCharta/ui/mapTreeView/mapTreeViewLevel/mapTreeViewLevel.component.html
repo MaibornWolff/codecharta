@@ -1,0 +1,34 @@
+<div *ngIf="!node.isExcluded" class="tree-element-{{ depth }} {{ (node | isNodeLeaf) ? 'tree-leaf' : 'tree-parent' }}">
+	<div
+		id="{{ node.path }}"
+		class="tree-element-label-{{ depth }} tree-element-label"
+		[class.hovered]="(hoveredBuildingPath$ | async) === node.path"
+		[class.marked]="isContextMenuOpenForNode"
+		(mouseenter)="onMouseEnter()"
+		(mouseleave)="onMouseLeave()"
+		(click)="toggleOpen()"
+		(contextmenu)="openNodeContextMenu($event)"
+	>
+		<cc-map-tree-view-item-icon [node]="node" [isOpen]="isOpen"></cc-map-tree-view-item-icon>
+		<cc-map-tree-view-item-name
+			[node]="node"
+			[isHovered]="(hoveredBuildingPath$ | async) === node.path"
+			[unaryValue]="node.attributes.unary"
+		>
+		</cc-map-tree-view-item-name>
+
+		<cc-map-tree-view-item-option-buttons
+			*ngIf="(hoveredBuildingPath$ | async) === node.path"
+			[isFlattened]="node.isFlattened"
+			[openNodeContextMenu]="openNodeContextMenu"
+		></cc-map-tree-view-item-option-buttons>
+	</div>
+
+	<div class="tree-element-children tree-element-children-{{ depth }}">
+		<ng-container *ngIf="isOpen">
+			<div *ngFor="let childNode of node.children">
+				<cc-map-tree-view-level [node]="childNode" [depth]="depth + 1"></cc-map-tree-view-level>
+			</div>
+		</ng-container>
+	</div>
+</div>

@@ -1,13 +1,15 @@
-import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3, Line, BufferGeometry } from "three"
+import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
+import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
-import { CodeMapNode, MapColors } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { MapColorsService, MapColorsSubscriber } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
+import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -28,6 +30,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	scene: Scene
 	labels: Group
+	floorLabelPlanes: Group
 	edgeArrows: Group
 	mapGeometry: Group
 	private readonly lights: Group
@@ -57,6 +60,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.mapGeometry = new Group()
 		this.lights = new Group()
 		this.labels = new Group()
+		this.floorLabelPlanes = new Group()
 		this.edgeArrows = new Group()
 
 		this.initLights()
@@ -65,6 +69,36 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+		this.scene.add(this.floorLabelPlanes)
+	}
+
+	private initFloorLabels(nodes: Node[]) {
+		this.floorLabelPlanes.clear()
+
+		const { layoutAlgorithm } = this.storeService.getState().appSettings
+		if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap) {
+			return
+		}
+
+		const rootNode = this.getRootNode(nodes)
+		if (!rootNode) {
+			return
+		}
+
+		const { mapSize } = this.storeService.getState().treeMap
+		const scaling = this.storeService.getState().appSettings.scaling
+
+		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
+		const floorLabels = floorLabelDrawer.draw()
+
+		if (floorLabels.length > 0) {
+			this.floorLabelPlanes.add(...floorLabels)
+			this.scene.add(this.floorLabelPlanes)
+		}
+	}
+
+	private getRootNode(nodes: Node[]) {
+		return nodes.find(node => node.id === 0)
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
@@ -159,9 +193,15 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	selectBuilding(building: CodeMapBuilding) {
+		// TODO this check shouldn't be necessary. When investing into model we should investigate why and remove the need.
+		if (building.id !== this.selected?.id) {
+			this.storeService.dispatch(setSelectedBuildingId(building.id))
+		}
+
 		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
 		this.selected = building
 		this.highlightBuildings()
+
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
 		if (this.mapGeometry.children[0]) {
 			this.selectMaterial(this.mapGeometry.children[0]["material"])
@@ -252,6 +292,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private isOverlapping(a: Box3, b: Box3, dimension: string) {
 		return Number(a.max[dimension] >= b.min[dimension] && b.max[dimension] >= a.min[dimension])
 	}
+
 	private getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
 		normedVector.multiplyScalar(distance)
 		bboxHoveredLabel.translate(normedVector)
@@ -341,6 +382,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
+			this.storeService.dispatch(setSelectedBuildingId(null))
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
 		if (this.highlighted.length > 0) {
@@ -365,9 +407,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.lights.add(light2)
 	}
 
-	setMapMesh(mesh: CodeMapMesh) {
+	setMapMesh(nodes: Node[], mesh: CodeMapMesh) {
 		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
+
+		this.initFloorLabels(nodes)
 
 		// Reset children
 		this.mapGeometry.children.length = 0
