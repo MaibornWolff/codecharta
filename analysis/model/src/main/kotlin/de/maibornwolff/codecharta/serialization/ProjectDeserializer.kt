@@ -19,7 +19,7 @@ object ProjectDeserializer {
         .create()
 
     fun deserializeProject(reader: Reader): Project {
-        return GSON.fromJson(reader, Project::class.java)
+        return (GSON.fromJson(reader, ProjectWrapper::class.java)).data
     }
 
     fun deserializeProject(projectString: String): Project {
