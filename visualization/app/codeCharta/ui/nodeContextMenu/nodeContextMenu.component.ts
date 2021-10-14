@@ -39,12 +39,16 @@ export class NodeContextMenuController
 		markingColors: string[]
 		nodePath: string
 		lastPartOfNodePath: string
+		isNodeFocused: boolean
+		isParentFocused: boolean
 	} = {
 		codeMapNode: null,
 		showNodeContextMenu: false,
 		markingColors: null,
 		nodePath: "",
-		lastPartOfNodePath: ""
+		lastPartOfNodePath: "",
+		isNodeFocused: false,
+		isParentFocused: false
 	}
 
 	constructor(
@@ -79,6 +83,12 @@ export class NodeContextMenuController
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		this._viewModel.nodePath = path
 		this._viewModel.lastPartOfNodePath = `${path.lastIndexOf("/") === 0 ? "" : "..."}${path.slice(path.lastIndexOf("/"))}`
+
+		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
+		this._viewModel.isNodeFocused = this._viewModel.nodePath === focusedNodePath
+		this._viewModel.isParentFocused =
+			this._viewModel.nodePath.startsWith(focusedNodePath) && this._viewModel.nodePath !== focusedNodePath
+
 		this._viewModel.showNodeContextMenu = true
 
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
