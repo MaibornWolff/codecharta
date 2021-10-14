@@ -188,6 +188,23 @@ describe("nodeContextMenuController", () => {
 			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(nodePath)
 			expect(nodeContextMenuController["_viewModel"].lastPartOfNodePath).toBe(`...${nodePath.slice(nodePath.lastIndexOf("/"))}`)
 		})
+
+		it("should set if the node is focused or it's parent is focuesd", () => {
+			storeService.dispatch(focusNode("/root/big leaf"))
+			nodeContextMenuController.onShowNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
+			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(true)
+			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(false)
+
+			storeService.dispatch(focusNode("/root"))
+			nodeContextMenuController.onShowNodeContextMenu("/root/ParentLeaf/smallLeaf", NodeType.FILE, 521, 588)
+			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
+			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(false)
+
+			storeService.dispatch(focusNode("/root/ParentLeaf"))
+			nodeContextMenuController.onShowNodeContextMenu("/root/ParentLeaf/smallLeaf", NodeType.FOLDER, 521, 588)
+			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
+			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(true)
+		})
 	})
 
 	describe("calculatePosition", () => {

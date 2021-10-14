@@ -9,11 +9,6 @@ import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store
 import { FocusedNodePathService, FocusNodeSubscriber } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 
 export class UnfocusButtonController implements IsLoadingFileSubscriber, FocusNodeSubscriber {
-	onFocusNode(focusedNodePath: string) {
-		if (focusedNodePath && !this._viewModel.focusedNodes.includes(focusedNodePath)) {
-			this._viewModel.focusedNodes.push(focusedNodePath)
-		}
-	}
 	private _viewModel: {
 		isLoadingFile: boolean
 		isNodeFocused: boolean
@@ -35,6 +30,12 @@ export class UnfocusButtonController implements IsLoadingFileSubscriber, FocusNo
 		"ngInject"
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
+	}
+
+	onFocusNode(focusedNodePath: string) {
+		if (focusedNodePath && !this._viewModel.focusedNodes.includes(focusedNodePath)) {
+			this._viewModel.focusedNodes.push(focusedNodePath)
+		}
 	}
 
 	removeFocusedNode(removeAll = false) {
