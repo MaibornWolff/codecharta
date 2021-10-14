@@ -56,42 +56,6 @@ describe("UnfocusButtonController", () => {
 		})
 	})
 
-	// describe("onBuildingRightClicked", () => {
-	// 	it("should show the unfocus button when the focusedNodePath equals the right-clicked-buildings path", () => {
-	// 		storeService.dispatch(focusNode(TEST_DELTA_MAP_A.map.children[0].path))
-	// 		CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[0].id
-	// 		CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[0].path
-	//
-	// 		unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
-	//
-	// 		expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeTruthy()
-	// 		expect(unfocusButtonController["_viewModel"].isParentFocused).toBeFalsy()
-	// 	})
-	//
-	// 	it("should show the unfocus parent button when right-clicking a child of the focused node", () => {
-	// 		storeService.dispatch(focusNode(TEST_DELTA_MAP_A.map.children[1].path))
-	// 		CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].children[0].id
-	// 		CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[1].children[0].path
-	//
-	// 		unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
-	//
-	// 		expect(unfocusButtonController["_viewModel"].isParentFocused).toBeTruthy()
-	// 		expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeFalsy()
-	// 	})
-	//
-	// 	it("should update focusedNodes if new node became focused", () => {
-	// 		unfocusButtonController["_viewModel"].focusedNodes = ["/root"]
-	// 		CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].children[0].id
-	// 		CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[1].children[0].path
-	//
-	// 		storeService.dispatch(focusNode("/root/app"))
-	//
-	// 		unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
-	//
-	// 		expect(unfocusButtonController["_viewModel"].focusedNodes).toEqual(["/root", "/root/app"])
-	// 	})
-	// })
-
 	describe("removeFocusedNode", () => {
 		it("should apply previous focusedNodePath in storeService", () => {
 			unfocusButtonController["_viewModel"].focusedNodes = ["/root", "/root/app"]
