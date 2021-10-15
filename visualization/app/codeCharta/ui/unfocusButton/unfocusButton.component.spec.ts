@@ -54,6 +54,14 @@ describe("UnfocusButtonController", () => {
 			unfocusButtonController.onFocusNode("/root/app")
 			expect(unfocusButtonController["_viewModel"].focusedNodes.length).toBeGreaterThan(0)
 		})
+		it("should not add the node to focusedNodes", function () {
+			unfocusButtonController.onFocusNode("/root/app")
+			unfocusButtonController.onFocusNode("/root/app")
+			expect(unfocusButtonController["_viewModel"].focusedNodes.length).toBe(1)
+
+			unfocusButtonController.onFocusNode("")
+			expect(unfocusButtonController["_viewModel"].focusedNodes.length).toBe(1)
+		})
 	})
 
 	describe("removeFocusedNode", () => {

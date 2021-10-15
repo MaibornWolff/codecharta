@@ -87,9 +87,8 @@ export class NodeContextMenuController
 		this._viewModel.lastPartOfNodePath = `${path.lastIndexOf("/") === 0 ? "" : "..."}${path.slice(path.lastIndexOf("/"))}`
 
 		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
-		this._viewModel.isNodeFocused = this._viewModel.nodePath === focusedNodePath
-		this._viewModel.isParentFocused =
-			this._viewModel.nodePath.startsWith(focusedNodePath) && this._viewModel.nodePath !== focusedNodePath
+		this._viewModel.isNodeFocused = path === focusedNodePath
+		this._viewModel.isParentFocused = path.startsWith(focusedNodePath) && path !== focusedNodePath
 
 		this._viewModel.showNodeContextMenu = true
 
