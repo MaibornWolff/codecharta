@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix unfocus button text not showing correctly ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439)) <br>
-    <img src="https://user-images.githubusercontent.com/48621967/137315736-2ef64fa5-5c8a-43b3-9260-997482501082.png" width="350px" alt="unfocus button text not showing"/>
+-   Fix unfocus button text not showing correctly ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
 
 ## [1.81.0] - 2021-10-11
 
