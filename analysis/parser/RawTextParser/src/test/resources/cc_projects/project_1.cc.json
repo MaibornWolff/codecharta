@@ -1,44 +1,47 @@
 {
-  "projectName": "",
-  "apiVersion": "1.2",
-  "nodes": [
-    {
-      "name": "root",
-      "type": "Folder",
-      "attributes": {},
-      "link": "",
-      "children": [
-        {
-          "name": "bar",
-          "type": "Folder",
-          "attributes": {},
-          "link": "",
-          "children": [
-            {
-              "name": "FooBar.java",
-              "type": "File",
-              "attributes": {
-                "foo": 0,
-                "bar": 18
-              },
-              "link": "",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "foo.java",
-          "type": "File",
-          "attributes": {
-            "barx": 42
-          },
-          "link": "",
-          "children": []
-        }
-      ]
-    }
-  ],
-  "edges": [],
-  "attributeTypes": {},
-  "blacklist": []
+	"checksum": "4a3d53e55ff9040ac2fe4a0b5d770563",
+	"data": {
+		"projectName": "",
+		"apiVersion": "1.2",
+		"nodes": [
+			{
+				"name": "root",
+				"type": "Folder",
+				"attributes": {},
+				"link": "",
+				"children": [
+					{
+						"name": "bar",
+						"type": "Folder",
+						"attributes": {},
+						"link": "",
+						"children": [
+							{
+								"name": "FooBar.java",
+								"type": "File",
+								"attributes": {
+									"foo": 0,
+									"bar": 18
+								},
+								"link": "",
+								"children": []
+							}
+						]
+					},
+					{
+						"name": "foo.java",
+						"type": "File",
+						"attributes": {
+							"barx": 42
+						},
+						"link": "",
+						"children": []
+					}
+				]
+			}
+		],
+		"edges": [],
+		"attributeTypes": {},
+		"blacklist": []
+	}
 }

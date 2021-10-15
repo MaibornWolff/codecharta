@@ -1,37 +1,40 @@
 {
-  "nodes": [
-    {
-      "children": [
-        {
-          "children": [],
-          "name": "foo.java",
-          "link": "",
-          "attributes": {
-            "rloc": 3,
-            "mcc": 2
-          },
-          "type": "File"
-        },
-        {
-          "children": [],
-          "name": "bar.kt",
-          "link": "",
-          "attributes": {
-            "rloc": 4,
-            "mcc": 1
-          },
-          "type": "File"
-        }
-      ],
-      "name": "root",
-      "link": "",
-      "attributes": {},
-      "type": "Folder"
-    }
-  ],
-  "apiVersion": "1.2",
-  "attributeTypes": {},
-  "edges": [],
-  "blacklist": [],
-  "projectName": ""
+	"data": {
+		"nodes": [
+			{
+				"children": [
+					{
+						"children": [],
+						"name": "foo.java",
+						"link": "",
+						"attributes": {
+							"rloc": 3,
+							"mcc": 2
+						},
+						"type": "File"
+					},
+					{
+						"children": [],
+						"name": "bar.kt",
+						"link": "",
+						"attributes": {
+							"rloc": 4,
+							"mcc": 1
+						},
+						"type": "File"
+					}
+				],
+				"name": "root",
+				"link": "",
+				"attributes": {},
+				"type": "Folder"
+			}
+		],
+		"apiVersion": "1.2",
+		"attributeTypes": {},
+		"edges": [],
+		"blacklist": [],
+		"projectName": ""
+	},
+	"checksum": "b17be41293b44b8ee0997d0ee2ba4b69"
 }

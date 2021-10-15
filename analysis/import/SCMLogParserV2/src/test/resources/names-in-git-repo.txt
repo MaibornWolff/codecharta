@@ -377,7 +377,7 @@ analysis/parser/RawTextParser/src/main/kotlin/de/maibornwolff/codecharta/parser/
 analysis/parser/RawTextParser/src/main/kotlin/de/maibornwolff/codecharta/parser/rawtextparser/model/BoolIntConversion.kt
 analysis/parser/RawTextParser/src/main/kotlin/de/maibornwolff/codecharta/parser/rawtextparser/model/FileMetrics.kt
 analysis/parser/RawTextParser/src/test/kotlin/de/maibornwolff/codecharta/indentationlevelparser/MetricCollectorTest.kt
-analysis/parser/RawTextParser/src/test/kotlin/de/maibornwolff/codecharta/indentationlevelparser/ProjectGeneratorTest.kt
+analysis/parser/RawTextParser/src/test/kotlin/de/maibornwolff/codecharta/indentationlevelparser/ProjectGeneratorTestProjectGeneratorTest.kt
 analysis/parser/RawTextParser/src/test/kotlin/de/maibornwolff/codecharta/indentationlevelparser/RawTextParserTest.kt
 analysis/parser/RawTextParser/src/test/kotlin/de/maibornwolff/codecharta/indentationlevelparser/metrics/IndentationCounterTest.kt
 analysis/parser/RawTextParser/src/test/kotlin/de/maibornwolff/codecharta/indentationlevelparser/metrics/MetricsFactoryTest.kt
