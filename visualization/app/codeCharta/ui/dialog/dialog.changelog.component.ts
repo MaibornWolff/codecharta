@@ -21,10 +21,8 @@ export class DialogChangelogController {
 		let changelogLines = markdownFile.split("\n")
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
 		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.lastOpenedVersion)
-		const lastOpenedVersionLastLine = this.findEndVersionLine(changelogLines, lastOpenedVersionFirstLine)
 
-		changelogLines = changelogLines.slice(currentVersionFirstLine, lastOpenedVersionLastLine)
-
+		changelogLines = changelogLines.slice(currentVersionFirstLine, lastOpenedVersionFirstLine + 1)
 		const titles = ["Added 🚀", "Fixed 🐞", "Changed", "Removed 🗑", "Chore 👨‍💻 👩‍💻"]
 		const changes = {}
 		for (const title of titles) {
@@ -61,11 +59,7 @@ export class DialogChangelogController {
 	}
 
 	private findEndChangesLine(lines: string[], startLine: number): number {
-		return startLine + lines.slice(startLine + 1).findIndex(element => /<h3>/.test(element))
-	}
-
-	private findEndVersionLine(lines: string[], versionLine: number): number {
-		return versionLine + lines.slice(versionLine + 1).findIndex(element => /<h2>/.test(element))
+		return startLine + lines.slice(startLine + 1).findIndex(element => /<h3>/.test(element) || /<h2>/.test(element))
 	}
 }
 
