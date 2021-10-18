@@ -4,10 +4,10 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { CODE_MAP_BUILDING, DEFAULT_STATE, TEST_DELTA_MAP_A } from "../../util/dataMocks"
+import { DEFAULT_STATE, TEST_DELTA_MAP_A } from "../../util/dataMocks"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
-import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
+import { FocusedNodePathService } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 
 describe("UnfocusButtonController", () => {
 	let unfocusButtonController: UnfocusButtonController
@@ -40,48 +40,27 @@ describe("UnfocusButtonController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to building-right-clicked-event", () => {
-			CodeMapMouseEventService.subscribeToBuildingRightClickedEvents = jest.fn()
+		it("should subscribe to focus node", () => {
+			FocusedNodePathService.subscribeToFocusNode = jest.fn()
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith($rootScope, unfocusButtonController)
+			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, unfocusButtonController)
 		})
 	})
 
-	describe("onBuildingRightClicked", () => {
-		it("should show the unfocus button when the focusedNodePath equals the right-clicked-buildings path", () => {
-			storeService.dispatch(focusNode(TEST_DELTA_MAP_A.map.children[0].path))
-			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[0].id
-			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[0].path
-
-			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
-
-			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeTruthy()
-			expect(unfocusButtonController["_viewModel"].isParentFocused).toBeFalsy()
+	describe("on focus node", () => {
+		it("should add the node to focusedNodes", function () {
+			unfocusButtonController.onFocusNode("/root/app")
+			expect(unfocusButtonController["_viewModel"].focusedNodes.length).toBeGreaterThan(0)
 		})
+		it("should not add the node to focusedNodes", function () {
+			unfocusButtonController.onFocusNode("/root/app")
+			unfocusButtonController.onFocusNode("/root/app")
+			expect(unfocusButtonController["_viewModel"].focusedNodes.length).toBe(1)
 
-		it("should show the unfocus parent button when right-clicking a child of the focused node", () => {
-			storeService.dispatch(focusNode(TEST_DELTA_MAP_A.map.children[1].path))
-			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].children[0].id
-			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[1].children[0].path
-
-			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
-
-			expect(unfocusButtonController["_viewModel"].isParentFocused).toBeTruthy()
-			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeFalsy()
-		})
-
-		it("should update focusedNodes if new node became focused", () => {
-			unfocusButtonController["_viewModel"].focusedNodes = ["/root"]
-			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].children[0].id
-			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[1].children[0].path
-
-			storeService.dispatch(focusNode("/root/app"))
-
-			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
-
-			expect(unfocusButtonController["_viewModel"].focusedNodes).toEqual(["/root", "/root/app"])
+			unfocusButtonController.onFocusNode("")
+			expect(unfocusButtonController["_viewModel"].focusedNodes.length).toBe(1)
 		})
 	})
 

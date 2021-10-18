@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix unfocus button text not showing correctly ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
+
 ## [1.81.0] - 2021-10-11
 
 ### Fixed 🐞
