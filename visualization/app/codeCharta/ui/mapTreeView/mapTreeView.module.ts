@@ -1,15 +1,27 @@
-import angular from "angular"
-import "../../state/state.module"
-import "../codeMap/codeMap.module"
-import "../../codeCharta.module"
+import { CommonModule } from "@angular/common"
+import { NgModule } from "@angular/core"
 
-import "./mapTreeView.component.scss"
-
-import { mapTreeViewComponent } from "./mapTreeView.component"
-import { downgradeComponent } from "@angular/upgrade/static"
+import { IsNodeLeafPipe } from "./isNodeLeaf.pipe"
+import { MapTreeViewComponent } from "./mapTreeView.component"
+import { MapTreeViewItemIcon } from "./mapTreeViewItemIcon/mapTreeViewItemIcon.component"
+import { MapTreeViewItemIconClassPipe } from "./mapTreeViewItemIcon/mapTreeViewItemIconClass.pipe"
+import { MapTreeViewItemIconColorPipe } from "./mapTreeViewItemIcon/mapTreeViewItemIconColor.pipe"
+import { MapTreeViewItemName } from "./mapTreeViewItemName/mapTreeViewItemName.component"
+import { MapTreeViewItemOptionButtons } from "./mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
 import { MapTreeViewLevel } from "./mapTreeViewLevel/mapTreeViewLevel.component"
 
-angular
-	.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.state", "app.codeCharta.ui.codeMap", "app.codeCharta"])
-	.component(mapTreeViewComponent.selector, mapTreeViewComponent)
-	.directive("ccMapTreeViewLevel", downgradeComponent({ component: MapTreeViewLevel }))
+@NgModule({
+	imports: [CommonModule],
+	declarations: [
+		MapTreeViewItemIcon,
+		MapTreeViewItemName,
+		MapTreeViewItemOptionButtons,
+		MapTreeViewLevel,
+		MapTreeViewComponent,
+		IsNodeLeafPipe,
+		MapTreeViewItemIconClassPipe,
+		MapTreeViewItemIconColorPipe
+	],
+	exports: [MapTreeViewComponent]
+})
+export class MapTreeViewModule {}
