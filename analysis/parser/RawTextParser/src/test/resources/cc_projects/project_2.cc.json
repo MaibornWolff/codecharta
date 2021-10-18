@@ -2,7 +2,7 @@
 	"checksum": "4267757e6d104c13dc45d5b85d59af86",
 	"data": {
 		"projectName": "",
-		"apiVersion": "1.2",
+		"apiVersion": "1.3",
 		"nodes": [
 			{
 				"name": "root",
