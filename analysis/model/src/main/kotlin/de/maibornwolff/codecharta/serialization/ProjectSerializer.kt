@@ -43,11 +43,9 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer) {
-        val projectJsonString = GSON.toJson(project, Project::class.java)
-        // TODO we must improve this
-        val wrapper = ProjectWrapper(project, projectJsonString.toString())
+        val wrappedProject = wrapProject(project)
 
-        GSON.toJson(wrapper, out)
+        GSON.toJson(wrappedProject, out)
 
         out.flush()
         out.close()
@@ -61,7 +59,8 @@ object ProjectSerializer {
      */
 
     fun serializeAsCompressedFile(project: Project, absolutePath: String) {
-        val jsonFile: String = GSON.toJson(project, Project::class.java)
+        val wrappedProject = wrapProject(project)
+        val jsonFile: String = GSON.toJson(wrappedProject, ProjectWrapper::class.java)
         File("$absolutePath.gz").writeBytes(compress(jsonFile))
     }
 
@@ -74,6 +73,12 @@ object ProjectSerializer {
         val byteStream = ByteArrayOutputStream()
         GZIPOutputStream(byteStream).bufferedWriter(UTF_8).use { it.write(toCompress) }
         return byteStream.toByteArray()
+    }
+
+    private fun wrapProject(project: Project): ProjectWrapper {
+        val projectJsonString = GSON.toJson(project, Project::class.java)
+        // TODO we must improve this
+        return ProjectWrapper(project, projectJsonString.toString())
     }
 
     /**
