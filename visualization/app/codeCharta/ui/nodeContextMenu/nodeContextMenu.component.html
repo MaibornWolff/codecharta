@@ -28,7 +28,11 @@
 			title="Only show selected nodes with children-nodes"
 			><i class="fa fa-bullseye"></i> Focus</md-button
 		>
-		<unfocus-button-component ng-show="$ctrl.isNodeOrParentFocused()"></unfocus-button-component>
+		<unfocus-button-component
+			is-node-focused="$ctrl._viewModel.isNodeFocused"
+			is-parent-focused="$ctrl._viewModel.isParentFocused"
+			ng-show="$ctrl.isNodeOrParentFocused()"
+		></unfocus-button-component>
 		<md-button
 			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
 			ng-click="$ctrl.flattenNode()"
