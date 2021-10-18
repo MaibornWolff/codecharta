@@ -2,12 +2,11 @@ import "./unfocusButton.component.scss"
 import { IRootScopeService } from "angular"
 import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { StoreService } from "../../state/store.service"
-import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import { FocusedNodePathService, FocusNodeSubscriber } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 
-export class UnfocusButtonController implements BuildingRightClickedEventSubscriber, IsLoadingFileSubscriber {
+export class UnfocusButtonController implements IsLoadingFileSubscriber, FocusNodeSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isNodeFocused: boolean
@@ -20,20 +19,21 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 		focusedNodes: []
 	}
 
+	// @ts-ignore
+	private isNodeFocused: boolean
+	// @ts-ignore
+	private isParentFocused: boolean
+
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
-		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
+		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 	}
 
-	onBuildingRightClicked(building: CodeMapBuilding) {
-		const codeMapNode = this.storeService.getState().lookUp.idToNode.get(building.node.id)
-		const { focusedNodePath } = this.storeService.getState().dynamicSettings
+	onFocusNode(focusedNodePath: string) {
 		if (focusedNodePath && !this._viewModel.focusedNodes.includes(focusedNodePath)) {
 			this._viewModel.focusedNodes.push(focusedNodePath)
 		}
-		this._viewModel.isNodeFocused = codeMapNode.path === focusedNodePath
-		this._viewModel.isParentFocused = codeMapNode.path.startsWith(focusedNodePath) && codeMapNode.path !== focusedNodePath
 	}
 
 	removeFocusedNode(removeAll = false) {
@@ -57,5 +57,6 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 export const unfocusButtonComponent = {
 	selector: "unfocusButtonComponent",
 	template: require("./unfocusButton.component.html"),
-	controller: UnfocusButtonController
+	controller: UnfocusButtonController,
+	bindings: { isNodeFocused: "<", isParentFocused: "<" }
 }
