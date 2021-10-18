@@ -34,17 +34,13 @@ Following two questions arose from the start of the migration:
 
 # Status
 
-proposed
+accepted
 
 # Decision
-
-## Temporary Decision
 
 1. We move all global state into the store, to have one single place and only one mechanism for global state.
 2. We favor to migrate to NgRx.
 
-We will mob migrate `map-tree-view-level-component` on 27th September 2021 to challenge this temporary decision.
-
 # Consequences
 
--   All AngularJS components, services ect need to be migrated.
+-   All AngularJS components, services ect need to be migrated (see [#2318](https://github.com/MaibornWolff/codecharta/issues/2318) for progress).
