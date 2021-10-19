@@ -45,11 +45,6 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 	}
 
 	private updateViewModel() {
-		if (this._viewModel.searchPattern.length === 0) {
-			this._viewModel.fileCount = `${this.allNodes.length}`
-			this._viewModel.flattenCount = `${this.getBlacklistedFileCount(BlacklistType.flatten, this.allNodes)}`
-			this._viewModel.excludeCount = `${this.getBlacklistedFileCount(BlacklistType.exclude, this.allNodes)}`
-		}
 		this._viewModel.fileCount = `${this.searchedNodeLeaves.length}/${this.allNodes.length}`
 		this._viewModel.flattenCount = `${this.getBlacklistedFileCount(
 			BlacklistType.flatten,
