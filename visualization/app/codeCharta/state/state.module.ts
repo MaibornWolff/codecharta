@@ -36,7 +36,6 @@ import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
-import { SearchedNodePathsService } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
@@ -98,7 +97,6 @@ angular
 	.service(camelCase(ColorRangeService.name), ColorRangeService)
 	.service(camelCase(MarginService.name), MarginService)
 	.service(camelCase(SearchPatternService.name), SearchPatternService)
-	.service(camelCase(SearchedNodePathsService.name), SearchedNodePathsService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
 	.service(camelCase(HeightMetricService.name), HeightMetricService)
 	.service(camelCase(DistributionMetricService.name), DistributionMetricService)

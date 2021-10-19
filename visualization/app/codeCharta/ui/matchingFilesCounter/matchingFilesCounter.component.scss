@@ -1,9 +1,9 @@
-matching-files-counter-component {
+cc-matching-files-counter {
 	.node-count {
 		background: #eee;
 		color: black;
 		padding: 4px 8px;
-		margin-right: 4px;
+		margin-right: 8px;
 	}
 
 	.node-count i {
@@ -44,7 +44,6 @@ matching-files-counter-component {
 	.sort-component {
 		margin-right: 3px;
 		float: right;
-		display: flex;
 		color: black;
 	}
 }

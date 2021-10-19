@@ -38,7 +38,6 @@ import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
-import { SearchedNodePathsService } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
@@ -95,7 +94,6 @@ export class InjectorService {
 		private colorRangeService: ColorRangeService,
 		private marginService: MarginService,
 		private searchPatternService: SearchPatternService,
-		private searchedNodePathsService: SearchedNodePathsService,
 		private focusedNodePathService: FocusedNodePathService,
 		private heightMetricService: HeightMetricService,
 		private distributionMetricService: DistributionMetricService,
