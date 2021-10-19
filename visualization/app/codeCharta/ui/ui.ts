@@ -17,7 +17,6 @@ import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./centerMapButton/centerMapButton.module"
-import "./matchingFilesCounter/matchingFilesCounter.module"
 import "./searchPanel/searchPanel.module"
 import "./searchPanelModeSelector/searchPanelModeSelector.module"
 import "./searchBar/searchBar.module"
@@ -44,10 +43,11 @@ import "./viewCube/viewCube.module"
 import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
-import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { MetricDeltaSelectedComponent } from "./metricDeltaSelected/metricDeltaSelected.component"
 import { MapTreeViewComponent } from "./mapTreeView/mapTreeView.component"
 import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
+import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
+import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -67,7 +67,6 @@ angular
 		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.centerMapButton",
-		"app.codeCharta.ui.matchingFilesCounter",
 		"app.codeCharta.ui.searchPanel",
 		"app.codeCharta.ui.searchPanelModeSelector",
 		"app.codeCharta.ui.searchBar",
@@ -100,3 +99,4 @@ angular
 	.directive("ccSortingOption", downgradeComponent({ component: SortingOptionComponent }))
 	.directive("ccMetricDeltaSelected", downgradeComponent({ component: MetricDeltaSelectedComponent }))
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
+	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
