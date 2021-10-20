@@ -4,7 +4,7 @@ type CompareFunction = (a: CodeMapNode, b: CodeMapNode) => number
 
 const nameCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" })
 const sortByName: CompareFunction = (a, b) => nameCollator.compare(a.name, b.name)
-const sortByUnary: CompareFunction = (a, b) => b.attributes.unary - a.attributes.unary
+const sortByUnary: CompareFunction = (a, b) => a.attributes.unary - b.attributes.unary
 
 const getCompareFunction = (sortingOrder: SortingOption, sortingOrderAscending: boolean) => {
 	const compareFunction = sortingOrder === SortingOption.NUMBER_OF_FILES ? sortByUnary : sortByName

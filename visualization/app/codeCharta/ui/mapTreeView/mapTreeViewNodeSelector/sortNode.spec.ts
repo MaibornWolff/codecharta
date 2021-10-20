@@ -23,7 +23,7 @@ describe("sortNode", () => {
 
 	it("should sort by unary value, if sortingOption is set to SortingOption.NUMBER_OF_FILES", () => {
 		const node = klona(VALID_NODE_WITH_MULTIPLE_FOLDERS)
-		expect(sortNode(node, SortingOption.NUMBER_OF_FILES, true)).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY)
+		expect(sortNode(node, SortingOption.NUMBER_OF_FILES, false)).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY)
 	})
 
 	it("should sort according to name accounting for numbers", () => {
