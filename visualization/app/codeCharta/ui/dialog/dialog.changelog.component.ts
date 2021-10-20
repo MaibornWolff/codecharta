@@ -22,6 +22,7 @@ export class DialogChangelogController {
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
 		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.lastOpenedVersion)
 
+		//Add 1 to keep the version line so that it detects the end of the last set of changes
 		changelogLines = changelogLines.slice(currentVersionFirstLine, lastOpenedVersionFirstLine + 1)
 		const titles = ["Added 🚀", "Fixed 🐞", "Changed", "Removed 🗑", "Chore 👨‍💻 👩‍💻"]
 		const changes = {}
@@ -46,19 +47,19 @@ export class DialogChangelogController {
 		this.$mdDialog.hide()
 	}
 
-	private getAllIndexes(titles: string[], pattern: RegExp) {
+	getAllIndexes(titles: string[], pattern: RegExp) {
 		return titles.reduce((matchingTitleIndexes, title, index) => {
 			if (pattern.test(title)) matchingTitleIndexes.push(index)
 			return matchingTitleIndexes
 		}, [])
 	}
 
-	private findVersionLine(lines: string[], version: string): number {
+	findVersionLine(lines: string[], version: string): number {
 		const versionPattern = new RegExp(version.replace(".", "\\."))
 		return lines.findIndex(element => versionPattern.test(element))
 	}
 
-	private findEndChangesLine(lines: string[], startLine: number): number {
+	findEndChangesLine(lines: string[], startLine: number): number {
 		return startLine + lines.slice(startLine + 1).findIndex(element => /<h3>/.test(element) || /<h2>/.test(element))
 	}
 }
