@@ -5,7 +5,7 @@ import { setSearchedNodePaths } from "../../../state/store/dynamicSettings/searc
 import { Store } from "../../../state/store/store"
 
 import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu.component"
-import { MapTreeViewLevelModule } from "../mapTreeViewLevel.module"
+import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevel } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
 
@@ -24,7 +24,7 @@ describe("mapTreeViewLevel", () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MapTreeViewLevelModule]
+			imports: [MapTreeViewModule]
 		})
 
 		Store["initialize"]()

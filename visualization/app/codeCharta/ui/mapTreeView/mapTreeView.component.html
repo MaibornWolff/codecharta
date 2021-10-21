@@ -1,1 +1,1 @@
-<cc-map-tree-view-level ng-if="$ctrl._viewModel.rootNode" [node]="$ctrl._viewModel.rootNode" [depth]="0"></cc-map-tree-view-level>
+<cc-map-tree-view-level *ngIf="mapTreeViewNode$ | async as mapTreeViewNode" [node]="mapTreeViewNode" [depth]="0"></cc-map-tree-view-level>
