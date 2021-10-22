@@ -114,5 +114,53 @@ describe("fileChooserController", () => {
 			expect(fileChooserController["files"][3].fileSize).toBe(45)
 			expect(fileChooserController["files"][3].content.fileChecksum).toBe("44f0fdb79d97053b25dce38611c117f0")
 		})
+
+		it("should not generate md5-file-checksum if api version is 1.3 or higher", () => {
+			fileChooserController["files"] = []
+
+			const file0 = {
+				name: "valid.with.md5.checksum.cc.json",
+				size: 42
+			} as File
+
+			fileChooserController["addNameDataPair"](file0, '{"checksum": "valid-md5", "data": { "apiVersion": "1.3" }}', 0)
+
+			expect(fileChooserController["files"][0].content.fileChecksum).toBe("valid-md5")
+		})
+
+		it("should generate md5-file-checksum if api version is lower than 1.3", () => {
+			fileChooserController["files"] = []
+
+			const file0 = {
+				name: "lower.api.with.md5.checksum.cc.json",
+				size: 42
+			} as File
+
+			fileChooserController["addNameDataPair"](file0, '{"checksum": "valid-md5", "data": { "apiVersion": "1.2" }}', 0)
+
+			expect(fileChooserController["files"][0].content.fileChecksum).toBe("ae10445ef555b6e50583eb56d6b08ca7")
+		})
+
+		it("should generate md5-file-checksum if api version is 1.3 or higher and given checksum is empty", () => {
+			fileChooserController["files"] = []
+
+			const file0 = {
+				name: "with.empty.md5.checksum.cc.json",
+				size: 42
+			} as File
+
+			const file1 = {
+				name: "without.md5.checksum.cc.json",
+				size: 42
+			} as File
+
+			fileChooserController["addNameDataPair"](file0, '{"checksum": "", "data": { "apiVersion": "1.3" }}', 0)
+
+			expect(fileChooserController["files"][0].content.fileChecksum).toBe("633dac20227f1157d9091b66eb761fdc")
+
+			fileChooserController["addNameDataPair"](file1, '{ "data": { "apiVersion": "1.3" }}', 1)
+
+			expect(fileChooserController["files"][1].content.fileChecksum).toBe("a35dd32bd850841c47894ac9b8e1287a")
+		})
 	})
 })

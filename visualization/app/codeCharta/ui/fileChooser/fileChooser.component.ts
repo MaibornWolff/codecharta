@@ -75,7 +75,8 @@ export class FileChooserController {
 			if (regEx.test(jsonString)) {
 				const wrappedContent: ExportWrappedCCFile = JSON.parse(jsonString)
 				content = wrappedContent.data
-				content.fileChecksum = wrappedContent.checksum
+
+				content.fileChecksum = wrappedContent.checksum ? wrappedContent.checksum : md5(jsonString)
 			} else {
 				content = JSON.parse(jsonString)
 				if (!content.fileChecksum) {
