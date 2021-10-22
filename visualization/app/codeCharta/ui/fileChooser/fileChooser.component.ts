@@ -4,7 +4,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { ExportCCFile } from "../../codeCharta.api.model"
+import { ExportCCFile, ExportWrappedCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
@@ -67,13 +67,20 @@ export class FileChooserController {
 	}
 
 	private addNameDataPair(file: File, jsonString: string, index: number) {
+		//toDO: improve RegExp
+		const regEx = new RegExp(/"?apiVersion"?(\s+)?:(\s+)?"?1\.[3-9]"?/)
 		let content: ExportCCFile
 
 		try {
-			content = JSON.parse(jsonString)
-
-			if (!content.fileChecksum) {
-				content.fileChecksum = md5(jsonString)
+			if (regEx.test(jsonString)) {
+				const wrappedContent: ExportWrappedCCFile = JSON.parse(jsonString)
+				content = wrappedContent.data
+				content.fileChecksum = wrappedContent.checksum
+			} else {
+				content = JSON.parse(jsonString)
+				if (!content.fileChecksum) {
+					content.fileChecksum = md5(jsonString)
+				}
 			}
 		} catch {
 			// Explicitly ignored

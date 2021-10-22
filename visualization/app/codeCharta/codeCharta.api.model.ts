@@ -12,6 +12,11 @@ export interface ExportCCFile {
 	repoCreationDate?: string
 }
 
+export interface ExportWrappedCCFile {
+	checksum: string
+	data: ExportCCFile
+}
+
 export interface ExportBlacklistItem {
 	path: string
 	type: ExportBlacklistType
