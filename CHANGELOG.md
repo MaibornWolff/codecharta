@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix what's new section including the last opened version ([#2447](https://github.com/MaibornWolff/codecharta/pull/2453))
 -   Fix unfocus button text not showing correctly ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
 
 ### Changed
