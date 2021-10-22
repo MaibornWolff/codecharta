@@ -7,10 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.82.0] - 2021-10-18
+
 ### Fixed 🐞
 
 -   Fix what's new section including the last opened version ([#2447](https://github.com/MaibornWolff/codecharta/pull/2453))
 -   Fix unfocus button text not showing correctly ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
+
+### Changed
+
+-   Folders in the Folder structure view of the top left come now always before any files, regardless of the sort order.
 
 ## [1.81.0] - 2021-10-11
 
