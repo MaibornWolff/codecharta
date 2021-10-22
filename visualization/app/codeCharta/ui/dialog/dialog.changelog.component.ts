@@ -47,19 +47,19 @@ export class DialogChangelogController {
 		this.$mdDialog.hide()
 	}
 
-	getAllIndexes(titles: string[], pattern: RegExp) {
+	private getAllIndexes(titles: string[], pattern: RegExp) {
 		return titles.reduce((matchingTitleIndexes, title, index) => {
 			if (pattern.test(title)) matchingTitleIndexes.push(index)
 			return matchingTitleIndexes
 		}, [])
 	}
 
-	findVersionLine(lines: string[], version: string): number {
+	private findVersionLine(lines: string[], version: string): number {
 		const versionPattern = new RegExp(version.replace(".", "\\."))
 		return lines.findIndex(element => versionPattern.test(element))
 	}
 
-	findEndChangesLine(lines: string[], startLine: number): number {
+	private findEndChangesLine(lines: string[], startLine: number): number {
 		return startLine + lines.slice(startLine + 1).findIndex(element => /<h3>/.test(element) || /<h2>/.test(element))
 	}
 }
