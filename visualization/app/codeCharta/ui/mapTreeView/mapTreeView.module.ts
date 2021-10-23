@@ -3,20 +3,20 @@ import { NgModule } from "@angular/core"
 
 import { IsNodeLeafPipe } from "./isNodeLeaf.pipe"
 import { MapTreeViewComponent } from "./mapTreeView.component"
-import { MapTreeViewItemIcon } from "./mapTreeViewItemIcon/mapTreeViewItemIcon.component"
+import { MapTreeViewItemIconComponent } from "./mapTreeViewItemIcon/mapTreeViewItemIcon.component"
 import { MapTreeViewItemIconClassPipe } from "./mapTreeViewItemIcon/mapTreeViewItemIconClass.pipe"
 import { MapTreeViewItemIconColorPipe } from "./mapTreeViewItemIcon/mapTreeViewItemIconColor.pipe"
-import { MapTreeViewItemName } from "./mapTreeViewItemName/mapTreeViewItemName.component"
-import { MapTreeViewItemOptionButtons } from "./mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
-import { MapTreeViewLevel } from "./mapTreeViewLevel/mapTreeViewLevel.component"
+import { MapTreeViewItemNameComponent } from "./mapTreeViewItemName/mapTreeViewItemName.component"
+import { MapTreeViewItemOptionButtonsComponent } from "./mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
+import { MapTreeViewLevelComponent } from "./mapTreeViewLevel/mapTreeViewLevel.component"
 
 @NgModule({
 	imports: [CommonModule],
 	declarations: [
-		MapTreeViewItemIcon,
-		MapTreeViewItemName,
-		MapTreeViewItemOptionButtons,
-		MapTreeViewLevel,
+		MapTreeViewItemIconComponent,
+		MapTreeViewItemNameComponent,
+		MapTreeViewItemOptionButtonsComponent,
+		MapTreeViewLevelComponent,
 		MapTreeViewComponent,
 		IsNodeLeafPipe,
 		MapTreeViewItemIconClassPipe,

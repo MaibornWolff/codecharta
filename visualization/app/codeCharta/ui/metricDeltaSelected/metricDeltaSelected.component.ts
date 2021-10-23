@@ -2,7 +2,7 @@ import { Component, Inject, Input, OnInit } from "@angular/core"
 import { Observable } from "rxjs"
 import { MapColors } from "../../codeCharta.model"
 import { Store } from "../../state/angular-redux/store"
-import { selectedBuildingSelector } from "../../state/selectors/selectedBuildingSelector"
+import { selectedBuildingSelector } from "../../state/selectors/selectedBuilding.selector"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 

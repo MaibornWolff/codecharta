@@ -3,13 +3,13 @@ import { Observable } from "rxjs"
 
 import { CodeMapNode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
-import { rootUnarySelector } from "../../../state/selectors/accumulatedData/rootUnarySelector"
+import { rootUnarySelector } from "../../../state/selectors/accumulatedData/rootUnary.selector"
 
 @Component({
 	selector: "cc-map-tree-view-item-name",
 	template: require("./mapTreeViewItemName.component.html")
 })
-export class MapTreeViewItemName {
+export class MapTreeViewItemNameComponent {
 	@Input() node: CodeMapNode
 	@Input() isHovered: boolean
 	@Input() unaryValue: number
