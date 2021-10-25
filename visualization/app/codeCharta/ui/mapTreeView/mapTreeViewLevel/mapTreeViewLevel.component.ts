@@ -11,7 +11,7 @@ import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu
 	selector: "cc-map-tree-view-level",
 	template: require("./mapTreeViewLevel.component.html")
 })
-export class MapTreeViewLevel implements OnInit {
+export class MapTreeViewLevelComponent implements OnInit {
 	@Input() node: CodeMapNode
 	@Input() depth: number
 

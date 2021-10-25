@@ -5,7 +5,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 	selector: "cc-map-tree-view-item-icon",
 	template: require("./mapTreeViewItemIcon.component.html")
 })
-export class MapTreeViewItemIcon {
+export class MapTreeViewItemIconComponent {
 	@Input() node: CodeMapNode
 	@Input() isOpen: boolean
 }
