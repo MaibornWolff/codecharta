@@ -5,8 +5,8 @@ import { setSearchedNodePaths } from "../../../state/store/dynamicSettings/searc
 import { Store } from "../../../state/store/store"
 
 import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu.component"
-import { MapTreeViewLevelModule } from "../mapTreeViewLevel.module"
-import { MapTreeViewLevel } from "./mapTreeViewLevel.component"
+import { MapTreeViewModule } from "../mapTreeView.module"
+import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
 
 jest.mock("../../nodeContextMenu/nodeContextMenu.component", () => ({
@@ -24,14 +24,14 @@ describe("mapTreeViewLevel", () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MapTreeViewLevelModule]
+			imports: [MapTreeViewModule]
 		})
 
 		Store["initialize"]()
 	})
 
 	it("should show root and first level folder and files initially", async () => {
-		const { container } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
 
 		expect(container.getElementsByClassName("tree-element-0").length).toBe(1)
 		expect(screen.getByText("root")).toBeTruthy()
@@ -47,7 +47,7 @@ describe("mapTreeViewLevel", () => {
 	})
 
 	it("should render first level folder closed initially and open it on click", async () => {
-		const { container } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
 		expect(firstLevelFolder).toBeTruthy()
@@ -60,7 +60,7 @@ describe("mapTreeViewLevel", () => {
 	})
 
 	it("should display option buttons on hover", async () => {
-		const { container } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy()
@@ -73,7 +73,7 @@ describe("mapTreeViewLevel", () => {
 	it("should open nodeContextMenu when options button clicked and be marked afterwards", async () => {
 		const nodeContextMenuSpy = jest.spyOn(NodeContextMenuController, "broadcastShowEvent")
 
-		const { container } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
 		userEvent.hover(firstLevelFolder)
@@ -90,7 +90,7 @@ describe("mapTreeViewLevel", () => {
 	})
 
 	it("should display root unary percentage for folders and toggle to total unary on hover", async () => {
-		const { container } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
 		const showsPercentage = firstLevelFolder.textContent.includes("%")
@@ -103,7 +103,10 @@ describe("mapTreeViewLevel", () => {
 	})
 
 	it("should make searched items 'angular-green'", async () => {
-		const { container, detectChanges } = await render(MapTreeViewLevel, { componentProperties, excludeComponentDeclaration: true })
+		const { container, detectChanges } = await render(MapTreeViewLevelComponent, {
+			componentProperties,
+			excludeComponentDeclaration: true
+		})
 
 		Store.store.dispatch(setSearchedNodePaths(new Set(["/root/bigLeaf"])))
 		detectChanges()

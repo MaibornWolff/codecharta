@@ -1,3 +1,5 @@
-<span class="metric-delta" ng-show="$ctrl._viewModel.deltaValue" ng-style="$ctrl._viewModel.style">
-	&Delta;{{ $ctrl._viewModel.deltaValue | number: 0 }}
-</span>
+<ng-container *ngIf="(selectedBuilding$ | async )?.node.deltas?.[attributeKey] as deltaValue">
+	<span [style.color]="(mapColors$ | async)[deltaValue > 0 ? 'positiveDelta' : 'negativeDelta']" class="metric-delta">
+		&Delta;{{ deltaValue }}
+	</span>
+</ng-container>
