@@ -67,21 +67,18 @@ export class FileChooserController {
 	}
 
 	private addNameDataPair(file: File, jsonString: string, index: number) {
-		//toDO: improve RegExp
-		const regEx = new RegExp(/"?apiVersion"?(\s+)?:(\s+)?"?1\.[3-9]"?/)
 		let content: ExportCCFile
 
-		try {
-			if (regEx.test(jsonString)) {
-				const wrappedContent: ExportWrappedCCFile = JSON.parse(jsonString)
-				content = wrappedContent.data
+		const fileContent = JSON.parse(jsonString) as ExportWrappedCCFile | ExportCCFile
 
-				content.fileChecksum = wrappedContent.checksum ? wrappedContent.checksum : md5(jsonString)
-			} else {
-				content = JSON.parse(jsonString)
-				if (!content.fileChecksum) {
-					content.fileChecksum = md5(jsonString)
-				}
+		try {
+			if ("data" in fileContent && "checksum" in fileContent) {
+				content = fileContent.data
+
+				content.fileChecksum = fileContent.checksum ? fileContent.checksum : md5(jsonString)
+			} else if (!fileContent.fileChecksum) {
+				fileContent.fileChecksum = md5(jsonString)
+				content = fileContent
 			}
 		} catch {
 			// Explicitly ignored
