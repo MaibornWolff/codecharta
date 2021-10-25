@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Calculate MD5 checksum when generating .cc.json files ([#2411](https://github.com/MaibornWolff/codecharta/pull/2450))
+
 ## [1.82.0] - 2021-10-18
 
 ### Fixed 🐞
