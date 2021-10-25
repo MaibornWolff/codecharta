@@ -69,15 +69,17 @@ export class FileChooserController {
 	private addNameDataPair(file: File, jsonString: string, index: number) {
 		let content: ExportCCFile
 
-		const fileContent = JSON.parse(jsonString) as ExportWrappedCCFile | ExportCCFile
-
 		try {
+			const fileContent = JSON.parse(jsonString) as ExportWrappedCCFile | ExportCCFile
+
 			if ("data" in fileContent && "checksum" in fileContent) {
 				content = fileContent.data
 
 				content.fileChecksum = fileContent.checksum ? fileContent.checksum : md5(jsonString)
-			} else if (!fileContent.fileChecksum) {
-				fileContent.fileChecksum = md5(jsonString)
+			} else {
+				if (!fileContent.fileChecksum) {
+					fileContent.fileChecksum = md5(jsonString)
+				}
 				content = fileContent
 			}
 		} catch {

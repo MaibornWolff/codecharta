@@ -128,7 +128,7 @@ describe("fileChooserController", () => {
 			expect(fileChooserController["files"][0].content.fileChecksum).toBe("valid-md5")
 		})
 
-		it("should generate md5-file-checksum if api version is lower than 1.3", () => {
+		it("should not generate md5-file-checksum, if new api version features are present, but apiVersion is lower", () => {
 			fileChooserController["files"] = []
 
 			const file0 = {
@@ -138,7 +138,7 @@ describe("fileChooserController", () => {
 
 			fileChooserController["addNameDataPair"](file0, '{"checksum": "valid-md5", "data": { "apiVersion": "1.2" }}', 0)
 
-			expect(fileChooserController["files"][0].content.fileChecksum).toBe("ae10445ef555b6e50583eb56d6b08ca7")
+			expect(fileChooserController["files"][0].content.fileChecksum).toBe("valid-md5")
 		})
 
 		it("should generate md5-file-checksum if api version is 1.3 or higher and given checksum is empty", () => {
