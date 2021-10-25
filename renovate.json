@@ -1,5 +1,5 @@
 {
-	"extends": ["config:base", "group:all"],
+	"extends": ["config:base", "group:all", ":preserveSemverRanges"],
 	"packageRules": [
 		{
 			"matchManagers": ["gradle"],
@@ -12,6 +12,9 @@
 			"matchPaths": ["package.json"],
 			"groupName": "npm dependencies update",
 			"enabled": true
+		},
+		{
+			"matchUpdateTypes": ["minor"]
 		}
 	],
 	"timezone": "Europe/Berlin",
