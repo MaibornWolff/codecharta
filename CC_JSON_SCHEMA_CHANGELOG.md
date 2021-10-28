@@ -41,7 +41,7 @@ export interface Fixed {
 
 ```json
 {
-	"checksum": "foo",
+	"checksum": "a30746ae9d919c891992ab1dea88471b",
 	"data": {
 		"projectName": "bar",
 		"apiVersion": "1.3",
