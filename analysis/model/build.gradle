@@ -14,6 +14,7 @@ dependencies {
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
+    testImplementation 'org.skyscreamer:jsonassert:1.5.0'
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
