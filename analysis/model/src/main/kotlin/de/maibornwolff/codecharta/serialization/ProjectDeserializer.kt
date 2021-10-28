@@ -15,15 +15,15 @@ object ProjectDeserializer {
     private val GSON = GsonBuilder()
         .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
         .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
-            .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer())
+        .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer())
         .create()
 
     fun deserializeProject(reader: Reader): Project {
-        return (GSON.fromJson(reader, ProjectWrapper::class.java)).data
+        val projectWrapper = GSON.fromJson(reader, ProjectWrapper::class.java)
+        return projectWrapper.data
     }
 
     fun deserializeProject(projectString: String): Project {
-        // TODO support two cases: first case - old json structure, second case - new json structure
         val projectWrapper = GSON.fromJson(projectString, ProjectWrapper::class.java)
         return projectWrapper.data
     }
