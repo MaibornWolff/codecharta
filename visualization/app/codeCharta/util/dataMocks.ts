@@ -1607,6 +1607,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 export const TEST_FILE_DATA_DOWNLOADED = {
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
+	fileChecksum: "md5-fileA",
 	nodes: [
 		{
 			name: "root",
