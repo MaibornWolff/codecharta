@@ -32,3 +32,23 @@ export interface Fixed {
 	height: number
 }
 ```
+
+## 1.3
+
+-   An additional property `checksum` has been added to the `cc.json`
+-   All known properties are wrapped in the `data` property
+-   `checksum` contains the MD5 hash calculated through the content of `data`
+
+```json
+{
+	"checksum": "foo",
+	"data": {
+		"projectName": "bar",
+		"apiVersion": "1.3",
+		"nodes": [],
+		"edges": [],
+		"attributeTypes": {},
+		"blacklist": []
+	}
+}
+```
