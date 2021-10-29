@@ -4,7 +4,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { ExportCCFile } from "../../codeCharta.api.model"
+import { ExportCCFile, ExportWrappedCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
 import md5 from "md5"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
@@ -70,10 +70,17 @@ export class FileChooserController {
 		let content: ExportCCFile
 
 		try {
-			content = JSON.parse(jsonString)
+			const fileContent = JSON.parse(jsonString) as ExportWrappedCCFile | ExportCCFile
 
-			if (!content.fileChecksum) {
-				content.fileChecksum = md5(jsonString)
+			if ("data" in fileContent && "checksum" in fileContent) {
+				content = fileContent.data
+
+				content.fileChecksum = fileContent.checksum ? fileContent.checksum : md5(jsonString)
+			} else {
+				if (!fileContent.fileChecksum) {
+					fileContent.fileChecksum = md5(jsonString)
+				}
+				content = fileContent
 			}
 		} catch {
 			// Explicitly ignored
