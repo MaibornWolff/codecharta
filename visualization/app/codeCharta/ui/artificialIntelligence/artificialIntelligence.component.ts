@@ -103,6 +103,12 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	}
 
 	private calculate() {
+		const { experimentalFeaturesEnabled } = this.storeService.getState().appSettings
+
+		if (!experimentalFeaturesEnabled) {
+			return
+		}
+
 		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState.file.map)
 		this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
 

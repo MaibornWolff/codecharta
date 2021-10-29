@@ -34,7 +34,7 @@ describe("ArtificialIntelligenceController", () => {
 		storeService = getService<StoreService>("storeService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("storeService")
-
+		storeService.getState().appSettings.experimentalFeaturesEnabled = true
 		storeService.dispatch(setFiles(FILE_STATES))
 	}
 
