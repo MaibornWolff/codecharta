@@ -1,66 +1,44 @@
-import "./sortingOption.module"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { SortingOptionController } from "./sortingOption.component"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
+import { TestBed } from "@angular/core/testing"
+import { MatSelectModule } from "@angular/material/select"
+import { fireEvent, render, screen, getByText, waitForElementToBeRemoved } from "@testing-library/angular"
+
 import { SortingOption } from "../../codeCharta.model"
-import { SortingOptionService } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
+import { Store } from "../../state/store/store"
+import { SortingOptionComponent } from "./sortingOption.component"
 
-describe("SortingOptionController", () => {
-	let sortingOptionController: SortingOptionController
-	let $rootScope: IRootScopeService
-	let storeService = getService<StoreService>("storeService")
-
+describe("SortingOptionComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
+		Store["initialize"]()
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.sortingOptionDialog")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-	}
-
-	function rebuildController() {
-		sortingOptionController = new SortingOptionController($rootScope, storeService)
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to SortingOptionService", () => {
-			SortingOptionService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(SortingOptionService.subscribe).toHaveBeenCalledWith($rootScope, sortingOptionController)
-		})
-
-		it("should set the correct sorting options", () => {
-			expect(sortingOptionController["_viewModel"].sortingOptions).toEqual(["Name", "Number of Files"])
+		TestBed.configureTestingModule({
+			imports: [MatSelectModule]
 		})
 	})
 
-	describe("onSortingOptionChanged", () => {
-		it("should update the sortingOption to Number of Files", () => {
-			sortingOptionController.onSortingOptionChanged(SortingOption.NUMBER_OF_FILES)
-
-			expect(sortingOptionController["_viewModel"].sortingOption).toEqual(SortingOption.NUMBER_OF_FILES)
-		})
-
-		it("should update the sortingOption to Name", () => {
-			sortingOptionController.onSortingOptionChanged(SortingOption.NAME)
-
-			expect(sortingOptionController["_viewModel"].sortingOption).toEqual(SortingOption.NAME)
-		})
+	it("should have an explaining title", async () => {
+		await render(SortingOptionComponent)
+		expect(screen.findByLabelText("Sort by")).toBeTruthy()
 	})
 
-	describe("onChange", () => {
-		it("should set sortingOption in settings", () => {
-			sortingOptionController["_viewModel"].sortingOption = SortingOption.NUMBER_OF_FILES
+	it("should be a select for the sorting option", async () => {
+		const { detectChanges } = await render(SortingOptionComponent)
+		detectChanges()
 
-			sortingOptionController.onChange()
+		// it has initial sorting order
+		expect(screen.getByText("Name")).toBeTruthy()
 
-			expect(storeService.getState().dynamicSettings.sortingOption).toBe(sortingOptionController["_viewModel"].sortingOption)
-		})
+		// it offers all possible sorting Options, when clicking on it
+		const selectBoxTrigger = screen.getByRole("combobox").querySelector(".mat-select-trigger") as HTMLElement
+		fireEvent.click(selectBoxTrigger)
+		const selectOptionsWrapper = screen.getByRole("listbox")
+		for (const option of Object.values(SortingOption)) {
+			expect(getByText(selectOptionsWrapper, option)).toBeTruthy()
+		}
+
+		// it closes itself and sets new sorting option, when clicking an option
+		const sortByNumberOfFiles = getByText(selectOptionsWrapper, "Number of Files")
+		fireEvent.click(sortByNumberOfFiles)
+		await waitForElementToBeRemoved(() => screen.getByRole("listbox"))
+		expect(screen.getByText("Number of Files")).toBeTruthy()
 	})
 })
