@@ -1,7 +1,5 @@
-<md-input-container class="box-rounded" title="Sort by">
-	<md-select ng-model="$ctrl._viewModel.sortingOption" ng-class="{ 'md-select-fixed-width': true }" ng-change="$ctrl.onChange()">
-		<md-option ng-repeat="option in $ctrl._viewModel.sortingOptions track by $index" ng-value="option">
-			{{ option }}
-		</md-option>
-	</md-select>
-</md-input-container>
+<mat-select title="Sort by" [value]="selectedSortingOption$ | async" (selectionChange)="handleSelectedSortingOptionChanged($event)">
+	<mat-option *ngFor="let option of sortingOptions" [value]="option">
+		{{ option }}
+	</mat-option>
+</mat-select>

@@ -6,7 +6,6 @@ import "./artificialIntelligence/artificialIntelligence.module"
 import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
 import "./attributeTypeSelector/attributeTypeSelector.module"
-import "./sortingOption/sortingOption.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
 import "./downloadButton/downloadButton.module"
@@ -48,6 +47,7 @@ import "./sharpnessModeSelector/sharpnessModeSelector.module"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { MetricDeltaSelectedComponent } from "./metricDeltaSelected/metricDeltaSelected.component"
 import { MapTreeViewComponent } from "./mapTreeView/mapTreeView.component"
+import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -55,7 +55,6 @@ angular
 		"app.codeCharta.ui.artificialIntelligence",
 		"app.codeCharta.ui.customColorPicker",
 		"app.codeCharta.ui.customConfigs",
-		"app.codeCharta.ui.sortingOptionDialog",
 		"app.codeCharta.ui.attributeTypeSelector",
 		"app.codeCharta.ui.unfocusButton",
 		"app.codeCharta.ui.metricValueHovered",
@@ -98,5 +97,6 @@ angular
 		"app.codeCharta.ui.maxTreeMapFiles"
 	])
 	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))
+	.directive("ccSortingOption", downgradeComponent({ component: SortingOptionComponent }))
 	.directive("ccMetricDeltaSelected", downgradeComponent({ component: MetricDeltaSelectedComponent }))
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
