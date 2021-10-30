@@ -36,7 +36,6 @@ matching-files-counter-component {
 	cc-sorting-option .mat-select {
 		width: 105px;
 		padding: 2px 8px;
-		text-align: start;
 		font-weight: normal;
 		line-height: 17px;
 		font-size: 10pt;
@@ -48,19 +47,4 @@ matching-files-counter-component {
 		display: flex;
 		color: black;
 	}
-}
-
-.mat-select {
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-	border-bottom-color: rgba(0, 0, 0, 0.12);
-}
-
-.mat-select:focus {
-	border-bottom-width: 2px;
-	border-bottom-color: rgb(0, 150, 136);
-}
-
-.mat-option.mat-selected.mat-active {
-	color: rgb(0, 137, 123);
 }
