@@ -1,0 +1,15 @@
+.mat-select {
+	text-align: start;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: rgba(0, 0, 0, 0.12);
+}
+
+.mat-select:focus {
+	border-bottom-width: 2px;
+	border-bottom-color: rgb(0, 150, 136);
+}
+
+.mat-option.mat-selected.mat-active {
+	color: rgb(0, 137, 123);
+}
