@@ -12,7 +12,6 @@ import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarg
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
@@ -75,7 +74,6 @@ angular
 	.service(camelCase(IdToNodeService.name), IdToNodeService)
 	.service(camelCase(IdToBuildingService.name), IdToBuildingService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
-	.service(camelCase(SortingOptionService.name), SortingOptionService)
 	.service(camelCase(SearchPanelModeService.name), SearchPanelModeService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(IsLoadingMapService.name), IsLoadingMapService)
