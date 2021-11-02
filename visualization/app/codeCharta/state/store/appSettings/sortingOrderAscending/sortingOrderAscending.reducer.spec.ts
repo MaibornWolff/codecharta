@@ -6,7 +6,7 @@ describe("sortingOrderAscending", () => {
 		it("should initialize the default state", () => {
 			const result = sortingOrderAscending(undefined, {} as SortingOrderAscendingAction)
 
-			expect(result).toEqual(false)
+			expect(result).toEqual(true)
 		})
 	})
 
@@ -15,12 +15,6 @@ describe("sortingOrderAscending", () => {
 			const result = sortingOrderAscending(false, setSortingOrderAscending(true))
 
 			expect(result).toEqual(true)
-		})
-
-		it("should set default sortingOrderAscending", () => {
-			const result = sortingOrderAscending(true, setSortingOrderAscending())
-
-			expect(result).toEqual(false)
 		})
 	})
 

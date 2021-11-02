@@ -1861,7 +1861,7 @@ export const DEFAULT_STATE: State = {
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
 		isLoadingFile: true,
-		sortingOrderAscending: false,
+		sortingOrderAscending: true,
 		searchPanelMode: SearchPanelMode.minimized,
 		isAttributeSideBarVisible: false,
 		panelSelection: PanelSelection.NONE,
