@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix UI issues in the configuration panel ([#2322](https://github.com/maibornwolff/codecharta/issues/2322))
 -   Fix tooltip of sorting order button in map tree view showing wrong sorting order ([#2473](https://github.com/maibornwolff/codecharta/issues/2473))
 
+### Changed
+
+-   Calculate MD5 checksum when generating .cc.json files ([#2411](https://github.com/MaibornWolff/codecharta/pull/2450))
+
 ## [1.82.0] - 2021-10-18
 
 ### Fixed 🐞
