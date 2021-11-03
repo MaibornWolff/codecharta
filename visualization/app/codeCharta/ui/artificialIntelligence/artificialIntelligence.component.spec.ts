@@ -14,6 +14,7 @@ import { setState } from "../../state/store/state.actions"
 import { klona } from "klona"
 import { BlacklistType } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 
 describe("ArtificialIntelligenceController", () => {
 	let artificialIntelligenceController: ArtificialIntelligenceController
@@ -34,7 +35,7 @@ describe("ArtificialIntelligenceController", () => {
 		storeService = getService<StoreService>("storeService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("storeService")
-		storeService.getState().appSettings.experimentalFeaturesEnabled = true
+
 		storeService.dispatch(setFiles(FILE_STATES))
 	}
 
@@ -65,6 +66,31 @@ describe("ArtificialIntelligenceController", () => {
 			rebuildController()
 
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, artificialIntelligenceController)
+		})
+
+		it("should subscribe to experimentalFeaturesEnabled service", () => {
+			ExperimentalFeaturesEnabledService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ExperimentalFeaturesEnabledService.subscribe).toHaveBeenCalledWith($rootScope, artificialIntelligenceController)
+		})
+	})
+
+	describe("calculations", () => {
+		it("should not calculate suspicious metrics when experimental features are disabled", function () {
+			artificialIntelligenceController["calculate"] = jest.fn()
+			artificialIntelligenceController["getMostFrequentLanguage"] = jest.fn()
+
+			artificialIntelligenceController.onExperimentalFeaturesEnabledChanged(true)
+
+			expect(artificialIntelligenceController["calculate"]).not.toHaveBeenCalled()
+			expect(artificialIntelligenceController["getMostFrequentLanguage"]).not.toHaveBeenCalled()
+		})
+
+		it("should calculate suspicious metrics when experimental features are enabled", function () {
+			artificialIntelligenceController["getMostFrequentLanguage"] = jest.fn()
+			expect(artificialIntelligenceController["getMostFrequentLanguage"]).toHaveBeenCalled()
 		})
 	})
 
