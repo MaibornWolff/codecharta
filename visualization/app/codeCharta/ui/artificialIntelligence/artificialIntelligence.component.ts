@@ -18,6 +18,10 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { isPathBlacklisted } from "../../util/codeMapHelper"
+import {
+	ExperimentalFeaturesEnabledService,
+	ExperimentalFeaturesEnabledSubscriber
+} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 
 interface MetricValues {
 	[metric: string]: number[]
@@ -37,7 +41,9 @@ interface MetricSuggestionParameters {
 	outlierCustomConfigId?: string
 }
 
-export class ArtificialIntelligenceController implements FilesSelectionSubscriber, BlacklistSubscriber {
+export class ArtificialIntelligenceController
+	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
+{
 	private _viewModel: {
 		analyzedProgrammingLanguage: string
 		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
@@ -63,6 +69,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	private debounceCalculation: () => void
 	private fileState: FileState
 	private blacklist: BlacklistItem[] = []
+	private experimentalFeatureState = false
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -73,10 +80,16 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
+		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 
 		this.debounceCalculation = debounce(() => {
 			this.calculate()
 		}, 10)
+	}
+
+	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
+		this.experimentalFeatureState = experimentalFeaturesEnabled
+		this.calculate()
 	}
 
 	applyCustomConfig(configId: string) {
@@ -103,9 +116,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	}
 
 	private calculate() {
-		const { experimentalFeaturesEnabled } = this.storeService.getState().appSettings
-
-		if (!experimentalFeaturesEnabled) {
+		if (!this.experimentalFeatureState) {
 			return
 		}
 
