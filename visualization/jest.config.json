@@ -30,5 +30,6 @@
 	"preset": "./jest-preset.js",
 	"testTimeout": 60000,
 	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
-	"setupFilesAfterEnv": ["<rootDir>/setupJest.ts"]
+	"setupFilesAfterEnv": ["<rootDir>/setupJest.ts"],
+	"testEnvironment": "jsdom"
 }

@@ -25,7 +25,8 @@
 		"strictNullChecks": false,
 		"strictPropertyInitialization": false,
 		"target": "es2016",
-		"types": ["puppeteer", "jest-environment-puppeteer", "expect-puppeteer"]
+		"types": ["puppeteer", "jest-environment-puppeteer", "expect-puppeteer"],
+		"esModuleInterop": true
 	},
 	"exclude": ["node_modules"]
 }
