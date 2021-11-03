@@ -89,7 +89,7 @@ export class ArtificialIntelligenceController
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this.experimentalFeatureState = experimentalFeaturesEnabled
-		this.calculate()
+		this.debounceCalculation()
 	}
 
 	applyCustomConfig(configId: string) {

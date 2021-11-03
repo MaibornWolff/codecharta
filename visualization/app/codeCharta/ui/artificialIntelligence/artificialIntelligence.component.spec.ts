@@ -15,6 +15,7 @@ import { klona } from "klona"
 import { BlacklistType } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
+import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 
 describe("ArtificialIntelligenceController", () => {
 	let artificialIntelligenceController: ArtificialIntelligenceController
@@ -82,14 +83,23 @@ describe("ArtificialIntelligenceController", () => {
 			artificialIntelligenceController["calculate"] = jest.fn()
 			artificialIntelligenceController["getMostFrequentLanguage"] = jest.fn()
 
-			artificialIntelligenceController.onExperimentalFeaturesEnabledChanged(true)
+			artificialIntelligenceController.onExperimentalFeaturesEnabledChanged(false)
 
-			expect(artificialIntelligenceController["calculate"]).not.toHaveBeenCalled()
+			expect(artificialIntelligenceController["experimentalFeatureState"]).toBe(false)
+
+			expect(artificialIntelligenceController["calculate"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["getMostFrequentLanguage"]).not.toHaveBeenCalled()
 		})
 
 		it("should calculate suspicious metrics when experimental features are enabled", function () {
+			artificialIntelligenceController["calculate"] = jest.fn()
 			artificialIntelligenceController["getMostFrequentLanguage"] = jest.fn()
+
+			artificialIntelligenceController.onExperimentalFeaturesEnabledChanged(true)
+			storeService.dispatch(setExperimentalFeaturesEnabled(true))
+
+			expect(artificialIntelligenceController["experimentalFeatureState"]).toBe(true)
+			expect(artificialIntelligenceController["calculate"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["getMostFrequentLanguage"]).toHaveBeenCalled()
 		})
 	})
