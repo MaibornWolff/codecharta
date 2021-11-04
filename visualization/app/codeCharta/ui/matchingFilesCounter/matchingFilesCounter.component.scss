@@ -33,12 +33,15 @@ matching-files-counter-component {
 		padding: 1px 8px;
 	}
 
-	#sort-component-dialog .md-select-value {
-		min-height: unset;
+	cc-sorting-option .mat-select {
+		width: 105px;
 		padding: 2px 8px;
+		font-weight: normal;
+		line-height: 17px;
+		font-size: 10pt;
 	}
 
-	#sort-component {
+	.sort-component {
 		margin-right: 3px;
 		float: right;
 		display: flex;

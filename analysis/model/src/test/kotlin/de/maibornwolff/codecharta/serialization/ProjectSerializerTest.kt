@@ -1,12 +1,9 @@
 package de.maibornwolff.codecharta.serialization
 
-import com.google.gson.JsonParser
-import com.natpryce.hamkrest.describe
 import de.maibornwolff.codecharta.model.Project
 import io.mockk.mockk
-import org.hamcrest.BaseMatcher
-import org.hamcrest.Description
-import org.hamcrest.Matcher
+import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.File
@@ -14,32 +11,27 @@ import kotlin.test.assertTrue
 
 class ProjectSerializerTest : Spek({
 
-    fun matchesProjectFile(expectedProjectFile: File): Matcher<File> {
-        return object : BaseMatcher<File>() {
+    val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
+    val tempDir = createTempDir()
+    val filename = tempDir.absolutePath + "test.cc.json"
 
-            override fun describeTo(description: Description) {
-                description.appendText("should be ").appendValue(expectedProjectFile.readLines())
-            }
+    describe("ProjectSerializer") {
+        it("should serialize project") {
+            val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3).reader()
+            val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json").readText()
+            val testProject = ProjectDeserializer.deserializeProject(jsonReader)
 
-            override fun describeMismatch(item: Any, description: Description) {
-                description.appendText("was").appendValue((item as File).readLines())
-            }
+            ProjectSerializer.serializeProjectAndWriteToFile(testProject, filename)
 
-            override fun matches(item: Any): Boolean {
-                return fileContentEqual(item as File, expectedProjectFile)
-            }
+            val testJsonString = File(filename).readText()
 
-            private fun fileContentEqual(actual: File, expected: File): Boolean {
-                val parser = JsonParser()
-                val actualJson = parser.parse(actual.reader())
-                val expectedJson = parser.parse(expected.reader())
-                return actualJson == expectedJson
-            }
+            JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.NON_EXTENSIBLE)
         }
     }
 
     describe("serializeAsCompressedFile") {
         val project = mockk<Project>()
+
         it("should create a gz file") {
             ProjectSerializer.serializeAsCompressedFile(project, "test.cc.json")
             assertTrue { File("test.cc.json.gz").exists() }

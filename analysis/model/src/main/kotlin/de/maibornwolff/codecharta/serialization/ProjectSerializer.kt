@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectWrapper
 import java.io.BufferedWriter
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -42,7 +43,10 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer) {
-        GSON.toJson(project, Project::class.java, out)
+        val wrappedProject = getWrappedProject(project)
+
+        GSON.toJson(wrappedProject, out)
+
         out.flush()
         out.close()
     }
@@ -55,7 +59,8 @@ object ProjectSerializer {
      */
 
     fun serializeAsCompressedFile(project: Project, absolutePath: String) {
-        val jsonFile: String = GSON.toJson(project, Project::class.java)
+        val wrappedProject = getWrappedProject(project)
+        val jsonFile: String = GSON.toJson(wrappedProject, ProjectWrapper::class.java)
         File("$absolutePath.gz").writeBytes(compress(jsonFile))
     }
 
@@ -68,6 +73,11 @@ object ProjectSerializer {
         val byteStream = ByteArrayOutputStream()
         GZIPOutputStream(byteStream).bufferedWriter(UTF_8).use { it.write(toCompress) }
         return byteStream.toByteArray()
+    }
+
+    private fun getWrappedProject(project: Project): ProjectWrapper {
+        val projectJsonString = GSON.toJson(project, Project::class.java)
+        return ProjectWrapper(project, projectJsonString.toString())
     }
 
     /**
