@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix unwanted calculations of suspicious metrics when experimental features are disabled ([#2434](https://github.com/MaibornWolff/codecharta/issues/2434))
 -   Fix UI issues in the configuration panel ([#2322](https://github.com/maibornwolff/codecharta/issues/2322))
 
 ## [1.82.0] - 2021-10-18

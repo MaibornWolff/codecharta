@@ -69,7 +69,6 @@ export class ArtificialIntelligenceController
 	private debounceCalculation: () => void
 	private fileState: FileState
 	private blacklist: BlacklistItem[] = []
-	private experimentalFeatureState = false
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -88,8 +87,9 @@ export class ArtificialIntelligenceController
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
-		this.experimentalFeatureState = experimentalFeaturesEnabled
-		this.debounceCalculation()
+		if (experimentalFeaturesEnabled) {
+			this.debounceCalculation()
+		}
 	}
 
 	applyCustomConfig(configId: string) {
@@ -116,7 +116,8 @@ export class ArtificialIntelligenceController
 	}
 
 	private calculate() {
-		if (!this.experimentalFeatureState) {
+		const { experimentalFeaturesEnabled } = this.storeService.getState().appSettings
+		if (!experimentalFeaturesEnabled) {
 			return
 		}
 
