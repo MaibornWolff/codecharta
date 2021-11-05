@@ -1,5 +1,6 @@
 .artificial-intelligence-component {
-	.ai-button {
+	.suspicious-metrics-button,
+	.high-risk-profile-button {
 		height: 22px;
 		min-height: 0;
 		line-height: 23px;
@@ -30,11 +31,23 @@
 	}
 }
 
+md-menu-item.title {
+	color: rgba(0, 0, 0, 0.38);
+	margin: 10px 0 10px 0;
+	line-height: 24px;
+}
+md-menu-item.il {
+}
 md-menu-item.ai-list-item {
 	padding: 0 16px;
+	height: auto;
+	min-height: unset;
+	margin-bottom: 10px;
+	line-height: 20px;
 }
 
 md-menu-item.risk-profile {
+	margin: 0 12px 0 12px;
 	.md-button {
 		min-width: unset;
 		padding: 0;

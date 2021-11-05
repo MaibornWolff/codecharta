@@ -18,6 +18,7 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { isPathBlacklisted } from "../../util/codeMapHelper"
+import { metricDescriptions } from "../../util/metric/metricDescriptions"
 
 interface MetricValues {
 	[metric: string]: number[]
@@ -230,7 +231,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			const maxMetricValue = Math.max(...valuesOfMetric)
 
 			if (maxMetricValue <= thresholdConfig.percentile70) {
-				metricAssessmentResults.unsuspiciousMetrics.push(metricName)
+				metricAssessmentResults.unsuspiciousMetrics.push(`${metricName} (${metricDescriptions.get(metricName)})`)
 			} else if (maxMetricValue > thresholdConfig.percentile70) {
 				metricAssessmentResults.suspiciousMetrics.set(metricName, {
 					from: thresholdConfig.percentile70,
