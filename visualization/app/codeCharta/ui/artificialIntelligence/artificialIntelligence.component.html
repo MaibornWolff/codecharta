@@ -23,7 +23,7 @@
 			</span>
 		</md-button>
 
-		<md-menu-content class="ai-drop-down" width="7">
+		<md-menu-content class="ai-drop-down">
 			<md-menu-item class="ai-item" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length">
 				<md-button ng-disabled="true">
 					<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
@@ -71,7 +71,7 @@
 		<md-button class="high-risk-profile-button" ng-click="$mdMenu.open($event)" title="Open High Risk Profile">
 			<i class="fa fa-bar-chart"></i>
 		</md-button>
-		<md-menu-content>
+		<md-menu-content class="ai-drop-down">
 			<md-menu-item class="title">
 				<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
 					>Risk Profile for {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (most frequent programming language in

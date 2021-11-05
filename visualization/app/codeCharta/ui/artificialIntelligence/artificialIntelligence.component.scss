@@ -31,6 +31,9 @@
 	}
 }
 
+.ai-drop-down {
+	padding: 0;
+}
 md-menu-item.title {
 	color: rgba(0, 0, 0, 0.38);
 	margin: 10px 0 10px 0;
@@ -47,22 +50,22 @@ md-menu-item.ai-list-item {
 }
 
 md-menu-item.risk-profile {
-	margin: 0 12px 0 12px;
+	margin: 0 12px 12px 12px;
 	.md-button {
 		min-width: unset;
 		padding: 0;
 		margin: auto 0;
 	}
 	.low-risk {
-		background-color: #00d600;
+		background-color: #5cb34d;
 	}
 	.moderate-risk {
-		background: #ffff00;
+		background: #eef432;
 	}
 	.high-risk {
-		background: #ff0000;
+		background: #cc2900;
 	}
 	.very-high-risk {
-		background: #ff00a6;
+		background: #9c0e6a;
 	}
 }
