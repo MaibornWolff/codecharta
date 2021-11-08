@@ -1,8 +1,8 @@
 <p class="cc-node-path">
-	<span ng-if="$ctrl._viewModel.node">
-		{{ $ctrl._viewModel.node.path }}
-		<span ng-if="$ctrl._viewModel.node && !$ctrl._viewModel.node.isLeaf" class="cc-node-file-count">
-			({{ $ctrl._viewModel.fileCountDescription }})
+	<span *ngIf="selectedBuilding$ | async as selectedBuilding">
+		{{ selectedBuilding.node.path }}
+		<span *ngIf="!selectedBuilding.node.isLeaf && fileCountDescription$ | async as fileCountDescription" class="cc-node-file-count">
+			({{ fileCountDescription }})
 		</span>
 	</span>
 </p>
