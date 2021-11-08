@@ -14,12 +14,6 @@
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"groupName": "npm dependencies not Major update",
 			"enabled": true
-		},
-		{
-			"matchPaths": ["auto-approve-and-merge.yml", "release_gh_pages.yml", "test.yml", "gradle-wrapper.properties", "Dockerfile"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"groupName": "other dependencies not Major update",
-			"enabled": true
 		}
 	],
 	"timezone": "Europe/Berlin",
