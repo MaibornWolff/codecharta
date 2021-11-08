@@ -14,7 +14,6 @@ import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarg
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { FilesService } from "./store/files/files.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
@@ -72,7 +71,6 @@ export class InjectorService {
 		private idToNodeService: IdToNodeService,
 		private idToBuildingService: IdToBuildingService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		private sortingOptionService: SortingOptionService,
 		private searchPanelModeService: SearchPanelModeService,
 		private isLoadingFileService: IsLoadingFileService,
 		private isLoadingMapService: IsLoadingMapService,

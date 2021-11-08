@@ -35,18 +35,18 @@ jest.mock("../../../state/store/dynamicSettings/sortingOption/sortingOrder.selec
 })
 
 describe("mapTreeViewNodeSelector", () => {
-	it("should sort default to descending by name", () => {
+	it("should sort default to ascending by name", () => {
 		const mapTreeViewNode = mapTreeViewNodeSelector(Store.store.getState())
-		expect(mapTreeViewNode.children[0].name).toBe("folder2")
-		expect(mapTreeViewNode.children[1].name).toBe("folder1")
-		expect(mapTreeViewNode.children[2].name).toBe("b")
-		expect(mapTreeViewNode.children[3].name).toBe("a")
+		expect(mapTreeViewNode.children[0].name).toBe("folder1")
+		expect(mapTreeViewNode.children[1].name).toBe("folder2")
+		expect(mapTreeViewNode.children[2].name).toBe("a")
+		expect(mapTreeViewNode.children[3].name).toBe("b")
 	})
 
-	it("should sort folder descending by unary value, meaning most children first", () => {
+	it("should sort folder ascending by unary value, meaning most children first", () => {
 		sortingOrderSelector["mockImplementationOnce"](() => SortingOption.NUMBER_OF_FILES)
 		const mapTreeViewNode = mapTreeViewNodeSelector(Store.store.getState())
-		expect(mapTreeViewNode.children[0].name).toBe("folder2")
-		expect(mapTreeViewNode.children[1].name).toBe("folder1")
+		expect(mapTreeViewNode.children[0].name).toBe("folder1")
+		expect(mapTreeViewNode.children[1].name).toBe("folder2")
 	})
 })

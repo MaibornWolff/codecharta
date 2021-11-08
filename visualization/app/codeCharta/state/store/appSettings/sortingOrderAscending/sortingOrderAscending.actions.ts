@@ -12,7 +12,7 @@ export interface SetSortingOrderAscendingAction extends Action {
 
 export type SortingOrderAscendingAction = SetSortingOrderAscendingAction
 
-export const defaultSortingOrderAscending = false
+export const defaultSortingOrderAscending = true
 
 export function setSortingOrderAscending(sortingOrderAscending: boolean = defaultSortingOrderAscending): SetSortingOrderAscendingAction {
 	return {

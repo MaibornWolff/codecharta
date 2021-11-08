@@ -22,11 +22,11 @@ describe("SortingButtonComponent", () => {
 
 	it("should set title of button according to current sorting order", async () => {
 		const { detectChanges } = await render(SortingButtonComponent)
-		expect(screen.getByTitle("Toggle sort order (currently descending)")).toBeTruthy()
+		expect(screen.getByTitle("Toggle sort order (currently ascending)")).toBeTruthy()
 
-		Store.store.dispatch(setSortingOrderAscending(true))
+		Store.store.dispatch(setSortingOrderAscending(false))
 		detectChanges()
 
-		expect(screen.getByTitle("Toggle sort order (currently ascending)")).toBeTruthy()
+		expect(screen.getByTitle("Toggle sort order (currently descending)")).toBeTruthy()
 	})
 })
