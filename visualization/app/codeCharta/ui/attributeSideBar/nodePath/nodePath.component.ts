@@ -7,11 +7,9 @@ import { Node } from "../../../codeCharta.model"
 class NodePathController implements BuildingSelectedEventSubscriber {
 	private _viewModel: {
 		node: Node
-		packageFileCount: number
 		fileCountDescription: string
 	} = {
 		node: null,
-		packageFileCount: 0,
 		fileCountDescription: ""
 	}
 
@@ -22,8 +20,8 @@ class NodePathController implements BuildingSelectedEventSubscriber {
 
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
-		this._viewModel.packageFileCount = selectedBuilding.node?.attributes?.unary ?? 0
-		this._viewModel.fileCountDescription = NodePathController.getFileCountDescription(this._viewModel.packageFileCount)
+		const packageFileCount = selectedBuilding.node?.attributes?.unary ?? 0
+		this._viewModel.fileCountDescription = NodePathController.getFileCountDescription(packageFileCount)
 	}
 
 	static getFileCountDescription(fileCount: number) {
