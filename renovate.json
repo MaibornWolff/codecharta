@@ -1,16 +1,32 @@
 {
-	"extends": ["config:base", "group:all", ":preserveSemverRanges"],
+	"extends": ["config:base", ":preserveSemverRanges"],
 	"packageRules": [
 		{
-			"matchManagers": ["gradle"],
 			"matchPaths": ["build.gradle"],
-			"groupName": "gradle dependencies update",
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"groupName": "gradle dependencies not Major update",
 			"enabled": true
 		},
 		{
-			"matchManagers": ["npm"],
 			"matchPaths": ["package.json"],
-			"groupName": "npm dependencies update",
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"groupName": "npm dependencies not Major update",
+			"enabled": true
+		},
+		{
+			"matchPackageNames": [
+				"JamesIves/github-pages-deploy-action",
+				"SonarSource/sonarcloud-github-action",
+				"actions/setup-java",
+				"alexellis/upload-assets",
+				"gradle",
+				"hmarr/auto-approve-action",
+				"nginx",
+				"pascalgn/automerge-action",
+				"ruby"
+			],
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"groupName": "other updates",
 			"enabled": true
 		}
 	],
