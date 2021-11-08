@@ -16,7 +16,6 @@
 			"enabled": true
 		},
 		{
-			"matchManagers": ["others"],
 			"matchPackageNames": ["github-pages-deploy-action"],
 			"groupName": "other updates",
 			"enabled": true
