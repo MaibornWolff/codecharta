@@ -44,7 +44,6 @@ import { DistributionMetricService } from "./store/dynamicSettings/distributionM
 import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMetric.service"
 import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
-import { NodeSearchService } from "./nodeSearch.service"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
@@ -100,7 +99,6 @@ export class InjectorService {
 		private colorMetricService: ColorMetricService,
 		private areaMetricService: AreaMetricService,
 		private blacklistService: BlacklistService,
-		private nodeSearchService: NodeSearchService,
 		private isPresentationModeService: IsPresentationModeService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
 		private maxTreeMapFilesService: MaxTreeMapFilesService,

@@ -4,6 +4,7 @@ import { Observable } from "rxjs"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
 import { rootUnarySelector } from "../../../state/selectors/accumulatedData/rootUnary.selector"
+import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodePaths.selector"
 
 @Component({
 	selector: "cc-map-tree-view-item-name",
@@ -19,7 +20,7 @@ export class MapTreeViewItemNameComponent {
 	rootUnary$: Observable<number>
 
 	constructor(@Inject(Store) store: Store) {
-		this.searchedNodePaths$ = store.select(state => state.dynamicSettings.searchedNodePaths)
+		this.searchedNodePaths$ = store.select(searchedNodePathsSelector)
 		this.rootUnary$ = store.select(rootUnarySelector)
 	}
 }

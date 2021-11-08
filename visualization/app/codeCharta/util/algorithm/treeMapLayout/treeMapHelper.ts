@@ -4,6 +4,7 @@ import { Color, Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { ColorConverter } from "../../color/colorConverter"
+import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodePaths.selector"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
@@ -167,8 +168,10 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: State) {
 		return true
 	}
 
-	if (state.dynamicSettings.searchedNodePaths && state.dynamicSettings.searchPattern?.length > 0) {
-		return state.dynamicSettings.searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
+	const searchedNodePaths = searchedNodePathsSelector(state)
+
+	if (searchedNodePaths && state.dynamicSettings.searchPattern?.length > 0) {
+		return searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
 	}
 
 	if (state.appSettings.showOnlyBuildingsWithEdges && state.fileSettings.edges.some(edge => edge.visible)) {
@@ -186,7 +189,8 @@ function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, state: State) {
 }
 
 function isNodeNonSearched(squaredNode: CodeMapNode, state: State) {
-	return !state.dynamicSettings.searchedNodePaths.has(squaredNode.path)
+	const searchedNodePaths = searchedNodePathsSelector(state)
+	return !searchedNodePaths.has(squaredNode.path)
 }
 
 export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettings }: State, isDeltaState: boolean, flattened: boolean) {

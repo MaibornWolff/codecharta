@@ -104,7 +104,6 @@ function initializeDynamicSettings(target: CustomConfig) {
 		heightMetric: "",
 		margin: 0,
 		searchPattern: "",
-		searchedNodePaths: undefined,
 		sortingOption: undefined,
 		colorRange: {
 			from: 0,
