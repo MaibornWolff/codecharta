@@ -17,17 +17,7 @@
 		},
 		{
 			"matchManagers": ["others"],
-			"matchPackageNames": [
-				"JamesIves/github-pages-deploy-action",
-				"SonarSource/sonarcloud-github-action",
-				"actions/setup-java",
-				"alexellis/upload-assets",
-				"gradle",
-				"hmarr/auto-approve-action",
-				"nginx",
-				"pascalgn/automerge-action",
-				"ruby"
-			],
+			"matchPackageNames": ["JamesIves/github-pages-deploy-action"],
 			"groupName": "other updates",
 			"enabled": true
 		}
