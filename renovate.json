@@ -17,7 +17,7 @@
 		},
 		{
 			"matchManagers": ["others"],
-			"matchPackageNames": ["JamesIves/github-pages-deploy-action"],
+			"matchPackageNames": ["github-pages-deploy-action"],
 			"groupName": "other updates",
 			"enabled": true
 		}
