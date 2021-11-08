@@ -50,8 +50,8 @@
 			<md-menu-item class="input-container md-block">
 				<md-checkbox
 					class="md-primary"
-					ng-model="$ctrl._viewModel.resetCameraIfNewFileIsLoaded"
-					ng-change="$ctrl.applySettingsResetCamera()"
+					ng-model="$ctrl._viewModel.changeRiskFilesCheckbox"
+					ng-change="$ctrl.onChangeRiskFilesCheckbox()"
 				>
 					Highlight Very High Risk files (if any)
 				</md-checkbox>

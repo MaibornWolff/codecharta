@@ -49,6 +49,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			highRisk: number
 			veryHighRisk: number
 		}
+		changeRiskFilesCheckbox: boolean
 	} = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
@@ -58,7 +59,8 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			moderateRisk: 0,
 			highRisk: 0,
 			veryHighRisk: 0
-		}
+		},
+		changeRiskFilesCheckbox: false
 	}
 
 	private debounceCalculation: () => void
@@ -78,6 +80,12 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		this.debounceCalculation = debounce(() => {
 			this.calculate()
 		}, 10)
+	}
+
+	// Todo: Delete this helper function when feature is done
+	onChangeRiskFilesCheckbox() {
+		// eslint-disable-next-line no-console
+		console.log(this._viewModel.changeRiskFilesCheckbox)
 	}
 
 	applyCustomConfig(configId: string) {
