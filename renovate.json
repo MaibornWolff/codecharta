@@ -25,7 +25,7 @@
 				"pascalgn/automerge-action",
 				"ruby"
 			],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"groupName": "other updates",
 			"enabled": true
 		}
