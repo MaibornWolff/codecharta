@@ -11,11 +11,12 @@ import { MetricDeltaSelectedComponent } from "./codeCharta/ui/metricDeltaSelecte
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
 import { SortingOptionComponent } from "./codeCharta/ui/sortingOption/sortingOption.component"
 import { MaterialModule } from "./material/material.module"
+import { NodePathComponent } from "./codeCharta/ui/attributeSideBar/nodePath/nodePath.component"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule],
-	declarations: [SortingButtonComponent, MetricDeltaSelectedComponent, SortingOptionComponent],
-	entryComponents: [SortingButtonComponent, MapTreeViewComponent, MetricDeltaSelectedComponent, SortingOptionComponent]
+	declarations: [SortingButtonComponent, MetricDeltaSelectedComponent, SortingOptionComponent, NodePathComponent],
+	entryComponents: [SortingButtonComponent, MapTreeViewComponent, MetricDeltaSelectedComponent, SortingOptionComponent, NodePathComponent]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}
