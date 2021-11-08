@@ -82,7 +82,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}, 10)
 	}
 
-	// Todo: Delete this helper function when feature is done
+	// Todo: Use this function to catch event when selected metric should show very high risk
 	onChangeRiskFilesCheckbox() {
 		// eslint-disable-next-line no-console
 		console.log(this._viewModel.changeRiskFilesCheckbox)
