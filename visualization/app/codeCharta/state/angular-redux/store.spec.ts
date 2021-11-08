@@ -12,16 +12,17 @@ describe("NgRx like store", () => {
 	})
 
 	it("should have initial value on selection and it should update its value", () => {
+		const initialValue = sortingOrderAscendingSelector(PlainStore.store.getState())
 		const sortingOrderAscending$ = storeService.select(sortingOrderAscendingSelector)
 		let value
 		sortingOrderAscending$.subscribe(v => {
 			value = v
 		})
-		expect(value).toBe(false)
+		expect(value).toBe(initialValue)
 
 		PlainStore.store.dispatch(toggleSortingOrderAscending())
 
-		expect(value).toBe(true)
+		expect(value).toBe(!initialValue)
 	})
 
 	it("should not call selector, when no one is subscribed", () => {
