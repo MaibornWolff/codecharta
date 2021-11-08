@@ -1,16 +1,24 @@
 {
-	"extends": ["config:base", "group:all", ":preserveSemverRanges"],
+	"extends": ["config:base", ":preserveSemverRanges"],
 	"packageRules": [
 		{
 			"matchManagers": ["gradle"],
 			"matchPaths": ["build.gradle"],
-			"groupName": "gradle dependencies update",
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"groupName": "gradle dependencies not Major update",
 			"enabled": true
 		},
 		{
 			"matchManagers": ["npm"],
 			"matchPaths": ["package.json"],
-			"groupName": "npm dependencies update",
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"groupName": "npm dependencies not Major update",
+			"enabled": true
+		},
+		{
+			"matchManagers": ["others"],
+			"matchPaths": ["auto-approve-and-merge.yml", "release_gh_pages.yml", "test.yml", "gradle-wrapper.properties", "Dockerfile"],
+			"groupName": "other updates",
 			"enabled": true
 		}
 	],
