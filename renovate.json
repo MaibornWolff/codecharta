@@ -4,14 +4,12 @@
 		{
 			"matchManagers": ["gradle"],
 			"matchPaths": ["build.gradle"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"groupName": "gradle dependencies not Major update",
 			"enabled": true
 		},
 		{
 			"matchManagers": ["npm"],
 			"matchPaths": ["package.json"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"groupName": "npm dependencies not Major update",
 			"enabled": true
 		}
