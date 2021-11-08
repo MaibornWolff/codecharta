@@ -30,7 +30,10 @@
 		}
 	}
 }
-
+.ai-item1 {
+	display: flex;
+	background-color: #5cb34d;
+}
 .ai-drop-down {
 	padding: 0;
 }
@@ -38,8 +41,6 @@ md-menu-item.title {
 	color: rgba(0, 0, 0, 0.38);
 	margin: 10px 0 10px 0;
 	line-height: 24px;
-}
-md-menu-item.il {
 }
 md-menu-item.ai-list-item {
 	padding: 0 16px;

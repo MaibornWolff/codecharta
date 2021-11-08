@@ -49,7 +49,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			highRisk: number
 			veryHighRisk: number
 		}
-		changeRiskFilesCheckbox: boolean
+		isHighRiskFilesModeEnabled: boolean
 	} = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
@@ -60,7 +60,7 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 			highRisk: 0,
 			veryHighRisk: 0
 		},
-		changeRiskFilesCheckbox: false
+		isHighRiskFilesModeEnabled: false
 	}
 
 	private debounceCalculation: () => void
@@ -83,9 +83,9 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 	}
 
 	// Todo: Use this function to catch event when selected metric should show very high risk
-	onChangeRiskFilesCheckbox() {
+	onChangeHighRiskFilesModeCheckbox() {
 		// eslint-disable-next-line no-console
-		console.log(this._viewModel.changeRiskFilesCheckbox)
+		console.log(this._viewModel.isHighRiskFilesModeEnabled)
 	}
 
 	applyCustomConfig(configId: string) {
