@@ -38,15 +38,24 @@
 					<li ng-repeat="unsuspiciousMetric in $ctrl._viewModel.unsuspiciousMetrics">{{ unsuspiciousMetric }}</li>
 				</ul>
 			</md-menu-item>
+
 			<md-menu-item class="ai-item" ng-show="$ctrl._viewModel.suspiciousMetricSuggestionLinks.length"
 				><md-button ng-disabled="true">
 					<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
 						>Suspicious Metrics in {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (click below to view)</span
 					>
 					<span ng-show="!$ctrl._viewModel.analyzedProgrammingLanguage.length">Suspicious Metrics (click below to view)</span>
-				</md-button></md-menu-item
-			>
-
+				</md-button>
+			</md-menu-item>
+			<md-menu-item class="input-container md-block">
+				<md-checkbox
+					class="md-primary"
+					ng-model="$ctrl._viewModel.resetCameraIfNewFileIsLoaded"
+					ng-change="$ctrl.applySettingsResetCamera()"
+				>
+					Highlight Very High Risk files (if any)
+				</md-checkbox>
+			</md-menu-item>
 			<md-menu-item class="custom-configs-item" ng-repeat="item in $ctrl._viewModel.suspiciousMetricSuggestionLinks">
 				<md-button
 					class="button-hovering"
@@ -86,10 +95,10 @@
 
 			<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.riskProfile !== undefined">
 				<ul>
-					<li>{{ $ctrl._viewModel.riskProfile.lowRisk }}% of overall code is placed in files with low complexity</li>
-					<li>{{ $ctrl._viewModel.riskProfile.moderateRisk }}% of overall code is placed in files with moderate complexity</li>
-					<li>{{ $ctrl._viewModel.riskProfile.highRisk }}% of overall code is placed in files with high complexity</li>
-					<li>{{ $ctrl._viewModel.riskProfile.veryHighRisk }}% of overall code is placed in files with extreme complexity</li>
+					<li>{{ $ctrl._viewModel.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
+					<li>{{ $ctrl._viewModel.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
+					<li>{{ $ctrl._viewModel.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
+					<li>{{ $ctrl._viewModel.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
 				</ul>
 			</md-menu-item>
 
