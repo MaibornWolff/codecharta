@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.83.0] - 2021-11-09
+
 ### Fixed 🐞
 
 -   Fix unwanted calculations of suspicious metrics when experimental features are disabled ([#2471](https://github.com/MaibornWolff/codecharta/pull/2471))
