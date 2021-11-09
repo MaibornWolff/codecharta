@@ -4,7 +4,7 @@ import { Color, Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { ColorConverter } from "../../color/colorConverter"
-import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodePaths.selector"
+import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2

@@ -4,7 +4,7 @@ import { Observable } from "rxjs"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
 import { rootUnarySelector } from "../../../state/selectors/accumulatedData/rootUnary.selector"
-import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodePaths.selector"
+import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 
 @Component({
 	selector: "cc-map-tree-view-item-name",
