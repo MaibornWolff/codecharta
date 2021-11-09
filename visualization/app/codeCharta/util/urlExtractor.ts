@@ -41,21 +41,17 @@ export class UrlExtractor {
 		}
 		const response = await this.$http.get(fileName)
 		let content: ExportCCFile
-		try {
-			const fileContent = response.data as ExportWrappedCCFile | ExportCCFile
+		const fileContent = response.data as ExportWrappedCCFile | ExportCCFile
 
-			if ("data" in fileContent && "checksum" in fileContent) {
-				content = fileContent.data
+		if ("data" in fileContent && "checksum" in fileContent) {
+			content = fileContent.data
 
-				content.fileChecksum = fileContent.checksum ? fileContent.checksum : md5(response.data)
-			} else {
-				if (!fileContent.fileChecksum) {
-					fileContent.fileChecksum = md5(response.data)
-				}
-				content = fileContent
+			content.fileChecksum = fileContent.checksum ? fileContent.checksum : md5(response.data)
+		} else {
+			if (!fileContent.fileChecksum) {
+				fileContent.fileChecksum = md5(response.data)
 			}
-		} catch {
-			// Explicitly ignored
+			content = fileContent
 		}
 		if (response.status >= 200 && response.status < 300) {
 			return { fileName, fileSize: response.data.toString().length, content }
