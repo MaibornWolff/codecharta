@@ -5,7 +5,7 @@ import { returnIgnore, transformPath } from "../../../util/codeMapHelper"
 
 export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
 	gitignorePath = gitignorePath.trimStart()
-	if (gitignorePath.length === 0) {
+	if (gitignorePath.length === 0 || !root) {
 		return []
 	}
 	const ignoreResults = returnIgnore(gitignorePath)
