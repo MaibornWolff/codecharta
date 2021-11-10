@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.83.1] - 2021-11-10
+
 ### Fixed 🐞
 
 -   Fix loading files from URL in Web Demo ([#2494](https://github.com/MaibornWolff/codecharta/pull/2494))
