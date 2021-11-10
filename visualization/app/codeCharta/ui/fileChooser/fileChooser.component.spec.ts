@@ -156,7 +156,7 @@ describe("fileChooserController", () => {
 
 			fileChooserController["addNameDataPair"](file0, '{"checksum": "", "data": { "apiVersion": "1.3" }}', 0)
 
-			expect(fileChooserController["files"][0].content.fileChecksum).toBe("633dac20227f1157d9091b66eb761fdc")
+			expect(fileChooserController["files"][0].content.fileChecksum).toBe("e12755910990db736e2cf0a5fd3cb510")
 
 			fileChooserController["addNameDataPair"](file1, '{ "data": { "apiVersion": "1.3" }}', 1)
 

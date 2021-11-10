@@ -4,10 +4,10 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { ExportCCFile, ExportWrappedCCFile } from "../../codeCharta.api.model"
+import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
-import md5 from "md5"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
+import { getCCFileAndDecorateFileChecksum } from "../../util/fileHelper"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
@@ -67,24 +67,7 @@ export class FileChooserController {
 	}
 
 	private addNameDataPair(file: File, jsonString: string, index: number) {
-		let content: ExportCCFile
-
-		try {
-			const fileContent = JSON.parse(jsonString) as ExportWrappedCCFile | ExportCCFile
-
-			if ("data" in fileContent && "checksum" in fileContent) {
-				content = fileContent.data
-
-				content.fileChecksum = fileContent.checksum ? fileContent.checksum : md5(jsonString)
-			} else {
-				if (!fileContent.fileChecksum) {
-					fileContent.fileChecksum = md5(jsonString)
-				}
-				content = fileContent
-			}
-		} catch {
-			// Explicitly ignored
-		}
+		const content: ExportCCFile = getCCFileAndDecorateFileChecksum(jsonString)
 
 		this.files[index] = {
 			fileName: file.name,
