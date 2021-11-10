@@ -82,12 +82,6 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}, 10)
 	}
 
-	// Todo: Use this function to catch event when selected metric should show very high risk
-	onChangeHighRiskFilesModeCheckbox() {
-		// eslint-disable-next-line no-console
-		console.log(this._viewModel.isHighRiskFilesModeEnabled)
-	}
-
 	applyCustomConfig(configId: string) {
 		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
 	}
@@ -215,9 +209,16 @@ export class ArtificialIntelligenceController implements FilesSelectionSubscribe
 		}
 
 		CustomConfigHelper.addCustomConfigs(newCustomConfigs)
-
-		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()]
+		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()].sort(
+			this.compareSuspiciousMetricSuggestionLinks
+		)
 		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+	}
+
+	private compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b: MetricSuggestionParameters): number {
+		if (a.outlierCustomConfigId && !b.outlierCustomConfigId) return -1
+		if (!a.outlierCustomConfigId && b.outlierCustomConfigId) return 1
+		return 0
 	}
 
 	private findGoodAndBadMetrics(metricValues, programmingLanguage): MetricAssessmentResults {
