@@ -60,7 +60,7 @@ export function getSelectedFilesSize(files: FileState[]) {
 	return totalFileSize
 }
 
-export function getCCFileAndDecorateFileChecksum(jsonInput: string | ExportWrappedCCFile | ExportCCFile): ExportCCFile {
+export function getCCFileAndDecorateFileChecksum(jsonInput: string | ExportWrappedCCFile | ExportCCFile): ExportCCFile | null {
 	let mappedFile: ExportCCFile = null
 
 	try {
