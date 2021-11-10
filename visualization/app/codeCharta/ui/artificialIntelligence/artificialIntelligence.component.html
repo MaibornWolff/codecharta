@@ -48,19 +48,9 @@
 				</md-button>
 			</md-menu-item>
 
-			<md-menu-item class="input-container md-block">
-				<md-checkbox
-					class="button"
-					ng-model="$ctrl._viewModel.isHighRiskFilesModeEnabled"
-					ng-change="$ctrl.onChangeHighRiskFilesModeCheckbox()"
-				>
-					Highlight Very High Risk files (if any)
-				</md-checkbox>
-			</md-menu-item>
-
-			<div class="ai-item1" ng-repeat="item in $ctrl._viewModel.suspiciousMetricSuggestionLinks">
+			<div class="ai-suspicious-metrics-list" ng-repeat="item in $ctrl._viewModel.suspiciousMetricSuggestionLinks">
 				<md-button
-					class=""
+					class="metric-button"
 					ng-click="$ctrl.applyCustomConfig(item.generalCustomConfigId)"
 					title="Click to apply Map Configuration to show files with suspicious metric {{
 						item.metric
@@ -70,11 +60,12 @@
 				</md-button>
 
 				<md-button
+					class="risk-button"
 					ng-click="$ctrl.applyCustomConfig(item.outlierCustomConfigId)"
 					ng-show="item.outlierCustomConfigId.length > 0"
 					title="Show very high risk files"
 				>
-					/!\
+					<i class="fa fa-exclamation-triangle"></i>
 				</md-button>
 			</div>
 		</md-menu-content>
@@ -113,28 +104,32 @@
 					class="low-risk"
 					style="width:{{ $ctrl._viewModel.riskProfile.lowRisk }}%"
 					ng-disabled="true"
-				></md-button>
+					>{{ $ctrl._viewModel.riskProfile.lowRisk }}%</md-button
+				>
 				<md-button
 					ng-if="$ctrl._viewModel.riskProfile.moderateRisk > 0"
 					title="Moderate Risk ({{ $ctrl._viewModel.riskProfile.moderateRisk }}% of code)"
 					class="moderate-risk"
 					style="width:{{ $ctrl._viewModel.riskProfile.moderateRisk }}%"
 					ng-disabled="true"
-				></md-button>
+					>{{ $ctrl._viewModel.riskProfile.moderateRisk }}%</md-button
+				>
 				<md-button
 					ng-if="$ctrl._viewModel.riskProfile.highRisk > 0"
 					title="High Risk ({{ $ctrl._viewModel.riskProfile.highRisk }}% of code)"
 					class="high-risk"
 					style="width:{{ $ctrl._viewModel.riskProfile.highRisk }}%"
 					ng-disabled="true"
-				></md-button>
+					>{{ $ctrl._viewModel.riskProfile.highRisk }}%</md-button
+				>
 				<md-button
 					ng-if="$ctrl._viewModel.riskProfile.veryHighRisk > 0"
 					title="Very High Risk ({{ $ctrl._viewModel.riskProfile.veryHighRisk }}% of code)"
 					class="very-high-risk"
 					style="width:{{ $ctrl._viewModel.riskProfile.veryHighRisk }}%"
 					ng-disabled="true"
-				></md-button>
+					>{{ $ctrl._viewModel.riskProfile.veryHighRisk }}%</md-button
+				>
 			</md-menu-item>
 		</md-menu-content>
 	</md-menu>
