@@ -179,7 +179,7 @@ jobs:
         with:
           projectBaseDir: ./visualization
           args: >
-            -Dsonar.javascript.lcov.reportPaths=./visualization/dist/coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=./dist/coverage/lcov.info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

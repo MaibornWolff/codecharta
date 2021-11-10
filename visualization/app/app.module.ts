@@ -5,17 +5,18 @@ import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
 
-import { SortingButtonComponent } from "./codeCharta/ui/sortingButton/sortingButton.component"
-import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
 import { MetricDeltaSelectedComponent } from "./codeCharta/ui/metricDeltaSelected/metricDeltaSelected.component"
-import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
-import { SortingOptionComponent } from "./codeCharta/ui/sortingOption/sortingOption.component"
 import { MaterialModule } from "./material/material.module"
+import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
+import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
+import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
+import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
+import { NodePathComponent } from "./codeCharta/ui/attributeSideBar/nodePath/nodePath.component"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule],
-	declarations: [SortingButtonComponent, MetricDeltaSelectedComponent, SortingOptionComponent],
-	entryComponents: [SortingButtonComponent, MapTreeViewComponent, MetricDeltaSelectedComponent, SortingOptionComponent]
+	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule],
+	declarations: [MetricDeltaSelectedComponent, NodePathComponent],
+	entryComponents: [MapTreeViewComponent, MetricDeltaSelectedComponent, MatchingFilesCounterComponent, NodePathComponent]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}
