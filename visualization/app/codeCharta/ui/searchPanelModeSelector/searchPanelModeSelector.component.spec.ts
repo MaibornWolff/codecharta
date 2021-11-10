@@ -3,7 +3,6 @@ import { SearchPanelModeSelectorController } from "./searchPanelModeSelector.com
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
-import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "../../state/store.service"
 import { SearchPanelModeService } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
@@ -30,14 +29,6 @@ describe("SearchPanelModeSelectorController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to Search-Pattern-Event", () => {
-			SearchPatternService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(SearchPatternService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
-		})
-
 		it("should subscribe to Blacklist-Event", () => {
 			BlacklistService.subscribe = jest.fn()
 
@@ -62,16 +53,6 @@ describe("SearchPanelModeSelectorController", () => {
 			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode)
 
 			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.blacklist)
-		})
-	})
-
-	describe("onSearchPatternChanged", () => {
-		it("should set searchFieldIsEmpty in viewModel", () => {
-			searchPanelModeSelectorController["_viewModel"].searchFieldIsEmpty = false
-
-			searchPanelModeSelectorController.onSearchPatternChanged("")
-
-			expect(searchPanelModeSelectorController["_viewModel"].searchFieldIsEmpty).toBeTruthy()
 		})
 	})
 
