@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Deprecated | Removed 🗑 | Fixed 🐞 | Security)
 
+### Changed
+
+-   Chore: Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern`.
+
 ## [1.83.1] - 2021-11-10
 
 ### Fixed 🐞
