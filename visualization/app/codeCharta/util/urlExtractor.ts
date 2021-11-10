@@ -1,7 +1,8 @@
 "use strict"
 import { ILocationService, IHttpService } from "angular"
 import { NameDataPair } from "../codeCharta.model"
-import { ExportCCFile } from "../codeCharta.api.model"
+import { ExportCCFile, ExportWrappedCCFile } from "../codeCharta.api.model"
+import { getCCFileAndDecorateFileChecksum } from "./fileHelper"
 
 export class UrlExtractor {
 	constructor(private $location: ILocationService, private $http: IHttpService) {}
@@ -38,9 +39,14 @@ export class UrlExtractor {
 		if (!fileName) {
 			throw new Error(`Filename is missing`)
 		}
+
 		const response = await this.$http.get(fileName)
 		if (response.status >= 200 && response.status < 300) {
-			return { fileName, fileSize: response.data.toString().length, content: response.data as ExportCCFile }
+			// @ts-ignore
+			const responseData: string | ExportCCFile | ExportWrappedCCFile = response.data
+			const content: ExportCCFile = getCCFileAndDecorateFileChecksum(responseData)
+
+			return { fileName, fileSize: response.data.toString().length, content }
 		}
 		throw new Error(`Could not load file "${fileName}"`)
 	}
