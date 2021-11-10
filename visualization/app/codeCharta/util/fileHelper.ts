@@ -1,6 +1,7 @@
-import { ExportBlacklistType, OldAttributeTypes } from "../codeCharta.api.model"
+import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTypes } from "../codeCharta.api.model"
 import { AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
+import md5 from "md5"
 
 export function getCCFile(file: NameDataPair): CCFile {
 	const fileContent = file.content
@@ -57,4 +58,32 @@ export function getSelectedFilesSize(files: FileState[]) {
 	}
 
 	return totalFileSize
+}
+
+export function getCCFileAndDecorateFileChecksum(jsonInput: string | ExportWrappedCCFile | ExportCCFile): ExportCCFile | null {
+	let mappedFile: ExportCCFile = null
+
+	try {
+		const fileContent: ExportCCFile | ExportWrappedCCFile =
+			typeof jsonInput === "string"
+				? (JSON.parse(jsonInput) as ExportWrappedCCFile | ExportCCFile)
+				: (jsonInput as ExportWrappedCCFile | ExportCCFile)
+
+		if ("data" in fileContent && "checksum" in fileContent) {
+			mappedFile = fileContent.data
+			mappedFile.fileChecksum = fileContent.checksum ? fileContent.checksum : md5(JSON.stringify(fileContent.data))
+
+			return mappedFile
+		}
+
+		if (!fileContent.fileChecksum) {
+			const jsonInputString = typeof jsonInput === "string" ? jsonInput : JSON.stringify(jsonInput)
+			fileContent.fileChecksum = md5(jsonInputString)
+		}
+		return fileContent
+	} catch {
+		// Explicitly ignored
+	}
+
+	return mappedFile
 }
