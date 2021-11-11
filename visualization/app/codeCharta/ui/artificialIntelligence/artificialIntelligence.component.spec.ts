@@ -178,8 +178,8 @@ describe("ArtificialIntelligenceController", () => {
 			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
 
 			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[0].generalCustomConfigId = "mocked"
+			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[0].outlierCustomConfigId = "mocked"
 			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[1].generalCustomConfigId = "mocked"
-			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[1].outlierCustomConfigId = "mocked"
 
 			expect(artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks).toMatchSnapshot()
 			expect(artificialIntelligenceController["_viewModel"].unsuspiciousMetrics).toMatchSnapshot()

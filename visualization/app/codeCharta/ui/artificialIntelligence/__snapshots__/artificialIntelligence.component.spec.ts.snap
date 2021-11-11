@@ -21,14 +21,6 @@ Object {
 exports[`ArtificialIntelligenceController on files selection changed should create custom config suggestions 1`] = `
 Array [
   Object {
-    "from": 48,
-    "generalCustomConfigId": "mocked",
-    "max": 0,
-    "metric": "mcc",
-    "min": 0,
-    "to": 71,
-  },
-  Object {
     "from": 29,
     "generalCustomConfigId": "mocked",
     "max": 0,
@@ -37,11 +29,19 @@ Array [
     "outlierCustomConfigId": "mocked",
     "to": 44,
   },
+  Object {
+    "from": 48,
+    "generalCustomConfigId": "mocked",
+    "max": 0,
+    "metric": "mcc",
+    "min": 0,
+    "to": 71,
+  },
 ]
 `;
 
 exports[`ArtificialIntelligenceController on files selection changed should create custom config suggestions 2`] = `
 Array [
-  "rloc",
+  "rloc (real lines of code)",
 ]
 `;
