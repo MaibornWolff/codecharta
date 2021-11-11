@@ -30,8 +30,10 @@
 		}
 	}
 }
+
 .ai-suspicious-metrics-list {
 	display: flex;
+
 	.metric-button {
 		min-height: 36px;
 		line-height: 23px;
@@ -41,6 +43,7 @@
 		margin-right: 0;
 		overflow: visible;
 	}
+
 	.risk-button {
 		margin-left: 0;
 		min-width: 36px;
@@ -49,25 +52,35 @@
 		color: #9c0e6a;
 	}
 }
+
 .ai-drop-down {
 	padding: 0;
 }
-md-menu-item.title {
+
+md-button.title {
 	color: rgba(0, 0, 0, 0.38);
-	margin-bottom: 10px;
-	line-height: 24px;
-	margin-top: 10px;
+	flex-direction: column;
 }
+
+md-menu-item.title-item {
+	height: 100%;
+
+	p.title {
+		margin: 12px 0px 12px;
+		line-height: 24px;
+	}
+}
+
 md-menu-item.ai-list-item {
 	padding: 0 16px;
+	margin-bottom: 10px;
 	height: auto;
 	min-height: unset;
-	margin-bottom: 10px;
-	line-height: 20px;
 }
 
 md-menu-item.risk-profile {
 	margin: 0 12px 12px 12px;
+
 	.md-button {
 		text-align: center;
 		color: black !important;
@@ -75,15 +88,19 @@ md-menu-item.risk-profile {
 		padding: 0;
 		margin: auto 0;
 	}
+
 	.low-risk {
 		background-color: #5cb34d;
 	}
+
 	.moderate-risk {
 		background: #eef432;
 	}
+
 	.high-risk {
 		background: #cc2900;
 	}
+
 	.very-high-risk {
 		background: #9c0e6a;
 	}

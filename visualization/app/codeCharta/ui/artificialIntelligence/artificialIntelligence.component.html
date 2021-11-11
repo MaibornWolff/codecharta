@@ -76,12 +76,14 @@
 			<i class="fa fa-bar-chart"></i>
 		</md-button>
 		<md-menu-content class="ai-drop-down">
-			<md-menu-item class="title">
-				<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
-					>Risk Profile for {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (most frequent programming language in
-					project)<br />
-					Calculations are always based on mcc (cyclomatic complexity)</span
-				>
+			<md-menu-item class="title-item">
+				<md-button ng-disabled="true">
+					<p class="title" ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
+						Risk Profile for {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (most frequent programming language in
+						project)<br />
+						Calculations are always based on mcc (cyclomatic complexity)
+					</p>
+				</md-button>
 			</md-menu-item>
 
 			<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.riskProfile === undefined">
