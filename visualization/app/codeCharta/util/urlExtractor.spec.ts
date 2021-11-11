@@ -29,7 +29,7 @@ describe("urlExtractor", () => {
 		})
 
 		$http.get = jest.fn().mockImplementation(async () => {
-			return { data: "some data", status: 200 }
+			return { data: '{"checksum": "fake-md5", "data": {"apiVersion": 1.3, "nodes": []}}', status: 200 }
 		})
 	}
 
@@ -105,8 +105,44 @@ describe("urlExtractor", () => {
 			return expect(urlExtractor.getFileDataFromFile("")).rejects.toEqual(new Error("Filename is missing"))
 		})
 
-		it("should resolve data and return an object with content and fileName", async () => {
-			const expected = { content: "some data", fileName: "test.json", fileSize: 9 }
+		it("should resolve data string of version 1.3 and return an object with content and fileName", async () => {
+			const expected = { content: { apiVersion: 1.3, fileChecksum: "fake-md5", nodes: [] }, fileName: "test.json", fileSize: 66 }
+			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+		})
+
+		it("should resolve data object of version 1.3 and return an object with content and fileName", async () => {
+			$http.get = jest.fn().mockImplementation(async () => {
+				return { data: { checksum: "", data: { apiVersion: 1.3, nodes: [] } }, status: 200 }
+			})
+			const expected = {
+				content: { apiVersion: 1.3, fileChecksum: "e59723b38e81becf997a191ca8e4a169", nodes: [] },
+				fileName: "test.json",
+				fileSize: 15
+			}
+			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+		})
+
+		it("should resolve data string of version 1.2 and return an object with content and fileName", async () => {
+			$http.get = jest.fn().mockImplementation(async () => {
+				return { data: '{"apiVersion":1.2,"nodes":[]}', status: 200 }
+			})
+			const expected = {
+				content: { apiVersion: 1.2, fileChecksum: "d0278536ce00e4fc7dbab39072ae43f6", nodes: [] },
+				fileName: "test.json",
+				fileSize: 29
+			}
+			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+		})
+
+		it("should resolve data object of version 1.2 and return an object with content and fileName", async () => {
+			$http.get = jest.fn().mockImplementation(async () => {
+				return { data: { apiVersion: 1.2, nodes: [] }, status: 200 }
+			})
+			const expected = {
+				content: { apiVersion: 1.2, fileChecksum: "d0278536ce00e4fc7dbab39072ae43f6", nodes: [] },
+				fileName: "test.json",
+				fileSize: 15
+			}
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
