@@ -113,6 +113,21 @@ describe("ArtificialIntelligenceController", () => {
 		})
 	})
 
+	describe("suspiciousMetricSuggestionLinks list", () => {
+		it("should set suspicious metrics with a outlierCustomConfigId at the beginning of the list", function () {
+			//toDO: finalize implementation
+			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
+			artificialIntelligenceController["compareSuspiciousMetricSuggestionLinks"] = jest.fn()
+			artificialIntelligenceController["fileState"] = FILE_STATES_JAVA[0]
+
+			storeService.dispatch(setExperimentalFeaturesEnabled(true))
+			artificialIntelligenceController.onExperimentalFeaturesEnabledChanged(true)
+
+			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["compareSuspiciousMetricSuggestionLinks"]).toHaveBeenCalled()
+		})
+	})
+
 	describe("apply custom Config", () => {
 		it("should call store.dispatch", () => {
 			const customConfigStub = {
