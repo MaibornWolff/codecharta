@@ -32,13 +32,13 @@
 }
 
 .ai-suspicious-metrics-list {
-	display: flex;
+	margin: 0;
+	padding-left: 0;
+}
 
+.ai-suspicious-metrics-item {
 	.metric-button {
-		min-height: 36px;
-		line-height: 23px;
-		min-width: 45px;
-		padding: 0 12px 0 12px;
+		padding: 0 12px;
 		text-transform: none;
 		margin-right: 0;
 		overflow: visible;
@@ -47,7 +47,6 @@
 	.risk-button {
 		margin-left: 0;
 		min-width: 36px;
-		width: 36px;
 		height: 36px;
 		color: #9c0e6a;
 	}
@@ -57,14 +56,8 @@
 	padding: 0;
 }
 
-md-button.title {
-	color: rgba(0, 0, 0, 0.38);
-	flex-direction: column;
-}
-
 md-menu-item.title-item {
 	height: 100%;
-
 	p.title {
 		margin: 12px 0px 12px;
 		line-height: 24px;
@@ -80,7 +73,15 @@ md-menu-item.ai-list-item {
 
 md-menu-item.risk-profile {
 	margin: 0 12px 12px 12px;
-
+	div {
+		height: 36px;
+		text-align: center;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 0;
+		overflow: hidden;
+	}
 	.md-button {
 		text-align: center;
 		color: black !important;
