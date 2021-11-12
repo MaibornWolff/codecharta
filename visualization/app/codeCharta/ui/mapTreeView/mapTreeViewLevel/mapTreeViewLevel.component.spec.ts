@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen, fireEvent } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { setSearchedNodePaths } from "../../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { Store } from "../../../state/store/store"
 
+import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
+import { Store } from "../../../state/store/store"
 import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu.component"
 import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
@@ -15,6 +15,12 @@ jest.mock("../../nodeContextMenu/nodeContextMenu.component", () => ({
 		broadcastShowEvent: jest.fn()
 	}
 }))
+jest.mock("../../../state/selectors/searchedNodes/searchedNodePaths.selector", () => ({
+	searchedNodePathsSelector: jest.fn(
+		jest.requireActual("../../../state/selectors/searchedNodes/searchedNodePaths.selector").searchedNodePathsSelector
+	)
+}))
+const searchedNodePathsSelectorMock = searchedNodePathsSelector as unknown as jest.Mock<ReturnType<typeof searchedNodePathsSelector>>
 
 describe("mapTreeViewLevel", () => {
 	const componentProperties = {
@@ -103,12 +109,12 @@ describe("mapTreeViewLevel", () => {
 	})
 
 	it("should make searched items 'angular-green'", async () => {
+		searchedNodePathsSelectorMock.mockImplementationOnce(() => new Set(["/root/bigLeaf"]))
 		const { container, detectChanges } = await render(MapTreeViewLevelComponent, {
 			componentProperties,
 			excludeComponentDeclaration: true
 		})
 
-		Store.store.dispatch(setSearchedNodePaths(new Set(["/root/bigLeaf"])))
 		detectChanges()
 
 		const bigLeaf = container.querySelector("#\\/root\\/bigLeaf")

@@ -3,6 +3,17 @@ import { BlacklistType, CodeMapNode, ColorMode, EdgeVisibility, NodeType, State 
 import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 
+jest.mock("../../../state/selectors/accumulatedData/unifiedMapNode.selector", () => ({
+	unifiedMapNodeSelector: () => ({
+		name: "Anode",
+		path: "/root/Anode",
+		type: "File",
+		attributes: { theHeight: 100 },
+		isExcluded: false,
+		isFlattened: false
+	})
+}))
+
 describe("TreeMapHelper", () => {
 	describe("build node", () => {
 		let codeMapNode: CodeMapNode
@@ -175,19 +186,16 @@ describe("TreeMapHelper", () => {
 			})
 
 			it("should not be a flat node, because its searched for", () => {
-				state.dynamicSettings.searchedNodePaths = new Set(["/root/Anode"])
-				state.dynamicSettings.searchPattern = "Anode"
+				state.dynamicSettings.searchPattern = "/root/Anode"
 				expect(buildNode().flat).toBeFalsy()
 			})
 
 			it("should be a flat node, because other nodes are searched for", () => {
-				state.dynamicSettings.searchedNodePaths = new Set(["/root/anotherNode", "/root/anotherNode2"])
-				state.dynamicSettings.searchPattern = "Anode"
+				state.dynamicSettings.searchPattern = "/root/anotherNode2"
 				expect(buildNode().flat).toBeTruthy()
 			})
 
 			it("should not be a flat node when searchPattern is empty", () => {
-				state.dynamicSettings.searchedNodePaths = new Set(["/root/anotherNode", "/root/anotherNode2"])
 				state.dynamicSettings.searchPattern = ""
 				expect(buildNode().flat).toBeFalsy()
 			})

@@ -8,7 +8,6 @@ import { splitEdgeMetricAction } from "./edgeMetric/edgeMetric.splitter"
 import { splitColorRangeAction } from "./colorRange/colorRange.splitter"
 import { splitMarginAction } from "./margin/margin.splitter"
 import { splitSearchPatternAction } from "./searchPattern/searchPattern.splitter"
-import { splitSearchedNodePathsAction } from "./searchedNodePaths/searchedNodePaths.splitter"
 import { splitFocusedNodePathAction } from "./focusedNodePath/focusedNodePath.splitter"
 import { splitHeightMetricAction } from "./heightMetric/heightMetric.splitter"
 import { splitDistributionMetricAction } from "./distributionMetric/distributionMetric.splitter"
@@ -45,10 +44,6 @@ export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSet
 
 	if (payload.searchPattern !== undefined) {
 		actions.push(splitSearchPatternAction(payload.searchPattern))
-	}
-
-	if (payload.searchedNodePaths !== undefined) {
-		actions.push(splitSearchedNodePathsAction(payload.searchedNodePaths as Set<string>))
 	}
 
 	if (payload.focusedNodePath !== undefined) {

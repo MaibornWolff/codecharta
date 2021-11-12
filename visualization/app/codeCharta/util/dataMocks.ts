@@ -1740,7 +1740,6 @@ export const STATE: State = {
 		distributionMetric: "mcc",
 		edgeMetric: "pairingRate",
 		focusedNodePath: "/root/ParentLeaf",
-		searchedNodePaths: new Set(),
 		searchPattern: "",
 		margin: 48,
 		colorRange: {
@@ -1890,7 +1889,6 @@ export const DEFAULT_STATE: State = {
 		},
 		colorMode: ColorMode.weightedGradient,
 		searchPattern: "",
-		searchedNodePaths: new Set(),
 		sortingOption: SortingOption.NAME,
 		recentFiles: []
 	},
