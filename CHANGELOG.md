@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern`.
+-   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern` ([#2495](https://github.com/MaibornWolff/codecharta/pull/2495)).
 
 ## [1.83.1] - 2021-11-10
 
