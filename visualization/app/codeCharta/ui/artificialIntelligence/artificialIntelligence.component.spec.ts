@@ -113,21 +113,6 @@ describe("ArtificialIntelligenceController", () => {
 		})
 	})
 
-	describe("suspiciousMetricSuggestionLinks list", () => {
-		it("should set suspicious metrics with a outlierCustomConfigId at the beginning of the list", function () {
-			//toDO: finalize implementation
-			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
-			artificialIntelligenceController["compareSuspiciousMetricSuggestionLinks"] = jest.fn()
-			artificialIntelligenceController["fileState"] = FILE_STATES_JAVA[0]
-
-			storeService.dispatch(setExperimentalFeaturesEnabled(true))
-			artificialIntelligenceController.onExperimentalFeaturesEnabledChanged(true)
-
-			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
-			expect(artificialIntelligenceController["compareSuspiciousMetricSuggestionLinks"]).toHaveBeenCalled()
-		})
-	})
-
 	describe("apply custom Config", () => {
 		it("should call store.dispatch", () => {
 			const customConfigStub = {
@@ -181,7 +166,7 @@ describe("ArtificialIntelligenceController", () => {
 			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
 		})
 
-		it("should create custom config suggestions", () => {
+		it("should create custom config suggestions sorted by outlierCustomConfigId", () => {
 			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
 
@@ -195,6 +180,8 @@ describe("ArtificialIntelligenceController", () => {
 			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[0].generalCustomConfigId = "mocked"
 			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[0].outlierCustomConfigId = "mocked"
 			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[1].generalCustomConfigId = "mocked"
+			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[1].outlierCustomConfigId = "mocked"
+			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks[2].generalCustomConfigId = "mocked"
 
 			expect(artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks).toMatchSnapshot()
 			expect(artificialIntelligenceController["_viewModel"].unsuspiciousMetrics).toMatchSnapshot()
