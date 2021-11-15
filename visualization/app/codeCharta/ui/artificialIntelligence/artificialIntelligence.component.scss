@@ -36,6 +36,7 @@
 }
 .ai-drop-down {
 	padding: 16px;
+	width: fit-content;
 
 	md-menu-item {
 		height: auto;
@@ -57,6 +58,7 @@
 			margin: 0;
 			padding: 0;
 			list-style: none;
+			width: max-content;
 		}
 
 		.suspicious-metric {
