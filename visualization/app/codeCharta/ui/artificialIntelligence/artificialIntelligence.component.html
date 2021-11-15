@@ -95,7 +95,8 @@
 					ng-if="$ctrl._viewModel.riskProfile.lowRisk > 0"
 					title="Low Risk ({{ $ctrl._viewModel.riskProfile.lowRisk }}% of code)"
 					class="risk-profile low-risk"
-					style="width:{{ $ctrl._viewModel.riskProfile.lowRisk }}%"
+					style="width:{{ $ctrl._viewModel.riskProfile.lowRisk }}%;
+                 {{ $ctrl._viewModel.riskProfile.lowRisk < 5 ? 'color:rgba(0,0,0,0)' : '' }}"
 				>
 					{{ $ctrl._viewModel.riskProfile.lowRisk }}%
 				</div>
@@ -103,7 +104,8 @@
 					ng-if="$ctrl._viewModel.riskProfile.moderateRisk > 0"
 					title="Moderate Risk ({{ $ctrl._viewModel.riskProfile.moderateRisk }}% of code)"
 					class="risk-profile moderate-risk"
-					style="width:{{ $ctrl._viewModel.riskProfile.moderateRisk }}%"
+					style="width:{{ $ctrl._viewModel.riskProfile.moderateRisk }}%;
+                {{ $ctrl._viewModel.riskProfile.moderateRisk < 5 ? 'color:rgba(0,0,0,0)' : '' }}"
 				>
 					{{ $ctrl._viewModel.riskProfile.moderateRisk }}%
 				</div>
@@ -111,7 +113,8 @@
 					ng-if="$ctrl._viewModel.riskProfile.highRisk > 0"
 					title="High Risk ({{ $ctrl._viewModel.riskProfile.highRisk }}% of code)"
 					class="risk-profile high-risk"
-					style="width:{{ $ctrl._viewModel.riskProfile.highRisk }}%"
+					style="width:{{ $ctrl._viewModel.riskProfile.highRisk }}%;
+                {{ $ctrl._viewModel.riskProfile.highRisk < 5 ? 'color:rgba(0,0,0,0)' : '' }}"
 				>
 					{{ $ctrl._viewModel.riskProfile.highRisk }}%
 				</div>
@@ -119,7 +122,8 @@
 					ng-if="$ctrl._viewModel.riskProfile.veryHighRisk > 0"
 					title="Very High Risk ({{ $ctrl._viewModel.riskProfile.veryHighRisk }}% of code)"
 					class="risk-profile very-high-risk"
-					style="width:{{ $ctrl._viewModel.riskProfile.veryHighRisk }}%"
+					style="width:{{ $ctrl._viewModel.riskProfile.veryHighRisk }}%;
+                {{ $ctrl._viewModel.riskProfile.veryHighRisk < 5 ? 'color:rgba(0,0,0,0)' : '' }}"
 				>
 					{{ $ctrl._viewModel.riskProfile.veryHighRisk }}%
 				</div>
