@@ -12,7 +12,6 @@ import { defaultEdgeMetric } from "./edgeMetric/edgeMetric.actions"
 import { defaultFocusedNodePath } from "./focusedNodePath/focusedNodePath.actions"
 import { defaultHeightMetric } from "./heightMetric/heightMetric.actions"
 import { defaultMargin } from "./margin/margin.actions"
-import { defaultSearchedNodePaths } from "./searchedNodePaths/searchedNodePaths.actions"
 import { defaultSearchPattern } from "./searchPattern/searchPattern.actions"
 
 export enum DynamicSettingsActions {
@@ -44,7 +43,6 @@ export const defaultDynamicSettings: DynamicSettings = {
 	distributionMetric: defaultDistributionMetric,
 	edgeMetric: defaultEdgeMetric,
 	focusedNodePath: defaultFocusedNodePath,
-	searchedNodePaths: defaultSearchedNodePaths,
 	searchPattern: defaultSearchPattern,
 	margin: defaultMargin,
 	colorRange: defaultColorRange

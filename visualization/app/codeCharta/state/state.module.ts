@@ -44,7 +44,6 @@ import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
-import { NodeSearchService } from "./nodeSearch.service"
 import "../codeCharta.module"
 import camelCase from "lodash.camelcase"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
@@ -106,7 +105,6 @@ angular
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
 	.service(camelCase(StoreService.name), StoreService)
-	.service(camelCase(NodeSearchService.name), NodeSearchService)
 	.service(camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)
 	.service(camelCase(MaxTreeMapFilesService.name), MaxTreeMapFilesService)
 	.service(camelCase(SharpnessModeService.name), SharpnessModeService)

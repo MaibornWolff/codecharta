@@ -148,7 +148,7 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v1.5
+        uses: SonarSource/sonarcloud-github-action@v1.6
         with:
           projectBaseDir: ./analysis
         env:
@@ -175,7 +175,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-        uses: SonarSource/sonarcloud-github-action@v1.5
+        uses: SonarSource/sonarcloud-github-action@v1.6
         with:
           projectBaseDir: ./visualization
           args: >
