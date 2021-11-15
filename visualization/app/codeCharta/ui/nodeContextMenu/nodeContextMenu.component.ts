@@ -155,8 +155,7 @@ export class NodeContextMenuController
 		const blacklistItem: BlacklistItem = {
 			path: codeMapNode.path,
 			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type,
-			attributes: codeMapNode.attributes
+			nodeType: codeMapNode.type
 		}
 		this.storeService.dispatch(addBlacklistItem(blacklistItem))
 	}
@@ -166,8 +165,7 @@ export class NodeContextMenuController
 		const blacklistItem: BlacklistItem = {
 			path: codeMapNode.path,
 			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type,
-			attributes: codeMapNode.attributes
+			nodeType: codeMapNode.type
 		}
 		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
 	}
@@ -177,8 +175,7 @@ export class NodeContextMenuController
 		const blacklistItem: BlacklistItem = {
 			path: codeMapNode.path,
 			type: BlacklistType.exclude,
-			nodeType: codeMapNode.type,
-			attributes: codeMapNode.attributes
+			nodeType: codeMapNode.type
 		}
 
 		if (this.blacklistService.resultsInEmptyMap([blacklistItem])) {

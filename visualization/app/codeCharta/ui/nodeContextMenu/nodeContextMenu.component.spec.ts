@@ -441,6 +441,15 @@ describe("nodeContextMenuController", () => {
 
 			expect(dialogService.showErrorDialog).toBeCalled()
 		})
+
+		it("should prevent duplicate blacklist object regarding issue #2419", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => false)
+
+			nodeContextMenuController.excludeNode()
+			nodeContextMenuController.excludeNode()
+
+			expect(storeService.getState().fileSettings.blacklist.length).toEqual(1)
+		})
 	})
 
 	describe("nodeIsFolder", () => {
