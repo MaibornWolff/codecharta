@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto approve
-        uses: hmarr/auto-approve-action@v2.0.0
+        uses: hmarr/auto-approve-action@v2.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto merge
-        uses: pascalgn/automerge-action@135f0bdb927d9807b5446f7ca9ecc2c51de03c4a
+        uses: pascalgn/automerge-action@04dfc9eae2586d19b7362d4f6413c48135d9c25a
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_LABELS: dependencies
