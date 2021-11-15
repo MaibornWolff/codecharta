@@ -183,10 +183,10 @@ export class ArtificialIntelligenceController
 		}
 
 		this._viewModel.riskProfile = {
-			lowRisk: Math.ceil((numberOfRlocLowRisk / totalRloc) * 100),
-			moderateRisk: Math.ceil((numberOfRlocModerateRisk / totalRloc) * 100),
-			highRisk: Math.ceil((numberOfRlocHighRisk / totalRloc) * 100),
-			veryHighRisk: Math.ceil((numberOfRlocVeryHighRisk / totalRloc) * 100)
+			lowRisk: Math.floor((numberOfRlocLowRisk / totalRloc) * 100),
+			moderateRisk: Math.floor((numberOfRlocModerateRisk / totalRloc) * 100),
+			highRisk: Math.floor((numberOfRlocHighRisk / totalRloc) * 100),
+			veryHighRisk: Math.floor((numberOfRlocVeryHighRisk / totalRloc) * 100)
 		}
 	}
 

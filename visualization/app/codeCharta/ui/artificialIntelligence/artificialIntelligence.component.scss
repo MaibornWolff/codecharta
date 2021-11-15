@@ -16,7 +16,7 @@
 			min-width: 30px;
 		}
 
-		#ai-badge {
+		.ai-badge {
 			position: absolute;
 			top: 12px;
 			padding: 4px 6px;
@@ -28,81 +28,114 @@
 			height: 18px;
 			line-height: 10px;
 		}
+
+		&:hover {
+			background-color: #c8c8c8;
+		}
 	}
 }
-
-.ai-suspicious-metrics-list {
-	margin: 0;
-	padding-left: 0;
-}
-
-.ai-suspicious-metrics-item {
-	.metric-button {
-		padding: 0 12px;
-		text-transform: none;
-		margin-right: 0;
-		overflow: visible;
-	}
-
-	.risk-button {
-		margin-left: 0;
-		min-width: 36px;
-		height: 36px;
-		color: #9c0e6a;
-	}
-}
-
 .ai-drop-down {
-	padding: 0;
-}
+	padding: 16px;
 
-md-menu-item.title-item {
-	height: 100%;
-	p.title {
-		margin: 12px 0px 12px;
-		line-height: 24px;
-	}
-}
-
-md-menu-item.ai-list-item {
-	padding: 0 16px;
-	margin-bottom: 10px;
-	height: auto;
-	min-height: unset;
-}
-
-md-menu-item.risk-profile {
-	margin: 0 12px 12px 12px;
-	div {
-		height: 36px;
-		text-align: center;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 0;
-		overflow: hidden;
-	}
-	.md-button {
-		text-align: center;
-		color: black !important;
-		min-width: unset;
-		padding: 0;
-		margin: auto 0;
+	md-menu-item {
+		height: auto;
+		min-height: auto;
 	}
 
-	.low-risk {
-		background-color: #5cb34d;
+	md-menu-item:not(:last-child) {
+		margin-bottom: 16px;
 	}
 
-	.moderate-risk {
-		background: #eef432;
+	&.metrics {
+		.title span {
+			padding: 0;
+			margin: 0;
+			font-weight: bold;
+		}
+
+		.suspicious-metrics {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.suspicious-metric {
+			.metric-button {
+				border-radius: 5px;
+				background-color: rgba(230, 230, 230, 0.96);
+				padding: 0 12px;
+				text-transform: none;
+				margin: 0;
+
+				&.high-risk {
+					border-radius: 5px 0 0 5px;
+				}
+			}
+
+			.risk-button {
+				border-radius: 0 5px 5px 0;
+				background-color: rgba(230, 230, 230, 0.96);
+				margin: 0;
+				min-width: 36px;
+				height: 36px;
+				color: #9c0e6a;
+			}
+
+			.risk-button:hover,
+			.metric-button:hover {
+				background-color: #c8c8c8;
+			}
+
+			&:not(:last-child) {
+				margin-bottom: 12px;
+			}
+		}
 	}
 
-	.high-risk {
-		background: #cc2900;
-	}
+	&.summary {
+		.title {
+			flex-direction: column;
+			gap: 6px;
 
-	.very-high-risk {
-		background: #9c0e6a;
+			p {
+				padding: 0;
+				margin: 0;
+			}
+		}
+
+		.risk-profiles {
+			.risk-profile {
+				height: 36px;
+				text-align: center;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 0;
+				overflow: hidden;
+
+				&.low-risk,
+				&.moderate-risk,
+				&.high-risk,
+				&.very-high-risk {
+					color: black;
+				}
+			}
+
+			.low-risk {
+				background-color: #5cb34d;
+			}
+
+			.moderate-risk {
+				background-color: #eef432;
+			}
+
+			.high-risk {
+				background-color: #cc2900;
+			}
+
+			.very-high-risk {
+				background-color: #9c0e6a;
+			}
+		}
 	}
 }

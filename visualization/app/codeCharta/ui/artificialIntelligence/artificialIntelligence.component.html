@@ -7,7 +7,7 @@
 		>
 			<i class="fa fa-exclamation-triangle"></i>
 			<span
-				id="ai-badge"
+				class="ai-badge"
 				ng-show="
 					!hideBadge &&
 					($ctrl._viewModel.riskProfile !== undefined ||
@@ -15,44 +15,37 @@
 						$ctrl._viewModel.unsuspiciousMetrics.length)
 				"
 			>
-				{{
-					($ctrl._viewModel.riskProfile !== undefined ? 1 : 0) +
-						($ctrl._viewModel.suspiciousMetricSuggestionLinks.length ? 1 : 0) +
-						($ctrl._viewModel.unsuspiciousMetrics.length ? 1 : 0)
-				}}
+				{{ $ctrl._viewModel.suspiciousMetricSuggestionLinks.length }}
 			</span>
 		</md-button>
 
-		<md-menu-content class="ai-drop-down">
-			<md-menu-item class="ai-item" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length">
-				<md-button ng-disabled="true">
-					<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
-						>Unsuspicious Metrics in {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code</span
-					>
-					<span ng-show="!$ctrl._viewModel.analyzedProgrammingLanguage.length">Unsuspicious Metrics</span>
-				</md-button>
+		<md-menu-content class="ai-drop-down metrics">
+			<md-menu-item class="title" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length">
+				<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
+					Unsuspicious Metrics in {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code
+				</span>
+				<span ng-show="!$ctrl._viewModel.analyzedProgrammingLanguage.length"> Unsuspicious Metrics </span>
 			</md-menu-item>
 
-			<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.unsuspiciousMetrics.length">
+			<md-menu-item ng-show="$ctrl._viewModel.unsuspiciousMetrics.length">
 				<ul>
 					<li ng-repeat="unsuspiciousMetric in $ctrl._viewModel.unsuspiciousMetrics">{{ unsuspiciousMetric }}</li>
 				</ul>
 			</md-menu-item>
 
-			<md-menu-item class="ai-item" ng-show="$ctrl._viewModel.suspiciousMetricSuggestionLinks.length"
-				><md-button ng-disabled="true">
-					<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length"
-						>Suspicious Metrics in {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (click below to view)</span
-					>
-					<span ng-show="!$ctrl._viewModel.analyzedProgrammingLanguage.length">Suspicious Metrics (click below to view)</span>
-				</md-button>
+			<md-menu-item class="title" ng-show="$ctrl._viewModel.suspiciousMetricSuggestionLinks.length">
+				<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
+					Suspicious Metrics in {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code
+				</span>
+				<span ng-show="!$ctrl._viewModel.analyzedProgrammingLanguage.length"> Suspicious Metrics (click below to view) </span>
 			</md-menu-item>
-			<ul class="ai-suspicious-metrics-list">
-				<li class="ai-suspicious-metrics-item" ng-repeat="item in $ctrl._viewModel.suspiciousMetricSuggestionLinks">
+
+			<ul class="suspicious-metrics">
+				<li class="suspicious-metric" ng-repeat="item in $ctrl._viewModel.suspiciousMetricSuggestionLinks">
 					<md-button
-						class="metric-button"
+						class="metric-button {{ item.outlierCustomConfigId.length > 0 ? 'high-risk' : '' }}"
 						ng-click="$ctrl.applyCustomConfig(item.generalCustomConfigId)"
-						title="Click to apply Map Configuration to show files with suspicious metric {{
+						title="Apply Map Configuration to show files with suspicious metric {{
 							item.metric
 						}} and high risk or very high risk depending on selection"
 					>
@@ -76,64 +69,57 @@
 		<md-button class="high-risk-profile-button" ng-click="$mdMenu.open($event)" title="Open High Risk Profile">
 			<i class="fa fa-bar-chart"></i>
 		</md-button>
-		<md-menu-content class="ai-drop-down">
-			<md-menu-item class="title-item">
-				<md-button ng-disabled="true">
-					<p class="title" ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
-						Risk Profile for {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (most frequent programming language in
-						project)<br />
-						Calculations are always based on mcc (cyclomatic complexity)
-					</p>
-				</md-button>
+
+		<md-menu-content class="ai-drop-down summary">
+			<md-menu-item class="title">
+				<p ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
+					Risk Profile for {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (most frequent programming language in project)
+				</p>
+				<p>Calculations are always based on mcc (cyclomatic complexity)</p>
 			</md-menu-item>
 
-			<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.riskProfile === undefined">
-				<span>Could not calculate Risk Profile. Metrics rloc and mcc not available.</span>
-			</md-menu-item>
-
-			<md-menu-item class="ai-list-item" ng-show="$ctrl._viewModel.riskProfile !== undefined">
-				<ul>
+			<md-menu-item class="suspicious-metrics-summary">
+				<ul ng-show="$ctrl._viewModel.riskProfile !== undefined">
 					<li>{{ $ctrl._viewModel.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
 					<li>{{ $ctrl._viewModel.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
 					<li>{{ $ctrl._viewModel.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
 					<li>{{ $ctrl._viewModel.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
 				</ul>
+				<span ng-show="$ctrl._viewModel.riskProfile === undefined">
+					Could not calculate Risk Profile. Metrics rloc and mcc not available.
+				</span>
 			</md-menu-item>
 
-			<md-menu-item class="ai-item risk-profile" ng-show="$ctrl._viewModel.riskProfile !== undefined">
+			<md-menu-item class="risk-profiles" ng-show="$ctrl._viewModel.riskProfile !== undefined">
 				<div
 					ng-if="$ctrl._viewModel.riskProfile.lowRisk > 0"
 					title="Low Risk ({{ $ctrl._viewModel.riskProfile.lowRisk }}% of code)"
-					class="low-risk"
+					class="risk-profile low-risk"
 					style="width:{{ $ctrl._viewModel.riskProfile.lowRisk }}%"
-					ng-disabled="true"
 				>
 					{{ $ctrl._viewModel.riskProfile.lowRisk }}%
 				</div>
 				<div
 					ng-if="$ctrl._viewModel.riskProfile.moderateRisk > 0"
 					title="Moderate Risk ({{ $ctrl._viewModel.riskProfile.moderateRisk }}% of code)"
-					class="moderate-risk"
+					class="risk-profile moderate-risk"
 					style="width:{{ $ctrl._viewModel.riskProfile.moderateRisk }}%"
-					ng-disabled="true"
 				>
 					{{ $ctrl._viewModel.riskProfile.moderateRisk }}%
 				</div>
 				<div
 					ng-if="$ctrl._viewModel.riskProfile.highRisk > 0"
 					title="High Risk ({{ $ctrl._viewModel.riskProfile.highRisk }}% of code)"
-					class="high-risk"
+					class="risk-profile high-risk"
 					style="width:{{ $ctrl._viewModel.riskProfile.highRisk }}%"
-					ng-disabled="true"
 				>
 					{{ $ctrl._viewModel.riskProfile.highRisk }}%
 				</div>
 				<div
 					ng-if="$ctrl._viewModel.riskProfile.veryHighRisk > 0"
 					title="Very High Risk ({{ $ctrl._viewModel.riskProfile.veryHighRisk }}% of code)"
-					class="very-high-risk"
+					class="risk-profile very-high-risk"
 					style="width:{{ $ctrl._viewModel.riskProfile.veryHighRisk }}%"
-					ng-disabled="true"
 				>
 					{{ $ctrl._viewModel.riskProfile.veryHighRisk }}%
 				</div>
