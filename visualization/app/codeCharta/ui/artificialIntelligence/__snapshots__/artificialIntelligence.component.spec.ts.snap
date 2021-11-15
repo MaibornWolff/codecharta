@@ -11,8 +11,8 @@ Object {
 
 exports[`ArtificialIntelligenceController on files selection changed should clear and calculate risk profile for Java map 1`] = `
 Object {
-  "highRisk": 12,
-  "lowRisk": 89,
+  "highRisk": 11,
+  "lowRisk": 88,
   "moderateRisk": 0,
   "veryHighRisk": 0,
 }
