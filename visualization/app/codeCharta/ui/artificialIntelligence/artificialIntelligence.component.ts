@@ -22,6 +22,7 @@ import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
+import { metricDescriptions } from "../../util/metric/metricDescriptions"
 
 interface MetricValues {
 	[metric: string]: number[]
@@ -54,6 +55,7 @@ export class ArtificialIntelligenceController
 			highRisk: number
 			veryHighRisk: number
 		}
+		isHighRiskFilesModeEnabled: boolean
 	} = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
@@ -63,7 +65,8 @@ export class ArtificialIntelligenceController
 			moderateRisk: 0,
 			highRisk: 0,
 			veryHighRisk: 0
-		}
+		},
+		isHighRiskFilesModeEnabled: false
 	}
 
 	private debounceCalculation: () => void
@@ -180,10 +183,10 @@ export class ArtificialIntelligenceController
 		}
 
 		this._viewModel.riskProfile = {
-			lowRisk: Math.ceil((numberOfRlocLowRisk / totalRloc) * 100),
-			moderateRisk: Math.ceil((numberOfRlocModerateRisk / totalRloc) * 100),
-			highRisk: Math.ceil((numberOfRlocHighRisk / totalRloc) * 100),
-			veryHighRisk: Math.ceil((numberOfRlocVeryHighRisk / totalRloc) * 100)
+			lowRisk: Math.floor((numberOfRlocLowRisk / totalRloc) * 100),
+			moderateRisk: Math.floor((numberOfRlocModerateRisk / totalRloc) * 100),
+			highRisk: Math.floor((numberOfRlocHighRisk / totalRloc) * 100),
+			veryHighRisk: Math.floor((numberOfRlocVeryHighRisk / totalRloc) * 100)
 		}
 	}
 
@@ -224,9 +227,16 @@ export class ArtificialIntelligenceController
 		}
 
 		CustomConfigHelper.addCustomConfigs(newCustomConfigs)
-
-		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()]
+		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()].sort(
+			this.compareSuspiciousMetricSuggestionLinks
+		)
 		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+	}
+
+	private compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b: MetricSuggestionParameters): number {
+		if (a.outlierCustomConfigId && !b.outlierCustomConfigId) return -1
+		if (!a.outlierCustomConfigId && b.outlierCustomConfigId) return 1
+		return 0
 	}
 
 	private findGoodAndBadMetrics(metricValues, programmingLanguage): MetricAssessmentResults {
@@ -248,7 +258,7 @@ export class ArtificialIntelligenceController
 			const maxMetricValue = Math.max(...valuesOfMetric)
 
 			if (maxMetricValue <= thresholdConfig.percentile70) {
-				metricAssessmentResults.unsuspiciousMetrics.push(metricName)
+				metricAssessmentResults.unsuspiciousMetrics.push(`${metricName} (${metricDescriptions.get(metricName)})`)
 			} else if (maxMetricValue > thresholdConfig.percentile70) {
 				metricAssessmentResults.suspiciousMetrics.set(metricName, {
 					from: thresholdConfig.percentile70,

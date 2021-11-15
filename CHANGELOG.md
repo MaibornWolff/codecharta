@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Improved the UI and usability of the Suspicious Metrics Feature ([#2376](https://github.com/MaibornWolff/codecharta/pull/2494)) <br>
+    -   The Metrics and the Analysis are now split in two menus <br>
+        <img src="https://user-images.githubusercontent.com/48621967/141795078-bb856f53-1bc3-4c09-8be5-d031899835ae.png" height="64px" alt="two menu buttons"/>
+    -   The Suspicious Metrics are now sorted with the Very High Risk on top <br>
+        <img src="https://user-images.githubusercontent.com/48621967/141793011-1bfc0e19-bd3a-4bd2-af70-c3dd472821b6.png" height="256px" alt="list of suspicious metrics"/>
+    -   The bar in the analysis shows the percentages <br>
+        <img src="https://user-images.githubusercontent.com/48621967/141791111-564778fa-b767-4ee4-b024-6856f1a79b4b.png" width="512px" alt="list of suspicious metrics"/>
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern` ([#2495](https://github.com/MaibornWolff/codecharta/pull/2495)).
