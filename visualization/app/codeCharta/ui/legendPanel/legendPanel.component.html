@@ -50,7 +50,7 @@
 	</div>
 	<hr />
 	<cc-store-color-picker map-color-for="selected" label="selected"> </cc-store-color-picker>
-	<hr />
+	<hr ng-if="$ctrl._viewModel.edgeMetricHasEdge" />
 	<div ng-if="$ctrl._viewModel.edgeMetricHasEdge">
 		<cc-store-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-store-color-picker>
 		<cc-store-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-store-color-picker>
