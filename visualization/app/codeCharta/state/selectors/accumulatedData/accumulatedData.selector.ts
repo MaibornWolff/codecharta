@@ -6,12 +6,13 @@ import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { createSelector } from "../../angular-redux/store"
 import { filesSelector } from "../../store/files/files.selector"
-import { fileSettingsSelector } from "../../store/fileSettings/fileSettings.selector"
 import { metricDataSelector } from "../../store/metricData/metricData.selector"
 import { CcState } from "../../store/store"
 import { metricNamesSelector } from "./metricNames.selector"
 import { getDeltaFile } from "./utils/getDeltaFile"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
+import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.selector"
+import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
 
 const accumulatedDataFallback = Object.freeze({
 	unifiedMapNode: undefined,
@@ -19,16 +20,16 @@ const accumulatedDataFallback = Object.freeze({
 })
 
 export const accumulatedDataSelector: (state: CcState) => { unifiedMapNode: CodeMapNode; unifiedFileMeta: FileMeta } = createSelector(
-	[metricDataSelector, filesSelector, fileSettingsSelector, metricNamesSelector],
-	(metricData, files, fileSettings, metricNames) => {
+	[metricDataSelector, filesSelector, attributeTypesSelector, blacklistSelector, metricNamesSelector],
+	(metricData, files, attributeTypes, blacklist, metricNames) => {
 		if (!fileStatesAvailable(files) || !metricData.nodeMetricData) return accumulatedDataFallback
 
 		const data = getUndecoratedAccumulatedData(files)
 		if (!data || !data.map) return accumulatedDataFallback
 
-		NodeDecorator.decorateMap(data.map, metricData, fileSettings.blacklist)
+		NodeDecorator.decorateMap(data.map, metricData, blacklist)
 		addEdgeMetricsForLeaves(data.map, metricNames)
-		NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(files), fileSettings.attributeTypes)
+		NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(files), attributeTypes)
 
 		return {
 			unifiedMapNode: data.map,
