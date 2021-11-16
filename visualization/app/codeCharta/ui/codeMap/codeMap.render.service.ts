@@ -119,6 +119,22 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		}
 	}
 
+	private getSetColorLabelsFunction(showNodeName: boolean, showNodeMetric: boolean, highestNodeInSet: number) {
+		const setColorLabelsFunction = (nodes: Node[]) => {
+			for (const node of nodes) {
+				this.codeMapLabelService.addLabel(
+					node,
+					{
+						showNodeName,
+						showNodeMetric
+					},
+					highestNodeInSet
+				)
+			}
+		}
+		return setColorLabelsFunction
+	}
+
 	private setLabels(sortedNodes: Node[]) {
 		this.codeMapLabelService.clearLabels()
 
@@ -126,67 +142,28 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 			return
 		}
 
-		const appSettings = this.storeService.getState().appSettings
-		const showLabelNodeName = appSettings.showMetricLabelNodeName
-		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
-		const colorLabelOptions = appSettings.colorLabels
+		const {
+			showMetricLabelNodeName,
+			showMetricLabelNameValue,
+			colorLabels: colorLabelOptions,
+			amountOfTopLabels
+		} = this.storeService.getState().appSettings
 
-		if (showLabelNodeName || showLabelNodeMetric) {
+		if (showMetricLabelNodeName || showMetricLabelNameValue) {
 			const highestNodeInSet = sortedNodes[0].height
+			const setColorLabels = this.getSetColorLabelsFunction(showMetricLabelNodeName, showMetricLabelNameValue, highestNodeInSet)
 
 			if (colorLabelOptions.positive) {
-				for (const node of this.nodesByColor.positive) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
-				}
+				setColorLabels(this.nodesByColor.positive)
 			}
 			if (colorLabelOptions.neutral) {
-				for (const node of this.nodesByColor.neutral) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
-				}
+				setColorLabels(this.nodesByColor.neutral)
 			}
 			if (colorLabelOptions.negative) {
-				for (const node of this.nodesByColor.negative) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
-				}
-			}
-			if (!colorLabelOptions.negative && !colorLabelOptions.positive && !colorLabelOptions.neutral) {
-				let { amountOfTopLabels } = appSettings
-				for (let index = 0; index < sortedNodes.length && amountOfTopLabels !== 0; index++) {
-					if (sortedNodes[index].isLeaf) {
-						//get neighbors with label
-						//neighbor ==> width + margin + 1
-						this.codeMapLabelService.addLabel(
-							sortedNodes[index],
-							{
-								showNodeName: showLabelNodeName,
-								showNodeMetric: showLabelNodeMetric
-							},
-							highestNodeInSet
-						)
-						amountOfTopLabels -= 1
-					}
-				}
+				setColorLabels(this.nodesByColor.negative)
+			} else if (!colorLabelOptions.neutral && !colorLabelOptions.positive) {
+				const nodes = sortedNodes.filter(node => node.isLeaf).slice(0, amountOfTopLabels)
+				setColorLabels(nodes)
 			}
 		}
 	}

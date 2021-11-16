@@ -1,3 +1,4 @@
+import { ColorRange, MapColors } from "./../../../codeCharta.model"
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { CodeMapNode, ColorMode, Node, State } from "../../../codeCharta.model"
 import { Color, Vector3 } from "three"
@@ -235,7 +236,7 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 }
 
 function calculateTrueGradient(
-	colorRange: { from: any; to: any; max: number },
+	colorRange: ColorRange,
 	metricValue: number,
 	positiveColorRGB: Color,
 	neutralColorRGB: Color,
@@ -255,8 +256,8 @@ function calculateTrueGradient(
 }
 
 function calculateWeightedGradient(
-	mapColors: { positive: any; neutral: any; negative: any },
-	colorRange: { from: any; to: any; max: number },
+	mapColors: MapColors,
+	colorRange: ColorRange,
 	metricValue: number,
 	positiveColorRGB: Color,
 	neutralColorRGB: Color,
