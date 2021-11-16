@@ -111,7 +111,11 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 						this.nodesByColor.positive.push(node)
 						break
 
-					case mapColor.neutral:
+					default:
+						// TODO: A couple of these are either negative or
+						// positive, depending on the mode! It's not possible to
+						// rely upon the color anymore. We have to add a state
+						// that tracks the color.
 						this.nodesByColor.neutral.push(node)
 						break
 				}
