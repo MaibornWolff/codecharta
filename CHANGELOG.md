@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fixed legend panel not having a background ([#2422]())
+-   Fixed legend panel not having a background ([#2422](https://github.com/MaibornWolff/codecharta/pull/2510))
 
 ### Chore 👨‍💻 👩‍💻
 
