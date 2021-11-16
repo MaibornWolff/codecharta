@@ -227,9 +227,6 @@ export interface BlacklistItem {
 	path: string
 	type: BlacklistType
 	nodeType?: NodeType
-	attributes?: {
-		[metricName: string]: unknown
-	}
 }
 
 export enum BlacklistType {
