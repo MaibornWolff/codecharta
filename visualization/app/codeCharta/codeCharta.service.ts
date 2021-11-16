@@ -2,7 +2,7 @@ import { validate } from "./util/fileValidator"
 import { NameDataPair } from "./codeCharta.model"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
-import { setFiles, setSingleByName } from "./state/store/files/files.actions"
+import { setFiles, setMultipleByNames } from "./state/store/files/files.actions"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { setState } from "./state/store/state.actions"
 import { ScenarioHelper } from "./util/scenarioHelper"
@@ -57,7 +57,7 @@ export class CodeChartaService {
 			const recentFile = this.storeService.getState().dynamicSettings.recentFiles[0]
 			const rootName = this.storeService.getState().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
 
-			this.storeService.dispatch(setSingleByName(recentFile))
+			this.storeService.dispatch(setMultipleByNames([recentFile]))
 			CodeChartaService.updateRootData(rootName)
 			this.setDefaultScenario()
 		}

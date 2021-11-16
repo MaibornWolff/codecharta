@@ -1,12 +1,6 @@
 <section layout="row" layout-align="center center" class="mode-chooser">
 	<md-button
 		class="state-selector-button mode-selector left"
-		ng-class="{ current: $ctrl._viewModel.isSingleState }"
-		ng-click="$ctrl.onSingleStateSelected()"
-		><span class="text">Single</span></md-button
-	>
-	<md-button
-		class="state-selector-button mode-selector middle"
 		ng-class="{ current: $ctrl._viewModel.isPartialState }"
 		ng-click="$ctrl.onPartialStateSelected()"
 		><span class="text">Multiple</span></md-button

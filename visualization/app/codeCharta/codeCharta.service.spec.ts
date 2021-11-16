@@ -6,7 +6,7 @@ import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.mo
 import { StoreService } from "./state/store.service"
 import { removeFile, resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
-import { getCCFiles, isSingleState } from "./model/files/files.helper"
+import { getCCFiles, isPartialState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
@@ -128,7 +128,7 @@ describe("codeChartaService", () => {
 			])
 
 			expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
-			expect(isSingleState(storeService.getState().files)).toBeTruthy()
+			expect(isPartialState(storeService.getState().files)).toBeTruthy()
 		})
 
 		it("should load a valid file and update root data", () => {
@@ -141,7 +141,7 @@ describe("codeChartaService", () => {
 			])
 
 			expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
-			expect(isSingleState(storeService.getState().files)).toBeTruthy()
+			expect(isPartialState(storeService.getState().files)).toBeTruthy()
 			expect(dialogService.showValidationWarningDialog).not.toHaveBeenCalled()
 			expect(dialogService.showValidationErrorDialog).not.toHaveBeenCalled()
 
@@ -175,7 +175,7 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([{ fileName: "SecondFile", content: validFileContent, fileSize: 42 }])
 
 			expect(storeService.getState().files[0].selectedAs).toEqual("None")
-			expect(storeService.getState().files[1].selectedAs).toEqual("Single")
+			expect(storeService.getState().files[1].selectedAs).toEqual("Partial")
 		})
 
 		it("should load the default scenario after loading a valid file", () => {
