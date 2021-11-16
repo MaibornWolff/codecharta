@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   The bar in the analysis shows the percentages <br>
         <img src="https://user-images.githubusercontent.com/48621967/141791111-564778fa-b767-4ee4-b024-6856f1a79b4b.png" width="512px" alt="list of suspicious metrics"/>
 
+### Fixed 🐞
+
+-   Fixed legend panel not having a background ([#2422](https://github.com/MaibornWolff/codecharta/pull/2510))
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern` ([#2495](https://github.com/MaibornWolff/codecharta/pull/2495)).
