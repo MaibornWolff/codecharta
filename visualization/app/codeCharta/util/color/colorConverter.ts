@@ -66,7 +66,7 @@ export class ColorConverter {
 
 	static hexToHSL(hex: string) {
 		const hsl = convert.hex.hsl(hex)
-		return new HSL(hsl[0], hsl[1], hsl[2])
+		return new HSL(...hsl)
 	}
 
 	static colorToVector3(color: string) {
