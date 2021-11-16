@@ -2,15 +2,6 @@
 
 exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile for not excluded files only 1`] = `
 Object {
-  "highRisk": 24,
-  "lowRisk": 77,
-  "moderateRisk": 0,
-  "veryHighRisk": 0,
-}
-`;
-
-exports[`ArtificialIntelligenceController on files selection changed should clear and calculate risk profile for Java map 1`] = `
-Object {
   "highRisk": 15,
   "lowRisk": 85,
   "moderateRisk": 0,
@@ -18,15 +9,25 @@ Object {
 }
 `;
 
-exports[`ArtificialIntelligenceController on files selection changed should create custom config suggestions 1`] = `
+exports[`ArtificialIntelligenceController on files selection changed should clear and calculate risk profile for Java map 1`] = `
+Object {
+  "highRisk": 11,
+  "lowRisk": 88,
+  "moderateRisk": 0,
+  "veryHighRisk": 0,
+}
+`;
+
+exports[`ArtificialIntelligenceController on files selection changed should create custom config suggestions sorted by outlierCustomConfigId 1`] = `
 Array [
   Object {
-    "from": 48,
+    "from": 365,
     "generalCustomConfigId": "mocked",
     "max": 0,
-    "metric": "mcc",
+    "metric": "loc",
     "min": 0,
-    "to": 71,
+    "outlierCustomConfigId": "mocked",
+    "to": 554,
   },
   Object {
     "from": 29,
@@ -37,11 +38,19 @@ Array [
     "outlierCustomConfigId": "mocked",
     "to": 44,
   },
+  Object {
+    "from": 48,
+    "generalCustomConfigId": "mocked",
+    "max": 0,
+    "metric": "mcc",
+    "min": 0,
+    "to": 71,
+  },
 ]
 `;
 
-exports[`ArtificialIntelligenceController on files selection changed should create custom config suggestions 2`] = `
+exports[`ArtificialIntelligenceController on files selection changed should create custom config suggestions sorted by outlierCustomConfigId 2`] = `
 Array [
-  "rloc",
+  "rloc (real lines of code)",
 ]
 `;
