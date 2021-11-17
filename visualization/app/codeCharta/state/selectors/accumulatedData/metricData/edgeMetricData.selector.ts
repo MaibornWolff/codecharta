@@ -1,5 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, BlacklistType, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
+import { FileState } from "../../../../model/files/files"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../angular-redux/store"
 import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
@@ -13,7 +14,9 @@ export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 // TODO move this as soon as edgeMetricData.service is deleted, to prevent random access / non unidirectional data flow
 export let nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
-export const edgeMetricDataSelector = createSelector([visibleFileStatesSelector, blacklistSelector], (visibleFileStates, blacklist) => {
+export const edgeMetricDataSelector = createSelector([visibleFileStatesSelector, blacklistSelector], calculateEdgeMetricData)
+
+export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
 	const allFilePaths: Set<string> = new Set()
 
@@ -37,7 +40,7 @@ export const edgeMetricDataSelector = createSelector([visibleFileStatesSelector,
 	const newEdgeMetricData = getMetricDataFromMap()
 	sortByMetricName(newEdgeMetricData)
 	return newEdgeMetricData
-})
+}
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]) {
 	if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
