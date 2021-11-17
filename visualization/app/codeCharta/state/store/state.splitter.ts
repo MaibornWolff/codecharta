@@ -2,7 +2,6 @@ import { CCAction } from "../../codeCharta.model"
 import { StateActions } from "./state.actions"
 
 // Plop: Import sub-reducer action here
-import { MetricDataActions } from "./metricData/metricData.actions"
 import { LookUpActions } from "./lookUp/lookUp.actions"
 import { DynamicSettingsActions } from "./dynamicSettings/dynamicSettings.actions"
 import { FileSettingsActions } from "./fileSettings/fileSettings.actions"
@@ -10,7 +9,6 @@ import { AppSettingsActions } from "./appSettings/appSettings.actions"
 import { TreeMapSettingsActions } from "./treeMap/treeMap.actions"
 
 // Plop: Import sub-reducer splitter here
-import { splitMetricDataActions } from "./metricData/metricData.splitter"
 import { splitLookUpActions } from "./lookUp/lookUp.splitter"
 import { splitDynamicSettingsActions } from "./dynamicSettings/dynamicSettings.splitter"
 import { splitFileSettingsActions } from "./fileSettings/fileSettings.splitter"
@@ -20,9 +18,6 @@ import { splitFilesAction } from "./files/files.splitter"
 
 export function splitStateActions(action: CCAction) {
 	// Plop: Propagate sub-reducer here
-	if (MetricDataActions[action.type] !== undefined) {
-		return splitMetricDataActions(action.payload)
-	}
 
 	if (LookUpActions[action.type] !== undefined) {
 		return splitLookUpActions(action.payload)
@@ -48,9 +43,6 @@ export function splitStateActions(action: CCAction) {
 		const actions: CCAction[] = []
 
 		// Plop: Split into sub-reducer here
-		if (action.payload.metricData !== undefined) {
-			actions.push(...splitMetricDataActions(action.payload.metricData))
-		}
 
 		if (action.payload.lookUp !== undefined) {
 			actions.push(...splitLookUpActions(action.payload.lookUp))

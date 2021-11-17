@@ -1,7 +1,6 @@
 import { CCAction, RecursivePartial, State } from "../../codeCharta.model"
 
 // Plop: Import sub-reducer here
-import { defaultMetricData } from "./metricData/metricData.actions"
 import { defaultLookUp } from "./lookUp/lookUp.actions"
 import { defaultAppSettings } from "./appSettings/appSettings.actions"
 import { defaultFileSettings } from "./fileSettings/fileSettings.actions"
@@ -31,7 +30,6 @@ export function setState(state: RecursivePartial<State> = defaultState): StateAc
 
 export const defaultState: State = {
 	// Plop: Append sub-reducer here
-	metricData: defaultMetricData,
 	lookUp: defaultLookUp,
 	appSettings: defaultAppSettings,
 	fileSettings: defaultFileSettings,

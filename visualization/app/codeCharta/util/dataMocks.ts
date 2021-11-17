@@ -1817,10 +1817,6 @@ export const STATE: State = {
 		idToNode: new Map(),
 		idToBuilding: new Map()
 	},
-	metricData: {
-		nodeMetricData: METRIC_DATA,
-		edgeMetricData: EDGE_METRIC_DATA
-	},
 	appStatus: {
 		hoveredBuildingPath: null,
 		selectedBuildingId: null
@@ -1904,10 +1900,6 @@ export const DEFAULT_STATE: State = {
 	lookUp: {
 		idToBuilding: new Map(),
 		idToNode: new Map()
-	},
-	metricData: {
-		nodeMetricData: [],
-		edgeMetricData: []
 	},
 	appStatus: {
 		hoveredBuildingPath: null,
