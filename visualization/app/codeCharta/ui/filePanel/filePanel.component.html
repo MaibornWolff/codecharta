@@ -1,39 +1,4 @@
-<section layout="row" layout-align="center center" class="mode-chooser">
-	<md-button
-		class="state-selector-button mode-selector left"
-		ng-class="{ current: $ctrl._viewModel.isPartialState }"
-		ng-click="$ctrl.onPartialStateSelected()"
-		><span class="text">Multiple</span></md-button
-	>
-	<md-button
-		class="state-selector-button mode-selector right"
-		ng-class="{ current: $ctrl._viewModel.isDeltaState }"
-		ng-click="$ctrl.onDeltaStateSelected()"
-		><span class="text">Delta</span></md-button
-	>
-</section>
-
-<md-input-container class="input-container" ng-show="$ctrl._viewModel.isSingleState" title="Select a file">
-	<md-select
-		class="md-select-menu"
-		ng-model="$ctrl._viewModel.selectedFileNames.single"
-		ng-change="$ctrl.onSingleFileChange($ctrl._viewModel.selectedFileNames.single)"
-	>
-		<md-option
-			ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
-			value="{{::fileState.file.fileMeta.fileName}}"
-		>
-			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-			<remove-file-button-component
-				on-remove-file="$ctrl.onRemoveFile(filename, state, event)"
-				ng-if="$ctrl._viewModel.files.length > 1"
-				filename="{{::fileState.file.fileMeta.fileName}}"
-				state="Single"
-			>
-			</remove-file-button-component>
-		</md-option>
-	</md-select>
-</md-input-container>
+<cc-file-panel-state-buttons [state]=" //TODO"></cc-file-panel-state-buttons>
 
 <md-input-container class="input-container" ng-show="$ctrl._viewModel.isPartialState" title="Select files">
 	<md-select
@@ -53,7 +18,7 @@
 		>
 			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 			<remove-file-button-component
-				on-remove-file="$ctrl.onRemoveFile(filename, state, event)"
+				on-remove-file="$ctrl.onRemoveFile(filename, event)"
 				ng-if="$ctrl._viewModel.files.length > 1"
 				filename="{{::fileState.file.fileMeta.fileName}}"
 				state="Partial"

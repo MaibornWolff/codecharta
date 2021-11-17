@@ -1,6 +1,14 @@
-import angular from "angular"
 import "../../state/state.module"
 import "../dialog/dialog.module"
-import { filePanelComponent } from "./filePanel.component"
+import { FilePanelComponent } from "./filePanel.component"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { FilePanelStateButtonsComponent } from "./filePanelStateButtons/filePanelStateButtons.component"
+import { MaterialModule } from "../../../material/material.module"
 
-angular.module("app.codeCharta.ui.filePanel", ["app.codeCharta.state"]).component(filePanelComponent.selector, filePanelComponent)
+@NgModule({
+	imports: [CommonModule, MaterialModule],
+	declarations: [FilePanelComponent, FilePanelStateButtonsComponent],
+	exports: [FilePanelComponent]
+})
+export class FilePanelModule {}

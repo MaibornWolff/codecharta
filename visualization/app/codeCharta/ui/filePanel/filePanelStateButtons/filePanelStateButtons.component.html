@@ -1,0 +1,14 @@
+<section layout="row" layout-align="center center" class="mode-chooser">
+	<mat-button
+		class="state-selector-button mode-selector left"
+		[class.current]="state == FilePanelState.FILE_PANEL_STATE_STANDARD"
+		ng-click="$ctrl.onPartialStateSelected()"
+		><span class="text">Standard</span></mat-button
+	>
+	<md-button
+		class="state-selector-button mode-selector right"
+		[class.current]="state == FilePanelState.FILE_PANEL_STATE_STANDARD"
+		ng-click="$ctrl.onDeltaStateSelected()"
+		><span class="text">Delta</span></md-button
+	>
+</section>
