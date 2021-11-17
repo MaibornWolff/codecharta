@@ -1,48 +1,39 @@
-import { StoreService, StoreSubscriber } from "../../../store.service"
+import { StoreService } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { calculateNewEdgeMetricData, EdgeMetricDataActions } from "./edgeMetricData.actions"
-import { isActionOfType } from "../../../../util/reduxHelper"
-import { BlacklistItem, EdgeMetricData } from "../../../../codeCharta.model"
-import { FileState } from "../../../../model/files/files"
+import { EdgeMetricData } from "../../../../codeCharta.model"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
-import { nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
+import { edgeMetricDataSelector, nodeEdgeMetricsMap } from "../../../selectors/accumulatedData/metricData/edgeMetricData.selector"
 
 export interface EdgeMetricDataSubscriber {
 	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[])
 }
 
-export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscriber, FilesSelectionSubscriber, AttributeTypesSubscriber {
+export class EdgeMetricDataService implements BlacklistSubscriber, FilesSelectionSubscriber, AttributeTypesSubscriber {
 	private static EDGE_METRIC_DATA_CHANGED_EVENT = "edge-metric-data-changed"
 	static NONE_METRIC = "None"
 
+	private edgeMetricData: EdgeMetricData[]
+
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
-		StoreService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		AttributeTypesService.subscribe(this.$rootScope, this)
 	}
 
-	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, EdgeMetricDataActions)) {
-			this.notify(this.select())
-		}
+	onBlacklistChanged() {
+		this.updateEdgeMetricData()
 	}
 
-	onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.storeService.dispatch(calculateNewEdgeMetricData(this.storeService.getState().files, blacklist))
+	onFilesSelectionChanged() {
+		this.updateEdgeMetricData()
 	}
 
-	onFilesSelectionChanged(files: FileState[]) {
-		this.storeService.dispatch(calculateNewEdgeMetricData(files, this.storeService.getState().fileSettings.blacklist))
-	}
-
+	// This shouldn't be needed, as edgeMetricData is not dependent on AttributeTypesChanged, but switching to median in attribute side bar breaks without it
 	onAttributeTypesChanged() {
-		this.storeService.dispatch(
-			calculateNewEdgeMetricData(this.storeService.getState().files, this.storeService.getState().fileSettings.blacklist)
-		)
+		this.$rootScope.$broadcast(EdgeMetricDataService.EDGE_METRIC_DATA_CHANGED_EVENT, { edgeMetricData: this.edgeMetricData })
 	}
 
 	getAmountOfAffectedBuildings(metricName: string) {
@@ -76,12 +67,12 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		return this.storeService.getState().fileSettings.attributeTypes.edges[metricName]
 	}
 
-	private select() {
-		return this.storeService.getState().metricData.edgeMetricData
-	}
-
-	private notify(newState: EdgeMetricData[]) {
-		this.$rootScope.$broadcast(EdgeMetricDataService.EDGE_METRIC_DATA_CHANGED_EVENT, { edgeMetricData: newState })
+	private updateEdgeMetricData() {
+		const edgeMetricData = edgeMetricDataSelector(this.storeService.getState())
+		if (edgeMetricData !== this.edgeMetricData) {
+			this.edgeMetricData = edgeMetricData
+			this.$rootScope.$broadcast(EdgeMetricDataService.EDGE_METRIC_DATA_CHANGED_EVENT, { edgeMetricData })
+		}
 	}
 
 	static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricDataSubscriber) {

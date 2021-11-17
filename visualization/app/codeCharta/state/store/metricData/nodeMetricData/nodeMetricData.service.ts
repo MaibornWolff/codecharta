@@ -13,6 +13,7 @@ export interface NodeMetricDataSubscriber {
 export class NodeMetricDataService implements FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
 	static UNARY_METRIC = "unary"
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
+
 	private nodeMetricData: NodeMetricData[]
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -32,8 +33,7 @@ export class NodeMetricDataService implements FilesSelectionSubscriber, Blacklis
 
 	// This shouldn't be needed, as nodeMetricData is not dependent on AttributeTypesChanged, but switching to median in attribute side bar breaks without it
 	onAttributeTypesChanged() {
-		const nodeMetricData = nodeMetricDataSelector(this.storeService.getState())
-		this.$rootScope.$broadcast(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, { nodeMetricData })
+		this.$rootScope.$broadcast(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, { nodeMetricData: this.nodeMetricData })
 	}
 
 	getMetrics() {

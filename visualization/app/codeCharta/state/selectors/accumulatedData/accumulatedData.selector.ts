@@ -6,29 +6,28 @@ import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { createSelector } from "../../angular-redux/store"
 import { CcState } from "../../store/store"
-import { metricNamesSelector } from "./metricNames.selector"
+import { metricNamesSelector } from "./metricData/metricNames.selector"
 import { getDeltaFile } from "./utils/getDeltaFile"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
 import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.selector"
 import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
 import { visibleFileStatesSelector } from "../visibleFileStates.selector"
-import { nodeMetricDataSelector } from "./metricData/nodeMetricData.selector"
+import { metricDataSelector } from "./metricData/metricData.selector"
 
 const accumulatedDataFallback = Object.freeze({
 	unifiedMapNode: undefined,
 	unifiedFileMeta: undefined
 })
 
-// todo metricDataSelector
 export const accumulatedDataSelector: (state: CcState) => { unifiedMapNode: CodeMapNode; unifiedFileMeta: FileMeta } = createSelector(
-	[nodeMetricDataSelector, visibleFileStatesSelector, attributeTypesSelector, blacklistSelector, metricNamesSelector],
-	(nodeMetricData, fileStates, attributeTypes, blacklist, metricNames) => {
-		if (!fileStatesAvailable(fileStates) || !nodeMetricData) return accumulatedDataFallback
+	[metricDataSelector, visibleFileStatesSelector, attributeTypesSelector, blacklistSelector, metricNamesSelector],
+	(metricData, fileStates, attributeTypes, blacklist, metricNames) => {
+		if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData) return accumulatedDataFallback
 
 		const data = getUndecoratedAccumulatedData(fileStates)
 		if (!data || !data.map) return accumulatedDataFallback
 
-		NodeDecorator.decorateMap(data.map, { nodeMetricData, edgeMetricData: [] }, blacklist)
+		NodeDecorator.decorateMap(data.map, metricData, blacklist)
 		addEdgeMetricsForLeaves(data.map, metricNames)
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), attributeTypes)
 

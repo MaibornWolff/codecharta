@@ -32,6 +32,7 @@ import { SecondaryMetricsActions } from "../../state/store/appSettings/secondary
 import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
 import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -177,7 +178,7 @@ export class CodeMapPreRenderService
 
 	private allNecessaryRenderDataAvailable() {
 		return (
-			this.storeService.getState().metricData.nodeMetricData !== null &&
+			nodeMetricDataSelector(this.storeService.getState()) !== null &&
 			fileStatesAvailable(this.storeService.getState().files) &&
 			this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {

@@ -1,5 +1,5 @@
 import { CcState } from "../../store/store"
-import { metricNamesSelector } from "./metricNames.selector"
+import { metricNamesSelector } from "./metricData/metricNames.selector"
 
 describe("metricNamesSelector", () => {
 	it("should get the names of the metrics", () => {
