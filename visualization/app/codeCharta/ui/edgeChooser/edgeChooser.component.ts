@@ -3,7 +3,6 @@ import { EdgeMetricCount, EdgeMetricData } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
-import $ from "jquery"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
@@ -75,7 +74,9 @@ export class EdgeChooserController
 
 	focusInputField() {
 		this.$timeout(() => {
-			$(".metric-search").focus()
+			for (const element of document.querySelectorAll("metric-search")) {
+				;(element as HTMLElement).focus()
+			}
 		}, 200)
 	}
 
