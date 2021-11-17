@@ -233,84 +233,141 @@ describe("TreeMapHelper", () => {
 				state.dynamicSettings.colorRange.from = 5
 				state.dynamicSettings.colorRange.to = 10
 				state.dynamicSettings.colorMetric = "validMetricName"
-				state.dynamicSettings.colorMode = ColorMode.absolute
 			})
 
-			it("creates grey building for undefined colorMetric", () => {
-				state.dynamicSettings.colorMetric = "invalid"
-				expect(buildNode().color).toBe(state.appSettings.mapColors.base)
+			describe("generics", () => {
+				it("creates grey building for undefined colorMetric", () => {
+					state.dynamicSettings.colorMetric = "invalid"
+					expect(buildNode().color).toBe(state.appSettings.mapColors.base)
+				})
+
+				it("creates flat colored building", () => {
+					state.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
+					squaredNode.data.isFlattened = true
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.flat)
+				})
 			})
 
-			it("creates flat colored building", () => {
-				state.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
-				squaredNode.data.isFlattened = true
+			describe("absolute colors", () => {
+				beforeEach(() => {
+					state.dynamicSettings.colorMode = ColorMode.absolute
+				})
 
-				expect(buildNode().color).toBe(state.appSettings.mapColors.flat)
+				it("creates green colored building colorMetricValue < colorRangeFrom", () => {
+					expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
+				})
+
+				it("creates neutral colored building colorMetricValue === colorRangeTo", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.to }
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+				})
+
+				it("creates red colored building colorMetricValue > colorRangeTo", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.to + 1 }
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
+				})
+
+				it("creates green colored building colorMetricValue === colorRangeFrom", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from }
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
+				})
+
+				it("creates yellow colored building", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from + 1 }
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+				})
 			})
 
-			it("creates green colored building colorMetricValue < colorRangeFrom", () => {
-				expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
+			describe("weighted gradient", () => {
+				beforeEach(() => {
+					state.dynamicSettings.colorMode = ColorMode.weightedGradient
+				})
+
+				it("colors green to yellow to red according to weighted gradient", () => {
+					const { positive, neutral, negative } = state.appSettings.mapColors
+					const { from, to, max } = state.dynamicSettings.colorRange
+					const endPositive = Math.max(from - (to - from) / 2, from / 2)
+					const startNeutral = 2 * from - endPositive
+					const endNeutral = to - (to - from) / 2
+					const startNegative = to
+
+					node.attributes = { validMetricName: 0 }
+					expect(buildNode().color).toBe(positive)
+
+					node.attributes = { validMetricName: endPositive }
+					expect(buildNode().color).toBe(positive)
+
+					node.attributes = { validMetricName: endPositive + 0.1 }
+					expect(buildNode().color).toBe("#6baf3f")
+
+					node.attributes = { validMetricName: startNeutral - 0.1 }
+					expect(buildNode().color).toBe("#dbcb01")
+
+					node.attributes = { validMetricName: startNeutral }
+					expect(buildNode().color).toBe(neutral)
+
+					node.attributes = { validMetricName: endNeutral }
+					expect(buildNode().color).toBe(neutral)
+
+					node.attributes = { validMetricName: endNeutral + 0.1 }
+					expect(buildNode().color).toBe("#d9c401")
+
+					node.attributes = { validMetricName: startNegative - 0.1 }
+					expect(buildNode().color).toBe("#86160d")
+
+					node.attributes = { validMetricName: startNegative }
+					expect(buildNode().color).toBe(negative)
+
+					node.attributes = { validMetricName: max }
+					expect(buildNode().color).toBe(negative)
+				})
 			})
 
-			it("creates red colored building colorMetricValue > colorRangeFrom", () => {
-				node.attributes = { validMetricName: 12 }
+			describe("true gradient", () => {
+				beforeEach(() => {
+					state.dynamicSettings.colorMode = ColorMode.trueGradient
+				})
 
-				expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
-			})
+				it("colors greenish to yellow color according to true gradient", () => {
+					const { from, to } = state.dynamicSettings.colorRange
+					const middle = (from + to) / 2
 
-			it("creates yellow colored building", () => {
-				node.attributes = { validMetricName: 7 }
+					node.attributes = { validMetricName: 0 }
+					expect(buildNode().color).toBe(state.appSettings.mapColors.positive.toLowerCase())
 
-				expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
-			})
+					node.attributes = { validMetricName: 1 }
+					expect(buildNode().color).toBe("#78b237")
 
-			it("colors green according to weighted gradient", () => {
-				node.attributes = { validMetricName: 1 }
-				state.dynamicSettings.colorMode = ColorMode.weightedGradient
+					node.attributes = { validMetricName: middle - 1 }
+					expect(buildNode().color).toBe("#cec809")
 
-				expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
-			})
+					node.attributes = { validMetricName: middle }
+					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
 
-			it("colors a even mix of green and yellow according to weighted gradient", () => {
-				node.attributes = { validMetricName: 3 }
-				state.dynamicSettings.colorMode = ColorMode.weightedGradient
+					node.attributes = { validMetricName: middle + 1 }
+					expect(buildNode().color).toBe("#d5bc01")
+				})
 
-				expect(buildNode().color).toBe("#75b13a")
-			})
+				it("colors a reddish color according to true gradient", () => {
+					const { to, max } = state.dynamicSettings.colorRange
 
-			it("colors a even mix of yellow and red according to weighted gradient", () => {
-				node.attributes = { validMetricName: 7 }
-				state.dynamicSettings.colorMode = ColorMode.weightedGradient
+					node.attributes = { validMetricName: to + 1 }
 
-				expect(buildNode().color).toBe("#d1c906")
-			})
+					expect(buildNode().color).toBe("#d3b702")
 
-			it("colors red according to weighted gradient", () => {
-				node.attributes = { validMetricName: 11 }
-				state.dynamicSettings.colorMode = ColorMode.weightedGradient
+					node.attributes = { validMetricName: max - 1 }
 
-				expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
-			})
+					expect(buildNode().color).toBe("#83100e")
 
-			it("colors a greenish color according to true gradient", () => {
-				node.attributes = { validMetricName: 1 }
-				state.dynamicSettings.colorMode = ColorMode.trueGradient
+					node.attributes = { validMetricName: max }
 
-				expect(buildNode().color).toBe("#78b237")
-			})
-
-			it("colors a yellow color according to true gradient", () => {
-				node.attributes = { validMetricName: 7.5 }
-				state.dynamicSettings.colorMode = ColorMode.trueGradient
-
-				expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
-			})
-
-			it("colors a reddish color according to true gradient", () => {
-				node.attributes = { validMetricName: 11 }
-				state.dynamicSettings.colorMode = ColorMode.trueGradient
-
-				expect(buildNode().color).toBe("#dac501")
+					expect(buildNode().color).toBe(state.appSettings.mapColors.negative.toLowerCase())
+				})
 			})
 		})
 	})
