@@ -294,14 +294,12 @@ export class ArtificialIntelligenceController
 	private prepareOverviewConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {
 		const state = klona(this.storeService.getState())
 
-		// just use rloc as area metric
+		// Just use rloc as area metric
 		state.dynamicSettings.areaMetric = "rloc"
 
-		// use bad metric as height and color metric
+		// Use bad metric as height and color metric
 		state.dynamicSettings.heightMetric = metricName
 		state.dynamicSettings.colorMetric = metricName
-		//state.dynamicSettings.colorRange.from = bugOutlier.valueOf() / 2
-		//state.dynamicSettings.colorRange.to = bugOutlier.valueOf()
 		state.dynamicSettings.colorRange.from = colorRangeFrom
 		state.dynamicSettings.colorRange.to = colorRangeTo
 
@@ -363,7 +361,7 @@ export class ArtificialIntelligenceController
 	}
 
 	private getMostFrequentLanguage(map: CodeMapNode) {
-		const numberOfFilesPerLanguage = []
+		const numberOfFilesPerLanguage = new Map()
 
 		for (const { data } of hierarchy(map)) {
 			if (!data.name.includes(".")) {
@@ -372,17 +370,24 @@ export class ArtificialIntelligenceController
 
 			if (data.type === NodeType.FILE) {
 				const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
-				numberOfFilesPerLanguage[fileExtension] = numberOfFilesPerLanguage[fileExtension] + 1 || 1
+				const filesPerLanguage = numberOfFilesPerLanguage.get(fileExtension) ?? 0
+				numberOfFilesPerLanguage.set(fileExtension, filesPerLanguage + 1)
 			}
 		}
 
-		if (Object.keys(numberOfFilesPerLanguage).length === 0) {
+		if (numberOfFilesPerLanguage.size === 0) {
 			return
 		}
 
-		return Object.keys(numberOfFilesPerLanguage).reduce((a, b) => {
-			return numberOfFilesPerLanguage[a] > numberOfFilesPerLanguage[b] ? a : b
-		})
+		let language = ""
+		let max = -1
+		for (const [key, filesPerLanguage] of numberOfFilesPerLanguage) {
+			if (max < filesPerLanguage) {
+				max = filesPerLanguage
+				language = key
+			}
+		}
+		return language
 	}
 
 	private getAssociatedMetricThresholds(programmingLanguage) {

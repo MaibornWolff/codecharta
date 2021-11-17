@@ -123,20 +123,10 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		}
 	}
 
-	private getSetColorLabelsFunction(showNodeName: boolean, showNodeMetric: boolean, highestNodeInSet: number) {
-		const setColorLabelsFunction = (nodes: Node[]) => {
-			for (const node of nodes) {
-				this.codeMapLabelService.addLabel(
-					node,
-					{
-						showNodeName,
-						showNodeMetric
-					},
-					highestNodeInSet
-				)
-			}
+	private setBuildingLabel(nodes: Node[], highestNodeInSet: number) {
+		for (const node of nodes) {
+			this.codeMapLabelService.addLabel(node, highestNodeInSet)
 		}
-		return setColorLabelsFunction
 	}
 
 	private setLabels(sortedNodes: Node[]) {
@@ -155,19 +145,16 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 		if (showMetricLabelNodeName || showMetricLabelNameValue) {
 			const highestNodeInSet = sortedNodes[0].height
-			const setColorLabels = this.getSetColorLabelsFunction(showMetricLabelNodeName, showMetricLabelNameValue, highestNodeInSet)
 
-			if (colorLabelOptions.positive) {
-				setColorLabels(this.nodesByColor.positive)
+			for (const colorType of ["positive", "neutral", "negative"]) {
+				if (colorLabelOptions[colorType]) {
+					this.setBuildingLabel(this.nodesByColor[colorType], highestNodeInSet)
+				}
 			}
-			if (colorLabelOptions.neutral) {
-				setColorLabels(this.nodesByColor.neutral)
-			}
-			if (colorLabelOptions.negative) {
-				setColorLabels(this.nodesByColor.negative)
-			} else if (!colorLabelOptions.neutral && !colorLabelOptions.positive) {
+
+			if (!(colorLabelOptions.negative || colorLabelOptions.neutral || colorLabelOptions.positive)) {
 				const nodes = sortedNodes.filter(node => node.isLeaf).slice(0, amountOfTopLabels)
-				setColorLabels(nodes)
+				this.setBuildingLabel(nodes, highestNodeInSet)
 			}
 		}
 	}
