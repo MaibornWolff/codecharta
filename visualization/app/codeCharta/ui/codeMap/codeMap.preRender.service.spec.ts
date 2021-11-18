@@ -66,8 +66,6 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(addFile(ccFile))
 		storeService.dispatch(setSingleByName(fileStates[0].file.fileMeta.fileName))
 		storeService.dispatch(setBlacklist())
-		// storeService.dispatch(calculateNewNodeMetricData(storeService.getState().files, []))
-		// storeService.dispatch(calculateNewEdgeMetricData(storeService.getState().files, []))
 		calculateEdgeMetricData(storeService.getState().files, [])
 		calculateNodeMetricData(storeService.getState().files, [])
 	}
