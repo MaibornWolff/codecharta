@@ -1,7 +1,7 @@
 import "./edgeChooser.module"
 import { EdgeChooserController } from "./edgeChooser.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
@@ -15,7 +15,6 @@ describe("EdgeChooserController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let codeMapActionsService: CodeMapActionsService
-	let $timeout: ITimeoutService
 
 	beforeEach(() => {
 		restartSystem()
@@ -29,11 +28,10 @@ describe("EdgeChooserController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function rebuildController() {
-		edgeChooserController = new EdgeChooserController($rootScope, storeService, codeMapActionsService, $timeout)
+		edgeChooserController = new EdgeChooserController($rootScope, storeService, codeMapActionsService)
 	}
 
 	function withMockedCodeMapActionsService() {

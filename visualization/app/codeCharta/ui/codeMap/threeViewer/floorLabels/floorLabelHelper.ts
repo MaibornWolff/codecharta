@@ -4,8 +4,7 @@ import { Node } from "../../../../codeCharta.model"
 
 export class FloorLabelHelper {
 	static getMapResolutionScaling(mapWidth: number) {
-		// @ts-ignore
-		const { width: displayWidth }: HTMLCanvasElement = document.getElementById("codeMapScene")
+		const { width: displayWidth } = <HTMLCanvasElement>document.getElementById("codeMapScene")
 
 		const scalingThreshold = FloorLabelHelper.getScalingThreshold(displayWidth)
 
