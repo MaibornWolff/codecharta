@@ -166,6 +166,15 @@ describe("ArtificialIntelligenceController", () => {
 			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).toHaveBeenCalled()
 		})
 
+		it("should calculate risk profile and should not exceed 100 percent", () => {
+			storeService.dispatch(setExperimentalFeaturesEnabled(true))
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
+			const sumOfRiskPercentage = Object.values(artificialIntelligenceController["_viewModel"].riskProfile).reduce((a, b) => a + b)
+
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
+			expect(sumOfRiskPercentage).toEqual(99)
+		})
+
 		it("should create custom config suggestions sorted by outlierCustomConfigId", () => {
 			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
