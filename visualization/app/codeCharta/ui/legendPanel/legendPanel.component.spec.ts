@@ -37,7 +37,6 @@ describe("LegendPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
-		nodeMetricDataService["nodeMetricData"] = []
 		storeService = getService<StoreService>("storeService")
 	}
 

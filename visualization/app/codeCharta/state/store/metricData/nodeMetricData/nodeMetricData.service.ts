@@ -14,7 +14,7 @@ export class NodeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	static UNARY_METRIC = "unary"
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
 
-	private nodeMetricData: NodeMetricData[]
+	private nodeMetricData: NodeMetricData[] = []
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
@@ -41,7 +41,7 @@ export class NodeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	isMetricAvailable(metricName: string) {
-		return this.nodeMetricData?.some(x => x.name === metricName)
+		return this.nodeMetricData.some(x => x.name === metricName)
 	}
 
 	getMaxValueOfMetric(metricName: string) {
