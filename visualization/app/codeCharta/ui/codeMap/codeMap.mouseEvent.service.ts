@@ -262,11 +262,8 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 	}
 
 	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
-		const { showMetricLabelNodeName, showMetricLabelNameValue } = this.storeService.getState().appSettings
-
-		const displayLabelMetricName = !showMetricLabelNameValue || showMetricLabelNodeName
-
-		this.codeMapLabelService.addLabel(codeMapBuilding.node, 0, displayLabelMetricName)
+		const enforceLabel = true
+		this.codeMapLabelService.addLabel(codeMapBuilding.node, 0, enforceLabel)
 
 		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)

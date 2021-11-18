@@ -292,7 +292,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	private getIntersectionDistanceFunction(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3) {
-		const intersectionDistanceFunction = (distance: number) => {
+		return (distance: number) => {
 			const normedVector = this.normedTransformVector.clone()
 			normedVector.multiplyScalar(distance)
 			bboxHoveredLabel.translate(normedVector)
@@ -304,8 +304,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			}
 			return 0
 		}
-
-		return intersectionDistanceFunction
 	}
 
 	private calculateMaxDistance(hoveredLabel: Object3D, labels: Object3D[], cameraPoint: Vector3) {

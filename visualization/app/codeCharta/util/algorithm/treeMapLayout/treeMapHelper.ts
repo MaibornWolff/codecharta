@@ -233,14 +233,14 @@ function calculateTrueGradient(mapColors: MapColors, colorRange: ColorRange, met
 	const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
 
 	if (metricValue <= middle) {
-		const factor = metricValue / middle
+		const neutralFactor = metricValue / middle
 		const positiveColorRGB = ColorConverter.convertHexToColorObject(mapColors.positive)
-		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
+		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, neutralFactor))
 	}
 
-	const factor = (metricValue - middle) / (colorRange.max - middle)
+	const negativeFactor = (metricValue - middle) / (colorRange.max - middle)
 	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
-	return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
+	return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, negativeFactor))
 }
 
 function calculateWeightedGradient(mapColors: MapColors, colorRange: ColorRange, metricValue: number) {
