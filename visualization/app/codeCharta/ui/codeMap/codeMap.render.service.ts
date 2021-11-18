@@ -13,6 +13,7 @@ import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store
 import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	private nodesByColor = {
@@ -73,9 +74,9 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 	private getNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
+		const nodeMetricData = nodeMetricDataSelector(state)
 		const {
 			appSettings: { layoutAlgorithm },
-			metricData: { nodeMetricData },
 			files
 		} = state
 		const deltaState = isDeltaState(files)

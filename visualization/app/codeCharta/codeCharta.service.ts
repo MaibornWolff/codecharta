@@ -10,6 +10,7 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { setRecentFiles } from "./state/store/dynamicSettings/recentFiles/recentFiles.actions"
+import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export class CodeChartaService {
 	static ROOT_NAME = "root"
@@ -72,7 +73,7 @@ export class CodeChartaService {
 	private setDefaultScenario() {
 		const { areaMetric, heightMetric, colorMetric } = ScenarioHelper.getDefaultScenarioSetting().dynamicSettings
 		const names = [areaMetric, heightMetric, colorMetric]
-		const metricNames = new Set(this.storeService.getState().metricData.nodeMetricData.map(x => x.name))
+		const metricNames = new Set(nodeMetricDataSelector(this.storeService.getState()).map(x => x.name))
 
 		if (names.every(metric => metricNames.has(metric))) {
 			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))

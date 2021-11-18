@@ -350,7 +350,6 @@ export interface State {
 	treeMap: TreeMapSettings
 	files: FileState[]
 	lookUp: LookUp
-	metricData: MetricData
 	appStatus: AppStatus
 }
 

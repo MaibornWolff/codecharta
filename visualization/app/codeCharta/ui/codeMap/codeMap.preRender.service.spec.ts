@@ -17,11 +17,11 @@ import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/st
 import { hierarchy } from "d3-hierarchy"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
-import { calculateNewNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { getCCFiles } from "../../model/files/files.helper"
-import { calculateNewEdgeMetricData } from "../../state/store/metricData/edgeMetricData/edgeMetricData.actions"
 import { clone } from "../../util/clone"
 import { DeltaGenerator } from "../../util/deltaGenerator"
+import { calculateNodeMetricData } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { calculateEdgeMetricData } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -66,8 +66,8 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(addFile(ccFile))
 		storeService.dispatch(setSingleByName(fileStates[0].file.fileMeta.fileName))
 		storeService.dispatch(setBlacklist())
-		storeService.dispatch(calculateNewNodeMetricData(storeService.getState().files, []))
-		storeService.dispatch(calculateNewEdgeMetricData(storeService.getState().files, []))
+		calculateEdgeMetricData(storeService.getState().files, [])
+		calculateNodeMetricData(storeService.getState().files, [])
 	}
 
 	function rebuildService() {

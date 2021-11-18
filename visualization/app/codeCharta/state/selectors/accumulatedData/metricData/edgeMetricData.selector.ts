@@ -1,41 +1,32 @@
-import { EdgeMetricDataAction, EdgeMetricDataActions, setEdgeMetricData } from "./edgeMetricData.actions"
-import { BlacklistItem, BlacklistType, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
-import { getVisibleFileStates } from "../../../../model/files/files.helper"
-import { isPathBlacklisted } from "../../../../util/codeMapHelper"
-import { FileState } from "../../../../model/files/files"
-import { EdgeMetricDataService } from "./edgeMetricData.service"
-import { sortByMetricName } from "../metricData.reducer"
 import { hierarchy } from "d3-hierarchy"
+import { BlacklistItem, BlacklistType, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
+import { FileState } from "../../../../model/files/files"
+import { isPathBlacklisted } from "../../../../util/codeMapHelper"
+import { createSelector } from "../../../angular-redux/store"
+import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
+import { EdgeMetricDataService } from "../../../store/metricData/edgeMetricData/edgeMetricData.service"
+import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
+import { sortByMetricName } from "./sortByMetricName"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 // Required for performance improvements
-// TODO move this into store or create a selector for it, to prevent random access / non unidirectional data flow
+// TODO move this as soon as edgeMetricData.service is deleted, to prevent random access / non unidirectional data flow
 export let nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
-export function edgeMetricData(state = setEdgeMetricData().payload, action: EdgeMetricDataAction) {
-	switch (action.type) {
-		case EdgeMetricDataActions.SET_EDGE_METRIC_DATA:
-			return action.payload
-		case EdgeMetricDataActions.CALCULATE_NEW_EDGE_METRIC_DATA:
-			return calculateMetrics(action.payload.fileStates, action.payload.blacklist)
-		default:
-			return state
-	}
-}
+export const edgeMetricDataSelector = createSelector([visibleFileStatesSelector, blacklistSelector], calculateEdgeMetricData)
 
-function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
+export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
-	const allVisibleFileStates = getVisibleFileStates(fileStates)
 	const allFilePaths: Set<string> = new Set()
 
-	for (const { file } of allVisibleFileStates) {
+	for (const { file } of visibleFileStates) {
 		for (const { data } of hierarchy(file.map)) {
 			allFilePaths.add(data.path)
 		}
 	}
 
-	for (const fileState of allVisibleFileStates) {
+	for (const fileState of visibleFileStates) {
 		for (const edge of fileState.file.settings.fileSettings.edges) {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
 				// TODO: We likely only need the attributes once per file.

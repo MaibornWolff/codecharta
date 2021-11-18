@@ -2,14 +2,21 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { calculateNewEdgeMetricData, EdgeMetricDataAction, EdgeMetricDataActions } from "./edgeMetricData.actions"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
-import { EDGE_METRIC_DATA, FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../../../util/dataMocks"
+import { FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../../../util/dataMocks"
 import { FilesService } from "../../files/files.service"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
 import { FileState } from "../../../../model/files/files"
 import { clone } from "../../../../util/clone"
+import { visibleFileStatesSelector } from "../../../selectors/visibleFileStates.selector"
+
+const mockedVisibleFileStatesSelector = visibleFileStatesSelector as unknown as jest.Mock
+
+jest.mock("../../../selectors/visibleFileStates.selector", () => ({
+	visibleFileStatesSelector: jest.fn()
+}))
+jest.mock("../../fileSettings/blacklist/blacklist.selector", () => ({ blacklistSelector: () => [] }))
 
 describe("EdgeMetricDataService", () => {
 	let edgeMetricDataService: EdgeMetricDataService
@@ -20,9 +27,9 @@ describe("EdgeMetricDataService", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		rebuildService()
-
-		storeService.dispatch(calculateNewEdgeMetricData(files, []))
+		mockedVisibleFileStatesSelector.mockImplementation(() => files)
+		edgeMetricDataService = new EdgeMetricDataService($rootScope, storeService)
+		edgeMetricDataService["updateEdgeMetricData"]()
 
 		withMockedEventMethods($rootScope)
 	})
@@ -42,14 +49,6 @@ describe("EdgeMetricDataService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
-			StoreService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
-		})
-
 		it("should subscribe to FilesService", () => {
 			FilesService.subscribe = jest.fn()
 
@@ -72,26 +71,6 @@ describe("EdgeMetricDataService", () => {
 			rebuildService()
 
 			expect(AttributeTypesService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
-		})
-	})
-
-	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new edgeMetricData value", () => {
-			const action: EdgeMetricDataAction = {
-				type: EdgeMetricDataActions.SET_EDGE_METRIC_DATA,
-				payload: EDGE_METRIC_DATA
-			}
-			storeService["store"].dispatch(action)
-
-			edgeMetricDataService.onStoreChanged(EdgeMetricDataActions.SET_EDGE_METRIC_DATA)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("edge-metric-data-changed", { edgeMetricData: EDGE_METRIC_DATA })
-		})
-
-		it("should not notify anything on non-edge-metric-data-events", () => {
-			edgeMetricDataService.onStoreChanged("ANOTHER_ACTION")
-
-			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 	})
 

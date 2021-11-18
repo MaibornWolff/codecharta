@@ -9,9 +9,14 @@ import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
-import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import packageJson from "../../package.json"
 import { clone } from "./util/clone"
+import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+
+const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
+jest.mock("./state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
+	nodeMetricDataSelector: jest.fn()
+}))
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -179,7 +184,7 @@ describe("codeChartaService", () => {
 		})
 
 		it("should load the default scenario after loading a valid file", () => {
-			storeService.dispatch(setNodeMetricData(metricData))
+			mockedNodeMetricDataSelector.mockImplementation(() => metricData)
 
 			codeChartaService.loadFiles([
 				{
@@ -196,7 +201,7 @@ describe("codeChartaService", () => {
 
 		it("should not load the default scenario after loading a valid file, that does not have the required metrics", () => {
 			metricData.pop()
-			storeService.dispatch(setNodeMetricData(metricData))
+			mockedNodeMetricDataSelector.mockImplementation(() => metricData)
 
 			codeChartaService.loadFiles([
 				{
