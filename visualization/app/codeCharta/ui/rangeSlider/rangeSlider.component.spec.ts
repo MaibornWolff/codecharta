@@ -2,7 +2,7 @@ import "./rangeSlider.module"
 
 import { RangeSliderController } from "./rangeSlider.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { MapColors } from "../../codeCharta.model"
@@ -14,7 +14,6 @@ import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricDa
 
 describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let storeService: StoreService
 	let nodeMetricDataService: NodeMetricDataService
 	let colorRangeService: ColorRangeService
@@ -23,14 +22,13 @@ describe("RangeSliderController", () => {
 	let mapColors: MapColors
 
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController($rootScope, $timeout, storeService, nodeMetricDataService, colorRangeService)
+		rangeSliderController = new RangeSliderController($rootScope, storeService, nodeMetricDataService, colorRangeService)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.rangeSlider")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		colorRangeService = getService<ColorRangeService>("colorRangeService")
@@ -80,24 +78,6 @@ describe("RangeSliderController", () => {
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
-
-		it("should have called renderSliderOnInitialisation", () => {
-			const spy = spyOn(RangeSliderController.prototype, "renderSliderOnInitialisation")
-
-			rebuildController()
-
-			expect(spy).toHaveBeenCalled()
-		})
-
-		it("should have called broadcast with rzSliderForceRender", () => {
-			const spy = spyOn($rootScope, "$broadcast")
-
-			rebuildController()
-
-			setTimeout(() => {
-				expect(spy).toHaveBeenCalledWith("rzSliderForceRender")
-			})
-		})
 	})
 
 	describe("onBlacklistChanged", () => {
@@ -130,6 +110,11 @@ describe("RangeSliderController", () => {
 	})
 
 	describe("onColorRangeChanged", () => {
+		beforeEach(() => {
+			rangeSliderController["applyCssColors"] = jest.fn()
+			rangeSliderController["updateInputFieldWidth"] = jest.fn()
+		})
+
 		it("should update the viewModel", () => {
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
@@ -160,9 +145,7 @@ describe("RangeSliderController", () => {
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
-			setTimeout(() => {
-				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
-			})
+			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
 		})
 
 		it("should set standard colors", () => {
@@ -171,9 +154,7 @@ describe("RangeSliderController", () => {
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
-			setTimeout(() => {
-				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
-			})
+			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
 		})
 
 		it("should call applySliderUpdateDone", () => {
@@ -184,17 +165,8 @@ describe("RangeSliderController", () => {
 			})
 		})
 
-		it("should call initSliderOptions", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
-
-			setTimeout(() => {
-				expect(rangeSliderController["initSliderOptions"]).toBeCalled()
-			})
-		})
-
 		describe("updateSliderColors", () => {
 			beforeEach(() => {
-				rangeSliderController["applyCssColors"] = jest.fn()
 				rangeSliderController["getColoredRangeColors"] = jest.fn()
 				rangeSliderController["getGreyRangeColors"] = jest.fn()
 			})
@@ -203,18 +175,14 @@ describe("RangeSliderController", () => {
 				it("should set sliderOptions.disabled to false", () => {
 					rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
-					setTimeout(() => {
-						expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeFalsy()
-					})
+					expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeFalsy()
 				})
 
 				it("should set sliders with range colors", () => {
 					rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
-					setTimeout(() => {
-						expect(rangeSliderController["getColoredRangeColors"]).toHaveBeenCalled()
-						expect(rangeSliderController["getGreyRangeColors"]).not.toHaveBeenCalled()
-					})
+					expect(rangeSliderController["getColoredRangeColors"]).toHaveBeenCalled()
+					expect(rangeSliderController["getGreyRangeColors"]).not.toHaveBeenCalled()
 				})
 			})
 
@@ -226,18 +194,14 @@ describe("RangeSliderController", () => {
 				it("should set sliderOptions.disabled to true", () => {
 					rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
-					setTimeout(() => {
-						expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeTruthy()
-					})
+					expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeTruthy()
 				})
 
 				it("should set sliders with grey colors", () => {
 					rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
-					setTimeout(() => {
-						expect(rangeSliderController["getColoredRangeColors"]).not.toHaveBeenCalled()
-						expect(rangeSliderController["getGreyRangeColors"]).toHaveBeenCalled()
-					})
+					expect(rangeSliderController["getColoredRangeColors"]).not.toHaveBeenCalled()
+					expect(rangeSliderController["getGreyRangeColors"]).toHaveBeenCalled()
 				})
 			})
 		})
@@ -257,13 +221,16 @@ describe("RangeSliderController", () => {
 
 			rangeSliderController.onFilesSelectionChanged()
 
-			setTimeout(() => {
-				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)
-			})
+			expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)
 		})
 	})
 
 	describe("applySliderChange", () => {
+		beforeEach(() => {
+			rangeSliderController["applyCssColors"] = jest.fn()
+			rangeSliderController["updateInputFieldWidth"] = jest.fn()
+		})
+
 		it("should call applyColorRange", () => {
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
@@ -283,6 +250,7 @@ describe("RangeSliderController", () => {
 
 	describe("onMapColorsChanged", () => {
 		it("should call updateSliderColors", () => {
+			rangeSliderController["applyCssColors"] = jest.fn()
 			rangeSliderController.onMapColorsChanged()
 
 			setTimeout(() => {
