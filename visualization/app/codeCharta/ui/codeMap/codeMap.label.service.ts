@@ -48,6 +48,23 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
 		const { margin, heightMetric } = dynamicSettings
 
+		let labelText = ""
+
+		if (showMetricLabelNodeName || (enforceLabel && !showMetricLabelNameValue)) {
+			labelText = `${node.name}`
+		} else if (!showMetricLabelNameValue) {
+			return
+		}
+
+		if (showMetricLabelNameValue) {
+			if (labelText !== "") {
+				labelText += "\n"
+			}
+			labelText += `${node.attributes[heightMetric]} ${heightMetric}`
+		}
+
+		const label = this.makeText(labelText, 30, node)
+
 		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
 		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
 
@@ -64,20 +81,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const labelY = (y + this.nodeHeight) * multiplier.y
 		const labelYOrigin = y + node.height
 		const labelZ = (z + node.length / 2) * multiplier.z
-
-		let labelText = ""
-
-		if (showMetricLabelNodeName || enforceLabel) {
-			labelText = `${node.name}`
-		}
-		if (showMetricLabelNameValue) {
-			if (labelText !== "") {
-				labelText += "\n"
-			}
-			labelText += `${node.attributes[heightMetric]} ${heightMetric}`
-		}
-
-		const label = this.makeText(labelText, 30, node)
 
 		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 		let labelOffset = labelHeightScaled + label.heightValue / 2

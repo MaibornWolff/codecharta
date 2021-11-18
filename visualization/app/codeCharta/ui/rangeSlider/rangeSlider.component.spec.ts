@@ -236,7 +236,7 @@ describe("RangeSliderController", () => {
 
 			setTimeout(() => {
 				expect(rangeSliderController["applyColorRange"]).toBeCalled()
-			})
+			}, RangeSliderController["DEBOUNCE_TIME"])
 		})
 
 		it("should call updateSliderColors", () => {
