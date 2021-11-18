@@ -238,7 +238,7 @@ function calculateTrueGradient(mapColors: MapColors, colorRange: ColorRange, met
 		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
 	}
 
-	const factor = metricValue / colorRange.max
+	const factor = (metricValue - middle) / (colorRange.max - middle)
 	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
 	return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
 }

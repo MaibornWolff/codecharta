@@ -350,7 +350,7 @@ describe("TreeMapHelper", () => {
 					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
 
 					node.attributes = { validMetricName: middle + 1 }
-					expect(buildNode().color).toBe("#d5bc01")
+					expect(buildNode().color).toBe("#dcca00")
 				})
 
 				it("colors a reddish color according to true gradient", () => {
@@ -358,7 +358,7 @@ describe("TreeMapHelper", () => {
 
 					node.attributes = { validMetricName: to + 1 }
 
-					expect(buildNode().color).toBe("#d3b702")
+					expect(buildNode().color).toBe("#dac501")
 
 					node.attributes = { validMetricName: max - 1 }
 
