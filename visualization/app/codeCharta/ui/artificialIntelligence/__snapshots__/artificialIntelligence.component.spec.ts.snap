@@ -1,19 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile and should not exceed 100 percent 1`] = `
+Object {
+  "highRisk": 37,
+  "lowRisk": 46,
+  "moderateRisk": 16,
+  "veryHighRisk": 0,
+}
+`;
+
 exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile for not excluded files only 1`] = `
 Object {
-  "highRisk": 15,
-  "lowRisk": 85,
-  "moderateRisk": 0,
+  "highRisk": 50,
+  "lowRisk": 27,
+  "moderateRisk": 22,
   "veryHighRisk": 0,
 }
 `;
 
 exports[`ArtificialIntelligenceController on files selection changed should clear and calculate risk profile for Java map 1`] = `
 Object {
-  "highRisk": 11,
-  "lowRisk": 88,
-  "moderateRisk": 0,
+  "highRisk": 37,
+  "lowRisk": 46,
+  "moderateRisk": 16,
   "veryHighRisk": 0,
 }
 `;
