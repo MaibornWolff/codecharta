@@ -1,5 +1,4 @@
 import "./rangeSlider.component.scss"
-import $ from "jquery"
 import { ColorRange } from "../../codeCharta.model"
 import angular, { IRootScopeService, ITimeoutService, RzSlider } from "angular"
 import { StoreService } from "../../state/store.service"
@@ -201,9 +200,9 @@ export class RangeSliderController
 		const fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		const toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
-		$("range-slider-component #rangeFromInputField").css("width", `${fromWidth}px`)
-		$("range-slider-component #rangeToInputField").css("width", `${toWidth}px`)
-		$("range-slider-component #colorSlider").css("width", `${this.FULL_WIDTH_SLIDER - fromWidth - toWidth}px`)
+		document.getElementById("rangeFromInputField").style.width = `${fromWidth}px`
+		document.getElementById("rangeToInputField").style.width = `${toWidth}px`
+		document.getElementById("colorSlider").style.width = `${this.FULL_WIDTH_SLIDER - fromWidth - toWidth}px`
 	}
 
 	private updateSliderColors() {
@@ -232,14 +231,14 @@ export class RangeSliderController
 	}
 
 	private applyCssColors(rangeColors, rangeFromPercentage) {
-		const slider = $("range-slider-component .rzslider")
-		const leftSection = slider.find(".rz-bar-wrapper:nth-child(3) .rz-bar")
-		const middleSection = slider.find(".rz-selection")
-		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
+		const slider = document.querySelector("range-slider-component .rzslider")
+		const leftSection = <HTMLElement>slider.querySelector(".rz-bar-wrapper:nth-child(3) .rz-bar")
+		const middleSection = <HTMLElement>slider.querySelector(".rz-selection")
+		const rightSection = <HTMLElement>slider.querySelector(".rz-right-out-selection .rz-bar")
 
-		leftSection.css("cssText", `background: ${rangeColors.left} !important; width: ${rangeFromPercentage}%;`)
-		middleSection.css("cssText", `background: ${rangeColors.middle} !important;`)
-		rightSection.css("cssText", `background: ${rangeColors.right};`)
+		leftSection.style.cssText = `background: ${rangeColors.left} !important; width: ${rangeFromPercentage}%;`
+		middleSection.style.cssText = `background: ${rangeColors.middle} !important;`
+		rightSection.style.cssText = `background: ${rangeColors.right};`
 	}
 }
 

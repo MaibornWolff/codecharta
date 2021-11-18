@@ -2,7 +2,7 @@ import "./metricChooser.module"
 
 import { MetricChooserController } from "./metricChooser.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
@@ -14,18 +14,16 @@ import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricDa
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let storeService: StoreService
 
 	function rebuildController() {
-		metricChooserController = new MetricChooserController($rootScope, $timeout, storeService)
+		metricChooserController = new MetricChooserController($rootScope, storeService)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.metricChooser")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 	}
 
