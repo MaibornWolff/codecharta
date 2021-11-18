@@ -88,6 +88,7 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onFilesSelectionChanged", () => {
 		it("should detect delta mode selection", () => {
+			nodeMetricDataService["nodeMetricData"] = []
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
 			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
