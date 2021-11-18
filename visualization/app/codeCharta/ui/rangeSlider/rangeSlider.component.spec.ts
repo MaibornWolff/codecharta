@@ -106,6 +106,12 @@ describe("RangeSliderController", () => {
 			rangeSliderController.onColorMetricChanged()
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
+
+			rangeSliderController["_viewModel"].sliderOptions.ceil = 50
+
+			rangeSliderController.onColorMetricChanged()
+
+			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
 	})
 
@@ -120,21 +126,6 @@ describe("RangeSliderController", () => {
 
 			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(10)
 			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(30)
-		})
-
-		it("should init the slider options when metric data is available", () => {
-			const expected = {
-				ceil: 100,
-				onChange: () => rangeSliderController["updateSliderColors"],
-				pushRange: true,
-				disabled: false
-			}
-
-			rangeSliderController.onColorMetricChanged()
-
-			setTimeout(() => {
-				expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
-			})
 		})
 
 		it("should set grey colors when slider is disabled", () => {
@@ -155,14 +146,6 @@ describe("RangeSliderController", () => {
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 
 			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
-		})
-
-		it("should call applySliderUpdateDone", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
-
-			setTimeout(() => {
-				expect(rangeSliderController["applySliderUpdateDone"]).toBeCalled()
-			})
 		})
 
 		describe("updateSliderColors", () => {
@@ -205,6 +188,14 @@ describe("RangeSliderController", () => {
 				})
 			})
 		})
+
+		it("should call updateSliderColors", () => {
+			rangeSliderController["updateSliderColors"] = jest.fn()
+
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
+
+			expect(rangeSliderController["updateSliderColors"]).toBeCalled()
+		})
 	})
 
 	describe("onFilesSelectionChanged", () => {
@@ -222,40 +213,6 @@ describe("RangeSliderController", () => {
 			rangeSliderController.onFilesSelectionChanged()
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)
-		})
-	})
-
-	describe("applySliderChange", () => {
-		beforeEach(() => {
-			rangeSliderController["applyCssColors"] = jest.fn()
-			rangeSliderController["updateInputFieldWidth"] = jest.fn()
-		})
-
-		it("should call applyColorRange", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
-
-			setTimeout(() => {
-				expect(rangeSliderController["applyColorRange"]).toBeCalled()
-			}, RangeSliderController["DEBOUNCE_TIME"])
-		})
-
-		it("should call updateSliderColors", () => {
-			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
-
-			setTimeout(() => {
-				expect(rangeSliderController["updateSliderColors"]).toBeCalled()
-			})
-		})
-	})
-
-	describe("onMapColorsChanged", () => {
-		it("should call updateSliderColors", () => {
-			rangeSliderController["applyCssColors"] = jest.fn()
-			rangeSliderController.onMapColorsChanged()
-
-			setTimeout(() => {
-				expect(rangeSliderController["updateSliderColors"]).toBeCalled()
-			})
 		})
 	})
 
