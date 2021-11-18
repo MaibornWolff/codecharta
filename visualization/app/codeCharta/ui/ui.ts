@@ -79,7 +79,6 @@ angular
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.fileChooser",
 		"app.codeCharta.ui.fileExtensionBar",
-		"app.codeCharta.ui.filePanel",
 		"app.codeCharta.ui.heightSettingsPanel",
 		"app.codeCharta.ui.legendPanel",
 		"app.codeCharta.ui.loadingGif",
