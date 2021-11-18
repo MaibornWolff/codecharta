@@ -24,6 +24,8 @@ import { calculateNodeMetricData } from "../../state/selectors/accumulatedData/m
 import { calculateEdgeMetricData } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 
 describe("codeMapPreRenderService", () => {
+	const wait = async (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
+
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
@@ -144,15 +146,13 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("onStoreChanged", () => {
-		it("should call codeMapRenderService.render", done => {
+		it("should call codeMapRenderService.render", async () => {
 			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
 
-			setTimeout(() => {
-				expect(codeMapRenderService.render).toHaveBeenCalled()
-				expect(storeService.getState().appSettings.isLoadingFile).toBeFalsy()
-				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
+			await wait(CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
+			expect(codeMapRenderService.render).toHaveBeenCalled()
+			expect(storeService.getState().appSettings.isLoadingFile).toBeFalsy()
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 
 		it("should not call codeMapRenderService.render for scaling actions", () => {
@@ -167,15 +167,13 @@ describe("codeMapPreRenderService", () => {
 			expect(codeMapRenderService.render).not.toHaveBeenCalled()
 		})
 
-		it("should show and stop the loadingMapGif", done => {
+		it("should show and stop the loadingMapGif", async () => {
 			codeMapPreRenderService["showLoadingMapGif"] = jest.fn()
 
 			codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
 
-			setTimeout(() => {
-				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+			await wait(CodeMapPreRenderService["DEBOUNCE_TIME"])
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 	})
 
@@ -197,35 +195,29 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("onMetricDataChanged", () => {
-		it("should decorate and set a new render map", done => {
+		it("should decorate and set a new render map", async () => {
 			codeMapPreRenderService.onMetricDataChanged()
 
-			setTimeout(() => {
-				expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+			await wait(CodeMapPreRenderService["DEBOUNCE_TIME"])
+			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
 
-		it("should update the isBlacklisted attribute on each node", done => {
+		it("should update the isBlacklisted attribute on each node", async () => {
 			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
 
 			codeMapPreRenderService.onMetricDataChanged()
 
-			setTimeout(() => {
-				expect(allNodesToBeExcluded()).toBeTruthy()
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+			await wait(CodeMapPreRenderService["DEBOUNCE_TIME"])
+			expect(allNodesToBeExcluded()).toBeTruthy()
 		})
 
-		it("should change map to multiple mode and check that no id exists twice", done => {
+		it("should change map to multiple mode and check that no id exists twice", async () => {
 			storeService.dispatch(setMultiple(getCCFiles(storeService.getState().files)))
 
 			codeMapPreRenderService.onMetricDataChanged()
 
-			setTimeout(() => {
-				expect(isIdUnique()).toBeTruthy()
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+			await wait(CodeMapPreRenderService["DEBOUNCE_TIME"])
+			expect(isIdUnique()).toBeTruthy()
 		})
 
 		it("should call DeltaGenerator with the right parameters", () => {
