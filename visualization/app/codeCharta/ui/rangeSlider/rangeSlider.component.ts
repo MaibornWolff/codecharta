@@ -1,9 +1,9 @@
 import "./rangeSlider.component.scss"
 import { ColorRange } from "../../codeCharta.model"
-import angular, { IRootScopeService, ITimeoutService, RzSlider } from "angular"
+import { IRootScopeService, RzSlider } from "angular"
 import { StoreService } from "../../state/store.service"
-import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
@@ -24,7 +24,6 @@ export class RangeSliderController
 	implements ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, MapColorsSubscriber
 {
 	private static DEBOUNCE_TIME = 400
-	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
 	private DIGIT_WIDTH = 11
 	private MIN_DIGITS = 4
@@ -46,7 +45,6 @@ export class RangeSliderController
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private colorRangeService: ColorRangeService
@@ -57,29 +55,11 @@ export class RangeSliderController
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		MapColorsService.subscribe(this.$rootScope, this)
-		this.renderSliderOnInitialisation()
-		this.applyDebouncedColorRange = debounce((action: SetColorRangeAction) => {
-			this.storeService.dispatch(action)
-		}, RangeSliderController.DEBOUNCE_TIME)
+		this.applyColorRange()
 	}
 
 	onMapColorsChanged() {
 		this.updateSliderColors()
-	}
-
-	renderSliderOnInitialisation() {
-		// quick and dirty: Better solution would be to wait for the content to be loaded for the first render
-		// should be taken care of when switching to Angular
-
-		angular.element(() => {
-			this.$timeout(() => {
-				this.forceSliderRender()
-			})
-		})
-	}
-
-	forceSliderRender() {
-		angular.element(() => this.$rootScope.$broadcast("rzSliderForceRender"))
 	}
 
 	onBlacklistChanged() {
@@ -95,12 +75,9 @@ export class RangeSliderController
 
 	onColorRangeChanged(colorRange: ColorRange) {
 		this.updateViewModel(colorRange)
-
-		this.$timeout(() => {
-			this.initSliderOptions()
-			this.updateSliderColors()
-			this.updateInputFieldWidth()
-		}, 0)
+		this.initSliderOptions()
+		this.updateSliderColors()
+		this.updateInputFieldWidth()
 	}
 
 	onFilesSelectionChanged() {
@@ -155,8 +132,8 @@ export class RangeSliderController
 		this.updateSliderColors()
 	}
 
-	private applyColorRange() {
-		this.applyDebouncedColorRange(
+	private applyColorRange = debounce(() => {
+		this.storeService.dispatch(
 			setColorRange({
 				to: this._viewModel.colorRangeTo,
 				from: this._viewModel.colorRangeFrom,
@@ -164,7 +141,7 @@ export class RangeSliderController
 				max: this._viewModel.sliderOptions.ceil
 			})
 		)
-	}
+	}, RangeSliderController.DEBOUNCE_TIME)
 
 	private applySliderUpdateDone(modelValue, highValue, pointerType) {
 		if (pointerType === "min") {
