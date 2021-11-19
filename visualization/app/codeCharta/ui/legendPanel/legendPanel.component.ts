@@ -17,6 +17,7 @@ import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricDa
 import { StoreService } from "../../state/store.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { metricDescriptions } from "../../util/metric/metricDescriptions"
+import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 
 export class LegendPanelController
 	implements
@@ -101,7 +102,7 @@ export class LegendPanelController
 
 	onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.edge = edgeMetric
-		const edgeMetricData = this.storeService.getState().metricData.edgeMetricData
+		const edgeMetricData = edgeMetricDataSelector(this.storeService.getState())
 		const { maxValue } = edgeMetricData.find(object => {
 			return object.name === this._viewModel.edge
 		})

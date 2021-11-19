@@ -1,5 +1,4 @@
 import angular from "angular"
-// Plop: Append module import here
 import { ColorModeService } from "./store/dynamicSettings/colorMode/colorMode.service"
 import { SecondaryMetricsService } from "./store/appSettings/secondaryMetrics/secondaryMetrics.service"
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
@@ -57,7 +56,6 @@ import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableC
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
-	// Plop: Append service name here
 	.service(camelCase(ColorModeService.name), ColorModeService)
 	.service(camelCase(SecondaryMetricsService.name), SecondaryMetricsService)
 	.service(camelCase(RecentFilesService.name), RecentFilesService)
