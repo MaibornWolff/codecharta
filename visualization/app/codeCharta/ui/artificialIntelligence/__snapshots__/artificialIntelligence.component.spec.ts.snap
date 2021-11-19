@@ -1,19 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile and should not exceed 100 percent 1`] = `
-Object {
-  "highRisk": 37,
-  "lowRisk": 46,
-  "moderateRisk": 16,
-  "veryHighRisk": 0,
-}
-`;
-
 exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile for not excluded files only 1`] = `
 Object {
   "highRisk": 50,
   "lowRisk": 27,
-  "moderateRisk": 22,
+  "moderateRisk": 23,
   "veryHighRisk": 0,
 }
 `;
@@ -22,7 +13,7 @@ exports[`ArtificialIntelligenceController on files selection changed should clea
 Object {
   "highRisk": 37,
   "lowRisk": 46,
-  "moderateRisk": 16,
+  "moderateRisk": 17,
   "veryHighRisk": 0,
 }
 `;
