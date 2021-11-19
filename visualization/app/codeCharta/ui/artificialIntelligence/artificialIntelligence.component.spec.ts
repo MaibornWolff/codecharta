@@ -169,10 +169,17 @@ describe("ArtificialIntelligenceController", () => {
 		it("should calculate risk profile and should not exceed 100 percent", () => {
 			storeService.dispatch(setExperimentalFeaturesEnabled(true))
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
-			const sumOfRiskPercentage = Object.values(artificialIntelligenceController["_viewModel"].riskProfile).reduce((a, b) => a + b)
 
-			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
-			expect(sumOfRiskPercentage).toEqual(99)
+			const sumOfRiskPercentage = Object.values(artificialIntelligenceController["_viewModel"].riskProfile).reduce((a, b) => a + b)
+			const expectedRiskProfile = {
+				highRisk: 37,
+				lowRisk: 46,
+				moderateRisk: 17,
+				veryHighRisk: 0
+			}
+
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toEqual(expectedRiskProfile)
+			expect(sumOfRiskPercentage).toEqual(100)
 		})
 
 		it("should create custom config suggestions sorted by outlierCustomConfigId", () => {

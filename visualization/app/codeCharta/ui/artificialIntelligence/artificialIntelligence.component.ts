@@ -23,6 +23,7 @@ import {
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { metricDescriptions } from "../../util/metric/metricDescriptions"
+import percentRound from "percent-round"
 
 interface MetricValues {
 	[metric: string]: number[]
@@ -182,11 +183,18 @@ export class ArtificialIntelligenceController
 			return
 		}
 
+		const [lowRisk, moderateRisk, highRisk, veryHighRisk] = percentRound([
+			numberOfRlocLowRisk,
+			numberOfRlocModerateRisk,
+			numberOfRlocHighRisk,
+			numberOfRlocVeryHighRisk
+		])
+
 		this._viewModel.riskProfile = {
-			lowRisk: Math.floor((numberOfRlocLowRisk / totalRloc) * 100),
-			moderateRisk: Math.floor((numberOfRlocModerateRisk / totalRloc) * 100),
-			highRisk: Math.floor((numberOfRlocHighRisk / totalRloc) * 100),
-			veryHighRisk: Math.floor((numberOfRlocVeryHighRisk / totalRloc) * 100)
+			lowRisk,
+			moderateRisk,
+			highRisk,
+			veryHighRisk
 		}
 	}
 
