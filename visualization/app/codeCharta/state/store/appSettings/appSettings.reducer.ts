@@ -1,4 +1,3 @@
-// Plop: Append reducer import here
 import { secondaryMetrics } from "./secondaryMetrics/secondaryMetrics.reducer"
 import { colorLabels } from "./colorLabels/colorLabels.reducer"
 import { showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
@@ -31,7 +30,6 @@ import { sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
 import { screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 
 const appSettings = combineReducers({
-	// Plop: Append sub-reducer here
 	secondaryMetrics,
 	colorLabels,
 	showMetricLabelNodeName,

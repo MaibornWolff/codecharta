@@ -12,7 +12,6 @@ import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import {
 	CODE_MAP_BUILDING,
 	CONSTANT_HIGHLIGHT,
-	DEFAULT_STATE,
 	FILE_META,
 	TEST_FILE_WITH_PATHS,
 	TEST_NODE_LEAF,
@@ -64,7 +63,14 @@ describe("codeMapMouseEventService", () => {
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedEventMethods($rootScope)
-		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, DEFAULT_STATE.metricData, [])
+		NodeDecorator.decorateMap(
+			TEST_FILE_WITH_PATHS.map,
+			{
+				nodeMetricData: [],
+				edgeMetricData: []
+			},
+			[]
+		)
 	})
 
 	function restartSystem() {
