@@ -1,7 +1,6 @@
 import { AppSettings, CCAction, colorLabelOptions, MapColors, RecursivePartial } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 
-// Plop: Append action splitter import here
 import { splitSecondaryMetricsAction } from "./secondaryMetrics/secondaryMetrics.splitter"
 import { splitColorLabelsAction } from "./colorLabels/colorLabels.splitter"
 import { splitShowMetricLabelNodeNameAction } from "./showMetricLabelNodeName/showMetricLabelNodeName.splitter"
@@ -35,7 +34,6 @@ import { SecondaryMetric } from "../../../ui/attributeSideBar/attributeSideBar.c
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []
 
-	// Plop: Append action split here
 	if (payload.secondaryMetrics !== undefined) {
 		actions.push(splitSecondaryMetricsAction(payload.secondaryMetrics as SecondaryMetric[]))
 	}
