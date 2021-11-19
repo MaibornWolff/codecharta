@@ -1,4 +1,4 @@
-file-panel-component {
+cc-file-panel {
 	width: calc(100% - 150px);
 	min-width: 400px;
 	display: inline-block;
@@ -16,6 +16,7 @@ file-panel-component {
 	}
 
 	.small-action-button.transparent {
+		//TODO: change md to mat?
 		.md-fab.md-button.md-ink-ripple {
 			&:hover {
 				background-color: transparent !important;
