@@ -1,10 +1,9 @@
-import { Component, Input } from "@angular/core"
-import { FilePanelState } from "../filePanel.component"
+import { Component } from "@angular/core"
 
 @Component({
 	selector: "cc-file-panel-state-buttons",
 	template: require("./filePanelStateButtons.component.html")
 })
 export class FilePanelStateButtonsComponent {
-	@Input() state: FilePanelState
+	//@Input() state: FilePanelState
 }
