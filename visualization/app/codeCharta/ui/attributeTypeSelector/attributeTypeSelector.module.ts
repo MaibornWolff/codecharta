@@ -1,7 +1,13 @@
-import "../../state/state.module"
-import angular from "angular"
-import { attributeTypeSelectorComponent } from "./attributeTypeSelector.component"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
 
-angular
-	.module("app.codeCharta.ui.attributeTypeSelector", ["app.codeCharta.state"])
-	.component(attributeTypeSelectorComponent.selector, attributeTypeSelectorComponent)
+import { AttributeTypeSelectorComponent } from "./attributeTypeSelector.component"
+import { MaterialModule } from "../../../material/material.module"
+import { AggregationSymbolPipe } from "./aggregationSymbol.pipe"
+
+@NgModule({
+	imports: [CommonModule, MaterialModule],
+	declarations: [AttributeTypeSelectorComponent, AggregationSymbolPipe],
+	exports: [AttributeTypeSelectorComponent]
+})
+export class AttributeTypeSelectorModule {}

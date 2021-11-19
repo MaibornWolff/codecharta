@@ -1,72 +1,33 @@
 import "./attributeTypeSelector.component.scss"
-import { StoreService } from "../../state/store.service"
+import { Component, Inject, Input } from "@angular/core"
+import { Observable } from "rxjs"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { updateAttributeType } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import { IRootScopeService } from "angular"
-import { AttributeTypesService } from "../../state/store/fileSettings/attributeTypes/attributeTypes.service"
+import { Store } from "../../state/angular-redux/store"
+import { getAttributeTypeOfNodesByMetricSelector } from "../../state/selectors/getAttributeTypeOfNodesByMetric.selector"
 
-export class AttributeTypeSelectorController {
-	private _viewModel: {
-		aggregationSymbol: string
-	} = {
-		aggregationSymbol: ""
+@Component({
+	selector: "cc-attribute-type-selector",
+	template: require("./attributeTypeSelector.component.html")
+})
+export class AttributeTypeSelectorComponent {
+	@Input() metric: string
+
+	getAttributeTypeOfNodesByMetric$: Observable<(metricName: string) => AttributeTypeValue>
+
+	constructor(@Inject(Store) private store: Store) {
+		this.getAttributeTypeOfNodesByMetric$ = this.store.select(getAttributeTypeOfNodesByMetricSelector)
 	}
 
-	private type: string
-	private metric: string
-
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private nodeMetricDataService: NodeMetricDataService,
-		private edgeMetricDataService: EdgeMetricDataService
-	) {
-		"ngInject"
-		AttributeTypesService.subscribe(this.$rootScope, this)
+	setToAbsolute() {
+		this.setAttributeType(AttributeTypeValue.absolute)
 	}
 
-	onAttributeTypesChanged() {
-		this.setAggregationSymbol()
+	setToRelative() {
+		this.setAttributeType(AttributeTypeValue.relative)
 	}
 
-	$onInit() {
-		this.setAggregationSymbol()
+	private setAttributeType(type: AttributeTypeValue) {
+		this.store.dispatch(updateAttributeType("nodes", this.metric, type))
 	}
-
-	setToAbsolute(metricName: string, category: string) {
-		this.setAttributeType(metricName, category, AttributeTypeValue.absolute)
-	}
-
-	setToRelative(metricName: string, category: string) {
-		this.setAttributeType(metricName, category, AttributeTypeValue.relative)
-	}
-
-	private setAttributeType(metricName: string, category: string, type: AttributeTypeValue) {
-		this.storeService.dispatch(updateAttributeType(category, metricName, type))
-		this.setAggregationSymbol()
-	}
-
-	private setAggregationSymbol() {
-		const type =
-			this.type === "nodes"
-				? this.nodeMetricDataService.getAttributeTypeByMetric(this.metric)
-				: this.edgeMetricDataService.getAttributeTypeByMetric(this.metric)
-		switch (type) {
-			case AttributeTypeValue.relative:
-				this._viewModel.aggregationSymbol = "x͂"
-				break
-			case AttributeTypeValue.absolute:
-			default:
-				this._viewModel.aggregationSymbol = "Σ"
-		}
-	}
-}
-
-export const attributeTypeSelectorComponent = {
-	selector: "attributeTypeSelectorComponent",
-	template: require("./attributeTypeSelector.component.html"),
-	controller: AttributeTypeSelectorController,
-	bindings: { type: "@", metric: "@" }
 }

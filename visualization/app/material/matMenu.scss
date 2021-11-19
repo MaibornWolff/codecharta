@@ -1,0 +1,18 @@
+.mat-menu-content {
+	.menu-header {
+		font-size: 9pt;
+		height: 20px;
+		line-height: 20px;
+	}
+}
+
+.mat-menu-content {
+	// overwrite global app.scss style
+	button {
+		margin: unset;
+	}
+}
+
+.mat-menu-item {
+	font-size: 16px;
+}
