@@ -1,9 +1,8 @@
 import "./edgeChooser.component.scss"
 import { EdgeMetricCount, EdgeMetricData } from "../../codeCharta.model"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
-import $ from "jquery"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
@@ -30,8 +29,7 @@ export class EdgeChooserController
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private codeMapActionsService: CodeMapActionsService,
-		private $timeout: ITimeoutService
+		private codeMapActionsService: CodeMapActionsService
 	) {
 		"ngInject"
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
@@ -73,9 +71,9 @@ export class EdgeChooserController
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(({ name }) => name.toLowerCase().includes(searchTerm))
 	}
 
-	focusInputField() {
-		this.$timeout(() => {
-			$(".metric-search").focus()
+	focusInputField(idName) {
+		setTimeout(() => {
+			document.getElementById(`${idName}-selector`).focus()
 		}, 200)
 	}
 

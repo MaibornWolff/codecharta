@@ -24,7 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fixed legend panel not having a background ([#2422](https://github.com/MaibornWolff/codecharta/pull/2510))
+-   Fix rounding of the sum of percentages in risk profile ([#2393](https://github.com/MaibornWolff/codecharta/pull/2516))
+-   Fix legend panel not having a background ([#2422](https://github.com/MaibornWolff/codecharta/pull/2510))
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -98,7 +99,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix broken methode call in screenshot feature.
+-   Fix broken method call in screenshot feature.
 -   Improve changelog entries.
 
 ### Changed

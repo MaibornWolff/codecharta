@@ -823,14 +823,7 @@ describe("codeMapMouseEventService", () => {
 			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
-				codeMapBuilding.node,
-				{
-					showNodeName: true,
-					showNodeMetric: false
-				},
-				0
-			)
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 			expect(nodeHeight).toBeGreaterThan(0)
 		})
 
@@ -843,14 +836,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
-				codeMapBuilding.node,
-				{
-					showNodeName: true,
-					showNodeMetric: false
-				},
-				0
-			)
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 		})
 
 		it("should not generate names in temporary Label when metric option is set to true and name is set to false", () => {
@@ -862,14 +848,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
-				codeMapBuilding.node,
-				{
-					showNodeName: false,
-					showNodeMetric: true
-				},
-				0
-			)
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 		})
 	})
 })

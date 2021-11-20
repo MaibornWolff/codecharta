@@ -41,12 +41,29 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	//labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }, highestNodeInSet: number) {
-		const state = this.storeService.getState()
+	// Labels need to be scaled according to map or it will clip + looks bad
+	addLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
+		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
 
-		const { scaling, layoutAlgorithm } = state.appSettings
-		const { margin, heightMetric } = state.dynamicSettings
+		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
+		const { margin, heightMetric } = dynamicSettings
+
+		let labelText = ""
+
+		if (showMetricLabelNodeName || (enforceLabel && !showMetricLabelNameValue)) {
+			labelText = `${node.name}`
+		} else if (!showMetricLabelNameValue) {
+			return
+		}
+
+		if (showMetricLabelNameValue) {
+			if (labelText !== "") {
+				labelText += "\n"
+			}
+			labelText += `${node.attributes[heightMetric]} ${heightMetric}`
+		}
+
+		const label = this.makeText(labelText, 30, node)
 
 		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
 		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
@@ -56,28 +73,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		const multiplier = scaling.clone()
 
-		const x = node.x0 - state.treeMap.mapSize
+		const x = node.x0 - treeMap.mapSize
 		const y = node.z0
-		const z = node.y0 - state.treeMap.mapSize
+		const z = node.y0 - treeMap.mapSize
 
 		const labelX = (x + node.width / 2) * multiplier.x
 		const labelY = (y + this.nodeHeight) * multiplier.y
 		const labelYOrigin = y + node.height
 		const labelZ = (z + node.length / 2) * multiplier.z
-
-		let labelText = ""
-
-		if (options.showNodeName) {
-			labelText = `${node.name}`
-		}
-		if (options.showNodeMetric) {
-			if (labelText !== "") {
-				labelText += "\n"
-			}
-			labelText += `${node.attributes[heightMetric]} ${heightMetric}`
-		}
-
-		const label = this.makeText(labelText, 30, node)
 
 		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 		let labelOffset = labelHeightScaled + label.heightValue / 2
