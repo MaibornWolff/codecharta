@@ -1,12 +1,12 @@
 cc-attribute-type-selector {
 	display: inline-block;
+	background-color: white;
+	border-radius: 12px;
 
 	.menu-button {
 		height: 24px;
 		width: 24px;
 		min-width: 0 !important;
-		background-color: white;
-		border-radius: 16px;
 		padding: 0;
 
 		&:hover {
@@ -15,7 +15,7 @@ cc-attribute-type-selector {
 
 		.symbol {
 			position: absolute;
-			top: -6px;
+			top: -7px;
 			left: 8px;
 		}
 	}
