@@ -11,6 +11,7 @@ import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colo
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 export interface ScenarioItem {
 	scenarioName: string
@@ -36,7 +37,7 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 	}
 
 	loadScenarios() {
-		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.storeService.getState().metricData)
+		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(metricDataSelector(this.storeService.getState()))
 	}
 
 	onMetricDataChanged() {

@@ -13,6 +13,7 @@ import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store
 import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	private nodesByColor = {
@@ -73,9 +74,9 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 	private getNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
+		const nodeMetricData = nodeMetricDataSelector(state)
 		const {
 			appSettings: { layoutAlgorithm },
-			metricData: { nodeMetricData },
 			files
 		} = state
 		const deltaState = isDeltaState(files)
@@ -110,11 +111,21 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 						this.nodesByColor.positive.push(node)
 						break
 
-					case mapColor.neutral:
+					default:
+						// TODO: A couple of these are either negative or
+						// positive, depending on the mode! It's not possible to
+						// rely upon the color anymore. We have to add a state
+						// that tracks the color.
 						this.nodesByColor.neutral.push(node)
 						break
 				}
 			}
+		}
+	}
+
+	private setBuildingLabel(nodes: Node[], highestNodeInSet: number) {
+		for (const node of nodes) {
+			this.codeMapLabelService.addLabel(node, highestNodeInSet)
 		}
 	}
 
@@ -125,67 +136,25 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 			return
 		}
 
-		const appSettings = this.storeService.getState().appSettings
-		const showLabelNodeName = appSettings.showMetricLabelNodeName
-		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
-		const colorLabelOptions = appSettings.colorLabels
+		const {
+			showMetricLabelNodeName,
+			showMetricLabelNameValue,
+			colorLabels: colorLabelOptions,
+			amountOfTopLabels
+		} = this.storeService.getState().appSettings
 
-		if (showLabelNodeName || showLabelNodeMetric) {
+		if (showMetricLabelNodeName || showMetricLabelNameValue) {
 			const highestNodeInSet = sortedNodes[0].height
 
-			if (colorLabelOptions.positive) {
-				for (const node of this.nodesByColor.positive) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
+			for (const colorType of ["positive", "neutral", "negative"]) {
+				if (colorLabelOptions[colorType]) {
+					this.setBuildingLabel(this.nodesByColor[colorType], highestNodeInSet)
 				}
 			}
-			if (colorLabelOptions.neutral) {
-				for (const node of this.nodesByColor.neutral) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
-				}
-			}
-			if (colorLabelOptions.negative) {
-				for (const node of this.nodesByColor.negative) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
-				}
-			}
-			if (!colorLabelOptions.negative && !colorLabelOptions.positive && !colorLabelOptions.neutral) {
-				let { amountOfTopLabels } = appSettings
-				for (let index = 0; index < sortedNodes.length && amountOfTopLabels !== 0; index++) {
-					if (sortedNodes[index].isLeaf) {
-						//get neighbors with label
-						//neighbor ==> width + margin + 1
-						this.codeMapLabelService.addLabel(
-							sortedNodes[index],
-							{
-								showNodeName: showLabelNodeName,
-								showNodeMetric: showLabelNodeMetric
-							},
-							highestNodeInSet
-						)
-						amountOfTopLabels -= 1
-					}
-				}
+
+			if (!(colorLabelOptions.negative || colorLabelOptions.neutral || colorLabelOptions.positive)) {
+				const nodes = sortedNodes.filter(node => node.isLeaf).slice(0, amountOfTopLabels)
+				this.setBuildingLabel(nodes, highestNodeInSet)
 			}
 		}
 	}

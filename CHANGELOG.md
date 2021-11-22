@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
+
 ### Changed
 
 -   Improved the UI and usability of the Suspicious Metrics Feature ([#2376](https://github.com/MaibornWolff/codecharta/pull/2494)) <br>
@@ -16,6 +20,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
         <img src="https://user-images.githubusercontent.com/48621967/141793011-1bfc0e19-bd3a-4bd2-af70-c3dd472821b6.png" height="256px" alt="list of suspicious metrics"/>
     -   The bar in the analysis shows the percentages <br>
         <img src="https://user-images.githubusercontent.com/48621967/141791111-564778fa-b767-4ee4-b024-6856f1a79b4b.png" width="512px" alt="list of suspicious metrics"/>
+
+### Fixed 🐞
+
+-   Fix rounding of the sum of percentages in risk profile ([#2393](https://github.com/MaibornWolff/codecharta/pull/2516))
+-   Fix legend panel not having a background ([#2422](https://github.com/MaibornWolff/codecharta/pull/2510))
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -89,7 +98,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix broken methode call in screenshot feature.
+-   Fix broken method call in screenshot feature.
 -   Improve changelog entries.
 
 ### Changed

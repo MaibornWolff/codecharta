@@ -1,4 +1,4 @@
-import { DEFAULT_STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
 import {
 	CCFile,
 	CodeMapNode,
@@ -283,7 +283,14 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should decorate nodes with a unique id starting from 0", () => {
-			NodeDecorator.decorateMap(file.map, DEFAULT_STATE.metricData, [])
+			NodeDecorator.decorateMap(
+				file.map,
+				{
+					nodeMetricData: [],
+					edgeMetricData: []
+				},
+				[]
+			)
 
 			const h = hierarchy(file.map)
 			h.each(node => {

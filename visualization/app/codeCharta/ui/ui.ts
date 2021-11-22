@@ -1,7 +1,6 @@
 import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
-// Plop: Append module import here
 import "./artificialIntelligence/artificialIntelligence.module"
 import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
@@ -51,7 +50,6 @@ import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 
 angular
 	.module("app.codeCharta.ui", [
-		// Plop: Append component name here
 		"app.codeCharta.ui.artificialIntelligence",
 		"app.codeCharta.ui.customColorPicker",
 		"app.codeCharta.ui.customConfigs",

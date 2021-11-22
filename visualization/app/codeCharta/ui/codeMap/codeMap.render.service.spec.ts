@@ -24,7 +24,6 @@ import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { klona } from "klona"
@@ -32,6 +31,12 @@ import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+
+const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
+jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
+	nodeMetricDataSelector: jest.fn()
+}))
 
 describe("codeMapRenderService", () => {
 	let $rootScope: IRootScopeService
@@ -72,7 +77,7 @@ describe("codeMapRenderService", () => {
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
 		storeService.dispatch(setState(state))
 		storeService.dispatch(unfocusNode())
-		storeService.dispatch(setNodeMetricData(METRIC_DATA))
+		mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
 	}
 
 	function rebuildService() {
