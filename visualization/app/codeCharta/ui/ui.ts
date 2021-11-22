@@ -4,7 +4,6 @@ import { downgradeComponent } from "@angular/upgrade/static"
 import "./artificialIntelligence/artificialIntelligence.module"
 import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
-import "./attributeTypeSelector/attributeTypeSelector.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
 import "./downloadButton/downloadButton.module"
@@ -47,13 +46,13 @@ import { MapTreeViewComponent } from "./mapTreeView/mapTreeView.component"
 import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
+import { AttributeTypeSelectorComponent } from "./attributeTypeSelector/attributeTypeSelector.component"
 
 angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
 		"app.codeCharta.ui.customColorPicker",
 		"app.codeCharta.ui.customConfigs",
-		"app.codeCharta.ui.attributeTypeSelector",
 		"app.codeCharta.ui.unfocusButton",
 		"app.codeCharta.ui.metricValueHovered",
 		"app.codeCharta.ui.downloadButton",
@@ -98,3 +97,4 @@ angular
 	.directive("ccMetricDeltaSelected", downgradeComponent({ component: MetricDeltaSelectedComponent }))
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
+	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))

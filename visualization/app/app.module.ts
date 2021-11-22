@@ -12,11 +12,19 @@ import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.co
 import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
 import { NodePathComponent } from "./codeCharta/ui/attributeSideBar/nodePath/nodePath.component"
+import { AttributeTypeSelectorModule } from "./codeCharta/ui/attributeTypeSelector/attributeTypeSelector.module"
+import { AttributeTypeSelectorComponent } from "./codeCharta/ui/attributeTypeSelector/attributeTypeSelector.component"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule],
+	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeTypeSelectorModule],
 	declarations: [MetricDeltaSelectedComponent, NodePathComponent],
-	entryComponents: [MapTreeViewComponent, MetricDeltaSelectedComponent, MatchingFilesCounterComponent, NodePathComponent]
+	entryComponents: [
+		MapTreeViewComponent,
+		MetricDeltaSelectedComponent,
+		MatchingFilesCounterComponent,
+		NodePathComponent,
+		AttributeTypeSelectorComponent
+	]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}

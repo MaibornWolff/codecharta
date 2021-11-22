@@ -25,13 +25,12 @@
 					<td>
 						<i class="fa fa-arrows-alt"></i>
 						<div class="metric-value">
-							<attribute-type-selector-component
+							<cc-attribute-type-selector
 								class="attribute-type-select"
-								type="nodes"
 								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.area}}"
 								ng-if="!$ctrl._viewModel.node.isLeaf"
 							>
-							</attribute-type-selector-component>
+							</cc-attribute-type-selector>
 							<span>
 								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
 							</span>
@@ -43,13 +42,12 @@
 					<td>
 						<i class="fa fa-arrows-v"></i>
 						<div class="metric-value">
-							<attribute-type-selector-component
+							<cc-attribute-type-selector
 								class="attribute-type-select"
-								type="nodes"
 								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.height}}"
 								ng-if="!$ctrl._viewModel.node.isLeaf"
 							>
-							</attribute-type-selector-component>
+							</cc-attribute-type-selector>
 							<span>
 								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number: 0 }}
 							</span>
@@ -65,13 +63,12 @@
 					<td>
 						<i class="fa fa-paint-brush"></i>
 						<div class="metric-value">
-							<attribute-type-selector-component
+							<cc-attribute-type-selector
 								class="attribute-type-select"
-								type="nodes"
 								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.color}}"
 								ng-if="!$ctrl._viewModel.node.isLeaf"
 							>
-							</attribute-type-selector-component>
+							</cc-attribute-type-selector>
 							<span>
 								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number: 0 }}
 							</span>
@@ -106,13 +103,12 @@
 					<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetrics track by $index" class="metric-row">
 						<td class="metric-summary">
 							<span class="metric-type">
-								<attribute-type-selector-component
+								<cc-attribute-type-selector
 									class="attribute-type-select"
-									type="nodes"
 									metric="{{::attributeKey.name}}"
 									ng-if="!$ctrl._viewModel.node.isLeaf"
 								>
-								</attribute-type-selector-component>
+								</cc-attribute-type-selector>
 							</span>
 							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey.name] | number: 0 }}</span>
 						</td>

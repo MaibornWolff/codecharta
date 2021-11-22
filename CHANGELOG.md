@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.84.0] - 2021-11-22
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
+-   Migrate `attribute-type-selector-component` to Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
 
 ### Changed
 
@@ -23,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix showing labels when weighted gradient on yellow buildings in color metric options are enabled ([#2511](https://github.com/MaibornWolff/codecharta/pull/2511))
 -   Fix rounding of the sum of percentages in risk profile ([#2393](https://github.com/MaibornWolff/codecharta/pull/2516))
 -   Fix legend panel not having a background ([#2422](https://github.com/MaibornWolff/codecharta/pull/2510))
 

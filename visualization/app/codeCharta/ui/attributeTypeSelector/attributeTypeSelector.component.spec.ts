@@ -1,93 +1,53 @@
-import "./attributeTypeSelector.module"
-import { AttributeTypeSelectorController } from "./attributeTypeSelector.component"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { StoreService } from "../../state/store.service"
-import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { TestBed } from "@angular/core/testing"
+import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/angular"
+
+import { AttributeTypeSelectorModule } from "./attributeTypeSelector.module"
+import { Store } from "../../state/store/store"
+import { AttributeTypeSelectorComponent } from "./attributeTypeSelector.component"
 import { AttributeTypeValue } from "../../codeCharta.model"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import { IRootScopeService } from "angular"
+import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 
-describe("AttributeTypeSelectorController", () => {
-	let attributeTypeSelectorController: AttributeTypeSelectorController
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
-	let nodeMetricDataService: NodeMetricDataService
-	let edgeMetricDataService: EdgeMetricDataService
-
+describe("attributeTypeSelector", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
+		TestBed.configureTestingModule({
+			imports: [AttributeTypeSelectorModule]
+		})
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.attributeTypeSelector")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
-		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
-	}
-
-	function rebuildController() {
-		attributeTypeSelectorController = new AttributeTypeSelectorController(
-			$rootScope,
-			storeService,
-			nodeMetricDataService,
-			edgeMetricDataService
+		Store["initialize"]()
+		Store.store.dispatch(
+			setAttributeTypes({
+				nodes: { rloc: AttributeTypeValue.absolute }
+			})
 		)
-	}
-
-	describe("setToAbsolute", () => {
-		it("should update attributeType to absolute", () => {
-			attributeTypeSelectorController.setToAbsolute("bar", "nodes")
-
-			expect(storeService.getState().fileSettings.attributeTypes.nodes["bar"]).toEqual(AttributeTypeValue.absolute)
-		})
 	})
 
-	describe("setToRelative", () => {
-		it("should set attributeType to relative", () => {
-			attributeTypeSelectorController.setToRelative("foo", "edges")
-
-			expect(storeService.getState().fileSettings.attributeTypes.edges["foo"]).toEqual(AttributeTypeValue.relative)
+	it("should update to median", async () => {
+		await render(AttributeTypeSelectorComponent, {
+			componentProperties: { metric: "rloc" },
+			excludeComponentDeclaration: true
 		})
+
+		const initialDisplayedElement = await screen.findByText("Σ")
+		expect(initialDisplayedElement).toBeTruthy()
+
+		fireEvent.click(initialDisplayedElement)
+		const medianMenuItem = await screen.findByText("x͂ Median")
+		expect(medianMenuItem).toBeTruthy()
+
+		fireEvent.click(medianMenuItem)
+		await waitForElementToBeRemoved(() => {
+			const medianMenuItem = screen.queryByText("x͂ Median")
+			return medianMenuItem
+		})
+		const updatedDisplayedElement = await screen.findByText("x͂")
+		expect(updatedDisplayedElement).toBeTruthy()
 	})
 
-	describe("setAggregationSymbol", () => {
-		beforeEach(() => {
-			storeService.dispatch(
-				setAttributeTypes({
-					nodes: { rloc: AttributeTypeValue.absolute },
-					edges: { pairingRate: AttributeTypeValue.relative }
-				})
-			)
+	it("should set aggregation symbol to absolute if attributeType is not available", async () => {
+		await render(AttributeTypeSelectorComponent, {
+			componentProperties: { metric: "non-existing" },
+			excludeComponentDeclaration: true
 		})
-
-		it("should set aggregationSymbol to absolute", () => {
-			attributeTypeSelectorController["metric"] = "rloc"
-			attributeTypeSelectorController["type"] = "nodes"
-
-			attributeTypeSelectorController.$onInit()
-
-			expect(attributeTypeSelectorController["_viewModel"].aggregationSymbol).toEqual("Σ")
-		})
-
-		it("should set aggregationSymbol to relative", () => {
-			attributeTypeSelectorController["metric"] = "pairingRate"
-			attributeTypeSelectorController["type"] = "edges"
-
-			attributeTypeSelectorController.$onInit()
-
-			expect(attributeTypeSelectorController["_viewModel"].aggregationSymbol).toEqual("x͂")
-		})
-
-		it("should set aggregationSymbol to absolute if attributeType is not available", () => {
-			attributeTypeSelectorController["metric"] = "foobar"
-			attributeTypeSelectorController["type"] = "nodes"
-
-			attributeTypeSelectorController.$onInit()
-
-			expect(attributeTypeSelectorController["_viewModel"].aggregationSymbol).toEqual("Σ")
-		})
+		expect(await screen.findByText("Σ")).toBeTruthy()
 	})
 })
