@@ -7,19 +7,25 @@ Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sour
 
 ## Parameter and Usage
 
-| Parameter                       | description                       |
-| ------------------------------- | --------------------------------- |
-| `FILE`                          | sourcemonitor csv files           |
-| `-h, --help`                    | displays help                     |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout) |
+| Parameters                      | description                                                       |
+| ------------------------------- | ----------------------------------------------------------------- |
+| `FILE`                          | sourcemonitor csv files                                           |
+| `-h, --help`                    | displays help                                                     |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                 |
+| `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
 
 ### CSV Import for SourceMonitor
 
-If you have analized your projectBuilder with SourceMonitor and exported the metric data (for classes only) to a csv-file, you may call the command
+If you have analyzed your projectBuilder with SourceMonitor and exported the metric data (for classes only) to a csv-file, you may call the command
 
-> ccsh sourcemonitorimport \<path to sourcemonitor csv file>
+```
+    ccsh sourcemonitorimport [-nc] [-o=<outputFile>] FILE
+```
 
-which prints the visualisation data to stdout.
+If the output file is omitted it prints the visualisation data to stdout.
+Otherwise, it will export to a .gz file.
+
+> Note that the output file should end with .cc.json
 
 Currently, SourceMonitorImporter does not support metrics for methods in csv files from SourceMonitor.
 
