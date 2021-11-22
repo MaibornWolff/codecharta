@@ -17,6 +17,8 @@ import { ColorLabelsService } from "../../state/store/appSettings/colorLabels/co
 import { colorLabelOptions } from "../../codeCharta.model"
 
 describe("HeightSettingsPanelController", () => {
+	const wait = async (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
+
 	let heightSettingsPanelController: HeightSettingsPanelController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
@@ -149,15 +151,13 @@ describe("HeightSettingsPanelController", () => {
 	})
 
 	describe("applySettingsAmountOfTopLabels", () => {
-		it("should update amountOfTopLabels in store", done => {
+		it("should update amountOfTopLabels in store", async () => {
 			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 12
 
 			heightSettingsPanelController.applySettingsAmountOfTopLabels()
 
-			setTimeout(() => {
-				expect(storeService.getState().appSettings.amountOfTopLabels).toBe(12)
-				done()
-			}, HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			await wait(HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			expect(storeService.getState().appSettings.amountOfTopLabels).toBe(12)
 		})
 	})
 
@@ -204,15 +204,13 @@ describe("HeightSettingsPanelController", () => {
 	})
 
 	describe("applySettingsScaling", () => {
-		it("should update scaling in store", done => {
+		it("should update scaling in store", async () => {
 			heightSettingsPanelController["_viewModel"].scalingY = 1.8
 
 			heightSettingsPanelController.applySettingsScaling()
 
-			setTimeout(() => {
-				expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1.8, 1))
-				done()
-			}, HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			await wait(HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1.8, 1))
 		})
 	})
 

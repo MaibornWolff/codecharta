@@ -1,5 +1,5 @@
 import "./nodeContextMenu.component.scss"
-import angular, { IRootScopeService, ITimeoutService } from "angular"
+import angular, { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
@@ -54,7 +54,6 @@ export class NodeContextMenuController
 
 	constructor(
 		private $element: Element,
-		private $timeout: ITimeoutService,
 		private $window,
 		public $rootScope: IRootScopeService,
 		private storeService: StoreService,
@@ -94,8 +93,6 @@ export class NodeContextMenuController
 
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
-
-		this.synchronizeAngularTwoWayBinding()
 
 		// Add event listeners, so that opened node context menu can be closed again later
 		// when clicking (left or right button)
@@ -143,7 +140,6 @@ export class NodeContextMenuController
 
 	onHideNodeContextMenu() {
 		this._viewModel.showNodeContextMenu = false
-		this.synchronizeAngularTwoWayBinding()
 	}
 
 	focusNode() {
@@ -155,8 +151,7 @@ export class NodeContextMenuController
 		const blacklistItem: BlacklistItem = {
 			path: codeMapNode.path,
 			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type,
-			attributes: codeMapNode.attributes
+			nodeType: codeMapNode.type
 		}
 		this.storeService.dispatch(addBlacklistItem(blacklistItem))
 	}
@@ -166,8 +161,7 @@ export class NodeContextMenuController
 		const blacklistItem: BlacklistItem = {
 			path: codeMapNode.path,
 			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type,
-			attributes: codeMapNode.attributes
+			nodeType: codeMapNode.type
 		}
 		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
 	}
@@ -177,8 +171,7 @@ export class NodeContextMenuController
 		const blacklistItem: BlacklistItem = {
 			path: codeMapNode.path,
 			type: BlacklistType.exclude,
-			nodeType: codeMapNode.type,
-			attributes: codeMapNode.attributes
+			nodeType: codeMapNode.type
 		}
 
 		if (this.blacklistService.resultsInEmptyMap([blacklistItem])) {
@@ -288,10 +281,6 @@ export class NodeContextMenuController
 
 	nodeIsFolder() {
 		return this._viewModel.codeMapNode?.children?.length > 0
-	}
-
-	private synchronizeAngularTwoWayBinding() {
-		this.$timeout(() => {})
 	}
 
 	static broadcastShowEvent($rootScope, path: string, type: string, x, y) {

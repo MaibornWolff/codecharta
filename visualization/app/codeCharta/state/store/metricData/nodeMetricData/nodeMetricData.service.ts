@@ -1,64 +1,56 @@
-import { StoreService, StoreSubscriber } from "../../../store.service"
+import { StoreService } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { NodeMetricDataActions, calculateNewNodeMetricData } from "./nodeMetricData.actions"
-import { isActionOfType } from "../../../../util/reduxHelper"
-import { BlacklistItem, NodeMetricData } from "../../../../codeCharta.model"
+import { NodeMetricData } from "../../../../codeCharta.model"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
-import { FileState } from "../../../../model/files/files"
+import { nodeMetricDataSelector } from "../../../selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export interface NodeMetricDataSubscriber {
 	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[])
 }
 
-export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
+export class NodeMetricDataService implements FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
 	static UNARY_METRIC = "unary"
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
 
+	private nodeMetricData: NodeMetricData[] = []
+
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
-		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		AttributeTypesService.subscribe(this.$rootScope, this)
 	}
 
-	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, NodeMetricDataActions)) {
-			this.notify(this.select())
-		}
+	onFilesSelectionChanged() {
+		this.updateNodeMetricData()
 	}
 
-	onFilesSelectionChanged(files: FileState[]) {
-		this.storeService.dispatch(calculateNewNodeMetricData(files, this.storeService.getState().fileSettings.blacklist))
+	onBlacklistChanged() {
+		this.updateNodeMetricData()
 	}
 
-	onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.storeService.dispatch(calculateNewNodeMetricData(this.storeService.getState().files, blacklist))
-	}
-
+	// This shouldn't be needed, as nodeMetricData is not dependent on AttributeTypesChanged, but switching to median in attribute side bar breaks without it
 	onAttributeTypesChanged() {
-		this.storeService.dispatch(
-			calculateNewNodeMetricData(this.storeService.getState().files, this.storeService.getState().fileSettings.blacklist)
-		)
+		this.$rootScope.$broadcast(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, { nodeMetricData: this.nodeMetricData })
 	}
 
 	getMetrics() {
-		return this.storeService.getState().metricData.nodeMetricData.map(x => x.name)
+		return this.nodeMetricData.map(x => x.name)
 	}
 
 	isMetricAvailable(metricName: string) {
-		return this.storeService.getState().metricData.nodeMetricData.some(x => x.name === metricName)
+		return this.nodeMetricData.some(x => x.name === metricName)
 	}
 
 	getMaxValueOfMetric(metricName: string) {
-		const metric = this.storeService.getState().metricData.nodeMetricData.find(x => x.name === metricName)
+		const metric = this.nodeMetricData.find(x => x.name === metricName)
 		return metric?.maxValue
 	}
 
 	getMinValueOfMetric(metricName: string) {
-		const metric = this.storeService.getState().metricData.nodeMetricData.find(x => x.name === metricName)
+		const metric = this.nodeMetricData.find(x => x.name === metricName)
 		return metric ? metric.minValue : 0
 	}
 
@@ -66,12 +58,12 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 		return this.storeService.getState().fileSettings.attributeTypes.nodes[metricName]
 	}
 
-	private select() {
-		return this.storeService.getState().metricData.nodeMetricData
-	}
-
-	private notify(newState: NodeMetricData[]) {
-		this.$rootScope.$broadcast(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, { nodeMetricData: newState })
+	private updateNodeMetricData() {
+		const nodeMetricData = nodeMetricDataSelector(this.storeService.getState())
+		if (nodeMetricData !== this.nodeMetricData) {
+			this.nodeMetricData = nodeMetricData
+			this.$rootScope.$broadcast(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, { nodeMetricData })
+		}
 	}
 
 	static subscribe($rootScope: IRootScopeService, subscriber: NodeMetricDataSubscriber) {

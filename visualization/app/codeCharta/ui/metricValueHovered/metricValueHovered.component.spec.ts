@@ -1,7 +1,7 @@
 import "./metricValueHovered.module"
 import { MetricValueHoveredController } from "./metricValueHovered.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { Node } from "../../codeCharta.model"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
@@ -13,7 +13,6 @@ import { klona } from "klona"
 describe("MetricValueHoveredController", () => {
 	let metricValueHoveredController: MetricValueHoveredController
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let deltaBuilding
 	let codeMapBuilding
 
@@ -26,11 +25,10 @@ describe("MetricValueHoveredController", () => {
 		instantiateModule("app.codeCharta.ui.metricValueHovered")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function rebuildController() {
-		metricValueHoveredController = new MetricValueHoveredController($rootScope, $timeout)
+		metricValueHoveredController = new MetricValueHoveredController($rootScope)
 	}
 
 	function withMockedBuildingTransitions() {

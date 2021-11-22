@@ -55,18 +55,6 @@ adding ":auto" to run target will run the tests in watch mode
 
 `npm run package` packages the nwjs app
 
-#### Generate code
-
-`npm run plop` runs the code generation via plop.
-
-You can generate the following modules:
-
--   "state service" - an empty service with corresponding test file
--   "ui module" - an ui module with an empty component, all necessary files and tests
--   "util static class" - an empty static class with corresponding test file
--   "redux property" - a store property including actions, reducer, service and test files
--   "redux subreducer" - creates a subreducer like dynamicSettings
-
 ## JSON structure
 
 [Example Data](/visualization/app/codeCharta/assets/sample1.cc.json)

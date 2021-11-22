@@ -14,7 +14,12 @@ import { BlacklistService } from "../../state/store/fileSettings/blacklist/black
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
-import { setEdgeMetricData } from "../../state/store/metricData/edgeMetricData/edgeMetricData.actions"
+import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
+
+const mockedEdgeMetricDataSelector = edgeMetricDataSelector as unknown as jest.Mock
+jest.mock("../../state/selectors/accumulatedData/metricData/edgeMetricData.selector", () => ({
+	edgeMetricDataSelector: jest.fn()
+}))
 
 describe("LegendPanelController", () => {
 	let legendPanelController: LegendPanelController
@@ -164,13 +169,13 @@ describe("LegendPanelController", () => {
 		it("should update the edge metric and determine if edges exist", () => {
 			const newEdgeMetric = "new_edge_metric"
 
-			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 0, minValue: 0 }]))
+			mockedEdgeMetricDataSelector.mockImplementation(() => [{ name: newEdgeMetric, maxValue: 0, minValue: 0 }])
 			legendPanelController.onEdgeMetricChanged(newEdgeMetric)
 
 			expect(legendPanelController["_viewModel"].edge).toEqual(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edgeMetricHasEdge).toBeFalsy()
 
-			storeService.dispatch(setEdgeMetricData([{ name: newEdgeMetric, maxValue: 3, minValue: 1 }]))
+			mockedEdgeMetricDataSelector.mockImplementation(() => [{ name: newEdgeMetric, maxValue: 3, minValue: 1 }])
 			legendPanelController.onEdgeMetricChanged(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edge).toEqual(newEdgeMetric)
 			expect(legendPanelController["_viewModel"].edgeMetricHasEdge).toBeTruthy()
