@@ -3,7 +3,7 @@ buildscript {
         // Dependency versions
         boon_version = '0.34'
         commons_lang3_version = '3.12.0'
-        gson_version = '2.6'
+        gson_version = '2.8.9'
         jackson_version = '2.11.2'
         jacoco_version = '0.8.5'
         jaxb_api_version = '2.3.1'
