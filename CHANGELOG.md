@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
+-   Migrate `attribute-type-selector-component` to Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
 
 ### Changed
 
