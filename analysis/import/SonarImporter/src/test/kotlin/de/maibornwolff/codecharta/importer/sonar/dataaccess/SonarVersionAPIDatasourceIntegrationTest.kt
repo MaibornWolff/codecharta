@@ -47,7 +47,6 @@ class SonarVersionAPIDatasourceIntegrationTest {
                     aResponse()
                         .withHeader("Content-Type", MediaType.TEXT_PLAIN + "; charset=utf-8")
                         .withStatus(200)
-                        .withBody("something_weird")
                 )
         )
 
