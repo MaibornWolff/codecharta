@@ -38,7 +38,7 @@ export class FileChooserController {
 				}
 
 				reader.onload = event => {
-					content = isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)) : event.target.result
+					content = isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)).toString() : event.target.result
 				}
 
 				reader.onloadend = () => {
