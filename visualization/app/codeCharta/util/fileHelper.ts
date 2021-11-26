@@ -64,8 +64,10 @@ export function getCCFileAndDecorateFileChecksum(jsonInput: string | ExportWrapp
 	let mappedFile: ExportCCFile = null
 
 	try {
-		jsonInput = typeof jsonInput !== "string" ? jsonInput.toString() : jsonInput
-		const fileContent = JSON.parse(jsonInput) as ExportWrappedCCFile | ExportCCFile
+		const fileContent: ExportCCFile | ExportWrappedCCFile =
+			typeof jsonInput === "string"
+				? (JSON.parse(jsonInput) as ExportWrappedCCFile | ExportCCFile)
+				: (jsonInput as ExportWrappedCCFile | ExportCCFile)
 
 		if ("data" in fileContent && "checksum" in fileContent) {
 			mappedFile = fileContent.data
