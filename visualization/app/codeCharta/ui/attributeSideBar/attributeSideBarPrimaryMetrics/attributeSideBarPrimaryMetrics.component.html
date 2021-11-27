@@ -1,20 +1,20 @@
 <div class="metric-box">
-	<table class="primary-metrics" aria-hidden="true">
+	<table *ngIf="primaryMetrics$ | async; let primaryMetrics" class="primary-metrics" aria-hidden="true">
 		<th scope="col">Primary Metrics</th>
 
 		<tr>
 			<td>
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-arrows-alt'"
-					[metric]="(primaryMetrics$ | async).area"
-					[isLeaf]="(selectedNode$ | async).isLeaf"
+					[metric]="primaryMetrics.area"
+					[isLeaf]="(selectedNode$ | async)?.isLeaf"
 				></cc-attribute-side-bar-primary-metric>
 			</td>
 			<td>
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-arrows-v'"
-					[metric]="(primaryMetrics$ | async).height"
-					[isLeaf]="(selectedNode$ | async).isLeaf"
+					[metric]="primaryMetrics.height"
+					[isLeaf]="(selectedNode$ | async)?.isLeaf"
 				></cc-attribute-side-bar-primary-metric>
 			</td>
 		</tr>
@@ -23,11 +23,11 @@
 			<td>
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-paint-brush'"
-					[metric]="(primaryMetrics$ | async).color"
-					[isLeaf]="(selectedNode$ | async).isLeaf"
+					[metric]="primaryMetrics.color"
+					[isLeaf]="(selectedNode$ | async)?.isLeaf"
 				></cc-attribute-side-bar-primary-metric>
 			</td>
-			<ng-container *ngIf="(primaryMetrics$ | async).edge; let edge">
+			<ng-container *ngIf="primaryMetrics.edge; let edge">
 				<td *ngIf="edge.name !== 'None'">
 					<i class="fa fa-exchange"></i>
 					<span class="metric-value">

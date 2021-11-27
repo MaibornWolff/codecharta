@@ -7,32 +7,5 @@
 
 	<cc-attribute-side-bar-primary-metrics></cc-attribute-side-bar-primary-metrics>
 
-	<div class="side-bar-body">
-		<div class="metrics-wrapper">
-			<div class="metric-box scrollable-content">
-				<table class="secondary-metrics" aria-hidden="true">
-					<tr>
-						<th scope="col" colspan="2">Secondary Metrics</th>
-					</tr>
-					<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetrics track by $index" class="metric-row">
-						<td class="metric-summary">
-							<span class="metric-type">
-								<cc-attribute-type-selector
-									class="attribute-type-select"
-									metric="{{::attributeKey.name}}"
-									ng-if="!$ctrl._viewModel.node.isLeaf"
-								>
-								</cc-attribute-type-selector>
-							</span>
-							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey.name] | number: 0 }}</span>
-						</td>
-						<td ng-show="$ctrl._viewModel.node.deltas">
-							<cc-metric-delta-selected [attribute-key]="::attributeKey"></cc-metric-delta-selected>
-						</td>
-						<td class="metric-name">{{ attributeKey.name }}</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-	</div>
+	<cc-attribute-side-bar-secondary-metrics></cc-attribute-side-bar-secondary-metrics>
 </div>

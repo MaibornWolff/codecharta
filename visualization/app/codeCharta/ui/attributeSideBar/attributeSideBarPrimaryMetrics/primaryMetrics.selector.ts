@@ -9,22 +9,16 @@ export type Metric = {
 }
 
 export type PrimaryMetrics = {
-	area: Metric | undefined
-	height: Metric | undefined
-	color: Metric | undefined
-	edge: { name: string; incoming: number | undefined; outgoing: number | undefined } | undefined
+	area: Metric
+	height: Metric
+	color: Metric
+	edge: { name: string; incoming: number; outgoing: number } | undefined
 }
 
-export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics = createSelector(
+export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics | undefined = createSelector(
 	[selectedNodeSelector, primaryMetricNamesSelector],
 	(selectedNode, primaryMetricNames) => {
-		if (!selectedNode?.attributes)
-			return {
-				area: undefined,
-				height: undefined,
-				color: undefined,
-				edge: undefined
-			}
+		if (!selectedNode?.attributes) return
 
 		return {
 			area: {

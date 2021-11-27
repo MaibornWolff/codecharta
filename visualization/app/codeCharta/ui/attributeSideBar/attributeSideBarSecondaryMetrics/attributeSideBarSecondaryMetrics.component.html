@@ -1,0 +1,28 @@
+<div class="side-bar-body">
+	<div class="metrics-wrapper">
+		<div class="metric-box scrollable-content">
+			<table class="secondary-metrics" aria-hidden="true">
+				<tr>
+					<th scope="col" colspan="2">Secondary Metrics</th>
+				</tr>
+				<tr *ngFor="let secondaryMetric of secondaryMetrics$ | async" class="metric-row">
+					<td class="metric-summary">
+						<span class="metric-type">
+							<cc-attribute-type-selector
+								class="attribute-type-select"
+								[metric]="secondaryMetric.name"
+								*ngIf="secondaryMetric.showAttributeTypeSelector"
+							>
+							</cc-attribute-type-selector>
+						</span>
+						<span class="metric-value">{{ secondaryMetric.value | number: "1.0-0" }}</span>
+					</td>
+					<td [hidden]="!secondaryMetric.showDeltaValue">
+						<cc-metric-delta-selected [attributeKey]="secondaryMetric.name"></cc-metric-delta-selected>
+					</td>
+					<td class="metric-name">{{ secondaryMetric.name }}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
