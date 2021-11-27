@@ -1,15 +1,22 @@
-import angular from "angular"
-import { downgradeComponent } from "@angular/upgrade/static"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
 
-import "../../state/state.module"
-import { attributeSideBarComponent } from "./attributeSideBar.component"
-import { AttributeSideBarHeaderSectionComponent } from "./attributeSideBarHeaderSection/attributeSideBarHeaderSection.component"
-import { AttributeSideBarPrimaryMetricsComponent } from "./attributeSideBarPrimaryMetrics/attributeSideBarPrimaryMetrics.component"
+import { AttributeSideBarComponent } from "./attributeSideBar.component"
+import { AttributeSideBarHeaderSectionModule } from "./attributeSideBarHeaderSection/attributeSideBarHeaderSection.module"
+import { AttributeSideBarHeaderPrimaryMetricsModule } from "./attributeSideBarPrimaryMetrics/attributeSideBarPrimaryMetrics.module"
 import { AttributeSideBarSecondaryMetricsComponent } from "./attributeSideBarSecondaryMetrics/attributeSideBarSecondaryMetrics.component"
+import { AttributeTypeSelectorModule } from "../attributeTypeSelector/attributeTypeSelector.module"
+import { MetricDeltaSelectedModule } from "../metricDeltaSelected/metricDeltaSelected.module"
 
-angular
-	.module("app.codeCharta.ui.attributeSideBar", ["app.codeCharta.state"])
-	.directive("ccAttributeSideBarHeaderSection", downgradeComponent({ component: AttributeSideBarHeaderSectionComponent }))
-	.directive("ccAttributeSideBarPrimaryMetrics", downgradeComponent({ component: AttributeSideBarPrimaryMetricsComponent }))
-	.directive("ccAttributeSideBarSecondaryMetrics", downgradeComponent({ component: AttributeSideBarSecondaryMetricsComponent }))
-	.component(attributeSideBarComponent.selector, attributeSideBarComponent)
+@NgModule({
+	imports: [
+		CommonModule,
+		AttributeSideBarHeaderSectionModule,
+		AttributeSideBarHeaderPrimaryMetricsModule,
+		AttributeTypeSelectorModule,
+		MetricDeltaSelectedModule
+	],
+	declarations: [AttributeSideBarComponent, AttributeSideBarSecondaryMetricsComponent],
+	exports: [AttributeSideBarComponent]
+})
+export class AttributeSideBarModule {}

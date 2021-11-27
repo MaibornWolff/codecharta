@@ -10,7 +10,6 @@ import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
 import "./globalSettingsButton/globalSettingsButton.module"
 import "./nodePathPanel/nodePathPanel.module"
-import "./attributeSideBar/attributeSideBar.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
@@ -59,7 +58,6 @@ angular
 		"app.codeCharta.ui.screenshotButton",
 		"app.codeCharta.ui.globalSettingsButton",
 		"app.codeCharta.ui.nodePathPanel",
-		"app.codeCharta.ui.attributeSideBar",
 		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",

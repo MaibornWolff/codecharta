@@ -5,43 +5,18 @@ import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
 
-import { MetricDeltaSelectedComponent } from "./codeCharta/ui/metricDeltaSelected/metricDeltaSelected.component"
 import { MaterialModule } from "./material/material.module"
 import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
 import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
-import { AttributeTypeSelectorModule } from "./codeCharta/ui/attributeTypeSelector/attributeTypeSelector.module"
-import { AttributeTypeSelectorComponent } from "./codeCharta/ui/attributeTypeSelector/attributeTypeSelector.component"
-import { AttributeSideBarHeaderSectionComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBarHeaderSection/attributeSideBarHeaderSection.component"
-import { AttributeSideBarHeaderSectionModule } from "./codeCharta/ui/attributeSideBar/attributeSideBarHeaderSection/attributeSideBarHeaderSection.module"
-import { AttributeSideBarHeaderPrimaryMetricsModule } from "./codeCharta/ui/attributeSideBar/attributeSideBarPrimaryMetrics/attributeSideBarPrimaryMetrics.module"
-import { MetricDeltaSelectedModule } from "./codeCharta/ui/metricDeltaSelected/metricDeltaSelected.module"
-import { AttributeSideBarPrimaryMetricsComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBarPrimaryMetrics/attributeSideBarPrimaryMetrics.component"
-import { AttributeSideBarSecondaryMetricsComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBarSecondaryMetrics/attributeSideBarSecondaryMetrics.component"
+import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
+import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
 
 @NgModule({
-	imports: [
-		BrowserModule,
-		UpgradeModule,
-		MaterialModule,
-		MapTreeViewModule,
-		MatchingFilesCounterModule,
-		AttributeTypeSelectorModule,
-		AttributeSideBarHeaderSectionModule,
-		AttributeSideBarHeaderPrimaryMetricsModule,
-		MetricDeltaSelectedModule
-	],
-	declarations: [AttributeSideBarSecondaryMetricsComponent],
-	entryComponents: [
-		MapTreeViewComponent,
-		MetricDeltaSelectedComponent,
-		MatchingFilesCounterComponent,
-		AttributeSideBarHeaderSectionComponent,
-		AttributeTypeSelectorComponent,
-		AttributeSideBarPrimaryMetricsComponent,
-		AttributeSideBarSecondaryMetricsComponent
-	]
+	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule],
+	declarations: [],
+	entryComponents: [MapTreeViewComponent, MatchingFilesCounterComponent, AttributeSideBarComponent]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}

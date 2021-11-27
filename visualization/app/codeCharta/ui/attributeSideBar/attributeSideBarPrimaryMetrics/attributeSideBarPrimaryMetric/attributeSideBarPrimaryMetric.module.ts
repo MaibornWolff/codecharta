@@ -10,4 +10,4 @@ import { AttributeSideBarPrimaryMetricComponent } from "./attributeSideBarPrimar
 	declarations: [AttributeSideBarPrimaryMetricComponent],
 	exports: [AttributeSideBarPrimaryMetricComponent]
 })
-export class AttributeSideBarPrimaryMetricsModule {}
+export class AttributeSideBarPrimaryMetricModule {}

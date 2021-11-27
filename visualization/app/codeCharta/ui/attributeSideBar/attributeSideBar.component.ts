@@ -1,15 +1,12 @@
 import "./attributeSideBar.component.scss"
-import { IRootScopeService } from "angular"
+import { Observable, map } from "rxjs"
+import { Component, Inject } from "@angular/core"
+
 import { Node } from "../../codeCharta.model"
-import {
-	IsAttributeSideBarVisibleService,
-	IsAttributeSideBarVisibleSubscriber
-} from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { StoreService } from "../../state/store.service"
-import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { Store } from "../../state/angular-redux/store"
+import { isAttributeSideBarVisibleSelector } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector"
+import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
+import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 
 export interface PrimaryMetrics {
 	node: {
@@ -27,43 +24,18 @@ export interface SecondaryMetric {
 	type: string
 }
 
-export class AttributeSideBarController implements IsAttributeSideBarVisibleSubscriber {
-	private _viewModel: {
-		node: Node
-		fileName: string
-		isSideBarVisible: boolean
-	} = {
-		node: null,
-		fileName: null,
-		isSideBarVisible: null
-	}
+@Component({
+	selector: "cc-attribute-side-bar",
+	template: require("./attributeSideBar.component.html")
+})
+export class AttributeSideBarComponent {
+	isSideBarVisible$: Observable<boolean>
+	selectedNode$: Observable<Node>
+	fileName$: Observable<string>
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private codeMapPreRenderService: CodeMapPreRenderService
-	) {
-		"ngInject"
-		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
+	constructor(@Inject(Store) store: Store) {
+		this.isSideBarVisible$ = store.select(isAttributeSideBarVisibleSelector)
+		this.selectedNode$ = store.select(selectedNodeSelector)
+		this.fileName$ = store.select(accumulatedDataSelector).pipe(map(accumulatedData => accumulatedData.unifiedFileMeta.fileName))
 	}
-
-	onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
-		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
-	}
-
-	onClickCloseSideBar = () => {
-		this.storeService.dispatch(closeAttributeSideBar())
-	}
-
-	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		this._viewModel.node = selectedBuilding.node
-		this._viewModel.fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
-	}
-}
-
-export const attributeSideBarComponent = {
-	selector: "attributeSideBarComponent",
-	template: require("./attributeSideBar.component.html"),
-	controller: AttributeSideBarController
 }

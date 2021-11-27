@@ -1,9 +1,5 @@
-<div class="side-bar-container cc-shadow" ng-if="$ctrl._viewModel.node" ng-class="{ expanded: $ctrl._viewModel.isSideBarVisible }">
-	<cc-attribute-side-bar-header-section
-		[node]="$ctrl._viewModel.node"
-		[file-name]="$ctrl._viewModel.fileName"
-		[close-side-bar]="$ctrl.onClickCloseSideBar"
-	></cc-attribute-side-bar-header-section>
+<div *ngIf="selectedNode$ | async; let selectedNode" class="side-bar-container cc-shadow" [class.expanded]="isSideBarVisible$ | async">
+	<cc-attribute-side-bar-header-section [node]="selectedNode" [fileName]="fileName$ | async"></cc-attribute-side-bar-header-section>
 
 	<cc-attribute-side-bar-primary-metrics></cc-attribute-side-bar-primary-metrics>
 
