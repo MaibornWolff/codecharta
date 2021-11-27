@@ -6,80 +6,74 @@
 		[close-side-bar]="$ctrl.onClickCloseSideBar"
 	></cc-attribute-side-bar-header-section>
 
-	<div class="side-bar-header">
-		<div class="metric-box">
-			<table class="primary-metrics" aria-hidden="true">
-				<th scope="col">Primary Metrics</th>
-				<tr>
-					<td>
-						<i class="fa fa-arrows-alt"></i>
-						<div class="metric-value">
-							<cc-attribute-type-selector
-								class="attribute-type-select"
-								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.area}}"
-								ng-if="!$ctrl._viewModel.node.isLeaf"
-							>
-							</cc-attribute-type-selector>
-							<span>
-								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
-							</span>
-						</div>
-						<cc-metric-delta-selected [attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.area"></cc-metric-delta-selected>
-						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</p>
-					</td>
-
-					<td>
-						<i class="fa fa-arrows-v"></i>
-						<div class="metric-value">
-							<cc-attribute-type-selector
-								class="attribute-type-select"
-								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.height}}"
-								ng-if="!$ctrl._viewModel.node.isLeaf"
-							>
-							</cc-attribute-type-selector>
-							<span>
-								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number: 0 }}
-							</span>
-						</div>
-						<cc-metric-delta-selected
-							[attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.height"
-						></cc-metric-delta-selected>
-						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.height }}</p>
-					</td>
-				</tr>
-
-				<tr>
-					<td>
-						<i class="fa fa-paint-brush"></i>
-						<div class="metric-value">
-							<cc-attribute-type-selector
-								class="attribute-type-select"
-								metric="{{::$ctrl._viewModel.primaryMetricKeys.node.color}}"
-								ng-if="!$ctrl._viewModel.node.isLeaf"
-							>
-							</cc-attribute-type-selector>
-							<span>
-								{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number: 0 }}
-							</span>
-						</div>
-						<cc-metric-delta-selected
-							[attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.color"
-						></cc-metric-delta-selected>
-						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</p>
-					</td>
-
-					<td ng-if="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
-						<i class="fa fa-exchange"></i>
-						<span class="metric-value" ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
-							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].incoming | number: 0 }}
-							<span>/</span>
-							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].outgoing | number: 0 }}
+	<div class="metric-box">
+		<table class="primary-metrics" aria-hidden="true">
+			<th scope="col">Primary Metrics</th>
+			<tr>
+				<td>
+					<i class="fa fa-arrows-alt"></i>
+					<div class="metric-value">
+						<cc-attribute-type-selector
+							class="attribute-type-select"
+							metric="{{::$ctrl._viewModel.primaryMetricKeys.node.area}}"
+							ng-if="!$ctrl._viewModel.node.isLeaf"
+						>
+						</cc-attribute-type-selector>
+						<span>
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
 						</span>
-						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge.edge }} (in/out)</p>
-					</td>
-				</tr>
-			</table>
-		</div>
+					</div>
+					<cc-metric-delta-selected [attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.area"></cc-metric-delta-selected>
+					<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</p>
+				</td>
+
+				<td>
+					<i class="fa fa-arrows-v"></i>
+					<div class="metric-value">
+						<cc-attribute-type-selector
+							class="attribute-type-select"
+							metric="{{::$ctrl._viewModel.primaryMetricKeys.node.height}}"
+							ng-if="!$ctrl._viewModel.node.isLeaf"
+						>
+						</cc-attribute-type-selector>
+						<span>
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number: 0 }}
+						</span>
+					</div>
+					<cc-metric-delta-selected [attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.height"></cc-metric-delta-selected>
+					<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.height }}</p>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<i class="fa fa-paint-brush"></i>
+					<div class="metric-value">
+						<cc-attribute-type-selector
+							class="attribute-type-select"
+							metric="{{::$ctrl._viewModel.primaryMetricKeys.node.color}}"
+							ng-if="!$ctrl._viewModel.node.isLeaf"
+						>
+						</cc-attribute-type-selector>
+						<span>
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number: 0 }}
+						</span>
+					</div>
+					<cc-metric-delta-selected [attribute-key]="$ctrl._viewModel.primaryMetricKeys.node.color"></cc-metric-delta-selected>
+					<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</p>
+				</td>
+
+				<td ng-if="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
+					<i class="fa fa-exchange"></i>
+					<span class="metric-value" ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
+						{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].incoming | number: 0 }}
+						<span>/</span>
+						{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].outgoing | number: 0 }}
+					</span>
+					<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge.edge }} (in/out)</p>
+				</td>
+			</tr>
+		</table>
 	</div>
 
 	<div class="side-bar-body">
