@@ -11,18 +11,27 @@ import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.modul
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
 import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
-import { NodePathComponent } from "./codeCharta/ui/attributeSideBar/nodePath/nodePath.component"
 import { AttributeTypeSelectorModule } from "./codeCharta/ui/attributeTypeSelector/attributeTypeSelector.module"
 import { AttributeTypeSelectorComponent } from "./codeCharta/ui/attributeTypeSelector/attributeTypeSelector.component"
+import { AttributeSideBarHeaderSectionComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBarHeaderSection/attributeSideBarHeaderSection.component"
+import { AttributeSideBarHeaderSectionModule } from "./codeCharta/ui/attributeSideBar/attributeSideBarHeaderSection/attributeSideBarHeaderSection.module"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeTypeSelectorModule],
-	declarations: [MetricDeltaSelectedComponent, NodePathComponent],
+	imports: [
+		BrowserModule,
+		UpgradeModule,
+		MaterialModule,
+		MapTreeViewModule,
+		MatchingFilesCounterModule,
+		AttributeTypeSelectorModule,
+		AttributeSideBarHeaderSectionModule
+	],
+	declarations: [MetricDeltaSelectedComponent],
 	entryComponents: [
 		MapTreeViewComponent,
 		MetricDeltaSelectedComponent,
 		MatchingFilesCounterComponent,
-		NodePathComponent,
+		AttributeSideBarHeaderSectionComponent,
 		AttributeTypeSelectorComponent
 	]
 })

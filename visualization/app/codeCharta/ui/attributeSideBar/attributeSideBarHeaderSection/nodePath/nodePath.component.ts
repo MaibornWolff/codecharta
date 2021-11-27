@@ -1,9 +1,9 @@
 import { Component, Inject } from "@angular/core"
 import { Observable } from "rxjs"
 
-import { CodeMapBuilding } from "../../codeMap/rendering/codeMapBuilding"
-import { Store } from "../../../state/angular-redux/store"
-import { selectedBuildingSelector } from "../../../state/selectors/selectedBuilding.selector"
+import { CodeMapBuilding } from "../../../codeMap/rendering/codeMapBuilding"
+import { Store } from "../../../../state/angular-redux/store"
+import { selectedBuildingSelector } from "../../../../state/selectors/selectedBuilding.selector"
 import { fileCountDescriptionSelector } from "./fileCountDescription.selector"
 
 @Component({

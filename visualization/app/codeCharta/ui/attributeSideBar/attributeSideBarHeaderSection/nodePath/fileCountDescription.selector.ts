@@ -1,5 +1,5 @@
-import { createSelector } from "../../../state/angular-redux/createSelector"
-import { selectedBuildingSelector } from "../../../state/selectors/selectedBuilding.selector"
+import { createSelector } from "../../../../state/angular-redux/createSelector"
+import { selectedBuildingSelector } from "../../../../state/selectors/selectedBuilding.selector"
 
 type BuildingWithFileCountDescription = {
 	node?: {

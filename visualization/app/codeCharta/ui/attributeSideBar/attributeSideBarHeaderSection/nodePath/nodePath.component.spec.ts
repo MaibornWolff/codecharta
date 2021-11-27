@@ -1,8 +1,8 @@
 import { render } from "@testing-library/angular"
 
-import { selectedBuildingSelector } from "../../../state/selectors/selectedBuilding.selector"
-import { Store } from "../../../state/store/store"
-import { CodeMapBuilding } from "../../codeMap/rendering/codeMapBuilding"
+import { selectedBuildingSelector } from "../../../../state/selectors/selectedBuilding.selector"
+import { Store } from "../../../../state/store/store"
+import { CodeMapBuilding } from "../../../codeMap/rendering/codeMapBuilding"
 import { NodePathComponent } from "./nodePath.component"
 
 jest.mock("../../../state/selectors/selectedBuilding.selector", () => ({

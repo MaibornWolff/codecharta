@@ -14,7 +14,6 @@ import {
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { StoreService } from "../../state/store.service"
 import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import { LazyLoader } from "../../util/lazyLoader"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { setSecondaryMetrics } from "../../state/store/appSettings/secondaryMetrics/secondaryMetrics.actions"
@@ -104,15 +103,8 @@ export class AttributeSideBarController
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
-	onClickCloseSideBar() {
+	onClickCloseSideBar = () => {
 		this.storeService.dispatch(closeAttributeSideBar())
-	}
-
-	onClickNodeName() {
-		if (!this._viewModel.node.isLeaf) {
-			return
-		}
-		LazyLoader.openFile(this._viewModel.fileName, this._viewModel.node.path)
 	}
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics(buildingSelected: boolean) {
