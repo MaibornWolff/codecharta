@@ -1,0 +1,9 @@
+<i [class]="iconName"></i>
+<div class="metric-value">
+	<cc-attribute-type-selector *ngIf="!isLeaf" class="attribute-type-select" [metric]="metric.name"></cc-attribute-type-selector>
+	<span>
+		{{ metric.value | number: "1.0-0" }}
+	</span>
+</div>
+<cc-metric-delta-selected [attributeKey]="metric.name"></cc-metric-delta-selected>
+<p class="metric-name">{{ metric.name }}</p>

@@ -15,6 +15,9 @@ import { AttributeTypeSelectorModule } from "./codeCharta/ui/attributeTypeSelect
 import { AttributeTypeSelectorComponent } from "./codeCharta/ui/attributeTypeSelector/attributeTypeSelector.component"
 import { AttributeSideBarHeaderSectionComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBarHeaderSection/attributeSideBarHeaderSection.component"
 import { AttributeSideBarHeaderSectionModule } from "./codeCharta/ui/attributeSideBar/attributeSideBarHeaderSection/attributeSideBarHeaderSection.module"
+import { AttributeSideBarHeaderPrimaryMetricsModule } from "./codeCharta/ui/attributeSideBar/attributeSideBarPrimaryMetrics/attributeSideBarPrimaryMetrics.module"
+import { MetricDeltaSelectedModule } from "./codeCharta/ui/metricDeltaSelected/metricDeltaSelected.module"
+import { AttributeSideBarPrimaryMetricsComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBarPrimaryMetrics/attributeSideBarPrimaryMetrics.component"
 
 @NgModule({
 	imports: [
@@ -24,15 +27,18 @@ import { AttributeSideBarHeaderSectionModule } from "./codeCharta/ui/attributeSi
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeTypeSelectorModule,
-		AttributeSideBarHeaderSectionModule
+		AttributeSideBarHeaderSectionModule,
+		AttributeSideBarHeaderPrimaryMetricsModule,
+		MetricDeltaSelectedModule
 	],
-	declarations: [MetricDeltaSelectedComponent],
+	declarations: [],
 	entryComponents: [
 		MapTreeViewComponent,
 		MetricDeltaSelectedComponent,
 		MatchingFilesCounterComponent,
 		AttributeSideBarHeaderSectionComponent,
-		AttributeTypeSelectorComponent
+		AttributeTypeSelectorComponent,
+		AttributeSideBarPrimaryMetricsComponent
 	]
 })
 export class AppModule {
