@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core"
 
-import { AttributeTypeValue } from "../../codeCharta.model"
-import { GetAttributeTypeOfNodesByMetric } from "../../state/selectors/getAttributeTypeOfNodesByMetric.selector"
+import { AttributeTypeValue } from "../../../codeCharta.model"
+import { GetAttributeTypeOfNodesByMetric } from "../../../state/selectors/getAttributeTypeOfNodesByMetric.selector"
 
 @Pipe({ name: "aggregationSymbolPipe" })
 export class AggregationSymbolPipe implements PipeTransform {

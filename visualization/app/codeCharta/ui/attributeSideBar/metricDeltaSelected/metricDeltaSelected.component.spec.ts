@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/angular"
 
-import { Store } from "../../state/store/store"
-import { ColorConverter } from "../../util/color/colorConverter"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { Store } from "../../../state/store/store"
+import { ColorConverter } from "../../../util/color/colorConverter"
+import { CodeMapBuilding } from "../../codeMap/rendering/codeMapBuilding"
 import { MetricDeltaSelectedComponent } from "./metricDeltaSelected.component"
 
 describe("MetricDeltaSelectedComponent", () => {
@@ -29,7 +29,7 @@ describe("MetricDeltaSelectedComponent", () => {
 		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
 
 		await render(MetricDeltaSelectedComponent, {
-			componentProperties: { attributeKey: "rloc" }
+			componentProperties: { metricName: "rloc" }
 		})
 
 		const metricDeltaSelectedDomNode = screen.queryByText(/Δ2/)
@@ -45,7 +45,7 @@ describe("MetricDeltaSelectedComponent", () => {
 		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
 
 		await render(MetricDeltaSelectedComponent, {
-			componentProperties: { attributeKey: "rloc" }
+			componentProperties: { metricName: "rloc" }
 		})
 
 		const metricDeltaSelectedDomNode = screen.queryByText(/Δ-2/)
@@ -53,7 +53,7 @@ describe("MetricDeltaSelectedComponent", () => {
 		expect(areColorsEqual(state.appSettings.mapColors.negativeDelta, metricDeltaSelectedDomNode.style.color)).toBe(true)
 	})
 
-	it("should update when its attributeKey changes", async () => {
+	it("should update when its metricName changes", async () => {
 		const fakeCodeMapBuilding = { node: { deltas: { rloc: 2, mcc: 4 } } } as unknown as CodeMapBuilding
 		const state = Store.store.getState()
 		state.appStatus.selectedBuildingId = 0
@@ -61,11 +61,11 @@ describe("MetricDeltaSelectedComponent", () => {
 		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
 
 		const { rerender } = await render(MetricDeltaSelectedComponent, {
-			componentProperties: { attributeKey: "rloc" }
+			componentProperties: { metricName: "rloc" }
 		})
 		expect(screen.queryByText(/Δ2/)).toBeTruthy()
 
-		await rerender({ attributeKey: "mcc" })
+		await rerender({ metricName: "mcc" })
 		expect(screen.queryByText(/Δ4/)).toBeTruthy()
 	})
 })

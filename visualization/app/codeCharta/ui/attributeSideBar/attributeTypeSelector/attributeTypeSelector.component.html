@@ -1,6 +1,6 @@
 <div class="small-action-button transparent">
 	<button mat-button [matMenuTriggerFor]="menu" title="Select attribute type" class="menu-button">
-		<span class="symbol">{{ metric | aggregationSymbolPipe: (getAttributeTypeOfNodesByMetric$ | async) }}</span>
+		<span class="symbol">{{ metricName | aggregationSymbolPipe: (getAttributeTypeOfNodesByMetric$ | async) }}</span>
 	</button>
 </div>
 

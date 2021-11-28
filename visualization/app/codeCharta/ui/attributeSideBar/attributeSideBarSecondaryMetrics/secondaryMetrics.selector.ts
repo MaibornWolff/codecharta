@@ -5,7 +5,6 @@ import { primaryMetricNamesSelector } from "../attributeSideBarPrimaryMetrics/pr
 import { Metric } from "../attributeSideBarPrimaryMetrics/primaryMetrics.selector"
 
 export type SecondaryMetric = Metric & {
-	showAttributeTypeSelector: boolean
 	showDeltaValue: boolean
 }
 

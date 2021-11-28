@@ -6,6 +6,7 @@ import { primaryMetricNamesSelector } from "./primaryMetricNames.selector"
 export type Metric = {
 	name: string
 	value: number
+	showAttributeTypeSelector: boolean
 }
 
 export type PrimaryMetrics = {
@@ -20,23 +21,28 @@ export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics | undefi
 	(selectedNode, primaryMetricNames) => {
 		if (!selectedNode?.attributes) return
 
+		const showAttributeTypeSelector = !selectedNode.isLeaf
 		return {
 			area: {
 				name: primaryMetricNames.nameOfAreaMetric,
-				value: selectedNode.attributes[primaryMetricNames.nameOfAreaMetric]
+				value: selectedNode.attributes[primaryMetricNames.nameOfAreaMetric],
+				showAttributeTypeSelector
 			},
 			height: {
 				name: primaryMetricNames.nameOfHeightMetric,
-				value: selectedNode.attributes[primaryMetricNames.nameOfHeightMetric]
+				value: selectedNode.attributes[primaryMetricNames.nameOfHeightMetric],
+				showAttributeTypeSelector
 			},
 			color: {
 				name: primaryMetricNames.nameOfColorMetric,
-				value: selectedNode.attributes[primaryMetricNames.nameOfColorMetric]
+				value: selectedNode.attributes[primaryMetricNames.nameOfColorMetric],
+				showAttributeTypeSelector
 			},
 			edge: {
 				name: primaryMetricNames.nameOfEdgeMetric,
 				incoming: selectedNode.edgeAttributes[primaryMetricNames.nameOfEdgeMetric]?.incoming,
-				outgoing: selectedNode.edgeAttributes[primaryMetricNames.nameOfEdgeMetric]?.outgoing
+				outgoing: selectedNode.edgeAttributes[primaryMetricNames.nameOfEdgeMetric]?.outgoing,
+				showAttributeTypeSelector
 			}
 		}
 	}

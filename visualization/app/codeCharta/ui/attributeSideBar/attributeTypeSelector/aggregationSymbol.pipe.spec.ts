@@ -1,4 +1,4 @@
-import { AttributeTypeValue } from "../../codeCharta.model"
+import { AttributeTypeValue } from "../../../codeCharta.model"
 import { AggregationSymbolPipe } from "./aggregationSymbol.pipe"
 
 describe("aggregationSymbolPipe", () => {

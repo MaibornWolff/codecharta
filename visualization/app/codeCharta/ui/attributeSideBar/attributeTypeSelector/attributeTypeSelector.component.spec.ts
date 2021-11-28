@@ -2,10 +2,10 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/angular"
 
 import { AttributeTypeSelectorModule } from "./attributeTypeSelector.module"
-import { Store } from "../../state/store/store"
+import { Store } from "../../../state/store/store"
 import { AttributeTypeSelectorComponent } from "./attributeTypeSelector.component"
-import { AttributeTypeValue } from "../../codeCharta.model"
-import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { AttributeTypeValue } from "../../../codeCharta.model"
+import { setAttributeTypes } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 
 describe("attributeTypeSelector", () => {
 	beforeEach(() => {
@@ -23,7 +23,7 @@ describe("attributeTypeSelector", () => {
 
 	it("should update to median", async () => {
 		await render(AttributeTypeSelectorComponent, {
-			componentProperties: { metric: "rloc" },
+			componentProperties: { metricName: "rloc" },
 			excludeComponentDeclaration: true
 		})
 
@@ -45,7 +45,7 @@ describe("attributeTypeSelector", () => {
 
 	it("should set aggregation symbol to absolute if attributeType is not available", async () => {
 		await render(AttributeTypeSelectorComponent, {
-			componentProperties: { metric: "non-existing" },
+			componentProperties: { metricName: "non-existing" },
 			excludeComponentDeclaration: true
 		})
 		expect(await screen.findByText("Σ")).toBeTruthy()

@@ -8,5 +8,4 @@ import { Metric } from "../primaryMetrics.selector"
 export class AttributeSideBarPrimaryMetricComponent {
 	@Input() iconName: string
 	@Input() metric: Metric
-	@Input() isLeaf: boolean
 }

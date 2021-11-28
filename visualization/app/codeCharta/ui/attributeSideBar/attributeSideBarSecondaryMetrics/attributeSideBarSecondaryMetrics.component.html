@@ -9,16 +9,16 @@
 					<td class="metric-summary">
 						<span class="metric-type">
 							<cc-attribute-type-selector
-								class="attribute-type-select"
-								[metric]="secondaryMetric.name"
 								*ngIf="secondaryMetric.showAttributeTypeSelector"
+								class="attribute-type-select"
+								[metricName]="secondaryMetric.name"
 							>
 							</cc-attribute-type-selector>
 						</span>
 						<span class="metric-value">{{ secondaryMetric.value | number: "1.0-0" }}</span>
 					</td>
 					<td [hidden]="!secondaryMetric.showDeltaValue">
-						<cc-metric-delta-selected [attributeKey]="secondaryMetric.name"></cc-metric-delta-selected>
+						<cc-metric-delta-selected [metricName]="secondaryMetric.name"></cc-metric-delta-selected>
 					</td>
 					<td class="metric-name">{{ secondaryMetric.name }}</td>
 				</tr>
