@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
+
+### Chore 👨‍💻 👩‍💻
+
+-   Remove `secondaryMetrics` from store and remove `secondaryMetrics.service` as the data can be derived from selected node [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
+-   Migrate `attribute-side-bar-component` to Angular [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
+
 ## [1.84.0] - 2021-11-22
 
 ### Chore 👨‍💻 👩‍💻
