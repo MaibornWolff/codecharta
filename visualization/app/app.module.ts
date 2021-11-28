@@ -5,7 +5,6 @@ import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
 
-import { MaterialModule } from "./material/material.module"
 import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
 import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
@@ -14,7 +13,7 @@ import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attribu
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule],
+	imports: [BrowserModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule],
 	declarations: [],
 	entryComponents: [MapTreeViewComponent, MatchingFilesCounterComponent, AttributeSideBarComponent]
 })
