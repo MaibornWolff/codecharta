@@ -19,11 +19,6 @@ export interface PrimaryMetrics {
 	}
 }
 
-export interface SecondaryMetric {
-	name: string
-	type: string
-}
-
 @Component({
 	selector: "cc-attribute-side-bar",
 	template: require("./attributeSideBar.component.html")
