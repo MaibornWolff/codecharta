@@ -1,7 +1,7 @@
 <p class="cc-node-path">
-	<span *ngIf="selectedBuilding$ | async as selectedBuilding">
-		{{ selectedBuilding.node.path }}
-		<span *ngIf="!selectedBuilding.node.isLeaf && fileCountDescription$ | async as fileCountDescription" class="cc-node-file-count">
+	<span *ngIf="node">
+		{{ node.path }}
+		<span *ngIf="!node.isLeaf && fileCountDescription$ | async as fileCountDescription" class="cc-node-file-count">
 			({{ fileCountDescription }})
 		</span>
 	</span>

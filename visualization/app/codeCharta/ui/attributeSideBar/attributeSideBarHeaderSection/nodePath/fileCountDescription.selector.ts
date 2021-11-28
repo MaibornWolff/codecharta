@@ -1,21 +1,15 @@
 import { createSelector } from "../../../../state/angular-redux/createSelector"
-import { selectedBuildingSelector } from "../../../../state/selectors/selectedBuilding.selector"
+import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
 
-type BuildingWithFileCountDescription = {
-	node?: {
-		attributes?: {
-			unary?: number
-		}
-	}
-}
+type Node2FileCountDescription = { attributes?: { unary?: number } }
 
-export const building2fileCountDescription = (building: BuildingWithFileCountDescription | undefined) => {
-	if (!building) return
+export const node2fileCountDescription = (node: Node2FileCountDescription | undefined) => {
+	if (!node) return
 
-	const fileCount = building.node?.attributes?.unary ?? 0
+	const fileCount = node.attributes?.unary ?? 0
 	if (fileCount === 0) return "empty"
 	if (fileCount === 1) return "1 file"
 	return `${fileCount} files`
 }
 
-export const fileCountDescriptionSelector = createSelector([selectedBuildingSelector], building2fileCountDescription)
+export const fileCountDescriptionSelector = createSelector([selectedNodeSelector], node2fileCountDescription)
