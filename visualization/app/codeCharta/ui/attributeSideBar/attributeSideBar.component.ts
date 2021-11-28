@@ -8,17 +8,6 @@ import { isAttributeSideBarVisibleSelector } from "../../state/store/appSettings
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 
-export interface PrimaryMetrics {
-	node: {
-		area: string
-		color: string
-		height: string
-	}
-	edge: {
-		edge: string
-	}
-}
-
 @Component({
 	selector: "cc-attribute-side-bar",
 	template: require("./attributeSideBar.component.html")
