@@ -1,13 +1,8 @@
 import { createSelector } from "../../../state/angular-redux/store"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { CcState } from "../../../state/store/store"
+import { Metric, shouldShowAttributeTypeSelector } from "../util/metricHelper"
 import { primaryMetricNamesSelector } from "./primaryMetricNames.selector"
-
-export type Metric = {
-	name: string
-	value: number
-	showAttributeTypeSelector: boolean
-}
 
 export type PrimaryMetrics = {
 	area: Metric
@@ -21,7 +16,7 @@ export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics | undefi
 	(selectedNode, primaryMetricNames) => {
 		if (!selectedNode?.attributes) return
 
-		const showAttributeTypeSelector = !selectedNode.isLeaf
+		const showAttributeTypeSelector = shouldShowAttributeTypeSelector(selectedNode)
 		return {
 			area: {
 				name: primaryMetricNames.nameOfAreaMetric,

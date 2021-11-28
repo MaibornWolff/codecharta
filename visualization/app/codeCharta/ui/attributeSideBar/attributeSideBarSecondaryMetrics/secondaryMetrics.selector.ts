@@ -2,7 +2,7 @@ import { createSelector } from "../../../state/angular-redux/store"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { CcState } from "../../../state/store/store"
 import { primaryMetricNamesSelector } from "../attributeSideBarPrimaryMetrics/primaryMetricNames.selector"
-import { Metric } from "../attributeSideBarPrimaryMetrics/primaryMetrics.selector"
+import { Metric, shouldShowAttributeTypeSelector } from "../util/metricHelper"
 
 export type SecondaryMetric = Metric & {
 	showDeltaValue: boolean
@@ -21,7 +21,7 @@ export const secondaryMetricsSelector: (state: CcState) => SecondaryMetric[] = c
 		return secondaryMetricNames.map(secondaryMetricName => ({
 			name: secondaryMetricName,
 			value: selectedNode.attributes[secondaryMetricName],
-			showAttributeTypeSelector: !selectedNode.isLeaf,
+			showAttributeTypeSelector: shouldShowAttributeTypeSelector(selectedNode),
 			showDeltaValue: Boolean(selectedNode.deltas)
 		}))
 	}

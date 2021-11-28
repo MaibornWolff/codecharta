@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core"
-import { Metric } from "../primaryMetrics.selector"
+import { Metric } from "../../util/metricHelper"
 
 @Component({
 	selector: "cc-attribute-side-bar-primary-metric",
