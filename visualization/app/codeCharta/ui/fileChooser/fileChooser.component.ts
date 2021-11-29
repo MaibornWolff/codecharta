@@ -18,7 +18,7 @@ export class FileChooserController {
 
 	onImportNewFiles(element) {
 		this.$scope.$apply(() => {
-			let content
+			let content: string
 			let readFiles = 0
 
 			for (let index = 0; index < element.files.length; index++) {
@@ -38,7 +38,7 @@ export class FileChooserController {
 				}
 
 				reader.onload = event => {
-					content = isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)) : event.target.result
+					content = (isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)) : event.target.result).toString()
 				}
 
 				reader.onloadend = () => {
