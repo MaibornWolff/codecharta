@@ -164,7 +164,7 @@
 		"canvas": "^2.7.0",
 		"clean-webpack-plugin": "^4.0.0",
 		"cross-env": "^7.0.3",
-		"css-loader": "^5.2.1",
+		"css-loader": "^6.0.0",
 		"eslint": "^7.28.0",
 		"eslint-config-prettier": "^8.2.0",
 		"eslint-plugin-unicorn": "^36.0.0",
