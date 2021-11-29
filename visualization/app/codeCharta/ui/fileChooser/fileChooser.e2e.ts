@@ -23,6 +23,12 @@ describe("FileChooser", () => {
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
 
+	it("should load another .gz", async () => {
+		await fileChooser.openFiles(["./app/codeCharta/assets/output.cc.json.gz"])
+
+		expect(await filePanel.getSelectedName()).toEqual("output.cc.json.gz")
+	})
+
 	it("should load multiple cc.json files", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json", "./app/codeCharta/assets/sample4.cc.json"])
 
