@@ -16,12 +16,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Remove `secondaryMetrics` from store and remove `secondaryMetrics.service` as the data can be derived from selected node [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
 -   Migrate `attribute-side-bar-component` to Angular [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
 
+## [1.84.1] - 2021-11-29
+
+### Fixed 🐞
+
+-   Fix compressed files not being loaded ([#2524](https://github.com/MaibornWolff/codecharta/pull/2525))
+
 ## [1.84.0] - 2021-11-22
-
-### Chore 👨‍💻 👩‍💻
-
--   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
--   Migrate `attribute-type-selector-component` to Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
 
 ### Changed
 
@@ -42,6 +43,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern` ([#2495](https://github.com/MaibornWolff/codecharta/pull/2495)).
+-   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
+-   Migrate `attribute-type-selector-component` to Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
 
 ## [1.83.1] - 2021-11-10
 
