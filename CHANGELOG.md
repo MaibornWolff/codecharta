@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
+-   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
 
 ### Chore 👨‍💻 👩‍💻
 
