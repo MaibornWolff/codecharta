@@ -14,7 +14,7 @@ export type PrimaryMetrics = {
 export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics | undefined = createSelector(
 	[selectedNodeSelector, primaryMetricNamesSelector],
 	(selectedNode, primaryMetricNames) => {
-		if (!selectedNode?.attributes) return
+		if (!selectedNode) return
 
 		const showAttributeTypeSelector = shouldShowAttributeTypeSelector(selectedNode)
 		return {
