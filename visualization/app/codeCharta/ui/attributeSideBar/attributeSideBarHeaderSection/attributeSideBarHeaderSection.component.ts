@@ -11,7 +11,7 @@ import { closeAttributeSideBar } from "../../../state/store/appSettings/isAttrib
 	template: require("./attributeSideBarHeaderSection.component.html")
 })
 export class AttributeSideBarHeaderSectionComponent {
-	@Input() node: Node
+	@Input() node: Pick<Node, "isLeaf" | "name" | "link" | "path">
 	@Input() fileName: string
 
 	constructor(@Inject(Store) private store: Store) {}

@@ -2236,6 +2236,31 @@ export const TEST_NODE_LEAF: Node = {
 	outgoingEdgePoint: new Vector3()
 }
 
+export const TEST_NODE_FOLDER: Node = {
+	name: "root",
+	id: 1,
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	mapNodeDepth: 1,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: false,
+	attributes: { a: 20, b: 15 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root",
+	flat: false,
+	link: "NO_LINK",
+	color: "#ddcc00",
+	markingColor: "0xFFFFFF",
+	incomingEdgePoint: new Vector3(),
+	outgoingEdgePoint: new Vector3()
+}
+
 export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
 
 export const INCOMING_NODE: Node = {
