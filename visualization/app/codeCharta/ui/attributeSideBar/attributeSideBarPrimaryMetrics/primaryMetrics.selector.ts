@@ -8,7 +8,7 @@ export type PrimaryMetrics = {
 	area: Metric
 	height: Metric
 	color: Metric
-	edge: { name: string; incoming: number; outgoing: number } | undefined
+	edge: { name: string; incoming: number | undefined; outgoing: number | undefined }
 }
 
 export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics | undefined = createSelector(
