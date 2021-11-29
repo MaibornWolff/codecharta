@@ -9,11 +9,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.84.0] - 2021-11-22
 
-### Chore 👨‍💻 👩‍💻
-
--   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
--   Migrate `attribute-type-selector-component` to Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
-
 ### Changed
 
 -   Improved the UI and usability of the Suspicious Metrics Feature ([#2376](https://github.com/MaibornWolff/codecharta/pull/2494)) <br>
@@ -33,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern` ([#2495](https://github.com/MaibornWolff/codecharta/pull/2495)).
+-   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
+-   Migrate `attribute-type-selector-component` to Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
 
 ## [1.83.1] - 2021-11-10
 
