@@ -1,13 +1,12 @@
 import { render } from "@testing-library/angular"
 
-import { Node } from "../../../../codeCharta.model"
 import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
 import { NodePathComponent } from "./nodePath.component"
 
 jest.mock("../../../../state/selectors/selectedNode.selector", () => ({
 	selectedNodeSelector: jest.fn()
 }))
-const selectedNodeSelectorMock = selectedNodeSelector as unknown as jest.Mock<ReturnType<typeof selectedNodeSelector>>
+const selectedNodeSelectorMock = selectedNodeSelector as jest.Mock
 
 describe("nodePathComponent", () => {
 	it("should display an empty p tag, if no building is selected", async () => {
@@ -19,7 +18,7 @@ describe("nodePathComponent", () => {
 	})
 
 	it("should display only node path, when a file is selected", async () => {
-		const node = { isLeaf: true, path: "some/file.ts" } as unknown as Node
+		const node = { isLeaf: true, path: "some/file.ts" }
 		selectedNodeSelectorMock.mockImplementation(() => node)
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
@@ -31,7 +30,7 @@ describe("nodePathComponent", () => {
 			isLeaf: false,
 			path: "some/folder",
 			attributes: { unary: 2 }
-		} as unknown as Node
+		}
 		selectedNodeSelectorMock.mockImplementation(() => node)
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })

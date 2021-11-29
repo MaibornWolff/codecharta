@@ -10,7 +10,7 @@ import { fileCountDescriptionSelector } from "./fileCountDescription.selector"
 	template: require("./nodePath.component.html")
 })
 export class NodePathComponent {
-	@Input() node: Node
+	@Input() node?: Pick<Node, "path" | "isLeaf">
 	fileCountDescription$: Observable<string | undefined>
 
 	constructor(@Inject(Store) store: Store) {
