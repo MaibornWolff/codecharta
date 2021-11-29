@@ -1,7 +1,7 @@
 <i [class]="iconName"></i>
 <div class="metric-value">
 	<cc-attribute-type-selector
-		*ngIf="metric.showAttributeTypeSelector"
+		*ngIf="showAttributeTypeSelector$ | async"
 		class="attribute-type-select"
 		[metricName]="metric.name"
 	></cc-attribute-type-selector>

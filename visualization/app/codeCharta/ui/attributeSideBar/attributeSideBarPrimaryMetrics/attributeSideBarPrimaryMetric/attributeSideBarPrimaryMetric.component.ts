@@ -1,5 +1,9 @@
-import { Component, Input } from "@angular/core"
-import { Metric } from "../../util/metricHelper"
+import { Component, Inject, Input } from "@angular/core"
+import { Observable } from "rxjs"
+import { Store } from "../../../../state/angular-redux/store"
+
+import { Metric } from "../../util/metric"
+import { showAttributeTypeSelectorSelector } from "../../util/showAttributeTypeSelector.selector"
 
 @Component({
 	selector: "cc-attribute-side-bar-primary-metric",
@@ -8,4 +12,9 @@ import { Metric } from "../../util/metricHelper"
 export class AttributeSideBarPrimaryMetricComponent {
 	@Input() iconName: string
 	@Input() metric: Metric
+	showAttributeTypeSelector$: Observable<boolean>
+
+	constructor(@Inject(Store) store: Store) {
+		this.showAttributeTypeSelector$ = store.select(showAttributeTypeSelectorSelector)
+	}
 }
