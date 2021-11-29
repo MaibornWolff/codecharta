@@ -1,10 +1,10 @@
 name: Build
 
-on: 
-  push: 
+on:
+  push:
     tags: '*.*.*'
 
-jobs:  
+jobs:
   build_project:
     name: Build Project
 
@@ -12,33 +12,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: Setup Java JDK
         uses: actions/setup-java@v2.4.0
-        with: 
+        with:
+          distribution: 'zulu'
           java-version: '11'
-          
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  
-          
+          node-version: '16'
+
       - name: Build analysis
         working-directory: ./analysis
         run: |
               chmod +x ./gradlew
-              ./gradlew build 
+              ./gradlew build
 
       - name: Build visualization
         working-directory: ./visualization
-        run: | 
+        run: |
           rm -rf node_modules/nwjs-builder-phoenix/caches/*
           npm ci
           npm run test
           npm run build:web
           npm run package
           docker build -t codecharta/codecharta-visualization .
-     
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -49,9 +50,9 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-      
+
       - name: Run building script build gh pages
-        run: sh ./script/build_gh_pages.sh   
+        run: sh ./script/build_gh_pages.sh
 
       - name: Upload Release Files to tagged release
         uses: alexellis/upload-assets@0.3.0
@@ -59,7 +60,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
-          
+
       - name: Publish visualization npm package
         uses: actions/setup-node@v2
         with:
@@ -84,7 +85,7 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./analysis/node-wrapper/package.json
           working-directory: ./visualization
-          
+
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
