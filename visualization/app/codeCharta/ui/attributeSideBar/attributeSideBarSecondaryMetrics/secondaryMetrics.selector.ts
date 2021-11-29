@@ -18,11 +18,14 @@ export const secondaryMetricsSelector: (state: CcState) => SecondaryMetric[] = c
 			.filter(metricName => metricName !== "unary" && !primaryMetricNamesList.includes(metricName))
 			.sort()
 
+		const showAttributeTypeSelector = shouldShowAttributeTypeSelector(selectedNode)
+		const showDeltaValue = Boolean(selectedNode.deltas)
+
 		return secondaryMetricNames.map(secondaryMetricName => ({
 			name: secondaryMetricName,
 			value: selectedNode.attributes[secondaryMetricName],
-			showAttributeTypeSelector: shouldShowAttributeTypeSelector(selectedNode),
-			showDeltaValue: Boolean(selectedNode.deltas)
+			showAttributeTypeSelector,
+			showDeltaValue
 		}))
 	}
 )
