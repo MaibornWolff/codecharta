@@ -14,15 +14,18 @@
 		ng-disabled="$ctrl.noEdgesAvailable()"
 	>
 		<md-select-header>
-			<input
-				id="edge-metric-selector"
-				class="metric-search"
-				ng-model="$ctrl._viewModel.searchTerm"
-				type="text"
-				placeholder="&#xF002; Metric (highest value)"
-				ng-keydown="$event.stopPropagation()"
-				ng-change="$ctrl.filterMetricData()"
-			/>
+			<div>
+				<i class="fa fa-search search-icon search-bar"></i>
+				<input
+					id="edge-metric-selector"
+					class="metric-search search-bar"
+					ng-model="$ctrl._viewModel.searchTerm"
+					type="text"
+					placeholder="Metric (highest value)"
+					ng-keydown="$event.stopPropagation()"
+					ng-change="$ctrl.filterMetricData()"
+				/>
+			</div>
 		</md-select-header>
 		<md-content class="option-group">
 			<md-option
