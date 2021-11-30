@@ -20,6 +20,6 @@ export class AttributeSideBarComponent {
 	constructor(@Inject(Store) store: Store) {
 		this.isSideBarVisible$ = store.select(isAttributeSideBarVisibleSelector)
 		this.selectedNode$ = store.select(selectedNodeSelector)
-		this.fileName$ = store.select(accumulatedDataSelector).pipe(map(accumulatedData => accumulatedData.unifiedFileMeta.fileName))
+		this.fileName$ = store.select(accumulatedDataSelector).pipe(map(accumulatedData => accumulatedData.unifiedFileMeta?.fileName ?? ""))
 	}
 }

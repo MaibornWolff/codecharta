@@ -1,5 +1,8 @@
-<div *ngIf="selectedNode$ | async; let selectedNode" class="side-bar-container cc-shadow" [class.expanded]="isSideBarVisible$ | async">
-	<cc-attribute-side-bar-header-section [node]="selectedNode" [fileName]="fileName$ | async"></cc-attribute-side-bar-header-section>
+<div class="side-bar-container cc-shadow" [class.expanded]="isSideBarVisible$ | async">
+	<cc-attribute-side-bar-header-section
+		[node]="selectedNode$ | async"
+		[fileName]="fileName$ | async"
+	></cc-attribute-side-bar-header-section>
 
 	<cc-attribute-side-bar-primary-metrics></cc-attribute-side-bar-primary-metrics>
 
