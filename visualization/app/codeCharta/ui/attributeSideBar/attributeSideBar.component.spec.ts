@@ -34,11 +34,11 @@ describe("AttributeSideBarComponent", () => {
 		})
 	})
 
-	it("should not display side bar if no building is selected", async () => {
+	it("should display side bar if no building is selected (for opening / closing transition effect)", async () => {
 		mockedSelectedNodeSelector.mockImplementationOnce(() => {})
 		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
-		expect(container.querySelector(".side-bar-container")).toBe(null)
+		expect(container.querySelector(".side-bar-container")).not.toBe(null)
 	})
 
 	it("should hide side bar if side bar is closed", async () => {
