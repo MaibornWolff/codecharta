@@ -3,7 +3,7 @@ import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.s
 
 type Node2FileCountDescription = { attributes?: { unary?: number } }
 
-export const node2fileCountDescription = (node: Node2FileCountDescription | undefined) => {
+export const node2fileCountDescription = (node?: Node2FileCountDescription) => {
 	if (!node) return
 
 	const fileCount = node.attributes.unary ?? 0
