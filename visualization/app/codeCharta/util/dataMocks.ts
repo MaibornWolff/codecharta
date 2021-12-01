@@ -1759,7 +1759,6 @@ export const STATE: State = {
 		recentFiles: ["fileA", "fileB"]
 	},
 	appSettings: {
-		secondaryMetrics: [],
 		amountOfTopLabels: 31,
 		amountOfEdgePreviews: 5,
 		colorLabels: {
@@ -1825,7 +1824,6 @@ export const STATE: State = {
 
 export const DEFAULT_STATE: State = {
 	appSettings: {
-		secondaryMetrics: [],
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,
 		colorLabels: {
@@ -2234,6 +2232,31 @@ export const TEST_NODE_LEAF: Node = {
 	markingColor: "0xFFFFFF",
 	flat: false,
 	color: "#ddcc00",
+	incomingEdgePoint: new Vector3(),
+	outgoingEdgePoint: new Vector3()
+}
+
+export const TEST_NODE_FOLDER: Node = {
+	name: "root",
+	id: 1,
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	mapNodeDepth: 1,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: false,
+	attributes: { a: 20, b: 15 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root",
+	flat: false,
+	link: "NO_LINK",
+	color: "#ddcc00",
+	markingColor: "0xFFFFFF",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }

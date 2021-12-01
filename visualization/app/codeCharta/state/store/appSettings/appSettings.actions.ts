@@ -1,6 +1,5 @@
 import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
 
-import { defaultSecondaryMetrics } from "./secondaryMetrics/secondaryMetrics.actions"
 import { defaultColorLabels } from "./colorLabels/colorLabels.actions"
 import { defaultShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { defaultShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
@@ -49,7 +48,6 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 }
 
 export const defaultAppSettings: AppSettings = {
-	secondaryMetrics: defaultSecondaryMetrics,
 	colorLabels: defaultColorLabels,
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
