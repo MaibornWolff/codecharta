@@ -1,138 +1,38 @@
-import "../legendPanel.module"
+import { TestBed } from "@angular/core/testing"
+import { render } from "@testing-library/angular"
+import { LegendMarkedPackagesComponent } from "./legendMarkedPackages.component"
 
-import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { IScope, IControllerService, ICompileService, ITimeoutService } from "angular"
-import { LegendMarkedPackagesController } from "./legendMarkedPackages.component"
-import { CodeMapActionsService } from "../../codeMap/codeMap.actions.service"
-import { MarkedPackagesService } from "../../../state/store/fileSettings/markedPackages/markedPackages.service"
+import { LegendMarkedPackagesModule } from "./legendMarkedPackages.module"
+import { legendMarkedPackagesSelector } from "./legendMarkedPackages.selector"
 
-describe("LegendMarkedPackagesController", () => {
-	let createController: () => LegendMarkedPackagesController
+jest.mock("./legendMarkedPackages.selector", () => ({
+	legendMarkedPackagesSelector: jest.fn()
+}))
+const mockedLegendMarkedPackagesSelector = legendMarkedPackagesSelector as jest.Mock
 
+describe("LegendMarkedPackages", () => {
 	beforeEach(() => {
-		instantiateModule("app.codeCharta.ui.legendPanel")
-
-		const $rootScope = getService<IScope>("$rootScope")
-		const $compile = getService<ICompileService>("$compile")
-		const $controller = getService<IControllerService>("$controller")
-
-		createController = () => {
-			return $controller(LegendMarkedPackagesController, {
-				$rootScope,
-				$scope: $rootScope.$new(),
-				$element: $compile("<cc-legend-marked-packages></cc-legend-marked-packages")($rootScope),
-				$timeout: getService<ITimeoutService>("$timeout"),
-				codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService")
-			})
-		}
-	})
-
-	afterEach(() => {
-		jest.restoreAllMocks()
-	})
-
-	describe("constructor", () => {
-		it("should subscribe to MarkedPackagesService", () => {
-			const markedPackagesServiceSpy = jest.spyOn(MarkedPackagesService, "subscribe")
-
-			createController()
-
-			expect(markedPackagesServiceSpy).toHaveBeenCalled()
+		TestBed.configureTestingModule({
+			imports: [LegendMarkedPackagesModule]
 		})
 	})
 
-	describe("onMarkedPackagesChanged", () => {
-		it("should update its _viewModel.packageLists", () => {
-			const controller = createController()
+	it("shouldn't display anything if there are no marked packages", async () => {
+		mockedLegendMarkedPackagesSelector.mockImplementation(() => ({}))
+		const { container } = await render(LegendMarkedPackagesComponent, { excludeComponentDeclaration: true })
 
-			controller.onMarkedPackagesChanged([{ color: "#ffffff", path: "/a/b" }])
-
-			expect(controller["_viewModel"].packageLists).toEqual({ "#ffffff": ["/a/b"] })
-		})
-
-		it("should update its _colorPickerScopes", () => {
-			const controller = createController()
-
-			controller.onMarkedPackagesChanged([{ color: "#ffffff", path: "/a/b" }])
-
-			expect(controller["_colorPickerScopes"]).toEqual({ "/a/b": "#ffffff" })
-		})
-
-		it("should update brushes icon's color", () => {
-			const controller = createController()
-			const updateBrushesColorSpy = jest.spyOn<any, any>(controller, "updateBrushesColor")
-
-			controller.onMarkedPackagesChanged([])
-
-			expect(updateBrushesColorSpy).toHaveBeenCalled()
-		})
+		expect(container.textContent).toBe("")
 	})
 
-	describe("color-picker's on change", () => {
-		const oldColor = "#000000"
-		const newColor = "#ffffff"
-		const mockedApi = {
-			getElement: () => ({
-				scope: () => ({
-					color: oldColor
-				})
-			})
-		}
+	it("should display color pickers for each marked package, sorted by first marked path", async () => {
+		mockedLegendMarkedPackagesSelector.mockImplementation(() => ({
+			"#ffffff": ["/blackMarked/whiteMarked"],
+			"#000000": ["/blackMarked"]
+		}))
+		const { container } = await render(LegendMarkedPackagesComponent, { excludeComponentDeclaration: true })
 
-		it("should hook into coler-picker's event api", () => {
-			const controller = createController()
-			controller.$onInit()
-
-			expect(typeof controller["$scope"].colorPickerEventApi.onChange).toBe("function")
-		})
-
-		it("should call updateViewModelPackageList", () => {
-			const controller = createController()
-			controller.$onInit()
-			controller["_viewModel"].packageLists = {
-				[newColor]: ["/a", "/b/c"]
-			}
-			const updateViewModelPackageListSpy = jest
-				.spyOn<any, any>(controller, "updateViewModelPackageList")
-				.mockImplementation(jest.fn())
-
-			controller["$scope"].colorPickerEventApi.onChange(mockedApi, newColor)
-
-			expect(updateViewModelPackageListSpy).toHaveBeenCalled()
-			expect(updateViewModelPackageListSpy.mock.calls[0][0]).toBe(oldColor)
-			expect(updateViewModelPackageListSpy.mock.calls[0][1]).toBe(newColor)
-		})
-
-		it("should mark the related folder", () => {
-			const controller = createController()
-			controller.$onInit()
-			controller["_viewModel"].packageLists = {
-				[newColor]: ["/a", "/b/c"]
-			}
-			jest.spyOn<any, any>(controller, "updateViewModelPackageList").mockImplementation(jest.fn())
-			const markFolderSpy = jest.spyOn(controller["codeMapActionsService"], "markFolder").mockImplementation(jest.fn())
-
-			controller["$scope"].colorPickerEventApi.onChange(mockedApi, newColor)
-
-			expect(markFolderSpy).toHaveBeenCalledTimes(2)
-
-			expect(markFolderSpy.mock.calls[0][0]).toEqual({ path: "/a" })
-			expect(markFolderSpy.mock.calls[0][1]).toBe(newColor)
-
-			expect(markFolderSpy.mock.calls[1][0]).toEqual({ path: "/b/c" })
-			expect(markFolderSpy.mock.calls[1][1]).toBe(newColor)
-		})
-
-		it("should not delete its _viewModel.packageLists entry, if old and new color are the same", () => {
-			const controller = createController()
-			controller.$onInit()
-			controller["_viewModel"].packageLists = {
-				[oldColor]: ["/a", "/b/c"]
-			}
-
-			controller["$scope"].colorPickerEventApi.onChange(mockedApi, oldColor)
-
-			expect(controller["_viewModel"].packageLists[oldColor]).toEqual(["/a", "/b/c"])
-		})
+		expect(container.querySelectorAll("cc-labelled-color-picker").length).toBe(2)
+		expect(container.querySelectorAll("cc-labelled-color-picker")[0].textContent).toMatch("/blackMarked")
+		expect(container.querySelectorAll("cc-labelled-color-picker")[1].textContent).toMatch("/blackMarked/whiteMarked")
 	})
 })

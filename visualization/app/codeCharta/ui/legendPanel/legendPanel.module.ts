@@ -1,10 +1,11 @@
 import angular from "angular"
+import { downgradeComponent } from "@angular/upgrade/static"
+
 import "../../state/state.module"
 import "../codeMap/codeMap.module"
 import "../../codeCharta.module"
-
 import { legendPanelComponent } from "./legendPanel.component"
-import { legendMarkedPackagesComponent } from "./legendMarkedPackages/legendMarkedPackages.component"
+import { LegendMarkedPackagesComponent } from "./legendMarkedPackages/legendMarkedPackages.component"
 
 angular
 	.module("app.codeCharta.ui.legendPanel", [
@@ -13,5 +14,5 @@ angular
 		"app.codeCharta",
 		"app.codeCharta.ui.customColorPicker"
 	])
-	.component(legendMarkedPackagesComponent.selector, legendMarkedPackagesComponent)
+	.directive("ccLegendMarkedPackages", downgradeComponent({ component: LegendMarkedPackagesComponent }))
 	.component(legendPanelComponent.selector, legendPanelComponent)

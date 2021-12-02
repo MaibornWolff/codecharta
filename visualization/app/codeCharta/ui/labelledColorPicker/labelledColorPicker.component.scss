@@ -1,0 +1,37 @@
+cc-labelled-color-picker {
+	.cc-labelled-color-picker-container {
+		display: flex;
+		align-items: center;
+		margin: 4px 0;
+
+		&:hover {
+			cursor: pointer;
+		}
+
+		.cc-color-swatch-container {
+			position: relative;
+			margin-right: 8px;
+
+			.cc-color-swatch,
+			.cc-color-brush {
+				display: inline-block;
+				width: 16px;
+				height: 16px;
+			}
+
+			.cc-color-brush {
+				position: absolute;
+				left: 0;
+				opacity: 0; // handled by component
+			}
+		}
+	}
+}
+
+.mat-menu-panel.color-picker-menu .mat-menu-content {
+	padding: 0;
+}
+
+color-chrome .chrome-hue {
+	margin-top: 10px;
+}
