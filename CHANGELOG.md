@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
+-   Fix attribute type selector of primary edge metric not shown [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
 
 ### Chore 👨‍💻 👩‍💻
 

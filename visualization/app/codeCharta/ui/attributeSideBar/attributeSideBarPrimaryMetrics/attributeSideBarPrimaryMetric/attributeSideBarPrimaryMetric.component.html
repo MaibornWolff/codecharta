@@ -4,6 +4,7 @@
 		*ngIf="showAttributeTypeSelector$ | async"
 		class="attribute-type-select"
 		[metricName]="metric.name"
+		[metricType]="'nodes'"
 	></cc-attribute-type-selector>
 	<span>
 		{{ metric.value | number: "1.0-0" }}

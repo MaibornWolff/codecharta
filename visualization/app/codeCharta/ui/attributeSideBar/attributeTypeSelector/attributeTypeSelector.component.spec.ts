@@ -23,7 +23,7 @@ describe("attributeTypeSelector", () => {
 
 	it("should update to median", async () => {
 		await render(AttributeTypeSelectorComponent, {
-			componentProperties: { metricName: "rloc" },
+			componentProperties: { metricName: "rloc", metricType: "nodes" },
 			excludeComponentDeclaration: true
 		})
 

@@ -23,7 +23,7 @@ jest.mock("./attributeSideBarPrimaryMetrics/primaryMetricNames.selector", () => 
 		nameOfAreaMetric: "a",
 		nameOfHeightMetric: "a",
 		nameOfColorMetric: "a",
-		nameOfEdgeMetric: "None"
+		nameOfEdgeMetric: "c"
 	}))
 }))
 
@@ -96,9 +96,17 @@ describe("AttributeSideBarComponent", () => {
 
 	it("should display attribute type selectors for folders", async () => {
 		mockedSelectedNodeSelector.mockImplementation(() => klona(TEST_NODE_FOLDER))
+
 		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
-		expect(isAttributeTypeSelectorShown(container)).toBe(true)
+		const attributeTypeSelectorWithinPrimaryMetrics = container.querySelectorAll(
+			"cc-attribute-side-bar-primary-metrics cc-attribute-type-selector"
+		)
+		expect(attributeTypeSelectorWithinPrimaryMetrics.length).toBe(4)
+		const attributeTypeSelectorWithinSecondaryMetrics = container.querySelectorAll(
+			"cc-attribute-side-bar-secondary-metrics cc-attribute-type-selector"
+		)
+		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(1)
 	})
 })
 
