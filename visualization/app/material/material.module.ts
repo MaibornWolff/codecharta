@@ -4,8 +4,9 @@ import { MatSelectModule } from "@angular/material/select"
 import { MatMenuModule } from "@angular/material/menu"
 import { MatButtonModule } from "@angular/material/button"
 import { MatDividerModule } from "@angular/material/divider"
+import { MatTooltipModule } from "@angular/material/tooltip"
 
-const materialModules = [MatSelectModule, MatMenuModule, MatButtonModule, MatDividerModule]
+const materialModules = [MatSelectModule, MatMenuModule, MatButtonModule, MatDividerModule, MatTooltipModule]
 
 @NgModule({
 	imports: [BrowserAnimationsModule, materialModules],

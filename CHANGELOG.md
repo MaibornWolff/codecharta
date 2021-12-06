@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
+
+### Chore 👨‍💻 👩‍💻
+
+-   Remove `secondaryMetrics` from store and remove `secondaryMetrics.service` as the data can be derived from selected node [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
+-   Migrate `attribute-side-bar-component` to Angular [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
+-   Switch from Webpack 4 Loaders to Asset Module to load icons properly with css-loader 6.x [#2542](https://github.com/MaibornWolff/codecharta/pull/2542).
+
 ## [1.84.1] - 2021-11-29
 
 ### Fixed 🐞
