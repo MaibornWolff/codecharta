@@ -10,7 +10,6 @@ import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
 import "./globalSettingsButton/globalSettingsButton.module"
 import "./nodePathPanel/nodePathPanel.module"
-import "./attributeSideBar/attributeSideBar.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
@@ -41,12 +40,12 @@ import "./viewCube/viewCube.module"
 import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
-import { MetricDeltaSelectedComponent } from "./metricDeltaSelected/metricDeltaSelected.component"
+import { MetricDeltaSelectedComponent } from "./attributeSideBar/metricDeltaSelected/metricDeltaSelected.component"
 import { MapTreeViewComponent } from "./mapTreeView/mapTreeView.component"
 import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
-import { AttributeTypeSelectorComponent } from "./attributeTypeSelector/attributeTypeSelector.component"
+import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -59,7 +58,6 @@ angular
 		"app.codeCharta.ui.screenshotButton",
 		"app.codeCharta.ui.globalSettingsButton",
 		"app.codeCharta.ui.nodePathPanel",
-		"app.codeCharta.ui.attributeSideBar",
 		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",

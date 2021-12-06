@@ -50,12 +50,12 @@ code-charta-component {
 		width: 100%;
 	}
 
-	attribute-side-bar-component .side-bar-container,
+	cc-attribute-side-bar .side-bar-container,
 	legend-panel-component .block-wrapper,
 	legend-panel-component .panel-button,
 	view-cube-component,
 	unfocus-button-component {
-		transition: right 0.25s ease;
+		transition: right 0.3s ease;
 	}
 
 	.angular-green {
