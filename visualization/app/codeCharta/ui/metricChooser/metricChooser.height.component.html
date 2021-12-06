@@ -10,18 +10,16 @@
 		md-container-class="ribbonBarDropdown"
 	>
 		<md-select-header>
-			<div>
-				<i class="fa fa-search search-icon search-bar"></i>
-				<input
-					id="height-metric-selector"
-					class="metric-search height-metric search-bar"
-					ng-model="$ctrl._viewModel.searchTerm"
-					type="text"
-					placeholder="Metric (highest value)"
-					ng-keydown="$event.stopPropagation()"
-					ng-change="$ctrl.filterMetricData()"
-				/>
-			</div>
+			<i class="fa fa-search search-icon search-bar"></i>
+			<input
+				id="height-metric-selector"
+				class="metric-search height-metric search-bar"
+				ng-model="$ctrl._viewModel.searchTerm"
+				type="text"
+				placeholder="Metric (highest value)"
+				ng-keydown="$event.stopPropagation()"
+				ng-change="$ctrl.filterMetricData()"
+			/>
 		</md-select-header>
 		<md-content class="option-group">
 			<md-option ng-repeat="metric in $ctrl._viewModel.metricData track by metric.name" value="{{::metric.name}}">

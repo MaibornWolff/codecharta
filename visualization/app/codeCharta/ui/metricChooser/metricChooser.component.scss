@@ -82,9 +82,13 @@ edge-chooser-component {
 	.search-bar {
 		background-color: #f5f5f5;
 		padding: 10px;
-		border: none rgb(0, 150, 136);
-		border-bottom: 2px solid;
-		color: rgb(0, 150, 136);
+		border: none;
+		border-bottom: solid 2px;
+		border-color: rgba(0, 0, 0, 0.12);
+		&:focus {
+			border-color: rgb(0, 150, 136);
+			color: rgb(0, 150, 136);
+		}
 	}
 
 	.search-icon {
@@ -93,8 +97,7 @@ edge-chooser-component {
 		width: 12%;
 		height: $optionHeight - 8 + px;
 		top: 8px;
-		color: rgb(0, 150, 136);
-		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 	}
 
 	.metric-search {
@@ -102,12 +105,12 @@ edge-chooser-component {
 		position: fixed;
 		top: 8px;
 		left: 12%;
-		width: 90%;
+		width: 88%;
 		height: $optionHeight - 8 + px;
 		outline: none;
 		font-family: Arial, FontAwesome, sans-serif;
 		font-size: 11pt;
-		box-shadow: 5px 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+		box-shadow: 5px 1px 5px 0 rgba(0, 0, 0, 0.2);
 	}
 
 	md-content.option-group {
