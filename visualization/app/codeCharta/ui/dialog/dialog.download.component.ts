@@ -6,6 +6,11 @@ import { hierarchy } from "d3-hierarchy"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
+//import {STLExporter} from "three/examples/jsm/exporters/STLExporter";
+import { CodeMapMeshChangedSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { CodeMapMesh } from "../codeMap/rendering/codeMapMesh"
+import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
+//import {ThreeRendererService} from "../codeMap/threeViewer/threeRendererService";
 
 interface FileDownloadContent {
 	name: string
@@ -21,7 +26,11 @@ export enum DownloadCheckboxNames {
 	markedPackages = "MarkedPackages"
 }
 
-export class DialogDownloadController {
+export class DialogDownloadController implements CodeMapMeshChangedSubscriber {
+	onCodeMapMeshChanged(mapMesh: CodeMapMesh) {
+		// eslint-disable-next-line no-console
+		console.log(mapMesh)
+	}
 	private _viewModel: {
 		fileName: string
 		amountOfNodes: number
@@ -34,9 +43,15 @@ export class DialogDownloadController {
 		fileContent: []
 	}
 
-	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private storeService: StoreService) {
+	constructor(
+		private $mdDialog,
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private storeService: StoreService,
+		private threeSceneService: ThreeSceneService
+	) {
 		"ngInject"
 		this.initDialogFields()
+		this.exportBinary(this.threeSceneService.getMapMesh().getThreeMesh())
 	}
 
 	hide() {
@@ -119,6 +134,37 @@ export class DialogDownloadController {
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
 		return a.isDisabled === b.isDisabled ? 0 : a.isDisabled ? 1 : -1
+	}
+
+	exporter = new STLExporter()
+	private exportBinary(mesh) {
+		const result = this.exporter.parse(mesh, { binary: true })
+		// eslint-disable-next-line no-console
+		console.log(result)
+		this.saveArrayBuffer(result, "box.stl")
+	}
+
+	// const link = document.createElement( 'a' );
+	// link.style.display = 'none';
+	// document.body.appendChild( link );
+
+	// private save( blob, filename ) {
+	//
+	// 	link.href = URL.createObjectURL( blob );
+	// 	link.download = filename;
+	// 	link.click();
+	//
+	// }
+
+	// private saveString( text, filename ) {
+	//
+	// 	this.save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+	//
+	// }
+
+	private saveArrayBuffer(buffer, filename) {
+		FileDownloader.downloadData(buffer, filename)
+		//this.save( new Blob( [ buffer ], { type: 'application/octet-stream' } ), filename );
 	}
 }
 
