@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
+-   Use icon tag instead of font awesome icon [#2537](https://github.com/MaibornWolff/codecharta/pull/2537).
 
 ### Chore 👨‍💻 👩‍💻
 
