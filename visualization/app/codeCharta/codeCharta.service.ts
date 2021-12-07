@@ -27,9 +27,9 @@ export class CodeChartaService {
 		this.fileStates = this.storeService.getState().files
 		for (const nameDataPair of nameDataPairs) {
 			try {
-				validate(nameDataPair, this.storeService)
+				validate(nameDataPair, this.fileStates)
 				this.addFile(nameDataPair)
-				this.addRecentFile(nameDataPair.fileName)
+				//this.addRecentFile(nameDataPair.fileName)
 			} catch (error) {
 				if (error.error.length > 0) {
 					this.fileStates = []
@@ -64,10 +64,29 @@ export class CodeChartaService {
 		}
 	}
 
+	//toDo: Rethink logic, maybe we should give recentFiles[] fileChecksum as property too
 	private addFile(file: NameDataPair) {
 		const ccFile = getCCFile(file)
+		const currentFileChecksum = ccFile.fileMeta.fileChecksum
+		const currentFileName = ccFile.fileMeta.fileName
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
+
+		for (const recentFile of this.fileStates) {
+			const { fileChecksum, fileName } = recentFile.file.fileMeta
+
+			if (currentFileChecksum === fileChecksum && currentFileName !== fileName) {
+				recentFile.file.fileMeta.fileName = currentFileName
+				this.recentFiles[0] = currentFileName
+				return
+			}
+			if (currentFileChecksum !== fileChecksum && currentFileName === fileName) {
+				//toDo: Improve string replacement
+				ccFile.fileMeta.fileName = currentFileName.replace(currentFileName, `${currentFileName.split(".cc.json")[0]}_1.cc.json`)
+			}
+		}
+
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
+		this.recentFiles.push(file.fileName)
 	}
 
 	private setDefaultScenario() {
