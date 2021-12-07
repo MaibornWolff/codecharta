@@ -1,4 +1,4 @@
-export interface ISelectedFileNameListComponent {
+export interface ISelectedFileNameList {
 	single: string
 	delta: {
 		reference: string
