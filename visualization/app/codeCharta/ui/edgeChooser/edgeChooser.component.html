@@ -13,19 +13,17 @@
 		md-container-class="ribbonBarDropdown"
 		ng-disabled="$ctrl.noEdgesAvailable()"
 	>
-		<md-select-header>
-			<div class="search-bar">
-				<i class="fa fa-search search-icon"></i>
-				<input
-					id="edge-metric-selector"
-					class="metric-search edge-metric"
-					ng-model="$ctrl._viewModel.searchTerm"
-					type="text"
-					placeholder="Metric (highest value)"
-					ng-keydown="$event.stopPropagation()"
-					ng-change="$ctrl.filterMetricData()"
-				/>
-			</div>
+		<md-select-header class="search-bar">
+			<i class="fa fa-search search-icon"></i>
+			<input
+				id="edge-metric-selector"
+				class="metric-search"
+				ng-model="$ctrl._viewModel.searchTerm"
+				type="text"
+				placeholder="Metric (highest value)"
+				ng-keydown="$event.stopPropagation()"
+				ng-change="$ctrl.filterMetricData()"
+			/>
 		</md-select-header>
 		<md-content class="option-group">
 			<md-option
