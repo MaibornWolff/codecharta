@@ -2249,7 +2249,7 @@ export const TEST_NODE_FOLDER: Node = {
 	y0: 7,
 	isLeaf: false,
 	attributes: { a: 20, b: 15 },
-	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	edgeAttributes: { c: { incoming: 2, outgoing: 666 } },
 	heightDelta: 20,
 	visible: true,
 	path: "/root",

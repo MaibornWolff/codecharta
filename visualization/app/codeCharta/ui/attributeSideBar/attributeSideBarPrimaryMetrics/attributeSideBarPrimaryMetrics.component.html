@@ -27,11 +27,19 @@
 			<ng-container *ngIf="primaryMetrics.edge; let edge">
 				<td *ngIf="edge.name !== 'None'">
 					<i class="fa fa-exchange"></i>
-					<span class="metric-value">
-						{{ edge.incoming | number: "1.0-0" }}
-						<span>/</span>
-						{{ edge.outgoing | number: "1.0-0" }}
-					</span>
+					<div class="metric-value">
+						<cc-attribute-type-selector
+							*ngIf="showAttributeTypeSelector$ | async"
+							class="attribute-type-select"
+							[metricName]="edge.name"
+							[metricType]="'edges'"
+						></cc-attribute-type-selector>
+						<span class="metric-value">
+							{{ edge.incoming | number: "1.0-0" }}
+							<span>/</span>
+							{{ edge.outgoing | number: "1.0-0" }}
+						</span>
+					</div>
 					<p class="metric-name">{{ edge.name }} (in/out)</p>
 				</td>
 			</ng-container>

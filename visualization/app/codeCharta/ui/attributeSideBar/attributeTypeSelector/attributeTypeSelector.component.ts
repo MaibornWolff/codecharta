@@ -1,7 +1,7 @@
 import "./attributeTypeSelector.component.scss"
 import { Component, Inject, Input } from "@angular/core"
 import { Observable } from "rxjs"
-import { AttributeTypeValue } from "../../../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue } from "../../../codeCharta.model"
 import { updateAttributeType } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { Store } from "../../../state/angular-redux/store"
 import {
@@ -15,6 +15,7 @@ import {
 })
 export class AttributeTypeSelectorComponent {
 	@Input() metricName: string
+	@Input() metricType: keyof AttributeTypes
 
 	getAttributeTypeOfNodesByMetric$: Observable<GetAttributeTypeOfNodesByMetric>
 
@@ -30,7 +31,7 @@ export class AttributeTypeSelectorComponent {
 		this.setAttributeType(AttributeTypeValue.relative)
 	}
 
-	private setAttributeType(type: AttributeTypeValue) {
-		this.store.dispatch(updateAttributeType("nodes", this.metricName, type))
+	private setAttributeType(attributeTypeValue: AttributeTypeValue) {
+		this.store.dispatch(updateAttributeType(this.metricType, this.metricName, attributeTypeValue))
 	}
 }
