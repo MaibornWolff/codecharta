@@ -9,13 +9,14 @@
 		md-on-open="$ctrl.focusInputField('height-metric')"
 		md-container-class="ribbonBarDropdown"
 	>
-		<md-select-header>
+		<md-select-header class="search-bar">
+			<i class="fa fa-search search-icon"></i>
 			<input
 				id="height-metric-selector"
 				class="metric-search height-metric"
 				ng-model="$ctrl._viewModel.searchTerm"
 				type="text"
-				placeholder="&#xF002; Metric (highest value)"
+				placeholder="Metric (highest value)"
 				ng-keydown="$event.stopPropagation()"
 				ng-change="$ctrl.filterMetricData()"
 			/>
