@@ -97,4 +97,4 @@ angular
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
 	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
-	.directive("ccExport3DMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
+	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
