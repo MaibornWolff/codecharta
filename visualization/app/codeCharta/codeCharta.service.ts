@@ -1,5 +1,4 @@
 import { validate } from "./util/fileValidator"
-import { NameDataPair } from "./codeCharta.model"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { setFiles, setSingleByName } from "./state/store/files/files.actions"
@@ -11,6 +10,7 @@ import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { setRecentFiles } from "./state/store/dynamicSettings/recentFiles/recentFiles.actions"
 import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { NameDataPair } from "./codeCharta.model"
 
 export class CodeChartaService {
 	static ROOT_NAME = "root"
@@ -27,9 +27,8 @@ export class CodeChartaService {
 		this.fileStates = this.storeService.getState().files
 		for (const nameDataPair of nameDataPairs) {
 			try {
-				validate(nameDataPair, this.fileStates)
+				validate(nameDataPair)
 				this.addFile(nameDataPair)
-				//this.addRecentFile(nameDataPair.fileName)
 			} catch (error) {
 				if (error.error.length > 0) {
 					this.fileStates = []
@@ -57,36 +56,41 @@ export class CodeChartaService {
 
 			const recentFile = this.storeService.getState().dynamicSettings.recentFiles[0]
 			const rootName = this.storeService.getState().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-
 			this.storeService.dispatch(setSingleByName(recentFile))
+
 			CodeChartaService.updateRootData(rootName)
 			this.setDefaultScenario()
 		}
 	}
 
-	//toDo: Rethink logic, maybe we should give recentFiles[] fileChecksum as property too
 	private addFile(file: NameDataPair) {
 		const ccFile = getCCFile(file)
 		const currentFileChecksum = ccFile.fileMeta.fileChecksum
 		const currentFileName = ccFile.fileMeta.fileName
+		const fileNameList = new Set(this.fileStates.map(file => file.file.fileMeta.fileName))
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 
 		for (const recentFile of this.fileStates) {
 			const { fileChecksum, fileName } = recentFile.file.fileMeta
 
-			if (currentFileChecksum === fileChecksum && currentFileName !== fileName) {
+			if (currentFileChecksum === fileChecksum) {
 				recentFile.file.fileMeta.fileName = currentFileName
 				this.recentFiles[0] = currentFileName
+				this.recentFiles.push(currentFileName)
 				return
 			}
 			if (currentFileChecksum !== fileChecksum && currentFileName === fileName) {
 				//toDo: Improve string replacement
 				ccFile.fileMeta.fileName = currentFileName.replace(currentFileName, `${currentFileName.split(".cc.json")[0]}_1.cc.json`)
+				if (fileNameList.has(ccFile.fileMeta.fileName)) {
+					this.recentFiles[0] = ccFile.fileMeta.fileName
+					this.recentFiles.push(ccFile.fileMeta.fileName)
+					return
+				}
 			}
 		}
-
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
-		this.recentFiles.push(file.fileName)
+		this.recentFiles.push(ccFile.fileMeta.fileName)
 	}
 
 	private setDefaultScenario() {
