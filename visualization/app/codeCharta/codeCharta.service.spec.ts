@@ -12,6 +12,7 @@ import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 import packageJson from "../../package.json"
 import { clone } from "./util/clone"
 import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { klona } from "klona"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("./state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -32,6 +33,7 @@ describe("codeChartaService", () => {
 		withMockedDialogService()
 
 		validFileContent = clone(TEST_FILE_CONTENT)
+
 		metricData = clone([
 			{ name: "mcc", maxValue: 1, minValue: 1 },
 			{ name: "rloc", maxValue: 2, minValue: 1 }
@@ -57,6 +59,8 @@ describe("codeChartaService", () => {
 	}
 
 	describe("loadFiles", () => {
+		mockedNodeMetricDataSelector.mockImplementation(() => metricData)
+
 		const expected: CCFile = {
 			fileMeta: {
 				apiVersion: packageJson.codecharta.apiVersion,
@@ -121,10 +125,10 @@ describe("codeChartaService", () => {
 			}
 		}
 
-		it("should load a file without edges", () => {
+		it("should load a file without edges", async () => {
 			validFileContent.edges = undefined
 
-			codeChartaService.loadFiles([
+			await codeChartaService.loadFiles([
 				{
 					fileName,
 					content: validFileContent,
@@ -136,8 +140,8 @@ describe("codeChartaService", () => {
 			expect(isSingleState(storeService.getState().files)).toBeTruthy()
 		})
 
-		it("should load a valid file and update root data", () => {
-			codeChartaService.loadFiles([
+		it("should load a valid file and update root data", async () => {
+			await codeChartaService.loadFiles([
 				{
 					fileName,
 					content: validFileContent,
@@ -154,8 +158,11 @@ describe("codeChartaService", () => {
 			expect(CodeChartaService.ROOT_PATH).toEqual(`/${expected.map.name}`)
 		})
 
-		it("should not replace the last files when loading new files", () => {
-			codeChartaService.loadFiles([
+		it("should replace files with equal file name and checksum when loading new files", async () => {
+			const validContent2ndFile = klona(validFileContent)
+			validContent2ndFile.fileChecksum = "validHash_1"
+
+			await codeChartaService.loadFiles([
 				{
 					fileName: "FirstFile",
 					content: validFileContent,
@@ -163,30 +170,30 @@ describe("codeChartaService", () => {
 				}
 			])
 
-			codeChartaService.loadFiles([
-				{ fileName: "SecondFile", content: validFileContent, fileSize: 42 },
-				{ fileName: "ThirdFile", content: validFileContent, fileSize: 42 }
+			await codeChartaService.loadFiles([
+				{ fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+				{ fileName: "SecondFile", content: validContent2ndFile, fileSize: 42 }
 			])
 
-			expect(getCCFiles(storeService.getState().files).length).toEqual(3)
+			expect(getCCFiles(storeService.getState().files).length).toEqual(2)
 			expect(getCCFiles(storeService.getState().files)[0].fileMeta.fileName).toEqual("FirstFile")
 			expect(getCCFiles(storeService.getState().files)[1].fileMeta.fileName).toEqual("SecondFile")
-			expect(getCCFiles(storeService.getState().files)[2].fileMeta.fileName).toEqual("ThirdFile")
 		})
 
-		it("should select the newly added file", () => {
-			codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+		it("should select the newly added file", async () => {
+			const validContent2ndFile = klona(validFileContent)
+			validContent2ndFile.fileChecksum = "validHash_1"
 
-			codeChartaService.loadFiles([{ fileName: "SecondFile", content: validFileContent, fileSize: 42 }])
+			await codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+
+			await codeChartaService.loadFiles([{ fileName: "SecondFile", content: validContent2ndFile, fileSize: 42 }])
 
 			expect(storeService.getState().files[0].selectedAs).toEqual("None")
 			expect(storeService.getState().files[1].selectedAs).toEqual("Single")
 		})
 
-		it("should load the default scenario after loading a valid file", () => {
-			mockedNodeMetricDataSelector.mockImplementation(() => metricData)
-
-			codeChartaService.loadFiles([
+		it("should load the default scenario after loading a valid file", async () => {
+			await codeChartaService.loadFiles([
 				{
 					fileName,
 					content: validFileContent,
@@ -199,11 +206,10 @@ describe("codeChartaService", () => {
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("mcc")
 		})
 
-		it("should not load the default scenario after loading a valid file, that does not have the required metrics", () => {
+		it("should not load the default scenario after loading a valid file, that does not have the required metrics", async () => {
 			metricData.pop()
-			mockedNodeMetricDataSelector.mockImplementation(() => metricData)
 
-			codeChartaService.loadFiles([
+			await codeChartaService.loadFiles([
 				{
 					fileName,
 					content: validFileContent,
@@ -216,31 +222,31 @@ describe("codeChartaService", () => {
 			expect(storeService.getState().dynamicSettings.colorMetric).toBeNull()
 		})
 
-		it("should show error on invalid file", () => {
+		it("should show error on invalid file", async () => {
 			const expectedError: CCValidationResult = {
 				error: [ERROR_MESSAGES.fileIsInvalid],
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])
+			await codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 
-		it("should show error on a random string", () => {
+		it("should show error on a random string", async () => {
 			const expectedError: CCValidationResult = {
 				error: [ERROR_MESSAGES.apiVersionIsInvalid],
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, fileSize: 42, content: "string" as unknown as ExportCCFile }])
+			await codeChartaService.loadFiles([{ fileName, fileSize: 42, content: "string" as unknown as ExportCCFile }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 
-		it("should show error if a file is missing a required property", () => {
+		it("should show error if a file is missing a required property", async () => {
 			const expectedError: CCValidationResult = {
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
@@ -248,16 +254,16 @@ describe("codeChartaService", () => {
 
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
-			codeChartaService.loadFiles([{ fileName, fileSize: 42, content: invalidFileContent }])
+			await codeChartaService.loadFiles([{ fileName, fileSize: 42, content: invalidFileContent }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 
-		it("should convert old blacklist type", () => {
+		it("should convert old blacklist type", async () => {
 			validFileContent.blacklist = [{ path: "foo", type: ExportBlacklistType.hide }]
 
-			codeChartaService.loadFiles([
+			await codeChartaService.loadFiles([
 				{
 					fileName,
 					content: validFileContent,
@@ -269,7 +275,7 @@ describe("codeChartaService", () => {
 			expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
 		})
 
-		it("should break the loop after the first invalid file was validated", () => {
+		it("should break the loop after the first invalid file was validated", async () => {
 			const expectedError: CCValidationResult = {
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
@@ -278,7 +284,7 @@ describe("codeChartaService", () => {
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 
-			codeChartaService.loadFiles([
+			await codeChartaService.loadFiles([
 				{ fileName, content: invalidFileContent, fileSize: 42 },
 				{ fileName, content: invalidFileContent, fileSize: 42 }
 			])
@@ -287,17 +293,17 @@ describe("codeChartaService", () => {
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 
-		it("should not show a validation error if filenames are duplicated when their path is different", () => {
+		it("should not show a validation error if filenames are duplicated when their path is different", async () => {
 			validFileContent.nodes[0].children[0].name = "duplicate"
 			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
 
-			codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
+			await codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
 			expect(storeService.getState().files).toHaveLength(1)
 		})
 
-		it("should show a validation error if two files in a folder have the same name", () => {
+		it("should show a validation error if two files in a folder have the same name", async () => {
 			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
 			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
 			const expectedError: CCValidationResult = {
@@ -305,26 +311,26 @@ describe("codeChartaService", () => {
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
+			await codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 
-		it("should not show a validation error if two files in a folder have the same name but different type", () => {
+		it("should not show a validation error if two files in a folder have the same name but different type", async () => {
 			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
 			validFileContent.nodes[0].children[1].children[0].type = NodeType.FILE
 			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
 			validFileContent.nodes[0].children[1].children[1].type = NodeType.FOLDER
 
-			codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
+			await codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
 			expect(storeService.getState().files).toHaveLength(1)
 		})
 
-		it("should remove a file", () => {
-			codeChartaService.loadFiles([
+		it("should remove a file", async () => {
+			await codeChartaService.loadFiles([
 				{ fileName: "FirstFile", content: validFileContent, fileSize: 42 },
 				{ fileName: "SecondFile", content: validFileContent, fileSize: 42 }
 			])
