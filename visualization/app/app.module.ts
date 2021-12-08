@@ -11,11 +11,13 @@ import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCoun
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
+import { Export3DMapButtonComponent } from "./codeCharta/ui/stlExportButton/export3DMapButton.component"
+import { Export3DMapButtonModule } from "./codeCharta/ui/stlExportButton/export3DMapButton.module"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule],
+	imports: [BrowserModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule, Export3DMapButtonModule],
 	declarations: [],
-	entryComponents: [MapTreeViewComponent, MatchingFilesCounterComponent, AttributeSideBarComponent]
+	entryComponents: [MapTreeViewComponent, MatchingFilesCounterComponent, AttributeSideBarComponent, Export3DMapButtonComponent]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}

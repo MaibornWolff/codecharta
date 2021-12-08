@@ -46,6 +46,7 @@ import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
+import { Export3DMapButtonComponent } from "./stlExportButton/export3DMapButton.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -96,3 +97,4 @@ angular
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
 	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
+	.directive("ccExport3DMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
