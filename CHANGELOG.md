@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
 -   Use icon tag instead of font awesome icon [#2537](https://github.com/MaibornWolff/codecharta/pull/2537).
--   Rename text for placeholder of metric chooser [#2508](https://github.com/MaibornWolff/codecharta/pull/2547)
+-   Rename text for placeholder of metric chooser [#2547](https://github.com/MaibornWolff/codecharta/pull/2547)
 -   Fix attribute type selector of primary edge metric not shown [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
 
 ### Chore 👨‍💻 👩‍💻
