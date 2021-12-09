@@ -1,7 +1,12 @@
-<!-- Todo: use div instead of section -->
-<section layout="row" layout-align="center center" class="mode-chooser">
+<div class="mode-chooser">
 	<cc-file-panel-state-buttons [state]="'FILE_PANEL_STATE_STANDARD'"></cc-file-panel-state-buttons>
-</section>
+</div>
+
+<cc-file-panel-file-selector
+	[selectedFileNames]="$ctrl._viewModel.selectedFileNames.partial"
+	[files]="$ctrl._viewModel.files"
+></cc-file-panel-file-selector>
+
 <!--<md-input-container class="input-container" ng-show="$ctrl._viewModel.isPartialState" title="Select files">
 	<md-select
 		class="md-select-menu"

@@ -49,6 +49,7 @@ import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { FilePanelComponent } from "./filePanel/filePanel.component"
+import { FilePanelFileSelectorComponent } from "./filePanel/filePanelFileSelector/filePanelFileSelector.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -101,3 +102,4 @@ angular
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
 	.directive("ccFilePanel", downgradeComponent({ component: FilePanelComponent }))
+	.directive("ccFilePanelFileSelector", downgradeComponent({ component: FilePanelFileSelectorComponent }))
