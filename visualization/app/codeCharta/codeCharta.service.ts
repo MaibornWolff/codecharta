@@ -65,32 +65,56 @@ export class CodeChartaService {
 
 	private addFile(file: NameDataPair) {
 		const ccFile = getCCFile(file)
-		const currentFileChecksum = ccFile.fileMeta.fileChecksum
-		const currentFileName = ccFile.fileMeta.fileName
-		const fileNameList = new Set(this.fileStates.map(file => file.file.fileMeta.fileName))
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
+		const currentFileChecksum = ccFile.fileMeta.fileChecksum
+		let currentFileName = ccFile.fileMeta.fileName
+		const storedFileNames = new Map(this.fileStates.map(file => [file.file.fileMeta.fileName, file.file.fileMeta.fileChecksum]))
+		const storedFileChecksums = new Map(
+			this.fileStates.map((file, index) => [file.file.fileMeta.fileChecksum, index] as [string, number])
+		)
+		const isDuplicate = storedFileChecksums.has(currentFileChecksum)
 
-		for (const recentFile of this.fileStates) {
-			const { fileChecksum, fileName } = recentFile.file.fileMeta
+		if (storedFileNames.has(currentFileName)) {
+			currentFileName = this.findFileName(currentFileName, isDuplicate, storedFileNames, currentFileChecksum)
+			ccFile.fileMeta.fileName = currentFileName
+		}
+		if (isDuplicate) {
+			this.fileStates[storedFileChecksums.get(currentFileChecksum)].file.fileMeta.fileName = currentFileName
+			this.recentFiles[0] = currentFileName
+			this.recentFiles.push(currentFileName)
+			return
+		}
 
-			if (currentFileChecksum === fileChecksum) {
-				recentFile.file.fileMeta.fileName = currentFileName
-				this.recentFiles[0] = currentFileName
-				this.recentFiles.push(currentFileName)
-				return
+		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
+		this.recentFiles.push(currentFileName)
+	}
+
+	private findFileName(currentFileName: string, isDuplicate: boolean, storedFileNames: Map<string, string>, currentFileChecksum: string) {
+		if (storedFileNames.get(currentFileName) === currentFileChecksum) {
+			return currentFileName
+		}
+
+		let nameFound = false
+		let fileNameOccurrence = 1
+		let newFileName = currentFileName
+		while (!nameFound) {
+			newFileName = currentFileName.replace(currentFileName, `${currentFileName.split(".")[0]}_${fileNameOccurrence}.cc.json`)
+			const endOfNameIndex = currentFileName.indexOf(".")
+			newFileName =
+				endOfNameIndex >= 0
+					? [currentFileName.slice(0, endOfNameIndex), "_", fileNameOccurrence, currentFileName.slice(endOfNameIndex)].join("")
+					: `${currentFileName}_${fileNameOccurrence}`
+			// resolve if uploaded file has identical checksum and different already occurring name
+			if (isDuplicate && storedFileNames.has(newFileName) && storedFileNames.get(newFileName) === currentFileChecksum) {
+				nameFound = true
 			}
-			if (currentFileChecksum !== fileChecksum && currentFileName === fileName) {
-				//toDo: Improve string replacement
-				ccFile.fileMeta.fileName = currentFileName.replace(currentFileName, `${currentFileName.split(".cc.json")[0]}_1.cc.json`)
-				if (fileNameList.has(ccFile.fileMeta.fileName)) {
-					this.recentFiles[0] = ccFile.fileMeta.fileName
-					this.recentFiles.push(ccFile.fileMeta.fileName)
-					return
-				}
+			if (!storedFileNames.has(newFileName)) {
+				nameFound = true
+			} else {
+				fileNameOccurrence++
 			}
 		}
-		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
-		this.recentFiles.push(ccFile.fileMeta.fileName)
+		return newFileName
 	}
 
 	private setDefaultScenario() {
