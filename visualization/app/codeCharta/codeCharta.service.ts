@@ -107,8 +107,7 @@ export class CodeChartaService {
 			// resolve if uploaded file has identical checksum and different already occurring name
 			if (storedFileNames.get(newFileName) === currentFileChecksum) {
 				nameFound = true
-			}
-			if (!storedFileNames.has(newFileName)) {
+			} else if (!storedFileNames.has(newFileName)) {
 				nameFound = true
 			}
 			fileNameOccurrence++
