@@ -160,7 +160,7 @@ describe("codeChartaService", () => {
 
 		it("should replace files with equal file name and checksum when loading new files", async () => {
 			const valid2ndFileContent = klona(validFileContent)
-			valid2ndFileContent.fileChecksum = "validHash_1"
+			valid2ndFileContent.fileChecksum = "hash_1"
 
 			await codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
 
@@ -175,14 +175,14 @@ describe("codeChartaService", () => {
 			expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
 			expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
 			expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("SecondFile")
-			expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("validHash_1")
+			expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
 		})
 
 		it("should load files with equal file name but different checksum and rename uploaded files ", async () => {
 			const valid2ndFileContent = klona(validFileContent)
-			valid2ndFileContent.fileChecksum = "validHash_1"
+			valid2ndFileContent.fileChecksum = "hash_1"
 			const valid3rdFileContent = klona(validFileContent)
-			valid3rdFileContent.fileChecksum = "validHash_2"
+			valid3rdFileContent.fileChecksum = "hash_2"
 
 			await codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
 
@@ -197,16 +197,16 @@ describe("codeChartaService", () => {
 			expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
 			expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
 			expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("FirstFile_1")
-			expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("validHash_1")
+			expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
 			expect(CCFilesUnderTest[2].fileMeta.fileName).toEqual("FirstFile_2")
-			expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("validHash_2")
+			expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("hash_2")
 		})
 
 		it("should not load files with equal file name and checksum when there was a renaming of file names in previous uploads", async () => {
 			const valid2ndFileContent = klona(validFileContent)
-			valid2ndFileContent.fileChecksum = "validHash_1"
+			valid2ndFileContent.fileChecksum = "hash_1"
 			const valid3rdFileContent = klona(validFileContent)
-			valid3rdFileContent.fileChecksum = "validHash_2"
+			valid3rdFileContent.fileChecksum = "hash_2"
 
 			await codeChartaService.loadFiles([
 				{ fileName: "FirstFile", content: validFileContent, fileSize: 42 },
@@ -224,9 +224,9 @@ describe("codeChartaService", () => {
 			expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
 			expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
 			expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("FirstFile_1")
-			expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("validHash_1")
+			expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
 			expect(CCFilesUnderTest[2].fileMeta.fileName).toEqual("FirstFile_2")
-			expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("validHash_2")
+			expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("hash_2")
 		})
 
 		it("should not load broken file but after fixing this problem manually it should possible to load this file again", async () => {
@@ -245,12 +245,12 @@ describe("codeChartaService", () => {
 		})
 
 		it("should select the newly added file", async () => {
-			const validContent2ndFile = klona(validFileContent)
-			validContent2ndFile.fileChecksum = "validHash_1"
+			const valid2ndFileContent = klona(validFileContent)
+			valid2ndFileContent.fileChecksum = "hash_1"
 
 			await codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
 
-			await codeChartaService.loadFiles([{ fileName: "SecondFile", content: validContent2ndFile, fileSize: 42 }])
+			await codeChartaService.loadFiles([{ fileName: "SecondFile", content: valid2ndFileContent, fileSize: 42 }])
 
 			expect(storeService.getState().files[0].selectedAs).toEqual("None")
 			expect(storeService.getState().files[1].selectedAs).toEqual("Single")
