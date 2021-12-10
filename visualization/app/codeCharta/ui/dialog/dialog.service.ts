@@ -34,10 +34,6 @@ export class DialogService {
 		this.$mdDialog.show(dialog)
 	}
 
-	showInfoDialog(message, title = "Info", button = "Ok") {
-		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
-	}
-
 	async showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
 		await this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
