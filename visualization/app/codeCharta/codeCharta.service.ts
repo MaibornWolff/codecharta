@@ -75,7 +75,7 @@ export class CodeChartaService {
 		const isDuplicate = storedFileChecksums.has(currentFileChecksum)
 
 		if (storedFileNames.has(currentFileName)) {
-			currentFileName = this.findFileName(currentFileName, isDuplicate, storedFileNames, currentFileChecksum)
+			currentFileName = this.getFileName(currentFileName, storedFileNames, currentFileChecksum)
 			ccFile.fileMeta.fileName = currentFileName
 		}
 		if (isDuplicate) {
@@ -89,7 +89,7 @@ export class CodeChartaService {
 		this.recentFiles.push(currentFileName)
 	}
 
-	private findFileName(currentFileName: string, isDuplicate: boolean, storedFileNames: Map<string, string>, currentFileChecksum: string) {
+	private getFileName(currentFileName: string, storedFileNames: Map<string, string>, currentFileChecksum: string) {
 		if (storedFileNames.get(currentFileName) === currentFileChecksum) {
 			return currentFileName
 		}
@@ -97,22 +97,21 @@ export class CodeChartaService {
 		let nameFound = false
 		let fileNameOccurrence = 1
 		let newFileName = currentFileName
+
 		while (!nameFound) {
-			newFileName = currentFileName.replace(currentFileName, `${currentFileName.split(".")[0]}_${fileNameOccurrence}.cc.json`)
 			const endOfNameIndex = currentFileName.indexOf(".")
 			newFileName =
 				endOfNameIndex >= 0
 					? [currentFileName.slice(0, endOfNameIndex), "_", fileNameOccurrence, currentFileName.slice(endOfNameIndex)].join("")
 					: `${currentFileName}_${fileNameOccurrence}`
 			// resolve if uploaded file has identical checksum and different already occurring name
-			if (isDuplicate && storedFileNames.has(newFileName) && storedFileNames.get(newFileName) === currentFileChecksum) {
+			if (storedFileNames.get(newFileName) === currentFileChecksum) {
 				nameFound = true
 			}
 			if (!storedFileNames.has(newFileName)) {
 				nameFound = true
-			} else {
-				fileNameOccurrence++
 			}
+			fileNameOccurrence++
 		}
 		return newFileName
 	}
