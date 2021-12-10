@@ -1,5 +1,8 @@
 cc-export-threed-map-button {
-	//.small-action-button {
-	//  display: inline-block;
-	//}
+	.toolbar-material-button {
+		display: inline-block;
+		mat-icon {
+			margin-right: 0;
+		}
+	}
 }

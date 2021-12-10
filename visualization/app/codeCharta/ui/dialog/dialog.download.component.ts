@@ -51,7 +51,7 @@ export class DialogDownloadController implements CodeMapMeshChangedSubscriber {
 	) {
 		"ngInject"
 		this.initDialogFields()
-		this.exportBinary(this.threeSceneService.getMapMesh().getThreeMesh())
+		//this.exportBinary(this.threeSceneService.getMapMesh().getThreeMesh())
 	}
 
 	hide() {
@@ -139,8 +139,6 @@ export class DialogDownloadController implements CodeMapMeshChangedSubscriber {
 	exporter = new STLExporter()
 	private exportBinary(mesh) {
 		const result = this.exporter.parse(mesh, { binary: true })
-		// eslint-disable-next-line no-console
-		console.log(result)
 		this.saveArrayBuffer(result, "box.stl")
 	}
 
