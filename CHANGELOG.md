@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Replace color picker for marked packages in legend [#2552](https://github.com/MaibornWolff/codecharta/pull/2552). All other color-pickers will be replaced soon as well in the progress of the Angular migration.
+
 ### Fixed 🐞
 
 -   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
