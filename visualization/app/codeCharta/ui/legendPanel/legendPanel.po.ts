@@ -7,15 +7,17 @@ export class LegendPanelObject {
 	}
 
 	async getMultipleFilenames() {
-		return page.$$eval("legend-panel-component cc-legend-marked-packages-component p", elements =>
-			elements.map(x => x.textContent.replace(/[\n\r]+|\s{2,}/g, " ").trim())
+		return page.$$eval("legend-panel-component cc-legend-marked-packages cc-labelled-color-picker", elements =>
+			elements.map(x => x.textContent.trim())
 		)
 	}
 	async getFilename() {
-		return page.$eval("legend-panel-component cc-legend-marked-packages-component p", element => element["innerText"])
+		return page.$eval("legend-panel-component cc-legend-marked-packages cc-labelled-color-picker", element => {
+			return element["innerText"]
+		})
 	}
 
 	async getEmptyLegendIfNoFilenamesExist() {
-		return (await page.$("legend-panel-component cc-legend-marked-packages-component p")) || ""
+		return page.$eval("legend-panel-component cc-legend-marked-packages", element => element["innerText"])
 	}
 }
