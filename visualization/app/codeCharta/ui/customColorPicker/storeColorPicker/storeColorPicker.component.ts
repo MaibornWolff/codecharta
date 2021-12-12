@@ -48,7 +48,6 @@ export class StoreColorPickerController implements MapColorsSubscriber {
 	private updateMapColorInStore(color: string) {
 		this.storeService.dispatch(
 			setMapColors({
-				...this.storeService.getState().appSettings.mapColors,
 				[this.mapColorFor]: color
 			})
 		)
