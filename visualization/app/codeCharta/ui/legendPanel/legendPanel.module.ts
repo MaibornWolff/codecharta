@@ -1,18 +1,15 @@
-import angular from "angular"
-import { downgradeComponent } from "@angular/upgrade/static"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
 
-import "../../state/state.module"
-import "../codeMap/codeMap.module"
-import "../../codeCharta.module"
-import { legendPanelComponent } from "./legendPanel.component"
-import { LegendMarkedPackagesComponent } from "./legendMarkedPackages/legendMarkedPackages.component"
+import { LegendMarkedPackagesModule } from "./legendMarkedPackages/legendMarkedPackages.module"
+import { LegendPanelComponent } from "./legendPanel.component"
+import { MaterialModule } from "../../../material/material.module"
+import { LegendBlockComponent } from "./legendBlock/legendBlock.component"
+import { ColorPickerForMapColorModule } from "../colorPickerForMapColor/colorPickerForMapColor.module"
 
-angular
-	.module("app.codeCharta.ui.legendPanel", [
-		"app.codeCharta.state",
-		"app.codeCharta.ui.codeMap",
-		"app.codeCharta",
-		"app.codeCharta.ui.customColorPicker"
-	])
-	.directive("ccLegendMarkedPackages", downgradeComponent({ component: LegendMarkedPackagesComponent }))
-	.component(legendPanelComponent.selector, legendPanelComponent)
+@NgModule({
+	imports: [CommonModule, MaterialModule, LegendMarkedPackagesModule, ColorPickerForMapColorModule],
+	declarations: [LegendPanelComponent, LegendBlockComponent],
+	exports: [LegendPanelComponent]
+})
+export class LegendPanelModule {}

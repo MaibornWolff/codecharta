@@ -1,4 +1,4 @@
-legend-panel-component {
+cc-legend-panel {
 	$fixedHeight: 35;
 
 	.panel-button {
@@ -7,8 +7,12 @@ legend-panel-component {
 		right: -35px;
 		transform: rotate(90deg);
 		border-radius: 0 0 5px 5px;
+		height: 36px;
+		width: 88px;
+		margin: 6px 8px;
+		margin: 6px 8px;
 
-		&.sideBarVisible {
+		&.isAttributeSideBarVisible {
 			right: 316px;
 		}
 	}
@@ -24,7 +28,7 @@ legend-panel-component {
 		visibility: hidden;
 		border-radius: 5px;
 
-		&.sideBarVisible {
+		&.isAttributeSideBarVisible {
 			right: 390px;
 		}
 

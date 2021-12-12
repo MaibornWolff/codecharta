@@ -1,0 +1,7 @@
+<div *ngIf="legendMetric.description" class="legend-block">
+	Size metric (<span class="bold">{{ legendMetric.metricName }}</span
+	>: {{ legendMetric.description }})
+</div>
+<div *ngIf="!legendMetric.description" class="legend-block">
+	Size metric: <span class="bold">{{ legendMetric.metricName }}</span>
+</div>

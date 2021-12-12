@@ -25,7 +25,6 @@ import "./dialog/dialog.module"
 import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./heightSettingsPanel/heightSettingsPanel.module"
-import "./legendPanel/legendPanel.module"
 import "./loadingGif/loadingGif.module"
 import "./metricChooser/metricChooser.module"
 import "./metricType/metricType.module"
@@ -46,6 +45,7 @@ import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
+import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -75,7 +75,6 @@ angular
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.filePanel",
 		"app.codeCharta.ui.heightSettingsPanel",
-		"app.codeCharta.ui.legendPanel",
 		"app.codeCharta.ui.loadingGif",
 		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.metricType",
@@ -96,3 +95,4 @@ angular
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
 	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
+	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))

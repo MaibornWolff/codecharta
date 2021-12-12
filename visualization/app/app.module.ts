@@ -11,25 +11,18 @@ import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCoun
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
-import { LegendMarkedPackagesComponent } from "./codeCharta/ui/legendPanel/legendMarkedPackages/legendMarkedPackages.component"
-import { LegendMarkedPackagesModule } from "./codeCharta/ui/legendPanel/legendMarkedPackages/legendMarkedPackages.module"
 import { LabelledColorPickerComponent } from "./codeCharta/ui/labelledColorPicker/labelledColorPicker.component"
+import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.component"
+import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 
 @NgModule({
-	imports: [
-		BrowserModule,
-		UpgradeModule,
-		MapTreeViewModule,
-		MatchingFilesCounterModule,
-		AttributeSideBarModule,
-		LegendMarkedPackagesModule
-	],
+	imports: [BrowserModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule, LegendPanelModule],
 	declarations: [],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
 		AttributeSideBarComponent,
-		LegendMarkedPackagesComponent,
+		LegendPanelComponent,
 		LabelledColorPickerComponent
 	]
 })
