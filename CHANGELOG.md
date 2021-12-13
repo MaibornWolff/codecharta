@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Use icon tag instead of font awesome icon [#2537](https://github.com/MaibornWolff/codecharta/pull/2537).
 -   Rename text for placeholder of metric chooser [#2547](https://github.com/MaibornWolff/codecharta/pull/2547)
 -   Fix attribute type selector of primary edge metric not shown [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
+-   Identical files and files with identical file names but different hashes can be loaded [#2548](https://github.com/MaibornWolff/codecharta/pull/2548)
 
 ### Chore 👨‍💻 👩‍💻
 
