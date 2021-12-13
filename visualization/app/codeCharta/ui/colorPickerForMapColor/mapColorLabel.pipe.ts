@@ -7,11 +7,11 @@ export class MapColorLabelPipe implements PipeTransform {
 	transform(metricName: keyof MapColors, colorRange: ColorRange): string {
 		switch (metricName) {
 			case "positive":
-				return `0 to < ${Math.floor(colorRange.from)}`
+				return `0 to < ${Math.round(colorRange.from)}`
 			case "neutral":
-				return `≥ ${Math.floor(colorRange.from)} to ≤ ${Math.floor(colorRange.to)}`
+				return `≥ ${Math.round(colorRange.from)} to ≤ ${Math.round(colorRange.to)}`
 			case "negative":
-				return `> ${Math.floor(colorRange.to)} to ${Math.floor(colorRange.max)}`
+				return `> ${Math.round(colorRange.to)} to ${Math.round(colorRange.max)}`
 			case "positiveDelta":
 				return "+Δ positive delta"
 			case "negativeDelta":

@@ -1,7 +1,7 @@
 import { MapColorLabelPipe } from "./mapColorLabel.pipe"
 
 describe("mapColorLabelPipe", () => {
-	const colorRange = { from: 21, to: 42.5, max: 9001, min: 0 }
+	const colorRange = { from: 21.2, to: 41.5, max: 9001, min: 0 }
 
 	it("should transform 'positive'", () => {
 		expect(new MapColorLabelPipe().transform("positive", colorRange)).toBe("0 to < 21")
