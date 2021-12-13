@@ -33,7 +33,6 @@
 		},
 		{
 			"matchPackageNames": ["@types/three", "org.sonarsource.java:sonar-java-plugin", "three"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"groupName": "Almost always breaking changes",
 			"enabled": false
 		}
