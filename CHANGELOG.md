@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## Changed
 
--   Replace all color picker in legend and in color metric options [#2559](https://github.com/MaibornWolff/codecharta/pull/2559). All other color-pickers will be replaced soon as well in the progress of the Angular migration.
+-   Replace all color pickers in the context of ongoing Angular migration [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
 
 ## Fixed 🐞
 
@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## Chore 👨‍💻 👩‍💻
 
--   Migrate legend to Angular [#2558](https://github.com/MaibornWolff/codecharta/pull/2558).
+-   Migrate legend panel to Angular [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
 
 ## [1.85.0] - 2021-12-13
 
