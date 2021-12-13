@@ -16,6 +16,8 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
+import { MarkFolderColorPickerModule } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.module"
+import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.component"
 
 @NgModule({
 	imports: [
@@ -25,7 +27,8 @@ import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForM
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
 		LegendPanelModule,
-		ColorPickerForMapColorModule
+		ColorPickerForMapColorModule,
+		MarkFolderColorPickerModule
 	],
 	declarations: [],
 	entryComponents: [
@@ -34,7 +37,8 @@ import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForM
 		AttributeSideBarComponent,
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
-		ColorPickerForMapColorComponent
+		ColorPickerForMapColorComponent,
+		MarkFolderColorPickerComponent
 	]
 })
 export class AppModule {

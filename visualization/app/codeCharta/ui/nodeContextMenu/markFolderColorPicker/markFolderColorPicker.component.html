@@ -1,0 +1,11 @@
+<div class="cc-color-picker-trigger fa fa-paint-brush" [matMenuTriggerFor]="menu"></div>
+
+<mat-menu #menu="matMenu" class="cc-color-picker-menu">
+	<color-chrome
+		role="colorpicker"
+		(click)="$event.stopPropagation()"
+		[disableAlpha]="true"
+		[color]="'#ff0000'"
+		(onChangeComplete)="markFolder($event.color.hex)"
+	></color-chrome>
+</mat-menu>
