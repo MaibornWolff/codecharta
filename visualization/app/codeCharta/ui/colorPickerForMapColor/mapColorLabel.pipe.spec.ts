@@ -12,7 +12,7 @@ describe("mapColorLabelPipe", () => {
 	})
 
 	it("should transform 'negative'", () => {
-		expect(new MapColorLabelPipe().transform("negative", colorRange)).toBe("> 42 to 9.001")
+		expect(new MapColorLabelPipe().transform("negative", colorRange)).toBe("> 42 to 9,001")
 	})
 
 	it("should transform 'positiveDelta'", () => {
