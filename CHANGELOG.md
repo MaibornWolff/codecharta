@@ -7,9 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Changed
+## Changed
 
--   Replace color picker for marked packages in legend [#2552](https://github.com/MaibornWolff/codecharta/pull/2552). All other color-pickers will be replaced soon as well in the progress of the Angular migration.
+-   Replace all color picker in legend [#2558](https://github.com/MaibornWolff/codecharta/pull/2558). All other color-pickers will be replaced soon as well in the progress of the Angular migration.
+
+## Fixed 🐞
+
+-   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557)
+
+## Chore 👨‍💻 👩‍💻
+
+-   Migrate legend to Angular [#2558](https://github.com/MaibornWolff/codecharta/pull/2558).
+
+## [1.85.0] - 2021-12-13
 
 ### Fixed 🐞
 
@@ -17,12 +27,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Use icon tag instead of font awesome icon [#2537](https://github.com/MaibornWolff/codecharta/pull/2537).
 -   Rename text for placeholder of metric chooser [#2547](https://github.com/MaibornWolff/codecharta/pull/2547)
 -   Fix attribute type selector of primary edge metric not shown [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
+-   Identical files and files with identical file names but different hashes can be loaded [#2548](https://github.com/MaibornWolff/codecharta/pull/2548)
 
 ### Chore 👨‍💻 👩‍💻
 
 -   Remove `secondaryMetrics` from store and remove `secondaryMetrics.service` as the data can be derived from selected node [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
 -   Migrate `attribute-side-bar-component` to Angular [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
 -   Switch from Webpack 4 Loaders to Asset Module to load icons properly with css-loader 6.x [#2542](https://github.com/MaibornWolff/codecharta/pull/2542).
+
+### Removed 🗑
+
+-   Remove notification dialog when deleting a custom config [#2553](https://github.com/MaibornWolff/codecharta/pull/2553)
 
 ## [1.84.1] - 2021-11-29
 

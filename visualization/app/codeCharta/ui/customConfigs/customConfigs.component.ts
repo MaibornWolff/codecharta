@@ -74,9 +74,8 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
 	}
 
-	removeCustomConfig(configId, configName) {
+	removeCustomConfig(configId) {
 		CustomConfigHelper.deleteCustomConfig(configId)
-		this.dialogService.showInfoDialog(`${configName} deleted.`)
 	}
 
 	downloadPreloadedCustomConfigs() {
