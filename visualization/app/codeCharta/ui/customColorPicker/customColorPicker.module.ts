@@ -4,7 +4,6 @@ import "../../state/state.module"
 import "../../codeCharta.module"
 
 import customColorPickerTemplate from "./customColorPicker.template.html"
-import { storeColorPickerComponent } from "./storeColorPicker/storeColorPicker.component"
 import { nodeContextMenuColorPickerComponent } from "./nodeContextMenuColorPicker/nodeContextMenuColorPicker.component"
 
 import "./customColorPicker.scss"
@@ -30,7 +29,6 @@ angular
 			})
 		}
 	])
-	.component(storeColorPickerComponent.selector, storeColorPickerComponent)
 	.component(nodeContextMenuColorPickerComponent.selector, nodeContextMenuColorPickerComponent)
 	.run([
 		"$templateCache",
