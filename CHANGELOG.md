@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Migrate `attribute-side-bar-component` to Angular [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
 -   Switch from Webpack 4 Loaders to Asset Module to load icons properly with css-loader 6.x [#2542](https://github.com/MaibornWolff/codecharta/pull/2542).
 
+### Removed 🗑
+
+-   Remove notification dialog when deleting a custom config [#2553](https://github.com/MaibornWolff/codecharta/pull/2553)
+
 ## [1.84.1] - 2021-11-29
 
 ### Fixed 🐞
