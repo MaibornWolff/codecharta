@@ -50,16 +50,16 @@
 							class="button-hovering"
 							ng-click="$ctrl.applyCustomConfig(customConfig.id)"
 							ng-disabled="!customConfig.isApplicable"
-						>
 							title="{{
 								customConfig.isApplicable
-									? "Apply Custom Config"
-									: "This one is applicable for map(s) " +
+									? 'Apply Custom Config'
+									: 'This one is applicable for map(s) ' +
 									  customConfig.mapNames +
-									  " in " +
+									  ' in ' +
 									  customConfig.mapSelectionMode +
-									  " mode only."
-							}}" >
+									  ' mode only.'
+							}}"
+						>
 							{{ customConfig.name }}
 						</md-button>
 
