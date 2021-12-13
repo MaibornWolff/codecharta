@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
+
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { LegendPanelComponent } from "./legendPanel.component"
 import { LegendPanelModule } from "./legendPanel.module"
@@ -13,6 +14,9 @@ jest.mock("../../state/store/dynamicSettings/areaMetric/areaMetric.selector", ()
 jest.mock("../../state/store/dynamicSettings/colorMetric/colorMetric.selector", () => ({
 	colorMetricSelector: () => "rloc"
 }))
+jest.mock("../../state/store/dynamicSettings/colorRange/colorRange.selector", () => ({
+	colorRangeSelector: () => ({ from: 21, to: 42, max: 9001 })
+}))
 
 const mockedIsDeltaStateSelector = isDeltaStateSelector as jest.Mock
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
@@ -20,10 +24,6 @@ jest.mock("../../state/selectors/isDeltaState.selector", () => ({
 }))
 
 describe("LegendPanelController", () => {
-	// toggle
-	// delta
-	// edgeMetric
-
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [LegendPanelModule]
@@ -42,6 +42,32 @@ describe("LegendPanelController", () => {
 		const closeLegendButton = screen.getByTitle("Hide panel")
 		fireEvent.click(closeLegendButton)
 		expect(isLegendPanelOpen(container)).toBe(false)
+	})
+
+	it("should display legend for single mode", async () => {
+		mockedIsDeltaStateSelector.mockImplementation(() => false)
+		const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+		fireEvent.click(screen.getByTitle("Show panel"))
+
+		const areDeltaEntriesShown = screen.queryAllByText("delta", { exact: false }).length > 0
+		expect(areDeltaEntriesShown).toBe(false)
+
+		const metricDescriptions = container.querySelectorAll("cc-legend-block")
+		expect(metricDescriptions[0].textContent).toMatch("Size metric (loc: lines of code)")
+		expect(metricDescriptions[1].textContent).toMatch("Size metric (mcc: cyclomatic complexity)")
+		expect(metricDescriptions[2].textContent).toMatch("Size metric (rloc: real lines of code)")
+	})
+
+	it("should display legend for delta mode", async () => {
+		mockedIsDeltaStateSelector.mockImplementation(() => true)
+		const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+		fireEvent.click(screen.getByTitle("Show panel"))
+
+		const areDeltaEntriesShown = screen.queryAllByText("delta", { exact: false }).length > 0
+		expect(areDeltaEntriesShown).toBe(true)
+
+		const metricDescriptions = container.querySelectorAll("cc-legend-block")
+		expect(metricDescriptions.length).toBe(0)
 	})
 })
 
