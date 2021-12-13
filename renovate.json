@@ -4,6 +4,7 @@
 		{
 			"matchPaths": ["build.gradle"],
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"excludePackageNames": ["org.sonarsource.java:sonar-java-plugin"],
 			"groupName": "gradle dependencies not Major update",
 			"enabled": true
 		},
@@ -29,6 +30,11 @@
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"groupName": "other updates",
 			"enabled": true
+		},
+		{
+			"matchPackageNames": ["@types/three", "org.sonarsource.java:sonar-java-plugin", "three"],
+			"groupName": "Almost always breaking changes",
+			"enabled": false
 		}
 	],
 	"timezone": "Europe/Berlin",
