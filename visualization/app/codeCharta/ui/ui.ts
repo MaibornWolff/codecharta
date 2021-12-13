@@ -2,7 +2,6 @@ import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
 import "./artificialIntelligence/artificialIntelligence.module"
-import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
@@ -50,7 +49,6 @@ import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
-		"app.codeCharta.ui.customColorPicker",
 		"app.codeCharta.ui.customConfigs",
 		"app.codeCharta.ui.unfocusButton",
 		"app.codeCharta.ui.metricValueHovered",

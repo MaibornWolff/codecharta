@@ -1,6 +1,5 @@
 import { Pipe } from "@angular/core"
-
-import { getReadableColorForBackground } from "../customColorPicker/colorHelper"
+import { getReadableColorForBackground } from "../../util/color/getReadableColorForBackground"
 
 @Pipe({ name: "readableColorForBackground" })
 export class ReadableColorForBackgroundPipe {

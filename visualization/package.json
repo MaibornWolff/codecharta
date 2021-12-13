@@ -158,7 +158,6 @@
 		"@types/three": "^0.126.0",
 		"@typescript-eslint/eslint-plugin": "^4.22.0",
 		"@typescript-eslint/parser": "^4.22.0",
-		"angularjs-color-picker": "^3.4.8",
 		"babel-loader": "^8.2.2",
 		"babel-plugin-angularjs-annotate": "^0.10.0",
 		"bestzip": "^2.2.0",
