@@ -46,7 +46,7 @@ import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
-import { Export3DMapButtonComponent } from "./stlExportButton/export3DMapButton.component"
+import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
 
 angular
 	.module("app.codeCharta.ui", [

@@ -1,0 +1,20 @@
+cc-export-threed-map-button {
+	margin-left: 8px;
+	.mat-mini-fab {
+		height: 28px;
+		width: 28px;
+	}
+	.button-icon {
+		transform: scale(0.75);
+	}
+	span {
+		padding: 0;
+		margin: 0;
+	}
+	&.mat-button-wrapper {
+		height: 28px;
+		width: 28px;
+		display: block;
+		padding: 0;
+	}
+}

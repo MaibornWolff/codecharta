@@ -11,8 +11,8 @@ import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCoun
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
-import { Export3DMapButtonComponent } from "./codeCharta/ui/stlExportButton/export3DMapButton.component"
-import { Export3DMapButtonModule } from "./codeCharta/ui/stlExportButton/export3DMapButton.module"
+import { Export3DMapButtonComponent } from "./codeCharta/ui/export3DMapButton/export3DMapButton.component"
+import { Export3DMapButtonModule } from "./codeCharta/ui/export3DMapButton/export3DMapButton.module"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule, Export3DMapButtonModule],
