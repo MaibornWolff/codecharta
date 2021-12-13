@@ -14,16 +14,27 @@ import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attr
 import { LabelledColorPickerComponent } from "./codeCharta/ui/labelledColorPicker/labelledColorPicker.component"
 import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.component"
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
+import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
+import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule, LegendPanelModule],
+	imports: [
+		BrowserModule,
+		UpgradeModule,
+		MapTreeViewModule,
+		MatchingFilesCounterModule,
+		AttributeSideBarModule,
+		LegendPanelModule,
+		ColorPickerForMapColorModule
+	],
 	declarations: [],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
 		AttributeSideBarComponent,
 		LegendPanelComponent,
-		LabelledColorPickerComponent
+		LabelledColorPickerComponent,
+		ColorPickerForMapColorComponent
 	]
 })
 export class AppModule {
