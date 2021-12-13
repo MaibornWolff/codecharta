@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Fixed 🐞
+
+-   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557)
+
 ## [1.85.0] - 2021-12-13
 
 ### Fixed 🐞
