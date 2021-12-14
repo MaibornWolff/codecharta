@@ -5,6 +5,7 @@ import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
+import { SuspiciousMetricConfig } from "./ui/artificialIntelligence/suspiciousMetricConfig.api.model"
 
 export interface NameDataPair {
 	fileName: string
@@ -257,6 +258,10 @@ export interface MetricData {
 export interface LocalStorageCustomConfigs {
 	version: string
 	customConfigs: [string, CustomConfig][]
+}
+
+export interface LocalStorageSuspiciousMetricConfigs {
+	suspiciousMetricConfigs: [string, SuspiciousMetricConfig][]
 }
 
 export interface LocalStorageScenarios {

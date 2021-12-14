@@ -24,24 +24,14 @@ import {
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { metricDescriptions } from "../../util/metric/metricDescriptions"
 import percentRound from "percent-round"
-
-interface MetricValues {
-	[metric: string]: number[]
-}
-
-interface MetricAssessmentResults {
-	suspiciousMetrics: Map<string, ColorRange>
-	unsuspiciousMetrics: string[]
-	outliersThresholds: Map<string, number>
-}
-
-interface MetricSuggestionParameters {
-	metric: string
-	from: number
-	to: number
-	generalCustomConfigId: string
-	outlierCustomConfigId?: string
-}
+import { SuspiciousMetricConfigHelper } from "./suspiciousMetricConfigHelper"
+import {
+	MetricAssessmentResults,
+	MetricSuggestionParameters,
+	MetricValues,
+	SuspiciousMetricConfig
+} from "./suspiciousMetricConfig.api.model"
+import { SuspiciousMetricConfigFileStateConnector } from "./suspiciousMetricConfigFileStateConnector"
 
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
@@ -195,6 +185,76 @@ export class ArtificialIntelligenceController
 			moderateRisk,
 			highRisk,
 			veryHighRisk
+		}
+	}
+
+	// @ts-ignore
+	private createSuspiciousMetricConfigSuggestions(fileState: FileState, programmingLanguage) {
+		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
+		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
+
+		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
+		const newSuspiciousMetricConfigs: SuspiciousMetricConfig[] = []
+		const state = this.storeService.getState()
+		const suspiciousMetricConfigFileStateConnector = new SuspiciousMetricConfigFileStateConnector(state.files)
+		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
+			const suspiciousMetricConfig = this.prepareSusbiciosMetricConfig(
+				suspiciousMetricConfigFileStateConnector,
+				metricName,
+				colorRange
+			)
+
+			newSuspiciousMetricConfigs.push(suspiciousMetricConfig)
+
+			noticeableMetricSuggestionLinks.set(metricName, {
+				metric: metricName,
+				...colorRange,
+				generalCustomConfigId: suspiciousMetricConfig.id
+			})
+
+			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
+			if (outlierThreshold > 0) {
+				const highRiskMetricConfig = this.prepareSusbiciosMetricConfig(
+					suspiciousMetricConfigFileStateConnector,
+					metricName,
+					colorRange
+				)
+
+				newSuspiciousMetricConfigs.push(highRiskMetricConfig)
+
+				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = highRiskMetricConfig.id
+			}
+		}
+		SuspiciousMetricConfigHelper.addSuspiciousMetricConfigs(newSuspiciousMetricConfigs)
+		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()].sort(
+			this.compareSuspiciousMetricSuggestionLinks
+		)
+		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+	}
+
+	private prepareSusbiciosMetricConfig(
+		suspiciousMetricConfigFileStateConnector: SuspiciousMetricConfigFileStateConnector,
+		metricName: string,
+		colorRange: ColorRange
+	) {
+		return {
+			id: "",
+			fileChecksum: suspiciousMetricConfigFileStateConnector.getChecksumOfAssignedMaps(),
+			mapSelectionMode: suspiciousMetricConfigFileStateConnector.getMapSelectionMode(),
+			date: Date.now(),
+			metricName,
+			colorRange,
+			analyzedProgrammingLanguage: this._viewModel.analyzedProgrammingLanguage,
+			suspiciousMetricSuggestionLinks: this._viewModel.suspiciousMetricSuggestionLinks,
+			unsuspiciousMetrics: this._viewModel.unsuspiciousMetrics,
+			riskProfile: {
+				lowRisk: this._viewModel.riskProfile.lowRisk,
+				moderateRisk: this._viewModel.riskProfile.moderateRisk,
+				highRisk: this._viewModel.riskProfile.highRisk,
+				veryHighRisk: this._viewModel.riskProfile.veryHighRisk
+			},
+			stateSettings: suspiciousMetricConfigFileStateConnector.getStateSetting(),
+			isHighRiskFilesModeEnabled: this._viewModel.isHighRiskFilesModeEnabled
 		}
 	}
 
