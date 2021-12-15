@@ -9,6 +9,7 @@ import { Store } from "../../state/angular-redux/store"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { filesSelector } from "../../state/store/files/files.selector"
 import { FileState } from "../../model/files/files"
+import { Mesh } from "three"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -29,12 +30,9 @@ export class Export3DMapButtonComponent {
 	}
 
 	downloadStlFile() {
-		this.exportBinary(ThreeSceneService.mapMeshInstance.getThreeMesh())
-	}
-
-	private exportBinary(mesh) {
-		const result = this.exporter.parse(mesh, { binary: true })
+		const threeMesh: Mesh = ThreeSceneService.mapMeshInstance.getThreeMesh()
+		const exportedBinaryFile = this.exporter.parse(threeMesh, { binary: true })
 		const fileName = `${FileNameHelper.getNewFileName(this.fileName, isDeltaState(this.files))}.stl`
-		FileDownloader.downloadData(result, fileName)
+		FileDownloader.downloadData(exportedBinaryFile, fileName)
 	}
 }
