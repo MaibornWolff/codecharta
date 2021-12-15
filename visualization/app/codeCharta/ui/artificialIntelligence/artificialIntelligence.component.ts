@@ -25,7 +25,10 @@ import {
 	SuspiciousMetricConfig
 } from "./suspiciousMetricConfig.api.model"
 import md5 from "md5"
-import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { klona } from "klona"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { defaultAppSettings } from "../../state/store/appSettings/appSettings.actions"
 
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
@@ -58,7 +61,12 @@ export class ArtificialIntelligenceController
 	private fileState: FileState
 	private blacklist: BlacklistItem[] = []
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private threeCameraService: ThreeCameraService
+	) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
@@ -76,7 +84,12 @@ export class ArtificialIntelligenceController
 	}
 
 	applySuspiciousMetricConfig(configId: string) {
-		SuspiciousMetricConfigHelper.applySuspiciousMetricConfig(configId, this.storeService)
+		SuspiciousMetricConfigHelper.applySuspiciousMetricConfig(
+			configId,
+			this.storeService,
+			this.threeCameraService,
+			this.threeOrbitControlsService
+		)
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
@@ -187,13 +200,10 @@ export class ArtificialIntelligenceController
 			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
 
 			const suspiciousMetricConfig = this.prepareSusbiciosMetricConfig(
-				fileState,
 				metricName,
-				colorRange,
-				programmingLanguage,
-				outlierThreshold
+				fileState,
+				this.suspiciousMetricConfigMapColor(metricName, colorRange)
 			)
-			suspiciousMetricConfig.id = md5(JSON.stringify(suspiciousMetricConfig, stateObjectReplacer))
 
 			newSuspiciousMetricConfigs.push(suspiciousMetricConfig)
 			noticeableMetricSuggestionLinks.set(metricName, {
@@ -203,13 +213,10 @@ export class ArtificialIntelligenceController
 			})
 			if (outlierThreshold > 0) {
 				const highRiskMetricConfig = this.prepareSusbiciosMetricConfig(
-					fileState,
 					metricName,
-					colorRange,
-					programmingLanguage,
-					outlierThreshold
+					fileState,
+					this.highRiskSuspiciousMetricConfigMapColor(metricName, outlierThreshold)
 				)
-				highRiskMetricConfig.id = md5(JSON.stringify(highRiskMetricConfig, stateObjectReplacer))
 
 				newSuspiciousMetricConfigs.push(highRiskMetricConfig)
 
@@ -223,31 +230,24 @@ export class ArtificialIntelligenceController
 		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
 	}
 
-	private prepareSusbiciosMetricConfig(
-		fileState: FileState,
-		metricName: string,
-		colorRange: ColorRange,
-		programmingLanguage,
-		outlierThreshold
-	) {
-		const stateSettings = this.storeService.getState()
-		stateSettings.dynamicSettings.heightMetric = metricName
-		stateSettings.dynamicSettings.colorMetric = metricName
-		stateSettings.dynamicSettings.colorRange.from = colorRange.from
-		stateSettings.dynamicSettings.colorRange.to = colorRange.to
-		this.suspiciousMetricConfigMapColor(stateSettings)
-		if (outlierThreshold > 0) {
-			this.highRiskSuspiciousMetricConfigMapColor(stateSettings)
+	// @ts-ignore
+	private prepareSusbiciosMetricConfig(metricName, fileState: FileState, stateSetting) {
+		const suspiciousMetricConfig = SuspiciousMetricConfigHelper.getSuspiciousMetricConfigByName(
+			fileState.selectedAs,
+			fileState.file.fileMeta.fileChecksum,
+			metricName
+		)
+
+		// If it exists, create a fresh one with current thresholds
+		if (suspiciousMetricConfig !== null) {
+			SuspiciousMetricConfigHelper.deleteSuspiciousMetricConfig(suspiciousMetricConfig.id)
 		}
-		return {
+		const suspicoiusMetricConfig = {
 			id: "",
 			fileChecksum: fileState.file.fileMeta.fileChecksum,
 			mapSelectionMode: fileState.selectedAs,
-			outlierThreshold,
 			date: Date.now(),
-			metricName,
-			colorRange,
-			analyzedProgrammingLanguage: programmingLanguage,
+			analyzedProgrammingLanguage: undefined,
 			suspiciousMetricSuggestionLinks: [],
 			unsuspiciousMetrics: [],
 			riskProfile: {
@@ -256,21 +256,49 @@ export class ArtificialIntelligenceController
 				highRisk: 0,
 				veryHighRisk: 0
 			},
-			stateSettings,
+			stateSettings: stateSetting,
 			isHighRiskFilesModeEnabled: false
 		}
+		suspicoiusMetricConfig.id = md5(JSON.stringify(suspicoiusMetricConfig, stateObjectReplacer))
+		return suspicoiusMetricConfig
 	}
 
-	private highRiskSuspiciousMetricConfigMapColor(state) {
+	private highRiskSuspiciousMetricConfigMapColor(metricName, outlierThreshold) {
+		const state = klona(this.storeService.getState())
+
+		// just use rloc as area metric
+		state.dynamicSettings.areaMetric = "rloc"
+
+		// use bad metric as height and color metric
+		state.dynamicSettings.heightMetric = metricName
+		state.dynamicSettings.colorMetric = metricName
+
+		state.dynamicSettings.colorRange.to = outlierThreshold - 1
+		state.dynamicSettings.colorRange.from = outlierThreshold
+
 		state.appSettings.mapColors.positive = "#ffffff"
 		state.appSettings.mapColors.neutral = "#ffffff"
 		state.appSettings.mapColors.negative = "#A900C0"
+
+		return state
 	}
 
-	private suspiciousMetricConfigMapColor(state) {
-		state.appSettings.mapColors.positive = defaultMapColors.positive
-		state.appSettings.mapColors.neutral = defaultMapColors.neutral
-		state.appSettings.mapColors.negative = defaultMapColors.negative
+	private suspiciousMetricConfigMapColor(metricName, colorRange) {
+		const state = klona(this.storeService.getState())
+
+		// just use rloc as area metric
+		state.dynamicSettings.areaMetric = "rloc"
+
+		// use bad metric as height and color metric
+		state.dynamicSettings.heightMetric = metricName
+		state.dynamicSettings.colorMetric = metricName
+
+		state.dynamicSettings.colorRange.to = colorRange.to
+		state.dynamicSettings.colorRange.from = colorRange.from
+
+		state.appSettings.mapColors.positive = defaultAppSettings.mapColors.positive
+		state.appSettings.mapColors.neutral = defaultAppSettings.mapColors.neutral
+		state.appSettings.mapColors.negative = defaultAppSettings.mapColors.negative
 
 		return state
 	}

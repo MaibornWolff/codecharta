@@ -261,6 +261,7 @@ export interface LocalStorageCustomConfigs {
 }
 
 export interface LocalStorageSuspiciousMetricConfigs {
+	version: string
 	suspiciousMetricConfigs: [string, SuspiciousMetricConfig][]
 }
 

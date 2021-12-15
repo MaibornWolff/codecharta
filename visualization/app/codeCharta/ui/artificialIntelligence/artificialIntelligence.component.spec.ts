@@ -11,12 +11,18 @@ import { BlacklistType } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { SuspiciousMetricConfig } from "./suspiciousMetricConfig.api.model"
+import { SuspiciousMetricConfigHelper } from "./suspiciousMetricConfigHelper"
+import { setState } from "../../state/store/state.actions"
 
 describe("ArtificialIntelligenceController", () => {
 	let artificialIntelligenceController: ArtificialIntelligenceController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	//let threeOrbitControlsService: ThreeOrbitControlsService
+	let threeOrbitControlsService: ThreeOrbitControlsService
+	let threeCameraService: ThreeCameraService
 
 	beforeEach(() => {
 		restartSystem()
@@ -28,13 +34,19 @@ describe("ArtificialIntelligenceController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		//threeOrbitControlsService = getService<ThreeOrbitControlsService>("storeService")
+		threeOrbitControlsService = getService<ThreeOrbitControlsService>("storeService")
+		threeCameraService = getService<ThreeCameraService>("storeService")
 
 		storeService.dispatch(setFiles(FILE_STATES))
 	}
 
 	function rebuildController() {
-		artificialIntelligenceController = new ArtificialIntelligenceController($rootScope, storeService)
+		artificialIntelligenceController = new ArtificialIntelligenceController(
+			$rootScope,
+			storeService,
+			threeOrbitControlsService,
+			threeCameraService
+		)
 
 		// Overwrite debounce with original function, otherwise calculate() will not be called
 		artificialIntelligenceController["debounceCalculation"] = artificialIntelligenceController["calculate"]
@@ -102,15 +114,12 @@ describe("ArtificialIntelligenceController", () => {
 	})
 
 	describe("apply custom Config", () => {
-		/*
 		it("should call store.dispatch", () => {
 			const suspiciousMetricConfigStub = {
-				id: "CustomConfig1",
-				metricName: "mcc",
-				colorRange: { from: 1, to: 2 },
 				stateSettings: {
 					dynamicSettings: {
-						margin: 1
+						margin: 1,
+						colorRange: { from: 1, to: 2 }
 					}
 				}
 			} as SuspiciousMetricConfig
@@ -123,7 +132,6 @@ describe("ArtificialIntelligenceController", () => {
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setState(suspiciousMetricConfigStub.stateSettings))
 		})
-		*/
 	})
 
 	describe("on files selection changed", () => {

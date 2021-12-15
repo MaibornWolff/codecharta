@@ -5,10 +5,7 @@ export interface SuspiciousMetricConfig {
 	id: string
 	fileChecksum: string
 	mapSelectionMode: FileSelectionState
-	outlierThreshold: number
 	date: number
-	metricName: string
-	colorRange: ColorRange
 	analyzedProgrammingLanguage: string
 	suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
 	unsuspiciousMetrics: string[]
