@@ -132,16 +132,13 @@ describe("CustomConfigsController", () => {
 	})
 
 	describe("removeCustomConfig", () => {
-		it("should call deleteCustomConfig and show InfoDialog afterwards", () => {
+		it("should call deleteCustomConfig", () => {
 			CustomConfigHelper.deleteCustomConfig = jest.fn()
-			dialogService.showInfoDialog = jest.fn()
 
-			const configNameToRemove = "CustomConfigName1"
 			const configIdToRemove = 1
-			customConfigsController.removeCustomConfig(configIdToRemove, configNameToRemove)
+			customConfigsController.removeCustomConfig(configIdToRemove)
 
 			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(configIdToRemove)
-			expect(dialogService.showInfoDialog).toHaveBeenCalledWith(expect.stringContaining(`${configNameToRemove} deleted`))
 		})
 	})
 
