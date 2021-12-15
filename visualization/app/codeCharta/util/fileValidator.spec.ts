@@ -12,28 +12,13 @@ import assert from "assert"
 import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../resources/fixed-folders/fixed-folders-example"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { clone } from "./clone"
-import { getService } from "../../../mocks/ng.mockhelper"
-import { StoreService } from "../state/store.service"
-import { IRootScopeService } from "angular"
 
 describe("FileValidator", () => {
 	let file: ExportCCFile
-	let storeService: StoreService
-	let $rootScope: IRootScopeService
 
 	beforeEach(() => {
-		restartSystem()
-		rebuildService()
 		file = clone(TEST_FILE_CONTENT)
 	})
-
-	function restartSystem() {
-		$rootScope = getService<IRootScopeService>("$rootScope")
-	}
-
-	function rebuildService() {
-		storeService = new StoreService($rootScope)
-	}
 
 	it("API version exists in package.json", () => {
 		expect(packageJson.codecharta.apiVersion).toEqual("1.3")
@@ -46,7 +31,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(null, storeService)
+			validate(null)
 		}, expectedError)
 	})
 
@@ -63,7 +48,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(nameDataPair, storeService)
+			validate(nameDataPair)
 		}, expectedError)
 	})
 
@@ -80,7 +65,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(nameDataPair, storeService)
+			validate(nameDataPair)
 		}, expectedError)
 	})
 
@@ -97,7 +82,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(nameDataPair, storeService)
+			validate(nameDataPair)
 		}, expectedError)
 	})
 
@@ -114,7 +99,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(nameDataPair, storeService)
+			validate(nameDataPair)
 		}, expectedError)
 	})
 
@@ -132,7 +117,7 @@ describe("FileValidator", () => {
 
 		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
-		validate(nameDataPair, storeService)
+		validate(nameDataPair)
 	})
 
 	it("should not throw on a file without edges", () => {
@@ -140,7 +125,7 @@ describe("FileValidator", () => {
 
 		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
-		validate(nameDataPair, storeService)
+		validate(nameDataPair)
 	})
 
 	it("should not throw on a file when numbers are floating point values", () => {
@@ -148,7 +133,7 @@ describe("FileValidator", () => {
 
 		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
-		validate(nameDataPair, storeService)
+		validate(nameDataPair)
 	})
 
 	it("should throw when children are not unique in name+type", () => {
@@ -164,7 +149,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(nameDataPair, storeService)
+			validate(nameDataPair)
 		}, expectedError)
 	})
 
@@ -179,7 +164,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(nameDataPair, storeService)
+			validate(nameDataPair)
 		}, expectedError)
 	})
 
@@ -200,7 +185,7 @@ describe("FileValidator", () => {
 		}
 
 		assert.throws(() => {
-			validate(nameDataPair, storeService)
+			validate(nameDataPair)
 		}, expectedError)
 	})
 
@@ -221,7 +206,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 	})
@@ -244,7 +229,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -259,7 +244,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -274,7 +259,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -289,7 +274,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -318,7 +303,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -347,7 +332,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -376,7 +361,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -400,7 +385,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -414,7 +399,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 
@@ -428,7 +413,7 @@ describe("FileValidator", () => {
 			}
 
 			assert.throws(() => {
-				validate(nameDataPair, storeService)
+				validate(nameDataPair)
 			}, expectedError)
 		})
 	})
