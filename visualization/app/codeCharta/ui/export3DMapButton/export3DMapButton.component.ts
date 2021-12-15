@@ -19,7 +19,7 @@ export class Export3DMapButtonComponent {
 	private files: FileState[]
 	exporter = new STLExporter()
 
-	constructor(@Inject(Store) private store: Store) {
+	constructor(@Inject(Store) store: Store) {
 		store.select(accumulatedDataSelector).subscribe(accumulatedData => {
 			this.fileName = accumulatedData.unifiedFileMeta?.fileName
 		})
