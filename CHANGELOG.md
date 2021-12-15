@@ -7,15 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Fixed 🐞
+
+-   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557)
+
+## [1.85.0] - 2021-12-13
+
 ### Fixed 🐞
 
 -   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
+-   Use icon tag instead of font awesome icon [#2537](https://github.com/MaibornWolff/codecharta/pull/2537).
+-   Rename text for placeholder of metric chooser [#2547](https://github.com/MaibornWolff/codecharta/pull/2547)
+-   Fix attribute type selector of primary edge metric not shown [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
+-   Identical files and files with identical file names but different hashes can be loaded [#2548](https://github.com/MaibornWolff/codecharta/pull/2548)
 
 ### Chore 👨‍💻 👩‍💻
 
 -   Remove `secondaryMetrics` from store and remove `secondaryMetrics.service` as the data can be derived from selected node [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
 -   Migrate `attribute-side-bar-component` to Angular [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
 -   Switch from Webpack 4 Loaders to Asset Module to load icons properly with css-loader 6.x [#2542](https://github.com/MaibornWolff/codecharta/pull/2542).
+
+### Removed 🗑
+
+-   Remove notification dialog when deleting a custom config [#2553](https://github.com/MaibornWolff/codecharta/pull/2553)
 
 ## [1.84.1] - 2021-11-29
 

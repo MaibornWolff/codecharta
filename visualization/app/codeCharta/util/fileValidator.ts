@@ -4,7 +4,6 @@ import packageJson from "../../../package.json"
 import { ExportCCFile } from "../codeCharta.api.model"
 import jsonSchema from "./generatedSchema.json"
 import { isLeaf } from "./codeMapHelper"
-import { StoreService } from "../state/store.service"
 
 const latestApiVersion = packageJson.codecharta.apiVersion
 
@@ -33,9 +32,8 @@ export const ERROR_MESSAGES = {
 	blacklistError: "Excluding all buildings is not possible."
 }
 
-export function validate(nameDataPair: NameDataPair, storeService: StoreService) {
+export function validate(nameDataPair: NameDataPair) {
 	const file = nameDataPair?.content
-	const fileName = nameDataPair?.fileName
 	const result: CCValidationResult = { error: [], warning: [] }
 	switch (true) {
 		case !file:
@@ -49,9 +47,6 @@ export function validate(nameDataPair: NameDataPair, storeService: StoreService)
 			break
 		case fileHasHigherMinorVersion(file):
 			result.warning.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
-			break
-		case fileAlreadyExists(fileName, storeService):
-			result.error.push(ERROR_MESSAGES.fileAlreadyExists)
 			break
 	}
 
@@ -91,11 +86,6 @@ function fileHasHigherMajorVersion(file: ExportCCFile) {
 function fileHasHigherMinorVersion(file: ExportCCFile) {
 	const apiVersion = getAsApiVersion(file.apiVersion)
 	return apiVersion.minor > getAsApiVersion(latestApiVersion).minor
-}
-
-function fileAlreadyExists(fileName: string, storeService: StoreService) {
-	const recentFiles = storeService.getState().dynamicSettings.recentFiles
-	return recentFiles.includes(fileName)
 }
 
 export function getAsApiVersion(version: string): ApiVersion {
