@@ -1,17 +1,11 @@
 "use strict"
 
-import { ColorRange, LocalStorageSuspiciousMetricConfigs, stateObjectReplacer, stateObjectReviver } from "../../codeCharta.model"
+import { LocalStorageSuspiciousMetricConfigs, stateObjectReplacer, stateObjectReviver } from "../../codeCharta.model"
 import { CodeChartaStorage } from "../../util/codeChartaStorage"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { StoreService } from "../../state/store.service"
-import { setState } from "../../state/store/state.actions"
-import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
-import { setCamera } from "../../state/store/appSettings/camera/camera.actions"
-import { setCameraTarget } from "../../state/store/appSettings/cameraTarget/cameraTarget.actions"
-import { Vector3 } from "three"
 import { SuspiciousMetricConfig } from "./suspiciousMetricConfig.api.model"
+import { FileSelectionState } from "../../model/files/files"
+import { setState } from "../../state/store/state.actions"
 
 export const SUSPICIOUS_METRIC_CONFIGS_LOCAL_STORAGE_VERSION = "CodeCharta::suspiciousMetricConfigs"
 
@@ -47,6 +41,16 @@ export class SuspiciousMetricConfigHelper {
 
 	static addSuspiciousMetricConfigs(newSuspiciousMetricConfigs: SuspiciousMetricConfig[]) {
 		for (const newSuspiciousMetricConfig of newSuspiciousMetricConfigs) {
+			const suspiciousMetricConfig = SuspiciousMetricConfigHelper.getSuspiciousMetricConfigByName(
+				newSuspiciousMetricConfig.mapSelectionMode,
+				newSuspiciousMetricConfig.fileChecksum,
+				newSuspiciousMetricConfig.metricName
+			)
+
+			// If it exists, create a fresh one with current thresholds
+			if (suspiciousMetricConfig !== null) {
+				SuspiciousMetricConfigHelper.deleteSuspiciousMetricConfig(suspiciousMetricConfig.id)
+			}
 			SuspiciousMetricConfigHelper.suspiciousMetricConfigs.set(newSuspiciousMetricConfig.id, newSuspiciousMetricConfig)
 		}
 		SuspiciousMetricConfigHelper.setSuspiciousMetricConfigsToLocalStorage()
@@ -61,39 +65,37 @@ export class SuspiciousMetricConfigHelper {
 		return SuspiciousMetricConfigHelper.suspiciousMetricConfigs.get(configId)
 	}
 
-	static getSuspiciousMetricConfigs(): Map<string, SuspiciousMetricConfig> {
-		return SuspiciousMetricConfigHelper.suspiciousMetricConfigs
+	static getSuspiciousMetricConfigByName(
+		mapSelectionMode: FileSelectionState,
+		fileChecksum: string,
+		metricName: string
+	): SuspiciousMetricConfig | null {
+		for (const suspiciousMetricConfig of SuspiciousMetricConfigHelper.suspiciousMetricConfigs.values()) {
+			if (
+				suspiciousMetricConfig.metricName === metricName &&
+				suspiciousMetricConfig.mapSelectionMode === mapSelectionMode &&
+				suspiciousMetricConfig.fileChecksum === fileChecksum
+			) {
+				return suspiciousMetricConfig
+			}
+		}
+
+		return null
 	}
 
-	static applySuspiciousMetricConfig(
-		configId: string,
-		storeService: StoreService,
-		threeCameraService: ThreeCameraService,
-		threeOrbitControlsService: ThreeOrbitControlsService
-	) {
-		const suspiciousMetricConfig = this.getSuspiciousMetricConfigSettings(configId)
+	static deleteSuspiciousMetricConfig(configId: string) {
+		SuspiciousMetricConfigHelper.suspiciousMetricConfigs.delete(configId)
+		SuspiciousMetricConfigHelper.setSuspiciousMetricConfigsToLocalStorage()
+	}
 
+	static applySuspiciousMetricConfig(configId: string, storeService: StoreService) {
+		const suspiciousMetricConfig = this.getSuspiciousMetricConfigSettings(configId)
 		// TODO: Setting state from loaded SuspiciousMetricConfig not working at the moment
 		//  due to issues of the event architecture.
 
 		// TODO: Check if state properties differ
 		// Create new partial State (updates) for changed values only
+
 		storeService.dispatch(setState(suspiciousMetricConfig.stateSettings))
-
-		// Should we fire another event "ResettingStateFinishedEvent"
-		// We could add a listener then to reset the camera
-
-		storeService.dispatch(setColorRange(suspiciousMetricConfig.stateSettings.dynamicSettings.colorRange as ColorRange))
-		storeService.dispatch(setMargin(suspiciousMetricConfig.stateSettings.dynamicSettings.margin))
-
-		// TODO: remove this dirty timeout and set camera settings properly
-		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
-		setTimeout(() => {
-			threeCameraService.setPosition()
-			threeOrbitControlsService.setControlTarget()
-
-			storeService.dispatch(setCamera(suspiciousMetricConfig.stateSettings.appSettings.camera as Vector3))
-			storeService.dispatch(setCameraTarget(suspiciousMetricConfig.stateSettings.appSettings.cameraTarget as Vector3))
-		}, 100)
 	}
 }

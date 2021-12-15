@@ -1,15 +1,11 @@
+import { FileSelectionState } from "../../model/files/files"
 import { AppSettings, ColorRange, DynamicSettings, FileSettings, TreeMapSettings } from "../../codeCharta.model"
-
-export enum SuspiciousMetricConfigMapSelectionMode {
-	SINGLE = "SINGLE",
-	MULTIPLE = "MULTIPLE",
-	DELTA = "DELTA"
-}
 
 export interface SuspiciousMetricConfig {
 	id: string
 	fileChecksum: string
-	mapSelectionMode: SuspiciousMetricConfigMapSelectionMode
+	mapSelectionMode: FileSelectionState
+	outlierThreshold: number
 	date: number
 	metricName: string
 	colorRange: ColorRange
@@ -35,8 +31,8 @@ export interface MetricSuggestionParameters {
 	metric: string
 	from: number
 	to: number
-	generalCustomConfigId: string
-	outlierCustomConfigId?: string
+	generalSuspiciousMetricConfigId: string
+	outlierSuspiciousMetricConfigId?: string
 }
 
 export interface MetricValues {

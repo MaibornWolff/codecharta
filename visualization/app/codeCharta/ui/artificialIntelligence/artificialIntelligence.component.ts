@@ -3,19 +3,12 @@ import debounce from "lodash.debounce"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
-import { buildCustomConfigFromState } from "../../util/customConfigBuilder"
-import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
-import { klona } from "klona"
-import { CustomConfig, CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { pushSorted } from "../../util/nodeDecorator"
-import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange, NodeType, State } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange, NodeType, stateObjectReplacer } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { getVisibleFileStates } from "../../model/files/files.helper"
 import { metricThresholds } from "./artificialIntelligence.metricThresholds"
-import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { isPathBlacklisted } from "../../util/codeMapHelper"
 import {
@@ -31,7 +24,8 @@ import {
 	MetricValues,
 	SuspiciousMetricConfig
 } from "./suspiciousMetricConfig.api.model"
-import { SuspiciousMetricConfigFileStateConnector } from "./suspiciousMetricConfigFileStateConnector"
+import md5 from "md5"
+import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
@@ -64,12 +58,7 @@ export class ArtificialIntelligenceController
 	private fileState: FileState
 	private blacklist: BlacklistItem[] = []
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
-		private threeCameraService: ThreeCameraService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
@@ -86,8 +75,8 @@ export class ArtificialIntelligenceController
 		}
 	}
 
-	applyCustomConfig(configId: string) {
-		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
+	applySuspiciousMetricConfig(configId: string) {
+		SuspiciousMetricConfigHelper.applySuspiciousMetricConfig(configId, this.storeService)
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
@@ -122,7 +111,7 @@ export class ArtificialIntelligenceController
 
 		if (mainProgrammingLanguage !== undefined) {
 			this.calculateRiskProfile(this.fileState, mainProgrammingLanguage, "mcc")
-			this.createCustomConfigSuggestions(this.fileState, mainProgrammingLanguage)
+			this.createSuspiciousMetricConfigSuggestions(this.fileState, mainProgrammingLanguage)
 		}
 	}
 
@@ -188,41 +177,43 @@ export class ArtificialIntelligenceController
 		}
 	}
 
-	// @ts-ignore
 	private createSuspiciousMetricConfigSuggestions(fileState: FileState, programmingLanguage) {
 		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
 		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
 
 		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
 		const newSuspiciousMetricConfigs: SuspiciousMetricConfig[] = []
-		const state = this.storeService.getState()
-		const suspiciousMetricConfigFileStateConnector = new SuspiciousMetricConfigFileStateConnector(state.files)
 		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
+			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
+
 			const suspiciousMetricConfig = this.prepareSusbiciosMetricConfig(
-				suspiciousMetricConfigFileStateConnector,
+				fileState,
 				metricName,
-				colorRange
+				colorRange,
+				programmingLanguage,
+				outlierThreshold
 			)
+			suspiciousMetricConfig.id = md5(JSON.stringify(suspiciousMetricConfig, stateObjectReplacer))
 
 			newSuspiciousMetricConfigs.push(suspiciousMetricConfig)
-
 			noticeableMetricSuggestionLinks.set(metricName, {
 				metric: metricName,
 				...colorRange,
-				generalCustomConfigId: suspiciousMetricConfig.id
+				generalSuspiciousMetricConfigId: suspiciousMetricConfig.id
 			})
-
-			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
 			if (outlierThreshold > 0) {
 				const highRiskMetricConfig = this.prepareSusbiciosMetricConfig(
-					suspiciousMetricConfigFileStateConnector,
+					fileState,
 					metricName,
-					colorRange
+					colorRange,
+					programmingLanguage,
+					outlierThreshold
 				)
+				highRiskMetricConfig.id = md5(JSON.stringify(highRiskMetricConfig, stateObjectReplacer))
 
 				newSuspiciousMetricConfigs.push(highRiskMetricConfig)
 
-				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = highRiskMetricConfig.id
+				noticeableMetricSuggestionLinks.get(metricName).outlierSuspiciousMetricConfigId = highRiskMetricConfig.id
 			}
 		}
 		SuspiciousMetricConfigHelper.addSuspiciousMetricConfigs(newSuspiciousMetricConfigs)
@@ -233,77 +224,60 @@ export class ArtificialIntelligenceController
 	}
 
 	private prepareSusbiciosMetricConfig(
-		suspiciousMetricConfigFileStateConnector: SuspiciousMetricConfigFileStateConnector,
+		fileState: FileState,
 		metricName: string,
-		colorRange: ColorRange
+		colorRange: ColorRange,
+		programmingLanguage,
+		outlierThreshold
 	) {
+		const stateSettings = this.storeService.getState()
+		stateSettings.dynamicSettings.heightMetric = metricName
+		stateSettings.dynamicSettings.colorMetric = metricName
+		stateSettings.dynamicSettings.colorRange.from = colorRange.from
+		stateSettings.dynamicSettings.colorRange.to = colorRange.to
+		this.suspiciousMetricConfigMapColor(stateSettings)
+		if (outlierThreshold > 0) {
+			this.highRiskSuspiciousMetricConfigMapColor(stateSettings)
+		}
 		return {
 			id: "",
-			fileChecksum: suspiciousMetricConfigFileStateConnector.getChecksumOfAssignedMaps(),
-			mapSelectionMode: suspiciousMetricConfigFileStateConnector.getMapSelectionMode(),
+			fileChecksum: fileState.file.fileMeta.fileChecksum,
+			mapSelectionMode: fileState.selectedAs,
+			outlierThreshold,
 			date: Date.now(),
 			metricName,
 			colorRange,
-			analyzedProgrammingLanguage: this._viewModel.analyzedProgrammingLanguage,
-			suspiciousMetricSuggestionLinks: this._viewModel.suspiciousMetricSuggestionLinks,
-			unsuspiciousMetrics: this._viewModel.unsuspiciousMetrics,
+			analyzedProgrammingLanguage: programmingLanguage,
+			suspiciousMetricSuggestionLinks: [],
+			unsuspiciousMetrics: [],
 			riskProfile: {
-				lowRisk: this._viewModel.riskProfile.lowRisk,
-				moderateRisk: this._viewModel.riskProfile.moderateRisk,
-				highRisk: this._viewModel.riskProfile.highRisk,
-				veryHighRisk: this._viewModel.riskProfile.veryHighRisk
+				lowRisk: 0,
+				moderateRisk: 0,
+				highRisk: 0,
+				veryHighRisk: 0
 			},
-			stateSettings: suspiciousMetricConfigFileStateConnector.getStateSetting(),
-			isHighRiskFilesModeEnabled: this._viewModel.isHighRiskFilesModeEnabled
+			stateSettings,
+			isHighRiskFilesModeEnabled: false
 		}
 	}
 
-	private createCustomConfigSuggestions(fileState: FileState, programmingLanguage) {
-		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
-		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
+	private highRiskSuspiciousMetricConfigMapColor(state) {
+		state.appSettings.mapColors.positive = "#ffffff"
+		state.appSettings.mapColors.neutral = "#ffffff"
+		state.appSettings.mapColors.negative = "#A900C0"
+	}
 
-		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
-		const newCustomConfigs: CustomConfig[] = []
+	private suspiciousMetricConfigMapColor(state) {
+		state.appSettings.mapColors.positive = defaultMapColors.positive
+		state.appSettings.mapColors.neutral = defaultMapColors.neutral
+		state.appSettings.mapColors.negative = defaultMapColors.negative
 
-		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
-			const suspiciousMetricConfig = this.createOrUpdateCustomConfig(
-				`Suspicious Files - Metric ${metricName.toUpperCase()} - (AI)`,
-				this.prepareOverviewConfigState(metricName, colorRange.from, colorRange.to),
-				fileState
-			)
-
-			newCustomConfigs.push(suspiciousMetricConfig)
-
-			noticeableMetricSuggestionLinks.set(metricName, {
-				metric: metricName,
-				...colorRange,
-				generalCustomConfigId: suspiciousMetricConfig.id
-			})
-
-			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
-			if (outlierThreshold > 0) {
-				const highRiskMetricConfig = this.createOrUpdateCustomConfig(
-					`Very High Risk Files - Metric ${metricName.toUpperCase()} - (AI)`,
-					this.prepareOutlierConfigState(metricName, outlierThreshold - 1, outlierThreshold),
-					fileState
-				)
-
-				newCustomConfigs.push(highRiskMetricConfig)
-
-				noticeableMetricSuggestionLinks.get(metricName).outlierCustomConfigId = highRiskMetricConfig.id
-			}
-		}
-
-		CustomConfigHelper.addCustomConfigs(newCustomConfigs)
-		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()].sort(
-			this.compareSuspiciousMetricSuggestionLinks
-		)
-		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+		return state
 	}
 
 	private compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b: MetricSuggestionParameters): number {
-		if (a.outlierCustomConfigId && !b.outlierCustomConfigId) return -1
-		if (!a.outlierCustomConfigId && b.outlierCustomConfigId) return 1
+		if (a.outlierSuspiciousMetricConfigId && !b.outlierSuspiciousMetricConfigId) return -1
+		if (!a.outlierSuspiciousMetricConfigId && b.outlierSuspiciousMetricConfigId) return 1
 		return 0
 	}
 
@@ -342,60 +316,6 @@ export class ArtificialIntelligenceController
 		}
 
 		return metricAssessmentResults
-	}
-
-	private createOrUpdateCustomConfig(configName: string, state: State, fileState: FileState) {
-		const customConfig = CustomConfigHelper.getCustomConfigByName(
-			CustomConfigMapSelectionMode.SINGLE,
-			[fileState.file.fileMeta.fileName],
-			configName
-		)
-
-		// If it exists, create a fresh one with current thresholds
-		if (customConfig !== null) {
-			CustomConfigHelper.deleteCustomConfig(customConfig.id)
-		}
-
-		return buildCustomConfigFromState(configName, state)
-	}
-
-	private prepareOverviewConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {
-		const state = klona(this.storeService.getState())
-
-		// Just use rloc as area metric
-		state.dynamicSettings.areaMetric = "rloc"
-
-		// Use bad metric as height and color metric
-		state.dynamicSettings.heightMetric = metricName
-		state.dynamicSettings.colorMetric = metricName
-		state.dynamicSettings.colorRange.from = colorRangeFrom
-		state.dynamicSettings.colorRange.to = colorRangeTo
-
-		state.appSettings.mapColors.positive = defaultMapColors.positive
-		state.appSettings.mapColors.neutral = defaultMapColors.neutral
-		state.appSettings.mapColors.negative = defaultMapColors.negative
-
-		return state
-	}
-
-	private prepareOutlierConfigState(metricName: string, colorRangeFrom: number, colorRangeTo: number) {
-		const state = klona(this.storeService.getState())
-
-		// just use rloc as area metric
-		state.dynamicSettings.areaMetric = "rloc"
-
-		// use bad metric as height and color metric
-		state.dynamicSettings.heightMetric = metricName
-		state.dynamicSettings.colorMetric = metricName
-
-		state.dynamicSettings.colorRange.to = colorRangeTo
-		state.dynamicSettings.colorRange.from = colorRangeFrom
-
-		state.appSettings.mapColors.positive = "#ffffff"
-		state.appSettings.mapColors.neutral = "#ffffff"
-		state.appSettings.mapColors.negative = "#A900C0"
-
-		return state
 	}
 
 	private getSortedMetricValues(fileState: FileState, programmingLanguage): MetricValues {

@@ -54,3 +54,40 @@ Array [
   "rloc (real lines of code)",
 ]
 `;
+
+exports[`ArtificialIntelligenceController on files selection changed should create custom config suggestions sorted by outlierSuspiciousMetricConfigId 1`] = `
+Array [
+  Object {
+    "from": 365,
+    "generalSuspiciousMetricConfigId": "mocked",
+    "max": 0,
+    "metric": "loc",
+    "min": 0,
+    "outlierSuspiciousMetricConfigId": "mocked",
+    "to": 554,
+  },
+  Object {
+    "from": 29,
+    "generalSuspiciousMetricConfigId": "mocked",
+    "max": 0,
+    "metric": "functions",
+    "min": 0,
+    "outlierSuspiciousMetricConfigId": "mocked",
+    "to": 44,
+  },
+  Object {
+    "from": 48,
+    "generalSuspiciousMetricConfigId": "mocked",
+    "max": 0,
+    "metric": "mcc",
+    "min": 0,
+    "to": 71,
+  },
+]
+`;
+
+exports[`ArtificialIntelligenceController on files selection changed should create custom config suggestions sorted by outlierSuspiciousMetricConfigId 2`] = `
+Array [
+  "rloc (real lines of code)",
+]
+`;
