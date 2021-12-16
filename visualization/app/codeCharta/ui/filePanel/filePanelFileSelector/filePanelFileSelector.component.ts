@@ -7,5 +7,6 @@ import { FileState } from "../../../model/files/files"
 })
 export class FilePanelFileSelectorComponent {
 	@Input() files: FileState[]
-	@Input() selectedFileNames: string
+	@Input() selectedFileNames: string[]
+	@Input() handleSelectedFilesChanged: (selectedFileNames: string[]) => void
 }

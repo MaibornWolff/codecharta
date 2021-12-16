@@ -7,7 +7,9 @@
 </div>
 
 <cc-file-panel-file-selector
+	style="display: inline-block; width: 200px"
 	[selected-file-names]="$ctrl._viewModel.selectedFileNames.partial"
+	[handle-selected-files-changed]="$ctrl.onPartialFilesChange"
 	[files]="$ctrl._viewModel.files"
 ></cc-file-panel-file-selector>
 

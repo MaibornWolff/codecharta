@@ -1,3 +1,16 @@
+<mat-select
+	[(ngModel)]="selectedFileNames"
+	(ngModelChange)="handleSelectedFilesChanged(selectedFileNames)"
+	name="recentFiles"
+	[placeholder]="selectedFileNames"
+	multiple
+>
+	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
+		{{ file.file.fileMeta.fileName }}
+	</mat-option>
+</mat-select>
+
+<!--
 <mat-form-field>
 	<mat-label>
 		{{ selectedFileNames }}
@@ -9,7 +22,7 @@
 		</mat-option>
 	</mat-select>
 </mat-form-field>
-<!--<md-input-container class="input-container" ng-show="$ctrl._viewModel.isPartialState" title="Select files">
+<md-input-container class="input-container" ng-show="$ctrl._viewModel.isPartialState" title="Select files">
 	<md-select
 		class="md-select-menu"
 		ng-model="$ctrl._viewModel.selectedFileNames.partial"

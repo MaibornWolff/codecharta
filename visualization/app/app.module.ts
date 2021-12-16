@@ -4,6 +4,7 @@ import { Inject, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
+import { FormsModule } from "@angular/forms"
 
 import { MetricDeltaSelectedComponent } from "./codeCharta/ui/metricDeltaSelected/metricDeltaSelected.component"
 import { MaterialModule } from "./material/material.module"
@@ -16,7 +17,7 @@ import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePa
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule],
+	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule, FormsModule],
 	declarations: [MetricDeltaSelectedComponent, NodePathComponent, FilePanelFileSelectorComponent, FilePanelStateButtonsComponent],
 	entryComponents: [
 		MapTreeViewComponent,

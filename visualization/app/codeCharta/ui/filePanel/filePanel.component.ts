@@ -126,7 +126,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		this.storeService.dispatch(setDeltaByNames(referenceFileName, comparisonFileName))
 	}
 
-	onPartialFilesChange(partialFileNames: string[]) {
+	onPartialFilesChange = (partialFileNames: string[]) => {
 		if (partialFileNames.length > 0) {
 			this.storeService.dispatch(setMultipleByNames(partialFileNames))
 		} else {
