@@ -48,8 +48,6 @@ import { MapTreeViewComponent } from "./mapTreeView/mapTreeView.component"
 import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
-import { FilePanelComponent } from "./filePanel/filePanel.component"
-import { FilePanelFileSelectorComponent } from "./filePanel/filePanelFileSelector/filePanelFileSelector.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -94,12 +92,11 @@ angular
 		"app.codeCharta.ui.viewCube",
 		"app.codeCharta.ui.layoutSelection",
 		"app.codeCharta.ui.sharpnessModeSelector",
-		"app.codeCharta.ui.maxTreeMapFiles"
+		"app.codeCharta.ui.maxTreeMapFiles",
+		"app.codeCharta.ui.filePanel"
 	])
 	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))
 	.directive("ccSortingOption", downgradeComponent({ component: SortingOptionComponent }))
 	.directive("ccMetricDeltaSelected", downgradeComponent({ component: MetricDeltaSelectedComponent }))
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
-	.directive("ccFilePanel", downgradeComponent({ component: FilePanelComponent }))
-	.directive("ccFilePanelFileSelector", downgradeComponent({ component: FilePanelFileSelectorComponent }))

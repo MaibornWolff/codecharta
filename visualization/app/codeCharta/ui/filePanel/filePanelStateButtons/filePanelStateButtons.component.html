@@ -2,7 +2,7 @@
 	mat-button
 	class="state-selector-button mode-selector left"
 	(click)="onStandardStateSelected()"
-	[class.current]="state == 'FILE_PANEL_STATE_STANDARD'"
+	[class.current]="state === 'FILE_PANEL_STATE_STANDARD'"
 >
 	<span class="text">Standard</span>
 </button>
@@ -10,7 +10,7 @@
 	mat-button
 	class="state-selector-button mode-selector right"
 	(click)="onDeltaStateSelected()"
-	[class.current]="state == 'FILE_PANEL_STATE_DELTA'"
+	[class.current]="state === 'FILE_PANEL_STATE_DELTA'"
 >
 	<span class="text">Delta</span>
 </button>

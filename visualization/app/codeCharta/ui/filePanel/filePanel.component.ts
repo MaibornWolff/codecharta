@@ -7,13 +7,6 @@ import { fileStatesAvailable, getFileNameOf, getVisibleFileStates, isDeltaState,
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
 import { removeRecentFile } from "../../state/store/dynamicSettings/recentFiles/recentFiles.actions"
-import { Component } from "@angular/core"
-
-@Component({
-	selector: "cc-file-panel",
-	template: require("./filePanel.component.html")
-})
-export class FilePanelComponent {}
 
 interface SelectedFileNames {
 	single: string
@@ -203,7 +196,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 }
 
 export const filePanelComponent = {
-	selector: "filePanelComponent",
+	selector: "ccFilePanel",
 	template: require("./filePanel.component.html"),
 	controller: FilePanelController
 }
