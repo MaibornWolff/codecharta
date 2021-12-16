@@ -2,9 +2,9 @@ import { MarkedPackage } from "../../../../../codeCharta.model"
 import { getParent } from "../../../../../util/nodePathHelper"
 
 export const addMarkedPackage = (markedPackagesMap: Map<string, MarkedPackage>, { path, color }: MarkedPackage) => {
-	const markedPackage = getParent(markedPackagesMap, path)
+	const directMarkedParentPackage = getParent(markedPackagesMap, path)
 
-	if (!markedPackage || markedPackage.color !== color) {
+	if (!directMarkedParentPackage || directMarkedParentPackage.color !== color) {
 		markedPackagesMap.set(path, {
 			path,
 			color
