@@ -113,7 +113,7 @@ describe("ArtificialIntelligenceController", () => {
 		})
 	})
 
-	describe("apply custom Config", () => {
+	describe("apply suspicious metric Config", () => {
 		it("should call store.dispatch", () => {
 			const suspiciousMetricConfigStub = {
 				stateSettings: {
@@ -128,7 +128,7 @@ describe("ArtificialIntelligenceController", () => {
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
 
-			artificialIntelligenceController.applySuspiciousMetricConfig("CustomConfig1")
+			artificialIntelligenceController.applySuspiciousMetricConfig("suspiciousMetricConfig1")
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setState(suspiciousMetricConfigStub.stateSettings))
 		})
@@ -141,7 +141,7 @@ describe("ArtificialIntelligenceController", () => {
 			expect(artificialIntelligenceController["getMostFrequentLanguage"]).not.toHaveBeenCalled()
 		})
 
-		it("should not calculate risk profile and suggest custom configs on empty main programming language", () => {
+		it("should not calculate risk profile and suggest suspiciousMetric configs on empty main programming language", () => {
 			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
 			artificialIntelligenceController["createSuspiciousMetricConfigSuggestions"] = jest.fn()
@@ -182,7 +182,7 @@ describe("ArtificialIntelligenceController", () => {
 			expect(sumOfRiskPercentage).toEqual(100)
 		})
 
-		it("should create custom config suggestions sorted by outlierSuspiciousMetricConfigId", () => {
+		it("should create suspiciousMetric config suggestions sorted by outlierSuspiciousMetricConfigId", () => {
 			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
 
@@ -241,7 +241,7 @@ describe("ArtificialIntelligenceController", () => {
 			expect(artificialIntelligenceController["createSuspiciousMetricConfigSuggestions"]).toHaveBeenCalled()
 		})
 
-		it("should calculate risk profile and add custom configs for maps with other programming languages", () => {
+		it("should calculate risk profile and add suspiciousMetric configs for maps with other programming languages", () => {
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
 			artificialIntelligenceController["createSuspiciousMetricConfigSuggestions"] = jest.fn()
 

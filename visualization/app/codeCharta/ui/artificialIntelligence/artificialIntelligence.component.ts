@@ -230,7 +230,6 @@ export class ArtificialIntelligenceController
 		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
 	}
 
-	// @ts-ignore
 	private prepareSusbiciosMetricConfig(metricName, fileState: FileState, stateSetting) {
 		const suspiciousMetricConfig = SuspiciousMetricConfigHelper.getSuspiciousMetricConfigByName(
 			fileState.selectedAs,
