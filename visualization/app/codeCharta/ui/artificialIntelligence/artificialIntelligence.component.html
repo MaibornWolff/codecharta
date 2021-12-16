@@ -43,8 +43,8 @@
 			<ul class="suspicious-metrics">
 				<li class="suspicious-metric" ng-repeat="item in $ctrl._viewModel.suspiciousMetricSuggestionLinks">
 					<md-button
-						class="metric-button {{ item.outlierCustomConfigId.length > 0 ? 'high-risk' : '' }}"
-						ng-click="$ctrl.applyCustomConfig(item.generalCustomConfigId)"
+						class="metric-button {{ item.isOutlier ? 'high-risk' : '' }}"
+						ng-click="$ctrl.applySuspiciousMetric(item, false)"
 						title="Apply Map Configuration to show files with suspicious metric {{
 							item.metric
 						}} and high risk or very high risk depending on selection"
@@ -54,8 +54,8 @@
 
 					<md-button
 						class="risk-button"
-						ng-click="$ctrl.applyCustomConfig(item.outlierCustomConfigId)"
-						ng-show="item.outlierCustomConfigId.length > 0"
+						ng-click="$ctrl.applySuspiciousMetric(item, true)"
+						ng-show="item.isOutlier"
 						title="Show very high risk files"
 					>
 						<i class="fa fa-exclamation-triangle"></i>
