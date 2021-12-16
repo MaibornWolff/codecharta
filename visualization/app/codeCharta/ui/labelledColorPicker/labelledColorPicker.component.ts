@@ -15,6 +15,8 @@ export class LabelledColorPickerComponent {
 	@ViewChild("colorPickerMenuTrigger") colorPickerMenuTrigger: MatMenuTrigger
 	@ViewChild("brush") brush: ElementRef
 
+	private isClickInside = false
+
 	@HostListener("mouseenter") onMouseEnter() {
 		this.brush.nativeElement.style.opacity = "1"
 	}
@@ -25,6 +27,8 @@ export class LabelledColorPickerComponent {
 
 	@HostListener("click")
 	onClick() {
+		this.isClickInside = true
+
 		const menuOpenedSubscription = this.colorPickerMenuTrigger.menuOpened.subscribe(() => {
 			this.brush.nativeElement.style.opacity = "1"
 			menuOpenedSubscription.unsubscribe()
@@ -37,7 +41,16 @@ export class LabelledColorPickerComponent {
 		this.colorPickerMenuTrigger.openMenu()
 	}
 
-	handleChangeComplete(hexColor: string) {
+	@HostListener("document:click")
+	handleDocumentClick() {
+		if (!this.isClickInside && this.colorPickerMenuTrigger && this.colorPickerMenuTrigger.menuOpen) {
+			this.colorPickerMenuTrigger.closeMenu()
+		}
+
+		this.isClickInside = false
+	}
+
+	handleColorChange(hexColor: string) {
 		this.onColorChange.emit(hexColor)
 	}
 }

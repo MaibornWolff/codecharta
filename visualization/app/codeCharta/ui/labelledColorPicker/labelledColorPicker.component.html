@@ -10,12 +10,6 @@
 	</div>
 </div>
 
-<mat-menu #menu="matMenu" xPosition="before" class="cc-color-picker-menu">
-	<color-chrome
-		role="colorpicker"
-		(click)="$event.stopPropagation()"
-		[disableAlpha]="true"
-		[color]="hexColor"
-		(onChangeComplete)="handleChangeComplete($event.color.hex)"
-	></color-chrome>
+<mat-menu #menu="matMenu" xPosition="before" [hasBackdrop]="false" class="cc-color-picker-menu">
+	<cc-color-picker [hexColor]="hexColor" (onColorChange)="handleColorChange($event)"></cc-color-picker>
 </mat-menu>

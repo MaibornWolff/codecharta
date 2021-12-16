@@ -1,0 +1,7 @@
+<color-chrome
+	role="colorpicker"
+	(click)="$event.stopPropagation()"
+	[disableAlpha]="true"
+	[color]="hexColor"
+	(onChangeComplete)="handleChangeComplete($event.color.hex)"
+></color-chrome>

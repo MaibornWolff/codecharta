@@ -1,13 +1,13 @@
 import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
-import { ColorChromeModule } from "ngx-color/chrome"
 
 import { MaterialModule } from "../../../material/material.module"
+import { ColorPickerModule } from "../colorPicker/colorPicker.module"
 import { LabelledColorPickerComponent } from "./labelledColorPicker.component"
 import { ReadableColorForBackgroundPipe } from "./readableColorForBackground.pipe"
 
 @NgModule({
-	imports: [CommonModule, ColorChromeModule, MaterialModule],
+	imports: [CommonModule, ColorPickerModule, MaterialModule],
 	declarations: [LabelledColorPickerComponent, ReadableColorForBackgroundPipe],
 	exports: [LabelledColorPickerComponent]
 })
