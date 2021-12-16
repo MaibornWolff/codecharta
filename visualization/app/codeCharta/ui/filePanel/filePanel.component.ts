@@ -134,11 +134,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		}
 	}
 
-	onPartialStateSelected() {
-		this.selectRecentPartialFiles()
-	}
-
-	onDeltaStateSelected() {
+	onDeltaStateSelected = () => {
 		this._viewModel.selectedFileNames.delta.reference = this.getLastVisibleFileName()
 		this.onDeltaComparisonFileChange(null)
 	}
@@ -148,7 +144,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		this.onPartialFilesChange(allFileNames)
 	}
 
-	selectRecentPartialFiles() {
+	selectRecentPartialFiles = () => {
 		const recentFileNames = this.storeService.getState().dynamicSettings.recentFiles
 		if (recentFileNames.length > 0) {
 			this.onPartialFilesChange(recentFileNames)

@@ -1,16 +1,6 @@
-<button
-	mat-button
-	class="state-selector-button mode-selector left"
-	(click)="onStandardStateSelected()"
-	[class.current]="state === 'FILE_PANEL_STATE_STANDARD'"
->
+<button mat-button class="state-selector-button mode-selector left" (click)="handleStandardButtonClicked()" [class.current]="!isDeltaState">
 	<span class="text">Standard</span>
 </button>
-<button
-	mat-button
-	class="state-selector-button mode-selector right"
-	(click)="onDeltaStateSelected()"
-	[class.current]="state === 'FILE_PANEL_STATE_DELTA'"
->
+<button mat-button class="state-selector-button mode-selector right" (click)="handleDeltaButtonClicked()" [class.current]="isDeltaState">
 	<span class="text">Delta</span>
 </button>
