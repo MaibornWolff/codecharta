@@ -68,9 +68,11 @@ export class CodeChartaService {
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 		const currentFileChecksum = ccFile.fileMeta.fileChecksum
 		let currentFileName = ccFile.fileMeta.fileName
-		const storedFileNames = new Map(this.fileStates.map(file => [file.file.fileMeta.fileName, file.file.fileMeta.fileChecksum]))
+		const storedFileNames = new Map(
+			this.fileStates.map(fileState => [fileState.file.fileMeta.fileName, fileState.file.fileMeta.fileChecksum])
+		)
 		const storedFileChecksums = new Map(
-			this.fileStates.map((file, index) => [file.file.fileMeta.fileChecksum, index] as [string, number])
+			this.fileStates.map((fileState, index) => [fileState.file.fileMeta.fileChecksum, index] as [string, number])
 		)
 		const isDuplicate = storedFileChecksums.has(currentFileChecksum)
 
@@ -105,9 +107,7 @@ export class CodeChartaService {
 					? [currentFileName.slice(0, endOfNameIndex), "_", fileNameOccurrence, currentFileName.slice(endOfNameIndex)].join("")
 					: `${currentFileName}_${fileNameOccurrence}`
 			// resolve if uploaded file has identical checksum and different already occurring name
-			if (storedFileNames.get(newFileName) === currentFileChecksum) {
-				nameFound = true
-			} else if (!storedFileNames.has(newFileName)) {
+			if (storedFileNames.get(newFileName) === currentFileChecksum || !storedFileNames.has(newFileName)) {
 				nameFound = true
 			}
 			fileNameOccurrence++

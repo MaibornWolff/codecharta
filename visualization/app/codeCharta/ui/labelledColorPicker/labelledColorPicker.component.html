@@ -1,0 +1,15 @@
+<span [matMenuTriggerFor]="menu" #colorPickerMenuTrigger="matMenuTrigger"></span>
+
+<div class="cc-labelled-color-picker-container">
+	<div class="cc-color-swatch-container">
+		<span class="cc-color-swatch" [style.background-color]="hexColor"></span>
+		<span #brush [style.color]="hexColor | readableColorForBackground" class="cc-color-brush fa fa-paint-brush"></span>
+	</div>
+	<div>
+		<span *ngFor="let label of labels"> {{ label }} <br *ngIf="!last" /></span>
+	</div>
+</div>
+
+<mat-menu #menu="matMenu" xPosition="before" [hasBackdrop]="false" class="cc-color-picker-menu">
+	<cc-color-picker [hexColor]="hexColor" (onColorChange)="handleColorChange($event)"></cc-color-picker>
+</mat-menu>

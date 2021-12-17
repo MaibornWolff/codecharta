@@ -12,7 +12,7 @@
 				<i class="fa fa-times" ng-if="$ctrl.isNodeOrParentMarked(color)"></i>
 			</md-button>
 
-			<cc-node-context-menu-color-picker mark-folder="$ctrl.markFolder(color)"></cc-node-context-menu-color-picker>
+			<cc-mark-folder-color-picker [mark-folder]="$ctrl.markFolder"></cc-mark-folder-color-picker>
 		</div>
 		<md-divider></md-divider>
 	</div>
