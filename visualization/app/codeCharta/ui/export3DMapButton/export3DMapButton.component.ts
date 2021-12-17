@@ -18,7 +18,7 @@ import { Mesh } from "three"
 export class Export3DMapButtonComponent {
 	private fileName: string
 	private files: FileState[]
-	exporter = new STLExporter()
+	private exporter = new STLExporter()
 
 	constructor(@Inject(Store) store: Store) {
 		store.select(accumulatedDataSelector).subscribe(accumulatedData => {

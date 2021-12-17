@@ -35,7 +35,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	mapGeometry: Group
 	private readonly lights: Group
 	private mapMesh: CodeMapMesh
-	/** Temporary workaround until mapMesh can be derived from store */
+	/** TODO: Fix temporary workaround as soon as mapMesh can be derived from store */
 	static mapMeshInstance: CodeMapMesh
 
 	private selected: CodeMapBuilding = null
