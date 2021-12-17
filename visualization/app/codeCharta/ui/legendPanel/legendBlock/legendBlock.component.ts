@@ -6,5 +6,6 @@ import { LegendMetric } from "../selectors/legendMetric"
 	template: require("./legendBlock.component.html")
 })
 export class LegendBlockComponent {
+	@Input() metricFor: string
 	@Input() legendMetric: LegendMetric
 }
