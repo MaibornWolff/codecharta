@@ -199,7 +199,7 @@ export class NodeContextMenuController
 		}
 	}
 
-	markFolder(color: string) {
+	markFolder = (color: string) => {
 		this.codeMapActionsService.markFolder(this._viewModel.codeMapNode, color)
 	}
 
@@ -233,9 +233,8 @@ export class NodeContextMenuController
 	}
 
 	private isEventFromColorPicker(mouseEvent: MouseEvent) {
-		return mouseEvent
-			.composedPath()
-			.some((element: EventTarget & { nodeName: string }) => element?.nodeName === "CC-NODE-CONTEXT-MENU-COLOR-PICKER")
+		const elements = mouseEvent.composedPath() as Node[]
+		return elements.some(element => element?.nodeName === "CC-MARK-FOLDER-COLOR-PICKER" || element?.nodeName === "COLOR-CHROME")
 	}
 
 	private isNodeMarked() {

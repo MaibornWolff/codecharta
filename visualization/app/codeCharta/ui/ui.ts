@@ -2,7 +2,6 @@ import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
 import "./artificialIntelligence/artificialIntelligence.module"
-import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
@@ -25,7 +24,6 @@ import "./dialog/dialog.module"
 import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./heightSettingsPanel/heightSettingsPanel.module"
-import "./legendPanel/legendPanel.module"
 import "./loadingGif/loadingGif.module"
 import "./metricChooser/metricChooser.module"
 import "./metricType/metricType.module"
@@ -47,11 +45,11 @@ import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFi
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
 import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
+import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 
 angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
-		"app.codeCharta.ui.customColorPicker",
 		"app.codeCharta.ui.customConfigs",
 		"app.codeCharta.ui.unfocusButton",
 		"app.codeCharta.ui.metricValueHovered",
@@ -76,7 +74,6 @@ angular
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.filePanel",
 		"app.codeCharta.ui.heightSettingsPanel",
-		"app.codeCharta.ui.legendPanel",
 		"app.codeCharta.ui.loadingGif",
 		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.metricType",
@@ -98,3 +95,4 @@ angular
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
 	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
+	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))

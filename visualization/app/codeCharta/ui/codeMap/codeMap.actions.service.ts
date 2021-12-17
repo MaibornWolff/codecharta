@@ -2,8 +2,8 @@ import { CodeMapNode, EdgeVisibility, MarkedPackage } from "../../codeCharta.mod
 import { StoreService } from "../../state/store.service"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { unmarkPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { addMarkedPackage } from "../../state/store/fileSettings/markedPackages/util/addMarkedPackage"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import { getParent } from "../../util/nodePathHelper"
 
 export class CodeMapActionsService {
 	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {
@@ -13,29 +13,7 @@ export class CodeMapActionsService {
 	markFolder({ path }: { path?: string }, color: string) {
 		const { markedPackages } = this.storeService.getState().fileSettings
 		const markedPackagesMap = new Map(markedPackages.map(entry => [entry.path, entry]))
-
-		const markedPackage = getParent(markedPackagesMap, path)
-
-		if (!markedPackage || markedPackage.color !== color) {
-			markedPackagesMap.set(path, {
-				path,
-				color
-			})
-		}
-
-		for (const [key, markedPackage] of markedPackagesMap) {
-			if (markedPackage.path === path) {
-				if (markedPackage.color !== color) {
-					markedPackagesMap.delete(key)
-				}
-			} else if (markedPackage.path.startsWith(path)) {
-				// Remove marked packages with color identical to their parent marked package
-				const markedPackageParent = getParent(markedPackagesMap, markedPackage.path)
-				if (markedPackageParent && markedPackageParent.color === markedPackage.color) {
-					markedPackagesMap.delete(key)
-				}
-			}
-		}
+		addMarkedPackage(markedPackagesMap, { path, color })
 
 		this.storeService.dispatch(setMarkedPackages([...markedPackagesMap.values()]))
 	}

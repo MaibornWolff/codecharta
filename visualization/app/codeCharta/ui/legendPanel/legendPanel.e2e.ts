@@ -28,34 +28,32 @@ describe("LegendPanel", () => {
 		await clickButtonOnPageElement(".colorButton:nth-child(2)")
 	}
 
-	describe("LegendPanel", () => {
-		it("should highlight a folder and add to legend", async () => {
-			const selectedFolder = await legendPanelObject.getFilename()
-			expect(selectedFolder).toEqual("/root")
-		})
+	it("should highlight a folder and add to legend", async () => {
+		const selectedFolder = await legendPanelObject.getFilename()
+		expect(selectedFolder).toMatch(/\/root\s*/)
+	})
 
-		it("should remove a highlighted folder and remove from legend", async () => {
-			await mapTreeViewLevel.openContextMenu("/root")
-			await clickButtonOnPageElement(".colorButton:nth-child(2)")
-			const emptyFilelist = await legendPanelObject.getEmptyLegendIfNoFilenamesExist()
-			expect(emptyFilelist).toEqual("")
-		})
+	it("should remove a highlighted folder and remove from legend", async () => {
+		await mapTreeViewLevel.openContextMenu("/root")
+		await clickButtonOnPageElement(".colorButton:nth-child(2)")
+		const emptyFilelist = await legendPanelObject.getEmptyLegendIfNoFilenamesExist()
+		expect(emptyFilelist).toEqual("")
+	})
 
-		it("should highlight two different folders and add both to the legend", async () => {
-			await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
-			await clickButtonOnPageElement(".colorButton:nth-child(1)")
-			const selectedFolder = await legendPanelObject.getMultipleFilenames()
-			expect(selectedFolder[0]).toEqual("/root")
-			expect(selectedFolder[1]).toEqual("/root/ParentLeaf")
-		})
+	it("should highlight two different folders and add both to the legend", async () => {
+		await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
+		await clickButtonOnPageElement(".colorButton:nth-child(1)")
+		const selectedFolder = await legendPanelObject.getMultipleFilenames()
+		expect(selectedFolder[0]).toEqual("/root")
+		expect(selectedFolder[1]).toEqual("/root/ParentLeaf")
+	})
 
-		it("should highlight two different folders and add both to the legend then remove the first", async () => {
-			await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
-			await clickButtonOnPageElement(".colorButton:nth-child(1)")
-			await mapTreeViewLevel.openContextMenu("/root")
-			await clickButtonOnPageElement(".colorButton:nth-child(2)")
-			const selectedFolder = await legendPanelObject.getFilename()
-			expect(selectedFolder).toEqual("/root/ParentLeaf")
-		})
+	it("should highlight two different folders and add both to the legend then remove the first", async () => {
+		await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
+		await clickButtonOnPageElement(".colorButton:nth-child(1)")
+		await mapTreeViewLevel.openContextMenu("/root")
+		await clickButtonOnPageElement(".colorButton:nth-child(2)")
+		const selectedFolder = await legendPanelObject.getFilename()
+		expect(selectedFolder).toMatch(/root\/ParentLeaf\s*/)
 	})
 })

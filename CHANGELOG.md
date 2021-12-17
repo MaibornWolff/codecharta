@@ -13,9 +13,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     <img src="https://user-images.githubusercontent.com/48621967/146173663-e0ea177e-6ed8-4ddb-bd11-410415541e9f.png" height="32px" alt="two menu buttons"/> <br>
     <img src="https://user-images.githubusercontent.com/48621967/146174397-42a6e475-ed2f-47c0-ba9c-4f8304d53399.png" height="256px" alt="two menu buttons"/>
 
+### Changed
+
+-   Replace all color pickers in the context of ongoing Angular migration [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
+
 ### Fixed 🐞
 
 -   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate legend panel to Angular [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
 
 ## [1.85.0] - 2021-12-13
 
