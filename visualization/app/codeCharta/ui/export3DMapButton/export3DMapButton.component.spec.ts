@@ -15,7 +15,7 @@ describe("Export3DMapButtonComponent", () => {
 		// mock download and therefore only verify the Angular binding.
 		// A better approach would be, if the component would only fire an action
 		// and an https://ngrx.io/guide/effects would do the side effect and logic.
-		// Then the we could test the logic in the effect without mocking a lot
+		// Then we could test the logic in the effect without mocking a lot
 		// and the component wouldn't need to know anything about store values
 		// @ts-ignore
 		const mockedDownload = jest.spyOn(ng.probe(container).componentInstance, "downloadStlFile").mockImplementation(() => null)
