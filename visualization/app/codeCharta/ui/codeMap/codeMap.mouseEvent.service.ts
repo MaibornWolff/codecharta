@@ -13,8 +13,6 @@ import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3-hierarchy"
 import { Intersection, Object3D, Raycaster } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
-import { LazyLoader } from "../../util/lazyLoader"
-import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { setHoveredBuildingPath } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { hoveredBuildingPathSelector } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
@@ -75,7 +73,6 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
 		private codeMapLabelService: CodeMapLabelService,
-		private codeMapPreRenderService: CodeMapPreRenderService,
 		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
 		private threeViewerService: ThreeViewerService
 	) {
@@ -306,10 +303,6 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 			if (sourceLink) {
 				this.$window.open(sourceLink, "_blank")
 				return
-			}
-			const fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
-			if (fileName) {
-				LazyLoader.openFile(fileName, selectedBuilding.node.path)
 			}
 		}
 	}
