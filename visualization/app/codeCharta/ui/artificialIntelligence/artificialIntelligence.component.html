@@ -43,7 +43,7 @@
 			<ul class="suspicious-metrics">
 				<li class="suspicious-metric" ng-repeat="item in $ctrl._viewModel.suspiciousMetricSuggestionLinks">
 					<md-button
-						class="metric-button {{ item.isOutlier ? 'high-risk' : '' }}"
+						class="metric-button"
 						ng-click="$ctrl.applySuspiciousMetric(item, false)"
 						title="Apply Map Configuration to show files with suspicious metric {{
 							item.metric

@@ -89,7 +89,7 @@ export class ArtificialIntelligenceController
 	applySuspiciousMetric(metric: MetricSuggestionParameters, isOutlier: boolean) {
 		//TODO: Improve method
 		if (this._viewModel.suspiciousMetricSuggestionLinks.includes(metric)) {
-			const { mapColors } = this.storeService.getState().appSettings
+			const mapColors = { ...this.storeService.getState().appSettings.mapColors }
 			const colorRange: ColorRange = {
 				from: metric.from,
 				to: metric.to,
@@ -147,7 +147,7 @@ export class ArtificialIntelligenceController
 
 		if (mainProgrammingLanguage !== undefined) {
 			this.calculateRiskProfile(this.fileState, mainProgrammingLanguage, "mcc")
-			this.createCustomConfigSuggestions(this.fileState, mainProgrammingLanguage)
+			this.calculateSuspisciousMetrics(this.fileState, mainProgrammingLanguage)
 		}
 	}
 
@@ -213,7 +213,7 @@ export class ArtificialIntelligenceController
 		}
 	}
 
-	private createCustomConfigSuggestions(fileState: FileState, programmingLanguage) {
+	private calculateSuspisciousMetrics(fileState: FileState, programmingLanguage) {
 		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
 		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
 		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
