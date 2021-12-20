@@ -5,7 +5,7 @@ import { StoreService } from "../../state/store.service"
 import { ArtificialIntelligenceController } from "./artificialIntelligence.component"
 import { FilesService } from "../../state/store/files/files.service"
 import { setFiles } from "../../state/store/files/files.actions"
-import { FILE_STATES, FILE_STATES_JAVA, FILE_STATES_UNSELECTED } from "../../util/dataMocks"
+import { FILE_STATES, FILE_STATES_JAVA, FILE_STATES_UNSELECTED, STATE } from "../../util/dataMocks"
 import { klona } from "klona"
 import { BlacklistType, ColorRange } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
@@ -15,6 +15,8 @@ import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colo
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { setState } from "../../state/store/state.actions"
 
 describe("ArtificialIntelligenceController", () => {
 	let artificialIntelligenceController: ArtificialIntelligenceController
@@ -104,15 +106,15 @@ describe("ArtificialIntelligenceController", () => {
 	})
 
 	describe("apply suspicious metric", () => {
-		//TODO: Mock mapColors and test storeService.dispatch(setMapColors(defaultMapColors)) correctly
-		it("should call store.dispatch", () => {
+		it("should call store.dispatch with all needed states for desired suspicious metric view", () => {
+			storeService.dispatch(setState(STATE))
 			const testMetricSuggestionParameters = {
 				metric: "loc",
 				from: 365,
 				to: 554,
 				max: 0,
 				min: 0,
-				isOutlier: false
+				isOutlier: undefined
 			}
 
 			const colorRange: ColorRange = {
@@ -123,16 +125,48 @@ describe("ArtificialIntelligenceController", () => {
 			}
 
 			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks = [testMetricSuggestionParameters]
-			//storeService.getState().appSettings.mapColors = jest.fn().mockReturnValue(defaultMapColors)
 			storeService.dispatch = jest.fn()
-
 			artificialIntelligenceController.applySuspiciousMetric(testMetricSuggestionParameters, false)
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setAreaMetric("rloc"))
 			expect(storeService.dispatch).toHaveBeenCalledWith(setHeightMetric("loc"))
 			expect(storeService.dispatch).toHaveBeenCalledWith(setColorMetric("loc"))
 			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange(colorRange))
-			//expect(storeService.dispatch).toHaveBeenCalledWith(setMapColors(defaultMapColors))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setMapColors(STATE.appSettings.mapColors))
+		})
+
+		it("should call store.dispatch with all needed states for desired very high risk metric view", () => {
+			storeService.dispatch(setState(STATE))
+			const mapColors = { ...STATE.appSettings.mapColors }
+			mapColors.positive = "#ffffff"
+			mapColors.neutral = "#ffffff"
+			mapColors.negative = "#A900C0"
+
+			const testMetricSuggestionParameters = {
+				metric: "loc",
+				from: 365,
+				to: 554,
+				max: 0,
+				min: 0,
+				isOutlier: true
+			}
+
+			const colorRange: ColorRange = {
+				from: testMetricSuggestionParameters.from,
+				to: testMetricSuggestionParameters.to,
+				max: 0,
+				min: 0
+			}
+
+			artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks = [testMetricSuggestionParameters]
+			storeService.dispatch = jest.fn()
+			artificialIntelligenceController.applySuspiciousMetric(testMetricSuggestionParameters, true)
+
+			expect(storeService.dispatch).toHaveBeenCalledWith(setAreaMetric("rloc"))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setHeightMetric("loc"))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setColorMetric("loc"))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange(colorRange))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setMapColors(mapColors))
 		})
 	})
 
