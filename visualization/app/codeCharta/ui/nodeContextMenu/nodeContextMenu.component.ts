@@ -7,13 +7,13 @@ import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { DialogService } from "../dialog/dialog.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { ERROR_MESSAGES } from "../../util/fileValidator"
+import type { BUILDING_RIGHT_CLICKED_EVENT_TYPE } from "../../../../src/globals"
 
 export enum ClickType {
 	RightClick = 2
@@ -27,9 +27,7 @@ export interface HideNodeContextMenuSubscriber {
 	onHideNodeContextMenu()
 }
 
-export class NodeContextMenuController
-	implements BuildingRightClickedEventSubscriber, ShowNodeContextMenuSubscriber, HideNodeContextMenuSubscriber, MapColorsSubscriber
-{
+export class NodeContextMenuController implements ShowNodeContextMenuSubscriber, HideNodeContextMenuSubscriber, MapColorsSubscriber {
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
 	private static HIDE_NODE_CONTEXT_MENU_EVENT = "hide-node-context-menu"
 	private static instance: NodeContextMenuController
@@ -66,7 +64,7 @@ export class NodeContextMenuController
 		"ngInject"
 		NodeContextMenuController.instance = this
 		MapColorsService.subscribe(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
+		document.addEventListener("building-right-clicked", this.onBuildingRightClicked)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
 		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
 	}
@@ -75,7 +73,7 @@ export class NodeContextMenuController
 		this._viewModel.markingColors = mapColors.markingColors
 	}
 
-	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
+	onBuildingRightClicked = ({ detail: { building, x, y } }: CustomEvent<BUILDING_RIGHT_CLICKED_EVENT_TYPE>) => {
 		const nodeType = building.node.isLeaf ? NodeType.FILE : NodeType.FOLDER
 		this.onShowNodeContextMenu(building.node.path, nodeType, x, y)
 	}

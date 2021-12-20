@@ -20,7 +20,6 @@ import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
@@ -131,14 +130,12 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should subscribe to 'on-building-right-clicked' events", () => {
-			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-			CodeMapMouseEventService.subscribeToBuildingRightClickedEvents = jest.fn()
-
+			const documentAddEventListenerSpy = jest.spyOn(document, "addEventListener")
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith(
-				$rootScope,
-				nodeContextMenuController
+			expect(documentAddEventListenerSpy).toHaveBeenCalledWith(
+				"building-right-clicked",
+				nodeContextMenuController.onBuildingRightClicked
 			)
 		})
 	})
