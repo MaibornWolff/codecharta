@@ -46,7 +46,6 @@ describe("nodeContextMenuController", () => {
 		withMockedCodeMapPreRenderService()
 		withMockedThreeSceneService()
 		rebuildController()
-		withMockedHideNodeContextMenuMethod()
 
 		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
 	})
@@ -96,10 +95,6 @@ describe("nodeContextMenuController", () => {
 		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
 	}
 
-	function withMockedHideNodeContextMenuMethod() {
-		nodeContextMenuController.onHideNodeContextMenu = jest.fn()
-	}
-
 	function withMockedThreeSceneService() {
 		threeSceneService = jest.fn().mockReturnValue({
 			addNodeAndChildrenToConstantHighlight: jest.fn(),
@@ -141,15 +136,15 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("onShowNodeContextMenu", () => {
-		let elementMock
+		let mockedWheelTargetElement
 		beforeEach(() => {
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
 
 			document.body.addEventListener = jest.fn()
-			elementMock = { addEventListener: jest.fn() }
+			mockedWheelTargetElement = { addEventListener: jest.fn(), removeEventListener: jest.fn() }
 			// @ts-ignore
-			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
+			jest.spyOn(document, "getElementById").mockImplementation(() => mockedWheelTargetElement)
 		})
 
 		it("should set the correct building after some timeout", () => {
@@ -165,7 +160,7 @@ describe("nodeContextMenuController", () => {
 			expect(document.body.addEventListener).toHaveBeenNthCalledWith(2, "mousedown", expect.anything(), expect.anything())
 
 			expect(document.getElementById).toHaveBeenCalledWith("codeMap")
-			expect(elementMock.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
+			expect(mockedWheelTargetElement.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
 		})
 
 		it("should not shorten the path if it has no sub paths", () => {
@@ -204,6 +199,28 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.onShowNodeContextMenu("/root/ParentLeaf/smallLeaf", NodeType.FOLDER, 521, 588)
 			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
 			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(true)
+		})
+
+		it("should remove all listener on hide", () => {
+			const documentRemoveEventListenerSpy = jest.spyOn(document.body, "removeEventListener")
+
+			nodeContextMenuController.onHideNodeContextMenu()
+
+			expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith(
+				"click",
+				nodeContextMenuController.onBodyLeftClickHideNodeContextMenu,
+				true
+			)
+			expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith(
+				"mousedown",
+				nodeContextMenuController.onBodyRightClickHideNodeContextMenu,
+				true
+			)
+			expect(mockedWheelTargetElement.removeEventListener).toHaveBeenCalledWith(
+				"wheel",
+				nodeContextMenuController.onMapWheelHideNodeContextMenu,
+				true
+			)
 		})
 	})
 

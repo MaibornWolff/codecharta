@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557)
+-   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557).
+-   Fix minor memory leak in context menu for code map buildings [#2565](https://github.com/MaibornWolff/codecharta/issues/2565).
 
 ### Chore 👨‍💻 👩‍💻
 
