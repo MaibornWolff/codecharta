@@ -147,7 +147,7 @@ export class ArtificialIntelligenceController
 
 		if (mainProgrammingLanguage !== undefined) {
 			this.calculateRiskProfile(this.fileState, mainProgrammingLanguage, "mcc")
-			this.calculateSuspisciousMetrics(this.fileState, mainProgrammingLanguage)
+			this.calculateSuspiciousMetrics(this.fileState, mainProgrammingLanguage)
 		}
 	}
 
@@ -213,7 +213,7 @@ export class ArtificialIntelligenceController
 		}
 	}
 
-	private calculateSuspisciousMetrics(fileState: FileState, programmingLanguage) {
+	private calculateSuspiciousMetrics(fileState: FileState, programmingLanguage) {
 		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
 		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
 		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
