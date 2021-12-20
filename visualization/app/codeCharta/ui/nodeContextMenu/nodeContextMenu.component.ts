@@ -93,8 +93,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		this.setPosition(x, y)
 
 		// Add event listeners, so that opened node context menu can be closed again later
-		// when clicking (left or right button)
-		// or using the mouse wheel on the body element.
+		// when clicking (left or right button) or using the mouse wheel on the body element.
 		document.body.addEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
 		document.body.addEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
 		document.getElementById("codeMap").addEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
@@ -105,11 +104,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 
 		// Just close node context menu, if you click anywhere on the map.
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-
-		// The listener is added when showing the node context menu.
-		// Thus, remove the listener when clicking the body element with the left or right button
-		// to fire hide events only (once) when it is really necessary.
-		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
 	}
 
 	onBodyRightClickHideNodeContextMenu = event => {
@@ -119,25 +113,20 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		if (event.button === ClickType.RightClick) {
 			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 		}
-
-		// The listener is added when showing the node context menu.
-		// Thus, remove the listener when clicking the body element with the left or right button
-		// to fire hide events only (once) when it is really necessary.
-		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
 	}
 
 	onMapWheelHideNodeContextMenu = () => {
 		// If you zoom in and out the map, the node context menu should be closed.
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-
-		// The listener is added when showing the node context menu.
-		// Thus, remove the listener when using the mouse wheel on the body element
-		// to fire hide events only (once) when it is really necessary.
-		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
 
 	onHideNodeContextMenu() {
 		this._viewModel.showNodeContextMenu = false
+
+		// remove event listeners registered in onShowNodeContextMenu
+		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
+		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
+		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
 
 	focusNode() {
