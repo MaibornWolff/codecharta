@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## Fixed 🐞
+### Fixed 🐞
 
 -   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557)
+
+### Changed
+
+-   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564)
 
 ## [1.85.0] - 2021-12-13
 
