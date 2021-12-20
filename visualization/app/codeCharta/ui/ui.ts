@@ -2,7 +2,6 @@ import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
 import "./artificialIntelligence/artificialIntelligence.module"
-import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
@@ -25,7 +24,6 @@ import "./dialog/dialog.module"
 import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./heightSettingsPanel/heightSettingsPanel.module"
-import "./legendPanel/legendPanel.module"
 import "./loadingGif/loadingGif.module"
 import "./metricChooser/metricChooser.module"
 import "./metricType/metricType.module"
@@ -46,11 +44,11 @@ import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
+import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 
 angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
-		"app.codeCharta.ui.customColorPicker",
 		"app.codeCharta.ui.customConfigs",
 		"app.codeCharta.ui.unfocusButton",
 		"app.codeCharta.ui.metricValueHovered",
@@ -75,7 +73,6 @@ angular
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.filePanel",
 		"app.codeCharta.ui.heightSettingsPanel",
-		"app.codeCharta.ui.legendPanel",
 		"app.codeCharta.ui.loadingGif",
 		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.metricType",
@@ -96,3 +93,4 @@ angular
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
 	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
+	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))

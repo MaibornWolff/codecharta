@@ -11,11 +11,35 @@ import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCoun
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
+import { LabelledColorPickerComponent } from "./codeCharta/ui/labelledColorPicker/labelledColorPicker.component"
+import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.component"
+import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
+import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
+import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
+import { MarkFolderColorPickerModule } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.module"
+import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.component"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, AttributeSideBarModule],
+	imports: [
+		BrowserModule,
+		UpgradeModule,
+		MapTreeViewModule,
+		MatchingFilesCounterModule,
+		AttributeSideBarModule,
+		LegendPanelModule,
+		ColorPickerForMapColorModule,
+		MarkFolderColorPickerModule
+	],
 	declarations: [],
-	entryComponents: [MapTreeViewComponent, MatchingFilesCounterComponent, AttributeSideBarComponent]
+	entryComponents: [
+		MapTreeViewComponent,
+		MatchingFilesCounterComponent,
+		AttributeSideBarComponent,
+		LegendPanelComponent,
+		LabelledColorPickerComponent,
+		ColorPickerForMapColorComponent,
+		MarkFolderColorPickerComponent
+	]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}

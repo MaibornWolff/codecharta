@@ -1,3 +1,8 @@
+.cdk-overlay-container {
+	/* overwrite z-index of below #codemap-context-menu */
+	z-index: 2000 !important;
+}
+
 node-context-menu-component {
 	#codemap-context-menu {
 		position: absolute;

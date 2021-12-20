@@ -538,10 +538,20 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("onBodyLeftClickHideNodeContextMenu", () => {
-		it("should not hide if a click on color-picker occurs", () => {
+		it("should not hide if a click on color-picker tricker occurs", () => {
 			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
 			const mockedMouseEvent: any = {
-				composedPath: () => [{ nodeName: "CC-NODE-CONTEXT-MENU-COLOR-PICKER" }]
+				composedPath: () => [{ nodeName: "CC-MARK-FOLDER-COLOR-PICKER" }]
+			}
+			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
+
+			expect(broadcastHideEventSpy).not.toHaveBeenCalled()
+		})
+
+		it("should not hide if a click within color-picker occurs", () => {
+			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const mockedMouseEvent: any = {
+				composedPath: () => [{ nodeName: "COLOR-CHROME" }]
 			}
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
