@@ -5,6 +5,7 @@ import "angular-material"
 import "./codeCharta/codeCharta.module"
 import "angular-sanitize"
 import "./app.scss"
+import "material-icons/iconfont/material-icons.css"
 
 angular.module("app", ["app.codeCharta", "ngMaterial", "ngSanitize"])
 
