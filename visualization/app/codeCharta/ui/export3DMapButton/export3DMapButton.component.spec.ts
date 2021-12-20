@@ -50,7 +50,7 @@ describe("Export3DMapButtonComponent", () => {
 		fireEvent.click(downloadButton)
 		expect(mockedDownload).toHaveBeenCalledTimes(1)
 	})
-	it("should call downloadStlFile with the right parameters", async function () {
+	it("should download STL file with the right file name", async function () {
 		const { container } = await render(Export3DMapButtonComponent, { excludeComponentDeclaration: true })
 		const downloadButton = container.querySelector(".export-3d-button")
 
