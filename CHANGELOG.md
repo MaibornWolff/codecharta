@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.86.0] - 2021-12-20
+
 ### Added 🚀
 
 -   Add 3D export feature for 3D printing [#2561](https://github.com/MaibornWolff/codecharta/pull/2561). <br>
