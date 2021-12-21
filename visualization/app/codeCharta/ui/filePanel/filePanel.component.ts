@@ -82,7 +82,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		this.lastRenderState = this._viewModel.renderState
 	}
 
-	onPartialSelectionClosed() {
+	onPartialSelectionClosed = () => {
 		this.updateSelectedFileNamesInViewModel()
 	}
 
@@ -139,7 +139,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		this.onDeltaComparisonFileChange(null)
 	}
 
-	selectAllPartialFiles() {
+	selectAllPartialFiles = () => {
 		const allFileNames = this._viewModel.files.map(x => x.file.fileMeta.fileName)
 		this.onPartialFilesChange(allFileNames)
 	}
@@ -153,11 +153,11 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		}
 	}
 
-	selectZeroPartialFiles() {
+	selectZeroPartialFiles = () => {
 		this.onPartialFilesChange([])
 	}
 
-	invertPartialFileSelection() {
+	invertPartialFileSelection = () => {
 		const invertedFileNames: string[] = []
 		const partialFileNames = new Set(this._viewModel.selectedFileNames.partial)
 

@@ -9,4 +9,8 @@ export class FilePanelFileSelectorComponent {
 	@Input() files: FileState[]
 	@Input() selectedFileNames: string[]
 	@Input() handleSelectedFilesChanged: (selectedFileNames: string[]) => void
+	@Input() handleSelectAllPartialFiles: () => void
+	@Input() handleSelectZeroPartialFiles: () => void
+	@Input() handleInvertSelectedPartialFiles: () => void
+	@Input() handleOnSelectionClosed: () => void
 }
