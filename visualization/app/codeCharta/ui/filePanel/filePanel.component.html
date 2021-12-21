@@ -8,6 +8,7 @@
 
 <cc-file-panel-file-selector
 	style="display: inline-block; width: 200px"
+	ng-show="!$ctrl._viewModel.isDeltaState"
 	[selected-file-names]="$ctrl._viewModel.selectedFileNames.partial"
 	[handle-selected-files-changed]="$ctrl.onPartialFilesChange"
 	[handle-select-all-partial-files]="$ctrl.selectAllPartialFiles"
@@ -17,41 +18,12 @@
 	[files]="$ctrl._viewModel.files"
 ></cc-file-panel-file-selector>
 
-<!--
-<div class="input-container delta-chooser" ng-show="$ctrl._viewModel.isDeltaState">
-	<div class="pictogram" ng-style="{ background: $ctrl._viewModel.pictogramFirstFileColor }"></div>
-	<md-input-container class="delta-select input-container" title="Select reference file">
-		<md-select
-			ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
-			ng-change="$ctrl.onDeltaReferenceFileChange($ctrl._viewModel.selectedFileNames.delta.reference)"
-		>
-			<md-option
-				ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
-				value="{{::fileState.file.fileMeta.fileName}}"
-			>
-				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-			</md-option>
-		</md-select>
-	</md-input-container>
-
-	<div
-		class="pictogram"
-		ng-style="{
-			background:
-				'linear-gradient(' + $ctrl._viewModel.pictogramUpperColor + ' 50%, ' + $ctrl._viewModel.pictogramLowerColor + ' 50%)'
-		}"
-	></div>
-	<md-input-container class="input-container delta-select" title="Select comparison file">
-		<md-select
-			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
-			ng-change="$ctrl.onDeltaComparisonFileChange($ctrl._viewModel.selectedFileNames.delta.comparison)"
-		>
-			<md-option
-				ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
-				value="{{::fileState.file.fileMeta.fileName}}"
-			>
-				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-			</md-option>
-		</md-select>
-	</md-input-container>
-</div>-->
+<cc-file-panel-delta-selector
+	ng-show="$ctrl._viewModel.isDeltaState"
+	[pictogram-first-color]="$ctrl._viewModel.pictogramFirstFileColor"
+	[pictogram-upper-color]="$ctrl._viewModel.pictogramUpperColor"
+	[pictogram-lower-color]="$ctrl._viewModel.pictogramLowerColor"
+	[handle-delta-reference-file-change]="$ctrl.onDeltaReferenceFileChange"
+	[handle-delta-comparison-file-change]="$ctrl.onDeltaComparisonFileChange"
+	[files]="$ctrl._viewModel.files"
+></cc-file-panel-delta-selector>

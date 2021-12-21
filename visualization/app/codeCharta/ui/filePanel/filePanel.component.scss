@@ -63,6 +63,12 @@ cc-file-panel {
 		height: 22px;
 		border-radius: 2px;
 		align-self: center;
+		vertical-align: bottom;
+	}
+
+	.delta-select {
+		width: 200px;
+		vertical-align: bottom;
 	}
 
 	md-input-container {
@@ -72,10 +78,6 @@ cc-file-panel {
 		width: calc(100% - 250px);
 		max-width: 300px;
 		min-width: 150px;
-
-		&.delta-select {
-			width: calc((100% - 300px) / 2);
-		}
 
 		md-select {
 			display: block;

@@ -15,17 +15,25 @@ import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter
 import { NodePathComponent } from "./codeCharta/ui/attributeSideBar/nodePath/nodePath.component"
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
+import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 
 @NgModule({
 	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule, FormsModule],
-	declarations: [MetricDeltaSelectedComponent, NodePathComponent, FilePanelFileSelectorComponent, FilePanelStateButtonsComponent],
+	declarations: [
+		MetricDeltaSelectedComponent,
+		NodePathComponent,
+		FilePanelFileSelectorComponent,
+		FilePanelStateButtonsComponent,
+		FilePanelDeltaSelectorComponent
+	],
 	entryComponents: [
 		MapTreeViewComponent,
 		MetricDeltaSelectedComponent,
 		MatchingFilesCounterComponent,
 		NodePathComponent,
 		FilePanelFileSelectorComponent,
-		FilePanelStateButtonsComponent
+		FilePanelStateButtonsComponent,
+		FilePanelDeltaSelectorComponent
 	]
 })
 export class AppModule {
