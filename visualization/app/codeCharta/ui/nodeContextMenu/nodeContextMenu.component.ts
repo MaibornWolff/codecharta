@@ -38,16 +38,12 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		markingColors: string[]
 		nodePath: string
 		lastPartOfNodePath: string
-		isNodeFocused: boolean
-		isParentFocused: boolean
 	} = {
 		codeMapNode: null,
 		showNodeContextMenu: false,
 		markingColors: null,
 		nodePath: "",
-		lastPartOfNodePath: "",
-		isNodeFocused: false,
-		isParentFocused: false
+		lastPartOfNodePath: ""
 	}
 
 	constructor(
@@ -82,10 +78,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		this._viewModel.nodePath = path
 		this._viewModel.lastPartOfNodePath = `${path.lastIndexOf("/") === 0 ? "" : "..."}${path.slice(path.lastIndexOf("/"))}`
-
-		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath[0]
-		this._viewModel.isNodeFocused = path === focusedNodePath
-		this._viewModel.isParentFocused = path.startsWith(focusedNodePath) && path !== focusedNodePath
 
 		this._viewModel.showNodeContextMenu = true
 
@@ -253,18 +245,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 			if (codeMapBuilding) {
 				return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
 			}
-		}
-		return false
-	}
-
-	isNodeOrParentFocused() {
-		const { focusedNodePath } = this.storeService.getState().dynamicSettings
-		return Boolean(focusedNodePath[0] && this._viewModel.codeMapNode?.path.startsWith(focusedNodePath[0]))
-	}
-
-	isNodeFocused() {
-		if (this._viewModel.codeMapNode) {
-			return this._viewModel.codeMapNode.path === this.storeService.getState().dynamicSettings.focusedNodePath[0]
 		}
 		return false
 	}
