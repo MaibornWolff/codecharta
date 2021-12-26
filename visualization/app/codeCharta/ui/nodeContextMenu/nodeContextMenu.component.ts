@@ -83,7 +83,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		this._viewModel.nodePath = path
 		this._viewModel.lastPartOfNodePath = `${path.lastIndexOf("/") === 0 ? "" : "..."}${path.slice(path.lastIndexOf("/"))}`
 
-		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
+		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath[0]
 		this._viewModel.isNodeFocused = path === focusedNodePath
 		this._viewModel.isParentFocused = path.startsWith(focusedNodePath) && path !== focusedNodePath
 
@@ -103,7 +103,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		if (this.isEventFromColorPicker(mouseEvent)) return
 
 		// Just close node context menu, if you click anywhere on the map.
-		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+		this.hideContextMenu()
 	}
 
 	onBodyRightClickHideNodeContextMenu = event => {
@@ -111,12 +111,16 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		// Otherwise, if mouseup would be used and you would move the map with keeping the right button pressed,
 		// the menu would not be closed.
 		if (event.button === ClickType.RightClick) {
-			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+			this.hideContextMenu()
 		}
 	}
 
 	onMapWheelHideNodeContextMenu = () => {
 		// If you zoom in and out the map, the node context menu should be closed.
+		this.hideContextMenu()
+	}
+
+	hideContextMenu = () => {
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 	}
 
@@ -255,12 +259,12 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 
 	isNodeOrParentFocused() {
 		const { focusedNodePath } = this.storeService.getState().dynamicSettings
-		return Boolean(focusedNodePath && this._viewModel.codeMapNode?.path.startsWith(focusedNodePath))
+		return Boolean(focusedNodePath[0] && this._viewModel.codeMapNode?.path.startsWith(focusedNodePath[0]))
 	}
 
 	isNodeFocused() {
 		if (this._viewModel.codeMapNode) {
-			return this._viewModel.codeMapNode.path === this.storeService.getState().dynamicSettings.focusedNodePath
+			return this._viewModel.codeMapNode.path === this.storeService.getState().dynamicSettings.focusedNodePath[0]
 		}
 		return false
 	}
