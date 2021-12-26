@@ -5,7 +5,6 @@ import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
@@ -123,10 +122,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
 		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
 		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
-	}
-
-	focusNode() {
-		this.storeService.dispatch(focusNode(this._viewModel.codeMapNode.path))
 	}
 
 	flattenNode() {
