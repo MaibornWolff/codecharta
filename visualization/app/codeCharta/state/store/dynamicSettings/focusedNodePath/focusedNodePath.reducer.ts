@@ -11,6 +11,8 @@ export function focusedNodePath(state = defaultFocusedNodePath, action: FocusedN
 			return state.slice(1)
 		case FocusedNodePathActions.UNFOCUS_ALL_NODES:
 			return []
+		case FocusedNodePathActions.SET_ALL_FOCUSED_NODES:
+			return [...action.payload]
 		default:
 			return state
 	}

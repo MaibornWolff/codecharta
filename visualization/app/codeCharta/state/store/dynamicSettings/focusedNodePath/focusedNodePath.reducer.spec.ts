@@ -1,5 +1,5 @@
 import { focusedNodePath } from "./focusedNodePath.reducer"
-import { FocusedNodePathAction, focusNode, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
+import { FocusedNodePathAction, focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
 
 describe("focusedNodePath", () => {
 	describe("Default State", () => {
@@ -43,6 +43,14 @@ describe("focusedNodePath", () => {
 			const result = focusedNodePath(["some/path/*.ts", "foo.ts"], unfocusAllNodes())
 
 			expect(result).toEqual([])
+		})
+	})
+
+	describe("Action: SET_ALL_FOCUSED_NODES", () => {
+		it("should set all focusedNodePaths", () => {
+			const result = focusedNodePath([], setAllFocusedNodes(["some/path/*.ts", "foo.ts"]))
+
+			expect(result).toEqual(["some/path/*.ts", "foo.ts"])
 		})
 	})
 })

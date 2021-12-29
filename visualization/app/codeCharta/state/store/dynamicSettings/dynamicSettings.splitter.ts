@@ -11,6 +11,7 @@ import { splitHeightMetricAction } from "./heightMetric/heightMetric.splitter"
 import { splitDistributionMetricAction } from "./distributionMetric/distributionMetric.splitter"
 import { splitColorMetricAction } from "./colorMetric/colorMetric.splitter"
 import { splitAreaMetricAction } from "./areaMetric/areaMetric.splitter"
+import { setAllFocusedNodes } from "./focusedNodePath/focusedNodePath.actions"
 
 export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSettings>) {
 	const actions: CCAction[] = []
@@ -43,10 +44,10 @@ export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSet
 		actions.push(splitSearchPatternAction(payload.searchPattern))
 	}
 
-	// is this used?
-	// if (payload.focusedNodePath !== undefined) {
-	// 	actions.push(splitFocusedNodePathAction(payload.focusedNodePath))
-	// }
+	if (payload.focusedNodePath !== undefined) {
+		actions.push(setAllFocusedNodes(payload.focusedNodePath))
+	}
+
 	if (payload.heightMetric !== undefined) {
 		actions.push(splitHeightMetricAction(payload.heightMetric))
 	}
