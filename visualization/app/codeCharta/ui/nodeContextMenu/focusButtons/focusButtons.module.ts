@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core"
 
 import { MaterialModule } from "../../../../material/material.module"
 import { FocusButtonsComponent } from "./focusButtons.component"
-import { IsNodeFocusedPipe } from "./pipes/isNodeFocused.pipe"
+import { IsNodeFocusedPipe } from "./isNodeFocused.pipe"
 
 @NgModule({
 	imports: [CommonModule, MaterialModule],

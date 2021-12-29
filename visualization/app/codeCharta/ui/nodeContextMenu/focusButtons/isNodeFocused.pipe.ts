@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core"
 
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
 
 type IsNodeFocusedType = {
 	isNodeFocused: boolean
@@ -9,7 +9,7 @@ type IsNodeFocusedType = {
 
 @Pipe({ name: "isNodeFocused" })
 export class IsNodeFocusedPipe implements PipeTransform {
-	transform(focusedNodePath: string | undefined, node: CodeMapNode): IsNodeFocusedType {
+	transform(focusedNodePath: string | undefined, node: Pick<CodeMapNode, "path">): IsNodeFocusedType {
 		if (!focusedNodePath)
 			return {
 				isNodeFocused: false,

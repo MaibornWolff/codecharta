@@ -12,7 +12,7 @@ import { focusedNodePathSelector } from "../../../state/store/dynamicSettings/fo
 	template: require("./focusButtons.component.html")
 })
 export class FocusButtonsComponent {
-	@Input() codeMapNode: CodeMapNode
+	@Input() codeMapNode: Pick<CodeMapNode, "path">
 
 	currentFocusedNodePath$: Observable<string | undefined>
 	hasPreviousFocusedNodePath$: Observable<boolean>
