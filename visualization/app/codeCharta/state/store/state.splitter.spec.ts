@@ -40,7 +40,7 @@ describe("state.splitter", () => {
 		it("should return 1 FOCUS_NODE action", () => {
 			const partialState: RecursivePartial<State> = {
 				dynamicSettings: {
-					focusedNodePath: "/some/path"
+					focusedNodePath: ["/some/path"]
 				}
 			}
 
@@ -80,7 +80,7 @@ describe("state.splitter", () => {
 	describe("setDynamicSettings", () => {
 		it("should return 1 FOCUS_NODE action", () => {
 			const partialDynamicSettings: RecursivePartial<DynamicSettings> = {
-				focusedNodePath: "/some/path"
+				focusedNodePath: ["/some/path"]
 			}
 
 			const result: CCAction[] = splitStateActions(setDynamicSettings(partialDynamicSettings))

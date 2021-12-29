@@ -57,7 +57,7 @@ describe("FocusedNodePathService", () => {
 
 			focusedNodePathService.onStoreChanged(FocusedNodePathActions.FOCUS_NODE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("focus-node", { focusedNodePath: "some/path/*.ts" })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("focus-node", { focusedNodePath: ["some/path/*.ts"] })
 		})
 
 		it("should notify all subscribers with the new focusedNodePath value", () => {
@@ -85,7 +85,7 @@ describe("FocusedNodePathService", () => {
 
 			focusedNodePathService.onFilesSelectionChanged()
 
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual([])
 		})
 	})
 })
