@@ -87,7 +87,6 @@ export class ArtificialIntelligenceController
 	}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, isOutlier: boolean) {
-		//TODO: Improve method
 		if (this._viewModel.suspiciousMetricSuggestionLinks.includes(metric)) {
 			const mapColors = { ...this.storeService.getState().appSettings.mapColors }
 			const colorRange: ColorRange = {
