@@ -11,7 +11,7 @@ export default abstract class Treemap extends BoundingBox {
 		super(rootNode)
 	}
 
-	public abstract layout(margin: number, origin: Vector2): CodeMapNode[]
+	abstract layout(margin: number, origin: Vector2): CodeMapNode[]
 
 	calculateDimension(metricName: string): void {
 		this.metricName = metricName
