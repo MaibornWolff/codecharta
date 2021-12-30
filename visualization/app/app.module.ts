@@ -11,6 +11,8 @@ import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCoun
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
+import { Export3DMapButtonComponent } from "./codeCharta/ui/export3DMapButton/export3DMapButton.component"
+import { Export3DMapButtonModule } from "./codeCharta/ui/export3DMapButton/export3DMapButton.module"
 import { LabelledColorPickerComponent } from "./codeCharta/ui/labelledColorPicker/labelledColorPicker.component"
 import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.component"
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
@@ -26,6 +28,7 @@ import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
+		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		MarkFolderColorPickerModule
@@ -35,6 +38,7 @@ import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
 		AttributeSideBarComponent,
+		Export3DMapButtonComponent,
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,

@@ -44,6 +44,7 @@ import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
+import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
 import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 
 angular
@@ -93,4 +94,5 @@ angular
 	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
 	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
 	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
+	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
 	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))
