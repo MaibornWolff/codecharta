@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Migrate `unfocus-button-component` to Angular.
 
+### Changed
+
+-   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
+
 ## [1.86.0] - 2021-12-20
 
 ### Added 🚀
