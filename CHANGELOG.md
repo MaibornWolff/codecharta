@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
+-   do not close custom config menu when try deleting a config [#2590](https://github.com/MaibornWolff/codecharta/pull/2590).
 
 ## [1.86.0] - 2021-12-20
 
