@@ -76,6 +76,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 
 	removeCustomConfig(configId) {
 		CustomConfigHelper.deleteCustomConfig(configId)
+		this.loadCustomConfigs()
 	}
 
 	downloadPreloadedCustomConfigs() {
