@@ -10,7 +10,7 @@ export default abstract class Strip {
 		this.nodes = nodes
 	}
 
-	public abstract layout(
+	abstract layout(
 		rect: Rectangle,
 		rootSize: number,
 		metricName: string,
@@ -19,7 +19,7 @@ export default abstract class Strip {
 		order?: number
 	): CodeMapNode[]
 
-	public abstract worstAspectRatio(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string): number
+	protected abstract worstAspectRatio(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string): number
 
 	totalScaledSize(nodes: CodeMapNode[], metricName: string, rootSize: number, rootArea: number): number {
 		return nodes.reduce((total, n) => total + this.scaledSize(n, rootSize, rootArea, metricName), 0)
