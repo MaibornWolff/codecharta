@@ -214,4 +214,22 @@ describe("CustomConfigsController", () => {
 			expect(customConfigsController["_viewModel"].hasDownloadableConfigs).toBe(true)
 		})
 	})
+
+	describe("show more or less should prevent confusion of not applicable configs", () => {
+		it("show more item should increase pagination count", () => {
+			customConfigsController["_viewModel"].paginationLimit = 1
+
+			customConfigsController.showMoreItems()
+
+			expect(customConfigsController["_viewModel"].paginationLimit).toEqual(11)
+		})
+
+		it("show less item should decrease pagination count", () => {
+			customConfigsController["_viewModel"].paginationLimit = 11
+
+			customConfigsController.showLessItems()
+
+			expect(customConfigsController["_viewModel"].paginationLimit).toEqual(1)
+		})
+	})
 })

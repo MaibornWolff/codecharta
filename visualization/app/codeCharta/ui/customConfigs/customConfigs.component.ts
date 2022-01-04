@@ -81,10 +81,13 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	showMoreItems() {
-		this._viewModel.paginationLimit = this._viewModel.paginationLimit + 10
+		const itemGroupsLength = this._viewModel.dropDownCustomConfigItemGroups.length
+		const paginationLimit = this._viewModel.paginationLimit
+		this._viewModel.paginationLimit = paginationLimit + 10 >= itemGroupsLength ? itemGroupsLength : paginationLimit + 10
 	}
+
 	showLessItems() {
-		this._viewModel.paginationLimit = this._viewModel.paginationLimit - 10
+		this._viewModel.paginationLimit = this._viewModel.paginationLimit <= 10 ? 1 : this._viewModel.paginationLimit - 10
 	}
 
 	downloadPreloadedCustomConfigs() {
