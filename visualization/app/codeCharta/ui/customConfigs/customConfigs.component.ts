@@ -29,9 +29,11 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	private _viewModel: {
 		dropDownCustomConfigItemGroups: CustomConfigItemGroup[]
 		hasDownloadableConfigs: boolean
+		paginationLimit: number
 	} = {
 		dropDownCustomConfigItemGroups: [],
-		hasDownloadableConfigs: false
+		hasDownloadableConfigs: false,
+		paginationLimit: 1
 	}
 
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
@@ -76,6 +78,13 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 
 	removeCustomConfig(configId) {
 		CustomConfigHelper.deleteCustomConfig(configId)
+	}
+
+	showMoreItems() {
+		this._viewModel.paginationLimit = this._viewModel.paginationLimit + 10
+	}
+	showLessItems() {
+		this._viewModel.paginationLimit = this._viewModel.paginationLimit - 10
 	}
 
 	downloadPreloadedCustomConfigs() {

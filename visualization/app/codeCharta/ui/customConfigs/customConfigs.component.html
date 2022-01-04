@@ -34,7 +34,11 @@
 				<md-button disabled>It is time to add your first CustomConfig.</md-button>
 			</md-menu-item>
 
-			<md-menu-item class="custom-configs-item" ng-repeat="customConfigItemGroup in $ctrl._viewModel.dropDownCustomConfigItemGroups">
+			<md-menu-item
+				class="custom-configs-item"
+				ng-repeat="customConfigItemGroup in $ctrl._viewModel.dropDownCustomConfigItemGroups |
+                     limitTo:$ctrl._viewModel.paginationLimit:0"
+			>
 				<md-button class="button-hovering" ng-click="collapsed=!collapsed" md-prevent-menu-close="md-prevent-menu-close">
 					<span class="collapse-trigger">
 						Custom Configs in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
@@ -73,6 +77,20 @@
 					</div>
 				</div>
 			</md-menu-item>
+			<button
+				ng-if="$ctrl._viewModel.paginationLimit < $ctrl._viewModel.dropDownCustomConfigItemGroups.length"
+				ng-click="$ctrl.showMoreItems();"
+				md-prevent-menu-close="md-prevent-menu-close"
+			>
+				Show More <i class="fa fa-angle-down"></i>
+			</button>
+			<button
+				ng-if="$ctrl._viewModel.paginationLimit > 3"
+				ng-click="$ctrl.showLessItems();"
+				md-prevent-menu-close="md-prevent-menu-close"
+			>
+				Show Less <i class="fa fa-angle-up"></i>
+			</button>
 		</md-menu-content>
 	</md-menu>
 
