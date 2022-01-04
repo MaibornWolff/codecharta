@@ -140,7 +140,7 @@
                                     "attributes": {
                                       "number_of_authors": 2,
                                       "number_of_commits": 3,
-                                      "range_of_weeks_with_commits": 128,
+                                      "range_of_weeks_with_commits": 76,
                                       "successive_weeks_with_commits": 1,
                                       "weeks_with_commits": 2,
                                       "authors": [
