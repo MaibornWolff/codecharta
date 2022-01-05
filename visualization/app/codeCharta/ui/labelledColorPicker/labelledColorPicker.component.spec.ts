@@ -1,6 +1,6 @@
 import { EventEmitter } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { render, fireEvent, screen, waitForElementToBeRemoved, waitFor } from "@testing-library/angular"
+import { render, fireEvent, screen, waitForElementToBeRemoved } from "@testing-library/angular"
 
 import { LabelledColorPickerComponent } from "./labelledColorPicker.component"
 import { LabelledColorPickerModule } from "./labelledColorPicker.module"
@@ -15,7 +15,7 @@ describe("labelledColorPicker", () => {
 		})
 	})
 
-	it("should let a user change a color within a menu", async () => {
+	it("should display label and handle brush visibility", async () => {
 		const { container } = await render(LabelledColorPickerComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
@@ -24,39 +24,26 @@ describe("labelledColorPicker", () => {
 				onColorChange: { emit: handleColorChange } as unknown as EventEmitter<string>
 			}
 		})
+		const colorPickerTrigger = container.querySelector("cc-color-picker")
 
 		expect(container.textContent).toMatch("pretty color")
 
-		fireEvent.click(container)
-		const colorPicker = await waitFor(() => screen.getByRole("colorpicker"))
+		fireEvent.mouseEnter(colorPickerTrigger)
+		expectBrushVisibility(container, true)
+
+		fireEvent.click(colorPickerTrigger)
+		const colorPicker = screen.getByRole("colorpicker")
 		expectBrushVisibility(container, true)
 
 		// @ts-ignore
 		ng.probe(colorPicker).componentInstance.onChangeComplete.emit({ $event: {}, color: { hex: "#ffffff" } })
 		expect(handleColorChange).toHaveBeenCalledWith("#ffffff")
 
+		fireEvent.mouseLeave(colorPickerTrigger)
+		expectBrushVisibility(container, true) // still true as color picker is still open
+
 		fireEvent.click(document)
-
 		await waitForElementToBeRemoved(screen.getByRole("colorpicker"))
-		expectBrushVisibility(container, false)
-	})
-
-	it("should add/remove brush on mouseenter/mouseleave", async () => {
-		const { container } = await render(LabelledColorPickerComponent, {
-			excludeComponentDeclaration: true,
-			componentProperties: {
-				hexColor: "#000000",
-				labels: ["pretty color"],
-				onColorChange: { emit: handleColorChange } as unknown as EventEmitter<string>
-			}
-		})
-
-		expectBrushVisibility(container, false)
-
-		fireEvent.mouseEnter(container)
-		expectBrushVisibility(container, true)
-
-		fireEvent.mouseLeave(container)
 		expectBrushVisibility(container, false)
 	})
 })
