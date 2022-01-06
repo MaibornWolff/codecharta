@@ -29,11 +29,15 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	private _viewModel: {
 		dropDownCustomConfigItemGroups: CustomConfigItemGroup[]
 		hasDownloadableConfigs: boolean
-		paginationLimit: number
+		hasCustomConfigs: boolean
+		showLessButton: boolean
+		currentPagination: number
 	} = {
 		dropDownCustomConfigItemGroups: [],
 		hasDownloadableConfigs: false,
-		paginationLimit: 1
+		hasCustomConfigs: false,
+		showLessButton: false,
+		currentPagination: 0
 	}
 
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
@@ -59,6 +63,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	initView() {
 		this.loadCustomConfigs()
 		this.preloadDownloadableConfigs()
+		this.initCurrentPagination()
 	}
 
 	loadCustomConfigs() {
@@ -77,17 +82,32 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	removeCustomConfig(configId) {
+		this._viewModel.showLessButton = false
 		CustomConfigHelper.deleteCustomConfig(configId)
+		this.initCurrentPagination()
+	}
+
+	initCurrentPagination() {
+		let numberOfApplicableItems = 0
+
+		for (const { hasApplicableItems } of this._viewModel.dropDownCustomConfigItemGroups) {
+			if (hasApplicableItems) {
+				numberOfApplicableItems += 1
+			}
+		}
+
+		this._viewModel.currentPagination = numberOfApplicableItems
+		this._viewModel.hasCustomConfigs = this._viewModel.dropDownCustomConfigItemGroups.length > 0
 	}
 
 	showMoreItems() {
-		const itemGroupsLength = this._viewModel.dropDownCustomConfigItemGroups.length
-		const paginationLimit = this._viewModel.paginationLimit
-		this._viewModel.paginationLimit = paginationLimit + 10 >= itemGroupsLength ? itemGroupsLength : paginationLimit + 10
+		this._viewModel.showLessButton = true
+		this._viewModel.currentPagination = this._viewModel.dropDownCustomConfigItemGroups.length
 	}
 
 	showLessItems() {
-		this._viewModel.paginationLimit = this._viewModel.paginationLimit <= 10 ? 1 : this._viewModel.paginationLimit - 10
+		this._viewModel.showLessButton = false
+		this.initCurrentPagination()
 	}
 
 	downloadPreloadedCustomConfigs() {
