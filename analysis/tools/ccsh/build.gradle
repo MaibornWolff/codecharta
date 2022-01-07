@@ -13,7 +13,8 @@ if [ java ]; then
     if [ $version1 -ge 001009 ]; then
         DEFAULT_JVM_OPTS='"--add-opens=java.base/java.lang=ALL-UNNAMED"'
     fi
-fi'''
+fi
+'''
 
 dependencies {
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
