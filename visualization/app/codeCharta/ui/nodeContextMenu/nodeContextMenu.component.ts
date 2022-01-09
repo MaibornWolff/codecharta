@@ -15,7 +15,7 @@ import { BlacklistService } from "../../state/store/fileSettings/blacklist/black
 import { ERROR_MESSAGES } from "../../util/fileValidator"
 import type { BUILDING_RIGHT_CLICKED_EVENT_TYPE } from "../../../../src/globals"
 import { findIndexOfMarkedPackageOrParent } from "../../state/store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
-import { calculateMarkedPackages, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { markPackages, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 export enum ClickType {
 	RightClick = 2
@@ -190,7 +190,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 
 	markFolder = (color: string) => {
 		this.storeService.dispatch(
-			calculateMarkedPackages([
+			markPackages([
 				{
 					path: this._viewModel.codeMapNode.path,
 					color

@@ -12,7 +12,7 @@ export function markedPackages(state = setMarkedPackages().payload, action: Mark
 			if (indexOfPackageToBeUnmarked !== -1) return removeEntryAtIndexFromArray(state, indexOfPackageToBeUnmarked)
 			return state
 		}
-		case MarkedPackagesActions.CALCULATE_MARKED_PACKAGES_FOR_PATHS: {
+		case MarkedPackagesActions.MARK_PACKAGE: {
 			const markedPackagesMap = new Map(state.map(entry => [entry.path, entry]))
 
 			for (const markedPackage of action.payload) {
