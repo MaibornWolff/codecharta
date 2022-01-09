@@ -1,6 +1,5 @@
 import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
@@ -57,7 +56,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		private $window,
 		public $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private codeMapActionsService: CodeMapActionsService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
 		private threeSceneService: ThreeSceneService,
 		private dialogService: DialogService,

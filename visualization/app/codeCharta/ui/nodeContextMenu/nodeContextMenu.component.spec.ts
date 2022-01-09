@@ -2,7 +2,6 @@ import "./nodeContextMenu.module"
 
 import { IRootScopeService, IWindowService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
 import {
 	CODE_MAP_BUILDING,
@@ -32,7 +31,6 @@ describe("nodeContextMenuController", () => {
 	let $window: IWindowService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let codeMapActionsService: CodeMapActionsService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let threeSceneService: ThreeSceneService
 	let dialogService: DialogService
@@ -55,7 +53,6 @@ describe("nodeContextMenuController", () => {
 		$window = getService<IWindowService>("$window")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		dialogService = getService<DialogService>("dialogService")
@@ -77,7 +74,6 @@ describe("nodeContextMenuController", () => {
 			$window,
 			$rootScope,
 			storeService,
-			codeMapActionsService,
 			codeMapPreRenderService,
 			threeSceneService,
 			dialogService,
