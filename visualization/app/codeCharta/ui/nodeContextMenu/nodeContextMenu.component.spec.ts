@@ -42,7 +42,6 @@ describe("nodeContextMenuController", () => {
 		restartSystem()
 		mockElement()
 		mockWindow()
-		withMockedCodeMapActionService()
 		withMockedCodeMapPreRenderService()
 		withMockedThreeSceneService()
 		rebuildController()
@@ -84,11 +83,6 @@ describe("nodeContextMenuController", () => {
 			dialogService,
 			blacklistService
 		)
-	}
-
-	function withMockedCodeMapActionService() {
-		codeMapActionsService.markFolder = jest.fn()
-		codeMapActionsService.unmarkFolder = jest.fn()
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -398,22 +392,6 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.isNodeOrParentMarked("another color")
 
 			expect(result).toBeFalsy()
-		})
-	})
-
-	describe("markFolder", () => {
-		it("should call hide and codeMapActionService.markFolder", () => {
-			nodeContextMenuController.markFolder("color")
-
-			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode, "color")
-		})
-	})
-
-	describe("unmarkFolder", () => {
-		it("should call hide and codeMapActionService.unmarkFolder", () => {
-			nodeContextMenuController.unmarkFolder()
-
-			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode)
 		})
 	})
 
