@@ -1,21 +1,11 @@
 import { EdgeVisibility } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
-import { addMarkedPackage } from "../../state/store/fileSettings/markedPackages/util/addMarkedPackage"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export class CodeMapActionsService {
 	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {
 		"ngInject"
-	}
-
-	markFolder({ path }: { path?: string }, color: string) {
-		const { markedPackages } = this.storeService.getState().fileSettings
-		const markedPackagesMap = new Map(markedPackages.map(entry => [entry.path, entry]))
-		addMarkedPackage(markedPackagesMap, { path, color })
-
-		this.storeService.dispatch(setMarkedPackages([...markedPackagesMap.values()]))
 	}
 
 	updateEdgePreviews() {
