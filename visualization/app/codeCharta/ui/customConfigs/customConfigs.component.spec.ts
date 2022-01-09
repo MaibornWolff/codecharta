@@ -133,12 +133,17 @@ describe("CustomConfigsController", () => {
 
 	describe("removeCustomConfig", () => {
 		it("should call deleteCustomConfig", () => {
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+			customConfigsController.initView()
 			CustomConfigHelper.deleteCustomConfig = jest.fn()
 
-			const configIdToRemove = 1
-			customConfigsController.removeCustomConfig(configIdToRemove)
+			const configIdToRemove = "SINGLEfileASampleMap View #1"
+			customConfigsController.removeCustomConfig(configIdToRemove, 0, 0)
 
 			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(configIdToRemove)
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(3)
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups[0].customConfigItems).toHaveLength(1)
 		})
 	})
 
@@ -214,22 +219,19 @@ describe("CustomConfigsController", () => {
 			expect(customConfigsController["_viewModel"].hasDownloadableConfigs).toBe(true)
 		})
 	})
+
 	//TODO: Write tests for 'show more' or 'show less' functionality
-	/*	describe("show more or less should prevent confusion of not applicable configs", () => {
-		it("show more item should increase pagination count", () => {
-			customConfigsController["_viewModel"].currentPagination = 1
-
-			customConfigsController.showMoreItems()
-
-			expect(customConfigsController["_viewModel"].currentPagination).toEqual(11)
+	describe("collapse and expand non applicable custom configs", () => {
+		it("should not show configs that are not applicable by default", () => {
+			// only use index 0, 2 for this test
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
 		})
 
-		it("show less item should decrease pagination count", () => {
-			customConfigsController["_viewModel"].currentPagination = 11
+		it("should show all configs that are applicable by default", () => {})
 
-			customConfigsController.showLessItems()
+		it("should show all configs that are not applicable when 'Show More' button is clicked", () => {})
 
-			expect(customConfigsController["_viewModel"].currentPagination).toEqual(1)
-		})
-	})*/
+		it("should hide all configs that are not applicable when 'Show Less' button is clicked", () => {})
+	})
 })

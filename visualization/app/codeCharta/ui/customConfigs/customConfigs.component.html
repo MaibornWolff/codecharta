@@ -33,16 +33,11 @@
 			<md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomConfigItemGroups.length" class="custom-configs-item">
 				<md-button disabled>It is time to add your first CustomConfig.</md-button>
 			</md-menu-item>
-			<md-menu-item
-				ng-if="$ctrl._viewModel.dropDownCustomConfigItemGroups.length > 0 && $ctrl._viewModel.currentPagination === 0"
-				class="custom-configs-item"
-			>
-				<md-button disabled>Only CustomConfigs of other maps are available.</md-button>
-			</md-menu-item>
+
 			<md-menu-item
 				class="custom-configs-item"
 				ng-repeat="customConfigItemGroup in $ctrl._viewModel.dropDownCustomConfigItemGroups |
-                     limitTo: $ctrl._viewModel.currentPagination"
+                     limitTo: $ctrl._viewModel.visibleEntries"
 			>
 				<md-button
 					class="button-hovering"
@@ -78,7 +73,8 @@
 						</md-button>
 
 						<md-button
-							ng-click="$ctrl.removeCustomConfig(customConfig.id)"
+							ng-click="$ctrl.removeCustomConfig(customConfig.id, $index, $parent.$index)"
+							md-prevent-menu-close="md-prevent-menu-close"
 							class="action-button remove button-hovering"
 							title="Remove Custom Config"
 						>
@@ -88,14 +84,22 @@
 				</div>
 			</md-menu-item>
 			<button
-				ng-if="!$ctrl._viewModel.showLessButton"
-				ng-click="$ctrl.showMoreItems();"
+				ng-show="$ctrl._viewModel.showNonApplicableButton"
+				ng-click="$ctrl.toggleNonApplicableItems();"
 				md-prevent-menu-close="md-prevent-menu-close"
 			>
-				Show More <i class="fa fa-angle-down"></i>
-			</button>
-			<button ng-if="$ctrl._viewModel.showLessButton" ng-click="$ctrl.showLessItems();" md-prevent-menu-close="md-prevent-menu-close">
-				Show Less <i class="fa fa-angle-up"></i>
+				{{
+					$ctrl._viewModel.visibleEntries < $ctrl._viewModel.dropDownCustomConfigItemGroups.length
+						? "Show non-applicable CustomConfigs"
+						: "Hide non-applicable CustomConfigs"
+				}}
+				<i
+					ng-class="
+						$ctrl._viewModel.visibleEntries < $ctrl._viewModel.dropDownCustomConfigItemGroups.length
+							? 'fa fa-angle-down'
+							: 'fa fa-angle-up'
+					"
+				></i>
 			</button>
 		</md-menu-content>
 	</md-menu>
