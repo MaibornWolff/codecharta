@@ -14,6 +14,8 @@ import { DialogService } from "../dialog/dialog.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { ERROR_MESSAGES } from "../../util/fileValidator"
 import type { BUILDING_RIGHT_CLICKED_EVENT_TYPE } from "../../../../src/globals"
+import { findIndexOfMarkedPackageOrParent } from "../../state/store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
+import { unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 export enum ClickType {
 	RightClick = 2
@@ -191,7 +193,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 	}
 
 	unmarkFolder() {
-		this.codeMapActionsService.unmarkFolder(this._viewModel.codeMapNode)
+		this.storeService.dispatch(unmarkPackage(this._viewModel.codeMapNode))
 	}
 
 	calculatePosition(mouseX: number, mouseY: number) {
@@ -235,7 +237,8 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 	}
 
 	private packageMatchesColorOfParentMP(color: string) {
-		const index = this.codeMapActionsService.getParentMarkedPackageIndex(this._viewModel.codeMapNode.path)
+		const { markedPackages } = this.storeService.getState().fileSettings
+		const index = findIndexOfMarkedPackageOrParent(markedPackages, this._viewModel.codeMapNode.path)
 		if (index === -1) {
 			return false
 		}

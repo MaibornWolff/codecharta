@@ -1,7 +1,7 @@
-import { CodeMapNode, EdgeVisibility, MarkedPackage } from "../../codeCharta.model"
+import { EdgeVisibility } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { unmarkPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { addMarkedPackage } from "../../state/store/fileSettings/markedPackages/util/addMarkedPackage"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
@@ -16,18 +16,6 @@ export class CodeMapActionsService {
 		addMarkedPackage(markedPackagesMap, { path, color })
 
 		this.storeService.dispatch(setMarkedPackages([...markedPackagesMap.values()]))
-	}
-
-	unmarkFolder(node: CodeMapNode) {
-		let index = this.storeService.getState().fileSettings.markedPackages.findIndex(mp => mp.path === node.path)
-
-		if (index === -1) {
-			index = this.getParentMarkedPackageIndex(node.path)
-		}
-
-		if (index !== -1) {
-			this.storeService.dispatch(unmarkPackage(index))
-		}
 	}
 
 	updateEdgePreviews() {
@@ -57,22 +45,5 @@ export class CodeMapActionsService {
 		}
 
 		this.storeService.dispatch(setEdges(edges))
-	}
-
-	getParentMarkedPackageIndex(path: string) {
-		const markedPackages: MarkedPackage[] = this.storeService.getState().fileSettings.markedPackages
-		let index = -1
-		for (let loopIndex = 0; loopIndex < markedPackages.length; loopIndex++) {
-			const markedPackage = markedPackages[loopIndex]
-			if (
-				path.startsWith(markedPackage.path) &&
-				path !== markedPackage.path &&
-				(index === -1 || markedPackages[index].path.length < markedPackage.path.length)
-			) {
-				index = loopIndex
-			}
-		}
-
-		return index
 	}
 }
