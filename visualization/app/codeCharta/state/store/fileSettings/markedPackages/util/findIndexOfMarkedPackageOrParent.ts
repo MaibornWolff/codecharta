@@ -5,15 +5,15 @@ export const findIndexOfMarkedPackageOrParent = (markedPackages: MarkedPackage[]
 	const indexOfNodePath = markedPackages.findIndex(mp => mp.path === nodePath)
 	if (indexOfNodePath !== -1) return indexOfNodePath
 
-	let indexOfLongestParent = -1
+	let indexOfNearestParent = -1
 	for (let loopIndex = 0; loopIndex < markedPackages.length; loopIndex++) {
 		const markedPackage = markedPackages[loopIndex]
 		if (
 			nodePath.startsWith(markedPackage.path) &&
-			(indexOfLongestParent === -1 || markedPackages[indexOfLongestParent].path.length < markedPackage.path.length)
+			(indexOfNearestParent === -1 || markedPackages[indexOfNearestParent].path.length < markedPackage.path.length)
 		)
-			indexOfLongestParent = loopIndex
+			indexOfNearestParent = loopIndex
 	}
 
-	return indexOfLongestParent
+	return indexOfNearestParent
 }
