@@ -40,7 +40,8 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private downloadableConfigs: Map<string, ExportCustomConfig> = new Map()
-	private previousEntries = 0
+	private previousEntries
+	private applicableEntries = 0
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -87,29 +88,29 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].customConfigItems.splice(customConfigItemIndex, 1)
 
 		if (dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].customConfigItems.length === 0) {
+			if (dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].hasApplicableItems) {
+				this.applicableEntries--
+			}
+
 			dropDownCustomConfigItemGroups.splice(dropDownCustomConfigItemGroupIndex, 1)
 			this._viewModel.visibleEntries--
 			this.previousEntries--
-
-			if (dropDownCustomConfigItemGroups.length === 0) {
-				this._viewModel.showNonApplicableButton = false
-			}
+			this.updateButtonVisibility()
 		}
 	}
 
-	initVisibleEntries() {
-		let applicableEntries = 0
-
-		while (this._viewModel.dropDownCustomConfigItemGroups[applicableEntries]?.hasApplicableItems) {
-			applicableEntries++
+	private initVisibleEntries() {
+		this.applicableEntries = 0
+		while (this._viewModel.dropDownCustomConfigItemGroups[this.applicableEntries]?.hasApplicableItems) {
+			this.applicableEntries++
 		}
 
-		this._viewModel.showNonApplicableButton = applicableEntries < this._viewModel.dropDownCustomConfigItemGroups.length
-		this._viewModel.visibleEntries = applicableEntries
+		this._viewModel.visibleEntries = this.applicableEntries
+		this.updateButtonVisibility()
 	}
 
 	toggleNonApplicableItems() {
-		if (this._viewModel.visibleEntries < this._viewModel.dropDownCustomConfigItemGroups.length) {
+		if (!this.isExpanded()) {
 			this.previousEntries = this._viewModel.visibleEntries
 			this._viewModel.visibleEntries = this._viewModel.dropDownCustomConfigItemGroups.length
 		} else {
@@ -147,6 +148,20 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 			}
 		}
 		return false
+	}
+
+	private isExpanded(): boolean {
+		return this._viewModel.visibleEntries === this._viewModel.dropDownCustomConfigItemGroups.length
+	}
+
+	private updateButtonVisibility() {
+		if (this._viewModel.dropDownCustomConfigItemGroups.length === 0) {
+			this._viewModel.showNonApplicableButton = false
+		} else if (this.applicableEntries < this._viewModel.dropDownCustomConfigItemGroups.length) {
+			this._viewModel.showNonApplicableButton = true
+		} else {
+			this._viewModel.showNonApplicableButton = false
+		}
 	}
 }
 

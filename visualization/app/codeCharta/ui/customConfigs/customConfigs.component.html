@@ -88,18 +88,8 @@
 				ng-click="$ctrl.toggleNonApplicableItems();"
 				md-prevent-menu-close="md-prevent-menu-close"
 			>
-				{{
-					$ctrl._viewModel.visibleEntries < $ctrl._viewModel.dropDownCustomConfigItemGroups.length
-						? "Show non-applicable CustomConfigs"
-						: "Hide non-applicable CustomConfigs"
-				}}
-				<i
-					ng-class="
-						$ctrl._viewModel.visibleEntries < $ctrl._viewModel.dropDownCustomConfigItemGroups.length
-							? 'fa fa-angle-down'
-							: 'fa fa-angle-up'
-					"
-				></i>
+				{{ $ctrl.isExpanded() ? "Hide non-applicable CustomConfigs" : "Show non-applicable CustomConfigs" }}
+				<i ng-class="$ctrl.isExpanded() ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
 			</button>
 		</md-menu-content>
 	</md-menu>
