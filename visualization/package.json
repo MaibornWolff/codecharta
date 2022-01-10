@@ -169,7 +169,7 @@
 		"css-loader": "^6.0.0",
 		"eslint": "^8.0.0",
 		"eslint-config-prettier": "^8.2.0",
-		"eslint-plugin-unicorn": "^37.0.0",
+		"eslint-plugin-unicorn": "^40.0.0",
 		"file-loader": "^6.2.0",
 		"html-loader": "^1.1.0",
 		"html-loader-jest": "^0.2.1",
