@@ -1,3 +1,5 @@
+import type { CodeMapBuilding } from "../app/codeCharta/ui/codeMap/rendering/codeMapBuilding"
+
 export type BUILDING_RIGHT_CLICKED_EVENT_TYPE = {
 	building: CodeMapBuilding
 	x: number
