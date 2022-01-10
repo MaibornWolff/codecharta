@@ -20,6 +20,8 @@ import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapC
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
 import { MarkFolderColorPickerModule } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.module"
 import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.component"
+import { FocusButtonsModule } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.module"
+import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
 
 @NgModule({
 	imports: [
@@ -31,7 +33,8 @@ import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		MarkFolderColorPickerModule
+		MarkFolderColorPickerModule,
+		FocusButtonsModule
 	],
 	declarations: [],
 	entryComponents: [
@@ -42,7 +45,8 @@ import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		MarkFolderColorPickerComponent
+		MarkFolderColorPickerComponent,
+		FocusButtonsComponent
 	]
 })
 export class AppModule {
