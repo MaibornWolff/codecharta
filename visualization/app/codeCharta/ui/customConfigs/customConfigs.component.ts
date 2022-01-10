@@ -62,7 +62,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	initView() {
 		this.loadCustomConfigs()
 		this.preloadDownloadableConfigs()
-		this.initCurrentPagination()
+		this.initVisibleEntries()
 	}
 
 	loadCustomConfigs() {
@@ -91,14 +91,13 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 			this._viewModel.visibleEntries--
 			this.previousEntries--
 
-			// eslint-disable-next-line unicorn/consistent-destructuring
-			if (this._viewModel.visibleEntries === 0) {
+			if (dropDownCustomConfigItemGroups.length === 0) {
 				this._viewModel.showNonApplicableButton = false
 			}
 		}
 	}
 
-	initCurrentPagination() {
+	initVisibleEntries() {
 		let applicableEntries = 0
 
 		while (this._viewModel.dropDownCustomConfigItemGroups[applicableEntries]?.hasApplicableItems) {

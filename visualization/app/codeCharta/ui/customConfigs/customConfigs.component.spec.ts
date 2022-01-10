@@ -13,6 +13,7 @@ import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { setState } from "../../state/store/state.actions"
 import { CustomConfig, ExportCustomConfig } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { klona } from "klona"
 
 describe("CustomConfigsController", () => {
 	let customConfigsController: CustomConfigsController
@@ -133,17 +134,60 @@ describe("CustomConfigsController", () => {
 
 	describe("removeCustomConfig", () => {
 		it("should call deleteCustomConfig", () => {
-			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(klona(CUSTOM_CONFIG_ITEM_GROUPS))
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+			customConfigsController.initView()
+			CustomConfigHelper.deleteCustomConfig = jest.fn()
+			const configIdToRemove = "SINGLEfileASampleMap View #1"
+
+			customConfigsController.removeCustomConfig(configIdToRemove, 0, 0)
+
+			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(configIdToRemove)
+		})
+
+		it("should delete element from customConfigItemGroup in dropDownCustomConfigItemGroups when removing a custom config", () => {
+			const testDropDownConfigItemGroup = [klona(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBSINGLE"))]
+			const configIdToRemove = "SINGLEfileASampleMap View #1"
+
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(testDropDownConfigItemGroup)
 			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
 			customConfigsController.initView()
 			CustomConfigHelper.deleteCustomConfig = jest.fn()
 
-			const configIdToRemove = "SINGLEfileASampleMap View #1"
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(1)
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups[0].customConfigItems).toHaveLength(2)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeTruthy()
+
 			customConfigsController.removeCustomConfig(configIdToRemove, 0, 0)
 
 			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(configIdToRemove)
-			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(3)
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(1)
 			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups[0].customConfigItems).toHaveLength(1)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeTruthy()
+		})
+
+		it("should delete element from dropDownCustomConfigItemGroups when removing a custom config", () => {
+			const testDropDownConfigItemGroup = [klona(CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBMultiple"))]
+			testDropDownConfigItemGroup[0].customConfigItems.pop()
+			const configIdToRemove = "MULTIPLEfileESampleMap View #1"
+
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue([testDropDownConfigItemGroup])
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(testDropDownConfigItemGroup)
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+			customConfigsController.initView()
+			CustomConfigHelper.deleteCustomConfig = jest.fn()
+
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(1)
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups[0].customConfigItems).toHaveLength(1)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(1)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeFalsy()
+
+			customConfigsController.removeCustomConfig(configIdToRemove, 0, 0)
+
+			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(configIdToRemove)
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(0)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(0)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeFalsy()
 		})
 	})
 
@@ -220,18 +264,75 @@ describe("CustomConfigsController", () => {
 		})
 	})
 
-	//TODO: Write tests for 'show more' or 'show less' functionality
 	describe("collapse and expand non applicable custom configs", () => {
 		it("should not show configs that are not applicable by default", () => {
-			// only use index 0, 2 for this test
-			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
+			const testConfigItemGroups = [[...CUSTOM_CONFIG_ITEM_GROUPS][0], [...CUSTOM_CONFIG_ITEM_GROUPS][2]]
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(testConfigItemGroups)
 			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+
+			customConfigsController.initView()
+
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(2)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(0)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeTruthy()
 		})
 
-		it("should show all configs that are applicable by default", () => {})
+		it("should show all configs that are applicable by default", () => {
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
 
-		it("should show all configs that are not applicable when 'Show More' button is clicked", () => {})
+			customConfigsController.initView()
 
-		it("should hide all configs that are not applicable when 'Show Less' button is clicked", () => {})
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(3)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(1)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeTruthy()
+		})
+
+		it("should hide expand button when only applicable custom configs are loaded", () => {
+			const testConfigItemGroup = [CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBMultiple")]
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(testConfigItemGroup)
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+
+			customConfigsController.initView()
+
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(1)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(1)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeFalsy()
+		})
+
+		it("should show all custom configs when 'show non-applicable CustomConfigs' button is clicked", () => {
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+
+			customConfigsController.initView()
+
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(3)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(1)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeTruthy()
+
+			customConfigsController.toggleNonApplicableItems()
+
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(3)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(3)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeTruthy()
+		})
+
+		it("should hide all configs that are not applicable when 'show non-applicable CustomConfigs' button is clicked", () => {
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_CONFIG_ITEM_GROUPS)
+			CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map())
+
+			customConfigsController.initView()
+
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(3)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(1)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeTruthy()
+
+			customConfigsController.toggleNonApplicableItems()
+			customConfigsController.toggleNonApplicableItems()
+
+			expect(customConfigsController["_viewModel"].dropDownCustomConfigItemGroups).toHaveLength(3)
+			expect(customConfigsController["_viewModel"].visibleEntries).toBe(1)
+			expect(customConfigsController["_viewModel"].showNonApplicableButton).toBeTruthy()
+		})
 	})
 })
