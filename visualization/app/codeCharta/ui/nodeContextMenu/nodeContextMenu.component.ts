@@ -1,6 +1,5 @@
 import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
@@ -14,6 +13,8 @@ import { DialogService } from "../dialog/dialog.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { ERROR_MESSAGES } from "../../util/fileValidator"
 import type { BUILDING_RIGHT_CLICKED_EVENT_TYPE } from "../../../../src/globals"
+import { findIndexOfMarkedPackageOrParent } from "../../state/store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
+import { markPackages, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 export enum ClickType {
 	RightClick = 2
@@ -55,7 +56,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		private $window,
 		public $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private codeMapActionsService: CodeMapActionsService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
 		private threeSceneService: ThreeSceneService,
 		private dialogService: DialogService,
@@ -187,11 +187,18 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 	}
 
 	markFolder = (color: string) => {
-		this.codeMapActionsService.markFolder(this._viewModel.codeMapNode, color)
+		this.storeService.dispatch(
+			markPackages([
+				{
+					path: this._viewModel.codeMapNode.path,
+					color
+				}
+			])
+		)
 	}
 
 	unmarkFolder() {
-		this.codeMapActionsService.unmarkFolder(this._viewModel.codeMapNode)
+		this.storeService.dispatch(unmarkPackage(this._viewModel.codeMapNode))
 	}
 
 	calculatePosition(mouseX: number, mouseY: number) {
@@ -235,7 +242,8 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 	}
 
 	private packageMatchesColorOfParentMP(color: string) {
-		const index = this.codeMapActionsService.getParentMarkedPackageIndex(this._viewModel.codeMapNode.path)
+		const { markedPackages } = this.storeService.getState().fileSettings
+		const index = findIndexOfMarkedPackageOrParent(markedPackages, this._viewModel.codeMapNode.path)
 		if (index === -1) {
 			return false
 		}
