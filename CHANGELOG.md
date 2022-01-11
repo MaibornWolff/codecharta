@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   User-friendly renaming for display quality options [#2601](https://github.com/MaibornWolff/codecharta/pull/2601)
+
 ## [1.87.0] - 2022-01-11
 
 ### Chore 👨‍💻 👩‍💻

@@ -35,7 +35,7 @@ export class DialogGlobalSettingsPageObject {
 		await clickButtonOnPageElement("div.md-dialog-content sharpness-mode-selector-component div md-input-container md-select", {
 			visible: true
 		})
-		await clickButtonOnPageElement('md-select-menu md-content [value="Pixel Ratio without Antialiasing"]', { visible: true })
+		await clickButtonOnPageElement('md-select-menu md-content [value="Low"]', { visible: true })
 		await page.waitForSelector(".md-select-menu-container.md-active", { visible: false })
 	}
 

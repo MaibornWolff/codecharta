@@ -49,7 +49,7 @@ describe("DialogGlobalSettings", () => {
 			await globalSettingsPageObject.isTreeMapFilesComponentVisible()
 		})
 
-		it("should change the display quality to Pixel Ratio without Antialiasing", async () => {
+		it("should change the display quality to Low Setting", async () => {
 			await globalSettingsPageObject.changedDisplayQuality()
 
 			const layout = await globalSettingsPageObject.getDisplayQuality()
