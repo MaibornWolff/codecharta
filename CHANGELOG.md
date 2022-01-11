@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   User-friendly renaming for display quality options [#2601](https://github.com/MaibornWolff/codecharta/pull/2601)
 
+### Fixed 🐞
+
+-   Fix link to news page when clicking 'Know more' button changelog dialog [#2602](https://github.com/MaibornWolff/codecharta/pull/2602)
+
 ## [1.87.0] - 2022-01-11
 
 ### Chore 👨‍💻 👩‍💻
