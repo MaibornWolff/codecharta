@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.87.0] - 2022-01-11
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate `unfocus-button-component` to Angular.
