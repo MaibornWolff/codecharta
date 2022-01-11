@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
+-   Add 'show/hide non-applicable CustomConfigs' button to Custom Configs menu [#2591](https://github.com/MaibornWolff/codecharta/pull/2591).
 
 ## [1.86.0] - 2021-12-20
 
