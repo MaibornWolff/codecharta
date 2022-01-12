@@ -63,12 +63,12 @@ dependencies {
 }
 
 jar {
-    baseName = "${applicationName}"
+    archiveBaseName = "${applicationName}" as Property<String>
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': mainClassName,
                 'Implementation-Title': 'CodeCharta ccsh',
-                'Implementation-Version': version
+                'Implementation-Version': archiveVersion
     }
     zip64 true
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
