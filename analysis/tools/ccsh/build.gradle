@@ -63,7 +63,7 @@ dependencies {
 }
 
 jar {
-    archiveBaseName = "${applicationName}" as Property<String>
+    archiveBaseName = "${applicationName}"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': mainClassName,
