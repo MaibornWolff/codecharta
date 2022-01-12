@@ -3,7 +3,7 @@ cc-file-panel {
 	min-width: 400px;
 	display: inline-block;
 
-	.hidden {
+	&.hidden {
 		display: none;
 	}
 

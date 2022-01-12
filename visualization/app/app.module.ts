@@ -14,9 +14,18 @@ import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attr
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
+import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 
 @NgModule({
-	imports: [BrowserModule, MaterialModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, FormsModule],
+	imports: [
+		BrowserModule,
+		MaterialModule,
+		UpgradeModule,
+		MapTreeViewModule,
+		MatchingFilesCounterModule,
+		FormsModule,
+		AttributeSideBarModule
+	],
 	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent],
 	entryComponents: [
 		MapTreeViewComponent,
