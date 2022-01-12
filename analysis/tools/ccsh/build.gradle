@@ -17,7 +17,7 @@ fi
 '''
 
 dependencies {
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
 
     def codeMaatImporter = project(':import:CodeMaatImporter')
     def crococosmoImporter = project(':import:CrococosmoImporter')
@@ -36,38 +36,39 @@ dependencies {
     def csvExporter = project(':export:CSVExporter')
     def rawTextParser = project(':parser:RawTextParser')
 
-    // first compile is for dependency in main, testCompile is so our test suite can find all other tests
-    compile codeMaatImporter; testCompile codeMaatImporter.sourceSets.test.output
-    compile crococosmoImporter; testCompile crococosmoImporter.sourceSets.test.output
-    compile csvImporter; testCompile csvImporter.sourceSets.test.output
-    compile jasomeImporter; testCompile jasomeImporter.sourceSets.test.output
-    compile scmlogParser; testCompile scmlogParser.sourceSets.test.output
-    compile scmlogParserV2; testCompile scmlogParserV2.sourceSets.test.output
-    compile sonarImporter; testCompile sonarImporter.sourceSets.test.output
-    compile sourceCodeParser; testCompile sourceCodeParser.sourceSets.test.output
-    compile tokeiImporter; testCompile tokeiImporter.sourceSets.test.output
-    compile understandImporter; testCompile understandImporter.sourceSets.test.output
-    compile mergeFilter; testCompile mergeFilter.sourceSets.test.output
-    compile edgeFilter; testCompile edgeFilter.sourceSets.test.output
-    compile validationTool; testCompile validationTool.sourceSets.test.output
-    compile csvExporter; testCompile csvExporter.sourceSets.test.output
-    compile structureModifier; testCompile structureModifier.sourceSets.test.output
-    compile rawTextParser; testCompile rawTextParser.sourceSets.test.output
+    // first implementation is for dependency in main, testImplementation is so our test suite can find all other tests
+    implementation codeMaatImporter; testImplementation codeMaatImporter.sourceSets.test.output
+    implementation crococosmoImporter; testImplementation crococosmoImporter.sourceSets.test.output
+    implementation csvImporter; testImplementation csvImporter.sourceSets.test.output
+    implementation jasomeImporter; testImplementation jasomeImporter.sourceSets.test.output
+    implementation scmlogParser; testImplementation scmlogParser.sourceSets.test.output
+    implementation scmlogParserV2; testImplementation scmlogParserV2.sourceSets.test.output
+    implementation sonarImporter; testImplementation sonarImporter.sourceSets.test.output
+    implementation sourceCodeParser; testImplementation sourceCodeParser.sourceSets.test.output
+    implementation tokeiImporter; testImplementation tokeiImporter.sourceSets.test.output
+    implementation understandImporter; testImplementation understandImporter.sourceSets.test.output
+    implementation mergeFilter; testImplementation mergeFilter.sourceSets.test.output
+    implementation edgeFilter; testImplementation edgeFilter.sourceSets.test.output
+    implementation validationTool; testImplementation validationTool.sourceSets.test.output
+    implementation csvExporter; testImplementation csvExporter.sourceSets.test.output
+    implementation structureModifier; testImplementation structureModifier.sourceSets.test.output
+    implementation rawTextParser; testImplementation rawTextParser.sourceSets.test.output
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
 
-    testCompile("org.junit.platform:junit-platform-runner:$junit_platform_version")
+    testImplementation("org.junit.platform:junit-platform-runner:$junit_platform_version")
 }
 
 jar {
-    baseName = "${applicationName}"
+    archiveBaseName = "${applicationName}"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': mainClassName,
                 'Implementation-Title': 'CodeCharta ccsh',
-                'Implementation-Version': version
+                'Implementation-Version': archiveVersion
     }
     zip64 true
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
