@@ -48,7 +48,7 @@ describe("TreeMapHelper", () => {
 			state.dynamicSettings.margin = 15
 			state.dynamicSettings.heightMetric = "theHeight"
 			state.appSettings.invertHeight = false
-			state.dynamicSettings.focusedNodePath = ""
+			state.dynamicSettings.focusedNodePath = []
 		})
 
 		function buildNode() {
@@ -117,7 +117,7 @@ describe("TreeMapHelper", () => {
 		})
 
 		it("should be visible if it's a children of the focused node path", () => {
-			state.dynamicSettings.focusedNodePath = "/root"
+			state.dynamicSettings.focusedNodePath = ["/root"]
 			expect(buildNode().visible).toBeTruthy()
 		})
 

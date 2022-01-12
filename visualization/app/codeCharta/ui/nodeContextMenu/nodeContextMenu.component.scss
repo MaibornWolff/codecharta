@@ -20,7 +20,9 @@ node-context-menu-component {
 		background-repeat: no-repeat no-repeat;
 		pointer-events: none;
 	}
-	.md-button:not(.colorButton) {
+	.md-button:not(.colorButton),
+	[mat-button] {
+		width: 100%;
 		text-align: left;
 		margin-top: 0;
 		line-height: 30px;

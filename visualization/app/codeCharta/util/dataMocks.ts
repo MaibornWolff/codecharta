@@ -1745,7 +1745,7 @@ export const STATE: State = {
 		colorMetric: "mcc",
 		distributionMetric: "mcc",
 		edgeMetric: "pairingRate",
-		focusedNodePath: "/root/ParentLeaf",
+		focusedNodePath: ["/root/ParentLeaf"],
 		searchPattern: "",
 		margin: 48,
 		colorRange: {
@@ -1876,7 +1876,7 @@ export const DEFAULT_STATE: State = {
 	dynamicSettings: {
 		areaMetric: null,
 		colorMetric: null,
-		focusedNodePath: "",
+		focusedNodePath: [],
 		heightMetric: null,
 		distributionMetric: null,
 		edgeMetric: null,

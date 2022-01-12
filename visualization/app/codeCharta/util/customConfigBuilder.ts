@@ -99,7 +99,7 @@ function initializeDynamicSettings(target: CustomConfig) {
 		colorMetric: "",
 		distributionMetric: "",
 		edgeMetric: "",
-		focusedNodePath: undefined,
+		focusedNodePath: [],
 		heightMetric: "",
 		margin: 0,
 		searchPattern: "",
