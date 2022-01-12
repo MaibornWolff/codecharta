@@ -149,8 +149,8 @@ CodeMapBuilding {
   },
   "_color": "#EB8319",
   "_defaultColor": "#ddcc00",
-  "_defaultDeltaColor": "#000000",
-  "_deltaColor": "#000000",
+  "_defaultDeltaColor": "#EB8319",
+  "_deltaColor": "#EB8319",
   "_id": 1,
   "_node": Object {
     "attributes": Object {
