@@ -1,10 +1,8 @@
-<div class="mode-chooser">
-	<cc-file-panel-state-buttons
-		[is-delta-state]="$ctrl._viewModel.isDeltaState"
-		[handle-standard-button-clicked]="$ctrl.selectRecentPartialFiles"
-		[handle-delta-button-clicked]="$ctrl.onDeltaStateSelected"
-	></cc-file-panel-state-buttons>
-</div>
+<cc-file-panel-state-buttons
+	[is-delta-state]="$ctrl._viewModel.isDeltaState"
+	[handle-standard-button-clicked]="$ctrl.selectRecentPartialFiles"
+	[handle-delta-button-clicked]="$ctrl.onDeltaStateSelected"
+></cc-file-panel-state-buttons>
 
 <cc-file-panel-file-selector
 	style="display: inline-block; width: 200px"

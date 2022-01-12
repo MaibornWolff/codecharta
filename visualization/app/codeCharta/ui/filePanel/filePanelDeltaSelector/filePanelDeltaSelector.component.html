@@ -2,8 +2,8 @@
 
 <mat-select
 	class="delta-select"
-	[ngModel]="selectedDeltaReferenceFile"
-	(ngModelChange)="handleDeltaReferenceFileChange(selectedDeltaReferenceFile)"
+	[(ngModel)]="selectedDeltaReferenceFile"
+	(selectionChange)="handleDeltaReferenceFileChange(selectedDeltaReferenceFile)"
 >
 	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
 		{{ file.file.fileMeta.fileName }}
@@ -14,8 +14,8 @@
 
 <mat-select
 	class="delta-select"
-	[ngModel]="selectedDeltaComparisonFile"
-	(ngModelChange)="handleDeltaComparisonFileChange(selectedDeltaComparisonFile)"
+	[(ngModel)]="selectedDeltaComparisonFile"
+	(selectionChange)="handleDeltaComparisonFileChange(selectedDeltaComparisonFile)"
 >
 	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
 		{{ file.file.fileMeta.fileName }}

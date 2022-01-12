@@ -3,6 +3,10 @@ cc-file-panel {
 	min-width: 400px;
 	display: inline-block;
 
+	.hidden {
+		display: none;
+	}
+
 	.delta-chooser {
 		position: absolute;
 		display: inline-flex;
