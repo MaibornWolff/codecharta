@@ -1,6 +1,6 @@
 import "./nodeContextMenu.module"
 
-import { IRootScopeService, IWindowService, ITimeoutService } from "angular"
+import { IRootScopeService, IWindowService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
@@ -30,7 +30,6 @@ import { BlacklistService } from "../../state/store/fileSettings/blacklist/black
 describe("nodeContextMenuController", () => {
 	let element: Element
 	let nodeContextMenuController: NodeContextMenuController
-	let $timeout: ITimeoutService
 	let $window: IWindowService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
@@ -56,7 +55,6 @@ describe("nodeContextMenuController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.nodeContextMenu")
 
-		$timeout = getService<ITimeoutService>("$timeout")
 		$window = getService<IWindowService>("$window")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
@@ -79,7 +77,6 @@ describe("nodeContextMenuController", () => {
 	function rebuildController() {
 		nodeContextMenuController = new NodeContextMenuController(
 			element,
-			$timeout,
 			$window,
 			$rootScope,
 			storeService,

@@ -28,10 +28,10 @@ import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetri
 import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { SecondaryMetricsActions } from "../../state/store/appSettings/secondaryMetrics/secondaryMetrics.actions"
 import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
 import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -107,8 +107,7 @@ export class CodeMapPreRenderService
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
 			!isActionOfType(actionType, PanelSelectionActions) &&
 			!isActionOfType(actionType, PresentationModeActions) &&
-			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions) &&
-			!isActionOfType(actionType, SecondaryMetricsActions)
+			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
 		) {
 			this.debounceRendering()
 			this.debounceTracking(actionType)
@@ -177,7 +176,7 @@ export class CodeMapPreRenderService
 
 	private allNecessaryRenderDataAvailable() {
 		return (
-			this.storeService.getState().metricData.nodeMetricData !== null &&
+			nodeMetricDataSelector(this.storeService.getState()) !== null &&
 			fileStatesAvailable(this.storeService.getState().files) &&
 			this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {

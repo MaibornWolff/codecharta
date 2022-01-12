@@ -5,32 +5,23 @@ import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
 import { FormsModule } from "@angular/forms"
-
-import { MetricDeltaSelectedComponent } from "./codeCharta/ui/metricDeltaSelected/metricDeltaSelected.component"
 import { MaterialModule } from "./material/material.module"
 import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
 import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
 import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
-import { NodePathComponent } from "./codeCharta/ui/attributeSideBar/nodePath/nodePath.component"
+import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 
 @NgModule({
-	imports: [BrowserModule, UpgradeModule, MaterialModule, MapTreeViewModule, MatchingFilesCounterModule, FormsModule],
-	declarations: [
-		MetricDeltaSelectedComponent,
-		NodePathComponent,
-		FilePanelFileSelectorComponent,
-		FilePanelStateButtonsComponent,
-		FilePanelDeltaSelectorComponent
-	],
+	imports: [BrowserModule, MaterialModule, UpgradeModule, MapTreeViewModule, MatchingFilesCounterModule, FormsModule],
+	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent],
 	entryComponents: [
 		MapTreeViewComponent,
-		MetricDeltaSelectedComponent,
 		MatchingFilesCounterComponent,
-		NodePathComponent,
+		AttributeSideBarComponent,
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent

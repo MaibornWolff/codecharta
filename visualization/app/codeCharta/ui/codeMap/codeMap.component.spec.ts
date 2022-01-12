@@ -1,6 +1,6 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapController } from "./codeMap.component"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
@@ -15,7 +15,6 @@ import { setPanelSelection } from "../../state/store/appSettings/panelSelection/
 describe("ColorSettingsPanelController", () => {
 	let codeMapController: CodeMapController
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let $element: Element
 	let storeService: StoreService
 	let threeViewerService: ThreeViewerService
@@ -33,7 +32,6 @@ describe("ColorSettingsPanelController", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 		codeMapMouseEventService = getService<CodeMapMouseEventService>("codeMapMouseEventService")
@@ -59,7 +57,6 @@ describe("ColorSettingsPanelController", () => {
 	function rebuildController() {
 		codeMapController = new CodeMapController(
 			$rootScope,
-			$timeout,
 			$element,
 			threeViewerService,
 			codeMapMouseEventService,

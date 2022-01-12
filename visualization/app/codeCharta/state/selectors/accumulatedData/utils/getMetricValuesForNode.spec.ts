@@ -2,7 +2,7 @@ import { HierarchyNode } from "d3-hierarchy"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { getMetricValuesForNode } from "./getMetricValuesForNode"
 
-jest.mock("../../../store/metricData/edgeMetricData/edgeMetricData.reducer", () => ({
+jest.mock("../metricData/edgeMetricData.selector", () => ({
 	nodeEdgeMetricsMap: {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		get: (_metricName: string) => ({

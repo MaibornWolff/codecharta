@@ -103,19 +103,19 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					name: "file2.java",
 					path: "/root/src/main/file2.java",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, loc: 100 }
+					attributes: { rloc: 55, functions: 100, mcc: 40, loc: 100 }
 				},
 				{
 					name: "file3.java",
 					path: "/root/src/main/file3.java",
 					type: NodeType.FILE,
-					attributes: { rloc: 70, functions: 1, mcc: 1, loc: 1 }
+					attributes: { rloc: 45, functions: 1, mcc: 70, loc: 1 }
 				},
 				{
 					name: "readme",
 					path: "/root/src/main/readme",
 					type: NodeType.FILE,
-					attributes: { rloc: 200, functions: 1, mcc: 1, loc: 1 }
+					attributes: { rloc: 200, functions: 1, mcc: 70, loc: 1 }
 				}
 			]
 		},
@@ -129,7 +129,7 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					name: "otherFile.java",
 					path: "/root/src/test/otherFile.java",
 					type: NodeType.FILE,
-					attributes: { rloc: 100, functions: 10, mcc: 1 }
+					attributes: { rloc: 100, functions: 10, mcc: 100 }
 				}
 			]
 		}
@@ -1759,7 +1759,6 @@ export const STATE: State = {
 		recentFiles: ["fileA", "fileB"]
 	},
 	appSettings: {
-		secondaryMetrics: [],
 		amountOfTopLabels: 31,
 		amountOfEdgePreviews: 5,
 		colorLabels: {
@@ -1817,10 +1816,6 @@ export const STATE: State = {
 		idToNode: new Map(),
 		idToBuilding: new Map()
 	},
-	metricData: {
-		nodeMetricData: METRIC_DATA,
-		edgeMetricData: EDGE_METRIC_DATA
-	},
 	appStatus: {
 		hoveredBuildingPath: null,
 		selectedBuildingId: null
@@ -1829,7 +1824,6 @@ export const STATE: State = {
 
 export const DEFAULT_STATE: State = {
 	appSettings: {
-		secondaryMetrics: [],
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,
 		colorLabels: {
@@ -1904,10 +1898,6 @@ export const DEFAULT_STATE: State = {
 	lookUp: {
 		idToBuilding: new Map(),
 		idToNode: new Map()
-	},
-	metricData: {
-		nodeMetricData: [],
-		edgeMetricData: []
 	},
 	appStatus: {
 		hoveredBuildingPath: null,
@@ -2242,6 +2232,31 @@ export const TEST_NODE_LEAF: Node = {
 	markingColor: "0xFFFFFF",
 	flat: false,
 	color: "#ddcc00",
+	incomingEdgePoint: new Vector3(),
+	outgoingEdgePoint: new Vector3()
+}
+
+export const TEST_NODE_FOLDER: Node = {
+	name: "root",
+	id: 1,
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	mapNodeDepth: 1,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: false,
+	attributes: { a: 20, b: 15 },
+	edgeAttributes: { c: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root",
+	flat: false,
+	link: "NO_LINK",
+	color: "#ddcc00",
+	markingColor: "0xFFFFFF",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }

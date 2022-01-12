@@ -193,7 +193,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	selectBuilding(building: CodeMapBuilding) {
-		// TODO this check shouldn't be necessary. When investing into model we should investigate why and remove the need.
+		// TODO: This check shouldn't be necessary. When investing into model we should investigate why and remove the need.
 		if (building.id !== this.selected?.id) {
 			this.storeService.dispatch(setSelectedBuildingId(building.node.id))
 		}
@@ -223,10 +223,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
 
 			const norm = Math.sqrt(this.rayPoint.x ** 2 + this.rayPoint.y ** 2 + this.rayPoint.z ** 2)
-			const cameraPoint = raycaster.ray.origin
-			const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
-
 			this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
+
+			const cameraPoint = raycaster.ray.origin
+			const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint)
+
 			this.normedTransformVector.multiplyScalar(maxDistance)
 
 			hoveredLabel.position.add(this.normedTransformVector)
@@ -277,11 +278,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
-		if (!labels) {
-			return null
-		}
 		// 2-step: the labels array consists of alternating label and the corresponding label antennae
-		for (let counter = 0; counter < labels.length; counter += 2) {
+		for (let counter = 0; counter < labels?.length; counter += 2) {
 			if (labels[counter].userData.node === hoveredBuilding.node) {
 				return labels[counter]
 			}
@@ -293,60 +291,50 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		return Number(a.max[dimension] >= b.min[dimension] && b.max[dimension] >= a.min[dimension])
 	}
 
-	private getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
-		normedVector.multiplyScalar(distance)
-		bboxHoveredLabel.translate(normedVector)
-		const count =
-			this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "x") +
-			this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "y")
-		if (count === 2 || (count === 1 && this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "z"))) {
-			return distance
+	private getIntersectionDistanceFunction(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3) {
+		return (distance: number) => {
+			const normedVector = this.normedTransformVector.clone()
+			normedVector.multiplyScalar(distance)
+			bboxHoveredLabel.translate(normedVector)
+			const count =
+				this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "x") +
+				this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "y")
+			if (count === 2 || (count === 1 && this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "z"))) {
+				return distance
+			}
+			return 0
 		}
-		return 0
 	}
 
-	private calculateMaxDistance(hoveredLabel: Object3D, labels: Object3D[], cameraPoint: Vector3, norm: number) {
-		let maxDistance = 0
-
+	private calculateMaxDistance(hoveredLabel: Object3D, labels: Object3D[], cameraPoint: Vector3) {
 		const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel)
 		const centerPoint = new Vector3()
 		bboxHoveredLabel.getCenter(centerPoint)
 		const distanceLabelCenterToCamera = cameraPoint.distanceTo(centerPoint)
-		let maxDistanceForLabel = distanceLabelCenterToCamera / 20
+		let maxDistance = distanceLabelCenterToCamera / 20
 
 		for (let counter = 0; counter < labels.length; counter += 2) {
-			//creates a nice small highlighting for hovered, unobstructed labels, empirically gathered value
-
-			const bboxHoveredLabelWorkingCopy = bboxHoveredLabel.clone()
-
+			// Creates a nice small highlighting for hovered, unobstructed
+			// labels, empirically gathered value.
 			if (labels[counter] !== hoveredLabel) {
+				const bboxHoveredLabelWorkingCopy = bboxHoveredLabel.clone()
 				const bboxObstructingLabel = new Box3().setFromObject(labels[counter])
 				const centerPoint2 = new Vector3()
 
 				bboxObstructingLabel.getCenter(centerPoint2)
 
-				maxDistanceForLabel = Math.max(
-					this.getIntersectionDistance(
-						bboxHoveredLabelWorkingCopy,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)
-					),
-					this.getIntersectionDistance(
-						bboxHoveredLabelWorkingCopy,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)
-					),
-					this.getIntersectionDistance(
-						bboxHoveredLabelWorkingCopy,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)
-					)
+				const calculateIntersectionDistance = this.getIntersectionDistanceFunction(
+					bboxHoveredLabelWorkingCopy,
+					bboxObstructingLabel
+				)
+
+				maxDistance = Math.max(
+					calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)),
+					calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)),
+					calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)),
+					maxDistance
 				)
 			}
-			maxDistance = Math.max(maxDistance, maxDistanceForLabel)
 		}
 		return maxDistance
 	}

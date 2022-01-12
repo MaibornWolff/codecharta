@@ -25,6 +25,6 @@ _Conventions for csv input:_
 ## Usage
 
 ```
-csvimport [-ch] [--path-separator=<pathSeparator>]
+csvimport [-nc] [--path-separator=<pathSeparator>]
           [-d=<csvDelimiter>] [-o=<outputFile>] FILE
 ```
