@@ -1,13 +1,11 @@
-<hr ng-show="($ctrl._viewModel.packageLists | json) != '{}'" />
+<ng-container *ngIf="hasMarkedPackages$ | async">
+	<hr />
 
-<div
-	ng-repeat="(color, markedPackagesPath) in $ctrl._viewModel.packageLists track by markedPackagesPath"
-	class="cc-legend-marked-packages-color-picker-wrapper"
-	ng-click="colorPickerApi.open()"
->
-	<color-picker ng-model="$ctrl._colorPickerScopes[markedPackagesPath[0]]" event-api="colorPickerEventApi" api="colorPickerApi">
-	</color-picker>
-	<p class="cc-legend-marked-packages-color-picker-label">
-		<span ng-repeat="markedPackagePath in markedPackagesPath"> {{ markedPackagePath }}<br ng-if="!$last" /> </span>
-	</p>
-</div>
+	<ng-container *ngFor="let markedPackage of markedPackagesMap$ | async | keyvalue: sortMarkedPackagesMap; trackBy: trackMarkedPackage">
+		<cc-labelled-color-picker
+			[hexColor]="markedPackage.key"
+			[labels]="markedPackage.value"
+			(onColorChange)="handleColorChange($event, markedPackage.value)"
+		></cc-labelled-color-picker>
+	</ng-container>
+</ng-container>

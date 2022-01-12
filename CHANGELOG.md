@@ -7,9 +7,45 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## Fixed 🐞
+### Changed
 
--   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557)
+-   User-friendly renaming for display quality options [#2601](https://github.com/MaibornWolff/codecharta/pull/2601)
+
+### Fixed 🐞
+
+-   Fix link to news page when clicking 'Know more' button changelog dialog [#2602](https://github.com/MaibornWolff/codecharta/pull/2602)
+
+## [1.87.0] - 2022-01-11
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate `unfocus-button-component` to Angular.
+
+### Changed
+
+-   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
+-   Add 'show/hide non-applicable CustomConfigs' button to Custom Configs menu [#2591](https://github.com/MaibornWolff/codecharta/pull/2591).
+
+## [1.86.0] - 2021-12-20
+
+### Added 🚀
+
+-   Add 3D export feature for 3D printing [#2561](https://github.com/MaibornWolff/codecharta/pull/2561). <br>
+    <img src="https://user-images.githubusercontent.com/48621967/146173663-e0ea177e-6ed8-4ddb-bd11-410415541e9f.png" height="32px" alt="two menu buttons"/> <br>
+    <img src="https://user-images.githubusercontent.com/48621967/146174397-42a6e475-ed2f-47c0-ba9c-4f8304d53399.png" height="256px" alt="two menu buttons"/>
+
+### Changed
+
+-   Replace all color pickers in the context of ongoing Angular migration [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
+
+### Fixed 🐞
+
+-   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557).
+-   Fix minor memory leak in context menu for code map buildings [#2565](https://github.com/MaibornWolff/codecharta/issues/2565).
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate legend panel to Angular [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
 
 ## [1.85.0] - 2021-12-13
 

@@ -6,12 +6,12 @@ export enum MapColorsActions {
 
 export interface SetMapColorsAction extends CCAction {
 	type: MapColorsActions.SET_MAP_COLORS
-	payload: MapColors
+	payload: Partial<MapColors>
 }
 
 export type MapColorsAction = SetMapColorsAction
 
-export function setMapColors(mapColors: MapColors = defaultMapColors): SetMapColorsAction {
+export function setMapColors(mapColors: Partial<MapColors> = defaultMapColors): SetMapColorsAction {
 	return {
 		type: MapColorsActions.SET_MAP_COLORS,
 		payload: mapColors

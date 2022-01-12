@@ -1,9 +1,14 @@
-import { CCAction, MarkedPackage } from "../../../../codeCharta.model"
+import { CCAction, CodeMapNode, MarkedPackage } from "../../../../codeCharta.model"
 
 export enum MarkedPackagesActions {
 	SET_MARKED_PACKAGES = "SET_MARKED_PACKAGES",
 	MARK_PACKAGE = "MARK_PACKAGE",
 	UNMARK_PACKAGE = "UNMARK_PACKAGE"
+}
+
+export interface MarkPackagesAction extends CCAction {
+	type: MarkedPackagesActions.MARK_PACKAGE
+	payload: MarkedPackage[]
 }
 
 export interface SetMarkedPackagesAction extends CCAction {
@@ -13,10 +18,17 @@ export interface SetMarkedPackagesAction extends CCAction {
 
 export interface UnmarkPackageAction extends CCAction {
 	type: MarkedPackagesActions.UNMARK_PACKAGE
-	payload: number
+	payload: CodeMapNode["path"]
 }
 
-export type MarkedPackagesAction = SetMarkedPackagesAction | UnmarkPackageAction
+export type MarkedPackagesAction = SetMarkedPackagesAction | UnmarkPackageAction | MarkPackagesAction
+
+export function markPackages(packagesToBeMarked: MarkedPackage[]): MarkPackagesAction {
+	return {
+		type: MarkedPackagesActions.MARK_PACKAGE,
+		payload: packagesToBeMarked
+	}
+}
 
 export function setMarkedPackages(markedPackages: MarkedPackage[] = defaultMarkedPackages): SetMarkedPackagesAction {
 	return {
@@ -25,10 +37,10 @@ export function setMarkedPackages(markedPackages: MarkedPackage[] = defaultMarke
 	}
 }
 
-export function unmarkPackage(index: number): UnmarkPackageAction {
+export function unmarkPackage(node: Pick<CodeMapNode, "path">): UnmarkPackageAction {
 	return {
 		type: MarkedPackagesActions.UNMARK_PACKAGE,
-		payload: index
+		payload: node.path
 	}
 }
 

@@ -24,7 +24,7 @@ color-settings-panel-component {
 		margin: 0 3px;
 
 		.row md-checkbox,
-		.row cc-store-color-picker {
+		.row cc-color-picker-for-map-color {
 			display: inline-block;
 		}
 	}
@@ -35,12 +35,13 @@ color-settings-panel-component {
 		height: 35px;
 	}
 
-	.spacer .cc-store-color-picker-wrapper {
-		margin-bottom: 12px;
+	.spacer cc-color-picker-for-map-color {
+		margin-top: 8px;
+		margin-bottom: 8px;
 	}
 
-	cc-store-color-picker p.cc-store-color-picker-label {
-		margin-left: 12px;
+	.spacer cc-color-picker-for-map-color div.cc-color-swatch-container {
+		margin-right: 12px;
 	}
 
 	.bottom-row {

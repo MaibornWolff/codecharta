@@ -2,7 +2,6 @@ import "./nodeContextMenu.module"
 
 import { IRootScopeService, IWindowService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
 import {
 	CODE_MAP_BUILDING,
@@ -18,9 +17,7 @@ import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
@@ -33,7 +30,6 @@ describe("nodeContextMenuController", () => {
 	let $window: IWindowService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let codeMapActionsService: CodeMapActionsService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let threeSceneService: ThreeSceneService
 	let dialogService: DialogService
@@ -43,11 +39,9 @@ describe("nodeContextMenuController", () => {
 		restartSystem()
 		mockElement()
 		mockWindow()
-		withMockedCodeMapActionService()
 		withMockedCodeMapPreRenderService()
 		withMockedThreeSceneService()
 		rebuildController()
-		withMockedHideNodeContextMenuMethod()
 
 		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
 	})
@@ -58,7 +52,6 @@ describe("nodeContextMenuController", () => {
 		$window = getService<IWindowService>("$window")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		dialogService = getService<DialogService>("dialogService")
@@ -80,7 +73,6 @@ describe("nodeContextMenuController", () => {
 			$window,
 			$rootScope,
 			storeService,
-			codeMapActionsService,
 			codeMapPreRenderService,
 			threeSceneService,
 			dialogService,
@@ -88,17 +80,8 @@ describe("nodeContextMenuController", () => {
 		)
 	}
 
-	function withMockedCodeMapActionService() {
-		codeMapActionsService.markFolder = jest.fn()
-		codeMapActionsService.unmarkFolder = jest.fn()
-	}
-
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
-	}
-
-	function withMockedHideNodeContextMenuMethod() {
-		nodeContextMenuController.onHideNodeContextMenu = jest.fn()
 	}
 
 	function withMockedThreeSceneService() {
@@ -131,28 +114,26 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should subscribe to 'on-building-right-clicked' events", () => {
-			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-			CodeMapMouseEventService.subscribeToBuildingRightClickedEvents = jest.fn()
-
+			const documentAddEventListenerSpy = jest.spyOn(document, "addEventListener")
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith(
-				$rootScope,
-				nodeContextMenuController
+			expect(documentAddEventListenerSpy).toHaveBeenCalledWith(
+				"building-right-clicked",
+				nodeContextMenuController.onBuildingRightClicked
 			)
 		})
 	})
 
 	describe("onShowNodeContextMenu", () => {
-		let elementMock
+		let mockedWheelTargetElement
 		beforeEach(() => {
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
 
 			document.body.addEventListener = jest.fn()
-			elementMock = { addEventListener: jest.fn() }
+			mockedWheelTargetElement = { addEventListener: jest.fn(), removeEventListener: jest.fn() }
 			// @ts-ignore
-			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
+			jest.spyOn(document, "getElementById").mockImplementation(() => mockedWheelTargetElement)
 		})
 
 		it("should set the correct building after some timeout", () => {
@@ -168,7 +149,7 @@ describe("nodeContextMenuController", () => {
 			expect(document.body.addEventListener).toHaveBeenNthCalledWith(2, "mousedown", expect.anything(), expect.anything())
 
 			expect(document.getElementById).toHaveBeenCalledWith("codeMap")
-			expect(elementMock.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
+			expect(mockedWheelTargetElement.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
 		})
 
 		it("should not shorten the path if it has no sub paths", () => {
@@ -186,27 +167,26 @@ describe("nodeContextMenuController", () => {
 			expect(nodeContextMenuController["_viewModel"].lastPartOfNodePath).toBe(`...${nodePath.slice(nodePath.lastIndexOf("/"))}`)
 		})
 
-		it("should set if the node is focused or it's parent is focuesd", () => {
-			storeService.dispatch(unfocusNode())
-			storeService.dispatch(focusNode("/root/big leaf"))
-			nodeContextMenuController.onShowNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
-			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(true)
-			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(false)
-			storeService.dispatch(unfocusNode())
-			storeService.dispatch(focusNode("/root/other big leaf"))
-			nodeContextMenuController.onShowNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
-			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
-			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(false)
-			storeService.dispatch(unfocusNode())
-			storeService.dispatch(focusNode("/root"))
-			nodeContextMenuController.onShowNodeContextMenu("/root/ParentLeaf/smallLeaf", NodeType.FILE, 521, 588)
-			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
-			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(true)
-			storeService.dispatch(unfocusNode())
-			storeService.dispatch(focusNode("/root/ParentLeaf"))
-			nodeContextMenuController.onShowNodeContextMenu("/root/ParentLeaf/smallLeaf", NodeType.FOLDER, 521, 588)
-			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
-			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(true)
+		it("should remove all listener on hide", () => {
+			const documentRemoveEventListenerSpy = jest.spyOn(document.body, "removeEventListener")
+
+			nodeContextMenuController.onHideNodeContextMenu()
+
+			expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith(
+				"click",
+				nodeContextMenuController.onBodyLeftClickHideNodeContextMenu,
+				true
+			)
+			expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith(
+				"mousedown",
+				nodeContextMenuController.onBodyRightClickHideNodeContextMenu,
+				true
+			)
+			expect(mockedWheelTargetElement.removeEventListener).toHaveBeenCalledWith(
+				"wheel",
+				nodeContextMenuController.onMapWheelHideNodeContextMenu,
+				true
+			)
 		})
 	})
 
@@ -387,34 +367,6 @@ describe("nodeContextMenuController", () => {
 		})
 	})
 
-	describe("markFolder", () => {
-		it("should call hide and codeMapActionService.markFolder", () => {
-			nodeContextMenuController.markFolder("color")
-
-			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode, "color")
-		})
-	})
-
-	describe("unmarkFolder", () => {
-		it("should call hide and codeMapActionService.unmarkFolder", () => {
-			nodeContextMenuController.unmarkFolder()
-
-			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode)
-		})
-	})
-
-	describe("focusNode", () => {
-		beforeEach(() => {
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
-		})
-
-		it("should set new focused path", () => {
-			nodeContextMenuController.focusNode()
-
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(VALID_NODE_WITH_PATH.children[1].path)
-		})
-	})
-
 	describe("excludeNode", () => {
 		beforeEach(() => {
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
@@ -488,60 +440,21 @@ describe("nodeContextMenuController", () => {
 		})
 	})
 
-	describe("isNodeFocused", () => {
-		it("should return true if a node is focused", () => {
-			storeService.dispatch(focusNode("/root/big leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if a node is not focused", () => {
-			storeService.dispatch(unfocusNode())
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeFocused()
-
-			expect(actual).toBeFalsy()
-		})
-	})
-
-	describe("isNodeOrParentFocused", () => {
-		it("should return true if a node is focused", () => {
-			storeService.dispatch(focusNode("/root/big leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return true if a parent of a node is focused", () => {
-			storeService.dispatch(focusNode("/root/Parent Leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[1].children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if a node is not focused", () => {
-			storeService.dispatch(unfocusNode())
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeFalsy()
-		})
-	})
-
 	describe("onBodyLeftClickHideNodeContextMenu", () => {
-		it("should not hide if a click on color-picker occurs", () => {
+		it("should not hide if a click on color-picker tricker occurs", () => {
 			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
 			const mockedMouseEvent: any = {
-				composedPath: () => [{ nodeName: "CC-NODE-CONTEXT-MENU-COLOR-PICKER" }]
+				composedPath: () => [{ nodeName: "CC-MARK-FOLDER-COLOR-PICKER" }]
+			}
+			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
+
+			expect(broadcastHideEventSpy).not.toHaveBeenCalled()
+		})
+
+		it("should not hide if a click within color-picker occurs", () => {
+			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const mockedMouseEvent: any = {
+				composedPath: () => [{ nodeName: "COLOR-CHROME" }]
 			}
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 

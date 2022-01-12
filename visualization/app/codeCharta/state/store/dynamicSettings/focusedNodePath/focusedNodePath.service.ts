@@ -43,7 +43,7 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 		return this.storeService.getState().dynamicSettings.focusedNodePath
 	}
 
-	private notifyFocus(newState: string) {
+	private notifyFocus(newState: string[]) {
 		this.$rootScope.$broadcast(FocusedNodePathService.FOCUS_NODE_EVENT, { focusedNodePath: newState })
 	}
 

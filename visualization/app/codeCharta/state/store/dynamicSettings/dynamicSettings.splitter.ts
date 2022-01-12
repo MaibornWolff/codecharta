@@ -7,11 +7,11 @@ import { splitEdgeMetricAction } from "./edgeMetric/edgeMetric.splitter"
 import { splitColorRangeAction } from "./colorRange/colorRange.splitter"
 import { splitMarginAction } from "./margin/margin.splitter"
 import { splitSearchPatternAction } from "./searchPattern/searchPattern.splitter"
-import { splitFocusedNodePathAction } from "./focusedNodePath/focusedNodePath.splitter"
 import { splitHeightMetricAction } from "./heightMetric/heightMetric.splitter"
 import { splitDistributionMetricAction } from "./distributionMetric/distributionMetric.splitter"
 import { splitColorMetricAction } from "./colorMetric/colorMetric.splitter"
 import { splitAreaMetricAction } from "./areaMetric/areaMetric.splitter"
+import { setAllFocusedNodes } from "./focusedNodePath/focusedNodePath.actions"
 
 export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSettings>) {
 	const actions: CCAction[] = []
@@ -45,7 +45,7 @@ export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSet
 	}
 
 	if (payload.focusedNodePath !== undefined) {
-		actions.push(splitFocusedNodePathAction(payload.focusedNodePath))
+		actions.push(setAllFocusedNodes(payload.focusedNodePath))
 	}
 
 	if (payload.heightMetric !== undefined) {

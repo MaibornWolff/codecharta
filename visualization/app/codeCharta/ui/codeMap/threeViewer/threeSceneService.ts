@@ -35,6 +35,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	mapGeometry: Group
 	private readonly lights: Group
 	private mapMesh: CodeMapMesh
+	/** TODO: Fix temporary workaround as soon as mapMesh can be derived from store */
+	static mapMeshInstance: CodeMapMesh
 
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding[] = []
@@ -398,6 +400,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	setMapMesh(nodes: Node[], mesh: CodeMapMesh) {
 		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
+		ThreeSceneService.mapMeshInstance = this.mapMesh
 
 		this.initFloorLabels(nodes)
 

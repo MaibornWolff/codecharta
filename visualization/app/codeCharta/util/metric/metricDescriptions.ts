@@ -8,7 +8,7 @@ export const metricDescriptions: Map<string, string> = new Map([
 	["comment_lines", "number of code lines with comments"],
 	["mcc", "cyclomatic complexity"],
 	["avgCommits", "average number of commits from this file"],
-	["functions", "number of files from this file"],
+	["functions", "number of functions"],
 	["pairingRate", "pairing rate of selected building"],
 	["unary", "-"],
 	["line_coverage", "number of code lines covered by tests"],

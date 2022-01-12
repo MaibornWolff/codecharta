@@ -1,0 +1,9 @@
+<cc-color-picker
+	[hexColor]="'#ff0000'"
+	(onColorChange)="markFolder($event)"
+	[triggerTemplate]="colorPickerTriggerTemplate"
+></cc-color-picker>
+
+<ng-template #colorPickerTriggerTemplate>
+	<div class="cc-color-picker-trigger fa fa-paint-brush"></div>
+</ng-template>

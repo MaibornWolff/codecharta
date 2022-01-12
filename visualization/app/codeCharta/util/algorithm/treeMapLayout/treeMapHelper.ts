@@ -144,7 +144,7 @@ export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: 
 	}
 
 	if (state.dynamicSettings.focusedNodePath.length > 0) {
-		return squaredNode.path.startsWith(state.dynamicSettings.focusedNodePath)
+		return squaredNode.path.startsWith(state.dynamicSettings.focusedNodePath[0])
 	}
 
 	return true
