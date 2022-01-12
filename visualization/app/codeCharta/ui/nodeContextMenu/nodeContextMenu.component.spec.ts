@@ -17,7 +17,6 @@ import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -166,29 +165,6 @@ describe("nodeContextMenuController", () => {
 
 			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(nodePath)
 			expect(nodeContextMenuController["_viewModel"].lastPartOfNodePath).toBe(`...${nodePath.slice(nodePath.lastIndexOf("/"))}`)
-		})
-
-		it("should set if the node is focused or it's parent is focuesd", () => {
-			storeService.dispatch(unfocusNode())
-			storeService.dispatch(focusNode("/root/big leaf"))
-			nodeContextMenuController.onShowNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
-			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(true)
-			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(false)
-			storeService.dispatch(unfocusNode())
-			storeService.dispatch(focusNode("/root/other big leaf"))
-			nodeContextMenuController.onShowNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
-			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
-			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(false)
-			storeService.dispatch(unfocusNode())
-			storeService.dispatch(focusNode("/root"))
-			nodeContextMenuController.onShowNodeContextMenu("/root/ParentLeaf/smallLeaf", NodeType.FILE, 521, 588)
-			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
-			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(true)
-			storeService.dispatch(unfocusNode())
-			storeService.dispatch(focusNode("/root/ParentLeaf"))
-			nodeContextMenuController.onShowNodeContextMenu("/root/ParentLeaf/smallLeaf", NodeType.FOLDER, 521, 588)
-			expect(nodeContextMenuController["_viewModel"].isNodeFocused).toEqual(false)
-			expect(nodeContextMenuController["_viewModel"].isParentFocused).toEqual(true)
 		})
 
 		it("should remove all listener on hide", () => {
@@ -391,18 +367,6 @@ describe("nodeContextMenuController", () => {
 		})
 	})
 
-	describe("focusNode", () => {
-		beforeEach(() => {
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
-		})
-
-		it("should set new focused path", () => {
-			nodeContextMenuController.focusNode()
-
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(VALID_NODE_WITH_PATH.children[1].path)
-		})
-	})
-
 	describe("excludeNode", () => {
 		beforeEach(() => {
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
@@ -473,55 +437,6 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
-		})
-	})
-
-	describe("isNodeFocused", () => {
-		it("should return true if a node is focused", () => {
-			storeService.dispatch(focusNode("/root/big leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if a node is not focused", () => {
-			storeService.dispatch(unfocusNode())
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeFocused()
-
-			expect(actual).toBeFalsy()
-		})
-	})
-
-	describe("isNodeOrParentFocused", () => {
-		it("should return true if a node is focused", () => {
-			storeService.dispatch(focusNode("/root/big leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return true if a parent of a node is focused", () => {
-			storeService.dispatch(focusNode("/root/Parent Leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[1].children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if a node is not focused", () => {
-			storeService.dispatch(unfocusNode())
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeFalsy()
 		})
 	})
 

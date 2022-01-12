@@ -9,7 +9,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   User-friendly renaming for display quality options [#2601](https://github.com/MaibornWolff/codecharta/pull/2601)
+
+### Fixed 🐞
+
+-   Fix link to news page when clicking 'Know more' button changelog dialog [#2602](https://github.com/MaibornWolff/codecharta/pull/2602)
+
+## [1.87.0] - 2022-01-11
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate `unfocus-button-component` to Angular.
+
+### Changed
+
 -   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
+-   Add 'show/hide non-applicable CustomConfigs' button to Custom Configs menu [#2591](https://github.com/MaibornWolff/codecharta/pull/2591).
 
 ## [1.86.0] - 2021-12-20
 

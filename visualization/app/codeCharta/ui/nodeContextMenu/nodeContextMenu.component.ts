@@ -4,7 +4,6 @@ import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
@@ -39,16 +38,12 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		markingColors: string[]
 		nodePath: string
 		lastPartOfNodePath: string
-		isNodeFocused: boolean
-		isParentFocused: boolean
 	} = {
 		codeMapNode: null,
 		showNodeContextMenu: false,
 		markingColors: null,
 		nodePath: "",
-		lastPartOfNodePath: "",
-		isNodeFocused: false,
-		isParentFocused: false
+		lastPartOfNodePath: ""
 	}
 
 	constructor(
@@ -83,10 +78,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		this._viewModel.nodePath = path
 		this._viewModel.lastPartOfNodePath = `${path.lastIndexOf("/") === 0 ? "" : "..."}${path.slice(path.lastIndexOf("/"))}`
 
-		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
-		this._viewModel.isNodeFocused = path === focusedNodePath
-		this._viewModel.isParentFocused = path.startsWith(focusedNodePath) && path !== focusedNodePath
-
 		this._viewModel.showNodeContextMenu = true
 
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
@@ -103,7 +94,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		if (this.isEventFromColorPicker(mouseEvent)) return
 
 		// Just close node context menu, if you click anywhere on the map.
-		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+		this.hideContextMenu()
 	}
 
 	onBodyRightClickHideNodeContextMenu = event => {
@@ -111,12 +102,16 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		// Otherwise, if mouseup would be used and you would move the map with keeping the right button pressed,
 		// the menu would not be closed.
 		if (event.button === ClickType.RightClick) {
-			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+			this.hideContextMenu()
 		}
 	}
 
 	onMapWheelHideNodeContextMenu = () => {
 		// If you zoom in and out the map, the node context menu should be closed.
+		this.hideContextMenu()
+	}
+
+	hideContextMenu = () => {
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 	}
 
@@ -127,10 +122,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
 		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
 		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
-	}
-
-	focusNode() {
-		this.storeService.dispatch(focusNode(this._viewModel.codeMapNode.path))
 	}
 
 	flattenNode() {
@@ -257,18 +248,6 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 			if (codeMapBuilding) {
 				return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
 			}
-		}
-		return false
-	}
-
-	isNodeOrParentFocused() {
-		const { focusedNodePath } = this.storeService.getState().dynamicSettings
-		return Boolean(focusedNodePath && this._viewModel.codeMapNode?.path.startsWith(focusedNodePath))
-	}
-
-	isNodeFocused() {
-		if (this._viewModel.codeMapNode) {
-			return this._viewModel.codeMapNode.path === this.storeService.getState().dynamicSettings.focusedNodePath
 		}
 		return false
 	}

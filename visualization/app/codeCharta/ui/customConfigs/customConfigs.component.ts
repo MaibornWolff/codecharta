@@ -29,13 +29,19 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	private _viewModel: {
 		dropDownCustomConfigItemGroups: CustomConfigItemGroup[]
 		hasDownloadableConfigs: boolean
+		showNonApplicableButton: boolean
+		visibleEntries: number
 	} = {
 		dropDownCustomConfigItemGroups: [],
-		hasDownloadableConfigs: false
+		hasDownloadableConfigs: false,
+		showNonApplicableButton: false,
+		visibleEntries: 0
 	}
 
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private downloadableConfigs: Map<string, ExportCustomConfig> = new Map()
+	private previousEntries
+	private applicableEntries = 0
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -57,6 +63,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	initView() {
 		this.loadCustomConfigs()
 		this.preloadDownloadableConfigs()
+		this.initVisibleEntries()
 	}
 
 	loadCustomConfigs() {
@@ -74,8 +81,41 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
 	}
 
-	removeCustomConfig(configId) {
+	removeCustomConfig(configId, customConfigItemIndex, dropDownCustomConfigItemGroupIndex) {
+		const { dropDownCustomConfigItemGroups } = this._viewModel
+
 		CustomConfigHelper.deleteCustomConfig(configId)
+		dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].customConfigItems.splice(customConfigItemIndex, 1)
+
+		if (dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].customConfigItems.length === 0) {
+			if (dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].hasApplicableItems) {
+				this.applicableEntries--
+			}
+
+			dropDownCustomConfigItemGroups.splice(dropDownCustomConfigItemGroupIndex, 1)
+			this._viewModel.visibleEntries--
+			this.previousEntries--
+			this.updateButtonVisibility()
+		}
+	}
+
+	private initVisibleEntries() {
+		this.applicableEntries = 0
+		while (this._viewModel.dropDownCustomConfigItemGroups[this.applicableEntries]?.hasApplicableItems) {
+			this.applicableEntries++
+		}
+
+		this._viewModel.visibleEntries = this.applicableEntries
+		this.updateButtonVisibility()
+	}
+
+	toggleNonApplicableItems() {
+		if (!this.isExpanded()) {
+			this.previousEntries = this._viewModel.visibleEntries
+			this._viewModel.visibleEntries = this._viewModel.dropDownCustomConfigItemGroups.length
+		} else {
+			this._viewModel.visibleEntries = this.previousEntries
+		}
 	}
 
 	downloadPreloadedCustomConfigs() {
@@ -108,6 +148,20 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 			}
 		}
 		return false
+	}
+
+	private isExpanded(): boolean {
+		return this._viewModel.visibleEntries === this._viewModel.dropDownCustomConfigItemGroups.length
+	}
+
+	private updateButtonVisibility() {
+		if (this._viewModel.dropDownCustomConfigItemGroups.length === 0) {
+			this._viewModel.showNonApplicableButton = false
+		} else if (this.applicableEntries < this._viewModel.dropDownCustomConfigItemGroups.length) {
+			this._viewModel.showNonApplicableButton = true
+		} else {
+			this._viewModel.showNonApplicableButton = false
+		}
 	}
 }
 

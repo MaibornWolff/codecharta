@@ -10,7 +10,7 @@ import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.acti
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { setCamera } from "./store/appSettings/camera/camera.actions"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { setIsLoadingFile } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { toggleSortingOrderAscending } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -118,9 +118,9 @@ describe("StoreService", () => {
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 
-		it("should show not the loading-gif when an action is triggered, that changes the loading-gif state", () => {
+		it("should show not the loading-gif when an action is triggered, that doesn't change the loading-gif state", () => {
 			storeService.dispatch(setIsLoadingMap(false))
-			storeService.dispatch(setIsLoadingFile(false))
+			storeService.dispatch(toggleSortingOrderAscending())
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})

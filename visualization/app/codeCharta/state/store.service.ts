@@ -14,6 +14,7 @@ import { ExperimentalFeaturesEnabledActions } from "./store/appSettings/enableEx
 import { Store } from "./store/store"
 import { ScreenshotToClipboardEnabledActions } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { HoveredBuildingPathActions } from "./store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
+import { unfocusAllNodes } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -63,6 +64,10 @@ export class StoreService {
 			)
 		) {
 			this.dispatch(setIsLoadingMap(true))
+		}
+
+		if (isActionOfType(action.type, IsLoadingFileActions)) {
+			this.dispatch(unfocusAllNodes())
 		}
 
 		for (const atomicAction of splitStateActions(action)) {
