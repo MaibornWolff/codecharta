@@ -64,6 +64,7 @@ dependencies {
 
 jar {
     baseName = "${applicationName}"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': mainClassName,
                 'Implementation-Title': 'CodeCharta ccsh',
