@@ -35,41 +35,57 @@ export const ERROR_MESSAGES = {
 export function validate(nameDataPair: NameDataPair) {
 	const file = nameDataPair?.content
 	const result: CCValidationResult = { error: [], warning: [] }
+
+	result.error = checkErrors(file)
+	result.warning = checkWarnings(file)
+
+	if (result.error.length > 0) {
+		throw result.error
+	}
+}
+
+function checkWarnings(file: ExportCCFile) {
+	const warnings = []
+	switch (true) {
+		case fileHasHigherMinorVersion(file):
+			warnings.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
+			break
+	}
+	return warnings
+}
+
+function checkErrors(file: ExportCCFile) {
+	const errors = []
 	switch (true) {
 		case !file:
-			result.error.push(ERROR_MESSAGES.fileIsInvalid)
+			errors.push(ERROR_MESSAGES.fileIsInvalid)
 			break
 		case !isValidApiVersion(file):
-			result.error.push(ERROR_MESSAGES.apiVersionIsInvalid)
+			errors.push(ERROR_MESSAGES.apiVersionIsInvalid)
 			break
 		case fileHasHigherMajorVersion(file):
-			result.error.push(ERROR_MESSAGES.majorApiVersionIsOutdated)
-			break
-		case fileHasHigherMinorVersion(file):
-			result.warning.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
+			errors.push(ERROR_MESSAGES.majorApiVersionIsOutdated)
 			break
 	}
 
-	if (result.error.length === 0) {
+	if (errors.length === 0) {
 		const ajv = new Ajv({ allErrors: true })
 		const validate = ajv.compile(jsonSchema)
 		const valid = validate(file)
 
 		if (!valid) {
-			result.error = validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
+			errors.push(validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error)))
 		} else if (file.nodes.length === 0) {
-			result.error.push(ERROR_MESSAGES.nodesEmpty)
+			errors.push(ERROR_MESSAGES.nodesEmpty)
 		} else {
+			const result: CCValidationResult = { error: [], warning: [] }
 			validateAllNodesAreUnique(file.nodes[0], result)
 			validateFixedFolders(file, result)
+			errors.push(...result.error)
 		}
 	}
-
-	if (result.error.length > 0 || result.warning.length > 0) {
-		throw result
-	}
+	return errors
 }
-
 function isValidApiVersion(file: ExportCCFile) {
 	const { apiVersion } = file
 	const hasApiVersion = apiVersion !== undefined
