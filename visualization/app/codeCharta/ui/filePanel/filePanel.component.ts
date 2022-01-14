@@ -9,7 +9,6 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { removeRecentFile } from "../../state/store/dynamicSettings/recentFiles/recentFiles.actions"
 
 interface SelectedFileNames {
-	single: string
 	delta: {
 		reference: string
 		comparison: string
@@ -35,7 +34,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		files: null,
 		renderState: null,
 		selectedFileNames: {
-			single: null,
 			delta: {
 				reference: null,
 				comparison: null
@@ -179,9 +177,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	}
 
 	private getLastVisibleFileName() {
-		if (this.lastRenderState === FileSelectionState.Single) {
-			return this._viewModel.selectedFileNames.single
-		}
 		if (this.lastRenderState === FileSelectionState.Partial) {
 			const visibleFileStates = getVisibleFileStates(this._viewModel.files)
 			if (fileStatesAvailable(this._viewModel.files)) {
@@ -199,9 +194,4 @@ export const filePanelComponent = {
 	selector: "ccFilePanel",
 	template: require("./filePanel.component.html"),
 	controller: FilePanelController
-}
-
-export enum FilePanelState {
-	FILE_PANEL_STATE_STANDARD = "FILE_PANEL_STATE_STANDARD",
-	FILE_PANEL_STATE_DELTA = "FILE_PANEL_STATE_DELTA"
 }
