@@ -51,15 +51,15 @@ export class CodeChartaService {
 			this.storeService.dispatch(setRecentFiles(this.recentFiles))
 			this.storeService.dispatch(setFiles(this.fileStates))
 
-			this.fileStates = []
-			this.recentFiles = []
-
 			const recentFile = this.storeService.getState().dynamicSettings.recentFiles[0]
 			const rootName = this.storeService.getState().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-			this.storeService.dispatch(setMultipleByNames([recentFile]))
+			this.storeService.dispatch(setMultipleByNames(this.recentFiles))
 
 			CodeChartaService.updateRootData(rootName)
 			this.setDefaultScenario()
+
+			this.fileStates = []
+			this.recentFiles = []
 		}
 	}
 
