@@ -32,6 +32,7 @@ edge-chooser-component {
 			.md-select-value span {
 				max-height: 18px;
 				overflow: hidden;
+				text-align: inherit !important;
 			}
 		}
 
@@ -78,26 +79,45 @@ edge-chooser-component {
 		display: initial;
 	}
 
+	.search-bar {
+		i,
+		input {
+			background-color: #f5f5f5;
+			padding: 10px;
+			border: none;
+			border-bottom: solid 2px;
+			border-color: rgba(0, 0, 0, 0.12);
+		}
+	}
+
+	.search-bar:focus-within {
+		i,
+		input {
+			border-color: rgb(0, 150, 136);
+			color: rgb(0, 150, 136);
+		}
+	}
+
+	.search-icon {
+		position: absolute;
+		left: 0;
+		width: 12%;
+		height: $optionHeight - 8 + px;
+		top: 8px;
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+	}
+
 	.metric-search {
 		display: block;
 		position: fixed;
 		top: 8px;
-		width: 100%;
-		padding: 10px;
+		left: 12%;
+		width: 88%;
 		height: $optionHeight - 8 + px;
 		outline: none;
-		border: none;
-		border-bottom: solid 2px;
-		border-color: rgba(0, 0, 0, 0.12);
-		background-color: #f5f5f5;
 		font-family: Arial, FontAwesome, sans-serif;
 		font-size: 11pt;
-		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
-
-		&:focus {
-			border-color: rgb(0, 150, 136);
-			color: rgb(0, 150, 136);
-		}
+		box-shadow: 5px 1px 5px 0 rgba(0, 0, 0, 0.2);
 	}
 
 	md-content.option-group {

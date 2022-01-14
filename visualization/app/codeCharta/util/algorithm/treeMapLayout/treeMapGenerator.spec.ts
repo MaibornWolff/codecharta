@@ -34,7 +34,7 @@ describe("treeMapGenerator", () => {
 		codeMapNode = klona(VALID_NODE_WITH_PATH)
 		metricData = klona(METRIC_DATA)
 		isDeltaState = false
-		state.dynamicSettings.focusedNodePath = ""
+		state.dynamicSettings.focusedNodePath = []
 	}
 
 	describe("create Treemap nodes", () => {
@@ -126,8 +126,8 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.heightMetric = "myHeight"
 			state.treeMap.mapSize = 1000
 			metricData = [
-				{ name: "myArea", maxValue: 42 },
-				{ name: "myHeight", maxValue: 99 }
+				{ name: "myArea", maxValue: 42, minValue: 1 },
+				{ name: "myHeight", maxValue: 99, minValue: 1 }
 			]
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
@@ -158,8 +158,8 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.heightMetric = "b"
 			state.dynamicSettings.areaMetric = "b"
 			metricData = [
-				{ name: "a", maxValue: 42 },
-				{ name: "b", maxValue: 99 }
+				{ name: "a", maxValue: 42, minValue: 1 },
+				{ name: "b", maxValue: 99, minValue: 1 }
 			]
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
@@ -171,7 +171,7 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.areaMetric = "unknown"
 			state.dynamicSettings.heightMetric = "unknown"
 			state.fileSettings.edges = VALID_EDGES
-			metricData = [{ name: "unknown", maxValue: 100 }]
+			metricData = [{ name: "unknown", maxValue: 100, minValue: 1 }]
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 

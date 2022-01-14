@@ -1,5 +1,4 @@
 import { validate } from "./util/fileValidator"
-import { NameDataPair } from "./codeCharta.model"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { setFiles, setSingleByName } from "./state/store/files/files.actions"
@@ -10,6 +9,8 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { setRecentFiles } from "./state/store/dynamicSettings/recentFiles/recentFiles.actions"
+import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { NameDataPair } from "./codeCharta.model"
 
 export class CodeChartaService {
 	static ROOT_NAME = "root"
@@ -24,13 +25,10 @@ export class CodeChartaService {
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
 		this.fileStates = this.storeService.getState().files
-		console.log(this.fileStates)
-		console.log(this.recentFiles)
 		for (const nameDataPair of nameDataPairs) {
-			this.addFile(nameDataPair)
-			this.addRecentFile(nameDataPair.fileName)
 			try {
-				validate(nameDataPair, this.storeService)
+				validate(nameDataPair)
+				this.addFile(nameDataPair)
 			} catch (error) {
 				if (error.error.length > 0) {
 					this.fileStates.filter(file => getCCFile(nameDataPair) !== file.file)
@@ -55,8 +53,8 @@ export class CodeChartaService {
 
 			const recentFile = this.storeService.getState().dynamicSettings.recentFiles[0]
 			const rootName = this.storeService.getState().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-
 			this.storeService.dispatch(setSingleByName(recentFile))
+
 			CodeChartaService.updateRootData(rootName)
 			this.setDefaultScenario()
 		}
@@ -65,13 +63,59 @@ export class CodeChartaService {
 	private addFile(file: NameDataPair) {
 		const ccFile = getCCFile(file)
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
+		const currentFileChecksum = ccFile.fileMeta.fileChecksum
+		let currentFileName = ccFile.fileMeta.fileName
+		const storedFileNames = new Map(
+			this.fileStates.map(fileState => [fileState.file.fileMeta.fileName, fileState.file.fileMeta.fileChecksum])
+		)
+		const storedFileChecksums = new Map(
+			this.fileStates.map((fileState, index) => [fileState.file.fileMeta.fileChecksum, index] as [string, number])
+		)
+		const isDuplicate = storedFileChecksums.has(currentFileChecksum)
+
+		if (storedFileNames.has(currentFileName)) {
+			currentFileName = this.getFileName(currentFileName, storedFileNames, currentFileChecksum)
+			ccFile.fileMeta.fileName = currentFileName
+		}
+		if (isDuplicate) {
+			this.fileStates[storedFileChecksums.get(currentFileChecksum)].file.fileMeta.fileName = currentFileName
+			this.recentFiles[0] = currentFileName
+			this.recentFiles.push(currentFileName)
+			return
+		}
+
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
+		this.recentFiles.push(currentFileName)
+	}
+
+	private getFileName(currentFileName: string, storedFileNames: Map<string, string>, currentFileChecksum: string) {
+		if (storedFileNames.get(currentFileName) === currentFileChecksum) {
+			return currentFileName
+		}
+
+		let nameFound = false
+		let fileNameOccurrence = 1
+		let newFileName = currentFileName
+
+		while (!nameFound) {
+			const endOfNameIndex = currentFileName.indexOf(".")
+			newFileName =
+				endOfNameIndex >= 0
+					? [currentFileName.slice(0, endOfNameIndex), "_", fileNameOccurrence, currentFileName.slice(endOfNameIndex)].join("")
+					: `${currentFileName}_${fileNameOccurrence}`
+			// resolve if uploaded file has identical checksum and different already occurring name
+			if (storedFileNames.get(newFileName) === currentFileChecksum || !storedFileNames.has(newFileName)) {
+				nameFound = true
+			}
+			fileNameOccurrence++
+		}
+		return newFileName
 	}
 
 	private setDefaultScenario() {
 		const { areaMetric, heightMetric, colorMetric } = ScenarioHelper.getDefaultScenarioSetting().dynamicSettings
 		const names = [areaMetric, heightMetric, colorMetric]
-		const metricNames = new Set(this.storeService.getState().metricData.nodeMetricData.map(x => x.name))
+		const metricNames = new Set(nodeMetricDataSelector(this.storeService.getState()).map(x => x.name))
 
 		if (names.every(metric => metricNames.has(metric))) {
 			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))

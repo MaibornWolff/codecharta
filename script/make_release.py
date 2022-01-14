@@ -139,15 +139,13 @@ analysis_package = f"{root}/analysis/node-wrapper"
 analysis_package_json = f"{analysis_package}/package.json"
 analysis_package_lock_json = f"{analysis_package}/package-lock.json"
 
-subprocess.run(["npm", "--prefix", analysis_package,
-                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+subprocess.run(f"npm --prefix {analysis_package} --no-git-tag-version version {new_version}", shell=True)
 print("incremented version in ./analysis/node-wrapper/package.json + locks")
 
 visualization_package = f"{root}/visualization"
 visualization_package_json = f"{visualization_package}/package.json"
 visualization_package_lock_json = f"{visualization_package}/package-lock.json"
-subprocess.run(["npm", "--prefix", visualization_package,
-                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+subprocess.run(f"npm --prefix {visualization_package} --no-git-tag-version version {new_version}", shell=True)
 print("incremented version in ./visualization/package.json + locks")
 
 
@@ -196,7 +194,7 @@ confirm(message, printMessage)
 
 repo.index.add([release_post_path, changelog_path, gradle_properties,
                 analysis_package_json, analysis_package_lock_json, visualization_package_json, visualization_package_lock_json])
-subprocess.run(["git", "commit", "-a", "-m", f'"Releasing {new_version}"'], shell=True)
+subprocess.run('git commit -a -m "Releasing ' + new_version + '"', shell=True)
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
 
@@ -206,6 +204,6 @@ message = "The release is now committed and tagged but not pushed. In order to f
 printMessage = "Pushing..."
 confirm(message, printMessage)
 
-subprocess.run(["git", "push", "--follow-tags"], shell=True)
+subprocess.run("git push --follow-tags", shell=True)
 
 print("Please manually add the latest release notes, as soon as the build is successfully deployed")

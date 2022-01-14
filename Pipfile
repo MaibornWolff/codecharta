@@ -11,7 +11,7 @@ pyinquirer = "*"
 in-place = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
 
 [scripts]
 make_release = "python ./script/make_release.py"

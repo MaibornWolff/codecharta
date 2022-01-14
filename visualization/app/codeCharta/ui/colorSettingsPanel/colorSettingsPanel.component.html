@@ -1,5 +1,11 @@
 <range-slider-component></range-slider-component>
 
+<md-select ng-model="$ctrl._viewModel.colorMode" ng-change="$ctrl.applyColorMode()">
+	<md-option value="absolute"> Absolute </md-option>
+	<md-option value="weightedGradient"> Weighted Gradient </md-option>
+	<md-option value="trueGradient"> True Gradient </md-option>
+</md-select>
+
 <reset-settings-button-component
 	settings-names="dynamicSettings.colorRange, appSettings.mapColors.positiveDelta, appSettings.mapColors.negativeDelta"
 	tooltip=" Reset slider thresholds to default"
@@ -11,30 +17,21 @@
 <div class="wrapper">
 	<div class="spacer" ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="color-row">
-			<cc-store-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
-			</cc-store-color-picker>
+			<cc-color-picker-for-map-color [map-color-for]="'positive'"></cc-color-picker-for-map-color>
 			<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.colorLabels.positive" ng-change="$ctrl.swapColorLabelsPositive()">
 				Show labels
 			</md-checkbox>
 		</div>
 
 		<div class="color-row">
-			<cc-store-color-picker
-				map-color-for="neutral"
-				label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
-			>
-			</cc-store-color-picker>
+			<cc-color-picker-for-map-color [map-color-for]="'neutral'"></cc-color-picker-for-map-color>
 			<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.colorLabels.neutral" ng-change="$ctrl.swapColorLabelsNeutral()">
 				Show labels
 			</md-checkbox>
 		</div>
 
 		<div class="color-row">
-			<cc-store-color-picker
-				map-color-for="negative"
-				label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to {{ $ctrl._viewModel.maxMetricValue | number: 0 }}"
-			>
-			</cc-store-color-picker>
+			<cc-color-picker-for-map-color [map-color-for]="'negative'"></cc-color-picker-for-map-color>
 			<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.colorLabels.negative" ng-change="$ctrl.swapColorLabelsNegative()">
 				Show labels
 			</md-checkbox>
@@ -42,11 +39,11 @@
 	</div>
 
 	<div class="spacer" ng-if="$ctrl._viewModel.isDeltaState">
-		<cc-store-color-picker map-color-for="positiveDelta" label="+&Delta; positive delta"> </cc-store-color-picker>
-		<cc-store-color-picker map-color-for="negativeDelta" label="&ndash;&Delta; negative delta"> </cc-store-color-picker>
+		<cc-color-picker-for-map-color [map-color-for]="'positiveDelta'"></cc-color-picker-for-map-color>
+		<cc-color-picker-for-map-color [map-color-for]="'negativeDelta'"> </cc-color-picker-for-map-color>
 	</div>
 
-	<cc-store-color-picker map-color-for="selected" label="selected"> </cc-store-color-picker>
+	<cc-color-picker-for-map-color [map-color-for]="'selected'"> </cc-color-picker-for-map-color>
 </div>
 
 <div class="bottom-row">

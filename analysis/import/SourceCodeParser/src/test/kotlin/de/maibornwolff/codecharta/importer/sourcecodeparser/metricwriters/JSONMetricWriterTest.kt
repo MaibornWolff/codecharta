@@ -26,8 +26,7 @@ class JSONMetricWriterTest {
 
         val resultJSON = JSONObject(result.toString()).toString()
 
-        val parser = JsonParser()
-        val expectedJson = parser.parse(expectedResultFile.reader()).toString()
+        val expectedJson = JsonParser.parseReader(expectedResultFile.reader()).toString()
 
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
@@ -46,10 +45,9 @@ class JSONMetricWriterTest {
 
         val resultJSON = JSONObject(result.toString()).toString()
 
-        val parser = JsonParser()
-        val expectedJson = parser.parse(expectedResultFile.reader()).toString()
+        val expectedJson = JsonParser.parseReader(expectedResultFile.reader()).toString()
 
-        Assertions.assertThat(resultJSON == expectedJson).isTrue()
+        Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 
     @Test
@@ -62,7 +60,7 @@ class JSONMetricWriterTest {
         JSONMetricWriter(OutputStreamWriter(PrintStream(result)), "notSpecified", false).generate(metrics, setOf())
 
         val resultJSON = JSONObject(result.toString())
-        val leaf = resultJSON.getJSONArray("nodes").getJSONObject(0).getJSONArray("children").getJSONObject(0)
+        val leaf = resultJSON.getJSONObject("data").getJSONArray("nodes").getJSONObject(0).getJSONArray("children").getJSONObject(0)
         Assertions.assertThat(leaf["type"]).isEqualTo("File")
         Assertions.assertThat(leaf["name"]).isEqualTo("foo.java")
         Assertions.assertThat(leaf.getJSONObject("attributes").length()).isEqualTo(2)

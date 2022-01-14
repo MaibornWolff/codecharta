@@ -47,6 +47,7 @@ export class CodeMapMesh {
 
 	selectBuilding(building: CodeMapBuilding, color: string) {
 		building.setColor(color)
+		building.setDeltaColor(color)
 		this.setVertexColor(building.id, building.getColorVector(), building.getDefaultDeltaColorVector())
 		this.updateVertices()
 	}

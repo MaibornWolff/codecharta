@@ -1,6 +1,5 @@
 import angular from "angular"
-// Plop: Append module import here
-import { SecondaryMetricsService } from "./store/appSettings/secondaryMetrics/secondaryMetrics.service"
+import { ColorModeService } from "./store/dynamicSettings/colorMode/colorMode.service"
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
@@ -11,8 +10,6 @@ import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarg
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
-import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
@@ -37,7 +34,6 @@ import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
-import { SearchedNodePathsService } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
@@ -46,7 +42,6 @@ import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
-import { NodeSearchService } from "./nodeSearch.service"
 import "../codeCharta.module"
 import camelCase from "lodash.camelcase"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
@@ -60,8 +55,7 @@ import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableC
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
-	// Plop: Append service name here
-	.service(camelCase(SecondaryMetricsService.name), SecondaryMetricsService)
+	.service(camelCase(ColorModeService.name), ColorModeService)
 	.service(camelCase(RecentFilesService.name), RecentFilesService)
 	.service(camelCase(ColorLabelsService.name), ColorLabelsService)
 	.service(camelCase(LabelShowMetricValueService.name), LabelShowMetricValueService)
@@ -74,9 +68,7 @@ angular
 	.service(camelCase(IdToNodeService.name), IdToNodeService)
 	.service(camelCase(IdToBuildingService.name), IdToBuildingService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
-	.service(camelCase(SortingOptionService.name), SortingOptionService)
 	.service(camelCase(SearchPanelModeService.name), SearchPanelModeService)
-	.service(camelCase(SortingOrderAscendingService.name), SortingOrderAscendingService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(camelCase(FilesService.name), FilesService)
@@ -100,7 +92,6 @@ angular
 	.service(camelCase(ColorRangeService.name), ColorRangeService)
 	.service(camelCase(MarginService.name), MarginService)
 	.service(camelCase(SearchPatternService.name), SearchPatternService)
-	.service(camelCase(SearchedNodePathsService.name), SearchedNodePathsService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
 	.service(camelCase(HeightMetricService.name), HeightMetricService)
 	.service(camelCase(DistributionMetricService.name), DistributionMetricService)
@@ -110,7 +101,6 @@ angular
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
 	.service(camelCase(StoreService.name), StoreService)
-	.service(camelCase(NodeSearchService.name), NodeSearchService)
 	.service(camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)
 	.service(camelCase(MaxTreeMapFilesService.name), MaxTreeMapFilesService)
 	.service(camelCase(SharpnessModeService.name), SharpnessModeService)

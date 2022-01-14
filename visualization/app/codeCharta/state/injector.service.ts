@@ -1,7 +1,6 @@
 //@ts-nocheck
 
-// Plop: Append service import here
-import { SecondaryMetricsService } from "./store/appSettings/secondaryMetrics/secondaryMetrics.service"
+import { ColorModeService } from "./store/dynamicSettings/colorMode/colorMode.service"
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
@@ -13,8 +12,6 @@ import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarg
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
-import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { FilesService } from "./store/files/files.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
@@ -39,14 +36,12 @@ import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
-import { SearchedNodePathsService } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
 import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMetric.service"
 import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
-import { NodeSearchService } from "./nodeSearch.service"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
@@ -57,8 +52,7 @@ import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableC
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
-		// Plop: Append service injection here
-		private secondaryMetricsService: SecondaryMetricsService,
+		private colorModeService: ColorModeService,
 		private recentFilesService: RecentFilesService,
 		private colorLabelsService: ColorLabelsService,
 		private labelShowMetricValueService: LabelShowMetricValueService,
@@ -71,8 +65,6 @@ export class InjectorService {
 		private idToNodeService: IdToNodeService,
 		private idToBuildingService: IdToBuildingService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		private sortingOptionService: SortingOptionService,
-		private sortingOrderAscendingService: SortingOrderAscendingService,
 		private searchPanelModeService: SearchPanelModeService,
 		private isLoadingFileService: IsLoadingFileService,
 		private isLoadingMapService: IsLoadingMapService,
@@ -97,14 +89,12 @@ export class InjectorService {
 		private colorRangeService: ColorRangeService,
 		private marginService: MarginService,
 		private searchPatternService: SearchPatternService,
-		private searchedNodePathsService: SearchedNodePathsService,
 		private focusedNodePathService: FocusedNodePathService,
 		private heightMetricService: HeightMetricService,
 		private distributionMetricService: DistributionMetricService,
 		private colorMetricService: ColorMetricService,
 		private areaMetricService: AreaMetricService,
 		private blacklistService: BlacklistService,
-		private nodeSearchService: NodeSearchService,
 		private isPresentationModeService: IsPresentationModeService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
 		private maxTreeMapFilesService: MaxTreeMapFilesService,

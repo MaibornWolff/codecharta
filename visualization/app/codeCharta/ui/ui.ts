@@ -1,25 +1,17 @@
 import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
-// Plop: Append module import here
 import "./artificialIntelligence/artificialIntelligence.module"
-import "./customColorPicker/customColorPicker.module"
 import "./customConfigs/customConfigs.module"
-import "./attributeTypeSelector/attributeTypeSelector.module"
-import "./sortingOption/sortingOption.module"
-import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
 import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
 import "./globalSettingsButton/globalSettingsButton.module"
-import "./metricDeltaSelected/metricDeltaSelected.module"
 import "./nodePathPanel/nodePathPanel.module"
-import "./attributeSideBar/attributeSideBar.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./centerMapButton/centerMapButton.module"
-import "./matchingFilesCounter/matchingFilesCounter.module"
 import "./searchPanel/searchPanel.module"
 import "./searchPanelModeSelector/searchPanelModeSelector.module"
 import "./searchBar/searchBar.module"
@@ -31,9 +23,7 @@ import "./dialog/dialog.module"
 import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./heightSettingsPanel/heightSettingsPanel.module"
-import "./legendPanel/legendPanel.module"
 import "./loadingGif/loadingGif.module"
-import "./mapTreeView/mapTreeView.module"
 import "./metricChooser/metricChooser.module"
 import "./metricType/metricType.module"
 import "./nodeContextMenu/nodeContextMenu.module"
@@ -47,29 +37,28 @@ import "./viewCube/viewCube.module"
 import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
+import { MetricDeltaSelectedComponent } from "./attributeSideBar/metricDeltaSelected/metricDeltaSelected.component"
+import { MapTreeViewComponent } from "./mapTreeView/mapTreeView.component"
+import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
+import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
+import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
+import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
+import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 
 angular
 	.module("app.codeCharta.ui", [
-		// Plop: Append component name here
 		"app.codeCharta.ui.artificialIntelligence",
-		"app.codeCharta.ui.customColorPicker",
 		"app.codeCharta.ui.customConfigs",
-		"app.codeCharta.ui.sortingOptionDialog",
-		"app.codeCharta.ui.attributeTypeSelector",
-		"app.codeCharta.ui.unfocusButton",
 		"app.codeCharta.ui.metricValueHovered",
 		"app.codeCharta.ui.downloadButton",
 		"app.codeCharta.ui.screenshotButton",
 		"app.codeCharta.ui.globalSettingsButton",
-		"app.codeCharta.ui.metricDeltaSelected",
 		"app.codeCharta.ui.nodePathPanel",
-		"app.codeCharta.ui.attributeSideBar",
 		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.centerMapButton",
-		"app.codeCharta.ui.matchingFilesCounter",
 		"app.codeCharta.ui.searchPanel",
 		"app.codeCharta.ui.searchPanelModeSelector",
 		"app.codeCharta.ui.searchBar",
@@ -83,9 +72,7 @@ angular
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.filePanel",
 		"app.codeCharta.ui.heightSettingsPanel",
-		"app.codeCharta.ui.legendPanel",
 		"app.codeCharta.ui.loadingGif",
-		"app.codeCharta.ui.mapTreeView",
 		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.metricType",
 		"app.codeCharta.ui.nodeContextMenu",
@@ -100,3 +87,10 @@ angular
 		"app.codeCharta.ui.maxTreeMapFiles"
 	])
 	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))
+	.directive("ccSortingOption", downgradeComponent({ component: SortingOptionComponent }))
+	.directive("ccMetricDeltaSelected", downgradeComponent({ component: MetricDeltaSelectedComponent }))
+	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
+	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
+	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
+	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
+	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))

@@ -4,24 +4,25 @@ import {
 	BlacklistType,
 	CCFile,
 	CodeMapNode,
+	ColorMode,
 	Edge,
+	EdgeMetricData,
 	EdgeVisibility,
 	FileMeta,
+	GlobalSettings,
+	LayoutAlgorithm,
 	MarkedPackage,
 	Node,
+	NodeMetricData,
 	NodeType,
 	PanelSelection,
 	RecursivePartial,
 	Scenario,
-	NodeMetricData,
-	EdgeMetricData,
 	SearchPanelMode,
 	Settings,
+	SharpnessMode,
 	SortingOption,
-	State,
-	LayoutAlgorithm,
-	GlobalSettings,
-	SharpnessMode
+	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -96,19 +97,25 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					name: "file1.java",
 					path: "/root/src/main/file1.java",
 					type: NodeType.FILE,
-					attributes: { rloc: 70, functions: 1000, mcc: 10 }
+					attributes: { rloc: 70, functions: 1000, mcc: 10, loc: 2000 }
 				},
 				{
 					name: "file2.java",
 					path: "/root/src/main/file2.java",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100 }
+					attributes: { rloc: 55, functions: 100, mcc: 40, loc: 100 }
+				},
+				{
+					name: "file3.java",
+					path: "/root/src/main/file3.java",
+					type: NodeType.FILE,
+					attributes: { rloc: 45, functions: 1, mcc: 70, loc: 1 }
 				},
 				{
 					name: "readme",
 					path: "/root/src/main/readme",
 					type: NodeType.FILE,
-					attributes: { rloc: 200, functions: 1, mcc: 1 }
+					attributes: { rloc: 200, functions: 1, mcc: 70, loc: 1 }
 				}
 			]
 		},
@@ -122,7 +129,7 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					name: "otherFile.java",
 					path: "/root/src/test/otherFile.java",
 					type: NodeType.FILE,
-					attributes: { rloc: 100, functions: 10, mcc: 1 }
+					attributes: { rloc: 100, functions: 10, mcc: 100 }
 				}
 			]
 		}
@@ -688,7 +695,7 @@ export const VALID_EDGE: Edge = {
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
 	fileChecksum: "invalid-md5-sample",
-	apiVersion: APIVersions.ONE_POINT_TWO,
+	apiVersion: APIVersions.ONE_POINT_THREE,
 	nodes: [VALID_NODE]
 }
 
@@ -702,7 +709,7 @@ export const TEST_FILE_CONTENT_INVALID_MAJOR_API: ExportCCFile = {
 export const TEST_FILE_CONTENT_INVALID_MINOR_API: ExportCCFile = {
 	projectName: "Valid Sample Map Minor API High",
 	fileChecksum: "invalid-md5-sample",
-	apiVersion: "1.3",
+	apiVersion: "1.4",
 	nodes: [VALID_NODE]
 }
 
@@ -1606,6 +1613,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 export const TEST_FILE_DATA_DOWNLOADED = {
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
+	fileChecksum: "md5-fileA",
 	nodes: [
 		{
 			name: "root",
@@ -1706,14 +1714,14 @@ export const FILE_STATES_JAVA: FileState[] = [
 ]
 
 export const METRIC_DATA: NodeMetricData[] = [
-	{ name: "mcc", maxValue: 1 },
-	{ name: "rloc", maxValue: 2 },
-	{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1 }
+	{ name: "mcc", maxValue: 1, minValue: 1 },
+	{ name: "rloc", maxValue: 2, minValue: 1 },
+	{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1, minValue: 1 }
 ]
 
 export const EDGE_METRIC_DATA: EdgeMetricData[] = [
-	{ name: "pairing_rate", maxValue: 10 },
-	{ name: "average_commits", maxValue: 20 }
+	{ name: "pairing_rate", maxValue: 10, minValue: 0 },
+	{ name: "average_commits", maxValue: 20, minValue: 0 }
 ]
 
 export const STATE: State = {
@@ -1737,19 +1745,20 @@ export const STATE: State = {
 		colorMetric: "mcc",
 		distributionMetric: "mcc",
 		edgeMetric: "pairingRate",
-		focusedNodePath: "/root/ParentLeaf",
-		searchedNodePaths: new Set(),
+		focusedNodePath: ["/root/ParentLeaf"],
 		searchPattern: "",
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			min: 1,
+			max: 100
 		},
+		colorMode: ColorMode.weightedGradient,
 		sortingOption: SortingOption.NAME,
 		recentFiles: ["fileA", "fileB"]
 	},
 	appSettings: {
-		secondaryMetrics: [],
 		amountOfTopLabels: 31,
 		amountOfEdgePreviews: 5,
 		colorLabels: {
@@ -1807,15 +1816,14 @@ export const STATE: State = {
 		idToNode: new Map(),
 		idToBuilding: new Map()
 	},
-	metricData: {
-		nodeMetricData: METRIC_DATA,
-		edgeMetricData: EDGE_METRIC_DATA
+	appStatus: {
+		hoveredBuildingPath: null,
+		selectedBuildingId: null
 	}
 }
 
 export const DEFAULT_STATE: State = {
 	appSettings: {
-		secondaryMetrics: [],
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,
 		colorLabels: {
@@ -1853,7 +1861,7 @@ export const DEFAULT_STATE: State = {
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
 		isLoadingFile: true,
-		sortingOrderAscending: false,
+		sortingOrderAscending: true,
 		searchPanelMode: SearchPanelMode.minimized,
 		isAttributeSideBarVisible: false,
 		panelSelection: PanelSelection.NONE,
@@ -1868,17 +1876,19 @@ export const DEFAULT_STATE: State = {
 	dynamicSettings: {
 		areaMetric: null,
 		colorMetric: null,
-		focusedNodePath: "",
+		focusedNodePath: [],
 		heightMetric: null,
 		distributionMetric: null,
 		edgeMetric: null,
 		margin: null,
 		colorRange: {
 			from: null,
-			to: null
+			to: null,
+			min: null,
+			max: null
 		},
+		colorMode: ColorMode.weightedGradient,
 		searchPattern: "",
-		searchedNodePaths: new Set(),
 		sortingOption: SortingOption.NAME,
 		recentFiles: []
 	},
@@ -1889,9 +1899,9 @@ export const DEFAULT_STATE: State = {
 		idToBuilding: new Map(),
 		idToNode: new Map()
 	},
-	metricData: {
-		nodeMetricData: [],
-		edgeMetricData: []
+	appStatus: {
+		hoveredBuildingPath: null,
+		selectedBuildingId: null
 	}
 }
 
@@ -1910,7 +1920,9 @@ export const SCENARIO: RecursivePartial<Scenario> = {
 		colorMetric: "mcc",
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			max: 100,
+			min: 1
 		},
 		mapColors: DEFAULT_STATE.appSettings.mapColors
 	},
@@ -1934,7 +1946,9 @@ export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67
+			to: 67,
+			max: 100,
+			min: 1
 		}
 	},
 	appSettings: {
@@ -1999,7 +2013,7 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.COLOR_METRIC,
 		metricName: "mcc",
-		savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+		savedValues: { colorRange: { from: 19, to: 67, min: 1, max: 100 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},
@@ -2218,6 +2232,31 @@ export const TEST_NODE_LEAF: Node = {
 	markingColor: "0xFFFFFF",
 	flat: false,
 	color: "#ddcc00",
+	incomingEdgePoint: new Vector3(),
+	outgoingEdgePoint: new Vector3()
+}
+
+export const TEST_NODE_FOLDER: Node = {
+	name: "root",
+	id: 1,
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	mapNodeDepth: 1,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: false,
+	attributes: { a: 20, b: 15 },
+	edgeAttributes: { c: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root",
+	flat: false,
+	link: "NO_LINK",
+	color: "#ddcc00",
+	markingColor: "0xFFFFFF",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }

@@ -1,6 +1,6 @@
 import { CCAction, DynamicSettings, RecursivePartial } from "../../../codeCharta.model"
 
-// Plop: Append default property import here
+import { defaultColorMode } from "./colorMode/colorMode.actions"
 import { defaultRecentFiles } from "./recentFiles/recentFiles.actions"
 import { defaultSortingOption } from "./sortingOption/sortingOption.actions"
 import { defaultAreaMetric } from "./areaMetric/areaMetric.actions"
@@ -11,7 +11,6 @@ import { defaultEdgeMetric } from "./edgeMetric/edgeMetric.actions"
 import { defaultFocusedNodePath } from "./focusedNodePath/focusedNodePath.actions"
 import { defaultHeightMetric } from "./heightMetric/heightMetric.actions"
 import { defaultMargin } from "./margin/margin.actions"
-import { defaultSearchedNodePaths } from "./searchedNodePaths/searchedNodePaths.actions"
 import { defaultSearchPattern } from "./searchPattern/searchPattern.actions"
 
 export enum DynamicSettingsActions {
@@ -33,7 +32,7 @@ export function setDynamicSettings(dynamicSettings: RecursivePartial<DynamicSett
 }
 
 export const defaultDynamicSettings: DynamicSettings = {
-	// Plop: Append default property here
+	colorMode: defaultColorMode,
 	recentFiles: defaultRecentFiles,
 	sortingOption: defaultSortingOption,
 	areaMetric: defaultAreaMetric,
@@ -42,7 +41,6 @@ export const defaultDynamicSettings: DynamicSettings = {
 	distributionMetric: defaultDistributionMetric,
 	edgeMetric: defaultEdgeMetric,
 	focusedNodePath: defaultFocusedNodePath,
-	searchedNodePaths: defaultSearchedNodePaths,
 	searchPattern: defaultSearchPattern,
 	margin: defaultMargin,
 	colorRange: defaultColorRange

@@ -7,25 +7,173 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Added 🚀
+### Changed
 
--   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
-    ![Bildschirmfoto 2021-09-13 um 15 34 31](https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png)
--   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326)) ![Screenshot 2021-08-30 at 14 59 21](https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png)
--   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
--   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342))
-    <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="450px"/>
+-   User-friendly renaming for display quality options [#2601](https://github.com/MaibornWolff/codecharta/pull/2601)
 
 ### Fixed 🐞
 
--   Fix broken methode call in screenshot feature
--   Improve changelog entries
+-   Fix color of selected building in delta mode [#2603](https://github.com/MaibornWolff/codecharta/pull/2603)
+-   Fix link to news page when clicking 'Know more' button changelog dialog [#2602](https://github.com/MaibornWolff/codecharta/pull/2602)
+
+## [1.87.0] - 2022-01-11
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate `unfocus-button-component` to Angular.
+
+### Changed
+
+-   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
+-   Add 'show/hide non-applicable CustomConfigs' button to Custom Configs menu [#2591](https://github.com/MaibornWolff/codecharta/pull/2591).
+
+## [1.86.0] - 2021-12-20
+
+### Added 🚀
+
+-   Add 3D export feature for 3D printing [#2561](https://github.com/MaibornWolff/codecharta/pull/2561). <br>
+    <img src="https://user-images.githubusercontent.com/48621967/146173663-e0ea177e-6ed8-4ddb-bd11-410415541e9f.png" height="32px" alt="two menu buttons"/> <br>
+    <img src="https://user-images.githubusercontent.com/48621967/146174397-42a6e475-ed2f-47c0-ba9c-4f8304d53399.png" height="256px" alt="two menu buttons"/>
+
+### Changed
+
+-   Replace all color pickers in the context of ongoing Angular migration [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
+
+### Fixed 🐞
+
+-   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557).
+-   Fix minor memory leak in context menu for code map buildings [#2565](https://github.com/MaibornWolff/codecharta/issues/2565).
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate legend panel to Angular [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
+
+## [1.85.0] - 2021-12-13
+
+### Fixed 🐞
+
+-   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
+-   Use icon tag instead of font awesome icon [#2537](https://github.com/MaibornWolff/codecharta/pull/2537).
+-   Rename text for placeholder of metric chooser [#2547](https://github.com/MaibornWolff/codecharta/pull/2547)
+-   Fix attribute type selector of primary edge metric not shown [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
+-   Identical files and files with identical file names but different hashes can be loaded [#2548](https://github.com/MaibornWolff/codecharta/pull/2548)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Remove `secondaryMetrics` from store and remove `secondaryMetrics.service` as the data can be derived from selected node [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
+-   Migrate `attribute-side-bar-component` to Angular [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
+-   Switch from Webpack 4 Loaders to Asset Module to load icons properly with css-loader 6.x [#2542](https://github.com/MaibornWolff/codecharta/pull/2542).
+
+### Removed 🗑
+
+-   Remove notification dialog when deleting a custom config [#2553](https://github.com/MaibornWolff/codecharta/pull/2553)
+
+## [1.84.1] - 2021-11-29
+
+### Fixed 🐞
+
+-   Fix compressed files not being loaded ([#2524](https://github.com/MaibornWolff/codecharta/pull/2525))
+
+## [1.84.0] - 2021-11-22
+
+### Changed
+
+-   Improved the UI and usability of the Suspicious Metrics Feature ([#2376](https://github.com/MaibornWolff/codecharta/pull/2494)) <br>
+    -   The Metrics and the Analysis are now split in two menus <br>
+        <img src="https://user-images.githubusercontent.com/48621967/141795078-bb856f53-1bc3-4c09-8be5-d031899835ae.png" height="64px" alt="two menu buttons"/>
+    -   The Suspicious Metrics are now sorted with the Very High Risk on top <br>
+        <img src="https://user-images.githubusercontent.com/48621967/141793011-1bfc0e19-bd3a-4bd2-af70-c3dd472821b6.png" height="256px" alt="list of suspicious metrics"/>
+    -   The bar in the analysis shows the percentages <br>
+        <img src="https://user-images.githubusercontent.com/48621967/141791111-564778fa-b767-4ee4-b024-6856f1a79b4b.png" width="512px" alt="list of suspicious metrics"/>
+
+### Fixed 🐞
+
+-   Fix showing labels when weighted gradient on yellow buildings in color metric options are enabled ([#2511](https://github.com/MaibornWolff/codecharta/pull/2511))
+-   Fix rounding of the sum of percentages in risk profile ([#2393](https://github.com/MaibornWolff/codecharta/pull/2516))
+-   Fix legend panel not having a background ([#2422](https://github.com/MaibornWolff/codecharta/pull/2510))
+
+### Chore 👨‍💻 👩‍💻
+
+-   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern` ([#2495](https://github.com/MaibornWolff/codecharta/pull/2495)).
+-   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
+-   Migrate `attribute-type-selector-component` to Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
+
+## [1.83.1] - 2021-11-10
+
+### Fixed 🐞
+
+-   Fix loading files from URL in Web Demo ([#2494](https://github.com/MaibornWolff/codecharta/pull/2494))
+
+## [1.83.0] - 2021-11-09
+
+### Fixed 🐞
+
+-   Fix unwanted calculations of suspicious metrics when experimental features are disabled ([#2471](https://github.com/MaibornWolff/codecharta/pull/2471))
+-   Fix UI issues in the configuration panel ([#2322](https://github.com/maibornwolff/codecharta/issues/2322))
+-   Fix tooltip of sorting order button in map tree view showing wrong sorting order ([#2473](https://github.com/maibornwolff/codecharta/issues/2473))
+
+### Changed
+
+-   Calculate MD5 checksum when generating .cc.json files ([#2411](https://github.com/MaibornWolff/codecharta/pull/2450))
+
+## [1.82.0] - 2021-10-18
+
+### Fixed 🐞
+
+-   Fix what's new section including the last opened version ([#2447](https://github.com/MaibornWolff/codecharta/pull/2453))
+-   Fix unfocus button text not showing correctly ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
+
+### Changed
+
+-   Folders in the Folder structure view of the top left come now always before any files, regardless of the sort order.
+
+## [1.81.0] - 2021-10-11
+
+### Fixed 🐞
+
+-   Fix color picker not being usable ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
+-   Fix Changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425)) <br>
+    <img src="https://user-images.githubusercontent.com/48621967/135866024-ee06119a-1a62-4912-90df-ac3aa9216608.PNG" width="350px" alt="consistent changelog images"/>
+-   Fix memory and performance issues related to drawing labels on floors/folders ([#2348](https://github.com/MaibornWolff/codecharta/issues/2348)).
+-   Hides legend block if label description is not available and adds new metric descriptions ([#2377](https://github.com/maibornwolff/codecharta/issues/2377)).
+
+## [1.80.0] - 2021-10-04
+
+### Added 🚀
+
+-   Adds feature to display building colors as a gradients ([#2327](https://github.com/MaibornWolff/codecharta/issues/2327)).
+    -   "Weighted Gradient" only mixes colors in a small interval around the preset values.
+    -   "True Gradient" mixes colors from the 0 to the highest value, the two preset color range values determine the balance.
+    -   "Absolute" represents the old behaviour without gradients. <br>
+        <img src="https://user-images.githubusercontent.com/42114276/134924267-245c65c9-2893-43a8-9a0a-17e3182bf15a.JPG" width="350px"/>
+
+### Fixed 🐞
+
+-   Fix broken file/node search #2389
+-   Fix changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425))
+
+## [1.79.0] - 2021-09-20
+
+### Added 🚀
+
+-   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330)) <br>
+    <img src="https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png" width="250px"/>
+-   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326)) <br>
+    <img src="https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png" width="450px"/>
+-   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
+-   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342)) <br>
+    <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="350px"/>
+
+### Fixed 🐞
+
+-   Fix broken method call in screenshot feature.
+-   Improve changelog entries.
 
 ### Changed
 
 -   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not applicable ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
--   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362))
-    <img src="https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png" width="450px"/>
+-   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362)) <br>
+    <img src="https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png" width="350px" alt=""/>
 
 ## [1.78.0] - 2021-09-06
 
@@ -54,7 +202,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Small ui improvements added. ([#1881](https://github.com/MaibornWolff/codecharta/issues/1881))
-
 -   Numbers/Percentages always show in the distribution bar([#1540](https://github.com/MaibornWolff/codecharta/issues/1540))
     -   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
     -   The old expanded distribution bar is now accessible through a button.
@@ -80,27 +227,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Imported files are now compressed by default. Use the -nc parameter to uncompress the files. ([#1702](https://github.com/maibornwolff/codecharta/issues/1702))
 -   Export the current view as a png image by using "Ctrl+Alt+S" or clicking the corresponding button ([#674](https://github.com/MaibornWolff/codecharta/issues/674))
 -   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
--   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613))
-
+-   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613)) <br>
     <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350" alt="Updated menu">
 
 ### Changed
 
 -   Metric aggregations now work as intended and are available from the sidebar when selecting folders ([#1953](https://github.com/MaibornWolff/codecharta/issues/1953))
-
 -   Opening new files does no longer remove old ones.
-
-    <img src="https://user-images.githubusercontent.com/50167165/123071234-c6856f00-d414-11eb-8326-e25f614e75d7.png" width="350">
-
     -   Already loaded files can be individually removed.
-    -   The 'Multiple' view will select the latest files.
-
-### Changed
-
--   Numbers/Percentages are always shown on distribution bar.
--   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
--   The old expanded distribution bar is
-    now accessible through a button.
+    -   The 'Multiple' view will select the latest files. <br>
+        <img src="https://user-images.githubusercontent.com/50167165/123071234-c6856f00-d414-11eb-8326-e25f614e75d7.png" width="350">
 
 ### Fixed 🐞
 

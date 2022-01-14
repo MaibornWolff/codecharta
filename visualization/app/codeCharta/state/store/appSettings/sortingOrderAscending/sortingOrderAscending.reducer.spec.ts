@@ -1,12 +1,12 @@
 import { sortingOrderAscending } from "./sortingOrderAscending.reducer"
-import { SortingOrderAscendingAction, setSortingOrderAscending } from "./sortingOrderAscending.actions"
+import { SortingOrderAscendingAction, setSortingOrderAscending, toggleSortingOrderAscending } from "./sortingOrderAscending.actions"
 
 describe("sortingOrderAscending", () => {
 	describe("Default State", () => {
 		it("should initialize the default state", () => {
 			const result = sortingOrderAscending(undefined, {} as SortingOrderAscendingAction)
 
-			expect(result).toEqual(false)
+			expect(result).toEqual(true)
 		})
 	})
 
@@ -16,11 +16,14 @@ describe("sortingOrderAscending", () => {
 
 			expect(result).toEqual(true)
 		})
+	})
 
-		it("should set default sortingOrderAscending", () => {
-			const result = sortingOrderAscending(true, setSortingOrderAscending())
+	describe("Action: TOGGLE_SORTING_ORDER_ASCENDING", () => {
+		it("should toggle state", () => {
+			const result = sortingOrderAscending(false, setSortingOrderAscending(true))
+			const toggledResult = sortingOrderAscending(result, toggleSortingOrderAscending())
 
-			expect(result).toEqual(false)
+			expect(toggledResult).toBe(!result)
 		})
 	})
 })

@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.tokeiimporter
 
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter.Companion.mainWithInOut
+import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -11,6 +12,7 @@ import java.io.InputStream
 import java.io.PrintStream
 
 class TokeiImporterTest {
+
     @Test
     fun `reads tokei from file`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
@@ -34,7 +36,8 @@ class TokeiImporterTest {
 
     @Test
     fun `reads tokei piped input`() {
-        val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines().joinToString(separator = "") { it }
+        val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines()
+            .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input, arrayOf())
 
@@ -43,7 +46,8 @@ class TokeiImporterTest {
 
     @Test
     fun `projectStructure is correct`() {
-        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "") { it }
+        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines()
+            .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input, arrayOf("--path-separator=\\"))
 
@@ -57,7 +61,8 @@ class TokeiImporterTest {
 
     @Test
     fun `tokei 12 projectStructure is correct`() {
-        val input = File("src/test/resources/tokei_without_inner.json").bufferedReader().readLines().joinToString(separator = "") { it }
+        val input = File("src/test/resources/tokei_without_inner.json").bufferedReader().readLines()
+            .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input)
 
@@ -72,7 +77,8 @@ class TokeiImporterTest {
 
     @Test
     fun `reads project piped input multiline`() {
-        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
+        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines()
+            .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
@@ -97,10 +103,14 @@ class TokeiImporterTest {
     @Test
     fun `attributeTypes are set`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
-        val expected = mapOf("comment_lines" to "absolute", "empty_lines" to "absolute", "loc" to "absolute", "rloc" to "absolute")
+        val expected = mapOf(
+            "comment_lines" to AttributeType.absolute,
+            "empty_lines" to AttributeType.absolute,
+            "loc" to AttributeType.absolute,
+            "rloc" to AttributeType.absolute
+                            )
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-
         Assertions.assertThat(project.attributeTypes).containsKey("nodes")
         Assertions.assertThat(project.attributeTypes["nodes"]).isEqualTo(expected)
     }
@@ -117,7 +127,7 @@ fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStr
 fun outputAsString(
     inputStream: InputStream = System.`in`,
     aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
-) =
+                  ) =
     ByteArrayOutputStream().use { baOutputStream ->
         PrintStream(baOutputStream).use { outputStream ->
             aMethod(inputStream, outputStream, System.err)

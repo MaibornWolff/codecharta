@@ -1,8 +1,7 @@
 import "./nodeContextMenu.module"
 
-import { IRootScopeService, IWindowService, ITimeoutService } from "angular"
+import { IRootScopeService, IWindowService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
 import {
 	CODE_MAP_BUILDING,
@@ -18,9 +17,7 @@ import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
@@ -30,11 +27,9 @@ import { BlacklistService } from "../../state/store/fileSettings/blacklist/black
 describe("nodeContextMenuController", () => {
 	let element: Element
 	let nodeContextMenuController: NodeContextMenuController
-	let $timeout: ITimeoutService
 	let $window: IWindowService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let codeMapActionsService: CodeMapActionsService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let threeSceneService: ThreeSceneService
 	let dialogService: DialogService
@@ -44,11 +39,9 @@ describe("nodeContextMenuController", () => {
 		restartSystem()
 		mockElement()
 		mockWindow()
-		withMockedCodeMapActionService()
 		withMockedCodeMapPreRenderService()
 		withMockedThreeSceneService()
 		rebuildController()
-		withMockedHideNodeContextMenuMethod()
 
 		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
 	})
@@ -56,11 +49,9 @@ describe("nodeContextMenuController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.nodeContextMenu")
 
-		$timeout = getService<ITimeoutService>("$timeout")
 		$window = getService<IWindowService>("$window")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		dialogService = getService<DialogService>("dialogService")
@@ -79,11 +70,9 @@ describe("nodeContextMenuController", () => {
 	function rebuildController() {
 		nodeContextMenuController = new NodeContextMenuController(
 			element,
-			$timeout,
 			$window,
 			$rootScope,
 			storeService,
-			codeMapActionsService,
 			codeMapPreRenderService,
 			threeSceneService,
 			dialogService,
@@ -91,17 +80,8 @@ describe("nodeContextMenuController", () => {
 		)
 	}
 
-	function withMockedCodeMapActionService() {
-		codeMapActionsService.markFolder = jest.fn()
-		codeMapActionsService.unmarkFolder = jest.fn()
-	}
-
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
-	}
-
-	function withMockedHideNodeContextMenuMethod() {
-		nodeContextMenuController.onHideNodeContextMenu = jest.fn()
 	}
 
 	function withMockedThreeSceneService() {
@@ -134,28 +114,26 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should subscribe to 'on-building-right-clicked' events", () => {
-			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-			CodeMapMouseEventService.subscribeToBuildingRightClickedEvents = jest.fn()
-
+			const documentAddEventListenerSpy = jest.spyOn(document, "addEventListener")
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith(
-				$rootScope,
-				nodeContextMenuController
+			expect(documentAddEventListenerSpy).toHaveBeenCalledWith(
+				"building-right-clicked",
+				nodeContextMenuController.onBuildingRightClicked
 			)
 		})
 	})
 
 	describe("onShowNodeContextMenu", () => {
-		let elementMock
+		let mockedWheelTargetElement
 		beforeEach(() => {
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
 
 			document.body.addEventListener = jest.fn()
-			elementMock = { addEventListener: jest.fn() }
+			mockedWheelTargetElement = { addEventListener: jest.fn(), removeEventListener: jest.fn() }
 			// @ts-ignore
-			jest.spyOn(document, "getElementById").mockImplementation(() => elementMock)
+			jest.spyOn(document, "getElementById").mockImplementation(() => mockedWheelTargetElement)
 		})
 
 		it("should set the correct building after some timeout", () => {
@@ -171,7 +149,7 @@ describe("nodeContextMenuController", () => {
 			expect(document.body.addEventListener).toHaveBeenNthCalledWith(2, "mousedown", expect.anything(), expect.anything())
 
 			expect(document.getElementById).toHaveBeenCalledWith("codeMap")
-			expect(elementMock.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
+			expect(mockedWheelTargetElement.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
 		})
 
 		it("should not shorten the path if it has no sub paths", () => {
@@ -187,6 +165,28 @@ describe("nodeContextMenuController", () => {
 
 			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(nodePath)
 			expect(nodeContextMenuController["_viewModel"].lastPartOfNodePath).toBe(`...${nodePath.slice(nodePath.lastIndexOf("/"))}`)
+		})
+
+		it("should remove all listener on hide", () => {
+			const documentRemoveEventListenerSpy = jest.spyOn(document.body, "removeEventListener")
+
+			nodeContextMenuController.onHideNodeContextMenu()
+
+			expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith(
+				"click",
+				nodeContextMenuController.onBodyLeftClickHideNodeContextMenu,
+				true
+			)
+			expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith(
+				"mousedown",
+				nodeContextMenuController.onBodyRightClickHideNodeContextMenu,
+				true
+			)
+			expect(mockedWheelTargetElement.removeEventListener).toHaveBeenCalledWith(
+				"wheel",
+				nodeContextMenuController.onMapWheelHideNodeContextMenu,
+				true
+			)
 		})
 	})
 
@@ -268,7 +268,6 @@ describe("nodeContextMenuController", () => {
 		it("should add flattened blacklistItem", () => {
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
 			const expected = {
-				attributes: {},
 				nodeType: NodeType.FOLDER,
 				path: "/root/Parent Leaf",
 				type: BlacklistType.flatten
@@ -368,34 +367,6 @@ describe("nodeContextMenuController", () => {
 		})
 	})
 
-	describe("markFolder", () => {
-		it("should call hide and codeMapActionService.markFolder", () => {
-			nodeContextMenuController.markFolder("color")
-
-			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode, "color")
-		})
-	})
-
-	describe("unmarkFolder", () => {
-		it("should call hide and codeMapActionService.unmarkFolder", () => {
-			nodeContextMenuController.unmarkFolder()
-
-			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode)
-		})
-	})
-
-	describe("focusNode", () => {
-		beforeEach(() => {
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
-		})
-
-		it("should set new focused path", () => {
-			nodeContextMenuController.focusNode()
-
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(VALID_NODE_WITH_PATH.children[1].path)
-		})
-	})
-
 	describe("excludeNode", () => {
 		beforeEach(() => {
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
@@ -403,7 +374,7 @@ describe("nodeContextMenuController", () => {
 
 		it("should add exclude blacklistItem", () => {
 			blacklistService.resultsInEmptyMap = jest.fn(() => false)
-			const expected = { attributes: {}, nodeType: "Folder", path: "/root/Parent Leaf", type: BlacklistType.exclude }
+			const expected = { nodeType: "Folder", path: "/root/Parent Leaf", type: BlacklistType.exclude }
 
 			nodeContextMenuController.excludeNode()
 
@@ -417,6 +388,15 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.excludeNode()
 
 			expect(dialogService.showErrorDialog).toBeCalled()
+		})
+
+		it("should prevent duplicate blacklist object regarding issue #2419", () => {
+			blacklistService.resultsInEmptyMap = jest.fn(() => false)
+
+			nodeContextMenuController.excludeNode()
+			nodeContextMenuController.excludeNode()
+
+			expect(storeService.getState().fileSettings.blacklist.length).toEqual(1)
 		})
 	})
 
@@ -460,60 +440,21 @@ describe("nodeContextMenuController", () => {
 		})
 	})
 
-	describe("isNodeFocused", () => {
-		it("should return true if a node is focused", () => {
-			storeService.dispatch(focusNode("/root/big leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if a node is not focused", () => {
-			storeService.dispatch(unfocusNode())
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeFocused()
-
-			expect(actual).toBeFalsy()
-		})
-	})
-
-	describe("isNodeOrParentFocused", () => {
-		it("should return true if a node is focused", () => {
-			storeService.dispatch(focusNode("/root/big leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return true if a parent of a node is focused", () => {
-			storeService.dispatch(focusNode("/root/Parent Leaf"))
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[1].children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if a node is not focused", () => {
-			storeService.dispatch(unfocusNode())
-			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
-
-			const actual = nodeContextMenuController.isNodeOrParentFocused()
-
-			expect(actual).toBeFalsy()
-		})
-	})
-
 	describe("onBodyLeftClickHideNodeContextMenu", () => {
-		it("should not hide if a click on color-picker occurs", () => {
+		it("should not hide if a click on color-picker tricker occurs", () => {
 			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
 			const mockedMouseEvent: any = {
-				composedPath: () => [{ nodeName: "CC-NODE-CONTEXT-MENU-COLOR-PICKER" }]
+				composedPath: () => [{ nodeName: "CC-MARK-FOLDER-COLOR-PICKER" }]
+			}
+			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
+
+			expect(broadcastHideEventSpy).not.toHaveBeenCalled()
+		})
+
+		it("should not hide if a click within color-picker occurs", () => {
+			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const mockedMouseEvent: any = {
+				composedPath: () => [{ nodeName: "COLOR-CHROME" }]
 			}
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 

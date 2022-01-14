@@ -1,10 +1,9 @@
 import "./rangeSlider.component.scss"
-import $ from "jquery"
 import { ColorRange } from "../../codeCharta.model"
-import angular, { IRootScopeService, ITimeoutService, RzSlider } from "angular"
+import { IRootScopeService, RzSlider } from "angular"
 import { StoreService } from "../../state/store.service"
-import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
@@ -25,7 +24,6 @@ export class RangeSliderController
 	implements ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, MapColorsSubscriber
 {
 	private static DEBOUNCE_TIME = 400
-	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
 	private DIGIT_WIDTH = 11
 	private MIN_DIGITS = 4
@@ -47,7 +45,6 @@ export class RangeSliderController
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private colorRangeService: ColorRangeService
@@ -58,29 +55,11 @@ export class RangeSliderController
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		MapColorsService.subscribe(this.$rootScope, this)
-		this.renderSliderOnInitialisation()
-		this.applyDebouncedColorRange = debounce((action: SetColorRangeAction) => {
-			this.storeService.dispatch(action)
-		}, RangeSliderController.DEBOUNCE_TIME)
+		this.applyColorRange()
 	}
 
 	onMapColorsChanged() {
 		this.updateSliderColors()
-	}
-
-	renderSliderOnInitialisation() {
-		// quick and dirty: Better solution would be to wait for the content to be loaded for the first render
-		// should be taken care of when switching to Angular
-
-		angular.element(() => {
-			this.$timeout(() => {
-				this.forceSliderRender()
-			})
-		})
-	}
-
-	forceSliderRender() {
-		angular.element(() => this.$rootScope.$broadcast("rzSliderForceRender"))
 	}
 
 	onBlacklistChanged() {
@@ -96,12 +75,9 @@ export class RangeSliderController
 
 	onColorRangeChanged(colorRange: ColorRange) {
 		this.updateViewModel(colorRange)
-
-		this.$timeout(() => {
-			this.initSliderOptions()
-			this.updateSliderColors()
-			this.updateInputFieldWidth()
-		}, 0)
+		this.initSliderOptions()
+		this.updateSliderColors()
+		this.updateInputFieldWidth()
 	}
 
 	onFilesSelectionChanged() {
@@ -127,19 +103,19 @@ export class RangeSliderController
 	}
 
 	private updateMaxMetricValue() {
-		this._viewModel.sliderOptions.ceil = this.nodeMetricDataService.getMaxMetricByMetricName(
+		this._viewModel.sliderOptions.ceil = this.nodeMetricDataService.getMaxValueOfMetric(
 			this.storeService.getState().dynamicSettings.colorMetric
 		)
 	}
 
 	private isMaxMetricValueChanged() {
-		const newMaxValue = this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
+		const newMaxValue = this.nodeMetricDataService.getMaxValueOfMetric(this.storeService.getState().dynamicSettings.colorMetric)
 		return this._viewModel.sliderOptions.ceil !== newMaxValue
 	}
 
 	private initSliderOptions() {
 		this._viewModel.sliderOptions = {
-			ceil: this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
+			ceil: this.nodeMetricDataService.getMaxValueOfMetric(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
 			onEnd: (_, modelValue, highValue, pointerType) => this.applySliderUpdateDone(modelValue, highValue, pointerType),
 			pushRange: true,
@@ -156,14 +132,16 @@ export class RangeSliderController
 		this.updateSliderColors()
 	}
 
-	private applyColorRange() {
-		this.applyDebouncedColorRange(
+	private applyColorRange = debounce(() => {
+		this.storeService.dispatch(
 			setColorRange({
 				to: this._viewModel.colorRangeTo,
-				from: this._viewModel.colorRangeFrom
+				from: this._viewModel.colorRangeFrom,
+				min: this._viewModel.sliderOptions.floor,
+				max: this._viewModel.sliderOptions.ceil
 			})
 		)
-	}
+	}, RangeSliderController.DEBOUNCE_TIME)
 
 	private applySliderUpdateDone(modelValue, highValue, pointerType) {
 		if (pointerType === "min") {
@@ -199,9 +177,9 @@ export class RangeSliderController
 		const fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		const toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
-		$("range-slider-component #rangeFromInputField").css("width", `${fromWidth}px`)
-		$("range-slider-component #rangeToInputField").css("width", `${toWidth}px`)
-		$("range-slider-component #colorSlider").css("width", `${this.FULL_WIDTH_SLIDER - fromWidth - toWidth}px`)
+		document.getElementById("rangeFromInputField").style.width = `${fromWidth}px`
+		document.getElementById("rangeToInputField").style.width = `${toWidth}px`
+		document.getElementById("colorSlider").style.width = `${this.FULL_WIDTH_SLIDER - fromWidth - toWidth}px`
 	}
 
 	private updateSliderColors() {
@@ -230,14 +208,14 @@ export class RangeSliderController
 	}
 
 	private applyCssColors(rangeColors, rangeFromPercentage) {
-		const slider = $("range-slider-component .rzslider")
-		const leftSection = slider.find(".rz-bar-wrapper:nth-child(3) .rz-bar")
-		const middleSection = slider.find(".rz-selection")
-		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
+		const slider = document.querySelector("range-slider-component .rzslider")
+		const leftSection = <HTMLElement>slider.querySelector(".rz-bar-wrapper:nth-child(3) .rz-bar")
+		const middleSection = <HTMLElement>slider.querySelector(".rz-selection")
+		const rightSection = <HTMLElement>slider.querySelector(".rz-right-out-selection .rz-bar")
 
-		leftSection.css("cssText", `background: ${rangeColors.left} !important; width: ${rangeFromPercentage}%;`)
-		middleSection.css("cssText", `background: ${rangeColors.middle} !important;`)
-		rightSection.css("cssText", `background: ${rangeColors.right};`)
+		leftSection.style.cssText = `background: ${rangeColors.left} !important; width: ${rangeFromPercentage}%;`
+		middleSection.style.cssText = `background: ${rangeColors.middle} !important;`
+		rightSection.style.cssText = `background: ${rangeColors.right};`
 	}
 }
 

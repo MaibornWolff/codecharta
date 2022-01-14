@@ -13,6 +13,7 @@ import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store
 import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	private nodesByColor = {
@@ -46,20 +47,23 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	render(map: CodeMapNode) {
-		const sortedNodes = this.getSortedNodes(map)
-		const filteredSortedNodes = sortedNodes.filter(({ flat }) => !flat)
+		const nodes = this.getNodes(map)
+		const visibleSortedNodes = nodes
+			.filter(node => node.visible && node.length > 0 && node.width > 0)
+			.sort((a, b) => b.height - a.height)
+		const unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
-		this.setNewMapMesh(sortedNodes)
-		this.getNodesMatchingColorSelector(filteredSortedNodes)
-		this.setLabels(filteredSortedNodes)
-		this.setArrows(sortedNodes)
+		this.setNewMapMesh(nodes, visibleSortedNodes)
+		this.getNodesMatchingColorSelector(unflattenedNodes)
+		this.setLabels(unflattenedNodes)
+		this.setArrows(visibleSortedNodes)
 		this.scaleMap()
 	}
 
-	private setNewMapMesh(sortedNodes) {
+	private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
 		const state = this.storeService.getState()
-		const mapMesh = new CodeMapMesh(sortedNodes, state, isDeltaState(state.files))
-		this.threeSceneService.setMapMesh(mapMesh)
+		const mapMesh = new CodeMapMesh(visibleSortedNodes, state, isDeltaState(state.files))
+		this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
 	}
 
 	scaleMap() {
@@ -68,27 +72,23 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		this.threeSceneService.scaleHeight()
 	}
 
-	private getSortedNodes(map: CodeMapNode) {
+	private getNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
+		const nodeMetricData = nodeMetricDataSelector(state)
 		const {
 			appSettings: { layoutAlgorithm },
-			metricData: { nodeMetricData },
 			files
 		} = state
-		let nodes: Node[] = []
 		const deltaState = isDeltaState(files)
 		switch (layoutAlgorithm) {
 			case LayoutAlgorithm.StreetMap:
 			case LayoutAlgorithm.TreeMapStreet:
-				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, deltaState)
-				break
+				return StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, deltaState)
 			case LayoutAlgorithm.SquarifiedTreeMap:
-				nodes = createTreemapNodes(map, state, nodeMetricData, deltaState)
-				break
+				return createTreemapNodes(map, state, nodeMetricData, deltaState)
+			default:
+				return []
 		}
-		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
-		// prevent multiple steps if the visibility is checked first.
-		return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
 	}
 
 	private getNodesMatchingColorSelector(sortedNodes: Node[]) {
@@ -111,7 +111,11 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 						this.nodesByColor.positive.push(node)
 						break
 
-					case mapColor.neutral:
+					default:
+						// TODO: A couple of these are either negative or
+						// positive, depending on the mode! It's not possible to
+						// rely upon the color anymore. We have to add a state
+						// that tracks the color.
 						this.nodesByColor.neutral.push(node)
 						break
 				}
@@ -119,70 +123,38 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		}
 	}
 
-	private setLabels(sortedNodes: Node[]) {
-		const appSettings = this.storeService.getState().appSettings
-		const showLabelNodeName = appSettings.showMetricLabelNodeName
-		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
-		const colorLabelOptions = appSettings.colorLabels
+	private setBuildingLabel(nodes: Node[], highestNodeInSet: number) {
+		for (const node of nodes) {
+			this.codeMapLabelService.addLabel(node, highestNodeInSet)
+		}
+	}
 
+	private setLabels(sortedNodes: Node[]) {
 		this.codeMapLabelService.clearLabels()
 
-		if (showLabelNodeName || showLabelNodeMetric) {
+		if (sortedNodes.length === 0) {
+			return
+		}
+
+		const {
+			showMetricLabelNodeName,
+			showMetricLabelNameValue,
+			colorLabels: colorLabelOptions,
+			amountOfTopLabels
+		} = this.storeService.getState().appSettings
+
+		if (showMetricLabelNodeName || showMetricLabelNameValue) {
 			const highestNodeInSet = sortedNodes[0].height
 
-			if (colorLabelOptions.positive) {
-				for (const node of this.nodesByColor.positive) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
+			for (const colorType of ["positive", "neutral", "negative"]) {
+				if (colorLabelOptions[colorType]) {
+					this.setBuildingLabel(this.nodesByColor[colorType], highestNodeInSet)
 				}
 			}
-			if (colorLabelOptions.neutral) {
-				for (const node of this.nodesByColor.neutral) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
-				}
-			}
-			if (colorLabelOptions.negative) {
-				for (const node of this.nodesByColor.negative) {
-					this.codeMapLabelService.addLabel(
-						node,
-						{
-							showNodeName: showLabelNodeName,
-							showNodeMetric: showLabelNodeMetric
-						},
-						highestNodeInSet
-					)
-				}
-			}
-			if (!colorLabelOptions.negative && !colorLabelOptions.positive && !colorLabelOptions.neutral) {
-				let { amountOfTopLabels } = appSettings
-				for (let index = 0; index < sortedNodes.length && amountOfTopLabels !== 0; index++) {
-					if (sortedNodes[index].isLeaf) {
-						//get neighbors with label
-						//neighbor ==> width + margin + 1
-						this.codeMapLabelService.addLabel(
-							sortedNodes[index],
-							{
-								showNodeName: showLabelNodeName,
-								showNodeMetric: showLabelNodeMetric
-							},
-							highestNodeInSet
-						)
-						amountOfTopLabels -= 1
-					}
-				}
+
+			if (!(colorLabelOptions.negative || colorLabelOptions.neutral || colorLabelOptions.positive)) {
+				const nodes = sortedNodes.filter(node => node.isLeaf).slice(0, amountOfTopLabels)
+				this.setBuildingLabel(nodes, highestNodeInSet)
 			}
 		}
 	}

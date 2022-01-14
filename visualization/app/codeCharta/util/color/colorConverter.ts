@@ -58,15 +58,15 @@ export class ColorConverter {
 	}
 
 	static convertColorToHex(colorObject: Color) {
-		return (
-			String(String(`#${Math.round(colorObject.r).toString(16)}`) + Math.round(colorObject.g).toString(16)) +
-			Math.round(colorObject.b).toString(16)
-		)
+		return [colorObject.r, colorObject.g, colorObject.b].reduce((string, color) => {
+			string += Math.round(color).toString(16).padStart(2, "0")
+			return string
+		}, "#")
 	}
 
 	static hexToHSL(hex: string) {
 		const hsl = convert.hex.hsl(hex)
-		return new HSL(hsl[0], hsl[1], hsl[2])
+		return new HSL(...hsl)
 	}
 
 	static colorToVector3(color: string) {

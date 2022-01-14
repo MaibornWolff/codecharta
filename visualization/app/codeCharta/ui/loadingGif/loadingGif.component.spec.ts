@@ -1,14 +1,13 @@
 import "./loadingGif.module"
 import { LoadingGifController } from "./loadingGif.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { IsLoadingFileService } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.service"
 
 describe("LoadingGifController", () => {
 	let loadingGifController: LoadingGifController
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 
 	beforeEach(() => {
 		restartSystem()
@@ -19,11 +18,10 @@ describe("LoadingGifController", () => {
 		instantiateModule("app.codeCharta.ui.loadingGif")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function rebuildController() {
-		loadingGifController = new LoadingGifController($rootScope, $timeout)
+		loadingGifController = new LoadingGifController($rootScope)
 	}
 
 	describe("constructor", () => {

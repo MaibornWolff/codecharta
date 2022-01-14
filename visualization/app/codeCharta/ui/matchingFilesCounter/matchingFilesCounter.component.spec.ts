@@ -1,91 +1,32 @@
-import "./matchingFilesCounter.module"
-import { MatchingFilesCounterController } from "./matchingFilesCounter.component"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { BlacklistType } from "../../codeCharta.model"
-import { IRootScopeService } from "angular"
-import { NodeSearchService } from "../../state/nodeSearch.service"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { StoreService } from "../../state/store.service"
-import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { TestBed } from "@angular/core/testing"
+import { render } from "@testing-library/angular"
 
-describe("MatchingFilesCounterController", () => {
-	let matchingFilesCounterController: MatchingFilesCounterController
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
-	let codeMapPreRenderService: CodeMapPreRenderService
+import { MatchingFilesCounterComponent } from "./matchingFilesCounter.component"
+import { MatchingFilesCounterModule } from "./matchingFilesCounter.module"
 
+jest.mock("./selectors/matchingFilesCounter.selector", () => ({
+	matchingFilesCounterSelector: () => ({
+		fileCount: "2/3",
+		flattenCount: "1/1",
+		excludeCount: "0/1"
+	})
+}))
+
+describe("MatchingFilesCounterComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.matchingFilesCounter")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-	}
-
-	function rebuildController() {
-		matchingFilesCounterController = new MatchingFilesCounterController($rootScope, storeService, codeMapPreRenderService)
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to NodeSearchService", () => {
-			NodeSearchService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(NodeSearchService.subscribe).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
-		})
-
-		it("should subscribe to BlacklistService", () => {
-			BlacklistService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
+		TestBed.configureTestingModule({
+			imports: [MatchingFilesCounterModule]
 		})
 	})
 
-	describe("updateViewModel", () => {
-		const rootNode = VALID_NODE_WITH_PATH
+	it("should render and show matching files counter data", async () => {
+		const { container } = await render(MatchingFilesCounterComponent, { excludeComponentDeclaration: true })
+		const searchContainer = container.querySelector("[title='Files matching search pattern']")
+		const flattenedContainer = container.querySelector("[title='Files flattened']")
+		const excludedContainer = container.querySelector("[title='Files excluded']")
 
-		it("should update ViewModel count Attributes when pattern hidden and excluded", () => {
-			matchingFilesCounterController["_viewModel"].searchPattern = "/root/node/path"
-			matchingFilesCounterController["searchedNodeLeaves"] = [rootNode, rootNode]
-			matchingFilesCounterController["searchedNodeLeaves"][0].path = matchingFilesCounterController["_viewModel"].searchPattern
-			storeService.dispatch(addBlacklistItem({ path: "/root/node/path", type: BlacklistType.exclude }))
-			storeService.dispatch(addBlacklistItem({ path: "/root/node/path", type: BlacklistType.flatten }))
-
-			matchingFilesCounterController["updateViewModel"]()
-
-			expect(matchingFilesCounterController["_viewModel"].fileCount).toEqual("2/0")
-			expect(matchingFilesCounterController["_viewModel"].flattenCount).toEqual("2/0")
-			expect(matchingFilesCounterController["_viewModel"].excludeCount).toEqual("2/0")
-		})
-	})
-
-	describe("getSearchedNodeLeaves", () => {
-		it("should return array of nodes leaves", () => {
-			const rootNode = VALID_NODE_WITH_PATH
-			const searchNodes = [
-				rootNode,
-				rootNode.children[0],
-				rootNode.children[1].children[0],
-				rootNode.children[1].children[1],
-				rootNode.children[1].children[2]
-			]
-			const nodeLeaves = [
-				rootNode.children[0],
-				rootNode.children[1].children[0],
-				rootNode.children[1].children[1],
-				rootNode.children[1].children[2]
-			]
-			matchingFilesCounterController.onNodeSearchComplete(searchNodes, "r")
-			expect(matchingFilesCounterController["searchedNodeLeaves"]).toEqual(nodeLeaves)
-		})
+		expect(searchContainer.textContent).toMatch(/2\/3/)
+		expect(flattenedContainer.textContent).toMatch(/1\/1/)
+		expect(excludedContainer.textContent).toMatch(/0\/1/)
 	})
 })

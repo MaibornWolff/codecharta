@@ -1,292 +1,115 @@
-import "./attributeSideBar.module"
-import { AttributeSideBarController, PrimaryMetrics } from "./attributeSideBar.component"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
-import { CODE_MAP_BUILDING, TEST_NODE_LEAF } from "../../util/dataMocks"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
-import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
-import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
-import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { StoreService } from "../../state/store.service"
-import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
+import { TestBed } from "@angular/core/testing"
+import { render } from "@testing-library/angular"
 import { klona } from "klona"
-import { LazyLoader } from "../../util/lazyLoader"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
-describe("AttributeSideBarController", () => {
-	let attributeSideBarController: AttributeSideBarController
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
-	let codeMapPreRenderService: CodeMapPreRenderService
-	let nodeMetricDataService: NodeMetricDataService
-	let edgeMetricDataService: EdgeMetricDataService
+import { TEST_NODE_FOLDER, TEST_NODE_LEAF } from "../../util/dataMocks"
+import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
+import { AttributeSideBarComponent } from "./attributeSideBar.component"
+import { AttributeSideBarModule } from "./attributeSideBar.module"
+import { isAttributeSideBarVisibleSelector } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector"
 
+jest.mock("../../state/selectors/selectedNode.selector", () => ({
+	selectedNodeSelector: jest.fn()
+}))
+const mockedSelectedNodeSelector = selectedNodeSelector as jest.Mock
+
+jest.mock("../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector", () => ({
+	isAttributeSideBarVisibleSelector: jest.fn(() => true)
+}))
+const mockedIsAttributeSideBarVisibleSelector = isAttributeSideBarVisibleSelector as jest.Mock
+
+jest.mock("./attributeSideBarPrimaryMetrics/primaryMetricNames.selector", () => ({
+	primaryMetricNamesSelector: jest.fn(() => ({
+		nameOfAreaMetric: "a",
+		nameOfHeightMetric: "a",
+		nameOfColorMetric: "a",
+		nameOfEdgeMetric: "c"
+	}))
+}))
+
+describe("AttributeSideBarComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
+		TestBed.configureTestingModule({
+			imports: [AttributeSideBarModule]
+		})
 	})
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.attributeSideBar")
+	it("should display side bar if no building is selected (for opening / closing transition effect)", async () => {
+		mockedSelectedNodeSelector.mockImplementationOnce(() => {})
+		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
-		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
-	}
+		expect(container.querySelector(".side-bar-container")).not.toBe(null)
+	})
 
-	function rebuildController() {
-		attributeSideBarController = new AttributeSideBarController(
-			$rootScope,
-			storeService,
-			codeMapPreRenderService,
-			nodeMetricDataService,
-			edgeMetricDataService
+	it("should hide side bar if side bar is closed", async () => {
+		mockedSelectedNodeSelector.mockImplementation(() => klona(TEST_NODE_LEAF))
+		mockedIsAttributeSideBarVisibleSelector.mockImplementationOnce(() => false)
+		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
+
+		expect(container.querySelector(".side-bar-container.expanded")).toBe(null)
+	})
+
+	it("should render correctly with selected building", async () => {
+		mockedSelectedNodeSelector.mockImplementation(() => {
+			const selectedNode = klona(TEST_NODE_LEAF)
+			selectedNode.deltas = undefined
+			return selectedNode
+		})
+		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
+
+		const isSideBarOpen = container.querySelector(".side-bar-container.expanded") !== null
+		expect(isSideBarOpen).toBe(true)
+
+		const name = container.querySelector("a[class=node-link]").textContent
+		expect(name).toMatch("root/big leaf.ts")
+
+		const pathName = container.querySelector("cc-node-path").textContent
+		expect(pathName).toMatch("/root/big leaf")
+
+		const firstPrimaryMetricEntry = container.querySelector("cc-attribute-side-bar-primary-metric").textContent
+		const expectedPrimaryMetricTextContent = "20 a"
+		expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
+
+		const expectedSecondaryMetricTextContent = "15b"
+		const isSecondaryMetricInPrimaryMetricSection = container
+			.querySelector("cc-attribute-side-bar-primary-metric")
+			.textContent.includes(expectedSecondaryMetricTextContent)
+		expect(isSecondaryMetricInPrimaryMetricSection).toBe(false)
+		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics .metric-row").textContent
+		expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
+
+		expect(isAttributeTypeSelectorShown(container)).toBe(false)
+	})
+
+	it("should display deltas if node has delta values", async () => {
+		mockedSelectedNodeSelector.mockImplementation(() => klona(TEST_NODE_LEAF))
+		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
+
+		const firstPrimaryMetricEntry = container.querySelector("cc-attribute-side-bar-primary-metric").textContent
+		const expectedPrimaryMetricTextContent = /20\s+Δ1\s+a/
+		expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
+
+		const expectedSecondaryMetricTextContent = /15\s+Δ2\s+b/
+		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics .metric-row").textContent
+		expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
+	})
+
+	it("should display attribute type selectors for folders", async () => {
+		mockedSelectedNodeSelector.mockImplementation(() => klona(TEST_NODE_FOLDER))
+
+		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
+
+		const attributeTypeSelectorWithinPrimaryMetrics = container.querySelectorAll(
+			"cc-attribute-side-bar-primary-metrics cc-attribute-type-selector"
 		)
-	}
-
-	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue({ fileName: "my_fileName" })
-		attributeSideBarController["codeMapPreRenderService"] = codeMapPreRenderService
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to Node Selected Events", () => {
-			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
-
-			rebuildController()
-
-			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarController)
-		})
-
-		it("should subscribe to AreaMetricService", () => {
-			AreaMetricService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
-		})
-
-		it("should subscribe to HeightMetricService", () => {
-			HeightMetricService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
-		})
-
-		it("should subscribe to ColorMetricService", () => {
-			ColorMetricService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
-		})
-
-		it("should subscribe to EdgeMetricService", () => {
-			EdgeMetricService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
-		})
-
-		it("should subscribe to IsAttributeSideBarVisibleService Events", () => {
-			IsAttributeSideBarVisibleService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(IsAttributeSideBarVisibleService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
-		})
-	})
-
-	describe("onBuildingSelected", () => {
-		let codeMapBuilding: CodeMapBuilding
-
-		beforeEach(() => {
-			withMockedCodeMapPreRenderService()
-			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
-			codeMapBuilding = klona(CODE_MAP_BUILDING)
-		})
-
-		it("should set new viewModel node", () => {
-			attributeSideBarController.onBuildingSelected(codeMapBuilding)
-
-			expect(attributeSideBarController["_viewModel"].node).toBe(codeMapBuilding.node)
-		})
-
-		it("should call function to update secondaryMetricKeys", () => {
-			attributeSideBarController.onBuildingSelected(codeMapBuilding)
-
-			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
-		})
-
-		it("should get fileName from codeMapPreRenderService", () => {
-			attributeSideBarController.onBuildingSelected(codeMapBuilding)
-
-			expect(attributeSideBarController["_viewModel"].fileName).toEqual("my_fileName")
-		})
-	})
-
-	describe("onAreaMetricChanged", () => {
-		let areaMetric: string
-
-		beforeEach(() => {
-			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
-			areaMetric = "myAreaMetric"
-		})
-
-		it("should set new viewModel areaMetric", () => {
-			attributeSideBarController.onAreaMetricChanged(areaMetric)
-
-			expect(attributeSideBarController["_viewModel"].primaryMetricKeys.node.area).toBe(areaMetric)
-		})
-
-		it("should call function to update secondaryMetricKeys", () => {
-			attributeSideBarController.onAreaMetricChanged(areaMetric)
-
-			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
-		})
-	})
-
-	describe("onHeightMetricChanged", () => {
-		let heightMetric: string
-
-		beforeEach(() => {
-			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
-			heightMetric = "myHeightMetric"
-		})
-
-		it("should set new viewModel heightMetric", () => {
-			attributeSideBarController.onHeightMetricChanged(heightMetric)
-
-			expect(attributeSideBarController["_viewModel"].primaryMetricKeys.node.height).toBe(heightMetric)
-		})
-
-		it("should call function to update secondaryMetricKeys", () => {
-			attributeSideBarController.onHeightMetricChanged(heightMetric)
-
-			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
-		})
-	})
-
-	describe("onColorMetricChanged", () => {
-		let colorMetric: string
-
-		beforeEach(() => {
-			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
-			colorMetric = "myColorMetric"
-		})
-
-		it("should set new viewModel colorMetric", () => {
-			attributeSideBarController.onColorMetricChanged(colorMetric)
-
-			expect(attributeSideBarController["_viewModel"].primaryMetricKeys.node.color).toBe(colorMetric)
-		})
-
-		it("should call function to update secondaryMetricKeys", () => {
-			attributeSideBarController.onColorMetricChanged(colorMetric)
-
-			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
-		})
-	})
-
-	describe("onEdgeMetricChanged", () => {
-		let edgeMetric: string
-
-		beforeEach(() => {
-			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
-			edgeMetric = "myEdgeMetric"
-		})
-
-		it("should set new viewModel edgeMetric", () => {
-			attributeSideBarController.onEdgeMetricChanged(edgeMetric)
-
-			expect(attributeSideBarController["_viewModel"].primaryMetricKeys.edge.edge).toBe(edgeMetric)
-		})
-
-		it("should call function to update secondaryMetricKeys", () => {
-			attributeSideBarController.onEdgeMetricChanged(edgeMetric)
-
-			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
-		})
-	})
-
-	describe("onClickCloseSideBar", () => {
-		it("should call set isAttributeSideBarVisible to false", () => {
-			storeService.dispatch(openAttributeSideBar())
-
-			attributeSideBarController.onClickCloseSideBar()
-
-			expect(storeService.getState().appSettings.isAttributeSideBarVisible).toBeFalsy()
-		})
-	})
-
-	describe("onClickNodeName", () => {
-		it("should open file if node is a leaf", () => {
-			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
-
-			LazyLoader.openFile = jest.fn()
-			attributeSideBarController.onClickNodeName()
-
-			expect(LazyLoader.openFile).toHaveBeenCalled()
-		})
-	})
-
-	describe("updateSortedMetricKeysWithoutPrimaryMetrics", () => {
-		beforeEach(() => {
-			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
-			attributeSideBarController["_viewModel"].node.attributes = {
-				a: 1,
-				b: 2,
-				c: 3,
-				d: 4,
-				e: 5
-			}
-		})
-
-		it("should filter node.attributes by selected metricKeys 1", () => {
-			attributeSideBarController["_viewModel"].primaryMetricKeys = {
-				node: {
-					area: "a"
-				}
-			} as PrimaryMetrics
-
-			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"](false)
-
-			const expectedSecondaryMetrics = [
-				{ name: "b", type: undefined },
-				{ name: "c", type: undefined },
-				{ name: "d", type: undefined },
-				{ name: "e", type: undefined }
-			]
-
-			expect(attributeSideBarController["_viewModel"].secondaryMetrics).toEqual(expectedSecondaryMetrics)
-		})
-
-		it("should filter node.attributes by selected metricKeys 2", () => {
-			attributeSideBarController["_viewModel"].primaryMetricKeys = {
-				node: {
-					area: "a",
-					color: "c",
-					height: "e"
-				}
-			} as PrimaryMetrics
-
-			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"](false)
-
-			const expectedSecondaryMetrics = [
-				{ name: "b", type: undefined },
-				{ name: "d", type: undefined }
-			]
-
-			expect(attributeSideBarController["_viewModel"].secondaryMetrics).toEqual(expectedSecondaryMetrics)
-		})
+		expect(attributeTypeSelectorWithinPrimaryMetrics.length).toBe(4)
+		const attributeTypeSelectorWithinSecondaryMetrics = container.querySelectorAll(
+			"cc-attribute-side-bar-secondary-metrics cc-attribute-type-selector"
+		)
+		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(1)
 	})
 })
+
+function isAttributeTypeSelectorShown(container: Element) {
+	return container.querySelector("cc-attribute-type-selector") !== null
+}

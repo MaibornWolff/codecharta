@@ -8,10 +8,15 @@ import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
 import { METRIC_DATA, PARTIAL_SETTINGS, SCENARIO_ITEMS } from "../../util/dataMocks"
-import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+
+const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
+jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
+	nodeMetricDataSelector: jest.fn()
+}))
 
 describe("ScenarioDropDownController", () => {
 	let scenarioButtonsController: ScenarioDropDownController
@@ -32,7 +37,7 @@ describe("ScenarioDropDownController", () => {
 		dialogService = getService<DialogService>("dialogService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
-		storeService.dispatch(setNodeMetricData(METRIC_DATA))
+		mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
 	}
 
 	beforeEach(() => {
@@ -80,7 +85,7 @@ describe("ScenarioDropDownController", () => {
 			scenarioButtonsController.applyScenario("Scenario1")
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setState(PARTIAL_SETTINGS))
-			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange({ from: 19, to: 67 }))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange({ from: 19, to: 67, min: 1, max: 100 }))
 			expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalled()
 		})
 	})

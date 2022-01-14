@@ -66,14 +66,16 @@ Windows:
 
 1. Open `CMD` on Windows
 2. Navigate to the downloaded codecharta-analysis binaries `cd A_PATH\codecharta-analysis-VERSION\bin`
-3. Run `ccsh.bat sourcemonitorimport PATH_TO_SOURCEMONITOR_CSV -p PROJECT_NAME -o PATH_TO_OUTPUTFILE`
+3. Run `ccsh.bat sourcemonitorimport PATH_TO_SOURCEMONITOR_CSV -o PATH_TO_OUTPUTFILE`
 
 Unix:
 
 1. Open command line of your choice
 2. Navigate to the downloaded codecharta-analysis binaries `cd A_PATH/codecharta-analysis-VERSION/bin`
-3. Run `./ccsh sourcemonitorimport PATH_TO_SOURCEMONITOR_CSV -p PROJECT_NAME -o PATH_TO_OUTPUTFILE`
+3. Run `./ccsh sourcemonitorimport PATH_TO_SOURCEMONITOR_CSV -o PATH_TO_OUTPUTFILE`
 
 If you installed codecharta-analysis globally via npm, you can just run
 <br>
-`ccsh sourcemonitorimport PATH_TO_SOURCEMONITOR_CSV -p PROJECT_NAME -o PATH_TO_OUTPUTFILE`
+`ccsh sourcemonitorimport PATH_TO_SOURCEMONITOR_CSV -o PATH_TO_OUTPUTFILE`
+
+> You can find everything about this importer here [SourceMonitorImporter]({{site.baseurl}}{% link _docs/04-07-sourcemonitor.md %})

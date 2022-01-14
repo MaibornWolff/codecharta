@@ -7,13 +7,11 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import {
 	CODE_MAP_BUILDING,
 	CONSTANT_HIGHLIGHT,
-	DEFAULT_STATE,
 	FILE_META,
 	TEST_FILE_WITH_PATHS,
 	TEST_NODE_LEAF,
@@ -65,7 +63,14 @@ describe("codeMapMouseEventService", () => {
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedEventMethods($rootScope)
-		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, DEFAULT_STATE.metricData, [])
+		NodeDecorator.decorateMap(
+			TEST_FILE_WITH_PATHS.map,
+			{
+				nodeMetricData: [],
+				edgeMetricData: []
+			},
+			[]
+		)
 	})
 
 	function restartSystem() {
@@ -173,14 +178,6 @@ describe("codeMapMouseEventService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to hoverEvents", () => {
-			MapTreeViewLevelController.subscribeToHoverEvents = jest.fn()
-
-			rebuildService()
-
-			expect(MapTreeViewLevelController.subscribeToHoverEvents).toHaveBeenCalled()
-		})
-
 		it("should call register on threeUpdateCycleService", () => {
 			rebuildService()
 
@@ -817,38 +814,6 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
-	describe("onShouldHoverNode", () => {
-		beforeEach(() => {
-			codeMapMouseEventService["hoverBuilding"] = jest.fn()
-		})
-
-		it("should call threeSceneService.getMapDescription", () => {
-			codeMapMouseEventService.onShouldHoverNode(file.map)
-
-			expect(threeSceneService.getMapMesh().getMeshDescription).toHaveBeenCalled()
-		})
-
-		it("should call onBuildingHovered", () => {
-			codeMapBuilding.node.path = file.map.path
-			threeSceneService.getHighlightedBuilding = jest.fn()
-
-			codeMapMouseEventService.onShouldHoverNode(file.map)
-
-			expect(codeMapMouseEventService["hoverBuilding"]).toHaveBeenCalledWith(codeMapBuilding)
-		})
-	})
-
-	describe("onShouldUnhoverNode", () => {
-		it("should call onBuildingHovered", () => {
-			codeMapMouseEventService["unhoverBuilding"] = jest.fn()
-			codeMapMouseEventService["highlightedInTreeView"] = codeMapBuilding
-
-			codeMapMouseEventService.onShouldUnhoverNode()
-
-			expect(codeMapMouseEventService["unhoverBuilding"]).toHaveBeenCalled()
-		})
-	})
-
 	describe("drawTemporaryLabelFor", () => {
 		it("should call addLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
@@ -858,14 +823,7 @@ describe("codeMapMouseEventService", () => {
 			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
-				codeMapBuilding.node,
-				{
-					showNodeName: true,
-					showNodeMetric: false
-				},
-				0
-			)
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 			expect(nodeHeight).toBeGreaterThan(0)
 		})
 
@@ -878,14 +836,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
-				codeMapBuilding.node,
-				{
-					showNodeName: true,
-					showNodeMetric: false
-				},
-				0
-			)
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 		})
 
 		it("should not generate names in temporary Label when metric option is set to true and name is set to false", () => {
@@ -897,14 +848,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(
-				codeMapBuilding.node,
-				{
-					showNodeName: false,
-					showNodeMetric: true
-				},
-				0
-			)
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 		})
 	})
 })

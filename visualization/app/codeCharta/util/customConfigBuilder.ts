@@ -42,7 +42,6 @@ export function buildCustomConfigFromState(configName: string, state: State): Cu
 
 function initializeAppSettings(target: CustomConfig) {
 	target.stateSettings.appSettings = {
-		secondaryMetrics: [],
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: false,
 		colorLabels: {
@@ -100,16 +99,18 @@ function initializeDynamicSettings(target: CustomConfig) {
 		colorMetric: "",
 		distributionMetric: "",
 		edgeMetric: "",
-		focusedNodePath: undefined,
+		focusedNodePath: [],
 		heightMetric: "",
 		margin: 0,
 		searchPattern: "",
-		searchedNodePaths: undefined,
 		sortingOption: undefined,
 		colorRange: {
 			from: 0,
-			to: 0
+			to: 0,
+			min: 0,
+			max: 0
 		},
+		colorMode: undefined,
 		recentFiles: []
 	}
 }

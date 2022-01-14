@@ -12,7 +12,7 @@
 				<i class="fa fa-times" ng-if="$ctrl.isNodeOrParentMarked(color)"></i>
 			</md-button>
 
-			<cc-node-context-menu-color-picker mark-folder="$ctrl.markFolder(color)"></cc-node-context-menu-color-picker>
+			<cc-mark-folder-color-picker [mark-folder]="$ctrl.markFolder"></cc-mark-folder-color-picker>
 		</div>
 		<md-divider></md-divider>
 	</div>
@@ -21,14 +21,8 @@
 		<md-button ng-disabled="true" title="{{ $ctrl._viewModel.nodePath }}">
 			{{ $ctrl._viewModel.lastPartOfNodePath }}
 		</md-button>
-		<md-button
-			ng-show="!$ctrl.isNodeFocused()"
-			ng-click="$ctrl.focusNode()"
-			id="focus-button"
-			title="Only show selected nodes with children-nodes"
-			><i class="fa fa-bullseye"></i> Focus</md-button
-		>
-		<unfocus-button-component ng-show="$ctrl.isNodeOrParentFocused()"></unfocus-button-component>
+
+		<cc-focus-buttons [code-map-node]="$ctrl._viewModel.codeMapNode"></cc-focus-buttons>
 		<md-button
 			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
 			ng-click="$ctrl.flattenNode()"

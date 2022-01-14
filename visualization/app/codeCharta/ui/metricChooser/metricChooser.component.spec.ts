@@ -2,7 +2,7 @@ import "./metricChooser.module"
 
 import { MetricChooserController } from "./metricChooser.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
@@ -14,18 +14,16 @@ import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricDa
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let storeService: StoreService
 
 	function rebuildController() {
-		metricChooserController = new MetricChooserController($rootScope, $timeout, storeService)
+		metricChooserController = new MetricChooserController($rootScope, storeService)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.metricChooser")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 	}
 
@@ -116,8 +114,8 @@ describe("MetricChooserController", () => {
 	describe("onMetricDataAdded", () => {
 		it("metric data should be updated", () => {
 			const metricData: NodeMetricData[] = [
-				{ name: "a", maxValue: 1 },
-				{ name: "b", maxValue: 2 }
+				{ name: "a", maxValue: 1, minValue: 1 },
+				{ name: "b", maxValue: 2, minValue: 1 }
 			]
 
 			metricChooserController.onNodeMetricDataChanged(metricData)
@@ -169,8 +167,8 @@ describe("MetricChooserController", () => {
 	describe("filterMetricData", () => {
 		it("should return the default MetricData list", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1 },
-				{ name: "mcc", maxValue: 2 }
+				{ name: "rloc", maxValue: 1, minValue: 1 },
+				{ name: "mcc", maxValue: 2, minValue: 1 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = ""
@@ -181,8 +179,8 @@ describe("MetricChooserController", () => {
 		})
 		it("should return only metric mcc from MetricData list, when its the searchTerm", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1 },
-				{ name: "mcc", maxValue: 2 }
+				{ name: "rloc", maxValue: 1, minValue: 1 },
+				{ name: "mcc", maxValue: 2, minValue: 1 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "mcc"
@@ -192,15 +190,16 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].metricData).toEqual([
 				{
 					name: "mcc",
-					maxValue: 2
+					maxValue: 2,
+					minValue: 1
 				}
 			])
 		})
 
 		it("should return rloc metric when searchTerm is only 'rl'", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1 },
-				{ name: "mcc", maxValue: 2 }
+				{ name: "rloc", maxValue: 1, minValue: 1 },
+				{ name: "mcc", maxValue: 2, minValue: 1 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rl"
@@ -210,16 +209,17 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].metricData).toEqual([
 				{
 					name: "rloc",
-					maxValue: 1
+					maxValue: 1,
+					minValue: 1
 				}
 			])
 		})
 
 		it("should return the metrics which contains the metrics with 'c' in it", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1 },
-				{ name: "mcc", maxValue: 2 },
-				{ name: "avg", maxValue: 3 }
+				{ name: "rloc", maxValue: 1, minValue: 1 },
+				{ name: "mcc", maxValue: 2, minValue: 1 },
+				{ name: "avg", maxValue: 3, minValue: 1 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "c"
@@ -227,17 +227,17 @@ describe("MetricChooserController", () => {
 			metricChooserController.filterMetricData()
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual([
-				{ name: "rloc", maxValue: 1 },
-				{ name: "mcc", maxValue: 2 }
+				{ name: "rloc", maxValue: 1, minValue: 1 },
+				{ name: "mcc", maxValue: 2, minValue: 1 }
 			])
 		})
 
 		it("should return the metrics which contains substrings with 'mc' as prefix", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1 },
-				{ name: "mcc", maxValue: 2 },
-				{ name: "avg", maxValue: 3 },
-				{ name: "cmc", maxValue: 4 }
+				{ name: "rloc", maxValue: 1, minValue: 1 },
+				{ name: "mcc", maxValue: 2, minValue: 1 },
+				{ name: "avg", maxValue: 3, minValue: 1 },
+				{ name: "cmc", maxValue: 4, minValue: 1 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "mc"
@@ -245,16 +245,16 @@ describe("MetricChooserController", () => {
 			metricChooserController.filterMetricData()
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual([
-				{ name: "mcc", maxValue: 2 },
-				{ name: "cmc", maxValue: 4 }
+				{ name: "mcc", maxValue: 2, minValue: 1 },
+				{ name: "cmc", maxValue: 4, minValue: 1 }
 			])
 		})
 		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1 },
-				{ name: "mcc", maxValue: 2 },
-				{ name: "avg", maxValue: 3 },
-				{ name: "cmc", maxValue: 4 }
+				{ name: "rloc", maxValue: 1, minValue: 1 },
+				{ name: "mcc", maxValue: 2, minValue: 1 },
+				{ name: "avg", maxValue: 3, minValue: 1 },
+				{ name: "cmc", maxValue: 4, minValue: 1 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rla"
@@ -276,10 +276,10 @@ describe("MetricChooserController", () => {
 
 		it("should return the metricData array with all elements, when function is called", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1 },
-				{ name: "mcc", maxValue: 2 },
-				{ name: "avg", maxValue: 3 },
-				{ name: "cmc", maxValue: 4 }
+				{ name: "rloc", maxValue: 1, minValue: 1 },
+				{ name: "mcc", maxValue: 2, minValue: 1 },
+				{ name: "avg", maxValue: 3, minValue: 1 },
+				{ name: "cmc", maxValue: 4, minValue: 1 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rlo"

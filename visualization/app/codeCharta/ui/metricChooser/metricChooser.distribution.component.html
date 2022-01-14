@@ -9,12 +9,14 @@
 		md-on-open="$ctrl.focusInputField('distribution-metric')"
 		md-container-class="distributionBarDropdown"
 	>
-		<md-select-header>
+		<md-select-header class="search-bar">
+			<i class="fa fa-search search-icon"></i>
 			<input
+				id="distribution-metric-selector"
 				class="metric-search distribution-metric"
 				ng-model="$ctrl._viewModel.searchTerm"
 				type="text"
-				placeholder="&#xF002; Metric (highest value)"
+				placeholder="Distribution Metric (highest value)"
 				ng-keydown="$event.stopPropagation()"
 				ng-change="$ctrl.filterMetricData()"
 			/>

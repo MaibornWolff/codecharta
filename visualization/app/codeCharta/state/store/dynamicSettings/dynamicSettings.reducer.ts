@@ -1,11 +1,10 @@
-// Plop: Append reducer import here
+import { colorMode } from "./colorMode/colorMode.reducer"
 import { recentFiles } from "./recentFiles/recentFiles.reducer"
 import { sortingOption } from "./sortingOption/sortingOption.reducer"
 import { edgeMetric } from "./edgeMetric/edgeMetric.reducer"
 import { colorRange } from "./colorRange/colorRange.reducer"
 import { margin } from "./margin/margin.reducer"
 import { searchPattern } from "./searchPattern/searchPattern.reducer"
-import { searchedNodePaths } from "./searchedNodePaths/searchedNodePaths.reducer"
 import { focusedNodePath } from "./focusedNodePath/focusedNodePath.reducer"
 import { heightMetric } from "./heightMetric/heightMetric.reducer"
 import { distributionMetric } from "./distributionMetric/distributionMetric.reducer"
@@ -14,14 +13,13 @@ import { areaMetric } from "./areaMetric/areaMetric.reducer"
 import { combineReducers } from "redux"
 
 const dynamicSettings = combineReducers({
-	// Plop: Append sub-reducer here
+	colorMode,
 	recentFiles,
 	sortingOption,
 	edgeMetric,
 	colorRange,
 	margin,
 	searchPattern,
-	searchedNodePaths,
 	focusedNodePath,
 	heightMetric,
 	distributionMetric,
