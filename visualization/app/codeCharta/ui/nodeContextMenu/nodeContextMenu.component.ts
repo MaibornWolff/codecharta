@@ -1,18 +1,15 @@
 import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
-import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { DialogService } from "../dialog/dialog.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { ERROR_MESSAGES } from "../../util/fileValidator"
-import { findIndexOfMarkedPackageOrParent } from "../../state/store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
-import { markPackages, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { Store } from "../../state/store/store"
 import { rightClickedNodeDataSelector } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import {
@@ -24,17 +21,15 @@ export enum ClickType {
 	RightClick = 2
 }
 
-export class NodeContextMenuController implements MapColorsSubscriber {
+export class NodeContextMenuController {
 	private rightClickedNodeData: RightClickedNodeData
 
 	private _viewModel: {
 		codeMapNode: CodeMapNode
-		markingColors: string[]
 		nodePath: string
 		lastPartOfNodePath: string
 	} = {
 		codeMapNode: null,
-		markingColors: null,
 		nodePath: "",
 		lastPartOfNodePath: ""
 	}
@@ -50,7 +45,6 @@ export class NodeContextMenuController implements MapColorsSubscriber {
 		private blacklistService: BlacklistService
 	) {
 		"ngInject"
-		MapColorsService.subscribe(this.$rootScope, this)
 		Store.store.subscribe(() => {
 			const state = Store.store.getState()
 			const rightClickedNodeData = rightClickedNodeDataSelector(state)
@@ -72,10 +66,6 @@ export class NodeContextMenuController implements MapColorsSubscriber {
 		})
 	}
 
-	onMapColorsChanged(mapColors: MapColors) {
-		this._viewModel.markingColors = mapColors.markingColors
-	}
-
 	showNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		this._viewModel.nodePath = path
@@ -86,7 +76,7 @@ export class NodeContextMenuController implements MapColorsSubscriber {
 
 		// Add event listeners, so that opened node context menu can be closed again later
 		// when clicking (left or right button) or using the mouse wheel on the body element.
-		document.body.addEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
+		document.body.addEventListener("click", this.onBodyLeftClickHideNodeContextMenu, false)
 		document.body.addEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
 		document.getElementById("codeMap").addEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
@@ -166,29 +156,6 @@ export class NodeContextMenuController implements MapColorsSubscriber {
 		this.hideNodeContextMenu()
 	}
 
-	clickColor(color: string) {
-		if (this.isNodeOrParentMarked(color)) {
-			this.unmarkFolder()
-		} else {
-			this.markFolder(color)
-		}
-	}
-
-	markFolder = (color: string) => {
-		this.storeService.dispatch(
-			markPackages([
-				{
-					path: this._viewModel.codeMapNode.path,
-					color
-				}
-			])
-		)
-	}
-
-	unmarkFolder() {
-		this.storeService.dispatch(unmarkPackage(this._viewModel.codeMapNode))
-	}
-
 	calculatePosition(mouseX: number, mouseY: number) {
 		const width = this.$element[0].children[0].clientWidth
 		const height = this.$element[0].children[0].clientHeight
@@ -203,39 +170,9 @@ export class NodeContextMenuController implements MapColorsSubscriber {
 		angular.element(this.$element[0].children[0]).css("left", `${x}px`)
 	}
 
-	isNodeOrParentMarked(color?: string) {
-		if (!color || !this._viewModel.codeMapNode) {
-			return false
-		}
-
-		if (this.isNodeMarked()) {
-			return this.packageMatchesColor(color)
-		}
-		return this.packageMatchesColorOfParentMP(color)
-	}
-
 	private isEventFromColorPicker(mouseEvent: MouseEvent) {
 		const elements = mouseEvent.composedPath() as Node[]
-		return elements.some(element => element?.nodeName === "CC-MARK-FOLDER-COLOR-PICKER" || element?.nodeName === "COLOR-CHROME")
-	}
-
-	private isNodeMarked() {
-		return this.storeService.getState().fileSettings.markedPackages.some(mp => mp.path === this._viewModel.codeMapNode.path)
-	}
-
-	private packageMatchesColor(color: string) {
-		return this.storeService
-			.getState()
-			.fileSettings.markedPackages.some(mp => mp.path === this._viewModel.codeMapNode.path && mp.color === color)
-	}
-
-	private packageMatchesColorOfParentMP(color: string) {
-		const { markedPackages } = this.storeService.getState().fileSettings
-		const index = findIndexOfMarkedPackageOrParent(markedPackages, this._viewModel.codeMapNode.path)
-		if (index === -1) {
-			return false
-		}
-		return this.storeService.getState().fileSettings.markedPackages[index].color === color
+		return elements.some(element => element?.nodeName === "CC-COLOR-PICKER" || element?.nodeName === "COLOR-CHROME")
 	}
 
 	isNodeConstantlyHighlighted() {

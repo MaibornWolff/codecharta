@@ -1,12 +1,11 @@
 import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
-
 import { ColorPickerModule } from "../../colorPicker/colorPicker.module"
-import { MarkFolderColorPickerComponent } from "./markFolderColorPicker.component"
+import { MarkFolderRowComponent } from "./markFolderRow.component"
 
 @NgModule({
 	imports: [CommonModule, ColorPickerModule],
-	declarations: [MarkFolderColorPickerComponent],
-	exports: [MarkFolderColorPickerComponent]
+	declarations: [MarkFolderRowComponent],
+	exports: [MarkFolderRowComponent]
 })
-export class MarkFolderColorPickerModule {}
+export class MarkFolderRowModule {}
