@@ -4,17 +4,10 @@ import userEvent from "@testing-library/user-event"
 
 import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 import { Store } from "../../../state/store/store"
-import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu.component"
 import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
 
-jest.mock("../../nodeContextMenu/nodeContextMenu.component", () => ({
-	NodeContextMenuController: {
-		subscribeToHideNodeContextMenu: () => {},
-		broadcastShowEvent: jest.fn()
-	}
-}))
 jest.mock("../../../state/selectors/searchedNodes/searchedNodePaths.selector", () => ({
 	searchedNodePathsSelector: jest.fn(
 		jest.requireActual("../../../state/selectors/searchedNodes/searchedNodePaths.selector").searchedNodePathsSelector
@@ -76,20 +69,17 @@ describe("mapTreeViewLevel", () => {
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeTruthy()
 	})
 
-	it("should open nodeContextMenu when options button clicked and be marked afterwards", async () => {
-		const nodeContextMenuSpy = jest.spyOn(NodeContextMenuController, "broadcastShowEvent")
-
+	it("should show option button on hover and be marked after context menu was opened", async () => {
 		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
+
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+		let optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
+		expect(optionsButton).toBe(null)
 
 		userEvent.hover(firstLevelFolder)
-		const optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
+		optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
+		expect(optionsButton).not.toBe(null)
 		fireEvent.click(optionsButton.querySelector("[title='Open Node-Context-Menu']"))
-
-		expect(nodeContextMenuSpy).toHaveBeenCalled()
-		const argumentsToNodeContextMenu = nodeContextMenuSpy.mock.calls[0]
-		expect(argumentsToNodeContextMenu[1]).toBe("/root/ParentLeaf")
-		expect(argumentsToNodeContextMenu[2]).toBe("Folder")
 
 		const isMarked = container.querySelector("#\\/root\\/ParentLeaf.marked")
 		expect(isMarked).toBeTruthy()
