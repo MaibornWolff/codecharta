@@ -9,6 +9,7 @@ import { FilesService } from "../../state/store/files/files.service"
 import { getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
 import { FileSelectionState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
+import { MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
 
 describe("filePanelController", () => {
 	let filePanelController: FilePanelController
@@ -47,6 +48,14 @@ describe("filePanelController", () => {
 			buildController()
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
+		})
+
+		it("should subscribe to MapColorService", () => {
+			MapColorsService.subscribe = jest.fn()
+
+			buildController()
+
+			expect(MapColorsService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
 		})
 	})
 
@@ -120,13 +129,25 @@ describe("filePanelController", () => {
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([])
 		})
+	})
 
-		it("should set the pictogram colors in view model", () => {
-			filePanelController.onFilesSelectionChanged(storeService.getState().files)
+	describe("onMapColorsChanged", () => {
+		it("should set default colors of delta mode in view model for pictogram", () => {
+			filePanelController.onMapColorsChanged(storeService.getState().appSettings.mapColors)
 
-			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
 			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(storeService.getState().appSettings.mapColors.negativeDelta)
 			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(storeService.getState().appSettings.mapColors.positiveDelta)
+		})
+
+		it("should update colors of delta mode in view model for pictogram when colors had changed", () => {
+			filePanelController["_viewModel"].pictogramLowerColor = storeService.getState().appSettings.mapColors.negativeDelta
+			filePanelController["_viewModel"].pictogramUpperColor = storeService.getState().appSettings.mapColors.positiveDelta
+			const testMapColors = { ...storeService.getState().appSettings.mapColors, negativeDelta: "#FFFFFF", positiveDelta: "#000000" }
+
+			filePanelController.onMapColorsChanged(testMapColors)
+
+			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(testMapColors.negativeDelta)
+			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(testMapColors.positiveDelta)
 		})
 	})
 

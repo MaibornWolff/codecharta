@@ -7,6 +7,8 @@ import { fileStatesAvailable, getFileNameOf, getVisibleFileStates, isDeltaState,
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
 import { removeRecentFile } from "../../state/store/dynamicSettings/recentFiles/recentFiles.actions"
+import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
+import { MapColors } from "../../codeCharta.model"
 
 interface SelectedFileNames {
 	delta: {
@@ -16,7 +18,7 @@ interface SelectedFileNames {
 	partial: string[]
 }
 
-export class FilePanelController implements FilesSelectionSubscriber {
+export class FilePanelController implements FilesSelectionSubscriber, MapColorsSubscriber {
 	private lastRenderState: FileSelectionState
 
 	private _viewModel: {
@@ -25,7 +27,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		files: FileState[]
 		renderState: FileSelectionState
 		selectedFileNames: SelectedFileNames
-		pictogramFirstFileColor: string
 		pictogramUpperColor: string
 		pictogramLowerColor: string
 	} = {
@@ -40,7 +41,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 			},
 			partial: []
 		},
-		pictogramFirstFileColor: null,
 		pictogramUpperColor: null,
 		pictogramLowerColor: null
 	}
@@ -48,6 +48,12 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
+		MapColorsService.subscribe(this.$rootScope, this)
+	}
+
+	onMapColorsChanged(mapColors: MapColors) {
+		this._viewModel.pictogramUpperColor = mapColors.positiveDelta
+		this._viewModel.pictogramLowerColor = mapColors.negativeDelta
 	}
 
 	onRemoveFile(filename, $event): void {
@@ -75,19 +81,12 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		this._viewModel.files = files
 		this._viewModel.isPartialState = isPartialState(files)
 		this._viewModel.isDeltaState = isDeltaState(files)
-		this.setPictogramColor()
 		this.updateSelectedFileNamesInViewModel()
 		this.lastRenderState = this._viewModel.renderState
 	}
 
 	onPartialSelectionClosed = () => {
 		this.updateSelectedFileNamesInViewModel()
-	}
-
-	private setPictogramColor() {
-		this._viewModel.pictogramFirstFileColor = "#808080"
-		this._viewModel.pictogramUpperColor = this.storeService.getState().appSettings.mapColors.positiveDelta
-		this._viewModel.pictogramLowerColor = this.storeService.getState().appSettings.mapColors.negativeDelta
 	}
 
 	private updateSelectedFileNamesInViewModel() {
