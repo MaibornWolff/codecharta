@@ -13,8 +13,7 @@ import {
 } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
-import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
+import { BlacklistType, NodeType } from "../../codeCharta.model"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -259,80 +258,6 @@ describe("nodeContextMenuController", () => {
 		})
 	})
 
-	describe("clickColor", () => {
-		it("should call unmarkFolder, if current folder is marked with color ", () => {
-			nodeContextMenuController.isNodeOrParentMarked = jest.fn().mockReturnValue(true)
-			nodeContextMenuController.unmarkFolder = jest.fn()
-
-			nodeContextMenuController.clickColor("color")
-
-			expect(nodeContextMenuController.isNodeOrParentMarked).toHaveBeenCalledWith("color")
-			expect(nodeContextMenuController.unmarkFolder).toHaveBeenCalled()
-		})
-
-		it("should call markFolder, if current folder is not marked with color ", () => {
-			nodeContextMenuController.isNodeOrParentMarked = jest.fn().mockReturnValue(false)
-			nodeContextMenuController.markFolder = jest.fn()
-
-			nodeContextMenuController.clickColor("color")
-
-			expect(nodeContextMenuController.isNodeOrParentMarked).toHaveBeenCalledWith("color")
-			expect(nodeContextMenuController.markFolder).toHaveBeenCalled()
-		})
-	})
-
-	describe("currentFolderIsMarkedWithColor", () => {
-		it("should return false, if color is undefined", () => {
-			const result = nodeContextMenuController.isNodeOrParentMarked()
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false, if color is null", () => {
-			const result = nodeContextMenuController.isNodeOrParentMarked(null)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false, if _viewModel.contextMenuBuilding is undefined", () => {
-			nodeContextMenuController["_viewModel"].codeMapNode = undefined
-
-			const result = nodeContextMenuController.isNodeOrParentMarked("color")
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false, if _viewModel.contextMenuBuilding is null", () => {
-			nodeContextMenuController["_viewModel"].codeMapNode = null
-
-			const result = nodeContextMenuController.isNodeOrParentMarked("color")
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return true, if package is marked and matches the color", () => {
-			const markedPackages: MarkedPackage[] = [{ path: "/root", color: "color" }]
-			storeService.dispatch(setMarkedPackages(markedPackages))
-
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
-
-			const result = nodeContextMenuController.isNodeOrParentMarked("color")
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return false, if package is not marked and doesn't match the color of parent folder", () => {
-			const markedPackages: MarkedPackage[] = [{ path: "/root", color: "color" }]
-			storeService.dispatch(setMarkedPackages(markedPackages))
-
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
-
-			const result = nodeContextMenuController.isNodeOrParentMarked("another color")
-
-			expect(result).toBeFalsy()
-		})
-	})
-
 	describe("excludeNode", () => {
 		beforeEach(() => {
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
@@ -410,7 +335,7 @@ describe("nodeContextMenuController", () => {
 		it("should not hide if a click on color-picker tricker occurs", () => {
 			const broadcastHideEventSpy = jest.spyOn(nodeContextMenuController, "hideNodeContextMenu")
 			const mockedMouseEvent: any = {
-				composedPath: () => [{ nodeName: "CC-MARK-FOLDER-COLOR-PICKER" }]
+				composedPath: () => [{ nodeName: "CC-COLOR-PICKER" }]
 			}
 			nodeContextMenuController.onBodyLeftClickHideNodeContextMenu(mockedMouseEvent)
 
