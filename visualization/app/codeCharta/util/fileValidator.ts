@@ -46,10 +46,8 @@ export function validate(nameDataPair: NameDataPair) {
 
 function checkWarnings(file: ExportCCFile) {
 	const warnings = []
-	switch (true) {
-		case fileHasHigherMinorVersion(file):
+	if (fileHasHigherMinorVersion(file)) {
 			warnings.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
-			break
 	}
 	return warnings
 }
