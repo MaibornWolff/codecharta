@@ -1,4 +1,4 @@
-import { CCValidationResult, validate } from "./util/fileValidator"
+import { checkErrors, checkWarnings } from "./util/fileValidator"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { setFiles, setSingleByName } from "./state/store/files/files.actions"
@@ -25,32 +25,25 @@ export class CodeChartaService {
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
 		this.fileStates = this.storeService.getState().files
-		const validationResult: CCValidationResult = {
-			error: [],
-			warning: []
-		}
+		const errors = []
+		const warnings = []
 
 		for (const nameDataPair of nameDataPairs) {
-			try {
-				validate(nameDataPair)
+			errors.push(...checkErrors(nameDataPair.content))
+			if (errors.length > 0) {
+				this.fileStates.filter(file => getCCFile(nameDataPair) !== file.file)
+				this.recentFiles.filter(fileName => fileName !== nameDataPair.fileName)
+			}
+			if (errors.length === 0) {
+				warnings.push(...checkWarnings(nameDataPair.content))
 				this.addFile(nameDataPair)
-			} catch ({ warning, error }) {
-				if (error?.length > 0) {
-					this.fileStates.filter(file => getCCFile(nameDataPair) !== file.file)
-					this.recentFiles.filter(fileName => fileName !== nameDataPair.fileName)
-					validationResult.error.push(error)
-				}
-				if (warning?.length > 0) {
-					this.addFile(nameDataPair)
-					this.addRecentFile(nameDataPair.fileName)
-					validationResult.error.push(warning)
-				}
+				this.addRecentFile(nameDataPair.fileName)
 			}
 		}
 
 		this.storeService.dispatch(setIsLoadingFile(false))
-		if (validationResult.error.length > 0) await this.dialogService.showValidationErrorDialog(validationResult)
-		if (validationResult.warning.length > 0) await this.dialogService.showValidationWarningDialog(validationResult)
+		if (errors.length > 0) await this.dialogService.showValidationErrorDialog({ error: errors, warning: [] })
+		if (warnings.length > 0) await this.dialogService.showValidationWarningDialog({ error: [], warning: warnings })
 
 		if (this.fileStates.length > 0) {
 			this.storeService.dispatch(setRecentFiles(this.recentFiles))
