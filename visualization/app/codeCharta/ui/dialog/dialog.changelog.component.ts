@@ -1,6 +1,6 @@
 import markdownFile from "../../../../../CHANGELOG.md"
 import packageJson from "../../../../package.json"
-import "./test.scss"
+import "./dialog.changelog.component.scss"
 
 export class DialogChangelogController {
 	private _viewModel: {
