@@ -1,4 +1,4 @@
-import { checkErrors, checkWarnings } from "./util/fileValidator"
+import { CCFileValidationResult, checkErrors, checkWarnings } from "./util/fileValidator"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { setFiles, setSingleByName } from "./state/store/files/files.actions"
@@ -25,27 +25,34 @@ export class CodeChartaService {
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
 		this.fileStates = this.storeService.getState().files
-		const errors = []
-		const warnings = []
+		const fileValidationResults: CCFileValidationResult[] = []
 
 		for (const nameDataPair of nameDataPairs) {
-			errors.push(...checkErrors(nameDataPair.content))
-			if (errors.length > 0) {
+			const fileValidationResult: CCFileValidationResult = { fileName: nameDataPair.fileName, errors: [], warnings: [] }
+			fileValidationResult.errors.push(...checkErrors(nameDataPair.content))
+			if (fileValidationResult.errors.length > 0) {
 				this.fileStates.filter(file => getCCFile(nameDataPair) !== file.file)
 				this.recentFiles.filter(fileName => fileName !== nameDataPair.fileName)
 			}
-			if (errors.length === 0) {
-				warnings.push(...checkWarnings(nameDataPair.content))
+
+			if (fileValidationResult.errors.length === 0) {
+				fileValidationResult.warnings.push(...checkWarnings(nameDataPair.content))
 				this.addFile(nameDataPair)
 				this.addRecentFile(nameDataPair.fileName)
 			}
+
+			fileValidationResults.push(fileValidationResult)
 		}
 
 		this.storeService.dispatch(setIsLoadingFile(false))
-		if (errors.length > 0) await this.dialogService.showValidationErrorDialog({ error: errors, warning: [] })
-		if (warnings.length > 0) await this.dialogService.showValidationWarningDialog({ error: [], warning: warnings })
 
-		if (this.fileStates.length > 0) {
+		if (
+			fileValidationResults.flatMap(validation => validation.errors).length > 0 ||
+			fileValidationResults.flatMap(validation => validation.warnings).length > 0
+		)
+			await this.dialogService.showValidationDialog(fileValidationResults)
+
+		if (fileValidationResults.flatMap(validation => validation.errors).length === 0) {
 			this.storeService.dispatch(setRecentFiles(this.recentFiles))
 			this.storeService.dispatch(setFiles(this.fileStates))
 

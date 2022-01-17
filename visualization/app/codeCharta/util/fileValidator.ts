@@ -12,9 +12,10 @@ interface ApiVersion {
 	minor: number
 }
 
-export interface CCValidationResult {
-	error: string[]
-	warning: string[]
+export interface CCFileValidationResult {
+	fileName: string
+	errors: string[]
+	warnings: string[]
 }
 
 export const ERROR_MESSAGES = {
