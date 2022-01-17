@@ -5,7 +5,11 @@ import { Store } from "../../../state/angular-redux/store"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { hoveredBuildingPathSelector } from "../../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
 import { setHoveredBuildingPath } from "../../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
-import { NodeContextMenuController } from "../../nodeContextMenu/nodeContextMenu.component"
+import {
+	RightClickedNodeData,
+	setRightClickedNodeData
+} from "../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { rightClickedNodeDataSelector } from "../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 
 @Component({
 	selector: "cc-map-tree-view-level",
@@ -16,14 +20,13 @@ export class MapTreeViewLevelComponent implements OnInit {
 	@Input() depth: number
 
 	hoveredBuildingPath$: Observable<string | null>
+	rightClickedNodeData$: Observable<RightClickedNodeData>
 
 	isOpen = false
-	isContextMenuOpenForNode = false
 
 	constructor(@Inject(Store) private store: Store) {
 		this.hoveredBuildingPath$ = this.store.select(hoveredBuildingPathSelector)
-
-		NodeContextMenuController.subscribeToHideNodeContextMenu(undefined, this)
+		this.rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
 	}
 
 	ngOnInit(): void {
@@ -31,10 +34,6 @@ export class MapTreeViewLevelComponent implements OnInit {
 		if (this.depth === 0) {
 			this.isOpen = true
 		}
-	}
-
-	onHideNodeContextMenu() {
-		this.isContextMenuOpenForNode = false
 	}
 
 	onMouseEnter() {
@@ -49,8 +48,13 @@ export class MapTreeViewLevelComponent implements OnInit {
 		$event.stopPropagation()
 		$event.preventDefault()
 
-		this.isContextMenuOpenForNode = true
-		NodeContextMenuController.broadcastShowEvent(undefined, this.node.path, this.node.type, $event.clientX, $event.clientY)
+		this.store.dispatch(
+			setRightClickedNodeData({
+				nodeId: this.node.id,
+				xPositionOfRightClickEvent: $event.clientX,
+				yPositionOfRightClickEvent: $event.clientY
+			})
+		)
 
 		document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
 	}
@@ -60,7 +64,7 @@ export class MapTreeViewLevelComponent implements OnInit {
 	}
 
 	private scrollFunction = () => {
-		NodeContextMenuController.broadcastHideEvent()
+		this.store.dispatch(setRightClickedNodeData(null))
 		document.querySelector(".tree-element-0").removeEventListener("scroll", this.scrollFunction)
 	}
 }
