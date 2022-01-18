@@ -1,5 +1,6 @@
 import markdownFile from "../../../../../CHANGELOG.md"
 import packageJson from "../../../../package.json"
+import "./dialog.changelog.component.scss"
 
 export class DialogChangelogController {
 	private _viewModel: {
@@ -35,7 +36,7 @@ export class DialogChangelogController {
 				const start = lineIndex + 2
 				const end = this.findEndChangesLine(changelogLines, lineIndex)
 				for (const changeLine of changelogLines.slice(start, end)) {
-					changelogTypes.push(changeLine)
+					changelogTypes.push(`${changeLine}<br>`)
 				}
 			}
 			if (changelogTypes.length > 0) changes[title] = changelogTypes.join("\n")
