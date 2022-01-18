@@ -9,8 +9,7 @@ import {
 	CONSTANT_HIGHLIGHT,
 	TEST_DELTA_MAP_A,
 	VALID_FILE_NODE_WITH_ID,
-	VALID_NODE_WITH_PATH,
-	withMockedEventMethods
+	VALID_NODE_WITH_PATH
 } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
@@ -92,38 +91,6 @@ describe("nodeContextMenuController", () => {
 		})()
 	}
 
-	describe("constructor", () => {
-		it("should subscribe to 'show-node-context-menu' events", () => {
-			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-
-			rebuildController()
-
-			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
-		})
-
-		it("should broadcast 'show-node-context-menu' when 'show' method is called", () => {
-			withMockedEventMethods($rootScope)
-			NodeContextMenuController.broadcastShowEvent($rootScope, "somepath", "sometype", 42, 24)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", {
-				path: "somepath",
-				type: "sometype",
-				x: 42,
-				y: 24
-			})
-		})
-
-		it("should subscribe to 'on-building-right-clicked' events", () => {
-			const documentAddEventListenerSpy = jest.spyOn(document, "addEventListener")
-			rebuildController()
-
-			expect(documentAddEventListenerSpy).toHaveBeenCalledWith(
-				"building-right-clicked",
-				nodeContextMenuController.onBuildingRightClicked
-			)
-		})
-	})
-
 	describe("onShowNodeContextMenu", () => {
 		let mockedWheelTargetElement
 		beforeEach(() => {
@@ -137,10 +104,9 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should set the correct building after some timeout", () => {
-			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
+			nodeContextMenuController.showNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 
 			expect(nodeContextMenuController["_viewModel"].codeMapNode).toEqual(TEST_DELTA_MAP_A.map)
-			expect(nodeContextMenuController["_viewModel"].showNodeContextMenu).toBe(true)
 			expect(nodeContextMenuController.calculatePosition).toHaveBeenCalledWith(42, 24)
 			expect(nodeContextMenuController.setPosition).toHaveBeenCalledTimes(1)
 			expect(nodeContextMenuController.setPosition).toBeCalledWith(1, 2)
@@ -153,14 +119,14 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should not shorten the path if it has no sub paths", () => {
-			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
+			nodeContextMenuController.showNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 
 			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(TEST_DELTA_MAP_A.map.path)
 			expect(nodeContextMenuController["_viewModel"].lastPartOfNodePath).toBe(TEST_DELTA_MAP_A.map.path)
 		})
 
 		it("should set the complete and shortened node path", () => {
-			nodeContextMenuController.onShowNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
+			nodeContextMenuController.showNodeContextMenu("/root/big leaf", NodeType.FILE, 521, 588)
 			const nodePath = TEST_DELTA_MAP_A.map.children[0].path
 
 			expect(nodeContextMenuController["_viewModel"].nodePath).toEqual(nodePath)
@@ -170,7 +136,7 @@ describe("nodeContextMenuController", () => {
 		it("should remove all listener on hide", () => {
 			const documentRemoveEventListenerSpy = jest.spyOn(document.body, "removeEventListener")
 
-			nodeContextMenuController.onHideNodeContextMenu()
+			nodeContextMenuController.hideNodeContextMenu()
 
 			expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith(
 				"click",
@@ -442,7 +408,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("onBodyLeftClickHideNodeContextMenu", () => {
 		it("should not hide if a click on color-picker tricker occurs", () => {
-			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const broadcastHideEventSpy = jest.spyOn(nodeContextMenuController, "hideNodeContextMenu")
 			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "CC-MARK-FOLDER-COLOR-PICKER" }]
 			}
@@ -452,7 +418,7 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should not hide if a click within color-picker occurs", () => {
-			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const broadcastHideEventSpy = jest.spyOn(nodeContextMenuController, "hideNodeContextMenu")
 			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "COLOR-CHROME" }]
 			}
@@ -462,7 +428,7 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should hide if clicked somewhere but not within the color-picker", () => {
-			const broadcastHideEventSpy = jest.spyOn(NodeContextMenuController, "broadcastHideEvent")
+			const broadcastHideEventSpy = jest.spyOn(nodeContextMenuController, "hideNodeContextMenu")
 			const mockedMouseEvent: any = {
 				composedPath: () => [{ nodeName: "DIV" }]
 			}

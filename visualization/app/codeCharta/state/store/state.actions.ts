@@ -8,6 +8,7 @@ import { defaultTreeMapSettings } from "./treeMap/treeMap.actions"
 import { defaultFiles } from "./files/files.actions"
 import { defaultHoveredBuildingPath } from "./appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { defaultSelectedBuildingId } from "./appStatus/selectedBuildingId/selectedBuildingId.actions"
+import { defaultRightClickedNodeData } from "./appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 export enum StateActions {
 	SET_STATE = "SET_STATE"
@@ -36,6 +37,7 @@ export const defaultState: State = {
 	files: defaultFiles,
 	appStatus: {
 		hoveredBuildingPath: defaultHoveredBuildingPath,
-		selectedBuildingId: defaultSelectedBuildingId
+		selectedBuildingId: defaultSelectedBuildingId,
+		rightClickedNodeData: defaultRightClickedNodeData
 	}
 }
