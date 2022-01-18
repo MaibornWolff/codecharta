@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix Image not shown in what is new dialog [#2610](https://github.com/MaibornWolff/codecharta/pull/2610)
+
 ## [1.87.1] - 2022-01-17
 
 ### Changed
