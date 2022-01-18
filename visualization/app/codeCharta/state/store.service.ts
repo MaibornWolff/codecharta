@@ -14,7 +14,7 @@ import { ExperimentalFeaturesEnabledActions } from "./store/appSettings/enableEx
 import { Store } from "./store/store"
 import { ScreenshotToClipboardEnabledActions } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { HoveredBuildingPathActions } from "./store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
-import { unfocusAllNodes } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { EffectsModule } from "./angular-redux/effects/effects.module"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -63,11 +63,9 @@ export class StoreService {
 				options.silent
 			)
 		) {
-			this.dispatch(setIsLoadingMap(true))
-		}
-
-		if (isActionOfType(action.type, IsLoadingFileActions)) {
-			this.dispatch(unfocusAllNodes())
+			// todo move relevant types into effects
+			console.log(action.type)
+			this.originalDispatch(setIsLoadingMap(true))
 		}
 
 		for (const atomicAction of splitStateActions(action)) {
@@ -77,6 +75,8 @@ export class StoreService {
 				this.notifyExtended(atomicAction.type, atomicAction.payload)
 			}
 		}
+
+		EffectsModule.actions$.next(action)
 	}
 
 	getState(): State {

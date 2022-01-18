@@ -22,11 +22,14 @@ import { FocusButtonsModule } from "./codeCharta/ui/nodeContextMenu/focusButtons
 import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
 import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
 import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
+import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
+import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
+		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
