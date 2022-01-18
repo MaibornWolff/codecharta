@@ -36,12 +36,7 @@ export class DialogChangelogController {
 				const start = lineIndex + 2
 				const end = this.findEndChangesLine(changelogLines, lineIndex)
 				for (const changeLine of changelogLines.slice(start, end)) {
-					if (!changeLine.includes("<img")) {
-						const newChangeLine = `${changeLine}<br>`
-						changelogTypes.push(newChangeLine)
-					} else {
-						changelogTypes.push(`${changeLine}<br>`)
-					}
+					changelogTypes.push(`${changeLine}<br>`)
 				}
 			}
 			if (changelogTypes.length > 0) changes[title] = changelogTypes.join("\n")
