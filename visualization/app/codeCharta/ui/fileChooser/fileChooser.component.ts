@@ -6,7 +6,7 @@ import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
-import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
+import { CUSTOM_VIEW_FILE_EXTENSION, CustomViewHelper } from "../../util/customViewHelper"
 import { getCCFileAndDecorateFileChecksum } from "../../util/fileHelper"
 
 export class FileChooserController {
@@ -43,9 +43,9 @@ export class FileChooserController {
 
 				reader.onloadend = () => {
 					readFiles++
-					if (file.name.includes(CUSTOM_CONFIG_FILE_EXTENSION)) {
+					if (file.name.includes(CUSTOM_VIEW_FILE_EXTENSION)) {
 						try {
-							CustomConfigHelper.importCustomConfigs(content)
+							CustomViewHelper.importCustomViews(content)
 						} catch {
 							// Explicitly ignored
 						}

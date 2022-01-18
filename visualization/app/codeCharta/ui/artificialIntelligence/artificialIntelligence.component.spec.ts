@@ -180,13 +180,13 @@ describe("ArtificialIntelligenceController", () => {
 		it("should not calculate risk profile and suspicious metrics on empty main programming language", () => {
 			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
-			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
+			artificialIntelligenceController["createCustomViewSuggestions"] = jest.fn()
 			storeService.dispatch(setExperimentalFeaturesEnabled(true))
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES)
 
 			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["calculateRiskProfile"]).not.toHaveBeenCalled()
-			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).not.toHaveBeenCalled()
+			expect(artificialIntelligenceController["createCustomViewSuggestions"]).not.toHaveBeenCalled()
 		})
 
 		it("should clear and calculate risk profile for Java map", () => {

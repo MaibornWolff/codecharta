@@ -1,12 +1,12 @@
 "use strict"
 import { FileSelectionState, FileState } from "../../model/files/files"
-import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
+import { CustomViewMapSelectionMode } from "../../model/customView/customView.api.model"
 
-export class CustomConfigFileStateConnector {
+export class CustomViewFileStateConnector {
 	private readonly files: FileState[] = []
 	private fileNameParts: string[] = []
 	private mapChecksums: string[] = []
-	private mapSelectionMode: CustomConfigMapSelectionMode = CustomConfigMapSelectionMode.SINGLE
+	private mapSelectionMode: CustomViewMapSelectionMode = CustomViewMapSelectionMode.SINGLE
 
 	constructor(files: FileState[]) {
 		this.files = files
@@ -36,18 +36,18 @@ export class CustomConfigFileStateConnector {
 
 	private setMapSelectionMode(fileSelectionState: string) {
 		if (fileSelectionState === FileSelectionState.Partial) {
-			this.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
+			this.mapSelectionMode = CustomViewMapSelectionMode.MULTIPLE
 		} else if (fileSelectionState === FileSelectionState.Comparison || fileSelectionState === FileSelectionState.Reference) {
-			this.mapSelectionMode = CustomConfigMapSelectionMode.DELTA
+			this.mapSelectionMode = CustomViewMapSelectionMode.DELTA
 		}
 	}
 
-	getMapSelectionMode(): CustomConfigMapSelectionMode {
+	getMapSelectionMode(): CustomViewMapSelectionMode {
 		return this.mapSelectionMode
 	}
 
 	isDeltaMode(): boolean {
-		return this.mapSelectionMode === CustomConfigMapSelectionMode.DELTA
+		return this.mapSelectionMode === CustomViewMapSelectionMode.DELTA
 	}
 
 	getChecksumOfAssignedMaps(): string {

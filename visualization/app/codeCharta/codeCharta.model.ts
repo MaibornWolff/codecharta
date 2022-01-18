@@ -3,7 +3,7 @@ import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
-import { CustomConfig } from "./model/customConfig/customConfig.api.model"
+import { CustomView } from "./model/customView/customView.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
 import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
@@ -255,9 +255,9 @@ export interface MetricData {
 	edgeMetricData: EdgeMetricData[]
 }
 
-export interface LocalStorageCustomConfigs {
+export interface LocalStorageCustomViews {
 	version: string
-	customConfigs: [string, CustomConfig][]
+	customViews: [string, CustomView][]
 }
 
 export interface LocalStorageScenarios {

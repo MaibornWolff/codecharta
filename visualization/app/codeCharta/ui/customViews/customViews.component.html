@@ -1,0 +1,107 @@
+<div class="custom-views">
+	<md-menu class="custom-views-component">
+		<md-button class="custom-views-button" ng-click="$ctrl.initView(); $mdMenu.open($event);" title="Open your saved Custom Views">
+			<i class="fa fa-cogs"></i>
+		</md-button>
+
+		<md-menu-content class="custom-views-drop-down" width="7">
+			<md-menu-item class="custom-views-item">
+				<md-button class="custom-views-dialog-name" ng-disabled="true">Custom Views</md-button>
+
+				<md-button
+					class="action-button"
+					onclick="document.getElementById('input-file-id').click()"
+					title="Upload Custom Views (.cc.config.json file)."
+				>
+					<i class="fa fa-folder-open" aria-hidden="true"></i>
+				</md-button>
+				<md-button
+					ng-click="$ctrl.downloadPreloadedCustomViews()"
+					ng-disabled="!$ctrl._viewModel.hasDownloadableViews"
+					class="action-button"
+					title="Download Custom Views related to currently uploaded maps, if any."
+				>
+					<i class="fa fa-download" aria-hidden="true"></i>
+				</md-button>
+				<md-button ng-click="$ctrl.showAddCustomViewSettings()" class="action-button" title="Create new Custom View">
+					<i class="fa fa-plus" aria-hidden="true"></i>
+				</md-button>
+			</md-menu-item>
+
+			<md-divider></md-divider>
+
+			<md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomViewItemGroups.length" class="custom-views-item">
+				<md-button disabled>It is time to add your first Custom View.</md-button>
+			</md-menu-item>
+
+			<md-menu-item
+				class="custom-views-item"
+				ng-repeat="customViewItemGroup in $ctrl._viewModel.dropDownCustomViewItemGroups |
+                     limitTo: $ctrl._viewModel.visibleEntries"
+			>
+				<md-button
+					class="button-hovering"
+					ng-click="collapsed=!collapsed"
+					ng-style="!customViewItemGroup.hasApplicableItems && { color: 'rgba(0,0,0,0.3)' }"
+					md-prevent-menu-close="md-prevent-menu-close"
+				>
+					<span class="collapse-trigger">
+						Custom Views in <strong>{{ customViewItemGroup.mapSelectionMode | lowercase }}</strong> mode for
+						<strong>{{ customViewItemGroup.mapNames }}</strong>
+					</span>
+					<i ng-show="!collapsed" class="collapse-icon fa fa-arrow-down"></i>
+					<i ng-show="collapsed" class="collapse-icon fa fa-arrow-up"></i>
+				</md-button>
+
+				<div class="collapsable" ng-show="collapsed">
+					<div class="custom-views-item" ng-repeat="customView in customViewItemGroup.customViewItems">
+						<md-button
+							class="button-hovering"
+							ng-click="$ctrl.applyCustomView(customView.id)"
+							ng-disabled="!customView.isApplicable"
+							title="{{
+								customView.isApplicable
+									? 'Apply Custom View'
+									: 'This one is applicable for map(s) ' +
+									  customView.mapNames +
+									  ' in ' +
+									  customView.mapSelectionMode +
+									  ' mode only.'
+							}}"
+						>
+							{{ customView.name }}
+						</md-button>
+
+						<md-button
+							ng-click="$ctrl.removeCustomView(customView.id, $index, $parent.$index)"
+							md-prevent-menu-close="md-prevent-menu-close"
+							class="action-button remove button-hovering"
+							title="Remove Custom View"
+						>
+							<i class="fa fa-minus-square"></i>
+						</md-button>
+					</div>
+				</div>
+			</md-menu-item>
+			<button
+				ng-show="$ctrl._viewModel.showNonApplicableButton"
+				ng-click="$ctrl.toggleNonApplicableItems();"
+				md-prevent-menu-close="md-prevent-menu-close"
+			>
+				{{ $ctrl.isExpanded() ? "Hide non-applicable Custom Views" : "Show non-applicable Custom Views" }}
+				<i ng-class="$ctrl.isExpanded() ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+			</button>
+		</md-menu-content>
+	</md-menu>
+
+	<md-menu class="custom-views-component">
+		<md-button
+			class="custom-views-button plus"
+			ng-click="$ctrl.showAddCustomViewSettings();"
+			title="Quick save current view as a Custom View"
+		>
+			<i class="fa fa-plus"></i>
+		</md-button>
+		<md-menu-content></md-menu-content>
+	</md-menu>
+</div>

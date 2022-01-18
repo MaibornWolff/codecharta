@@ -1,7 +1,7 @@
-<md-dialog class="custom-config-dialog">
+<md-dialog class="custom-view-dialog">
 	<md-toolbar>
 		<div class="md-toolbar-tools">
-			<h2>Add Custom Config</h2>
+			<h2>Add Custom View</h2>
 		</div>
 	</md-toolbar>
 
@@ -10,11 +10,11 @@
 			<md-input-container class="md-block">
 				<label>View Name</label>
 				<input
-					class="custom-config-input"
+					class="custom-view-input"
 					type="text"
-					ng-model="$ctrl._viewModel.customConfigName"
-					ng-on-show="$ctrl.validateCustomConfigName()"
-					ng-on-keyup="$ctrl.validateCustomConfigName()"
+					ng-model="$ctrl._viewModel.customViewName"
+					ng-on-show="$ctrl.validateCustomViewName()"
+					ng-on-keyup="$ctrl.validateCustomViewName()"
 				/>
 			</md-input-container>
 			<div class="md-block" ng-show="$ctrl._viewModel.addErrorMessage.length > 0">
@@ -39,6 +39,6 @@
 			>
 		</span>
 
-		<md-button ng-click="$ctrl.addCustomConfig()" ng-disabled="!$ctrl.isNewCustomConfigValid()" class="md-primary">Add</md-button>
+		<md-button ng-click="$ctrl.addCustomView()" ng-disabled="!$ctrl.isNewCustomViewValid()" class="md-primary">Add</md-button>
 	</md-dialog-actions>
 </md-dialog>

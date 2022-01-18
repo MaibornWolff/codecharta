@@ -1,9 +1,9 @@
-.custom-configs {
+.custom-views {
 	margin-left: 15%;
 }
 
-.custom-configs-component {
-	.custom-configs-button {
+.custom-views-component {
+	.custom-views-button {
 		height: 22px;
 		min-height: 0;
 		line-height: 23px;
@@ -24,7 +24,7 @@
 	}
 }
 
-.custom-configs-drop-down {
+.custom-views-drop-down {
 	padding: 0;
 
 	md-menu-item {
@@ -42,7 +42,7 @@
 		}
 	}
 
-	.custom-configs-item {
+	.custom-views-item {
 		.button-hovering {
 			height: 48px;
 			text-align: left;
@@ -102,7 +102,7 @@
 			color: #949494;
 		}
 
-		.custom-configs-dialog-name {
+		.custom-views-dialog-name {
 			display: inline-block;
 			width: 60%;
 			min-height: 48px;

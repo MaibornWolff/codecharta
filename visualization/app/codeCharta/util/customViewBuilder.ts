@@ -1,22 +1,22 @@
 "use strict"
 import { State, stateObjectReplacer } from "../codeCharta.model"
-import { CustomConfig } from "../model/customConfig/customConfig.api.model"
-import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
+import { CustomView } from "../model/customView/customView.api.model"
+import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
 import md5 from "md5"
 
-const CUSTOM_CONFIG_API_VERSION = "1.0.0"
+const CUSTOM_VIEW_API_VERSION = "1.0.0"
 
-export function buildCustomConfigFromState(configName: string, state: State): CustomConfig {
-	const customConfigFileStateConnector = new CustomConfigFileStateConnector(state.files)
+export function buildCustomViewFromState(viewName: string, state: State): CustomView {
+	const customViewFileStateConnector = new CustomViewFileStateConnector(state.files)
 
-	const customConfig: CustomConfig = {
+	const customView: CustomView = {
 		id: "",
-		name: configName,
+		name: viewName,
 		creationTime: Date.now(),
-		mapSelectionMode: customConfigFileStateConnector.getMapSelectionMode(),
-		assignedMaps: customConfigFileStateConnector.getSelectedMaps(),
-		mapChecksum: customConfigFileStateConnector.getChecksumOfAssignedMaps(),
-		customConfigVersion: CUSTOM_CONFIG_API_VERSION,
+		mapSelectionMode: customViewFileStateConnector.getMapSelectionMode(),
+		assignedMaps: customViewFileStateConnector.getSelectedMaps(),
+		mapChecksum: customViewFileStateConnector.getChecksumOfAssignedMaps(),
+		customViewVersion: CUSTOM_VIEW_API_VERSION,
 		stateSettings: {
 			appSettings: undefined,
 			dynamicSettings: undefined,
@@ -27,20 +27,20 @@ export function buildCustomConfigFromState(configName: string, state: State): Cu
 
 	// Initialize all necessary state settings with default values right here
 	// Any changes to the state properties must also be adapted here
-	// You must handle breaking changes of the CustomConfig API
-	initializeAppSettings(customConfig)
-	initializeDynamicSettings(customConfig)
-	initializeFileSettings(customConfig)
-	initializeTreeMapSettings(customConfig)
+	// You must handle breaking changes of the CustomView API
+	initializeAppSettings(customView)
+	initializeDynamicSettings(customView)
+	initializeFileSettings(customView)
+	initializeTreeMapSettings(customView)
 
-	// Override the default state settings with the stored CustomConfig values
-	deepMapOneToOther(state, customConfig.stateSettings)
+	// Override the default state settings with the stored CustomView values
+	deepMapOneToOther(state, customView.stateSettings)
 
-	customConfig.id = md5(JSON.stringify(customConfig, stateObjectReplacer))
-	return customConfig
+	customView.id = md5(JSON.stringify(customView, stateObjectReplacer))
+	return customView
 }
 
-function initializeAppSettings(target: CustomConfig) {
+function initializeAppSettings(target: CustomView) {
 	target.stateSettings.appSettings = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: false,
@@ -93,7 +93,7 @@ function initializeAppSettings(target: CustomConfig) {
 	}
 }
 
-function initializeDynamicSettings(target: CustomConfig) {
+function initializeDynamicSettings(target: CustomView) {
 	target.stateSettings.dynamicSettings = {
 		areaMetric: "",
 		colorMetric: "",
@@ -115,7 +115,7 @@ function initializeDynamicSettings(target: CustomConfig) {
 	}
 }
 
-function initializeFileSettings(target: CustomConfig) {
+function initializeFileSettings(target: CustomView) {
 	target.stateSettings.fileSettings = {
 		attributeTypes: undefined,
 		blacklist: undefined,
@@ -124,7 +124,7 @@ function initializeFileSettings(target: CustomConfig) {
 	}
 }
 
-function initializeTreeMapSettings(target: CustomConfig) {
+function initializeTreeMapSettings(target: CustomView) {
 	target.stateSettings.treeMap = {
 		mapSize: 0
 	}
