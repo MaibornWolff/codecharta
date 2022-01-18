@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   rename custom config into custom view [#2611](https://github.com/MaibornWolff/codecharta/pull/2611)
+-   rename custom config into custom view [#2612](https://github.com/MaibornWolff/codecharta/pull/2612)
 
 ### Fixed 🐞
 
