@@ -18,7 +18,7 @@ import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { setHoveredBuildingPath } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { hoveredBuildingPathSelector } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
-import type { BUILDING_RIGHT_CLICKED_EVENT_TYPE } from "../../../../src/globals"
+import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 interface Coordinates {
 	x: number
@@ -355,13 +355,11 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		// Check if mouse moved to prevent the node context menu to show up
 		// after moving the map, when the cursor ends on a building.
 		if (building && !this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
-			document.dispatchEvent(
-				new CustomEvent<BUILDING_RIGHT_CLICKED_EVENT_TYPE>("building-right-clicked", {
-					detail: {
-						building,
-						x: this.mouse.x,
-						y: this.mouse.y
-					}
+			this.storeService.dispatch(
+				setRightClickedNodeData({
+					nodeId: building.node.id,
+					xPositionOfRightClickEvent: this.mouse.x,
+					yPositionOfRightClickEvent: this.mouse.y
 				})
 			)
 		}

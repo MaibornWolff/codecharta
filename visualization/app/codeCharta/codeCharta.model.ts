@@ -5,6 +5,7 @@ import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
+import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 export interface NameDataPair {
 	fileName: string
@@ -404,6 +405,7 @@ export interface LookUp {
 export interface AppStatus {
 	hoveredBuildingPath: string | null
 	selectedBuildingId: number | null
+	rightClickedNodeData: RightClickedNodeData
 }
 
 export enum PanelSelection {

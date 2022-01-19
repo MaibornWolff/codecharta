@@ -96,7 +96,7 @@ To unify the appearance of all commit messages we only accept commit messages us
     [One picture (specify the width and/or height)]<br/>
     Example:<br/>
     `- Description ([#1315](pull-request-link)) <br>`<br/>
-    `<img src="image-link" width="350px" alt="pull-request-1315">`<br/>
+    `![image-size](image-ling)`<br/>
 -   Please do not forget the `_<br>` at the end before the img tag (with a space). This breaks the two lines and is compatible with our parsers.
 
 ### How to write a good description?
