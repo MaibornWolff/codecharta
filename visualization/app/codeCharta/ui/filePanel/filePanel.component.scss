@@ -7,25 +7,10 @@ cc-file-panel {
 		display: none;
 	}
 
-	.delta-chooser {
-		position: absolute;
-		display: inline-flex;
-		min-width: 70%;
-	}
-
 	.mode-chooser {
 		display: inline-flex;
 		vertical-align: middle;
 		margin-left: 10px;
-	}
-
-	.small-action-button.transparent {
-		//TODO: change md to mat?
-		.md-fab.md-button.md-ink-ripple {
-			&:hover {
-				background-color: transparent !important;
-			}
-		}
 	}
 
 	.state-selector-button {
@@ -72,48 +57,11 @@ cc-file-panel {
 
 	.delta-select {
 		width: 200px;
+		margin: 0 10px 0 10px;
 		vertical-align: bottom;
 	}
 
-	md-input-container {
-		display: inline-block;
-		text-align: left;
-		font-size: 11pt;
-		width: calc(100% - 250px);
-		max-width: 300px;
-		min-width: 150px;
-
-		md-select {
-			display: block;
-
-			.md-select-value {
-				background: white;
-				margin-right: 5px;
-				border-radius: 5px;
-				padding-left: 5px;
-				min-height: 22px;
-
-				span {
-					margin-top: -3px;
-				}
-			}
-		}
-
-		> * {
-			display: inline-block;
-		}
-
-		i.fa {
-			color: rgb(0, 150, 136);
-			margin-top: 4px;
-			margin-left: 5px;
-			margin-right: 3px;
-			min-width: 16px;
-
-			&:hover {
-				color: black;
-				cursor: pointer;
-			}
-		}
+	.standard-select {
+		margin: 0 10px 0 10px;
 	}
 }

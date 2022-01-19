@@ -1,5 +1,6 @@
 <mat-select
 	class="delta-select"
+	placeholder="select reference file"
 	[(ngModel)]="selectedDeltaReferenceFile"
 	(selectionChange)="handleDeltaReferenceFileChange(selectedDeltaReferenceFile)"
 >
@@ -12,6 +13,7 @@
 
 <mat-select
 	class="delta-select"
+	placeholder="select comparison file"
 	[(ngModel)]="selectedDeltaComparisonFile"
 	(selectionChange)="handleDeltaComparisonFileChange(selectedDeltaComparisonFile)"
 >
