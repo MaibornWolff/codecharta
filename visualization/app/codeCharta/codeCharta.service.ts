@@ -62,10 +62,6 @@ export class CodeChartaService {
 			}
 			fileValidationResult.errors.push(...checkErrors(nameDataPair?.content))
 
-			if (fileValidationResult.errors.length > 0) {
-				this.fileStates.filter(fileState => fileState.file.fileMeta.fileName !== nameDataPair.fileName)
-			}
-
 			if (fileValidationResult.errors.length === 0) {
 				fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
 				this.addFile(nameDataPair)
