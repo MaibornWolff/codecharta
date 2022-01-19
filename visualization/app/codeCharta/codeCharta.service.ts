@@ -27,21 +27,7 @@ export class CodeChartaService {
 		this.fileStates = this.storeService.getState().files
 		const fileValidationResults: CCFileValidationResult[] = []
 
-		for (const nameDataPair of nameDataPairs) {
-			const fileValidationResult: CCFileValidationResult = { fileName: nameDataPair?.fileName, errors: [], warnings: [] }
-			fileValidationResult.errors.push(...checkErrors(nameDataPair?.content))
-
-			if (fileValidationResult.errors.length > 0) {
-				this.fileStates.filter(fileState => fileState.file.fileMeta.fileName !== nameDataPair.fileName)
-			}
-
-			if (fileValidationResult.errors.length === 0) {
-				fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
-				this.addFile(nameDataPair)
-			}
-
-			fileValidationResults.push(fileValidationResult)
-		}
+		this.getValidationResults(nameDataPairs, fileValidationResults)
 
 		this.storeService.dispatch(setIsLoadingFile(false))
 
@@ -64,6 +50,28 @@ export class CodeChartaService {
 
 			CodeChartaService.updateRootData(rootName)
 			this.setDefaultScenario()
+		}
+	}
+
+	private getValidationResults(nameDataPairs: NameDataPair[], fileValidationResults: CCFileValidationResult[]) {
+		for (const nameDataPair of nameDataPairs) {
+			const fileValidationResult: CCFileValidationResult = {
+				fileName: nameDataPair?.fileName,
+				errors: [],
+				warnings: []
+			}
+			fileValidationResult.errors.push(...checkErrors(nameDataPair?.content))
+
+			if (fileValidationResult.errors.length > 0) {
+				this.fileStates.filter(fileState => fileState.file.fileMeta.fileName !== nameDataPair.fileName)
+			}
+
+			if (fileValidationResult.errors.length === 0) {
+				fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
+				this.addFile(nameDataPair)
+			}
+
+			fileValidationResults.push(fileValidationResult)
 		}
 	}
 
