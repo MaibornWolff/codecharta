@@ -19,13 +19,13 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
-import { MarkFolderColorPickerModule } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.module"
-import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.component"
 import { FocusButtonsModule } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.module"
 import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
+import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
+import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
 
 @NgModule({
 	imports: [
@@ -39,8 +39,8 @@ import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/fileP
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		MarkFolderColorPickerModule,
-		FocusButtonsModule
+		FocusButtonsModule,
+		MarkFolderRowModule
 	],
 	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent],
 	entryComponents: [
@@ -51,11 +51,12 @@ import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/fileP
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		MarkFolderColorPickerComponent,
 		FocusButtonsComponent,
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
-		FilePanelDeltaSelectorComponent
+		FilePanelDeltaSelectorComponent,
+		FocusButtonsComponent,
+		MarkFolderRowComponent
 	]
 })
 export class AppModule {

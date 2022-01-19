@@ -33,11 +33,11 @@ describe("DialogChangelogController", () => {
 			expect(dialogChangelogController["_viewModel"].changes).not.toBeNull()
 			expect(dialogChangelogController["_viewModel"].changes[added]).toBeUndefined()
 			expect(dialogChangelogController["_viewModel"].changes[fixed]).toBe(
-				'<li>3 (<a href="">#3</a>)</li>\n' + '<li>4 (<a href="">#4</a>)</li>\n' + '<li>5 (<a href="">#5</a>)</li>'
+				'<li>3 (<a href="">#3</a>)</li><br>\n' + '<li>4 (<a href="">#4</a>)</li><br>\n' + '<li>5 (<a href="">#5</a>)</li><br>'
 			)
 			expect(dialogChangelogController["_viewModel"].changes[removed]).toBeUndefined()
 			expect(dialogChangelogController["_viewModel"].changes[changed]).toBeUndefined()
-			expect(dialogChangelogController["_viewModel"].changes[chore]).toBe('<li>6 (<a href="">#6</a>)</li>')
+			expect(dialogChangelogController["_viewModel"].changes[chore]).toBe('<li>6 (<a href="">#6</a>)</li><br>')
 		})
 
 		it("should extract the changes from changelog for 2 versions", () => {
@@ -47,24 +47,24 @@ describe("DialogChangelogController", () => {
 
 			expect(dialogChangelogController["_viewModel"].changes).not.toBeNull()
 			expect(dialogChangelogController["_viewModel"].changes[added]).toBe(
-				'<li>7 (<a href="">#7</a>)</li>\n' + '<li>8 (<a href="">#8</a>)</li>'
+				'<li>7 (<a href="">#7</a>)</li><br>\n' + '<li>8 (<a href="">#8</a>)</li><br>'
 			)
 			expect(dialogChangelogController["_viewModel"].changes[fixed]).toBe(
-				'<li>3 (<a href="">#3</a>)</li>\n' + '<li>4 (<a href="">#4</a>)</li>\n' + '<li>5 (<a href="">#5</a>)</li>'
+				'<li>3 (<a href="">#3</a>)</li><br>\n' + '<li>4 (<a href="">#4</a>)</li><br>\n' + '<li>5 (<a href="">#5</a>)</li><br>'
 			)
-			expect(dialogChangelogController["_viewModel"].changes[chore]).toBe('<li>6 (<a href="">#6</a>)</li>')
+			expect(dialogChangelogController["_viewModel"].changes[chore]).toBe('<li>6 (<a href="">#6</a>)</li><br>')
 			// Expect nested list to be correctly parsed
 			expect(dialogChangelogController["_viewModel"].changes[changed]).toBe(
-				"<li>\n" +
-					'<p>9 (<a href="">#9</a>)</p>\n' +
-					"</li>\n" +
-					"<li>\n" +
-					'<p>10 (<a href="">#10</a>)</p>\n' +
-					"<ul>\n" +
-					"<li>10.1</li>\n" +
-					"<li>10.2</li>\n" +
-					"</ul>\n" +
-					"</li>"
+				"<li><br>\n" +
+					'<p>9 (<a href="">#9</a>)</p><br>\n' +
+					"</li><br>\n" +
+					"<li><br>\n" +
+					'<p>10 (<a href="">#10</a>)</p><br>\n' +
+					"<ul><br>\n" +
+					"<li>10.1</li><br>\n" +
+					"<li>10.2</li><br>\n" +
+					"</ul><br>\n" +
+					"</li><br>"
 			)
 			expect(dialogChangelogController["_viewModel"].changes[removed]).toBeUndefined()
 		})

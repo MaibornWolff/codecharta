@@ -1,0 +1,22 @@
+<div class="row" *ngIf="node$ | async as node">
+	<ng-container *ngFor="let markFolderItem of markFolderItems$ | async">
+		<button
+			[style.background-color]="markFolderItem.color"
+			(click)="markFolderItem.isMarked ? unmarkFolder(node.path) : markFolder(node.path, markFolderItem.color)"
+			class="colorButton"
+			title="Colorize folder"
+		>
+			<i class="fa fa-times" *ngIf="markFolderItem.isMarked"></i>
+		</button>
+	</ng-container>
+
+	<cc-color-picker
+		[hexColor]="'#ff0000'"
+		(onColorChange)="markFolder(node.path, $event)"
+		[triggerTemplate]="colorPickerTriggerTemplate"
+	></cc-color-picker>
+</div>
+
+<ng-template #colorPickerTriggerTemplate>
+	<div class="cc-color-picker-trigger fa fa-paint-brush"></div>
+</ng-template>
