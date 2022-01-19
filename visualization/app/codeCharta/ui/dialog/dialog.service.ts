@@ -38,12 +38,6 @@ export class DialogService {
 		await this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
-	async showErrorDialogAndOpenFileChooser(message = "An error occurred.", title = "Error", button = "Ok") {
-		const prompt = this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button)
-		await this.$mdDialog.show(prompt)
-		document.getElementById("input-file-id").click()
-	}
-
 	async showValidationDialog(fileValidationResults: CCFileValidationResult[]) {
 		const htmlMessages = []
 
@@ -66,8 +60,7 @@ export class DialogService {
 				}
 			}
 		}
-
-		await this.showErrorDialogAndOpenFileChooser(htmlMessages.join(""), "Something is wrong with the uploaded file(s)")
+		await this.showErrorDialog(htmlMessages.join(""), "Something is wrong with the uploaded file(s)")
 	}
 
 	private buildFileErrorMessage(fileValidationResult) {

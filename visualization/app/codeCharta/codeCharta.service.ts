@@ -28,17 +28,16 @@ export class CodeChartaService {
 		const fileValidationResults: CCFileValidationResult[] = []
 
 		for (const nameDataPair of nameDataPairs) {
-			const fileValidationResult: CCFileValidationResult = { fileName: nameDataPair.fileName, errors: [], warnings: [] }
-			fileValidationResult.errors.push(...checkErrors(nameDataPair.content))
+			const fileValidationResult: CCFileValidationResult = { fileName: nameDataPair?.fileName, errors: [], warnings: [] }
+			fileValidationResult.errors.push(...checkErrors(nameDataPair?.content))
+
 			if (fileValidationResult.errors.length > 0) {
-				this.fileStates.filter(file => getCCFile(nameDataPair) !== file.file)
-				this.recentFiles.filter(fileName => fileName !== nameDataPair.fileName)
+				this.fileStates.filter(fileState => fileState.file.fileMeta.fileName !== nameDataPair.fileName)
 			}
 
 			if (fileValidationResult.errors.length === 0) {
-				fileValidationResult.warnings.push(...checkWarnings(nameDataPair.content))
+				fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
 				this.addFile(nameDataPair)
-				this.addRecentFile(nameDataPair.fileName)
 			}
 
 			fileValidationResults.push(fileValidationResult)
@@ -52,7 +51,7 @@ export class CodeChartaService {
 		)
 			await this.dialogService.showValidationDialog(fileValidationResults)
 
-		if (fileValidationResults.flatMap(validation => validation.errors).length === 0) {
+		if (this.recentFiles.length > 0) {
 			this.storeService.dispatch(setRecentFiles(this.recentFiles))
 			this.storeService.dispatch(setFiles(this.fileStates))
 
@@ -133,9 +132,5 @@ export class CodeChartaService {
 	static updateRootData(rootName: string) {
 		CodeChartaService.ROOT_NAME = rootName
 		CodeChartaService.ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
-	}
-
-	private addRecentFile(fileName: string) {
-		this.recentFiles.push(fileName)
 	}
 }
