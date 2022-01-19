@@ -1,4 +1,5 @@
-import { createStore } from "redux"
+import { Action, createStore } from "redux"
+import { EffectsModule } from "../angular-redux/effects/effects.module"
 
 import rootReducer from "./state.reducer"
 
@@ -19,5 +20,10 @@ export class Store {
 	static get store() {
 		if (!Store._store) Store.initialize()
 		return Store._store
+	}
+
+	static dispatch(action: Action) {
+		Store.store.dispatch(action)
+		EffectsModule.actions$.next(action)
 	}
 }

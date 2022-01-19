@@ -14,7 +14,7 @@ import { ExperimentalFeaturesEnabledActions } from "./store/appSettings/enableEx
 import { Store } from "./store/store"
 import { ScreenshotToClipboardEnabledActions } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { HoveredBuildingPathActions } from "./store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
-import { EffectsModule } from "./angular-redux/effects/effects.module"
+import { FocusedNodePathActions } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -60,11 +60,11 @@ export class StoreService {
 				isActionOfType(action.type, ExperimentalFeaturesEnabledActions) ||
 				isActionOfType(action.type, ScreenshotToClipboardEnabledActions) ||
 				isActionOfType(action.type, HoveredBuildingPathActions) ||
+				isActionOfType(action.type, FocusedNodePathActions) ||
 				options.silent
 			)
 		) {
-			// todo move relevant types into effects
-			console.log(action.type)
+			// todo move relevant types into effect
 			this.originalDispatch(setIsLoadingMap(true))
 		}
 
@@ -75,8 +75,6 @@ export class StoreService {
 				this.notifyExtended(atomicAction.type, atomicAction.payload)
 			}
 		}
-
-		EffectsModule.actions$.next(action)
 	}
 
 	getState(): State {

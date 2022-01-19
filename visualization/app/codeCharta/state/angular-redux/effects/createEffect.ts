@@ -14,8 +14,7 @@ export function createEffect(source: () => Observable<unknown>, config?: Config)
 
 		if (!isAction(output)) throw new Error("output must be an action")
 
-		console.log("will dispatch", output)
-		Store.store.dispatch(output)
+		Store.dispatch(output)
 	})
 }
 
