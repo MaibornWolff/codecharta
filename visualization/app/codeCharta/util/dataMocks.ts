@@ -1818,7 +1818,8 @@ export const STATE: State = {
 	},
 	appStatus: {
 		hoveredBuildingPath: null,
-		selectedBuildingId: null
+		selectedBuildingId: null,
+		rightClickedNodeData: null
 	}
 }
 
@@ -1901,7 +1902,8 @@ export const DEFAULT_STATE: State = {
 	},
 	appStatus: {
 		hoveredBuildingPath: null,
-		selectedBuildingId: null
+		selectedBuildingId: null,
+		rightClickedNodeData: null
 	}
 }
 

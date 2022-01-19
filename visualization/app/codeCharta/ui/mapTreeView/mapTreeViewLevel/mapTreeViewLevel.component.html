@@ -3,7 +3,7 @@
 		id="{{ node.path }}"
 		class="tree-element-label-{{ depth }} tree-element-label"
 		[class.hovered]="(hoveredBuildingPath$ | async) === node.path"
-		[class.marked]="isContextMenuOpenForNode"
+		[class.marked]="(rightClickedNodeData$ | async)?.nodeId === node.id"
 		(mouseenter)="onMouseEnter()"
 		(mouseleave)="onMouseLeave()"
 		(click)="toggleOpen()"
