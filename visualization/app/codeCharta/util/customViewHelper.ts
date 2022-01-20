@@ -1,7 +1,13 @@
 "use strict"
 import { ColorRange, LocalStorageCustomViews, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 import { CustomViewItemGroup } from "../ui/customViews/customViews.component"
-import { CustomView, CustomViewMapSelectionMode, CustomViewsDownloadFile, ExportCustomView } from "../model/customView/customView.api.model"
+import {
+	CustomConfigsDownloadFile,
+	CustomView,
+	CustomViewMapSelectionMode,
+	CustomViewsDownloadFile,
+	ExportCustomView
+} from "../model/customView/customView.api.model"
 import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
 import { FileNameHelper } from "./fileNameHelper"
 import { FileDownloader } from "./fileDownloader"
@@ -17,9 +23,9 @@ import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitC
 import { CodeChartaStorage } from "./codeChartaStorage"
 
 export const CUSTOM_VIEW_FILE_EXTENSION = ".cc.config.json"
-const CUSTOM_VIEWS_LOCAL_STORAGE_VERSION = "1.0.0"
-const CUSTOM_VIEWS_DOWNLOAD_FILE_VERSION = "1.0.0"
-export const CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customViews"
+const CUSTOM_VIEWS_LOCAL_STORAGE_VERSION = "2.0.0"
+const CUSTOM_VIEWS_DOWNLOAD_FILE_VERSION = "2.0.0"
+export const CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomViewHelper {
 	private static customViews: Map<string, CustomView> = CustomViewHelper.loadCustomViews()
@@ -145,9 +151,9 @@ export class CustomViewHelper {
 	}
 
 	static importCustomViews(content: string) {
-		const importedCustomViewsFile: CustomViewsDownloadFile = JSON.parse(content, stateObjectReviver)
+		const parsedCustomViewFile = this.getImportedCustomViewsFile(content)
 
-		for (const exportedConfig of importedCustomViewsFile.customViews.values()) {
+		for (const exportedConfig of parsedCustomViewFile.customViews.values()) {
 			const alreadyExistingConfig = CustomViewHelper.getCustomViewSettings(exportedConfig.id)
 
 			// Check for a duplicate custom view by matching checksums
@@ -165,7 +171,7 @@ export class CustomViewHelper {
 				name: exportedConfig.name,
 				creationTime: exportedConfig.creationTime,
 				assignedMaps: exportedConfig.assignedMaps,
-				customViewVersion: exportedConfig.customViewVersion,
+				customViewVersion: exportedConfig.customViewVersion ? exportedConfig.customViewVersion : CUSTOM_VIEWS_LOCAL_STORAGE_VERSION,
 				mapChecksum: exportedConfig.mapChecksum,
 				mapSelectionMode: exportedConfig.mapSelectionMode,
 				stateSettings: exportedConfig.stateSettings
@@ -173,6 +179,20 @@ export class CustomViewHelper {
 
 			CustomViewHelper.addCustomView(importedCustomView)
 		}
+	}
+
+	private static getImportedCustomViewsFile(content: string) {
+		const importedCustomViewsFile: CustomConfigsDownloadFile | CustomViewsDownloadFile = JSON.parse(content, stateObjectReviver)
+
+		if ("customConfigs" in importedCustomViewsFile) {
+			const parsedCustomViewFile: CustomViewsDownloadFile = {
+				downloadApiVersion: CUSTOM_VIEWS_DOWNLOAD_FILE_VERSION,
+				timestamp: importedCustomViewsFile.timestamp,
+				customViews: importedCustomViewsFile.customConfigs
+			}
+			return parsedCustomViewFile
+		}
+		return importedCustomViewsFile
 	}
 
 	static downloadCustomViews(customViews: Map<string, ExportCustomView>, customViewFileStateConnector: CustomViewFileStateConnector) {

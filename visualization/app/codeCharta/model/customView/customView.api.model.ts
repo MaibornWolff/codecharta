@@ -30,3 +30,9 @@ export interface CustomViewsDownloadFile {
 	timestamp: number
 	customViews: Map<string, ExportCustomView>
 }
+
+export interface CustomConfigsDownloadFile {
+	downloadApiVersion: string
+	timestamp: number
+	customConfigs: Map<string, ExportCustomView>
+}
