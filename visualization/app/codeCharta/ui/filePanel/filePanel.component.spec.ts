@@ -225,19 +225,6 @@ describe("filePanelController", () => {
 	})
 
 	describe("onRenderStateChange", () => {
-		//ToDO: Rewrite test
-		/*it("should update the viewModel with the last visible filename and call onSingleFileChange if multiple mode is active", () => {
-			filePanelController.onPartialFilesChange() = jest.fn()
-
-			filePanelController["lastRenderState"] = FileSelectionState.Partial
-			filePanelController["_viewModel"].selectedFileNames.partial = ["fileA"]
-
-			filePanelController.onPartialFilesChange(["fileA"])
-
-			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual(["fileA"])
-			expect(filePanelController.onPartialFilesChange([])).toHaveBeenCalledWith(["fileA"])
-		})*/
-
 		it("should update the viewModel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
 			filePanelController.onDeltaComparisonFileChange = jest.fn()
 

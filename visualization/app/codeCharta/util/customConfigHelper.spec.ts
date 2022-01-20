@@ -503,7 +503,7 @@ describe("CustomConfigHelper", () => {
 	})
 
 	describe("importCustomConfigs", () => {
-		it("should import Configs in SINGLE Mode and change mode to DELTA", () => {
+		it("should import Configs in SINGLE Mode and change mode to MULTIPLE", () => {
 			const configStub = {
 				id: "invalid-md5-checksum",
 				name: "to-be-imported",
