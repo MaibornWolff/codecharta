@@ -41,6 +41,10 @@ export class CustomConfigHelper {
 		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
 
 		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
+			if (customConfig.mapSelectionMode === "SINGLE") {
+				customConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
+			}
+
 			const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
 
 			if (!customConfigItemGroups.has(groupKey)) {
@@ -165,6 +169,10 @@ export class CustomConfigHelper {
 				CustomConfigHelper.hasCustomConfigByName(exportedConfig.mapSelectionMode, exportedConfig.assignedMaps, exportedConfig.name)
 			) {
 				exportedConfig.name += ` (${FileNameHelper.getFormattedTimestamp(new Date(exportedConfig.creationTime))})`
+			}
+
+			if (exportedConfig.mapSelectionMode === "SINGLE") {
+				exportedConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
 			}
 
 			const importedCustomConfig: CustomConfig = {
