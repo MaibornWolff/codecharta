@@ -260,6 +260,11 @@ export interface LocalStorageCustomViews {
 	customViews: [string, CustomView][]
 }
 
+export interface LocalStorageCustomConfigs {
+	version: string
+	customConfigs: [string, CustomView][]
+}
+
 export interface LocalStorageScenarios {
 	version: string
 	scenarios: [string, RecursivePartial<Scenario>][]

@@ -1,5 +1,11 @@
 "use strict"
-import { ColorRange, LocalStorageCustomViews, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
+import {
+	ColorRange,
+	LocalStorageCustomConfigs,
+	LocalStorageCustomViews,
+	stateObjectReplacer,
+	stateObjectReviver
+} from "../codeCharta.model"
 import { CustomViewItemGroup } from "../ui/customViews/customViews.component"
 import {
 	CustomConfigsDownloadFile,
@@ -91,11 +97,50 @@ export class CustomViewHelper {
 	}
 
 	private static loadCustomViews() {
-		const ccLocalStorage: LocalStorageCustomViews = JSON.parse(
+		const ccLocalStorage = this.getCcLocalStorage()
+		return new Map(ccLocalStorage?.customViews)
+	}
+
+	private static getCcLocalStorage() {
+		const ccLocalStorage: LocalStorageCustomViews | LocalStorageCustomConfigs = JSON.parse(
 			CustomViewHelper.getStorage().getItem(CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT),
 			stateObjectReviver
 		)
-		return new Map(ccLocalStorage?.customViews)
+		if (!ccLocalStorage) return
+
+		if ("customConfigs" in ccLocalStorage) {
+			return this.getParsedCcLocalStorageViews(ccLocalStorage)
+		}
+		return ccLocalStorage
+	}
+
+	private static getParsedCcLocalStorageViews(ccLocalStorage: LocalStorageCustomConfigs) {
+		const parsedCcLocalStorageView: LocalStorageCustomViews = {
+			version: CUSTOM_VIEWS_LOCAL_STORAGE_VERSION,
+			customViews: []
+		}
+
+		for (const [id, exportedConfig] of ccLocalStorage.customConfigs.values()) {
+			const importedCustomView: CustomView = {
+				id: exportedConfig.id,
+				name: exportedConfig.name,
+				creationTime: exportedConfig.creationTime,
+				assignedMaps: exportedConfig.assignedMaps,
+				customViewVersion: CUSTOM_VIEWS_LOCAL_STORAGE_VERSION,
+				mapChecksum: exportedConfig.mapChecksum,
+				mapSelectionMode: exportedConfig.mapSelectionMode,
+				stateSettings: exportedConfig.stateSettings
+			}
+			parsedCcLocalStorageView.customViews.push([id, importedCustomView])
+		}
+		this.replaceCustomConfigsWithCustomViewsInLocalStorage(parsedCcLocalStorageView)
+
+		return parsedCcLocalStorageView
+	}
+
+	private static replaceCustomConfigsWithCustomViewsInLocalStorage(parsedCcLocalStorageView: LocalStorageCustomViews) {
+		CustomViewHelper.getStorage().removeItem(CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT)
+		CustomViewHelper.getStorage().setItem(CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT, JSON.stringify(parsedCcLocalStorageView))
 	}
 
 	static addCustomViews(newCustomViews: CustomView[]) {
