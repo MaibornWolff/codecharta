@@ -94,11 +94,31 @@ export class CustomConfigHelper {
 	}
 
 	private static loadCustomConfigs() {
+		const ccLocalStorage = this.getCcLocalStorage()
+		return new Map(ccLocalStorage?.customConfigs)
+	}
+
+	// TODO [2022-08-01]: remove replace method for SINGLE mode before when deadline is reached
+	private static getCcLocalStorage() {
 		const ccLocalStorage: LocalStorageCustomConfigs = JSON.parse(
 			CustomConfigHelper.getStorage().getItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT),
 			stateObjectReviver
 		)
-		return new Map(ccLocalStorage?.customConfigs)
+
+		if (localStorage?.getItem("codeChartaVersion") < "1.88.0") {
+			for (const [, customConfig] of ccLocalStorage.customConfigs.values()) {
+				if (customConfig.mapSelectionMode === "SINGLE") {
+					customConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
+				}
+			}
+			this.replaceSingleModeInLocalStorage(ccLocalStorage)
+		}
+		return ccLocalStorage
+	}
+
+	private static replaceSingleModeInLocalStorage(ccLocalStorage: LocalStorageCustomConfigs) {
+		CustomConfigHelper.getStorage().removeItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT)
+		CustomConfigHelper.getStorage().setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(ccLocalStorage, stateObjectReviver))
 	}
 
 	static addCustomConfigs(newCustomConfigs: CustomConfig[]) {
@@ -169,10 +189,6 @@ export class CustomConfigHelper {
 				CustomConfigHelper.hasCustomConfigByName(exportedConfig.mapSelectionMode, exportedConfig.assignedMaps, exportedConfig.name)
 			) {
 				exportedConfig.name += ` (${FileNameHelper.getFormattedTimestamp(new Date(exportedConfig.creationTime))})`
-			}
-
-			if (exportedConfig.mapSelectionMode === "SINGLE") {
-				exportedConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
 			}
 
 			const importedCustomConfig: CustomConfig = {
