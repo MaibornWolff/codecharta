@@ -1,4 +1,4 @@
-import { CodeMapNode, FixedPosition, NameDataPair } from "../codeCharta.model"
+import { CodeMapNode, FixedPosition } from "../codeCharta.model"
 import Ajv from "ajv"
 import packageJson from "../../../package.json"
 import { ExportCCFile } from "../codeCharta.api.model"
@@ -12,9 +12,10 @@ interface ApiVersion {
 	minor: number
 }
 
-export interface CCValidationResult {
-	error: string[]
-	warning: string[]
+export interface CCFileValidationResult {
+	fileName: string
+	errors: string[]
+	warnings: string[]
 }
 
 export const ERROR_MESSAGES = {
@@ -32,42 +33,50 @@ export const ERROR_MESSAGES = {
 	blacklistError: "Excluding all buildings is not possible."
 }
 
-export function validate(nameDataPair: NameDataPair) {
-	const file = nameDataPair?.content
-	const result: CCValidationResult = { error: [], warning: [] }
+export function checkWarnings(file: ExportCCFile) {
+	const warnings: string[] = []
+	if (!file) {
+		return warnings
+	}
+	if (fileHasHigherMinorVersion(file)) {
+		warnings.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
+	}
+	return warnings
+}
+
+export function checkErrors(file: ExportCCFile) {
+	const errors: string[] = []
 	switch (true) {
 		case !file:
-			result.error.push(ERROR_MESSAGES.fileIsInvalid)
+			errors.push(ERROR_MESSAGES.fileIsInvalid)
 			break
 		case !isValidApiVersion(file):
-			result.error.push(ERROR_MESSAGES.apiVersionIsInvalid)
+			errors.push(ERROR_MESSAGES.apiVersionIsInvalid)
 			break
 		case fileHasHigherMajorVersion(file):
-			result.error.push(ERROR_MESSAGES.majorApiVersionIsOutdated)
-			break
-		case fileHasHigherMinorVersion(file):
-			result.warning.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
+			errors.push(ERROR_MESSAGES.majorApiVersionIsOutdated)
 			break
 	}
+	if (errors.length === 0) errors.push(...checkJsonSchema(file))
+	return errors
+}
 
-	if (result.error.length === 0) {
+function checkJsonSchema(file: ExportCCFile) {
+	const errors: string[] = []
+	if (errors.length === 0) {
 		const ajv = new Ajv({ allErrors: true })
 		const validate = ajv.compile(jsonSchema)
 		const valid = validate(file)
 
 		if (!valid) {
-			result.error = validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
+			errors.push(...validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error)))
 		} else if (file.nodes.length === 0) {
-			result.error.push(ERROR_MESSAGES.nodesEmpty)
+			errors.push(ERROR_MESSAGES.nodesEmpty)
 		} else {
-			validateAllNodesAreUnique(file.nodes[0], result)
-			validateFixedFolders(file, result)
+			errors.push(...validateAllNodesAreUnique(file.nodes[0]), ...validateFixedFolders(file))
 		}
 	}
-
-	if (result.error.length > 0 || result.warning.length > 0) {
-		throw result
-	}
+	return errors
 }
 
 function isValidApiVersion(file: ExportCCFile) {
@@ -101,13 +110,15 @@ function getValidationMessage(error: Ajv.ErrorObject) {
 	return `${errorType} error: ${errorParameter} ${error.message}`
 }
 
-function validateAllNodesAreUnique(node: CodeMapNode, result: CCValidationResult) {
+function validateAllNodesAreUnique(node: CodeMapNode) {
+	const errors: string[] = []
 	const names = new Set<string>()
 	names.add(`${node.name}|${node.type}`)
-	validateChildrenAreUniqueRecursive(node, result, names, `/${node.name}`)
+	validateChildrenAreUniqueRecursive(node, errors, names, `/${node.name}`)
+	return errors
 }
 
-function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidationResult, names: Set<string>, subPath: string) {
+function validateChildrenAreUniqueRecursive(node: CodeMapNode, errors: string[], names: Set<string>, subPath: string) {
 	if (isLeaf(node)) {
 		return
 	}
@@ -115,26 +126,29 @@ function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidat
 	for (const child of node.children) {
 		const path = `${subPath}/${child.name}`
 		if (names.has(`${path}|${child.type}`)) {
-			result.error.push(`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${child.type} with path: ${path}`)
+			errors.push(`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${child.type} with path: ${path}`)
 		} else {
 			names.add(`${path}|${child.type}`)
-			validateChildrenAreUniqueRecursive(child, result, names, path)
+			validateChildrenAreUniqueRecursive(child, errors, names, path)
 		}
 	}
 }
 
-function validateFixedFolders(file: ExportCCFile, result: CCValidationResult, childNodes: CodeMapNode[] = file.nodes[0].children) {
-	const notFixed: string[] = []
-	const outOfBounds: string[] = []
-	const intersections: Set<string> = new Set()
-
+function checkChildNodes(
+	childNodes: CodeMapNode[],
+	notFixed: string[],
+	file: ExportCCFile,
+	errors: string[],
+	outOfBounds: string[],
+	intersections: Set<string>
+) {
 	for (const node of childNodes) {
 		if (node.fixedPosition === undefined) {
 			notFixed.push(`${node.name}`)
 		} else {
 			const apiVersion = getAsApiVersion(file.apiVersion)
 			if (apiVersion.major < 1 || (apiVersion.major === 1 && apiVersion.minor < 2)) {
-				result.error.push(`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: ${file.apiVersion}`)
+				errors.push(`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: ${file.apiVersion}`)
 				return
 			}
 
@@ -154,24 +168,34 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult, ch
 			}
 		}
 	}
+}
+
+function validateFixedFolders(file: ExportCCFile, childNodes: CodeMapNode[] = file.nodes[0].children) {
+	const errors: string[] = []
+	const notFixed: string[] = []
+	const outOfBounds: string[] = []
+	const intersections: Set<string> = new Set()
+
+	checkChildNodes(childNodes, notFixed, file, errors, outOfBounds, intersections)
 
 	if (notFixed.length > 0 && notFixed.length !== childNodes.length) {
-		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
+		errors.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
 	}
 
 	if (outOfBounds.length > 0) {
-		result.error.push(`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: ${outOfBounds.join(", ")}`)
+		errors.push(`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: ${outOfBounds.join(", ")}`)
 	}
 
 	if (intersections.size > 0) {
-		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: ${[...intersections].join(", ")}`)
+		errors.push(`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: ${[...intersections].join(", ")}`)
 	}
 
 	for (const node of childNodes) {
 		if (node.children) {
-			validateFixedFolders(file, result, node.children)
+			errors.push(...validateFixedFolders(file, node.children))
 		}
 	}
+	return errors
 }
 
 function getFoundFolderMessage(node: CodeMapNode) {

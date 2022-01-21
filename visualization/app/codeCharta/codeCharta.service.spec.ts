@@ -8,7 +8,7 @@ import { removeFile, resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isPartialState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
+import { CCFileValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 import packageJson from "../../package.json"
 import { clone } from "./util/clone"
 import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
@@ -53,8 +53,7 @@ describe("codeChartaService", () => {
 
 	function withMockedDialogService() {
 		dialogService = codeChartaService["dialogService"] = jest.fn().mockReturnValue({
-			showValidationErrorDialog: jest.fn(),
-			showValidationWarningDialog: jest.fn()
+			showValidationDialog: jest.fn()
 		})()
 	}
 
@@ -151,8 +150,7 @@ describe("codeChartaService", () => {
 
 			expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
 			expect(isPartialState(storeService.getState().files)).toBeTruthy()
-			expect(dialogService.showValidationWarningDialog).not.toHaveBeenCalled()
-			expect(dialogService.showValidationErrorDialog).not.toHaveBeenCalled()
+			expect(dialogService.showValidationDialog).not.toHaveBeenCalled()
 
 			expect(CodeChartaService.ROOT_NAME).toEqual(expected.map.name)
 			expect(CodeChartaService.ROOT_PATH).toEqual(`/${expected.map.name}`)
@@ -287,41 +285,50 @@ describe("codeChartaService", () => {
 		})
 
 		it("should show error on invalid file", async () => {
-			const expectedError: CCValidationResult = {
-				error: [ERROR_MESSAGES.fileIsInvalid],
-				warning: []
-			}
+			const expectedError: CCFileValidationResult[] = [
+				{
+					fileName,
+					errors: [ERROR_MESSAGES.fileIsInvalid],
+					warnings: []
+				}
+			]
 
 			await codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])
 
 			expect(storeService.getState().files).toHaveLength(0)
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+			expect(dialogService.showValidationDialog).toHaveBeenCalledWith(expectedError)
 		})
 
 		it("should show error on a random string", async () => {
-			const expectedError: CCValidationResult = {
-				error: [ERROR_MESSAGES.apiVersionIsInvalid],
-				warning: []
-			}
+			const expectedError: CCFileValidationResult[] = [
+				{
+					fileName,
+					errors: [ERROR_MESSAGES.apiVersionIsInvalid],
+					warnings: []
+				}
+			]
 
 			await codeChartaService.loadFiles([{ fileName, fileSize: 42, content: "string" as unknown as ExportCCFile }])
 
 			expect(storeService.getState().files).toHaveLength(0)
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+			expect(dialogService.showValidationDialog).toHaveBeenCalledWith(expectedError)
 		})
 
 		it("should show error if a file is missing a required property", async () => {
-			const expectedError: CCValidationResult = {
-				error: ["Required error:  should have required property 'projectName'"],
-				warning: []
-			}
+			const expectedError: CCFileValidationResult[] = [
+				{
+					fileName,
+					errors: ["Required error:  should have required property 'projectName'"],
+					warnings: []
+				}
+			]
 
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 			await codeChartaService.loadFiles([{ fileName, fileSize: 42, content: invalidFileContent }])
 
 			expect(storeService.getState().files).toHaveLength(0)
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+			expect(dialogService.showValidationDialog).toHaveBeenCalledWith(expectedError)
 		})
 
 		it("should convert old blacklist type", async () => {
@@ -339,46 +346,30 @@ describe("codeChartaService", () => {
 			expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
 		})
 
-		it("should break the loop after the first invalid file was validated", async () => {
-			const expectedError: CCValidationResult = {
-				error: ["Required error:  should have required property 'projectName'"],
-				warning: []
-			}
-
-			const invalidFileContent = validFileContent
-			delete invalidFileContent.projectName
-
-			await codeChartaService.loadFiles([
-				{ fileName, content: invalidFileContent, fileSize: 42 },
-				{ fileName, content: invalidFileContent, fileSize: 42 }
-			])
-
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
-		})
-
 		it("should not show a validation error if filenames are duplicated when their path is different", async () => {
 			validFileContent.nodes[0].children[0].name = "duplicate"
 			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
 
 			await codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
+			expect(dialogService.showValidationDialog).toHaveBeenCalledTimes(0)
 			expect(storeService.getState().files).toHaveLength(1)
 		})
 
 		it("should show a validation error if two files in a folder have the same name", async () => {
 			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
 			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
-			const expectedError: CCValidationResult = {
-				error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/Parent Leaf/duplicate`],
-				warning: []
-			}
+			const expectedError: CCFileValidationResult[] = [
+				{
+					fileName,
+					errors: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/Parent Leaf/duplicate`],
+					warnings: []
+				}
+			]
 
 			await codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+			expect(dialogService.showValidationDialog).toHaveBeenCalledWith(expectedError)
 		})
 
 		it("should not show a validation error if two files in a folder have the same name but different type", async () => {
@@ -389,7 +380,7 @@ describe("codeChartaService", () => {
 
 			await codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
+			expect(dialogService.showValidationDialog).toHaveBeenCalledTimes(0)
 			expect(storeService.getState().files).toHaveLength(1)
 		})
 
