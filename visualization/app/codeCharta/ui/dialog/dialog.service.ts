@@ -41,23 +41,25 @@ export class DialogService {
 	async showValidationDialog(fileValidationResults: CCFileValidationResult[]) {
 		const htmlMessages = []
 
-		if (fileValidationResults.flatMap(validation => validation.errors).length > 0) {
+		const filesWithErrors = fileValidationResults.filter(validationResult => {
+			return validationResult.errors.length > 0
+		})
+		if (filesWithErrors.length > 0) {
 			htmlMessages.push("<h2>Errors</h2>")
-			for (const fileValidationResult of fileValidationResults) {
-				if (fileValidationResult.errors.length > 0) {
-					const fileErrorMessage = this.buildFileErrorMessage(fileValidationResult)
-					htmlMessages.push(fileErrorMessage)
-				}
+			for (const fileWithErrors of filesWithErrors) {
+				const fileErrorMessage = this.buildFileErrorMessage(fileWithErrors)
+				htmlMessages.push(fileErrorMessage)
 			}
 		}
 
-		if (fileValidationResults.flatMap(validation => validation.warnings).length > 0) {
+		const filesWithWarnings = fileValidationResults.filter(validationResult => {
+			return validationResult.warnings.length > 0
+		})
+		if (filesWithWarnings.length > 0) {
 			htmlMessages.push("<h2>Warnings</h2>")
-			for (const fileValidationResult of fileValidationResults) {
-				if (fileValidationResult.warnings.length > 0) {
-					const fileWarningMessage = this.buildFileWarningMessage(fileValidationResult)
-					htmlMessages.push(fileWarningMessage)
-				}
+			for (const fileWithWarnings of filesWithWarnings) {
+				const fileWarningMessage = this.buildFileWarningMessage(fileWithWarnings)
+				htmlMessages.push(fileWarningMessage)
 			}
 		}
 		await this.showErrorDialog(htmlMessages.join(""), "Something is wrong with the uploaded file(s)")
