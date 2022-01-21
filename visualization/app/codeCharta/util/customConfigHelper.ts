@@ -41,10 +41,6 @@ export class CustomConfigHelper {
 		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
 
 		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
-			if (customConfig.mapSelectionMode === "SINGLE") {
-				customConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
-			}
-
 			const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
 
 			if (!customConfigItemGroups.has(groupKey)) {
@@ -177,6 +173,10 @@ export class CustomConfigHelper {
 		const importedCustomConfigsFile: CustomConfigsDownloadFile = JSON.parse(content, stateObjectReviver)
 
 		for (const exportedConfig of importedCustomConfigsFile.customConfigs.values()) {
+			if (exportedConfig.mapSelectionMode === "SINGLE") {
+				exportedConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
+			}
+
 			const alreadyExistingConfig = CustomConfigHelper.getCustomConfigSettings(exportedConfig.id)
 
 			// Check for a duplicate Config by matching checksums
