@@ -134,12 +134,14 @@ function validateChildrenAreUniqueRecursive(node: CodeMapNode, errors: string[],
 	}
 }
 
-function validateFixedFolders(file: ExportCCFile, childNodes: CodeMapNode[] = file.nodes[0].children) {
-	const errors: string[] = []
-	const notFixed: string[] = []
-	const outOfBounds: string[] = []
-	const intersections: Set<string> = new Set()
-
+function checkChildNodes(
+	childNodes: CodeMapNode[],
+	notFixed: string[],
+	file: ExportCCFile,
+	errors: string[],
+	outOfBounds: string[],
+	intersections: Set<string>
+) {
 	for (const node of childNodes) {
 		if (node.fixedPosition === undefined) {
 			notFixed.push(`${node.name}`)
@@ -147,7 +149,7 @@ function validateFixedFolders(file: ExportCCFile, childNodes: CodeMapNode[] = fi
 			const apiVersion = getAsApiVersion(file.apiVersion)
 			if (apiVersion.major < 1 || (apiVersion.major === 1 && apiVersion.minor < 2)) {
 				errors.push(`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: ${file.apiVersion}`)
-				return errors
+				return
 			}
 
 			if (isOutOfBounds(node)) {
@@ -166,6 +168,15 @@ function validateFixedFolders(file: ExportCCFile, childNodes: CodeMapNode[] = fi
 			}
 		}
 	}
+}
+
+function validateFixedFolders(file: ExportCCFile, childNodes: CodeMapNode[] = file.nodes[0].children) {
+	const errors: string[] = []
+	const notFixed: string[] = []
+	const outOfBounds: string[] = []
+	const intersections: Set<string> = new Set()
+
+	checkChildNodes(childNodes, notFixed, file, errors, outOfBounds, intersections)
 
 	if (notFixed.length > 0 && notFixed.length !== childNodes.length) {
 		errors.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
