@@ -7,8 +7,7 @@ import {
 } from "./dataMocks"
 import { CodeMapNode, NameDataPair, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
-import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
-import assert from "assert"
+import { checkErrors, checkWarnings, ERROR_MESSAGES } from "./fileValidator"
 import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../resources/fixed-folders/fixed-folders-example"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { clone } from "./clone"
@@ -25,14 +24,9 @@ describe("FileValidator", () => {
 	})
 
 	it("should throw on null", () => {
-		const expectedError: CCValidationResult = {
-			error: [ERROR_MESSAGES.fileIsInvalid],
-			warning: []
-		}
+		const expectedErrors = [ERROR_MESSAGES.fileIsInvalid]
 
-		assert.throws(() => {
-			validate(null)
-		}, expectedError)
+		expect(checkErrors(null)).toEqual(expectedErrors)
 	})
 
 	it("should throw when higher Major API", () => {
@@ -41,15 +35,9 @@ describe("FileValidator", () => {
 			fileSize: 30,
 			content: TEST_FILE_CONTENT_INVALID_MAJOR_API
 		}
+		const expectedErrors = [ERROR_MESSAGES.majorApiVersionIsOutdated]
 
-		const expectedError: CCValidationResult = {
-			error: [ERROR_MESSAGES.majorApiVersionIsOutdated],
-			warning: []
-		}
-
-		assert.throws(() => {
-			validate(nameDataPair)
-		}, expectedError)
+		expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 	})
 
 	it("should throw on warning with higher minor API version", () => {
@@ -58,15 +46,9 @@ describe("FileValidator", () => {
 			fileSize: 30,
 			content: TEST_FILE_CONTENT_INVALID_MINOR_API
 		}
+		const expectedWarnings = [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${nameDataPair.content.apiVersion}`]
 
-		const expectedError: CCValidationResult = {
-			error: [],
-			warning: [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${nameDataPair.content.apiVersion}`]
-		}
-
-		assert.throws(() => {
-			validate(nameDataPair)
-		}, expectedError)
+		expect(checkWarnings(nameDataPair.content)).toEqual(expectedWarnings)
 	})
 
 	it("should throw on file missing API version", () => {
@@ -75,15 +57,9 @@ describe("FileValidator", () => {
 			fileSize: 30,
 			content: TEST_FILE_CONTENT_NO_API
 		}
+		const expectedErrors = [ERROR_MESSAGES.apiVersionIsInvalid]
 
-		const expectedError: CCValidationResult = {
-			error: [ERROR_MESSAGES.apiVersionIsInvalid],
-			warning: []
-		}
-
-		assert.throws(() => {
-			validate(nameDataPair)
-		}, expectedError)
+		expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 	})
 
 	it("should throw on file with wrong API version", () => {
@@ -92,15 +68,9 @@ describe("FileValidator", () => {
 			fileSize: 30,
 			content: TEST_FILE_CONTENT_INVALID_API
 		}
+		const expectedErrors = [ERROR_MESSAGES.apiVersionIsInvalid]
 
-		const expectedError: CCValidationResult = {
-			error: [ERROR_MESSAGES.apiVersionIsInvalid],
-			warning: []
-		}
-
-		assert.throws(() => {
-			validate(nameDataPair)
-		}, expectedError)
+		expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 	})
 
 	it("should not throw on a file with edges", () => {
@@ -117,7 +87,8 @@ describe("FileValidator", () => {
 
 		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
-		validate(nameDataPair)
+		expect(checkErrors(nameDataPair.content)).toEqual([])
+		expect(checkWarnings(nameDataPair.content)).toEqual([])
 	})
 
 	it("should not throw on a file without edges", () => {
@@ -125,7 +96,8 @@ describe("FileValidator", () => {
 
 		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
-		validate(nameDataPair)
+		expect(checkErrors(nameDataPair.content)).toEqual([])
+		expect(checkWarnings(nameDataPair.content)).toEqual([])
 	})
 
 	it("should not throw on a file when numbers are floating point values", () => {
@@ -133,7 +105,8 @@ describe("FileValidator", () => {
 
 		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
 
-		validate(nameDataPair)
+		expect(checkErrors(nameDataPair.content)).toEqual([])
+		expect(checkWarnings(nameDataPair.content)).toEqual([])
 	})
 
 	it("should throw when children are not unique in name+type", () => {
@@ -142,30 +115,17 @@ describe("FileValidator", () => {
 		file.nodes[0].children[1].name = "same"
 		file.nodes[0].children[1].type = NodeType.FILE
 		const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+		const expectedErrors = [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/same`]
 
-		const expectedError: CCValidationResult = {
-			error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/same`],
-			warning: []
-		}
-
-		assert.throws(() => {
-			validate(nameDataPair)
-		}, expectedError)
+		expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 	})
 
 	it("should throw when nodes are empty", () => {
 		file.nodes = []
-
 		const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
+		const expectedErrors = [ERROR_MESSAGES.nodesEmpty]
 
-		const expectedError: CCValidationResult = {
-			error: [ERROR_MESSAGES.nodesEmpty],
-			warning: []
-		}
-
-		assert.throws(() => {
-			validate(nameDataPair)
-		}, expectedError)
+		expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 	})
 
 	it("should throw if nodes is not a node and therefore has no name or id", () => {
@@ -173,20 +133,13 @@ describe("FileValidator", () => {
 			// @ts-expect-error
 			something: "something"
 		}
-
 		const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
+		const expectedErrors = [
+			"Required error: nodes[0] should have required property 'name'",
+			"Required error: nodes[0] should have required property 'type'"
+		]
 
-		const expectedError: CCValidationResult = {
-			error: [
-				"Required error: nodes[0] should have required property 'name'",
-				"Required error: nodes[0] should have required property 'type'"
-			],
-			warning: []
-		}
-
-		assert.throws(() => {
-			validate(nameDataPair)
-		}, expectedError)
+		expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 	})
 
 	describe("fixed sub folders validation", () => {
@@ -195,19 +148,13 @@ describe("FileValidator", () => {
 			const folder1: CodeMapNode = file.nodes[0].children[0].children[0]
 			const folder2: CodeMapNode = file.nodes[0].children[0].children[1]
 			const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
+			const expectedErrors = [
+				`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1_1 ${JSON.stringify(
+					folder1.fixedPosition
+				)} and folder_1_2 ${JSON.stringify(folder2.fixedPosition)}`
+			]
 
-			const expectedError: CCValidationResult = {
-				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1_1 ${JSON.stringify(
-						folder1.fixedPosition
-					)} and folder_1_2 ${JSON.stringify(folder2.fixedPosition)}`
-				],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 	})
 
@@ -223,59 +170,36 @@ describe("FileValidator", () => {
 		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
 			folder1.fixedPosition = undefined
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
-			const expectedError: CCValidationResult = {
-				error: [`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: folder_1`],
-				warning: []
-			}
+			const expectedErrors = [`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: folder_1`]
 
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if at least one fixed folder has a padding that is out of bounds", () => {
 			folder1.fixedPosition.left = -5
 			folder1.fixedPosition.width = 7
-			const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
+			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+			const expectedErrors = [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`]
 
-			const expectedError: CCValidationResult = {
-				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if at least one fixed folder has a width or height that is out of bounds", () => {
 			folder1.fixedPosition.left = 10
 			folder1.fixedPosition.width = -50
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+			const expectedErrors = [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`]
 
-			const expectedError: CCValidationResult = {
-				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if at least one fixed folder exceeds the maximum coordinate of 100", () => {
 			folder1.fixedPosition.left = 99
 			folder1.fixedPosition.width = 2
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+			const expectedErrors = [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`]
 
-			const expectedError: CCValidationResult = {
-				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if two folders horizontally overlap", () => {
@@ -292,19 +216,13 @@ describe("FileValidator", () => {
 				height: 10
 			}
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+			const expectedErrors = [
+				`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
+					folder1.fixedPosition
+				)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+			]
 
-			const expectedError: CCValidationResult = {
-				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
-						folder1.fixedPosition
-					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
-				],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if two folders vertically overlap", () => {
@@ -321,19 +239,12 @@ describe("FileValidator", () => {
 				height: 10
 			}
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
-
-			const expectedError: CCValidationResult = {
-				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
-						folder1.fixedPosition
-					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
-				],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			const expectedErrors = [
+				`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
+					folder1.fixedPosition
+				)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+			]
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if a folder is placed inside another", () => {
@@ -350,19 +261,13 @@ describe("FileValidator", () => {
 				height: 1
 			}
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+			const expectedErrors = [
+				`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_2 ${JSON.stringify(
+					folder2.fixedPosition
+				)} and folder_1 ${JSON.stringify(folder1.fixedPosition)}`
+			]
 
-			const expectedError: CCValidationResult = {
-				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_2 ${JSON.stringify(
-						folder2.fixedPosition
-					)} and folder_1 ${JSON.stringify(folder1.fixedPosition)}`
-				],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if a folder has the same boundaries as another", () => {
@@ -374,47 +279,29 @@ describe("FileValidator", () => {
 			}
 			folder2.fixedPosition = folder1.fixedPosition
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+			const expectedErrors = [
+				`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
+					folder1.fixedPosition
+				)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+			]
 
-			const expectedError: CCValidationResult = {
-				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
-						folder1.fixedPosition
-					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
-				],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if the major api version is smaller and fixed folders were defined", () => {
 			file.apiVersion = APIVersions.ZERO_POINT_ONE
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+			const expectedErrors = [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 0.1`]
 
-			const expectedError: CCValidationResult = {
-				error: [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 0.1`],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 
 		it("should throw an error, if the minor api version is smaller and fixed folders were defined", () => {
 			file.apiVersion = APIVersions.ONE_POINT_ONE
 			const nameDataPair: NameDataPair = { fileName: "fileName", fileSize: 30, content: file }
+			const expectedErrors = [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 1.1`]
 
-			const expectedError: CCValidationResult = {
-				error: [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 1.1`],
-				warning: []
-			}
-
-			assert.throws(() => {
-				validate(nameDataPair)
-			}, expectedError)
+			expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
 		})
 	})
 })

@@ -5,7 +5,7 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
+import { getCodeMapNodeFromPath, isLeaf } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { DialogService } from "../dialog/dialog.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
@@ -54,10 +54,10 @@ export class NodeContextMenuController {
 			if (rightClickedNodeData === null) {
 				this.hideNodeContextMenu()
 			} else {
-				const rightClickedNode = state.lookUp.idToBuilding.get(rightClickedNodeData.nodeId)
-				const nodeType = rightClickedNode.node.isLeaf ? NodeType.FILE : NodeType.FOLDER
+				const rightClickedNode = state.lookUp.idToNode.get(rightClickedNodeData.nodeId)
+				const nodeType = isLeaf(rightClickedNode) ? NodeType.FILE : NodeType.FOLDER
 				this.showNodeContextMenu(
-					rightClickedNode.node.path,
+					rightClickedNode.path,
 					nodeType,
 					rightClickedNodeData.xPositionOfRightClickEvent,
 					rightClickedNodeData.yPositionOfRightClickEvent
