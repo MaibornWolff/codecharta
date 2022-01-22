@@ -1,5 +1,6 @@
 import { clone } from "./clone"
 import isEqual from "lodash.isequal"
+import { Action } from "redux"
 
 export function removeItemFromArray<T>(array: T[], searchItem: T) {
 	return array.filter(entry => !isEqual(entry, searchItem))
@@ -18,6 +19,10 @@ export function addItemToArray<T>(array: T[], item: T) {
 
 export function isActionOfType(actionType: string, actions) {
 	return actions[actionType] !== undefined
+}
+
+export function isAction<T extends Action>(action: Action, actions: Record<string, string>): action is T {
+	return actions[action.type] !== undefined
 }
 
 function arrayContainsItem<T>(array: T[], item: T) {

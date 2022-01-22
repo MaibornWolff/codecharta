@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix Image not shown in what is new dialog [#2610](https://github.com/MaibornWolff/codecharta/pull/2610)
 
+### Chore 👨‍💻 👩‍💻
+
+    - Only unfocus focused node when map starts to load and not as well when map has finished loading. This shouldn't change any behavior for the user.
+
 ## [1.87.1] - 2022-01-17
 
 ### Changed
