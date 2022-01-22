@@ -5,6 +5,9 @@ import { Subject } from "rxjs"
 export type Actions = Subject<Action>
 export const ActionsToken = new InjectionToken<Actions>("Actions")
 
+/** Simple placeholder for NgRx's EffectsModule. The goal is to provide the
+ * same api as NgRx, so that we can switch to NgRx in the long run.
+ */
 @NgModule({})
 export class EffectsModule {
 	static actions$ = new Subject<Action>()
