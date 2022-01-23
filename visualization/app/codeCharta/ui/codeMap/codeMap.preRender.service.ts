@@ -74,7 +74,7 @@ export class CodeMapPreRenderService
 		}, this.DEBOUNCE_TIME)
 
 		this.debounceTracking = debounce(() => {
-			trackMapMetaData(this.storeService.getState())
+			trackMapMetaData(this.storeService.getState().files)
 		}, 1000)
 	}
 
@@ -125,16 +125,16 @@ export class CodeMapPreRenderService
 				isActionOfType(actionType, FocusedNodePathActions))
 		) {
 			// Track event usage data only on certain events
-			trackEventUsageData(actionType, this.storeService.getState(), payload)
+			trackEventUsageData(actionType, this.storeService.getState().files, payload)
 		}
 	}
 
 	onColorRangeFromUpdated(colorMetric: string, fromValue: number) {
-		trackEventUsageData(RangeSliderController.COLOR_RANGE_FROM_UPDATED, this.storeService.getState(), { colorMetric, fromValue })
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_FROM_UPDATED, this.storeService.getState().files, { colorMetric, fromValue })
 	}
 
 	onColorRangeToUpdated(colorMetric: string, toValue: number) {
-		trackEventUsageData(RangeSliderController.COLOR_RANGE_TO_UPDATED, this.storeService.getState(), { colorMetric, toValue })
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_TO_UPDATED, this.storeService.getState().files, { colorMetric, toValue })
 	}
 
 	onLayoutAlgorithmChanged() {
