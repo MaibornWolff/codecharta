@@ -124,6 +124,7 @@ export class CodeMapPreRenderService
 				isActionOfType(actionType, BlacklistActions) ||
 				isActionOfType(actionType, FocusedNodePathActions))
 		) {
+			console.log(actionType, "onStoreChangedExtended:")
 			// Track event usage data only on certain events
 			trackEventUsageData(actionType, this.storeService.getState().files, payload)
 		}

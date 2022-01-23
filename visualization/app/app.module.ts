@@ -24,12 +24,13 @@ import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFold
 import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
+import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
-		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect]),
+		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, TrackEventUsageDataEffect]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,

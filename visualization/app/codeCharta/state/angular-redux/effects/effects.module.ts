@@ -24,7 +24,7 @@ export class EffectsModule {
 				effects,
 				{
 					provide: APP_INITIALIZER,
-					deps: [effects],
+					deps: effects,
 					useFactory: () => () => {
 						// initialized effects"
 					},
