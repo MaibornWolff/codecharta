@@ -11,6 +11,8 @@ import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { setCamera } from "./store/appSettings/camera/camera.actions"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { toggleSortingOrderAscending } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { EffectsModule } from "./angular-redux/effects/effects.module"
+import { Subject } from "rxjs"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -123,6 +125,25 @@ describe("StoreService", () => {
 			storeService.dispatch(toggleSortingOrderAscending())
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+		})
+
+		describe("connection to action subject", () => {
+			beforeEach(() => {
+				EffectsModule.actions$ = new Subject()
+			})
+
+			afterEach(() => {
+				EffectsModule.actions$.complete()
+			})
+
+			it("should trigger a new action value on dispatch", () => {
+				const subscription = jest.fn()
+				EffectsModule.actions$.subscribe(subscription)
+
+				storeService.dispatch({ type: "something" })
+
+				expect(subscription).toHaveBeenCalledWith({ type: "something" })
+			})
 		})
 	})
 })

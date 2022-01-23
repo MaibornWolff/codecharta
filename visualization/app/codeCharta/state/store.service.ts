@@ -15,6 +15,7 @@ import { Store } from "./store/store"
 import { ScreenshotToClipboardEnabledActions } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { HoveredBuildingPathActions } from "./store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { FocusedNodePathActions } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { EffectsModule } from "./angular-redux/effects/effects.module"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -75,6 +76,8 @@ export class StoreService {
 				this.notifyExtended(atomicAction.type, atomicAction.payload)
 			}
 		}
+
+		EffectsModule.actions$.next(action)
 	}
 
 	getState(): State {
