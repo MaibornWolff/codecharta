@@ -10,6 +10,7 @@
 		</md-button>
 
 		<cc-focus-buttons [code-map-node]="$ctrl._viewModel.codeMapNode"></cc-focus-buttons>
+		<cc-flatten-buttons></cc-flatten-buttons>
 		<md-button
 			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
 			ng-click="$ctrl.flattenNode()"

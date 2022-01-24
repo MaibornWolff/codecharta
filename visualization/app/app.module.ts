@@ -26,6 +26,8 @@ import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePa
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
 import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
+import { FlattenButtonsModule } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.module"
+import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.component"
 
 @NgModule({
 	imports: [
@@ -40,7 +42,8 @@ import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderR
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		FocusButtonsModule,
-		MarkFolderRowModule
+		MarkFolderRowModule,
+		FlattenButtonsModule
 	],
 	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent],
 	entryComponents: [
@@ -56,7 +59,8 @@ import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderR
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		FocusButtonsComponent,
-		MarkFolderRowComponent
+		MarkFolderRowComponent,
+		FlattenButtonsComponent
 	]
 })
 export class AppModule {
