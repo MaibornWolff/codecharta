@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Rename custom configs to custom view [#2625](https://github.com/MaibornWolff/codecharta/pull/2625)
 -   Improve file validation handling and provide more descriptive import messages [#2604](https://github.com/MaibornWolff/codecharta/pull/2604)
     ![xs](https://user-images.githubusercontent.com/48621967/150532207-f3b482ed-3a14-43c0-b1a3-80ac4c25d5e0.png)
 
