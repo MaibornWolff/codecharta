@@ -1,0 +1,18 @@
+<mat-select
+	class="standard-select"
+	[(ngModel)]="selectedFileNames"
+	(selectionChange)="handleSelectedFilesChanged(selectedFileNames)"
+	name="recentFiles"
+	[placeholder]="selectedFileNames"
+	multiple
+	(closed)="handleOnSelectionClosed()"
+>
+	<div class="actions">
+		<button mat-button (click)="handleSelectAllPartialFiles()">All</button>
+		<button mat-button (click)="handleSelectZeroPartialFiles()">None</button>
+		<button mat-button (click)="handleInvertSelectedPartialFiles()">Invert</button>
+	</div>
+	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
+		{{ file.file.fileMeta.fileName }}
+	</mat-option>
+</mat-select>

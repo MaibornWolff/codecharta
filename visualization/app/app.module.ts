@@ -4,7 +4,8 @@ import { Inject, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
-
+import { FormsModule } from "@angular/forms"
+import { MaterialModule } from "./material/material.module"
 import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
 import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
@@ -20,6 +21,9 @@ import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapC
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
 import { FocusButtonsModule } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.module"
 import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
+import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
+import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
+import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
 import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
 
@@ -30,13 +34,15 @@ import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderR
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
+		MaterialModule,
+		FormsModule,
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		FocusButtonsModule,
 		MarkFolderRowModule
 	],
-	declarations: [],
+	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
@@ -45,6 +51,10 @@ import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderR
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
+		FocusButtonsComponent,
+		FilePanelFileSelectorComponent,
+		FilePanelStateButtonsComponent,
+		FilePanelDeltaSelectorComponent,
 		FocusButtonsComponent,
 		MarkFolderRowComponent
 	]
