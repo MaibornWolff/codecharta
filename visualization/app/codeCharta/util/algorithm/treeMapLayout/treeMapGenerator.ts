@@ -12,6 +12,7 @@ const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
+	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric).maxValue * mapSizeResolutionScaling
 	const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 
 	if (hasFixedFolders(map)) {
@@ -42,14 +43,14 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 				0,
 				heightScale,
 				maxHeight,
+				maxWidth,
 				isDeltaState,
 				mapSizeResolutionScaling
 			)
 		]
 	}
 
-	const squarifiedTreeMap = getSquarifiedTreeMap(map, state, mapSizeResolutionScaling)
-
+	const squarifiedTreeMap = getSquarifiedTreeMap(map, state, mapSizeResolutionScaling, maxWidth)
 	const nodes: Node[] = []
 	for (const squarifiedNode of squarifiedTreeMap.treeMap) {
 		nodes.push(TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState))
@@ -66,6 +67,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 	offsetY0: number,
 	heightScale: number,
 	maxHeight: number,
+	maxWidth: number,
 	isDeltaState: boolean,
 	mapSizeResolutionScaling: number
 ) {
@@ -73,7 +75,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 
 	for (const fixedFolder of hierarchyNode.children) {
 		const fixedPosition = fixedFolder.data.fixedPosition
-		const squarified = getSquarifiedTreeMap(fixedFolder.data, state, mapSizeResolutionScaling)
+		const squarified = getSquarifiedTreeMap(fixedFolder.data, state, mapSizeResolutionScaling, maxWidth)
 
 		for (const squarifiedNode of squarified.treeMap.descendants()) {
 			// squarified.width/height is a sum of the fixedPosition.width/height and applied margins
@@ -119,6 +121,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 						squarifiedNode.y0,
 						heightScale,
 						maxHeight,
+						maxWidth,
 						isDeltaState,
 						mapSizeResolutionScaling
 					)
@@ -150,7 +153,7 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 	root.length *= scaleLength
 }
 
-function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionScaling: number): SquarifiedTreeMap {
+function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionScaling: number, maxWidth: number): SquarifiedTreeMap {
 	const hierarchyNode = hierarchy(map)
 	const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
 	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
@@ -216,7 +219,11 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 			return padding
 		})
 
-	return { treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state) * mapSizeResolutionScaling)), height, width }
+	return {
+		treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state, maxWidth) * mapSizeResolutionScaling)),
+		height,
+		width
+	}
 }
 
 function getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {
@@ -241,17 +248,19 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, dynamicSettings: Dynami
 }
 
 // Only exported for testing.
-export function calculateAreaValue(node: CodeMapNode, { dynamicSettings }: State) {
+export function calculateAreaValue(node: CodeMapNode, state: State, maxWidth: number) {
 	if (node.isExcluded) {
 		return 0
 	}
 
-	if (node.deltas && isOnlyVisibleInComparisonMap(node, dynamicSettings)) {
-		return Math.abs(node.deltas[dynamicSettings.areaMetric])
+	if (node.deltas && isOnlyVisibleInComparisonMap(node, state.dynamicSettings)) {
+		return Math.abs(node.deltas[state.dynamicSettings.areaMetric])
 	}
 
-	if (isLeaf(node) && node.attributes?.[dynamicSettings.areaMetric]) {
-		return node.attributes[dynamicSettings.areaMetric]
+	if (isLeaf(node) && node.attributes?.[state.dynamicSettings.areaMetric]) {
+		return state.appSettings.invertArea
+			? maxWidth - node.attributes[state.dynamicSettings.areaMetric]
+			: node.attributes[state.dynamicSettings.areaMetric]
 	}
 	return 0
 }
