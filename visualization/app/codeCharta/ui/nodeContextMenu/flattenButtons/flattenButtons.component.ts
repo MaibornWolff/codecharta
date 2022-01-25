@@ -3,7 +3,6 @@ import { BlacklistType, CodeMapNode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
 import { addBlacklistItem, removeBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
 
-/* todo styling */
 @Component({
 	selector: "cc-flatten-buttons",
 	template: require("./flattenButtons.component.html")
