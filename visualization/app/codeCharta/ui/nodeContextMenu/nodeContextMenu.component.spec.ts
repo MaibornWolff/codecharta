@@ -14,7 +14,6 @@ import {
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { BlacklistType, NodeType } from "../../codeCharta.model"
-import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -226,35 +225,6 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.isNodeConstantlyHighlighted()
 
 			expect(result).toEqual(true)
-		})
-	})
-
-	describe("flattenNode", () => {
-		it("should add flattened blacklistItem", () => {
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
-			const expected = {
-				nodeType: NodeType.FOLDER,
-				path: "/root/Parent Leaf",
-				type: BlacklistType.flatten
-			}
-			nodeContextMenuController.flattenNode()
-
-			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
-		})
-	})
-
-	describe("showNode", () => {
-		it("should add flattened blacklistItem", () => {
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
-			const expected = {
-				path: "/root/Parent Leaf",
-				type: BlacklistType.flatten
-			}
-			storeService.dispatch(addBlacklistItem(expected))
-
-			nodeContextMenuController.showFlattenedNode()
-
-			expect(storeService.getState().fileSettings.blacklist).not.toContain(expected)
 		})
 	})
 

@@ -3,7 +3,7 @@ import angular, { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { getCodeMapNodeFromPath, isLeaf } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -109,16 +109,6 @@ export class NodeContextMenuController {
 		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
 		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
 		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
-	}
-
-	showFlattenedNode() {
-		const codeMapNode = this._viewModel.codeMapNode
-		const blacklistItem: BlacklistItem = {
-			path: codeMapNode.path,
-			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type
-		}
-		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
 	}
 
 	excludeNode() {
