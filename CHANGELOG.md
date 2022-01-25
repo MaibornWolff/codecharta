@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.88.0] - 2022-01-24
+
 ### Changed
 
+-   Rename custom configs to custom view [#2625](https://github.com/MaibornWolff/codecharta/pull/2625)
+-   Combine single and multiple mode into standard mode [#2578](https://github.com/MaibornWolff/codecharta/pull/2578)
+    ![xs](https://user-images.githubusercontent.com/72517530/150765617-2d66eb78-2c26-45c5-b63b-f84994ed88ab.png)
 -   Improve file validation handling and provide more descriptive import messages [#2604](https://github.com/MaibornWolff/codecharta/pull/2604)
     ![xs](https://user-images.githubusercontent.com/48621967/150532207-f3b482ed-3a14-43c0-b1a3-80ac4c25d5e0.png)
 

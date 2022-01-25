@@ -70,7 +70,6 @@ angular
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.fileChooser",
 		"app.codeCharta.ui.fileExtensionBar",
-		"app.codeCharta.ui.filePanel",
 		"app.codeCharta.ui.heightSettingsPanel",
 		"app.codeCharta.ui.loadingGif",
 		"app.codeCharta.ui.metricChooser",
@@ -84,7 +83,8 @@ angular
 		"app.codeCharta.ui.viewCube",
 		"app.codeCharta.ui.layoutSelection",
 		"app.codeCharta.ui.sharpnessModeSelector",
-		"app.codeCharta.ui.maxTreeMapFiles"
+		"app.codeCharta.ui.maxTreeMapFiles",
+		"app.codeCharta.ui.filePanel"
 	])
 	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))
 	.directive("ccSortingOption", downgradeComponent({ component: SortingOptionComponent }))
