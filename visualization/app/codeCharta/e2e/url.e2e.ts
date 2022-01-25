@@ -63,7 +63,7 @@ describe("codecharta", () => {
 	it("should throw errors when file parameters in url are invalid and load sample data instead", async () => {
 		await goto(`${CC_URL}?file=invalid234`)
 		await handleErrorDialog()
-		await checkSelectedFileName("sample1.cc.json")
+		await checkSelectedFileName("sample1.cc.json, sample2.cc.json")
 		await checkAllFileNames(["sample1.cc.json", "sample2.cc.json"])
 	})
 })

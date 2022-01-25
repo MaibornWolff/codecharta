@@ -35,11 +35,11 @@ tool-bar-component {
 		display: inline-flex;
 		align-items: center;
 		width: 400px;
+		justify-content: space-between;
 	}
 
 	span {
 		font-size: 10pt;
-		margin-right: 8px;
 	}
 
 	loading-gif-map-component {
