@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
-    - Only unfocus focused node when map starts to load and not as well when map has finished loading. This shouldn't change any behavior for the user.
+    - Unfocus focused node only when map starts to load and not also when map has finished loading. This shouldn't change any behavior for the user [#2614](https://github.com/MaibornWolff/codecharta/pull/2614)
 
 ## [1.87.1] - 2022-01-17
 
