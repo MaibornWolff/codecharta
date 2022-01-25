@@ -111,16 +111,6 @@ export class NodeContextMenuController {
 		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
 
-	flattenNode() {
-		const codeMapNode = this._viewModel.codeMapNode
-		const blacklistItem: BlacklistItem = {
-			path: codeMapNode.path,
-			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type
-		}
-		this.storeService.dispatch(addBlacklistItem(blacklistItem))
-	}
-
 	showFlattenedNode() {
 		const codeMapNode = this._viewModel.codeMapNode
 		const blacklistItem: BlacklistItem = {
