@@ -28,7 +28,7 @@ export class Store {
 	}
 
 	dispatch(action: CCAction) {
-		PlainStore.store.dispatch(action)
+		PlainStore.dispatch(action)
 	}
 }
 

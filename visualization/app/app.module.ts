@@ -26,6 +26,8 @@ import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePa
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
 import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
+import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
+import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
 import { FlattenButtonsModule } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.module"
 import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.component"
 
@@ -33,6 +35,7 @@ import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flatten
 	imports: [
 		BrowserModule,
 		UpgradeModule,
+		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,

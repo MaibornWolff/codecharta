@@ -1,4 +1,4 @@
-import { createStore } from "redux"
+import { Action, createStore } from "redux"
 
 import rootReducer from "./state.reducer"
 
@@ -19,5 +19,9 @@ export class Store {
 	static get store() {
 		if (!Store._store) Store.initialize()
 		return Store._store
+	}
+
+	static dispatch(action: Action) {
+		Store.store.dispatch(action)
 	}
 }
