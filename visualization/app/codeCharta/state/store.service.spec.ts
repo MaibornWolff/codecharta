@@ -137,5 +137,24 @@ describe("StoreService", () => {
 				expect(subscription).toHaveBeenCalledWith({ type: "something" })
 			})
 		})
+
+		describe("connection to action subject", () => {
+			beforeEach(() => {
+				EffectsModule.actions$ = new Subject()
+			})
+
+			afterEach(() => {
+				EffectsModule.actions$.complete()
+			})
+
+			it("should trigger a new action value on dispatch", () => {
+				const subscription = jest.fn()
+				EffectsModule.actions$.subscribe(subscription)
+
+				storeService.dispatch({ type: "something" })
+
+				expect(subscription).toHaveBeenCalledWith({ type: "something" })
+			})
+		})
 	})
 })
