@@ -40,10 +40,6 @@ export class NodeMetricDataService implements FilesSelectionSubscriber, Blacklis
 		return this.nodeMetricData.map(x => x.name)
 	}
 
-	isMetricAvailable(metricName: string) {
-		return this.nodeMetricData.some(x => x.name === metricName)
-	}
-
 	getMaxValueOfMetric(metricName: string) {
 		const metric = this.nodeMetricData.find(x => x.name === metricName)
 		return metric?.maxValue
