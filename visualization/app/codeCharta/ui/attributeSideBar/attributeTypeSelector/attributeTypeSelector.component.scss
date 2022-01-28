@@ -1,4 +1,19 @@
 cc-attribute-type-selector {
+	.mat-button-toggle-group {
+		height: 18px;
+		width: 50px;
+		align-items: center;
+		justify-content: space-evenly;
+	}
+	.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+		padding: 0 3px 0 3px;
+	}
+
+	.mat-button-toggle-standalone.mat-button-toggle-appearance-standard,
+	.mat-button-toggle-group-appearance-standard {
+		border: none;
+	}
+
 	display: inline-block;
 	background-color: white;
 	border-radius: 12px;

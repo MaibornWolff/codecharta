@@ -1,4 +1,4 @@
-<div class="small-action-button transparent">
+<!--<div class="small-action-button transparent">
 	<button mat-button [matMenuTriggerFor]="menu" title="Select attribute type" class="menu-button">
 		<span class="symbol">{{ metricName | aggregationSymbolPipe: (getAttributeTypeOfNodesByMetric$ | async) }}</span>
 	</button>
@@ -9,4 +9,9 @@
 	<mat-divider></mat-divider>
 	<button mat-menu-item (click)="setToAbsolute()">Σ Sum</button>
 	<button mat-menu-item (click)="setToRelative()">x͂ Median</button>
-</mat-menu>
+</mat-menu>-->
+
+<mat-button-toggle-group value="sum">
+	<mat-button-toggle title="Sum" (click)="setToAbsolute()" value="sum">Σ</mat-button-toggle>
+	<mat-button-toggle title="Median" (click)="setToRelative()" value="median">x͂</mat-button-toggle>
+</mat-button-toggle-group>
