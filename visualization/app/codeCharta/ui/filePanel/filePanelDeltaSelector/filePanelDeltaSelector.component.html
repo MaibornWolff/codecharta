@@ -1,0 +1,23 @@
+<mat-select
+	class="delta-select"
+	placeholder="select reference file"
+	[(ngModel)]="selectedDeltaReferenceFile"
+	(selectionChange)="handleDeltaReferenceFileChange(selectedDeltaReferenceFile)"
+>
+	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
+		{{ file.file.fileMeta.fileName }}
+	</mat-option>
+</mat-select>
+
+<div class="pictogram" [style.background]="'linear-gradient(' + pictogramUpperColor + ' 50%, ' + pictogramLowerColor + ' 50%)'"></div>
+
+<mat-select
+	class="delta-select"
+	placeholder="select comparison file"
+	[(ngModel)]="selectedDeltaComparisonFile"
+	(selectionChange)="handleDeltaComparisonFileChange(selectedDeltaComparisonFile)"
+>
+	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
+		{{ file.file.fileMeta.fileName }}
+	</mat-option>
+</mat-select>
