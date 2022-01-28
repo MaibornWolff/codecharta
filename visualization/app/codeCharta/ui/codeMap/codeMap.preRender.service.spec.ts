@@ -15,7 +15,6 @@ import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/
 import { addFile, resetFiles, setDelta, setMultiple, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3-hierarchy"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
 import { getCCFiles } from "../../model/files/files.helper"
 import { clone } from "../../util/clone"
@@ -29,7 +28,6 @@ describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let nodeMetricDataService: NodeMetricDataService
 	let codeMapRenderService: CodeMapRenderService
 
 	let fileMeta: FileMeta
@@ -40,7 +38,6 @@ describe("codeMapPreRenderService", () => {
 		rebuildService()
 		withMockedEventMethods($rootScope)
 		withMockedCodeMapRenderService()
-		withMockedMetricService()
 		withUnifiedMapAndFileMeta()
 		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 	})
@@ -50,7 +47,6 @@ describe("codeMapPreRenderService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 
 		fileMeta = clone(FILE_STATES[0].file.fileMeta)
@@ -73,16 +69,12 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, storeService, nodeMetricDataService, codeMapRenderService)
+		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, storeService, codeMapRenderService)
 	}
 
 	function withMockedCodeMapRenderService() {
 		codeMapRenderService.render = jest.fn()
 		codeMapRenderService.scaleMap = jest.fn()
-	}
-
-	function withMockedMetricService() {
-		nodeMetricDataService.isMetricAvailable = jest.fn().mockReturnValue(true)
 	}
 
 	function withUnifiedMapAndFileMeta() {
