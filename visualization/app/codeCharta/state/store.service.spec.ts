@@ -112,19 +112,30 @@ describe("StoreService", () => {
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 
-		it("should dispatch an action silently and not show the loading-gif", () => {
-			storeService.dispatch(setIsLoadingMap(false))
-
-			storeService.dispatch(setCamera(), { silent: true })
-
-			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
-		})
-
 		it("should show not the loading-gif when an action is triggered, that doesn't change the loading-gif state", () => {
 			storeService.dispatch(setIsLoadingMap(false))
 			storeService.dispatch(toggleSortingOrderAscending())
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+		})
+
+		describe("connection to action subject", () => {
+			beforeEach(() => {
+				EffectsModule.actions$ = new Subject()
+			})
+
+			afterEach(() => {
+				EffectsModule.actions$.complete()
+			})
+
+			it("should trigger a new action value on dispatch", () => {
+				const subscription = jest.fn()
+				EffectsModule.actions$.subscribe(subscription)
+
+				storeService.dispatch({ type: "something" })
+
+				expect(subscription).toHaveBeenCalledWith({ type: "something" })
+			})
 		})
 
 		describe("connection to action subject", () => {
