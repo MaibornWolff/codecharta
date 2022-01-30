@@ -1,13 +1,5 @@
-.cdk-overlay-container {
-	/* overwrite z-index of below #codemap-context-menu */
-	z-index: 2000 !important;
-}
-
-node-context-menu-component {
-	#codemap-context-menu {
-		position: absolute;
-		z-index: 2000;
-	}
+#codemap-context-menu {
+	padding: 2px;
 
 	.button-group {
 		display: inline-grid;
@@ -20,7 +12,7 @@ node-context-menu-component {
 		background-repeat: no-repeat no-repeat;
 		pointer-events: none;
 	}
-	.md-button:not(.colorButton),
+
 	[mat-button] {
 		width: 100%;
 		text-align: left;

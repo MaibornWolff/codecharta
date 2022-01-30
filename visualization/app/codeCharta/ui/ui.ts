@@ -26,7 +26,6 @@ import "./heightSettingsPanel/heightSettingsPanel.module"
 import "./loadingGif/loadingGif.module"
 import "./metricChooser/metricChooser.module"
 import "./metricType/metricType.module"
-import "./nodeContextMenu/nodeContextMenu.module"
 import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
 import "./filePanel/filePanel.module"
@@ -74,7 +73,6 @@ angular
 		"app.codeCharta.ui.loadingGif",
 		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.metricType",
-		"app.codeCharta.ui.nodeContextMenu",
 		"app.codeCharta.ui.rangeSlider",
 		"app.codeCharta.ui.resetSettingsButton",
 		"app.codeCharta.ui.ribbonBar",

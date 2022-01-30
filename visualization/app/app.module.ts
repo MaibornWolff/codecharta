@@ -30,12 +30,13 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/ui/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { NodeContextMenuCardComponent } from "./codeCharta/ui/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.component"
+import { OpenNodeContextMenuEffect } from "./codeCharta/ui/nodeContextMenu/openNodeContextMenu.effect"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
-		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect]),
+		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect, OpenNodeContextMenuEffect]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
