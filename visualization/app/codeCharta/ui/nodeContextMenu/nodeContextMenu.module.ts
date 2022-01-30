@@ -5,15 +5,9 @@ import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
 import { nodeContextMenuComponent } from "./nodeContextMenu.component"
-import { FocusButtonsComponent } from "./focusButtons/focusButtons.component"
-import { MarkFolderRowComponent } from "./markFolderRow/markFolderRow.component"
-import { FlattenButtonsComponent } from "./flattenButtons/flattenButtons.component"
-import { HighlightButtonsComponent } from "./highlightButtons/highlightButtons.component"
+import { NodeContextMenuCardComponent } from "./nodeContextMenuCard/nodeContextMenuCard.component"
 
 angular
 	.module("app.codeCharta.ui.nodeContextMenu", ["app.codeCharta.state", "app.codeCharta.ui"])
 	.component(nodeContextMenuComponent.selector, nodeContextMenuComponent)
-	.directive("ccMarkFolderRow", downgradeComponent({ component: MarkFolderRowComponent }))
-	.directive("ccFocusButtons", downgradeComponent({ component: FocusButtonsComponent }))
-	.directive("ccFlattenButtons", downgradeComponent({ component: FlattenButtonsComponent }))
-	.directive("ccHighlightButtons", downgradeComponent({ component: HighlightButtonsComponent }))
+	.directive("ccNodeContextMenuCard", downgradeComponent({ component: NodeContextMenuCardComponent }))

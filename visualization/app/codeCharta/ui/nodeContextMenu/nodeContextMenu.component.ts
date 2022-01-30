@@ -1,9 +1,8 @@
 import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
-import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { getCodeMapNodeFromPath, isLeaf } from "../../util/codeMapHelper"
 import { Store } from "../../state/store/store"
 import { rightClickedNodeDataSelector } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
@@ -21,12 +20,8 @@ export class NodeContextMenuController {
 
 	private _viewModel: {
 		codeMapNode: CodeMapNode
-		nodePath: string
-		lastPartOfNodePath: string
 	} = {
-		codeMapNode: null,
-		nodePath: "",
-		lastPartOfNodePath: ""
+		codeMapNode: null
 	}
 
 	constructor(
@@ -60,8 +55,6 @@ export class NodeContextMenuController {
 
 	showNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
 		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
-		this._viewModel.nodePath = path
-		this._viewModel.lastPartOfNodePath = `${path.lastIndexOf("/") === 0 ? "" : "..."}${path.slice(path.lastIndexOf("/"))}`
 
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
@@ -104,17 +97,6 @@ export class NodeContextMenuController {
 		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
 
-	excludeNode() {
-		const codeMapNode = this._viewModel.codeMapNode
-		const blacklistItem: BlacklistItem = {
-			path: codeMapNode.path,
-			type: BlacklistType.exclude,
-			nodeType: codeMapNode.type
-		}
-
-		this.storeService.dispatch(addBlacklistItemsIfNotResultsInEmptyMap([blacklistItem]))
-	}
-
 	calculatePosition(mouseX: number, mouseY: number) {
 		const width = this.$element[0].children[0].clientWidth
 		const height = this.$element[0].children[0].clientHeight
@@ -132,10 +114,6 @@ export class NodeContextMenuController {
 	private isEventFromColorPicker(mouseEvent: MouseEvent) {
 		const elements = mouseEvent.composedPath() as Node[]
 		return elements.some(element => element?.nodeName === "CC-COLOR-PICKER" || element?.nodeName === "COLOR-CHROME")
-	}
-
-	nodeIsFolder() {
-		return this._viewModel.codeMapNode?.children?.length > 0
 	}
 }
 

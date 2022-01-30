@@ -19,22 +19,17 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
-import { FocusButtonsModule } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.module"
 import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
-import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
-import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
-import { FlattenButtonsModule } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.module"
-import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.component"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { HighlightButtonsModule } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.module"
-import { HighlightButtonsComponent } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.component"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import { NodeContextMenuCardModule } from "./codeCharta/ui/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
+import { NodeContextMenuCardComponent } from "./codeCharta/ui/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.component"
 
 @NgModule({
 	imports: [
@@ -49,10 +44,7 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		FocusButtonsModule,
-		MarkFolderRowModule,
-		FlattenButtonsModule,
-		HighlightButtonsModule
+		NodeContextMenuCardModule
 	],
 	providers: [threeSceneServiceProvider],
 	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
@@ -68,10 +60,7 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
-		FocusButtonsComponent,
-		MarkFolderRowComponent,
-		FlattenButtonsComponent,
-		HighlightButtonsComponent,
+		NodeContextMenuCardComponent,
 		...dialogs
 	]
 })
