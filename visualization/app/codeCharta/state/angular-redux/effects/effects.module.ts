@@ -1,8 +1,8 @@
 import { APP_INITIALIZER, Inject, InjectionToken, ModuleWithProviders, NgModule, Optional, SkipSelf } from "@angular/core"
 import { Action } from "redux"
-import { Subject } from "rxjs"
+import { Observable, Subject } from "rxjs"
 
-export type Actions = Subject<Action>
+export type Actions = Observable<Action>
 export const ActionsToken = new InjectionToken<Actions>("Actions")
 
 /** Simple placeholder for NgRx's EffectsModule. The goal is to provide the

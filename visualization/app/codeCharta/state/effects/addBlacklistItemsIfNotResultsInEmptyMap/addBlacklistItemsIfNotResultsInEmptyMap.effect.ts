@@ -3,7 +3,6 @@ import { Actions, ActionsToken } from "../../angular-redux/effects/effects.modul
 import { MatDialog } from "@angular/material/dialog"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { filter, map, tap, withLatestFrom } from "rxjs"
-import { isAction } from "../../../util/reduxHelper"
 import {
 	addBlacklistItems,
 	AddBlacklistItemsIfNotResultsInEmptyMapAction,
@@ -14,6 +13,7 @@ import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.
 import { Store } from "../../angular-redux/store"
 import { resultsInEmptyMap } from "./resultsInEmptyMap"
 import { ErrorDialogComponent } from "../../../ui/dialogs/errorDialog/errorDialog.component"
+import { ofType } from "../../angular-redux/ofType"
 
 @Injectable()
 export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
@@ -26,15 +26,7 @@ export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
 	private visibleFiles$ = this.store.select(visibleFileStatesSelector)
 	private blacklist$ = this.store.select(blacklistSelector)
 	private doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(
-		filter(action =>
-			isAction<AddBlacklistItemsIfNotResultsInEmptyMapAction>(
-				action,
-				BlacklistActions.ADD_BLACKLIST_ITEMS_IF_NOT_RESULTS_IN_EMPTY_MAP
-			)
-		),
-		map(action => {
-			return action as AddBlacklistItemsIfNotResultsInEmptyMapAction
-		}),
+		ofType<AddBlacklistItemsIfNotResultsInEmptyMapAction>(BlacklistActions.ADD_BLACKLIST_ITEMS_IF_NOT_RESULTS_IN_EMPTY_MAP),
 		withLatestFrom(this.visibleFiles$, this.blacklist$),
 		map(([addBlacklistItemsIfNotResultsInEmptyMapAction, visibleFiles, blacklist]) => ({
 			items: addBlacklistItemsIfNotResultsInEmptyMapAction.payload,
