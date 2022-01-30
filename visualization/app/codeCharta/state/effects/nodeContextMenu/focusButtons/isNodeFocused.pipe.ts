@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core"
 
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../../codeCharta.model"
 
 type IsNodeFocusedType = {
 	isNodeFocused: boolean

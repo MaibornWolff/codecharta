@@ -1,8 +1,8 @@
 import { Component, Inject, Input, OnChanges, SimpleChanges } from "@angular/core"
-import { CodeMapNode } from "../../../codeCharta.model"
-import { ThreeSceneServiceToken } from "../../../services/ajs-upgraded-providers"
-import { State } from "../../../state/angular-redux/state"
-import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
+import { CodeMapNode } from "../../../../codeCharta.model"
+import { ThreeSceneServiceToken } from "../../../../services/ajs-upgraded-providers"
+import { State } from "../../../angular-redux/state"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 
 @Component({
 	selector: "cc-highlight-buttons",

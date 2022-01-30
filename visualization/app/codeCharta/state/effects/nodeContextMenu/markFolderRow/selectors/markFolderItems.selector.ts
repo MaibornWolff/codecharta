@@ -1,9 +1,9 @@
-import { MarkedPackage, Node } from "../../../../codeCharta.model"
-import { createSelector } from "../../../../state/angular-redux/createSelector"
-import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
-import { markedPackagesSelector } from "../../../../state/store/fileSettings/markedPackages/markedPackages.selector"
-import { findIndexOfMarkedPackageOrParent } from "../../../../state/store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
-import { CcState } from "../../../../state/store/store"
+import { MarkedPackage, Node } from "../../../../../codeCharta.model"
+import { createSelector } from "../../../../angular-redux/createSelector"
+import { mapColorsSelector } from "../../../../store/appSettings/mapColors/mapColors.selector"
+import { markedPackagesSelector } from "../../../../store/fileSettings/markedPackages/markedPackages.selector"
+import { findIndexOfMarkedPackageOrParent } from "../../../../store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
+import { CcState } from "../../../../store/store"
 import { rightClickedNodeSelector } from "./rightClickedNode.selector"
 
 export type MarkFolderItem = {

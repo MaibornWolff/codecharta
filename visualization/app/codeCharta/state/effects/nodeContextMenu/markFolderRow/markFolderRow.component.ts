@@ -1,10 +1,10 @@
 import "./markFolderRow.component.scss"
 import { Component, Inject } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
-import { markPackages, unmarkPackage } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { Store } from "../../../angular-redux/store"
+import { markPackages, unmarkPackage } from "../../../store/fileSettings/markedPackages/markedPackages.actions"
 import { Observable } from "rxjs"
 import { MarkFolderItem, markFolderItemsSelector } from "./selectors/markFolderItems.selector"
-import { Node } from "../../../codeCharta.model"
+import { Node } from "../../../../codeCharta.model"
 import { rightClickedNodeSelector } from "./selectors/rightClickedNode.selector"
 
 @Component({

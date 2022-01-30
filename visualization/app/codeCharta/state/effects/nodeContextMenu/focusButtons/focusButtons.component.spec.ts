@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing"
 
 import { FocusButtonsComponent } from "./focusButtons.component"
 import { FocusButtonsModule } from "./focusButtons.module"
-import { focusedNodePathSelector } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
+import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 
 jest.mock("../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.selector", () => ({
 	focusedNodePathSelector: jest.fn()

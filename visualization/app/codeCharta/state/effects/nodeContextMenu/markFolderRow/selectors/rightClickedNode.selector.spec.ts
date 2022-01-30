@@ -1,4 +1,4 @@
-import { CodeMapBuilding } from "../../../codeMap/rendering/codeMapBuilding"
+import { CodeMapBuilding } from "../../../../../ui/codeMap/rendering/codeMapBuilding"
 import { _getNode } from "./rightClickedNode.selector"
 
 describe("rightClickedNodeSelector's _getNode", () => {

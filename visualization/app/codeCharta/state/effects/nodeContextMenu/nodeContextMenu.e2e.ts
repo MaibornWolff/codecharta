@@ -1,8 +1,8 @@
-import { goto } from "../../../puppeteer.helper"
+import { goto } from "../../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
-import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
-import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
-import { CodeMapPageObject } from "../codeMap/codeMap.po"
+import { SearchPanelModeSelectorPageObject } from "../../../ui/searchPanelModeSelector/searchPanelModeSelector.po"
+import { MapTreeViewLevelPageObject } from "../../../ui/mapTreeView/mapTreeView.level.po"
+import { CodeMapPageObject } from "../../../ui/codeMap/codeMap.po"
 
 describe("NodeContextMenu", () => {
 	let contextMenu: NodeContextMenuPageObject

@@ -1,12 +1,12 @@
 import { Inject, Injectable } from "@angular/core"
-import { createEffect } from "../../state/angular-redux/effects/createEffect"
-import { Actions, ActionsToken } from "../../state/angular-redux/effects/effects.module"
-import { ofType } from "../../state/angular-redux/ofType"
+import { createEffect } from "../../angular-redux/effects/createEffect"
+import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
+import { ofType } from "../../angular-redux/ofType"
 import { NodeContextMenuService } from "./nodeContextMenu.service"
 import {
 	RightClickedNodeDataActions,
 	SetRightClickedNodeDataAction
-} from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+} from "../../store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { tap } from "rxjs"
 
 @Injectable()

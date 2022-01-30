@@ -19,7 +19,7 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
-import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
+import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
@@ -28,9 +28,9 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
-import { NodeContextMenuCardModule } from "./codeCharta/ui/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
-import { NodeContextMenuCardComponent } from "./codeCharta/ui/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.component"
-import { OpenNodeContextMenuEffect } from "./codeCharta/ui/nodeContextMenu/openNodeContextMenu.effect"
+import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
+import { NodeContextMenuCardComponent } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.component"
+import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 
 @NgModule({
 	imports: [

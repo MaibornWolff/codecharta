@@ -1,13 +1,13 @@
 import "./nodeContextMenu.module"
 
 import { IRootScopeService, IWindowService } from "angular"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { instantiateModule, getService } from "../../../../../mocks/ng.mockhelper"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
-import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { StoreService } from "../../state/store.service"
-import { NodeType } from "../../codeCharta.model"
-import { NodeDecorator } from "../../util/nodeDecorator"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH } from "../../../util/dataMocks"
+import { CodeMapPreRenderService } from "../../../ui/codeMap/codeMap.preRender.service"
+import { StoreService } from "../../store.service"
+import { NodeType } from "../../../codeCharta.model"
+import { NodeDecorator } from "../../../util/nodeDecorator"
 
 describe("nodeContextMenuController", () => {
 	let element: Element

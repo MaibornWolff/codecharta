@@ -1,7 +1,7 @@
 import { Component, Inject, Input } from "@angular/core"
-import { BlacklistType, CodeMapNode } from "../../../codeCharta.model"
-import { Store } from "../../../state/angular-redux/store"
-import { addBlacklistItem, removeBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { BlacklistType, CodeMapNode } from "../../../../codeCharta.model"
+import { Store } from "../../../angular-redux/store"
+import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettings/blacklist/blacklist.actions"
 
 @Component({
 	selector: "cc-flatten-buttons",

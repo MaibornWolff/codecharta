@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { FlattenButtonsComponent } from "./flattenButtons.component"
 import { FlattenButtonsModule } from "./flattenButtons.module"
-import { BlacklistType, NodeType } from "../../../codeCharta.model"
+import { BlacklistType, NodeType } from "../../../../codeCharta.model"
 import userEvent from "@testing-library/user-event"
-import { Store } from "../../../state/store/store"
+import { Store } from "../../../store/store"
 
 describe("flattenButtonsComponent", () => {
 	beforeEach(() => {

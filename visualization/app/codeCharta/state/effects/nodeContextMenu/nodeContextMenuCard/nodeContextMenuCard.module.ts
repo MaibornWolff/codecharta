@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
-import { MaterialModule } from "../../../../material/material.module"
+import { MaterialModule } from "../../../../../material/material.module"
 import { FlattenButtonsModule } from "../flattenButtons/flattenButtons.module"
 import { FocusButtonsModule } from "../focusButtons/focusButtons.module"
 import { HighlightButtonsModule } from "../highlightButtons/highlightButtons.module"
