@@ -1,10 +1,10 @@
-import { MarkedPackage, Node } from "../../../../../codeCharta.model"
+import { MarkedPackage } from "../../../../../codeCharta.model"
 import { createSelector } from "../../../../angular-redux/createSelector"
 import { mapColorsSelector } from "../../../../store/appSettings/mapColors/mapColors.selector"
 import { markedPackagesSelector } from "../../../../store/fileSettings/markedPackages/markedPackages.selector"
 import { findIndexOfMarkedPackageOrParent } from "../../../../store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
 import { CcState } from "../../../../store/store"
-import { rightClickedNodeSelector } from "./rightClickedNode.selector"
+import { rightClickedCodeMapNodeSelector } from "../../rightClickedCodeMapNode.selector"
 
 export type MarkFolderItem = {
 	color: string
@@ -13,7 +13,7 @@ export type MarkFolderItem = {
 
 const markingColorsSelector = createSelector([mapColorsSelector], mapColors => mapColors.markingColors)
 
-export const _getMarkFolderItems = (node: Pick<Node, "path">, markingColors: string[], markedPackages: MarkedPackage[]) => {
+export const _getMarkFolderItems = (node: { path?: string } | null, markingColors: string[], markedPackages: MarkedPackage[]) => {
 	if (node === null) return markingColors.map(color => ({ color, isMarked: false }))
 
 	const nodeIndexWithinMarkedPackages = findIndexOfMarkedPackageOrParent(markedPackages, node.path)
@@ -24,6 +24,6 @@ export const _getMarkFolderItems = (node: Pick<Node, "path">, markingColors: str
 }
 
 export const markFolderItemsSelector: (state: CcState) => MarkFolderItem[] = createSelector(
-	[rightClickedNodeSelector, markingColorsSelector, markedPackagesSelector],
+	[rightClickedCodeMapNodeSelector, markingColorsSelector, markedPackagesSelector],
 	_getMarkFolderItems
 )

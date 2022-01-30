@@ -3,8 +3,8 @@ import { fireEvent, render } from "@testing-library/angular"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
 import { MarkFolderRowModule } from "./markFolderRow.module"
 
-jest.mock("./selectors/rightClickedNode.selector", () => ({
-	rightClickedNodeSelector: () => ({ path: "/root" })
+jest.mock("../rightClickedCodeMapNode.selector", () => ({
+	rightClickedCodeMapNodeSelector: () => ({ path: "/root" })
 }))
 
 describe("markFolderRow component", () => {
