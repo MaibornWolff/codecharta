@@ -6,7 +6,6 @@ import { Observable } from "rxjs"
 import { CodeMapNode } from "../../../../codeCharta.model"
 
 @Component({
-	selector: "cc-node-context-menu-card",
 	template: require("./nodeContextMenuCard.component.html")
 })
 export class NodeContextMenuCardComponent implements OnInit {

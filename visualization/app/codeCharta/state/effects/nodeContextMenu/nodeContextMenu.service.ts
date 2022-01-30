@@ -31,15 +31,15 @@ export class NodeContextMenuService {
 
 		this.overlayReference.attach(new ComponentPortal(NodeContextMenuCardComponent))
 
-		document.body.addEventListener("click", this.onBodyLeftClickHideNodeContextMenu, false)
-		document.body.addEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
-		document.getElementById("codeMap").addEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
+		document.addEventListener("click", this.onLeftClickHideNodeContextMenu, false)
+		document.addEventListener("mousedown", this.onRightClickHideNodeContextMenu, true)
+		document.getElementById("codeMap").addEventListener("wheel", this.close, true)
 	}
 
-	close() {
-		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
-		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
-		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
+	close = () => {
+		document.removeEventListener("click", this.onLeftClickHideNodeContextMenu, true)
+		document.removeEventListener("mousedown", this.onRightClickHideNodeContextMenu, true)
+		document.getElementById("codeMap").removeEventListener("wheel", this.close, true)
 
 		this.store.dispatch(setRightClickedNodeData(null))
 
@@ -49,19 +49,15 @@ export class NodeContextMenuService {
 		}
 	}
 
-	private onBodyLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
+	private onLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
 		if (this.isEventFromColorPicker(mouseEvent)) return
 
 		this.close()
 	}
 
-	private onBodyRightClickHideNodeContextMenu = event => {
+	private onRightClickHideNodeContextMenu = event => {
 		if (event.button !== 2) return
 		// Close on right click down, to close before the map gets potential moved by right clicked
-		this.close()
-	}
-
-	private onMapWheelHideNodeContextMenu = () => {
 		this.close()
 	}
 

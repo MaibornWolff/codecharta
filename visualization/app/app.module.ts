@@ -29,7 +29,6 @@ import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/stat
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
-import { NodeContextMenuCardComponent } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.component"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 
 @NgModule({
@@ -61,7 +60,6 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
-		NodeContextMenuCardComponent,
 		...dialogs
 	]
 })
