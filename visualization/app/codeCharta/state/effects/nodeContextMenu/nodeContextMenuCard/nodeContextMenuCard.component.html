@@ -12,9 +12,6 @@
 		<cc-focus-buttons [codeMapNode]="codeMapNode"></cc-focus-buttons>
 		<cc-flatten-buttons [codeMapNode]="codeMapNode"></cc-flatten-buttons>
 		<cc-highlight-buttons [codeMapNode]="codeMapNode"></cc-highlight-buttons>
-
-		<button mat-button (click)="excludeNode()" id="exclude-button" title="Exclude node and children-nodes and reorder the CodeMap">
-			<i class="fa fa-ban"></i> Exclude
-		</button>
+		<cc-exclude-button [codeMapNode]="codeMapNode"></cc-exclude-button>
 	</div>
 </mat-card>

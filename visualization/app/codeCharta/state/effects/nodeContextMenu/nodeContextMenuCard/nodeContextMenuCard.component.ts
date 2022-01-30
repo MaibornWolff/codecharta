@@ -17,17 +17,4 @@ export class NodeContextMenuCardComponent implements OnInit {
 	ngOnInit(): void {
 		this.codeMapNode$ = this.store.select(rightClickedCodeMapNodeSelector)
 	}
-
-	excludeNode() {
-		// console.log("excludeNode")
-		// this.store.dispatch(
-		// 	addBlacklistItemsIfNotResultsInEmptyMap([
-		// 		{
-		// 			path: this.codeMapNode.path,
-		// 			type: BlacklistType.exclude,
-		// 			nodeType: this.codeMapNode.type
-		// 		}
-		// 	])
-		// )
-	}
 }
