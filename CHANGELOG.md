@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Migrate context menu with slightly new layout touch to Angular. Migrated version prevents rendering outside of view [#1661](https://github.com/MaibornWolff/codecharta/issues/1661)
+
 ## [1.88.0] - 2022-01-24
 
 ### Changed
