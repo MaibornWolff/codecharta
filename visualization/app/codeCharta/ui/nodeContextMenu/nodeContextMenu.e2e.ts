@@ -3,32 +3,20 @@ import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 import { CodeMapPageObject } from "../codeMap/codeMap.po"
-import { ERROR_MESSAGES } from "../../util/fileValidator"
-import { DialogErrorPageObject } from "../dialog/dialog.error.po"
 
 describe("NodeContextMenu", () => {
 	let contextMenu: NodeContextMenuPageObject
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 	let codeMap: CodeMapPageObject
-	let dialogError: DialogErrorPageObject
 
 	beforeEach(async () => {
 		contextMenu = new NodeContextMenuPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		codeMap = new CodeMapPageObject()
-		dialogError = new DialogErrorPageObject()
 
 		await goto()
-	})
-
-	it("should show error message when user excludes all files", async () => {
-		await searchPanelModeSelector.toggleTreeView()
-		await mapTreeViewLevel.openContextMenu("/root")
-		await contextMenu.clickOnExclude()
-
-		expect(await dialogError.getMessage()).toEqual(`${ERROR_MESSAGES.blacklistError}`)
 	})
 
 	it("right clicking a folder should open a context menu with color options", async () => {
