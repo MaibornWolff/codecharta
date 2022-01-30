@@ -3,21 +3,11 @@ import "./nodeContextMenu.module"
 import { IRootScopeService, IWindowService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
-import {
-	CODE_MAP_BUILDING,
-	CODE_MAP_BUILDING_TS_NODE,
-	CONSTANT_HIGHLIGHT,
-	TEST_DELTA_MAP_A,
-	VALID_FILE_NODE_WITH_ID,
-	VALID_NODE_WITH_PATH
-} from "../../util/dataMocks"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { NodeType } from "../../codeCharta.model"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -26,14 +16,12 @@ describe("nodeContextMenuController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
-	let threeSceneService: ThreeSceneService
 
 	beforeEach(() => {
 		restartSystem()
 		mockElement()
 		mockWindow()
 		withMockedCodeMapPreRenderService()
-		withMockedThreeSceneService()
 		rebuildController()
 
 		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
@@ -46,7 +34,6 @@ describe("nodeContextMenuController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 	}
 
 	function mockElement() {
@@ -59,26 +46,11 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function rebuildController() {
-		nodeContextMenuController = new NodeContextMenuController(
-			element,
-			$window,
-			$rootScope,
-			storeService,
-			codeMapPreRenderService,
-			threeSceneService
-		)
+		nodeContextMenuController = new NodeContextMenuController(element, $window, $rootScope, storeService, codeMapPreRenderService)
 	}
 
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
-	}
-
-	function withMockedThreeSceneService() {
-		threeSceneService = jest.fn().mockReturnValue({
-			addNodeAndChildrenToConstantHighlight: jest.fn(),
-			removeNodeAndChildrenFromConstantHighlight: jest.fn(),
-			getConstantHighlight: jest.fn().mockReturnValue(CONSTANT_HIGHLIGHT)
-		})()
 	}
 
 	describe("onShowNodeContextMenu", () => {
@@ -167,56 +139,6 @@ describe("nodeContextMenuController", () => {
 
 		it("should calculate the position for the menu correctly, when it doesn't fit in the window.innerHeight and window.innerWidth", () => {
 			testPositionCalculation(750, 500, 799, 599)
-		})
-	})
-
-	describe("removeNodeFromConstantHighlight", () => {
-		it("should call addNodeandChildrenToConstantHighlight", () => {
-			nodeContextMenuController.addNodeToConstantHighlight()
-
-			expect(threeSceneService.addNodeAndChildrenToConstantHighlight).toHaveBeenCalled()
-		})
-	})
-
-	describe("addNodeToConstantHighlight", () => {
-		it("should call addNodeandChildrenToConstantHighlight", () => {
-			nodeContextMenuController.removeNodeFromConstantHighlight()
-
-			expect(threeSceneService.removeNodeAndChildrenFromConstantHighlight).toHaveBeenCalled()
-		})
-	})
-
-	describe("isNodeConstantlyHighlighted", () => {
-		beforeEach(() => {
-			const idToBuilding = new Map<number, CodeMapBuilding>()
-			idToBuilding.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
-			idToBuilding.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
-			storeService.dispatch(setIdToBuilding(idToBuilding))
-		})
-		it("should return false if codeMapNode is not existing", () => {
-			nodeContextMenuController["_viewModel"].codeMapNode = null
-
-			const result = nodeContextMenuController.isNodeConstantlyHighlighted()
-
-			expect(result).toEqual(false)
-		})
-
-		it("should return false if codeMapNode exists but is not in constant Highlight", () => {
-			threeSceneService.getConstantHighlight = jest.fn().mockReturnValue(new Map())
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_FILE_NODE_WITH_ID
-
-			const result = nodeContextMenuController.isNodeConstantlyHighlighted()
-
-			expect(threeSceneService.getConstantHighlight).toHaveBeenCalled()
-			expect(result).toEqual(false)
-		})
-
-		it("should return true if codeMapNode exists and in constant Highlight", () => {
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_FILE_NODE_WITH_ID
-
-			const result = nodeContextMenuController.isNodeConstantlyHighlighted()
-
-			expect(result).toEqual(true)
 		})
 	})
 
