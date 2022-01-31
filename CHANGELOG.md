@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   add invert the amount of area, which is used for the nodes [#697](https://github.com/MaibornWolff/codecharta/issues/697)
+-   Add area metric option to invert the amount of area, which is used for the nodes [#2626](https://github.com/MaibornWolff/codecharta/pull/2626)
 
 ## [1.88.0] - 2022-01-24
 
