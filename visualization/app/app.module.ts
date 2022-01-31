@@ -28,6 +28,8 @@ import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFold
 import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
+import { FlattenButtonsModule } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.module"
+import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.component"
 
 @NgModule({
 	imports: [
@@ -43,7 +45,8 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		FocusButtonsModule,
-		MarkFolderRowModule
+		MarkFolderRowModule,
+		FlattenButtonsModule
 	],
 	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent],
 	entryComponents: [
@@ -59,7 +62,8 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		FocusButtonsComponent,
-		MarkFolderRowComponent
+		MarkFolderRowComponent,
+		FlattenButtonsComponent
 	]
 })
 export class AppModule {
