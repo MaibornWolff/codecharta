@@ -11,7 +11,7 @@
 	<button mat-menu-item (click)="setToRelative()">x͂ Median</button>
 </mat-menu>-->
 
-<mat-button-toggle-group value="sum">
+<mat-button-toggle-group [value]="metricName | aggregationSymbolPipe: (getAttributeTypeOfNodesByMetric$ | async)">
 	<mat-button-toggle title="Select Sum" (click)="setToAbsolute()" value="sum">Σ</mat-button-toggle>
 	<mat-button-toggle title="Select Median" (click)="setToRelative()" value="median">x͂</mat-button-toggle>
 </mat-button-toggle-group>

@@ -9,10 +9,10 @@ export class AggregationSymbolPipe implements PipeTransform {
 		const type = getAttributeTypeOfNodesByMetricSelector(metricName)
 		switch (type) {
 			case AttributeTypeValue.relative:
-				return "x͂"
+				return "median"
 			case AttributeTypeValue.absolute:
 			default:
-				return "Σ"
+				return "sum"
 		}
 	}
 }
