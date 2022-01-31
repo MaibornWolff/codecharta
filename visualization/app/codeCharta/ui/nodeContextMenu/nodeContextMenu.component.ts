@@ -4,9 +4,7 @@ import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../codeC
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { getCodeMapNodeFromPath, isLeaf } from "../../util/codeMapHelper"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { Store } from "../../state/store/store"
 import { rightClickedNodeDataSelector } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import {
@@ -36,8 +34,7 @@ export class NodeContextMenuController {
 		private $window,
 		public $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private codeMapPreRenderService: CodeMapPreRenderService,
-		private threeSceneService: ThreeSceneService
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		"ngInject"
 		Store.store.subscribe(() => {
@@ -99,6 +96,7 @@ export class NodeContextMenuController {
 
 	hideNodeContextMenu = () => {
 		this.storeService.dispatch(setRightClickedNodeData(null))
+		this._viewModel.codeMapNode = null
 
 		// remove event listeners registered in showNodeContextMenu
 		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
@@ -115,16 +113,6 @@ export class NodeContextMenuController {
 		}
 
 		this.storeService.dispatch(addBlacklistItemsIfNotResultsInEmptyMap([blacklistItem]))
-	}
-
-	addNodeToConstantHighlight() {
-		this.threeSceneService.addNodeAndChildrenToConstantHighlight(this._viewModel.codeMapNode)
-		this.hideNodeContextMenu()
-	}
-
-	removeNodeFromConstantHighlight() {
-		this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(this._viewModel.codeMapNode)
-		this.hideNodeContextMenu()
 	}
 
 	calculatePosition(mouseX: number, mouseY: number) {
@@ -144,17 +132,6 @@ export class NodeContextMenuController {
 	private isEventFromColorPicker(mouseEvent: MouseEvent) {
 		const elements = mouseEvent.composedPath() as Node[]
 		return elements.some(element => element?.nodeName === "CC-COLOR-PICKER" || element?.nodeName === "COLOR-CHROME")
-	}
-
-	isNodeConstantlyHighlighted() {
-		if (this._viewModel.codeMapNode) {
-			const { lookUp } = this.storeService.getState()
-			const codeMapBuilding: CodeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
-			if (codeMapBuilding) {
-				return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
-			}
-		}
-		return false
 	}
 
 	nodeIsFolder() {
