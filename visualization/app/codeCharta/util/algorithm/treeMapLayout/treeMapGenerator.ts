@@ -248,19 +248,17 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, dynamicSettings: Dynami
 }
 
 // Only exported for testing.
-export function calculateAreaValue(node: CodeMapNode, state: State, maxWidth: number) {
+export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSettings }: State, maxWidth: number) {
 	if (node.isExcluded) {
 		return 0
 	}
 
-	if (node.deltas && isOnlyVisibleInComparisonMap(node, state.dynamicSettings)) {
-		return Math.abs(node.deltas[state.dynamicSettings.areaMetric])
+	if (node.deltas && isOnlyVisibleInComparisonMap(node, dynamicSettings)) {
+		return Math.abs(node.deltas[dynamicSettings.areaMetric])
 	}
 
-	if (isLeaf(node) && node.attributes?.[state.dynamicSettings.areaMetric]) {
-		return state.appSettings.invertArea
-			? maxWidth - node.attributes[state.dynamicSettings.areaMetric]
-			: node.attributes[state.dynamicSettings.areaMetric]
+	if (isLeaf(node) && node.attributes?.[dynamicSettings.areaMetric]) {
+		return appSettings.invertArea ? maxWidth - node.attributes[dynamicSettings.areaMetric] : node.attributes[dynamicSettings.areaMetric]
 	}
 	return 0
 }
