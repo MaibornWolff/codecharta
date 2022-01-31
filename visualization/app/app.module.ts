@@ -66,6 +66,7 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 		FocusButtonsComponent,
 		MarkFolderRowComponent,
 		FlattenButtonsComponent,
+		FlattenButtonsComponent,
 		...dialogs
 	]
 })
