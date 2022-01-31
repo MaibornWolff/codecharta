@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add area metric option to invert the amount of area, which is used for the nodes [#2626](https://github.com/MaibornWolff/codecharta/pull/2626)
 
+### Changed
+
+-   New buttons for selecting attribute types [#2631](https://github.com/MaibornWolff/codecharta/pull/2631)
+    ![xs](https://user-images.githubusercontent.com/72517530/151762455-07e47bf5-18aa-4721-a60a-6dfee057e1e5.png)
+
 ## [1.88.0] - 2022-01-24
 
 ### Changed
