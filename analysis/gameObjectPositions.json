@@ -1,0 +1,2968 @@
+{
+	"gameObjectPositions": [
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
+			"position": {
+				"x": 69.0,
+				"y": 18.5,
+				"z": 228.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 5.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.SwitchCaseTest",
+			"position": {
+				"x": 65.0,
+				"y": 22.0,
+				"z": 181.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 12.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.NestedMethodsTest",
+			"position": {
+				"x": 59.5,
+				"y": 21.5,
+				"z": 185.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 11.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.TryCatchFinallyTest",
+			"position": {
+				"x": 66.0,
+				"y": 22.5,
+				"z": 177.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 13.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.NestedInterfaceTest",
+			"position": {
+				"x": 65.0,
+				"y": 21.0,
+				"z": 186.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 10.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.NestedClassTest",
+			"position": {
+				"x": 57.5,
+				"y": 20.5,
+				"z": 195.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 9.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.LambdasTest",
+			"position": {
+				"x": 72.5,
+				"y": 19.5,
+				"z": 187.5
+			},
+			"scale": {
+				"x": 7.0,
+				"y": 7.0,
+				"z": 7.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.InnerClassTest",
+			"position": {
+				"x": 69.0,
+				"y": 19.0,
+				"z": 212.0
+			},
+			"scale": {
+				"x": 8.0,
+				"y": 6.0,
+				"z": 8.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.LocalClassTest",
+			"position": {
+				"x": 65.0,
+				"y": 20.0,
+				"z": 196.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 8.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.GenericClassTest",
+			"position": {
+				"x": 63.0,
+				"y": 17.5,
+				"z": 240.5
+			},
+			"scale": {
+				"x": 11.0,
+				"y": 3.0,
+				"z": 11.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.GenericMethodsTest",
+			"position": {
+				"x": 75.5,
+				"y": 18.0,
+				"z": 240.0
+			},
+			"scale": {
+				"x": 10.0,
+				"y": 4.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.AnonymousClassTest",
+			"position": {
+				"x": 69.0,
+				"y": 16.5,
+				"z": 181.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.ConstructorAndInitializerTest",
+			"position": {
+				"x": 69.0,
+				"y": 17.0,
+				"z": 177.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.DoubleColonTest",
+			"position": {
+				"x": 69.0,
+				"y": 17.0,
+				"z": 254.0
+			},
+			"scale": {
+				"x": 12.0,
+				"y": 2.0,
+				"z": 12.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.DefaultInterfaceMethodTest",
+			"position": {
+				"x": 76.5,
+				"y": 16.5,
+				"z": 199.5
+			},
+			"scale": {
+				"x": 13.0,
+				"y": 1.0,
+				"z": 13.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.EnumTest",
+			"position": {
+				"x": 73.0,
+				"y": 17.0,
+				"z": 181.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 2.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.MetricExtractorSimpleClassTest",
+			"position": {
+				"x": 72.0,
+				"y": 17.0,
+				"z": 177.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.AnnotationTest",
+			"position": {
+				"x": 79.0,
+				"y": 16.5,
+				"z": 185.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract",
+			"position": {
+				"x": 69.0,
+				"y": 15.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 32.0,
+				"y": 1.0,
+				"z": 87.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core",
+			"position": {
+				"x": 69.0,
+				"y": 14.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 36.0,
+				"y": 1.0,
+				"z": 91.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop",
+			"position": {
+				"x": 69.0,
+				"y": 13.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 40.0,
+				"y": 1.0,
+				"z": 95.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser",
+			"position": {
+				"x": 69.0,
+				"y": 12.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 44.0,
+				"y": 1.0,
+				"z": 99.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer",
+			"position": {
+				"x": 69.0,
+				"y": 11.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 48.0,
+				"y": 1.0,
+				"z": 103.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta",
+			"position": {
+				"x": 69.0,
+				"y": 10.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 52.0,
+				"y": 1.0,
+				"z": 107.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff",
+			"position": {
+				"x": 69.0,
+				"y": 9.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 56.0,
+				"y": 1.0,
+				"z": 111.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de",
+			"position": {
+				"x": 69.0,
+				"y": 8.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 60.0,
+				"y": 1.0,
+				"z": 115.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test.kotlin",
+			"position": {
+				"x": 69.0,
+				"y": 7.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 64.0,
+				"y": 1.0,
+				"z": 119.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src.test",
+			"position": {
+				"x": 69.0,
+				"y": 6.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 68.0,
+				"y": 1.0,
+				"z": 123.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser.src",
+			"position": {
+				"x": 69.0,
+				"y": 5.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 72.0,
+				"y": 1.0,
+				"z": 127.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SourceCodeParser",
+			"position": {
+				"x": 69.0,
+				"y": 4.5,
+				"z": 218.5
+			},
+			"scale": {
+				"x": 76.0,
+				"y": 1.0,
+				"z": 131.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.resources.codecharta_git_numstat_raw",
+			"position": {
+				"x": 48.0,
+				"y": 9.5,
+				"z": 298.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 3.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.resources.codecharta_git_raw",
+			"position": {
+				"x": 48.0,
+				"y": 10.0,
+				"z": 294.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 4.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.resources.codecharta_git",
+			"position": {
+				"x": 45.5,
+				"y": 8.5,
+				"z": 303.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 1.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.resources.codecharta_git_numstat",
+			"position": {
+				"x": 51.0,
+				"y": 9.0,
+				"z": 302.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 2.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.resources",
+			"position": {
+				"x": 48.0,
+				"y": 7.5,
+				"z": 299.5
+			},
+			"scale": {
+				"x": 13.0,
+				"y": 1.0,
+				"z": 15.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatParserStrategyTest",
+			"position": {
+				"x": 73.0,
+				"y": 16.0,
+				"z": 308.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategyTest",
+			"position": {
+				"x": 76.0,
+				"y": 16.5,
+				"z": 308.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 3.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.git",
+			"position": {
+				"x": 74.5,
+				"y": 14.5,
+				"z": 308.5
+			},
+			"scale": {
+				"x": 8.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest",
+			"position": {
+				"x": 74.5,
+				"y": 16.5,
+				"z": 314.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 5.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.CommitCollectorTest",
+			"position": {
+				"x": 72.5,
+				"y": 15.0,
+				"z": 318.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 2.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserTest",
+			"position": {
+				"x": 76.5,
+				"y": 14.5,
+				"z": 318.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer.scmlogparser.parser",
+			"position": {
+				"x": 74.5,
+				"y": 13.5,
+				"z": 312.5
+			},
+			"scale": {
+				"x": 12.0,
+				"y": 1.0,
+				"z": 17.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer.scmlogparser",
+			"position": {
+				"x": 74.5,
+				"y": 12.5,
+				"z": 312.5
+			},
+			"scale": {
+				"x": 16.0,
+				"y": 1.0,
+				"z": 21.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.importer",
+			"position": {
+				"x": 74.5,
+				"y": 11.5,
+				"z": 312.5
+			},
+			"scale": {
+				"x": 20.0,
+				"y": 1.0,
+				"z": 25.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.model.input.VersionControlledFileTest",
+			"position": {
+				"x": 91.0,
+				"y": 14.0,
+				"z": 304.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.model.input",
+			"position": {
+				"x": 91.0,
+				"y": 12.5,
+				"z": 304.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta.model",
+			"position": {
+				"x": 91.0,
+				"y": 11.5,
+				"z": 304.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff.codecharta",
+			"position": {
+				"x": 80.0,
+				"y": 10.5,
+				"z": 312.5
+			},
+			"scale": {
+				"x": 35.0,
+				"y": 1.0,
+				"z": 29.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de.maibornwolff",
+			"position": {
+				"x": 80.0,
+				"y": 9.5,
+				"z": 312.5
+			},
+			"scale": {
+				"x": 39.0,
+				"y": 1.0,
+				"z": 33.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java.de",
+			"position": {
+				"x": 80.0,
+				"y": 8.5,
+				"z": 312.5
+			},
+			"scale": {
+				"x": 43.0,
+				"y": 1.0,
+				"z": 37.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test.java",
+			"position": {
+				"x": 80.0,
+				"y": 7.5,
+				"z": 312.5
+			},
+			"scale": {
+				"x": 47.0,
+				"y": 1.0,
+				"z": 41.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.test",
+			"position": {
+				"x": 72.5,
+				"y": 6.5,
+				"z": 312.5
+			},
+			"scale": {
+				"x": 66.0,
+				"y": 1.0,
+				"z": 45.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.NumberOfAuthors",
+			"position": {
+				"x": 66.5,
+				"y": 16.0,
+				"z": 413.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 2.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.NumberOfOccurencesInCommits",
+			"position": {
+				"x": 68.0,
+				"y": 16.5,
+				"z": 409.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 3.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.LinesOfCode",
+			"position": {
+				"x": 69.5,
+				"y": 15.5,
+				"z": 420.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 1.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory",
+			"position": {
+				"x": 71.5,
+				"y": 16.0,
+				"z": 414.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 2.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.RelativeCodeChurn",
+			"position": {
+				"x": 71.0,
+				"y": 16.0,
+				"z": 409.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.input.metrics",
+			"position": {
+				"x": 69.5,
+				"y": 14.5,
+				"z": 415.5
+			},
+			"scale": {
+				"x": 12.0,
+				"y": 1.0,
+				"z": 17.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.input",
+			"position": {
+				"x": 69.5,
+				"y": 13.5,
+				"z": 415.5
+			},
+			"scale": {
+				"x": 16.0,
+				"y": 1.0,
+				"z": 21.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatRawParserStrategy",
+			"position": {
+				"x": 64.0,
+				"y": 16.5,
+				"z": 388.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 3.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawParserStrategy",
+			"position": {
+				"x": 69.0,
+				"y": 17.0,
+				"z": 375.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 4.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy",
+			"position": {
+				"x": 69.0,
+				"y": 17.5,
+				"z": 381.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 5.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatParserStrategy",
+			"position": {
+				"x": 72.0,
+				"y": 16.5,
+				"z": 390.0
+			},
+			"scale": {
+				"x": 8.0,
+				"y": 3.0,
+				"z": 8.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.git",
+			"position": {
+				"x": 69.0,
+				"y": 14.5,
+				"z": 384.0
+			},
+			"scale": {
+				"x": 18.0,
+				"y": 1.0,
+				"z": 24.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy",
+			"position": {
+				"x": 69.0,
+				"y": 18.0,
+				"z": 367.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 6.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.svn",
+			"position": {
+				"x": 69.0,
+				"y": 14.5,
+				"z": 367.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy",
+			"position": {
+				"x": 69.0,
+				"y": 14.5,
+				"z": 399.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 1.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.parser",
+			"position": {
+				"x": 69.0,
+				"y": 13.5,
+				"z": 383.0
+			},
+			"scale": {
+				"x": 22.0,
+				"y": 1.0,
+				"z": 40.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter",
+			"position": {
+				"x": 81.5,
+				"y": 15.0,
+				"z": 407.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 4.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
+			"position": {
+				"x": 72.5,
+				"y": 13.5,
+				"z": 429.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.converter.ProjectConverter",
+			"position": {
+				"x": 84.5,
+				"y": 15.0,
+				"z": 365.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.converter",
+			"position": {
+				"x": 84.5,
+				"y": 13.5,
+				"z": 365.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser",
+			"position": {
+				"x": 72.5,
+				"y": 12.5,
+				"z": 396.5
+			},
+			"scale": {
+				"x": 33.0,
+				"y": 1.0,
+				"z": 71.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer",
+			"position": {
+				"x": 72.5,
+				"y": 11.5,
+				"z": 396.5
+			},
+			"scale": {
+				"x": 37.0,
+				"y": 1.0,
+				"z": 75.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.model.input.VersionControlledFile",
+			"position": {
+				"x": 72.5,
+				"y": 14.0,
+				"z": 352.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 2.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.model.input",
+			"position": {
+				"x": 72.5,
+				"y": 12.5,
+				"z": 352.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.model",
+			"position": {
+				"x": 72.5,
+				"y": 11.5,
+				"z": 352.0
+			},
+			"scale": {
+				"x": 10.0,
+				"y": 1.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta",
+			"position": {
+				"x": 72.5,
+				"y": 10.5,
+				"z": 390.5
+			},
+			"scale": {
+				"x": 41.0,
+				"y": 1.0,
+				"z": 91.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff",
+			"position": {
+				"x": 72.5,
+				"y": 9.5,
+				"z": 390.5
+			},
+			"scale": {
+				"x": 45.0,
+				"y": 1.0,
+				"z": 95.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java.de",
+			"position": {
+				"x": 72.5,
+				"y": 8.5,
+				"z": 390.5
+			},
+			"scale": {
+				"x": 49.0,
+				"y": 1.0,
+				"z": 99.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main.java",
+			"position": {
+				"x": 72.5,
+				"y": 7.5,
+				"z": 390.5
+			},
+			"scale": {
+				"x": 53.0,
+				"y": 1.0,
+				"z": 103.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src.main",
+			"position": {
+				"x": 72.5,
+				"y": 6.5,
+				"z": 390.5
+			},
+			"scale": {
+				"x": 57.0,
+				"y": 1.0,
+				"z": 107.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.src",
+			"position": {
+				"x": 72.5,
+				"y": 5.5,
+				"z": 367.0
+			},
+			"scale": {
+				"x": 70.0,
+				"y": 1.0,
+				"z": 158.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.build",
+			"position": {
+				"x": 70.5,
+				"y": 7.0,
+				"z": 450.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 4.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser.README",
+			"position": {
+				"x": 75.5,
+				"y": 5.5,
+				"z": 449.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SCMLogParser",
+			"position": {
+				"x": 72.5,
+				"y": 4.5,
+				"z": 370.0
+			},
+			"scale": {
+				"x": 74.0,
+				"y": 1.0,
+				"z": 168.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.build",
+			"position": {
+				"x": 54.5,
+				"y": 6.5,
+				"z": 460.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 3.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main.kotlin.de.maibornwolff.codecharta.importer.csv.CSVImporter",
+			"position": {
+				"x": 76.0,
+				"y": 13.5,
+				"z": 510.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main.kotlin.de.maibornwolff.codecharta.importer.csv.SourceMonitorImporter",
+			"position": {
+				"x": 76.0,
+				"y": 14.0,
+				"z": 506.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 2.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main.kotlin.de.maibornwolff.codecharta.importer.csv",
+			"position": {
+				"x": 76.0,
+				"y": 12.5,
+				"z": 508.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main.kotlin.de.maibornwolff.codecharta.importer",
+			"position": {
+				"x": 76.0,
+				"y": 11.5,
+				"z": 508.0
+			},
+			"scale": {
+				"x": 10.0,
+				"y": 1.0,
+				"z": 14.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main.kotlin.de.maibornwolff.codecharta",
+			"position": {
+				"x": 76.0,
+				"y": 10.5,
+				"z": 508.0
+			},
+			"scale": {
+				"x": 14.0,
+				"y": 1.0,
+				"z": 18.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main.kotlin.de.maibornwolff",
+			"position": {
+				"x": 76.0,
+				"y": 9.5,
+				"z": 508.0
+			},
+			"scale": {
+				"x": 18.0,
+				"y": 1.0,
+				"z": 22.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main.kotlin.de",
+			"position": {
+				"x": 76.0,
+				"y": 8.5,
+				"z": 508.0
+			},
+			"scale": {
+				"x": 22.0,
+				"y": 1.0,
+				"z": 26.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main.kotlin",
+			"position": {
+				"x": 76.0,
+				"y": 7.5,
+				"z": 508.0
+			},
+			"scale": {
+				"x": 26.0,
+				"y": 1.0,
+				"z": 30.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.main",
+			"position": {
+				"x": 76.0,
+				"y": 6.5,
+				"z": 508.0
+			},
+			"scale": {
+				"x": 30.0,
+				"y": 1.0,
+				"z": 34.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.test.kotlin.de.maibornwolff.codecharta.importer.csv.CSVProjectAdapterTest",
+			"position": {
+				"x": 76.0,
+				"y": 14.0,
+				"z": 474.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.test.kotlin.de.maibornwolff.codecharta.importer.csv",
+			"position": {
+				"x": 76.0,
+				"y": 12.5,
+				"z": 474.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.test.kotlin.de.maibornwolff.codecharta.importer",
+			"position": {
+				"x": 76.0,
+				"y": 11.5,
+				"z": 474.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.test.kotlin.de.maibornwolff.codecharta",
+			"position": {
+				"x": 76.0,
+				"y": 10.5,
+				"z": 474.5
+			},
+			"scale": {
+				"x": 13.0,
+				"y": 1.0,
+				"z": 13.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.test.kotlin.de.maibornwolff",
+			"position": {
+				"x": 76.0,
+				"y": 9.5,
+				"z": 474.5
+			},
+			"scale": {
+				"x": 17.0,
+				"y": 1.0,
+				"z": 17.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.test.kotlin.de",
+			"position": {
+				"x": 76.0,
+				"y": 8.5,
+				"z": 474.5
+			},
+			"scale": {
+				"x": 21.0,
+				"y": 1.0,
+				"z": 21.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.test.kotlin",
+			"position": {
+				"x": 76.0,
+				"y": 7.5,
+				"z": 474.5
+			},
+			"scale": {
+				"x": 25.0,
+				"y": 1.0,
+				"z": 25.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src.test",
+			"position": {
+				"x": 76.0,
+				"y": 6.5,
+				"z": 474.5
+			},
+			"scale": {
+				"x": 29.0,
+				"y": 1.0,
+				"z": 29.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter.src",
+			"position": {
+				"x": 76.0,
+				"y": 5.5,
+				"z": 492.5
+			},
+			"scale": {
+				"x": 34.0,
+				"y": 1.0,
+				"z": 69.0
+			}
+		},
+		{
+			"name": "root.analysis.import.CSVImporter",
+			"position": {
+				"x": 72.5,
+				"y": 4.5,
+				"z": 492.5
+			},
+			"scale": {
+				"x": 45.0,
+				"y": 1.0,
+				"z": 73.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SonarImporter.build",
+			"position": {
+				"x": 111.5,
+				"y": 7.0,
+				"z": 155.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 4.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.import.SonarImporter",
+			"position": {
+				"x": 111.5,
+				"y": 4.5,
+				"z": 155.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.import",
+			"position": {
+				"x": 72.5,
+				"y": 3.5,
+				"z": 341.0
+			},
+			"scale": {
+				"x": 87.0,
+				"y": 1.0,
+				"z": 380.0
+			}
+		},
+		{
+			"name": "root.analysis.filter.MergeFilter.build",
+			"position": {
+				"x": 77.5,
+				"y": 6.0,
+				"z": 539.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 2.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.filter.MergeFilter",
+			"position": {
+				"x": 77.5,
+				"y": 4.5,
+				"z": 539.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.analysis.filter",
+			"position": {
+				"x": 77.5,
+				"y": 3.5,
+				"z": 539.5
+			},
+			"scale": {
+				"x": 13.0,
+				"y": 1.0,
+				"z": 13.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ValidationTool.build",
+			"position": {
+				"x": 71.5,
+				"y": 7.5,
+				"z": 144.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 5.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ValidationTool",
+			"position": {
+				"x": 71.5,
+				"y": 4.5,
+				"z": 144.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.build",
+			"position": {
+				"x": 71.5,
+				"y": 7.5,
+				"z": 136.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 5.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src.main.kotlin.de.maibornwolff.codecharta.tools.ccsh.Ccsh",
+			"position": {
+				"x": 71.5,
+				"y": 14.0,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src.main.kotlin.de.maibornwolff.codecharta.tools.ccsh",
+			"position": {
+				"x": 71.5,
+				"y": 12.5,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src.main.kotlin.de.maibornwolff.codecharta.tools",
+			"position": {
+				"x": 71.5,
+				"y": 11.5,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src.main.kotlin.de.maibornwolff.codecharta",
+			"position": {
+				"x": 71.5,
+				"y": 10.5,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 13.0,
+				"y": 1.0,
+				"z": 13.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src.main.kotlin.de.maibornwolff",
+			"position": {
+				"x": 71.5,
+				"y": 9.5,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 17.0,
+				"y": 1.0,
+				"z": 17.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src.main.kotlin.de",
+			"position": {
+				"x": 71.5,
+				"y": 8.5,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 21.0,
+				"y": 1.0,
+				"z": 21.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src.main.kotlin",
+			"position": {
+				"x": 71.5,
+				"y": 7.5,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 25.0,
+				"y": 1.0,
+				"z": 25.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src.main",
+			"position": {
+				"x": 71.5,
+				"y": 6.5,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 29.0,
+				"y": 1.0,
+				"z": 29.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh.src",
+			"position": {
+				"x": 71.5,
+				"y": 5.5,
+				"z": 116.5
+			},
+			"scale": {
+				"x": 33.0,
+				"y": 1.0,
+				"z": 33.0
+			}
+		},
+		{
+			"name": "root.analysis.tools.ccsh",
+			"position": {
+				"x": 71.5,
+				"y": 4.5,
+				"z": 118.5
+			},
+			"scale": {
+				"x": 37.0,
+				"y": 1.0,
+				"z": 41.0
+			}
+		},
+		{
+			"name": "root.analysis.tools",
+			"position": {
+				"x": 71.5,
+				"y": 3.5,
+				"z": 122.5
+			},
+			"scale": {
+				"x": 41.0,
+				"y": 1.0,
+				"z": 53.0
+			}
+		},
+		{
+			"name": "root.analysis.noderapper.packageLock",
+			"position": {
+				"x": 121.0,
+				"y": 4.5,
+				"z": 154.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis.noderapper",
+			"position": {
+				"x": 121.0,
+				"y": 3.5,
+				"z": 154.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.analysis.nodeWrapper.package",
+			"position": {
+				"x": 97.5,
+				"y": 6.0,
+				"z": 99.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 4.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.analysis.nodeWrapper.packageLock",
+			"position": {
+				"x": 102.5,
+				"y": 5.5,
+				"z": 99.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 3.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.analysis.nodeWrapper",
+			"position": {
+				"x": 100.0,
+				"y": 3.5,
+				"z": 99.5
+			},
+			"scale": {
+				"x": 12.0,
+				"y": 1.0,
+				"z": 7.0
+			}
+		},
+		{
+			"name": "root.analysis.gradle",
+			"position": {
+				"x": 128.5,
+				"y": 4.0,
+				"z": 153.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 2.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.build",
+			"position": {
+				"x": 89.5,
+				"y": 3.5,
+				"z": 536.5
+			},
+			"scale": {
+				"x": 7.0,
+				"y": 1.0,
+				"z": 7.0
+			}
+		},
+		{
+			"name": "root.analysis.model.build",
+			"position": {
+				"x": 110.5,
+				"y": 5.0,
+				"z": 98.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.analysis.model",
+			"position": {
+				"x": 110.5,
+				"y": 3.5,
+				"z": 98.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.analysis.settings",
+			"position": {
+				"x": 134.0,
+				"y": 3.5,
+				"z": 152.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.analysis",
+			"position": {
+				"x": 82.0,
+				"y": 2.5,
+				"z": 321.0
+			},
+			"scale": {
+				"x": 110.0,
+				"y": 1.0,
+				"z": 454.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.aggregateSettingsPanel.aggregateSettingsPanel.component",
+			"position": {
+				"x": 35.5,
+				"y": 9.5,
+				"z": 32.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 3.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.aggregateSettingsPanel.aggregateSettingsPanel",
+			"position": {
+				"x": 35.5,
+				"y": 7.5,
+				"z": 32.5
+			},
+			"scale": {
+				"x": 7.0,
+				"y": 1.0,
+				"z": 7.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.aggregateSettingsPanel",
+			"position": {
+				"x": 35.5,
+				"y": 6.5,
+				"z": 32.5
+			},
+			"scale": {
+				"x": 11.0,
+				"y": 1.0,
+				"z": 11.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.revisionChooser.revisionChooserComponent",
+			"position": {
+				"x": 14.5,
+				"y": 8.0,
+				"z": 14.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.revisionChooser.revisionChooserFileDropDown",
+			"position": {
+				"x": 18.0,
+				"y": 8.0,
+				"z": 15.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 2.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.revisionChooser",
+			"position": {
+				"x": 16.5,
+				"y": 6.5,
+				"z": 15.0
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.ribbonBar.ribbonBar.component",
+			"position": {
+				"x": 28.0,
+				"y": 9.5,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 3.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.ribbonBar.ribbonBar",
+			"position": {
+				"x": 28.0,
+				"y": 7.5,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.ribbonBar",
+			"position": {
+				"x": 28.0,
+				"y": 6.5,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 10.0,
+				"y": 1.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.mapTreeView.mapTreeViewLevel",
+			"position": {
+				"x": 38.0,
+				"y": 7.5,
+				"z": 18.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.mapTreeView.mapTreeViewLevelComponent",
+			"position": {
+				"x": 38.0,
+				"y": 8.0,
+				"z": 14.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.mapTreeView",
+			"position": {
+				"x": 38.0,
+				"y": 6.5,
+				"z": 16.5
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.codeMap.rendering.geometryGenerator",
+			"position": {
+				"x": 48.0,
+				"y": 8.5,
+				"z": 20.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.codeMap.rendering.renderSettings",
+			"position": {
+				"x": 48.0,
+				"y": 9.0,
+				"z": 16.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.codeMap.rendering",
+			"position": {
+				"x": 48.0,
+				"y": 7.5,
+				"z": 18.5
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.codeMap.codeMap.render.service",
+			"position": {
+				"x": 57.5,
+				"y": 10.0,
+				"z": 18.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.codeMap.codeMap.render",
+			"position": {
+				"x": 57.5,
+				"y": 8.5,
+				"z": 18.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.codeMap.codeMap",
+			"position": {
+				"x": 57.5,
+				"y": 7.5,
+				"z": 18.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.codeMap",
+			"position": {
+				"x": 53.5,
+				"y": 6.5,
+				"z": 18.5
+			},
+			"scale": {
+				"x": 21.0,
+				"y": 1.0,
+				"z": 13.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.fileChooser.fileChooser",
+			"position": {
+				"x": 68.5,
+				"y": 8.0,
+				"z": 14.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.fileChooser",
+			"position": {
+				"x": 68.5,
+				"y": 6.5,
+				"z": 14.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.metricChooser.metricChooser.component",
+			"position": {
+				"x": 49.5,
+				"y": 9.5,
+				"z": 40.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 3.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.metricChooser.metricChooser.horizontal.component",
+			"position": {
+				"x": 49.5,
+				"y": 10.0,
+				"z": 33.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.metricChooser.metricChooser.horizontal",
+			"position": {
+				"x": 49.5,
+				"y": 8.5,
+				"z": 33.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.metricChooser.metricChooser",
+			"position": {
+				"x": 49.5,
+				"y": 7.5,
+				"z": 36.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 15.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.metricChooser",
+			"position": {
+				"x": 49.5,
+				"y": 6.5,
+				"z": 36.5
+			},
+			"scale": {
+				"x": 13.0,
+				"y": 1.0,
+				"z": 19.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.legendPanel.legendPanel",
+			"position": {
+				"x": 76.5,
+				"y": 8.5,
+				"z": 18.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 3.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.legendPanel.legendPanelComponent",
+			"position": {
+				"x": 76.5,
+				"y": 8.0,
+				"z": 14.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.legendPanel",
+			"position": {
+				"x": 76.5,
+				"y": 6.5,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 7.0,
+				"y": 1.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.displaySettingsPanel.displaySettingsPanel.component",
+			"position": {
+				"x": 63.0,
+				"y": 8.5,
+				"z": 32.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.displaySettingsPanel.displaySettingsPanel",
+			"position": {
+				"x": 63.0,
+				"y": 7.5,
+				"z": 32.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.displaySettingsPanel",
+			"position": {
+				"x": 63.0,
+				"y": 6.5,
+				"z": 32.0
+			},
+			"scale": {
+				"x": 10.0,
+				"y": 1.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.experimentalSettingsPanel.experimentalSettingsPanel.component",
+			"position": {
+				"x": 86.5,
+				"y": 9.0,
+				"z": 16.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.experimentalSettingsPanel.experimentalSettingsPanel",
+			"position": {
+				"x": 86.5,
+				"y": 7.5,
+				"z": 16.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.experimentalSettingsPanel",
+			"position": {
+				"x": 86.5,
+				"y": 6.5,
+				"z": 16.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.settingsPanel.settingsPanel",
+			"position": {
+				"x": 73.0,
+				"y": 7.5,
+				"z": 30.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.settingsPanel",
+			"position": {
+				"x": 73.0,
+				"y": 6.5,
+				"z": 30.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui.ui",
+			"position": {
+				"x": 93.5,
+				"y": 7.0,
+				"z": 12.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.ui",
+			"position": {
+				"x": 53.0,
+				"y": 5.5,
+				"z": 29.0
+			},
+			"scale": {
+				"x": 86.0,
+				"y": 1.0,
+				"z": 38.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.aggregate.aggregate.service",
+			"position": {
+				"x": 30.5,
+				"y": 9.0,
+				"z": 57.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 2.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.aggregate.aggregate",
+			"position": {
+				"x": 30.5,
+				"y": 7.5,
+				"z": 57.5
+			},
+			"scale": {
+				"x": 7.0,
+				"y": 1.0,
+				"z": 7.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.aggregate",
+			"position": {
+				"x": 30.5,
+				"y": 6.5,
+				"z": 57.5
+			},
+			"scale": {
+				"x": 11.0,
+				"y": 1.0,
+				"z": 11.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.data.data.deltaCalculator.service",
+			"position": {
+				"x": 47.0,
+				"y": 10.0,
+				"z": 67.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 2.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.data.data.deltaCalculator",
+			"position": {
+				"x": 47.0,
+				"y": 8.5,
+				"z": 67.5
+			},
+			"scale": {
+				"x": 7.0,
+				"y": 1.0,
+				"z": 7.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.data.data.service",
+			"position": {
+				"x": 43.0,
+				"y": 9.5,
+				"z": 57.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 3.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.data.data.decorator.service",
+			"position": {
+				"x": 49.0,
+				"y": 10.0,
+				"z": 59.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 2.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.data.data.decorator",
+			"position": {
+				"x": 49.0,
+				"y": 8.5,
+				"z": 59.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.data.data",
+			"position": {
+				"x": 47.0,
+				"y": 7.5,
+				"z": 63.5
+			},
+			"scale": {
+				"x": 14.0,
+				"y": 1.0,
+				"z": 19.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.data",
+			"position": {
+				"x": 47.0,
+				"y": 6.5,
+				"z": 63.5
+			},
+			"scale": {
+				"x": 18.0,
+				"y": 1.0,
+				"z": 23.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.scenario.scenario.data",
+			"position": {
+				"x": 63.5,
+				"y": 8.5,
+				"z": 60.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 1.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.scenario.scenario.service",
+			"position": {
+				"x": 63.5,
+				"y": 9.0,
+				"z": 56.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.scenario.scenario",
+			"position": {
+				"x": 63.5,
+				"y": 7.5,
+				"z": 59.0
+			},
+			"scale": {
+				"x": 7.0,
+				"y": 1.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.scenario.scenarios",
+			"position": {
+				"x": 69.5,
+				"y": 8.0,
+				"z": 54.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.scenario",
+			"position": {
+				"x": 65.0,
+				"y": 6.5,
+				"z": 59.0
+			},
+			"scale": {
+				"x": 14.0,
+				"y": 1.0,
+				"z": 14.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.treemap.treemap.service",
+			"position": {
+				"x": 79.0,
+				"y": 8.5,
+				"z": 57.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.treemap.treemap",
+			"position": {
+				"x": 79.0,
+				"y": 7.5,
+				"z": 57.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core.treemap",
+			"position": {
+				"x": 79.0,
+				"y": 6.5,
+				"z": 57.0
+			},
+			"scale": {
+				"x": 10.0,
+				"y": 1.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.core",
+			"position": {
+				"x": 54.5,
+				"y": 5.5,
+				"z": 63.5
+			},
+			"scale": {
+				"x": 63.0,
+				"y": 1.0,
+				"z": 27.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeMap.rendering.codeMapBuilding",
+			"position": {
+				"x": 104.0,
+				"y": 7.5,
+				"z": 33.0
+			},
+			"scale": {
+				"x": 4.0,
+				"y": 1.0,
+				"z": 4.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeMap.rendering.codeMapMesh",
+			"position": {
+				"x": 104.0,
+				"y": 8.5,
+				"z": 22.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 3.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeMap.rendering.codeMapGeometricDescription",
+			"position": {
+				"x": 104.0,
+				"y": 8.0,
+				"z": 27.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 2.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeMap.rendering.geometryGenerator",
+			"position": {
+				"x": 104.0,
+				"y": 9.5,
+				"z": 18.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 5.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeMap.rendering.labelManager",
+			"position": {
+				"x": 104.0,
+				"y": 9.0,
+				"z": 14.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 4.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeMap.rendering",
+			"position": {
+				"x": 104.0,
+				"y": 6.5,
+				"z": 24.5
+			},
+			"scale": {
+				"x": 8.0,
+				"y": 1.0,
+				"z": 25.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeMap.codeMapService",
+			"position": {
+				"x": 104.0,
+				"y": 6.5,
+				"z": 40.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 1.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeMap",
+			"position": {
+				"x": 104.0,
+				"y": 5.5,
+				"z": 27.0
+			},
+			"scale": {
+				"x": 12.0,
+				"y": 1.0,
+				"z": 34.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeCharta.component",
+			"position": {
+				"x": 92.5,
+				"y": 7.0,
+				"z": 54.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 2.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta.codeCharta",
+			"position": {
+				"x": 92.5,
+				"y": 5.5,
+				"z": 54.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codeCharta",
+			"position": {
+				"x": 60.0,
+				"y": 4.5,
+				"z": 43.5
+			},
+			"scale": {
+				"x": 104.0,
+				"y": 1.0,
+				"z": 71.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codecharta.ui.nodeContextMenu.nodeContextMenu.component",
+			"position": {
+				"x": 123.0,
+				"y": 9.0,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 2.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codecharta.ui.nodeContextMenu.nodeContextMenu",
+			"position": {
+				"x": 123.0,
+				"y": 7.5,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 6.0,
+				"y": 1.0,
+				"z": 6.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codecharta.ui.nodeContextMenu",
+			"position": {
+				"x": 123.0,
+				"y": 6.5,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 10.0,
+				"y": 1.0,
+				"z": 10.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codecharta.ui",
+			"position": {
+				"x": 123.0,
+				"y": 5.5,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 14.0,
+				"y": 1.0,
+				"z": 14.0
+			}
+		},
+		{
+			"name": "root.visualization.app.codecharta",
+			"position": {
+				"x": 123.0,
+				"y": 4.5,
+				"z": 17.0
+			},
+			"scale": {
+				"x": 18.0,
+				"y": 1.0,
+				"z": 18.0
+			}
+		},
+		{
+			"name": "root.visualization.app.app",
+			"position": {
+				"x": 71.5,
+				"y": 5.0,
+				"z": 82.5
+			},
+			"scale": {
+				"x": 3.0,
+				"y": 2.0,
+				"z": 3.0
+			}
+		},
+		{
+			"name": "root.visualization.app.index",
+			"position": {
+				"x": 134.5,
+				"y": 5.0,
+				"z": 8.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.app",
+			"position": {
+				"x": 71.5,
+				"y": 3.5,
+				"z": 46.0
+			},
+			"scale": {
+				"x": 131.0,
+				"y": 1.0,
+				"z": 80.0
+			}
+		},
+		{
+			"name": "root.visualization.package",
+			"position": {
+				"x": 139.5,
+				"y": 6.0,
+				"z": 6.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 6.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.packageLock",
+			"position": {
+				"x": 82.0,
+				"y": 5.0,
+				"z": 89.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 4.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.Gruntfile",
+			"position": {
+				"x": 86.0,
+				"y": 3.5,
+				"z": 89.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root.visualization.conf.grunt.nwjs.config",
+			"position": {
+				"x": 148.5,
+				"y": 7.0,
+				"z": 12.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.conf.grunt.nwjs",
+			"position": {
+				"x": 148.5,
+				"y": 5.5,
+				"z": 12.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.visualization.conf.grunt",
+			"position": {
+				"x": 148.5,
+				"y": 4.5,
+				"z": 12.5
+			},
+			"scale": {
+				"x": 9.0,
+				"y": 1.0,
+				"z": 9.0
+			}
+		},
+		{
+			"name": "root.visualization.conf",
+			"position": {
+				"x": 148.5,
+				"y": 3.5,
+				"z": 12.5
+			},
+			"scale": {
+				"x": 13.0,
+				"y": 1.0,
+				"z": 13.0
+			}
+		},
+		{
+			"name": "root.visualization.script.travisBuild",
+			"position": {
+				"x": 159.5,
+				"y": 5.0,
+				"z": 8.5
+			},
+			"scale": {
+				"x": 1.0,
+				"y": 2.0,
+				"z": 1.0
+			}
+		},
+		{
+			"name": "root.visualization.script",
+			"position": {
+				"x": 159.5,
+				"y": 3.5,
+				"z": 8.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.visualization",
+			"position": {
+				"x": 84.0,
+				"y": 2.5,
+				"z": 48.0
+			},
+			"scale": {
+				"x": 160.0,
+				"y": 1.0,
+				"z": 88.0
+			}
+		},
+		{
+			"name": "root.CHANGELOG",
+			"position": {
+				"x": 84.0,
+				"y": 2.5,
+				"z": 552.5
+			},
+			"scale": {
+				"x": 5.0,
+				"y": 1.0,
+				"z": 5.0
+			}
+		},
+		{
+			"name": "root.travis",
+			"position": {
+				"x": 140.0,
+				"y": 2.5,
+				"z": 95.0
+			},
+			"scale": {
+				"x": 2.0,
+				"y": 1.0,
+				"z": 2.0
+			}
+		},
+		{
+			"name": "root",
+			"position": {
+				"x": 84.0,
+				"y": 1.5,
+				"z": 279.5
+			},
+			"scale": {
+				"x": 164.0,
+				"y": 1.0,
+				"z": 555.0
+			}
+		},
+		{
+			"name": "root",
+			"position": {
+				"x": 84.0,
+				"y": 0.5,
+				"z": 279.5
+			},
+			"scale": {
+				"x": 168.0,
+				"y": 1.0,
+				"z": 559.0
+			}
+		}
+	]
+}
