@@ -13,13 +13,11 @@ import {
 } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { BlacklistType, NodeType } from "../../codeCharta.model"
+import { NodeType } from "../../codeCharta.model"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
-import { DialogService } from "../dialog/dialog.service"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -29,8 +27,6 @@ describe("nodeContextMenuController", () => {
 	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let threeSceneService: ThreeSceneService
-	let dialogService: DialogService
-	let blacklistService: BlacklistService
 
 	beforeEach(() => {
 		restartSystem()
@@ -51,8 +47,6 @@ describe("nodeContextMenuController", () => {
 		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		dialogService = getService<DialogService>("dialogService")
-		blacklistService = getService<BlacklistService>("blacklistService")
 	}
 
 	function mockElement() {
@@ -71,9 +65,7 @@ describe("nodeContextMenuController", () => {
 			$rootScope,
 			storeService,
 			codeMapPreRenderService,
-			threeSceneService,
-			dialogService,
-			blacklistService
+			threeSceneService
 		)
 	}
 
@@ -225,39 +217,6 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.isNodeConstantlyHighlighted()
 
 			expect(result).toEqual(true)
-		})
-	})
-
-	describe("excludeNode", () => {
-		beforeEach(() => {
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
-		})
-
-		it("should add exclude blacklistItem", () => {
-			blacklistService.resultsInEmptyMap = jest.fn(() => false)
-			const expected = { nodeType: "Folder", path: "/root/Parent Leaf", type: BlacklistType.exclude }
-
-			nodeContextMenuController.excludeNode()
-
-			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
-		})
-
-		it("should display error dialog when no files are left", () => {
-			blacklistService.resultsInEmptyMap = jest.fn(() => true)
-			dialogService.showErrorDialog = jest.fn()
-
-			nodeContextMenuController.excludeNode()
-
-			expect(dialogService.showErrorDialog).toBeCalled()
-		})
-
-		it("should prevent duplicate blacklist object regarding issue #2419", () => {
-			blacklistService.resultsInEmptyMap = jest.fn(() => false)
-
-			nodeContextMenuController.excludeNode()
-			nodeContextMenuController.excludeNode()
-
-			expect(storeService.getState().fileSettings.blacklist.length).toEqual(1)
 		})
 	})
 

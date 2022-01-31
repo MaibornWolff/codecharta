@@ -11,7 +11,7 @@ export class UnfocusNodesOnLoadingMapEffect {
 
 	unfocusNodesOnLoadingMap$ = createEffect(() => {
 		return this.actions$.pipe(
-			filter(action => isAction<SetIsLoadingFileAction>(action, IsLoadingFileActions) && action.payload === true),
+			filter(action => isAction<SetIsLoadingFileAction>(action, IsLoadingFileActions.SET_IS_LOADING_FILE) && action.payload === true),
 			map(() => unfocusAllNodes())
 		)
 	})

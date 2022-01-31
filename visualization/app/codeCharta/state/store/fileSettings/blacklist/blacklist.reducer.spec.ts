@@ -1,4 +1,4 @@
-import { addBlacklistItem, BlacklistAction, setBlacklist, removeBlacklistItem } from "./blacklist.actions"
+import { addBlacklistItem, BlacklistAction, setBlacklist, removeBlacklistItem, addBlacklistItems } from "./blacklist.actions"
 import { blacklist } from "./blacklist.reducer"
 import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 
@@ -18,6 +18,22 @@ describe("blacklist", () => {
 			const result = blacklist([], addBlacklistItem(item))
 
 			expect(result).toEqual([item])
+		})
+	})
+
+	describe("Action: ADD_BLACKLIST_ITEMS", () => {
+		it("should add all unique blacklist items to the blacklist", () => {
+			const existingItem: BlacklistItem = { type: BlacklistType.flatten, path: "foo/bar" }
+			const result = blacklist(
+				[existingItem],
+				addBlacklistItems([
+					existingItem,
+					{ type: BlacklistType.flatten, path: "foo/bar2" },
+					{ type: BlacklistType.flatten, path: "foo/bar2" }
+				])
+			)
+
+			expect(result).toEqual([existingItem, { type: BlacklistType.flatten, path: "foo/bar2" }])
 		})
 	})
 
