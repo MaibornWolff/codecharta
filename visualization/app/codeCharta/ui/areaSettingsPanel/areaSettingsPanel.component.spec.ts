@@ -9,6 +9,7 @@ import { DynamicMarginService } from "../../state/store/appSettings/dynamicMargi
 import { MarginService } from "../../state/store/dynamicSettings/margin/margin.service"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { FilesService } from "../../state/store/files/files.service"
+import { InvertAreaService } from "../../state/store/appSettings/invertArea/invertArea.service"
 
 describe("AreaSettingsPanelController", () => {
 	let areaSettingsPanelController: AreaSettingsPanelController
@@ -57,6 +58,14 @@ describe("AreaSettingsPanelController", () => {
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
+
+		it("should subscribe to InvertAreaService", () => {
+			InvertAreaService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(InvertAreaService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+		})
 	})
 
 	describe("onDynamicMarginChanged", () => {
@@ -64,6 +73,14 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.onDynamicMarginChanged(true)
 
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
+		})
+	})
+
+	describe("onInvertAreaChanged", () => {
+		it("should set invertArea in viewModel", () => {
+			areaSettingsPanelController.onInvertAreaChanged(true)
+
+			expect(areaSettingsPanelController["_viewModel"].invertArea).toBeTruthy()
 		})
 	})
 
@@ -86,6 +103,16 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.onFilesSelectionChanged()
 
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
+		})
+	})
+
+	describe("applySettingsInvertArea", () => {
+		it("should update invertArea in store", () => {
+			areaSettingsPanelController["_viewModel"].invertArea = true
+
+			areaSettingsPanelController.applySettingsInvertArea()
+
+			expect(storeService.getState().appSettings.invertArea).toBeTruthy()
 		})
 	})
 
