@@ -28,12 +28,16 @@ import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFold
 import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
+import { FlattenButtonsModule } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.module"
+import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.component"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
-		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect]),
+		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
@@ -43,9 +47,10 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		FocusButtonsModule,
-		MarkFolderRowModule
+		MarkFolderRowModule,
+		FlattenButtonsModule
 	],
-	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent],
+	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
@@ -59,7 +64,10 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		FocusButtonsComponent,
-		MarkFolderRowComponent
+		MarkFolderRowComponent,
+		FlattenButtonsComponent,
+		FlattenButtonsComponent,
+		...dialogs
 	]
 })
 export class AppModule {

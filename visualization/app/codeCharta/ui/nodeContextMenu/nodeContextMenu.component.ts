@@ -3,13 +3,10 @@ import angular, { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { getCodeMapNodeFromPath, isLeaf } from "../../util/codeMapHelper"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { DialogService } from "../dialog/dialog.service"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { ERROR_MESSAGES } from "../../util/fileValidator"
 import { Store } from "../../state/store/store"
 import { rightClickedNodeDataSelector } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import {
@@ -40,9 +37,7 @@ export class NodeContextMenuController {
 		public $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
-		private threeSceneService: ThreeSceneService,
-		private dialogService: DialogService,
-		private blacklistService: BlacklistService
+		private threeSceneService: ThreeSceneService
 	) {
 		"ngInject"
 		Store.store.subscribe(() => {
@@ -111,26 +106,6 @@ export class NodeContextMenuController {
 		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
 	}
 
-	flattenNode() {
-		const codeMapNode = this._viewModel.codeMapNode
-		const blacklistItem: BlacklistItem = {
-			path: codeMapNode.path,
-			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type
-		}
-		this.storeService.dispatch(addBlacklistItem(blacklistItem))
-	}
-
-	showFlattenedNode() {
-		const codeMapNode = this._viewModel.codeMapNode
-		const blacklistItem: BlacklistItem = {
-			path: codeMapNode.path,
-			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type
-		}
-		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
-	}
-
 	excludeNode() {
 		const codeMapNode = this._viewModel.codeMapNode
 		const blacklistItem: BlacklistItem = {
@@ -139,11 +114,7 @@ export class NodeContextMenuController {
 			nodeType: codeMapNode.type
 		}
 
-		if (this.blacklistService.resultsInEmptyMap([blacklistItem])) {
-			this.dialogService.showErrorDialog(ERROR_MESSAGES.blacklistError, "Blacklist Error")
-		} else {
-			this.storeService.dispatch(addBlacklistItem(blacklistItem))
-		}
+		this.storeService.dispatch(addBlacklistItemsIfNotResultsInEmptyMap([blacklistItem]))
 	}
 
 	addNodeToConstantHighlight() {

@@ -7,6 +7,7 @@ import { MatDividerModule } from "@angular/material/divider"
 import { MatTooltipModule } from "@angular/material/tooltip"
 import { MatIconModule } from "@angular/material/icon"
 import { MatButtonToggleModule } from "@angular/material/button-toggle"
+import { MatDialogModule } from "@angular/material/dialog"
 
 const materialModules = [
 	MatSelectModule,
@@ -15,7 +16,8 @@ const materialModules = [
 	MatDividerModule,
 	MatTooltipModule,
 	MatIconModule,
-	MatButtonToggleModule
+	MatButtonToggleModule,
+	MatDialogModule
 ]
 
 @NgModule({
