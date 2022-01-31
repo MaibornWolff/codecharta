@@ -32,20 +32,20 @@ describe("flattenButtonsComponent", () => {
 			componentProperties: { codeMapNode }
 		})
 
-		expect(screen.queryByText("Remove Highlight")).toBe(null)
-		userEvent.click(screen.getByText("Keep Highlight"))
+		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
+		userEvent.click(screen.getByText("KEEP HIGHLIGHT"))
 
 		rerender({ codeMapNode: null })
 		rerender({ codeMapNode })
 
-		expect(screen.queryByText("Keep Highlight")).toBe(null)
-		userEvent.click(screen.getByText("Remove Highlight"))
+		expect(screen.queryByText("KEEP HIGHLIGHT")).toBe(null)
+		userEvent.click(screen.getByText("REMOVE HIGHLIGHT"))
 
 		rerender({ codeMapNode: null })
 		rerender({ codeMapNode })
 
-		expect(screen.queryByText("Remove Highlight")).toBe(null)
-		expect(screen.queryByText("Keep Highlight")).not.toBe(null)
+		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
+		expect(screen.queryByText("KEEP HIGHLIGHT")).not.toBe(null)
 	})
 
 	function createMockedThreeSceneService() {
