@@ -19,7 +19,6 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
-import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
@@ -56,7 +55,6 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		FocusButtonsComponent,
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
