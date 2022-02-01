@@ -60,9 +60,34 @@ function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, ga
 	return
 }
 
+function addWrappedFolderName(filePath) {
+	const splitFilePath = filePath.split(".")
+	return `${filePath.replace(/\./g, "/")}/${splitFilePath.slice(-1)}`
+}
+
+function createEdge(cycle) {
+	return {
+		fromNodeName: addWrappedFolderName(cycle.from),
+		toNodeName: addWrappedFolderName(cycle.to),
+		attributes: {
+			coupling: 100.0
+		}
+	}
+}
+
+function createAttributeTypes() {
+	return {
+		edges: [
+			{
+				coupling: "relative"
+			}
+		]
+	}
+}
+
 try {
-	const data = fs.readFileSync("./gameObjectPositions.json", "utf8")
-	const { gameObjectPositions } = JSON.parse(data)
+	const data = fs.readFileSync("./gameObjectsAndCycles.json", "utf8")
+	const { gameObjectPositions, cycles } = JSON.parse(data)
 
 	const ccJson = {
 		checksum: "somechecksum",
@@ -75,12 +100,21 @@ try {
 	}
 
 	const nodes = []
+	const edges = []
+
 	for (const gameObjectPosition of gameObjectPositions) {
 		const names = gameObjectPosition.name.split(".")
 		addNodeRecursively(names, nodes, gameObjectPosition, null, gameObjectPositions)
 	}
 
-	ccJson["data"]["nodes"] = nodes
+	// Actually we need to make sure if there are really edges in cc.json
+	for (const cycle of cycles) {
+		edges.push(createEdge(cycle))
+	}
+
+	ccJson.data.nodes = nodes
+	ccJson.data["edges"] = edges
+	ccJson.data["attributeTypes"] = createAttributeTypes()
 	outputCCJsonFile(ccJson)
 } catch (err) {
 	console.log(`Error reading file from disk: ${err}`)
