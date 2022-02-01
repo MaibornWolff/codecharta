@@ -1745,7 +1745,7 @@ export const STATE: State = {
 		colorMetric: "mcc",
 		distributionMetric: "mcc",
 		edgeMetric: "pairingRate",
-		focusedNodePath: "/root/ParentLeaf",
+		focusedNodePath: ["/root/ParentLeaf"],
 		searchPattern: "",
 		margin: 48,
 		colorRange: {
@@ -1772,6 +1772,7 @@ export const STATE: State = {
 		cameraTarget: new Vector3(177, 0, 299),
 		hideFlatBuildings: true,
 		invertHeight: true,
+		invertArea: false,
 		dynamicMargin: true,
 		isWhiteBackground: false,
 		mapColors: {
@@ -1818,7 +1819,8 @@ export const STATE: State = {
 	},
 	appStatus: {
 		hoveredBuildingPath: null,
-		selectedBuildingId: null
+		selectedBuildingId: null,
+		rightClickedNodeData: null
 	}
 }
 
@@ -1837,6 +1839,7 @@ export const DEFAULT_STATE: State = {
 		dynamicMargin: true,
 		hideFlatBuildings: false,
 		invertHeight: false,
+		invertArea: false,
 		isWhiteBackground: false,
 		mapColors: {
 			angularGreen: "#00BFA5",
@@ -1876,7 +1879,7 @@ export const DEFAULT_STATE: State = {
 	dynamicSettings: {
 		areaMetric: null,
 		colorMetric: null,
-		focusedNodePath: "",
+		focusedNodePath: [],
 		heightMetric: null,
 		distributionMetric: null,
 		edgeMetric: null,
@@ -1901,7 +1904,8 @@ export const DEFAULT_STATE: State = {
 	},
 	appStatus: {
 		hoveredBuildingPath: null,
-		selectedBuildingId: null
+		selectedBuildingId: null,
+		rightClickedNodeData: null
 	}
 }
 

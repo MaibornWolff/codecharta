@@ -5,6 +5,7 @@ import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
+import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 export interface NameDataPair {
 	fileName: string
@@ -25,10 +26,10 @@ export enum LayoutAlgorithm {
 }
 
 export enum SharpnessMode {
-	Standard = "Standard",
-	PixelRatioNoAA = "Pixel Ratio without Antialiasing",
-	PixelRatioFXAA = "Pixel Ratio With FXAA Antialiasing",
-	PixelRatioAA = "Pixel Ratio with Antialisaing (best)"
+	Standard = "High",
+	PixelRatioNoAA = "Low",
+	PixelRatioFXAA = "Medium",
+	PixelRatioAA = "Best"
 }
 
 export interface CCFile {
@@ -119,7 +120,7 @@ export interface DynamicSettings {
 	colorMetric: string
 	distributionMetric: string
 	edgeMetric: string
-	focusedNodePath: string
+	focusedNodePath: string[]
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
@@ -135,6 +136,7 @@ export interface AppSettings {
 	cameraTarget: Vector3
 	hideFlatBuildings: boolean
 	invertHeight: boolean
+	invertArea: boolean
 	dynamicMargin: boolean
 	isWhiteBackground: boolean
 	mapColors: MapColors
@@ -404,6 +406,7 @@ export interface LookUp {
 export interface AppStatus {
 	hoveredBuildingPath: string | null
 	selectedBuildingId: number | null
+	rightClickedNodeData: RightClickedNodeData
 }
 
 export enum PanelSelection {

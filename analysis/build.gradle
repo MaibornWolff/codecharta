@@ -4,42 +4,42 @@ buildscript {
         boon_version = '0.34'
         commons_lang3_version = '3.12.0'
         gson_version = '2.8.9'
-        jackson_version = '2.11.2'
-        gradle_module_metadata_maven_plugin = '0.2.0'
+        jackson_version = '2.13.1'
+        gradle_module_metadata_maven_plugin = '0.3.0'
         jacoco_version = '0.8.7'
         jaxb_api_version = '2.3.1'
         jersey_version = '2.35'
         json_schema_version = '1.14.0'
         json_version = '20190722'
         juniversalchardet_version = '1.0.3'
-        kotlin_logging_version = '1.12.5'
-        kotlin_version = '1.6.0'
-        kotlinx_coroutines_version = '1.5.2'
+        kotlin_logging_version = '2.1.21'
+        kotlin_version = '1.6.10'
+        kotlinx_coroutines_version = '1.6.0'
         picocli_version = '4.6.2'
-        slf4j_version = '1.7.32'
+        slf4j_version = '1.7.33'
         sonar_java_version = '6.8.0.23379'
         sonarqube_version = '3.0'
         univocity_parsers_version = '2.9.1'
 
         // Test dependency versions
-        assertj_version = '3.21.0'
+        assertj_version = '3.22.0'
         hamcrest_version = '1.4-atlassian-1'
         hamkrest_version = '1.8.0.1'
         junit4_version = '4.13.2'
-        junit5_version = '5.8.1'
-        junit_platform_version = '1.8.1'
-        ktlint_version = '10.2.0'
+        junit5_version = '5.8.2'
+        junit_platform_version = '1.8.2'
+        ktlint_version = '10.2.1'
 
         mockito_core_version = '3.12.4'
         mockito_kotlin_version = '2.2.0'
-        mokk_version = '1.12.0'
+        mokk_version = '1.12.2'
         spek2_version = '2.0.17'
-        wiremock_version = '2.27.2'
+        wiremock_version = '2.32.0'
         jsonassert_version = '1.5.0'
     }
 
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
@@ -64,7 +64,7 @@ allprojects {
     repositories.addAll(rootProject.getBuildscript().getRepositories())
 
     apply plugin: 'jacoco'
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 
     jacoco {
@@ -83,7 +83,7 @@ subprojects {
 
         testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5_version")
-        testRuntime("org.junit.jupiter:junit-jupiter-engine:$junit5_version")
+        testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5_version")
         testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5_version")
         testImplementation "com.natpryce:hamkrest:$hamkrest_version"
 
@@ -119,7 +119,7 @@ subprojects {
 
 distributions {
     main {
-        baseName = 'codecharta-analysis'
+        distributionBaseName  = 'codecharta-analysis'
         contents {
             from { '../LICENSE.md' }
             from { '../CHANGELOG.md' }

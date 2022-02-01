@@ -21,8 +21,8 @@ import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCameraService
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
-const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.0"
-const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.0"
+const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
+const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.1"
 export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
@@ -78,11 +78,36 @@ export class CustomConfigHelper {
 	}
 
 	private static loadCustomConfigs() {
+		const ccLocalStorage = this.getCcLocalStorage()
+		return new Map(ccLocalStorage?.customConfigs)
+	}
+
+	// TODO [2022-08-01]: remove replace method for SINGLE mode when deadline is reached
+	private static getCcLocalStorage() {
 		const ccLocalStorage: LocalStorageCustomConfigs = JSON.parse(
 			localStorage.getItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT),
 			stateObjectReviver
 		)
-		return new Map(ccLocalStorage?.customConfigs)
+		if (ccLocalStorage?.version === "1.0.0") {
+			return this.replaceSingleModeInLocalStorage(ccLocalStorage)
+		}
+
+		return ccLocalStorage
+	}
+
+	// TODO [2022-08-01]: remove replace method for SINGLE mode when deadline is reached
+	private static replaceSingleModeInLocalStorage(ccLocalStorage: LocalStorageCustomConfigs) {
+		for (const [, customConfig] of ccLocalStorage?.customConfigs.values() ?? []) {
+			if (customConfig.mapSelectionMode === "SINGLE") {
+				customConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
+			}
+		}
+
+		ccLocalStorage.version = CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION
+		CustomConfigHelper.getStorage().removeItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT)
+		CustomConfigHelper.getStorage().setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(ccLocalStorage, stateObjectReviver))
+
+		return ccLocalStorage
 	}
 
 	static addCustomConfigs(newCustomConfigs: CustomConfig[]) {
@@ -141,6 +166,11 @@ export class CustomConfigHelper {
 		const importedCustomConfigsFile: CustomConfigsDownloadFile = JSON.parse(content, stateObjectReviver)
 
 		for (const exportedConfig of importedCustomConfigsFile.customConfigs.values()) {
+			// TODO [2022-08-01]: remove condition for SINGLE mode when deadline is reached
+			if (exportedConfig.mapSelectionMode === "SINGLE") {
+				exportedConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
+			}
+
 			const alreadyExistingConfig = CustomConfigHelper.getCustomConfigSettings(exportedConfig.id)
 
 			// Check for a duplicate Config by matching checksums

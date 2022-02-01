@@ -8,9 +8,9 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
-    implementation group: 'io.github.microutils', name: 'kotlin-logging-jvm', version: '2.0.10'
+    implementation group: 'io.github.microutils', name: 'kotlin-logging-jvm', version: '2.1.21'
 
-    runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version

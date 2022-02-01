@@ -5,7 +5,7 @@ import { KeyValue } from "@angular/common"
 
 import { Store } from "../../../state/angular-redux/store"
 import { legendMarkedPackagesSelector, MarkedPackagesMap } from "./legendMarkedPackages.selector"
-import { calculateMarkedPackages } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { markPackages } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 type MarkedPackagesMapKeyValue = KeyValue<keyof MarkedPackagesMap, MarkedPackagesMap[keyof MarkedPackagesMap]>
 
@@ -24,7 +24,7 @@ export class LegendMarkedPackagesComponent {
 
 	handleColorChange(newHexColor: string, paths: string[]) {
 		this.store.dispatch(
-			calculateMarkedPackages(
+			markPackages(
 				paths.map(path => ({
 					color: newHexColor,
 					path

@@ -1,0 +1,38 @@
+import { Component, Inject, Input } from "@angular/core"
+import { Observable, map } from "rxjs"
+
+import { CodeMapNode } from "../../../codeCharta.model"
+import { Store } from "../../../state/angular-redux/store"
+import { currentFocusedNodePathSelector } from "../../../state/store/dynamicSettings/focusedNodePath/currentFocused.selector"
+import { focusNode, unfocusAllNodes, unfocusNode } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { focusedNodePathSelector } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
+
+@Component({
+	selector: "cc-focus-buttons",
+	template: require("./focusButtons.component.html")
+})
+export class FocusButtonsComponent {
+	@Input() codeMapNode: Pick<CodeMapNode, "path">
+
+	currentFocusedNodePath$: Observable<string | undefined>
+	hasPreviousFocusedNodePath$: Observable<boolean>
+
+	constructor(@Inject(Store) private store: Store) {
+		this.currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
+		this.hasPreviousFocusedNodePath$ = this.store
+			.select(focusedNodePathSelector)
+			.pipe(map(focusedNodePaths => focusedNodePaths.length > 1))
+	}
+
+	handleFocusNodeClicked() {
+		this.store.dispatch(focusNode(this.codeMapNode.path))
+	}
+
+	handleUnfocusNodeClicked() {
+		this.store.dispatch(unfocusNode())
+	}
+
+	handleUnfocusAllNodesClicked() {
+		this.store.dispatch(unfocusAllNodes())
+	}
+}

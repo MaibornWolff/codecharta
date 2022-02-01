@@ -40,7 +40,7 @@ describe("state.splitter", () => {
 		it("should return 1 FOCUS_NODE action", () => {
 			const partialState: RecursivePartial<State> = {
 				dynamicSettings: {
-					focusedNodePath: "/some/path"
+					focusedNodePath: ["/some/path"]
 				}
 			}
 
@@ -48,7 +48,7 @@ describe("state.splitter", () => {
 
 			expect(result.length).toEqual(1)
 
-			expect(result[0].type).toEqual(FocusedNodePathActions.FOCUS_NODE)
+			expect(result[0].type).toEqual(FocusedNodePathActions.SET_ALL_FOCUSED_NODES)
 		})
 
 		it("should return 3 atomic actions from different parts of the state", () => {
@@ -80,13 +80,13 @@ describe("state.splitter", () => {
 	describe("setDynamicSettings", () => {
 		it("should return 1 FOCUS_NODE action", () => {
 			const partialDynamicSettings: RecursivePartial<DynamicSettings> = {
-				focusedNodePath: "/some/path"
+				focusedNodePath: ["/some/path"]
 			}
 
 			const result: CCAction[] = splitStateActions(setDynamicSettings(partialDynamicSettings))
 
 			expect(result.length).toEqual(1)
-			expect(result[0].type).toEqual(FocusedNodePathActions.FOCUS_NODE)
+			expect(result[0].type).toEqual(FocusedNodePathActions.SET_ALL_FOCUSED_NODES)
 			expect(result[0].payload).toEqual(partialDynamicSettings.focusedNodePath)
 		})
 	})

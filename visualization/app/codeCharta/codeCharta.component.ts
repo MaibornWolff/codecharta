@@ -76,6 +76,8 @@ export class CodeChartaController {
 		this.codeChartaService.loadFiles(values)
 	}
 
+	// TODO: Please make sure that this function works fine on Github pages with
+	//  the updated file selection (no more single mode!)
 	private setRenderStateFromUrl() {
 		const renderState = this.urlUtils.getParameterByName("mode")
 		const files = getCCFiles(this.storeService.getState().files)

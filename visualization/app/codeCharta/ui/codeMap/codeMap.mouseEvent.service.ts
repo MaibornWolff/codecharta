@@ -16,6 +16,7 @@ import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { setHoveredBuildingPath } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { hoveredBuildingPathSelector } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
+import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 interface Coordinates {
 	x: number
@@ -28,10 +29,6 @@ export interface BuildingHoveredSubscriber {
 
 export interface BuildingUnhoveredSubscriber {
 	onBuildingUnhovered()
-}
-
-export interface BuildingRightClickedEventSubscriber {
-	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
 
 export enum ClickType {
@@ -49,7 +46,6 @@ export enum CursorType {
 export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
-	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
 
 	private highlightedInTreeView: CodeMapBuilding
@@ -109,12 +105,6 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 	static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
 		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, () => {
 			subscriber.onBuildingUnhovered()
-		})
-	}
-
-	static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (_event, data) => {
-			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
 		})
 	}
 
@@ -358,11 +348,13 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		// Check if mouse moved to prevent the node context menu to show up
 		// after moving the map, when the cursor ends on a building.
 		if (building && !this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
-			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
-				building,
-				x: this.mouse.x,
-				y: this.mouse.y
-			})
+			this.storeService.dispatch(
+				setRightClickedNodeData({
+					nodeId: building.node.id,
+					xPositionOfRightClickEvent: this.mouse.x,
+					yPositionOfRightClickEvent: this.mouse.y
+				})
+			)
 		}
 		this.threeUpdateCycleService.update()
 	}

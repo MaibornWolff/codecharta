@@ -18,7 +18,6 @@ import { fileStatesAvailable } from "../../model/files/files.helper"
 import { PanelSelectionActions } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 import { PresentationModeActions } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTracker"
@@ -31,7 +30,7 @@ import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focuse
 import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
 import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
-import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -59,7 +58,6 @@ export class CodeMapPreRenderService
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private nodeMetricDataService: NodeMetricDataService,
 		private codeMapRenderService: CodeMapRenderService
 	) {
 		"ngInject"
@@ -175,23 +173,7 @@ export class CodeMapPreRenderService
 	}
 
 	private allNecessaryRenderDataAvailable() {
-		return (
-			nodeMetricDataSelector(this.storeService.getState()) !== null &&
-			fileStatesAvailable(this.storeService.getState().files) &&
-			this.areChosenMetricsInMetricData() &&
-			Object.values(this.storeService.getState().dynamicSettings).every(x => {
-				return x !== null && Object.values(x).every(v => v !== null)
-			})
-		)
-	}
-
-	private areChosenMetricsInMetricData() {
-		const { dynamicSettings } = this.storeService.getState()
-		return (
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.areaMetric) &&
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.colorMetric) &&
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.heightMetric)
-		)
+		return areAllNecessaryRenderDataAvailableSelector(this.storeService.getState())
 	}
 
 	private removeLoadingGifs() {

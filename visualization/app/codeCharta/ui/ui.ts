@@ -3,7 +3,6 @@ import { downgradeComponent } from "@angular/upgrade/static"
 
 import "./artificialIntelligence/artificialIntelligence.module"
 import "./customConfigs/customConfigs.module"
-import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
 import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
@@ -51,7 +50,6 @@ angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
 		"app.codeCharta.ui.customConfigs",
-		"app.codeCharta.ui.unfocusButton",
 		"app.codeCharta.ui.metricValueHovered",
 		"app.codeCharta.ui.downloadButton",
 		"app.codeCharta.ui.screenshotButton",
@@ -72,7 +70,6 @@ angular
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.fileChooser",
 		"app.codeCharta.ui.fileExtensionBar",
-		"app.codeCharta.ui.filePanel",
 		"app.codeCharta.ui.heightSettingsPanel",
 		"app.codeCharta.ui.loadingGif",
 		"app.codeCharta.ui.metricChooser",
@@ -86,7 +83,8 @@ angular
 		"app.codeCharta.ui.viewCube",
 		"app.codeCharta.ui.layoutSelection",
 		"app.codeCharta.ui.sharpnessModeSelector",
-		"app.codeCharta.ui.maxTreeMapFiles"
+		"app.codeCharta.ui.maxTreeMapFiles",
+		"app.codeCharta.ui.filePanel"
 	])
 	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))
 	.directive("ccSortingOption", downgradeComponent({ component: SortingOptionComponent }))

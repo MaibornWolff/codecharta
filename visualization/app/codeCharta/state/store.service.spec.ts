@@ -10,7 +10,9 @@ import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.acti
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { setCamera } from "./store/appSettings/camera/camera.actions"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { setIsLoadingFile } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { toggleSortingOrderAscending } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { EffectsModule } from "./angular-redux/effects/effects.module"
+import { Subject } from "rxjs"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -110,19 +112,30 @@ describe("StoreService", () => {
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 
-		it("should dispatch an action silently and not show the loading-gif", () => {
+		it("should show not the loading-gif when an action is triggered, that doesn't change the loading-gif state", () => {
 			storeService.dispatch(setIsLoadingMap(false))
-
-			storeService.dispatch(setCamera(), { silent: true })
+			storeService.dispatch(toggleSortingOrderAscending())
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 
-		it("should show not the loading-gif when an action is triggered, that changes the loading-gif state", () => {
-			storeService.dispatch(setIsLoadingMap(false))
-			storeService.dispatch(setIsLoadingFile(false))
+		describe("connection to action subject", () => {
+			beforeEach(() => {
+				EffectsModule.actions$ = new Subject()
+			})
 
-			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+			afterEach(() => {
+				EffectsModule.actions$.complete()
+			})
+
+			it("should trigger a new action value on dispatch", () => {
+				const subscription = jest.fn()
+				EffectsModule.actions$.subscribe(subscription)
+
+				storeService.dispatch({ type: "something" })
+
+				expect(subscription).toHaveBeenCalledWith({ type: "something" })
+			})
 		})
 	})
 })

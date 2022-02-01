@@ -9,9 +9,61 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add area metric option to invert the amount of area, which is used for the nodes [#2626](https://github.com/MaibornWolff/codecharta/pull/2626)
+
+### Changed
+
+-   New buttons for selecting attribute types [#2631](https://github.com/MaibornWolff/codecharta/pull/2631)
+    ![xs](https://user-images.githubusercontent.com/72517530/151762455-07e47bf5-18aa-4721-a60a-6dfee057e1e5.png)
+
+## [1.88.0] - 2022-01-24
+
+### Changed
+
+-   Rename custom configs to custom view [#2625](https://github.com/MaibornWolff/codecharta/pull/2625)
+-   Combine single and multiple mode into standard mode [#2578](https://github.com/MaibornWolff/codecharta/pull/2578)
+    ![xs](https://user-images.githubusercontent.com/72517530/150765617-2d66eb78-2c26-45c5-b63b-f84994ed88ab.png)
+-   Improve file validation handling and provide more descriptive import messages [#2604](https://github.com/MaibornWolff/codecharta/pull/2604)
+    ![xs](https://user-images.githubusercontent.com/48621967/150532207-f3b482ed-3a14-43c0-b1a3-80ac4c25d5e0.png)
+
+### Fixed 🐞
+
+-   Fix Image not shown in what is new dialog [#2610](https://github.com/MaibornWolff/codecharta/pull/2610)
+
+### Chore 👨‍💻 👩‍💻
+
+    - Unfocus focused node only when map starts to load and not also when map has finished loading. This shouldn't change any behavior for the user [#2614](https://github.com/MaibornWolff/codecharta/pull/2614)
+
+## [1.87.1] - 2022-01-17
+
+### Changed
+
+-   User-friendly renaming for display quality options [#2601](https://github.com/MaibornWolff/codecharta/pull/2601)
+
+### Fixed 🐞
+
+-   Fix color of selected building in delta mode [#2603](https://github.com/MaibornWolff/codecharta/pull/2603)
+-   Fix link to news page when clicking 'Know more' button changelog dialog [#2602](https://github.com/MaibornWolff/codecharta/pull/2602)
+-   Fix Image not shown in what is new dialog [#2610](https://github.com/MaibornWolff/codecharta/pull/2610)
+
+## [1.87.0] - 2022-01-11
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate `unfocus-button-component` to Angular.
+
+### Changed
+
+-   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
+-   Add 'show/hide non-applicable CustomConfigs' button to Custom Configs menu [#2591](https://github.com/MaibornWolff/codecharta/pull/2591).
+
+## [1.86.0] - 2021-12-20
+
+### Added 🚀
+
 -   Add 3D export feature for 3D printing [#2561](https://github.com/MaibornWolff/codecharta/pull/2561). <br>
-    <img src="https://user-images.githubusercontent.com/48621967/146173663-e0ea177e-6ed8-4ddb-bd11-410415541e9f.png" height="32px" alt="two menu buttons"/> <br>
-    <img src="https://user-images.githubusercontent.com/48621967/146174397-42a6e475-ed2f-47c0-ba9c-4f8304d53399.png" height="256px" alt="two menu buttons"/>
+    ![xs](https://user-images.githubusercontent.com/48621967/146173663-e0ea177e-6ed8-4ddb-bd11-410415541e9f.png)
+    ![l](https://user-images.githubusercontent.com/48621967/146174397-42a6e475-ed2f-47c0-ba9c-4f8304d53399.png)
 
 ### Changed
 
@@ -19,7 +71,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557)
+-   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557).
+-   Fix minor memory leak in context menu for code map buildings [#2565](https://github.com/MaibornWolff/codecharta/issues/2565).
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -57,11 +110,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Improved the UI and usability of the Suspicious Metrics Feature ([#2376](https://github.com/MaibornWolff/codecharta/pull/2494)) <br>
     -   The Metrics and the Analysis are now split in two menus <br>
-        <img src="https://user-images.githubusercontent.com/48621967/141795078-bb856f53-1bc3-4c09-8be5-d031899835ae.png" height="64px" alt="two menu buttons"/>
+        ![xs](https://user-images.githubusercontent.com/48621967/141795078-bb856f53-1bc3-4c09-8be5-d031899835ae.png)
     -   The Suspicious Metrics are now sorted with the Very High Risk on top <br>
-        <img src="https://user-images.githubusercontent.com/48621967/141793011-1bfc0e19-bd3a-4bd2-af70-c3dd472821b6.png" height="256px" alt="list of suspicious metrics"/>
+        ![m](https://user-images.githubusercontent.com/48621967/141793011-1bfc0e19-bd3a-4bd2-af70-c3dd472821b6.png)
     -   The bar in the analysis shows the percentages <br>
-        <img src="https://user-images.githubusercontent.com/48621967/141791111-564778fa-b767-4ee4-b024-6856f1a79b4b.png" width="512px" alt="list of suspicious metrics"/>
+        ![m](https://user-images.githubusercontent.com/48621967/141791111-564778fa-b767-4ee4-b024-6856f1a79b4b.png)
 
 ### Fixed 🐞
 
@@ -110,7 +163,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix color picker not being usable ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
 -   Fix Changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425)) <br>
-    <img src="https://user-images.githubusercontent.com/48621967/135866024-ee06119a-1a62-4912-90df-ac3aa9216608.PNG" width="350px" alt="consistent changelog images"/>
+    ![xl](https://user-images.githubusercontent.com/48621967/135866024-ee06119a-1a62-4912-90df-ac3aa9216608.PNG)
 -   Fix memory and performance issues related to drawing labels on floors/folders ([#2348](https://github.com/MaibornWolff/codecharta/issues/2348)).
 -   Hides legend block if label description is not available and adds new metric descriptions ([#2377](https://github.com/maibornwolff/codecharta/issues/2377)).
 
@@ -122,7 +175,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   "Weighted Gradient" only mixes colors in a small interval around the preset values.
     -   "True Gradient" mixes colors from the 0 to the highest value, the two preset color range values determine the balance.
     -   "Absolute" represents the old behaviour without gradients. <br>
-        <img src="https://user-images.githubusercontent.com/42114276/134924267-245c65c9-2893-43a8-9a0a-17e3182bf15a.JPG" width="350px"/>
+        ![l](https://user-images.githubusercontent.com/42114276/134924267-245c65c9-2893-43a8-9a0a-17e3182bf15a.JPG)
 
 ### Fixed 🐞
 
@@ -136,10 +189,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330)) <br>
     <img src="https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png" width="250px"/>
 -   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326)) <br>
-    <img src="https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png" width="450px"/>
+    ![xl](https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png)
 -   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
 -   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342)) <br>
-    <img src="https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG" width="350px"/>
+    ![xl](https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG)
 
 ### Fixed 🐞
 
@@ -150,7 +203,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not applicable ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
 -   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362)) <br>
-    <img src="https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png" width="350px" alt=""/>
+    ![m](https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png)
 
 ## [1.78.0] - 2021-09-06
 
@@ -205,7 +258,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Export the current view as a png image by using "Ctrl+Alt+S" or clicking the corresponding button ([#674](https://github.com/MaibornWolff/codecharta/issues/674))
 -   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
 -   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613)) <br>
-    <img src="https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png" width="350" alt="Updated menu">
+    ![l](https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png)
 
 ### Changed
 
@@ -213,7 +266,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Opening new files does no longer remove old ones.
     -   Already loaded files can be individually removed.
     -   The 'Multiple' view will select the latest files. <br>
-        <img src="https://user-images.githubusercontent.com/50167165/123071234-c6856f00-d414-11eb-8326-e25f614e75d7.png" width="350">
+        ![l](https://user-images.githubusercontent.com/50167165/123071234-c6856f00-d414-11eb-8326-e25f614e75d7.png)
 
 ### Fixed 🐞
 
@@ -236,7 +289,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Improve descriptions ([#1879](https://github.com/MaibornWolff/codecharta/issues/1879))
     <br></br>
-    ![option dialog](https://user-images.githubusercontent.com/57844849/115393175-b2897b00-a1e1-11eb-8601-d2128f3469a3.png)
+    ![m](https://user-images.githubusercontent.com/57844849/115393175-b2897b00-a1e1-11eb-8601-d2128f3469a3.png)
 
 ### Fixed 🐞
 

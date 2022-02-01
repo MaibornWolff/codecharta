@@ -1,19 +1,6 @@
-<md-card id="codemap-context-menu" ng-show="$ctrl._viewModel.showNodeContextMenu">
+<md-card id="codemap-context-menu" ng-show="$ctrl.rightClickedNodeData !== null">
 	<div ng-if="$ctrl.nodeIsFolder()">
-		<div layout="row" layout-align="center center">
-			<md-button
-				ng-repeat="color in $ctrl._viewModel.markingColors track by $index"
-				ng-style="{ 'background-color': '{{ color }}' }"
-				ng-disabled="primary === color && !isPrimary"
-				ng-click="$ctrl.clickColor(color)"
-				class="colorButton"
-				title="Colorize folder"
-			>
-				<i class="fa fa-times" ng-if="$ctrl.isNodeOrParentMarked(color)"></i>
-			</md-button>
-
-			<cc-mark-folder-color-picker [mark-folder]="$ctrl.markFolder"></cc-mark-folder-color-picker>
-		</div>
+		<cc-mark-folder-row></cc-mark-folder-row>
 		<md-divider></md-divider>
 	</div>
 
@@ -21,45 +8,10 @@
 		<md-button ng-disabled="true" title="{{ $ctrl._viewModel.nodePath }}">
 			{{ $ctrl._viewModel.lastPartOfNodePath }}
 		</md-button>
-		<md-button
-			ng-show="!$ctrl.isNodeFocused()"
-			ng-click="$ctrl.focusNode()"
-			id="focus-button"
-			title="Only show selected nodes with children-nodes"
-			><i class="fa fa-bullseye"></i> Focus</md-button
-		>
-		<unfocus-button-component
-			is-node-focused="$ctrl._viewModel.isNodeFocused"
-			is-parent-focused="$ctrl._viewModel.isParentFocused"
-			ng-show="$ctrl.isNodeOrParentFocused()"
-		></unfocus-button-component>
-		<md-button
-			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
-			ng-click="$ctrl.flattenNode()"
-			id="flatten-button"
-			title="Flatten node and children-nodes, but keep an empty space"
-		>
-			<img alt="flattenIcon" class="png-icon" src="../../../assets/flatten.png" style="width: 17px; height: 17px" />
-			Flatten
-		</md-button>
-		<md-button
-			ng-if="$ctrl._viewModel.codeMapNode.isFlattened"
-			ng-click="$ctrl.showFlattenedNode()"
-			title="Show node and children-nodes"
-			><img alt="flattenIcon" class="png-icon" src="../../../assets/flatten.png" style="width: 17px; height: 17px" /> Show</md-button
-		>
-		<md-button
-			ng-if="!$ctrl.isNodeConstantlyHighlighted()"
-			title="Highlight node constantly"
-			ng-click="$ctrl.addNodeToConstantHighlight()"
-			><i class="fa fa-cubes"></i> Keep Highlight</md-button
-		>
-		<md-button
-			ng-if="$ctrl.isNodeConstantlyHighlighted()"
-			title="Remove constant highlight"
-			ng-click="$ctrl.removeNodeFromConstantHighlight()"
-			><i class="fa fa-cubes"></i> Remove Highlight</md-button
-		>
+
+		<cc-focus-buttons [code-map-node]="$ctrl._viewModel.codeMapNode"></cc-focus-buttons>
+		<cc-flatten-buttons [code-map-node]="$ctrl._viewModel.codeMapNode"></cc-flatten-buttons>
+		<cc-highlight-buttons [code-map-node]="$ctrl._viewModel.codeMapNode"></cc-highlight-buttons>
 
 		<md-button ng-click="$ctrl.excludeNode()" id="exclude-button" title="Exclude node and children-nodes and reorder the CodeMap"
 			><i class="fa fa-ban"></i> Exclude</md-button

@@ -4,7 +4,8 @@ import { Inject, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
-
+import { FormsModule } from "@angular/forms"
+import { MaterialModule } from "./material/material.module"
 import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
 import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
@@ -18,22 +19,43 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
-import { MarkFolderColorPickerModule } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.module"
-import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/markFolderColorPicker/markFolderColorPicker.component"
+import { FocusButtonsModule } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.module"
+import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
+import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
+import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
+import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
+import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
+import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
+import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
+import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
+import { FlattenButtonsModule } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.module"
+import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.component"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
+import { HighlightButtonsModule } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.module"
+import { HighlightButtonsComponent } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.component"
+import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
+		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
+		MaterialModule,
+		FormsModule,
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		MarkFolderColorPickerModule
+		FocusButtonsModule,
+		MarkFolderRowModule,
+		FlattenButtonsModule,
+		HighlightButtonsModule
 	],
-	declarations: [],
+	providers: [threeSceneServiceProvider],
+	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
@@ -42,7 +64,15 @@ import { MarkFolderColorPickerComponent } from "./codeCharta/ui/nodeContextMenu/
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		MarkFolderColorPickerComponent
+		FocusButtonsComponent,
+		FilePanelFileSelectorComponent,
+		FilePanelStateButtonsComponent,
+		FilePanelDeltaSelectorComponent,
+		FocusButtonsComponent,
+		MarkFolderRowComponent,
+		FlattenButtonsComponent,
+		HighlightButtonsComponent,
+		...dialogs
 	]
 })
 export class AppModule {
