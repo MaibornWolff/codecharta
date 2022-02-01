@@ -50,7 +50,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		this.applyDebouncedSearchPattern()
 	}
 
-	clearSearchPattern() {		
+	clearSearchPattern() {
 		this.resetSearchPattern()
 	}
 
