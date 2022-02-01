@@ -39,7 +39,7 @@
 	},
 	"main": "dist/webpack/index.html",
 	"build": {
-		"nwVersion": "0.53.0",
+		"nwVersion": "0.60.0",
 		"output": "./dist/packages/",
 		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
 		"files": "./dist/webpack/**/*",
@@ -126,7 +126,7 @@
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
 		"nouislider": "^15.0.0",
-		"nw": "^0.58.0",
+		"nw": "^0.60.0",
 		"open": "^8.0.6",
 		"percent-round": "^2.2.1",
 		"redux": "^4.0.5",
