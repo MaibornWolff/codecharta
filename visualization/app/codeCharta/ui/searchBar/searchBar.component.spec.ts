@@ -213,4 +213,14 @@ describe("SearchBarController", () => {
 			}, SearchBarController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
+
+	describe("clearSearchPattern", () => {
+		it("should clear the SearchPattern", () => {
+			searchBarController["_viewModel"].searchPattern = "pattern"
+
+			searchBarController.clearSearchPattern()
+
+			expect(searchBarController.isSearchPatternEmpty()).toBeTruthy()
+		})
+	})
 })

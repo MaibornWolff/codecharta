@@ -50,6 +50,10 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		this.applyDebouncedSearchPattern()
 	}
 
+	clearSearchPattern() {		
+		this.resetSearchPattern()
+	}
+
 	onClickBlacklistPattern(blacklistType: BlacklistType) {
 		const blacklistItems: BlacklistItem[] = this.parseValidBlacklistItems(blacklistType)
 
