@@ -10,33 +10,8 @@
 		</md-button>
 
 		<cc-focus-buttons [code-map-node]="$ctrl._viewModel.codeMapNode"></cc-focus-buttons>
-		<md-button
-			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
-			ng-click="$ctrl.flattenNode()"
-			id="flatten-button"
-			title="Flatten node and children-nodes, but keep an empty space"
-		>
-			<img alt="flattenIcon" class="png-icon" src="../../../assets/flatten.png" style="width: 17px; height: 17px" />
-			Flatten
-		</md-button>
-		<md-button
-			ng-if="$ctrl._viewModel.codeMapNode.isFlattened"
-			ng-click="$ctrl.showFlattenedNode()"
-			title="Show node and children-nodes"
-			><img alt="flattenIcon" class="png-icon" src="../../../assets/flatten.png" style="width: 17px; height: 17px" /> Show</md-button
-		>
-		<md-button
-			ng-if="!$ctrl.isNodeConstantlyHighlighted()"
-			title="Highlight node constantly"
-			ng-click="$ctrl.addNodeToConstantHighlight()"
-			><i class="fa fa-cubes"></i> Keep Highlight</md-button
-		>
-		<md-button
-			ng-if="$ctrl.isNodeConstantlyHighlighted()"
-			title="Remove constant highlight"
-			ng-click="$ctrl.removeNodeFromConstantHighlight()"
-			><i class="fa fa-cubes"></i> Remove Highlight</md-button
-		>
+		<cc-flatten-buttons [code-map-node]="$ctrl._viewModel.codeMapNode"></cc-flatten-buttons>
+		<cc-highlight-buttons [code-map-node]="$ctrl._viewModel.codeMapNode"></cc-highlight-buttons>
 
 		<md-button ng-click="$ctrl.excludeNode()" id="exclude-button" title="Exclude node and children-nodes and reorder the CodeMap"
 			><i class="fa fa-ban"></i> Exclude</md-button

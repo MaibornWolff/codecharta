@@ -3,13 +3,8 @@ import angular, { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { getCodeMapNodeFromPath, isLeaf } from "../../util/codeMapHelper"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { DialogService } from "../dialog/dialog.service"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { ERROR_MESSAGES } from "../../util/fileValidator"
 import { Store } from "../../state/store/store"
 import { rightClickedNodeDataSelector } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import {
@@ -39,10 +34,7 @@ export class NodeContextMenuController {
 		private $window,
 		public $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private codeMapPreRenderService: CodeMapPreRenderService,
-		private threeSceneService: ThreeSceneService,
-		private dialogService: DialogService,
-		private blacklistService: BlacklistService
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		"ngInject"
 		Store.store.subscribe(() => {
@@ -104,31 +96,12 @@ export class NodeContextMenuController {
 
 	hideNodeContextMenu = () => {
 		this.storeService.dispatch(setRightClickedNodeData(null))
+		this._viewModel.codeMapNode = null
 
 		// remove event listeners registered in showNodeContextMenu
 		document.body.removeEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
 		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
 		document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
-	}
-
-	flattenNode() {
-		const codeMapNode = this._viewModel.codeMapNode
-		const blacklistItem: BlacklistItem = {
-			path: codeMapNode.path,
-			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type
-		}
-		this.storeService.dispatch(addBlacklistItem(blacklistItem))
-	}
-
-	showFlattenedNode() {
-		const codeMapNode = this._viewModel.codeMapNode
-		const blacklistItem: BlacklistItem = {
-			path: codeMapNode.path,
-			type: BlacklistType.flatten,
-			nodeType: codeMapNode.type
-		}
-		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
 	}
 
 	excludeNode() {
@@ -139,21 +112,7 @@ export class NodeContextMenuController {
 			nodeType: codeMapNode.type
 		}
 
-		if (this.blacklistService.resultsInEmptyMap([blacklistItem])) {
-			this.dialogService.showErrorDialog(ERROR_MESSAGES.blacklistError, "Blacklist Error")
-		} else {
-			this.storeService.dispatch(addBlacklistItem(blacklistItem))
-		}
-	}
-
-	addNodeToConstantHighlight() {
-		this.threeSceneService.addNodeAndChildrenToConstantHighlight(this._viewModel.codeMapNode)
-		this.hideNodeContextMenu()
-	}
-
-	removeNodeFromConstantHighlight() {
-		this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(this._viewModel.codeMapNode)
-		this.hideNodeContextMenu()
+		this.storeService.dispatch(addBlacklistItemsIfNotResultsInEmptyMap([blacklistItem]))
 	}
 
 	calculatePosition(mouseX: number, mouseY: number) {
@@ -173,17 +132,6 @@ export class NodeContextMenuController {
 	private isEventFromColorPicker(mouseEvent: MouseEvent) {
 		const elements = mouseEvent.composedPath() as Node[]
 		return elements.some(element => element?.nodeName === "CC-COLOR-PICKER" || element?.nodeName === "COLOR-CHROME")
-	}
-
-	isNodeConstantlyHighlighted() {
-		if (this._viewModel.codeMapNode) {
-			const { lookUp } = this.storeService.getState()
-			const codeMapBuilding: CodeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
-			if (codeMapBuilding) {
-				return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
-			}
-		}
-		return false
 	}
 
 	nodeIsFolder() {
