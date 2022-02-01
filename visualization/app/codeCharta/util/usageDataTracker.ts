@@ -1,7 +1,6 @@
 "use strict"
 
 import { getVisibleFileStates, isSingleState } from "../model/files/files.helper"
-import { CodeChartaStorage } from "./codeChartaStorage"
 import { CodeMapNode, NodeType, State } from "../codeCharta.model"
 import { isStandalone } from "./envDetector"
 import { isActionOfType } from "./reduxHelper"
@@ -56,6 +55,8 @@ interface MetricStatistics {
 	metricValues: number[]
 }
 
+export const TRACKING_DATA_LOCAL_STORAGE_ELEMENT = "CodeCharta::usageData"
+
 function isTrackingAllowed(state: State) {
 	const singleFileStates = getVisibleFileStates(state.files)
 
@@ -90,12 +91,11 @@ export function trackMapMetaData(state: State) {
 		repoCreationDate: fileMeta.repoCreationDate
 	}
 
-	const fileStorage = new CodeChartaStorage()
 	// Make sure that only files within usageData can be read
 	const fileChecksum = trackingDataItem.mapId.replace(/\//g, "")
 
 	try {
-		fileStorage.setItem(`usageData/${fileChecksum}-meta`, JSON.stringify(trackingDataItem))
+		localStorage.setItem(`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/${fileChecksum}-meta`, JSON.stringify(trackingDataItem))
 	} catch {
 		// ignore it
 	}
@@ -294,11 +294,9 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 	// Make sure that only files within usageData can be read
 	const fileChecksum = getVisibleFileStates(state.files)[0].file.fileMeta.fileChecksum.replace(/\//g, "")
 
-	const fileStorage = new CodeChartaStorage()
-
 	let appendedEvents = ""
 	try {
-		appendedEvents = fileStorage.getItem(`usageData/${fileChecksum}-events`)
+		appendedEvents = localStorage.getItem(`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/${fileChecksum}-events`)
 	} catch {
 		// ignore, it no events item exists
 	}
@@ -307,7 +305,10 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 		if (appendedEvents.length > 0) {
 			appendedEvents += "\n"
 		}
-		fileStorage.setItem(`usageData/${fileChecksum}-events`, appendedEvents + JSON.stringify(eventTrackingItem))
+		localStorage.setItem(
+			`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/${fileChecksum}-events`,
+			appendedEvents + JSON.stringify(eventTrackingItem)
+		)
 	} catch {
 		// ignore tracking errors
 	}
