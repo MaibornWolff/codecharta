@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Add area metric option to invert the amount of area, which is used for the nodes [#2626](https://github.com/MaibornWolff/codecharta/pull/2626)
+-   Add button to clear search field [#2638](https://github.com/MaibornWolff/codecharta/pull/2638) <br>
+    ![xs](https://user-images.githubusercontent.com/48218172/151999974-3b8a7cca-52b2-4757-b3c0-e3b2e36ad237.png)
 
 ### Changed
 
