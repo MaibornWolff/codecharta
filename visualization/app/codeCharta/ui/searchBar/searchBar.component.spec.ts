@@ -214,11 +214,11 @@ describe("SearchBarController", () => {
 		})
 	})
 
-	describe("clearSearchPattern", () => {
+	describe("resetSearchPattern", () => {
 		it("should clear the SearchPattern", () => {
 			searchBarController["_viewModel"].searchPattern = "pattern"
 
-			searchBarController.clearSearchPattern()
+			searchBarController.resetSearchPattern()
 
 			expect(searchBarController.isSearchPatternEmpty()).toBeTruthy()
 		})
