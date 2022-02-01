@@ -21,6 +21,17 @@ search-bar-component {
 			vertical-align: middle;
 			display: inline-block;
 		}
+
+		#searchInput {
+			padding-right: 24px;
+		}
+
+		.clear-icon {
+			position: absolute;
+			right: 0;
+			margin: 0;
+			margin-top: 2px;
+		}
 	}
 
 	.small-action-button {
