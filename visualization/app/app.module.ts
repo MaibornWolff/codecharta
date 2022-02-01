@@ -32,6 +32,9 @@ import { FlattenButtonsModule } from "./codeCharta/ui/nodeContextMenu/flattenBut
 import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.component"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
+import { HighlightButtonsModule } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.module"
+import { HighlightButtonsComponent } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.component"
+import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 
 @NgModule({
 	imports: [
@@ -48,8 +51,10 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 		ColorPickerForMapColorModule,
 		FocusButtonsModule,
 		MarkFolderRowModule,
-		FlattenButtonsModule
+		FlattenButtonsModule,
+		HighlightButtonsModule
 	],
+	providers: [threeSceneServiceProvider],
 	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
 	entryComponents: [
 		MapTreeViewComponent,
@@ -66,7 +71,7 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 		FocusButtonsComponent,
 		MarkFolderRowComponent,
 		FlattenButtonsComponent,
-		FlattenButtonsComponent,
+		HighlightButtonsComponent,
 		...dialogs
 	]
 })
