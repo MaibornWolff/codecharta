@@ -1,16 +1,3 @@
-<!--<div class="small-action-button transparent">
-	<button mat-button [matMenuTriggerFor]="menu" title="Select attribute type" class="menu-button">
-		<span class="symbol">{{ metricName | aggregationSymbolPipe: (getAttributeTypeOfNodesByMetric$ | async) }}</span>
-	</button>
-</div>
-
-<mat-menu #menu>
-	<div class="menu-header" mat-menu-item disabled>Set global aggregation for rloc</div>
-	<mat-divider></mat-divider>
-	<button mat-menu-item (click)="setToAbsolute()">Σ Sum</button>
-	<button mat-menu-item (click)="setToRelative()">x͂ Median</button>
-</mat-menu>-->
-
 <mat-button-toggle-group [value]="metricName | aggregationTypePipe: (getAttributeTypeOfNodesByMetric$ | async)">
 	<mat-button-toggle title="Select Sum" (click)="setToAbsolute()" value="sum">Σ</mat-button-toggle>
 	<mat-button-toggle title="Select Median" (click)="setToRelative()" value="median">x͂</mat-button-toggle>
