@@ -1,15 +1,12 @@
 import { BlacklistItem, CCFile, CodeMapNode, NodeType, State } from "../codeCharta.model"
-import { trackEventUsageData, trackMapMetaData } from "./usageDataTracker"
-import * as EnvironmentDetector from "./envDetector"
+import { trackEventUsageData, TRACKING_DATA_LOCAL_STORAGE_ELEMENT, trackMapMetaData } from "./usageDataTracker"
 import * as FilesHelper from "../model/files/files.helper"
 import { FileState } from "../model/files/files"
 import { APIVersions } from "../codeCharta.api.model"
-import { CodeChartaStorage } from "./codeChartaStorage"
 import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { klona } from "klona"
-jest.mock("./codeChartaStorage")
 
 describe("UsageDataTracker", () => {
 	// provide some default state properties
@@ -41,34 +38,20 @@ describe("UsageDataTracker", () => {
 	})
 
 	function mockTrackingToBeAllowed() {
-		jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
 		jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
 		jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
 	}
 
 	describe("trackMetaUsageData", () => {
 		const setItemMock = jest.fn()
-		CodeChartaStorage.prototype.setItem = setItemMock
+		localStorage.setItem = setItemMock
 
-		afterAll(() => {
-			jest.resetAllMocks()
-			jest.unmock("./codeChartaStorage")
-		})
-
-		it("should not track in web version, in multi/delta mode or for more than one uploaded file", () => {
-			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(false)
-			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
-			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([{} as FileState])
-
-			trackMapMetaData(stateStub)
-
-			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
+		it("should not track in multi/delta mode or for more than one uploaded file", () => {
 			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(false)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([{} as FileState])
 
 			trackMapMetaData(stateStub)
 
-			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([{} as FileState, {} as FileState])
 
@@ -121,7 +104,7 @@ describe("UsageDataTracker", () => {
 			mockTrackingToBeAllowed()
 			jest.spyOn(Date, "now").mockReturnValue(1_612_369_999_999)
 
-			const expectSetItemSnapshot = (CodeChartaStorage.prototype.setItem = jest.fn().mockImplementation((_, value) => {
+			const expectSetItemSnapshot = (localStorage.setItem = jest.fn().mockImplementation((_, value) => {
 				expect(value).toMatchSnapshot()
 			}))
 
@@ -132,29 +115,23 @@ describe("UsageDataTracker", () => {
 	})
 
 	describe("trackEventUsageData", () => {
-		afterAll(() => {
-			jest.resetAllMocks()
-			jest.unmock("./codeChartaStorage")
-		})
-
 		let getItemMock
 		let expectSetItemSnapshot
 
 		beforeEach(() => {
-			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
 			jest.spyOn(Date, "now").mockReturnValue(1_612_428_357_566)
 
-			getItemMock = CodeChartaStorage.prototype.getItem = jest.fn().mockReturnValue("some-already-tracked-events-from-file-storage")
-			expectSetItemSnapshot = CodeChartaStorage.prototype.setItem = jest.fn().mockImplementation((_, value) => {
+			getItemMock = localStorage.getItem = jest.fn().mockReturnValue("some-already-tracked-events-from-file-storage")
+			expectSetItemSnapshot = localStorage.setItem = jest.fn().mockImplementation((_, value) => {
 				expect(value).toMatchSnapshot()
 			})
 		})
 
 		function expectEventHasBeenTracked() {
 			expect(FilesHelper.getVisibleFileStates).toHaveBeenCalledTimes(3)
-			expect(getItemMock).toHaveBeenCalledWith("usageData/invalid-md5-sample-checksum-events")
+			expect(getItemMock).toHaveBeenCalledWith(`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/invalid-md5-sample-checksum-events`)
 			expect(expectSetItemSnapshot).toHaveBeenCalledTimes(1)
 		}
 

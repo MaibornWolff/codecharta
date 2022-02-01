@@ -30,7 +30,6 @@ import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store
 import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { FileDownloader } from "../../util/fileDownloader"
 import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
-import { isStandalone } from "../../util/envDetector"
 import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import {
 	ScreenshotToClipboardEnabledService,
@@ -166,7 +165,7 @@ export class DialogGlobalSettingsController
 
 	mapTrackingDataAvailable() {
 		const files = this.storeService.getState().files
-		return isStandalone() && isSingleState(files) && getVisibleFileStates(files)
+		return isSingleState(files) && getVisibleFileStates(files)
 	}
 
 	downloadTrackingData() {

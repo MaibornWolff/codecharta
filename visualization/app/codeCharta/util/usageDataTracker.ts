@@ -2,7 +2,6 @@
 
 import { getVisibleFileStates, isSingleState } from "../model/files/files.helper"
 import { CodeMapNode, NodeType, State } from "../codeCharta.model"
-import { isStandalone } from "./envDetector"
 import { isActionOfType } from "./reduxHelper"
 import { AreaMetricActions } from "../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
@@ -60,7 +59,7 @@ export const TRACKING_DATA_LOCAL_STORAGE_ELEMENT = "CodeCharta::usageData"
 function isTrackingAllowed(state: State) {
 	const singleFileStates = getVisibleFileStates(state.files)
 
-	if (!isStandalone() || !isSingleState(state.files) || singleFileStates.length > 1) {
+	if (!isSingleState(state.files) || singleFileStates.length > 1) {
 		return false
 	}
 
