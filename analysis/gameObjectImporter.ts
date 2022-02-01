@@ -62,7 +62,7 @@ function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, ga
 
 function addWrappedFolderName(filePath) {
 	const splitFilePath = filePath.split(".")
-	return `${filePath.replace(/\./g, "/")}/${splitFilePath.slice(-1)}`
+	return `/${filePath.replace(/\./g, "/")}/${splitFilePath.slice(-1)}`
 }
 
 function createEdge(cycle) {
@@ -77,11 +77,9 @@ function createEdge(cycle) {
 
 function createAttributeTypes() {
 	return {
-		edges: [
-			{
-				coupling: "relative"
-			}
-		]
+		edges: {
+			coupling: "relative"
+		}
 	}
 }
 
