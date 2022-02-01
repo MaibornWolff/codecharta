@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/angular"
+import { render, screen, fireEvent } from "@testing-library/angular"
 
 import { AttributeTypeSelectorModule } from "./attributeTypeSelector.module"
 import { Store } from "../../../state/store/store"
@@ -27,20 +27,12 @@ describe("attributeTypeSelector", () => {
 			excludeComponentDeclaration: true
 		})
 
-		const initialDisplayedElement = await screen.findByText("Σ")
-		expect(initialDisplayedElement).toBeTruthy()
+		const initialDisplayedElement = await screen.getByRole("button", { pressed: true })
+		expect(initialDisplayedElement.textContent).toBe("Σ")
 
-		fireEvent.click(initialDisplayedElement)
-		const medianMenuItem = await screen.findByText("x͂ Median")
-		expect(medianMenuItem).toBeTruthy()
-
-		fireEvent.click(medianMenuItem)
-		await waitForElementToBeRemoved(() => {
-			const medianMenuItem = screen.queryByText("x͂ Median")
-			return medianMenuItem
-		})
-		const updatedDisplayedElement = await screen.findByText("x͂")
-		expect(updatedDisplayedElement).toBeTruthy()
+		fireEvent.click(screen.getByText("x͂"))
+		const medianMenuItem = await screen.getByRole("button", { pressed: true })
+		expect(medianMenuItem.textContent).toBe("x͂")
 	})
 
 	it("should set aggregation symbol to absolute if attributeType is not available", async () => {
@@ -48,6 +40,7 @@ describe("attributeTypeSelector", () => {
 			componentProperties: { metricName: "non-existing" },
 			excludeComponentDeclaration: true
 		})
-		expect(await screen.findByText("Σ")).toBeTruthy()
+		const initialDisplayedElement = await screen.getByRole("button", { pressed: true })
+		expect(initialDisplayedElement.textContent).toBe("Σ")
 	})
 })
