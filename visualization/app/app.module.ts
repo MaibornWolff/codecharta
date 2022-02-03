@@ -35,6 +35,7 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { HighlightButtonsModule } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.module"
 import { HighlightButtonsComponent } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.component"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 
 @NgModule({
 	imports: [
@@ -55,7 +56,13 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 		HighlightButtonsModule
 	],
 	providers: [threeSceneServiceProvider],
-	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
+	declarations: [
+		FilePanelFileSelectorComponent,
+		FilePanelStateButtonsComponent,
+		FilePanelDeltaSelectorComponent,
+		InvertAreaOptionComponent,
+		...dialogs
+	],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
@@ -72,6 +79,7 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 		MarkFolderRowComponent,
 		FlattenButtonsComponent,
 		HighlightButtonsComponent,
+		InvertAreaOptionComponent,
 		...dialogs
 	]
 })

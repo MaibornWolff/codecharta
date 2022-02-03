@@ -70,7 +70,7 @@ export class AreaSettingsPanelController
 }
 
 export const areaSettingsPanelComponent = {
-	selector: "areaSettingsPanelComponent",
+	selector: "ccAreaSettingsPanel",
 	template: require("./areaSettingsPanel.component.html"),
 	controller: AreaSettingsPanelController
 }
