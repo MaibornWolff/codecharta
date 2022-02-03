@@ -1,3 +1,4 @@
+import "./invertAreaOption.component.scss"
 import { Component, Inject, OnInit } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { invertAreaSelector } from "../../../state/store/appSettings/invertArea/invertArea.selector"

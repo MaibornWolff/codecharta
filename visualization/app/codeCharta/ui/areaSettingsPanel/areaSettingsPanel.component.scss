@@ -16,6 +16,10 @@ cc-area-settings-panel {
 	top: 45px;
 	right: 0;
 
+	.md-primary .md-label {
+		padding-top: 3px;
+	}
+
 	md-slider-container {
 		position: relative;
 		.slider-title {
