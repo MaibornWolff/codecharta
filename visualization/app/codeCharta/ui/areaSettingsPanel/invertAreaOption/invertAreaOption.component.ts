@@ -4,4 +4,6 @@ import { Component } from "@angular/core"
 	selector: "cc-invert-area-option",
 	template: require("./invertAreaOption.component.html")
 })
-export class InvertAreaOptionComponent {}
+export class InvertAreaOptionComponent {
+	checked = false
+}

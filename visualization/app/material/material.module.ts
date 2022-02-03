@@ -8,6 +8,7 @@ import { MatTooltipModule } from "@angular/material/tooltip"
 import { MatIconModule } from "@angular/material/icon"
 import { MatButtonToggleModule } from "@angular/material/button-toggle"
 import { MatDialogModule } from "@angular/material/dialog"
+import { MatCheckboxModule } from "@angular/material/checkbox"
 
 const materialModules = [
 	MatSelectModule,
@@ -17,7 +18,8 @@ const materialModules = [
 	MatTooltipModule,
 	MatIconModule,
 	MatButtonToggleModule,
-	MatDialogModule
+	MatDialogModule,
+	MatCheckboxModule
 ]
 
 @NgModule({
