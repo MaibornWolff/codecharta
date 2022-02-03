@@ -76,7 +76,6 @@ export class InjectorService {
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private dynamicMarginService: DynamicMarginService,
 		private invertHeightService: InvertHeightService,
-		private invertAreaService: InvertAreaService,
 		private hideFlatBuildingsService: HideFlatBuildingsService,
 		private cameraService: CameraService,
 		private scalingService: ScalingService,

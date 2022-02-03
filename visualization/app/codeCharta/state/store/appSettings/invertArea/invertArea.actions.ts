@@ -1,10 +1,10 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { Action } from "redux"
 
 export enum InvertAreaActions {
 	SET_INVERT_AREA = "SET_INVERT_AREA"
 }
 
-export interface SetInvertAreaAction extends CCAction {
+export interface SetInvertAreaAction extends Action {
 	type: InvertAreaActions.SET_INVERT_AREA
 	payload: boolean
 }

@@ -3,4 +3,4 @@
     Invert Area
   </md-checkbox>
 </md-input-container>-->
-<mat-checkbox class="example-margin" [(ngModel)]="checked">Invert Area</mat-checkbox>
+<mat-checkbox [checked]="isInvertedArea$ | async" (click)="onClick()">Invert Area</mat-checkbox>
