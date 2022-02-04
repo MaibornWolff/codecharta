@@ -18,7 +18,7 @@ export class InvertAreaOptionComponent implements OnInit {
 		this.isInvertedArea$ = this.store.select(invertAreaSelector)
 	}
 
-	onClick() {
+	toggleInvertingArea() {
 		this.store.dispatch(toggleInvertingArea())
 	}
 }
