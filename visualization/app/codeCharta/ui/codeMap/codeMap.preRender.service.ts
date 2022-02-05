@@ -173,10 +173,8 @@ export class CodeMapPreRenderService
 	}
 
 	private removeLoadingGifs() {
-		if (this.storeService.getState().appSettings.isLoadingFile) {
-			this.storeService.dispatch(setIsLoadingFile(false))
-		}
-		this.storeService.dispatch(setIsLoadingMap(false))
+		if (this.storeService.getState().appSettings.isLoadingFile) this.storeService.dispatch(setIsLoadingFile(false))
+		if (this.storeService.getState().appSettings.isLoadingMap) this.storeService.dispatch(setIsLoadingMap(false))
 	}
 
 	private showLoadingMapGif() {
