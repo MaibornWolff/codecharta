@@ -31,6 +31,7 @@ import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController
 import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
+import { RightClickedNodeDataActions } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -87,13 +88,6 @@ export class CodeMapPreRenderService
 	}
 
 	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, HoveredBuildingPathActions)) {
-			// temporary hack:
-			// this.debounceRendering() leads to a new MapMesh, which leads to a new render, which would revert hover
-			// TODO We definitely need to improve this
-			return
-		}
-
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
@@ -105,7 +99,9 @@ export class CodeMapPreRenderService
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
 			!isActionOfType(actionType, PanelSelectionActions) &&
 			!isActionOfType(actionType, PresentationModeActions) &&
-			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
+			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions) &&
+			!isActionOfType(actionType, HoveredBuildingPathActions) &&
+			!isActionOfType(actionType, RightClickedNodeDataActions)
 		) {
 			this.debounceRendering()
 			this.debounceTracking(actionType)
