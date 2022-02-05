@@ -88,6 +88,7 @@ export class CodeMapPreRenderService
 	}
 
 	onStoreChanged(actionType: string) {
+		// TODO: Get rid of this if else block. Why do we sometimes call this.debounceRendering() and sometimes this.codeMapRenderService.update()?
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
