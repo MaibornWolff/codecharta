@@ -41,8 +41,7 @@ export class TrackEventUsageDataEffect {
 				map(([action]) => action),
 				withLatestFrom(this.files$),
 				tap(([action, files]) => {
-					console.log(action.type, "TrackEventUsageDataEffect")
-					// trackEventUsageData(action.type, files, action["payload"])
+					trackEventUsageData(action.type, files, action["payload"])
 				})
 			),
 		{ dispatch: false }
