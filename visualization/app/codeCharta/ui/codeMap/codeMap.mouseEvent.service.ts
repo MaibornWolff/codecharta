@@ -93,8 +93,6 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 				this.unhoverNode()
 			}
 		})
-
-		document.addEventListener("contextmenu", event => event.preventDefault())
 	}
 
 	static changeCursorIndicator(cursorIcon: CursorType) {
