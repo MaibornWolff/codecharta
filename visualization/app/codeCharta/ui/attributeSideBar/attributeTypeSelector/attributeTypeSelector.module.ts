@@ -3,11 +3,11 @@ import { CommonModule } from "@angular/common"
 
 import { AttributeTypeSelectorComponent } from "./attributeTypeSelector.component"
 import { MaterialModule } from "../../../../material/material.module"
-import { AggregationSymbolPipe } from "./aggregationSymbol.pipe"
+import { AggregationTypePipePipe } from "./aggregationType.pipe"
 
 @NgModule({
 	imports: [CommonModule, MaterialModule],
-	declarations: [AttributeTypeSelectorComponent, AggregationSymbolPipe],
+	declarations: [AttributeTypeSelectorComponent, AggregationTypePipePipe],
 	exports: [AttributeTypeSelectorComponent]
 })
 export class AttributeTypeSelectorModule {}

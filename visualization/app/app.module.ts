@@ -19,22 +19,28 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
-import { FocusButtonsModule } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.module"
-import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
-import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
-import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
 import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
+import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
+import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
-		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, TrackEventUsageDataEffect]),
+		EffectsModule.forRoot([
+			UnfocusNodesOnLoadingMapEffect,
+			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
+			OpenNodeContextMenuEffect,
+			TrackEventUsageDataEffect
+		]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
@@ -43,10 +49,10 @@ import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEvent
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		FocusButtonsModule,
-		MarkFolderRowModule
+		NodeContextMenuCardModule
 	],
-	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent],
+	providers: [threeSceneServiceProvider],
+	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
@@ -55,12 +61,10 @@ import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEvent
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		FocusButtonsComponent,
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
-		FocusButtonsComponent,
-		MarkFolderRowComponent
+		...dialogs
 	]
 })
 export class AppModule {

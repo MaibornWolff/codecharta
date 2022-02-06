@@ -1772,6 +1772,7 @@ export const STATE: State = {
 		cameraTarget: new Vector3(177, 0, 299),
 		hideFlatBuildings: true,
 		invertHeight: true,
+		invertArea: false,
 		dynamicMargin: true,
 		isWhiteBackground: false,
 		mapColors: {
@@ -1838,6 +1839,7 @@ export const DEFAULT_STATE: State = {
 		dynamicMargin: true,
 		hideFlatBuildings: false,
 		invertHeight: false,
+		invertArea: false,
 		isWhiteBackground: false,
 		mapColors: {
 			angularGreen: "#00BFA5",

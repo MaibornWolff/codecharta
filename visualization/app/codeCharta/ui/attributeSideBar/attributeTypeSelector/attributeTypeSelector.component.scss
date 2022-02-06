@@ -1,25 +1,16 @@
 cc-attribute-type-selector {
-	display: inline-block;
-	background-color: white;
-	border-radius: 12px;
+	.mat-button-toggle-group {
+		height: 18px;
+		align-items: center;
+		justify-content: space-evenly;
+	}
 
-	.menu-button {
-		height: 24px;
-		width: 24px;
-		min-width: 0;
-		padding: 0;
-		border-radius: 12px;
-		vertical-align: top;
-		transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+	.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+		padding: 0 7px 0 7px;
+	}
 
-		&:hover {
-			background-color: #c8c8c8;
-		}
-
-		.symbol {
-			position: absolute;
-			top: -5px;
-			left: 8px;
-		}
+	.mat-button-toggle-standalone.mat-button-toggle-appearance-standard,
+	.mat-button-toggle-group-appearance-standard {
+		border: 0.1px solid darkgrey;
 	}
 }

@@ -1,14 +1,13 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
+import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import { getMergedBlacklist } from "./blacklist.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { getVisibleFiles, getVisibleFileStates, isPartialState } from "../../../../model/files/files.helper"
 import { FileState } from "../../../../model/files/files"
-import { hierarchy } from "d3-hierarchy"
-import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
+import { resultsInEmptyMap } from "../../../effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
 
 export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
@@ -34,31 +33,9 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 	}
 
 	resultsInEmptyMap(blacklistItems: BlacklistItem[]) {
-		const fileStates = getVisibleFileStates(this.storeService.getState().files)
-		for (const { file } of fileStates) {
-			if (!this.isEmptyFile(file, blacklistItems)) {
-				return false
-			}
-		}
-		return true
-	}
-
-	isIncludedNode(node, blacklist: Array<BlacklistItem>) {
-		return isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)
-	}
-
-	private isEmptyFile(file, blacklistItems: BlacklistItem[]) {
-		const blacklist = [...this.storeService.getState().fileSettings.blacklist]
-		for (const blacklistItem of blacklistItems) {
-			blacklist.push(blacklistItem)
-		}
-
-		for (const node of hierarchy(file.map)) {
-			if (this.isIncludedNode(node, blacklist)) {
-				return false
-			}
-		}
-		return true
+		const visibleFiles = getVisibleFileStates(this.storeService.getState().files)
+		const blacklist = this.storeService.getState().fileSettings.blacklist
+		return resultsInEmptyMap(visibleFiles, blacklist, blacklistItems)
 	}
 
 	private merge(files: FileState[]) {

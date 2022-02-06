@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@angular/core"
 import { combineLatest, filter, map, tap, withLatestFrom } from "rxjs"
-import { isAction } from "../../../util/reduxHelper"
+import { isActionOfType } from "../../../util/reduxHelper"
 import { trackEventUsageData } from "../../../util/usageDataTracker"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
@@ -36,7 +36,7 @@ export class TrackEventUsageDataEffect {
 				filter(
 					([action, areAllNecessaryRenderDataAvailable]) =>
 						areAllNecessaryRenderDataAvailable &&
-						actionsToTrackWithPayload.some(actionToTrack => isAction(action, actionToTrack))
+						actionsToTrackWithPayload.some(actionToTrack => isActionOfType(action.type, actionToTrack))
 				),
 				map(([action]) => action),
 				withLatestFrom(this.files$),
