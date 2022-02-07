@@ -28,7 +28,6 @@ import { splitExperimentalFeaturesEnabledAction } from "./enableExperimentalFeat
 import { splitLayoutAlgorithmAction } from "./layoutAlgorithm/layoutAlgorithm.splitter"
 import { splitMaxTreeMapFilesAction } from "./maxTreeMapFiles/maxTreeMapFiles.splitter"
 import { splitSharpnessAction } from "./sharpnessMode/sharpnessMode.splitter"
-import { splitInvertAreaAction } from "./invertArea/invertArea.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []
@@ -91,10 +90,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.invertHeight !== undefined) {
 		actions.push(splitInvertHeightAction(payload.invertHeight))
-	}
-
-	if (payload.invertArea !== undefined) {
-		actions.push(splitInvertAreaAction(payload.invertArea))
 	}
 
 	if (payload.hideFlatBuildings !== undefined) {
