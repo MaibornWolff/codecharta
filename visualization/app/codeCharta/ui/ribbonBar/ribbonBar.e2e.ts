@@ -47,7 +47,7 @@ describe("RibbonBar", () => {
 	})
 
 	describe("opening and closing ribbon-bar cards", () => {
-		it("searchPanel", async () => {
+		it("search-panel-card", async () => {
 			let isSearchPanelOpen = await searchPanel.toggle()
 			expect(isSearchPanelOpen).toBeTruthy()
 
@@ -55,7 +55,7 @@ describe("RibbonBar", () => {
 			expect(isSearchPanelOpen).toBeFalsy()
 		})
 
-		it("height-metric cad", async () => {
+		it("height-metric card", async () => {
 			const panel = "height-metric"
 
 			let isHeightSettingsPanelOpen = await ribbonBar.togglePanel(panel)
@@ -85,7 +85,7 @@ describe("RibbonBar", () => {
 			expect(isColorSettingsPanelOpen).toBeFalsy()
 		})
 
-		it("edge-metric", async () => {
+		it("edge-metric card", async () => {
 			const panel = "edge-metric"
 
 			let isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(panel)

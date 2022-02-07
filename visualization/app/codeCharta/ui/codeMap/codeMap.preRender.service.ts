@@ -31,6 +31,7 @@ import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController
 import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
+import { RightClickedNodeDataActions } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -87,13 +88,7 @@ export class CodeMapPreRenderService
 	}
 
 	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, HoveredBuildingPathActions)) {
-			// temporary hack:
-			// this.debounceRendering() leads to a new MapMesh, which leads to a new render, which would revert hover
-			// TODO We definitely need to improve this
-			return
-		}
-
+		// TODO: Get rid of this if else block. Why do we sometimes call this.debounceRendering() and sometimes this.codeMapRenderService.update()?
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
@@ -105,7 +100,9 @@ export class CodeMapPreRenderService
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
 			!isActionOfType(actionType, PanelSelectionActions) &&
 			!isActionOfType(actionType, PresentationModeActions) &&
-			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
+			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions) &&
+			!isActionOfType(actionType, HoveredBuildingPathActions) &&
+			!isActionOfType(actionType, RightClickedNodeDataActions)
 		) {
 			this.debounceRendering()
 			this.debounceTracking(actionType)
@@ -177,10 +174,8 @@ export class CodeMapPreRenderService
 	}
 
 	private removeLoadingGifs() {
-		if (this.storeService.getState().appSettings.isLoadingFile) {
-			this.storeService.dispatch(setIsLoadingFile(false))
-		}
-		this.storeService.dispatch(setIsLoadingMap(false))
+		if (this.storeService.getState().appSettings.isLoadingFile) this.storeService.dispatch(setIsLoadingFile(false))
+		if (this.storeService.getState().appSettings.isLoadingMap) this.storeService.dispatch(setIsLoadingMap(false))
 	}
 
 	private showLoadingMapGif() {

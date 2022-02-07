@@ -29,6 +29,7 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
+import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 
 @NgModule({
 	imports: [
@@ -46,7 +47,13 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 		NodeContextMenuCardModule
 	],
 	providers: [threeSceneServiceProvider],
-	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
+	declarations: [
+		FilePanelFileSelectorComponent,
+		FilePanelStateButtonsComponent,
+		FilePanelDeltaSelectorComponent,
+		InvertAreaOptionComponent,
+		...dialogs
+	],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
@@ -58,6 +65,7 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
+		InvertAreaOptionComponent,
 		...dialogs
 	]
 })
