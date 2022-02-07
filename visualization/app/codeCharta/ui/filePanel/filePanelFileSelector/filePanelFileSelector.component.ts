@@ -13,4 +13,5 @@ export class FilePanelFileSelectorComponent {
 	@Input() handleSelectZeroPartialFiles: () => void
 	@Input() handleInvertSelectedPartialFiles: () => void
 	@Input() handleOnSelectionClosed: () => void
+	@Input() handleOnRemoveFile: (filename: string, event) => void
 }

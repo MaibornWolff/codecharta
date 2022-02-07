@@ -14,5 +14,7 @@
 	</div>
 	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
 		{{ file.file.fileMeta.fileName }}
+
+		<cc-remove-file-button [filename]="file.file.fileMeta.fileName" [onRemoveFile]="handleOnRemoveFile()"></cc-remove-file-button>
 	</mat-option>
 </mat-select>

@@ -30,6 +30,9 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
+import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
+import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
+import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
 
 @NgModule({
 	imports: [
@@ -52,6 +55,7 @@ import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/inv
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		RemoveFileButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -66,6 +70,9 @@ import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/inv
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		FocusButtonsComponent,
+		MarkFolderRowComponent,
+		RemoveFileButtonComponent,
 		...dialogs
 	]
 })
