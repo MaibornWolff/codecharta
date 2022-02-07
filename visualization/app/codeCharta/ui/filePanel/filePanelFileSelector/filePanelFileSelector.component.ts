@@ -1,6 +1,6 @@
+import "./filePanelFileSelector.component.scss"
 import { Component, Input } from "@angular/core"
 import { FileState } from "../../../model/files/files"
-
 @Component({
 	selector: "cc-file-panel-file-selector",
 	template: require("./filePanelFileSelector.component.html")
