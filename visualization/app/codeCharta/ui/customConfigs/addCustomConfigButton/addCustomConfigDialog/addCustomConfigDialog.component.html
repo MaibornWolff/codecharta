@@ -1,0 +1,38 @@
+<mat-toolbar>
+	<div class="md-toolbar-tools">
+		<h2>Add Custom View</h2>
+	</div>
+</mat-toolbar>
+
+<mat-dialog-content>
+	<div class="md-dialog-content">
+		<mat-form-field class="md-block">
+			<label>View Name</label>
+			<input matInput class="custom-config-input" type="text" [formControl]="customConfigName" required />
+		</mat-form-field>
+		<div class="md-block" ng-show="$ctrl._viewModel.addErrorMessage.length > 0">
+			<div class="error">
+				<i class="fa fa-warning"></i>
+				<span>{{ "$ctrl._viewModel.addErrorMessage" }}</span>
+			</div>
+		</div>
+	</div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+	<span class="warning" ng-show="$ctrl._viewModel.localStorageSizeWarningMessage.length > 0">
+		<span>{{ "$ctrl._viewModel.localStorageSizeWarningMessage" }}</span>
+	</span>
+	<span ng-show="$ctrl._viewModel.localStorageSizeWarningMessage.length > 0">
+		<button
+			mat-button
+			ng-click="$ctrl.showPurgeConfirmDialog()"
+			class="md-warn"
+			title="Download old unused Custom Views as a backup file and then delete them in the browser."
+		>
+			Download & Purge ...
+		</button>
+	</span>
+
+	<button mat-button ng-click="$ctrl.addCustomConfig()" ng-disabled="!$ctrl.isNewCustomConfigValid()" class="md-primary">Add</button>
+</mat-dialog-actions>

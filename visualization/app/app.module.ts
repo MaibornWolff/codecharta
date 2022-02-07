@@ -4,7 +4,7 @@ import { Inject, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
-import { FormsModule } from "@angular/forms"
+import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "./material/material.module"
 import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
@@ -48,7 +48,8 @@ import { AddCustomConfigDialogComponent } from "./codeCharta/ui/customConfigs/ad
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule,
-		AddCustomConfigButtonModule
+		AddCustomConfigButtonModule,
+		ReactiveFormsModule
 	],
 	providers: [threeSceneServiceProvider],
 	declarations: [
