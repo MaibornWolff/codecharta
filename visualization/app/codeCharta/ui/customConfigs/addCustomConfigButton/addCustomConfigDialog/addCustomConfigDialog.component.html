@@ -9,6 +9,7 @@
 		<mat-form-field class="md-block">
 			<label>View Name</label>
 			<input matInput class="custom-config-input" type="text" [formControl]="customConfigName" required />
+			<mat-error *ngIf="customConfigName.invalid">{{ getErrorMessage() }}</mat-error>
 		</mat-form-field>
 		<div class="md-block" ng-show="$ctrl._viewModel.addErrorMessage.length > 0">
 			<div class="error">
