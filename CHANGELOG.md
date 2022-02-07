@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     ![xs](https://user-images.githubusercontent.com/72517530/151762455-07e47bf5-18aa-4721-a60a-6dfee057e1e5.png)
 -   Migrate context menu with slightly new layout touch to Angular. Migrated version prevents rendering outside of view [#1661](https://github.com/MaibornWolff/codecharta/issues/1661)
 
+### Fixed 🐞
+
+-   Remove delay of keeping a building highlight permanently [#2641](https://github.com/MaibornWolff/codecharta/issues/2641)
+
 ## [1.88.0] - 2022-01-24
 
 ### Changed
