@@ -23,7 +23,7 @@ function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, ga
 
 	// create node
 	node = { name: name, type: isFile(names) ? "File" : "Folder", attributes: {} }
-	if (!isFile(names)) node["children"] = []
+	if (!isFile(names)) node.children = []
 
 	// wrap file
 	if (isFile(names)) {
@@ -36,27 +36,30 @@ function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, ga
 	if (!nodeAlreadyExists(nodes, name)) {
 		nodes.push(node)
 	} else {
-		node = nodes.find(node => node["name"] == name)
+		node = nodes.find(node => node.name == name)
 	}
 
-	const parent = gameObjectPositions.find(gameObject => gameObject["name"] == parentNodeName)
+	const parent = gameObjectPositions.find(gameObject => gameObject.name === parentNodeName)
 
 	// set Position
-	if (node.type === "Folder" && name !== "root") {
+	if (node.type === "Folder" && name !== "base") {
 		const cornerXofParent = parent.position.x - parent.scale.x / 2
 		const cornerZofParent = parent.position.z - parent.scale.z / 2
 		const cornerXofChild = gameObjectPosition.position.x - gameObjectPosition.scale.x / 2
 		const cornerZofChild = gameObjectPosition.position.z - gameObjectPosition.scale.z / 2
-		const left = Math.floor(((cornerXofChild - cornerXofParent) / parent.scale.x) * 100)
-		const top = Math.floor(((cornerZofChild - cornerZofParent) / parent.scale.z) * 100)
-		const width = Math.floor((gameObjectPosition.scale.x / parent.scale.x) * 100)
-		const height = Math.floor((gameObjectPosition.scale.z / parent.scale.z) * 100)
-
-		node["fixedPosition"] = { left: top, top: left, width: height, height: width }
+		const top = Math.floor(((cornerXofChild - cornerXofParent) / parent.scale.x) * 100)
+		const left = Math.floor(((cornerZofChild - cornerZofParent) / parent.scale.z) * 100)
+		const width = Math.floor((gameObjectPosition.scale.z / parent.scale.z) * 100)
+		const height = Math.floor((gameObjectPosition.scale.x / parent.scale.x) * 100)
+		node.fixedPosition = { left, top, width, height }
+	}
+	if (name === "root") {
+		node.fixedPosition.top = Math.floor(50 - node.fixedPosition.height / 2)
+		node.fixedPosition.left = 0
 	}
 
-	const newParentName = parentNodeName === null ? node.name : parentNodeName + "." + node.name
-	addNodeRecursively(names, node["children"], gameObjectPosition, newParentName, gameObjectPositions)
+	const newParentName = parentNodeName === "base" ? node.name : parentNodeName + "." + node.name
+	addNodeRecursively(names, node.children, gameObjectPosition, newParentName, gameObjectPositions)
 	return
 }
 
@@ -100,15 +103,41 @@ try {
 	const nodes = []
 	const edges = []
 
+	// we add a dummy node so that base and root folders don't get merged and the fixed position of root won't be ignored
+	const dummyNode = {
+		name: "dummy",
+		type: "Folder",
+		attributes: {},
+		children: [],
+		fixedPosition: { top: 0, left: 0, width: 0, height: 0 }
+	}
+	nodes.push({ name: "base", type: "Folder", attributes: {}, children: [dummyNode] })
+
+	const rootGamePosition = gameObjectPositions.find(gameObject => gameObject.name === "root")
+	const longEdge = Math.max(rootGamePosition.scale.x, rootGamePosition.scale.z)
+	gameObjectPositions.push({
+		name: "base",
+		position: {
+			x: 0,
+			y: 0,
+			z: 0
+		},
+		scale: {
+			x: longEdge,
+			y: 1.0,
+			z: longEdge
+		}
+	})
+
 	for (const gameObjectPosition of gameObjectPositions) {
 		const names = gameObjectPosition.name.split(".")
-		addNodeRecursively(names, nodes, gameObjectPosition, null, gameObjectPositions)
+		if (names[0] !== "base") addNodeRecursively(names, nodes[0].children, gameObjectPosition, "base", gameObjectPositions)
 	}
 
-	// Actually we need to make sure if there are really edges in cc.json
-	for (const cycle of cycles) {
-		edges.push(createEdge(cycle))
-	}
+	if (cycles)
+		for (const cycle of cycles) {
+			edges.push(createEdge(cycle))
+		}
 
 	ccJson.data.nodes = nodes
 	ccJson.data["edges"] = edges
