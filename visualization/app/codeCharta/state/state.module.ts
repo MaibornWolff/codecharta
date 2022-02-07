@@ -52,7 +52,6 @@ import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layo
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
-import { InvertAreaService } from "./store/appSettings/invertArea/invertArea.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
@@ -80,7 +79,6 @@ angular
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
 	.service(camelCase(InvertHeightService.name), InvertHeightService)
-	.service(camelCase(InvertAreaService.name), InvertAreaService)
 	.service(camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)
