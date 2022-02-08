@@ -15,7 +15,6 @@ import { APIVersions } from "../codeCharta.api.model"
 import { getAsApiVersion } from "./fileValidator"
 import { hierarchy } from "d3-hierarchy"
 import { getMedian, pushSorted } from "./nodeDecorator"
-import { RangeSliderController } from "../ui/rangeSlider/rangeSlider.component"
 import { ColorRangeActions } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { FileState } from "../model/files/files"
 
@@ -271,18 +270,7 @@ interface EventTrackingItem {
 }
 
 export function trackEventUsageData(actionType: string, files: FileState[], payload?: any) {
-	if (
-		!isTrackingAllowed(files) ||
-		(!isActionOfType(actionType, AreaMetricActions) &&
-			!isActionOfType(actionType, HeightMetricActions) &&
-			!isActionOfType(actionType, ColorMetricActions) &&
-			!isActionOfType(actionType, ColorRangeActions) &&
-			!isActionOfType(actionType, BlacklistActions) &&
-			!isActionOfType(actionType, FocusedNodePathActions) &&
-			![RangeSliderController.COLOR_RANGE_FROM_UPDATED, RangeSliderController.COLOR_RANGE_TO_UPDATED].includes(actionType))
-	) {
-		return
-	}
+	if (!isTrackingAllowed(files)) return
 
 	const singleFileStates = getVisibleFileStates(files)
 	const fileMeta = singleFileStates[0].file.fileMeta
