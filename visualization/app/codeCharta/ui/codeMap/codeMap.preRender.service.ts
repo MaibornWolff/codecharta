@@ -3,7 +3,7 @@
 import { CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { StoreExtendedSubscriber, StoreService, StoreSubscriber } from "../../state/store.service"
+import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import debounce from "lodash.debounce"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
@@ -21,16 +21,11 @@ import { MetricDataService, MetricDataSubscriber } from "../../state/store/metri
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTracker"
-import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
 import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
+import { RightClickedNodeDataActions } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -39,7 +34,6 @@ export interface CodeMapPreRenderServiceSubscriber {
 export class CodeMapPreRenderService
 	implements
 		StoreSubscriber,
-		StoreExtendedSubscriber,
 		MetricDataSubscriber,
 		ScalingSubscriber,
 		LayoutAlgorithmSubscriber,
@@ -63,7 +57,6 @@ export class CodeMapPreRenderService
 		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
-		StoreService.subscribeDetailedData(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 		RangeSliderController.subscribeToColorRangeFromUpdated(this.$rootScope, this)
@@ -74,7 +67,7 @@ export class CodeMapPreRenderService
 		}, this.DEBOUNCE_TIME)
 
 		this.debounceTracking = debounce(() => {
-			trackMapMetaData(this.storeService.getState())
+			trackMapMetaData(this.storeService.getState().files)
 		}, 1000)
 	}
 
@@ -87,13 +80,7 @@ export class CodeMapPreRenderService
 	}
 
 	onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, HoveredBuildingPathActions)) {
-			// temporary hack:
-			// this.debounceRendering() leads to a new MapMesh, which leads to a new render, which would revert hover
-			// TODO We definitely need to improve this
-			return
-		}
-
+		// TODO: Get rid of this if else block. Why do we sometimes call this.debounceRendering() and sometimes this.codeMapRenderService.update()?
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
@@ -105,7 +92,9 @@ export class CodeMapPreRenderService
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
 			!isActionOfType(actionType, PanelSelectionActions) &&
 			!isActionOfType(actionType, PresentationModeActions) &&
-			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
+			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions) &&
+			!isActionOfType(actionType, HoveredBuildingPathActions) &&
+			!isActionOfType(actionType, RightClickedNodeDataActions)
 		) {
 			this.debounceRendering()
 			this.debounceTracking(actionType)
@@ -114,27 +103,12 @@ export class CodeMapPreRenderService
 		}
 	}
 
-	onStoreChangedExtended(actionType: string, payload?: any) {
-		if (
-			this.allNecessaryRenderDataAvailable() &&
-			(isActionOfType(actionType, AreaMetricActions) ||
-				isActionOfType(actionType, HeightMetricActions) ||
-				isActionOfType(actionType, ColorMetricActions) ||
-				isActionOfType(actionType, ColorRangeActions) ||
-				isActionOfType(actionType, BlacklistActions) ||
-				isActionOfType(actionType, FocusedNodePathActions))
-		) {
-			// Track event usage data only on certain events
-			trackEventUsageData(actionType, this.storeService.getState(), payload)
-		}
-	}
-
 	onColorRangeFromUpdated(colorMetric: string, fromValue: number) {
-		trackEventUsageData(RangeSliderController.COLOR_RANGE_FROM_UPDATED, this.storeService.getState(), { colorMetric, fromValue })
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_FROM_UPDATED, this.storeService.getState().files, { colorMetric, fromValue })
 	}
 
 	onColorRangeToUpdated(colorMetric: string, toValue: number) {
-		trackEventUsageData(RangeSliderController.COLOR_RANGE_TO_UPDATED, this.storeService.getState(), { colorMetric, toValue })
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_TO_UPDATED, this.storeService.getState().files, { colorMetric, toValue })
 	}
 
 	onLayoutAlgorithmChanged() {
@@ -177,10 +151,8 @@ export class CodeMapPreRenderService
 	}
 
 	private removeLoadingGifs() {
-		if (this.storeService.getState().appSettings.isLoadingFile) {
-			this.storeService.dispatch(setIsLoadingFile(false))
-		}
-		this.storeService.dispatch(setIsLoadingMap(false))
+		if (this.storeService.getState().appSettings.isLoadingFile) this.storeService.dispatch(setIsLoadingFile(false))
+		if (this.storeService.getState().appSettings.isLoadingMap) this.storeService.dispatch(setIsLoadingMap(false))
 	}
 
 	private showLoadingMapGif() {

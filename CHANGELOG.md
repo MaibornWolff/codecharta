@@ -7,14 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.89.0] - 2022-02-07
+
 ### Added 🚀
 
 -   Add area metric option to invert the amount of area, which is used for the nodes [#2626](https://github.com/MaibornWolff/codecharta/pull/2626)
+-   Add button to clear search field [#2638](https://github.com/MaibornWolff/codecharta/pull/2638) <br>
+    ![xs](https://user-images.githubusercontent.com/48218172/151999974-3b8a7cca-52b2-4757-b3c0-e3b2e36ad237.png)
 
 ### Changed
 
 -   New buttons for selecting attribute types [#2631](https://github.com/MaibornWolff/codecharta/pull/2631)
     ![xs](https://user-images.githubusercontent.com/72517530/151762455-07e47bf5-18aa-4721-a60a-6dfee057e1e5.png)
+-   Migrate context menu with slightly new layout touch to Angular. Migrated version prevents rendering outside of view [#1661](https://github.com/MaibornWolff/codecharta/issues/1661)
+
+### Fixed 🐞
+
+-   Remove delay of keeping a building highlight permanently [#2641](https://github.com/MaibornWolff/codecharta/issues/2641)
 
 ## [1.88.0] - 2022-01-24
 
