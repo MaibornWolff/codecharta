@@ -104,8 +104,8 @@ export class CustomConfigHelper {
 		}
 
 		ccLocalStorage.version = CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION
-		CustomConfigHelper.getStorage().removeItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT)
-		CustomConfigHelper.getStorage().setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(ccLocalStorage, stateObjectReviver))
+		localStorage.removeItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT)
+		localStorage.setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(ccLocalStorage, stateObjectReviver))
 
 		return ccLocalStorage
 	}
