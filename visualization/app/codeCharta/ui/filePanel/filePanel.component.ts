@@ -69,11 +69,8 @@ export class FilePanelController implements FilesSelectionSubscriber, MapColorsS
 
 	private partialStateFileRemove(files: FileState[]) {
 		const selectedFiles = files.filter(x => x.selectedAs === FileSelectionState.Partial).map(fileState => getFileNameOf(fileState))
-
 		if (selectedFiles.length > 0) {
 			this.onPartialFilesChange(selectedFiles)
-		} else {
-			this.onPartialFilesChange([getFileNameOf(files[files.length - 1])])
 		}
 	}
 
