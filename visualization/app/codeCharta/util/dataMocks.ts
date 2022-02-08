@@ -1814,7 +1814,6 @@ export const STATE: State = {
 	},
 	files: [],
 	lookUp: {
-		idToNode: new Map(),
 		idToBuilding: new Map()
 	},
 	appStatus: {
@@ -1899,8 +1898,7 @@ export const DEFAULT_STATE: State = {
 	treeMap: { mapSize: 250 },
 	files: [],
 	lookUp: {
-		idToBuilding: new Map(),
-		idToNode: new Map()
+		idToBuilding: new Map()
 	},
 	appStatus: {
 		hoveredBuildingPath: null,

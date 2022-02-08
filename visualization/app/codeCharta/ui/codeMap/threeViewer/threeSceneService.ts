@@ -10,6 +10,7 @@ import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsService, MapColorsSubscriber } from "../../../state/store/appSettings/mapColors/mapColors.service"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
+import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -343,7 +344,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode) {
 		const { lookUp } = this.storeService.getState()
-		const codeMapBuilding = lookUp.idToNode.get(codeMapNode.id)
+		const idToNode = idToNodeSelector(this.storeService.getState())
+		const codeMapBuilding = idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
 			const building = lookUp.idToBuilding.get(data.id)
 			if (building) {
@@ -354,7 +356,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	removeNodeAndChildrenFromConstantHighlight(codeMapNode: CodeMapNode) {
 		const { lookUp } = this.storeService.getState()
-		const codeMapBuilding = lookUp.idToNode.get(codeMapNode.id)
+		const idToNode = idToNodeSelector(this.storeService.getState())
+		const codeMapBuilding = idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
 			const building = lookUp.idToBuilding.get(data.id)
 			if (building) {
