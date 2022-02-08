@@ -398,8 +398,7 @@ export interface CCAction extends Action {
 }
 
 export interface LookUp {
-	idToNode: Map<number, CodeMapNode>
-	// note that key is id of node and NOT id of building
+	/* note that key is id of node and NOT id of building */
 	idToBuilding: Map<number, CodeMapBuilding>
 }
 
