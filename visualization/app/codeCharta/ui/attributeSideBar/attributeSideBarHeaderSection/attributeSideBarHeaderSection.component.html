@@ -1,7 +1,6 @@
 <ng-container *ngIf="node">
 	<i class="close-icon fa fa-times" (click)="closeSideBar()"></i>
 
-	<h2 *ngIf="!node.link" data-testid="file-opener" class="node-name">{{ node.name }}</h2>
 	<div *ngIf="node.link" data-testid="file-link" matTooltip="{{ node.link }}" [matTooltipShowDelay]="200" class="node-name">
 		<a class="node-link" href="{{ node.link }}" target="_blank" rel="noopener noreferrer">
 			<h2>{{ node.name }}&nbsp;</h2>
