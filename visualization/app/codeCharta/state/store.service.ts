@@ -8,17 +8,12 @@ export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
 }
 
-export interface StoreExtendedSubscriber {
-	onStoreChangedExtended(actionType: string, data?: unknown)
-}
-
 export interface DispatchOptions {
 	silent: boolean
 }
 
 export class StoreService {
 	static STORE_CHANGED_EVENT = "store-changed"
-	private static STORE_CHANGED_EXTENDED_EVENT = "store-changed-extended"
 	private store = Store.store
 	private originalDispatch: typeof Store.store.dispatch
 
@@ -39,7 +34,6 @@ export class StoreService {
 			this.originalDispatch(atomicAction)
 			if (!options.silent) {
 				this.notify(atomicAction.type)
-				this.notifyExtended(atomicAction.type, atomicAction.payload)
 			}
 		}
 
@@ -54,19 +48,9 @@ export class StoreService {
 		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType })
 	}
 
-	private notifyExtended(actionType: string, payload?: unknown) {
-		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EXTENDED_EVENT, { actionType, payload })
-	}
-
 	static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {
 		$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onStoreChanged(data.actionType)
-		})
-	}
-
-	static subscribeDetailedData($rootScope: IRootScopeService, subscriber: StoreExtendedSubscriber) {
-		$rootScope.$on(StoreService.STORE_CHANGED_EXTENDED_EVENT, (_event_, data) => {
-			subscriber.onStoreChangedExtended(data.actionType, data.payload)
 		})
 	}
 }

@@ -24,6 +24,7 @@ import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePa
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
+import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
@@ -35,7 +36,12 @@ import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/inv
 	imports: [
 		BrowserModule,
 		UpgradeModule,
-		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect, OpenNodeContextMenuEffect]),
+		EffectsModule.forRoot([
+			UnfocusNodesOnLoadingMapEffect,
+			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
+			OpenNodeContextMenuEffect,
+			TrackEventUsageDataEffect
+		]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
