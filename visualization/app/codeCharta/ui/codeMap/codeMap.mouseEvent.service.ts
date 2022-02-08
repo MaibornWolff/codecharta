@@ -19,6 +19,7 @@ import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { setHoveredBuildingPath } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { hoveredBuildingPathSelector } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
 import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 
 interface Coordinates {
 	x: number
@@ -93,8 +94,6 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 				this.unhoverNode()
 			}
 		})
-
-		document.addEventListener("contextmenu", event => event.preventDefault())
 	}
 
 	static changeCursorIndicator(cursorIcon: CursorType) {
@@ -398,8 +397,9 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
 
+		const idToNode = idToNodeSelector(this.storeService.getState())
 		const { lookUp } = this.storeService.getState()
-		const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
+		const codeMapNode = idToNode.get(hoveredBuilding.node.id)
 		for (const { data } of hierarchy(codeMapNode)) {
 			const building = lookUp.idToBuilding.get(data.id)
 			if (building) {

@@ -1,6 +1,6 @@
 import { createSelector } from "../../angular-redux/createSelector"
+import { idToNodeSelector } from "../../selectors/accumulatedData/idToNode.selector"
 import { rightClickedNodeDataSelector } from "../../store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
-import { idToNodeSelector } from "../../store/lookUp/idToNode/idToNode.selector"
 
 export const rightClickedCodeMapNodeSelector = createSelector(
 	[rightClickedNodeDataSelector, idToNodeSelector],
