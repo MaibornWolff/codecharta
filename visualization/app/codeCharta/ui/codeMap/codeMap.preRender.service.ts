@@ -20,8 +20,7 @@ import { PresentationModeActions } from "../../state/store/appSettings/isPresent
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
-import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTracker"
-import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
+import { trackMapMetaData } from "../../util/usageDataTracker"
 import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
@@ -31,15 +30,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService
-	implements
-		StoreSubscriber,
-		MetricDataSubscriber,
-		ScalingSubscriber,
-		LayoutAlgorithmSubscriber,
-		ColorRangeFromSubscriber,
-		ColorRangeToSubscriber
-{
+export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -59,8 +50,6 @@ export class CodeMapPreRenderService
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
-		RangeSliderController.subscribeToColorRangeFromUpdated(this.$rootScope, this)
-		RangeSliderController.subscribeToColorRangeToUpdated(this.$rootScope, this)
 
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
@@ -101,14 +90,6 @@ export class CodeMapPreRenderService
 		} else {
 			this.codeMapRenderService.update()
 		}
-	}
-
-	onColorRangeFromUpdated(colorMetric: string, fromValue: number) {
-		trackEventUsageData(RangeSliderController.COLOR_RANGE_FROM_UPDATED, this.storeService.getState().files, { colorMetric, fromValue })
-	}
-
-	onColorRangeToUpdated(colorMetric: string, toValue: number) {
-		trackEventUsageData(RangeSliderController.COLOR_RANGE_TO_UPDATED, this.storeService.getState().files, { colorMetric, toValue })
 	}
 
 	onLayoutAlgorithmChanged() {
