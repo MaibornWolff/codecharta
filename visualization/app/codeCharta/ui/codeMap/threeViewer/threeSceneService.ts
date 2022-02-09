@@ -11,6 +11,7 @@ import { MapColorsService, MapColorsSubscriber } from "../../../state/store/appS
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
+import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -20,14 +21,9 @@ export interface BuildingDeselectedEventSubscriber {
 	onBuildingDeselected()
 }
 
-export interface CodeMapMeshChangedSubscriber {
-	onCodeMapMeshChanged(mapMesh: CodeMapMesh)
-}
-
 export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, MapColorsSubscriber {
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
-	private static readonly CODE_MAP_MESH_CHANGED_EVENT = "code-map-mesh-changed"
 
 	scene: Scene
 	labels: Group
@@ -54,7 +50,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private highlightedLine = null
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private idToBuilding: IdToBuildingService) {
 		"ngInject"
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
@@ -343,11 +339,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode) {
-		const { lookUp } = this.storeService.getState()
 		const idToNode = idToNodeSelector(this.storeService.getState())
 		const codeMapBuilding = idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
-			const building = lookUp.idToBuilding.get(data.id)
+			const building = this.idToBuilding.get(data.id)
 			if (building) {
 				this.constantHighlight.set(building.id, building)
 			}
@@ -355,11 +350,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	removeNodeAndChildrenFromConstantHighlight(codeMapNode: CodeMapNode) {
-		const { lookUp } = this.storeService.getState()
 		const idToNode = idToNodeSelector(this.storeService.getState())
 		const codeMapBuilding = idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
-			const building = lookUp.idToBuilding.get(data.id)
+			const building = this.idToBuilding.get(data.id)
 			if (building) {
 				this.constantHighlight.delete(building.id)
 			}
@@ -415,7 +409,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.mapGeometry.position.z = -mapSize
 
 		this.mapGeometry.add(this.mapMesh.getThreeMesh())
-		this.notifyMapMeshChanged()
+
+		this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
 	}
 
 	getMapMesh() {
@@ -446,10 +441,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		}
 	}
 
-	private notifyMapMeshChanged() {
-		this.$rootScope.$broadcast(ThreeSceneService.CODE_MAP_MESH_CHANGED_EVENT, this.mapMesh)
-	}
-
 	dispose() {
 		this.mapMesh?.dispose()
 	}
@@ -463,12 +454,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (_event, selectedBuilding: CodeMapBuilding) => {
 			subscriber.onBuildingSelected(selectedBuilding)
-		})
-	}
-
-	static subscribeToCodeMapMeshChangedEvent($rootScope: IRootScopeService, subscriber: CodeMapMeshChangedSubscriber) {
-		$rootScope.$on(this.CODE_MAP_MESH_CHANGED_EVENT, (_event, mapMesh: CodeMapMesh) => {
-			subscriber.onCodeMapMeshChanged(mapMesh)
 		})
 	}
 }

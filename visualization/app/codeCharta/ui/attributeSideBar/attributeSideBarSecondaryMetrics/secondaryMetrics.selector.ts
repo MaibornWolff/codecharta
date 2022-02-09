@@ -1,11 +1,11 @@
-import { Node } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
 import { createSelector } from "../../../state/angular-redux/store"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { CcState } from "../../../state/store/store"
 import { PrimaryMetricNames, primaryMetricNamesSelector } from "../attributeSideBarPrimaryMetrics/primaryMetricNames.selector"
 import { Metric } from "../util/metric"
 
-export const _calculateSecondaryMetrics = (primaryMetricNames: PrimaryMetricNames, node?: Node) => {
+export const _calculateSecondaryMetrics = (primaryMetricNames: PrimaryMetricNames, node?: CodeMapNode) => {
 	if (!node) return [] as Metric[]
 
 	const primaryMetricNamesList = Object.values(primaryMetricNames)

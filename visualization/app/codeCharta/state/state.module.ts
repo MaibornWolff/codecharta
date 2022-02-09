@@ -7,7 +7,6 @@ import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNam
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
-import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
@@ -64,7 +63,6 @@ angular
 	.service(camelCase(NodeMetricDataService.name), NodeMetricDataService)
 	.service(camelCase(PanelSelectionService.name), PanelSelectionService)
 	.service(camelCase(CameraTargetService.name), CameraTargetService)
-	.service(camelCase(IdToBuildingService.name), IdToBuildingService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(camelCase(SearchPanelModeService.name), SearchPanelModeService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)

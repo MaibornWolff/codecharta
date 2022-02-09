@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnChanges, SimpleChanges } from "@angular/core"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { ThreeSceneServiceToken } from "../../../../services/ajs-upgraded-providers"
-import { State } from "../../../angular-redux/state"
+import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 
 @Component({
@@ -13,7 +13,10 @@ export class HighlightButtonsComponent implements OnChanges {
 
 	isHighlighted: boolean
 
-	constructor(@Inject(ThreeSceneServiceToken) private threeSceneService: ThreeSceneService, @Inject(State) private state: State) {}
+	constructor(
+		@Inject(ThreeSceneServiceToken) private threeSceneService: ThreeSceneService,
+		@Inject(IdToBuildingService) private idToBuilding: IdToBuildingService
+	) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.codeMapNode) this.isHighlighted = this.calculateIsHighlighted()
@@ -30,8 +33,7 @@ export class HighlightButtonsComponent implements OnChanges {
 	private calculateIsHighlighted() {
 		if (!this.codeMapNode) return false
 
-		const { lookUp } = this.state.getValue()
-		const codeMapBuilding = lookUp.idToBuilding.get(this.codeMapNode.id)
+		const codeMapBuilding = this.idToBuilding.get(this.codeMapNode.id)
 		if (!codeMapBuilding) return false
 
 		return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
