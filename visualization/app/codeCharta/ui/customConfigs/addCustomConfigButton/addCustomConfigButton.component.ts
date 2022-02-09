@@ -11,6 +11,6 @@ export class AddCustomConfigButtonComponent {
 	constructor(@Inject(MatDialog) private dialog: MatDialog) {}
 
 	showAddCustomConfigDialog() {
-		this.dialog.open(AddCustomConfigDialogComponent)
+		this.dialog.open(AddCustomConfigDialogComponent, { panelClass: "cc-add-custom-config-dialog" })
 	}
 }

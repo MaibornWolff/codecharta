@@ -1,3 +1,4 @@
+import "./addCustomDialog.component.scss"
 import { Component } from "@angular/core"
 import { FormControl, Validators } from "@angular/forms"
 

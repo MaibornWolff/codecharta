@@ -1,0 +1,43 @@
+.cc-add-custom-config-dialog .mat-dialog-container {
+	padding: 0;
+	overflow: hidden;
+
+	mat-toolbar {
+		&.header {
+			background-color: #009688;
+
+			h2 {
+				color: white;
+			}
+		}
+	}
+
+	.dialog-content {
+		padding: 0 24px;
+		margin: 10px 0;
+
+		mat-form-field {
+			width: 100%;
+		}
+
+		label {
+			color: rgba(0, 0, 0, 0.54);
+			font-size: 13px;
+		}
+
+		input {
+			margin-top: 12px;
+		}
+	}
+
+	.mat-dialog-actions {
+		margin: 0;
+		padding: 0 8px;
+
+		button {
+			color: rgb(0, 150, 136);
+			padding: 0 8px;
+			margin: 8px 0 8px 8px;
+		}
+	}
+}
