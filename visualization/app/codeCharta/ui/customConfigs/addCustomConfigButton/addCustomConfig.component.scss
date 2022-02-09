@@ -1,5 +1,16 @@
 cc-add-custom-config-button {
 	button {
-		text-align: center;
+		padding: 0 16px;
+		height: 48px;
+		width: 100%;
+		margin: 0;
+		background-color: #00a091;
+		vertical-align: middle;
+
+		i.fa {
+			color: #ffffff;
+			vertical-align: middle;
+			font-size: 12px;
+		}
 	}
 }

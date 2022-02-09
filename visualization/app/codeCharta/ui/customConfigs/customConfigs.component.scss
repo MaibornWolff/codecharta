@@ -43,6 +43,12 @@
 	}
 
 	.custom-configs-item {
+		cc-add-custom-config-button {
+			padding: 0;
+			margin: 0;
+			display: inline-block;
+			width: 53.75px;
+		}
 		.button-hovering {
 			height: 48px;
 			text-align: left;
@@ -62,9 +68,6 @@
 			}
 		}
 
-		i.fa {
-			margin-left: 0.8rem;
-		}
 		i.collapse-icon {
 			font-size: 10px;
 			line-height: 48px;
@@ -74,7 +77,6 @@
 
 		.action-button {
 			display: inline-block;
-			margin-right: 1px;
 			min-width: 12%;
 			height: 48px;
 			width: 12%;
