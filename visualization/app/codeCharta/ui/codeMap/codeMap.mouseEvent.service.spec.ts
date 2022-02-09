@@ -18,13 +18,12 @@ import {
 	TEST_NODES,
 	withMockedEventMethods
 } from "../../util/dataMocks"
-import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
-import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
@@ -34,6 +33,13 @@ import { LazyLoader } from "../../util/lazyLoader"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { mocked } from "ts-jest/utils"
+import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
+
+jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
+	idToNodeSelector: jest.fn()
+}))
+const mockedIdToNodeSelector = mocked(idToNodeSelector)
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -51,7 +57,6 @@ describe("codeMapMouseEventService", () => {
 	let threeViewerService: ThreeViewerService
 
 	let codeMapBuilding: CodeMapBuilding
-	let file: CCFile
 
 	beforeEach(() => {
 		restartSystem()
@@ -89,7 +94,6 @@ describe("codeMapMouseEventService", () => {
 		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
-		file = klona(TEST_FILE_WITH_PATHS)
 		document.body.style.cursor = CursorType.Default
 	}
 
@@ -387,6 +391,11 @@ describe("codeMapMouseEventService", () => {
 
 	describe("updateHovering", () => {
 		beforeEach(() => {
+			mockedIdToNodeSelector.mockImplementation(() => {
+				const idToNode = new Map<number, CodeMapNode>()
+				idToNode.set(codeMapBuilding.node.id, codeMapBuilding.node as unknown as CodeMapNode)
+				return idToNode
+			})
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn()
 			})
@@ -394,10 +403,7 @@ describe("codeMapMouseEventService", () => {
 
 			const idToBuilding = new Map<number, CodeMapBuilding>()
 			idToBuilding.set(CODE_MAP_BUILDING.node.id, CODE_MAP_BUILDING)
-			const idToNode = new Map<number, CodeMapNode>()
-			idToNode.set(file.map.id, file.map)
 			storeService.dispatch(setIdToBuilding(idToBuilding))
-			storeService.dispatch(setIdToNode(idToNode))
 			threeSceneService.resetLabel = jest.fn()
 			threeSceneService.getLabelForHoveredNode = jest.fn()
 			threeSceneService.animateLabel = jest.fn()
@@ -770,12 +776,14 @@ describe("codeMapMouseEventService", () => {
 
 	describe("hoverBuilding", () => {
 		beforeEach(() => {
+			mockedIdToNodeSelector.mockImplementation(() => {
+				const idToNode = new Map<number, CodeMapNode>()
+				idToNode.set(codeMapBuilding.node.id, codeMapBuilding.node as unknown as CodeMapNode)
+				return idToNode
+			})
 			const idToBuilding = new Map<number, CodeMapBuilding>()
 			idToBuilding.set(codeMapBuilding.node.id, codeMapBuilding)
-			const idToNode = new Map<number, CodeMapNode>()
-			idToNode.set(file.map.id, file.map)
 			storeService.dispatch(setIdToBuilding(idToBuilding))
-			storeService.dispatch(setIdToNode(idToNode))
 		})
 
 		it("should set the highlight when to is not null", () => {

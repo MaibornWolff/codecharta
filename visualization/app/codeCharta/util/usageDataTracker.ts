@@ -2,7 +2,7 @@
 
 import { getVisibleFileStates, isSingleState } from "../model/files/files.helper"
 import { CodeChartaStorage } from "./codeChartaStorage"
-import { CodeMapNode, NodeType, State } from "../codeCharta.model"
+import { CodeMapNode, NodeType } from "../codeCharta.model"
 import { isStandalone } from "./envDetector"
 import { isActionOfType } from "./reduxHelper"
 import { AreaMetricActions } from "../state/store/dynamicSettings/areaMetric/areaMetric.actions"
@@ -15,8 +15,8 @@ import { APIVersions } from "../codeCharta.api.model"
 import { getAsApiVersion } from "./fileValidator"
 import { hierarchy } from "d3-hierarchy"
 import { getMedian, pushSorted } from "./nodeDecorator"
-import { RangeSliderController } from "../ui/rangeSlider/rangeSlider.component"
 import { ColorRangeActions } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { FileState } from "../model/files/files"
 
 interface MetaDataTrackingItem {
 	mapId: string
@@ -56,10 +56,10 @@ interface MetricStatistics {
 	metricValues: number[]
 }
 
-function isTrackingAllowed(state: State) {
-	const singleFileStates = getVisibleFileStates(state.files)
+function isTrackingAllowed(files: FileState[]) {
+	const singleFileStates = getVisibleFileStates(files)
 
-	if (!isStandalone() || !isSingleState(state.files) || singleFileStates.length > 1) {
+	if (!isStandalone() || !isSingleState(files) || singleFileStates.length > 1) {
 		return false
 	}
 
@@ -72,12 +72,12 @@ function isTrackingAllowed(state: State) {
 	)
 }
 
-export function trackMapMetaData(state: State) {
-	if (!isTrackingAllowed(state)) {
+export function trackMapMetaData(files: FileState[]) {
+	if (!isTrackingAllowed(files)) {
 		return
 	}
 
-	const singleFileStates = getVisibleFileStates(state.files)
+	const singleFileStates = getVisibleFileStates(files)
 	const fileNodes: CodeMapNode[] = getFileNodes(singleFileStates[0].file.map)
 	const fileMeta = singleFileStates[0].file.fileMeta
 
@@ -269,21 +269,10 @@ interface EventTrackingItem {
 	payload: SettingChangedEventPayload | NodeInteractionEventPayload
 }
 
-export function trackEventUsageData(actionType: string, state: State, payload?: any) {
-	if (
-		!isTrackingAllowed(state) ||
-		(!isActionOfType(actionType, AreaMetricActions) &&
-			!isActionOfType(actionType, HeightMetricActions) &&
-			!isActionOfType(actionType, ColorMetricActions) &&
-			!isActionOfType(actionType, ColorRangeActions) &&
-			!isActionOfType(actionType, BlacklistActions) &&
-			!isActionOfType(actionType, FocusedNodePathActions) &&
-			![RangeSliderController.COLOR_RANGE_FROM_UPDATED, RangeSliderController.COLOR_RANGE_TO_UPDATED].includes(actionType))
-	) {
-		return
-	}
+export function trackEventUsageData(actionType: string, files: FileState[], payload?: any) {
+	if (!isTrackingAllowed(files)) return
 
-	const singleFileStates = getVisibleFileStates(state.files)
+	const singleFileStates = getVisibleFileStates(files)
 	const fileMeta = singleFileStates[0].file.fileMeta
 
 	const eventTrackingItem = buildEventTrackingItem(fileMeta.fileChecksum, actionType, payload)
@@ -292,7 +281,7 @@ export function trackEventUsageData(actionType: string, state: State, payload?: 
 	}
 
 	// Make sure that only files within usageData can be read
-	const fileChecksum = getVisibleFileStates(state.files)[0].file.fileMeta.fileChecksum.replace(/\//g, "")
+	const fileChecksum = getVisibleFileStates(files)[0].file.fileMeta.fileChecksum.replace(/\//g, "")
 
 	const fileStorage = new CodeChartaStorage()
 

@@ -132,7 +132,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		return path
 	}
 
-	private resetSearchPattern() {
+	resetSearchPattern() {
 		this._viewModel.searchPattern = ""
 		this.updateSearchPattern()
 	}

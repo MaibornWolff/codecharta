@@ -27,6 +27,7 @@ import { layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
 import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
 import { sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
 import { screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
+import { invertArea } from "./invertArea/invertArea.reducer"
 
 const appSettings = combineReducers({
 	colorLabels,
@@ -45,6 +46,7 @@ const appSettings = combineReducers({
 	isWhiteBackground,
 	dynamicMargin,
 	invertHeight,
+	invertArea,
 	hideFlatBuildings,
 	camera,
 	scaling,

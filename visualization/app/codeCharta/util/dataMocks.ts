@@ -1772,6 +1772,7 @@ export const STATE: State = {
 		cameraTarget: new Vector3(177, 0, 299),
 		hideFlatBuildings: true,
 		invertHeight: true,
+		invertArea: false,
 		dynamicMargin: true,
 		isWhiteBackground: false,
 		mapColors: {
@@ -1813,7 +1814,6 @@ export const STATE: State = {
 	},
 	files: [],
 	lookUp: {
-		idToNode: new Map(),
 		idToBuilding: new Map()
 	},
 	appStatus: {
@@ -1838,6 +1838,7 @@ export const DEFAULT_STATE: State = {
 		dynamicMargin: true,
 		hideFlatBuildings: false,
 		invertHeight: false,
+		invertArea: false,
 		isWhiteBackground: false,
 		mapColors: {
 			angularGreen: "#00BFA5",
@@ -1897,8 +1898,7 @@ export const DEFAULT_STATE: State = {
 	treeMap: { mapSize: 250 },
 	files: [],
 	lookUp: {
-		idToBuilding: new Map(),
-		idToNode: new Map()
+		idToBuilding: new Map()
 	},
 	appStatus: {
 		hoveredBuildingPath: null,

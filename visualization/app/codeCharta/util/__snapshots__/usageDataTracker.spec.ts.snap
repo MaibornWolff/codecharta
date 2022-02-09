@@ -1,23 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UsageDataTracker trackEventUsageData should track node interaction blacklist event 1`] = `
-"some-already-tracked-events-from-file-storage
-{\\"mapId\\":\\"invalid-md5-sample-checksum\\",\\"eventType\\":\\"node_interaction\\",\\"eventTime\\":1612428357566,\\"payload\\":{\\"eventName\\":\\"ADD_BLACKLIST_ITEM\\",\\"id\\":\\"098f6bcd4621d373cade4e832627b4f6\\",\\"type\\":\\"exclude\\",\\"attributes\\":{}}}"
-`;
-
-exports[`UsageDataTracker trackEventUsageData should track node interaction focus event 1`] = `
-"some-already-tracked-events-from-file-storage
-{\\"mapId\\":\\"invalid-md5-sample-checksum\\",\\"eventType\\":\\"node_interaction\\",\\"eventTime\\":1612428357566,\\"payload\\":{\\"eventName\\":\\"FOCUS_NODE\\",\\"id\\":\\"9d1e46ce2260c90b8b7600a11ca08972\\"}}"
-`;
-
-exports[`UsageDataTracker trackEventUsageData should track setting changed event 1`] = `
+exports[`UsageDataTracker trackEventUsageData should track an event 1`] = `
 "some-already-tracked-events-from-file-storage
 {\\"mapId\\":\\"invalid-md5-sample-checksum\\",\\"eventType\\":\\"setting_changed\\",\\"eventTime\\":1612428357566,\\"payload\\":{\\"eventName\\":\\"SET_HEIGHT_METRIC\\",\\"newValue\\":\\"newHeightMetricValue\\"}}"
-`;
-
-exports[`UsageDataTracker trackEventUsageData should track setting changed event for resetting the blacklist 1`] = `
-"some-already-tracked-events-from-file-storage
-{\\"mapId\\":\\"invalid-md5-sample-checksum\\",\\"eventType\\":\\"setting_changed\\",\\"eventTime\\":1612428357566,\\"payload\\":{\\"eventName\\":\\"SET_BLACKLIST\\",\\"newValue\\":[]}}"
 `;
 
 exports[`UsageDataTracker trackMetaUsageData should not consider files with divergent metrics for statistic calculation 1`] = `"{\\"mapId\\":\\"invalid-md5-sample-checksum\\",\\"codeChartaApiVersion\\":\\"1.1\\",\\"creationTime\\":1612369999999,\\"exportedFileSizeInBytes\\":999,\\"statisticsPerLanguage\\":{\\"ts\\":{\\"metrics\\":{\\"rloc\\":{\\"avg\\":33.333333333333336,\\"max\\":70,\\"median\\":30,\\"min\\":0,\\"numberOfFiles\\":3,\\"totalSum\\":100,\\"firstQuantile\\":0,\\"thirdQuantile\\":70,\\"variance\\":822.2222222222223,\\"standardDeviation\\":28.674417556808756,\\"variationCoefficient\\":0.8602325267042626,\\"outliers\\":[],\\"metricValues\\":[0,30,70]}},\\"numberOfFiles\\":3,\\"maxFilePathDepth\\":4,\\"avgFilePathDepth\\":3.6666666666666665},\\"java\\":{\\"metrics\\":{\\"rloc\\":{\\"avg\\":55,\\"max\\":100,\\"median\\":50,\\"min\\":20,\\"numberOfFiles\\":4,\\"totalSum\\":220,\\"firstQuantile\\":25,\\"thirdQuantile\\":85,\\"variance\\":1025,\\"standardDeviation\\":32.01562118716424,\\"variationCoefficient\\":0.5821022034029862,\\"outliers\\":[],\\"metricValues\\":[100,30,70,20]},\\"functions\\":{\\"avg\\":280,\\"max\\":1000,\\"median\\":55,\\"min\\":10,\\"numberOfFiles\\":4,\\"totalSum\\":1120,\\"firstQuantile\\":10,\\"thirdQuantile\\":550,\\"variance\\":174150,\\"standardDeviation\\":417.31283229730667,\\"variationCoefficient\\":1.490402972490381,\\"outliers\\":[],\\"metricValues\\":[10,100,1000,10]},\\"mcc\\":{\\"avg\\":28.25,\\"max\\":100,\\"median\\":6,\\"min\\":1,\\"numberOfFiles\\":4,\\"totalSum\\":113,\\"firstQuantile\\":1.5,\\"thirdQuantile\\":55,\\"variance\\":1728.1875,\\"standardDeviation\\":41.57147459496716,\\"variationCoefficient\\":1.4715566228306958,\\"outliers\\":[],\\"metricValues\\":[1,100,10,2]}},\\"numberOfFiles\\":4,\\"maxFilePathDepth\\":4,\\"avgFilePathDepth\\":3.75}}}"`;
