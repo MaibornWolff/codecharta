@@ -1,11 +1,9 @@
-import { BlacklistItem, CCFile, CodeMapNode, NodeType, State } from "../codeCharta.model"
+import { CCFile, CodeMapNode, NodeType, State } from "../codeCharta.model"
 import { trackEventUsageData, TRACKING_DATA_LOCAL_STORAGE_ELEMENT, trackMapMetaData } from "./usageDataTracker"
 import * as FilesHelper from "../model/files/files.helper"
 import { FileState } from "../model/files/files"
 import { APIVersions } from "../codeCharta.api.model"
 import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklist.actions"
-import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { klona } from "klona"
 
 describe("UsageDataTracker", () => {
@@ -137,34 +135,17 @@ describe("UsageDataTracker", () => {
 			expect(localStorage.setItem).toHaveBeenCalledTimes(1)
 		}
 
-		it("should not track on not allowed events", () => {
-			trackEventUsageData("EVENT_ACTION_WHICH_SHOULD_NOT_BE_TRACKED", stateStub.files)
+		it("should not track when tracking is not allowed", () => {
+			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState, singleFileState])
+
+			trackEventUsageData(HeightMetricActions.SET_HEIGHT_METRIC, stateStub.files, "newHeightMetricValue")
 
 			// A second call would indicate that the tracking has not been cancelled as expected
 			expect(FilesHelper.getVisibleFileStates).toHaveBeenCalledTimes(1)
 		})
 
-		it("should track setting changed event", () => {
+		it("should track an event", () => {
 			trackEventUsageData(HeightMetricActions.SET_HEIGHT_METRIC, stateStub.files, "newHeightMetricValue")
-			expectEventHasBeenTracked()
-		})
-
-		it("should track setting changed event for resetting the blacklist", () => {
-			trackEventUsageData(BlacklistActions.SET_BLACKLIST, stateStub.files, [])
-			expectEventHasBeenTracked()
-		})
-
-		it("should track node interaction blacklist event", () => {
-			trackEventUsageData(BlacklistActions.ADD_BLACKLIST_ITEM, stateStub.files, {
-				path: "test",
-				attributes: {},
-				type: "exclude"
-			} as BlacklistItem)
-			expectEventHasBeenTracked()
-		})
-
-		it("should track node interaction focus event", () => {
-			trackEventUsageData(FocusedNodePathActions.FOCUS_NODE, stateStub.files, "focusedPathPayload")
 			expectEventHasBeenTracked()
 		})
 	})
