@@ -16,6 +16,11 @@ describe("FileChooser", () => {
 
 		await goto()
 	})
+	it("should load a valid gameObjects file", async () => {
+		await fileChooser.openFiles(["./app/codeCharta/assets/gameObjectsFile.json"])
+
+		expect(await filePanel.getSelectedName()).toEqual("gameObjectsFile.json")
+	})
 
 	it("should load another cc.json", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])

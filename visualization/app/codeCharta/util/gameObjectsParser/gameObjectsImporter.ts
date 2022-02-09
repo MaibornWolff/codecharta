@@ -1,3 +1,5 @@
+import md5 from "md5"
+
 function isFile(names) {
 	return names.length === 0
 }
@@ -81,10 +83,10 @@ export function parseGameObjectsFile(data) {
 	const { gameObjectPositions, cycles } = JSON.parse(data)
 
 	const ccJson = {
-		checksum: "somechecksum",
+		checksum: "",
 		data: {
 			projectName: "ScriptProjectName",
-			fileChecksum: "invalid-md5-sample",
+			fileChecksum: "",
 			apiVersion: "1.3",
 			nodes: []
 		}
@@ -128,9 +130,9 @@ export function parseGameObjectsFile(data) {
 		for (const cycle of cycles) {
 			edges.push(createEdge(cycle))
 		}
-
 	ccJson.data.nodes = nodes
 	ccJson.data["edges"] = edges
 	ccJson.data["attributeTypes"] = createAttributeTypes()
+	ccJson.checksum = md5(JSON.stringify(ccJson.data))
 	return ccJson
 }
