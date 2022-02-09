@@ -1,14 +1,5 @@
-// @ts-ignore
-const fs = require("fs")
-
 function isFile(names) {
 	return names.length === 0
-}
-
-function outputCCJsonFile(ccJson) {
-	const ccJsonString = JSON.stringify(ccJson, null, 4)
-	fs.writeFileSync("./Output.cc.json", ccJsonString, "utf8")
-	console.log(`File is written successfully!`)
 }
 
 function nodeAlreadyExists(nodes, name) {
@@ -22,21 +13,21 @@ function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, ga
 	let node
 
 	// create node
-	node = { name: name, type: isFile(names) ? "File" : "Folder", attributes: {} }
+	node = { name, type: isFile(names) ? "File" : "Folder", attributes: {} }
 	if (!isFile(names)) node.children = []
 
 	// wrap file
 	if (isFile(names)) {
 		const childNode = { ...node }
 		childNode.attributes = { height: gameObjectPosition.scale.y }
-		node = { name: name, type: "Folder", attributes: {}, children: [childNode] }
+		node = { name, type: "Folder", attributes: {}, children: [childNode] }
 	}
 
 	// add or select node
 	if (!nodeAlreadyExists(nodes, name)) {
 		nodes.push(node)
 	} else {
-		node = nodes.find(node => node.name == name)
+		node = nodes.find(node => node.name === name)
 	}
 
 	const parent = gameObjectPositions.find(gameObject => gameObject.name === parentNodeName)
@@ -58,7 +49,7 @@ function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, ga
 		node.fixedPosition.left = 0
 	}
 
-	const newParentName = parentNodeName === "base" ? node.name : parentNodeName + "." + node.name
+	const newParentName = parentNodeName === "base" ? node.name : `${parentNodeName}.${node.name}`
 	addNodeRecursively(names, node.children, gameObjectPosition, newParentName, gameObjectPositions)
 	return
 }
@@ -73,7 +64,7 @@ function createEdge(cycle) {
 		fromNodeName: addWrappedFolderName(cycle.from),
 		toNodeName: addWrappedFolderName(cycle.to),
 		attributes: {
-			coupling: 100.0
+			coupling: 100
 		}
 	}
 }
@@ -86,8 +77,7 @@ function createAttributeTypes() {
 	}
 }
 
-try {
-	const data = fs.readFileSync("./gameObjectsAndCycles.json", "utf8")
+export function parseGameObjectsFile(data) {
 	const { gameObjectPositions, cycles } = JSON.parse(data)
 
 	const ccJson = {
@@ -124,7 +114,7 @@ try {
 		},
 		scale: {
 			x: longEdge,
-			y: 1.0,
+			y: 1,
 			z: longEdge
 		}
 	})
@@ -142,7 +132,5 @@ try {
 	ccJson.data.nodes = nodes
 	ccJson.data["edges"] = edges
 	ccJson.data["attributeTypes"] = createAttributeTypes()
-	outputCCJsonFile(ccJson)
-} catch (err) {
-	console.log(`Error reading file from disk: ${err}`)
+	return ccJson
 }
