@@ -181,7 +181,7 @@
 		"lint-staged": "^11.0.0",
 		"makeshift": "^1.1.0",
 		"node-polyfill-webpack-plugin": "^1.1.4",
-		"node-sass": "^6.0.1",
+		"node-sass": "^7.0.0",
 		"nwjs-builder-phoenix": "^1.15.0",
 		"puppeteer": "^10.4.0",
 		"sass-loader": "^12.0.0",
@@ -191,7 +191,7 @@
 		"typescript": "^4.3.5",
 		"webpack": "^5.33.2",
 		"webpack-cli": "^4.7.2",
-		"webpack-dev-server": "^3.11.2",
+		"webpack-dev-server": "^4.0.0",
 		"webpack-glsl-loader": "^1.0.1"
 	},
 	"optionalDependencies": {
