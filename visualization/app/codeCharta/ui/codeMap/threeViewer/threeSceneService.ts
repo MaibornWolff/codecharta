@@ -338,7 +338,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		return maxDistance
 	}
 
-	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode) {
+	addNodeAndChildrenToConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
 		const idToNode = idToNodeSelector(this.storeService.getState())
 		const codeMapBuilding = idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
@@ -349,7 +349,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		}
 	}
 
-	removeNodeAndChildrenFromConstantHighlight(codeMapNode: CodeMapNode) {
+	removeNodeAndChildrenFromConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
 		const idToNode = idToNodeSelector(this.storeService.getState())
 		const codeMapBuilding = idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {

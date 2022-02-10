@@ -9,7 +9,7 @@ import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeScene
 	template: require("./highlightButtons.component.html")
 })
 export class HighlightButtonsComponent implements OnChanges {
-	@Input() codeMapNode: CodeMapNode
+	@Input() codeMapNode: Pick<CodeMapNode, "id">
 
 	isHighlighted: boolean
 

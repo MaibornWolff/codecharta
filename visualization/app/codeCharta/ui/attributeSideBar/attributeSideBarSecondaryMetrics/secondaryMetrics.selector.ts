@@ -5,7 +5,7 @@ import { CcState } from "../../../state/store/store"
 import { PrimaryMetricNames, primaryMetricNamesSelector } from "../attributeSideBarPrimaryMetrics/primaryMetricNames.selector"
 import { Metric } from "../util/metric"
 
-export const _calculateSecondaryMetrics = (primaryMetricNames: PrimaryMetricNames, node?: CodeMapNode) => {
+export const _calculateSecondaryMetrics = (primaryMetricNames: PrimaryMetricNames, node?: Pick<CodeMapNode, "attributes">) => {
 	if (!node) return [] as Metric[]
 
 	const primaryMetricNamesList = Object.values(primaryMetricNames)
