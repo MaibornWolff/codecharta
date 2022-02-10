@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
+
 ## [1.89.0] - 2022-02-07
 
 ### Added 🚀

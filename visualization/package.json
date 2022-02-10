@@ -183,7 +183,7 @@
 		"node-polyfill-webpack-plugin": "^1.1.4",
 		"node-sass": "^7.0.0",
 		"nwjs-builder-phoenix": "^1.15.0",
-		"puppeteer": "^10.4.0",
+		"puppeteer": "^13.0.0",
 		"sass-loader": "^12.0.0",
 		"style-loader": "^2.0.0",
 		"ts-jest": "^26.5.5",
