@@ -6,32 +6,25 @@
 	<div class="dialog-content">
 		<mat-form-field>
 			<label>View Name</label>
-			<input matInput class="custom-config-input" type="text" [formControl]="customConfigName" required />
+			<input matInput class="custom-config-input" [formControl]="customConfigName" required />
 			<mat-error *ngIf="customConfigName.invalid">{{ getErrorMessage() }}</mat-error>
 		</mat-form-field>
-		<div class="md-block" ng-show="$ctrl._viewModel.addErrorMessage.length > 0">
-			<div class="error">
-				<i class="fa fa-warning"></i>
-				<span>{{ "$ctrl._viewModel.addErrorMessage" }}</span>
-			</div>
-		</div>
 	</div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-	<span class="warning" ng-show="$ctrl._viewModel.localStorageSizeWarningMessage.length > 0">
-		<span>{{ "$ctrl._viewModel.localStorageSizeWarningMessage" }}</span>
-	</span>
-	<span ng-show="$ctrl._viewModel.localStorageSizeWarningMessage.length > 0">
-		<button
-			mat-button
-			ng-click="$ctrl.showPurgeConfirmDialog()"
-			class="md-warn"
-			title="Download old unused Custom Views as a backup file and then delete them in the browser."
-		>
-			DOWNLOAD & PURGE...
-		</button>
-	</span>
+	<span class="message-exceed-local-storage" *ngIf="localStorageSizeWarningMessage.length > 0">{{ localStorageSizeWarningMessage }}</span>
+	<button
+		mat-button
+		class="exceed-local-storage-button"
+		*ngIf="localStorageSizeWarningMessage.length > 0"
+		(click)="showPurgeConfirmDialog()"
+		title="Download old unused Custom Views as a backup file and then delete them in the browser."
+	>
+		DOWNLOAD & PURGE...
+	</button>
 
-	<button mat-button ng-click="$ctrl.addCustomConfig()" ng-disabled="!$ctrl.isNewCustomConfigValid()" class="md-primary">ADD</button>
+	<button mat-button class="add-custom-config-button" (click)="addCustomConfig()" mat-dialog-close [disabled]="customConfigName.invalid">
+		ADD
+	</button>
 </mat-dialog-actions>

@@ -1,5 +1,6 @@
 .cc-add-custom-config-dialog .mat-dialog-container {
 	padding: 0;
+	width: 500px;
 	overflow: hidden;
 
 	mat-toolbar {
@@ -33,11 +34,30 @@
 	.mat-dialog-actions {
 		margin: 0;
 		padding: 0 8px;
+		display: flex;
+		justify-content: flex-end;
 
-		button {
-			color: rgb(0, 150, 136);
+		.message-exceed-local-storage {
+			padding: 0 16px;
+			color: #b02929;
+		}
+
+		.mat-button {
 			padding: 0 8px;
 			margin: 8px 0 8px 8px;
+			&.exceed-local-storage-button {
+				color: #ffffff;
+				background-color: #b02929;
+			}
+
+			&.add-custom-config-button {
+				color: rgb(0, 150, 136);
+				background-color: rgba(138, 132, 132, 0.08);
+			}
+
+			&.add-custom-config-button[disabled] {
+				color: grey;
+			}
 		}
 	}
 }
