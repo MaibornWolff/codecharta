@@ -41,6 +41,6 @@ export class DialogGlobalSettingsPageObject {
 
 	async getDisplayQuality() {
 		await page.waitForSelector("sharpness-mode-selector-component .md-select-value .md-text")
-		return page.$eval("sharpness-mode-selector-component .md-select-value .md-text", element => element["innerText"])
+		return page.$eval("sharpness-mode-selector-component .md-select-value .md-text", element => `${element["innerText"]}`)
 	}
 }
