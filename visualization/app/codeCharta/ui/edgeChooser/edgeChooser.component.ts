@@ -54,7 +54,7 @@ export class EdgeChooserController
 	}
 
 	onEdgeMetricChanged(edgeMetric?: string) {
-		this._viewModel.edgeMetric = edgeMetric || EdgeMetricDataService.NONE_METRIC
+		this._viewModel.edgeMetric = edgeMetric
 		this.codeMapActionsService.updateEdgePreviews()
 	}
 
