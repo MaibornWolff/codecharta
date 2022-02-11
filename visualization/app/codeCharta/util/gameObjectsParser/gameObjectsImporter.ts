@@ -8,6 +8,24 @@ function nodeAlreadyExists(nodes, name) {
 	return nodes.some(node => node.name === name)
 }
 
+function calculateFixedFolderPosition(node, name, parent, gameObjectPosition) {
+	if (node.type === "Folder" && name !== "base") {
+		const cornerXofParent = parent.position.x - parent.scale.x / 2
+		const cornerZofParent = parent.position.z - parent.scale.z / 2
+		const cornerXofChild = gameObjectPosition.position.x - gameObjectPosition.scale.x / 2
+		const cornerZofChild = gameObjectPosition.position.z - gameObjectPosition.scale.z / 2
+		const top = Math.floor(((cornerXofChild - cornerXofParent) / parent.scale.x) * 100)
+		const left = Math.floor(((cornerZofChild - cornerZofParent) / parent.scale.z) * 100)
+		const width = Math.floor((gameObjectPosition.scale.z / parent.scale.z) * 100)
+		const height = Math.floor((gameObjectPosition.scale.x / parent.scale.x) * 100)
+		node.fixedPosition = { left, top, width, height }
+	}
+	if (name === "root") {
+		node.fixedPosition.top = Math.floor(50 - node.fixedPosition.height / 2)
+		node.fixedPosition.left = 0
+	}
+}
+
 function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, gameObjectPositions) {
 	if (names.length === 0) return
 	// get current path name
@@ -35,21 +53,7 @@ function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, ga
 	const parent = gameObjectPositions.find(gameObject => gameObject.name === parentNodeName)
 
 	// set Position
-	if (node.type === "Folder" && name !== "base") {
-		const cornerXofParent = parent.position.x - parent.scale.x / 2
-		const cornerZofParent = parent.position.z - parent.scale.z / 2
-		const cornerXofChild = gameObjectPosition.position.x - gameObjectPosition.scale.x / 2
-		const cornerZofChild = gameObjectPosition.position.z - gameObjectPosition.scale.z / 2
-		const top = Math.floor(((cornerXofChild - cornerXofParent) / parent.scale.x) * 100)
-		const left = Math.floor(((cornerZofChild - cornerZofParent) / parent.scale.z) * 100)
-		const width = Math.floor((gameObjectPosition.scale.z / parent.scale.z) * 100)
-		const height = Math.floor((gameObjectPosition.scale.x / parent.scale.x) * 100)
-		node.fixedPosition = { left, top, width, height }
-	}
-	if (name === "root") {
-		node.fixedPosition.top = Math.floor(50 - node.fixedPosition.height / 2)
-		node.fixedPosition.left = 0
-	}
+	calculateFixedFolderPosition(node, name, parent, gameObjectPosition)
 
 	const newParentName = parentNodeName === "base" ? node.name : `${parentNodeName}.${node.name}`
 	addNodeRecursively(names, node.children, gameObjectPosition, newParentName, gameObjectPositions)
@@ -123,13 +127,16 @@ export function parseGameObjectsFile(data) {
 
 	for (const gameObjectPosition of gameObjectPositions) {
 		const names = gameObjectPosition.name.split(".")
-		if (names[0] !== "base") addNodeRecursively(names, nodes[0].children, gameObjectPosition, "base", gameObjectPositions)
+		if (names[0] !== "base") {
+			addNodeRecursively(names, nodes[0].children, gameObjectPosition, "base", gameObjectPositions)
+		}
 	}
 
-	if (cycles)
+	if (cycles) {
 		for (const cycle of cycles) {
 			edges.push(createEdge(cycle))
 		}
+	}
 	ccJson.data.nodes = nodes
 	ccJson.data["edges"] = edges
 	ccJson.data["attributeTypes"] = createAttributeTypes()
