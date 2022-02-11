@@ -4,45 +4,41 @@ import userEvent from "@testing-library/user-event"
 import { HighlightButtonsModule } from "./highlightButtons.module"
 import { ThreeSceneServiceToken } from "../../../../services/ajs-upgraded-providers"
 import { HighlightButtonsComponent } from "./highlightButtons.component"
-import { VALID_FILE_NODE_WITH_ID as codeMapNode } from "../../../../util/dataMocks"
-import { State } from "../../../angular-redux/state"
 import { CodeMapNode } from "../../../../codeCharta.model"
+import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
+import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
 
 describe("flattenButtonsComponent", () => {
-	let threeSceneService
-	let state
-
 	beforeEach(() => {
-		threeSceneService = createMockedThreeSceneService()
-		state = createMockedState()
 		TestBed.configureTestingModule({
-			imports: [HighlightButtonsModule],
-			providers: [
-				{ provide: ThreeSceneServiceToken, useValue: threeSceneService },
-				{ provide: State, useValue: state }
-			]
+			imports: [HighlightButtonsModule]
 		})
 	})
 
 	it("should let a user permanently highlight and remove permanently highlight of a node", async () => {
-		state.getValue().lookUp.idToBuilding.set(codeMapNode.id, { id: codeMapNode.id, node: codeMapNode })
+		const idToBuilding = new IdToBuildingService()
+		idToBuilding.setIdToBuilding([{ id: 0, node: { id: 0 } } as unknown as CodeMapBuilding])
 
 		const { rerender } = await render(HighlightButtonsComponent, {
 			excludeComponentDeclaration: true,
-			componentProperties: { codeMapNode }
+			componentProperties: { codeMapNode: { id: 0 } },
+			providers: [
+				{ provide: IdToBuildingService, useValue: idToBuilding },
+				{ provide: ThreeSceneServiceToken, useValue: createMockedThreeSceneService() }
+			]
 		})
 
 		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
 		userEvent.click(screen.getByText("KEEP HIGHLIGHT"))
 
-		rerender({ codeMapNode: null })
-		rerender({ codeMapNode })
+		rerender({ codeMapNode: undefined })
+		rerender({ codeMapNode: { id: 0 } })
 
 		expect(screen.queryByText("KEEP HIGHLIGHT")).toBe(null)
 		userEvent.click(screen.getByText("REMOVE HIGHLIGHT"))
 
-		rerender({ codeMapNode: null })
-		rerender({ codeMapNode })
+		rerender({ codeMapNode: undefined })
+		rerender({ codeMapNode: { id: 0 } })
 
 		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
 		expect(screen.queryByText("KEEP HIGHLIGHT")).not.toBe(null)
@@ -55,10 +51,5 @@ describe("flattenButtonsComponent", () => {
 			removeNodeAndChildrenFromConstantHighlight: (node: CodeMapNode) => highlighted.delete(node.id),
 			getConstantHighlight: () => highlighted
 		}
-	}
-
-	function createMockedState() {
-		const idToBuilding = new Map()
-		return { getValue: () => ({ lookUp: { idToBuilding } }) }
 	}
 })

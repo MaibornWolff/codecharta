@@ -1,7 +1,7 @@
 <p class="cc-node-path">
 	<span *ngIf="node">
 		{{ node.path }}
-		<span *ngIf="!node.isLeaf && fileCountDescription$ | async as fileCountDescription" class="cc-node-file-count">
+		<span *ngIf="node.children?.length && fileCountDescription$ | async as fileCountDescription" class="cc-node-file-count">
 			({{ fileCountDescription }})
 		</span>
 	</span>
