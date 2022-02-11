@@ -1,4 +1,5 @@
 import { render } from "@testing-library/angular"
+import { CodeMapNode } from "../../../../codeCharta.model"
 
 import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
 import { NodePathComponent } from "./nodePath.component"
@@ -18,7 +19,7 @@ describe("nodePathComponent", () => {
 	})
 
 	it("should display only node path, when a file is selected", async () => {
-		const node = { isLeaf: true, path: "some/file.ts" }
+		const node = { path: "some/file.ts" }
 		selectedNodeSelectorMock.mockImplementation(() => node)
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
@@ -27,7 +28,7 @@ describe("nodePathComponent", () => {
 
 	it("should display node path and fileCountDescription,, when a folder is selected", async () => {
 		const node = {
-			isLeaf: false,
+			children: [{}] as CodeMapNode[],
 			path: "some/folder",
 			attributes: { unary: 2 }
 		}

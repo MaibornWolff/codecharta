@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render, fireEvent } from "@testing-library/angular"
+import { CodeMapNode } from "../../../codeCharta.model"
 
 import { LazyLoader } from "../../../util/lazyLoader"
 import { AttributeSideBarModule } from "../attributeSideBar.module"
@@ -16,7 +17,7 @@ describe("attributeSideBarHeaderSection", () => {
 		const { container } = await render(AttributeSideBarHeaderSectionComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
-				node: { name: "myNode", isLeaf: true, path: "./myNode.ts", link: undefined },
+				node: { name: "myNode", path: "./myNode.ts", link: undefined },
 				fileName: "myNode.ts"
 			}
 		})
@@ -36,7 +37,7 @@ describe("attributeSideBarHeaderSection", () => {
 		const { container } = await render(AttributeSideBarHeaderSectionComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
-				node: { name: "myNode", isLeaf: false, path: "./myNode.ts", link: undefined },
+				node: { name: "myNode", children: [{}], path: "./myNode.ts", link: undefined } as CodeMapNode,
 				fileName: "myNode.ts"
 			}
 		})
@@ -56,7 +57,7 @@ describe("attributeSideBarHeaderSection", () => {
 		const { container } = await render(AttributeSideBarHeaderSectionComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
-				node: { name: "myNode", isLeaf: true, path: "./myNode.ts", link: "myNode.com" },
+				node: { name: "myNode", children: [{}], path: "./myNode.ts", link: "myNode.com" } as CodeMapNode,
 				fileName: "myNode.ts"
 			}
 		})
