@@ -19,6 +19,7 @@ import {
 } from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 
 export class EdgeSettingsPanelController
 	implements EdgeMetricSubscriber, AmountOfEdgePreviewsSubscriber, EdgeHeightSubscriber, ShowOnlyBuildingsWithEdgesSubscriber
@@ -28,11 +29,13 @@ export class EdgeSettingsPanelController
 		totalAffectedBuildings: number
 		edgeHeight: number
 		showOnlyBuildingsWithEdges: boolean
+		disableEdgeMetric: boolean
 	} = {
 		amountOfEdgePreviews: null,
 		totalAffectedBuildings: null,
 		edgeHeight: null,
-		showOnlyBuildingsWithEdges: null
+		showOnlyBuildingsWithEdges: null,
+		disableEdgeMetric: null
 	}
 
 	constructor(
@@ -65,6 +68,7 @@ export class EdgeSettingsPanelController
 
 	onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.totalAffectedBuildings = this.edgeMetricDataService.getAmountOfAffectedBuildings(edgeMetric)
+
 		if (edgeMetric === "None") {
 			this._viewModel.amountOfEdgePreviews = 0
 			this._viewModel.showOnlyBuildingsWithEdges = false
@@ -73,6 +77,10 @@ export class EdgeSettingsPanelController
 		}
 		this.applySettingsAmountOfEdgePreviews()
 		this.applyShowOnlyBuildingsWithEdges()
+	}
+
+	applyDisableEdgeMetric() {
+		this.storeService.dispatch(setEdgeMetric("None"))
 	}
 
 	applySettingsAmountOfEdgePreviews() {
