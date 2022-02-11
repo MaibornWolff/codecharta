@@ -2,7 +2,7 @@ import { Component, Inject, Input } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { Store } from "../../../../state/angular-redux/store"
-import { Node } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../../codeCharta.model"
 import { fileCountDescriptionSelector } from "./fileCountDescription.selector"
 
 @Component({
@@ -10,7 +10,7 @@ import { fileCountDescriptionSelector } from "./fileCountDescription.selector"
 	template: require("./nodePath.component.html")
 })
 export class NodePathComponent {
-	@Input() node?: Pick<Node, "path" | "isLeaf">
+	@Input() node?: Pick<CodeMapNode, "path" | "children">
 	fileCountDescription$: Observable<string | undefined>
 
 	constructor(@Inject(Store) store: Store) {

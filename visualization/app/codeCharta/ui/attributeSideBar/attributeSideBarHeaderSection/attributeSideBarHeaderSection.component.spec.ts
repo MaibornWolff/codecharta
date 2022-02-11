@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
-
+import { CodeMapNode } from "../../../codeCharta.model"
 import { AttributeSideBarModule } from "../attributeSideBar.module"
 import { AttributeSideBarHeaderSectionComponent } from "./attributeSideBarHeaderSection.component"
 
@@ -15,7 +15,7 @@ describe("attributeSideBarHeaderSection", () => {
 		const { container } = await render(AttributeSideBarHeaderSectionComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
-				node: { name: "myNode", isLeaf: true, path: "./myNode.ts", link: "myNode.com" },
+				node: { name: "myNode", children: [{}], path: "./myNode.ts", link: "myNode.com" } as CodeMapNode,
 				fileName: "myNode.ts"
 			}
 		})

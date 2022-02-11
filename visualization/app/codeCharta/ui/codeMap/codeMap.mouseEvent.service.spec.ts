@@ -15,7 +15,6 @@ import { BlacklistService } from "../../state/store/fileSettings/blacklist/black
 import { FilesService } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
@@ -25,6 +24,7 @@ import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showM
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { mocked } from "ts-jest/utils"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
+import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -44,6 +44,7 @@ describe("codeMapMouseEventService", () => {
 	let codeMapLabelService: CodeMapLabelService
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
 	let threeViewerService: ThreeViewerService
+	let idToBuildingService: IdToBuildingService
 
 	let codeMapBuilding: CodeMapBuilding
 
@@ -80,6 +81,7 @@ describe("codeMapMouseEventService", () => {
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>("viewCubeMouseEventsService")
 		threeViewerService = getService<ThreeViewerService>("threeViewerService")
+		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		document.body.style.cursor = CursorType.Default
@@ -96,7 +98,8 @@ describe("codeMapMouseEventService", () => {
 			storeService,
 			codeMapLabelService,
 			viewCubeMouseEventsService,
-			threeViewerService
+			threeViewerService,
+			idToBuildingService
 		)
 
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
@@ -341,7 +344,7 @@ describe("codeMapMouseEventService", () => {
 
 		function setAnimatedLabel(label: Object3D) {
 			// At first, animate a label
-			threeSceneService = new ThreeSceneService($rootScope, storeService)
+			threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService)
 			threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 			threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 			threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
@@ -388,9 +391,8 @@ describe("codeMapMouseEventService", () => {
 			})
 			codeMapMouseEventService["transformHTMLToSceneCoordinates"] = jest.fn().mockReturnValue({ x: 0, y: 1 })
 
-			const idToBuilding = new Map<number, CodeMapBuilding>()
-			idToBuilding.set(CODE_MAP_BUILDING.node.id, CODE_MAP_BUILDING)
-			storeService.dispatch(setIdToBuilding(idToBuilding))
+			idToBuildingService.setIdToBuilding([CODE_MAP_BUILDING])
+
 			threeSceneService.resetLabel = jest.fn()
 			threeSceneService.getLabelForHoveredNode = jest.fn()
 			threeSceneService.animateLabel = jest.fn()
@@ -756,9 +758,7 @@ describe("codeMapMouseEventService", () => {
 				idToNode.set(codeMapBuilding.node.id, codeMapBuilding.node as unknown as CodeMapNode)
 				return idToNode
 			})
-			const idToBuilding = new Map<number, CodeMapBuilding>()
-			idToBuilding.set(codeMapBuilding.node.id, codeMapBuilding)
-			storeService.dispatch(setIdToBuilding(idToBuilding))
+			idToBuildingService.setIdToBuilding([codeMapBuilding])
 		})
 
 		it("should set the highlight when to is not null", () => {

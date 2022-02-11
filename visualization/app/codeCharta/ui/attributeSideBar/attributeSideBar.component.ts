@@ -2,7 +2,7 @@ import "./attributeSideBar.component.scss"
 import { Observable, map } from "rxjs"
 import { Component, Inject } from "@angular/core"
 
-import { Node } from "../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { Store } from "../../state/angular-redux/store"
 import { isAttributeSideBarVisibleSelector } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
@@ -14,7 +14,7 @@ import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/a
 })
 export class AttributeSideBarComponent {
 	isSideBarVisible$: Observable<boolean>
-	selectedNode$: Observable<Node>
+	selectedNode$: Observable<CodeMapNode>
 	fileName$: Observable<string>
 
 	constructor(@Inject(Store) store: Store) {

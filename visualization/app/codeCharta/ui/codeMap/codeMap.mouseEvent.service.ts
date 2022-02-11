@@ -18,6 +18,7 @@ import { setHoveredBuildingPath } from "../../state/store/appStatus/hoveredBuild
 import { hoveredBuildingPathSelector } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
 import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
+import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 
 interface Coordinates {
 	x: number
@@ -71,7 +72,8 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		private storeService: StoreService,
 		private codeMapLabelService: CodeMapLabelService,
 		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
-		private threeViewerService: ThreeViewerService
+		private threeViewerService: ThreeViewerService,
+		private idToBuilding: IdToBuildingService
 	) {
 		"ngInject"
 		this.threeUpdateCycleService.register(() => this.threeRendererService.render())
@@ -391,10 +393,9 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
 
 		const idToNode = idToNodeSelector(this.storeService.getState())
-		const { lookUp } = this.storeService.getState()
 		const codeMapNode = idToNode.get(hoveredBuilding.node.id)
 		for (const { data } of hierarchy(codeMapNode)) {
-			const building = lookUp.idToBuilding.get(data.id)
+			const building = this.idToBuilding.get(data.id)
 			if (building) {
 				this.threeSceneService.addBuildingToHighlightingList(building)
 			}

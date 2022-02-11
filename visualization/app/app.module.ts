@@ -31,6 +31,7 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
+import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 
 @NgModule({
 	imports: [
@@ -52,7 +53,7 @@ import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/inv
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule
 	],
-	providers: [threeSceneServiceProvider],
+	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,

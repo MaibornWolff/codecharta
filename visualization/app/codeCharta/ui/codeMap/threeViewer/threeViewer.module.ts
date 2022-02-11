@@ -9,6 +9,8 @@ import "../../../state/state.module"
 import camelCase from "lodash.camelcase"
 
 import angular from "angular"
+import { downgradeInjectable } from "@angular/upgrade/static"
+import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 
 angular
 	.module("app.codeCharta.ui.codeMap.threeViewer", ["app.codeCharta.state"])
@@ -19,3 +21,4 @@ angular
 	.service(camelCase(ThreeOrbitControlsService.name), ThreeOrbitControlsService)
 	.service(camelCase(ThreeCameraService.name), ThreeCameraService)
 	.service(camelCase(ThreeStatsService.name), ThreeStatsService)
+	.factory("idToBuilding", downgradeInjectable(IdToBuildingService))
