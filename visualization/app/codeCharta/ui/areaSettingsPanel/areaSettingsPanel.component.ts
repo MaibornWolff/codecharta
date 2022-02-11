@@ -55,7 +55,7 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 }
 
 export const areaSettingsPanelComponent = {
-	selector: "areaSettingsPanelComponent",
+	selector: "ccAreaSettingsPanel",
 	template: require("./areaSettingsPanel.component.html"),
 	controller: AreaSettingsPanelController
 }

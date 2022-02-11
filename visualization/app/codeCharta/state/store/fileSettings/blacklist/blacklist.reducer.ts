@@ -1,10 +1,12 @@
 import { BlacklistAction, BlacklistActions, setBlacklist } from "./blacklist.actions"
-import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
+import { addItemsToArray, addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 
 export function blacklist(state = setBlacklist().payload, action: BlacklistAction) {
 	switch (action.type) {
 		case BlacklistActions.ADD_BLACKLIST_ITEM:
 			return addItemToArray(state, action.payload)
+		case BlacklistActions.ADD_BLACKLIST_ITEMS:
+			return addItemsToArray(state, action.payload)
 		case BlacklistActions.REMOVE_BLACKLIST_ITEM:
 			return removeItemFromArray(state, action.payload)
 		case BlacklistActions.SET_BLACKLIST:

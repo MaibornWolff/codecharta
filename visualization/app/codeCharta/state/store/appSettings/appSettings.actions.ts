@@ -28,6 +28,7 @@ import { defaultLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.action
 import { defaultMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
 import { defaultSharpnessMode } from "./sharpnessMode/sharpnessMode.actions"
 import { defaultScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
+import { defaultInvertArea } from "./invertArea/invertArea.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -61,6 +62,7 @@ export const defaultAppSettings: AppSettings = {
 	cameraTarget: defaultCameraTarget,
 	hideFlatBuildings: defaultHideFlatBuildings,
 	invertHeight: defaultInvertHeight,
+	invertArea: defaultInvertArea,
 	dynamicMargin: defaultDynamicMargin,
 	isWhiteBackground: defaultIsWhiteBackground,
 	mapColors: defaultMapColors,
