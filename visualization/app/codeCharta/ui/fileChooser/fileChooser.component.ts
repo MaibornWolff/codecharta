@@ -40,7 +40,7 @@ export class FileChooserController {
 				}
 
 				reader.onload = event => {
-					const result: string = event.target.result.toString()
+					const result = event.target.result.toString()
 					content = isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)).toString() : result
 					if (result.includes("gameObjectPositions") && validateGameObjects(result))
 						content = JSON.stringify(parseGameObjectsFile(result))

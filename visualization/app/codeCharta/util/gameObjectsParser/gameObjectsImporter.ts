@@ -1,6 +1,6 @@
 import md5 from "md5"
 
-function isFile(names) {
+function isFile(names: string[]) {
 	return names.length === 0
 }
 
@@ -26,38 +26,36 @@ function calculateFixedFolderPosition(node, name, parent, gameObjectPosition) {
 	}
 }
 
-function addNodeRecursively(names, nodes, gameObjectPosition, parentNodeName, gameObjectPositions) {
-	if (names.length === 0) return
+function addNodeRecursively(nodeNames, nodes, gameObjectPosition, parentNodeName, gameObjectPositions) {
+	if (nodeNames.length === 0) return
 	// get current path name
-	const name = names.shift()
-	let node
+	const [nodeName] = nodeNames
 
 	// create node
-	node = { name, type: isFile(names) ? "File" : "Folder", attributes: {} }
-	if (!isFile(names)) node.children = []
+	let node = { name: nodeName, type: isFile(nodeNames) ? "File" : "Folder", attributes: {}, children: undefined }
+	if (!isFile(nodeNames)) node.children = []
 
 	// wrap file
-	if (isFile(names)) {
+	if (isFile(nodeNames)) {
 		const childNode = { ...node }
 		childNode.attributes = { height: gameObjectPosition.scale.y }
-		node = { name, type: "Folder", attributes: {}, children: [childNode] }
+		node = { name: nodeName, type: "Folder", attributes: {}, children: [childNode] }
 	}
 
 	// add or select node
-	if (!nodeAlreadyExists(nodes, name)) {
+	if (!nodeAlreadyExists(nodes, nodeName)) {
 		nodes.push(node)
 	} else {
-		node = nodes.find(node => node.name === name)
+		node = nodes.find(node => node.name === nodeName)
 	}
 
 	const parent = gameObjectPositions.find(gameObject => gameObject.name === parentNodeName)
 
 	// set Position
-	calculateFixedFolderPosition(node, name, parent, gameObjectPosition)
+	calculateFixedFolderPosition(node, nodeName, parent, gameObjectPosition)
 
 	const newParentName = parentNodeName === "base" ? node.name : `${parentNodeName}.${node.name}`
-	addNodeRecursively(names, node.children, gameObjectPosition, newParentName, gameObjectPositions)
-	return
+	addNodeRecursively(nodeNames, node["children"], gameObjectPosition, newParentName, gameObjectPositions)
 }
 
 function addWrappedFolderName(filePath) {
@@ -83,35 +81,10 @@ function createAttributeTypes() {
 	}
 }
 
-export function parseGameObjectsFile(data) {
-	const { gameObjectPositions, cycles } = JSON.parse(data)
-
-	const ccJson = {
-		checksum: "",
-		data: {
-			projectName: "ScriptProjectName",
-			fileChecksum: "",
-			apiVersion: "1.3",
-			nodes: []
-		}
-	}
-
-	const nodes = []
-	const edges = []
-
-	// we add a dummy node so that base and root folders don't get merged and the fixed position of root won't be ignored
-	const dummyNode = {
-		name: "dummy",
-		type: "Folder",
-		attributes: {},
-		children: [],
-		fixedPosition: { top: 0, left: 0, width: 0, height: 0 }
-	}
-	nodes.push({ name: "base", type: "Folder", attributes: {}, children: [dummyNode] })
-
+function createBaseGameObjectPosition(gameObjectPositions) {
 	const rootGamePosition = gameObjectPositions.find(gameObject => gameObject.name === "root")
 	const longEdge = Math.max(rootGamePosition.scale.x, rootGamePosition.scale.z)
-	gameObjectPositions.push({
+	return {
 		name: "base",
 		position: {
 			x: 0,
@@ -123,22 +96,42 @@ export function parseGameObjectsFile(data) {
 			y: 1,
 			z: longEdge
 		}
-	})
+	}
+}
+
+export function parseGameObjectsFile(data) {
+	const { gameObjectPositions, cycles = [] } = JSON.parse(data)
+
+	const ccJson = {
+		checksum: "",
+		data: {
+			projectName: "ScriptProjectName",
+			fileChecksum: "",
+			apiVersion: "1.3",
+			nodes: []
+		}
+	}
+
+	// we add a dummy node so that base and root folders don't get merged and the fixed position of root won't be ignored
+	const dummyNode = {
+		name: "dummy",
+		type: "Folder",
+		attributes: {},
+		children: [],
+		fixedPosition: { top: 0, left: 0, width: 0, height: 0 }
+	}
+	const nodes = [{ name: "base", type: "Folder", attributes: {}, children: [dummyNode] }]
+	gameObjectPositions.push(createBaseGameObjectPosition(gameObjectPositions))
 
 	for (const gameObjectPosition of gameObjectPositions) {
-		const names = gameObjectPosition.name.split(".")
-		if (names[0] !== "base") {
-			addNodeRecursively(names, nodes[0].children, gameObjectPosition, "base", gameObjectPositions)
+		const nodeNames = gameObjectPosition.name.split(".")
+		if (nodeNames[0] !== "base") {
+			addNodeRecursively(nodeNames, nodes[0].children, gameObjectPosition, "base", gameObjectPositions)
 		}
 	}
 
-	if (cycles) {
-		for (const cycle of cycles) {
-			edges.push(createEdge(cycle))
-		}
-	}
 	ccJson.data.nodes = nodes
-	ccJson.data["edges"] = edges
+	ccJson.data["edges"] = cycles.map(cycle => createEdge(cycle))
 	ccJson.data["attributeTypes"] = createAttributeTypes()
 	ccJson.checksum = md5(JSON.stringify(ccJson.data))
 	return ccJson

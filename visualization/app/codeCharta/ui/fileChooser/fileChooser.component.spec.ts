@@ -164,5 +164,4 @@ describe("fileChooserController", () => {
 			expect(fileChooserController["files"][1].content.fileChecksum).toBe("a35dd32bd850841c47894ac9b8e1287a")
 		})
 	})
-	describe("", () => {})
 })
