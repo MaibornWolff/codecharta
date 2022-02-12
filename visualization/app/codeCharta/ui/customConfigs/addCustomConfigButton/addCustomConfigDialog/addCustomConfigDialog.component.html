@@ -13,16 +13,17 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-	<span class="message-exceed-local-storage" *ngIf="localStorageSizeWarningMessage.length > 0">{{ localStorageSizeWarningMessage }}</span>
-	<button
-		mat-button
-		class="exceed-local-storage-button"
-		*ngIf="localStorageSizeWarningMessage.length > 0"
-		(click)="showPurgeConfirmDialog()"
-		title="Download old unused Custom Views as a backup file and then delete them in the browser."
-	>
-		DOWNLOAD & PURGE...
-	</button>
+	<ng-container *ngIf="localStorageSizeWarningMessage.length > 0">
+		<span class="message-exceed-local-storage">{{ localStorageSizeWarningMessage }}</span>
+		<button
+			mat-button
+			class="exceed-local-storage-button"
+			(click)="showPurgeConfirmDialog()"
+			title="Download old unused Custom Views as a backup file and then delete them in the browser."
+		>
+			DOWNLOAD & PURGE...
+		</button>
+	</ng-container>
 
 	<button mat-button class="add-custom-config-button" (click)="addCustomConfig()" mat-dialog-close [disabled]="customConfigName.invalid">
 		ADD
