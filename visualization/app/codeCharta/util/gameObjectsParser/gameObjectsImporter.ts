@@ -112,15 +112,7 @@ export function parseGameObjectsFile(data) {
 		}
 	}
 
-	// we add a dummy node so that base and root folders don't get merged and the fixed position of root won't be ignored
-	const dummyNode = {
-		name: "dummy",
-		type: "Folder",
-		attributes: {},
-		children: [],
-		fixedPosition: { top: 0, left: 0, width: 0, height: 0 }
-	}
-	const nodes = [{ name: "base", type: "Folder", attributes: {}, children: [dummyNode] }]
+	const nodes = [{ name: "base", type: "Folder", attributes: {}, children: [] }]
 	gameObjectPositions.push(createBaseGameObjectPosition(gameObjectPositions))
 
 	for (const gameObjectPosition of gameObjectPositions) {
