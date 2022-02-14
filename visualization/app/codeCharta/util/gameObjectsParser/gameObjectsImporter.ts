@@ -70,8 +70,8 @@ function nodeAlreadyExists(nodes: CodeMapNode[], name: string) {
 function wrapFileInAFolder(nodeName: string, node: CodeMapNode, gameObjectPosition) {
 	const childNode = { ...node }
 	childNode.attributes = { height: gameObjectPosition.scale.y }
-	const ParentNode: CodeMapNode = { name: nodeName, type: NodeType.FOLDER, attributes: {}, children: [childNode] }
-	return ParentNode
+	const parentNode: CodeMapNode = { name: nodeName, type: NodeType.FOLDER, attributes: {}, children: [childNode] }
+	return parentNode
 }
 
 function calculateFixedFolderPosition(node: CodeMapNode, name: string, parentGameObject, childGameObject) {
