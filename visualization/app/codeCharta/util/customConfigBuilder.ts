@@ -68,7 +68,7 @@ function initializeAppSettings(target: CustomConfig) {
 		scaling: undefined,
 		searchPanelMode: undefined,
 		showOnlyBuildingsWithEdges: false,
-		toggleEdgeMetric: false,
+		edgeMetricToggler: false,
 		sortingOrderAscending: false,
 		experimentalFeaturesEnabled: false,
 		screenshotToClipboardEnabled: false,

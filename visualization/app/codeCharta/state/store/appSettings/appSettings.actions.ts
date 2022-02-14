@@ -69,7 +69,7 @@ export const defaultAppSettings: AppSettings = {
 	mapColors: defaultMapColors,
 	isPresentationMode: defaultIsPresentationMode,
 	showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,
-	toggleEdgeMetric: defaultToggleEdgeMetric,
+	edgeMetricToggler: defaultToggleEdgeMetric,
 	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded,
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
