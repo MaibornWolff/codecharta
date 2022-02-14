@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
+-   Fix show garbage bin next to the loaded maps [#2647](https://github.com/MaibornWolff/codecharta/pull/2647)
 
 ### Chore 👨‍💻 👩‍💻
 
