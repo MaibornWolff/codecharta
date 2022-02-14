@@ -9,15 +9,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import {
-	CODE_MAP_BUILDING,
-	CONSTANT_HIGHLIGHT,
-	FILE_META,
-	TEST_FILE_WITH_PATHS,
-	TEST_NODE_LEAF,
-	TEST_NODES,
-	withMockedEventMethods
-} from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES, withMockedEventMethods } from "../../util/dataMocks"
 import { BlacklistType, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
@@ -27,8 +19,6 @@ import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
-import { CodeMapPreRenderService } from "./codeMap.preRender.service"
-import { LazyLoader } from "../../util/lazyLoader"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
@@ -52,7 +42,6 @@ describe("codeMapMouseEventService", () => {
 	let threeUpdateCycleService: ThreeUpdateCycleService
 	let storeService: StoreService
 	let codeMapLabelService: CodeMapLabelService
-	let codeMapPreRenderService: CodeMapPreRenderService
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
 	let threeViewerService: ThreeViewerService
 	let idToBuildingService: IdToBuildingService
@@ -90,7 +79,6 @@ describe("codeMapMouseEventService", () => {
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		storeService = getService<StoreService>("storeService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>("viewCubeMouseEventsService")
 		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
@@ -109,7 +97,6 @@ describe("codeMapMouseEventService", () => {
 			threeUpdateCycleService,
 			storeService,
 			codeMapLabelService,
-			codeMapPreRenderService,
 			viewCubeMouseEventsService,
 			threeViewerService,
 			idToBuildingService
@@ -699,18 +686,6 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
-		})
-
-		it("should call open file if selected.node.link is undefined", () => {
-			LazyLoader.openFile = jest.fn()
-			const node: Node = klona(TEST_NODE_LEAF)
-			node.isLeaf = true
-			node.link = null
-			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, node, null))
-			codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue(klona(FILE_META))
-			codeMapMouseEventService.onDocumentDoubleClick()
-
-			expect(LazyLoader.openFile).toHaveBeenCalled()
 		})
 	})
 
