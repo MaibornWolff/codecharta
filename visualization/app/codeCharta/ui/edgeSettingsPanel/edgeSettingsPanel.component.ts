@@ -66,12 +66,7 @@ export class EdgeSettingsPanelController
 	onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.totalAffectedBuildings = this.edgeMetricDataService.getAmountOfAffectedBuildings(edgeMetric)
 
-		if (edgeMetric === "None") {
-			this._viewModel.amountOfEdgePreviews = 0
-			this._viewModel.showOnlyBuildingsWithEdges = false
-		} else {
-			this._viewModel.amountOfEdgePreviews = defaultAmountOfEdgePreviews
-		}
+		this._viewModel.amountOfEdgePreviews = defaultAmountOfEdgePreviews
 		this.applySettingsAmountOfEdgePreviews()
 		this.applyShowOnlyBuildingsWithEdges()
 	}
