@@ -2,7 +2,7 @@
 
 exports[`GameObjectsImporter should parse gameObjects json to cc.json 1`] = `
 Object {
-  "checksum": "011a8d5bb457b3f7c2e8d88018cef1b8",
+  "checksum": "b318b8b77caec1e2ba86b87c7a7579c0",
   "data": Object {
     "apiVersion": "1.3",
     "attributeTypes": Object {
@@ -24,18 +24,6 @@ Object {
       Object {
         "attributes": Object {},
         "children": Array [
-          Object {
-            "attributes": Object {},
-            "children": Array [],
-            "fixedPosition": Object {
-              "height": 0,
-              "left": 0,
-              "top": 0,
-              "width": 0,
-            },
-            "name": "dummy",
-            "type": "Folder",
-          },
           Object {
             "attributes": Object {},
             "children": Array [
