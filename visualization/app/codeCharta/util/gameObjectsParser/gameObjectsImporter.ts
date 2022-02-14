@@ -49,7 +49,7 @@ function addNodeRecursively(nodeNames: string[], nodes: CodeMapNode[], parentNod
 	if (!nodeAlreadyExists(nodes, nodeName)) {
 		nodes.push(node)
 	} else {
-		node = nodes.find(node => node.name === nodeName)
+		node = nodes.find(singleNode => singleNode.name === nodeName)
 	}
 
 	const parent = gameObjectPositions.find(gameObject => gameObject.name === parentNodeName)
