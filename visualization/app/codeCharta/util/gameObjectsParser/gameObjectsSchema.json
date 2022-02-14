@@ -49,7 +49,7 @@
 			"$id": "#/properties/gameObjectPositions",
 			"type": "array",
 			"title": "The gameObjectPositions schema",
-			"description": "An explanation about the purpose of this instance.",
+			"description": "Defines the position and scale of GameObjects",
 			"default": [],
 			"examples": [
 				[
@@ -89,7 +89,7 @@
 						"$id": "#/properties/gameObjectPositions/items/anyOf/0",
 						"type": "object",
 						"title": "The first anyOf schema",
-						"description": "An explanation about the purpose of this instance.",
+						"description": "Defines the properties of a GameObject",
 						"default": {},
 						"examples": [
 							{
@@ -122,7 +122,7 @@
 								"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position",
 								"type": "object",
 								"title": "The position schema",
-								"description": "An explanation about the purpose of this instance.",
+								"description": "The position in absolute values",
 								"default": {},
 								"examples": [
 									{
@@ -137,7 +137,7 @@
 										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/x",
 										"type": "number",
 										"title": "The x schema",
-										"description": "An explanation about the purpose of this instance.",
+										"description": "x position",
 										"default": 0.0,
 										"examples": [69.0]
 									},
@@ -145,7 +145,7 @@
 										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/y",
 										"type": "number",
 										"title": "The y schema",
-										"description": "An explanation about the purpose of this instance.",
+										"description": "y position",
 										"default": 0.0,
 										"examples": [18.5]
 									},
@@ -153,7 +153,7 @@
 										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/z",
 										"type": "number",
 										"title": "The z schema",
-										"description": "An explanation about the purpose of this instance.",
+										"description": "z position",
 										"default": 0.0,
 										"examples": [228.5]
 									}
@@ -164,7 +164,7 @@
 								"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale",
 								"type": "object",
 								"title": "The scale schema",
-								"description": "An explanation about the purpose of this instance.",
+								"description": "The scale of GameObjects",
 								"default": {},
 								"examples": [
 									{
@@ -179,7 +179,7 @@
 										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/x",
 										"type": "number",
 										"title": "The x schema",
-										"description": "An explanation about the purpose of this instance.",
+										"description": "x scale",
 										"default": 0.0,
 										"examples": [9.0]
 									},
@@ -187,7 +187,7 @@
 										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/y",
 										"type": "number",
 										"title": "The y schema",
-										"description": "An explanation about the purpose of this instance.",
+										"description": "y scale",
 										"default": 0.0,
 										"examples": [5.0]
 									},
@@ -195,7 +195,7 @@
 										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/z",
 										"type": "number",
 										"title": "The z schema",
-										"description": "An explanation about the purpose of this instance.",
+										"description": "z scale",
 										"default": 0.0,
 										"examples": [9.0]
 									}
@@ -212,7 +212,7 @@
 			"$id": "#/properties/cycles",
 			"type": "array",
 			"title": "The cycles schema",
-			"description": "An explanation about the purpose of this instance.",
+			"description": "Defines the cycles between GameObjects",
 			"default": [],
 			"examples": [
 				[
@@ -230,7 +230,7 @@
 						"$id": "#/properties/cycles/items/anyOf/0",
 						"type": "object",
 						"title": "The first anyOf schema",
-						"description": "An explanation about the purpose of this instance.",
+						"description": "A cycle between two GameObjects",
 						"default": {},
 						"examples": [
 							{
@@ -244,7 +244,7 @@
 								"$id": "#/properties/cycles/items/anyOf/0/properties/from",
 								"type": "string",
 								"title": "The from schema",
-								"description": "An explanation about the purpose of this instance.",
+								"description": "from GameObject",
 								"default": "",
 								"examples": [
 									"root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
@@ -254,7 +254,7 @@
 								"$id": "#/properties/cycles/items/anyOf/0/properties/to",
 								"type": "string",
 								"title": "The to schema",
-								"description": "An explanation about the purpose of this instance.",
+								"description": "to GameObject",
 								"default": "",
 								"examples": [
 									"root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
