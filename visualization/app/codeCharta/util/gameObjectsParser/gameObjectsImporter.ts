@@ -77,6 +77,7 @@ function wrapFileInAFolder(nodeName: string, node: CodeMapNode, gameObjectPositi
 function calculateFixedFolderPosition(node: CodeMapNode, name: string, parentGameObject, childGameObject) {
 	let position: FixedPosition
 	if (node.type === NodeType.FOLDER && name !== "base") {
+		// translate the center point from the middle of the gameObject to the corner as needed for fixedPosition
 		const cornerXofParent = parentGameObject.position.x - parentGameObject.scale.x / 2
 		const cornerZofParent = parentGameObject.position.z - parentGameObject.scale.z / 2
 		const cornerXofChild = childGameObject.position.x - childGameObject.scale.x / 2

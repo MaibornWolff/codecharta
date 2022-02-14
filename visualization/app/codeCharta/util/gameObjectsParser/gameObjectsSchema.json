@@ -2,7 +2,7 @@
 	"$id": "http://example.com/example.json",
 	"$schema": "http://json-schema.org/draft-07/schema",
 	"default": {},
-	"description": "The root schema comprises the entire JSON document.",
+	"description": "This is the JSON Schema for the GameObjectsPositions structure",
 	"examples": [
 		{
 			"gameObjectPositions": [
