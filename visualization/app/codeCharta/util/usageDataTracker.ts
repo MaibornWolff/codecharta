@@ -1,9 +1,7 @@
 "use strict"
 
 import { getVisibleFileStates, isSingleState } from "../model/files/files.helper"
-import { CodeChartaStorage } from "./codeChartaStorage"
 import { CodeMapNode, NodeType } from "../codeCharta.model"
-import { isStandalone } from "./envDetector"
 import { isActionOfType } from "./reduxHelper"
 import { AreaMetricActions } from "../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
@@ -56,10 +54,12 @@ interface MetricStatistics {
 	metricValues: number[]
 }
 
+export const TRACKING_DATA_LOCAL_STORAGE_ELEMENT = "CodeCharta::usageData"
+
 function isTrackingAllowed(files: FileState[]) {
 	const singleFileStates = getVisibleFileStates(files)
 
-	if (!isStandalone() || !isSingleState(files) || singleFileStates.length > 1) {
+	if (!isSingleState(files) || singleFileStates.length > 1) {
 		return false
 	}
 
@@ -90,12 +90,11 @@ export function trackMapMetaData(files: FileState[]) {
 		repoCreationDate: fileMeta.repoCreationDate
 	}
 
-	const fileStorage = new CodeChartaStorage()
 	// Make sure that only files within usageData can be read
 	const fileChecksum = trackingDataItem.mapId.replace(/\//g, "")
 
 	try {
-		fileStorage.setItem(`usageData/${fileChecksum}-meta`, JSON.stringify(trackingDataItem))
+		localStorage.setItem(`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/${fileChecksum}-meta`, JSON.stringify(trackingDataItem))
 	} catch {
 		// ignore it
 	}
@@ -283,11 +282,9 @@ export function trackEventUsageData(actionType: string, files: FileState[], payl
 	// Make sure that only files within usageData can be read
 	const fileChecksum = getVisibleFileStates(files)[0].file.fileMeta.fileChecksum.replace(/\//g, "")
 
-	const fileStorage = new CodeChartaStorage()
-
 	let appendedEvents = ""
 	try {
-		appendedEvents = fileStorage.getItem(`usageData/${fileChecksum}-events`)
+		appendedEvents = localStorage.getItem(`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/${fileChecksum}-events`)
 	} catch {
 		// ignore, it no events item exists
 	}
@@ -296,7 +293,10 @@ export function trackEventUsageData(actionType: string, files: FileState[], payl
 		if (appendedEvents.length > 0) {
 			appendedEvents += "\n"
 		}
-		fileStorage.setItem(`usageData/${fileChecksum}-events`, appendedEvents + JSON.stringify(eventTrackingItem))
+		localStorage.setItem(
+			`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/${fileChecksum}-events`,
+			appendedEvents + JSON.stringify(eventTrackingItem)
+		)
 	} catch {
 		// ignore tracking errors
 	}

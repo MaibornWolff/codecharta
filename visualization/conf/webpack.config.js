@@ -8,7 +8,7 @@ const dist = path.resolve(__dirname, "../dist/webpack")
 module.exports = env => {
 	return {
 		mode: "development",
-		target: JSON.parse(env.STANDALONE) ? "node" : "web",
+		target: "web",
 		entry: "./app/app.module.ts",
 		output: {
 			filename: "bundle.js",
@@ -30,7 +30,6 @@ module.exports = env => {
 				favicon: "./app/assets/icon.ico"
 			}),
 			new DefinePlugin({
-				"process.env.STANDALONE": JSON.stringify(env.STANDALONE),
 				"process.env.DEV": JSON.stringify(env.DEV)
 			}),
 			new NodePolyfillPlugin()
@@ -38,9 +37,6 @@ module.exports = env => {
 		devtool: "source-map",
 		resolve: {
 			extensions: [".ts", ".tsx", ".js"]
-		},
-		externals: {
-			child_process: "require('child_process')"
 		}
 	}
 }
