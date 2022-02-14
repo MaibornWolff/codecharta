@@ -1,4 +1,4 @@
-import { BlacklistItem, CCFile, CodeMapNode, NodeType, State } from "../codeCharta.model"
+import { CCFile, CodeMapNode, NodeType, State } from "../codeCharta.model"
 import { trackEventUsageData, trackMapMetaData } from "./usageDataTracker"
 import * as EnvironmentDetector from "./envDetector"
 import * as FilesHelper from "../model/files/files.helper"
@@ -6,8 +6,6 @@ import { FileState } from "../model/files/files"
 import { APIVersions } from "../codeCharta.api.model"
 import { CodeChartaStorage } from "./codeChartaStorage"
 import { HeightMetricActions } from "../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { BlacklistActions } from "../state/store/fileSettings/blacklist/blacklist.actions"
-import { FocusedNodePathActions } from "../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { klona } from "klona"
 jest.mock("./codeChartaStorage")
 
@@ -60,19 +58,19 @@ describe("UsageDataTracker", () => {
 			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([{} as FileState])
 
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(false)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([{} as FileState])
 
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([{} as FileState, {} as FileState])
 
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			expect(setItemMock).not.toHaveBeenCalled()
 		})
@@ -80,10 +78,10 @@ describe("UsageDataTracker", () => {
 		it("should not track maps from old API versions", () => {
 			singleFileState.file.fileMeta.apiVersion = APIVersions.ZERO_POINT_ONE
 			mockTrackingToBeAllowed()
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			singleFileState.file.fileMeta.apiVersion = "0.9"
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			expect(setItemMock).not.toHaveBeenCalled()
 		})
@@ -92,13 +90,13 @@ describe("UsageDataTracker", () => {
 			singleFileState.file.map = { path: "/root" } as CodeMapNode
 
 			mockTrackingToBeAllowed()
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			singleFileState.file.fileMeta.apiVersion = "1.0"
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			singleFileState.file.fileMeta.apiVersion = "2.0"
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			expect(setItemMock).toHaveBeenCalledTimes(3)
 		})
@@ -125,7 +123,7 @@ describe("UsageDataTracker", () => {
 				expect(value).toMatchSnapshot()
 			}))
 
-			trackMapMetaData(stateStub)
+			trackMapMetaData(stateStub.files)
 
 			expect(expectSetItemSnapshot).toHaveBeenCalledTimes(1)
 		}
@@ -158,34 +156,17 @@ describe("UsageDataTracker", () => {
 			expect(expectSetItemSnapshot).toHaveBeenCalledTimes(1)
 		}
 
-		it("should not track on not allowed events", () => {
-			trackEventUsageData("EVENT_ACTION_WHICH_SHOULD_NOT_BE_TRACKED", stateStub)
+		it("should not track when tracking is not allowed", () => {
+			jest.spyOn(EnvironmentDetector, "isStandalone").mockReturnValue(false)
+
+			trackEventUsageData(HeightMetricActions.SET_HEIGHT_METRIC, stateStub.files, "newHeightMetricValue")
 
 			// A second call would indicate that the tracking has not been cancelled as expected
 			expect(FilesHelper.getVisibleFileStates).toHaveBeenCalledTimes(1)
 		})
 
-		it("should track setting changed event", () => {
-			trackEventUsageData(HeightMetricActions.SET_HEIGHT_METRIC, stateStub, "newHeightMetricValue")
-			expectEventHasBeenTracked()
-		})
-
-		it("should track setting changed event for resetting the blacklist", () => {
-			trackEventUsageData(BlacklistActions.SET_BLACKLIST, stateStub, [])
-			expectEventHasBeenTracked()
-		})
-
-		it("should track node interaction blacklist event", () => {
-			trackEventUsageData(BlacklistActions.ADD_BLACKLIST_ITEM, stateStub, {
-				path: "test",
-				attributes: {},
-				type: "exclude"
-			} as BlacklistItem)
-			expectEventHasBeenTracked()
-		})
-
-		it("should track node interaction focus event", () => {
-			trackEventUsageData(FocusedNodePathActions.FOCUS_NODE, stateStub, "focusedPathPayload")
+		it("should track an event", () => {
+			trackEventUsageData(HeightMetricActions.SET_HEIGHT_METRIC, stateStub.files, "newHeightMetricValue")
 			expectEventHasBeenTracked()
 		})
 	})
