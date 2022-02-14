@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Run standalone version of CodeCharta in Node.js web target (and disable [#1314](https://github.com/MaibornWolff/codecharta/issues/1314)), so that local storage is available [#2637](https://github.com/MaibornWolff/codecharta/pull/2637)
+
 ## [1.89.0] - 2022-02-07
 
 ### Added 🚀
