@@ -1,4 +1,6 @@
-.mat-option-text {
-	display: flex !important;
-	justify-content: space-between;
+.filenames {
+	.mat-option-text {
+		display: flex;
+		justify-content: space-between;
+	}
 }
