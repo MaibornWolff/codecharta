@@ -64,7 +64,7 @@ function isFile(names: string[]) {
 }
 
 function nodeAlreadyExists(nodes: CodeMapNode[], name: string) {
-	return nodes.some(node => node.name === name)
+	return nodes.some(singleNode => singleNode.name === name)
 }
 
 function wrapFileInAFolder(nodeName: string, node: CodeMapNode, gameObjectPosition) {
