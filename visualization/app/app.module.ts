@@ -31,6 +31,7 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
+import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 
 @NgModule({
 	imports: [
@@ -58,6 +59,7 @@ import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/inv
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		EdgeMetricToggleComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -72,6 +74,7 @@ import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/inv
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		EdgeMetricToggleComponent,
 		...dialogs
 	]
 })

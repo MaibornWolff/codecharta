@@ -142,6 +142,7 @@ export interface AppSettings {
 	mapColors: MapColors
 	isPresentationMode: boolean
 	showOnlyBuildingsWithEdges: boolean
+	toggleEdgeMetric: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	isLoadingMap: boolean
 	isLoadingFile: boolean

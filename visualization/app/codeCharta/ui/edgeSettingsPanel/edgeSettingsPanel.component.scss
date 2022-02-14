@@ -1,4 +1,4 @@
-edge-settings-panel-component {
+cc-edge-settings-panel {
 	background: white;
 	border: 1px solid #b5b5b5;
 	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
@@ -49,7 +49,7 @@ edge-settings-panel-component {
 	}
 }
 
-edge-settings-panel-component.hidden {
+cc-edge-settings-panel.hidden {
 	max-height: 0;
 	opacity: 0;
 	transition: max-height 200ms ease-in-out, opacity 0ms 200ms;
