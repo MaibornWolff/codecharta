@@ -19,7 +19,7 @@ module.exports = env => {
 				directory: dist
 			},
 			compress: true, // enable gzip compression
-			hot: "only", // hot module replacement. Depends on HotModuleReplacementPlugin
+			hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
 			port: 3000,
 			client: {
 				logging: "error"
