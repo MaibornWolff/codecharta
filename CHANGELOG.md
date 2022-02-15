@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.90.0] - 2022-02-15
+
 ### Added 🚀
 
 -   Parse and import GameObjects file structure into cc.json on upload [#2646](https://github.com/MaibornWolff/codecharta/pull/2646)
