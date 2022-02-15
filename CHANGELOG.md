@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.90.0] - 2022-02-15
+
+### Added 🚀
+
+-   Parse and import GameObjects file structure into cc.json on upload [#2646](https://github.com/MaibornWolff/codecharta/pull/2646)
+
+### Fixed 🐞
+
+-   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
+-   Fix show garbage bin next to the loaded maps [#2647](https://github.com/MaibornWolff/codecharta/pull/2647)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Run standalone version of CodeCharta in Node.js web target (and disable [#1314](https://github.com/MaibornWolff/codecharta/issues/1314)), so that local storage is available [#2637](https://github.com/MaibornWolff/codecharta/pull/2637)
+
 ## [1.89.0] - 2022-02-07
 
 ### Added 🚀

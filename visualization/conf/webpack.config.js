@@ -8,18 +8,22 @@ const dist = path.resolve(__dirname, "../dist/webpack")
 module.exports = env => {
 	return {
 		mode: "development",
-		target: JSON.parse(env.STANDALONE) ? "node" : "web",
+		target: "web",
 		entry: "./app/app.module.ts",
 		output: {
 			filename: "bundle.js",
 			path: dist
 		},
 		devServer: {
-			contentBase: dist,
+			static: {
+				directory: dist
+			},
 			compress: true, // enable gzip compression
 			hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
 			port: 3000,
-			clientLogLevel: "error",
+			client: {
+				logging: "error"
+			},
 			open: true
 		},
 		module: require("./webpack.loaders.js"),
@@ -30,7 +34,6 @@ module.exports = env => {
 				favicon: "./app/assets/icon.ico"
 			}),
 			new DefinePlugin({
-				"process.env.STANDALONE": JSON.stringify(env.STANDALONE),
 				"process.env.DEV": JSON.stringify(env.DEV)
 			}),
 			new NodePolyfillPlugin()
@@ -38,9 +41,6 @@ module.exports = env => {
 		devtool: "source-map",
 		resolve: {
 			extensions: [".ts", ".tsx", ".js"]
-		},
-		externals: {
-			child_process: "require('child_process')"
 		}
 	}
 }

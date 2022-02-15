@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.89.0",
+	"version": "1.90.0",
 	"engines": {
 		"node": ">=16"
 	},
@@ -39,7 +39,7 @@
 	},
 	"main": "dist/webpack/index.html",
 	"build": {
-		"nwVersion": "0.53.0",
+		"nwVersion": "0.61.0",
 		"output": "./dist/packages/",
 		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
 		"files": "./dist/webpack/**/*",
@@ -64,9 +64,9 @@
 	],
 	"scripts": {
 		"start": "nw .",
-		"build": "webpack --config ./conf/webpack.config.js --env STANDALONE=true --env DEV=false",
-		"build:web": "webpack --config ./conf/webpack.config.js --env STANDALONE=false --env DEV=false",
-		"dev": "webpack serve --config ./conf/webpack.config.js --env STANDALONE=false --env DEV=true",
+		"build": "webpack --config ./conf/webpack.config.js --env DEV=false",
+		"build:web": "webpack --config ./conf/webpack.config.js --env DEV=false",
+		"dev": "webpack serve --config ./conf/webpack.config.js --env DEV=true",
 		"test": "jest --config ./jest.config.json .*\\.spec\\.ts --env=jsdom",
 		"test:auto": "npm test -- --watch",
 		"test:autoNoCoverage": "npm run test:auto -- --coverage false",
@@ -126,8 +126,7 @@
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
 		"nouislider": "^15.0.0",
-		"nw": "^0.58.0",
-		"open": "^8.0.6",
+		"nw": "^0.61.0",
 		"percent-round": "^2.2.1",
 		"redux": "^4.0.5",
 		"remark": "^13.0.0",
@@ -137,7 +136,7 @@
 		"shelljs": "^0.8.4",
 		"three": "^0.126.1",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "^0.52.0",
+		"typescript-json-schema": "^0.53.0",
 		"zone.js": "^0.11.4"
 	},
 	"devDependencies": {

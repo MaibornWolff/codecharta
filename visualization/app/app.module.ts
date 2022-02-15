@@ -31,6 +31,10 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
+import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
+import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
+import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
+import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 
 @NgModule({
@@ -53,13 +57,14 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule
 	],
-	providers: [threeSceneServiceProvider],
+	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
+		RemoveFileButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -74,6 +79,9 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		FocusButtonsComponent,
+		MarkFolderRowComponent,
+		RemoveFileButtonComponent,
 		EdgeMetricToggleComponent,
 		...dialogs
 	]

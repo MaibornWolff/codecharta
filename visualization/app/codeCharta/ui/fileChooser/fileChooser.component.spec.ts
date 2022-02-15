@@ -46,6 +46,7 @@ describe("fileChooserController", () => {
 			loadFiles: jest.fn().mockReturnValue({ catch: jest.fn() })
 		})()
 	}
+
 	describe("setNewData", () => {
 		it("should call loadFiles with read files", () => {
 			const file: NameDataPair = {

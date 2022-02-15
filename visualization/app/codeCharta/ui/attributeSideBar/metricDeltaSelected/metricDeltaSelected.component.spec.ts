@@ -1,9 +1,18 @@
 import { render, screen } from "@testing-library/angular"
-
+import { mocked } from "ts-jest/utils"
+import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { Store } from "../../../state/store/store"
+
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { CodeMapBuilding } from "../../codeMap/rendering/codeMapBuilding"
 import { MetricDeltaSelectedComponent } from "./metricDeltaSelected.component"
+
+jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
+	idToNodeSelector: jest.fn()
+}))
+const mockedIdToNodeSelector = mocked(idToNodeSelector)
+jest.mock("../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector", () => ({
+	selectedBuildingIdSelector: () => 0
+}))
 
 describe("MetricDeltaSelectedComponent", () => {
 	const areColorsEqual = (hex: string, styleColor: string) => {
@@ -12,21 +21,13 @@ describe("MetricDeltaSelectedComponent", () => {
 		return formattedHex === formattedStyleColor
 	}
 
-	beforeEach(() => {
-		Store["initialize"]()
-	})
-
 	it("should not show, if there is no delta value", async () => {
 		await render(MetricDeltaSelectedComponent)
 		expect(screen.queryByText(/Δ/)).toBe(null)
 	})
 
 	it("should show in positive delta color when selected building has a positive delta value", async () => {
-		const fakeCodeMapBuilding = { node: { deltas: { rloc: 2 } } } as unknown as CodeMapBuilding
-		const state = Store.store.getState()
-		state.appStatus.selectedBuildingId = 0
-		state.lookUp.idToBuilding = new Map()
-		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
+		mockIdToNodeSelector({ rloc: 2 })
 
 		await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
@@ -34,15 +35,13 @@ describe("MetricDeltaSelectedComponent", () => {
 
 		const metricDeltaSelectedDomNode = screen.queryByText(/Δ2/)
 		expect(metricDeltaSelectedDomNode).toBeTruthy()
-		expect(areColorsEqual(state.appSettings.mapColors.positiveDelta, metricDeltaSelectedDomNode.style.color)).toBe(true)
+		expect(areColorsEqual(Store.store.getState().appSettings.mapColors.positiveDelta, metricDeltaSelectedDomNode.style.color)).toBe(
+			true
+		)
 	})
 
 	it("should show in negative delta color when selected building has a negative delta value", async () => {
-		const fakeCodeMapBuilding = { node: { deltas: { rloc: -2 } } } as unknown as CodeMapBuilding
-		const state = Store.store.getState()
-		state.appStatus.selectedBuildingId = 0
-		state.lookUp.idToBuilding = new Map()
-		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
+		mockIdToNodeSelector({ rloc: -2 })
 
 		await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
@@ -50,15 +49,13 @@ describe("MetricDeltaSelectedComponent", () => {
 
 		const metricDeltaSelectedDomNode = screen.queryByText(/Δ-2/)
 		expect(metricDeltaSelectedDomNode).toBeTruthy()
-		expect(areColorsEqual(state.appSettings.mapColors.negativeDelta, metricDeltaSelectedDomNode.style.color)).toBe(true)
+		expect(areColorsEqual(Store.store.getState().appSettings.mapColors.negativeDelta, metricDeltaSelectedDomNode.style.color)).toBe(
+			true
+		)
 	})
 
 	it("should update when its metricName changes", async () => {
-		const fakeCodeMapBuilding = { node: { deltas: { rloc: 2, mcc: 4 } } } as unknown as CodeMapBuilding
-		const state = Store.store.getState()
-		state.appStatus.selectedBuildingId = 0
-		state.lookUp.idToBuilding = new Map()
-		state.lookUp.idToBuilding.set(0, fakeCodeMapBuilding)
+		mockIdToNodeSelector({ rloc: 2, mcc: 4 })
 
 		const { rerender } = await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
@@ -68,4 +65,10 @@ describe("MetricDeltaSelectedComponent", () => {
 		await rerender({ metricName: "mcc" })
 		expect(screen.queryByText(/Δ4/)).toBeTruthy()
 	})
+
+	function mockIdToNodeSelector(deltas: Record<string, unknown>) {
+		const idToNode = new Map()
+		idToNode.set(0, { id: 0, deltas })
+		mockedIdToNodeSelector.mockImplementation(() => idToNode)
+	}
 })

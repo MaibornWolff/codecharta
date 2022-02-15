@@ -1814,9 +1814,6 @@ export const STATE: State = {
 		mapSize: 250
 	},
 	files: [],
-	lookUp: {
-		idToBuilding: new Map()
-	},
 	appStatus: {
 		hoveredBuildingPath: null,
 		selectedBuildingId: null,
@@ -1899,9 +1896,6 @@ export const DEFAULT_STATE: State = {
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
 	files: [],
-	lookUp: {
-		idToBuilding: new Map()
-	},
 	appStatus: {
 		hoveredBuildingPath: null,
 		selectedBuildingId: null,
