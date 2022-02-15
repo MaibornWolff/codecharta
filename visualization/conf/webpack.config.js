@@ -15,11 +15,15 @@ module.exports = env => {
 			path: dist
 		},
 		devServer: {
-			contentBase: dist,
+			static: {
+				directory: dist
+			},
 			compress: true, // enable gzip compression
-			hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
+			hot: "only", // hot module replacement. Depends on HotModuleReplacementPlugin
 			port: 3000,
-			clientLogLevel: "error",
+			client: {
+				logging: "error"
+			},
 			open: true
 		},
 		module: require("./webpack.loaders.js"),
