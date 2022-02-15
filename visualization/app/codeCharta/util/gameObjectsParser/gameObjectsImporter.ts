@@ -2,6 +2,20 @@ import md5 from "md5"
 import { AttributeTypes, CodeMapNode, Edge, FixedPosition, NodeType } from "../../codeCharta.model"
 import { ExportWrappedCCFile } from "../../codeCharta.api.model"
 
+export interface BaseNode {
+	name: string
+	position: Position
+	scale: Position
+}
+
+export interface Position {
+	x: number
+	y: number
+	z: number
+}
+
+const BASE_NAME = "base"
+
 export function parseGameObjectsFile(data) {
 	const { gameObjectPositions, cycles = [] } = JSON.parse(data)
 
@@ -15,13 +29,15 @@ export function parseGameObjectsFile(data) {
 		}
 	}
 
-	const nodes = [{ name: "base", type: NodeType.FOLDER, attributes: {}, children: [] }]
-	gameObjectPositions.push(createBaseGameObjectPosition(gameObjectPositions))
+	const nodes = [{ name: BASE_NAME, type: NodeType.FOLDER, attributes: {}, children: [] }]
+	const rootGameObjectPosition = gameObjectPositions.find(gameObject => gameObject.name.split(".").length === 1)
+
+	gameObjectPositions.push(createBaseGameObjectPosition(rootGameObjectPosition))
 
 	for (const gameObjectPosition of gameObjectPositions) {
 		const nodeNames = gameObjectPosition.name.split(".")
-		if (nodeNames[0] !== "base") {
-			addNodeRecursively(nodeNames, nodes[0].children, "base", gameObjectPosition, gameObjectPositions)
+		if (nodeNames[0] !== BASE_NAME) {
+			addNodeRecursively(nodeNames, nodes[0].children, BASE_NAME, gameObjectPosition, gameObjectPositions, rootGameObjectPosition)
 		}
 	}
 
@@ -32,7 +48,14 @@ export function parseGameObjectsFile(data) {
 	return ccJson
 }
 
-function addNodeRecursively(nodeNames: string[], nodes: CodeMapNode[], parentNodeName: string, gameObjectPosition, gameObjectPositions) {
+function addNodeRecursively(
+	nodeNames: string[],
+	nodes: CodeMapNode[],
+	parentNodeName: string,
+	gameObjectPosition,
+	gameObjectPositions,
+	rootGameObjectPosition
+) {
 	if (nodeNames.length === 0) return
 
 	// get current node name and create cc node structure
@@ -42,8 +65,12 @@ function addNodeRecursively(nodeNames: string[], nodes: CodeMapNode[], parentNod
 		type: isFile(nodeNames) ? NodeType.FILE : NodeType.FOLDER,
 		attributes: {}
 	}
-	if (!isFile(nodeNames)) node.children = []
-	if (isFile(nodeNames)) node = wrapFileInAFolder(nodeName, node, gameObjectPosition)
+
+	if (!isFile(nodeNames)) {
+		node.children = []
+	} else {
+		node = wrapFileInAFolder(nodeName, node, gameObjectPosition)
+	}
 
 	// add or select node if found
 	if (!nodeAlreadyExists(nodes, nodeName)) {
@@ -52,11 +79,11 @@ function addNodeRecursively(nodeNames: string[], nodes: CodeMapNode[], parentNod
 		node = nodes.find(singleNode => singleNode.name === nodeName)
 	}
 
-	const parent = gameObjectPositions.find(gameObject => gameObject.name === parentNodeName)
-	node.fixedPosition = calculateFixedFolderPosition(node, nodeName, parent, gameObjectPosition)
+	const parentGameObject = gameObjectPositions.find(gameObject => gameObject.name === parentNodeName)
+	node.fixedPosition = calculateFixedFolderPosition(node, parentGameObject, gameObjectPosition, rootGameObjectPosition.name)
 
-	const newParentName = parentNodeName === "base" ? node.name : `${parentNodeName}.${node.name}`
-	addNodeRecursively(nodeNames.slice(1), node.children, newParentName, gameObjectPosition, gameObjectPositions)
+	const newParentName = parentNodeName === BASE_NAME ? node.name : `${parentNodeName}.${node.name}`
+	addNodeRecursively(nodeNames.slice(1), node.children, newParentName, gameObjectPosition, gameObjectPositions, rootGameObjectPosition)
 }
 
 function isFile(names: string[]) {
@@ -74,9 +101,10 @@ function wrapFileInAFolder(nodeName: string, node: CodeMapNode, gameObjectPositi
 	return parentNode
 }
 
-function calculateFixedFolderPosition(node: CodeMapNode, name: string, parentGameObject, childGameObject) {
+function calculateFixedFolderPosition(node: CodeMapNode, parentGameObject, childGameObject, rootGameObjectPositionName: string) {
 	let position: FixedPosition
-	if (node.type === NodeType.FOLDER && name !== "base") {
+
+	if (node.type === NodeType.FOLDER) {
 		// translate the center point from the middle of the gameObject to the corner as needed for fixedPosition
 		const cornerXofParent = parentGameObject.position.x - parentGameObject.scale.x / 2
 		const cornerZofParent = parentGameObject.position.z - parentGameObject.scale.z / 2
@@ -88,11 +116,17 @@ function calculateFixedFolderPosition(node: CodeMapNode, name: string, parentGam
 		const height = Math.floor((childGameObject.scale.x / parentGameObject.scale.x) * 100)
 		position = { left, top, width, height }
 	}
-	if (name === "root") {
-		position.top = Math.floor(50 - position.height / 2)
-		position.left = 0
+
+	if (node.name === rootGameObjectPositionName) {
+		centerRootPosition(position)
 	}
+
 	return position
+}
+
+function centerRootPosition(rootPosition) {
+	rootPosition.top = Math.floor(50 - rootPosition.height / 2)
+	rootPosition.left = 0
 }
 
 function addWrappedFolderName(filePath: string) {
@@ -118,11 +152,10 @@ function createAttributeTypes() {
 	} as AttributeTypes
 }
 
-function createBaseGameObjectPosition(gameObjectPositions) {
-	const rootGamePosition = gameObjectPositions.find(gameObject => gameObject.name === "root")
-	const longEdge = Math.max(rootGamePosition.scale.x, rootGamePosition.scale.z)
+function createBaseGameObjectPosition(rootGameObjectPosition) {
+	const longEdge = Math.max(rootGameObjectPosition.scale.x, rootGameObjectPosition.scale.z)
 	return {
-		name: "base",
+		name: BASE_NAME,
 		position: {
 			x: 0,
 			y: 0,
@@ -130,8 +163,8 @@ function createBaseGameObjectPosition(gameObjectPositions) {
 		},
 		scale: {
 			x: longEdge,
-			y: 1,
+			y: 0,
 			z: longEdge
 		}
-	}
+	} as BaseNode
 }
