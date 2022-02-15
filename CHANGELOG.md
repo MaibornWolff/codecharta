@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Parse and import GameObjects file structure into cc.json on upload [#2646](https://github.com/MaibornWolff/codecharta/pull/2646)
+
 ### Fixed 🐞
 
 -   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
