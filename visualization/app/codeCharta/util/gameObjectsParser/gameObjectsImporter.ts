@@ -131,7 +131,7 @@ function centerRootPosition(rootPosition) {
 
 function addWrappedFolderName(filePath: string) {
 	const splitFilePath = filePath.split(".")
-	return `/base/${filePath.replace(/\./g, "/")}/${splitFilePath.slice(-1)}`
+	return `/${BASE_NAME}/${filePath.replace(/\./g, "/")}/${splitFilePath.slice(-1)}`
 }
 
 function createEdge(cycle) {
