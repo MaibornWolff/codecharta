@@ -32,7 +32,7 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataSubscri
 	}
 
 	reset(edgeMetric: EdgeMetricData) {
-		this.storeService.dispatch(setEdgeMetric(edgeMetric.name))
+		this.storeService.dispatch(setEdgeMetric(edgeMetric?.name))
 	}
 
 	private select() {

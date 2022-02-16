@@ -47,7 +47,7 @@ export class CodeMapArrowService
 
 	onBuildingUnhovered() {
 		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None") {
+		if (state.dynamicSettings?.edgeMetric) {
 			this.clearArrows()
 			this.showEdgesOfBuildings()
 		}
@@ -73,9 +73,9 @@ export class CodeMapArrowService
 	}
 
 	addEdgePreview(nodes?: Node[]) {
-		if (nodes) {
-			this.map = this.getNodesAsMap(nodes)
-		}
+		if (!nodes) return
+
+		this.map = this.getNodesAsMap(nodes)
 
 		const { edges } = this.storeService.getState().fileSettings
 
