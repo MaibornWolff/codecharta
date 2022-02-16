@@ -35,6 +35,8 @@ import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFi
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
+import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
+import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 
 @NgModule({
 	imports: [
@@ -54,7 +56,8 @@ import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuil
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		NodeContextMenuCardModule
+		NodeContextMenuCardModule,
+		LoadingFileProgressSpinnerModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
@@ -80,6 +83,7 @@ import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuil
 		FocusButtonsComponent,
 		MarkFolderRowComponent,
 		RemoveFileButtonComponent,
+		LoadingFileProgressSpinnerComponent,
 		...dialogs
 	]
 })
