@@ -6,18 +6,19 @@ import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
-import md5 from "md5"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
+import { getCCFileAndDecorateFileChecksum } from "../../util/fileHelper"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
 
-	/* @ngInject */
-	constructor(private $scope, private codeChartaService: CodeChartaService, private storeService: StoreService) {}
+	constructor(private $scope, private codeChartaService: CodeChartaService, private storeService: StoreService) {
+		"ngInject"
+	}
 
 	onImportNewFiles(element) {
 		this.$scope.$apply(() => {
-			let content
+			let content: string
 			let readFiles = 0
 
 			for (let index = 0; index < element.files.length; index++) {
@@ -37,7 +38,7 @@ export class FileChooserController {
 				}
 
 				reader.onload = event => {
-					content = isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)) : event.target.result
+					content = (isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)) : event.target.result).toString()
 				}
 
 				reader.onloadend = () => {
@@ -66,17 +67,7 @@ export class FileChooserController {
 	}
 
 	private addNameDataPair(file: File, jsonString: string, index: number) {
-		let content: ExportCCFile
-
-		try {
-			content = JSON.parse(jsonString)
-
-			if (!content.fileChecksum) {
-				content.fileChecksum = md5(jsonString)
-			}
-		} catch {
-			// Explicitly ignored
-		}
+		const content: ExportCCFile = getCCFileAndDecorateFileChecksum(jsonString)
 
 		this.files[index] = {
 			fileName: file.name,

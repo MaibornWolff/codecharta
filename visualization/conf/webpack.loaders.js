@@ -1,3 +1,5 @@
+const RemarkHTML = require("remark-html")
+
 module.exports = {
 	rules: [
 		{
@@ -7,7 +9,10 @@ module.exports = {
 		},
 		{
 			test: /\.html$/,
-			use: ["html-loader"]
+			loader: "html-loader",
+			options: {
+				esModule: false
+			}
 		},
 		{
 			test: /\.css$/,
@@ -18,12 +23,8 @@ module.exports = {
 			use: ["style-loader", "css-loader", "sass-loader"]
 		},
 		{
-			test: /\.(png|svg|jpg|gif)$/,
-			use: ["file-loader"]
-		},
-		{
-			test: /\.(woff|woff2|eot|ttf|otf)$/,
-			use: ["file-loader"]
+			test: /\.(jpe?g|svg|png|gif|ico|eot|otf|ttf|woff2?)(\?v=\d+\.\d+\.\d+)?$/i,
+			type: "asset/resource"
 		},
 		{
 			test: /\.ts(x?)$/,
@@ -32,6 +33,22 @@ module.exports = {
 		{
 			test: /\.glsl$/,
 			use: ["webpack-glsl-loader"]
+		},
+		{
+			test: /\.md$/,
+
+			use: [
+				{ loader: "html-loader" },
+				{
+					loader: "remark-loader",
+					options: {
+						removeFrontMatter: false,
+						remarkOptions: {
+							plugins: [RemarkHTML]
+						}
+					}
+				}
+			]
 		}
 	]
 }

@@ -2,13 +2,14 @@ import "./filePanel.module"
 import { FilePanelController } from "./filePanel.component"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { addFile, resetFiles, resetSelection, setDelta, setMultiple, setSingle } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
-import { getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
+import { getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
 import { FileSelectionState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
+import { MapColorsService } from "../../state/store/appSettings/mapColors/mapColors.service"
 
 describe("filePanelController", () => {
 	let filePanelController: FilePanelController
@@ -36,7 +37,8 @@ describe("filePanelController", () => {
 		storeService.dispatch(resetFiles())
 		storeService.dispatch(addFile(TEST_DELTA_MAP_A))
 		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
-		storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
+		storeService.dispatch(addFile(TEST_DELTA_MAP_C))
+		storeService.dispatch(addFile(TEST_DELTA_MAP_D))
 	}
 
 	describe("constructor", () => {
@@ -46,6 +48,14 @@ describe("filePanelController", () => {
 			buildController()
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
+		})
+
+		it("should subscribe to MapColorService", () => {
+			MapColorsService.subscribe = jest.fn()
+
+			buildController()
+
+			expect(MapColorsService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
 		})
 	})
 
@@ -61,19 +71,18 @@ describe("filePanelController", () => {
 
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			expect(filePanelController["_viewModel"].isSingleState).toBeFalsy()
 			expect(filePanelController["_viewModel"].isPartialState).toBeFalsy()
 			expect(filePanelController["_viewModel"].isDeltaState).toBeTruthy()
 			expect(filePanelController["lastRenderState"]).toEqual(filePanelController["_viewModel"].renderState)
 		})
 
-		it("should update selected filenames in viewModel correctly if single mode is active", () => {
-			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
+		it("should update selected filenames in viewModel correctly if multiple mode is active", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
 
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Single)
-			expect(filePanelController["_viewModel"].selectedFileNames.single).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
+			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Partial)
+			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([TEST_DELTA_MAP_A.fileMeta.fileName])
 		})
 
 		it("should update selected filenames in viewModel correctly if partial mode is active", () => {
@@ -119,15 +128,26 @@ describe("filePanelController", () => {
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([])
-			expect(filePanelController["_viewModel"].selectedFileNames.single).toBeNull()
 		})
+	})
 
-		it("should set the pictogram colors in view model", () => {
-			filePanelController.onFilesSelectionChanged(storeService.getState().files)
+	describe("onMapColorsChanged", () => {
+		it("should set default colors of delta mode in view model for pictogram", () => {
+			filePanelController.onMapColorsChanged(storeService.getState().appSettings.mapColors)
 
-			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
 			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(storeService.getState().appSettings.mapColors.negativeDelta)
 			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(storeService.getState().appSettings.mapColors.positiveDelta)
+		})
+
+		it("should update colors of delta mode in view model for pictogram when colors had changed", () => {
+			filePanelController["_viewModel"].pictogramLowerColor = storeService.getState().appSettings.mapColors.negativeDelta
+			filePanelController["_viewModel"].pictogramUpperColor = storeService.getState().appSettings.mapColors.positiveDelta
+			const testMapColors = { ...storeService.getState().appSettings.mapColors, negativeDelta: "#FFFFFF", positiveDelta: "#000000" }
+
+			filePanelController.onMapColorsChanged(testMapColors)
+
+			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(testMapColors.negativeDelta)
+			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(testMapColors.positiveDelta)
 		})
 	})
 
@@ -143,28 +163,6 @@ describe("filePanelController", () => {
 				TEST_DELTA_MAP_A.fileMeta.fileName,
 				TEST_DELTA_MAP_B.fileMeta.fileName
 			])
-		})
-	})
-
-	describe("onSingleFileChange", () => {
-		it("should set a single file in state und update root data", () => {
-			filePanelController["_viewModel"].files = [
-				{
-					file: TEST_DELTA_MAP_A,
-					selectedAs: FileSelectionState.None
-				},
-				{
-					file: TEST_DELTA_MAP_B,
-					selectedAs: FileSelectionState.Single
-				}
-			]
-			filePanelController.onSingleFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
-
-			expect(isSingleState(storeService.getState().files)).toBeTruthy()
-			expect(getVisibleFileStates(storeService.getState().files)[0].selectedAs).toEqual(FileSelectionState.Single)
-
-			expect(CodeChartaService.ROOT_NAME).toEqual(TEST_DELTA_MAP_B.map.name)
-			expect(CodeChartaService.ROOT_PATH).toEqual(`/${TEST_DELTA_MAP_B.map.name}`)
 		})
 	})
 
@@ -227,26 +225,6 @@ describe("filePanelController", () => {
 	})
 
 	describe("onRenderStateChange", () => {
-		it("should update the viewModel with the last visible filename and call onSingleFileChange if single mode is active", () => {
-			filePanelController.onSingleFileChange = jest.fn()
-
-			filePanelController["lastRenderState"] = FileSelectionState.Single
-			filePanelController["_viewModel"].selectedFileNames.single = "fileA"
-
-			filePanelController.onSingleStateSelected()
-
-			expect(filePanelController["_viewModel"].selectedFileNames.single).toEqual("fileA")
-			expect(filePanelController.onSingleFileChange).toHaveBeenCalledWith("fileA")
-		})
-
-		it("should update the viewModel with the last visible filename and call Files if partial mode is active", () => {
-			filePanelController.selectAllPartialFiles = jest.fn()
-
-			filePanelController.onPartialStateSelected()
-
-			expect(filePanelController.selectAllPartialFiles).toHaveBeenCalled()
-		})
-
 		it("should update the viewModel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
 			filePanelController.onDeltaComparisonFileChange = jest.fn()
 
@@ -257,6 +235,121 @@ describe("filePanelController", () => {
 
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual("fileA")
 			expect(filePanelController.onDeltaComparisonFileChange).toHaveBeenCalledWith(null)
+		})
+	})
+
+	describe("onRemoveFile in single state", () => {
+		beforeEach(() => {
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Single
+				},
+				{
+					file: TEST_DELTA_MAP_C,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_D,
+					selectedAs: FileSelectionState.None
+				}
+			]
+		})
+
+		it("should call onPartialFilesChange when partial state", () => {
+			filePanelController.onPartialFilesChange = jest.fn()
+
+			filePanelController.onRemoveFile("fileA", new Event("mouseEvent"))
+
+			expect(filePanelController.onPartialFilesChange).toHaveBeenCalled()
+		})
+
+		it("should keep selection when a non-selected file is removed", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B]))
+			filePanelController.onRemoveFile("fileA", new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			expect(remainingFiles[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(remainingFiles[1].selectedAs).toEqual(FileSelectionState.None)
+		})
+
+		it("should select most recent file when a selected file is removed", () => {
+			storeService.dispatch(setSingle(TEST_DELTA_MAP_B))
+			filePanelController.onRemoveFile("fileB", new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			const fileA = remainingFiles[0]
+			const fileD = remainingFiles[2]
+			expect(fileA.selectedAs).toEqual(FileSelectionState.None)
+			expect(fileD.selectedAs).toEqual(FileSelectionState.Partial)
+		})
+	})
+
+	describe("onRemoveFile in partial state", () => {
+		beforeEach(() => {
+			filePanelController["_viewModel"].files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.None
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Partial
+				},
+				{
+					file: TEST_DELTA_MAP_C,
+					selectedAs: FileSelectionState.Partial
+				},
+				{
+					file: TEST_DELTA_MAP_D,
+					selectedAs: FileSelectionState.None
+				}
+			]
+		})
+
+		it("should not change selection when partially selected files still exist", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+
+			filePanelController.onRemoveFile("fileB", new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			const fileA = remainingFiles[0]
+			const fileC = remainingFiles[1]
+			const fileD = remainingFiles[2]
+			expect(fileA.selectedAs).toEqual(FileSelectionState.None)
+			expect(fileC.selectedAs).toEqual(FileSelectionState.Partial)
+			expect(fileD.selectedAs).toEqual(FileSelectionState.None)
+		})
+
+		it("should select most recent file when no partially selected file exists", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+
+			filePanelController.onRemoveFile("fileB", new Event("mouseEvent"))
+			filePanelController.onRemoveFile("fileC", new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			const fileA = remainingFiles[0]
+			const fileD = remainingFiles[1]
+			expect(fileA.selectedAs).toEqual(FileSelectionState.None)
+			expect(fileD.selectedAs).toEqual(FileSelectionState.Partial)
+		})
+
+		it("should not change selection when non-selected file is removed", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+
+			filePanelController.onRemoveFile("fileA", new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			const fileB = remainingFiles[0]
+			const fileC = remainingFiles[1]
+			const fileD = remainingFiles[2]
+			expect(fileB.selectedAs).toEqual(FileSelectionState.Partial)
+			expect(fileC.selectedAs).toEqual(FileSelectionState.Partial)
+			expect(fileD.selectedAs).toEqual(FileSelectionState.None)
 		})
 	})
 

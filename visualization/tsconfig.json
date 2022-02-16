@@ -1,6 +1,8 @@
 {
 	"compileOnSave": true,
 	"compilerOptions": {
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 		"allowJs": false,
 		"allowSyntheticDefaultImports": true,
 		"alwaysStrict": true,
@@ -19,7 +21,7 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strictBindCallApply": true,
-		"strictFunctionTypes": false,
+		"strictFunctionTypes": true,
 		"strictNullChecks": false,
 		"strictPropertyInitialization": false,
 		"target": "es2016",

@@ -5,6 +5,7 @@ import "angular-material"
 import "./codeCharta/codeCharta.module"
 import "angular-sanitize"
 import "./app.scss"
+import "material-icons/iconfont/material-icons.css"
 
 angular.module("app", ["app.codeCharta", "ngMaterial", "ngSanitize"])
 
@@ -20,12 +21,18 @@ angular
 			})
 		}
 	])
-	.config($mdThemingProvider => {
-		$mdThemingProvider.theme("default").primaryPalette("teal").warnPalette("teal").accentPalette("teal")
-	})
-	.config($mdAriaProvider => {
-		$mdAriaProvider.disableWarnings()
-	})
+	.config([
+		"$mdThemingProvider",
+		$mdThemingProvider => {
+			$mdThemingProvider.theme("default").primaryPalette("teal").warnPalette("teal").accentPalette("teal")
+		}
+	])
+	.config([
+		"$mdAriaProvider",
+		$mdAriaProvider => {
+			$mdAriaProvider.disableWarnings()
+		}
+	])
 	.config([
 		"$compileProvider",
 		$compileProvider => {

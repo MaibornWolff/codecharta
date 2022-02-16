@@ -2,20 +2,13 @@ import "./customConfigs.component.scss"
 import { DialogService } from "../dialog/dialog.service"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
-import { setState } from "../../state/store/state.actions"
-import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { ColorRange } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import { FileState } from "../../model/files/files"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { IRootScopeService } from "angular"
 import { CustomConfigFileStateConnector } from "./customConfigFileStateConnector"
 import { CustomConfig, CustomConfigMapSelectionMode, ExportCustomConfig } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
-import { setCamera } from "../../state/store/appSettings/camera/camera.actions"
-import { setCameraTarget } from "../../state/store/appSettings/cameraTarget/cameraTarget.actions"
-import { Vector3 } from "three"
 
 export interface CustomConfigItem {
 	id: string
@@ -36,13 +29,19 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	private _viewModel: {
 		dropDownCustomConfigItemGroups: CustomConfigItemGroup[]
 		hasDownloadableConfigs: boolean
+		showNonApplicableButton: boolean
+		visibleEntries: number
 	} = {
 		dropDownCustomConfigItemGroups: [],
-		hasDownloadableConfigs: false
+		hasDownloadableConfigs: false,
+		showNonApplicableButton: false,
+		visibleEntries: 0
 	}
 
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private downloadableConfigs: Map<string, ExportCustomConfig> = new Map()
+	private previousEntries
+	private applicableEntries = 0
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -51,6 +50,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService
 	) {
+		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
@@ -63,6 +63,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	initView() {
 		this.loadCustomConfigs()
 		this.preloadDownloadableConfigs()
+		this.initVisibleEntries()
 	}
 
 	loadCustomConfigs() {
@@ -77,39 +78,48 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	applyCustomConfig(configId: string) {
-		const customConfig = CustomConfigHelper.getCustomConfigSettings(configId)
-
-		// TODO: Setting state from loaded CustomConfig not working at the moment
-		//  due to issues of the event architecture.
-
-		// TODO: Check if state properties differ
-		// Create new partial State (updates) for changed values only
-		this.storeService.dispatch(setState(customConfig.stateSettings))
-
-		// Should we fire another event "ResettingStateFinishedEvent"
-		// We could add a listener then to reset the camera
-
-		this.storeService.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange as ColorRange))
-		this.storeService.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
-
-		// TODO: remove this dirty timeout and set camera settings properly
-		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
-		setTimeout(() => {
-			this.threeCameraService.setPosition()
-			this.threeOrbitControlsService.setControlTarget()
-
-			this.storeService.dispatch(setCamera(customConfig.stateSettings.appSettings.camera as Vector3))
-			this.storeService.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget as Vector3))
-		}, 100)
+		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
 	}
 
-	removeCustomConfig(configId, configName) {
+	removeCustomConfig(configId, customConfigItemIndex, dropDownCustomConfigItemGroupIndex) {
+		const { dropDownCustomConfigItemGroups } = this._viewModel
+
 		CustomConfigHelper.deleteCustomConfig(configId)
-		this.dialogService.showInfoDialog(`${configName} deleted.`)
+		dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].customConfigItems.splice(customConfigItemIndex, 1)
+
+		if (dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].customConfigItems.length === 0) {
+			if (dropDownCustomConfigItemGroups[dropDownCustomConfigItemGroupIndex].hasApplicableItems) {
+				this.applicableEntries--
+			}
+
+			dropDownCustomConfigItemGroups.splice(dropDownCustomConfigItemGroupIndex, 1)
+			this._viewModel.visibleEntries--
+			this.previousEntries--
+			this.updateButtonVisibility()
+		}
+	}
+
+	private initVisibleEntries() {
+		this.applicableEntries = 0
+		while (this._viewModel.dropDownCustomConfigItemGroups[this.applicableEntries]?.hasApplicableItems) {
+			this.applicableEntries++
+		}
+
+		this._viewModel.visibleEntries = this.applicableEntries
+		this.updateButtonVisibility()
+	}
+
+	toggleNonApplicableItems() {
+		if (!this.isExpanded()) {
+			this.previousEntries = this._viewModel.visibleEntries
+			this._viewModel.visibleEntries = this._viewModel.dropDownCustomConfigItemGroups.length
+		} else {
+			this._viewModel.visibleEntries = this.previousEntries
+		}
 	}
 
 	downloadPreloadedCustomConfigs() {
-		if (!this.downloadableConfigs.size) {
+		if (this.downloadableConfigs.size === 0) {
 			return
 		}
 
@@ -138,6 +148,20 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 			}
 		}
 		return false
+	}
+
+	private isExpanded(): boolean {
+		return this._viewModel.visibleEntries === this._viewModel.dropDownCustomConfigItemGroups.length
+	}
+
+	private updateButtonVisibility() {
+		if (this._viewModel.dropDownCustomConfigItemGroups.length === 0) {
+			this._viewModel.showNonApplicableButton = false
+		} else if (this.applicableEntries < this._viewModel.dropDownCustomConfigItemGroups.length) {
+			this._viewModel.showNonApplicableButton = true
+		} else {
+			this._viewModel.showNonApplicableButton = false
+		}
 	}
 }
 

@@ -7,6 +7,9 @@
 	},
 	"name": "codecharta",
 	"version": "0.0.2",
+	"engines": {
+		"node": ">=16"
+	},
 	"description": "MaibornWolff CodeCharta placeholder",
 	"license": "BSD-3-Clause",
 	"scripts": {
@@ -18,7 +21,7 @@
 		"prepare": "husky install"
 	},
 	"devDependencies": {
-		"husky": "^6.0.0",
+		"husky": "^7.0.0",
 		"prettier": "^2.2.1",
 		"pretty-quick": "^3.1.0"
 	}

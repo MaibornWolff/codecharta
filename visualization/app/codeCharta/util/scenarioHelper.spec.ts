@@ -1,6 +1,6 @@
 import { ScenarioHelper } from "./scenarioHelper"
 import { RecursivePartial, Scenario, Settings } from "../codeCharta.model"
-import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_ITEM_WITH_EVERYTHING_SAVED, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
+import { DEFAULT_STATE, PARTIAL_SETTINGS, SCENARIO, SCENARIO_ITEM_WITH_EVERYTHING_SAVED, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
@@ -70,8 +70,8 @@ describe("scenarioHelper", () => {
 			const expected: ScenarioItem[] = SCENARIO_ITEM_WITH_EVERYTHING_SAVED
 
 			const result = ScenarioHelper.getScenarioItems({
-				nodeMetricData: [{ name: "mcc", maxValue: 56 }],
-				edgeMetricData: [{ name: "pairingRate", maxValue: 47 }]
+				nodeMetricData: [{ name: "mcc", maxValue: 56, minValue: 1 }],
+				edgeMetricData: [{ name: "pairingRate", maxValue: 47, minValue: 1 }]
 			})
 
 			expect(result).toEqual(expected)
@@ -115,8 +115,8 @@ describe("scenarioHelper", () => {
 			]
 
 			const result = ScenarioHelper.getScenarioItems({
-				nodeMetricData: [{ name: "mcc", maxValue: 56 }],
-				edgeMetricData: [{ name: "None", maxValue: 0 }]
+				nodeMetricData: [{ name: "mcc", maxValue: 56, minValue: 1 }],
+				edgeMetricData: [{ name: "None", maxValue: 0, minValue: 1 }]
 			})
 
 			expect(result).toEqual(expected)
@@ -129,10 +129,10 @@ describe("scenarioHelper", () => {
 
 			const result = ScenarioHelper.getScenarioItems({
 				nodeMetricData: [
-					{ name: "mcc", maxValue: 56 },
-					{ name: "rloc", maxValue: 43 }
+					{ name: "mcc", maxValue: 56, minValue: 1 },
+					{ name: "rloc", maxValue: 43, minValue: 1 }
 				],
-				edgeMetricData: [{ name: "unavailableMetric", maxValue: 0 }]
+				edgeMetricData: [{ name: "unavailableMetric", maxValue: 0, minValue: 1 }]
 			})
 
 			expect(result).toEqual(expected)
@@ -187,7 +187,7 @@ describe("scenarioHelper", () => {
 			{
 				metricType: ScenarioMetricType.COLOR_METRIC,
 				metricName: "mcc",
-				savedValues: { from: 19, to: 67 },
+				savedValues: { colorRange: { from: 19, to: 67, max: 100, min: 1 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 				isSelected: true,
 				isDisabled: false
 			},

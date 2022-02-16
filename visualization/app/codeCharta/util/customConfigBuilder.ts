@@ -44,6 +44,11 @@ function initializeAppSettings(target: CustomConfig) {
 	target.stateSettings.appSettings = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: false,
+		colorLabels: {
+			positive: false,
+			negative: false,
+			neutral: false
+		},
 		amountOfEdgePreviews: 0,
 		amountOfTopLabels: 0,
 		camera: undefined,
@@ -51,9 +56,8 @@ function initializeAppSettings(target: CustomConfig) {
 		dynamicMargin: false,
 		edgeHeight: 0,
 		hideFlatBuildings: false,
-		invertColorRange: false,
-		invertDeltaColors: false,
 		invertHeight: false,
+		invertArea: false,
 		isAttributeSideBarVisible: false,
 		isLoadingFile: false,
 		isLoadingMap: false,
@@ -65,8 +69,8 @@ function initializeAppSettings(target: CustomConfig) {
 		searchPanelMode: undefined,
 		showOnlyBuildingsWithEdges: false,
 		sortingOrderAscending: false,
-		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
+		screenshotToClipboardEnabled: false,
 		layoutAlgorithm: undefined,
 		maxTreeMapFiles: 0,
 		sharpnessMode: undefined,
@@ -96,16 +100,19 @@ function initializeDynamicSettings(target: CustomConfig) {
 		colorMetric: "",
 		distributionMetric: "",
 		edgeMetric: "",
-		focusedNodePath: undefined,
+		focusedNodePath: [],
 		heightMetric: "",
 		margin: 0,
 		searchPattern: "",
-		searchedNodePaths: undefined,
 		sortingOption: undefined,
 		colorRange: {
 			from: 0,
-			to: 0
-		}
+			to: 0,
+			min: 0,
+			max: 0
+		},
+		colorMode: undefined,
+		recentFiles: []
 	}
 }
 

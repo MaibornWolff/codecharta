@@ -27,12 +27,10 @@ export class ThreeOrbitControlsService
 	implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber, LayoutAlgorithmSubscriber
 {
 	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
-	private static AUTO_FIT_TIMEOUT = 0
 
 	controls: OrbitControls
 	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
 
-	/* ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
@@ -41,6 +39,7 @@ export class ThreeOrbitControlsService
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
+		"ngInject"
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
@@ -95,7 +94,7 @@ export class ThreeOrbitControlsService
 			this.focusCameraViewToCenter(boundingSphere)
 			this.threeUpdateCycleService.update()
 			this.onInput(this.threeCameraService.camera)
-		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
+		})
 	}
 
 	update() {

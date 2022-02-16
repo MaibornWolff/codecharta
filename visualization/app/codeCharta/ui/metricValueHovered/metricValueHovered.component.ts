@@ -2,7 +2,7 @@ import "./metricValueHovered.component.scss"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
@@ -28,8 +28,8 @@ export class MetricValueHoveredController
 		deltaColor: null
 	}
 
-	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
+	constructor(private $rootScope: IRootScopeService) {
+		"ngInject"
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
@@ -57,12 +57,10 @@ export class MetricValueHoveredController
 				this._viewModel.deltaColor = this.getHoveredDeltaColor()
 			}
 		}
-		this.synchronizeAngularTwoWayBinding()
 	}
 
 	onBuildingUnhovered() {
 		this._viewModel.hoveredNode = null
-		this.synchronizeAngularTwoWayBinding()
 	}
 
 	private getHoveredDeltaColor() {
@@ -75,11 +73,6 @@ export class MetricValueHoveredController
 			return this.NEGATIVE_COLOR
 		}
 		return this.NEUTRAL_COLOR
-	}
-
-	//TODO: Check if this is required after finishing redux
-	private synchronizeAngularTwoWayBinding() {
-		this.$timeout(() => {})
 	}
 }
 

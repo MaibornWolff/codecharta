@@ -18,9 +18,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.4
+      uses: actions/setup-node@v2
       with:
-        node-version: '12'
+        node-version: '16'
 
     - name: Cache root node modules
       uses: actions/cache@v2
@@ -35,7 +35,7 @@ jobs:
           ${{ runner.os }}-
 
     - name: Install Node
-      run: npm install
+      run: npm ci
       working-directory: ${{env.working-directory}}
 
     - name: Lint files
@@ -53,9 +53,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.4
+      uses: actions/setup-node@v2
       with:
-        node-version: '12'
+        node-version: '16'
 
     - name: Cache node modules
       uses: actions/cache@v2
@@ -70,7 +70,7 @@ jobs:
           ${{ runner.os }}-
 
     - name: Install Node
-      run: npm install
+      run: npm ci
       working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
@@ -95,9 +95,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.4
+      uses: actions/setup-node@v2
       with:
-        node-version: '12'
+        node-version: '16'
 
     - name: Cache node modules
       uses: actions/cache@v2
@@ -112,7 +112,7 @@ jobs:
           ${{ runner.os }}-
 
     - name: Install Node
-      run: npm install
+      run: npm ci
       working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
@@ -120,4 +120,68 @@ jobs:
         npm run build:web
         npm run e2e:ci
       working-directory: ${{env.working-directory}}
+
+
+ test_and_sonar_analysis:
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+    name: "Build, Test and Publish Analysis Sonar Results"
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./analysis
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2.5.0
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Build
+        run: chmod +x ./gradlew
+        working-directory: ${{env.working-directory}}
+
+      - name: Test Analysis
+        run: |
+          ./gradlew build integrationTest
+          ./gradlew jacocoTestReport
+        working-directory: ${{env.working-directory}}
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v1.6
+        with:
+          projectBaseDir: ./analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          JAVA_HOME: ''
+
+
+ publish_sonar_visualization:
+    needs: [build_visualization_test, build_visualization_e2e]
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+    name: "Build and Publish Visualization Sonar Results"
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./visualization
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: coverage
+          path: ./visualization/dist/
+
+      - name: SonarCloud Scan
+        if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+        uses: SonarSource/sonarcloud-github-action@v1.6
+        with:
+          projectBaseDir: ./visualization
+          args: >
+            -Dsonar.javascript.lcov.reportPaths=./dist/coverage/lcov.info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

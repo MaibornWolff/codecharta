@@ -1,25 +1,27 @@
-import angular from "angular"
-import "../../state/state.module"
-import "../codeMap/codeMap.module"
-import "../../codeCharta.module"
+import { CommonModule } from "@angular/common"
+import { NgModule } from "@angular/core"
 
-import "./mapTreeView.component.scss"
+import { IsNodeLeafPipe } from "./isNodeLeaf.pipe"
+import { MapTreeViewComponent } from "./mapTreeView.component"
+import { MapTreeViewItemIconComponent } from "./mapTreeViewItemIcon/mapTreeViewItemIcon.component"
+import { MapTreeViewItemIconClassPipe } from "./mapTreeViewItemIcon/mapTreeViewItemIconClass.pipe"
+import { MapTreeViewItemIconColorPipe } from "./mapTreeViewItemIcon/mapTreeViewItemIconColor.pipe"
+import { MapTreeViewItemNameComponent } from "./mapTreeViewItemName/mapTreeViewItemName.component"
+import { MapTreeViewItemOptionButtonsComponent } from "./mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
+import { MapTreeViewLevelComponent } from "./mapTreeViewLevel/mapTreeViewLevel.component"
 
-import { mapTreeViewComponent } from "./mapTreeView.component"
-import { mapTreeViewLevelComponent } from "./mapTreeView.level.component"
-
-angular
-	.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.state", "app.codeCharta.ui.codeMap", "app.codeCharta"])
-	.component(mapTreeViewComponent.selector, mapTreeViewComponent)
-	.component(mapTreeViewLevelComponent.selector, mapTreeViewLevelComponent)
-	.directive("ngRightClick", $parse => {
-		return (scope, element, attributes) => {
-			const parseFunction = $parse(attributes.ngRightClick)
-			element.bind("contextmenu", event => {
-				scope.$apply(() => {
-					event.preventDefault()
-					parseFunction(scope, { $event: event })
-				})
-			})
-		}
-	})
+@NgModule({
+	imports: [CommonModule],
+	declarations: [
+		MapTreeViewItemIconComponent,
+		MapTreeViewItemNameComponent,
+		MapTreeViewItemOptionButtonsComponent,
+		MapTreeViewLevelComponent,
+		MapTreeViewComponent,
+		IsNodeLeafPipe,
+		MapTreeViewItemIconClassPipe,
+		MapTreeViewItemIconColorPipe
+	],
+	exports: [MapTreeViewComponent]
+})
+export class MapTreeViewModule {}

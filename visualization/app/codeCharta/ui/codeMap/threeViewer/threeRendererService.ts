@@ -13,8 +13,8 @@ import { WEBGL } from "three/examples/jsm/WebGL"
 import { SharpnessMode } from "../../../codeCharta.model"
 export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	static BACKGROUND_COLOR = {
-		white: 0xffffff,
-		normal: 0xeeeedd
+		white: 0xff_ff_ff,
+		normal: 0xee_ee_dd
 	}
 
 	static CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
@@ -23,7 +23,8 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	static RENDER_OPTIONS: WebGLContextAttributes = {
 		antialias: true,
-		preserveDrawingBuffer: true
+		preserveDrawingBuffer: true,
+		alpha: true
 	}
 
 	static enableFXAA = false
@@ -35,6 +36,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	camera: Camera
 
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {
+		"ngInject"
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 	}
 
@@ -63,6 +65,8 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 			}
 		}
 		this.renderer.setSize(containerWidth, containerHeight)
+		this.renderer.domElement.id = "codeMapScene"
+
 		if (ThreeRendererService.enableFXAA) {
 			this.initComposer()
 		}

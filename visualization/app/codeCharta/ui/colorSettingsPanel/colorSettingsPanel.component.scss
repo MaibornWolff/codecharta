@@ -7,9 +7,9 @@ color-settings-panel-component {
 	overflow: hidden;
 	font-size: 0.9em;
 	text-align: left;
-	max-height: 300px;
+	max-height: 348px;
 	opacity: 1;
-	width: 262px;
+	width: 266px;
 	transition: opacity 0ms, max-height 200ms ease-in-out;
 
 	top: 45px;
@@ -21,21 +21,36 @@ color-settings-panel-component {
 	}
 
 	.wrapper {
-		margin-left: 3px;
+		margin: 0 3px;
+
+		.row md-checkbox,
+		.row cc-color-picker-for-map-color {
+			display: inline-block;
+		}
 	}
 
-	.spacer .cc-store-color-picker-wrapper {
-		margin-bottom: 12px;
+	.color-row {
+		display: flex;
+		justify-content: space-between;
+		height: 35px;
 	}
 
-	cc-store-color-picker p.cc-store-color-picker-label {
-		margin-left: 12px;
+	.spacer cc-color-picker-for-map-color {
+		margin-top: 8px;
+		margin-bottom: 8px;
+	}
+
+	.spacer cc-color-picker-for-map-color div.cc-color-swatch-container {
+		margin-right: 12px;
 	}
 
 	.bottom-row {
 		align-items: center;
 		display: flex;
 		justify-content: space-between;
+		position: relative;
+		height: 35px;
+		top: 7px;
 	}
 }
 

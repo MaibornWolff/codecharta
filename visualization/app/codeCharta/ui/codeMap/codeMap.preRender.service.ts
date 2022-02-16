@@ -2,9 +2,6 @@
 
 import { CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { NodeDecorator } from "../../util/nodeDecorator"
-import { AggregationGenerator } from "../../util/aggregationGenerator"
-import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { StoreExtendedSubscriber, StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
@@ -17,16 +14,10 @@ import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
-import { FileSelectionState, FileState } from "../../model/files/files"
-import { clone } from "../../util/clone"
+import { fileStatesAvailable } from "../../model/files/files.helper"
 import { PanelSelectionActions } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 import { PresentationModeActions } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import { hierarchy } from "d3-hierarchy"
-import { isLeaf } from "../../util/codeMapHelper"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { trackEventUsageData, trackMapMetaData } from "../../util/usageDataTracker"
@@ -34,16 +25,26 @@ import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricActions } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { ColorRangeActions } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { InvertColorRangeActions } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FocusedNodePathActions } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { ColorRangeFromSubscriber, ColorRangeToSubscriber, RangeSliderController } from "../rangeSlider/rangeSlider.component"
+import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
+import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
+import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
 export class CodeMapPreRenderService
-	implements StoreSubscriber, StoreExtendedSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber
+	implements
+		StoreSubscriber,
+		StoreExtendedSubscriber,
+		MetricDataSubscriber,
+		ScalingSubscriber,
+		LayoutAlgorithmSubscriber,
+		ColorRangeFromSubscriber,
+		ColorRangeToSubscriber
 {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
@@ -57,15 +58,16 @@ export class CodeMapPreRenderService
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private nodeMetricDataService: NodeMetricDataService,
-		private codeMapRenderService: CodeMapRenderService,
-		private edgeMetricDataService: EdgeMetricDataService
+		private codeMapRenderService: CodeMapRenderService
 	) {
+		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		StoreService.subscribeDetailedData(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+		RangeSliderController.subscribeToColorRangeFromUpdated(this.$rootScope, this)
+		RangeSliderController.subscribeToColorRangeToUpdated(this.$rootScope, this)
 
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
@@ -85,6 +87,13 @@ export class CodeMapPreRenderService
 	}
 
 	onStoreChanged(actionType: string) {
+		if (isActionOfType(actionType, HoveredBuildingPathActions)) {
+			// temporary hack:
+			// this.debounceRendering() leads to a new MapMesh, which leads to a new render, which would revert hover
+			// TODO We definitely need to improve this
+			return
+		}
+
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
@@ -112,13 +121,20 @@ export class CodeMapPreRenderService
 				isActionOfType(actionType, HeightMetricActions) ||
 				isActionOfType(actionType, ColorMetricActions) ||
 				isActionOfType(actionType, ColorRangeActions) ||
-				isActionOfType(actionType, InvertColorRangeActions) ||
 				isActionOfType(actionType, BlacklistActions) ||
 				isActionOfType(actionType, FocusedNodePathActions))
 		) {
 			// Track event usage data only on certain events
 			trackEventUsageData(actionType, this.storeService.getState(), payload)
 		}
+	}
+
+	onColorRangeFromUpdated(colorMetric: string, fromValue: number) {
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_FROM_UPDATED, this.storeService.getState(), { colorMetric, fromValue })
+	}
+
+	onColorRangeToUpdated(colorMetric: string, toValue: number) {
+		trackEventUsageData(RangeSliderController.COLOR_RANGE_TO_UPDATED, this.storeService.getState(), { colorMetric, toValue })
 	}
 
 	onLayoutAlgorithmChanged() {
@@ -132,77 +148,16 @@ export class CodeMapPreRenderService
 	}
 
 	onMetricDataChanged() {
-		if (fileStatesAvailable(this.storeService.getState().files)) {
-			this.updateRenderMapAndFileMeta()
-			this.decorateIfPossible()
-			if (this.allNecessaryRenderDataAvailable()) {
-				this.debounceRendering()
-			}
+		const state = this.storeService.getState()
+		if (fileStatesAvailable(state.files)) {
+			const data = accumulatedDataSelector(state)
+			this.unifiedMap = data.unifiedMapNode
+			this.unifiedFileMeta = data.unifiedFileMeta
 		}
-	}
 
-	private updateRenderMapAndFileMeta() {
-		const unifiedFile = this.getSelectedFilesAsUnifiedMap()
-		this.unifiedMap = unifiedFile.map
-		this.unifiedFileMeta = unifiedFile.fileMeta
-	}
-
-	private decorateIfPossible() {
-		const { metricData, files, fileSettings } = this.storeService.getState()
-		if (this.unifiedMap && this.unifiedFileMeta && fileStatesAvailable(files) && metricData.nodeMetricData) {
-			NodeDecorator.decorateMap(this.unifiedMap, metricData, fileSettings.blacklist)
-			this.getEdgeMetricsForLeaves(this.unifiedMap)
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(this.unifiedMap, isDeltaState(files), fileSettings.attributeTypes)
+		if (this.allNecessaryRenderDataAvailable()) {
+			this.debounceRendering()
 		}
-	}
-
-	private getEdgeMetricsForLeaves(map: CodeMapNode) {
-		const names = this.edgeMetricDataService.getMetricNames()
-		if (names.length === 0) {
-			return
-		}
-		for (const node of hierarchy(map)) {
-			if (isLeaf(node)) {
-				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node, names)
-				for (const [key, value] of edgeMetrics) {
-					node.data.edgeAttributes[key] = value
-				}
-			}
-		}
-	}
-
-	private getSelectedFilesAsUnifiedMap() {
-		const { files } = this.storeService.getState()
-		const visibleFileStates = clone(getVisibleFileStates(files))
-
-		if (isSingleState(files)) {
-			return visibleFileStates[0].file
-		}
-		if (isPartialState(files)) {
-			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
-		}
-		if (isDeltaState(files)) {
-			const [reference, comparison] = visibleFileStates
-			if (comparison && reference.file.map.name !== comparison.file.map.name) {
-				return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
-			}
-			return this.getDeltaFile(visibleFileStates)
-		}
-	}
-
-	private getDeltaFile(visibleFileStates: FileState[]) {
-		if (visibleFileStates.length === 2) {
-			let [reference, comparison] = visibleFileStates
-			if (reference.selectedAs !== FileSelectionState.Reference) {
-				const temporary = comparison
-				comparison = reference
-				reference = temporary
-			}
-			return DeltaGenerator.getDeltaFile(reference.file, comparison.file)
-		}
-		// Compare with itself. This is somewhat questionable.
-		const [{ file }] = visibleFileStates
-		return DeltaGenerator.getDeltaFile(file, file)
 	}
 
 	private renderAndNotify() {
@@ -218,23 +173,7 @@ export class CodeMapPreRenderService
 	}
 
 	private allNecessaryRenderDataAvailable() {
-		return (
-			this.storeService.getState().metricData.nodeMetricData !== null &&
-			fileStatesAvailable(this.storeService.getState().files) &&
-			this.areChosenMetricsInMetricData() &&
-			Object.values(this.storeService.getState().dynamicSettings).every(x => {
-				return x !== null && Object.values(x).every(v => v !== null)
-			})
-		)
-	}
-
-	private areChosenMetricsInMetricData() {
-		const { dynamicSettings } = this.storeService.getState()
-		return (
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.areaMetric) &&
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.colorMetric) &&
-			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.heightMetric)
-		)
+		return areAllNecessaryRenderDataAvailableSelector(this.storeService.getState())
 	}
 
 	private removeLoadingGifs() {

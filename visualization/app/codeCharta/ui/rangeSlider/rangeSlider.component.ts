@@ -1,43 +1,37 @@
 import "./rangeSlider.component.scss"
-import $ from "jquery"
 import { ColorRange } from "../../codeCharta.model"
-import angular, { IRootScopeService, ITimeoutService, RzSlider } from "angular"
+import { IRootScopeService, RzSlider } from "angular"
 import { StoreService } from "../../state/store.service"
-import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import {
-	InvertColorRangeService,
-	InvertColorRangeSubscriber
-} from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
-import {
-	WhiteColorBuildingsService,
-	WhiteColorBuildingsSubscriber
-} from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 
+export interface ColorRangeFromSubscriber {
+	onColorRangeFromUpdated(colorMetric: string, fromValue: number)
+}
+
+export interface ColorRangeToSubscriber {
+	onColorRangeToUpdated(colorMetric: string, toValue: number)
+}
+
 export class RangeSliderController
-	implements
-		ColorMetricSubscriber,
-		ColorRangeSubscriber,
-		InvertColorRangeSubscriber,
-		WhiteColorBuildingsSubscriber,
-		FilesSelectionSubscriber,
-		BlacklistSubscriber,
-		MapColorsSubscriber
+	implements ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, MapColorsSubscriber
 {
 	private static DEBOUNCE_TIME = 400
-	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
 	private DIGIT_WIDTH = 11
 	private MIN_DIGITS = 4
 	private MAX_DIGITS = 6
 	private FULL_WIDTH_SLIDER = 235
+
+	static COLOR_RANGE_FROM_UPDATED = "color-range-from-updated"
+	static COLOR_RANGE_TO_UPDATED = "color-range-to-updated"
 
 	private _viewModel: {
 		colorRangeFrom: number
@@ -49,44 +43,23 @@ export class RangeSliderController
 		sliderOptions: { disabled: false }
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private colorRangeService: ColorRangeService
 	) {
+		"ngInject"
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
-		InvertColorRangeService.subscribe(this.$rootScope, this)
-		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		MapColorsService.subscribe(this.$rootScope, this)
-		this.renderSliderOnInitialisation()
-		this.applyDebouncedColorRange = debounce((action: SetColorRangeAction) => {
-			this.storeService.dispatch(action)
-		}, RangeSliderController.DEBOUNCE_TIME)
+		this.applyColorRange()
 	}
 
 	onMapColorsChanged() {
 		this.updateSliderColors()
-	}
-
-	renderSliderOnInitialisation() {
-		// quick and dirty: Better solution would be to wait for the content to be loaded for the first render
-		// should be taken care of when switching to Angular
-
-		angular.element(() => {
-			this.$timeout(() => {
-				this.forceSliderRender()
-			})
-		})
-	}
-
-	forceSliderRender() {
-		this.$rootScope.$broadcast("rzSliderForceRender")
 	}
 
 	onBlacklistChanged() {
@@ -102,25 +75,14 @@ export class RangeSliderController
 
 	onColorRangeChanged(colorRange: ColorRange) {
 		this.updateViewModel(colorRange)
-
-		this.$timeout(() => {
-			this.initSliderOptions()
-			this.updateSliderColors()
-			this.updateInputFieldWidth()
-		}, 0)
+		this.initSliderOptions()
+		this.updateSliderColors()
+		this.updateInputFieldWidth()
 	}
 
 	onFilesSelectionChanged() {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
-	}
-
-	onInvertColorRangeChanged() {
-		this.updateSliderColors()
-	}
-
-	onWhiteColorBuildingsChanged() {
-		this.updateSliderColors()
 	}
 
 	onFromSliderChange() {
@@ -141,20 +103,21 @@ export class RangeSliderController
 	}
 
 	private updateMaxMetricValue() {
-		this._viewModel.sliderOptions.ceil = this.nodeMetricDataService.getMaxMetricByMetricName(
+		this._viewModel.sliderOptions.ceil = this.nodeMetricDataService.getMaxValueOfMetric(
 			this.storeService.getState().dynamicSettings.colorMetric
 		)
 	}
 
 	private isMaxMetricValueChanged() {
-		const newMaxValue = this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
+		const newMaxValue = this.nodeMetricDataService.getMaxValueOfMetric(this.storeService.getState().dynamicSettings.colorMetric)
 		return this._viewModel.sliderOptions.ceil !== newMaxValue
 	}
 
 	private initSliderOptions() {
 		this._viewModel.sliderOptions = {
-			ceil: this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
+			ceil: this.nodeMetricDataService.getMaxValueOfMetric(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
+			onEnd: (_, modelValue, highValue, pointerType) => this.applySliderUpdateDone(modelValue, highValue, pointerType),
 			pushRange: true,
 			disabled: isDeltaState(this.storeService.getState().files)
 		}
@@ -169,24 +132,54 @@ export class RangeSliderController
 		this.updateSliderColors()
 	}
 
-	private applyColorRange() {
-		this.applyDebouncedColorRange(
+	private applyColorRange = debounce(() => {
+		this.storeService.dispatch(
 			setColorRange({
 				to: this._viewModel.colorRangeTo,
-				from: this._viewModel.colorRangeFrom
+				from: this._viewModel.colorRangeFrom,
+				min: this._viewModel.sliderOptions.floor,
+				max: this._viewModel.sliderOptions.ceil
 			})
 		)
+	}, RangeSliderController.DEBOUNCE_TIME)
+
+	private applySliderUpdateDone(modelValue, highValue, pointerType) {
+		if (pointerType === "min") {
+			this.broadcastColorRangeFromUpdated(this.storeService.getState().dynamicSettings.colorMetric, modelValue)
+		} else if (pointerType === "max") {
+			this.broadcastColorRangeToUpdated(this.storeService.getState().dynamicSettings.colorMetric, highValue)
+		}
+	}
+
+	private broadcastColorRangeFromUpdated(colorMetric: string, fromValue: number) {
+		this.$rootScope.$broadcast(RangeSliderController.COLOR_RANGE_FROM_UPDATED, { colorMetric, fromValue })
+	}
+
+	private broadcastColorRangeToUpdated(colorMetric: string, toValue: number) {
+		this.$rootScope.$broadcast(RangeSliderController.COLOR_RANGE_TO_UPDATED, { colorMetric, toValue })
+	}
+
+	static subscribeToColorRangeFromUpdated($rootScope: IRootScopeService, subscriber: ColorRangeFromSubscriber) {
+		$rootScope.$on(RangeSliderController.COLOR_RANGE_FROM_UPDATED, (_event, data) => {
+			subscriber.onColorRangeFromUpdated(data.colorMetric, data.fromValue)
+		})
+	}
+
+	static subscribeToColorRangeToUpdated($rootScope: IRootScopeService, subscriber: ColorRangeToSubscriber) {
+		$rootScope.$on(RangeSliderController.COLOR_RANGE_TO_UPDATED, (_event, data) => {
+			subscriber.onColorRangeToUpdated(data.colorMetric, data.toValue)
+		})
 	}
 
 	private updateInputFieldWidth() {
-		const fromLength = this._viewModel.colorRangeFrom.toFixed().length + 1
-		const toLength = this._viewModel.colorRangeTo.toFixed().length + 1
+		const fromLength = this._viewModel.colorRangeFrom.toFixed(0).length + 1
+		const toLength = this._viewModel.colorRangeTo.toFixed(0).length + 1
 		const fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		const toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
-		$("range-slider-component #rangeFromInputField").css("width", `${fromWidth}px`)
-		$("range-slider-component #rangeToInputField").css("width", `${toWidth}px`)
-		$("range-slider-component #colorSlider").css("width", `${this.FULL_WIDTH_SLIDER - fromWidth - toWidth}px`)
+		document.getElementById("rangeFromInputField").style.width = `${fromWidth}px`
+		document.getElementById("rangeToInputField").style.width = `${toWidth}px`
+		document.getElementById("colorSlider").style.width = `${this.FULL_WIDTH_SLIDER - fromWidth - toWidth}px`
 	}
 
 	private updateSliderColors() {
@@ -215,14 +208,14 @@ export class RangeSliderController
 	}
 
 	private applyCssColors(rangeColors, rangeFromPercentage) {
-		const slider = $("range-slider-component .rzslider")
-		const leftSection = slider.find(".rz-bar-wrapper:nth-child(3) .rz-bar")
-		const middleSection = slider.find(".rz-selection")
-		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
+		const slider = document.querySelector("range-slider-component .rzslider")
+		const leftSection = <HTMLElement>slider.querySelector(".rz-bar-wrapper:nth-child(3) .rz-bar")
+		const middleSection = <HTMLElement>slider.querySelector(".rz-selection")
+		const rightSection = <HTMLElement>slider.querySelector(".rz-right-out-selection .rz-bar")
 
-		leftSection.css("cssText", `background: ${rangeColors.left} !important; width: ${rangeFromPercentage}%;`)
-		middleSection.css("cssText", `background: ${rangeColors.middle} !important;`)
-		rightSection.css("cssText", `background: ${rangeColors.right};`)
+		leftSection.style.cssText = `background: ${rangeColors.left} !important; width: ${rangeFromPercentage}%;`
+		middleSection.style.cssText = `background: ${rangeColors.middle} !important;`
+		rightSection.style.cssText = `background: ${rangeColors.right};`
 	}
 }
 

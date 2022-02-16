@@ -3,14 +3,13 @@ const path = require("path")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const { DefinePlugin } = require("webpack")
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
-
 const dist = path.resolve(__dirname, "../dist/webpack")
 
 module.exports = env => {
 	return {
 		mode: "development",
 		target: JSON.parse(env.STANDALONE) ? "node" : "web",
-		entry: "./app/app.ts",
+		entry: "./app/app.module.ts",
 		output: {
 			filename: "bundle.js",
 			path: dist

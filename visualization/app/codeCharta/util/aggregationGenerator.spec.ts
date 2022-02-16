@@ -9,7 +9,7 @@ describe("AggregationGenerator", () => {
 			fileChecksum: "md5-file1",
 			projectName: "Sample Project",
 			apiVersion: packageJson.codecharta.apiVersion,
-			exportedFileSize: 300000
+			exportedFileSize: 300_000
 		},
 		map: {
 			name: "root",
@@ -49,7 +49,7 @@ describe("AggregationGenerator", () => {
 			fileChecksum: "md5-file2",
 			projectName: "Sample Project",
 			apiVersion: packageJson.codecharta.apiVersion,
-			exportedFileSize: 300000
+			exportedFileSize: 300_000
 		},
 		map: {
 			name: "root",

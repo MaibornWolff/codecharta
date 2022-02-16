@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`codeMapRenderService getSortedNodes should get sorted Nodes as array 1`] = `
+exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
 Array [
   Object {
     "attributes": Object {
@@ -46,7 +46,7 @@ Array [
       "rloc": 100,
       "unary": 1,
     },
-    "color": "#DDDDDD",
+    "color": "#69AE40",
     "deltas": undefined,
     "depth": 1,
     "edgeAttributes": Object {},
@@ -159,7 +159,7 @@ Array [
       "rloc": 70,
       "unary": 1,
     },
-    "color": "#DDDDDD",
+    "color": "#6caf3e",
     "deltas": undefined,
     "depth": 2,
     "edgeAttributes": Object {},
@@ -188,6 +188,43 @@ Array [
     "width": 281.67550765359243,
     "x0": 453.4755076535926,
     "y0": 306.16530459215556,
+    "z0": 4,
+  },
+  Object {
+    "attributes": Object {
+      "mcc": 0,
+      "rloc": 0,
+      "unary": 1,
+    },
+    "color": "#69AE40",
+    "deltas": undefined,
+    "depth": 2,
+    "edgeAttributes": Object {},
+    "flat": false,
+    "height": 500,
+    "heightDelta": 0,
+    "id": 5,
+    "incomingEdgePoint": Vector3 {
+      "x": 273.8943845669907,
+      "y": 504,
+      "z": 671.351015307185,
+    },
+    "isLeaf": true,
+    "length": 0,
+    "link": undefined,
+    "mapNodeDepth": 2,
+    "markingColor": undefined,
+    "name": "empty folder",
+    "outgoingEdgePoint": Vector3 {
+      "x": 414.73213839378695,
+      "y": 504,
+      "z": 671.351015307185,
+    },
+    "path": "/root/Parent Leaf/empty folder",
+    "visible": true,
+    "width": 281.67550765359243,
+    "x0": 453.4755076535926,
+    "y0": 921.351015307185,
     "z0": 4,
   },
 ]

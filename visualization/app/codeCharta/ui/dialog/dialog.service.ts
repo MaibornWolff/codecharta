@@ -2,11 +2,13 @@ import { dialogDownloadComponent } from "./dialog.download.component"
 import { dialogGlobalSettingsComponent } from "./dialog.globalSettings.component"
 import { addScenarioSettingsComponent } from "./dialog.addScenarioSettings.component"
 import { addCustomConfigSettingsComponent } from "./dialog.addCustomConfigSettings.component"
-import { CCValidationResult } from "../../util/fileValidator"
+import { CCFileValidationResult } from "../../util/fileValidator"
+import { dialogChangelogComponent } from "./dialog.changelog.component"
 
 export class DialogService {
-	/* @ngInject */
-	constructor(private $mdDialog) {}
+	constructor(private $mdDialog) {
+		"ngInject"
+	}
 
 	showDownloadDialog() {
 		this.showCustomDialog(dialogDownloadComponent)
@@ -24,38 +26,59 @@ export class DialogService {
 		this.showCustomDialog(addCustomConfigSettingsComponent)
 	}
 
-	showCustomDialog(dialog) {
-		this.$mdDialog.show(dialog)
+	showChangelogDialog() {
+		this.showCustomDialog(dialogChangelogComponent)
 	}
 
-	showInfoDialog(message, title = "Info", button = "Ok") {
-		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
+	showCustomDialog(dialog) {
+		this.$mdDialog.show(dialog)
 	}
 
 	async showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
 		await this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
-	async showErrorDialogAndOpenFileChooser(message = "An error occurred.", title = "Error", button = "Ok") {
-		const prompt = this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button)
-		await this.$mdDialog.show(prompt)
-		document.getElementById("input-file-id").click()
+	async showValidationDialog(fileValidationResults: CCFileValidationResult[]) {
+		const htmlMessages = []
+
+		const filesWithErrors = fileValidationResults.filter(validationResult => {
+			return validationResult.errors.length > 0
+		})
+		if (filesWithErrors.length > 0) {
+			htmlMessages.push("<h2>Errors</h2>")
+			for (const fileWithErrors of filesWithErrors) {
+				const fileErrorMessage = this.buildFileErrorMessage(fileWithErrors)
+				htmlMessages.push(fileErrorMessage)
+			}
+		}
+
+		const filesWithWarnings = fileValidationResults.filter(validationResult => {
+			return validationResult.warnings.length > 0
+		})
+		if (filesWithWarnings.length > 0) {
+			htmlMessages.push("<h2>Warnings</h2>")
+			for (const fileWithWarnings of filesWithWarnings) {
+				const fileWarningMessage = this.buildFileWarningMessage(fileWithWarnings)
+				htmlMessages.push(fileWarningMessage)
+			}
+		}
+		await this.showErrorDialog(htmlMessages.join(""), "Something is wrong with the uploaded file(s)")
 	}
 
-	async showValidationWarningDialog(validationResult: CCValidationResult) {
-		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
-
-		const htmlMessage = this.buildHtmlMessage(warningSymbol, validationResult.warning)
-
-		await this.showErrorDialog(htmlMessage, "Validation Warning")
-	}
-
-	async showValidationErrorDialog(validationResult: CCValidationResult) {
+	private buildFileErrorMessage(fileValidationResult) {
 		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
+		return `<p><strong>${fileValidationResult.fileName}:</strong> ${this.buildHtmlMessage(
+			errorSymbol,
+			fileValidationResult.errors
+		)}</p>`
+	}
 
-		const htmlMessage = this.buildHtmlMessage(errorSymbol, validationResult.error)
-
-		await this.showErrorDialogAndOpenFileChooser(htmlMessage, "Validation Error")
+	private buildFileWarningMessage(fileValidationResult) {
+		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
+		return `<p><strong>${fileValidationResult.fileName}:</strong> ${this.buildHtmlMessage(
+			warningSymbol,
+			fileValidationResult.warnings
+		)}</p>`
 	}
 
 	private buildHtmlMessage(symbol: string, validationResult: string[]) {

@@ -36,39 +36,27 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService
 	) {
+		"ngInject"
 		this.labels = new Array<InternalLabel>()
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	//labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
-		const state = this.storeService.getState()
+	// Labels need to be scaled according to map or it will clip + looks bad
+	addLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
+		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
 
-		const { scaling, layoutAlgorithm } = state.appSettings
-		const { margin, heightMetric } = state.dynamicSettings
-
-		const newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
-
-		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
-		// todo: tk rename to addLeafLabel
-
-		const multiplier = scaling.clone()
-
-		const x = node.x0 - state.treeMap.mapSize
-		const y = node.z0
-		const z = node.y0 - state.treeMap.mapSize
-
-		const labelX = (x + node.width / 2) * multiplier.x
-		const labelY = (y + this.nodeHeight) * multiplier.y
-		const labelYOrigin = y + node.height
-		const labelZ = (z + node.length / 2) * multiplier.z
+		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
+		const { margin, heightMetric } = dynamicSettings
 
 		let labelText = ""
 
-		if (options.showNodeName) {
+		if (showMetricLabelNodeName || (enforceLabel && !showMetricLabelNameValue)) {
 			labelText = `${node.name}`
+		} else if (!showMetricLabelNameValue) {
+			return
 		}
-		if (options.showNodeMetric) {
+
+		if (showMetricLabelNameValue) {
 			if (labelText !== "") {
 				labelText += "\n"
 			}
@@ -76,6 +64,23 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 
 		const label = this.makeText(labelText, 30, node)
+
+		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
+		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
+
+		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
+		// todo: tk rename to addLeafLabel
+
+		const multiplier = scaling.clone()
+
+		const x = node.x0 - treeMap.mapSize
+		const y = node.z0
+		const z = node.y0 - treeMap.mapSize
+
+		const labelX = (x + node.width / 2) * multiplier.x
+		const labelY = (y + this.nodeHeight) * multiplier.y
+		const labelYOrigin = y + node.height
+		const labelZ = (z + node.length / 2) * multiplier.z
 
 		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 		let labelOffset = labelHeightScaled + label.heightValue / 2
@@ -107,6 +112,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	clearLabels() {
+		this.threeSceneService.resetLabel()
+		this.threeSceneService.resetLineHighlight()
 		this.dispose(this.labels)
 
 		this.labels = []
@@ -197,9 +204,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const canvas = document.createElement("canvas")
 		const context = canvas.getContext("2d")
 
-		context.font = `${fontsize}px Helvetica Neue`
+		context.font = `${fontsize}px Roboto`
 
-		const margin = 20
+		const margin = 25
 		const multiLineContext = message.split("\n")
 
 		// setting canvas width/height before ctx draw, else canvas is empty
@@ -212,7 +219,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		canvas.height = margin + fontsize * multiLineContext.length
 
 		// bg
-		context.font = `${fontsize}px Helvetica Neue`
+		context.font = `${fontsize}px Roboto`
 		context.fillStyle = "rgba(255,255,255,1)"
 		context.lineJoin = "round"
 		context.lineCap = "round"

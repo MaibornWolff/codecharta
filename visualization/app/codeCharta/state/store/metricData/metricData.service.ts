@@ -2,6 +2,8 @@ import { IRootScopeService } from "angular"
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "./nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "./edgeMetricData/edgeMetricData.service"
 import { StoreService } from "../../store.service"
+import { nodeMetricDataSelector } from "../../selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { edgeMetricDataSelector } from "../../selectors/accumulatedData/metricData/edgeMetricData.selector"
 
 export interface MetricDataSubscriber {
 	onMetricDataChanged()
@@ -11,12 +13,14 @@ export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDa
 	private static METRIC_DATA_COMPLETE = "metric-data-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
 	onEdgeMetricDataChanged() {
-		if (this.storeService.getState().metricData.nodeMetricData.length > 0) {
+		const nodeMetricData = nodeMetricDataSelector(this.storeService.getState())
+		if (nodeMetricData.length > 0) {
 			this.notify()
 		}
 	}
@@ -33,7 +37,7 @@ export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDa
 
 	private edgeMetricsAvailable() {
 		const { edges } = this.storeService.getState().fileSettings
-		return edges.length === 0 || (edges.length > 0 && this.storeService.getState().metricData.edgeMetricData.length > 0)
+		return edges.length === 0 || (edges.length > 0 && edgeMetricDataSelector(this.storeService.getState()).length > 0)
 	}
 
 	static subscribe($rootScope: IRootScopeService, subscriber: MetricDataSubscriber) {

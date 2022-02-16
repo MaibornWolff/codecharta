@@ -14,7 +14,7 @@ export function getCodeMapNodeFromPath(path: string, nodeType: string, root: Cod
 	return matchingNode?.data
 }
 
-function transformPath(toTransform: string) {
+export function transformPath(toTransform: string) {
 	let removeNumberOfCharactersFromStart = 2
 
 	if (toTransform.startsWith("/")) {
@@ -38,27 +38,12 @@ export function getAllNodes(root: CodeMapNode) {
 	return filtered
 }
 
-export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
-	gitignorePath = gitignorePath.trimStart()
-	if (gitignorePath.length === 0) {
-		return []
-	}
-	const ignoreResults = returnIgnore(gitignorePath)
-	const filtered = []
-	for (const { data } of hierarchy(root)) {
-		if (ignoreResults.ignoredNodePaths.ignores(transformPath(data.path)) === ignoreResults.condition) {
-			filtered.push(data)
-		}
-	}
-	return filtered
-}
-
 export function isNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string): boolean {
 	const ignoreResults = returnIgnore(gitignorePath)
 	return ignoreResults.ignoredNodePaths.ignores(transformPath(node.path)) === ignoreResults.condition
 }
 
-function returnIgnore(gitignorePath: string) {
+export function returnIgnore(gitignorePath: string) {
 	gitignorePath = transformPath(gitignorePath.trimStart())
 
 	let condition = true
@@ -98,7 +83,7 @@ export function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>,
 	return ig.ignores(transformPath(path))
 }
 
-export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]) {
+export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string | void {
 	if (markedPackages) {
 		let longestPathParentPackage: MarkedPackage
 		for (const markedPackage of markedPackages) {

@@ -1,7 +1,7 @@
 import { goto } from "../../../puppeteer.helper"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
-import { NodeContextMenuPageObject } from "../nodeContextMenu/nodeContextMenu.po"
+import { NodeContextMenuPageObject } from "../../state/effects/nodeContextMenu/nodeContextMenu.po"
 
 describe("MapTreeViewLevel", () => {
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
@@ -18,10 +18,11 @@ describe("MapTreeViewLevel", () => {
 
 	describe("Blacklist", () => {
 		it("excluding a building should exclude it from the tree-view as well", async () => {
-			const filePath = "/root/ParentLeaf/smallLeaf.html"
+			const filePath = "/root/sample1.cc.json/ParentLeaf/smallLeaf.html"
 
 			await searchPanelModeSelector.toggleTreeView()
-			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
+			await mapTreeViewLevel.openFolder("/root/sample1.cc.json")
+			await mapTreeViewLevel.openFolder("/root/sample1.cc.json/ParentLeaf")
 			await mapTreeViewLevel.openContextMenu(filePath)
 			await nodeContextMenu.exclude()
 
@@ -31,24 +32,15 @@ describe("MapTreeViewLevel", () => {
 
 	describe("NodeContextMenu", () => {
 		it("NodeContextMenu path should remain marked when hovering over another mapTreeView Element", async () => {
-			const filePath = "/root/ParentLeaf/smallLeaf.html"
+			const filePath = "/root/sample1.cc.json/ParentLeaf/smallLeaf.html"
 
 			await searchPanelModeSelector.toggleTreeView()
-			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
+			await mapTreeViewLevel.openFolder("/root/sample1.cc.json")
+			await mapTreeViewLevel.openFolder("/root/sample1.cc.json/ParentLeaf")
 			await mapTreeViewLevel.openContextMenu(filePath)
-			await mapTreeViewLevel.hoverNode("/root/sample1OnlyLeaf.scss")
+			await mapTreeViewLevel.hoverNode("/root/sample1.cc.json/sample1OnlyLeaf.scss")
 
 			expect(await mapTreeViewLevel.isNodeMarked(filePath)).toBeTruthy()
-		})
-	})
-
-	describe("Number of Files", () => {
-		it("should show the correct number of files in a folder", async () => {
-			const folder = "/root/ParentLeaf"
-			await searchPanelModeSelector.toggleTreeView()
-			await mapTreeViewLevel.hoverNode(folder)
-
-			expect(await mapTreeViewLevel.getNumberOfFiles(folder)).toBe(2)
 		})
 	})
 })

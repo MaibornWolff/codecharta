@@ -16,6 +16,7 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 	private static UNFOCUS_NODE_EVENT = "unfocus-node"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 	}
@@ -42,7 +43,7 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 		return this.storeService.getState().dynamicSettings.focusedNodePath
 	}
 
-	private notifyFocus(newState: string) {
+	private notifyFocus(newState: string[]) {
 		this.$rootScope.$broadcast(FocusedNodePathService.FOCUS_NODE_EVENT, { focusedNodePath: newState })
 	}
 

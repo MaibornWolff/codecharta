@@ -5,6 +5,7 @@ import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
+import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 export interface NameDataPair {
 	fileName: string
@@ -25,10 +26,10 @@ export enum LayoutAlgorithm {
 }
 
 export enum SharpnessMode {
-	Standard = "Standard",
-	PixelRatioNoAA = "Pixel Ratio without Antialiasing",
-	PixelRatioFXAA = "Pixel Ratio With FXAA Antialiasing",
-	PixelRatioAA = "Pixel Ratio with Antialisaing (best)"
+	Standard = "High",
+	PixelRatioNoAA = "Low",
+	PixelRatioFXAA = "Medium",
+	PixelRatioAA = "Best"
 }
 
 export interface CCFile {
@@ -82,12 +83,19 @@ export enum SortingOption {
 	NUMBER_OF_FILES = "Number of Files"
 }
 
+export interface colorLabelOptions {
+	positive: boolean
+	negative: boolean
+	neutral: boolean
+}
+
 export interface FileMeta {
 	fileName: string
 	fileChecksum: string
 	apiVersion: string
 	projectName: string
 	exportedFileSize: number
+	repoCreationDate?: string
 }
 
 export interface Settings {
@@ -105,17 +113,18 @@ export interface FileSettings {
 }
 
 export interface DynamicSettings {
+	colorMode: ColorMode
 	sortingOption: SortingOption
 	areaMetric: string
 	heightMetric: string
 	colorMetric: string
 	distributionMetric: string
 	edgeMetric: string
-	focusedNodePath: string
-	searchedNodePaths: Set<string>
+	focusedNodePath: string[]
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
+	recentFiles: string[]
 }
 
 export interface AppSettings {
@@ -126,13 +135,11 @@ export interface AppSettings {
 	camera: Vector3
 	cameraTarget: Vector3
 	hideFlatBuildings: boolean
-	invertColorRange: boolean
-	invertDeltaColors: boolean
 	invertHeight: boolean
+	invertArea: boolean
 	dynamicMargin: boolean
 	isWhiteBackground: boolean
 	mapColors: MapColors
-	whiteColorBuildings: boolean
 	isPresentationMode: boolean
 	showOnlyBuildingsWithEdges: boolean
 	resetCameraIfNewFileIsLoaded: boolean
@@ -148,6 +155,8 @@ export interface AppSettings {
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
+	screenshotToClipboardEnabled: boolean
+	colorLabels: colorLabelOptions
 }
 
 export interface TreeMapSettings {
@@ -175,6 +184,8 @@ export interface MapColors {
 export interface ColorRange {
 	from: number
 	to: number
+	min: number
+	max: number
 }
 
 export interface AttributeTypes {
@@ -185,6 +196,12 @@ export interface AttributeTypes {
 export enum AttributeTypeValue {
 	absolute = "absolute",
 	relative = "relative"
+}
+
+export enum ColorMode {
+	trueGradient = "trueGradient",
+	weightedGradient = "weightedGradient",
+	absolute = "absolute"
 }
 
 export interface Edge {
@@ -210,9 +227,6 @@ export interface BlacklistItem {
 	path: string
 	type: BlacklistType
 	nodeType?: NodeType
-	attributes?: {
-		[metricName: string]: unknown
-	}
 }
 
 export enum BlacklistType {
@@ -228,11 +242,13 @@ export interface MarkedPackage {
 export interface EdgeMetricData {
 	name: string
 	maxValue: number
+	minValue: number
 }
 
 export interface NodeMetricData {
 	name: string
 	maxValue: number
+	minValue: number
 }
 
 export interface MetricData {
@@ -260,6 +276,7 @@ export interface GlobalSettings {
 	isWhiteBackground: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	experimentalFeaturesEnabled: boolean
+	screenshotToClipboardEnabled: boolean
 	layoutAlgorithm: LayoutAlgorithm
 	maxTreeMapFiles: number
 	sharpnessMode: SharpnessMode
@@ -279,6 +296,7 @@ export interface Scenario {
 	color: {
 		colorMetric: string
 		colorRange: ColorRange
+		mapColors: MapColors
 	}
 	camera: {
 		camera: Vector3
@@ -318,7 +336,7 @@ export interface Node {
 	visible: boolean
 	path: string
 	link: string
-	markingColor: string
+	markingColor: string | void
 	flat: boolean
 	color: string
 	incomingEdgePoint: Vector3
@@ -332,7 +350,7 @@ export interface State {
 	treeMap: TreeMapSettings
 	files: FileState[]
 	lookUp: LookUp
-	metricData: MetricData
+	appStatus: AppStatus
 }
 
 export function stateObjectReplacer(_, valueToReplace) {
@@ -381,7 +399,14 @@ export interface CCAction extends Action {
 
 export interface LookUp {
 	idToNode: Map<number, CodeMapNode>
+	// note that key is id of node and NOT id of building
 	idToBuilding: Map<number, CodeMapBuilding>
+}
+
+export interface AppStatus {
+	hoveredBuildingPath: string | null
+	selectedBuildingId: number | null
+	rightClickedNodeData: RightClickedNodeData
 }
 
 export enum PanelSelection {

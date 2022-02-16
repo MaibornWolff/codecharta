@@ -47,6 +47,7 @@ export class CodeMapMesh {
 
 	selectBuilding(building: CodeMapBuilding, color: string) {
 		building.setColor(color)
+		building.setDeltaColor(color)
 		this.setVertexColor(building.id, building.getColorVector(), building.getDefaultDeltaColorVector())
 		this.updateVertices()
 	}
@@ -118,6 +119,10 @@ export class CodeMapMesh {
 	}
 
 	private initDeltaColorsOnMesh(state: State) {
+
+		console.log(this.mapGeomDesc.buildings)
+		console.log(this.mapGeomDesc.buildings[0])
+
 		if (this.mapGeomDesc.buildings[0].node.deltas) {
 			for (const building of this.mapGeomDesc.buildings) {
 				this.setNewDeltaColor(building, state)

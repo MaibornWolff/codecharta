@@ -18,4 +18,4 @@ export function setColorRange(colorRange: ColorRange = defaultColorRange): SetCo
 	}
 }
 
-export const defaultColorRange: ColorRange = { from: null, to: null }
+export const defaultColorRange: ColorRange = { from: null, to: null, min: null, max: null }

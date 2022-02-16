@@ -1,5 +1,7 @@
 import angular from "angular"
-// Plop: Append module import here
+import { ColorModeService } from "./store/dynamicSettings/colorMode/colorMode.service"
+import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
+import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
@@ -8,8 +10,6 @@ import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarg
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
-import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
@@ -18,12 +18,9 @@ import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
-import { WhiteColorBuildingsService } from "./store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
-import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
-import { InvertColorRangeService } from "./store/appSettings/invertColorRange/invertColorRange.service"
 import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
@@ -37,7 +34,6 @@ import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
-import { SearchedNodePathsService } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
@@ -46,7 +42,6 @@ import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
-import { NodeSearchService } from "./nodeSearch.service"
 import "../codeCharta.module"
 import camelCase from "lodash.camelcase"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
@@ -56,10 +51,14 @@ import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableEx
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
+import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
+import { InvertAreaService } from "./store/appSettings/invertArea/invertArea.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
-	// Plop: Append service name here
+	.service(camelCase(ColorModeService.name), ColorModeService)
+	.service(camelCase(RecentFilesService.name), RecentFilesService)
+	.service(camelCase(ColorLabelsService.name), ColorLabelsService)
 	.service(camelCase(LabelShowMetricValueService.name), LabelShowMetricValueService)
 	.service(camelCase(LabelShowNodeNameService.name), LabelShowNodeNameService)
 	.service(camelCase(MetricDataService.name), MetricDataService)
@@ -70,9 +69,7 @@ angular
 	.service(camelCase(IdToNodeService.name), IdToNodeService)
 	.service(camelCase(IdToBuildingService.name), IdToBuildingService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
-	.service(camelCase(SortingOptionService.name), SortingOptionService)
 	.service(camelCase(SearchPanelModeService.name), SearchPanelModeService)
-	.service(camelCase(SortingOrderAscendingService.name), SortingOrderAscendingService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(camelCase(FilesService.name), FilesService)
@@ -80,12 +77,10 @@ angular
 	.service(camelCase(MapColorsService.name), MapColorsService)
 	.service(camelCase(ResetCameraIfNewFileIsLoadedService.name), ResetCameraIfNewFileIsLoadedService)
 	.service(camelCase(ShowOnlyBuildingsWithEdgesService.name), ShowOnlyBuildingsWithEdgesService)
-	.service(camelCase(WhiteColorBuildingsService.name), WhiteColorBuildingsService)
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
 	.service(camelCase(InvertHeightService.name), InvertHeightService)
-	.service(camelCase(InvertDeltaColorsService.name), InvertDeltaColorsService)
-	.service(camelCase(InvertColorRangeService.name), InvertColorRangeService)
+	.service(camelCase(InvertAreaService.name), InvertAreaService)
 	.service(camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)
@@ -99,7 +94,6 @@ angular
 	.service(camelCase(ColorRangeService.name), ColorRangeService)
 	.service(camelCase(MarginService.name), MarginService)
 	.service(camelCase(SearchPatternService.name), SearchPatternService)
-	.service(camelCase(SearchedNodePathsService.name), SearchedNodePathsService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
 	.service(camelCase(HeightMetricService.name), HeightMetricService)
 	.service(camelCase(DistributionMetricService.name), DistributionMetricService)
@@ -109,8 +103,8 @@ angular
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
 	.service(camelCase(StoreService.name), StoreService)
-	.service(camelCase(NodeSearchService.name), NodeSearchService)
 	.service(camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)
 	.service(camelCase(MaxTreeMapFilesService.name), MaxTreeMapFilesService)
 	.service(camelCase(SharpnessModeService.name), SharpnessModeService)
 	.service(camelCase(ExperimentalFeaturesEnabledService.name), ExperimentalFeaturesEnabledService)
+	.service(camelCase(ScreenshotToClipboardEnabledService.name), ScreenshotToClipboardEnabledService)

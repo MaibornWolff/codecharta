@@ -1,22 +1,29 @@
 import { RecursivePartial, DynamicSettings, CCAction, ColorRange } from "../../../codeCharta.model"
 
-// Plop: Append action splitter import here
+import { splitColorModeAction } from "./colorMode/colorMode.splitter"
+import { splitRecentFilesAction } from "./recentFiles/recentFiles.splitter"
 import { splitSortingOptionAction } from "./sortingOption/sortingOption.splitter"
 import { splitEdgeMetricAction } from "./edgeMetric/edgeMetric.splitter"
 import { splitColorRangeAction } from "./colorRange/colorRange.splitter"
 import { splitMarginAction } from "./margin/margin.splitter"
 import { splitSearchPatternAction } from "./searchPattern/searchPattern.splitter"
-import { splitSearchedNodePathsAction } from "./searchedNodePaths/searchedNodePaths.splitter"
-import { splitFocusedNodePathAction } from "./focusedNodePath/focusedNodePath.splitter"
 import { splitHeightMetricAction } from "./heightMetric/heightMetric.splitter"
 import { splitDistributionMetricAction } from "./distributionMetric/distributionMetric.splitter"
 import { splitColorMetricAction } from "./colorMetric/colorMetric.splitter"
 import { splitAreaMetricAction } from "./areaMetric/areaMetric.splitter"
+import { setAllFocusedNodes } from "./focusedNodePath/focusedNodePath.actions"
 
 export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSettings>) {
 	const actions: CCAction[] = []
 
-	// Plop: Append action split here
+	if (payload.colorMode !== undefined) {
+		actions.push(splitColorModeAction(payload.colorMode))
+	}
+
+	if (payload.recentFiles !== undefined) {
+		actions.push(splitRecentFilesAction(payload.recentFiles))
+	}
+
 	if (payload.sortingOption !== undefined) {
 		actions.push(splitSortingOptionAction(payload.sortingOption))
 	}
@@ -37,12 +44,8 @@ export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSet
 		actions.push(splitSearchPatternAction(payload.searchPattern))
 	}
 
-	if (payload.searchedNodePaths !== undefined) {
-		actions.push(splitSearchedNodePathsAction(payload.searchedNodePaths as Set<string>))
-	}
-
 	if (payload.focusedNodePath !== undefined) {
-		actions.push(splitFocusedNodePathAction(payload.focusedNodePath))
+		actions.push(setAllFocusedNodes(payload.focusedNodePath))
 	}
 
 	if (payload.heightMetric !== undefined) {

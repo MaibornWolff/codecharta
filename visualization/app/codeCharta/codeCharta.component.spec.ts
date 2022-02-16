@@ -5,6 +5,7 @@ import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { InjectorService } from "./state/injector.service"
+import packageJson from "../../package.json"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
@@ -29,16 +30,6 @@ describe("codeChartaController", () => {
 	let dialogService: DialogService
 	let codeChartaService: CodeChartaService
 	let injectorService: InjectorService
-
-	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-		initThreeCameraService()
-		withMockedUrlUtils()
-		withMockedCodeChartaService()
-		withMockedDialogService()
-		localStorage.clear()
-	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
@@ -80,7 +71,27 @@ describe("codeChartaController", () => {
 		threeCameraService.init(1536, 754)
 	}
 
+	function initialize() {
+		restartSystem()
+		rebuildController()
+		initThreeCameraService()
+		withMockedUrlUtils()
+		withMockedCodeChartaService()
+		withMockedDialogService()
+		localStorage.clear()
+	}
+
+	function initControllerChangelog() {
+		rebuildController()
+		initThreeCameraService()
+		withMockedUrlUtils()
+		withMockedCodeChartaService()
+	}
+
 	describe("constructor", () => {
+		beforeEach(() => {
+			initialize()
+		})
 		it("should set urlUtils", () => {
 			rebuildController()
 
@@ -96,10 +107,15 @@ describe("codeChartaController", () => {
 
 	describe("loadFileOrSample", () => {
 		beforeEach(() => {
+			initialize()
 			codeChartaController.tryLoadingSampleFiles = jest.fn()
 		})
 
 		it("should call tryLoadingSampleFiles when data is an empty array", async () => {
+			// hot fix for issue #2294
+			rebuildController()
+			codeChartaController.tryLoadingSampleFiles = jest.fn()
+
 			await codeChartaController.loadFileOrSample()
 
 			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalledWith(new Error("Filename is missing"))
@@ -151,6 +167,10 @@ describe("codeChartaController", () => {
 	})
 
 	describe("tryLoadingSampleFiles", () => {
+		beforeEach(() => {
+			initialize()
+			localStorage.clear()
+		})
 		it("should call getParameterByName with 'file'", () => {
 			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
 
@@ -212,6 +232,24 @@ describe("codeChartaController", () => {
 			GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(storeService)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
+		})
+	})
+	describe("version check", () => {
+		beforeEach(() => {
+			restartSystem()
+			jest.spyOn(Storage.prototype, "getItem")
+			dialogService.showChangelogDialog = jest.fn()
+		})
+
+		it("should call changelog dialog on version update", () => {
+			Storage.prototype.getItem = jest.fn(() => "1.70.0")
+			initControllerChangelog()
+			expect(dialogService.showChangelogDialog).toHaveBeenCalled()
+		})
+		it("should not call changelog dialog", () => {
+			Storage.prototype.getItem = jest.fn().mockReturnValue(packageJson.version)
+			initControllerChangelog()
+			expect(dialogService.showChangelogDialog).not.toHaveBeenCalled()
 		})
 	})
 })

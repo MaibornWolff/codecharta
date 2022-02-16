@@ -31,6 +31,31 @@ ribbon-bar-component {
 		min-width: 92px;
 		transition: 200ms width ease-in-out;
 
+		.color-section {
+			text-align: center;
+			height: 100%;
+			width: 100%;
+
+			.color-icon {
+				margin: 5%;
+			}
+			.color-dropdown-icon {
+				margin: 2%;
+			}
+		}
+
+		&#ai-card {
+			.section {
+				.section-header {
+					overflow: visible;
+					text-align: center;
+				}
+				.section-title {
+					padding: 1px 5px;
+				}
+			}
+		}
+
 		.section {
 			display: inline-block;
 			height: 100%;
@@ -102,7 +127,8 @@ ribbon-bar-component {
 		margin: 0;
 	}
 
-	md-card.custom-configs-card {
+	md-card.custom-configs-card,
+	md-card.ai-card {
 		max-width: 120px;
 		min-width: 120px;
 	}
@@ -110,9 +136,5 @@ ribbon-bar-component {
 	md-card.scenario-card {
 		max-width: 100px;
 		min-width: 100px;
-	}
-
-	cc-map-color-picker .cc-map-color-picker-wrapper {
-		margin-left: 9px;
 	}
 }

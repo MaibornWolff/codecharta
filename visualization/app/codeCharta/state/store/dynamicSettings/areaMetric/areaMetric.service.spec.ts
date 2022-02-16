@@ -72,10 +72,10 @@ describe("AreaMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update areaMetric if current areaMetric is not available", () => {
 			const metricData = [
-				{ name: "a", maxValue: 1 },
-				{ name: "b", maxValue: 2 },
-				{ name: "c", maxValue: 2 },
-				{ name: "d", maxValue: 2 }
+				{ name: "a", maxValue: 1, minValue: 1 },
+				{ name: "b", maxValue: 2, minValue: 1 },
+				{ name: "c", maxValue: 2, minValue: 1 },
+				{ name: "d", maxValue: 2, minValue: 1 }
 			]
 
 			areaMetricService.onNodeMetricDataChanged(metricData)
@@ -87,8 +87,8 @@ describe("AreaMetricService", () => {
 			storeService.dispatch(setAreaMetric("rloc"))
 			storeService.dispatch = jest.fn()
 			const metricData = [
-				{ name: "mcc", maxValue: 1 },
-				{ name: "rloc", maxValue: 2 }
+				{ name: "mcc", maxValue: 1, minValue: 1 },
+				{ name: "rloc", maxValue: 2, minValue: 1 }
 			]
 
 			areaMetricService.onNodeMetricDataChanged(metricData)

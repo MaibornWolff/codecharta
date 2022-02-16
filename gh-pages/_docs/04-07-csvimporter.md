@@ -13,18 +13,18 @@ _Conventions for csv input:_
 
 ## Parameter
 
-| Parameters                         | description                          |
-| ---------------------------------- | ------------------------------------ |
-| `FILE`                             | sourcemonitor csv files              |
-| `--path-seperator=<pathSeperator>` | path seperator (default= '/')        |
-| `-d, --delimeter=<csvDelimeter>`   | delimeter in csv file                |
-| `-h, --help`                       | displays help                        |
-| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)    |
-| `-c`                               | compresses outputfile to gzip format |
+| Parameters                         | description                                                       |
+| ---------------------------------- | ----------------------------------------------------------------- |
+| `FILE`                             | sourcemonitor csv files                                           |
+| `--path-seperator=<pathSeperator>` | path seperator (default= '/')                                     |
+| `-d, --delimeter=<csvDelimeter>`   | delimeter in csv file                                             |
+| `-h, --help`                       | displays help                                                     |
+| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)                                 |
+| `-nc, --not-compressed`            | uncompresses outputfile to json format, if format of File is gzip |
 
 ## Usage
 
 ```
-csvimport [-ch] [--path-separator=<pathSeparator>]
+csvimport [-nc] [--path-separator=<pathSeparator>]
           [-d=<csvDelimiter>] [-o=<outputFile>] FILE
 ```

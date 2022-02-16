@@ -50,8 +50,8 @@ class NodeMaxAttributeMerger(var mergeChildrenList: Boolean = false) : NodeMerge
 
     private fun maxValOrFirst(x: Any, y: Any): Any {
         return when {
-            (x is Long || x is Int || x is Short || x is Byte)
-                && (y is Long || y is Int || y is Short || y is Byte) ->
+            (x is Long || x is Int || x is Short || x is Byte) &&
+                (y is Long || y is Int || y is Short || y is Byte) ->
                 maxOf((x as Number).toLong(), (y as Number).toLong())
             x is Number && y is Number -> maxOf(x.toDouble(), y.toDouble())
             x !is Number && y is Number -> y

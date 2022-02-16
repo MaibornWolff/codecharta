@@ -1,94 +1,10 @@
-<div class="side-bar-container cc-shadow" ng-class="{ expanded: $ctrl._viewModel.isSideBarVisible }">
-	<div class="side-bar-header">
-		<i class="close-icon fa fa-times" ng-click="$ctrl.onClickCloseSideBar()"></i>
-		<h2 ng-if="!$ctrl._viewModel.node.link" class="node-name" ng-click="$ctrl.onClickNodeName()">
-			{{ $ctrl._viewModel.node.name }}
-		</h2>
-		<div class="node-name" ng-if="$ctrl._viewModel.node.link">
-			<a class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank" rel="noopener noreferrer">
-				<h2 class="node-name-h2">
-					{{ $ctrl._viewModel.node.name }}
-				</h2>
-				<i class="fa fa-external-link"></i>
-				<md-tooltip md-delay="200">{{ $ctrl._viewModel.node.link }}</md-tooltip>
-			</a>
-		</div>
+<div class="side-bar-container cc-shadow" [class.expanded]="isSideBarVisible$ | async">
+	<cc-attribute-side-bar-header-section
+		[node]="selectedNode$ | async"
+		[fileName]="fileName$ | async"
+	></cc-attribute-side-bar-header-section>
 
-		<p class="node-origin">{{ $ctrl._viewModel.fileName }}</p>
+	<cc-attribute-side-bar-primary-metrics></cc-attribute-side-bar-primary-metrics>
 
-		<cc-node-path-component></cc-node-path-component>
-
-		<div class="metric-box">
-			<table class="primary-metrics" aria-hidden="true">
-				<th scope="col">Primary Metrics</th>
-				<tr>
-					<td>
-						<i class="fa fa-arrows-alt"></i>
-						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
-						</span>
-						<metric-delta-selected-component
-							attributekey="$ctrl._viewModel.primaryMetricKeys.node.area"
-						></metric-delta-selected-component>
-						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</p>
-					</td>
-
-					<td>
-						<i class="fa fa-arrows-v"></i>
-						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number: 0 }}
-						</span>
-						<metric-delta-selected-component
-							attributekey="$ctrl._viewModel.primaryMetricKeys.node.height"
-						></metric-delta-selected-component>
-						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.height }}</p>
-					</td>
-				</tr>
-
-				<tr>
-					<td>
-						<i class="fa fa-paint-brush"></i>
-						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number: 0 }}
-						</span>
-						<metric-delta-selected-component
-							attributekey="$ctrl._viewModel.primaryMetricKeys.node.color"
-						></metric-delta-selected-component>
-						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</p>
-					</td>
-
-					<td>
-						<i class="fa fa-exchange"></i>
-						<span class="metric-value" ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
-							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].incoming | number: 0 }}
-							<span>/</span>
-							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].outgoing | number: 0 }}
-						</span>
-						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge.edge }} (in/out)</p>
-					</td>
-				</tr>
-			</table>
-		</div>
-	</div>
-
-	<div class="side-bar-body">
-		<div class="metrics-wrapper">
-			<div class="metric-box scrollable-content">
-				<table class="secondary-metrics" aria-hidden="true">
-					<tr>
-						<th scope="col" colspan="2">Secondary Metrics</th>
-					</tr>
-					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys track by $index">
-						<td>
-							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number: 0 }}</span>
-						</td>
-						<td ng-show="$ctrl._viewModel.node.deltas">
-							<metric-delta-selected-component attributekey="::attributekey"></metric-delta-selected-component>
-						</td>
-						<td class="metric-name">{{ attributekey }}</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-	</div>
+	<cc-attribute-side-bar-secondary-metrics></cc-attribute-side-bar-secondary-metrics>
 </div>

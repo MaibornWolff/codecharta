@@ -1,7 +1,7 @@
 import "./codeMap.component.scss"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 import {
 	IsAttributeSideBarVisibleService,
@@ -18,15 +18,14 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		isSideBarVisible: null
 	}
 
-	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
 		private $element: Element,
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService,
 		private codeChartaMouseEventService: CodeChartaMouseEventService
 	) {
+		"ngInject"
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 		SharpnessModeService.subscribe(this.$rootScope, this)
@@ -44,7 +43,6 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 	onIsLoadingFileChanged(isLoadingFile: boolean) {
 		this.threeViewerService?.dispose()
 		this._viewModel.isLoadingFile = isLoadingFile
-		this.synchronizeAngularTwoWayBinding()
 	}
 
 	// TODO not used right now, but added for catching the gl context loss, needs to be further implemented and tested
@@ -72,10 +70,6 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 
 	onClick() {
 		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
-	}
-
-	private synchronizeAngularTwoWayBinding() {
-		this.$timeout(() => {})
 	}
 }
 

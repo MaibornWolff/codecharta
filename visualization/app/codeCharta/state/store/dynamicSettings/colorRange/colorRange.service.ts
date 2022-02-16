@@ -20,6 +20,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService
 	) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
@@ -42,7 +43,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 
 	private tryToResetIfNull() {
 		const { colorRange, colorMetric } = this.storeService.getState().dynamicSettings
-		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
+		const maxMetricValue = this.nodeMetricDataService.getMaxValueOfMetric(colorMetric)
 		if (!colorRange.from && !colorRange.to && maxMetricValue) {
 			this.reset()
 		}
@@ -50,9 +51,10 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 
 	reset() {
 		const { colorMetric } = this.storeService.getState().dynamicSettings
-		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
+		const maxMetricValue = this.nodeMetricDataService.getMaxValueOfMetric(colorMetric)
+		const minMetricValue = this.nodeMetricDataService.getMinValueOfMetric(colorMetric)
 
-		const newColorRange = getResetColorRange(maxMetricValue)
+		const newColorRange = getResetColorRange(maxMetricValue, minMetricValue)
 		this.storeService.dispatch(setColorRange(newColorRange))
 	}
 

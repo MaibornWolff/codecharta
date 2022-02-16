@@ -1,4 +1,4 @@
-legend-panel-component {
+cc-legend-panel {
 	$fixedHeight: 35;
 
 	.panel-button {
@@ -7,22 +7,27 @@ legend-panel-component {
 		right: -35px;
 		transform: rotate(90deg);
 		border-radius: 0 0 5px 5px;
+		height: 36px;
+		width: 88px;
+		margin: 6px 8px;
 
-		&.sideBarVisible {
+		&.isAttributeSideBarVisible {
 			right: 316px;
 		}
 	}
 
 	.block-wrapper {
+		background-color: white;
+		border: 1px solid #cdcdcd;
+		box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 		position: fixed;
 		bottom: $fixedHeight + px;
-		background-color: #fff;
 		padding: 10px;
 		right: 40px;
 		visibility: hidden;
 		border-radius: 5px;
 
-		&.sideBarVisible {
+		&.isAttributeSideBarVisible {
 			right: 390px;
 		}
 
@@ -40,8 +45,7 @@ legend-panel-component {
 		.legend-block {
 			display: block;
 			min-height: 25px;
-			margin-bottom: 5px;
-			max-width: 250px;
+			max-width: 350px;
 			overflow: hidden;
 
 			i,
@@ -79,11 +83,6 @@ legend-panel-component {
 		}
 		.bold {
 			font-weight: 600;
-		}
-
-		color-picker .color-picker-panel {
-			/* prevent panel to be below browser bottom */
-			bottom: -50px;
 		}
 	}
 }

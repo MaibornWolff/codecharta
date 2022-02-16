@@ -11,6 +11,7 @@ export class InvertHeightService implements StoreSubscriber {
 	private static INVERT_HEIGHT_CHANGED_EVENT = "invert-height-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
 	}
 

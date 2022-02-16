@@ -2,25 +2,28 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { NodeMetricDataAction, NodeMetricDataActions, setNodeMetricData } from "./nodeMetricData.actions"
 import { NodeMetricDataService } from "./nodeMetricData.service"
-import { METRIC_DATA, STATE, withMockedEventMethods } from "../../../../util/dataMocks"
+import { STATE, withMockedEventMethods } from "../../../../util/dataMocks"
 import { setState } from "../../state.actions"
-import { AttributeTypeValue, NodeMetricData } from "../../../../codeCharta.model"
+import { AttributeTypeValue } from "../../../../codeCharta.model"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../files/files.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
+import { nodeMetricDataSelector } from "../../../selectors/accumulatedData/metricData/nodeMetricData.selector"
+
+const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
+jest.mock("../../../selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
+	nodeMetricDataSelector: jest.fn(() => [
+		{ name: "rloc", maxValue: 999_999, minValue: 1 },
+		{ name: "functions", maxValue: 999_999, minValue: 1 },
+		{ name: "mcc", maxValue: 999_999, minValue: 1 }
+	])
+}))
 
 describe("NodeMetricDataService", () => {
 	let nodeMetricDataService: NodeMetricDataService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
-
-	const metricData: NodeMetricData[] = [
-		{ name: "rloc", maxValue: 999999 },
-		{ name: "functions", maxValue: 999999 },
-		{ name: "mcc", maxValue: 999999 }
-	]
 
 	beforeEach(() => {
 		restartSystem()
@@ -33,8 +36,6 @@ describe("NodeMetricDataService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-
-		storeService.dispatch(setNodeMetricData(metricData))
 	}
 
 	function rebuildService() {
@@ -42,14 +43,6 @@ describe("NodeMetricDataService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
-			StoreService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, nodeMetricDataService)
-		})
-
 		it("should subscribe to FilesService", () => {
 			FilesService.subscribe = jest.fn()
 
@@ -72,26 +65,6 @@ describe("NodeMetricDataService", () => {
 			rebuildService()
 
 			expect(AttributeTypesService.subscribe).toHaveBeenCalledWith($rootScope, nodeMetricDataService)
-		})
-	})
-
-	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new nodeMetricData value", () => {
-			const action: NodeMetricDataAction = {
-				type: NodeMetricDataActions.SET_NODE_METRIC_DATA,
-				payload: METRIC_DATA
-			}
-			storeService["store"].dispatch(action)
-
-			nodeMetricDataService.onStoreChanged(NodeMetricDataActions.SET_NODE_METRIC_DATA)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("node-metric-data-changed", { nodeMetricData: METRIC_DATA })
-		})
-
-		it("should not notify anything on non-node-metric-data-events", () => {
-			nodeMetricDataService.onStoreChanged("ANOTHER_ACTION")
-
-			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 	})
 
@@ -121,7 +94,8 @@ describe("NodeMetricDataService", () => {
 
 	describe("getMetrics", () => {
 		it("should return an empty array if metricData is empty", () => {
-			storeService.dispatch(setNodeMetricData([]))
+			mockedNodeMetricDataSelector.mockImplementationOnce(() => [])
+			nodeMetricDataService["updateNodeMetricData"]()
 
 			const result = nodeMetricDataService.getMetrics()
 
@@ -129,6 +103,8 @@ describe("NodeMetricDataService", () => {
 		})
 
 		it("should return an array of all metric names used in metricData", () => {
+			nodeMetricDataService["updateNodeMetricData"]()
+
 			const result = nodeMetricDataService.getMetrics()
 
 			expect(result).toEqual(["rloc", "functions", "mcc"])
@@ -136,15 +112,19 @@ describe("NodeMetricDataService", () => {
 	})
 
 	describe("getMaxMetricByMetricName", () => {
+		beforeEach(() => {
+			nodeMetricDataService["updateNodeMetricData"]()
+		})
+
 		it("should return the possible maxValue of a metric by name", () => {
-			const result = nodeMetricDataService.getMaxMetricByMetricName("rloc")
-			const expected = 999999
+			const result = nodeMetricDataService.getMaxValueOfMetric("rloc")
+			const expected = 999_999
 
 			expect(result).toBe(expected)
 		})
 
 		it("should return undefined if metric doesn't exist in metricData", () => {
-			const result = nodeMetricDataService.getMaxMetricByMetricName("some metric")
+			const result = nodeMetricDataService.getMaxValueOfMetric("some metric")
 
 			expect(result).not.toBeDefined()
 		})

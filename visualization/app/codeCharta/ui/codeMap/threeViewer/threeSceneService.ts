@@ -1,13 +1,15 @@
-import { AmbientLight, DirectionalLight, Scene, Group, Material, Raycaster, Vector3, Object3D, Box3, Line, BufferGeometry } from "three"
+import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
+import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
-import { CodeMapNode, MapColors } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { MapColorsSubscriber, MapColorsService } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { MapColorsService, MapColorsSubscriber } from "../../../state/store/appSettings/mapColors/mapColors.service"
+import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
+import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -28,10 +30,13 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	scene: Scene
 	labels: Group
+	floorLabelPlanes: Group
 	edgeArrows: Group
 	mapGeometry: Group
 	private readonly lights: Group
 	private mapMesh: CodeMapMesh
+	/** TODO: Fix temporary workaround as soon as mapMesh can be derived from store */
+	static mapMeshInstance: CodeMapMesh
 
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding[] = []
@@ -49,6 +54,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
@@ -56,6 +62,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.mapGeometry = new Group()
 		this.lights = new Group()
 		this.labels = new Group()
+		this.floorLabelPlanes = new Group()
 		this.edgeArrows = new Group()
 
 		this.initLights()
@@ -64,6 +71,36 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+		this.scene.add(this.floorLabelPlanes)
+	}
+
+	private initFloorLabels(nodes: Node[]) {
+		this.floorLabelPlanes.clear()
+
+		const { layoutAlgorithm } = this.storeService.getState().appSettings
+		if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap) {
+			return
+		}
+
+		const rootNode = this.getRootNode(nodes)
+		if (!rootNode) {
+			return
+		}
+
+		const { mapSize } = this.storeService.getState().treeMap
+		const scaling = this.storeService.getState().appSettings.scaling
+
+		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
+		const floorLabels = floorLabelDrawer.draw()
+
+		if (floorLabels.length > 0) {
+			this.floorLabelPlanes.add(...floorLabels)
+			this.scene.add(this.floorLabelPlanes)
+		}
+	}
+
+	private getRootNode(nodes: Node[]) {
+		return nodes.find(node => node.id === 0)
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
@@ -158,9 +195,15 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	selectBuilding(building: CodeMapBuilding) {
+		// TODO: This check shouldn't be necessary. When investing into model we should investigate why and remove the need.
+		if (building.id !== this.selected?.id) {
+			this.storeService.dispatch(setSelectedBuildingId(building.node.id))
+		}
+
 		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
 		this.selected = building
 		this.highlightBuildings()
+
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
 		if (this.mapGeometry.children[0]) {
 			this.selectMaterial(this.mapGeometry.children[0]["material"])
@@ -182,10 +225,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 			this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
 
 			const norm = Math.sqrt(this.rayPoint.x ** 2 + this.rayPoint.y ** 2 + this.rayPoint.z ** 2)
-			const cameraPoint = raycaster.ray.origin
-			const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint, norm)
-
 			this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
+
+			const cameraPoint = raycaster.ray.origin
+			const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint)
+
 			this.normedTransformVector.multiplyScalar(maxDistance)
 
 			hoveredLabel.position.add(this.normedTransformVector)
@@ -236,11 +280,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
-		if (!labels) {
-			return null
-		}
 		// 2-step: the labels array consists of alternating label and the corresponding label antennae
-		for (let counter = 0; counter < labels.length; counter += 2) {
+		for (let counter = 0; counter < labels?.length; counter += 2) {
 			if (labels[counter].userData.node === hoveredBuilding.node) {
 				return labels[counter]
 			}
@@ -251,60 +292,51 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	private isOverlapping(a: Box3, b: Box3, dimension: string) {
 		return Number(a.max[dimension] >= b.min[dimension] && b.max[dimension] >= a.min[dimension])
 	}
-	private getIntersectionDistance(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3, normedVector: Vector3, distance: number) {
-		normedVector.multiplyScalar(distance)
-		bboxHoveredLabel.translate(normedVector)
-		const count =
-			this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "x") +
-			this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "y")
-		if (count === 2 || (count === 1 && this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "z"))) {
-			return distance
+
+	private getIntersectionDistanceFunction(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3) {
+		return (distance: number) => {
+			const normedVector = this.normedTransformVector.clone()
+			normedVector.multiplyScalar(distance)
+			bboxHoveredLabel.translate(normedVector)
+			const count =
+				this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "x") +
+				this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "y")
+			if (count === 2 || (count === 1 && this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "z"))) {
+				return distance
+			}
+			return 0
 		}
-		return 0
 	}
 
-	private calculateMaxDistance(hoveredLabel: Object3D, labels: Object3D[], cameraPoint: Vector3, norm: number) {
-		let maxDistance = 0
-
+	private calculateMaxDistance(hoveredLabel: Object3D, labels: Object3D[], cameraPoint: Vector3) {
 		const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel)
 		const centerPoint = new Vector3()
 		bboxHoveredLabel.getCenter(centerPoint)
 		const distanceLabelCenterToCamera = cameraPoint.distanceTo(centerPoint)
-		let maxDistanceForLabel = distanceLabelCenterToCamera / 20
+		let maxDistance = distanceLabelCenterToCamera / 20
 
 		for (let counter = 0; counter < labels.length; counter += 2) {
-			//creates a nice small highlighting for hovered, unobstructed labels, empirically gathered value
-
-			const bboxHoveredLabelWorkingCopy = bboxHoveredLabel.clone()
-
+			// Creates a nice small highlighting for hovered, unobstructed
+			// labels, empirically gathered value.
 			if (labels[counter] !== hoveredLabel) {
+				const bboxHoveredLabelWorkingCopy = bboxHoveredLabel.clone()
 				const bboxObstructingLabel = new Box3().setFromObject(labels[counter])
 				const centerPoint2 = new Vector3()
 
 				bboxObstructingLabel.getCenter(centerPoint2)
 
-				maxDistanceForLabel = Math.max(
-					this.getIntersectionDistance(
-						bboxHoveredLabelWorkingCopy,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)
-					),
-					this.getIntersectionDistance(
-						bboxHoveredLabelWorkingCopy,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)
-					),
-					this.getIntersectionDistance(
-						bboxHoveredLabelWorkingCopy,
-						bboxObstructingLabel,
-						new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm),
-						distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)
-					)
+				const calculateIntersectionDistance = this.getIntersectionDistanceFunction(
+					bboxHoveredLabelWorkingCopy,
+					bboxObstructingLabel
+				)
+
+				maxDistance = Math.max(
+					calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)),
+					calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)),
+					calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)),
+					maxDistance
 				)
 			}
-			maxDistance = Math.max(maxDistance, maxDistanceForLabel)
 		}
 		return maxDistance
 	}
@@ -340,6 +372,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
+			this.storeService.dispatch(setSelectedBuildingId(null))
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
 		if (this.highlighted.length > 0) {
@@ -352,11 +385,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	}
 
 	initLights() {
-		const ambilight = new AmbientLight(0x707070) // soft white light
-		const light1 = new DirectionalLight(0xe0e0e0, 1)
+		const ambilight = new AmbientLight(0x70_70_70) // soft white light
+		const light1 = new DirectionalLight(0xe0_e0_e0, 1)
 		light1.position.set(50, 10, 8).normalize()
 
-		const light2 = new DirectionalLight(0xe0e0e0, 1)
+		const light2 = new DirectionalLight(0xe0_e0_e0, 1)
 		light2.position.set(-50, 10, -8).normalize()
 
 		this.lights.add(ambilight)
@@ -364,9 +397,12 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		this.lights.add(light2)
 	}
 
-	setMapMesh(mesh: CodeMapMesh) {
+	setMapMesh(nodes: Node[], mesh: CodeMapMesh) {
 		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
+		ThreeSceneService.mapMeshInstance = this.mapMesh
+
+		this.initFloorLabels(nodes)
 
 		// Reset children
 		this.mapGeometry.children.length = 0

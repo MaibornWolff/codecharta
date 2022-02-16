@@ -1,34 +1,26 @@
 import "./searchPanelModeSelector.component.scss"
 import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
-export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelModeSubscriber {
+export class SearchPanelModeSelectorController implements BlacklistSubscriber, SearchPanelModeSubscriber {
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
 		flattenListLength: number
 		excludeListLength: number
-		searchFieldIsEmpty: boolean
 	} = {
 		searchPanelMode: SearchPanelMode.minimized,
 		flattenListLength: 0,
-		excludeListLength: 0,
-		searchFieldIsEmpty: true
+		excludeListLength: 0
 	}
 
-	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		SearchPatternService.subscribe(this.$rootScope, this)
+		"ngInject"
 		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPanelModeService.subscribe(this.$rootScope, this)
-	}
-
-	onSearchPatternChanged(searchPattern: string) {
-		this._viewModel.searchFieldIsEmpty = searchPattern === ""
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {

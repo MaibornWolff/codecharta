@@ -79,9 +79,9 @@ describe("ViewCubeController", () => {
 			viewCubeController.onCameraChanged(perspectiveCamera)
 
 			expect(viewCubeController["setCameraPosition"]).toHaveBeenCalledWith({
-				x: -0.8017837257372732,
-				y: -1.6035674514745464,
-				z: -2.4053511772118195
+				x: -0.801_783_725_737_273_2,
+				y: -1.603_567_451_474_546_4,
+				z: -2.405_351_177_211_819_5
 			})
 		})
 	})
@@ -93,7 +93,7 @@ describe("ViewCubeController", () => {
 			} as unknown as WebGLRenderer
 			viewCubeController.onCubeHovered(new Mesh())
 
-			expect(viewCubeController["hoverInfo"].cube.material.emissive).toStrictEqual(new Color(0xffffff))
+			expect(viewCubeController["hoverInfo"].cube.material.emissive).toStrictEqual(new Color(0xff_ff_ff))
 		})
 	})
 
@@ -101,7 +101,7 @@ describe("ViewCubeController", () => {
 		it("should set cube to null", () => {
 			viewCubeController["hoverInfo"].cube = {
 				material: {
-					emissive: new Color(0xffffff)
+					emissive: new Color(0xff_ff_ff)
 				}
 			}
 			viewCubeController["renderer"] = {

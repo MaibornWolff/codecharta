@@ -1,4 +1,4 @@
-// Plop: Append reducer import here
+import { colorLabels } from "./colorLabels/colorLabels.reducer"
 import { showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
 import { showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
 import { panelSelection } from "./panelSelection/panelSelection.reducer"
@@ -11,12 +11,9 @@ import { isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
 import { mapColors } from "./mapColors/mapColors.reducer"
 import { resetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.reducer"
 import { showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
-import { whiteColorBuildings } from "./whiteColorBuildings/whiteColorBuildings.reducer"
 import { isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer"
 import { dynamicMargin } from "./dynamicMargin/dynamicMargin.reducer"
 import { invertHeight } from "./invertHeight/invertHeight.reducer"
-import { invertDeltaColors } from "./invertDeltaColors/invertDeltaColors.reducer"
-import { invertColorRange } from "./invertColorRange/invertColorRange.reducer"
 import { hideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.reducer"
 import { camera } from "./camera/camera.reducer"
 import { scaling } from "./scaling/scaling.reducer"
@@ -29,9 +26,11 @@ import { experimentalFeaturesEnabled } from "./enableExperimentalFeatures/experi
 import { layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
 import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
 import { sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
+import { screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
+import { invertArea } from "./invertArea/invertArea.reducer"
 
 const appSettings = combineReducers({
-	// Plop: Append sub-reducer here
+	colorLabels,
 	showMetricLabelNodeName,
 	showMetricLabelNameValue,
 	panelSelection,
@@ -44,12 +43,10 @@ const appSettings = combineReducers({
 	mapColors,
 	resetCameraIfNewFileIsLoaded,
 	showOnlyBuildingsWithEdges,
-	whiteColorBuildings,
 	isWhiteBackground,
 	dynamicMargin,
 	invertHeight,
-	invertDeltaColors,
-	invertColorRange,
+	invertArea,
 	hideFlatBuildings,
 	camera,
 	scaling,
@@ -58,6 +55,7 @@ const appSettings = combineReducers({
 	amountOfTopLabels,
 	isPresentationMode,
 	experimentalFeaturesEnabled,
+	screenshotToClipboardEnabled,
 	layoutAlgorithm,
 	maxTreeMapFiles,
 	sharpnessMode

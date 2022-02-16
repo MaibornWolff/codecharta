@@ -1,92 +1,26 @@
-<section layout="row" layout-align="center center" class="mode-chooser">
-	<md-button
-		class="state-selector-button mode-selector left"
-		ng-class="{ current: $ctrl._viewModel.isSingleState }"
-		ng-click="$ctrl.onSingleStateSelected()"
-		><span class="text">Single</span></md-button
-	>
-	<md-button
-		class="state-selector-button mode-selector middle"
-		ng-class="{ current: $ctrl._viewModel.isPartialState }"
-		ng-click="$ctrl.onPartialStateSelected()"
-		><span class="text">Multiple</span></md-button
-	>
-	<md-button
-		class="state-selector-button mode-selector right"
-		ng-class="{ current: $ctrl._viewModel.isDeltaState }"
-		ng-click="$ctrl.onDeltaStateSelected()"
-		><span class="text">Delta</span></md-button
-	>
-</section>
+<cc-file-panel-state-buttons
+	[is-delta-state]="$ctrl._viewModel.isDeltaState"
+	[handle-standard-button-clicked]="$ctrl.selectRecentPartialFiles"
+	[handle-delta-button-clicked]="$ctrl.onDeltaStateSelected"
+></cc-file-panel-state-buttons>
 
-<md-input-container class="input-container" ng-show="$ctrl._viewModel.isSingleState" title="Select a file">
-	<md-select
-		ng-model="$ctrl._viewModel.selectedFileNames.single"
-		ng-change="$ctrl.onSingleFileChange($ctrl._viewModel.selectedFileNames.single)"
-	>
-		<md-option
-			ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
-			value="{{::fileState.file.fileMeta.fileName}}"
-		>
-			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-		</md-option>
-	</md-select>
-</md-input-container>
+<cc-file-panel-file-selector
+	style="display: inline-block; width: 200px"
+	ng-show="!$ctrl._viewModel.isDeltaState"
+	[selected-file-names]="$ctrl._viewModel.selectedFileNames.partial"
+	[handle-selected-files-changed]="$ctrl.onPartialFilesChange"
+	[handle-select-all-partial-files]="$ctrl.selectAllPartialFiles"
+	[handle-select-zero-partial-files]="$ctrl.selectZeroPartialFiles"
+	[handle-invert-selected-partial-files]="$ctrl.invertPartialFileSelection"
+	[handle-on-selection-closed]="$ctrl.onPartialSelectionClosed"
+	[files]="$ctrl._viewModel.files"
+></cc-file-panel-file-selector>
 
-<md-input-container class="input-container" ng-show="$ctrl._viewModel.isPartialState" title="Select files">
-	<md-select
-		ng-model="$ctrl._viewModel.selectedFileNames.partial"
-		multiple="{{ true }}"
-		ng-change="$ctrl.onPartialFilesChange($ctrl._viewModel.selectedFileNames.partial)"
-		md-on-close="$ctrl.onPartialSelectionClosed()"
-	>
-		<md-button ng-click="$ctrl.selectAllPartialFiles()">All</md-button>
-		<md-button ng-click="$ctrl.selectZeroPartialFiles()">None</md-button>
-		<md-button ng-click="$ctrl.invertPartialFileSelection()">Invert</md-button>
-
-		<md-option
-			ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
-			value="{{::fileState.file.fileMeta.fileName}}"
-		>
-			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-		</md-option>
-	</md-select>
-</md-input-container>
-
-<div class="input-container delta-chooser" ng-show="$ctrl._viewModel.isDeltaState">
-	<div class="pictogram" ng-style="{ background: $ctrl._viewModel.pictogramFirstFileColor }"></div>
-	<md-input-container class="delta-select input-container" title="Select reference file">
-		<md-select
-			ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
-			ng-change="$ctrl.onDeltaReferenceFileChange($ctrl._viewModel.selectedFileNames.delta.reference)"
-		>
-			<md-option
-				ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
-				value="{{::fileState.file.fileMeta.fileName}}"
-			>
-				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-			</md-option>
-		</md-select>
-	</md-input-container>
-
-	<div
-		class="pictogram"
-		ng-style="{
-			background:
-				'linear-gradient(' + $ctrl._viewModel.pictogramUpperColor + ' 50%, ' + $ctrl._viewModel.pictogramLowerColor + ' 50%)'
-		}"
-	></div>
-	<md-input-container class="input-container delta-select" title="Select comparison file">
-		<md-select
-			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
-			ng-change="$ctrl.onDeltaComparisonFileChange($ctrl._viewModel.selectedFileNames.delta.comparison)"
-		>
-			<md-option
-				ng-repeat="fileState in $ctrl._viewModel.files track by fileState.file.fileMeta.fileName"
-				value="{{::fileState.file.fileMeta.fileName}}"
-			>
-				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-			</md-option>
-		</md-select>
-	</md-input-container>
-</div>
+<cc-file-panel-delta-selector
+	ng-show="$ctrl._viewModel.isDeltaState"
+	[pictogram-upper-color]="$ctrl._viewModel.pictogramUpperColor"
+	[pictogram-lower-color]="$ctrl._viewModel.pictogramLowerColor"
+	[handle-delta-reference-file-change]="$ctrl.onDeltaReferenceFileChange"
+	[handle-delta-comparison-file-change]="$ctrl.onDeltaComparisonFileChange"
+	[files]="$ctrl._viewModel.files"
+></cc-file-panel-delta-selector>

@@ -29,35 +29,29 @@ def confirm(message, printMessage):
     quit()
 
 
-def getLatestChangelogEntry(path):
-  release_post_content = ""
+def getLatestChangelogEntries(path):
   with open(path, "r", encoding="utf-8") as fp:
     line_number = 0
-    section = None
+    new_changelog_section = ""
+
     for line in fp:
-      if line_number > 20:
-        if "## [" in line:
+      if line_number > 10:
+
+        # break on headline for already released log entries
+        if line.startswith("## ["):
           break
 
-        if "###" in line and section != None:
-          if len(section.split("\n")) > 3:
-            release_post_content = release_post_content + section
-          section = None
+        new_changelog_section += line
 
-        if section != None:
-          section = section + line
+      line_number += 1
 
-        if "###" in line and section == None:
-          section = line
-
-      line_number = line_number + 1
-  return release_post_content
+  return new_changelog_section
 
 
 def getReleasePost(version, path):
   release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n\ntitle: {version}\n---\n\n"
   release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
-  release_post_content = getLatestChangelogEntry(path)
+  release_post_content = getLatestChangelogEntries(path)
   return release_post_header + release_post_headline + release_post_content
 
 
@@ -145,15 +139,13 @@ analysis_package = f"{root}/analysis/node-wrapper"
 analysis_package_json = f"{analysis_package}/package.json"
 analysis_package_lock_json = f"{analysis_package}/package-lock.json"
 
-subprocess.run(["npm", "--prefix", analysis_package,
-                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+subprocess.run(f"npm --prefix {analysis_package} --no-git-tag-version version {new_version}", shell=True)
 print("incremented version in ./analysis/node-wrapper/package.json + locks")
 
 visualization_package = f"{root}/visualization"
 visualization_package_json = f"{visualization_package}/package.json"
 visualization_package_lock_json = f"{visualization_package}/package-lock.json"
-subprocess.run(["npm", "--prefix", visualization_package,
-                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+subprocess.run(f"npm --prefix {visualization_package} --no-git-tag-version version {new_version}", shell=True)
 print("incremented version in ./visualization/package.json + locks")
 
 
@@ -193,14 +185,7 @@ release_post = f"{date_formatted}-v{new_version_formatted}.md"
 release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
 
 with open(release_post_path, "w", encoding="utf-8") as fp:
-  pass
-  fp.write("\n")
-
-with in_place.InPlace(release_post_path, encoding="utf-8") as fp:
-  for line in fp:
-    fp.write(getReleasePost(new_version, changelog_path))
-    break
-
+  fp.write(getReleasePost(new_version, changelog_path))
 
 # confirm and make a commit and tag it correctly
 message = "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
@@ -209,7 +194,7 @@ confirm(message, printMessage)
 
 repo.index.add([release_post_path, changelog_path, gradle_properties,
                 analysis_package_json, analysis_package_lock_json, visualization_package_json, visualization_package_lock_json])
-subprocess.run(["git", "commit", "-a", "-m", f'"Releasing {new_version}"'], shell=True)
+subprocess.run('git commit -a -m "Releasing ' + new_version + '"', shell=True)
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
 
@@ -219,6 +204,6 @@ message = "The release is now committed and tagged but not pushed. In order to f
 printMessage = "Pushing..."
 confirm(message, printMessage)
 
-subprocess.run(["git", "push", "--follow-tags"], shell=True)
+subprocess.run("git push --follow-tags", shell=True)
 
 print("Please manually add the latest release notes, as soon as the build is successfully deployed")

@@ -1,36 +1,24 @@
-import "./sortingOption.component.scss"
+import { Component, Inject } from "@angular/core"
+import { Observable } from "rxjs"
+
 import { SortingOption } from "../../codeCharta.model"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
 import { setSortingOption } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
-import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
+import { Store } from "../../state/angular-redux/store"
+import { sortingOrderSelector } from "../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
 
-export class SortingOptionController implements SortingOptionSubscriber {
-	private _viewModel: {
-		sortingOption: SortingOption
-		sortingOptions: string[]
-	} = {
-		sortingOption: SortingOption.NAME,
-		sortingOptions: null
+@Component({
+	selector: "cc-sorting-option",
+	template: require("./sortingOption.component.html")
+})
+export class SortingOptionComponent {
+	sortingOptions = Object.values(SortingOption)
+	selectedSortingOption$: Observable<SortingOption>
+
+	constructor(@Inject(Store) private store: Store) {
+		this.selectedSortingOption$ = store.select(sortingOrderSelector)
 	}
 
-	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		SortingOptionService.subscribe(this.$rootScope, this)
-		this._viewModel.sortingOptions = Object.values(SortingOption)
+	handleSelectedSortingOptionChanged(event) {
+		this.store.dispatch(setSortingOption(event.value))
 	}
-
-	onSortingOptionChanged(sortingOption: SortingOption) {
-		this._viewModel.sortingOption = sortingOption
-	}
-
-	onChange() {
-		this.storeService.dispatch(setSortingOption(this._viewModel.sortingOption))
-	}
-}
-
-export const sortingOptionComponent = {
-	selector: "sortingOptionComponent",
-	template: require("./sortingOption.component.html"),
-	controller: SortingOptionController
 }

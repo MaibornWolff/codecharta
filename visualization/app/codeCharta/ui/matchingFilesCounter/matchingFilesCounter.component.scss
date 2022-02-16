@@ -1,9 +1,9 @@
-matching-files-counter-component {
+cc-matching-files-counter {
 	.node-count {
 		background: #eee;
 		color: black;
 		padding: 4px 8px;
-		margin-right: 4px;
+		margin-right: 8px;
 	}
 
 	.node-count i {
@@ -27,23 +27,23 @@ matching-files-counter-component {
 		margin-left: 6px;
 	}
 
-	#sort-component-button .md-button {
-		min-height: unset;
-		margin-bottom: 0;
-		height: 23px;
+	cc-sorting-button button {
+		height: 25px;
 		background: #e6e6e6;
 		padding: 1px 8px;
 	}
 
-	#sort-component-dialog .md-select-value {
-		min-height: unset;
+	cc-sorting-option .mat-select {
+		width: 105px;
 		padding: 2px 8px;
+		font-weight: normal;
+		line-height: 17px;
+		font-size: 10pt;
 	}
 
-	#sort-component {
+	.sort-component {
 		margin-right: 3px;
 		float: right;
-		display: flex;
 		color: black;
 	}
 }

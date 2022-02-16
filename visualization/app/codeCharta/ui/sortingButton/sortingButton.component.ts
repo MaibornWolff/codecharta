@@ -1,34 +1,24 @@
-import "./sortingButton.component.scss"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
-import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
-import {
-	SortingOrderAscendingService,
-	SortingOrderAscendingSubscriber
-} from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
+import { Component, Inject, OnInit } from "@angular/core"
+import { Observable } from "rxjs"
 
-export class SortingButtonController implements SortingOrderAscendingSubscriber {
-	private _viewModel: {
-		orderAscending: boolean
-	} = {
-		orderAscending: true
-	}
-	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		SortingOrderAscendingService.subscribe(this.$rootScope, this)
-	}
+import { Store } from "../../state/angular-redux/store"
+import { toggleSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { sortingOrderAscendingSelector } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
 
-	onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
-		this._viewModel.orderAscending = sortingOrderAscending
+@Component({
+	selector: "cc-sorting-button",
+	template: require("./sortingButton.component.html")
+})
+export class SortingButtonComponent implements OnInit {
+	sortingOrderAscending$: Observable<boolean>
+
+	constructor(@Inject(Store) private store: Store) {}
+
+	ngOnInit(): void {
+		this.sortingOrderAscending$ = this.store.select(sortingOrderAscendingSelector)
 	}
 
-	onButtonClick() {
-		this.storeService.dispatch(setSortingOrderAscending(!this._viewModel.orderAscending))
+	onClick() {
+		this.store.dispatch(toggleSortingOrderAscending())
 	}
-}
-
-export const sortingButtonComponent = {
-	selector: "sortingButtonComponent",
-	template: require("./sortingButton.component.html"),
-	controller: SortingButtonController
 }

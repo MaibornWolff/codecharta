@@ -1,38 +1,41 @@
-<div
-	class="block-wrapper cc-shadow"
-	ng-class="{ visible: $ctrl._viewModel.isLegendVisible, sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
->
-	<div ng-if="!$ctrl._viewModel.isDeltaState">
-		<div class="legend-block bold">{{ $ctrl._viewModel.colorMetric }}:</div>
-		<cc-store-color-picker map-color-for="positive" label="0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}">
-		</cc-store-color-picker>
-		<cc-store-color-picker
-			map-color-for="neutral"
-			label="&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}"
-		>
-		</cc-store-color-picker>
-		<cc-store-color-picker map-color-for="negative" label="&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite">
-		</cc-store-color-picker>
+<div class="block-wrapper" [class.visible]="isLegendVisible" [class.isAttributeSideBarVisible]="isAttributeSideBarVisible$ | async">
+	<div *ngIf="!(isDeltaState$ | async)">
+		<cc-legend-block [metricFor]="'Size'" [legendMetric]="areaMetric$ | async"></cc-legend-block>
+		<cc-legend-block [metricFor]="'Height'" [legendMetric]="heightMetric$ | async"></cc-legend-block>
+		<cc-legend-block *ngIf="edgeMetric$ | async; let edgeMetric" [metricFor]="'Edge'" [legendMetric]="edgeMetric"></cc-legend-block>
+
+		<hr />
+		<cc-legend-block [metricFor]="'Color'" [legendMetric]="colorMetric$ | async"></cc-legend-block>
+		<cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
+		<cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
+		<cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
 	</div>
 
-	<div ng-if="$ctrl._viewModel.isDeltaState">
-		<cc-store-color-picker map-color-for="positiveDelta" label="+&Delta;"> </cc-store-color-picker>
-		<cc-store-color-picker map-color-for="negativeDelta" label="-&Delta;"> </cc-store-color-picker>
+	<div *ngIf="isDeltaState$ | async">
+		<cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
+		<cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"></cc-color-picker-for-map-color>
 	</div>
 
-	<cc-store-color-picker map-color-for="selected" label="selected"> </cc-store-color-picker>
 	<hr />
-	<cc-store-color-picker map-color-for="outgoingEdge" label="Outgoing Edge"> </cc-store-color-picker>
-	<cc-store-color-picker map-color-for="incomingEdge" label="Incoming Edge"> </cc-store-color-picker>
+	<cc-color-picker-for-map-color [mapColorFor]="'selected'"></cc-color-picker-for-map-color>
 
-	<cc-legend-marked-packages-component></cc-legend-marked-packages-component>
+	<ng-container *ngIf="edgeMetric$ | async; let edgeMetric">
+		<hr />
+		<div ng-if="$ctrl._viewModel.edgeMetricHasEdge">
+			<cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'"></cc-color-picker-for-map-color>
+			<cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
+		</div>
+	</ng-container>
+
+	<cc-legend-marked-packages></cc-legend-marked-packages>
 </div>
 
-<md-button
-	class="panel-button md-raised md-primary cc-shadow"
-	ng-click="$ctrl.toggle()"
-	ng-class="{ sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
-	ng-attr-title="{{ $ctrl._viewModel.isLegendVisible ? 'Hide panel' : 'Show panel' }}"
+<button
+	mat-button
+	class="panel-button cc-mat-raised cc-shadow"
+	(click)="toggleIsLegendVisible()"
+	[class.isAttributeSideBarVisible]="isAttributeSideBarVisible$ | async"
+	title="{{ isLegendVisible ? 'Hide panel' : 'Show panel' }}"
 >
-	Legend
-</md-button>
+	LEGEND
+</button>

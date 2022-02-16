@@ -4,6 +4,7 @@ import {
 	CODE_MAP_BUILDING,
 	CODE_MAP_BUILDING_TS_NODE,
 	CONSTANT_HIGHLIGHT,
+	TEST_NODE_LEAF,
 	TEST_NODES,
 	VALID_FILE_NODE_WITH_ID,
 	VALID_NODES_WITH_ID
@@ -15,11 +16,13 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { klona } from "klona"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
 import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 import { Box3, BufferGeometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
+import { setLayoutAlgorithm } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -165,7 +168,6 @@ describe("ThreeSceneService", () => {
 		let bboxOverlap = null
 		let bboxHovered = null
 		let bboxMiss = null
-		let normedVector = null
 		let bboxContain = null
 		const overlapDistance = 2
 
@@ -174,21 +176,24 @@ describe("ThreeSceneService", () => {
 			bboxHovered = new Box3(new Vector3(1, 1, 1), new Vector3(2, 2, 2))
 			bboxMiss = new Box3(new Vector3(5, 5, 5), new Vector3(6, 6, 6))
 			bboxContain = new Box3(new Vector3(3, 3, 3), new Vector3(4, 4, 4))
-			normedVector = new Vector3(1, 1, 1)
+			threeSceneService["normedTransformVector"] = new Vector3(1, 1, 1)
 		})
 
 		it("should calculate distance if labels partially overlap", () => {
-			const distance = threeSceneService["getIntersectionDistance"](bboxHovered, bboxOverlap, normedVector, overlapDistance)
+			const getDistance = threeSceneService["getIntersectionDistanceFunction"](bboxHovered, bboxOverlap)
+			const distance = getDistance(overlapDistance)
 			expect(distance).toEqual(overlapDistance)
 		})
 
 		it("should calculate distance if labels fully overlap", () => {
-			const distance = threeSceneService["getIntersectionDistance"](bboxHovered, bboxContain, normedVector, overlapDistance)
+			const getDistance = threeSceneService["getIntersectionDistanceFunction"](bboxHovered, bboxContain)
+			const distance = getDistance(overlapDistance)
 			expect(distance).toEqual(overlapDistance)
 		})
 
 		it("should return 0 if labels dont overlap", () => {
-			const distance = threeSceneService["getIntersectionDistance"](bboxHovered, bboxMiss, normedVector, overlapDistance)
+			const getDistance = threeSceneService["getIntersectionDistanceFunction"](bboxHovered, bboxMiss)
+			const distance = getDistance(overlapDistance)
 			expect(distance).toEqual(0)
 		})
 	})
@@ -421,6 +426,47 @@ describe("ThreeSceneService", () => {
 			threeSceneService.scaleHeight()
 
 			expect(threeSceneService["mapMesh"].setScale).toHaveBeenCalledWith(scaling)
+		})
+	})
+
+	describe("initFloorLabels", () => {
+		const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
+
+		afterEach(() => {
+			floorLabelDrawerSpy.mockReset()
+		})
+
+		it("should not add floor labels for StreetMap and TreeMapStreet algorithms", () => {
+			threeSceneService["notifyMapMeshChanged"] = jest.fn()
+			const getRootNodeMock = jest.fn()
+			const originalGetRootNode = threeSceneService["getRootNode"]
+			threeSceneService["getRootNode"] = getRootNodeMock
+
+			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.StreetMap))
+			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, storeService.getState(), false))
+
+			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.TreeMapStreet))
+			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, storeService.getState(), false))
+
+			expect(getRootNodeMock).not.toHaveBeenCalled()
+			expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
+
+			threeSceneService["getRootNode"] = originalGetRootNode
+
+			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
+			threeSceneService.setMapMesh(TEST_NODES, new CodeMapMesh(TEST_NODES, storeService.getState(), false))
+
+			expect(floorLabelDrawerSpy).toHaveBeenCalled()
+		})
+
+		it("should not add floor labels if no root node was found", () => {
+			threeSceneService["notifyMapMeshChanged"] = jest.fn()
+			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
+
+			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
+			threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, storeService.getState(), false))
+
+			expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
 		})
 	})
 })

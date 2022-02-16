@@ -1,115 +1,76 @@
-import "./legendPanel.module"
+import { TestBed } from "@angular/core/testing"
+import { fireEvent, render, screen } from "@testing-library/angular"
 
-import { LegendPanelController } from "./legendPanel.component"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
-import { ColorRange } from "../../codeCharta.model"
-import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
-import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { FilesService } from "../../state/store/files/files.service"
+import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
+import { LegendPanelComponent } from "./legendPanel.component"
+import { LegendPanelModule } from "./legendPanel.module"
+
+jest.mock("../../state/store/dynamicSettings/heightMetric/heightMetric.selector", () => ({
+	heightMetricSelector: () => "mcc"
+}))
+jest.mock("../../state/store/dynamicSettings/areaMetric/areaMetric.selector", () => ({
+	areaMetricSelector: () => "loc"
+}))
+jest.mock("../../state/store/dynamicSettings/colorMetric/colorMetric.selector", () => ({
+	colorMetricSelector: () => "rloc"
+}))
+jest.mock("../../state/store/dynamicSettings/colorRange/colorRange.selector", () => ({
+	colorRangeSelector: () => ({ from: 21, to: 42, max: 9001 })
+}))
+
+const mockedIsDeltaStateSelector = isDeltaStateSelector as jest.Mock
+jest.mock("../../state/selectors/isDeltaState.selector", () => ({
+	isDeltaStateSelector: jest.fn()
+}))
 
 describe("LegendPanelController", () => {
-	let legendPanelController: LegendPanelController
-	let $rootScope: IRootScopeService
-
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.legendPanel")
-
-		$rootScope = getService<IRootScopeService>("$rootScope")
-	}
-
-	function rebuildController() {
-		legendPanelController = new LegendPanelController($rootScope)
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to colorMetric", () => {
-			ColorMetricService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
-		})
-
-		it("should subscribe to colorRange", () => {
-			ColorRangeService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(ColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
-		})
-
-		it("should subscribe to IsAttributeSideBarVisibleService", () => {
-			IsAttributeSideBarVisibleService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(IsAttributeSideBarVisibleService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
-		})
-
-		it("should subscribe to FilesService", () => {
-			const fileServiceSubscribeSpy = jest.spyOn(FilesService, "subscribe").mockImplementation(jest.fn())
-
-			rebuildController()
-
-			expect(fileServiceSubscribeSpy).toHaveBeenCalled()
+		TestBed.configureTestingModule({
+			imports: [LegendPanelModule]
 		})
 	})
 
-	describe("onFilesSelectionChanged", () => {
-		it("should update its _viewModel.isDeltaState", () => {
-			legendPanelController["_viewModel"].isDeltaState = true
-			legendPanelController.onFilesSelectionChanged([])
+	it("should open and close", async () => {
+		const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
 
-			expect(legendPanelController["_viewModel"].isDeltaState).toBe(false)
-		})
+		expect(isLegendPanelOpen(container)).toBe(false)
+
+		const openLegendButton = screen.getByTitle("Show panel")
+		fireEvent.click(openLegendButton)
+		expect(isLegendPanelOpen(container)).toBe(true)
+
+		const closeLegendButton = screen.getByTitle("Hide panel")
+		fireEvent.click(closeLegendButton)
+		expect(isLegendPanelOpen(container)).toBe(false)
 	})
 
-	describe("onColorMetricChanged", () => {
-		it("should update the color metric when it is changed", () => {
-			const newColorMetric = "new_color_metric"
+	it("should display legend for single mode", async () => {
+		mockedIsDeltaStateSelector.mockImplementation(() => false)
+		const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+		fireEvent.click(screen.getByTitle("Show panel"))
 
-			legendPanelController.onColorMetricChanged(newColorMetric)
+		const areDeltaEntriesShown = screen.queryAllByText("delta", { exact: false }).length > 0
+		expect(areDeltaEntriesShown).toBe(false)
 
-			expect(legendPanelController["_viewModel"].colorMetric).toEqual(newColorMetric)
-		})
+		const metricDescriptions = container.querySelectorAll("cc-legend-block")
+		expect(metricDescriptions[0].textContent).toMatch("Size metric (loc: lines of code)")
+		expect(metricDescriptions[1].textContent).toMatch("Height metric (mcc: cyclomatic complexity)")
+		expect(metricDescriptions[2].textContent).toMatch("Color metric (rloc: real lines of code)")
 	})
 
-	describe("onColorRangeChanged", () => {
-		it("should update the ColorRange when it is changed", () => {
-			const newColorRange: ColorRange = { from: 13, to: 33 }
+	it("should display legend for delta mode", async () => {
+		mockedIsDeltaStateSelector.mockImplementation(() => true)
+		const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+		fireEvent.click(screen.getByTitle("Show panel"))
 
-			legendPanelController.onColorRangeChanged(newColorRange)
+		const areDeltaEntriesShown = screen.queryAllByText("delta", { exact: false }).length > 0
+		expect(areDeltaEntriesShown).toBe(true)
 
-			expect(legendPanelController["_viewModel"].colorRange).toEqual(newColorRange)
-		})
-	})
-
-	describe("onIsAttributeSideBarVisibleChanged", () => {
-		it("should set the sideBarVisibility in viewModel", () => {
-			legendPanelController.onIsAttributeSideBarVisibleChanged(true)
-
-			expect(legendPanelController["_viewModel"].isSideBarVisible).toBeTruthy()
-		})
-	})
-
-	describe("toggle", () => {
-		it("should toggle the legendPanel visibility", () => {
-			legendPanelController["_viewModel"].isLegendVisible = false
-
-			legendPanelController.toggle()
-
-			expect(legendPanelController["_viewModel"].isLegendVisible).toBeTruthy()
-
-			legendPanelController.toggle()
-
-			expect(legendPanelController["_viewModel"].isLegendVisible).toBeFalsy()
-		})
+		const metricDescriptions = container.querySelectorAll("cc-legend-block")
+		expect(metricDescriptions.length).toBe(0)
 	})
 })
+
+function isLegendPanelOpen(container: Element) {
+	return container.querySelector(".block-wrapper").classList.contains("visible")
+}

@@ -13,6 +13,7 @@ const PADDING_SCALING_FACTOR = 1
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
+	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric).maxValue * mapSizeResolutionScaling
 	const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 
 	if (hasFixedFolders(map)) {
@@ -29,7 +30,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 		const scaleLength = totalMapSize / nodes[0].width
 		const scaleWidth = totalMapSize / nodes[0].length
 
-		// Scale the 100x100 root folder to a bigger map
+		// Scale the 100x100 root folder to be bigger and to match fixed/estimated totalMapSize
 		scaleRoot(nodes[0], scaleLength, scaleWidth)
 
 		return [
@@ -43,6 +44,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 				0,
 				heightScale,
 				maxHeight,
+				maxWidth,
 				isDeltaState,
 				mapSizeResolutionScaling
 			)
@@ -67,6 +69,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 	offsetY0: number,
 	heightScale: number,
 	maxHeight: number,
+	maxWidth: number,
 	isDeltaState: boolean,
 	mapSizeResolutionScaling: number
 ) {
@@ -120,6 +123,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 						squarifiedNode.y0,
 						heightScale,
 						maxHeight,
+						maxWidth,
 						isDeltaState,
 						mapSizeResolutionScaling
 					)

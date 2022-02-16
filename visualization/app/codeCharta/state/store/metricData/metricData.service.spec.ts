@@ -2,13 +2,22 @@ import "../../state.module"
 import { IRootScopeService } from "angular"
 import { MetricDataService } from "./metricData.service"
 import { EdgeMetricDataService } from "./edgeMetricData/edgeMetricData.service"
-import { setEdgeMetricData } from "./edgeMetricData/edgeMetricData.actions"
-import { setNodeMetricData } from "./nodeMetricData/nodeMetricData.actions"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { EDGE_METRIC_DATA, METRIC_DATA, VALID_EDGE, withMockedEventMethods } from "../../../util/dataMocks"
 import { NodeMetricDataService } from "./nodeMetricData/nodeMetricData.service"
 import { StoreService } from "../../store.service"
 import { setEdges } from "../fileSettings/edges/edges.actions"
+import { nodeMetricDataSelector } from "../../selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { edgeMetricDataSelector } from "../../selectors/accumulatedData/metricData/edgeMetricData.selector"
+
+const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
+jest.mock("../../selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
+	nodeMetricDataSelector: jest.fn()
+}))
+const mockedEdgeMetricDataSelector = edgeMetricDataSelector as unknown as jest.Mock
+jest.mock("../../selectors/accumulatedData/metricData/edgeMetricData.selector", () => ({
+	edgeMetricDataSelector: jest.fn()
+}))
 
 describe("MetricDataService", () => {
 	let metricDataService: MetricDataService
@@ -52,7 +61,7 @@ describe("MetricDataService", () => {
 
 	describe("onEdgeMetricDataChanged", () => {
 		it("should notify that metric data is complete if node metric data exists", () => {
-			storeService["store"].dispatch(setNodeMetricData(METRIC_DATA))
+			mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
 
 			metricDataService.onEdgeMetricDataChanged()
 
@@ -60,7 +69,7 @@ describe("MetricDataService", () => {
 		})
 
 		it("should not notify if node metric data does not exist", () => {
-			storeService["store"].dispatch(setNodeMetricData())
+			mockedNodeMetricDataSelector.mockImplementation(() => [])
 
 			metricDataService.onEdgeMetricDataChanged()
 
@@ -70,7 +79,7 @@ describe("MetricDataService", () => {
 
 	describe("onNodeMetricDataChanged", () => {
 		it("should notify that metric data is complete if edge metric data exists", () => {
-			storeService["store"].dispatch(setEdgeMetricData(EDGE_METRIC_DATA))
+			mockedEdgeMetricDataSelector.mockImplementation(() => EDGE_METRIC_DATA)
 
 			metricDataService.onNodeMetricDataChanged()
 
@@ -78,8 +87,8 @@ describe("MetricDataService", () => {
 		})
 
 		it("should not notify if edge metric data does not exist and there are edges in the file", () => {
-			storeService["store"].dispatch(setEdges([VALID_EDGE]))
-			storeService["store"].dispatch(setEdgeMetricData())
+			storeService["originalDispatch"](setEdges([VALID_EDGE]))
+			mockedEdgeMetricDataSelector.mockImplementation(() => [])
 
 			metricDataService.onNodeMetricDataChanged()
 
@@ -87,7 +96,7 @@ describe("MetricDataService", () => {
 		})
 
 		it("should notify if edges are not available in the files", () => {
-			storeService["store"].dispatch(setEdgeMetricData())
+			mockedEdgeMetricDataSelector.mockImplementation(() => [])
 
 			metricDataService.onNodeMetricDataChanged()
 

@@ -1,7 +1,6 @@
 import "./metricChooser.component.scss"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { NodeMetricData } from "../../codeCharta.model"
-import $ from "jquery"
 import { StoreService } from "../../state/store.service"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
@@ -37,8 +36,8 @@ export class MetricChooserController
 		searchTerm: ""
 	}
 
-	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		"ngInject"
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
@@ -78,8 +77,8 @@ export class MetricChooserController
 	}
 
 	focusInputField(idName: string) {
-		this.$timeout(() => {
-			$(`.metric-search.${idName}`).focus()
+		setTimeout(() => {
+			document.getElementById(`${idName}-selector`).focus()
 		}, 200)
 	}
 

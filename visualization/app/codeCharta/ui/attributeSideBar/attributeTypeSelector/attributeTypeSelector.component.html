@@ -1,0 +1,4 @@
+<mat-button-toggle-group [value]="metricName | aggregationTypePipe: (getAttributeTypeOfNodesByMetric$ | async)">
+	<mat-button-toggle title="Select Sum" (click)="setToAbsolute()" value="sum">Σ</mat-button-toggle>
+	<mat-button-toggle title="Select Median" (click)="setToRelative()" value="median">x͂</mat-button-toggle>
+</mat-button-toggle-group>

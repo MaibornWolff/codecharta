@@ -13,8 +13,12 @@ import { TEST_DELTA_MAP_A } from "../../util/dataMocks"
 import { addFile, setDelta } from "../../state/store/files/files.actions"
 import { LabelShowNodeNameService } from "../../state/store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
 import { LabelShowMetricValueService } from "../../state/store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
+import { ColorLabelsService } from "../../state/store/appSettings/colorLabels/colorLabels.service"
+import { colorLabelOptions } from "../../codeCharta.model"
 
 describe("HeightSettingsPanelController", () => {
+	const wait = async (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
+
 	let heightSettingsPanelController: HeightSettingsPanelController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
@@ -85,6 +89,14 @@ describe("HeightSettingsPanelController", () => {
 
 			expect(LabelShowMetricValueService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
+
+		it("should subscribe to ColorLabelService", () => {
+			ColorLabelsService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ColorLabelsService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+		})
 	})
 
 	describe("onAmountOfTopLabelsChanged", () => {
@@ -139,15 +151,45 @@ describe("HeightSettingsPanelController", () => {
 	})
 
 	describe("applySettingsAmountOfTopLabels", () => {
-		it("should update amountOfTopLabels in store", done => {
+		it("should update amountOfTopLabels in store", async () => {
 			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 12
 
 			heightSettingsPanelController.applySettingsAmountOfTopLabels()
 
-			setTimeout(() => {
-				expect(storeService.getState().appSettings.amountOfTopLabels).toBe(12)
-				done()
-			}, HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			await wait(HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			expect(storeService.getState().appSettings.amountOfTopLabels).toBe(12)
+		})
+	})
+
+	describe("onColorLabelsChanged", () => {
+		it("should set sliderDisabled in viewModel to true if one option is truthy", () => {
+			const colorLabelsNeg: colorLabelOptions = {
+				positive: false,
+				negative: true,
+				neutral: false
+			}
+			heightSettingsPanelController.onColorLabelsChanged(colorLabelsNeg)
+			expect(heightSettingsPanelController["_viewModel"].sliderDisabled).toBeTruthy()
+		})
+
+		it("should set sliderDisabled in viewModel to true if multiple options are truthy", () => {
+			const colorLabelsPosNeut: colorLabelOptions = {
+				positive: true,
+				negative: false,
+				neutral: true
+			}
+			heightSettingsPanelController.onColorLabelsChanged(colorLabelsPosNeut)
+			expect(heightSettingsPanelController["_viewModel"].sliderDisabled).toBeTruthy()
+		})
+
+		it("should set sliderDisabled in viewModel to false if no color label options are truthy", () => {
+			const colorLabelsFalse: colorLabelOptions = {
+				positive: false,
+				negative: false,
+				neutral: false
+			}
+			heightSettingsPanelController.onColorLabelsChanged(colorLabelsFalse)
+			expect(heightSettingsPanelController["_viewModel"].sliderDisabled).toBeFalsy()
 		})
 	})
 
@@ -162,15 +204,13 @@ describe("HeightSettingsPanelController", () => {
 	})
 
 	describe("applySettingsScaling", () => {
-		it("should update scaling in store", done => {
+		it("should update scaling in store", async () => {
 			heightSettingsPanelController["_viewModel"].scalingY = 1.8
 
 			heightSettingsPanelController.applySettingsScaling()
 
-			setTimeout(() => {
-				expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1.8, 1))
-				done()
-			}, HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			await wait(HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1.8, 1))
 		})
 	})
 

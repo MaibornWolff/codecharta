@@ -52,6 +52,7 @@ exclude:
     - Gemfile
     - Gemfile.lock
     - README.md
+    - vendor/
 keep_files:
     - .git
     - .svn

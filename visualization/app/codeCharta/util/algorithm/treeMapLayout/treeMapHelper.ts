@@ -1,8 +1,11 @@
+import { ColorRange, MapColors } from "./../../../codeCharta.model"
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
-import { Node, CodeMapNode, State } from "../../../codeCharta.model"
-import { Vector3 } from "three"
+import { CodeMapNode, ColorMode, Node, State } from "../../../codeCharta.model"
+import { Color, Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
+import { ColorConverter } from "../../color/colorConverter"
+import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
@@ -141,7 +144,7 @@ export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: 
 	}
 
 	if (state.dynamicSettings.focusedNodePath.length > 0) {
-		return squaredNode.path.startsWith(state.dynamicSettings.focusedNodePath)
+		return squaredNode.path.startsWith(state.dynamicSettings.focusedNodePath[0])
 	}
 
 	return true
@@ -166,8 +169,10 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: State) {
 		return true
 	}
 
-	if (state.dynamicSettings.searchedNodePaths && state.dynamicSettings.searchPattern?.length > 0) {
-		return state.dynamicSettings.searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
+	const searchedNodePaths = searchedNodePathsSelector(state)
+
+	if (searchedNodePaths && state.dynamicSettings.searchPattern?.length > 0) {
+		return searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
 	}
 
 	if (state.appSettings.showOnlyBuildingsWithEdges && state.fileSettings.edges.some(edge => edge.visible)) {
@@ -185,11 +190,12 @@ function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, state: State) {
 }
 
 function isNodeNonSearched(squaredNode: CodeMapNode, state: State) {
-	return !state.dynamicSettings.searchedNodePaths.has(squaredNode.path)
+	const searchedNodePaths = searchedNodePathsSelector(state)
+	return !searchedNodePaths.has(squaredNode.path)
 }
 
 export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettings }: State, isDeltaState: boolean, flattened: boolean) {
-	const { mapColors, invertColorRange, whiteColorBuildings } = appSettings
+	const { mapColors } = appSettings
 
 	if (isDeltaState) {
 		return mapColors.base
@@ -202,14 +208,70 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 	if (flattened) {
 		return mapColors.flat
 	}
-	const mapColorPositive = whiteColorBuildings ? mapColors.lightGrey : mapColors.positive
-	if (metricValue < dynamicSettings.colorRange.from) {
-		return invertColorRange ? mapColors.negative : mapColorPositive
+
+	const { colorRange, colorMode } = dynamicSettings
+
+	if (colorMode === ColorMode.absolute) {
+		if (metricValue <= colorRange.from) {
+			return mapColors.positive
+		}
+		if (metricValue > colorRange.to) {
+			return mapColors.negative
+		}
+		return mapColors.neutral
 	}
-	if (metricValue > dynamicSettings.colorRange.to) {
-		return invertColorRange ? mapColorPositive : mapColors.negative
+
+	if (colorMode === ColorMode.trueGradient) {
+		return calculateTrueGradient(mapColors, colorRange, metricValue)
 	}
-	return mapColors.neutral
+
+	return calculateWeightedGradient(mapColors, colorRange, metricValue)
+}
+
+function calculateTrueGradient(mapColors: MapColors, colorRange: ColorRange, metricValue: number) {
+	const middle = (colorRange.from + colorRange.to) / 2
+	const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
+
+	if (metricValue <= middle) {
+		const neutralFactor = metricValue / middle
+		const positiveColorRGB = ColorConverter.convertHexToColorObject(mapColors.positive)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, neutralFactor))
+	}
+
+	const negativeFactor = (metricValue - middle) / (colorRange.max - middle)
+	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
+	return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, negativeFactor))
+}
+
+function calculateWeightedGradient(mapColors: MapColors, colorRange: ColorRange, metricValue: number) {
+	const endPositive = Math.max(colorRange.from - (colorRange.to - colorRange.from) / 2, colorRange.from / 2)
+	const startNeutral = 2 * colorRange.from - endPositive
+	const endNeutral = colorRange.to - (colorRange.to - colorRange.from) / 2
+	const startNegative = colorRange.to
+
+	if (metricValue <= endPositive) {
+		return mapColors.positive
+	}
+
+	if (metricValue < startNeutral) {
+		const factor = (metricValue - endPositive) / (startNeutral - endPositive)
+		const positiveColorRGB = ColorConverter.convertHexToColorObject(mapColors.positive)
+		const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, factor))
+	}
+
+	if (metricValue <= endNeutral) {
+		return mapColors.neutral
+	}
+
+	if (metricValue < startNegative) {
+		const factor = (metricValue - endNeutral) / (startNegative - endNeutral)
+		const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
+		const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, factor))
+	}
+
+	return mapColors.negative
 }
 
 export const TreeMapHelper = {

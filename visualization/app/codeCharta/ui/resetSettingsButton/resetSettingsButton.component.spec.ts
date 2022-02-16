@@ -5,7 +5,8 @@ import { ResetSettingsButtonController } from "./resetSettingsButton.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
-import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 describe("resetSettingsButtonController", () => {
 	let resetSettingsButtonController: ResetSettingsButtonController
@@ -29,22 +30,33 @@ describe("resetSettingsButtonController", () => {
 	describe("applyDefaultSettings", () => {
 		it("should update store with available default settings objects", () => {
 			resetSettingsButtonController["settingsNames"] =
-				"appSettings.invertColorRange, appSettings.hideFlatBuildings, appSettings.notInAppSettings, notInSettings.something"
-			storeService.dispatch(setInvertColorRange(true))
-			storeService.dispatch(setInvertColorRange(true))
+				"appSettings.hideFlatBuildings, appSettings.notInAppSettings, notInSettings.something"
 
 			resetSettingsButtonController.applyDefaultSettings()
 
-			expect(storeService.getState().appSettings.invertColorRange).toBeFalsy()
 			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
 		})
 
+		it("should only reset the color options when specified", () => {
+			resetSettingsButtonController["settingsNames"] =
+				"appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, " +
+				"appSettings.mapColors.selected"
+			const mapColors = storeService.getState().appSettings.mapColors
+			const colorRange = storeService.getState().dynamicSettings.colorRange
+
+			storeService.dispatch(setMapColors({ ...mapColors, positive: "#176666" }))
+			storeService.dispatch(setColorRange({ ...colorRange, from: 50 }))
+			resetSettingsButtonController.applyDefaultSettings()
+
+			expect(storeService.getState().appSettings.mapColors).toEqual(defaultMapColors)
+			expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(50)
+		})
+
 		it("settingsNames should allow newline", () => {
-			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange,\nappSettings.hideFlatBuildings"
+			resetSettingsButtonController["settingsNames"] = "appSettings.mapColors.neutral,\nappSettings.hideFlatBuildings"
 
 			resetSettingsButtonController.applyDefaultSettings()
 
-			expect(storeService.getState().appSettings.invertColorRange).toBeFalsy()
 			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
 		})
 

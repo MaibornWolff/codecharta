@@ -2,7 +2,7 @@
 
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper } from "../../util/scenarioHelper"
-import { ColorRange } from "../../codeCharta.model"
+import { ColorRange, MapColors } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
@@ -10,6 +10,8 @@ import { DialogService } from "../dialog/dialog.service"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
+import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 export interface ScenarioItem {
 	scenarioName: string
@@ -30,11 +32,12 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 		private dialogService: DialogService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
+		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 	}
 
 	loadScenarios() {
-		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.storeService.getState().metricData)
+		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(metricDataSelector(this.storeService.getState()))
 	}
 
 	onMetricDataChanged() {
@@ -46,6 +49,7 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 
 		this.storeService.dispatch(setState(scenarioSettings))
 		this.storeService.dispatch(setColorRange(scenarioSettings.dynamicSettings.colorRange as ColorRange))
+		this.storeService.dispatch(setMapColors(scenarioSettings.appSettings.mapColors as MapColors))
 		this.threeOrbitControlsService.setControlTarget()
 	}
 
