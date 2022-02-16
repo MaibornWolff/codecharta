@@ -37,6 +37,8 @@ import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMe
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
+import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 
 @NgModule({
 	imports: [
@@ -57,7 +59,8 @@ import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFile
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule,
-		LoadingFileProgressSpinnerModule
+		LoadingFileProgressSpinnerModule,
+		LoadingMapProgressSpinnerModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
@@ -84,6 +87,7 @@ import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFile
 		MarkFolderRowComponent,
 		RemoveFileButtonComponent,
 		LoadingFileProgressSpinnerComponent,
+		LoadingMapProgressSpinnerComponent,
 		...dialogs
 	]
 })
