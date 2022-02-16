@@ -1,3 +1,4 @@
-import { CcState } from "../../store"
+import { createSelector } from "../../../angular-redux/store"
+import { appSettingsSelector } from "../appSettings.selector"
 
-export const toggleEdgeMetricSelector = (state: CcState): boolean => state.appSettings.edgeMetricToggler
+export const toggleEdgeMetricSelector = createSelector([appSettingsSelector], appSettings => appSettings.edgeMetricToggler)

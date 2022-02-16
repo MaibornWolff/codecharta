@@ -8,6 +8,8 @@ import { StoreService } from "../../state/store.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { onStoreChanged } from "../../state/angular-redux/onStoreChanged/onStoreChanged"
+import { toggleEdgeMetricSelector } from "../../state/store/appSettings/toggleEdgeMetric/toggleEdgeMetric.selector"
 
 export class EdgeChooserController
 	implements EdgeMetricDataSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber
@@ -19,11 +21,13 @@ export class EdgeChooserController
 		edgeMetric: string
 		hoveredEdgeValue: EdgeMetricCount
 		searchTerm: string
+		edgeMetricToggle: boolean
 	} = {
 		edgeMetricData: [],
 		edgeMetric: null,
 		hoveredEdgeValue: null,
-		searchTerm: ""
+		searchTerm: "",
+		edgeMetricToggle: false
 	}
 
 	constructor(
@@ -36,6 +40,11 @@ export class EdgeChooserController
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
+		onStoreChanged<boolean>(toggleEdgeMetricSelector, this.onEdgeMetricTogglerChanged)
+	}
+
+	onEdgeMetricTogglerChanged = (_old: boolean, newValue: boolean) => {
+		this._viewModel.edgeMetricToggle = newValue
 	}
 
 	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
