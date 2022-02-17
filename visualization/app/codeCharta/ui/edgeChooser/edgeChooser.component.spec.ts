@@ -9,6 +9,7 @@ import { StoreService } from "../../state/store.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { klona } from "klona"
+import { toggleEdgeMetric } from "../../state/store/appSettings/toggleEdgeMetric/toggleEdgeMetric.actions"
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
@@ -69,6 +70,12 @@ describe("EdgeChooserController", () => {
 			rebuildController()
 
 			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
+		})
+
+		it("should reflect store's toggleEdgeMetric in its edgeMetricToggle", () => {
+			expect(edgeChooserController["_viewModel"].edgeMetricToggle).toBe(false)
+			storeService.dispatch(toggleEdgeMetric())
+			expect(edgeChooserController["_viewModel"].edgeMetricToggle).toBe(true)
 		})
 	})
 
