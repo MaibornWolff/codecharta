@@ -46,8 +46,9 @@ export class CodeMapArrowService
 	}
 
 	onBuildingUnhovered() {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings?.edgeMetric) {
+		const { edgeMetricToggler } = this.storeService.getState().appSettings
+
+		if (!edgeMetricToggler) {
 			this.clearArrows()
 			this.showEdgesOfBuildings()
 		}

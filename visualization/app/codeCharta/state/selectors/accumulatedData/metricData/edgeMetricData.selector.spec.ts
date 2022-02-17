@@ -28,11 +28,10 @@ describe("edgeMetricDataSelector", () => {
 	it("should sort the metrics after calculating them", () => {
 		const result = calculateEdgeMetricData(fileStates, [])
 
-		expect(result).toHaveLength(4)
+		expect(result).toHaveLength(3)
 		expect(result[0].name).toBe("avgCommits")
-		expect(result[1].name).toBe("None")
-		expect(result[2].name).toBe("otherMetric")
-		expect(result[3].name).toBe("pairingRate")
+		expect(result[1].name).toBe("otherMetric")
+		expect(result[2].name).toBe("pairingRate")
 	})
 
 	it("metrics Map should contain correct entries", () => {

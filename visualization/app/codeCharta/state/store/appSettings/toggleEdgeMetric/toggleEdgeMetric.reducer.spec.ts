@@ -12,7 +12,7 @@ describe("edgeMetricToggler", () => {
 
 	describe("Action: TOGGLE_EDGE_METRIC", () => {
 		it("should toggle state", () => {
-			const result = edgeMetricToggler(false, toggleEdgeMetric(true))
+			const result = edgeMetricToggler(false, toggleEdgeMetric())
 			const toggledResult = edgeMetricToggler(result, toggleEdgeMetric())
 
 			expect(toggledResult).toBe(!result)

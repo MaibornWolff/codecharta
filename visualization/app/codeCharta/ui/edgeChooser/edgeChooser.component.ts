@@ -40,7 +40,7 @@ export class EdgeChooserController
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
-		onStoreChanged<boolean>(toggleEdgeMetricSelector, this.onEdgeMetricTogglerChanged)
+		onStoreChanged(toggleEdgeMetricSelector, this.onEdgeMetricTogglerChanged)
 	}
 
 	onEdgeMetricTogglerChanged = (_old: boolean, newValue: boolean) => {
@@ -62,7 +62,7 @@ export class EdgeChooserController
 		this._viewModel.hoveredEdgeValue = null
 	}
 
-	onEdgeMetricChanged(edgeMetric?: string) {
+	onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.edgeMetric = edgeMetric
 		this.codeMapActionsService.updateEdgePreviews()
 	}

@@ -80,15 +80,12 @@ describe("EdgeMetricService", () => {
 			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("validEdgeMetric")
 		})
 		it("should reset edgeMetric because current edgeMetric does not exists in metricData", () => {
-			const metricData = [
-				{ name: "someNewMetric", maxValue: 22, minValue: 1 },
-				{ name: "None", maxValue: 1, minValue: 1 }
-			]
+			const metricData = [{ name: "someNewMetric", maxValue: 22, minValue: 1 }]
 			storeService.dispatch(setEdgeMetric("invalidEdgeMetric"))
 
 			edgeMetricService.onEdgeMetricDataChanged(metricData)
 
-			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("None")
+			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("someNewMetric")
 		})
 	})
 })

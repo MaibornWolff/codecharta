@@ -142,7 +142,7 @@ describe("CodeMapArrowService", () => {
 			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalledTimes(0)
 		})
 
-		it("should call clearArrows and showEdgesOfBuildings through BuildingUnHovered", () => {
+		it("should call clearArrows and showEdgesOfBuildings through BuildingUnHovered when edge metric is enabled", () => {
 			codeMapArrowService.onBuildingUnhovered()
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
