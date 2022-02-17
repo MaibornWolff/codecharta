@@ -46,6 +46,11 @@ cc-edge-settings-panel {
 		align-items: center;
 		display: flex;
 		justify-content: space-between;
+
+		md-checkbox .md-label {
+			margin-top: 13px;
+			margin-left: 33px;
+		}
 	}
 }
 
