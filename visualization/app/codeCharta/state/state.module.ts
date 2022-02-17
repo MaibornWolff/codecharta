@@ -10,7 +10,6 @@ import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarg
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
-import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
@@ -66,7 +65,6 @@ angular
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(camelCase(SearchPanelModeService.name), SearchPanelModeService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
-	.service(camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(camelCase(FilesService.name), FilesService)
 	.service(camelCase(MapSizeService.name), MapSizeService)
 	.service(camelCase(MapColorsService.name), MapColorsService)
