@@ -6,15 +6,13 @@ export enum ToggleEdgeMetricActions {
 
 export interface ToggleEdgeMetricAction extends Action {
 	type: ToggleEdgeMetricActions.TOGGLE_EDGE_METRIC
-	payload: boolean
 }
 
 export type EdgeMetricToggleAction = ToggleEdgeMetricAction
 
-export function toggleEdgeMetric(toggleEdgeMetric: boolean = defaultToggleEdgeMetric): ToggleEdgeMetricAction {
+export function toggleEdgeMetric(): ToggleEdgeMetricAction {
 	return {
-		type: ToggleEdgeMetricActions.TOGGLE_EDGE_METRIC,
-		payload: toggleEdgeMetric
+		type: ToggleEdgeMetricActions.TOGGLE_EDGE_METRIC
 	}
 }
 
