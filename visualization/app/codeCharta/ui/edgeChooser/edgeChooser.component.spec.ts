@@ -138,14 +138,6 @@ describe("EdgeChooserController", () => {
 			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("myEdgeMetric")
 		})
 
-		it("should set None as edgeMetric into viewModel", () => {
-			codeMapActionsService.updateEdgePreviews = jest.fn()
-
-			edgeChooserController.onEdgeMetricChanged(null)
-
-			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("None")
-		})
-
 		it("should update Edge Previews", () => {
 			codeMapActionsService.updateEdgePreviews = jest.fn()
 

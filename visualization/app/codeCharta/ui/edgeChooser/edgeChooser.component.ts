@@ -71,10 +71,6 @@ export class EdgeChooserController
 		this.storeService.dispatch(setEdgeMetric(this._viewModel.edgeMetric))
 	}
 
-	noEdgesAvailable() {
-		return this._viewModel.edgeMetricData.length <= 1
-	}
-
 	filterMetricData() {
 		const searchTerm = this._viewModel.searchTerm.toLowerCase()
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(({ name }) => name.toLowerCase().includes(searchTerm))
