@@ -11,8 +11,7 @@ cc-loading-file-progress-spinner #loading-gif-file {
 
 	mat-progress-spinner.mat-progress-spinner {
 		display: inline-block;
-		margin: 0 auto;
-		margin-top: 22%;
+		margin: 22% auto 0;
 		circle {
 			stroke: #009688;
 		}
