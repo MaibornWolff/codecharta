@@ -13,6 +13,7 @@ import { PanelSelectionActions } from "../panelSelection/panelSelection.actions"
 import { SearchPanelModeActions } from "../searchPanelMode/searchPanelMode.actions"
 import { SortingOrderAscendingActions } from "../sortingOrderAscending/sortingOrderAscending.actions"
 import { IsLoadingMapAction, IsLoadingMapActions, setIsLoadingMap } from "./isLoadingMap.actions"
+import { RightClickedNodeDataActions } from "../../appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 // Todo state actions explicit instead of excluding all others; refs #1547
 const actionsToExclude = [
@@ -27,6 +28,7 @@ const actionsToExclude = [
 	ExperimentalFeaturesEnabledActions,
 	ScreenshotToClipboardEnabledActions,
 	HoveredBuildingPathActions,
+	RightClickedNodeDataActions,
 	FocusedNodePathActions,
 	CameraTargetActions,
 	CameraActions
