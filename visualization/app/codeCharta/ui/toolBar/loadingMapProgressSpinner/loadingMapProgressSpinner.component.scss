@@ -1,0 +1,10 @@
+cc-loading-map-progress-spinner {
+	display: inline-block;
+	vertical-align: middle;
+
+	mat-progress-spinner.mat-progress-spinner {
+		circle {
+			stroke: #009688;
+		}
+	}
+}
