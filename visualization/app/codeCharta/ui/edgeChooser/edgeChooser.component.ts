@@ -76,12 +76,6 @@ export class EdgeChooserController
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(({ name }) => name.toLowerCase().includes(searchTerm))
 	}
 
-	focusInputField(idName) {
-		setTimeout(() => {
-			document.getElementById(`${idName}-selector`).focus()
-		}, 200)
-	}
-
 	clearSearchTerm() {
 		this._viewModel.searchTerm = ""
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData
