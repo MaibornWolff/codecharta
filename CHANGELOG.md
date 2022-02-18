@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate loading gifs to Angular and remove now unused `isLoadingMap.service` [#2668](https://github.com/MaibornWolff/codecharta/pull/2668)
+
 ## [1.90.0] - 2022-02-15
 
 ### Added 🚀

@@ -35,6 +35,10 @@ import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFi
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
+import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
+import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
+import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 
 @NgModule({
@@ -55,7 +59,9 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		NodeContextMenuCardModule
+		NodeContextMenuCardModule,
+		LoadingFileProgressSpinnerModule,
+		LoadingMapProgressSpinnerModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
@@ -82,6 +88,8 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 		FocusButtonsComponent,
 		MarkFolderRowComponent,
 		RemoveFileButtonComponent,
+		LoadingFileProgressSpinnerComponent,
+		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
 		...dialogs
 	]
