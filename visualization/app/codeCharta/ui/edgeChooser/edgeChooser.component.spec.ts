@@ -9,7 +9,7 @@ import { StoreService } from "../../state/store.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { klona } from "klona"
-import { toggleEdgeMetric } from "../../state/store/appSettings/toggleEdgeMetric/toggleEdgeMetric.actions"
+import { setIsEdgeMetricVisible } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { Store } from "../../state/store/store"
 
 describe("EdgeChooserController", () => {
@@ -74,11 +74,11 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should reflect store's toggleEdgeMetric in its edgeMetricToggle", () => {
-			expect(edgeChooserController["_viewModel"].edgeMetricToggle).toBe(false)
+			expect(edgeChooserController["_viewModel"].isEdgeMetricVisible).toBeTruthy()
 
-			Store.store.dispatch(toggleEdgeMetric())
+			Store.store.dispatch(setIsEdgeMetricVisible())
 
-			expect(edgeChooserController["_viewModel"].edgeMetricToggle).toBe(true)
+			expect(edgeChooserController["_viewModel"].isEdgeMetricVisible).toBeFalsy()
 		})
 	})
 

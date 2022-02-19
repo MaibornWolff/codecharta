@@ -28,7 +28,7 @@ import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
 import { sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
 import { screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import { invertArea } from "./invertArea/invertArea.reducer"
-import { edgeMetricToggler } from "./toggleEdgeMetric/toggleEdgeMetric.reducer"
+import { isEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.reducer"
 
 const appSettings = combineReducers({
 	colorLabels,
@@ -44,7 +44,7 @@ const appSettings = combineReducers({
 	mapColors,
 	resetCameraIfNewFileIsLoaded,
 	showOnlyBuildingsWithEdges,
-	edgeMetricToggler,
+	isEdgeMetricVisible,
 	isWhiteBackground,
 	dynamicMargin,
 	invertHeight,

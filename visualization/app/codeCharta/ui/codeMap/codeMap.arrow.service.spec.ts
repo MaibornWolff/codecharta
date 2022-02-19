@@ -22,7 +22,7 @@ import { setScaling } from "../../state/store/appSettings/scaling/scaling.action
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { toggleEdgeMetric } from "../../state/store/appSettings/toggleEdgeMetric/toggleEdgeMetric.actions"
+import { setIsEdgeMetricVisible } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
@@ -152,7 +152,7 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should call clearArrows and showEdgesOfBuildings through BuildingUnHovered when edge metric is disabled", () => {
-			storeService.dispatch(toggleEdgeMetric())
+			storeService.dispatch(setIsEdgeMetricVisible())
 			codeMapArrowService.onBuildingUnhovered()
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalledTimes(0)

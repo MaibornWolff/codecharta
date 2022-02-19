@@ -46,9 +46,9 @@ export class CodeMapArrowService
 	}
 
 	onBuildingUnhovered() {
-		const { edgeMetricToggler } = this.storeService.getState().appSettings
+		const { isEdgeMetricVisible } = this.storeService.getState().appSettings
 
-		if (!edgeMetricToggler) {
+		if (isEdgeMetricVisible) {
 			this.clearArrows()
 			this.showEdgesOfBuildings()
 		}
@@ -104,7 +104,7 @@ export class CodeMapArrowService
 	}
 
 	private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
-		return !this.storeService.getState().appSettings.edgeMetricToggler && !codeMapBuilding.node.flat
+		return this.storeService.getState().appSettings.isEdgeMetricVisible && !codeMapBuilding.node.flat
 	}
 
 	private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {

@@ -6,7 +6,7 @@
 
 	<label></label>
 	<md-select
-		ng-class="$ctrl._viewModel.edgeMetricToggle ? 'md-select-disabled-metric' : ''"
+		ng-class="$ctrl._viewModel.isEdgeMetricVisible ? '' : 'md-select-disabled-metric'"
 		ng-model="$ctrl._viewModel.edgeMetric"
 		ng-change="$ctrl.onEdgeMetricSelected()"
 		md-on-close="$ctrl.clearSearchTerm()"

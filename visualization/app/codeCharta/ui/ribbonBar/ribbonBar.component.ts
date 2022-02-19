@@ -14,7 +14,7 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { FilesService } from "../../state/store/files/files.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
-export class RibbonBarController implements PanelSelectionSubscriber, ExperimentalFeaturesEnabledSubscriber, EdgeMetricData {
+export class RibbonBarController implements PanelSelectionSubscriber, ExperimentalFeaturesEnabledSubscriber {
 	constructor(
 		private storeService: StoreService,
 		private $rootScope: IRootScopeService,
@@ -27,9 +27,6 @@ export class RibbonBarController implements PanelSelectionSubscriber, Experiment
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	name: string
-	maxValue: number
-	minValue: number
 	private _viewModel: {
 		panelSelection: PanelSelection
 		panelSelectionValues: typeof PanelSelection

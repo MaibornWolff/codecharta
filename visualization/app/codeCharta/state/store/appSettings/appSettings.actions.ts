@@ -29,7 +29,7 @@ import { defaultMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.action
 import { defaultSharpnessMode } from "./sharpnessMode/sharpnessMode.actions"
 import { defaultScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
 import { defaultInvertArea } from "./invertArea/invertArea.actions"
-import { defaultToggleEdgeMetric } from "./toggleEdgeMetric/toggleEdgeMetric.actions"
+import { defaultIsEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -69,7 +69,7 @@ export const defaultAppSettings: AppSettings = {
 	mapColors: defaultMapColors,
 	isPresentationMode: defaultIsPresentationMode,
 	showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,
-	edgeMetricToggler: defaultToggleEdgeMetric,
+	isEdgeMetricVisible: defaultIsEdgeMetricVisible,
 	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded,
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
