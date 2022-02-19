@@ -148,6 +148,22 @@ describe("EdgeChooserController", () => {
 
 			expect(codeMapActionsService.updateEdgePreviews).toHaveBeenCalled()
 		})
+
+		// Note: It's hard to test this case in jest because of the store workaround for AngularJS and Angular
+		// onEdgeMetricVisibilityChanged is not called here therefore the state is tested not viewModel.isEdgeMetricVisible
+		it("should enable visibility of current edge metric when the previous edge metric was disabled", () => {
+			codeMapActionsService.updateEdgePreviews = jest.fn()
+			edgeChooserController["_viewModel"].edgeMetric = "EdgeMetric1"
+			edgeChooserController["_viewModel"].isEdgeMetricVisible = false
+			storeService.dispatch(setIsEdgeMetricVisible())
+
+			expect(storeService.getState().appSettings.isEdgeMetricVisible).toBeFalsy()
+
+			edgeChooserController.onEdgeMetricChanged("EdgeMetric2")
+
+			expect(storeService.getState().appSettings.isEdgeMetricVisible).toBeTruthy()
+			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("EdgeMetric2")
+		})
 	})
 
 	describe("onEdgeMetricSelected", () => {

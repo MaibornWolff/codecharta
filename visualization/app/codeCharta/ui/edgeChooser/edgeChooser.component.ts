@@ -10,6 +10,7 @@ import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynam
 import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { onStoreChanged } from "../../state/angular-redux/onStoreChanged/onStoreChanged"
 import { isEdgeMetricVisibleSelector } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
+import { setIsEdgeMetricVisible } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 export class EdgeChooserController
 	implements EdgeMetricDataSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber
@@ -40,10 +41,10 @@ export class EdgeChooserController
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
-		onStoreChanged(isEdgeMetricVisibleSelector, this.onEdgeMetricTogglerChanged)
+		onStoreChanged(isEdgeMetricVisibleSelector, this.onEdgeMetricVisibilityChanged)
 	}
 
-	onEdgeMetricTogglerChanged = (_old: boolean, newValue: boolean) => {
+	onEdgeMetricVisibilityChanged = (_old: boolean, newValue: boolean) => {
 		this._viewModel.isEdgeMetricVisible = newValue
 	}
 
@@ -63,6 +64,9 @@ export class EdgeChooserController
 	}
 
 	onEdgeMetricChanged(edgeMetric: string) {
+		if (!this._viewModel.isEdgeMetricVisible) {
+			this.storeService.dispatch(setIsEdgeMetricVisible())
+		}
 		this._viewModel.edgeMetric = edgeMetric
 		this.codeMapActionsService.updateEdgePreviews()
 	}
