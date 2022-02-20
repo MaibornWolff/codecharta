@@ -39,6 +39,9 @@ import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFilePro
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
 import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
+import { SearchBarComponent } from "./codeCharta/ui/searchPanel/searchBar/searchBar.component"
+import { SearchBarModule } from "./codeCharta/ui/searchPanel/searchBar/searchBar.module"
+import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
 
 @NgModule({
 	imports: [
@@ -48,7 +51,8 @@ import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/load
 			UnfocusNodesOnLoadingMapEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
-			TrackEventUsageDataEffect
+			TrackEventUsageDataEffect,
+			BlacklistSearchPatternEffect
 		]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
@@ -60,7 +64,8 @@ import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/load
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule,
 		LoadingFileProgressSpinnerModule,
-		LoadingMapProgressSpinnerModule
+		LoadingMapProgressSpinnerModule,
+		SearchBarModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
@@ -88,6 +93,7 @@ import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/load
 		RemoveFileButtonComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
+		SearchBarComponent,
 		...dialogs
 	]
 })
