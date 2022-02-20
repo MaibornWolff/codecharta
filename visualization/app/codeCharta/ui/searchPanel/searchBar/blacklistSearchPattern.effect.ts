@@ -1,10 +1,11 @@
 import { Inject, Injectable } from "@angular/core"
-import { map, filter, withLatestFrom, tap } from "rxjs"
+import { map, filter, withLatestFrom, tap, take } from "rxjs"
 import { BlacklistType } from "../../../codeCharta.model"
 import { createEffect } from "../../../state/angular-redux/effects/createEffect"
 import { Actions, ActionsToken } from "../../../state/angular-redux/effects/effects.module"
 import { ofType } from "../../../state/angular-redux/ofType"
 import { Store } from "../../../state/angular-redux/store"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
 import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
@@ -20,11 +21,14 @@ export const blacklistSearchPattern = (type: BlacklistType): BlacklistSearchPatt
 	payload: { type }
 })
 
-// todo delete BlacklistSubscriber, SearchPatternSubscriber?
-
 @Injectable()
 export class BlacklistSearchPatternEffect {
-	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(Store) private store: Store) {}
+	constructor(
+		@Inject(ActionsToken) private actions$: Actions,
+		@Inject(Store) private store: Store,
+		@Inject(AddBlacklistItemsIfNotResultsInEmptyMapEffect)
+		private addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
+	) {}
 
 	private searchPattern$ = this.store.select(searchPatternSelector)
 
@@ -53,7 +57,14 @@ export class BlacklistSearchPatternEffect {
 		this.searchPattern2BlacklistItems$.pipe(
 			filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === BlacklistType.exclude),
 			tap(() => {
-				// todo addBlacklistItems$.take(1).tap(...) setSearchPattern()
+				this.addBlacklistItemsIfNotResultsInEmptyMapEffect.addBlacklistItems$
+					.pipe(
+						take(1),
+						tap(() => {
+							this.store.dispatch(setSearchPattern())
+						})
+					)
+					.subscribe()
 			}),
 			map(searchPattern2BlacklistItems => addBlacklistItemsIfNotResultsInEmptyMap(searchPattern2BlacklistItems.blacklistItems))
 		)
