@@ -21,7 +21,6 @@ export const blacklistSearchPattern = (type: BlacklistType): BlacklistSearchPatt
 })
 
 // todo delete BlacklistSubscriber, SearchPatternSubscriber?
-// todo delete this.blacklistService.resultsInEmptyMap
 
 @Injectable()
 export class BlacklistSearchPatternEffect {
