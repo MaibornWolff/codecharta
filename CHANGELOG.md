@@ -7,15 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate loading gifs to Angular and remove now unused `isLoadingMap.service` [#2668](https://github.com/MaibornWolff/codecharta/pull/2668)
 
 ## [1.90.0] - 2022-02-15
-
-### Fixed 🐞
-
--   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
 
 ### Added 🚀
 
