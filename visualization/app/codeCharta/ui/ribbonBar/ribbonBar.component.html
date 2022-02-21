@@ -109,7 +109,7 @@
 	ng-class="{
 		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN
 	}"
-	ng-show="!$ctrl._viewModel.isDeltaState"
+	ng-show="$ctrl._viewModel.hasEdgeMetric"
 >
 	<div class="section">
 		<div class="section-header">
@@ -122,11 +122,11 @@
 		>
 			Edge Metric Options <i class="fa fa-angle-down"></i>
 		</span>
-		<edge-settings-panel-component
+		<cc-edge-settings-panel
 			ng-class="{
 				hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN
 			}"
-		></edge-settings-panel-component>
+		></cc-edge-settings-panel>
 	</div>
 </md-card>
 

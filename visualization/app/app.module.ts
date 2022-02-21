@@ -39,6 +39,7 @@ import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFilePro
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
 import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
+import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 
 @NgModule({
 	imports: [
@@ -68,6 +69,7 @@ import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/load
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
 		...dialogs
 	],
@@ -88,6 +90,7 @@ import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/load
 		RemoveFileButtonComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
+		EdgeMetricToggleComponent,
 		...dialogs
 	]
 })
