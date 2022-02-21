@@ -4,6 +4,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const { DefinePlugin } = require("webpack")
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const dist = path.resolve(__dirname, "../dist/webpack")
+const TerserPlugin = require("terser-webpack-plugin")
 
 module.exports = env => {
 	return {
@@ -41,6 +42,17 @@ module.exports = env => {
 		devtool: "source-map",
 		resolve: {
 			extensions: [".ts", ".tsx", ".js"]
+		},
+		optimization: {
+			minimize: true,
+			minimizer: [
+				new TerserPlugin({
+					terserOptions: {
+						keep_classnames: true,
+						keep_fnames: true
+					}
+				})
+			]
 		}
 	}
 }
