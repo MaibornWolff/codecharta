@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.91.0] - 2022-02-21
+
+### Changed
+
+-   Refactor edge metric panel [#2670](https://github.com/MaibornWolff/codecharta/pull/2670)
+    -   Remove edge metric option 'none'
+    -   By default, the first edge metric is enabled when map has edge metrics
+    -   Disable edge metric panel when loaded map has no edge metrics
+
 ### Fixed 🐞
 
 -   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)

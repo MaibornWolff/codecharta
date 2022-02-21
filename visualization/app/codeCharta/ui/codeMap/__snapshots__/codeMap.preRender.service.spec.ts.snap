@@ -17,7 +17,6 @@ Object {
         "unary": 1,
       },
       "edgeAttributes": Object {
-        "None": undefined,
         "avgCommits": Object {
           "incoming": 0,
           "outgoing": 1,
@@ -52,7 +51,6 @@ Object {
             "unary": 1,
           },
           "edgeAttributes": Object {
-            "None": undefined,
             "avgCommits": Object {
               "incoming": 1,
               "outgoing": 0,
@@ -81,7 +79,6 @@ Object {
             "unary": 1,
           },
           "edgeAttributes": Object {
-            "None": undefined,
             "avgCommits": undefined,
             "otherMetric": Object {
               "incoming": 0,
@@ -101,10 +98,6 @@ Object {
         },
       ],
       "edgeAttributes": Object {
-        "None": Object {
-          "incoming": 0,
-          "outgoing": 0,
-        },
         "avgCommits": Object {
           "incoming": 1,
           "outgoing": 0,
@@ -127,10 +120,6 @@ Object {
     },
   ],
   "edgeAttributes": Object {
-    "None": Object {
-      "incoming": 0,
-      "outgoing": 0,
-    },
     "avgCommits": Object {
       "incoming": 1,
       "outgoing": 1,
