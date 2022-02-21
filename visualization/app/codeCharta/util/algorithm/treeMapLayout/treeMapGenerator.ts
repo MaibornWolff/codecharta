@@ -1,10 +1,10 @@
-import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
-import { TreeMapHelper } from "./treeMapHelper"
-import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../../../codeCharta.model"
-import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
-import { calculatePadding } from "./paddingCalculator"
-import { getChildrenAreaValues, getSmallestDifference } from "./treeMapHelper2"
-import { calculateTotalNodeArea } from "./nodeAreaCalculator"
+import {hierarchy, HierarchyNode, HierarchyRectangularNode, treemap} from "d3-hierarchy"
+import {TreeMapHelper} from "./treeMapHelper"
+import {CodeMapNode, DynamicSettings, Node, NodeMetricData, State} from "../../../codeCharta.model"
+import {getMapResolutionScaleFactor, isLeaf} from "../../codeMapHelper"
+import {calculatePadding} from "./paddingCalculator"
+import {getChildrenAreaValues, getSmallestDifference} from "./treeMapHelper2"
+import {calculateTotalNodeArea} from "./nodeAreaCalculator"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
@@ -162,14 +162,25 @@ function getBuildingAreasWithProportionalPadding(
 	padding: number
 ) {
 	return childrenAreaValues.map(element => {
+		if(element === 0)
+			return 0;
+
 		const buildingArea = (element / smallestDelta) * minimumBuildingSize
 		return (Math.sqrt(buildingArea) + padding) ** 2
 	})
 }
 
 function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
+
+	map.children = map.children.filter(
+		child => child.attributes[state.dynamicSettings.areaMetric] !== 0
+		)
+
+	//TODO this is NOT calculated correctly -> hierarchy(map) of 0 value folders is breaking application
+
 	const hierarchyNode = hierarchy(map)
 	let padding = state.dynamicSettings.margin
+
 	// from hierarchy Node to areas
 	const childrenAreaValues = getChildrenAreaValues(hierarchyNode, state)
 

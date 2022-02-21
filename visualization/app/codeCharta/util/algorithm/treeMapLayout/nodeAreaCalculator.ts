@@ -68,11 +68,16 @@ export function calculateTotalNodeArea(
 		if (nodeKeyMap.get(nodePath)?.data.type === "File") {
 			const parent = getParent(nodeKeyMap, nodePath)
 			const parentPath = parent?.data.path
-			const parentArea = addPaddingToArea(nodeAreaMap[parentPath], padding)
-			const proportion = parentArea / nodeAreaMap[parentPath]
-			proportionMax = proportionMax > proportion ? proportionMax : proportion
+			if(nodeAreaMap[parentPath] > 0) {
+				const parentArea = addPaddingToArea(nodeAreaMap[parentPath], padding)
+				const proportion = parentArea / nodeAreaMap[parentPath]
+
+				proportionMax = proportionMax > proportion ? proportionMax : proportion
+			}
 		}
 	}
+
+
 	// Apply scaling factor to files only
 	for (const nodePath of paths) {
 		if (nodeKeyMap.get(nodePath)?.data.type === "File") {
@@ -84,8 +89,11 @@ export function calculateTotalNodeArea(
 	}
 
 	const metricSum = hierarchyNode.sum(node => {
-		return nodeAreaMap[node.path]
+		if(nodeAreaMap[node.path] > 0) {
+			return nodeAreaMap[node.path]
+		}
 	})
+
 
 	for (const node of hierarchyNode) {
 		if (!isLeaf(node.data) && node.value !== undefined) {

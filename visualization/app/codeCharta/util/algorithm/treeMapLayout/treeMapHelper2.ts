@@ -12,6 +12,7 @@ function getLeafValues(hierarchyNode: HierarchyNode<any>, state: State) {
 }
 
 function getNonZeroMetrics(areaValues: any[]) {
+
 	let index = 0
 	while (areaValues[index] === 0) {
 		index++
@@ -26,7 +27,7 @@ export function getSmallestDifference(childAreaValues: any[]) {
 	const smallestValue = childAreaValues[0]
 
 	for (let index = 0; index < childAreaValues.length - 1; index++) {
-		const intermediateDiff = childAreaValues[index + 1] - childAreaValues[index]
+		const intermediateDiff = Math.abs(childAreaValues[index + 1] - childAreaValues[index])
 		if (intermediateDiff < diff && intermediateDiff > 0) {
 			diff = intermediateDiff
 		}

@@ -1,8 +1,8 @@
-import { Node, State } from "../../../codeCharta.model"
-import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
-import { addBoxToVertexData, IntermediateVertexData} from "./geometryGenerationHelper"
-import { ColorConverter } from "../../../util/color/colorConverter"
-import { Mesh, BufferGeometry, Material, BufferAttribute } from "three"
+import {Node, State} from "../../../codeCharta.model"
+import {CodeMapGeometricDescription} from "./codeMapGeometricDescription"
+import {addBoxToVertexData, IntermediateVertexData} from "./geometryGenerationHelper"
+import {ColorConverter} from "../../../util/color/colorConverter"
+import {BufferAttribute, BufferGeometry, Material, Mesh} from "three"
 
 export interface BoxMeasures {
 	x: number
@@ -90,7 +90,7 @@ export class GeometryGenerator {
 		}
 	}
 
-	private ensureMinHeightUnlessDeltaIsNegative(height: number, delta: number) {
+	private static ensureMinHeightUnlessDeltaIsNegative(height: number, delta: number) {
 		return delta <= 0 ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT)
 	}
 
@@ -119,7 +119,7 @@ export class GeometryGenerator {
 		isDeltaState: boolean
 	) {
 		const measures = this.mapNodeToLocalBox(node)
-		measures.height = this.ensureMinHeightUnlessDeltaIsNegative(node.height, node.heightDelta)
+		measures.height = GeometryGenerator.ensureMinHeightUnlessDeltaIsNegative(node.height, node.heightDelta)
 
 		let renderDelta = 0
 
@@ -153,18 +153,18 @@ export class GeometryGenerator {
 
 		geometry.setIndex(new BufferAttribute(data.indices, 1))
 
-		const topSurfaceInfos = data
-		if (topSurfaceInfos[0] === undefined) {
+		if (data[0] === undefined) {
 			// Add default group
 			geometry.addGroup(0, Number.POSITIVE_INFINITY, 0)
 		} else {
-			this.addMaterialGroups(data, geometry)
+			GeometryGenerator.addMaterialGroups(data, geometry)
 		}
 
 		return new Mesh(geometry, this.materials)
 	}
 
-	private addMaterialGroups(data: IntermediateVertexData, geometry: BufferGeometry) {
+	private static addMaterialGroups(data: IntermediateVertexData, geometry: BufferGeometry) {
+
 		const topSurfaceInfos = data.indices
 
 		// Render with default material until first floor surface

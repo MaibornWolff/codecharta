@@ -119,10 +119,6 @@ export class CodeMapMesh {
 	}
 
 	private initDeltaColorsOnMesh(state: State) {
-
-		console.log(this.mapGeomDesc.buildings)
-		console.log(this.mapGeomDesc.buildings[0])
-
 		if (this.mapGeomDesc.buildings[0].node.deltas) {
 			for (const building of this.mapGeomDesc.buildings) {
 				this.setNewDeltaColor(building, state)
