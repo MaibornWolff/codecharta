@@ -2,7 +2,12 @@
 
 <div class="ccSearchInput">
 	<input type="text" placeholder="Search: *.js, **/app/*" [value]="searchPattern$ | async" (input)="setSearchPatternDebounced($event)" />
-	<button *ngIf="!(isSearchPatternEmpty$ | async)" (click)="resetSearchPattern()" class="small-action-button clear-icon">
+	<button
+		*ngIf="!(isSearchPatternEmpty$ | async)"
+		(click)="resetSearchPattern()"
+		class="small-action-button clear-icon"
+		data-testid="search-bar-clear-button"
+	>
 		<i class="fa fa-times"></i>
 	</button>
 </div>
@@ -13,10 +18,20 @@
 <mat-menu #menu="matMenu">
 	<button mat-menu-item disabled>Add Pattern to Blacklist</button>
 	<mat-divider></mat-divider>
-	<button mat-menu-item [disabled]="isFlattenPatternDisabled$ | async" (click)="blacklistSearchPattern('flatten')">
+	<button
+		mat-menu-item
+		[disabled]="isFlattenPatternDisabled$ | async"
+		(click)="blacklistSearchPattern('flatten')"
+		data-testid="search-bar-flatten-button"
+	>
 		<i class="fa fa-eye-slash"></i> Flatten
 	</button>
-	<button mat-menu-item [disabled]="isExcludePatternDisabled$ | async" (click)="blacklistSearchPattern('exclude')">
+	<button
+		mat-menu-item
+		[disabled]="isExcludePatternDisabled$ | async"
+		(click)="blacklistSearchPattern('exclude')"
+		data-testid="search-bar-exclude-button"
+	>
 		<i class="fa fa-ban"></i> Exclude
 	</button>
 </mat-menu>
