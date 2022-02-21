@@ -42,7 +42,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
+	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
 		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
 
 		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
@@ -69,7 +69,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
 
 		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
-		// todo: tk rename to addLeafLabel
 
 		const multiplier = scaling.clone()
 
