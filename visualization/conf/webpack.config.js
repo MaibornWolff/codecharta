@@ -7,7 +7,7 @@ const dist = path.resolve(__dirname, "../dist/webpack")
 const TerserPlugin = require("terser-webpack-plugin")
 
 module.exports = env => {
-	return {
+	const config = {
 		mode: "development",
 		target: "web",
 		entry: "./app/app.module.ts",
@@ -55,4 +55,10 @@ module.exports = env => {
 			]
 		}
 	}
+
+	if (env.DEV === "true") {
+		delete config.optimization
+	}
+
+	return config
 }
