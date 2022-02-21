@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.91.0] - 2022-02-21
+
 ### Changed
 
 -   Refactor edge metric panel [#2670](https://github.com/MaibornWolff/codecharta/pull/2670)
