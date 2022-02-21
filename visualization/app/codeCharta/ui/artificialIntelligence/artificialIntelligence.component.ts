@@ -63,22 +63,10 @@ export class ArtificialIntelligenceController
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
-		riskProfile: {
-			lowRisk: 0,
-			moderateRisk: 0,
-			highRisk: 0,
-			veryHighRisk: 0
-		}
+		riskProfile: {} as RiskProfile
 	}
 
-	private rlocRisk = {
-		lowRisk: 0,
-		moderateRisk: 0,
-		highRisk: 0,
-		veryHighRisk: 0,
-		totalRloc: 0
-	}
-
+	private rlocRisk = {} as RiskProfile
 	private fileState: FileState
 	private blacklist: BlacklistItem[] = []
 	private debounceCalculation: () => void
@@ -153,19 +141,20 @@ export class ArtificialIntelligenceController
 			return
 		}
 
-		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState.file.map)
-		this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
+		this.setDefaultRiskProfile()
 
-		this.clearRiskProfile()
+		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState.file.map)
 
 		if (mainProgrammingLanguage !== undefined) {
+			this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
 			this.calculateRiskProfile(this.fileState, HEIGHT_METRIC)
 			this.calculateSuspiciousMetrics(this.fileState, mainProgrammingLanguage)
 		}
 	}
 
-	private clearRiskProfile() {
-		this._viewModel.riskProfile = undefined
+	private setDefaultRiskProfile() {
+		this._viewModel.riskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
+		this.rlocRisk = { ...this._viewModel.riskProfile, totalRloc: 0 }
 	}
 
 	private calculateRiskProfile(fileState: FileState, metricName: string) {
@@ -198,15 +187,10 @@ export class ArtificialIntelligenceController
 			this.rlocRisk.veryHighRisk
 		])
 
-		this._viewModel.riskProfile = {
-			lowRisk,
-			moderateRisk,
-			highRisk,
-			veryHighRisk
-		}
+		this._viewModel.riskProfile = { lowRisk, moderateRisk, highRisk, veryHighRisk }
 	}
 
-	private isFileInvalid(node, metricName: string) {
+	private isFileInvalid(node: CodeMapNode, metricName: string) {
 		return (
 			node.type === NodeType.FILE &&
 			!isPathBlacklisted(node.path, this.blacklist, BlacklistType.exclude) &&
@@ -268,6 +252,7 @@ export class ArtificialIntelligenceController
 
 		for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
 			const valuesOfMetric = metricValues[metricName]
+
 			if (valuesOfMetric === undefined) {
 				continue
 			}
