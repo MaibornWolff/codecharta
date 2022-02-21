@@ -40,6 +40,17 @@ interface MetricSuggestionParameters {
 	isOutlier?: boolean
 }
 
+interface RiskProfile {
+	lowRisk: number
+	moderateRisk: number
+	highRisk: number
+	veryHighRisk: number
+	totalRloc?: number
+}
+
+const HEIGHT_METRIC = "mcc"
+const AREA_METRIC = "rloc"
+
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
 {
@@ -47,12 +58,7 @@ export class ArtificialIntelligenceController
 		analyzedProgrammingLanguage: string
 		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
 		unsuspiciousMetrics: string[]
-		riskProfile: {
-			lowRisk: number
-			moderateRisk: number
-			highRisk: number
-			veryHighRisk: number
-		}
+		riskProfile: RiskProfile
 	} = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
@@ -65,9 +71,17 @@ export class ArtificialIntelligenceController
 		}
 	}
 
-	private debounceCalculation: () => void
+	private rlocRisk = {
+		lowRisk: 0,
+		moderateRisk: 0,
+		highRisk: 0,
+		veryHighRisk: 0,
+		totalRloc: 0
+	}
+
 	private fileState: FileState
 	private blacklist: BlacklistItem[] = []
+	private debounceCalculation: () => void
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
@@ -145,7 +159,7 @@ export class ArtificialIntelligenceController
 		this.clearRiskProfile()
 
 		if (mainProgrammingLanguage !== undefined) {
-			this.calculateRiskProfile(this.fileState, mainProgrammingLanguage, "mcc")
+			this.calculateRiskProfile(this.fileState, HEIGHT_METRIC)
 			this.calculateSuspiciousMetrics(this.fileState, mainProgrammingLanguage)
 		}
 	}
@@ -154,54 +168,34 @@ export class ArtificialIntelligenceController
 		this._viewModel.riskProfile = undefined
 	}
 
-	private calculateRiskProfile(fileState: FileState, programmingLanguage, metricName) {
-		let totalRloc = 0
-		let numberOfRlocLowRisk = 0
-		let numberOfRlocModerateRisk = 0
-		let numberOfRlocHighRisk = 0
-		let numberOfRlocVeryHighRisk = 0
-
-		const languageSpecificThresholds = this.getAssociatedMetricThresholds(programmingLanguage)
-		const thresholds = languageSpecificThresholds[metricName]
-
+	private calculateRiskProfile(fileState: FileState, metricName: string) {
 		for (const { data } of hierarchy(fileState.file.map)) {
 			// TODO calculate risk profile only for focused or currently visible but not excluded files.
-			if (
-				data.type !== NodeType.FILE ||
-				isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
-				data.attributes[metricName] === undefined ||
-				data.attributes["rloc"] === undefined ||
-				this.getFileExtension(data.name) !== programmingLanguage
-			) {
-				continue
-			}
+			if (this.isFileInvalid(data, metricName)) {
+				const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
+				const languageSpecificThresholds = this.getAssociatedMetricThresholds(fileExtension)
+				const thresholds = languageSpecificThresholds[metricName]
+				const nodeMetricValue = data.attributes[metricName]
+				const nodeRlocValue = data.attributes[AREA_METRIC]
 
-			const nodeMetricValue = data.attributes[metricName]
-			const nodeRlocValue = data.attributes["rloc"]
-
-			totalRloc += nodeRlocValue
-
-			// Idea: We could calculate risk profiles per directory in the future.
-			if (nodeMetricValue <= thresholds.percentile70) {
-				numberOfRlocLowRisk += nodeRlocValue
-			} else if (nodeMetricValue <= thresholds.percentile80) {
-				numberOfRlocModerateRisk += nodeRlocValue
-			} else if (nodeMetricValue <= thresholds.percentile90) {
-				numberOfRlocHighRisk += nodeRlocValue
-			} else {
-				numberOfRlocVeryHighRisk += nodeRlocValue
+				// Idea: We could calculate risk profiles per directory in the future.
+				this.calculateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue)
 			}
 		}
 
-		if (totalRloc === 0) {
+		if (this.rlocRisk.totalRloc === 0) {
 			return
 		}
 
+		this.setRiskProfile()
+	}
+
+	private setRiskProfile() {
 		const [lowRisk, moderateRisk, highRisk, veryHighRisk] = percentRound([
-			numberOfRlocLowRisk,
-			numberOfRlocModerateRisk,
-			numberOfRlocHighRisk,
-			numberOfRlocVeryHighRisk
+			this.rlocRisk.lowRisk,
+			this.rlocRisk.moderateRisk,
+			this.rlocRisk.highRisk,
+			this.rlocRisk.veryHighRisk
 		])
 
 		this._viewModel.riskProfile = {
@@ -212,7 +206,29 @@ export class ArtificialIntelligenceController
 		}
 	}
 
-	private calculateSuspiciousMetrics(fileState: FileState, programmingLanguage) {
+	private isFileInvalid(node, metricName: string) {
+		return (
+			node.type === NodeType.FILE &&
+			!isPathBlacklisted(node.path, this.blacklist, BlacklistType.exclude) &&
+			node.attributes[metricName] !== undefined &&
+			node.attributes[AREA_METRIC] !== undefined
+		)
+	}
+
+	private calculateRlocRisk(nodeMetricValue: number, thresholds, nodeRlocValue: number) {
+		this.rlocRisk.totalRloc += nodeRlocValue
+		if (nodeMetricValue <= thresholds.percentile70) {
+			this.rlocRisk.lowRisk += nodeRlocValue
+		} else if (nodeMetricValue <= thresholds.percentile80) {
+			this.rlocRisk.moderateRisk += nodeRlocValue
+		} else if (nodeMetricValue <= thresholds.percentile90) {
+			this.rlocRisk.highRisk += nodeRlocValue
+		} else {
+			this.rlocRisk.veryHighRisk += nodeRlocValue
+		}
+	}
+
+	private calculateSuspiciousMetrics(fileState: FileState, programmingLanguage: string) {
 		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
 		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
 		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
@@ -312,11 +328,7 @@ export class ArtificialIntelligenceController
 		const numberOfFilesPerLanguage = new Map()
 
 		for (const { data } of hierarchy(map)) {
-			if (!data.name.includes(".")) {
-				continue
-			}
-
-			if (data.type === NodeType.FILE) {
+			if (data.name.includes(".") && data.type === NodeType.FILE) {
 				const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
 				const filesPerLanguage = numberOfFilesPerLanguage.get(fileExtension) ?? 0
 				numberOfFilesPerLanguage.set(fileExtension, filesPerLanguage + 1)
@@ -338,7 +350,7 @@ export class ArtificialIntelligenceController
 		return language
 	}
 
-	private getAssociatedMetricThresholds(programmingLanguage) {
+	private getAssociatedMetricThresholds(programmingLanguage: string) {
 		return programmingLanguage === "java" ? metricThresholds["java"] : metricThresholds["miscellaneous"]
 	}
 }
