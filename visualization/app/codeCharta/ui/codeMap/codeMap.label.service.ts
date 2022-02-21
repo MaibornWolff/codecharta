@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -45,7 +45,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
 		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
 
-		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
+		const { scaling, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
 		const { margin, heightMetric } = dynamicSettings
 
 		let labelText = ""
@@ -64,39 +64,24 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 
 		const label = this.makeText(labelText, 30, node)
+		const multiplier = scaling.clone()
 
-		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
+		let newHighestNode = (node.height + Math.abs(node.heightDelta ?? 0))
 		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
 
-		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
-
-		const multiplier = scaling.clone()
+		this.nodeHeight = this.nodeHeight * multiplier.y > newHighestNode ? this.nodeHeight : newHighestNode
 
 		const x = node.x0 - treeMap.mapSize
 		const y = node.z0
 		const z = node.y0 - treeMap.mapSize
 
 		const labelX = (x + node.width / 2) * multiplier.x
-		const labelY = y + this.nodeHeight
-		const labelYOrigin = y + node.height
+		const labelY = highestNodeInSet > 0 ? y + this.nodeHeight : y + this.nodeHeight * scaling.y;
 		const labelZ = (z + node.length / 2) * multiplier.z
 
-		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
-		let labelOffset = labelHeightScaled + label.heightValue / 2
+		const labelOffset = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 
-		switch (layoutAlgorithm) {
-			// !remark : algorithm scaling is not same as the squarified layout,
-			// !layout offset needs to be scaled down,the divided by value is just empirical,
-			// TODO !needs further investigation
-			case LayoutAlgorithm.StreetMap:
-			case LayoutAlgorithm.TreeMapStreet:
-				labelOffset /= 10
-				this.LABEL_HEIGHT_POSITION = 0
-				label.line = this.makeLine(labelX, labelY + labelOffset, labelYOrigin, labelZ)
-				break
-			default:
-				label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
-		}
+		label.line = this.makeLine(labelX, node.height + labelOffset, node.height * scaling.y, labelZ)
 
 		label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
 
@@ -170,8 +155,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const { margin } = this.storeService.getState().dynamicSettings
 
 		const multiplier = scaling.clone()
-
-		debugger;
 
 		for (const label of this.labels) {
 			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
