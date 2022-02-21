@@ -14,6 +14,7 @@ import { SearchPanelModeActions } from "../searchPanelMode/searchPanelMode.actio
 import { SortingOrderAscendingActions } from "../sortingOrderAscending/sortingOrderAscending.actions"
 import { IsLoadingMapAction, IsLoadingMapActions, setIsLoadingMap } from "./isLoadingMap.actions"
 import { RightClickedNodeDataActions } from "../../appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { IsEdgeMetricVisibleActions } from "../isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 // Todo state actions explicit instead of excluding all others; refs #1547
 const actionsToExclude = [
@@ -26,6 +27,7 @@ const actionsToExclude = [
 	PanelSelectionActions,
 	PresentationModeActions,
 	ExperimentalFeaturesEnabledActions,
+	IsEdgeMetricVisibleActions,
 	ScreenshotToClipboardEnabledActions,
 	HoveredBuildingPathActions,
 	RightClickedNodeDataActions,
