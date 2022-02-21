@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.90.0] - 2022-02-15
 
+### Fixed 🐞
+
+-   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
+
 ### Added 🚀
 
 -   Parse and import GameObjects file structure into cc.json on upload [#2646](https://github.com/MaibornWolff/codecharta/pull/2646)
