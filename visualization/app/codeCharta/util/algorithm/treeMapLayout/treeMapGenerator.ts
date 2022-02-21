@@ -176,8 +176,6 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 		child => child.attributes[state.dynamicSettings.areaMetric] !== 0
 		)
 
-	//TODO this is NOT calculated correctly -> hierarchy(map) of 0 value folders is breaking application
-
 	const hierarchyNode = hierarchy(map)
 	let padding = state.dynamicSettings.margin
 
@@ -189,7 +187,6 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	const minBuildingSize = 10
 
 	padding = calculatePadding(childrenAreaValues, smallestDelta, minBuildingSize, padding)
-	//console.log("Padding ", padding)
 
 	const metricBuildingAreasIncludingPadding = getBuildingAreasWithProportionalPadding(
 		childrenAreaValues,

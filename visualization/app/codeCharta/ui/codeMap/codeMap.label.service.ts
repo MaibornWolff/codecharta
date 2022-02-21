@@ -78,7 +78,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const z = node.y0 - treeMap.mapSize
 
 		const labelX = (x + node.width / 2) * multiplier.x
-		const labelY = (y + this.nodeHeight) * multiplier.y
+		const labelY = y + this.nodeHeight
 		const labelYOrigin = y + node.height
 		const labelZ = (z + node.length / 2) * multiplier.z
 
@@ -170,7 +170,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const { scaling } = this.storeService.getState().appSettings
 		const { margin } = this.storeService.getState().dynamicSettings
 
-		const multiplier = scaling.clone().divide(this.previousScaling)
+		const multiplier = scaling.clone()
+
+		debugger;
 
 		for (const label of this.labels) {
 			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
