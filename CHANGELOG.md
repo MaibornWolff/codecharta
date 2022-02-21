@@ -14,16 +14,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   By default, the first edge metric is enabled when map has edge metrics
     -   Disable edge metric panel when loaded map has no edge metrics
 
+### Fixed 🐞
+
+-   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate loading gifs to Angular and remove now unused `isLoadingMap.service` [#2668](https://github.com/MaibornWolff/codecharta/pull/2668)
 
 ## [1.90.0] - 2022-02-15
-
-### Fixed 🐞
-
--   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
--   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
 
 ### Added 🚀
 
@@ -31,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
 -   Fix show garbage bin next to the loaded maps [#2647](https://github.com/MaibornWolff/codecharta/pull/2647)
 
 ### Chore 👨‍💻 👩‍💻
