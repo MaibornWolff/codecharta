@@ -73,7 +73,7 @@ describe("ArtificialIntelligenceController", () => {
 	describe("calculations", () => {
 		it("should not calculate suspicious metrics when experimental features are disabled", function () {
 			artificialIntelligenceController["getMostFrequentLanguage"] = jest.fn()
-			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
+			artificialIntelligenceController["setDefaultRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateSuspiciousMetrics"] = jest.fn()
 			artificialIntelligenceController["fileState"] = FILE_STATES_JAVA[0]
@@ -82,14 +82,14 @@ describe("ArtificialIntelligenceController", () => {
 			artificialIntelligenceController.onExperimentalFeaturesEnabledChanged(false)
 
 			expect(artificialIntelligenceController["getMostFrequentLanguage"]).not.toHaveBeenCalled()
-			expect(artificialIntelligenceController["clearRiskProfile"]).not.toHaveBeenCalled()
+			expect(artificialIntelligenceController["setDefaultRiskProfile"]).not.toHaveBeenCalled()
 			expect(artificialIntelligenceController["calculateRiskProfile"]).not.toHaveBeenCalled()
 			expect(artificialIntelligenceController["calculateSuspiciousMetrics"]).not.toHaveBeenCalled()
 		})
 
 		it("should calculate suspicious metrics when experimental features are enabled", function () {
 			artificialIntelligenceController["getMostFrequentLanguage"] = jest.fn().mockReturnValue("java")
-			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
+			artificialIntelligenceController["setDefaultRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateSuspiciousMetrics"] = jest.fn()
 			artificialIntelligenceController["fileState"] = FILE_STATES_JAVA[0]
@@ -99,7 +99,7 @@ describe("ArtificialIntelligenceController", () => {
 
 			expect(artificialIntelligenceController["getMostFrequentLanguage"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
-			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["setDefaultRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["calculateSuspiciousMetrics"]).toHaveBeenCalled()
 		})
@@ -177,27 +177,43 @@ describe("ArtificialIntelligenceController", () => {
 			expect(artificialIntelligenceController["getMostFrequentLanguage"]).not.toHaveBeenCalled()
 		})
 
+		it("should set default values for risk profile", () => {
+			artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage = "java"
+			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
+			artificialIntelligenceController["calculateSuspiciousMetrics"] = jest.fn()
+			artificialIntelligenceController["getMostFrequentLanguage"] = jest.fn()
+
+			expect(artificialIntelligenceController["rlocRisk"]).toEqual({})
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toEqual({})
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
+
+			storeService.dispatch(setExperimentalFeaturesEnabled(true))
+			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
+
+			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBeUndefined()
+			expect(artificialIntelligenceController["rlocRisk"]).toMatchSnapshot()
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
+		})
+
 		it("should not calculate risk profile and suspicious metrics on empty main programming language", () => {
-			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
+			artificialIntelligenceController["setDefaultRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
 			artificialIntelligenceController["createCustomConfigSuggestions"] = jest.fn()
 			storeService.dispatch(setExperimentalFeaturesEnabled(true))
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES)
 
-			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["setDefaultRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["calculateRiskProfile"]).not.toHaveBeenCalled()
 			expect(artificialIntelligenceController["createCustomConfigSuggestions"]).not.toHaveBeenCalled()
 		})
 
-		it("should clear and calculate risk profile for Java map", () => {
-			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
+		it("should calculate risk profile for Java map", () => {
 			artificialIntelligenceController["calculateSuspiciousMetrics"] = jest.fn()
 
 			storeService.dispatch(setExperimentalFeaturesEnabled(true))
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
 
 			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
-			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
 			expect(artificialIntelligenceController["calculateSuspiciousMetrics"]).toHaveBeenCalled()
 		})
@@ -219,14 +235,14 @@ describe("ArtificialIntelligenceController", () => {
 		})
 
 		it("should calculate suspicious metrics sorted by isOutlier", () => {
-			artificialIntelligenceController["clearRiskProfile"] = jest.fn()
+			artificialIntelligenceController["setDefaultRiskProfile"] = jest.fn()
 			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
 
 			storeService.dispatch(setExperimentalFeaturesEnabled(true))
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_JAVA)
 
 			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
-			expect(artificialIntelligenceController["clearRiskProfile"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["setDefaultRiskProfile"]).toHaveBeenCalled()
 			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
 
 			expect(artificialIntelligenceController["_viewModel"].suspiciousMetricSuggestionLinks).toMatchSnapshot()
@@ -267,7 +283,7 @@ describe("ArtificialIntelligenceController", () => {
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_MISSING_METRICS)
 
 			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("java")
-			expect(artificialIntelligenceController["_viewModel"].riskProfile).toBeUndefined()
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
 			expect(artificialIntelligenceController["calculateSuspiciousMetrics"]).toHaveBeenCalled()
 		})
 

@@ -50,7 +50,7 @@ interface RiskProfile {
 
 const HEIGHT_METRIC = "mcc"
 const AREA_METRIC = "rloc"
-const EXCLUDED_FILES = new Set(["html", "sass", "scss", "scss", ".text", "md", undefined])
+const EXCLUDED_FILES = new Set(["html", "sass", "scss", "scss", ".txt", "md", "json", undefined])
 
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
@@ -109,7 +109,7 @@ export class ArtificialIntelligenceController
 				mapColors.negative = defaultMapColors.negative
 			}
 
-			this.storeService.dispatch(setAreaMetric("rloc"))
+			this.storeService.dispatch(setAreaMetric(AREA_METRIC))
 			this.storeService.dispatch(setHeightMetric(metric.metric))
 			this.storeService.dispatch(setColorMetric(metric.metric))
 			this.storeService.dispatch(setColorRange(colorRange))

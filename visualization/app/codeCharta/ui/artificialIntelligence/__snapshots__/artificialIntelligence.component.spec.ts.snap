@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile but skip files with missing metrics 1`] = `
+Object {
+  "highRisk": 0,
+  "lowRisk": 0,
+  "moderateRisk": 0,
+  "veryHighRisk": 0,
+}
+`;
+
+exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile for Java map 1`] = `
+Object {
+  "highRisk": 37,
+  "lowRisk": 46,
+  "moderateRisk": 17,
+  "veryHighRisk": 0,
+}
+`;
+
 exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile for not excluded files only 1`] = `
 Object {
   "highRisk": 50,
@@ -43,7 +61,26 @@ Array [
 ]
 `;
 
-exports[`ArtificialIntelligenceController on files selection changed should clear and calculate risk profile for Java map 1`] = `
+exports[`ArtificialIntelligenceController on files selection changed should set default values for risk profile 1`] = `
+Object {
+  "highRisk": 0,
+  "lowRisk": 0,
+  "moderateRisk": 0,
+  "totalRloc": 0,
+  "veryHighRisk": 0,
+}
+`;
+
+exports[`ArtificialIntelligenceController on files selection changed should set default values for risk profile 2`] = `
+Object {
+  "highRisk": 0,
+  "lowRisk": 0,
+  "moderateRisk": 0,
+  "veryHighRisk": 0,
+}
+`;
+
+exports[`ArtificialIntelligenceController on files selection changed should set default values for risk profile and calculate risk profile for Java map 1`] = `
 Object {
   "highRisk": 37,
   "lowRisk": 46,
