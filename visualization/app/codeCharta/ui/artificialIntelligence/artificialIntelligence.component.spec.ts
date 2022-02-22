@@ -287,24 +287,35 @@ describe("ArtificialIntelligenceController", () => {
 			expect(artificialIntelligenceController["calculateSuspiciousMetrics"]).toHaveBeenCalled()
 		})
 
-		it("should calculate risk profile and suspicious metrics for maps with other programming languages", () => {
-			artificialIntelligenceController["calculateRiskProfile"] = jest.fn()
+		it("should calculate risk profile and suspicious metrics for all occurring programming languages in selected file", () => {
 			artificialIntelligenceController["calculateSuspiciousMetrics"] = jest.fn()
 
 			const FILE_STATES_OTHER = klona(FILE_STATES_JAVA)
-			for (const codeMapNode of FILE_STATES_OTHER[0].file.map.children) {
-				codeMapNode.children.map(childCodeMapNode => {
-					childCodeMapNode.name = childCodeMapNode.name.replace(/\.java/, ".other")
-				})
+			for (const codeMapNode of FILE_STATES_OTHER[0].file.map.children[0].children) {
+				codeMapNode.name = codeMapNode.name.replace(/\.java/, ".other")
 			}
 
 			storeService.dispatch(setExperimentalFeaturesEnabled(true))
 			artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_OTHER)
 
 			expect(artificialIntelligenceController["_viewModel"].analyzedProgrammingLanguage).toBe("other")
-			expect(artificialIntelligenceController["calculateRiskProfile"]).toHaveBeenCalled()
+			expect(artificialIntelligenceController["rlocRisk"]).toMatchSnapshot()
+			expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
 			expect(artificialIntelligenceController["calculateSuspiciousMetrics"]).toHaveBeenCalled()
 		})
+	})
+
+	it("should calculate risk profile only for valid file extensions", () => {
+		const FILE_STATES_OTHER = klona(FILE_STATES_JAVA)
+		for (const codeMapNode of FILE_STATES_OTHER[0].file.map.children[1].children) {
+			codeMapNode.name = codeMapNode.name.replace(/\.java/, ".html")
+		}
+
+		storeService.dispatch(setExperimentalFeaturesEnabled(true))
+		artificialIntelligenceController.onFilesSelectionChanged(FILE_STATES_OTHER)
+
+		expect(artificialIntelligenceController["rlocRisk"]).toMatchSnapshot()
+		expect(artificialIntelligenceController["_viewModel"].riskProfile).toMatchSnapshot()
 	})
 
 	describe("on blacklist changed", () => {

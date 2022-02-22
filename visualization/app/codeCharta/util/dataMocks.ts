@@ -109,7 +109,7 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					name: "file3.java",
 					path: "/root/src/main/file3.java",
 					type: NodeType.FILE,
-					attributes: { rloc: 45, functions: 1, mcc: 70, loc: 1 }
+					attributes: { rloc: 45, functions: 1, mcc: 71, loc: 1 }
 				},
 				{
 					name: "readme",
