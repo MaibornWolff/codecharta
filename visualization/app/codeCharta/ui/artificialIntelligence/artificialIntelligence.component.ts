@@ -50,6 +50,7 @@ interface RiskProfile {
 
 const HEIGHT_METRIC = "mcc"
 const AREA_METRIC = "rloc"
+const EXCLUDED_FILES = new Set(["html", "sass", "scss", "scss", ".text", "md", undefined])
 
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
@@ -153,6 +154,7 @@ export class ArtificialIntelligenceController
 	}
 
 	private setDefaultRiskProfile() {
+		this._viewModel.analyzedProgrammingLanguage = undefined
 		this._viewModel.riskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 		this.rlocRisk = { ...this._viewModel.riskProfile, totalRloc: 0 }
 	}
@@ -161,7 +163,7 @@ export class ArtificialIntelligenceController
 		for (const { data } of hierarchy(fileState.file.map)) {
 			// TODO calculate risk profile only for focused or currently visible but not excluded files.
 			if (this.isFileInvalid(data, metricName)) {
-				const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
+				const fileExtension = this.getFileExtension(data.name)
 				const languageSpecificThresholds = this.getAssociatedMetricThresholds(fileExtension)
 				const thresholds = languageSpecificThresholds[metricName]
 				const nodeMetricValue = data.attributes[metricName]
@@ -195,7 +197,8 @@ export class ArtificialIntelligenceController
 			node.type === NodeType.FILE &&
 			!isPathBlacklisted(node.path, this.blacklist, BlacklistType.exclude) &&
 			node.attributes[metricName] !== undefined &&
-			node.attributes[AREA_METRIC] !== undefined
+			node.attributes[AREA_METRIC] !== undefined &&
+			!EXCLUDED_FILES.has(this.getFileExtension(node.name))
 		)
 	}
 
