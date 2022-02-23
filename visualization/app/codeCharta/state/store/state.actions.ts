@@ -1,6 +1,5 @@
 import { CCAction, RecursivePartial, State } from "../../codeCharta.model"
 
-import { defaultLookUp } from "./lookUp/lookUp.actions"
 import { defaultAppSettings } from "./appSettings/appSettings.actions"
 import { defaultFileSettings } from "./fileSettings/fileSettings.actions"
 import { defaultDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
@@ -29,7 +28,6 @@ export function setState(state: RecursivePartial<State> = defaultState): StateAc
 }
 
 export const defaultState: State = {
-	lookUp: defaultLookUp,
 	appSettings: defaultAppSettings,
 	fileSettings: defaultFileSettings,
 	dynamicSettings: defaultDynamicSettings,

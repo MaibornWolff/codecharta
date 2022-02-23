@@ -17,7 +17,7 @@ describe("SortingOptionComponent", () => {
 
 	it("should have an explaining title", async () => {
 		await render(SortingOptionComponent)
-		expect(screen.findByLabelText("Sort by")).toBeTruthy()
+		expect(await screen.findByTitle("Sort by")).toBeTruthy()
 	})
 
 	it("should be a select for the sorting option", async () => {

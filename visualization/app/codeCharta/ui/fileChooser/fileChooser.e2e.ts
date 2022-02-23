@@ -16,6 +16,11 @@ describe("FileChooser", () => {
 
 		await goto()
 	})
+	it("should load a valid gameObjects file", async () => {
+		await fileChooser.openFiles(["./app/codeCharta/assets/gameObjectsFile.json"])
+
+		expect(await filePanel.getSelectedName()).toEqual("gameObjectsFile.json")
+	})
 
 	it("should load another cc.json", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
@@ -45,7 +50,7 @@ describe("FileChooser", () => {
 		await fileChooser.cancelOpeningFile()
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
-		expect(await page.$eval("#loading-gif-map", element => element["className"])).toContain("ng-hide")
+		expect(await page.$eval("#loading-gif-map", element => element["style"]["visibility"])).toBe("hidden")
 	})
 
 	it("should open an invalid file, close the dialog and open a valid file", async () => {

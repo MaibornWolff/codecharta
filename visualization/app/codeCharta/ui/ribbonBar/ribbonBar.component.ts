@@ -1,7 +1,7 @@
 import "./ribbonBar.component.scss"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
-import { PanelSelection } from "../../codeCharta.model"
+import { EdgeMetricData, PanelSelection } from "../../codeCharta.model"
 import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 import { PanelSelectionService, PanelSelectionSubscriber } from "../../state/store/appSettings/panelSelection/panelSelection.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
@@ -12,6 +12,7 @@ import {
 import { FileState } from "../../model/files/files"
 import { isDeltaState } from "../../model/files/files.helper"
 import { FilesService } from "../../state/store/files/files.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export class RibbonBarController implements PanelSelectionSubscriber, ExperimentalFeaturesEnabledSubscriber {
 	constructor(
@@ -23,6 +24,7 @@ export class RibbonBarController implements PanelSelectionSubscriber, Experiment
 		PanelSelectionService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
+		EdgeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
 	private _viewModel: {
@@ -30,13 +32,19 @@ export class RibbonBarController implements PanelSelectionSubscriber, Experiment
 		panelSelectionValues: typeof PanelSelection
 		experimentalFeaturesEnabled: boolean
 		isDeltaState: boolean
+		hasEdgeMetric: boolean
 		files: FileState[]
 	} = {
 		panelSelection: PanelSelection.NONE,
 		panelSelectionValues: PanelSelection,
 		experimentalFeaturesEnabled: false,
 		isDeltaState: null,
+		hasEdgeMetric: false,
 		files: null
+	}
+
+	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
+		this._viewModel.hasEdgeMetric = edgeMetricData.length > 0
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {

@@ -29,4 +29,12 @@ export class RibbonBarPageObject {
 	async getActiveClassName() {
 		return page.evaluate(() => document.activeElement.className)
 	}
+
+	async isElementPresent(selector: string) {
+		let visible = true
+		await page.waitForSelector(`#${selector}-card`, { visible: true, timeout: 2000 }).catch(() => {
+			visible = false
+		})
+		return visible
+	}
 }

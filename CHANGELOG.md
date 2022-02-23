@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.91.0] - 2022-02-21
+
+### Changed
+
+-   Refactor edge metric panel [#2670](https://github.com/MaibornWolff/codecharta/pull/2670)
+    -   Remove edge metric option 'none'
+    -   By default, the first edge metric is enabled when map has edge metrics
+    -   Disable edge metric panel when loaded map has no edge metrics
+
+### Fixed 🐞
+
+-   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate loading gifs to Angular and remove now unused `isLoadingMap.service` [#2668](https://github.com/MaibornWolff/codecharta/pull/2668)
+
+## [1.90.0] - 2022-02-15
+
+### Added 🚀
+
+-   Parse and import GameObjects file structure into cc.json on upload [#2646](https://github.com/MaibornWolff/codecharta/pull/2646)
+
+### Fixed 🐞
+
+-   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
+-   Fix show garbage bin next to the loaded maps [#2647](https://github.com/MaibornWolff/codecharta/pull/2647)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Run standalone version of CodeCharta in Node.js web target (and disable [#1314](https://github.com/MaibornWolff/codecharta/issues/1314)), so that local storage is available [#2637](https://github.com/MaibornWolff/codecharta/pull/2637)
+
+## [1.89.0] - 2022-02-07
+
 ### Added 🚀
 
 -   Add area metric option to invert the amount of area, which is used for the nodes [#2626](https://github.com/MaibornWolff/codecharta/pull/2626)
@@ -18,6 +52,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   New buttons for selecting attribute types [#2631](https://github.com/MaibornWolff/codecharta/pull/2631)
     ![xs](https://user-images.githubusercontent.com/72517530/151762455-07e47bf5-18aa-4721-a60a-6dfee057e1e5.png)
 -   Migrate context menu with slightly new layout touch to Angular. Migrated version prevents rendering outside of view [#1661](https://github.com/MaibornWolff/codecharta/issues/1661)
+
+### Fixed 🐞
+
+-   Remove delay of keeping a building highlight permanently [#2641](https://github.com/MaibornWolff/codecharta/issues/2641)
 
 ## [1.88.0] - 2022-01-24
 

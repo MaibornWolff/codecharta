@@ -24,17 +24,33 @@ import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePa
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
+import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
+import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
+import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
+import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
+import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
+import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
+import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
+import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
+import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
+import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
-		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect, OpenNodeContextMenuEffect]),
+		EffectsModule.forRoot([
+			UnfocusNodesOnLoadingMapEffect,
+			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
+			OpenNodeContextMenuEffect,
+			TrackEventUsageDataEffect
+		]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
@@ -43,10 +59,20 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		NodeContextMenuCardModule
+		NodeContextMenuCardModule,
+		LoadingFileProgressSpinnerModule,
+		LoadingMapProgressSpinnerModule
 	],
-	providers: [threeSceneServiceProvider],
-	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
+	providers: [threeSceneServiceProvider, IdToBuildingService],
+	declarations: [
+		FilePanelFileSelectorComponent,
+		FilePanelStateButtonsComponent,
+		FilePanelDeltaSelectorComponent,
+		InvertAreaOptionComponent,
+		EdgeMetricToggleComponent,
+		RemoveFileButtonComponent,
+		...dialogs
+	],
 	entryComponents: [
 		MapTreeViewComponent,
 		MatchingFilesCounterComponent,
@@ -58,6 +84,13 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
+		InvertAreaOptionComponent,
+		FocusButtonsComponent,
+		MarkFolderRowComponent,
+		RemoveFileButtonComponent,
+		LoadingFileProgressSpinnerComponent,
+		LoadingMapProgressSpinnerComponent,
+		EdgeMetricToggleComponent,
 		...dialogs
 	]
 })

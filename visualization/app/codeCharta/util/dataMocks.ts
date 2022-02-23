@@ -1773,6 +1773,7 @@ export const STATE: State = {
 		hideFlatBuildings: true,
 		invertHeight: true,
 		invertArea: false,
+		isEdgeMetricVisible: true,
 		dynamicMargin: true,
 		isWhiteBackground: false,
 		mapColors: {
@@ -1813,10 +1814,6 @@ export const STATE: State = {
 		mapSize: 250
 	},
 	files: [],
-	lookUp: {
-		idToNode: new Map(),
-		idToBuilding: new Map()
-	},
 	appStatus: {
 		hoveredBuildingPath: null,
 		selectedBuildingId: null,
@@ -1840,6 +1837,7 @@ export const DEFAULT_STATE: State = {
 		hideFlatBuildings: false,
 		invertHeight: false,
 		invertArea: false,
+		isEdgeMetricVisible: true,
 		isWhiteBackground: false,
 		mapColors: {
 			angularGreen: "#00BFA5",
@@ -1898,10 +1896,6 @@ export const DEFAULT_STATE: State = {
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
 	files: [],
-	lookUp: {
-		idToBuilding: new Map(),
-		idToNode: new Map()
-	},
 	appStatus: {
 		hoveredBuildingPath: null,
 		selectedBuildingId: null,

@@ -10,7 +10,8 @@ import { RibbonBarController } from "./ribbonBar.component"
 import { PanelSelectionService } from "../../state/store/appSettings/panelSelection/panelSelection.service"
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { addFile, resetFiles, setDelta } from "../../state/store/files/files.actions"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 describe("RibbonBarController", () => {
 	let ribbonBarController: RibbonBarController
@@ -35,7 +36,7 @@ describe("RibbonBarController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscripe to PanelSelectionService", () => {
+		it("should subscribe to PanelSelectionService", () => {
 			PanelSelectionService.subscribe = jest.fn()
 
 			rebuildController()
@@ -43,12 +44,20 @@ describe("RibbonBarController", () => {
 			expect(PanelSelectionService.subscribe).toHaveBeenCalledWith($rootScope, ribbonBarController)
 		})
 
-		it("should subscripe to ExperimentalFeaturesEnabledService", () => {
+		it("should subscribe to ExperimentalFeaturesEnabledService", () => {
 			ExperimentalFeaturesEnabledService.subscribe = jest.fn()
 
 			rebuildController()
 
 			expect(ExperimentalFeaturesEnabledService.subscribe).toHaveBeenCalledWith($rootScope, ribbonBarController)
+		})
+
+		it("should subscribe to EdgeMetricDataService", () => {
+			EdgeMetricDataService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(EdgeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, ribbonBarController)
 		})
 	})
 
@@ -108,6 +117,16 @@ describe("RibbonBarController", () => {
 
 			expect(ribbonBarController["_viewModel"].files).toEqual(storeService.getState().files)
 			expect(ribbonBarController["_viewModel"].isDeltaState).toEqual(true)
+		})
+	})
+
+	describe("onEdgeMetricDataChanged", () => {
+		it("should detect if data has edge metrics", () => {
+			ribbonBarController.onEdgeMetricDataChanged([])
+			expect(ribbonBarController["_viewModel"].hasEdgeMetric).toBe(false)
+
+			ribbonBarController.onEdgeMetricDataChanged(METRIC_DATA)
+			expect(ribbonBarController["_viewModel"].hasEdgeMetric).toBe(true)
 		})
 	})
 })
