@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnInit } from "@angular/core"
 import { Observable } from "rxjs"
 
-import { MapColors, CodeMapNode } from "../../../codeCharta.model"
+import { MapColors, Node } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
@@ -13,7 +13,7 @@ import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/ma
 export class MetricDeltaSelectedComponent implements OnInit {
 	@Input() metricName: string
 
-	selectedNode$: Observable<CodeMapNode>
+	selectedNode$: Observable<Node>
 	mapColors$: Observable<MapColors>
 
 	constructor(@Inject(Store) private store: Store) {}

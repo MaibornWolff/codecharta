@@ -4,27 +4,22 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const { DefinePlugin } = require("webpack")
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const dist = path.resolve(__dirname, "../dist/webpack")
-const TerserPlugin = require("terser-webpack-plugin")
 
 module.exports = env => {
-	const config = {
+	return {
 		mode: "development",
-		target: "web",
+		target: JSON.parse(env.STANDALONE) ? "node" : "web",
 		entry: "./app/app.module.ts",
 		output: {
 			filename: "bundle.js",
 			path: dist
 		},
 		devServer: {
-			static: {
-				directory: dist
-			},
+			contentBase: dist,
 			compress: true, // enable gzip compression
 			hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
 			port: 3000,
-			client: {
-				logging: "error"
-			},
+			clientLogLevel: "error",
 			open: true
 		},
 		module: require("./webpack.loaders.js"),
@@ -35,6 +30,7 @@ module.exports = env => {
 				favicon: "./app/assets/icon.ico"
 			}),
 			new DefinePlugin({
+				"process.env.STANDALONE": JSON.stringify(env.STANDALONE),
 				"process.env.DEV": JSON.stringify(env.DEV)
 			}),
 			new NodePolyfillPlugin()
@@ -43,22 +39,8 @@ module.exports = env => {
 		resolve: {
 			extensions: [".ts", ".tsx", ".js"]
 		},
-		optimization: {
-			minimize: true,
-			minimizer: [
-				new TerserPlugin({
-					terserOptions: {
-						keep_classnames: true,
-						keep_fnames: true
-					}
-				})
-			]
+		externals: {
+			child_process: "require('child_process')"
 		}
 	}
-
-	if (env.DEV === "true") {
-		delete config.optimization
-	}
-
-	return config
 }

@@ -9,7 +9,6 @@ import { downgradeComponent } from "@angular/upgrade/static"
 import { FilePanelFileSelectorComponent } from "./filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./filePanelDeltaSelector/filePanelDeltaSelector.component"
-import { RemoveFileButtonComponent } from "./filePanelFileSelector/removeFileButton/removeFileButton.component"
 
 angular
 	.module("app.codeCharta.ui.filePanel", ["app.codeCharta.state"])
@@ -17,4 +16,3 @@ angular
 	.directive("ccFilePanelFileSelector", downgradeComponent({ component: FilePanelFileSelectorComponent }))
 	.directive("ccFilePanelStateButtons", downgradeComponent({ component: FilePanelStateButtonsComponent }))
 	.directive("ccFilePanelDeltaSelector", downgradeComponent({ component: FilePanelDeltaSelectorComponent }))
-	.directive("ccRemoveFileButton", downgradeComponent({ component: RemoveFileButtonComponent }))

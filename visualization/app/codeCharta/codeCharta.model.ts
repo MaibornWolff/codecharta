@@ -1,6 +1,7 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
+import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
@@ -141,7 +142,6 @@ export interface AppSettings {
 	mapColors: MapColors
 	isPresentationMode: boolean
 	showOnlyBuildingsWithEdges: boolean
-	isEdgeMetricVisible: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	isLoadingMap: boolean
 	isLoadingFile: boolean
@@ -349,6 +349,7 @@ export interface State {
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
 	files: FileState[]
+	lookUp: LookUp
 	appStatus: AppStatus
 }
 
@@ -384,8 +385,9 @@ export interface CCAction extends Action {
 	//
 	// As a starting point:
 	//
-	// RecursivePartial<MetricData & DynamicSettings & FileSettings & AppSettings & TreeMapSettings & FileState> & {
+	// RecursivePartial<MetricData & DynamicSettings & LookUp & FileSettings & AppSettings & TreeMapSettings & FileState> & {
 	// 	metricData: MetricData
+	// 	lookUp: LookUp
 	// 	dynamicSettings: DynamicSettings
 	// 	fileSettings: FileSettings
 	// 	appSettings: AppSettings
@@ -393,6 +395,12 @@ export interface CCAction extends Action {
 	// 	files: FileState[]
 	// }
 	payload?: any
+}
+
+export interface LookUp {
+	idToNode: Map<number, CodeMapNode>
+	// note that key is id of node and NOT id of building
+	idToBuilding: Map<number, CodeMapBuilding>
 }
 
 export interface AppStatus {

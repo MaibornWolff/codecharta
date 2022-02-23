@@ -31,10 +31,6 @@ export class NodeContextMenuService {
 
 		this.overlayReference.attach(new ComponentPortal(NodeContextMenuCardComponent))
 
-		this.overlayReference.overlayElement.addEventListener("contextmenu", event => {
-			event.preventDefault()
-		})
-
 		document.addEventListener("click", this.onLeftClickHideNodeContextMenu, false)
 		document.addEventListener("mousedown", this.onRightClickHideNodeContextMenu, true)
 		document.getElementById("codeMap").addEventListener("wheel", this.close, true)

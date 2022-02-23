@@ -54,7 +54,7 @@ describe("DialogGlobalSettings", () => {
 
 			const layout = await globalSettingsPageObject.getDisplayQuality()
 
-			expect(layout).toContain(SharpnessMode.PixelRatioNoAA)
+			expect(layout).toEqual(SharpnessMode.PixelRatioNoAA)
 		})
 	})
 })

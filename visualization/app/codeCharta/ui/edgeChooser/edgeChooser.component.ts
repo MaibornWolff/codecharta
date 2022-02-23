@@ -8,9 +8,6 @@ import { StoreService } from "../../state/store.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import { onStoreChanged } from "../../state/angular-redux/onStoreChanged/onStoreChanged"
-import { isEdgeMetricVisibleSelector } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
-import { setIsEdgeMetricVisible } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 export class EdgeChooserController
 	implements EdgeMetricDataSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber
@@ -22,13 +19,11 @@ export class EdgeChooserController
 		edgeMetric: string
 		hoveredEdgeValue: EdgeMetricCount
 		searchTerm: string
-		isEdgeMetricVisible: boolean
 	} = {
 		edgeMetricData: [],
 		edgeMetric: null,
 		hoveredEdgeValue: null,
-		searchTerm: "",
-		isEdgeMetricVisible: true
+		searchTerm: ""
 	}
 
 	constructor(
@@ -41,11 +36,6 @@ export class EdgeChooserController
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
-		onStoreChanged(isEdgeMetricVisibleSelector, this.onEdgeMetricVisibilityChanged)
-	}
-
-	onEdgeMetricVisibilityChanged = (_old: boolean, newValue: boolean) => {
-		this._viewModel.isEdgeMetricVisible = newValue
 	}
 
 	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
@@ -63,11 +53,8 @@ export class EdgeChooserController
 		this._viewModel.hoveredEdgeValue = null
 	}
 
-	onEdgeMetricChanged(edgeMetric: string) {
-		if (!this._viewModel.isEdgeMetricVisible) {
-			this.storeService.dispatch(setIsEdgeMetricVisible())
-		}
-		this._viewModel.edgeMetric = edgeMetric
+	onEdgeMetricChanged(edgeMetric?: string) {
+		this._viewModel.edgeMetric = edgeMetric || EdgeMetricDataService.NONE_METRIC
 		this.codeMapActionsService.updateEdgePreviews()
 	}
 
@@ -75,9 +62,19 @@ export class EdgeChooserController
 		this.storeService.dispatch(setEdgeMetric(this._viewModel.edgeMetric))
 	}
 
+	noEdgesAvailable() {
+		return this._viewModel.edgeMetricData.length <= 1
+	}
+
 	filterMetricData() {
 		const searchTerm = this._viewModel.searchTerm.toLowerCase()
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(({ name }) => name.toLowerCase().includes(searchTerm))
+	}
+
+	focusInputField(idName) {
+		setTimeout(() => {
+			document.getElementById(`${idName}-selector`).focus()
+		}, 200)
 	}
 
 	clearSearchTerm() {

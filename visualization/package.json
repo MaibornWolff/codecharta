@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.91.0",
+	"version": "1.88.0",
 	"engines": {
 		"node": ">=16"
 	},
@@ -39,7 +39,7 @@
 	},
 	"main": "dist/webpack/index.html",
 	"build": {
-		"nwVersion": "0.61.0",
+		"nwVersion": "0.53.0",
 		"output": "./dist/packages/",
 		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
 		"files": "./dist/webpack/**/*",
@@ -64,9 +64,9 @@
 	],
 	"scripts": {
 		"start": "nw .",
-		"build": "webpack --config ./conf/webpack.config.js --env DEV=false",
-		"build:web": "webpack --config ./conf/webpack.config.js --env DEV=false",
-		"dev": "webpack serve --config ./conf/webpack.config.js --env DEV=true",
+		"build": "webpack --config ./conf/webpack.config.js --env STANDALONE=true --env DEV=false",
+		"build:web": "webpack --config ./conf/webpack.config.js --env STANDALONE=false --env DEV=false",
+		"dev": "webpack serve --config ./conf/webpack.config.js --env STANDALONE=false --env DEV=true",
 		"test": "jest --config ./jest.config.json .*\\.spec\\.ts --env=jsdom",
 		"test:auto": "npm test -- --watch",
 		"test:autoNoCoverage": "npm run test:auto -- --coverage false",
@@ -126,7 +126,7 @@
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
 		"nouislider": "^15.0.0",
-		"nw": "^0.61.0",
+		"nw": "^0.58.0",
 		"object-inspect": "^1.10.3",
 		"open": "^8.0.6",
 		"percent-round": "^2.2.1",
@@ -138,7 +138,7 @@
 		"shelljs": "^0.8.4",
 		"three": "^0.126.1",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "^0.53.0",
+		"typescript-json-schema": "^0.52.0",
 		"zone.js": "^0.11.4"
 	},
 	"devDependencies": {
@@ -182,18 +182,17 @@
 		"lint-staged": "^11.0.0",
 		"makeshift": "^1.1.0",
 		"node-polyfill-webpack-plugin": "^1.1.4",
-		"node-sass": "^7.0.0",
+		"node-sass": "^6.0.1",
 		"nwjs-builder-phoenix": "^1.15.0",
-		"puppeteer": "^13.0.0",
+		"puppeteer": "^10.4.0",
 		"sass-loader": "^12.0.0",
 		"style-loader": "^2.0.0",
-		"terser-webpack-plugin": "^5.3.1",
 		"ts-jest": "^26.5.5",
 		"ts-loader": "^9.0.0",
 		"typescript": "^4.3.5",
 		"webpack": "^5.33.2",
 		"webpack-cli": "^4.7.2",
-		"webpack-dev-server": "^4.0.0",
+		"webpack-dev-server": "^3.11.2",
 		"webpack-glsl-loader": "^1.0.1"
 	},
 	"optionalDependencies": {

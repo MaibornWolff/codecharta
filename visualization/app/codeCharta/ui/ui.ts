@@ -23,6 +23,7 @@ import "./dialog/dialog.module"
 import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./heightSettingsPanel/heightSettingsPanel.module"
+import "./loadingGif/loadingGif.module"
 import "./metricChooser/metricChooser.module"
 import "./metricType/metricType.module"
 import "./rangeSlider/rangeSlider.module"
@@ -69,6 +70,7 @@ angular
 		"app.codeCharta.ui.fileChooser",
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.heightSettingsPanel",
+		"app.codeCharta.ui.loadingGif",
 		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.metricType",
 		"app.codeCharta.ui.rangeSlider",

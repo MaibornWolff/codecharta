@@ -7,17 +7,23 @@ import debounce from "lodash.debounce"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
+import { setInvertArea } from "../../state/store/appSettings/invertArea/invertArea.actions"
+import { InvertAreaService, InvertAreaSubscriber } from "../../state/store/appSettings/invertArea/invertArea.service"
 
-export class AreaSettingsPanelController implements FilesSelectionSubscriber, DynamicMarginSubscriber, MarginSubscriber {
+export class AreaSettingsPanelController
+	implements FilesSelectionSubscriber, DynamicMarginSubscriber, MarginSubscriber, InvertAreaSubscriber
+{
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedMargin: () => void
 
 	private _viewModel: {
 		margin: number
 		dynamicMargin: boolean
+		invertArea: boolean
 	} = {
 		margin: null,
-		dynamicMargin: null
+		dynamicMargin: null,
+		invertArea: null
 	}
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -25,6 +31,7 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		DynamicMarginService.subscribe(this.$rootScope, this)
 		MarginService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
+		InvertAreaService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedMargin = debounce(() => {
 			this.storeService.dispatch(setMargin(this._viewModel.margin))
@@ -48,14 +55,22 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
+	applySettingsInvertArea() {
+		this.storeService.dispatch(setInvertArea(this._viewModel.invertArea))
+	}
+
 	onChangeMarginSlider() {
 		this.applyDebouncedMargin()
 		this.storeService.dispatch(setDynamicMargin(false))
 	}
+
+	onInvertAreaChanged(invertArea: boolean) {
+		this._viewModel.invertArea = invertArea
+	}
 }
 
 export const areaSettingsPanelComponent = {
-	selector: "ccAreaSettingsPanel",
+	selector: "areaSettingsPanelComponent",
 	template: require("./areaSettingsPanel.component.html"),
 	controller: AreaSettingsPanelController
 }

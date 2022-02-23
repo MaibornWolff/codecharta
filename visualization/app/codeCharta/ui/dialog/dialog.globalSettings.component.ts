@@ -28,14 +28,15 @@ import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFile
 import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
 import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
 import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
+import { CodeChartaStorage } from "../../util/codeChartaStorage"
 import { FileDownloader } from "../../util/fileDownloader"
 import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
+import { isStandalone } from "../../util/envDetector"
 import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import {
 	ScreenshotToClipboardEnabledService,
 	ScreenshotToClipboardEnabledSubscriber
 } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
-import { TRACKING_DATA_LOCAL_STORAGE_ELEMENT } from "../../util/usageDataTracker"
 
 export class DialogGlobalSettingsController
 	implements
@@ -165,18 +166,19 @@ export class DialogGlobalSettingsController
 
 	mapTrackingDataAvailable() {
 		const files = this.storeService.getState().files
-		return isSingleState(files) && getVisibleFileStates(files)
+		return isStandalone() && isSingleState(files) && getVisibleFileStates(files)
 	}
 
 	downloadTrackingData() {
 		//TODO: this should be removed as soon as we send the data to a server
+		const fileStorage = new CodeChartaStorage()
 
 		// Make sure that only file within usageData can be read
 		const fileChecksum = this.storeService.getState().files[0].file.fileMeta.fileChecksum.replace(/\//g, "")
 
 		let trackedMapMetaData = ""
 		try {
-			trackedMapMetaData = localStorage.getItem(`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/${fileChecksum}-meta`)
+			trackedMapMetaData = fileStorage.getItem(`usageData/${fileChecksum}-meta`)
 		} catch {
 			// ignore, it no events item exists
 		}

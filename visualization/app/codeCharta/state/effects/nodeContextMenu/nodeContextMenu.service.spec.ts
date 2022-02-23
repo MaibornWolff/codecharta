@@ -1,6 +1,5 @@
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { fireEvent } from "@testing-library/angular"
 import { MaterialModule } from "../../../../material/material.module"
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
 import { NodeContextMenuService } from "./nodeContextMenu.service"
@@ -63,16 +62,5 @@ describe("nodeContextMenuService", () => {
 		expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith("click", nodeContextMenu["onLeftClickHideNodeContextMenu"], true)
 		expect(documentRemoveEventListenerSpy).toHaveBeenCalledWith("mousedown", nodeContextMenu["onRightClickHideNodeContextMenu"], true)
 		expect(mockedWheelTargetElement.removeEventListener).toHaveBeenCalledWith("wheel", nodeContextMenu.close, true)
-	})
-
-	it("should prevent default browser context menu to open", () => {
-		const nodeContextMenu = TestBed.inject(NodeContextMenuService)
-		nodeContextMenu.open(10, 10)
-		let wasDefaultContextMenuPrevented
-		document.addEventListener("contextmenu", event => {
-			wasDefaultContextMenuPrevented = event.defaultPrevented
-		})
-		fireEvent.contextMenu(nodeContextMenu["overlayReference"].overlayElement)
-		expect(wasDefaultContextMenuPrevented).toBe(true)
 	})
 })

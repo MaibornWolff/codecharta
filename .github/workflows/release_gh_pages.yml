@@ -100,7 +100,7 @@ jobs:
           workdir: ./visualization
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.2.3
+        uses: JamesIves/github-pages-deploy-action@v4.2.2
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages

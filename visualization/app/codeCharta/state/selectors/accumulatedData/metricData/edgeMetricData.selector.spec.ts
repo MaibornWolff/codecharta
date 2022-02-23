@@ -2,6 +2,7 @@ import { calculateEdgeMetricData, nodeEdgeMetricsMap } from "./edgeMetricData.se
 import { FILE_STATES, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
 import { FileState } from "../../../../model/files/files"
 import { clone } from "../../../../util/clone"
+import { EdgeMetricDataService } from "../../../store/metricData/edgeMetricData/edgeMetricData.service"
 
 describe("edgeMetricDataSelector", () => {
 	let fileStates: FileState[]
@@ -25,13 +26,20 @@ describe("edgeMetricDataSelector", () => {
 		expect(result.find(x => x.name === "otherMetric").maxValue).toEqual(1)
 	})
 
+	it("should contain the None metric once", () => {
+		const result = calculateEdgeMetricData(fileStates, [])
+
+		expect(result.filter(x => x.name === EdgeMetricDataService.NONE_METRIC)).toHaveLength(1)
+	})
+
 	it("should sort the metrics after calculating them", () => {
 		const result = calculateEdgeMetricData(fileStates, [])
 
-		expect(result).toHaveLength(3)
+		expect(result).toHaveLength(4)
 		expect(result[0].name).toBe("avgCommits")
-		expect(result[1].name).toBe("otherMetric")
-		expect(result[2].name).toBe("pairingRate")
+		expect(result[1].name).toBe("None")
+		expect(result[2].name).toBe("otherMetric")
+		expect(result[3].name).toBe("pairingRate")
 	})
 
 	it("metrics Map should contain correct entries", () => {

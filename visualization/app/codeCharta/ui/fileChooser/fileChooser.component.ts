@@ -8,8 +8,6 @@ import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
 import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
 import { getCCFileAndDecorateFileChecksum } from "../../util/fileHelper"
-import { parseGameObjectsFile } from "../../util/gameObjectsParser/gameObjectsImporter"
-import { validateGameObjects } from "../../util/gameObjectsParser/gameObjectsValidator"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
@@ -40,10 +38,7 @@ export class FileChooserController {
 				}
 
 				reader.onload = event => {
-					const result = event.target.result.toString()
-					content = isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)).toString() : result
-					if (result.includes("gameObjectPositions") && validateGameObjects(result))
-						content = JSON.stringify(parseGameObjectsFile(result))
+					content = (isCompressed ? zlib.unzipSync(Buffer.from(<string>event.target.result)) : event.target.result).toString()
 				}
 
 				reader.onloadend = () => {

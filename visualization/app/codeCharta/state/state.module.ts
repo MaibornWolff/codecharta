@@ -7,9 +7,12 @@ import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNam
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
+import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
+import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
+import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
@@ -49,6 +52,7 @@ import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layo
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
+import { InvertAreaService } from "./store/appSettings/invertArea/invertArea.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
@@ -62,9 +66,12 @@ angular
 	.service(camelCase(NodeMetricDataService.name), NodeMetricDataService)
 	.service(camelCase(PanelSelectionService.name), PanelSelectionService)
 	.service(camelCase(CameraTargetService.name), CameraTargetService)
+	.service(camelCase(IdToNodeService.name), IdToNodeService)
+	.service(camelCase(IdToBuildingService.name), IdToBuildingService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(camelCase(SearchPanelModeService.name), SearchPanelModeService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
+	.service(camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(camelCase(FilesService.name), FilesService)
 	.service(camelCase(MapSizeService.name), MapSizeService)
 	.service(camelCase(MapColorsService.name), MapColorsService)
@@ -73,6 +80,7 @@ angular
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
 	.service(camelCase(InvertHeightService.name), InvertHeightService)
+	.service(camelCase(InvertAreaService.name), InvertAreaService)
 	.service(camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)

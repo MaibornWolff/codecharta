@@ -4,6 +4,7 @@ import { FileState } from "../../../../model/files/files"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../angular-redux/store"
 import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
+import { EdgeMetricDataService } from "../../../store/metricData/edgeMetricData/edgeMetricData.service"
 import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
 import { sortByMetricName } from "./sortByMetricName"
 
@@ -78,6 +79,8 @@ function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, t
 
 function getMetricDataFromMap() {
 	const metricData: EdgeMetricData[] = []
+
+	nodeEdgeMetricsMap.set(EdgeMetricDataService.NONE_METRIC, new Map())
 
 	for (const [edgeMetric, occurrences] of nodeEdgeMetricsMap) {
 		let maximumMetricValue = 0

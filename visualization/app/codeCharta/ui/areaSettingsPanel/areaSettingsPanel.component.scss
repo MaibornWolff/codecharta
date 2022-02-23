@@ -1,4 +1,4 @@
-cc-area-settings-panel {
+area-settings-panel-component {
 	background: white;
 	border: 1px solid #b5b5b5;
 	box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
@@ -15,10 +15,6 @@ cc-area-settings-panel {
 
 	top: 45px;
 	right: 0;
-
-	.md-primary .md-label {
-		padding-top: 3px;
-	}
 
 	md-slider-container {
 		position: relative;
@@ -41,7 +37,7 @@ cc-area-settings-panel {
 	}
 }
 
-cc-area-settings-panel.hidden {
+area-settings-panel-component.hidden {
 	max-height: 0;
 	opacity: 0;
 	transition: max-height 200ms ease-in-out, opacity 0ms 200ms;

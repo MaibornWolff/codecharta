@@ -1,4 +1,4 @@
-cc-edge-settings-panel {
+edge-settings-panel-component {
 	background: white;
 	border: 1px solid #b5b5b5;
 	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
@@ -46,15 +46,10 @@ cc-edge-settings-panel {
 		align-items: center;
 		display: flex;
 		justify-content: space-between;
-
-		md-checkbox .md-label {
-			margin-top: 13px;
-			margin-left: 33px;
-		}
 	}
 }
 
-cc-edge-settings-panel.hidden {
+edge-settings-panel-component.hidden {
 	max-height: 0;
 	opacity: 0;
 	transition: max-height 200ms ease-in-out, opacity 0ms 200ms;

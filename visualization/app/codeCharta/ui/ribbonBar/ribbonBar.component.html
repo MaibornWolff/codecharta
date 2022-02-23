@@ -45,11 +45,11 @@
 			>Area Metric Options <i class="fa fa-angle-down"></i
 		></span>
 	</div>
-	<cc-area-settings-panel
+	<area-settings-panel-component
 		ng-class="{
 			hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN
 		}"
-	></cc-area-settings-panel>
+	></area-settings-panel-component>
 </md-card>
 
 <md-card
@@ -109,7 +109,7 @@
 	ng-class="{
 		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN
 	}"
-	ng-show="$ctrl._viewModel.hasEdgeMetric"
+	ng-show="!$ctrl._viewModel.isDeltaState"
 >
 	<div class="section">
 		<div class="section-header">
@@ -122,11 +122,11 @@
 		>
 			Edge Metric Options <i class="fa fa-angle-down"></i>
 		</span>
-		<cc-edge-settings-panel
+		<edge-settings-panel-component
 			ng-class="{
 				hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN
 			}"
-		></cc-edge-settings-panel>
+		></edge-settings-panel-component>
 	</div>
 </md-card>
 

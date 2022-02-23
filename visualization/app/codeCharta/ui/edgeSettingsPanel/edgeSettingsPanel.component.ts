@@ -65,8 +65,12 @@ export class EdgeSettingsPanelController
 
 	onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.totalAffectedBuildings = this.edgeMetricDataService.getAmountOfAffectedBuildings(edgeMetric)
-
-		this._viewModel.amountOfEdgePreviews = defaultAmountOfEdgePreviews
+		if (edgeMetric === "None") {
+			this._viewModel.amountOfEdgePreviews = 0
+			this._viewModel.showOnlyBuildingsWithEdges = false
+		} else {
+			this._viewModel.amountOfEdgePreviews = defaultAmountOfEdgePreviews
+		}
 		this.applySettingsAmountOfEdgePreviews()
 		this.applyShowOnlyBuildingsWithEdges()
 	}
@@ -85,7 +89,7 @@ export class EdgeSettingsPanelController
 }
 
 export const edgeSettingsPanelComponent = {
-	selector: "ccEdgeSettingsPanel",
+	selector: "edgeSettingsPanelComponent",
 	template: require("./edgeSettingsPanel.component.html"),
 	controller: EdgeSettingsPanelController
 }

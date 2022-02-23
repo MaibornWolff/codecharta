@@ -95,11 +95,7 @@ describe("AttributeSideBarComponent", () => {
 	})
 
 	it("should display attribute type selectors for folders", async () => {
-		mockedSelectedNodeSelector.mockImplementation(() => {
-			const node = klona(TEST_NODE_FOLDER)
-			node["children"] = [{}]
-			return node
-		})
+		mockedSelectedNodeSelector.mockImplementation(() => klona(TEST_NODE_FOLDER))
 
 		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 

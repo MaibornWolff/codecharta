@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from "@angular/core"
 
 import { ColorRange, MapColors } from "../../codeCharta.model"
 
-@Pipe({ name: "mapColorLabel" })
+@Pipe({ name: "mapColorLabelPipe" })
 export class MapColorLabelPipe implements PipeTransform {
 	transform(metricName: keyof MapColors, colorRange: ColorRange): string {
 		switch (metricName) {

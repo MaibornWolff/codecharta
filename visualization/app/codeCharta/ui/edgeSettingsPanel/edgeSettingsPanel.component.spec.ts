@@ -132,6 +132,24 @@ describe("EdgeSettingsPanelController", () => {
 
 			expect(edgeSettingsPanelController["_viewModel"].amountOfEdgePreviews).toBe(DEFAULT_STATE.appSettings.amountOfEdgePreviews)
 		})
+
+		it("should get 0 amountOfEdgePreviews and call applySettingsAmountOfEdgePreviews for metricName None", () => {
+			edgeSettingsPanelController.applySettingsAmountOfEdgePreviews = jest.fn()
+
+			edgeSettingsPanelController.onEdgeMetricChanged("None")
+
+			expect(edgeSettingsPanelController["_viewModel"].amountOfEdgePreviews).toBe(0)
+			expect(edgeSettingsPanelController.applySettingsAmountOfEdgePreviews).toHaveBeenCalled()
+		})
+
+		it("should get 0 amountOfEdgePreviews and call applyShowOnlyBuildingsWithEdges for metricName None", () => {
+			edgeSettingsPanelController.applyShowOnlyBuildingsWithEdges = jest.fn()
+
+			edgeSettingsPanelController.onEdgeMetricChanged("None")
+
+			expect(edgeSettingsPanelController["_viewModel"].showOnlyBuildingsWithEdges).toBe(false)
+			expect(edgeSettingsPanelController.applyShowOnlyBuildingsWithEdges).toHaveBeenCalled()
+		})
 	})
 
 	describe("applySettingsAmountOfEdgePreviews", () => {

@@ -12,6 +12,7 @@ export interface EdgeMetricDataSubscriber {
 
 export class EdgeMetricDataService implements BlacklistSubscriber, FilesSelectionSubscriber, AttributeTypesSubscriber {
 	private static EDGE_METRIC_DATA_CHANGED_EVENT = "edge-metric-data-changed"
+	static NONE_METRIC = "None"
 
 	private edgeMetricData: EdgeMetricData[]
 

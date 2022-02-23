@@ -85,17 +85,10 @@
 			"attributes": {
 				"pairingRate": 65
 			}
-		},
-		{
-			"fromNodeName": "/root/ParentLeaf/otherSmallLeaf.ts",
-			"toNodeName": "/root/bigLeaf.ts",
-			"attributes": {
-				"avgCommits": 20
-			}
 		}
 	],
 	"attributeTypes": {
 		"nodes": { "rloc": "absolute", "functions": "absolute", "mcc": "absolute", "pairingRate": "relative" },
-		"edges": { "pairingRate": "relative", "avgCommits": "relative" }
+		"edges": { "pairingRate": "relative" }
 	}
 }

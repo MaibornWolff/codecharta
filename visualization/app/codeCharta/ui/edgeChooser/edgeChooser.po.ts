@@ -4,7 +4,7 @@ import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 export class EdgeChooserPageObject {
 	async open() {
 		await clickButtonOnPageElement("edge-chooser-component md-select")
-		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active")
+		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active.md-clickable")
 	}
 
 	async getMetrics() {

@@ -12,13 +12,7 @@
 		<button mat-button (click)="handleSelectZeroPartialFiles()">None</button>
 		<button mat-button (click)="handleInvertSelectedPartialFiles()">Invert</button>
 	</div>
-	<mat-option class="filenames" *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
+	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
 		{{ file.file.fileMeta.fileName }}
-
-		<cc-remove-file-button
-			*ngIf="files.length > 1"
-			[filename]="file.file.fileMeta.fileName"
-			[onRemoveFile]="handleOnRemoveFile"
-		></cc-remove-file-button>
 	</mat-option>
 </mat-select>

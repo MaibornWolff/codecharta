@@ -56,7 +56,7 @@ export class FilePanelController implements FilesSelectionSubscriber, MapColorsS
 		this._viewModel.pictogramLowerColor = mapColors.negativeDelta
 	}
 
-	onRemoveFile = (filename: string, $event): void => {
+	onRemoveFile(filename, $event): void {
 		this.storeService.dispatch(removeFile(filename))
 		this.storeService.dispatch(removeRecentFile(filename))
 
@@ -69,6 +69,7 @@ export class FilePanelController implements FilesSelectionSubscriber, MapColorsS
 
 	private partialStateFileRemove(files: FileState[]) {
 		const selectedFiles = files.filter(x => x.selectedAs === FileSelectionState.Partial).map(fileState => getFileNameOf(fileState))
+
 		if (selectedFiles.length > 0) {
 			this.onPartialFilesChange(selectedFiles)
 		} else {

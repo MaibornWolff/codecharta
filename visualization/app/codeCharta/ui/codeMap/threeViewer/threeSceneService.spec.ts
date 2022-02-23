@@ -17,24 +17,17 @@ import { StoreService } from "../../../state/store.service"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { klona } from "klona"
 import { CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
+import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
+import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 import { Box3, BufferGeometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
 import { setLayoutAlgorithm } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
-import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
-import { mocked } from "ts-jest/utils"
-import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
-
-jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
-	idToNodeSelector: jest.fn()
-}))
-const mockedIdToNodeSelector = mocked(idToNodeSelector)
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let idToBuildingService: IdToBuildingService
 
 	let codeMapBuilding: CodeMapBuilding
 
@@ -49,13 +42,12 @@ describe("ThreeSceneService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 	}
 
 	function rebuildService() {
-		threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService)
+		threeSceneService = new ThreeSceneService($rootScope, storeService)
 	}
 
 	beforeEach(() => {
@@ -112,13 +104,14 @@ describe("ThreeSceneService", () => {
 
 	describe("addNodeAndChildrenToConstantHighlight", () => {
 		beforeEach(() => {
-			mockedIdToNodeSelector.mockImplementation(() => {
-				const idToNode = new Map<number, CodeMapNode>()
-				idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
-				idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
-				return idToNode
-			})
-			idToBuildingService.setIdToBuilding([CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE])
+			const idToBuilding = new Map<number, CodeMapBuilding>()
+			idToBuilding.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+			idToBuilding.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+			storeService.dispatch(setIdToBuilding(idToBuilding))
+			const idToNode = new Map<number, CodeMapNode>()
+			idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
+			idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
+			storeService.dispatch(setIdToNode(idToNode))
 			threeSceneService["constantHighlight"] = new Map()
 		})
 
@@ -144,15 +137,15 @@ describe("ThreeSceneService", () => {
 
 	describe("removeNodeAndChildrenFromConstantHighlight", () => {
 		beforeEach(() => {
-			mockedIdToNodeSelector.mockImplementation(() => {
-				const idToNode = new Map<number, CodeMapNode>()
-				idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
-				idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
-				return idToNode
-			})
-			idToBuildingService.setIdToBuilding([CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE])
+			const idToBuilding = new Map<number, CodeMapBuilding>()
+			idToBuilding.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+			idToBuilding.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+			storeService.dispatch(setIdToBuilding(idToBuilding))
+			const idToNode = new Map<number, CodeMapNode>()
+			idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
+			idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
+			storeService.dispatch(setIdToNode(idToNode))
 		})
-
 		it("should remove the building from constant Highlight ", () => {
 			const result = new Map<number, CodeMapBuilding>()
 			result.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)

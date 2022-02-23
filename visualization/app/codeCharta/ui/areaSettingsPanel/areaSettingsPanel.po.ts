@@ -2,21 +2,21 @@ import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 
 export const AreaSettingsPanelPageObject = {
 	async toggleDefaultMargin() {
-		await clickButtonOnPageElement("cc-area-settings-panel md-checkbox")
+		await clickButtonOnPageElement("area-settings-panel-component md-checkbox")
 		return this.isDefaultMarginEnabled()
 	},
 
 	async isDefaultMarginEnabled() {
-		return page.$eval("cc-area-settings-panel md-checkbox", element => element.className.includes("md-checked"))
+		return page.$eval("area-settings-panel-component md-checkbox", element => element.className.includes("md-checked"))
 	},
 
 	async toggleMarginBoundingBox() {
-		const marginToggleBoxHandle = await page.$("cc-area-settings-panel md-checkbox .md-container")
+		const marginToggleBoxHandle = await page.$("area-settings-panel-component md-checkbox .md-container")
 		return marginToggleBoxHandle.boundingBox()
 	},
 
 	async resetButtonBoundingBox() {
-		const resetBoxHandle = await page.$("cc-area-settings-panel reset-settings-button-component")
+		const resetBoxHandle = await page.$("area-settings-panel-component reset-settings-button-component")
 		return resetBoxHandle.boundingBox()
 	}
 }

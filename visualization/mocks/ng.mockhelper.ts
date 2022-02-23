@@ -1,5 +1,4 @@
 import angular, { IAngularStatic } from "angular"
-import { IdToBuildingService } from "../app/codeCharta/services/idToBuilding/idToBuilding.service"
 import { Store } from "../app/codeCharta/state/store/store"
 
 export const NGMock: IAngularStatic = angular
@@ -7,10 +6,6 @@ export const NG = angular
 
 export function instantiateModule(id: string) {
 	NGMock.mock.module(id)
-	const idToBuildingService = new IdToBuildingService()
-	angular.mock.module(($provide: ng.auto.IProvideService) => {
-		$provide.value("idToBuilding", idToBuildingService)
-	})
 }
 
 export function getService<T>(id: string): T {
