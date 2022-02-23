@@ -45,12 +45,11 @@ interface RiskProfile {
 	moderateRisk: number
 	highRisk: number
 	veryHighRisk: number
-	totalRloc?: number
 }
 
 const HEIGHT_METRIC = "mcc"
 const AREA_METRIC = "rloc"
-const EXCLUDED_FILES = new Set(["html", "sass", "scss", "scss", ".txt", "md", "json", undefined])
+const EXCLUDED_FILE_EXTENSION = new Set(["html", "sass", "css", "scss", "txt", "md", "json", undefined])
 
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
@@ -64,10 +63,9 @@ export class ArtificialIntelligenceController
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
-		riskProfile: {} as RiskProfile
+		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	}
 
-	private rlocRisk = {} as RiskProfile
 	private fileState: FileState
 	private blacklist: BlacklistItem[] = []
 	private debounceCalculation: () => void
@@ -155,14 +153,15 @@ export class ArtificialIntelligenceController
 
 	private setDefaultRiskProfile() {
 		this._viewModel.analyzedProgrammingLanguage = undefined
-		this._viewModel.riskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
-		this.rlocRisk = { ...this._viewModel.riskProfile, totalRloc: 0 }
+		this._viewModel.riskProfile = undefined
 	}
 
 	private calculateRiskProfile(fileState: FileState, metricName: string) {
+		const rlocRisk = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0, totalRloc: 0 }
+
 		for (const { data } of hierarchy(fileState.file.map)) {
 			// TODO calculate risk profile only for focused or currently visible but not excluded files.
-			if (this.isFileInvalid(data, metricName)) {
+			if (this.isFileValid(data, metricName)) {
 				const fileExtension = this.getFileExtension(data.name)
 				const languageSpecificThresholds = this.getAssociatedMetricThresholds(fileExtension)
 				const thresholds = languageSpecificThresholds[metricName]
@@ -170,49 +169,50 @@ export class ArtificialIntelligenceController
 				const nodeRlocValue = data.attributes[AREA_METRIC]
 
 				// Idea: We could calculate risk profiles per directory in the future.
-				this.calculateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue)
+				this.calculateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue, rlocRisk)
 			}
 		}
 
-		if (this.rlocRisk.totalRloc === 0) {
+		if (rlocRisk.totalRloc === 0) {
 			return
 		}
 
-		this.setRiskProfile()
+		this._viewModel.riskProfile = this.setRiskProfile(rlocRisk)
 	}
 
-	private setRiskProfile() {
+	private setRiskProfile(rlocRisk) {
 		const [lowRisk, moderateRisk, highRisk, veryHighRisk] = percentRound([
-			this.rlocRisk.lowRisk,
-			this.rlocRisk.moderateRisk,
-			this.rlocRisk.highRisk,
-			this.rlocRisk.veryHighRisk
+			rlocRisk.lowRisk,
+			rlocRisk.moderateRisk,
+			rlocRisk.highRisk,
+			rlocRisk.veryHighRisk
 		])
 
-		this._viewModel.riskProfile = { lowRisk, moderateRisk, highRisk, veryHighRisk }
+		return { lowRisk, moderateRisk, highRisk, veryHighRisk }
 	}
 
-	private isFileInvalid(node: CodeMapNode, metricName: string) {
+	private isFileValid(node: CodeMapNode, metricName: string) {
 		return (
 			node.type === NodeType.FILE &&
 			!isPathBlacklisted(node.path, this.blacklist, BlacklistType.exclude) &&
 			node.attributes[metricName] !== undefined &&
 			node.attributes[AREA_METRIC] !== undefined &&
-			!EXCLUDED_FILES.has(this.getFileExtension(node.name))
+			!EXCLUDED_FILE_EXTENSION.has(this.getFileExtension(node.name))
 		)
 	}
 
-	private calculateRlocRisk(nodeMetricValue: number, thresholds, nodeRlocValue: number) {
-		this.rlocRisk.totalRloc += nodeRlocValue
+	private calculateRlocRisk(nodeMetricValue: number, thresholds, nodeRlocValue: number, rlocRisk) {
+		rlocRisk.totalRloc += nodeRlocValue
 		if (nodeMetricValue <= thresholds.percentile70) {
-			this.rlocRisk.lowRisk += nodeRlocValue
-		} else if (nodeMetricValue <= thresholds.percentile80) {
-			this.rlocRisk.moderateRisk += nodeRlocValue
-		} else if (nodeMetricValue <= thresholds.percentile90) {
-			this.rlocRisk.highRisk += nodeRlocValue
-		} else {
-			this.rlocRisk.veryHighRisk += nodeRlocValue
+			return (rlocRisk.lowRisk += nodeRlocValue)
 		}
+		if (nodeMetricValue <= thresholds.percentile80) {
+			return (rlocRisk.moderateRisk += nodeRlocValue)
+		}
+		if (nodeMetricValue <= thresholds.percentile90) {
+			return (rlocRisk.highRisk += nodeRlocValue)
+		}
+		return (rlocRisk.veryHighRisk += nodeRlocValue)
 	}
 
 	private calculateSuspiciousMetrics(fileState: FileState, programmingLanguage: string) {
@@ -339,7 +339,7 @@ export class ArtificialIntelligenceController
 	}
 
 	private getAssociatedMetricThresholds(programmingLanguage: string) {
-		return programmingLanguage === "java" ? metricThresholds["java"] : metricThresholds["miscellaneous"]
+		return programmingLanguage === "java" ? metricThresholds.java : metricThresholds.miscellaneous
 	}
 }
 

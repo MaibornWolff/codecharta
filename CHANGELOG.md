@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Added 🚀
+### Changed
 
 -   Risk profile is now calculated for every occurring programming languages in selected file(s)[#2679](https://github.com/MaibornWolff/codecharta/pull/2679)
 
