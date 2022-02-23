@@ -19,41 +19,42 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.AutoComplete
 import picocli.CommandLine
+import java.io.File
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "ccsh",
-    description = ["Command Line Interface for CodeCharta analysis"],
-    subcommands = [
-        ValidationTool::class,
-        MergeFilter::class,
-        EdgeFilter::class,
-        StructureModifier::class,
-        CSVImporter::class,
-        SonarImporterMain::class,
-        SourceMonitorImporter::class,
-        SCMLogParser::class,
-        SCMLogParserV2::class,
-        Installer::class,
-        CSVExporter::class,
-        CrococosmoImporter::class,
-        SourceCodeParserMain::class,
-        UnderstandImporter::class,
-        CodeMaatImporter::class,
-        JasomeImporter::class,
-        TokeiImporter::class,
-        RawTextParser::class,
-        AutoComplete.GenerateCompletion::class
-    ],
-    versionProvider = Ccsh.ManifestVersionProvider::class,
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+        name = "ccsh",
+        description = ["Command Line Interface for CodeCharta analysis"],
+        subcommands = [
+            ValidationTool::class,
+            MergeFilter::class,
+            EdgeFilter::class,
+            StructureModifier::class,
+            CSVImporter::class,
+            SonarImporterMain::class,
+            SourceMonitorImporter::class,
+            SCMLogParser::class,
+            SCMLogParserV2::class,
+            Installer::class,
+            CSVExporter::class,
+            CrococosmoImporter::class,
+            SourceCodeParserMain::class,
+            UnderstandImporter::class,
+            CodeMaatImporter::class,
+            JasomeImporter::class,
+            TokeiImporter::class,
+            RawTextParser::class,
+            AutoComplete.GenerateCompletion::class
+        ],
+        versionProvider = Ccsh.ManifestVersionProvider::class,
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class Ccsh : Callable<Void?> {
 
     @CommandLine.Option(
-        names = ["-v", "--version"],
-        versionHelp = true,
-        description = ["prints version info and exits"]
+            names = ["-v", "--version"],
+            versionHelp = true,
+            description = ["prints version info and exits"]
     )
     var versionRequested: Boolean = false
 
@@ -70,7 +71,15 @@ class Ccsh : Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
+
             commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
+
+            var subcommandNames = commandLine.subcommands.keys.toString()
+
+            if( (args.isNotEmpty() && !subcommandNames.contains(args[0])) || args.isEmpty()) {
+                var subcommand = selectParser(commandLine)
+                println("executing $subcommand")
+            }
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
@@ -80,7 +89,7 @@ class Ccsh : Callable<Void?> {
                     var skip = false
                     argument.forEach {
                         if (it == '=') skip = true
-                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.toLowerCase()
+                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.lowercaseChar()
                         else sanitizedArg += it
                     }
                 } else {
@@ -89,14 +98,67 @@ class Ccsh : Callable<Void?> {
                 return@map sanitizedArg
             }.toTypedArray()
         }
+
+        private fun selectParser(commandLine: CommandLine): String {
+            println("Which parser do you want to execute?")
+
+            var listOfParsers = getListOfParsers(commandLine)
+            var index = 1
+
+            for ((name, description) in listOfParsers) {
+                var position = index++
+                println("$position) $name - $description")
+            }
+
+            var inputParser = readLine().toString()
+
+            var listLength = listOfParsers.size
+
+            while (isLetter(inputParser) || isSpecialCharacter(inputParser) || !isNumberRange(inputParser)) {
+                println("The input is invalid. Enter a valid number from 1 to $listLength.")
+                inputParser = readLine().toString()
+            }
+
+            var selectedParserNumber = inputParser.toInt()
+
+            return commandLine.subcommands.keys.elementAt(selectedParserNumber!! - 1)
+        }
+
+        private fun getListOfParsers(commandLine: CommandLine): MutableMap<String, String> {
+            var subcommands = commandLine.subcommands.values
+            var listOfParsers = mutableMapOf<String, String>()
+            var commandName: String
+
+            for (command in subcommands) {
+                commandName = command.commandName
+                var commandDescription = command.commandSpec.usageMessage().description()
+
+                for (description in commandDescription) {
+                    listOfParsers[commandName] = description
+                }
+            }
+            return listOfParsers
+        }
+
+        private fun isLetter(input: String): Boolean {
+            return input.matches("^[a-zA-Z]*$".toRegex())
+        }
+
+        private fun isSpecialCharacter(input: String): Boolean {
+            return input.matches("[!@#$%&*()_+=|<>?{}\\[\\]~-]".toRegex())
+        }
+
+        private fun isNumberRange(input: String): Boolean {
+            return input.matches("^[1-9]|1[0-7]*$".toRegex())
+        }
     }
 
     object ManifestVersionProvider : CommandLine.IVersionProvider {
         override fun getVersion(): Array<String> {
             return arrayOf(
-                Ccsh::class.java.`package`.implementationTitle + "\n" +
-                    "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
-                    "Copyright(c) 2020, MaibornWolff GmbH"
+                    Ccsh::class.java.`package`.implementationTitle + "\n" +
+                            "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
+                            "Copyright(c) 2020, MaibornWolff GmbH"
             )
         }
     }
