@@ -57,9 +57,10 @@ export class BlacklistSearchPatternEffect {
 		this.searchPattern2BlacklistItems$.pipe(
 			filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === BlacklistType.exclude),
 			tap(() => {
-				this.addBlacklistItemsIfNotResultsInEmptyMapEffect.addBlacklistItems$
+				this.addBlacklistItemsIfNotResultsInEmptyMapEffect.doBlacklistItemsResultInEmptyMap$
 					.pipe(
 						take(1),
+						filter(doBlacklistItemsResultInEmptyMap => !doBlacklistItemsResultInEmptyMap.resultsInEmptyMap),
 						tap(() => {
 							this.store.dispatch(setSearchPattern())
 						})

@@ -10,8 +10,8 @@ type Config = DispatchConfig | DontDispatchConfig
  * same api as NgRx, so that we can switch to NgRx in the long run.
  * Please note that its functionality is very minimal so far.
  */
-export function createEffect(source: () => Observable<unknown>, config?: Config) {
-	const subjectOfEffect = new Subject()
+export function createEffect<T>(source: () => Observable<T>, config?: Config) {
+	const subjectOfEffect = new Subject<T>()
 
 	source().subscribe(output => {
 		if (!config || config.dispatch !== false) {
@@ -22,7 +22,7 @@ export function createEffect(source: () => Observable<unknown>, config?: Config)
 		subjectOfEffect.next(output)
 	})
 
-	return subjectOfEffect
+	return subjectOfEffect as Observable<T>
 }
 
 function isAction(something: unknown): something is Action {
