@@ -42,6 +42,7 @@ import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/load
 import { SearchBarComponent } from "./codeCharta/ui/searchPanel/searchBar/searchBar.component"
 import { SearchBarModule } from "./codeCharta/ui/searchPanel/searchBar/searchBar.module"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
+import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 
 @NgModule({
 	imports: [
@@ -73,6 +74,7 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
 		...dialogs
 	],
@@ -94,6 +96,7 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
 		SearchBarComponent,
+		EdgeMetricToggleComponent,
 		...dialogs
 	]
 })
