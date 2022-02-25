@@ -1,91 +1,93 @@
 import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
-import { blacklistSearchPattern } from "./blacklistSearchPattern.effect"
+import { BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
 import { SearchBarComponent } from "./searchBar.component"
 import { SearchBarModule } from "./searchBar.module"
 import userEvent from "@testing-library/user-event"
-import { Store } from "../../../state/store/store"
+import { Store as PlainStore } from "../../../state/store/store"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
 import { BlacklistType } from "../../../codeCharta.model"
-import { setBlacklist } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { EffectsModule } from "../../../state/angular-redux/effects/effects.module"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { Subject } from "rxjs"
+import { Action } from "redux"
+import { MatDialog } from "@angular/material/dialog"
+import { resultsInEmptyMap } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
+import { mocked } from "ts-jest/utils"
+
+jest.mock("../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
+	resultsInEmptyMap: jest.fn()
+}))
+
+const mockedResultsInEmptyMap = mocked(resultsInEmptyMap)
 
 describe("cc-search-bar", () => {
+	const mockedDialog = { open: jest.fn() }
+
 	beforeEach(async () => {
-		Store["initialize"]()
+		PlainStore["initialize"]()
+		EffectsModule.actions$ = new Subject<Action>()
 		TestBed.configureTestingModule({
-			imports: [SearchBarModule]
+			imports: [
+				EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect]),
+				SearchBarModule
+			],
+			providers: [{ provide: MatDialog, useValue: mockedDialog }]
 		})
+	})
+
+	afterEach(() => {
+		EffectsModule.actions$.complete()
 	})
 
 	it("should be a debounced field for search pattern with clear button if is not empty", async () => {
 		await render(SearchBarComponent, { excludeComponentDeclaration: true })
-		const dispatchSpy = jest.spyOn(Store.store, "dispatch")
+		const dispatchSpy = jest.spyOn(PlainStore.store, "dispatch")
 
 		expect(screen.queryByTestId("search-bar-clear-button")).toBe(null)
 
-		const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
+		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle", { delay: 1 })
+
 		const clearButton = await screen.findByTestId("search-bar-clear-button")
 		expect(dispatchSpy).toHaveBeenCalledTimes(1)
-		expect(searchPatternSelector(Store.store.getState())).toBe("needle")
+		expect(searchPatternSelector(PlainStore.store.getState())).toBe("needle")
 
 		userEvent.click(clearButton)
-		expect(searchPatternSelector(Store.store.getState())).toBe("")
+
+		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
+		expect(searchField.value).toBe("")
+		expect(searchPatternSelector(PlainStore.store.getState())).toBe("")
 	})
 
-	it("should fire blacklistSearchPattern action for flattening", async () => {
-		const dispatchSpy = jest.spyOn(Store.store, "dispatch")
+	it("should flatten pattern", async () => {
 		await render(SearchBarComponent, { excludeComponentDeclaration: true })
 
-		const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
+		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle")
 		await screen.findByTestId("search-bar-clear-button")
-
 		userEvent.click(screen.getByTitle("Add to Blacklist"))
+
 		userEvent.click(await screen.findByTestId("search-bar-flatten-button"))
 
-		expect(dispatchSpy).toHaveBeenCalledWith(blacklistSearchPattern(BlacklistType.flatten))
+		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
+		expect(searchField.value).toBe("")
+		expect(PlainStore.store.getState().fileSettings.blacklist[0]).toEqual({ type: BlacklistType.flatten, path: "*needle*" })
 	})
 
-	it("should fire blacklistSearchPattern action for excluding and clear input afterwards", async () => {
-		const dispatchSpy = jest.spyOn(Store.store, "dispatch")
+	it("should exclude pattern", async () => {
+		mockedResultsInEmptyMap.mockImplementation(() => false)
 		await render(SearchBarComponent, { excludeComponentDeclaration: true })
 
-		const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
+		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle")
 		await screen.findByTestId("search-bar-clear-button")
-
 		userEvent.click(screen.getByTitle("Add to Blacklist"))
+
 		userEvent.click(await screen.findByTestId("search-bar-exclude-button"))
 
-		expect(dispatchSpy).toHaveBeenCalledWith(blacklistSearchPattern(BlacklistType.exclude))
-	})
-
-	it("should disable flatten button when search pattern is already flattened", async () => {
-		Store.dispatch(setBlacklist([{ path: "*needle*", type: BlacklistType.flatten }]))
-		await render(SearchBarComponent, { excludeComponentDeclaration: true })
-
-		const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
-		await userEvent.type(searchField, "needle")
-		await screen.findByTestId("search-bar-clear-button")
-
-		userEvent.click(screen.getByTitle("Add to Blacklist"))
-		const flattenButton = (await screen.findByTestId("search-bar-flatten-button")) as HTMLButtonElement
-
-		expect(flattenButton.disabled).toBe(true)
-	})
-
-	it("should disable exclude button when search pattern is already excluded", async () => {
-		Store.dispatch(setBlacklist([{ path: "*needle*", type: BlacklistType.exclude }]))
-		await render(SearchBarComponent, { excludeComponentDeclaration: true })
-
-		const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
-		await userEvent.type(searchField, "needle")
-		await screen.findByTestId("search-bar-clear-button")
-
-		userEvent.click(screen.getByTitle("Add to Blacklist"))
-		const flattenButton = (await screen.findByTestId("search-bar-exclude-button")) as HTMLButtonElement
-
-		expect(flattenButton.disabled).toBe(true)
+		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
+		expect(searchField.value).toBe("")
+		expect(PlainStore.store.getState().fileSettings.blacklist[0]).toEqual({ type: BlacklistType.exclude, path: "*needle*" })
 	})
 })
