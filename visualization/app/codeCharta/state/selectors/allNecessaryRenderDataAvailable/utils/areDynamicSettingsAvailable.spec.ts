@@ -1,5 +1,5 @@
 import { ColorMode, DynamicSettings, SortingOption } from "../../../../codeCharta.model"
-import { areDynamicSettingsAvailable } from "./areDynamicSettingsAvailable"
+import { areDynamicSettingsAvailable, _isDynamicSettingAvailable } from "./areDynamicSettingsAvailable"
 
 describe("areDynamicSettingsAvailable", () => {
 	it("should return false when recent files aren't set", () => {
@@ -32,5 +32,9 @@ describe("areDynamicSettingsAvailable", () => {
 			recentFiles: ["test.cc.json"]
 		}
 		expect(areDynamicSettingsAvailable(dynamicSettings)).toBe(true)
+	})
+
+	it("should ignore edgeMetric as edgeMetric is allowed to be unset", () => {
+		expect(_isDynamicSettingAvailable("edgeMetric", null)).toBe(true)
 	})
 })
