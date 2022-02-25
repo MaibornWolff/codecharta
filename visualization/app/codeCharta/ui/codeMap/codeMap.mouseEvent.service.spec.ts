@@ -9,32 +9,22 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import {
-	CODE_MAP_BUILDING,
-	CONSTANT_HIGHLIGHT,
-	FILE_META,
-	TEST_FILE_WITH_PATHS,
-	TEST_NODE_LEAF,
-	TEST_NODES,
-	withMockedEventMethods
-} from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES, withMockedEventMethods } from "../../util/dataMocks"
 import { BlacklistType, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
-import { CodeMapPreRenderService } from "./codeMap.preRender.service"
-import { LazyLoader } from "../../util/lazyLoader"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { mocked } from "ts-jest/utils"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
+import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -52,9 +42,9 @@ describe("codeMapMouseEventService", () => {
 	let threeUpdateCycleService: ThreeUpdateCycleService
 	let storeService: StoreService
 	let codeMapLabelService: CodeMapLabelService
-	let codeMapPreRenderService: CodeMapPreRenderService
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
 	let threeViewerService: ThreeViewerService
+	let idToBuildingService: IdToBuildingService
 
 	let codeMapBuilding: CodeMapBuilding
 
@@ -89,9 +79,9 @@ describe("codeMapMouseEventService", () => {
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		storeService = getService<StoreService>("storeService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>("viewCubeMouseEventsService")
 		threeViewerService = getService<ThreeViewerService>("threeViewerService")
+		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		document.body.style.cursor = CursorType.Default
@@ -107,9 +97,9 @@ describe("codeMapMouseEventService", () => {
 			threeUpdateCycleService,
 			storeService,
 			codeMapLabelService,
-			codeMapPreRenderService,
 			viewCubeMouseEventsService,
-			threeViewerService
+			threeViewerService,
+			idToBuildingService
 		)
 
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
@@ -354,7 +344,7 @@ describe("codeMapMouseEventService", () => {
 
 		function setAnimatedLabel(label: Object3D) {
 			// At first, animate a label
-			threeSceneService = new ThreeSceneService($rootScope, storeService)
+			threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService)
 			threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 			threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 			threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
@@ -401,9 +391,8 @@ describe("codeMapMouseEventService", () => {
 			})
 			codeMapMouseEventService["transformHTMLToSceneCoordinates"] = jest.fn().mockReturnValue({ x: 0, y: 1 })
 
-			const idToBuilding = new Map<number, CodeMapBuilding>()
-			idToBuilding.set(CODE_MAP_BUILDING.node.id, CODE_MAP_BUILDING)
-			storeService.dispatch(setIdToBuilding(idToBuilding))
+			idToBuildingService.setIdToBuilding([CODE_MAP_BUILDING])
+
 			threeSceneService.resetLabel = jest.fn()
 			threeSceneService.getLabelForHoveredNode = jest.fn()
 			threeSceneService.animateLabel = jest.fn()
@@ -698,18 +687,6 @@ describe("codeMapMouseEventService", () => {
 
 			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
 		})
-
-		it("should call open file if selected.node.link is undefined", () => {
-			LazyLoader.openFile = jest.fn()
-			const node: Node = klona(TEST_NODE_LEAF)
-			node.isLeaf = true
-			node.link = null
-			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, node, null))
-			codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue(klona(FILE_META))
-			codeMapMouseEventService.onDocumentDoubleClick()
-
-			expect(LazyLoader.openFile).toHaveBeenCalled()
-		})
 	})
 
 	describe("onDocumentMouseEnter", () => {
@@ -781,9 +758,7 @@ describe("codeMapMouseEventService", () => {
 				idToNode.set(codeMapBuilding.node.id, codeMapBuilding.node as unknown as CodeMapNode)
 				return idToNode
 			})
-			const idToBuilding = new Map<number, CodeMapBuilding>()
-			idToBuilding.set(codeMapBuilding.node.id, codeMapBuilding)
-			storeService.dispatch(setIdToBuilding(idToBuilding))
+			idToBuildingService.setIdToBuilding([codeMapBuilding])
 		})
 
 		it("should set the highlight when to is not null", () => {

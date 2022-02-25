@@ -9,6 +9,8 @@ import "./state/state.module"
 import { codeChartaComponent } from "./codeCharta.component"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaMouseEventService } from "./codeCharta.mouseEvent.service"
+import { downgradeComponent } from "@angular/upgrade/static"
+import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 
 angular.module("app.codeCharta", ["app.codeCharta.state", "app.codeCharta.ui"])
 
@@ -17,3 +19,4 @@ angular
 	.component(codeChartaComponent.selector, codeChartaComponent)
 	.service(camelCase(CodeChartaService.name), CodeChartaService)
 	.service(camelCase(CodeChartaMouseEventService.name), CodeChartaMouseEventService)
+	.directive("ccLoadingFileProgressSpinner", downgradeComponent({ component: LoadingFileProgressSpinnerComponent }))

@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GameObjectsImporter should parse gameObjects json to cc.json 1`] = `
+Object {
+  "checksum": "b318b8b77caec1e2ba86b87c7a7579c0",
+  "data": Object {
+    "apiVersion": "1.3",
+    "attributeTypes": Object {
+      "edges": Object {
+        "coupling": "relative",
+      },
+    },
+    "edges": Array [
+      Object {
+        "attributes": Object {
+          "coupling": 100,
+        },
+        "fromNodeName": "/base/root/CHANGELOG/CHANGELOG",
+        "toNodeName": "/base/root/visualization/packageLock/packageLock",
+      },
+    ],
+    "fileChecksum": "",
+    "nodes": Array [
+      Object {
+        "attributes": Object {},
+        "children": Array [
+          Object {
+            "attributes": Object {},
+            "children": Array [
+              Object {
+                "attributes": Object {},
+                "children": Array [
+                  Object {
+                    "attributes": Object {},
+                    "children": Array [
+                      Object {
+                        "attributes": Object {
+                          "height": 1,
+                        },
+                        "name": "ui",
+                        "type": "File",
+                      },
+                    ],
+                    "fixedPosition": Object {
+                      "height": 3,
+                      "left": 2,
+                      "top": 95,
+                      "width": 5,
+                    },
+                    "name": "ui",
+                    "type": "Folder",
+                  },
+                  Object {
+                    "attributes": Object {},
+                    "children": Array [
+                      Object {
+                        "attributes": Object {
+                          "height": 4,
+                        },
+                        "name": "packageLock",
+                        "type": "File",
+                      },
+                    ],
+                    "fixedPosition": Object {
+                      "height": 1,
+                      "left": 95,
+                      "top": 48,
+                      "width": 2,
+                    },
+                    "name": "packageLock",
+                    "type": "Folder",
+                  },
+                ],
+                "fixedPosition": Object {
+                  "height": 95,
+                  "left": 0,
+                  "top": 2,
+                  "width": 15,
+                },
+                "name": "visualization",
+                "type": "Folder",
+              },
+              Object {
+                "attributes": Object {},
+                "children": Array [
+                  Object {
+                    "attributes": Object {
+                      "height": 1,
+                    },
+                    "name": "CHANGELOG",
+                    "type": "File",
+                  },
+                ],
+                "fixedPosition": Object {
+                  "height": 2,
+                  "left": 98,
+                  "top": 48,
+                  "width": 0,
+                },
+                "name": "CHANGELOG",
+                "type": "Folder",
+              },
+            ],
+            "fixedPosition": Object {
+              "height": 30,
+              "left": 0,
+              "top": 35,
+              "width": 100,
+            },
+            "name": "root",
+            "type": "Folder",
+          },
+        ],
+        "name": "base",
+        "type": "Folder",
+      },
+    ],
+    "projectName": "ScriptProjectName",
+  },
+}
+`;

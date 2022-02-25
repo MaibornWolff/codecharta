@@ -3,7 +3,10 @@ import "../dialog/dialog.module"
 
 import angular from "angular"
 import { toolBarComponent } from "./toolBar.component"
+import { downgradeComponent } from "@angular/upgrade/static"
+import { LoadingMapProgressSpinnerComponent } from "./loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 
 angular
 	.module("app.codeCharta.ui.toolBar", ["app.codeCharta.state", "app.codeCharta.ui.dialog"])
 	.component(toolBarComponent.selector, toolBarComponent)
+	.directive("ccLoadingMapProgressSpinner", downgradeComponent({ component: LoadingMapProgressSpinnerComponent }))
