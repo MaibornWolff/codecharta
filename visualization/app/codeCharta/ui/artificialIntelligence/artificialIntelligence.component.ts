@@ -47,6 +47,13 @@ interface RiskProfile {
 	veryHighRisk: number
 }
 
+interface ArtificialIntelligenceControllerViewModel {
+	analyzedProgrammingLanguage: string
+	suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
+	unsuspiciousMetrics: string[]
+	riskProfile: RiskProfile
+}
+
 const HEIGHT_METRIC = "mcc"
 const AREA_METRIC = "rloc"
 const EXCLUDED_FILE_EXTENSION = new Set(["html", "sass", "css", "scss", "txt", "md", "json", undefined])
@@ -54,18 +61,14 @@ const EXCLUDED_FILE_EXTENSION = new Set(["html", "sass", "css", "scss", "txt", "
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
 {
-	private _viewModel: {
-		analyzedProgrammingLanguage: string
-		suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
-		unsuspiciousMetrics: string[]
-		riskProfile: RiskProfile
-	} = {
+	private defaultViewModel: ArtificialIntelligenceControllerViewModel = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
 		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	}
 
+	private _viewModel: ArtificialIntelligenceControllerViewModel = { ...this.defaultViewModel }
 	private fileState: FileState
 	private blacklist: BlacklistItem[] = []
 	private debounceCalculation: () => void
@@ -140,7 +143,7 @@ export class ArtificialIntelligenceController
 			return
 		}
 
-		this.resetRiskProfile()
+		this._viewModel = { ...this.defaultViewModel }
 
 		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState.file.map)
 
@@ -149,11 +152,6 @@ export class ArtificialIntelligenceController
 			this.calculateRiskProfile(this.fileState)
 			this.calculateSuspiciousMetrics(this.fileState, mainProgrammingLanguage)
 		}
-	}
-
-	private resetRiskProfile() {
-		this._viewModel.analyzedProgrammingLanguage = undefined
-		this._viewModel.riskProfile = undefined
 	}
 
 	private calculateRiskProfile(fileState: FileState) {
