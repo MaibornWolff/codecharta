@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Design and add a new CodeChara Logo [#2682](https://github.com/MaibornWolff/codecharta/pull/2682) <br>
+    ![xs](https://user-images.githubusercontent.com/48621967/155682925-ecc9fe5d-77de-4927-9c6a-b1059ae9eead.png)
+
 ### Fixed 🐞
 
 -   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
