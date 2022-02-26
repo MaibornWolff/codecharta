@@ -7,15 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate search-bar-component to Angular [#2686](https://github.com/MaibornWolff/codecharta/pull/2686)
+
 ## [1.91.1] - 2022-02-25
 
 ### Fixed 🐞
 
 -   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
-
-### Chore 👨‍💻 👩‍💻
-
--   Migrate search-bar-component to Angular [#2686](https://github.com/MaibornWolff/codecharta/pull/2686)
 
 ## [1.91.0] - 2022-02-21
 
