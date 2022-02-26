@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.91.1] - 2022-02-25
+
 ### Fixed 🐞
 
 -   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
