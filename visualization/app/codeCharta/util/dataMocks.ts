@@ -109,7 +109,7 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 					name: "file3.java",
 					path: "/root/src/main/file3.java",
 					type: NodeType.FILE,
-					attributes: { rloc: 45, functions: 1, mcc: 71, loc: 1 }
+					attributes: { rloc: 45, functions: 1, mcc: 70, loc: 1 }
 				},
 				{
 					name: "readme",
@@ -615,14 +615,6 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 			]
 		}
 	]
-}
-
-export const VALID_NODE_WITH_METRICS: CodeMapNode = {
-	name: "root",
-	type: NodeType.FOLDER,
-	attributes: { rloc: 100, functions: 10, mcc: 1 },
-	isExcluded: false,
-	isFlattened: false
 }
 
 export const VALID_EDGES: Edge[] = [
