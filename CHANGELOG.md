@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Risk profile is now calculated for every occurring programming languages in selected file(s)[#2679](https://github.com/MaibornWolff/codecharta/pull/2679)
 
+## [1.91.1] - 2022-02-25
+
+### Fixed 🐞
+
+-   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
+
 ## [1.91.0] - 2022-02-21
 
 ### Changed
