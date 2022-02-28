@@ -1,5 +1,5 @@
 export const validateLocalStorageSize = () => {
-	const customLocalStorageLimitInKB = 768
+	const customLocalStorageLimitInKB = 0
 	let allStringsConcatenated = ""
 	for (const [key, value] of Object.entries(localStorage)) {
 		allStringsConcatenated += key + value
