@@ -49,6 +49,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
+
     }
 }
 
@@ -68,7 +69,7 @@ allprojects {
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 
     jacoco {
-        toolVersion = jacoco_version
+      toolVersion = jacoco_version
     }
 }
 

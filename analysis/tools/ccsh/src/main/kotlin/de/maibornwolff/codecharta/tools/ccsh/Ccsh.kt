@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.tools.ccsh
 
+import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
@@ -19,7 +21,6 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.AutoComplete
 import picocli.CommandLine
-import java.io.File
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -74,12 +75,8 @@ class Ccsh : Callable<Void?> {
 
             commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
 
-            var subcommandNames = commandLine.subcommands.keys.toString()
-
-            if( (args.isNotEmpty() && !subcommandNames.contains(args[0])) || args.isEmpty()) {
-                var subcommand = selectParser(commandLine)
-                println("executing $subcommand")
-            }
+            val chosenParser = selectParser(commandLine)
+            println("executing $chosenParser")
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
@@ -100,56 +97,25 @@ class Ccsh : Callable<Void?> {
         }
 
         private fun selectParser(commandLine: CommandLine): String {
-            println("Which parser do you want to execute?")
+            val chosenParser: String = KInquirer.promptList(message = "Which parser do you want to execute?", choices = getListOfParsers(commandLine))
 
-            var listOfParsers = getListOfParsers(commandLine)
-            var index = 1
-
-            for ((name, description) in listOfParsers) {
-                var position = index++
-                println("$position) $name - $description")
-            }
-
-            var inputParser = readLine().toString()
-
-            var listLength = listOfParsers.size
-
-            while (isLetter(inputParser) || isSpecialCharacter(inputParser) || !isNumberRange(inputParser)) {
-                println("The input is invalid. Enter a valid number from 1 to $listLength.")
-                inputParser = readLine().toString()
-            }
-
-            var selectedParserNumber = inputParser.toInt()
-
-            return commandLine.subcommands.keys.elementAt(selectedParserNumber!! - 1)
+            return chosenParser.substring(0, chosenParser.indexOf(' '))
         }
 
-        private fun getListOfParsers(commandLine: CommandLine): MutableMap<String, String> {
-            var subcommands = commandLine.subcommands.values
-            var listOfParsers = mutableMapOf<String, String>()
+        private fun getListOfParsers(commandLine: CommandLine): MutableList<String> {
+            val subcommands = commandLine.subcommands.values
+            val listOfParsers = mutableListOf<String>()
             var commandName: String
 
             for (command in subcommands) {
                 commandName = command.commandName
-                var commandDescription = command.commandSpec.usageMessage().description()
+                val commandDescription = command.commandSpec.usageMessage().description()
 
                 for (description in commandDescription) {
-                    listOfParsers[commandName] = description
+                    listOfParsers.add("$commandName - $description")
                 }
             }
             return listOfParsers
-        }
-
-        private fun isLetter(input: String): Boolean {
-            return input.matches("^[a-zA-Z]*$".toRegex())
-        }
-
-        private fun isSpecialCharacter(input: String): Boolean {
-            return input.matches("[!@#$%&*()_+=|<>?{}\\[\\]~-]".toRegex())
-        }
-
-        private fun isNumberRange(input: String): Boolean {
-            return input.matches("^[1-9]|1[0-7]*$".toRegex())
         }
     }
 
