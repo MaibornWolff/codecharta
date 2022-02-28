@@ -10,6 +10,7 @@ import { MatDialog } from "@angular/material/dialog"
 import { CustomConfig, ExportCustomConfig } from "../../../../model/customConfig/customConfig.api.model"
 import { ConfirmationDialogComponent } from "../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { ErrorDialogComponent } from "../../../dialogs/errorDialog/errorDialog.component"
+import { validateLocalStorageSize } from "./validateLocalStorageSize"
 
 export function createCustomConfigNameValidator(customConfigFileStateConnector: CustomConfigFileStateConnector): ValidatorFn {
 	return (control: AbstractControl): { Error: string } => {
@@ -31,8 +32,7 @@ export function createCustomConfigNameValidator(customConfigFileStateConnector: 
 })
 export class AddCustomConfigDialogComponent implements OnInit {
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
-	private purgeableConfigs: Set<CustomConfig> = new Set()
-	private customLocalStorageLimitInKB = 768
+	private purgeableConfigs = new Set<CustomConfig>()
 	private customConfigAgeLimitInMonths = 6
 	localStorageSizeWarningMessage = ""
 	customConfigName: FormControl
@@ -47,7 +47,7 @@ export class AddCustomConfigDialogComponent implements OnInit {
 			createCustomConfigNameValidator(this.customConfigFileStateConnector)
 		])
 		this.customConfigName.setValue(CustomConfigHelper.getConfigNameSuggestionByFileState(this.customConfigFileStateConnector))
-		this.validateLocalStorageSize()
+		this.localStorageSizeWarningMessage = validateLocalStorageSize()
 	}
 
 	getErrorMessage() {
@@ -85,25 +85,6 @@ export class AddCustomConfigDialogComponent implements OnInit {
 		dialogReference.afterClosed().subscribe(confirmation => {
 			if (confirmation) this.purgeOldConfigs()
 		})
-	}
-
-	private validateLocalStorageSize() {
-		let allStringsConcatenated = ""
-		for (const [key, value] of Object.entries(localStorage)) {
-			allStringsConcatenated += key + value
-		}
-
-		// It does not exist a limit for the total localStorage size that applies to all browsers.
-		// Usually 2MB - 10MB are available (5MB seems to be very common).
-		// The localStorage size (e.g. 5MB) is assigned per origin.
-		// Multiply localStorage characters by 16 (bits because they are stored in UTF-16).
-		// Add 3KB as it seems there is some default overhead.
-		const localStorageSizeInKB = 3 + (allStringsConcatenated.length * 16) / 8 / 1024
-
-		this.localStorageSizeWarningMessage =
-			localStorageSizeInKB > this.customLocalStorageLimitInKB
-				? "Do you want to download and then purge old unused Configs to make space for new ones?"
-				: ""
 	}
 
 	private downloadAndCollectPurgeableOldConfigs() {
