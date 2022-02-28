@@ -1,7 +1,6 @@
 import "./addCustomDialog.component.scss"
 import { Component, Inject, OnInit } from "@angular/core"
 import { FormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
-import { Store } from "../../../../state/angular-redux/store"
 import { CustomConfigFileStateConnector } from "../../customConfigFileStateConnector"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { filesSelector } from "../../../../state/store/files/files.selector"
@@ -12,7 +11,7 @@ import { CustomConfig, ExportCustomConfig } from "../../../../model/customConfig
 import { ConfirmationDialogComponent } from "../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { ErrorDialogComponent } from "../../../dialogs/errorDialog/errorDialog.component"
 
-export function validateCustomConfigName(customConfigFileStateConnector: CustomConfigFileStateConnector): ValidatorFn {
+export function createCustomConfigNameValidator(customConfigFileStateConnector: CustomConfigFileStateConnector): ValidatorFn {
 	return (control: AbstractControl): { Error: string } => {
 		const value = control.value
 		if (
@@ -31,23 +30,22 @@ export function validateCustomConfigName(customConfigFileStateConnector: CustomC
 	template: require("./addCustomConfigDialog.component.html")
 })
 export class AddCustomConfigDialogComponent implements OnInit {
-	private readonly customConfigFileStateConnector: CustomConfigFileStateConnector
+	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private purgeableConfigs: Set<CustomConfig> = new Set()
-	private files = []
 	private customLocalStorageLimitInKB = 768
 	private customConfigAgeLimitInMonths = 6
 	localStorageSizeWarningMessage = ""
 	customConfigName: FormControl
 
-	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State, @Inject(MatDialog) private dialog: MatDialog) {
-		this.store.select(filesSelector).subscribe(files => {
-			this.files = files
-		})
-		this.customConfigFileStateConnector = new CustomConfigFileStateConnector(this.files)
-	}
+	constructor(@Inject(State) private state: State, @Inject(MatDialog) private dialog: MatDialog) {}
 
 	ngOnInit(): void {
-		this.customConfigName = new FormControl("", [Validators.required, validateCustomConfigName(this.customConfigFileStateConnector)])
+		const files = filesSelector(this.state.getValue())
+		this.customConfigFileStateConnector = new CustomConfigFileStateConnector(files)
+		this.customConfigName = new FormControl("", [
+			Validators.required,
+			createCustomConfigNameValidator(this.customConfigFileStateConnector)
+		])
 		this.customConfigName.setValue(CustomConfigHelper.getConfigNameSuggestionByFileState(this.customConfigFileStateConnector))
 		this.validateLocalStorageSize()
 	}
