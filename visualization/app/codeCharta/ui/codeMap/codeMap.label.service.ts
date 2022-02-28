@@ -42,7 +42,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
-	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
+	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false, isFirst = false) {
 		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
 
 		const { scaling, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
@@ -76,7 +76,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const z = node.y0 - treeMap.mapSize
 
 		const labelX = (x + node.width / 2) * multiplier.x
-		const labelY = highestNodeInSet > 0 ? y + this.nodeHeight : y + this.nodeHeight * scaling.y;
+		const labelY = highestNodeInSet > 0 ?
+			multiplier.y > 1 && !isFirst  ? y + this.nodeHeight * multiplier.y : y + this.nodeHeight
+			: y + this.nodeHeight * scaling.y;
 		const labelZ = (z + node.length / 2) * multiplier.z
 
 		const labelOffset = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
@@ -160,6 +162,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
 
+			if (multiplier.y > 1) {
+				multiplier.y = 1
+			}
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
 			const lineGeometry = label.line.geometry as BufferGeometry
 			const lineGeometryPosition = lineGeometry.attributes.position
