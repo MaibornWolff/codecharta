@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { Node } from "../../codeCharta.model"
+import {HEIGHT_OFFSET, Node} from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -76,14 +76,15 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const z = node.y0 - treeMap.mapSize
 
 		const labelX = (x + node.width / 2) * multiplier.x
-		const labelY = highestNodeInSet > 0 ?
+		let labelY = highestNodeInSet > 0 ?
 			multiplier.y > 1 && !isFirst  ? y + this.nodeHeight * multiplier.y : y + this.nodeHeight
 			: y + this.nodeHeight * scaling.y;
+		labelY = labelY * HEIGHT_OFFSET
 		const labelZ = (z + node.length / 2) * multiplier.z
 
 		const labelOffset = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 
-		label.line = this.makeLine(labelX, node.height + labelOffset, node.height * scaling.y, labelZ)
+		label.line = this.makeLine(labelX, node.height + labelOffset, node.height * scaling.y *HEIGHT_OFFSET, labelZ)
 
 		label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
 
@@ -170,7 +171,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const lineGeometryPosition = lineGeometry.attributes.position
 
 			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
-			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
+			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y * HEIGHT_OFFSET)
 			lineGeometryPosition.setZ(0, lineGeometryPosition.getZ(0) * multiplier.z)
 
 			lineGeometryPosition.setX(1, label.sprite.position.x)

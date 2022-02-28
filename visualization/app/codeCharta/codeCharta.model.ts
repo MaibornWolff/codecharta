@@ -416,3 +416,5 @@ export enum PanelSelection {
 	EDGE_PANEL_OPEN = "EDGE_PANEL_OPEN",
 	NONE = "NONE"
 }
+
+export const HEIGHT_OFFSET = 0.3
