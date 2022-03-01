@@ -1,7 +1,6 @@
 import { getService } from "../../../mocks/ng.mockhelper"
 import { ILocationService, IHttpService } from "angular"
 import { UrlExtractor } from "./urlExtractor"
-import assert from "assert"
 
 describe("urlExtractor", () => {
 	let urlExtractor: UrlExtractor
@@ -49,13 +48,9 @@ describe("urlExtractor", () => {
 	})
 
 	describe("getFileDataFromQueryParam", () => {
-		it("should return an empty array when file is undefined", async () => {
-			$location.search = jest.fn().mockReturnValue({})
-
-			await assert.rejects(urlExtractor.getFileDataFromQueryParam(), {
-				name: "Error",
-				message: "Filename is missing"
-			})
+		it("should throw when file is undefined", async () => {
+			$location.search = jest.fn().mockReturnValue({ file: undefined })
+			await expect(urlExtractor.getFileDataFromQueryParam()).rejects.toThrow(new Error(`Filename is missing`))
 		})
 
 		it("should create an array when file is defined but not as an array", async () => {

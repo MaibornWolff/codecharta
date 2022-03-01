@@ -71,26 +71,24 @@
 		</md-button>
 
 		<md-menu-content class="ai-drop-down summary">
-			<md-menu-item class="title">
-				<p ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
-					Risk Profile for {{ $ctrl._viewModel.analyzedProgrammingLanguage }} code (most frequent programming language in project)
-				</p>
+			<md-menu-item class="title" ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
+				<p>Risk Profile</p>
 				<p>Calculations are always based on mcc (cyclomatic complexity)</p>
 			</md-menu-item>
 
 			<md-menu-item class="suspicious-metrics-summary">
-				<ul ng-show="$ctrl._viewModel.riskProfile !== undefined">
+				<ul ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
 					<li>{{ $ctrl._viewModel.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
 					<li>{{ $ctrl._viewModel.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
 					<li>{{ $ctrl._viewModel.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
 					<li>{{ $ctrl._viewModel.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
 				</ul>
-				<span ng-show="$ctrl._viewModel.riskProfile === undefined">
+				<span ng-show="$ctrl._viewModel.analyzedProgrammingLanguage === undefined">
 					Could not calculate Risk Profile. Metrics rloc and mcc not available.
 				</span>
 			</md-menu-item>
 
-			<md-menu-item class="risk-profiles" ng-show="$ctrl._viewModel.riskProfile !== undefined">
+			<md-menu-item class="risk-profiles" ng-show="$ctrl._viewModel.analyzedProgrammingLanguage.length">
 				<div
 					ng-if="$ctrl._viewModel.riskProfile.lowRisk > 0"
 					title="Low Risk ({{ $ctrl._viewModel.riskProfile.lowRisk }}% of code)"
