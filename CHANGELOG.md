@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.92.0] - 2022-03-01
+
 ### Changed
 
 -   Design and add a new CodeChara Logo [#2682](https://github.com/MaibornWolff/codecharta/pull/2682) <br>
