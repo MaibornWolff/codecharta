@@ -1,9 +1,25 @@
-export const metricThresholds = {
+export interface Percentiles {
+	percentile70: number
+	percentile80: number
+	percentile90: number
+	percentile95: number
+}
+
+export interface MetricThresholds {
+	[key: string]: Percentiles
+}
+
+export interface MetricThresholdsByLanguage {
+	java: MetricThresholds
+	miscellaneous: MetricThresholds
+}
+
+export const metricThresholdsByLanguage: MetricThresholdsByLanguage = {
 	java: {
 		// Thresholds derived without any pre-clustering from benchmark data
 		//  that means that 241 heterogeneous open source projects were included in the benchmark:
-		//    e.g. young and old (2-10 years) old projects, projects with few lines of code or with quite a lot
-		//    on this basis thresholds were derived
+		//  e.g. young and old (2-10 years) old projects, projects with few lines of code or with quite a lot
+		//  on this basis thresholds were derived
 		mcc: {
 			percentile70: 48,
 			percentile80: 71,
