@@ -279,9 +279,9 @@ describe("ArtificialIntelligenceController", () => {
 		it("should calculate risk profile for all occurring programming languages in selected map", () => {
 			storeService.dispatch(setExperimentalFeaturesEnabled(true))
 			const fileStateJava = createFileStateWithNodes([{ name: "file1.java", type: NodeType.FILE, attributes: { rloc: 50, mcc: 1 } }])
-			const totalRocJava = fileStateJava.file.map.children.reduce((sum, child) => child.attributes.rloc + sum, 0)
-			const veryHighRiskRlocJava = totalRocJava - fileStateJava.file.map.children[0].attributes.rloc
-			const veryHighRiskJava = Math.round((veryHighRiskRlocJava / totalRocJava) * 100)
+			const totalRlocJava = fileStateJava.file.map.children.reduce((sum, child) => child.attributes.rloc + sum, 0)
+			const veryHighRiskRlocJava = totalRlocJava - fileStateJava.file.map.children[0].attributes.rloc
+			const veryHighRiskJava = Math.round((veryHighRiskRlocJava / totalRlocJava) * 100)
 			const expectedJavaRiskProfile = {
 				highRisk: 0,
 				lowRisk: 100 - veryHighRiskJava,
@@ -293,9 +293,9 @@ describe("ArtificialIntelligenceController", () => {
 				{ name: "file1.java", type: NodeType.FILE, attributes: { rloc: 50, mcc: 1 } },
 				{ name: "file2.ts", type: NodeType.FILE, attributes: { rloc: 50, mcc: 1000 } }
 			])
-			const totalRocMixed = fileStateMixedLanguages.file.map.children.reduce((sum, child) => child.attributes.rloc + sum, 0)
-			const veryHighRiskRlocMixed = totalRocMixed - fileStateMixedLanguages.file.map.children[0].attributes.rloc
-			const veryHighRiskMixed = Math.round((veryHighRiskRlocMixed / totalRocMixed) * 100)
+			const totalRlocMixed = fileStateMixedLanguages.file.map.children.reduce((sum, child) => child.attributes.rloc + sum, 0)
+			const veryHighRiskRlocMixed = totalRlocMixed - fileStateMixedLanguages.file.map.children[0].attributes.rloc
+			const veryHighRiskMixed = Math.round((veryHighRiskRlocMixed / totalRlocMixed) * 100)
 			const expectedMixedRiskProfile: typeof expectedJavaRiskProfile = {
 				highRisk: 0,
 				lowRisk: 100 - veryHighRiskMixed,
