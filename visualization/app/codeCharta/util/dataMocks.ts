@@ -617,14 +617,6 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_WITH_METRICS: CodeMapNode = {
-	name: "root",
-	type: NodeType.FOLDER,
-	attributes: { rloc: 100, functions: 10, mcc: 1 },
-	isExcluded: false,
-	isFlattened: false
-}
-
 export const VALID_EDGES: Edge[] = [
 	{
 		fromNodeName: "/root/big leaf",
