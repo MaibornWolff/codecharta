@@ -1,6 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ArtificialIntelligenceController on files selection changed should calculate risk profile for not excluded files only 1`] = `
+exports[`ArtificialIntelligenceController calculate should calculate risk profile but skip files with missing metrics 1`] = `
+Object {
+  "highRisk": 0,
+  "lowRisk": 0,
+  "moderateRisk": 0,
+  "veryHighRisk": 0,
+}
+`;
+
+exports[`ArtificialIntelligenceController calculate should calculate risk profile for not excluded files only 1`] = `
 Object {
   "highRisk": 50,
   "lowRisk": 27,
@@ -9,7 +18,16 @@ Object {
 }
 `;
 
-exports[`ArtificialIntelligenceController on files selection changed should calculate suspicious metrics sorted by isOutlier 1`] = `
+exports[`ArtificialIntelligenceController calculate should calculate risk profile only for valid file extensions 1`] = `
+Object {
+  "highRisk": 0,
+  "lowRisk": 0,
+  "moderateRisk": 0,
+  "veryHighRisk": 0,
+}
+`;
+
+exports[`ArtificialIntelligenceController calculate should calculate suspicious metrics sorted by isOutlier 1`] = `
 Array [
   Object {
     "from": 365,
@@ -37,17 +55,73 @@ Array [
 ]
 `;
 
-exports[`ArtificialIntelligenceController on files selection changed should calculate suspicious metrics sorted by isOutlier 2`] = `
+exports[`ArtificialIntelligenceController calculate should calculate suspicious metrics sorted by isOutlier 2`] = `
 Array [
   "rloc (real lines of code)",
 ]
 `;
 
-exports[`ArtificialIntelligenceController on files selection changed should clear and calculate risk profile for Java map 1`] = `
+exports[`ArtificialIntelligenceController on experimental features enabled changed should calculate suspicious metrics when experimental features are enabled 1`] = `
 Object {
-  "highRisk": 37,
-  "lowRisk": 46,
-  "moderateRisk": 17,
-  "veryHighRisk": 0,
+  "analyzedProgrammingLanguage": "java",
+  "riskProfile": Object {
+    "highRisk": 37,
+    "lowRisk": 46,
+    "moderateRisk": 17,
+    "veryHighRisk": 0,
+  },
+  "suspiciousMetricSuggestionLinks": Array [
+    Object {
+      "from": 365,
+      "isOutlier": true,
+      "max": 0,
+      "metric": "loc",
+      "min": 0,
+      "to": 554,
+    },
+    Object {
+      "from": 29,
+      "isOutlier": true,
+      "max": 0,
+      "metric": "functions",
+      "min": 0,
+      "to": 44,
+    },
+    Object {
+      "from": 48,
+      "max": 0,
+      "metric": "mcc",
+      "min": 0,
+      "to": 71,
+    },
+  ],
+  "unsuspiciousMetrics": Array [
+    "rloc (real lines of code)",
+  ],
+}
+`;
+
+exports[`ArtificialIntelligenceController on files selection changed should recalculate suspicious metrics 1`] = `
+Object {
+  "analyzedProgrammingLanguage": "ts",
+  "riskProfile": Object {
+    "highRisk": 0,
+    "lowRisk": 0,
+    "moderateRisk": 0,
+    "veryHighRisk": 100,
+  },
+  "suspiciousMetricSuggestionLinks": Array [
+    Object {
+      "from": 50,
+      "isOutlier": true,
+      "max": 0,
+      "metric": "mcc",
+      "min": 0,
+      "to": 70,
+    },
+  ],
+  "unsuspiciousMetrics": Array [
+    "rloc (real lines of code)",
+  ],
 }
 `;
