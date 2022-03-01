@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Design and add a new CodeChara Logo [#2682](https://github.com/MaibornWolff/codecharta/pull/2682) <br>
+    ![xs](https://user-images.githubusercontent.com/48621967/155682925-ecc9fe5d-77de-4927-9c6a-b1059ae9eead.png)
 -   Risk profile is now calculated for every occurring programming languages in selected file(s)[#2679](https://github.com/MaibornWolff/codecharta/pull/2679)
 
 ## [1.91.1] - 2022-02-25
