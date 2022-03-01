@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix removing maps with long file names [#2696](https://github.com/MaibornWolff/codecharta/pull/2697)
+
 ## [1.92.0] - 2022-03-01
 
 ### Changed
