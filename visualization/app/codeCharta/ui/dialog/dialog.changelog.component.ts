@@ -39,7 +39,9 @@ export class DialogChangelogController {
 					changelogTypes.push(`${changeLine}<br>`)
 				}
 			}
-			if (changelogTypes.length > 0) changes[title] = changelogTypes.join("\n")
+			if (changelogTypes.length > 0) {
+				changes[title] = changelogTypes.join("\n")
+			}
 		}
 		this._viewModel.changes = changes
 	}
@@ -50,7 +52,9 @@ export class DialogChangelogController {
 
 	private getAllIndexes(titles: string[], pattern: RegExp) {
 		return titles.reduce((matchingTitleIndexes, title, index) => {
-			if (pattern.test(title)) matchingTitleIndexes.push(index)
+			if (pattern.test(title)) {
+				matchingTitleIndexes.push(index)
+			}
 			return matchingTitleIndexes
 		}, [])
 	}

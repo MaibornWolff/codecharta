@@ -21,11 +21,12 @@ export class OpenNodeContextMenuEffect {
 			this.actions$.pipe(
 				ofType<SetRightClickedNodeDataAction>(RightClickedNodeDataActions.SET_RIGHT_CLICKED_NODE_DATA),
 				tap(rightClickedNodeData => {
-					if (rightClickedNodeData.payload)
+					if (rightClickedNodeData.payload) {
 						this.nodeContextMenu.open(
 							rightClickedNodeData.payload.xPositionOfRightClickEvent,
 							rightClickedNodeData.payload.yPositionOfRightClickEvent
 						)
+					}
 				})
 			),
 		{ dispatch: false }

@@ -6,7 +6,9 @@ import { PrimaryMetricNames, primaryMetricNamesSelector } from "../attributeSide
 import { Metric } from "../util/metric"
 
 export const _calculateSecondaryMetrics = (primaryMetricNames: PrimaryMetricNames, node?: Pick<CodeMapNode, "attributes">) => {
-	if (!node) return [] as Metric[]
+	if (!node) {
+		return [] as Metric[]
+	}
 
 	const primaryMetricNamesList = Object.values(primaryMetricNames)
 	const secondaryMetricNames = Object.keys(node.attributes)

@@ -269,7 +269,9 @@ interface EventTrackingItem {
 }
 
 export function trackEventUsageData(actionType: string, files: FileState[], payload?: any) {
-	if (!isTrackingAllowed(files)) return
+	if (!isTrackingAllowed(files)) {
+		return
+	}
 
 	const singleFileStates = getVisibleFileStates(files)
 	const fileMeta = singleFileStates[0].file.fileMeta

@@ -83,7 +83,9 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		this.storeService["store"].subscribe(() => {
 			const state = this.storeService["store"].getState()
 			const hoveredBuildingPath = hoveredBuildingPathSelector(state)
-			if (this.hoveredBuildingPath === hoveredBuildingPath) return
+			if (this.hoveredBuildingPath === hoveredBuildingPath) {
+				return
+			}
 
 			this.hoveredBuildingPath = hoveredBuildingPath
 
@@ -272,7 +274,9 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 	}
 
 	onDocumentMouseLeave(event: MouseEvent) {
-		if (!(event.relatedTarget instanceof HTMLCanvasElement)) this.EnableOrbitalsRotation(false)
+		if (!(event.relatedTarget instanceof HTMLCanvasElement)) {
+			this.EnableOrbitalsRotation(false)
+		}
 	}
 
 	onDocumentMouseMove(event: MouseEvent) {

@@ -14,7 +14,9 @@ export type PrimaryMetrics = {
 export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics | undefined = createSelector(
 	[selectedNodeSelector, primaryMetricNamesSelector],
 	(selectedNode, primaryMetricNames) => {
-		if (!selectedNode) return
+		if (!selectedNode) {
+			return
+		}
 
 		return {
 			area: {

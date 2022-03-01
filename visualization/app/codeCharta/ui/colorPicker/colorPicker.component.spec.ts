@@ -65,7 +65,10 @@ describe("colorPicker", () => {
 
 	function expectColorPickerInDom(isOpen: boolean) {
 		const colorPickerElement = screen.queryByRole("colorpicker")
-		if (isOpen) expect(colorPickerElement).not.toBe(null)
-		else expect(colorPickerElement).toBe(null)
+		if (isOpen) {
+			expect(colorPickerElement).not.toBe(null)
+		} else {
+			expect(colorPickerElement).toBe(null)
+		}
 	}
 })

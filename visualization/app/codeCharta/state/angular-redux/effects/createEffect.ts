@@ -12,9 +12,13 @@ type Config = DispatchConfig | DontDispatchConfig
  */
 export function createEffect(source: () => Observable<unknown>, config?: Config) {
 	source().subscribe(output => {
-		if (config?.dispatch === false) return
+		if (config?.dispatch === false) {
+			return
+		}
 
-		if (!isAction(output)) throw new Error("output must be an action")
+		if (!isAction(output)) {
+			throw new Error("output must be an action")
+		}
 
 		Store.dispatch(output)
 	})

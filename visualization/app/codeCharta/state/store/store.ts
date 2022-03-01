@@ -17,7 +17,9 @@ export class Store {
 	}
 
 	static get store() {
-		if (!Store._store) Store.initialize()
+		if (!Store._store) {
+			Store.initialize()
+		}
 		return Store._store
 	}
 
