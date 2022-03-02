@@ -14,7 +14,6 @@ import "./presentationModeButton/presentationModeButton.module"
 import "./centerMapButton/centerMapButton.module"
 import "./searchPanel/searchPanel.module"
 import "./searchPanelModeSelector/searchPanelModeSelector.module"
-import "./searchBar/searchBar.module"
 import "./areaSettingsPanel/areaSettingsPanel.module"
 import "./blacklistPanel/blacklistPanel.module"
 import "./codeMap/codeMap.module"
@@ -59,7 +58,6 @@ angular
 		"app.codeCharta.ui.centerMapButton",
 		"app.codeCharta.ui.searchPanel",
 		"app.codeCharta.ui.searchPanelModeSelector",
-		"app.codeCharta.ui.searchBar",
 		"app.codeCharta.ui.metricType",
 		"app.codeCharta.ui.areaSettingsPanel",
 		"app.codeCharta.ui.blacklistPanel",

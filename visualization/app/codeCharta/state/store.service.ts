@@ -2,7 +2,6 @@ import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { CCAction, State } from "../codeCharta.model"
 import { Store } from "./store/store"
-import { EffectsModule } from "./angular-redux/effects/effects.module"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -36,8 +35,6 @@ export class StoreService {
 				this.notify(atomicAction.type)
 			}
 		}
-
-		EffectsModule.actions$.next(action)
 	}
 
 	getState(): State {
