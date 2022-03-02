@@ -1,3 +1,9 @@
+.file-select {
+	&.mat-select-panel {
+		max-width: max-content;
+	}
+}
+
 .filenames {
 	.mat-option-text {
 		display: flex;

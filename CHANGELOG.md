@@ -7,9 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix removing maps with long file names [#2696](https://github.com/MaibornWolff/codecharta/pull/2697)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate search-bar-component to Angular [#2686](https://github.com/MaibornWolff/codecharta/pull/2686)
+
+## [1.92.0] - 2022-03-01
+
+### Changed
+
+-   Design and add a new CodeChara Logo [#2682](https://github.com/MaibornWolff/codecharta/pull/2682) <br>
+    ![xs](https://user-images.githubusercontent.com/48621967/155682925-ecc9fe5d-77de-4927-9c6a-b1059ae9eead.png)
+-   Risk profile is now calculated for every occurring programming languages in selected file(s)[#2679](https://github.com/MaibornWolff/codecharta/pull/2679)
 
 ## [1.91.1] - 2022-02-25
 
@@ -29,6 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
+-   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
 
 ### Chore 👨‍💻 👩‍💻
 
