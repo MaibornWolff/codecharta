@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Close search panel on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
+
 ### Fixed 🐞
 
 -   Fix removing maps with long file names [#2696](https://github.com/MaibornWolff/codecharta/pull/2697)
