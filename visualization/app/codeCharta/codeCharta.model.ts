@@ -12,12 +12,6 @@ export interface NameDataPair {
 	content: ExportCCFile
 }
 
-export enum SearchPanelMode {
-	treeView = "treeView",
-	blacklist = "blacklist",
-	minimized = "minimized"
-}
-
 export enum LayoutAlgorithm {
 	SquarifiedTreeMap = "Squarified TreeMap",
 	StreetMap = "StreetMap",
@@ -146,7 +140,6 @@ export interface AppSettings {
 	isLoadingMap: boolean
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
-	searchPanelMode: SearchPanelMode
 	isAttributeSideBarVisible: boolean
 	panelSelection: PanelSelection
 	showMetricLabelNameValue: boolean

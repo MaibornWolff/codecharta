@@ -9,7 +9,6 @@ import debounce from "lodash.debounce"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { SearchPanelModeActions } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
@@ -75,7 +74,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			!isActionOfType(actionType, ScalingActions) &&
 			!isActionOfType(actionType, IsLoadingMapActions) &&
 			!isActionOfType(actionType, IsLoadingFileActions) &&
-			!isActionOfType(actionType, SearchPanelModeActions) &&
 			!isActionOfType(actionType, SortingOrderAscendingActions) &&
 			!isActionOfType(actionType, SortingOptionActions) &&
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&

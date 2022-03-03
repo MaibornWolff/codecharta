@@ -11,7 +11,6 @@ import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMet
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { FilesService } from "./store/files/files.service"
-import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
@@ -60,7 +59,6 @@ export class InjectorService {
 		private nodeMetricDataService: NodeMetricDataService,
 		private cameraTargetService: CameraTargetService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		private searchPanelModeService: SearchPanelModeService,
 		private isLoadingFileService: IsLoadingFileService,
 		private filesService: FilesService,
 		private mapSizeService: MapSizeService,

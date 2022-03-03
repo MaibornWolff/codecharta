@@ -66,7 +66,6 @@ function initializeAppSettings(target: CustomConfig) {
 		panelSelection: undefined,
 		resetCameraIfNewFileIsLoaded: false,
 		scaling: undefined,
-		searchPanelMode: undefined,
 		showOnlyBuildingsWithEdges: false,
 		isEdgeMetricVisible: true,
 		sortingOrderAscending: false,

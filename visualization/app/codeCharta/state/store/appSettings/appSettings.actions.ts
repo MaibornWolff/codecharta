@@ -21,7 +21,6 @@ import { defaultResetIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/re
 import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
 import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
-import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
 import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
 import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { defaultLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
@@ -73,7 +72,6 @@ export const defaultAppSettings: AppSettings = {
 	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded,
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
-	searchPanelMode: defaultSearchPanelMode,
 	sortingOrderAscending: defaultSortingOrderAscending,
 	experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
 	screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
