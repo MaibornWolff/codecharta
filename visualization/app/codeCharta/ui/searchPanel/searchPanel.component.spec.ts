@@ -46,9 +46,9 @@ describe("SearchPanelController", () => {
 		it("should close search panel when called with current mode", () => {
 			searchPanelModeController["_viewModel"].searchPanelMode = "minimized"
 
-			searchPanelModeController.updateSearchPanelMode("treeView")
+			searchPanelModeController.updateSearchPanelMode("blacklist")
 
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual("treeView")
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual("blacklist")
 		})
 
 		it("should minimize all other panels", () => {
@@ -66,6 +66,22 @@ describe("SearchPanelController", () => {
 
 			searchPanelModeController.openSearchPanel()
 
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("treeView")
+		})
+	})
+
+	describe("closeSearchPanelOnOutsideClick", () => {
+		it("should close when clicked outside", () => {
+			searchPanelModeController["_viewModel"].searchPanelMode = "treeView"
+			searchPanelModeController["closeSearchPanelOnOutsideClick"]({ composedPath: () => [] } as MouseEvent)
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("minimized")
+		})
+
+		it("should not close when context menu within search panel was opened", () => {
+			searchPanelModeController["_viewModel"].searchPanelMode = "treeView"
+			searchPanelModeController["closeSearchPanelOnOutsideClick"]({
+				composedPath: () => [{ id: "codemap-context-menu" }]
+			} as unknown as MouseEvent)
 			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("treeView")
 		})
 	})
