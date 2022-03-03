@@ -72,7 +72,12 @@ class Ccsh : Callable<Void?> {
 
             commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
 
+            checkFirstArgument(args, commandLine)
+        }
+
+        private fun checkFirstArgument(args: Array<String>, commandLine: CommandLine) {
             var firstArg = ""
+
             if (args.isNotEmpty()) {
                 firstArg = args[0]
             }
