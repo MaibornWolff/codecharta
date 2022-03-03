@@ -1,13 +1,10 @@
 package de.maibornwolff.codecharta.tools.ccsh
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
-import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.csv.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
@@ -18,8 +15,8 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
+import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
-import picocli.AutoComplete
 import picocli.CommandLine
 import java.util.concurrent.Callable
 
@@ -36,16 +33,16 @@ import java.util.concurrent.Callable
             SourceMonitorImporter::class,
             SCMLogParser::class,
             SCMLogParserV2::class,
-            Installer::class,
+            // Installer::class,
             CSVExporter::class,
-            CrococosmoImporter::class,
+            // CrococosmoImporter::class,
             SourceCodeParserMain::class,
             UnderstandImporter::class,
             CodeMaatImporter::class,
             JasomeImporter::class,
             TokeiImporter::class,
             RawTextParser::class,
-            AutoComplete.GenerateCompletion::class
+            // AutoComplete.GenerateCompletion::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
@@ -75,8 +72,18 @@ class Ccsh : Callable<Void?> {
 
             commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
 
-            val chosenParser = selectParser(commandLine)
-            println("executing $chosenParser")
+            var firstArg = ""
+            if (args.isNotEmpty()) {
+                firstArg = args[0]
+            }
+
+            val subcommands = commandLine.subcommands.keys
+
+            if (args.isEmpty() || !subcommands.contains(firstArg)) {
+                val chosenParser = ParserService.selectParser(commandLine)
+                println("executing $chosenParser")
+                ParserService.coordinateChosenParser(chosenParser)
+            }
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
@@ -94,28 +101,6 @@ class Ccsh : Callable<Void?> {
                 }
                 return@map sanitizedArg
             }.toTypedArray()
-        }
-
-        private fun selectParser(commandLine: CommandLine): String {
-            val chosenParser: String = KInquirer.promptList(message = "Which parser do you want to execute?", choices = getListOfParsers(commandLine))
-
-            return chosenParser.substring(0, chosenParser.indexOf(' '))
-        }
-
-        private fun getListOfParsers(commandLine: CommandLine): MutableList<String> {
-            val subcommands = commandLine.subcommands.values
-            val listOfParsers = mutableListOf<String>()
-            var commandName: String
-
-            for (command in subcommands) {
-                commandName = command.commandName
-                val commandDescription = command.commandSpec.usageMessage().description()
-
-                for (description in commandDescription) {
-                    listOfParsers.add("$commandName - $description")
-                }
-            }
-            return listOfParsers
         }
     }
 

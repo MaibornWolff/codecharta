@@ -60,6 +60,7 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
 
     testImplementation("org.junit.platform:junit-platform-runner:$junit_platform_version")
+    implementation "org.jetbrains.kotlin:kotlin-script-runtime:1.6.10"
 }
 
 jar {
