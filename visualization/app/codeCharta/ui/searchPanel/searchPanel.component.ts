@@ -12,8 +12,7 @@ export class SearchPanelController {
 
 	constructor(private codeChartaMouseEventService: CodeChartaMouseEventService) {
 		"ngInject"
-		document.addEventListener("click", this.closeSearchPanelOnOutsideClick)
-		document.addEventListener("contextmenu", this.closeSearchPanelOnOutsideClick)
+		document.addEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
 	}
 
 	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
