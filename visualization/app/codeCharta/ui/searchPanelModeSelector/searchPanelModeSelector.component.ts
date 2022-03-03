@@ -2,7 +2,6 @@ import "./searchPanelModeSelector.component.scss"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { StoreService } from "../../state/store.service"
 import { SearchPanelMode } from "../searchPanel/searchPanel.component"
 
 export class SearchPanelModeSelectorController implements BlacklistSubscriber {
@@ -15,7 +14,7 @@ export class SearchPanelModeSelectorController implements BlacklistSubscriber {
 		excludeListLength: 0
 	}
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService) {
 		"ngInject"
 		BlacklistService.subscribe(this.$rootScope, this)
 	}

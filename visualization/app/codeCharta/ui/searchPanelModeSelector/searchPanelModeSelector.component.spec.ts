@@ -4,12 +4,10 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { BlacklistType } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { StoreService } from "../../state/store.service"
 
 describe("SearchPanelModeSelectorController", () => {
 	let searchPanelModeSelectorController: SearchPanelModeSelectorController
 	let $rootScope: IRootScopeService
-	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
@@ -20,11 +18,10 @@ describe("SearchPanelModeSelectorController", () => {
 		instantiateModule("app.codeCharta.ui.searchPanelModeSelector")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		searchPanelModeSelectorController = new SearchPanelModeSelectorController($rootScope, storeService)
+		searchPanelModeSelectorController = new SearchPanelModeSelectorController($rootScope)
 	}
 
 	describe("constructor", () => {
