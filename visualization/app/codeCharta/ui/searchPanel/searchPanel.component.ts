@@ -12,8 +12,8 @@ export class SearchPanelController {
 
 	constructor(private codeChartaMouseEventService: CodeChartaMouseEventService) {
 		"ngInject"
-		// Todo: Add Angular jest test after migration for this
 		document.addEventListener("click", this.closeSearchPanelOnOutsideClick)
+		document.addEventListener("contextmenu", this.closeSearchPanelOnOutsideClick)
 	}
 
 	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
@@ -27,14 +27,15 @@ export class SearchPanelController {
 	}
 
 	closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
-		if (this._viewModel.searchPanelMode === "minimized") {
-			return
-		}
-
-		const elements = event.composedPath() as Node[]
-		if (elements.every(element => element?.nodeName !== "SEARCH-PANEL-COMPONENT")) {
+		if (this._viewModel.searchPanelMode !== "minimized" && this.isOutside(event)) {
 			this._viewModel.searchPanelMode = "minimized"
 		}
+	}
+
+	private isOutside(event: MouseEvent) {
+		return event
+			.composedPath()
+			.every(element => element["nodeName"] !== "SEARCH-PANEL-COMPONENT" && element["id"] !== "codemap-context-menu")
 	}
 }
 
