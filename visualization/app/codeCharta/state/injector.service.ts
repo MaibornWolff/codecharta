@@ -32,7 +32,6 @@ import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attri
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
-import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
@@ -82,7 +81,6 @@ export class InjectorService {
 		private edgeMetricService: EdgeMetricService,
 		private colorRangeService: ColorRangeService,
 		private marginService: MarginService,
-		private searchPatternService: SearchPatternService,
 		private focusedNodePathService: FocusedNodePathService,
 		private heightMetricService: HeightMetricService,
 		private distributionMetricService: DistributionMetricService,
