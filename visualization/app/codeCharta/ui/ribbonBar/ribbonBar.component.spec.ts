@@ -1,10 +1,9 @@
 import "./ribbonBar.module"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { PanelSelection, SearchPanelMode } from "../../codeCharta.model"
+import { PanelSelection } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
-import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 import { RibbonBarController } from "./ribbonBar.component"
 import { PanelSelectionService } from "../../state/store/appSettings/panelSelection/panelSelection.service"
@@ -95,14 +94,12 @@ describe("RibbonBarController", () => {
 		})
 
 		it("should minimize all other panels except the ribbon bar panels", () => {
-			storeService.dispatch(setSearchPanelMode(SearchPanelMode.blacklist))
 			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 
 			ribbonBarController.toggle(PanelSelection.COLOR_PANEL_OPEN)
 
 			const { appSettings } = storeService.getState()
 
-			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 			expect(appSettings.panelSelection).toEqual(PanelSelection.COLOR_PANEL_OPEN)
 		})
 	})

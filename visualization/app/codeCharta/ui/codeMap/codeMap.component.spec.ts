@@ -8,8 +8,7 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { IsLoadingFileService } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 import { StoreService } from "../../state/store.service"
-import { PanelSelection, SearchPanelMode } from "../../codeCharta.model"
-import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { PanelSelection } from "../../codeCharta.model"
 import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 
 describe("ColorSettingsPanelController", () => {
@@ -120,14 +119,12 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onClick", () => {
 		it("should minimize all panels", () => {
-			storeService.dispatch(setSearchPanelMode(SearchPanelMode.blacklist))
 			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 
 			codeMapController.onClick()
 
 			const { appSettings } = storeService.getState()
 
-			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)
 		})
 	})

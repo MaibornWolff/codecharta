@@ -12,6 +12,7 @@ export class SearchPanelController {
 
 	constructor(private codeChartaMouseEventService: CodeChartaMouseEventService) {
 		"ngInject"
+		// Todo: Add Angular jest test after migration for this
 		document.addEventListener("click", this.closeSearchPanelOnOutsideClick)
 	}
 

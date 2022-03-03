@@ -1,16 +1,13 @@
 import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
-import { PanelSelection, SearchPanelMode } from "../../codeCharta.model"
+import { PanelSelection } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
-import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 
 describe("SearchPanelController", () => {
 	let searchPanelModeController: SearchPanelController
-	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let codeChartaMouseEventService: CodeChartaMouseEventService
 
@@ -21,77 +18,55 @@ describe("SearchPanelController", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.searchPanel")
-		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		codeChartaMouseEventService = getService<CodeChartaMouseEventService>("codeChartaMouseEventService")
 	}
 
 	function rebuildController() {
-		searchPanelModeController = new SearchPanelController($rootScope, storeService, codeChartaMouseEventService)
+		searchPanelModeController = new SearchPanelController(codeChartaMouseEventService)
 	}
 
 	describe("constructor", () => {
-		it("should minimize the search panel and not update searchPanelMode", () => {
+		it("should be minimized initially ", () => {
 			rebuildController()
 
-			expect(searchPanelModeController["_viewModel"].isExpanded).toBeFalsy()
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBeNull()
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("minimized")
 		})
 	})
 
-	describe("onSearchPanelModeChanged", () => {
-		it("should minimize the search panel, but still keep the old searchPanelMode value", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = SearchPanelMode.treeView
+	describe("updateSearchPanelMode", () => {
+		it("should open search panel, when it was minimized before", () => {
+			searchPanelModeController["_viewModel"].searchPanelMode = "minimized"
 
-			searchPanelModeController.onSearchPanelModeChanged(SearchPanelMode.minimized)
+			searchPanelModeController.updateSearchPanelMode("treeView")
 
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.treeView)
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual("treeView")
 		})
 
-		it("should expand the search panel and update the searchPanelMode", () => {
-			searchPanelModeController.onSearchPanelModeChanged(SearchPanelMode.blacklist)
+		it("should close search panel when called with current mode", () => {
+			searchPanelModeController["_viewModel"].searchPanelMode = "minimized"
 
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.blacklist)
-		})
-	})
+			searchPanelModeController.updateSearchPanelMode("treeView")
 
-	describe("toggle", () => {
-		it("should switch to treeView if minimized", () => {
-			searchPanelModeController["_viewModel"].isExpanded = false
-
-			searchPanelModeController.toggle()
-
-			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual("treeView")
 		})
 
-		it("should minimize when search panel is expanded", () => {
-			searchPanelModeController["_viewModel"].isExpanded = true
-
-			searchPanelModeController.toggle()
-
-			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
-		})
-
-		it("should minimize all other panels except the search panel", () => {
-			storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
+		it("should minimize all other panels", () => {
 			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 
-			searchPanelModeController.toggle()
+			searchPanelModeController.updateSearchPanelMode("blacklist")
 
-			const { appSettings } = storeService.getState()
-
-			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
-			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)
+			expect(storeService.getState().appSettings.panelSelection).toEqual(PanelSelection.NONE)
 		})
 	})
 
 	describe("openSearchPanel", () => {
-		it("should open the search panel", () => {
-			searchPanelModeController["_viewModel"].isExpanded = false
+		it("should keep the search panel open when it is already open", () => {
+			searchPanelModeController["_viewModel"].searchPanelMode = "treeView"
 
 			searchPanelModeController.openSearchPanel()
 
-			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("treeView")
 		})
 	})
 })
