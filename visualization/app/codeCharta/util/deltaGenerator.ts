@@ -1,4 +1,4 @@
-import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model"
+import { CCFile, CodeMapNode, FileMeta, KeyValuePair, NodeType } from "../codeCharta.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
@@ -12,8 +12,19 @@ export class DeltaGenerator {
 			if (path === CodeChartaService.ROOT_PATH) {
 				rootNode = node
 			} else {
-				const parentNode = getParent(hashMapWithAllNodes, path)
-				parentNode.children.push(node)
+				const childNode = node
+				let parentNode = getParent(hashMapWithAllNodes, path)
+				const originalParent = parentNode
+				const added = childNode.deltas["addedFiles"] ?? 0
+				const removed = childNode.deltas["removedFiles"] ?? 0
+
+				while (parentNode) {
+					parentNode.deltas["addedFiles"] += added
+					parentNode.deltas["removedFiles"] += removed
+					parentNode = getParent(hashMapWithAllNodes, parentNode.path)
+				}
+
+				originalParent.children.push(node)
 			}
 		}
 		return rootNode
@@ -21,6 +32,7 @@ export class DeltaGenerator {
 
 	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
 		const hashMapWithAllNodes = this.getHashMapWithAllNodes(referenceFile.map, comparisonFile.map)
+
 		const map = this.createCodeMapFromHashMap(hashMapWithAllNodes)
 		const fileMeta = this.getFileMetaData(referenceFile, comparisonFile)
 		return this.getNewCCFileWithDeltas(map, fileMeta)
@@ -38,6 +50,7 @@ export class DeltaGenerator {
 		// Combine both sides of the nodes
 		for (const { data: comparisonNode } of hierarchy(comparisonMap)) {
 			const referenceNode = referenceHashMap.get(comparisonNode.path)
+
 			if (referenceNode) {
 				if (referenceNode.children || comparisonNode.children) {
 					referenceNode.children = []
@@ -53,6 +66,12 @@ export class DeltaGenerator {
 					comparisonNode.children = []
 				}
 				comparisonNode.deltas = { ...comparisonNode.attributes }
+				comparisonNode.deltas["addedFiles"] = 0
+				comparisonNode.deltas["removedFiles"] = 0
+
+				if (comparisonNode.type === NodeType.FILE) {
+					comparisonNode.deltas["addedFiles"] += 1
+				}
 			}
 			const node = referenceNode ?? comparisonNode
 			hashMapWithAllNodes.set(node.path, node)
@@ -65,12 +84,20 @@ export class DeltaGenerator {
 				node.children = []
 			}
 			node.deltas = {}
+
 			for (const [key, value] of Object.entries(node.attributes)) {
 				node.deltas[key] = -value
 			}
+
+			node.deltas["addedFiles"] = 0
+			node.deltas["removedFiles"] = 0
+
+			if (node.type === NodeType.FILE) {
+				node.deltas["removedFiles"] += 1
+			}
+
 			hashMapWithAllNodes.set(node.path, node)
 		}
-
 		return hashMapWithAllNodes
 	}
 
@@ -89,6 +116,8 @@ export class DeltaGenerator {
 				deltaAttribute[key] = -referenceAttribute[key]
 			}
 		}
+		deltaAttribute["addedFiles"] = 0
+		deltaAttribute["removedFiles"] = 0
 		return deltaAttribute
 	}
 
