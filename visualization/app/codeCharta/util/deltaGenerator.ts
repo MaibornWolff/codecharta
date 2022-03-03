@@ -12,22 +12,25 @@ export class DeltaGenerator {
 			if (path === CodeChartaService.ROOT_PATH) {
 				rootNode = node
 			} else {
-				const childNode = node
-				let parentNode = getParent(hashMapWithAllNodes, path)
+				const parentNode = getParent(hashMapWithAllNodes, path)
 				const originalParent = parentNode
-				const added = childNode.deltas["addedFiles"] ?? 0
-				const removed = childNode.deltas["removedFiles"] ?? 0
-
-				while (parentNode) {
-					parentNode.deltas["addedFiles"] += added
-					parentNode.deltas["removedFiles"] += removed
-					parentNode = getParent(hashMapWithAllNodes, parentNode.path)
-				}
+				this.sumUpChangedFiles(node, parentNode, hashMapWithAllNodes)
 
 				originalParent.children.push(node)
 			}
 		}
 		return rootNode
+	}
+
+	private static sumUpChangedFiles(node: CodeMapNode, parentNode: CodeMapNode, hashMapWithAllNodes: Map<string, CodeMapNode>) {
+		const added: number = node.deltas["addedFiles"]
+		const removed: number = node.deltas["removedFiles"]
+
+		while (parentNode !== undefined) {
+			parentNode.deltas["addedFiles"] += added
+			parentNode.deltas["removedFiles"] += removed
+			parentNode = getParent(hashMapWithAllNodes, parentNode.path)
+		}
 	}
 
 	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
