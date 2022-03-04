@@ -13,7 +13,9 @@ export class EffectsModule {
 	static actions$ = new Subject<Action>()
 
 	constructor(@Optional() @SkipSelf() @Inject(EffectsModule) parentModule?: EffectsModule) {
-		if (parentModule) throw new Error("EffectsModule is already loaded. Import it in the AppModule only")
+		if (parentModule) {
+			throw new Error("EffectsModule is already loaded. Import it in the AppModule only")
+		}
 	}
 
 	static forRoot(effects = []): ModuleWithProviders<EffectsModule> {

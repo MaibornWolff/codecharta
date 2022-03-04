@@ -15,7 +15,9 @@ export function createEffect<T>(source: () => Observable<T>, config?: Config) {
 
 	source().subscribe(output => {
 		if (!config || config.dispatch !== false) {
-			if (!isAction(output)) throw new Error("output must be an action")
+			if (!isAction(output)) {
+				throw new Error("output must be an action")
+			}
 			Store.dispatch(output)
 		}
 

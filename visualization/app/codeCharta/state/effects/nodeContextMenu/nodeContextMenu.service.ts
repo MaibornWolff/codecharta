@@ -54,13 +54,17 @@ export class NodeContextMenuService {
 	}
 
 	private onLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
-		if (this.isEventFromColorPicker(mouseEvent)) return
+		if (this.isEventFromColorPicker(mouseEvent)) {
+			return
+		}
 
 		this.close()
 	}
 
 	private onRightClickHideNodeContextMenu = event => {
-		if (event.button !== 2) return
+		if (event.button !== 2) {
+			return
+		}
 		// Close on right click down, to close before the map gets potential moved by right clicked
 		this.close()
 	}

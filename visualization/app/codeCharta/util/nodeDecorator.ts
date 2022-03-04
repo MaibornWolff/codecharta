@@ -177,7 +177,9 @@ function mergeFolderChain(data: CodeMapNode) {
 	// Nodes with only one child which also have children are merged into one node
 	// e.g. a /folder which includes anotherFolder that includes other files or folders
 	// will be merged to a node with path /folder/anotherFolder and children are set accordingly
-	if (data.children?.length === 1 && data.children[0]?.fixedPosition) return
+	if (data.children?.length === 1 && data.children[0]?.fixedPosition) {
+		return
+	}
 
 	if (data.children?.length === 1 && data.children[0].children?.length > 0) {
 		const [child] = data.children

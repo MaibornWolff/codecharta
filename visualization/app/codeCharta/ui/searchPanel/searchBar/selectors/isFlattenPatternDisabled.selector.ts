@@ -8,7 +8,9 @@ import { isSearchPatternEmptySelector } from "./isSearchPatternEmpty.selector"
 export const isFlattenPatternDisabledSelector = createSelector(
 	[searchPatternSelector, isSearchPatternEmptySelector, blacklistSelector],
 	(searchPattern, isSearchPatternEmpty, blacklist) => {
-		if (isSearchPatternEmpty) return true
+		if (isSearchPatternEmpty) {
+			return true
+		}
 		return isPatternBlacklisted(blacklist, BlacklistType.flatten, searchPattern)
 	}
 )

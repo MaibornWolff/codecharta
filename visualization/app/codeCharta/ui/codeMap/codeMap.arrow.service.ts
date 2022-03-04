@@ -74,7 +74,9 @@ export class CodeMapArrowService
 	}
 
 	addEdgePreview(nodes?: Node[]) {
-		if (!nodes) return
+		if (!nodes) {
+			return
+		}
 
 		this.map = this.getNodesAsMap(nodes)
 

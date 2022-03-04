@@ -10,7 +10,9 @@ export class MapTreeViewItemIconColorPipe implements PipeTransform {
 	static store = Store.store
 
 	transform(value: CodeMapNode): string | undefined {
-		if (isLeaf(value)) return undefined
+		if (isLeaf(value)) {
+			return undefined
+		}
 		const markingColor = getMarkingColor(value, MapTreeViewItemIconColorPipe.store.getState().fileSettings.markedPackages)
 		return markingColor ? markingColor : MapTreeViewItemIconColorPipe.defaultColor
 	}

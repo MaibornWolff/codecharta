@@ -237,8 +237,12 @@ export class ArtificialIntelligenceController
 	}
 
 	private compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b: MetricSuggestionParameters): number {
-		if (a.isOutlier && !b.isOutlier) return -1
-		if (!a.isOutlier && b.isOutlier) return 1
+		if (a.isOutlier && !b.isOutlier) {
+			return -1
+		}
+		if (!a.isOutlier && b.isOutlier) {
+			return 1
+		}
 		return 0
 	}
 

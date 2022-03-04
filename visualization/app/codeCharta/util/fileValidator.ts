@@ -57,7 +57,9 @@ export function checkErrors(file: ExportCCFile) {
 			errors.push(ERROR_MESSAGES.majorApiVersionIsOutdated)
 			break
 	}
-	if (errors.length === 0) errors.push(...checkJsonSchema(file))
+	if (errors.length === 0) {
+		errors.push(...checkJsonSchema(file))
+	}
 	return errors
 }
 

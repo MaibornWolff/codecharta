@@ -42,7 +42,7 @@ module.exports = {
 		"@typescript-eslint/prefer-string-starts-ends-with": "error",
 		"@typescript-eslint/promise-function-async": "error",
 		"@typescript-eslint/explicit-member-accessibility": ["error", { accessibility: "no-public" }],
-
+		curly: ["error", "all"],
 		eqeqeq: ["error", "smart"],
 		"linebreak-style": ["error", "unix"],
 		"no-console": ["error", { allow: ["warn", "error"] }],

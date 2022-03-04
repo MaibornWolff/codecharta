@@ -14,7 +14,9 @@ export type MarkFolderItem = {
 const markingColorsSelector = createSelector([mapColorsSelector], mapColors => mapColors.markingColors)
 
 export const _getMarkFolderItems = (node: { path?: string } | null, markingColors: string[], markedPackages: MarkedPackage[]) => {
-	if (node === null) return markingColors.map(color => ({ color, isMarked: false }))
+	if (node === null) {
+		return markingColors.map(color => ({ color, isMarked: false }))
+	}
 
 	const nodeIndexWithinMarkedPackages = findIndexOfMarkedPackageOrParent(markedPackages, node.path)
 	return markingColors.map(color => ({
