@@ -39,6 +39,8 @@ export class Export3DMapButtonComponent implements OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		for (const subscription of this.storeSubscriptions) subscription.unsubscribe()
+		for (const subscription of this.storeSubscriptions) {
+			subscription.unsubscribe()
+		}
 	}
 }

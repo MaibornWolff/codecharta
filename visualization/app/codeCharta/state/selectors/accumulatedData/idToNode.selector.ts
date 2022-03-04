@@ -4,7 +4,9 @@ import { createSelector } from "../../angular-redux/createSelector"
 import { unifiedMapNodeSelector } from "./unifiedMapNode.selector"
 
 export const _calculateIdToNode = (unifiedMapNode: CodeMapNode | undefined): Map<number, CodeMapNode> => {
-	if (!unifiedMapNode) return new Map()
+	if (!unifiedMapNode) {
+		return new Map()
+	}
 
 	const idToNode: Map<number, CodeMapNode> = new Map([[unifiedMapNode.id, unifiedMapNode]])
 	for (const { data } of hierarchy(unifiedMapNode)) {

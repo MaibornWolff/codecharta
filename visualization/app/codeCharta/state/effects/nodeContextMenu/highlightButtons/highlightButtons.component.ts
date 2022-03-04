@@ -19,7 +19,9 @@ export class HighlightButtonsComponent implements OnChanges {
 	) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.codeMapNode) this.isHighlighted = this.calculateIsHighlighted()
+		if (changes.codeMapNode) {
+			this.isHighlighted = this.calculateIsHighlighted()
+		}
 	}
 
 	addNodeToConstantHighlight() {
@@ -31,10 +33,14 @@ export class HighlightButtonsComponent implements OnChanges {
 	}
 
 	private calculateIsHighlighted() {
-		if (!this.codeMapNode) return false
+		if (!this.codeMapNode) {
+			return false
+		}
 
 		const codeMapBuilding = this.idToBuilding.get(this.codeMapNode.id)
-		if (!codeMapBuilding) return false
+		if (!codeMapBuilding) {
+			return false
+		}
 
 		return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
 	}

@@ -35,9 +35,13 @@ const actionsToExclude = [
 ]
 
 export function isLoadingMap(state = setIsLoadingMap().payload, action: IsLoadingMapAction) {
-	if (action.type === IsLoadingMapActions.SET_IS_LOADING_MAP) return action.payload
+	if (action.type === IsLoadingMapActions.SET_IS_LOADING_MAP) {
+		return action.payload
+	}
 
-	if (actionsToExclude.every(excludeActions => !isActionOfType(action.type, excludeActions))) return true
+	if (actionsToExclude.every(excludeActions => !isActionOfType(action.type, excludeActions))) {
+		return true
+	}
 
 	return state
 }

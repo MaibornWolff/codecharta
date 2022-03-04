@@ -43,7 +43,9 @@ export class ResetSettingsButtonController {
 			this.storeService.dispatch(setState(updatedSettings))
 		}
 
-		if (this.callback) this.callback()
+		if (this.callback) {
+			this.callback()
+		}
 	}
 }
 

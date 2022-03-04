@@ -9,7 +9,9 @@ export function markedPackages(state = setMarkedPackages().payload, action: Mark
 			return action.payload
 		case MarkedPackagesActions.UNMARK_PACKAGE: {
 			const indexOfPackageToBeUnmarked = findIndexOfMarkedPackageOrParent(state, action.payload)
-			if (indexOfPackageToBeUnmarked !== -1) return removeEntryAtIndexFromArray(state, indexOfPackageToBeUnmarked)
+			if (indexOfPackageToBeUnmarked !== -1) {
+				return removeEntryAtIndexFromArray(state, indexOfPackageToBeUnmarked)
+			}
 			return state
 		}
 		case MarkedPackagesActions.MARK_PACKAGE: {

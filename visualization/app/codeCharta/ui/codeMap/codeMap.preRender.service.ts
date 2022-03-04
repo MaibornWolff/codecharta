@@ -130,8 +130,12 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private removeLoadingGifs() {
-		if (this.storeService.getState().appSettings.isLoadingFile) this.storeService.dispatch(setIsLoadingFile(false))
-		if (this.storeService.getState().appSettings.isLoadingMap) this.storeService.dispatch(setIsLoadingMap(false))
+		if (this.storeService.getState().appSettings.isLoadingFile) {
+			this.storeService.dispatch(setIsLoadingFile(false))
+		}
+		if (this.storeService.getState().appSettings.isLoadingMap) {
+			this.storeService.dispatch(setIsLoadingMap(false))
+		}
 	}
 
 	private showLoadingMapGif() {

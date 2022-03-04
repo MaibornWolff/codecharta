@@ -23,7 +23,9 @@ const areDynamicSettingsAvailableSelector = createSelector([dynamicSettingsSelec
 export const areAllNecessaryRenderDataAvailableSelector = createSelector(
 	[nodeMetricDataSelector, areFileStatesAvailableSelector, areChosenMetricsAvailableSelector, areDynamicSettingsAvailableSelector],
 	(nodeMetricData, areFileStatesAvailable, areChosenMetricsAvailable, areDynamicSettingsAvailable) => {
-		if (nodeMetricData === null || !areFileStatesAvailable || !areChosenMetricsAvailable || !areDynamicSettingsAvailable) return false
+		if (nodeMetricData === null || !areFileStatesAvailable || !areChosenMetricsAvailable || !areDynamicSettingsAvailable) {
+			return false
+		}
 
 		return true
 	}

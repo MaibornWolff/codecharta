@@ -20,11 +20,25 @@ export function parseSemver(semverString: string): semverObject {
 	return semver
 }
 export function compareSemver(semver1: semverObject, semver2: semverObject): number {
-	if (semver1.major === semver2.major && semver1.minor === semver2.minor && semver1.patch === semver2.patch) return 0
-	if (semver1.major > semver2.major) return 1
-	if (semver1.major < semver2.major) return -1
-	if (semver1.minor > semver2.minor) return 1
-	if (semver1.minor < semver2.minor) return -1
-	if (semver1.patch > semver2.patch) return 1
-	if (semver1.patch < semver2.patch) return -1
+	if (semver1.major === semver2.major && semver1.minor === semver2.minor && semver1.patch === semver2.patch) {
+		return 0
+	}
+	if (semver1.major > semver2.major) {
+		return 1
+	}
+	if (semver1.major < semver2.major) {
+		return -1
+	}
+	if (semver1.minor > semver2.minor) {
+		return 1
+	}
+	if (semver1.minor < semver2.minor) {
+		return -1
+	}
+	if (semver1.patch > semver2.patch) {
+		return 1
+	}
+	if (semver1.patch < semver2.patch) {
+		return -1
+	}
 }
