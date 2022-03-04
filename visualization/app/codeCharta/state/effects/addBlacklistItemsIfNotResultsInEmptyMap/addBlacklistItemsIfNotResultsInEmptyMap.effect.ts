@@ -25,7 +25,8 @@ export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
 
 	private visibleFiles$ = this.store.select(visibleFileStatesSelector)
 	private blacklist$ = this.store.select(blacklistSelector)
-	private doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(
+
+	doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(
 		ofType<AddBlacklistItemsIfNotResultsInEmptyMapAction>(BlacklistActions.ADD_BLACKLIST_ITEMS_IF_NOT_RESULTS_IN_EMPTY_MAP),
 		withLatestFrom(this.visibleFiles$, this.blacklist$),
 		map(([addBlacklistItemsIfNotResultsInEmptyMapAction, visibleFiles, blacklist]) => ({

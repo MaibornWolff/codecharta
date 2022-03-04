@@ -39,6 +39,9 @@ import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFilePro
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
 import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
+import { SearchBarComponent } from "./codeCharta/ui/searchPanel/searchBar/searchBar.component"
+import { SearchBarModule } from "./codeCharta/ui/searchPanel/searchBar/searchBar.module"
+import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 
 @NgModule({
@@ -49,7 +52,8 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 			UnfocusNodesOnLoadingMapEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
-			TrackEventUsageDataEffect
+			TrackEventUsageDataEffect,
+			BlacklistSearchPatternEffect
 		]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
@@ -61,7 +65,8 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule,
 		LoadingFileProgressSpinnerModule,
-		LoadingMapProgressSpinnerModule
+		LoadingMapProgressSpinnerModule,
+		SearchBarModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
@@ -90,6 +95,7 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 		RemoveFileButtonComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
+		SearchBarComponent,
 		EdgeMetricToggleComponent,
 		...dialogs
 	]
