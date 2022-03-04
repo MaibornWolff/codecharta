@@ -13,24 +13,10 @@ export class DeltaGenerator {
 				rootNode = node
 			} else {
 				const parentNode = getParent(hashMapWithAllNodes, path)
-				const originalParent = parentNode
-				this.sumUpChangedFiles(node, parentNode, hashMapWithAllNodes)
-
-				originalParent.children.push(node)
+				parentNode.children.push(node)
 			}
 		}
 		return rootNode
-	}
-
-	private static sumUpChangedFiles(node: CodeMapNode, parentNode: CodeMapNode, hashMapWithAllNodes: Map<string, CodeMapNode>) {
-		const added: number = node.deltas["addedFiles"]
-		const removed: number = node.deltas["removedFiles"]
-
-		while (parentNode !== undefined) {
-			parentNode.deltas["addedFiles"] += added
-			parentNode.deltas["removedFiles"] += removed
-			parentNode = getParent(hashMapWithAllNodes, parentNode.path)
-		}
 	}
 
 	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
@@ -53,7 +39,6 @@ export class DeltaGenerator {
 		// Combine both sides of the nodes
 		for (const { data: comparisonNode } of hierarchy(comparisonMap)) {
 			const referenceNode = referenceHashMap.get(comparisonNode.path)
-
 			if (referenceNode) {
 				if (referenceNode.children || comparisonNode.children) {
 					referenceNode.children = []
@@ -68,14 +53,13 @@ export class DeltaGenerator {
 				if (comparisonNode.children) {
 					comparisonNode.children = []
 				}
-				comparisonNode.deltas = { ...comparisonNode.attributes }
-				comparisonNode.deltas["addedFiles"] = 0
-				comparisonNode.deltas["removedFiles"] = 0
+				comparisonNode.deltas = { ...comparisonNode.attributes, addedFiles: 0, removedFiles: 0 }
 
 				if (comparisonNode.type === NodeType.FILE) {
-					comparisonNode.deltas["addedFiles"] += 1
+					comparisonNode.deltas.addedFiles = 1
 				}
 			}
+
 			const node = referenceNode ?? comparisonNode
 			hashMapWithAllNodes.set(node.path, node)
 			referenceHashMap.delete(node.path)
@@ -92,15 +76,15 @@ export class DeltaGenerator {
 				node.deltas[key] = -value
 			}
 
-			node.deltas["addedFiles"] = 0
-			node.deltas["removedFiles"] = 0
+			node.deltas = { ...node.deltas, addedFiles: 0, removedFiles: 0 }
 
 			if (node.type === NodeType.FILE) {
-				node.deltas["removedFiles"] += 1
+				node.deltas.removedFiles = 1
 			}
 
 			hashMapWithAllNodes.set(node.path, node)
 		}
+
 		return hashMapWithAllNodes
 	}
 
@@ -119,9 +103,8 @@ export class DeltaGenerator {
 				deltaAttribute[key] = -referenceAttribute[key]
 			}
 		}
-		deltaAttribute["addedFiles"] = 0
-		deltaAttribute["removedFiles"] = 0
-		return deltaAttribute
+
+		return { ...deltaAttribute, addedFiles: 0, removedFiles: 0 }
 	}
 
 	private static getFileMetaData(referenceFile: CCFile, comparisonFile: CCFile): FileMeta {
