@@ -20,25 +20,38 @@ export class DeltaGenerator {
 	}
 
 	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
-		const hashMapWithAllNodes = this.getHashMapWithAllNodes(referenceFile.map, comparisonFile.map)
-
-		const map = this.createCodeMapFromHashMap(hashMapWithAllNodes)
+		const deltaNodesByPath = this.getDeltaNodesByPath(referenceFile.map, comparisonFile.map)
+		const map = this.createCodeMapFromHashMap(deltaNodesByPath)
 		const fileMeta = this.getFileMetaData(referenceFile, comparisonFile)
 		return this.getNewCCFileWithDeltas(map, fileMeta)
 	}
 
-	private static getHashMapWithAllNodes(referenceMap: CodeMapNode, comparisonMap: CodeMapNode) {
-		const hashMapWithAllNodes: Map<string, CodeMapNode> = new Map()
-		const referenceHashMap: Map<string, CodeMapNode> = new Map()
+	private static getDeltaNodesByPath(referenceMap: CodeMapNode, comparisonMap: CodeMapNode) {
+		const deltaNodesByPath = new Map<string, CodeMapNode>()
+		const referenceNodesByPath = this.getReferenceNodesByPath(referenceMap)
 
-		// Get one side of the nodes
+		this.addExistingAndNewNodesToDeltaMap(referenceNodesByPath, comparisonMap, deltaNodesByPath)
+
+		this.addDeletedNodesToDeltaMap(referenceNodesByPath, deltaNodesByPath)
+
+		return deltaNodesByPath
+	}
+
+	private static getReferenceNodesByPath(referenceMap: CodeMapNode) {
+		const referenceNodesByPath = new Map<string, CodeMapNode>()
 		for (const { data } of hierarchy(referenceMap)) {
-			referenceHashMap.set(data.path, data)
+			referenceNodesByPath.set(data.path, data)
 		}
+		return referenceNodesByPath
+	}
 
-		// Combine both sides of the nodes
+	private static addExistingAndNewNodesToDeltaMap(
+		referenceNodesByPath: Map<string, CodeMapNode>,
+		comparisonMap: CodeMapNode,
+		deltaNodesByPath: Map<string, CodeMapNode>
+	) {
 		for (const { data: comparisonNode } of hierarchy(comparisonMap)) {
-			const referenceNode = referenceHashMap.get(comparisonNode.path)
+			const referenceNode = referenceNodesByPath.get(comparisonNode.path)
 			if (referenceNode) {
 				if (referenceNode.children || comparisonNode.children) {
 					referenceNode.children = []
@@ -53,39 +66,32 @@ export class DeltaGenerator {
 				if (comparisonNode.children) {
 					comparisonNode.children = []
 				}
-				comparisonNode.deltas = { ...comparisonNode.attributes, addedFiles: 0, removedFiles: 0 }
-
-				if (comparisonNode.type === NodeType.FILE) {
-					comparisonNode.deltas.addedFiles = 1
+				comparisonNode.deltas = {
+					...comparisonNode.attributes,
+					addedFiles: comparisonNode.type === NodeType.FILE ? 1 : 0,
+					removedFiles: 0
 				}
 			}
 
 			const node = referenceNode ?? comparisonNode
-			hashMapWithAllNodes.set(node.path, node)
-			referenceHashMap.delete(node.path)
+			deltaNodesByPath.set(node.path, node)
+			referenceNodesByPath.delete(node.path)
 		}
+	}
 
-		// Add missing nodes
-		for (const node of referenceHashMap.values()) {
+	private static addDeletedNodesToDeltaMap(referenceNodesByPath: Map<string, CodeMapNode>, deltaNodesByPath: Map<string, CodeMapNode>) {
+		for (const node of referenceNodesByPath.values()) {
 			if (node.children) {
 				node.children = []
 			}
-			node.deltas = {}
+			node.deltas = { removedFiles: node.type === NodeType.FILE ? 1 : 0 }
 
 			for (const [key, value] of Object.entries(node.attributes)) {
 				node.deltas[key] = -value
 			}
 
-			node.deltas = { ...node.deltas, addedFiles: 0, removedFiles: 0 }
-
-			if (node.type === NodeType.FILE) {
-				node.deltas.removedFiles = 1
-			}
-
-			hashMapWithAllNodes.set(node.path, node)
+			deltaNodesByPath.set(node.path, node)
 		}
-
-		return hashMapWithAllNodes
 	}
 
 	private static getDeltaAttributeList(referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
