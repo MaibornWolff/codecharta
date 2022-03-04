@@ -1,5 +1,5 @@
 import { Action } from "redux"
-import { Observable } from "rxjs"
+import { Observable, Subject } from "rxjs"
 import { Store } from "../../store/store"
 
 type DontDispatchConfig = { dispatch: false }
