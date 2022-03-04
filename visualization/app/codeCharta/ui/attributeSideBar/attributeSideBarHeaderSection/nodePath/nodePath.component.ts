@@ -3,7 +3,7 @@ import { Observable } from "rxjs"
 import { Store } from "../../../../state/angular-redux/store"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
-import { fileCountDescriptionSelector, FileCounter } from "./fileCountDescription.selector"
+import { fileCountSelector, FileCounter } from "./fileCountSelector"
 
 @Component({
 	selector: "cc-node-path",
@@ -15,7 +15,7 @@ export class NodePathComponent {
 	isDeltaMode$: Observable<boolean>
 
 	constructor(@Inject(Store) store: Store) {
-		this.fileCountDescription$ = store.select(fileCountDescriptionSelector)
+		this.fileCountDescription$ = store.select(fileCountSelector)
 		this.isDeltaMode$ = store.select(isDeltaStateSelector)
 	}
 }
