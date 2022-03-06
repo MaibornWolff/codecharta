@@ -1,8 +1,9 @@
 import { DeltaGenerator } from "./deltaGenerator"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "./dataMocks"
-import { CCFile, NodeType } from "../codeCharta.model"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D } from "./dataMocks"
+import { CCFile, KeyValuePair, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { clone } from "./clone"
+import { hierarchy } from "d3-hierarchy"
 
 describe("deltaGenerator", () => {
 	let fileA: CCFile
@@ -38,6 +39,14 @@ describe("deltaGenerator", () => {
 							type: NodeType.FILE,
 							attributes: { special: 42 },
 							path: "/root/onlyA/special/unicorn",
+							isExcluded: false,
+							isFlattened: false
+						},
+						{
+							name: "2ndUnicorn",
+							type: NodeType.FILE,
+							attributes: { special: 10 },
+							path: "/root/onlyA/special/2ndunicorn",
 							isExcluded: false,
 							isFlattened: false
 						}
@@ -89,7 +98,24 @@ describe("deltaGenerator", () => {
 		expect(result.map).toMatchSnapshot()
 	})
 
-	it("should sum the size of the comparison and reference File", () => {
+	it("should detect added and removed files and add result to delta attributes", () => {
+		const actualAmountOfChangedFiles: KeyValuePair = { addedFiles: 0, removedFiles: 0 }
+		const referenceMap = { ...TEST_DELTA_MAP_C }
+		const comparisonMap = { ...TEST_DELTA_MAP_D }
+		NodeDecorator.decorateMapWithPathAttribute(referenceMap)
+		NodeDecorator.decorateMapWithPathAttribute(comparisonMap)
+
+		const actualDeltaMap = DeltaGenerator.getDeltaFile(referenceMap, comparisonMap)
+
+		for (const { data } of hierarchy(actualDeltaMap.map)) {
+			actualAmountOfChangedFiles.addedFiles += data.deltas.addedFiles
+			actualAmountOfChangedFiles.removedFiles += data.deltas.removedFiles
+		}
+
+		expect(actualAmountOfChangedFiles).toEqual({ addedFiles: 5, removedFiles: 5 })
+	})
+
+	it("should sum exported file size of the comparison and reference File", () => {
 		NodeDecorator.decorateMapWithPathAttribute(fileA)
 		NodeDecorator.decorateMapWithPathAttribute(fileB)
 
@@ -107,26 +133,27 @@ describe("deltaGenerator", () => {
 		const e = { d: 110, e: 11 }
 
 		const ab = DeltaGenerator["getDeltaAttributeList"](a, b)
-		expect(ab.a).toBe(b.a - a.a)
-		expect(ab.b).toBe(b.b - a.b)
-		expect(ab.c).toBe(b.c - a.c)
+
+		expect(ab["a"]).toBe(b.a - a.a)
+		expect(ab["b"]).toBe(b.b - a.b)
+		expect(ab["c"]).toBe(b.c - a.c)
 
 		const ac = DeltaGenerator["getDeltaAttributeList"](a, c)
-		expect(ac.a).toBe(c.a - a.a)
-		expect(ac.b).toBe(c.b - a.b)
-		expect(ac.c).toBe(c.c - a.c)
-		expect(ac.d).toBe(c.d)
+		expect(ac["a"]).toBe(c.a - a.a)
+		expect(ac["b"]).toBe(c.b - a.b)
+		expect(ac["c"]).toBe(c.c - a.c)
+		expect(ac["d"]).toBe(c.d)
 
 		const ad = DeltaGenerator["getDeltaAttributeList"](a, d)
-		expect(ad.a).toBe(d.a - a.a)
-		expect(ad.b).toBe(d.b - a.b)
-		expect(ad.c).toBe(-a.c)
+		expect(ad["a"]).toBe(d.a - a.a)
+		expect(ad["b"]).toBe(d.b - a.b)
+		expect(ad["c"]).toBe(-a.c)
 
 		const ae = DeltaGenerator["getDeltaAttributeList"](a, e)
-		expect(ae.a).toBe(-a.a)
-		expect(ae.b).toBe(-a.b)
-		expect(ae.c).toBe(-a.c)
-		expect(ae.d).toBe(e.d)
-		expect(ae.e).toBe(e.e)
+		expect(ae["a"]).toBe(-a.a)
+		expect(ae["b"]).toBe(-a.b)
+		expect(ae["c"]).toBe(-a.c)
+		expect(ae["d"]).toBe(e.d)
+		expect(ae["e"]).toBe(e.e)
 	})
 })

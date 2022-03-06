@@ -84,7 +84,7 @@ export class DeltaGenerator {
 			if (node.children) {
 				node.children = []
 			}
-			node.deltas = { removedFiles: node.type === NodeType.FILE ? 1 : 0 }
+			node.deltas = { addedFiles: 0, removedFiles: node.type === NodeType.FILE ? 1 : 0 }
 
 			for (const [key, value] of Object.entries(node.attributes)) {
 				node.deltas[key] = -value
