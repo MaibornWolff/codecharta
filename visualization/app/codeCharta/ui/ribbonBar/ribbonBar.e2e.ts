@@ -34,21 +34,6 @@ describe("RibbonBar", () => {
 		expect(actual).toContain("600")
 	})*/
 
-	it("focus of ui element should be removed on ribbonBar toggle", async () => {
-		const panel = "color-metric"
-		let isColorSettingsPanelOpen = await ribbonBar.togglePanel(panel)
-		expect(isColorSettingsPanelOpen).toBeTruthy()
-		await ribbonBar.focusSomething()
-		const activeBefore = await ribbonBar.getActiveClassName()
-
-		isColorSettingsPanelOpen = await ribbonBar.togglePanel(panel)
-		expect(isColorSettingsPanelOpen).toBeFalsy()
-
-		const activeAfter = await ribbonBar.getActiveClassName()
-		expect(activeBefore).not.toBe("ng-scope")
-		expect(activeAfter).toBe("ng-scope")
-	})
-
 	describe("opening and closing ribbon-bar cards", () => {
 		it("search-panel-card", async () => {
 			let isSearchPanelOpen = await searchPanel.toggle()
