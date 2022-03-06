@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Show amount of added and removed files in attribute sidebar when delta mode is enabled and a folder is selected [#2701](https://github.com/MaibornWolff/codecharta/pull/2701/files)
+
 ### Fixed 🐞
 
 -   Fix removing maps with long file names [#2696](https://github.com/MaibornWolff/codecharta/pull/2697)
