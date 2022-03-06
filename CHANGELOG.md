@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Close search panel on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
+-   Close search panel and ribbon bar dropdowns on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
 
 ### Fixed 🐞
 
