@@ -68,7 +68,12 @@ export class RibbonBarController implements ExperimentalFeaturesEnabledSubscribe
 	private isOutside(event: MouseEvent) {
 		return event
 			.composedPath()
-			.every(element => !this.panelSelectionComponents.includes(element["nodeName"]) && element["id"] !== "codemap-context-menu")
+			.every(
+				element =>
+					!this.panelSelectionComponents.includes(element["nodeName"]) &&
+					!element["classList"]?.contains("section-title") &&
+					element["id"] !== "codemap-context-menu"
+			)
 	}
 }
 
