@@ -31,7 +31,12 @@ export class SearchPanelController {
 	private isOutside(event: MouseEvent) {
 		return event
 			.composedPath()
-			.every(element => element["nodeName"] !== "SEARCH-PANEL-COMPONENT" && element["id"] !== "codemap-context-menu")
+			.every(
+				element =>
+					element["nodeName"] !== "SEARCH-PANEL-COMPONENT" &&
+					element["nodeName"] !== "COLOR-CHROME" &&
+					element["id"] !== "codemap-context-menu"
+			)
 	}
 }
 
