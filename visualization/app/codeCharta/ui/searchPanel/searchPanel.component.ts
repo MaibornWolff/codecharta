@@ -1,5 +1,4 @@
 import "./searchPanel.component.scss"
-import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 
 export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
 
@@ -10,15 +9,13 @@ export class SearchPanelController {
 		searchPanelMode: "minimized"
 	}
 
-	constructor(private codeChartaMouseEventService: CodeChartaMouseEventService) {
+	constructor() {
 		"ngInject"
 		document.addEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
 	}
 
 	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
 		this._viewModel.searchPanelMode = this._viewModel.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode
-
-		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 
 	openSearchPanel() {

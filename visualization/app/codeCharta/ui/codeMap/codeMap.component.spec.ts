@@ -6,19 +6,13 @@ import { CodeMapController } from "./codeMap.component"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { IsLoadingFileService } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
-import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
-import { StoreService } from "../../state/store.service"
-import { PanelSelection } from "../../codeCharta.model"
-import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 
 describe("ColorSettingsPanelController", () => {
 	let codeMapController: CodeMapController
 	let $rootScope: IRootScopeService
 	let $element: Element
-	let storeService: StoreService
 	let threeViewerService: ThreeViewerService
 	let codeMapMouseEventService: CodeMapMouseEventService
-	let codeChartaMouseEventService: CodeChartaMouseEventService
 
 	beforeEach(() => {
 		restartSystem()
@@ -31,10 +25,8 @@ describe("ColorSettingsPanelController", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
 		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 		codeMapMouseEventService = getService<CodeMapMouseEventService>("codeMapMouseEventService")
-		codeChartaMouseEventService = getService<CodeChartaMouseEventService>("codeChartaMouseEventService")
 	}
 
 	function mockElement() {
@@ -54,13 +46,7 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		codeMapController = new CodeMapController(
-			$rootScope,
-			$element,
-			threeViewerService,
-			codeMapMouseEventService,
-			codeChartaMouseEventService
-		)
+		codeMapController = new CodeMapController($rootScope, $element, threeViewerService, codeMapMouseEventService)
 		codeMapController.$postLink = jest.fn()
 	}
 
@@ -114,18 +100,6 @@ describe("ColorSettingsPanelController", () => {
 
 		it("should call CodeMapController $postLink", () => {
 			expect(codeMapController.$postLink).toHaveBeenCalled()
-		})
-	})
-
-	describe("onClick", () => {
-		it("should minimize all panels", () => {
-			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
-
-			codeMapController.onClick()
-
-			const { appSettings } = storeService.getState()
-
-			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)
 		})
 	})
 })

@@ -1,15 +1,9 @@
 import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { PanelSelection } from "../../codeCharta.model"
-import { StoreService } from "../../state/store.service"
-import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
-import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
+import { instantiateModule } from "../../../../mocks/ng.mockhelper"
 
 describe("SearchPanelController", () => {
 	let searchPanelModeController: SearchPanelController
-	let storeService: StoreService
-	let codeChartaMouseEventService: CodeChartaMouseEventService
 
 	beforeEach(() => {
 		restartSystem()
@@ -18,12 +12,10 @@ describe("SearchPanelController", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.searchPanel")
-		storeService = getService<StoreService>("storeService")
-		codeChartaMouseEventService = getService<CodeChartaMouseEventService>("codeChartaMouseEventService")
 	}
 
 	function rebuildController() {
-		searchPanelModeController = new SearchPanelController(codeChartaMouseEventService)
+		searchPanelModeController = new SearchPanelController()
 	}
 
 	describe("constructor", () => {
@@ -49,14 +41,6 @@ describe("SearchPanelController", () => {
 			searchPanelModeController.updateSearchPanelMode("blacklist")
 
 			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual("blacklist")
-		})
-
-		it("should minimize all other panels", () => {
-			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
-
-			searchPanelModeController.updateSearchPanelMode("blacklist")
-
-			expect(storeService.getState().appSettings.panelSelection).toEqual(PanelSelection.NONE)
 		})
 	})
 
