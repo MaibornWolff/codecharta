@@ -4,7 +4,6 @@ import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFi
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
-import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
@@ -58,7 +57,6 @@ angular
 	.service(camelCase(MetricDataService.name), MetricDataService)
 	.service(camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(camelCase(NodeMetricDataService.name), NodeMetricDataService)
-	.service(camelCase(PanelSelectionService.name), PanelSelectionService)
 	.service(camelCase(CameraTargetService.name), CameraTargetService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)

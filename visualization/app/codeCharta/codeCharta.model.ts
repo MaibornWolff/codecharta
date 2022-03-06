@@ -141,7 +141,6 @@ export interface AppSettings {
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
 	isAttributeSideBarVisible: boolean
-	panelSelection: PanelSelection
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
 	layoutAlgorithm: LayoutAlgorithm
@@ -392,12 +391,4 @@ export interface AppStatus {
 	hoveredBuildingPath: string | null
 	selectedBuildingId: number | null
 	rightClickedNodeData: RightClickedNodeData
-}
-
-export enum PanelSelection {
-	AREA_PANEL_OPEN = "AREA_PANEL_OPEN",
-	HEIGHT_PANEL_OPEN = "HEIGHT_PANEL_OPEN",
-	COLOR_PANEL_OPEN = "COLOR_PANEL_OPEN",
-	EDGE_PANEL_OPEN = "EDGE_PANEL_OPEN",
-	NONE = "NONE"
 }

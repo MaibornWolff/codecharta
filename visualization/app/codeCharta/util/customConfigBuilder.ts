@@ -63,7 +63,6 @@ function initializeAppSettings(target: CustomConfig) {
 		isLoadingMap: false,
 		isPresentationMode: false,
 		isWhiteBackground: false,
-		panelSelection: undefined,
 		resetCameraIfNewFileIsLoaded: false,
 		scaling: undefined,
 		showOnlyBuildingsWithEdges: false,
