@@ -95,7 +95,7 @@ export class DeltaGenerator {
 	}
 
 	private static getDeltaAttributeList(referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
-		const deltaAttribute: KeyValuePair = {}
+		const deltaAttribute: KeyValuePair = { addedFiles: 0, removedFiles: 0 }
 
 		// TODO: All entries should have the combined attributes and deltas set,
 		// even if they do not exist on one side. Calculate these attributes up
@@ -110,7 +110,7 @@ export class DeltaGenerator {
 			}
 		}
 
-		return { ...deltaAttribute, addedFiles: 0, removedFiles: 0 }
+		return deltaAttribute
 	}
 
 	private static getFileMetaData(referenceFile: CCFile, comparisonFile: CCFile): FileMeta {
