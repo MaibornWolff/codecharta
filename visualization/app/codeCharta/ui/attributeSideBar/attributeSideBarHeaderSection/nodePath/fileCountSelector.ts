@@ -9,7 +9,9 @@ export interface FileCounter {
 }
 
 export const getFileCount = (node?: Pick<CodeMapNode, "attributes" | "deltas">): FileCounter => {
-	if (!node) return
+	if (!node) {
+		return
+	}
 
 	return {
 		fileCount: node.attributes?.unary ?? 0,
