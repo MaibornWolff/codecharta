@@ -22,10 +22,14 @@ const accumulatedDataFallback = Object.freeze({
 export const accumulatedDataSelector: (state: CcState) => { unifiedMapNode: CodeMapNode; unifiedFileMeta: FileMeta } = createSelector(
 	[metricDataSelector, visibleFileStatesSelector, attributeTypesSelector, blacklistSelector, metricNamesSelector],
 	(metricData, fileStates, attributeTypes, blacklist, metricNames) => {
-		if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData) return accumulatedDataFallback
+		if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData) {
+			return accumulatedDataFallback
+		}
 
 		const data = getUndecoratedAccumulatedData(fileStates)
-		if (!data || !data.map) return accumulatedDataFallback
+		if (!data || !data.map) {
+			return accumulatedDataFallback
+		}
 
 		NodeDecorator.decorateMap(data.map, metricData, blacklist)
 		addEdgeMetricsForLeaves(data.map, metricNames)

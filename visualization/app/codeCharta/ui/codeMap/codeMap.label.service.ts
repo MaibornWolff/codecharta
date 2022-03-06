@@ -256,8 +256,12 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	private drawRectangleWithRoundedCorners(context, x, y, width, height, radius) {
-		if (width < 2 * radius) radius = width / 2
-		if (height < 2 * radius) radius = height / 2
+		if (width < 2 * radius) {
+			radius = width / 2
+		}
+		if (height < 2 * radius) {
+			radius = height / 2
+		}
 		context.beginPath()
 
 		context.moveTo(x + radius, y)

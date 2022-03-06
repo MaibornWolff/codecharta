@@ -7,7 +7,9 @@ export class IdToBuildingService {
 
 	setIdToBuilding(buildings: CodeMapBuilding[]) {
 		this.idToBuilding = new Map<number, CodeMapBuilding>()
-		for (const building of buildings) this.idToBuilding.set(building.node.id, building)
+		for (const building of buildings) {
+			this.idToBuilding.set(building.node.id, building)
+		}
 	}
 
 	/** id is buildings' node.id */

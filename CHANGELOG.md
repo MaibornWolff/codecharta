@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix removing maps with long file names [#2696](https://github.com/MaibornWolff/codecharta/pull/2697)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate search-bar-component to Angular [#2686](https://github.com/MaibornWolff/codecharta/pull/2686)
+
 ## [1.92.0] - 2022-03-01
 
 ### Changed

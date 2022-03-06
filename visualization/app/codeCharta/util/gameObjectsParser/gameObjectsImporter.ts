@@ -56,7 +56,9 @@ function addNodeRecursively(
 	gameObjectPositions,
 	rootGameObjectPosition
 ) {
-	if (nodeNames.length === 0) return
+	if (nodeNames.length === 0) {
+		return
+	}
 
 	// get current node name and create cc node structure
 	const [nodeName] = nodeNames
