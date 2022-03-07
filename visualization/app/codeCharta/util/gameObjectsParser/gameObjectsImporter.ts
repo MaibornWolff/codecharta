@@ -31,14 +31,7 @@ export function parseGameObjectsFile(data) {
 	}
 
 	const nodes = [{ name: BASE_NAME, type: NodeType.FOLDER, attributes: {}, children: [] }]
-
-	for (const gameObjectPosition of gameObjectPositions) {
-		if (!gameObjectPosition.name.startsWith("root")) {
-			gameObjectPosition.name = gameObjectPosition.name.startsWith(".")
-				? `root${gameObjectPosition.name}`
-				: `root.${gameObjectPosition.name}`
-		}
-	}
+	fixGameObjectNames(gameObjectPositions)
 
 	const rootGameObjectPosition = gameObjectPositions.find(gameObject => gameObject.name === "root")
 	gameObjectPositions.push(createBaseGameObjectPosition(rootGameObjectPosition))
@@ -57,13 +50,22 @@ export function parseGameObjectsFile(data) {
 	return ccJson
 }
 
+function fixGameObjectNames(gameObjectPositions: GameObject[]) {
+	for (const gameObjectPosition of gameObjectPositions) {
+		if (!gameObjectPosition.name.startsWith("root")) {
+			gameObjectPosition.name = gameObjectPosition.name.startsWith(".")
+				? `root${gameObjectPosition.name}`
+				: `root.${gameObjectPosition.name}`
+		}
+	}
+}
 function addNodeRecursively(
 	nodeNames: string[],
 	nodes: CodeMapNode[],
 	parentNodeName: string,
-	gameObjectPosition,
-	gameObjectPositions,
-	rootGameObjectPosition
+	gameObjectPosition: GameObject,
+	gameObjectPositions: GameObject[],
+	rootGameObjectPosition: GameObject
 ) {
 	if (nodeNames.length === 0) {
 		return
