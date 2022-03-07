@@ -18,7 +18,7 @@ const BASE_NAME = "base"
 
 export function parseGameObjectsFile(data) {
 	// eslint-disable-next-line prefer-const
-	let { gameObjectPositions, cycles = [] } = JSON.parse(data)
+	let { gameObjectPositions: gameObjects, cycles = [] } = JSON.parse(data)
 
 	const ccJson: ExportWrappedCCFile = {
 		checksum: "",
@@ -31,15 +31,15 @@ export function parseGameObjectsFile(data) {
 	}
 
 	const nodes = [{ name: BASE_NAME, type: NodeType.FOLDER, attributes: {}, children: [] }]
-	fixGameObjectNames(gameObjectPositions)
+	fixGameObjectNames(gameObjects)
 
-	const rootGameObjectPosition = gameObjectPositions.find(gameObject => gameObject.name === "root")
-	gameObjectPositions.push(createBaseGameObjectPosition(rootGameObjectPosition))
+	const rootGameObjectPosition = gameObjects.find(gameObject => gameObject.name === "root")
+	gameObjects.push(createBaseGameObjectPosition(rootGameObjectPosition))
 
-	for (const gameObjectPosition of gameObjectPositions) {
+	for (const gameObjectPosition of gameObjects) {
 		const nodeNames = gameObjectPosition.name.split(".")
 		if (nodeNames[0] !== BASE_NAME) {
-			addNodeRecursively(nodeNames, nodes[0].children, BASE_NAME, gameObjectPosition, gameObjectPositions, rootGameObjectPosition)
+			addNodeRecursively(nodeNames, nodes[0].children, BASE_NAME, gameObjectPosition, gameObjects, rootGameObjectPosition)
 		}
 	}
 
@@ -59,6 +59,7 @@ function fixGameObjectNames(gameObjectPositions: GameObject[]) {
 		}
 	}
 }
+
 function addNodeRecursively(
 	nodeNames: string[],
 	nodes: CodeMapNode[],
