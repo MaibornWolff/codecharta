@@ -30,7 +30,7 @@ describe("nodePathComponent", () => {
 		expect(container.textContent).toContain("some/file.ts")
 	})
 
-	it("should display node path and amount of files, when a folder is selected and delta mode is not enabled", async () => {
+	it("should display node path and amount of files, when a folder is selected and delta mode is disabled", async () => {
 		const node = {
 			children: [{}] as CodeMapNode[],
 			path: "some/folder",
@@ -43,8 +43,8 @@ describe("nodePathComponent", () => {
 		selectedNodeSelectorMock.mockImplementation(() => node)
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
-		//TODO: adjust string when white space is fixed in nodePath template
-		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder (2 files )")
+
+		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files )")
 	})
 
 	it("should display node path,amount of files, added and removed files, when a folder is selected and delta mode is enabled", async () => {
@@ -57,11 +57,11 @@ describe("nodePathComponent", () => {
 				removedFiles: 2
 			}
 		}
-		isDeltaStateSelectorMock.mockImplementation(() => true)
+		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
 		selectedNodeSelectorMock.mockImplementation(() => node)
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
-		//TODO: adjust string when white space is fixed in nodePath template
-		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder (2 files | Δ1 | Δ2 )")
+
+		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ2)")
 	})
 })
