@@ -32,7 +32,6 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.component"
 import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
-import { AddCustomConfigDialogComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigDialog/addCustomConfigDialog.component"
 
 @NgModule({
 	imports: [
@@ -72,7 +71,6 @@ import { AddCustomConfigDialogComponent } from "./codeCharta/ui/customConfigs/ad
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
 		AddCustomConfigButtonComponent,
-		AddCustomConfigDialogComponent,
 		...dialogs
 	]
 })

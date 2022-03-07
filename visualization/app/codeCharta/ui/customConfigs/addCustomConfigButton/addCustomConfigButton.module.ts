@@ -9,6 +9,7 @@ import { DownloadAndPurgeConfigsComponent } from "./addCustomConfigDialog/downlo
 @NgModule({
 	imports: [MaterialModule, ReactiveFormsModule, FormsModule, CommonModule],
 	declarations: [AddCustomConfigButtonComponent, AddCustomConfigDialogComponent, DownloadAndPurgeConfigsComponent],
-	exports: [AddCustomConfigButtonComponent]
+	exports: [AddCustomConfigButtonComponent],
+	entryComponents: [AddCustomConfigDialogComponent]
 })
 export class AddCustomConfigButtonModule {}
