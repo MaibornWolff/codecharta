@@ -1,26 +1,31 @@
 import { TestBed } from "@angular/core/testing"
 import { AddCustomConfigButtonModule } from "./addCustomConfigButton.module"
-import { MatDialog } from "@angular/material/dialog"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { AddCustomConfigButtonComponent } from "./addCustomConfigButton.component"
-import { AddCustomConfigDialogComponent } from "./addCustomConfigDialog/addCustomConfigDialog.component"
+import userEvent from "@testing-library/user-event"
+import { waitForElementToBeRemoved } from "@testing-library/dom"
+import { CustomConfigHelper } from "../../../util/customConfigHelper"
 
 describe("addCustomConfigButtonComponent", () => {
-	const mockedDialog = { open: jest.fn() }
-
 	beforeEach(async () => {
 		TestBed.configureTestingModule({
-			imports: [AddCustomConfigButtonModule],
-			providers: [{ provide: MatDialog, useValue: mockedDialog }]
+			imports: [AddCustomConfigButtonModule]
 		})
 	})
 
-	it("should open add custom config dialog on click", async () => {
+	it("should let a user save a custom config", async () => {
+		const addCustomConfigSpy = jest.spyOn(CustomConfigHelper, "addCustomConfig")
 		await render(AddCustomConfigButtonComponent, { excludeComponentDeclaration: true })
 
 		const button = screen.getByRole("button")
 		fireEvent.click(button)
 
-		expect(mockedDialog.open).toHaveBeenCalledWith(AddCustomConfigDialogComponent, { panelClass: "cc-add-custom-config-dialog" })
+		await screen.findByText("Add Custom View")
+
+		userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
+		fireEvent.click(screen.getByRole("button", { name: "ADD" }))
+
+		await waitForElementToBeRemoved(screen.getByText("Add Custom View"))
+		expect(addCustomConfigSpy).toHaveBeenCalledTimes(1)
 	})
 })
