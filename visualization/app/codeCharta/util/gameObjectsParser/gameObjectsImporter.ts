@@ -2,13 +2,13 @@ import md5 from "md5"
 import { AttributeTypes, CodeMapNode, Edge, FixedPosition, NodeType } from "../../codeCharta.model"
 import { ExportWrappedCCFile } from "../../codeCharta.api.model"
 
-export interface BaseNode {
+export interface GameObject {
 	name: string
-	position: Position
-	scale: Position
+	position: Coordinates
+	scale: Coordinates
 }
 
-export interface Position {
+export interface Coordinates {
 	x: number
 	y: number
 	z: number
@@ -112,7 +112,12 @@ function wrapFileInAFolder(nodeName: string, node: CodeMapNode, gameObjectPositi
 	return parentNode
 }
 
-function calculateFixedFolderPosition(node: CodeMapNode, parentGameObject, childGameObject, rootGameObjectPositionName: string) {
+function calculateFixedFolderPosition(
+	node: CodeMapNode,
+	parentGameObject: GameObject,
+	childGameObject: GameObject,
+	rootGameObjectPositionName: string
+) {
 	let position: FixedPosition
 
 	if (node.type === NodeType.FOLDER) {
@@ -182,5 +187,5 @@ function createBaseGameObjectPosition(rootGameObjectPosition) {
 			y: 0,
 			z: longEdge
 		}
-	} as BaseNode
+	} as GameObject
 }
