@@ -17,7 +17,8 @@ export interface Position {
 const BASE_NAME = "base"
 
 export function parseGameObjectsFile(data) {
-	const { gameObjectPositions, cycles = [] } = JSON.parse(data)
+	// eslint-disable-next-line prefer-const
+	let { gameObjectPositions, cycles = [] } = JSON.parse(data)
 
 	const ccJson: ExportWrappedCCFile = {
 		checksum: "",
@@ -30,8 +31,16 @@ export function parseGameObjectsFile(data) {
 	}
 
 	const nodes = [{ name: BASE_NAME, type: NodeType.FOLDER, attributes: {}, children: [] }]
-	const rootGameObjectPosition = gameObjectPositions.find(gameObject => gameObject.name.split(".").length === 1)
 
+	for (const gameObjectPosition of gameObjectPositions) {
+		if (!gameObjectPosition.name.startsWith("root")) {
+			gameObjectPosition.name = gameObjectPosition.name.startsWith(".")
+				? `root${gameObjectPosition.name}`
+				: `root.${gameObjectPosition.name}`
+		}
+	}
+
+	const rootGameObjectPosition = gameObjectPositions.find(gameObject => gameObject.name === "root")
 	gameObjectPositions.push(createBaseGameObjectPosition(rootGameObjectPosition))
 
 	for (const gameObjectPosition of gameObjectPositions) {
