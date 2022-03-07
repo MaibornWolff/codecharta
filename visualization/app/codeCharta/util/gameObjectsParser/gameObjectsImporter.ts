@@ -14,11 +14,14 @@ export interface Coordinates {
 	z: number
 }
 
+export interface Cycle {
+	from: string
+	to: string
+}
 const BASE_NAME = "base"
 
 export function parseGameObjectsFile(data) {
-	// eslint-disable-next-line prefer-const
-	let { gameObjectPositions: gameObjects, cycles = [] } = JSON.parse(data)
+	const { gameObjectPositions: gameObjects, cycles = [] } = JSON.parse(data)
 
 	const ccJson: ExportWrappedCCFile = {
 		checksum: "",
@@ -119,7 +122,7 @@ function calculateFixedFolderPosition(
 	parentGameObject: GameObject,
 	childGameObject: GameObject,
 	rootGameObjectPositionName: string
-) {
+): FixedPosition {
 	let position: FixedPosition
 
 	if (node.type === NodeType.FOLDER) {
@@ -142,34 +145,34 @@ function calculateFixedFolderPosition(
 	return position
 }
 
-function round(value: number, decimalPoints: number) {
+function round(value: number, decimalPoints: number): number {
 	const roundingValue = Math.pow(10, decimalPoints)
 	return Math.round(value * roundingValue) / roundingValue
 }
 
-function getCenteredRootPosition(rootGameObject: FixedPosition) {
+function getCenteredRootPosition(rootGameObject: FixedPosition): FixedPosition {
 	const centeredPosition: FixedPosition = { ...rootGameObject }
 	centeredPosition.top = Math.floor(50 - centeredPosition.height / 2)
 	centeredPosition.left = 0
 	return centeredPosition
 }
 
-function addWrappedFolderName(filePath: string) {
+function addWrappedFolderName(filePath: string): string {
 	const splitFilePath = filePath.split(".")
 	return `/${BASE_NAME}/${filePath.replace(/\./g, "/")}/${splitFilePath.slice(-1)}`
 }
 
-function createEdge(cycle) {
+function createEdge(cycle: Cycle): Edge {
 	return {
 		fromNodeName: addWrappedFolderName(cycle.from),
 		toNodeName: addWrappedFolderName(cycle.to),
 		attributes: {
 			coupling: 100
 		}
-	} as Edge
+	}
 }
 
-function createAttributeTypes() {
+function createAttributeTypes(): AttributeTypes {
 	return {
 		edges: {
 			coupling: "relative"
@@ -177,7 +180,7 @@ function createAttributeTypes() {
 	} as AttributeTypes
 }
 
-function createBaseGameObjectPosition(rootGameObjectPosition) {
+function createBaseGameObjectPosition(rootGameObjectPosition): GameObject {
 	const longEdge = Math.max(rootGameObjectPosition.scale.x, rootGameObjectPosition.scale.z)
 	return {
 		name: BASE_NAME,
@@ -191,5 +194,5 @@ function createBaseGameObjectPosition(rootGameObjectPosition) {
 			y: 0,
 			z: longEdge
 		}
-	} as GameObject
+	}
 }
