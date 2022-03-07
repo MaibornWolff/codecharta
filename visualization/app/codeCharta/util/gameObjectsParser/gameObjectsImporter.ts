@@ -121,10 +121,10 @@ function calculateFixedFolderPosition(node: CodeMapNode, parentGameObject, child
 		const cornerZofParent = parentGameObject.position.z - parentGameObject.scale.z / 2
 		const cornerXofChild = childGameObject.position.x - childGameObject.scale.x / 2
 		const cornerZofChild = childGameObject.position.z - childGameObject.scale.z / 2
-		const top = Math.floor(((cornerXofChild - cornerXofParent) / parentGameObject.scale.x) * 100)
-		const left = Math.floor(((cornerZofChild - cornerZofParent) / parentGameObject.scale.z) * 100)
-		const width = Math.floor((childGameObject.scale.z / parentGameObject.scale.z) * 100)
-		const height = Math.floor((childGameObject.scale.x / parentGameObject.scale.x) * 100)
+		const top = round(((cornerXofChild - cornerXofParent) / parentGameObject.scale.x) * 100, 2)
+		const left = round(((cornerZofChild - cornerZofParent) / parentGameObject.scale.z) * 100, 2)
+		const width = round((childGameObject.scale.z / parentGameObject.scale.z) * 100, 2)
+		const height = round((childGameObject.scale.x / parentGameObject.scale.x) * 100, 2)
 		position = { left, top, width, height }
 	}
 
@@ -133,6 +133,11 @@ function calculateFixedFolderPosition(node: CodeMapNode, parentGameObject, child
 	}
 
 	return position
+}
+
+function round(value: number, decimalPoints: number) {
+	const roundingValue = Math.pow(10, decimalPoints)
+	return Math.round(value * roundingValue) / roundingValue
 }
 
 function centerRootPosition(rootPosition) {
