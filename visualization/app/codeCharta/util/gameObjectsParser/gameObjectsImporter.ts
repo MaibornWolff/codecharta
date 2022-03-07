@@ -50,8 +50,8 @@ export function parseGameObjectsFile(data) {
 	return ccJson
 }
 
-function fixGameObjectNames(gameObjectPositions: GameObject[]) {
-	for (const gameObjectPosition of gameObjectPositions) {
+function fixGameObjectNames(gameObjects: GameObject[]) {
+	for (const gameObjectPosition of gameObjects) {
 		if (!gameObjectPosition.name.startsWith("root")) {
 			gameObjectPosition.name = gameObjectPosition.name.startsWith(".")
 				? `root${gameObjectPosition.name}`
@@ -64,9 +64,9 @@ function addNodeRecursively(
 	nodeNames: string[],
 	nodes: CodeMapNode[],
 	parentNodeName: string,
-	gameObjectPosition: GameObject,
-	gameObjectPositions: GameObject[],
-	rootGameObjectPosition: GameObject
+	gameObject: GameObject,
+	gameObjects: GameObject[],
+	rootGameObject: GameObject
 ) {
 	if (nodeNames.length === 0) {
 		return
@@ -83,7 +83,7 @@ function addNodeRecursively(
 	if (!isFile(nodeNames)) {
 		node.children = []
 	} else {
-		node = wrapFileInAFolder(nodeName, node, gameObjectPosition)
+		node = wrapFileInAFolder(nodeName, node, gameObject)
 	}
 
 	// add or select node if found
@@ -93,11 +93,11 @@ function addNodeRecursively(
 		node = nodes.find(singleNode => singleNode.name === nodeName)
 	}
 
-	const parentGameObject = gameObjectPositions.find(gameObject => gameObject.name === parentNodeName)
-	node.fixedPosition = calculateFixedFolderPosition(node, parentGameObject, gameObjectPosition, rootGameObjectPosition.name)
+	const parentGameObject = gameObjects.find(gameObject => gameObject.name === parentNodeName)
+	node.fixedPosition = calculateFixedFolderPosition(node, parentGameObject, gameObject, rootGameObject.name)
 
 	const newParentName = parentNodeName === BASE_NAME ? node.name : `${parentNodeName}.${node.name}`
-	addNodeRecursively(nodeNames.slice(1), node.children, newParentName, gameObjectPosition, gameObjectPositions, rootGameObjectPosition)
+	addNodeRecursively(nodeNames.slice(1), node.children, newParentName, gameObject, gameObjects, rootGameObject)
 }
 
 function isFile(names: string[]) {
@@ -108,11 +108,10 @@ function nodeAlreadyExists(nodes: CodeMapNode[], name: string) {
 	return nodes.some(singleNode => singleNode.name === name)
 }
 
-function wrapFileInAFolder(nodeName: string, node: CodeMapNode, gameObjectPosition) {
+function wrapFileInAFolder(nodeName: string, node: CodeMapNode, gameObject: GameObject): CodeMapNode {
 	const childNode = { ...node }
-	childNode.attributes = { height: gameObjectPosition.scale.y }
-	const parentNode: CodeMapNode = { name: nodeName, type: NodeType.FOLDER, attributes: {}, children: [childNode] }
-	return parentNode
+	childNode.attributes = { height: gameObject.scale.y }
+	return { name: nodeName, type: NodeType.FOLDER, attributes: {}, children: [childNode] }
 }
 
 function calculateFixedFolderPosition(
@@ -137,7 +136,7 @@ function calculateFixedFolderPosition(
 	}
 
 	if (node.name === rootGameObjectPositionName) {
-		centerRootPosition(position)
+		position = getCenteredRootPosition(position)
 	}
 
 	return position
@@ -148,9 +147,11 @@ function round(value: number, decimalPoints: number) {
 	return Math.round(value * roundingValue) / roundingValue
 }
 
-function centerRootPosition(rootPosition) {
-	rootPosition.top = Math.floor(50 - rootPosition.height / 2)
-	rootPosition.left = 0
+function getCenteredRootPosition(rootGameObject: FixedPosition) {
+	const centeredPosition: FixedPosition = { ...rootGameObject }
+	centeredPosition.top = Math.floor(50 - centeredPosition.height / 2)
+	centeredPosition.left = 0
+	return centeredPosition
 }
 
 function addWrappedFolderName(filePath: string) {
