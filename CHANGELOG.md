@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Close search panel and ribbon bar dropdowns on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
 
+## [1.92.1] - 2022-03-07
+
 ### Fixed 🐞
 
 -   Fix removing maps with long file names [#2696](https://github.com/MaibornWolff/codecharta/pull/2697)

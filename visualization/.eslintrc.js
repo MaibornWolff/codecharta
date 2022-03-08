@@ -23,7 +23,7 @@ module.exports = {
 		project: "tsconfig.json",
 		sourceType: "module"
 	},
-	plugins: ["@typescript-eslint", "unicorn"],
+	plugins: ["@typescript-eslint", "unicorn", "unused-imports"],
 	rules: {
 		"@typescript-eslint/naming-convention": [
 			"error",
@@ -66,6 +66,18 @@ module.exports = {
 		"prefer-template": "error",
 
 		"unicorn/prevent-abbreviations": ["error", { checkFilenames: false }],
+
+		"no-unused-vars": "off",
+		"unused-imports/no-unused-imports": "error",
+		"unused-imports/no-unused-vars": [
+			"warn",
+			{
+				vars: "all",
+				varsIgnorePattern: "^_",
+				args: "after-used",
+				argsIgnorePattern: "^_"
+			}
+		],
 
 		// Do not apply inappropriate rules below
 		"@typescript-eslint/ban-ts-comment": "off",
