@@ -11,11 +11,11 @@ import { fileCountSelector, FileCounter } from "./fileCountSelector"
 })
 export class NodePathComponent {
 	@Input() node?: Pick<CodeMapNode, "path" | "children">
-	fileCountDescription$: Observable<FileCounter | undefined>
+	fileCount$: Observable<FileCounter | undefined>
 	isDeltaMode$: Observable<boolean>
 
 	constructor(@Inject(Store) store: Store) {
-		this.fileCountDescription$ = store.select(fileCountSelector)
+		this.fileCount$ = store.select(fileCountSelector)
 		this.isDeltaMode$ = store.select(isDeltaStateSelector)
 	}
 }

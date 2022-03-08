@@ -1,12 +1,12 @@
 <p class="cc-node-path">
 	<span *ngIf="node">
 		{{ node.path }}
-		<span *ngIf="node.children?.length && fileCountDescription$ | async as fileCountDescription" class="cc-node-file-count">
+		<span *ngIf="node.children?.length && fileCount$ | async as fileCount" class="cc-node-file-count">
 			(
-			{{ fileCountDescription.fileCount > 1 ? fileCountDescription.fileCount + " files" : fileCountDescription.fileCount + " file" }}
+			{{ fileCount.fileCount > 1 ? fileCount.fileCount + " files" : fileCount.fileCount + " file" }}
 			<span *ngIf="node.children?.length && (isDeltaMode$ | async)" class="cc-node-file-count">
-				| <span class="added-files"> Δ{{ fileCountDescription.added }}</span> |
-				<span class="removed-files"> Δ{{ fileCountDescription.removed }}</span> </span
+				| <span class="added-files" title="Amount of added files"> Δ{{ fileCount.added }}</span> |
+				<span class="removed-files" title="Amount of removed files"> Δ{{ fileCount.removed }}</span></span
 			>)
 		</span>
 	</span>
