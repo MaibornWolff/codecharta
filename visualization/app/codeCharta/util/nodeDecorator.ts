@@ -100,7 +100,9 @@ export const NodeDecorator = {
 					setNodeMediansToParent(medians, selector, parentSelector, data, name, isDeltaState)
 					collectNodeMediansOnParent(medians, parentSelector, data, name, isDeltaState)
 				} else {
-					parent.data.attributes[name] += data.attributes[name]
+					if (parent.data.attributes[name] !== undefined) {
+						parent.data.attributes[name] += data.attributes[name]
+					}
 					if (isDeltaState && parent.data.deltas) {
 						parent.data.deltas[name] = parent.data.deltas[name] ?? 0
 						parent.data.deltas[name] += data.deltas[name] ?? 0
