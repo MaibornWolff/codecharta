@@ -383,11 +383,12 @@ describe("nodeDecorator", () => {
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(deltaMap, true, attributeTypes)
 
 			const actualDeltaMapWithAggregatedAttributes = hierarchy(deltaMap)
+			const actualRootNode = actualDeltaMapWithAggregatedAttributes.find(node => node.data.name === "root")
 
-			expect(actualDeltaMapWithAggregatedAttributes.data.deltas.rloc).toBe(295)
-			expect(actualDeltaMapWithAggregatedAttributes.children[0].data.deltas.rloc).toBe(300)
-			expect(actualDeltaMapWithAggregatedAttributes.data.deltas.addedFiles).toBe(1)
-			expect(actualDeltaMapWithAggregatedAttributes.data.deltas.removedFiles).toBe(2)
+			expect(actualRootNode.data.deltas.rloc).toBe(295)
+			expect(actualRootNode.data.deltas.addedFiles).toBe(1)
+			expect(actualRootNode.data.deltas.removedFiles).toBe(2)
+			expect(actualRootNode.children[0].data.deltas.rloc).toBe(300)
 		})
 
 		it("folders should have median delta values of children for relative metrics", () => {
