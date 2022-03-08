@@ -65,13 +65,19 @@ export class RibbonBarController implements ExperimentalFeaturesEnabledSubscribe
 		"CC-EDGE-SETTINGS-PANEL",
 		"COLOR-CHROME"
 	]
+	private panelSectionTogglerTitles = [
+		"Show area metric settings",
+		"Show height metric settings",
+		"Show color metric settings",
+		"Show edge metric settings"
+	]
 	private isOutside(event: MouseEvent) {
 		return event
 			.composedPath()
 			.every(
 				element =>
 					!this.panelSelectionComponents.includes(element["nodeName"]) &&
-					!element["classList"]?.contains("section-title") &&
+					!this.panelSectionTogglerTitles.includes(element["title"]) &&
 					element["id"] !== "codemap-context-menu"
 			)
 	}
