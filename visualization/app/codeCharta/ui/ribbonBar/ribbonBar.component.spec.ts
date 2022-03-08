@@ -72,6 +72,30 @@ describe("RibbonBarController", () => {
 		})
 	})
 
+	describe("closePanelSelectionOnOutsideClick", () => {
+		it("should close when clicking outside", () => {
+			ribbonBarController["_viewModel"].panelSelection = "COLOR_PANEL_OPEN"
+			ribbonBarController["closePanelSelectionOnOutsideClick"]({ composedPath: () => [] } as MouseEvent)
+			expect(ribbonBarController["_viewModel"].panelSelection).toBe("NONE")
+		})
+
+		it("should not close when clicking inside", () => {
+			ribbonBarController["_viewModel"].panelSelection = "COLOR_PANEL_OPEN"
+			ribbonBarController["closePanelSelectionOnOutsideClick"]({
+				composedPath: () => [{ nodeName: "COLOR-SETTINGS-PANEL-COMPONENT" }]
+			} as unknown as MouseEvent)
+			expect(ribbonBarController["_viewModel"].panelSelection).toBe("COLOR_PANEL_OPEN")
+		})
+
+		it("should not close when clicking on toggler", () => {
+			ribbonBarController["_viewModel"].panelSelection = "COLOR_PANEL_OPEN"
+			ribbonBarController["closePanelSelectionOnOutsideClick"]({
+				composedPath: () => [{ title: "Show color metric settings" }]
+			} as unknown as MouseEvent)
+			expect(ribbonBarController["_viewModel"].panelSelection).toBe("COLOR_PANEL_OPEN")
+		})
+	})
+
 	describe("onFilesSelectionChanged", () => {
 		it("should detect delta mode selection", () => {
 			storeService.dispatch(resetFiles())
