@@ -150,10 +150,10 @@ function round(value: number, decimalPoints: number): number {
 	return Math.round(value * roundingValue) / roundingValue
 }
 
-function getCenteredRootPosition(rootGameObject: FixedPosition): FixedPosition {
-	const centeredPosition: FixedPosition = { ...rootGameObject }
+function getCenteredRootPosition(rootFixedPosition: FixedPosition): FixedPosition {
+	const centeredPosition: FixedPosition = { ...rootFixedPosition }
 	centeredPosition.top = Math.floor(50 - centeredPosition.height / 2)
-	centeredPosition.left = 0
+	centeredPosition.left = Math.floor(50 - centeredPosition.width / 2)
 	return centeredPosition
 }
 
