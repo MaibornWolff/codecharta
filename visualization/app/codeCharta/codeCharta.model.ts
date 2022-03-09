@@ -39,6 +39,12 @@ export interface CCFile {
 	fileMeta: FileMeta
 }
 
+export interface FileCount {
+	all?: number
+	added: number
+	removed: number
+}
+
 interface squarifiedNode {
 	name: string
 	id?: number
@@ -56,10 +62,7 @@ interface squarifiedNode {
 		[key: string]: number
 	}
 	fixedPosition?: FixedPosition
-	changedFiles?: {
-		added: number
-		removed: number
-	}
+	fileCount?: FileCount
 }
 
 interface streetNode {

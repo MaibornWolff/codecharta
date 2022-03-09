@@ -62,14 +62,14 @@ export class DeltaGenerator {
 				// attributes and is not specific about the attributes from the
 				// reference node.
 				referenceNode.attributes = comparisonNode.attributes
-				referenceNode.changedFiles = { added: 0, removed: 0 }
+				referenceNode.fileCount = { added: 0, removed: 0 }
 			} else {
 				if (comparisonNode.children) {
 					comparisonNode.children = []
 				}
 				comparisonNode.deltas = { ...comparisonNode.attributes }
 
-				comparisonNode.changedFiles = {
+				comparisonNode.fileCount = {
 					added: comparisonNode.type === NodeType.FILE ? 1 : 0,
 					removed: 0
 				}
@@ -87,7 +87,7 @@ export class DeltaGenerator {
 				node.children = []
 			}
 			node.deltas = {}
-			node.changedFiles = {
+			node.fileCount = {
 				added: 0,
 				removed: node.type === NodeType.FILE ? 1 : 0
 			}

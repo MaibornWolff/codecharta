@@ -108,9 +108,9 @@ export const NodeDecorator = {
 				}
 			}
 
-			if (isDeltaState && parent.data.changedFiles) {
-				parent.data.changedFiles.added += data.changedFiles.added
-				parent.data.changedFiles.removed += data.changedFiles.removed
+			if (isDeltaState && parent.data.fileCount) {
+				parent.data.fileCount.added += data.fileCount.added
+				parent.data.fileCount.removed += data.fileCount.removed
 			}
 
 			for (const name of edgeKeys) {
