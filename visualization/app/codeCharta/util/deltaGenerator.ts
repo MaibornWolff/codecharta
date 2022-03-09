@@ -62,14 +62,16 @@ export class DeltaGenerator {
 				// attributes and is not specific about the attributes from the
 				// reference node.
 				referenceNode.attributes = comparisonNode.attributes
+				referenceNode.changedFiles = { added: 0, removed: 0 }
 			} else {
 				if (comparisonNode.children) {
 					comparisonNode.children = []
 				}
-				comparisonNode.deltas = {
-					...comparisonNode.attributes,
-					addedFiles: comparisonNode.type === NodeType.FILE ? 1 : 0,
-					removedFiles: 0
+				comparisonNode.deltas = { ...comparisonNode.attributes }
+
+				comparisonNode.changedFiles = {
+					added: comparisonNode.type === NodeType.FILE ? 1 : 0,
+					removed: 0
 				}
 			}
 
@@ -84,7 +86,11 @@ export class DeltaGenerator {
 			if (node.children) {
 				node.children = []
 			}
-			node.deltas = { addedFiles: 0, removedFiles: node.type === NodeType.FILE ? 1 : 0 }
+			node.deltas = {}
+			node.changedFiles = {
+				added: 0,
+				removed: node.type === NodeType.FILE ? 1 : 0
+			}
 
 			for (const [key, value] of Object.entries(node.attributes)) {
 				node.deltas[key] = -value
@@ -95,7 +101,7 @@ export class DeltaGenerator {
 	}
 
 	private static getDeltaAttributeList(referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
-		const deltaAttribute: KeyValuePair = { addedFiles: 0, removedFiles: 0 }
+		const deltaAttribute: KeyValuePair = {}
 
 		// TODO: All entries should have the combined attributes and deltas set,
 		// even if they do not exist on one side. Calculate these attributes up

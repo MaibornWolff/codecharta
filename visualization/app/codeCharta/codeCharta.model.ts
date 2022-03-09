@@ -56,6 +56,10 @@ interface squarifiedNode {
 		[key: string]: number
 	}
 	fixedPosition?: FixedPosition
+	changedFiles?: {
+		added: number
+		removed: number
+	}
 }
 
 interface streetNode {

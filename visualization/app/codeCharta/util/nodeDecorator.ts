@@ -100,14 +100,17 @@ export const NodeDecorator = {
 					setNodeMediansToParent(medians, selector, parentSelector, data, name, isDeltaState)
 					collectNodeMediansOnParent(medians, parentSelector, data, name, isDeltaState)
 				} else {
-					if (parent.data.attributes[name] !== undefined) {
-						parent.data.attributes[name] += data.attributes[name]
-					}
+					parent.data.attributes[name] += data.attributes[name]
 					if (isDeltaState && parent.data.deltas) {
 						parent.data.deltas[name] = parent.data.deltas[name] ?? 0
 						parent.data.deltas[name] += data.deltas[name] ?? 0
 					}
 				}
+			}
+
+			if (isDeltaState && parent.data.changedFiles) {
+				parent.data.changedFiles.added += data.changedFiles.added ?? 0
+				parent.data.changedFiles.removed += data.changedFiles.removed ?? 0
 			}
 
 			for (const name of edgeKeys) {

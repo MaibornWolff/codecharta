@@ -8,15 +8,15 @@ export interface FileCounter {
 	removed: number
 }
 
-export const getFileCount = (node?: Pick<CodeMapNode, "attributes" | "deltas">): FileCounter => {
+export const getFileCount = (node?: Pick<CodeMapNode, "attributes" | "changedFiles">): FileCounter => {
 	if (!node) {
 		return
 	}
 
 	return {
 		fileCount: node.attributes?.unary ?? 0,
-		added: node.deltas?.addedFiles ?? 0,
-		removed: node.deltas?.removedFiles ?? 0
+		added: node.changedFiles?.added ?? 0,
+		removed: node.changedFiles?.removed ?? 0
 	}
 }
 
