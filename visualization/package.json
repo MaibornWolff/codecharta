@@ -114,6 +114,7 @@
 		"color-convert": "^2.0.1",
 		"core-js": "^3.15.2",
 		"d3-hierarchy": "^2.0.0",
+		"eslint-plugin-unused-imports": "^2.0.0",
 		"font-awesome": "^4.7.0",
 		"hotkeys-js": "^3.8.2",
 		"ignore": "^5.1.8",
