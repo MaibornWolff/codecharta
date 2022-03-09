@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Show amount of added and removed files in attribute sidebar when delta mode is enabled and a folder is selected [#2701](https://github.com/MaibornWolff/codecharta/pull/2701/files)
-    ![xs](https://user-images.githubusercontent.com/72517530/157202594-36c8be4d-995c-49f5-b4b1-7880351c6289.png)
+    ![xs](https://user-images.githubusercontent.com/72517530/157468180-4e2d052b-63b8-4040-bb22-b633a24d3b8a.png)
 
 ## [1.92.1] - 2022-03-07
 
