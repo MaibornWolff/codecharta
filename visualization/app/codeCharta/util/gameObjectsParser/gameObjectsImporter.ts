@@ -1,5 +1,5 @@
 import md5 from "md5"
-import { AttributeTypes, CodeMapNode, Edge, FixedPosition, NodeType } from "../../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, FixedPosition, NodeType } from "../../codeCharta.model"
 import { ExportWrappedCCFile } from "../../codeCharta.api.model"
 
 export interface GameObject {
@@ -18,15 +18,16 @@ export interface Cycle {
 	from: string
 	to: string
 }
+
 const BASE_NAME = "base"
 
-export function parseGameObjectsFile(data) {
+export function parseGameObjectsFile(data): ExportWrappedCCFile {
 	const { gameObjectPositions: gameObjects, cycles = [] } = JSON.parse(data)
 
-	const ccJson: ExportWrappedCCFile = {
+	const codeChartaJson: ExportWrappedCCFile = {
 		checksum: "",
 		data: {
-			projectName: "ScriptProjectName",
+			projectName: "GameObjects",
 			fileChecksum: "",
 			apiVersion: "1.3",
 			nodes: []
@@ -34,31 +35,30 @@ export function parseGameObjectsFile(data) {
 	}
 
 	const nodes = [{ name: BASE_NAME, type: NodeType.FOLDER, attributes: {}, children: [] }]
-	fixGameObjectNames(gameObjects)
+	fixGameObjectsNames(gameObjects)
 
-	const rootGameObjectPosition = gameObjects.find(gameObject => gameObject.name === "root")
-	gameObjects.push(createBaseGameObjectPosition(rootGameObjectPosition))
+	const rootGameObject = gameObjects.find(gameObject => gameObject.name === "root")
+	const baseGameObject = createBaseGameObjectPosition(rootGameObject.scale)
+	gameObjects.push(baseGameObject)
 
-	for (const gameObjectPosition of gameObjects) {
-		const nodeNames = gameObjectPosition.name.split(".")
+	for (const gameObject of gameObjects) {
+		const nodeNames = gameObject.name.split(".")
 		if (nodeNames[0] !== BASE_NAME) {
-			addNodeRecursively(nodeNames, nodes[0].children, BASE_NAME, gameObjectPosition, gameObjects, rootGameObjectPosition)
+			addNodeRecursively(nodeNames, nodes[0].children, BASE_NAME, gameObject, gameObjects, rootGameObject)
 		}
 	}
 
-	ccJson.data.nodes = nodes
-	ccJson.data.edges = cycles.map(cycle => createEdge(cycle))
-	ccJson.data.attributeTypes = createAttributeTypes()
-	ccJson.checksum = md5(JSON.stringify(ccJson.data))
-	return ccJson
+	codeChartaJson.data.nodes = nodes
+	codeChartaJson.data.edges = cycles.map(cycle => createEdge(cycle))
+	codeChartaJson.data.attributeTypes = createAttributeTypes()
+	codeChartaJson.checksum = md5(JSON.stringify(codeChartaJson.data))
+	return codeChartaJson
 }
 
-function fixGameObjectNames(gameObjects: GameObject[]) {
-	for (const gameObjectPosition of gameObjects) {
-		if (!gameObjectPosition.name.startsWith("root")) {
-			gameObjectPosition.name = gameObjectPosition.name.startsWith(".")
-				? `root${gameObjectPosition.name}`
-				: `root.${gameObjectPosition.name}`
+function fixGameObjectsNames(gameObjects: GameObject[]) {
+	for (const gameObject of gameObjects) {
+		if (!gameObject.name.startsWith("root")) {
+			gameObject.name = gameObject.name.startsWith(".") ? `root${gameObject.name}` : `root.${gameObject.name}`
 		}
 	}
 }
@@ -83,17 +83,16 @@ function addNodeRecursively(
 		attributes: {}
 	}
 
-	if (!isFile(nodeNames)) {
-		node.children = []
-	} else {
+	if (isFile(nodeNames)) {
 		node = wrapFileInAFolder(nodeName, node, gameObject)
+	} else {
+		node.children = []
 	}
 
-	// add or select node if found
-	if (!nodeAlreadyExists(nodes, nodeName)) {
-		nodes.push(node)
-	} else {
+	if (nodeAlreadyExists(nodes, nodeName)) {
 		node = nodes.find(singleNode => singleNode.name === nodeName)
+	} else {
+		nodes.push(node)
 	}
 
 	const parentGameObject = gameObjects.find(gameObject => gameObject.name === parentNodeName)
@@ -121,16 +120,17 @@ function calculateFixedFolderPosition(
 	node: CodeMapNode,
 	parentGameObject: GameObject,
 	childGameObject: GameObject,
-	rootGameObjectPositionName: string
+	rootGameObjectName: string
 ): FixedPosition {
 	let position: FixedPosition
 
 	if (node.type === NodeType.FOLDER) {
-		// translate the center point from the middle of the gameObject to the corner as needed for fixedPosition
+		// translate the center point from the middle of the gameObject to the corner (needed for fixedPosition)
 		const cornerXofParent = parentGameObject.position.x - parentGameObject.scale.x / 2
 		const cornerZofParent = parentGameObject.position.z - parentGameObject.scale.z / 2
 		const cornerXofChild = childGameObject.position.x - childGameObject.scale.x / 2
 		const cornerZofChild = childGameObject.position.z - childGameObject.scale.z / 2
+
 		const top = round(((cornerXofChild - cornerXofParent) / parentGameObject.scale.x) * 100, 2)
 		const left = round(((cornerZofChild - cornerZofParent) / parentGameObject.scale.z) * 100, 2)
 		const width = round((childGameObject.scale.z / parentGameObject.scale.z) * 100, 2)
@@ -138,7 +138,7 @@ function calculateFixedFolderPosition(
 		position = { left, top, width, height }
 	}
 
-	if (node.name === rootGameObjectPositionName) {
+	if (node.name === rootGameObjectName) {
 		position = getCenteredRootPosition(position)
 	}
 
@@ -157,15 +157,18 @@ function getCenteredRootPosition(rootGameObject: FixedPosition): FixedPosition {
 	return centeredPosition
 }
 
-function addWrappedFolderName(filePath: string): string {
+function wrapFilePath(filePath: string): string {
+	const filePathWithSlash = filePath.replace(/\./g, "/")
 	const splitFilePath = filePath.split(".")
-	return `/${BASE_NAME}/${filePath.replace(/\./g, "/")}/${splitFilePath.slice(-1)}`
+	const fileName = splitFilePath.slice(-1)
+	// add file name again to the end because the file has been wrapped in a folder. (with the same name)
+	return `/${BASE_NAME}/${filePathWithSlash}/${fileName}`
 }
 
 function createEdge(cycle: Cycle): Edge {
 	return {
-		fromNodeName: addWrappedFolderName(cycle.from),
-		toNodeName: addWrappedFolderName(cycle.to),
+		fromNodeName: wrapFilePath(cycle.from),
+		toNodeName: wrapFilePath(cycle.to),
 		attributes: {
 			coupling: 100
 		}
@@ -175,13 +178,13 @@ function createEdge(cycle: Cycle): Edge {
 function createAttributeTypes(): AttributeTypes {
 	return {
 		edges: {
-			coupling: "relative"
+			coupling: AttributeTypeValue.relative
 		}
-	} as AttributeTypes
+	}
 }
 
-function createBaseGameObjectPosition(rootGameObjectPosition): GameObject {
-	const longEdge = Math.max(rootGameObjectPosition.scale.x, rootGameObjectPosition.scale.z)
+function createBaseGameObjectPosition(rootGameObjectScale: Coordinates): GameObject {
+	const longEdge = Math.max(rootGameObjectScale.x, rootGameObjectScale.z)
 	return {
 		name: BASE_NAME,
 		position: {
