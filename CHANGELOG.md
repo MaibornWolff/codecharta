@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Close search panel and ribbon bar dropdowns on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
 
+### Fixed 🐞
+
+-   Fix GameObjects importer edge cases [#2705](https://github.com/MaibornWolff/codecharta/pull/2705)
+
 ## [1.92.1] - 2022-03-07
 
 ### Fixed 🐞
