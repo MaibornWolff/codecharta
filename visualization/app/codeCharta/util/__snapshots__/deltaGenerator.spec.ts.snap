@@ -3,6 +3,10 @@
 exports[`deltaGenerator getDeltaFile should result in expected deltaFiles 1`] = `
 Object {
   "attributes": Object {},
+  "changedFiles": Object {
+    "added": 0,
+    "removed": 0,
+  },
   "children": Array [
     Object {
       "attributes": Object {
@@ -10,11 +14,13 @@ Object {
         "mcc": 1,
         "rloc": 20,
       },
+      "changedFiles": Object {
+        "added": 0,
+        "removed": 0,
+      },
       "deltas": Object {
-        "addedFiles": 0,
         "functions": 0,
         "mcc": 0,
-        "removedFiles": 0,
         "rloc": -80,
       },
       "isExcluded": false,
@@ -30,11 +36,13 @@ Object {
         "mcc": 5,
         "rloc": 10,
       },
+      "changedFiles": Object {
+        "added": 1,
+        "removed": 0,
+      },
       "deltas": Object {
-        "addedFiles": 1,
         "functions": 11,
         "mcc": 5,
-        "removedFiles": 0,
         "rloc": 10,
       },
       "isExcluded": false,
@@ -46,6 +54,10 @@ Object {
     },
     Object {
       "attributes": Object {},
+      "changedFiles": Object {
+        "added": 0,
+        "removed": 0,
+      },
       "children": Array [
         Object {
           "attributes": Object {
@@ -54,12 +66,14 @@ Object {
             "more": 20,
             "rloc": 30,
           },
+          "changedFiles": Object {
+            "added": 0,
+            "removed": 0,
+          },
           "deltas": Object {
-            "addedFiles": 0,
             "functions": 0,
             "mcc": 0,
             "more": 20,
-            "removedFiles": 0,
             "rloc": 0,
           },
           "isExcluded": false,
@@ -73,11 +87,13 @@ Object {
             "functions": 1000,
             "rloc": 70,
           },
+          "changedFiles": Object {
+            "added": 0,
+            "removed": 0,
+          },
           "deltas": Object {
-            "addedFiles": 0,
             "functions": 0,
             "mcc": -10,
-            "removedFiles": 0,
             "rloc": 0,
           },
           "isExcluded": false,
@@ -92,11 +108,13 @@ Object {
             "mcc": 1,
             "rloc": 20,
           },
+          "changedFiles": Object {
+            "added": 1,
+            "removed": 0,
+          },
           "deltas": Object {
-            "addedFiles": 1,
             "functions": 10,
             "mcc": 1,
-            "removedFiles": 0,
             "rloc": 20,
           },
           "isExcluded": false,
@@ -107,10 +125,7 @@ Object {
           "type": "File",
         },
       ],
-      "deltas": Object {
-        "addedFiles": 0,
-        "removedFiles": 0,
-      },
+      "deltas": Object {},
       "isExcluded": false,
       "isFlattened": false,
       "name": "Parent Leaf",
@@ -118,10 +133,7 @@ Object {
       "type": "Folder",
     },
   ],
-  "deltas": Object {
-    "addedFiles": 0,
-    "removedFiles": 0,
-  },
+  "deltas": Object {},
   "isExcluded": false,
   "isFlattened": false,
   "name": "root",
@@ -133,6 +145,10 @@ Object {
 exports[`deltaGenerator golden test 1`] = `
 Object {
   "attributes": Object {},
+  "changedFiles": Object {
+    "added": 0,
+    "removed": 0,
+  },
   "children": Array [
     Object {
       "attributes": Object {
@@ -140,11 +156,13 @@ Object {
         "mcc": 1,
         "rloc": 20,
       },
+      "changedFiles": Object {
+        "added": 0,
+        "removed": 0,
+      },
       "deltas": Object {
-        "addedFiles": 0,
         "functions": 0,
         "mcc": 0,
-        "removedFiles": 0,
         "rloc": -80,
       },
       "isExcluded": false,
@@ -160,11 +178,13 @@ Object {
         "mcc": 5,
         "rloc": 10,
       },
+      "changedFiles": Object {
+        "added": 1,
+        "removed": 0,
+      },
       "deltas": Object {
-        "addedFiles": 1,
         "functions": 11,
         "mcc": 5,
-        "removedFiles": 0,
         "rloc": 10,
       },
       "isExcluded": false,
@@ -176,6 +196,10 @@ Object {
     },
     Object {
       "attributes": Object {},
+      "changedFiles": Object {
+        "added": 0,
+        "removed": 0,
+      },
       "children": Array [
         Object {
           "attributes": Object {
@@ -184,12 +208,14 @@ Object {
             "more": 20,
             "rloc": 30,
           },
+          "changedFiles": Object {
+            "added": 0,
+            "removed": 0,
+          },
           "deltas": Object {
-            "addedFiles": 0,
             "functions": 0,
             "mcc": 0,
             "more": 20,
-            "removedFiles": 0,
             "rloc": 0,
           },
           "isExcluded": false,
@@ -203,11 +229,13 @@ Object {
             "functions": 1000,
             "rloc": 70,
           },
+          "changedFiles": Object {
+            "added": 0,
+            "removed": 0,
+          },
           "deltas": Object {
-            "addedFiles": 0,
             "functions": 0,
             "mcc": -10,
-            "removedFiles": 0,
             "rloc": 0,
           },
           "isExcluded": false,
@@ -222,11 +250,13 @@ Object {
             "mcc": 1,
             "rloc": 20,
           },
+          "changedFiles": Object {
+            "added": 1,
+            "removed": 0,
+          },
           "deltas": Object {
-            "addedFiles": 1,
             "functions": 10,
             "mcc": 1,
-            "removedFiles": 0,
             "rloc": 20,
           },
           "isExcluded": false,
@@ -237,10 +267,7 @@ Object {
           "type": "File",
         },
       ],
-      "deltas": Object {
-        "addedFiles": 0,
-        "removedFiles": 0,
-      },
+      "deltas": Object {},
       "isExcluded": false,
       "isFlattened": false,
       "name": "Parent Leaf",
@@ -249,18 +276,28 @@ Object {
     },
     Object {
       "attributes": Object {},
+      "changedFiles": Object {
+        "added": 0,
+        "removed": 0,
+      },
       "children": Array [
         Object {
           "attributes": Object {},
+          "changedFiles": Object {
+            "added": 0,
+            "removed": 0,
+          },
           "children": Array [
             Object {
               "attributes": Object {
                 "monster": 666,
               },
+              "changedFiles": Object {
+                "added": 1,
+                "removed": 0,
+              },
               "deltas": Object {
-                "addedFiles": 1,
                 "monster": 666,
-                "removedFiles": 0,
               },
               "isExcluded": false,
               "isFlattened": false,
@@ -272,9 +309,11 @@ Object {
               "attributes": Object {
                 "special": 42,
               },
+              "changedFiles": Object {
+                "added": 0,
+                "removed": 1,
+              },
               "deltas": Object {
-                "addedFiles": 0,
-                "removedFiles": 1,
                 "special": -42,
               },
               "isExcluded": false,
@@ -287,9 +326,11 @@ Object {
               "attributes": Object {
                 "special": 10,
               },
+              "changedFiles": Object {
+                "added": 0,
+                "removed": 1,
+              },
               "deltas": Object {
-                "addedFiles": 0,
-                "removedFiles": 1,
                 "special": -10,
               },
               "isExcluded": false,
@@ -299,10 +340,7 @@ Object {
               "type": "File",
             },
           ],
-          "deltas": Object {
-            "addedFiles": 0,
-            "removedFiles": 0,
-          },
+          "deltas": Object {},
           "isExcluded": false,
           "isFlattened": false,
           "name": "special",
@@ -310,10 +348,7 @@ Object {
           "type": "Folder",
         },
       ],
-      "deltas": Object {
-        "addedFiles": 0,
-        "removedFiles": 0,
-      },
+      "deltas": Object {},
       "isExcluded": false,
       "isFlattened": false,
       "name": "onlyA",
@@ -321,10 +356,7 @@ Object {
       "type": "Folder",
     },
   ],
-  "deltas": Object {
-    "addedFiles": 0,
-    "removedFiles": 0,
-  },
+  "deltas": Object {},
   "isExcluded": false,
   "isFlattened": false,
   "name": "root",

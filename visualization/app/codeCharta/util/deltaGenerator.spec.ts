@@ -99,7 +99,7 @@ describe("deltaGenerator", () => {
 	})
 
 	it("should detect added and removed files and add result to delta attributes", () => {
-		const actualAmountOfChangedFiles: KeyValuePair = { addedFiles: 0, removedFiles: 0 }
+		const actualAmountOfChangedFiles: KeyValuePair = { added: 0, removed: 0 }
 		const referenceMap = { ...TEST_DELTA_MAP_C }
 		const comparisonMap = { ...TEST_DELTA_MAP_D }
 		NodeDecorator.decorateMapWithPathAttribute(referenceMap)
@@ -108,11 +108,11 @@ describe("deltaGenerator", () => {
 		const actualDeltaMap = DeltaGenerator.getDeltaFile(referenceMap, comparisonMap)
 
 		for (const { data } of hierarchy(actualDeltaMap.map)) {
-			actualAmountOfChangedFiles.addedFiles += data.deltas.addedFiles
-			actualAmountOfChangedFiles.removedFiles += data.deltas.removedFiles
+			actualAmountOfChangedFiles.added += data.changedFiles.added
+			actualAmountOfChangedFiles.removed += data.changedFiles.removed
 		}
 
-		expect(actualAmountOfChangedFiles).toEqual({ addedFiles: 5, removedFiles: 5 })
+		expect(actualAmountOfChangedFiles).toEqual({ added: 5, removed: 5 })
 	})
 
 	it("should sum exported file size of the comparison and reference File", () => {

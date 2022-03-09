@@ -35,9 +35,9 @@ describe("nodePathComponent", () => {
 			children: [{}] as CodeMapNode[],
 			path: "some/folder",
 			attributes: { unary: 2 },
-			deltas: {
-				addedFiles: 1,
-				removedFiles: 2
+			changedFiles: {
+				added: 1,
+				removed: 2
 			}
 		}
 		selectedNodeSelectorMock.mockImplementation(() => node)
@@ -52,9 +52,9 @@ describe("nodePathComponent", () => {
 			children: [{}] as CodeMapNode[],
 			path: "some/folder",
 			attributes: { unary: 2 },
-			deltas: {
-				addedFiles: 1,
-				removedFiles: 2
+			changedFiles: {
+				added: 1,
+				removed: 2
 			}
 		}
 		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
@@ -62,6 +62,6 @@ describe("nodePathComponent", () => {
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
 
-		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ2)")
+		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2)")
 	})
 })

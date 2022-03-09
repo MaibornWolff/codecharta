@@ -386,8 +386,8 @@ describe("nodeDecorator", () => {
 			const actualRootNode = actualDeltaMapWithAggregatedAttributes.find(node => node.data.name === "root")
 
 			expect(actualRootNode.data.deltas.rloc).toBe(295)
-			expect(actualRootNode.data.deltas.addedFiles).toBe(1)
-			expect(actualRootNode.data.deltas.removedFiles).toBe(2)
+			expect(actualRootNode.data.changedFiles.added).toBe(1)
+			expect(actualRootNode.data.changedFiles.removed).toBe(3)
 			expect(actualRootNode.children[0].data.deltas.rloc).toBe(300)
 		})
 

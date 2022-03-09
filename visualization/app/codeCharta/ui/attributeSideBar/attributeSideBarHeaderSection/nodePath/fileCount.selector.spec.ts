@@ -6,13 +6,13 @@ describe("getFileCount", () => {
 		expect(getFileCount(node)).toBe(undefined)
 	})
 
-	it("should return file count object with default values when it receives a building with no attributes and deltas", () => {
+	it("should return file count object with default values when it receives a building with no attributes and changed files", () => {
 		const node = {}
 		expect(getFileCount(node)).toEqual({ fileCount: 0, added: 0, removed: 0 })
 	})
 
-	it("should return file count object that has the same values as the value assignments of the received attributes and deltas", () => {
-		const node = { attributes: { unary: 4 }, deltas: { addedFiles: 2, removedFiles: 1 } }
+	it("should return file count object that has the same values as the value assignments of the received attributes and changed files", () => {
+		const node = { attributes: { unary: 4 }, changedFiles: { added: 2, removed: 1 } }
 		expect(getFileCount(node)).toEqual({ fileCount: 4, added: 2, removed: 1 })
 	})
 })
