@@ -4,11 +4,9 @@ import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFi
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
-import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
@@ -59,10 +57,8 @@ angular
 	.service(camelCase(MetricDataService.name), MetricDataService)
 	.service(camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(camelCase(NodeMetricDataService.name), NodeMetricDataService)
-	.service(camelCase(PanelSelectionService.name), PanelSelectionService)
 	.service(camelCase(CameraTargetService.name), CameraTargetService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
-	.service(camelCase(SearchPanelModeService.name), SearchPanelModeService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(FilesService.name), FilesService)
 	.service(camelCase(MapSizeService.name), MapSizeService)

@@ -1,50 +1,42 @@
 import "./searchPanel.component.scss"
-import { IRootScopeService } from "angular"
-import { SearchPanelMode } from "../../codeCharta.model"
-import { StoreService } from "../../state/store.service"
-import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
-import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
-import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 
-export class SearchPanelController implements SearchPanelModeSubscriber {
+export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
+
+export class SearchPanelController {
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
-		isExpanded: boolean
 	} = {
-		searchPanelMode: null,
-		isExpanded: false
+		searchPanelMode: "minimized"
 	}
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private codeChartaMouseEventService: CodeChartaMouseEventService
-	) {
+	constructor() {
 		"ngInject"
-		SearchPanelModeService.subscribe(this.$rootScope, this)
-		this.onSearchPanelModeChanged(SearchPanelMode.minimized)
+		document.addEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
 	}
 
-	onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
-		if (searchPanelMode === SearchPanelMode.minimized) {
-			this._viewModel.isExpanded = false
-		} else {
-			this._viewModel.searchPanelMode = searchPanelMode
-			this._viewModel.isExpanded = true
-		}
-	}
-
-	toggle() {
-		if (this._viewModel.isExpanded) {
-			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
-		} else {
-			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
-		}
-		this.codeChartaMouseEventService.closeComponentsExceptCurrent(this.codeChartaMouseEventService.closeSearchPanel)
+	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
+		this._viewModel.searchPanelMode = this._viewModel.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode
 	}
 
 	openSearchPanel() {
-		this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
+		this._viewModel.searchPanelMode = "treeView"
+	}
+
+	closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
+		if (this._viewModel.searchPanelMode !== "minimized" && this.isOutside(event)) {
+			this._viewModel.searchPanelMode = "minimized"
+		}
+	}
+
+	private isOutside(event: MouseEvent) {
+		return event
+			.composedPath()
+			.every(
+				element =>
+					element["nodeName"] !== "SEARCH-PANEL-COMPONENT" &&
+					element["nodeName"] !== "COLOR-CHROME" &&
+					element["id"] !== "codemap-context-menu"
+			)
 	}
 }
 

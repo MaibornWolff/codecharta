@@ -1,9 +1,11 @@
 <range-slider-component></range-slider-component>
 
 <md-select ng-model="$ctrl._viewModel.colorMode" ng-change="$ctrl.applyColorMode()">
-	<md-option value="absolute"> Absolute </md-option>
-	<md-option value="weightedGradient"> Weighted Gradient </md-option>
-	<md-option value="trueGradient"> True Gradient </md-option>
+	<div ng-mousedown="$event.stopPropagation()">
+		<md-option value="absolute"> Absolute </md-option>
+		<md-option value="weightedGradient"> Weighted Gradient </md-option>
+		<md-option value="trueGradient"> True Gradient </md-option>
+	</div>
 </md-select>
 
 <reset-settings-button-component

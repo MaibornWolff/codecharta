@@ -45,7 +45,6 @@ export class MapTreeViewLevelComponent implements OnInit {
 	}
 
 	openNodeContextMenu = $event => {
-		$event.stopPropagation()
 		$event.preventDefault()
 
 		this.store.dispatch(

@@ -9,8 +9,6 @@ import { ExperimentalFeaturesEnabledActions } from "../enableExperimentalFeature
 import { IsAttributeSideBarVisibleActions } from "../isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { IsLoadingFileActions } from "../isLoadingFile/isLoadingFile.actions"
 import { PresentationModeActions } from "../isPresentationMode/isPresentationMode.actions"
-import { PanelSelectionActions } from "../panelSelection/panelSelection.actions"
-import { SearchPanelModeActions } from "../searchPanelMode/searchPanelMode.actions"
 import { SortingOrderAscendingActions } from "../sortingOrderAscending/sortingOrderAscending.actions"
 import { IsLoadingMapAction, IsLoadingMapActions, setIsLoadingMap } from "./isLoadingMap.actions"
 import { RightClickedNodeDataActions } from "../../appStatus/rightClickedNodeData/rightClickedNodeData.actions"
@@ -21,10 +19,8 @@ const actionsToExclude = [
 	IsLoadingMapActions,
 	IsLoadingFileActions,
 	SortingOrderAscendingActions,
-	SearchPanelModeActions,
 	SortingOptionActions,
 	IsAttributeSideBarVisibleActions,
-	PanelSelectionActions,
 	PresentationModeActions,
 	ExperimentalFeaturesEnabledActions,
 	IsEdgeMetricVisibleActions,

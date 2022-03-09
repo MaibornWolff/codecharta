@@ -1,10 +1,6 @@
 import "./ribbonBar.component.scss"
 import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
-import { EdgeMetricData, PanelSelection } from "../../codeCharta.model"
-import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
-import { PanelSelectionService, PanelSelectionSubscriber } from "../../state/store/appSettings/panelSelection/panelSelection.service"
-import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
+import { EdgeMetricData } from "../../codeCharta.model"
 import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
@@ -14,29 +10,25 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { FilesService } from "../../state/store/files/files.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
-export class RibbonBarController implements PanelSelectionSubscriber, ExperimentalFeaturesEnabledSubscriber {
-	constructor(
-		private storeService: StoreService,
-		private $rootScope: IRootScopeService,
-		private codeChartaMouseEventService: CodeChartaMouseEventService
-	) {
+type PanelSelection = "NONE" | "AREA_PANEL_OPEN" | "HEIGHT_PANEL_OPEN" | "COLOR_PANEL_OPEN" | "EDGE_PANEL_OPEN"
+
+export class RibbonBarController implements ExperimentalFeaturesEnabledSubscriber {
+	constructor(private $rootScope: IRootScopeService) {
 		"ngInject"
-		PanelSelectionService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
+		document.addEventListener("mousedown", this.closePanelSelectionOnOutsideClick)
 	}
 
 	private _viewModel: {
 		panelSelection: PanelSelection
-		panelSelectionValues: typeof PanelSelection
 		experimentalFeaturesEnabled: boolean
 		isDeltaState: boolean
 		hasEdgeMetric: boolean
 		files: FileState[]
 	} = {
-		panelSelection: PanelSelection.NONE,
-		panelSelectionValues: PanelSelection,
+		panelSelection: "NONE",
 		experimentalFeaturesEnabled: false,
 		isDeltaState: null,
 		hasEdgeMetric: false,
@@ -52,25 +44,42 @@ export class RibbonBarController implements PanelSelectionSubscriber, Experiment
 		this._viewModel.isDeltaState = isDeltaState(files)
 	}
 
-	onPanelSelectionChanged(panelSelection: PanelSelection) {
-		this._viewModel.panelSelection = panelSelection
-	}
-
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
 	}
 
-	onClick() {
-		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
+	updatePanelSelection(panelSelection: PanelSelection) {
+		this._viewModel.panelSelection = this._viewModel.panelSelection === panelSelection ? "NONE" : panelSelection
 	}
 
-	toggle(panelSelection: PanelSelection) {
-		;(document.activeElement as HTMLElement).blur()
+	private closePanelSelectionOnOutsideClick = (event: MouseEvent) => {
+		if (this._viewModel.panelSelection !== "NONE" && this.isOutside(event)) {
+			this._viewModel.panelSelection = "NONE"
+		}
+	}
 
-		const newSelection = this._viewModel.panelSelection !== panelSelection ? panelSelection : PanelSelection.NONE
-		this.storeService.dispatch(setPanelSelection(newSelection))
-
-		this.codeChartaMouseEventService.closeComponentsExceptCurrent(this.codeChartaMouseEventService.closeRibbonBarSections)
+	private panelSelectionComponents = [
+		"CC-AREA-SETTINGS-PANEL",
+		"HEIGHT-SETTINGS-PANEL-COMPONENT",
+		"COLOR-SETTINGS-PANEL-COMPONENT",
+		"CC-EDGE-SETTINGS-PANEL",
+		"COLOR-CHROME"
+	]
+	private panelSectionTogglerTitles = [
+		"Show area metric settings",
+		"Show height metric settings",
+		"Show color metric settings",
+		"Show edge metric settings"
+	]
+	private isOutside(event: MouseEvent) {
+		return event
+			.composedPath()
+			.every(
+				element =>
+					!this.panelSelectionComponents.includes(element["nodeName"]) &&
+					!this.panelSectionTogglerTitles.includes(element["title"]) &&
+					element["id"] !== "codemap-context-menu"
+			)
 	}
 }
 

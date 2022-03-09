@@ -9,13 +9,11 @@ import debounce from "lodash.debounce"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { SearchPanelModeActions } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { fileStatesAvailable } from "../../model/files/files.helper"
-import { PanelSelectionActions } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 import { PresentationModeActions } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
@@ -75,11 +73,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			!isActionOfType(actionType, ScalingActions) &&
 			!isActionOfType(actionType, IsLoadingMapActions) &&
 			!isActionOfType(actionType, IsLoadingFileActions) &&
-			!isActionOfType(actionType, SearchPanelModeActions) &&
 			!isActionOfType(actionType, SortingOrderAscendingActions) &&
 			!isActionOfType(actionType, SortingOptionActions) &&
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
-			!isActionOfType(actionType, PanelSelectionActions) &&
 			!isActionOfType(actionType, PresentationModeActions) &&
 			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions) &&
 			!isActionOfType(actionType, HoveredBuildingPathActions) &&
