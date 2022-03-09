@@ -108,8 +108,8 @@ describe("deltaGenerator", () => {
 		const actualDeltaMap = DeltaGenerator.getDeltaFile(referenceMap, comparisonMap)
 
 		for (const { data } of hierarchy(actualDeltaMap.map)) {
-			actualAmountOfChangedFiles.added += data.changedFiles.added
-			actualAmountOfChangedFiles.removed += data.changedFiles.removed
+			actualAmountOfChangedFiles.added += data.fileCount.added
+			actualAmountOfChangedFiles.removed += data.fileCount.removed
 		}
 
 		expect(actualAmountOfChangedFiles).toEqual({ added: 5, removed: 5 })

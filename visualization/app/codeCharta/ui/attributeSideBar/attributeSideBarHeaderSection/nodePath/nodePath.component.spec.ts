@@ -35,7 +35,7 @@ describe("nodePathComponent", () => {
 			children: [{}] as CodeMapNode[],
 			path: "some/folder",
 			attributes: { unary: 2 },
-			changedFiles: {
+			fileCount: {
 				added: 1,
 				removed: 2
 			}
@@ -52,7 +52,7 @@ describe("nodePathComponent", () => {
 			children: [{}] as CodeMapNode[],
 			path: "some/folder",
 			attributes: { unary: 2 },
-			changedFiles: {
+			fileCount: {
 				added: 1,
 				removed: 2
 			}

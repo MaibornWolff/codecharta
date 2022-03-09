@@ -385,8 +385,8 @@ describe("nodeDecorator", () => {
 			const actualDeltaMapWithAggregatedAttributes = hierarchy(deltaMap)
 
 			expect(actualDeltaMapWithAggregatedAttributes.data.deltas.rloc).toBe(295)
-			expect(actualDeltaMapWithAggregatedAttributes.data.changedFiles.added).toBe(1)
-			expect(actualDeltaMapWithAggregatedAttributes.data.changedFiles.removed).toBe(3)
+			expect(actualDeltaMapWithAggregatedAttributes.data.fileCount.added).toBe(1)
+			expect(actualDeltaMapWithAggregatedAttributes.data.fileCount.removed).toBe(3)
 			expect(actualDeltaMapWithAggregatedAttributes.children[0].data.deltas.rloc).toBe(300)
 		})
 

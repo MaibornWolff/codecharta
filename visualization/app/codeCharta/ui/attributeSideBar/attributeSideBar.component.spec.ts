@@ -61,14 +61,14 @@ describe("AttributeSideBarComponent", () => {
 		expect(isSideBarOpen).toBe(true)
 
 		const name = container.querySelector("a[class=node-link]").textContent
-		expect(name).toMatch("root/big leaf.ts")
+		await expect(name).toMatch("root/big leaf.ts")
 
 		const pathName = container.querySelector("cc-node-path").textContent
-		expect(pathName).toMatch("/root/big leaf")
+		await expect(pathName).toMatch("/root/big leaf")
 
 		const firstPrimaryMetricEntry = container.querySelector("cc-attribute-side-bar-primary-metric").textContent
 		const expectedPrimaryMetricTextContent = "20 a"
-		expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
+		await expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
 
 		const expectedSecondaryMetricTextContent = "15b"
 		const isSecondaryMetricInPrimaryMetricSection = container
@@ -76,7 +76,7 @@ describe("AttributeSideBarComponent", () => {
 			.textContent.includes(expectedSecondaryMetricTextContent)
 		expect(isSecondaryMetricInPrimaryMetricSection).toBe(false)
 		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics .metric-row").textContent
-		expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
+		await expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
 
 		expect(isAttributeTypeSelectorShown(container)).toBe(false)
 	})
@@ -86,12 +86,12 @@ describe("AttributeSideBarComponent", () => {
 		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
 		const firstPrimaryMetricEntry = container.querySelector("cc-attribute-side-bar-primary-metric").textContent
-		const expectedPrimaryMetricTextContent = /20\s+Δ1\s+a/
-		expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
+		const expectedPrimaryMetricTextContent = /20\s+Δ1.0\s+a/
+		await expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
 
-		const expectedSecondaryMetricTextContent = /15\s+Δ2\s+b/
+		const expectedSecondaryMetricTextContent = /15\s+Δ2.0\s+b/
 		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics .metric-row").textContent
-		expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
+		await expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
 	})
 
 	it("should display attribute type selectors for folders", async () => {
