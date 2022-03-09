@@ -84,7 +84,7 @@ export const NodeDecorator = {
 		// TODO: Combine decorateMap, decorateMapWithPathAttribute and this one and
 		// remove the Object.keys calls from then on. They are identical to the
 		// `nodeMetricData` and `edgeMetricData` names.
-		const attributeKeys = isDeltaState ? Object.keys(map.deltas ?? {}) : Object.keys(map.attributes)
+		const attributeKeys = Object.keys(map.attributes)
 
 		const edgeKeys = Object.keys(map.edgeAttributes)
 		hierarchy(map).eachAfter(function decorateNode({ data, parent }) {
@@ -109,8 +109,8 @@ export const NodeDecorator = {
 			}
 
 			if (isDeltaState && parent.data.changedFiles) {
-				parent.data.changedFiles.added += data.changedFiles.added ?? 0
-				parent.data.changedFiles.removed += data.changedFiles.removed ?? 0
+				parent.data.changedFiles.added += data.changedFiles.added
+				parent.data.changedFiles.removed += data.changedFiles.removed
 			}
 
 			for (const name of edgeKeys) {
