@@ -1,7 +1,7 @@
 export const TEST_GAMEOBJECTS_FILE = {
 	gameObjectPositions: [
 		{
-			name: "root.visualization.ui",
+			name: "visualization.ui",
 			position: {
 				x: 159.5,
 				y: 3.5,
@@ -14,7 +14,7 @@ export const TEST_GAMEOBJECTS_FILE = {
 			}
 		},
 		{
-			name: "root.visualization.packageLock",
+			name: "visualization.packageLock",
 			position: {
 				x: 82,
 				y: 5,
@@ -27,7 +27,7 @@ export const TEST_GAMEOBJECTS_FILE = {
 			}
 		},
 		{
-			name: "root.visualization",
+			name: ".visualization",
 			position: {
 				x: 84,
 				y: 2.5,
