@@ -1,11 +1,9 @@
 import { colorLabels } from "./colorLabels/colorLabels.reducer"
 import { showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
 import { showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
-import { panelSelection } from "./panelSelection/panelSelection.reducer"
 import { cameraTarget } from "./cameraTarget/cameraTarget.reducer"
 import { isAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.reducer"
 import { sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
-import { searchPanelMode } from "./searchPanelMode/searchPanelMode.reducer"
 import { isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
 import { isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
 import { mapColors } from "./mapColors/mapColors.reducer"
@@ -34,11 +32,9 @@ const appSettings = combineReducers({
 	colorLabels,
 	showMetricLabelNodeName,
 	showMetricLabelNameValue,
-	panelSelection,
 	cameraTarget,
 	isAttributeSideBarVisible,
 	sortingOrderAscending,
-	searchPanelMode,
 	isLoadingFile,
 	isLoadingMap,
 	mapColors,

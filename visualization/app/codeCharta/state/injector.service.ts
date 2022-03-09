@@ -5,13 +5,11 @@ import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFi
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
-import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { FilesService } from "./store/files/files.service"
-import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
@@ -53,13 +51,11 @@ export class InjectorService {
 		private colorLabelsService: ColorLabelsService,
 		private labelShowMetricValueService: LabelShowMetricValueService,
 		private labelShowNodeNameService: LabelShowNodeNameService,
-		private panelSelectionService: PanelSelectionService,
 		private metricDataService: MetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private cameraTargetService: CameraTargetService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		private searchPanelModeService: SearchPanelModeService,
 		private isLoadingFileService: IsLoadingFileService,
 		private filesService: FilesService,
 		private mapSizeService: MapSizeService,

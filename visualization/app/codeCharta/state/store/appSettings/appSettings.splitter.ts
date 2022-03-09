@@ -4,11 +4,9 @@ import { Vector3 } from "three"
 import { splitColorLabelsAction } from "./colorLabels/colorLabels.splitter"
 import { splitShowMetricLabelNodeNameAction } from "./showMetricLabelNodeName/showMetricLabelNodeName.splitter"
 import { splitShowMetricLabelNameValueAction } from "./showMetricLabelNameValue/showMetricLabelNameValue.splitter"
-import { splitPanelSelectionAction } from "./panelSelection/panelSelection.splitter"
 import { splitCameraTargetAction } from "./cameraTarget/cameraTarget.splitter"
 import { splitIsAttributeSideBarVisibleAction } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.splitter"
 import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
-import { splitSearchPanelModeAction } from "./searchPanelMode/searchPanelMode.splitter"
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
 import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
 import { splitMapColorsAction } from "./mapColors/mapColors.splitter"
@@ -40,10 +38,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 		actions.push(splitShowMetricLabelNameValueAction(payload.showMetricLabelNameValue))
 	}
 
-	if (payload.panelSelection !== undefined) {
-		actions.push(splitPanelSelectionAction(payload.panelSelection))
-	}
-
 	if (payload.cameraTarget !== undefined) {
 		actions.push(splitCameraTargetAction(payload.cameraTarget as Vector3))
 	}
@@ -54,10 +48,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.sortingOrderAscending !== undefined) {
 		actions.push(splitSortingOrderAscendingAction(payload.sortingOrderAscending))
-	}
-
-	if (payload.searchPanelMode !== undefined) {
-		actions.push(splitSearchPanelModeAction(payload.searchPanelMode))
 	}
 
 	if (payload.isLoadingFile !== undefined) {

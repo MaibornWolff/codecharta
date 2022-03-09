@@ -3,7 +3,6 @@ import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.mod
 import { defaultColorLabels } from "./colorLabels/colorLabels.actions"
 import { defaultShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { defaultShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { defaultPanelSelection } from "./panelSelection/panelSelection.actions"
 import { defaultIsAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
@@ -21,7 +20,6 @@ import { defaultResetIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/re
 import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
 import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
-import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
 import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
 import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { defaultLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
@@ -53,7 +51,6 @@ export const defaultAppSettings: AppSettings = {
 	colorLabels: defaultColorLabels,
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
-	panelSelection: defaultPanelSelection,
 	isAttributeSideBarVisible: defaultIsAttributeSideBarVisible,
 	amountOfTopLabels: defaultAmountOfTopLabels,
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
@@ -73,7 +70,6 @@ export const defaultAppSettings: AppSettings = {
 	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded,
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
-	searchPanelMode: defaultSearchPanelMode,
 	sortingOrderAscending: defaultSortingOrderAscending,
 	experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
 	screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
