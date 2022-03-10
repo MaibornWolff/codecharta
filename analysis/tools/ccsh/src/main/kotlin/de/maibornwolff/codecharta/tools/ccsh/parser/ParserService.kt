@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
+import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
+import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.CommandLine
 
 class ParserService {
@@ -29,8 +31,10 @@ class ParserService {
         }
 
         fun coordinateChosenParser(chosenParser: String) {
+            val args = emptyArray<String>()
+
             when (chosenParser) {
-                "check" -> Check.chooseInputFile()
+                "check" -> ValidationTool.main(args)
                 "merge" -> print("merge")
                 "edgefilter" -> print("edgefilter")
                 "modify" -> print("modify")
@@ -43,7 +47,7 @@ class ParserService {
                 "sourcecodeparser" -> print("sourcecodeparser")
                 "understandimport" -> print("understandimport")
                 "codemaatimport" -> print("codemaatimport")
-                "jasomeimport" -> print("jasomeimport")
+                "jasomeimport" -> JasomeImporter.main(args)
                 "tokeiimporter" -> print("tokeiimporter")
                 "rawtextparser" -> print("rawtextparser")
                 else -> {

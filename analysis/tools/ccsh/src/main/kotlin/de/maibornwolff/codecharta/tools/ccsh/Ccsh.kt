@@ -69,9 +69,7 @@ class Ccsh : Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
-
-            commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
-
+            commandLine.execute(*sanitizeArgs(args))
             checkFirstArgument(args, commandLine)
         }
 
