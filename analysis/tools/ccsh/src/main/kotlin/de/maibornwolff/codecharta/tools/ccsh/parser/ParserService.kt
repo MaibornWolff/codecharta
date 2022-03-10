@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
+import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.CommandLine
@@ -36,7 +37,7 @@ class ParserService {
             when (chosenParser) {
                 "check" -> ValidationTool.main(args)
                 "merge" -> print("merge")
-                "edgefilter" -> print("edgefilter")
+                "edgefilter" -> EdgeFilter.main(args)
                 "modify" -> print("modify")
                 "csvimport" -> print("csvimport")
                 "sonarimport" -> print("sonarimport")

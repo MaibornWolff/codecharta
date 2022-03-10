@@ -6,7 +6,7 @@ class UserDialog {
     companion object {
         fun generateDialog(args: Array<String>, commandLine: CommandLine): Int {
             if (args.isEmpty() || args[0] == "-h" || args[0] == "--help") {
-                println("Please type in the json file that has to be validated.")
+                println("Please type in the cc.json file that has to be validated.")
                 var input = readln()
                 val selectedArgs = arrayOf(checkFileForCorrectness(input))
                 return commandLine.execute(*selectedArgs)

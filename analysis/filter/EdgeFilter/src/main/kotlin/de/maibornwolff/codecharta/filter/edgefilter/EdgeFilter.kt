@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
+import de.maibornwolff.codecharta.filter.edgefilter.UserDialog.Companion.generateDialog
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
@@ -39,7 +40,8 @@ class EdgeFilter : Callable<Void?> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(EdgeFilter(), System.out, *args)
+            val commandLine = CommandLine(EdgeFilter())
+            generateDialog(args, commandLine)
         }
     }
 }
