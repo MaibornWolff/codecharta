@@ -16,18 +16,14 @@ class UserDialog {
                 val isDefaultName: Boolean = KInquirer.promptConfirm(message = "Do you want to use $outputName as name for the output file?", default = true)
 
                 if (!isDefaultName) {
-                    outputName = getCustomOutputFilename()
+                    println("Please type in the name for the output file.")
+                    outputName = readln()
                 }
 
                 val selectedArgs = arrayOf(checkedFile, "-o $outputName")
                 return commandLine.execute(*selectedArgs)
             }
             return commandLine.execute(*args)
-        }
-
-        private fun getCustomOutputFilename() : String {
-            println("Please type in the name for the output file.")
-            return readln()
         }
 
         private fun checkFileForCorrectness(inputFile: String): String {
