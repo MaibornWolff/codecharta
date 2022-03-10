@@ -1238,6 +1238,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 	name: "root",
 	attributes: {},
 	deltas: {},
+	fileCount: { added: 0, removed: 0 },
 	type: NodeType.FOLDER,
 	path: "/root",
 	isExcluded: false,
@@ -1249,6 +1250,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			deltas: { rloc: 300, functions: -15, mcc: 12 },
+			fileCount: { added: 0, removed: 1 },
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -1258,6 +1260,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 120, functions: 20, mcc: 2 },
 			deltas: { rloc: -150, functions: 9, mcc: 33 },
+			fileCount: { added: 0, removed: 1 },
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -1266,6 +1269,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			type: NodeType.FOLDER,
 			attributes: {},
 			deltas: {},
+			fileCount: { added: 0, removed: 0 },
 			path: "/root/Parent Leaf",
 			isExcluded: false,
 			isFlattened: false,
@@ -1276,6 +1280,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/small leaf.json",
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
 					deltas: { rloc: -55, functions: 38, mcc: -40 },
+					fileCount: { added: 0, removed: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
@@ -1285,6 +1290,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/other small leaf.json",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
 					deltas: { rloc: 200, functions: -27, mcc: 65 },
+					fileCount: { added: 1, removed: 0 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -1772,7 +1778,7 @@ export const STATE: State = {
 			negative: "#820E0E",
 			selected: "#EB8319",
 			defaultC: "#89ACB4",
-			positiveDelta: "#69FF40",
+			positiveDelta: "#64d051",
 			negativeDelta: "#ff0E0E",
 			base: "#666666",
 			flat: "#AAAAAA",
@@ -1838,7 +1844,7 @@ export const DEFAULT_STATE: State = {
 			negativeDelta: "#ff0E0E",
 			neutral: "#ddcc00",
 			positive: "#69AE40",
-			positiveDelta: "#69FF40",
+			positiveDelta: "#64d051",
 			selected: "#EB8319",
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",

@@ -24,7 +24,7 @@ export const defaultMapColors: MapColors = {
 	negative: "#820E0E",
 	selected: "#EB8319",
 	defaultC: "#89ACB4",
-	positiveDelta: "#69FF40",
+	positiveDelta: "#64d051",
 	negativeDelta: "#ff0E0E",
 	base: "#666666",
 	flat: "#AAAAAA",

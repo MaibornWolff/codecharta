@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Show amount of added and removed files in attribute sidebar when delta mode is enabled and a folder is selected [#2701](https://github.com/MaibornWolff/codecharta/pull/2701/files)
+    ![xs](https://user-images.githubusercontent.com/72517530/157468180-4e2d052b-63b8-4040-bb22-b633a24d3b8a.png)
+
 ### Changed
 
 -   Close search panel and ribbon bar dropdowns on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)

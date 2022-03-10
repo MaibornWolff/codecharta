@@ -85,6 +85,7 @@ export const NodeDecorator = {
 		// remove the Object.keys calls from then on. They are identical to the
 		// `nodeMetricData` and `edgeMetricData` names.
 		const attributeKeys = Object.keys(map.attributes)
+
 		const edgeKeys = Object.keys(map.edgeAttributes)
 		hierarchy(map).eachAfter(function decorateNode({ data, parent }) {
 			// skip root
@@ -105,6 +106,11 @@ export const NodeDecorator = {
 						parent.data.deltas[name] += data.deltas[name] ?? 0
 					}
 				}
+			}
+
+			if (isDeltaState && parent.data.fileCount) {
+				parent.data.fileCount.added += data.fileCount.added
+				parent.data.fileCount.removed += data.fileCount.removed
 			}
 
 			for (const name of edgeKeys) {

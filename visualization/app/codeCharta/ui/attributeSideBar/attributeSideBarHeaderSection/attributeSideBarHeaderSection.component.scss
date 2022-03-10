@@ -43,6 +43,14 @@ cc-attribute-side-bar-header-section {
 			border-radius: 3px;
 			padding: 1px 3px;
 			color: black;
+
+			.added-files {
+				color: #64d051;
+			}
+
+			.removed-files {
+				color: rgb(255, 14, 14);
+			}
 		}
 	}
 
