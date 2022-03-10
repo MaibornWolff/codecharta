@@ -34,7 +34,6 @@ class ValidationTool : Callable<Void?> {
         fun main(args: Array<String>) {
             val commandLine = CommandLine(ValidationTool())
             generateDialog(args, commandLine)
-            commandLine.execute(*args)
         }
     }
 }

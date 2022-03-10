@@ -46,7 +46,6 @@ class JasomeImporter : Callable<Void> {
         fun main(args: Array<String>) {
             val commandLine = CommandLine(JasomeImporter())
             generateDialog(args, commandLine)
-            commandLine.execute(*args)
         }
     }
 }
