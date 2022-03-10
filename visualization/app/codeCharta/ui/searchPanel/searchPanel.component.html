@@ -7,10 +7,10 @@
 	<div class="section">
 		<div class="section-header">
 			<cc-search-bar ng-click="$ctrl.openSearchPanel()"></cc-search-bar>
-			<search-panel-mode-selector-component
-				search-panel-mode="$ctrl._viewModel.searchPanelMode"
-				update-search-panel-mode="$ctrl.updateSearchPanelMode(searchPanelMode)"
-			></search-panel-mode-selector-component>
+			<cc-search-panel-mode-selector
+				[search-panel-mode]="$ctrl._viewModel.searchPanelMode"
+				[update-search-panel-mode]="$ctrl.updateSearchPanelMode"
+			></cc-search-panel-mode-selector>
 		</div>
 		<span class="section-title" ng-click="$ctrl.updateSearchPanelMode('treeView')">
 			File/Node Explorer <i class="fa fa-angle-down" title="Show folder structure"></i>

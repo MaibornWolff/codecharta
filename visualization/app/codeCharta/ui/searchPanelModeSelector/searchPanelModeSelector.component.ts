@@ -1,42 +1,21 @@
 import "./searchPanelModeSelector.component.scss"
-import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
-import { IRootScopeService } from "angular"
-import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { SearchPanelMode } from "../searchPanel/searchPanel.component"
+import { Component, Inject, Input } from "@angular/core"
+import { Store } from "../../state/angular-redux/store"
+import { Observable } from "rxjs"
+import { hideBlacklistItemsIndicatorSelector } from "./hideBlacklistItemsIndicator.selector"
 
-export class SearchPanelModeSelectorController implements BlacklistSubscriber {
-	searchPanelMode: SearchPanelMode
-	private _viewModel: {
-		flattenListLength: number
-		excludeListLength: number
-	} = {
-		flattenListLength: 0,
-		excludeListLength: 0
-	}
+@Component({
+	selector: "cc-search-panel-mode-selector",
+	template: require("./searchPanelModeSelector.component.html")
+})
+export class SearchPanelModeSelectorComponent {
+	@Input() searchPanelMode: SearchPanelMode
+	@Input() updateSearchPanelMode: (SearchPanelMode: SearchPanelMode) => void
 
-	constructor(private $rootScope: IRootScopeService) {
-		"ngInject"
-		BlacklistService.subscribe(this.$rootScope, this)
-	}
+	hideBlacklistItemsIndicator$: Observable<boolean>
 
-	onBlacklistChanged(blacklist: BlacklistItem[]) {
-		const flattened = blacklist.reduce((count, { type }) => {
-			if (type === BlacklistType.flatten) {
-				count++
-			}
-			return count
-		}, 0)
-		this._viewModel.flattenListLength = flattened
-		this._viewModel.excludeListLength = blacklist.length - flattened
-	}
-}
-
-export const searchPanelModeSelectorComponent = {
-	selector: "searchPanelModeSelectorComponent",
-	template: require("./searchPanelModeSelector.component.html"),
-	controller: SearchPanelModeSelectorController,
-	bindings: {
-		searchPanelMode: "<",
-		updateSearchPanelMode: "&"
+	constructor(@Inject(Store) store: Store) {
+		this.hideBlacklistItemsIndicator$ = store.select(hideBlacklistItemsIndicatorSelector)
 	}
 }
