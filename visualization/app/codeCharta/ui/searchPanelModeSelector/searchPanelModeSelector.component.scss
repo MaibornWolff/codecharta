@@ -1,4 +1,4 @@
-search-panel-mode-selector-component {
+cc-search-panel-mode-selector {
 	vertical-align: top;
 	.mode-chooser {
 		display: inline-block;
@@ -7,7 +7,7 @@ search-panel-mode-selector-component {
 		font-size: 0px;
 	}
 
-	.list-length-count {
+	.has-blacklist-items-indicator {
 		position: absolute;
 		margin-left: 18px;
 		margin-top: -32px;

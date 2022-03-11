@@ -43,6 +43,7 @@ import { SearchBarComponent } from "./codeCharta/ui/searchPanel/searchBar/search
 import { SearchBarModule } from "./codeCharta/ui/searchPanel/searchBar/searchBar.module"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
+import { SearchPanelModeSelectorComponent } from "./codeCharta/ui/searchPanelModeSelector/searchPanelModeSelector.component"
 
 @NgModule({
 	imports: [
@@ -76,6 +77,7 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
+		SearchPanelModeSelectorComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -97,6 +99,7 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 		LoadingMapProgressSpinnerComponent,
 		SearchBarComponent,
 		EdgeMetricToggleComponent,
+		SearchPanelModeSelectorComponent,
 		...dialogs
 	]
 })
