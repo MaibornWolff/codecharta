@@ -34,12 +34,20 @@
 	.mat-dialog-actions {
 		margin: 0;
 		padding: 0 8px;
-		display: flex;
-		justify-content: flex-end;
+		position: relative;
 
-		.message-exceed-local-storage {
-			padding: 0 16px;
-			color: #b02929;
+		cc-download-and-purge-configs {
+			text-align: right;
+
+			.exceed-local-storage-message {
+				display: block;
+				text-align: left;
+				padding: 0 16px;
+				color: #b02929;
+			}
+			.exceed-local-storage-button {
+				margin-right: 89px;
+			}
 		}
 
 		.mat-button {
@@ -54,6 +62,9 @@
 			&.add-custom-config-button {
 				color: rgb(0, 150, 136);
 				background-color: rgba(138, 132, 132, 0.08);
+				position: absolute;
+				right: 16px;
+				bottom: 0;
 			}
 
 			&.add-custom-config-button[disabled] {
