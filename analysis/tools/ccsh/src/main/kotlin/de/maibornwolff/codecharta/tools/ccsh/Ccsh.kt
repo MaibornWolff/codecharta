@@ -7,13 +7,11 @@ import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.csv.SourceMonitorImporter
-import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
 import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser
 import de.maibornwolff.codecharta.importer.scmlogparserv2.SCMLogParserV2
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
-import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
@@ -37,9 +35,9 @@ import java.util.concurrent.Callable
             CSVExporter::class,
             // CrococosmoImporter::class,
             SourceCodeParserMain::class,
-            UnderstandImporter::class,
+            // UnderstandImporter::class,
             CodeMaatImporter::class,
-            JasomeImporter::class,
+            // JasomeImporter::class,
             TokeiImporter::class,
             RawTextParser::class,
             // AutoComplete.GenerateCompletion::class

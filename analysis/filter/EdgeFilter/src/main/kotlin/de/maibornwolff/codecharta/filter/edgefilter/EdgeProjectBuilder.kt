@@ -15,9 +15,9 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private val logger = KotlinLogging.logger {}
 
     private val projectBuilder = ProjectBuilder(
-        listOf(MutableNode("root", NodeType.Folder)),
-        mutableListOf(),
-        getAttributeTypes()
+            listOf(MutableNode("root", NodeType.Folder)),
+            mutableListOf(),
+            getAttributeTypes()
     )
 
     private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
@@ -60,9 +60,13 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun insertEdgeAsNode(nodeEdgeName: String) {
         val nodeFilename = nodeEdgeName.split(pathSeparator).reversed().first()
         val nodePath = nodeEdgeName.split(pathSeparator)
-        val nodeParentPath = nodePath.subList(2, max(2, nodePath.size - 1))
-        val node = Node(nodeFilename, NodeType.File)
-        insertNodeInProjectBuilder(node, nodeParentPath)
+        if (nodePath.size < 2) {
+            println("Keine übergeordnete Node gefunden.")
+        } else {
+            val nodeParentPath = nodePath.subList(2, nodePath.size - 1)
+            val node = Node(nodeFilename, NodeType.File)
+            insertNodeInProjectBuilder(node, nodeParentPath)
+        }
     }
 
     private fun insertEdgeAttributesIntoNodes(nodes: Set<Node>, parentPath: MutableList<String> = mutableListOf()) {
@@ -116,8 +120,8 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     }
 
     private fun getAggregatedAttributes(
-        listOfAttributes: MutableList<String>,
-        filteredEdges: List<Edge>
+            listOfAttributes: MutableList<String>,
+            filteredEdges: List<Edge>
     ): MutableMap<String, Any> {
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
@@ -125,7 +129,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             val attributeType = getAttributeTypeByKey(key)
             val filteredAttribute = filteredEdges.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue =
-                filteredAttribute.sumBy { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
+                    filteredAttribute.sumBy { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
 
             if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
 

@@ -2,8 +2,8 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
+import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
-import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.CommandLine
 
@@ -44,11 +44,9 @@ class ParserService {
                 "sourcemonitorimport" -> print("sourcemonitorimport")
                 "scmlogparser" -> print("scmlogparser")
                 "scmlogparserv2" -> print("scmlogparserv2")
-                "csvexport" -> print("csvexport")
+                "csvexport" -> CSVExporter.main(args)
                 "sourcecodeparser" -> print("sourcecodeparser")
-                "understandimport" -> print("understandimport")
                 "codemaatimport" -> print("codemaatimport")
-                "jasomeimport" -> JasomeImporter.main(args)
                 "tokeiimporter" -> print("tokeiimporter")
                 "rawtextparser" -> print("rawtextparser")
                 else -> {
