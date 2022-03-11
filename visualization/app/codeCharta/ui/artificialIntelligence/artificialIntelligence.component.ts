@@ -69,7 +69,7 @@ export class ArtificialIntelligenceController
 	}
 
 	private _viewModel: ArtificialIntelligenceControllerViewModel = { ...this.defaultViewModel }
-	private fileState: FileState
+	private fileState: FileState[]
 	private blacklist: BlacklistItem[] = []
 	private debounceCalculation: () => void
 
@@ -120,7 +120,7 @@ export class ArtificialIntelligenceController
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.blacklist = blacklist
-		this.fileState = getVisibleFileStates(this.storeService.getState().files)[0]
+		this.fileState = getVisibleFileStates(this.storeService.getState().files)
 
 		if (this.fileState !== undefined) {
 			this.debounceCalculation()
@@ -128,7 +128,7 @@ export class ArtificialIntelligenceController
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
-		const fileState = getVisibleFileStates(files)[0]
+		const fileState = getVisibleFileStates(files)
 		if (fileState === undefined) {
 			return
 		}
@@ -145,12 +145,12 @@ export class ArtificialIntelligenceController
 
 		this._viewModel = { ...this.defaultViewModel }
 
-		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState.file.map)
+		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState)
 
 		if (mainProgrammingLanguage !== undefined) {
 			this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
-			this.calculateRiskProfile(this.fileState)
-			this.calculateSuspiciousMetrics(this.fileState, mainProgrammingLanguage)
+			this.calculateRiskProfile(this.fileState[0])
+			this.calculateSuspiciousMetrics(this.fileState[0], mainProgrammingLanguage)
 		}
 	}
 
@@ -314,16 +314,18 @@ export class ArtificialIntelligenceController
 		return fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : undefined
 	}
 
-	private getMostFrequentLanguage(map: CodeMapNode) {
+	private getMostFrequentLanguage(fileState: FileState[]) {
 		const numberOfFilesPerLanguage = new Map()
-
-		for (const { data } of hierarchy(map)) {
-			if (data.name.includes(".") && data.type === NodeType.FILE) {
-				const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
-				const filesPerLanguage = numberOfFilesPerLanguage.get(fileExtension) ?? 0
-				numberOfFilesPerLanguage.set(fileExtension, filesPerLanguage + 1)
+		for (const { file } of fileState) {
+			for (const { data } of hierarchy(file.map)) {
+				if (data.name.includes(".") && data.type === NodeType.FILE) {
+					const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
+					const filesPerLanguage = numberOfFilesPerLanguage.get(fileExtension) ?? 0
+					numberOfFilesPerLanguage.set(fileExtension, filesPerLanguage + 1)
+				}
 			}
 		}
+
 		if (numberOfFilesPerLanguage.size === 0) {
 			return
 		}
