@@ -1,7 +1,7 @@
 import { goto } from "../../../puppeteer.helper"
 import { BlacklistPanelPageObject } from "../blacklistPanel/blacklistPanel.po"
 import { SearchBarPageObject } from "../searchPanel/searchBar/searchBar.po"
-import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
+import { SearchPanelModeSelectorPageObject } from "../searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"
 
 describe("Blacklist(TrackByEvaluation)", () => {
 	let searchBar: SearchBarPageObject

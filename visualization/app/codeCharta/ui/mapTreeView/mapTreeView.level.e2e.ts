@@ -1,6 +1,6 @@
 import { goto } from "../../../puppeteer.helper"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
-import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
+import { SearchPanelModeSelectorPageObject } from "../searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"
 import { NodeContextMenuPageObject } from "../../state/effects/nodeContextMenu/nodeContextMenu.po"
 
 describe("MapTreeViewLevel", () => {
