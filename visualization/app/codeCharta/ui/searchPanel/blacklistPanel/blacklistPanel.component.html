@@ -1,1 +1,20 @@
-<div>hello</div>
+<mat-list>
+	<div>
+		<h3 class="header-text">Flattened</h3>
+		<em
+			class="fa fa-question-circle-o"
+			matTooltip="Flattened nodes are shown as flat/short buildings and are included in folder metrics"
+		>
+		</em>
+	</div>
+
+	<div *ngIf="flattenedItems$ | async; let flattenedItems">
+		<mat-list-item *ngIf="flattenedItems.length === 0"> Add pattern via search or node context-menu </mat-list-item>
+
+		<mat-list-item *ngFor="let flattenedItem of flattenedItems" [title]="flattenedItem.path">
+			<button mat-button class="round-button" (click)="removeBlacklistEntry(flattenedItem)">
+				<em class="fa fa-minus-square" title="Remove list item"></em> {{ flattenedItem.path }}
+			</button>
+		</mat-list-item>
+	</div>
+</mat-list>
