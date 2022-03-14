@@ -13,15 +13,16 @@ import { CustomConfigFileStateConnector } from "../../../customConfigFileStateCo
 })
 export class DownloadAndPurgeConfigsComponent implements OnInit {
 	@Input() customConfigFileStateConnector: CustomConfigFileStateConnector
-	localStorageSizeWarningMessage = ""
+	isLocalStorageSizeValid = true
 	private customConfigAgeLimitInMonths = 6
 	private purgeableConfigs = new Set<CustomConfig>()
 
 	constructor(@Inject(MatDialog) private dialog: MatDialog) {}
 
 	ngOnInit(): void {
-		this.localStorageSizeWarningMessage = validateLocalStorageSize()
+		this.isLocalStorageSizeValid = validateLocalStorageSize()
 	}
+
 	showPurgeConfirmDialog() {
 		this.downloadAndCollectPurgeableOldConfigs()
 		if (this.purgeableConfigs.size === 0) {

@@ -1,5 +1,5 @@
-<ng-container *ngIf="localStorageSizeWarningMessage.length > 0">
-	<span class="message-exceed-local-storage">{{ localStorageSizeWarningMessage }}</span>
+<ng-container *ngIf="!isLocalStorageSizeValid">
+	<span class="message-exceed-local-storage">Do you want to download and then purge old unused Configs to make space for new ones?</span>
 	<button
 		mat-button
 		class="exceed-local-storage-button"

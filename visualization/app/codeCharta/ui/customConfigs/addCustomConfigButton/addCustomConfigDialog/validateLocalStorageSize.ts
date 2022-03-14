@@ -12,7 +12,5 @@ export const validateLocalStorageSize = () => {
 	// Add 3KB as it seems there is some default overhead.
 	const localStorageSizeInKB = 3 + (allStringsConcatenated.length * 16) / 8 / 1024
 
-	return localStorageSizeInKB > customLocalStorageLimitInKB
-		? "Do you want to download and then purge old unused Configs to make space for new ones?"
-		: ""
+	return localStorageSizeInKB <= customLocalStorageLimitInKB
 }
