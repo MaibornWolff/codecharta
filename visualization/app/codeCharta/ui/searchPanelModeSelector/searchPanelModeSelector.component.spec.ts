@@ -1,54 +1,20 @@
-import "./searchPanelModeSelector.module"
-import { SearchPanelModeSelectorController } from "./searchPanelModeSelector.component"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
+import { render } from "@testing-library/angular"
 import { BlacklistType } from "../../codeCharta.model"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { Store } from "../../state/store/store"
+import { SearchPanelModeSelectorComponent } from "./searchPanelModeSelector.component"
 
-describe("SearchPanelModeSelectorController", () => {
-	let searchPanelModeSelectorController: SearchPanelModeSelectorController
-	let $rootScope: IRootScopeService
+describe("SearchPanelModeSelectorComponent", () => {
+	it("should not show blacklist items indicator when there are no blacklist items", async () => {
+		const { container } = await render(SearchPanelModeSelectorComponent)
 
-	beforeEach(() => {
-		restartSystem()
-		rebuildController()
+		expect(container.querySelector(".has-blacklist-items-indicator")["hidden"]).toBe(true)
 	})
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.searchPanelModeSelector")
+	it("should show blacklist items indicator when there are blacklist items", async () => {
+		Store.dispatch(addBlacklistItem({ path: "something.ts", type: BlacklistType.exclude }))
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
-	}
-
-	function rebuildController() {
-		searchPanelModeSelectorController = new SearchPanelModeSelectorController($rootScope)
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to Blacklist-Event", () => {
-			BlacklistService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
-		})
-	})
-
-	describe("onBlacklistChanged", () => {
-		it("should update counters", () => {
-			const blacklist = [
-				{ path: "/root", type: BlacklistType.flatten },
-				{
-					path: "/root/foo",
-					type: BlacklistType.exclude
-				},
-				{ path: "/root/bar", type: BlacklistType.exclude }
-			]
-
-			searchPanelModeSelectorController.onBlacklistChanged(blacklist)
-
-			expect(searchPanelModeSelectorController["_viewModel"].flattenListLength).toEqual(1)
-			expect(searchPanelModeSelectorController["_viewModel"].excludeListLength).toEqual(2)
-		})
+		const { container } = await render(SearchPanelModeSelectorComponent)
+		expect(container.querySelector(".has-blacklist-items-indicator")["hidden"]).toBe(false)
 	})
 })
