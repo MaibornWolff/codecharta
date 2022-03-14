@@ -11,7 +11,7 @@ import { State } from "../../../../state/angular-redux/state"
 	template: require("./addCustomConfigDialog.component.html")
 })
 export class AddCustomConfigDialogComponent implements OnInit {
-	private customConfigFileStateConnector: CustomConfigFileStateConnector
+	customConfigFileStateConnector: CustomConfigFileStateConnector
 	customConfigName: FormControl
 
 	constructor(@Inject(State) private state: State) {}
