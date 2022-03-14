@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { fireEvent, render } from "@testing-library/angular"
+import { fireEvent, render, RenderResult } from "@testing-library/angular"
 import { SearchPanelComponent } from "./searchPanel.component"
 import { SearchPanelModule } from "./searchPanel.module"
 
@@ -42,6 +42,27 @@ describe("SearchPanelComponent", () => {
 			blackListPanel: true,
 			matchingFilesCounter: true,
 			mapTreeView: true
+		})
+	})
+
+	describe("closing on outside clicks", () => {
+		let renderResult: RenderResult<SearchPanelComponent, SearchPanelComponent>
+
+		beforeEach(async () => {
+			renderResult = await render(SearchPanelComponent, { excludeComponentDeclaration: true })
+			fireEvent.click(renderResult.container.querySelector("cc-search-bar"))
+		})
+
+		it("should close on outside click", async () => {
+			expect(isSearchPanelOpen(renderResult.container)).toBe(true)
+			fireEvent.mouseDown(document)
+			expect(isSearchPanelOpen(renderResult.container)).toBe(false)
+		})
+
+		it("should not close when clicking inside", () => {
+			renderResult.container.querySelector("cc-map-tree-view")["click"]()
+			// fireEvent.mouseDown(renderResult.container.querySelector("cc-map-tree-view"))
+			expect(isSearchPanelOpen(renderResult.container)).toBe(true)
 		})
 	})
 })

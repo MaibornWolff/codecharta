@@ -10,22 +10,28 @@ export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
 export class SearchPanelComponent {
 	searchPanelMode: SearchPanelMode = "minimized"
 
-	constructor() {
-		document.addEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
-	}
-
 	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
-		this.searchPanelMode = this.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode
+		this.setSearchPanelMode(this.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode)
 	}
 
 	openSearchPanel() {
-		this.searchPanelMode = "treeView"
+		this.setSearchPanelMode("treeView")
 	}
 
-	closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
-		if (this.searchPanelMode !== "minimized" && this.isOutside(event)) {
-			this.searchPanelMode = "minimized"
+	private closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
+		if (this.isOutside(event)) {
+			this.setSearchPanelMode("minimized")
 		}
+	}
+
+	private setSearchPanelMode(newMode: SearchPanelMode) {
+		if (this.searchPanelMode === "minimized" && newMode !== "minimized") {
+			document.addEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
+		}
+		if (this.searchPanelMode !== "minimized" && newMode === "minimized") {
+			document.removeEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
+		}
+		this.searchPanelMode = newMode
 	}
 
 	private isOutside(event: MouseEvent) {
