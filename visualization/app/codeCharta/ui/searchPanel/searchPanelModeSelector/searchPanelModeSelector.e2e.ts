@@ -1,4 +1,4 @@
-import { goto } from "../../../puppeteer.helper"
+import { goto } from "../../../../puppeteer.helper"
 import { SearchPanelModeSelectorPageObject } from "./searchPanelModeSelector.po"
 
 describe("SearchPanelModeSelector", () => {
