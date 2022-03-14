@@ -12,7 +12,6 @@ import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./centerMapButton/centerMapButton.module"
-import "./searchPanel/searchPanel.module"
 import "./areaSettingsPanel/areaSettingsPanel.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
@@ -33,9 +32,7 @@ import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
 import { MetricDeltaSelectedComponent } from "./attributeSideBar/metricDeltaSelected/metricDeltaSelected.component"
-import { MapTreeViewComponent } from "./mapTreeView/mapTreeView.component"
 import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
-import { MatchingFilesCounterComponent } from "./matchingFilesCounter/matchingFilesCounter.component"
 import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
 import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
@@ -54,7 +51,6 @@ angular
 		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.centerMapButton",
-		"app.codeCharta.ui.searchPanel",
 		"app.codeCharta.ui.metricType",
 		"app.codeCharta.ui.areaSettingsPanel",
 		"app.codeCharta.ui.codeMap",
@@ -79,8 +75,6 @@ angular
 	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))
 	.directive("ccSortingOption", downgradeComponent({ component: SortingOptionComponent }))
 	.directive("ccMetricDeltaSelected", downgradeComponent({ component: MetricDeltaSelectedComponent }))
-	.directive("ccMapTreeView", downgradeComponent({ component: MapTreeViewComponent }))
-	.directive("ccMatchingFilesCounter", downgradeComponent({ component: MatchingFilesCounterComponent }))
 	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
 	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))

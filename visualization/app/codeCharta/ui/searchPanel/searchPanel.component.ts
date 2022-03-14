@@ -1,30 +1,30 @@
+import { Component } from "@angular/core"
 import "./searchPanel.component.scss"
 
 export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
 
-export class SearchPanelController {
-	private _viewModel: {
-		searchPanelMode: SearchPanelMode
-	} = {
-		searchPanelMode: "minimized"
-	}
+@Component({
+	selector: "cc-search-panel",
+	template: require("./searchPanel.component.html")
+})
+export class SearchPanelComponent {
+	searchPanelMode: SearchPanelMode = "minimized"
 
 	constructor() {
-		"ngInject"
 		document.addEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
 	}
 
 	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
-		this._viewModel.searchPanelMode = this._viewModel.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode
+		this.searchPanelMode = this.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode
 	}
 
 	openSearchPanel() {
-		this._viewModel.searchPanelMode = "treeView"
+		this.searchPanelMode = "treeView"
 	}
 
 	closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
-		if (this._viewModel.searchPanelMode !== "minimized" && this.isOutside(event)) {
-			this._viewModel.searchPanelMode = "minimized"
+		if (this.searchPanelMode !== "minimized" && this.isOutside(event)) {
+			this.searchPanelMode = "minimized"
 		}
 	}
 
@@ -33,15 +33,9 @@ export class SearchPanelController {
 			.composedPath()
 			.every(
 				element =>
-					element["nodeName"] !== "SEARCH-PANEL-COMPONENT" &&
+					element["nodeName"] !== "CC-SEARCH-PANEL" &&
 					element["nodeName"] !== "COLOR-CHROME" &&
 					element["id"] !== "codemap-context-menu"
 			)
 	}
-}
-
-export const searchPanelComponent = {
-	selector: "searchPanelComponent",
-	template: require("./searchPanel.component.html"),
-	controller: SearchPanelController
 }
