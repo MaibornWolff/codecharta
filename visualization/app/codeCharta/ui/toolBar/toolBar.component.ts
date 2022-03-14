@@ -1,7 +1,6 @@
 import "./toolBar.component.scss"
 import { CodeMapMouseEventService, BuildingUnhoveredSubscriber, BuildingHoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
-import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
@@ -16,7 +15,7 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 		experimentalFeaturesEnabled: false
 	}
 
-	constructor(private $rootScope: IRootScopeService, private codeChartaMouseEventService: CodeChartaMouseEventService) {
+	constructor(private $rootScope: IRootScopeService) {
 		"ngInject"
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
@@ -33,10 +32,6 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
-	}
-
-	onClick() {
-		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 }
 

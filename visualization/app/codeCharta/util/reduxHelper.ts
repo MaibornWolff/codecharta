@@ -19,7 +19,11 @@ export function addItemToArray<T>(array: T[], item: T) {
 
 export function addItemsToArray<T>(array: T[], items: T[]) {
 	const newArray = [...array]
-	for (const item of items) if (!arrayContainsItem(newArray, item)) newArray.push(item)
+	for (const item of items) {
+		if (!arrayContainsItem(newArray, item)) {
+			newArray.push(item)
+		}
+	}
 	return newArray
 }
 

@@ -24,6 +24,7 @@ import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePa
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
+import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
@@ -32,12 +33,30 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.component"
 import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
+import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
+import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
+import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
+import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
+import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
+import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
+import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
+import { SearchBarComponent } from "./codeCharta/ui/searchPanel/searchBar/searchBar.component"
+import { SearchBarModule } from "./codeCharta/ui/searchPanel/searchBar/searchBar.module"
+import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
+import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
-		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect, OpenNodeContextMenuEffect]),
+		EffectsModule.forRoot([
+			UnfocusNodesOnLoadingMapEffect,
+			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
+			OpenNodeContextMenuEffect,
+			TrackEventUsageDataEffect,
+			BlacklistSearchPatternEffect
+		]),
 		MapTreeViewModule,
 		MatchingFilesCounterModule,
 		AttributeSideBarModule,
@@ -48,14 +67,19 @@ import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCu
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule,
 		AddCustomConfigButtonModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		LoadingFileProgressSpinnerModule,
+		LoadingMapProgressSpinnerModule,
+		SearchBarModule
 	],
-	providers: [threeSceneServiceProvider],
+	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		EdgeMetricToggleComponent,
+		RemoveFileButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -71,6 +95,13 @@ import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCu
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
 		AddCustomConfigButtonComponent,
+		FocusButtonsComponent,
+		MarkFolderRowComponent,
+		RemoveFileButtonComponent,
+		LoadingFileProgressSpinnerComponent,
+		LoadingMapProgressSpinnerComponent,
+		SearchBarComponent,
+		EdgeMetricToggleComponent,
 		...dialogs
 	]
 })

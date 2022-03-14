@@ -1,15 +1,18 @@
 <md-card
 	class="search-panel-card"
-	ng-class="{ expanded: $ctrl._viewModel.isExpanded }"
+	ng-class="{ expanded: $ctrl._viewModel.searchPanelMode !== 'minimized' }"
 	ng-attr-id="search-panel-card"
 	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
-			<search-bar-component ng-click="$ctrl.openSearchPanel()"></search-bar-component>
-			<search-panel-mode-selector-component></search-panel-mode-selector-component>
+			<cc-search-bar ng-click="$ctrl.openSearchPanel()"></cc-search-bar>
+			<search-panel-mode-selector-component
+				search-panel-mode="$ctrl._viewModel.searchPanelMode"
+				update-search-panel-mode="$ctrl.updateSearchPanelMode(searchPanelMode)"
+			></search-panel-mode-selector-component>
 		</div>
-		<span class="section-title" ng-click="$ctrl.toggle()">
+		<span class="section-title" ng-click="$ctrl.updateSearchPanelMode('treeView')">
 			File/Node Explorer <i class="fa fa-angle-down" title="Show folder structure"></i>
 		</span>
 		<div class="section-body">

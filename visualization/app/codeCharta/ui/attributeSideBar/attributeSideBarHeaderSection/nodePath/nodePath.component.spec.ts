@@ -1,39 +1,67 @@
 import { render } from "@testing-library/angular"
-
+import { CodeMapNode } from "../../../../codeCharta.model"
 import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
 import { NodePathComponent } from "./nodePath.component"
+import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 
 jest.mock("../../../../state/selectors/selectedNode.selector", () => ({
 	selectedNodeSelector: jest.fn()
 }))
+jest.mock("../../../../state/selectors/isDeltaState.selector", () => ({
+	isDeltaStateSelector: jest.fn()
+}))
+
 const selectedNodeSelectorMock = selectedNodeSelector as jest.Mock
+const isDeltaStateSelectorMock = isDeltaStateSelector as jest.Mock
 
 describe("nodePathComponent", () => {
 	it("should display an empty p tag, if no building is selected", async () => {
 		const { container } = await render(NodePathComponent, { componentProperties: { node: undefined } })
 		const pTag = container.querySelector("p")
-
 		expect(pTag).not.toBe(null)
 		expect(pTag.textContent).toBe("")
 	})
 
 	it("should display only node path, when a file is selected", async () => {
-		const node = { isLeaf: true, path: "some/file.ts" }
+		const node = { path: "some/file.ts" }
 		selectedNodeSelectorMock.mockImplementation(() => node)
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
 		expect(container.textContent).toContain("some/file.ts")
 	})
 
-	it("should display node path and fileCountDescription,, when a folder is selected", async () => {
+	it("should display node path and amount of files, when a folder is selected and delta mode is disabled", async () => {
 		const node = {
-			isLeaf: false,
+			children: [{}] as CodeMapNode[],
 			path: "some/folder",
-			attributes: { unary: 2 }
+			attributes: { unary: 2 },
+			fileCount: {
+				added: 1,
+				removed: 2
+			}
 		}
 		selectedNodeSelectorMock.mockImplementation(() => node)
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
-		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder (2 files)")
+
+		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files )")
+	})
+
+	it("should display node path,amount of files, added and removed files, when a folder is selected and delta mode is enabled", async () => {
+		const node = {
+			children: [{}] as CodeMapNode[],
+			path: "some/folder",
+			attributes: { unary: 2 },
+			fileCount: {
+				added: 1,
+				removed: 2
+			}
+		}
+		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
+		selectedNodeSelectorMock.mockImplementation(() => node)
+
+		const { container } = await render(NodePathComponent, { componentProperties: { node } })
+
+		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2)")
 	})
 })

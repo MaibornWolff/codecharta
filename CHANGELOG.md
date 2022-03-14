@@ -7,6 +7,76 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Show amount of added and removed files in attribute sidebar when delta mode is enabled and a folder is selected [#2701](https://github.com/MaibornWolff/codecharta/pull/2701/files)
+    ![xs](https://user-images.githubusercontent.com/72517530/157468180-4e2d052b-63b8-4040-bb22-b633a24d3b8a.png)
+
+### Changed
+
+-   Close search panel and ribbon bar dropdowns on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
+
+### Fixed 🐞
+
+-   Fix GameObjects importer edge cases [#2705](https://github.com/MaibornWolff/codecharta/pull/2705)
+
+## [1.92.1] - 2022-03-07
+
+### Fixed 🐞
+
+-   Fix removing maps with long file names [#2696](https://github.com/MaibornWolff/codecharta/pull/2697)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate search-bar-component to Angular [#2686](https://github.com/MaibornWolff/codecharta/pull/2686)
+
+## [1.92.0] - 2022-03-01
+
+### Changed
+
+-   Design and add a new CodeChara Logo [#2682](https://github.com/MaibornWolff/codecharta/pull/2682) <br>
+    ![xs](https://user-images.githubusercontent.com/48621967/155682925-ecc9fe5d-77de-4927-9c6a-b1059ae9eead.png)
+-   Risk profile is now calculated for every occurring programming languages in selected file(s)[#2679](https://github.com/MaibornWolff/codecharta/pull/2679)
+
+## [1.91.1] - 2022-02-25
+
+### Fixed 🐞
+
+-   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
+
+## [1.91.0] - 2022-02-21
+
+### Changed
+
+-   Refactor edge metric panel [#2670](https://github.com/MaibornWolff/codecharta/pull/2670)
+    -   Remove edge metric option 'none'
+    -   By default, the first edge metric is enabled when map has edge metrics
+    -   Disable edge metric panel when loaded map has no edge metrics
+
+### Fixed 🐞
+
+-   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
+-   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate loading gifs to Angular and remove now unused `isLoadingMap.service` [#2668](https://github.com/MaibornWolff/codecharta/pull/2668)
+
+## [1.90.0] - 2022-02-15
+
+### Added 🚀
+
+-   Parse and import GameObjects file structure into cc.json on upload [#2646](https://github.com/MaibornWolff/codecharta/pull/2646)
+
+### Fixed 🐞
+
+-   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
+-   Fix show garbage bin next to the loaded maps [#2647](https://github.com/MaibornWolff/codecharta/pull/2647)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Run standalone version of CodeCharta in Node.js web target (and disable [#1314](https://github.com/MaibornWolff/codecharta/issues/1314)), so that local storage is available [#2637](https://github.com/MaibornWolff/codecharta/pull/2637)
+
 ## [1.89.0] - 2022-02-07
 
 ### Added 🚀

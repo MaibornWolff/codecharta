@@ -4,7 +4,9 @@ import { CodeChartaService } from "../../../../codeCharta.service"
 export function focusedNodePath(state = defaultFocusedNodePath, action: FocusedNodePathAction) {
 	switch (action.type) {
 		case FocusedNodePathActions.FOCUS_NODE: {
-			if (action.payload === CodeChartaService.ROOT_PATH) return state
+			if (action.payload === CodeChartaService.ROOT_PATH) {
+				return state
+			}
 			return [action.payload, ...state]
 		}
 		case FocusedNodePathActions.UNFOCUS_NODE:
