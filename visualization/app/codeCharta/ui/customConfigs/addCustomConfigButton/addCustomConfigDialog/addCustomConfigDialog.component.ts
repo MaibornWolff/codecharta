@@ -7,22 +7,6 @@ import { filesSelector } from "../../../../state/store/files/files.selector"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
 import { State } from "../../../../state/angular-redux/state"
 
-export function createCustomConfigNameValidator(customConfigFileStateConnector: CustomConfigFileStateConnector): ValidatorFn {
-	return (control: AbstractControl): { Error: string } => {
-		const value = control.value
-		if (
-			!CustomConfigHelper.hasCustomConfigByName(
-				customConfigFileStateConnector.getMapSelectionMode(),
-				customConfigFileStateConnector.getSelectedMaps(),
-				value
-			)
-		) {
-			return null
-		}
-		return { Error: "A Custom View with this name already exists." }
-	}
-}
-
 @Component({
 	template: require("./addCustomConfigDialog.component.html")
 })
@@ -52,5 +36,21 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	addCustomConfig() {
 		const newCustomConfig = buildCustomConfigFromState(this.customConfigName.value, this.state.getValue())
 		CustomConfigHelper.addCustomConfig(newCustomConfig)
+	}
+}
+
+function createCustomConfigNameValidator(customConfigFileStateConnector: CustomConfigFileStateConnector): ValidatorFn {
+	return (control: AbstractControl): { Error: string } => {
+		const value = control.value
+		if (
+			!CustomConfigHelper.hasCustomConfigByName(
+				customConfigFileStateConnector.getMapSelectionMode(),
+				customConfigFileStateConnector.getSelectedMaps(),
+				value
+			)
+		) {
+			return null
+		}
+		return { Error: "A Custom View with this name already exists." }
 	}
 }
