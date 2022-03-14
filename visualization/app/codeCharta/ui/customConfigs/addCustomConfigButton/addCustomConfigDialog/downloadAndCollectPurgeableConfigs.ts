@@ -19,16 +19,15 @@ export function downloadAndCollectPurgeableOldConfigs(customConfigFileStateConne
 
 		// Download e.g. 6 month old or older Configs.
 		const ageInMonth = (Date.now() - value.creationTime) / (1000 * 60 * 60 * 24 * daysPerMonth)
-		if (ageInMonth < customConfigAgeLimitInMonths) {
-			continue
+		if (ageInMonth >= customConfigAgeLimitInMonths) {
+			downloadableConfigs.set(key, CustomConfigHelper.createExportCustomConfigFromConfig(value))
+			purgeableConfigs.add(value)
 		}
-
-		downloadableConfigs.set(key, CustomConfigHelper.createExportCustomConfigFromConfig(value))
-		purgeableConfigs.add(value)
 	}
 
 	if (downloadableConfigs.size > 0) {
 		CustomConfigHelper.downloadCustomConfigs(downloadableConfigs, customConfigFileStateConnector)
 	}
+
 	return purgeableConfigs
 }
