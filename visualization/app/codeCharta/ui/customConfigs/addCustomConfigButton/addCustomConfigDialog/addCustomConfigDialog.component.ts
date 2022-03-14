@@ -16,8 +16,9 @@ export function createCustomConfigNameValidator(customConfigFileStateConnector: 
 				customConfigFileStateConnector.getSelectedMaps(),
 				value
 			)
-		)
+		) {
 			return null
+		}
 		return { Error: "A Custom View with this name already exists." }
 	}
 }

@@ -4,7 +4,7 @@ import { CustomConfigFileStateConnector } from "../../customConfigFileStateConne
 
 const customConfigAgeLimitInMonths = 6
 
-export function downloadAndCollectPurgeableOldConfigs(customConfigFileStateConnector: CustomConfigFileStateConnector) {
+export function downloadAndCollectPurgeableConfigs(customConfigFileStateConnector: CustomConfigFileStateConnector) {
 	const purgeableConfigs = new Set<CustomConfig>()
 	const customConfigs = CustomConfigHelper.getCustomConfigs()
 

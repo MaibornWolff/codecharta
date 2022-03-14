@@ -5,7 +5,7 @@ import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { MatDialog } from "@angular/material/dialog"
 import { validateLocalStorageSize } from "../validateLocalStorageSize"
 import { CustomConfigFileStateConnector } from "../../../customConfigFileStateConnector"
-import { downloadAndCollectPurgeableOldConfigs } from "../downloadAndCollectPurgeableConfigs"
+import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeableConfigs"
 
 @Component({
 	template: require("./downloadAndPurgeConfigs.component.html"),
@@ -22,7 +22,7 @@ export class DownloadAndPurgeConfigsComponent implements OnInit {
 	}
 
 	showPurgeConfirmDialog() {
-		const purgeableConfigs = downloadAndCollectPurgeableOldConfigs(this.customConfigFileStateConnector)
+		const purgeableConfigs = downloadAndCollectPurgeableConfigs(this.customConfigFileStateConnector)
 		if (purgeableConfigs.size === 0) {
 			this.dialog.open(ErrorDialogComponent, {
 				data: {

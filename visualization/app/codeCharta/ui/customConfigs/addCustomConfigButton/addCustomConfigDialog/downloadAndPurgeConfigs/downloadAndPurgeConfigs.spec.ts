@@ -8,9 +8,13 @@ import userEvent from "@testing-library/user-event"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { NgModule } from "@angular/core"
 import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
+import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeableConfigs"
 
 jest.mock("../validateLocalStorageSize", () => ({ validateLocalStorageSize: jest.fn() }))
 const mockedValidateLocalStorageSize = mocked(validateLocalStorageSize)
+
+jest.mock("../downloadAndCollectPurgeableConfigs", () => ({ downloadAndCollectPurgeableConfigs: jest.fn() }))
+const mockedDownloadAndCollectPurgeableOldConfigs = mocked(downloadAndCollectPurgeableConfigs)
 
 describe("downloadAndPurgeConfigsComponent", () => {
 	@NgModule({
@@ -42,6 +46,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
 
 	it("should show 'Download Error' dialog when download and purge custom views is not possible", async () => {
 		mockedValidateLocalStorageSize.mockReturnValue(false)
+		mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set())
 		await render(DownloadAndPurgeConfigsComponent)
 
 		userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
