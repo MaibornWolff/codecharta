@@ -6,16 +6,23 @@ import { TestBed } from "@angular/core/testing"
 import { MaterialModule } from "../../../../../../material/material.module"
 import userEvent from "@testing-library/user-event"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
-import { dialogs } from "../../../../dialogs/dialogs"
+import { NgModule } from "@angular/core"
+import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
 
 jest.mock("../validateLocalStorageSize", () => ({ validateLocalStorageSize: jest.fn() }))
 const mockedValidateLocalStorageSize = mocked(validateLocalStorageSize)
 
 describe("downloadAndPurgeConfigsComponent", () => {
-	beforeEach(async () => {
+	@NgModule({
+		imports: [MaterialModule],
+		declarations: [ErrorDialogComponent, ConfirmationDialogComponent],
+		entryComponents: [ErrorDialogComponent, ConfirmationDialogComponent]
+	})
+	class TestModule {}
+
+	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MaterialModule],
-			declarations: [...dialogs]
+			imports: [TestModule]
 		})
 	})
 
@@ -29,14 +36,16 @@ describe("downloadAndPurgeConfigsComponent", () => {
 	it("should show 'DOWNLOAD & PURGE' button when local storage size is invalid", async () => {
 		mockedValidateLocalStorageSize.mockReturnValue(false)
 		await render(DownloadAndPurgeConfigsComponent)
-		const button = screen.queryByText("DOWNLOAD & PURGE...")
 
-		expect(button).not.toBeNull()
+		expect(screen.queryByText("DOWNLOAD & PURGE...")).not.toBeNull()
+	})
 
-		userEvent.click(button)
+	it("should show 'Download Error' dialog when download and purge custom views is not possible", async () => {
+		mockedValidateLocalStorageSize.mockReturnValue(false)
+		await render(DownloadAndPurgeConfigsComponent)
 
-		const { debug } = await render(ConfirmationDialogComponent)
-		debug()
-		//expect(screen.)
+		userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+
+		expect(screen.queryByText("Download Error")).not.toBeNull()
 	})
 })
