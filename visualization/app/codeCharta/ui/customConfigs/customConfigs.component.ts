@@ -166,7 +166,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 }
 
 export const customConfigsComponent = {
-	selector: "customConfigsComponent",
+	selector: "ccCustomConfigsComponent",
 	template: require("./customConfigs.component.html"),
 	controller: CustomConfigsController
 }

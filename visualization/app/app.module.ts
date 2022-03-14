@@ -4,7 +4,7 @@ import { Inject, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
-import { FormsModule } from "@angular/forms"
+import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "./material/material.module"
 import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
 import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
@@ -31,6 +31,8 @@ import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-pr
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
+import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.component"
+import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
 import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
@@ -65,6 +67,8 @@ import { SearchPanelModeSelectorComponent } from "./codeCharta/ui/searchPanelMod
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule,
+		AddCustomConfigButtonModule,
+		ReactiveFormsModule,
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
 		SearchBarModule
@@ -92,6 +96,7 @@ import { SearchPanelModeSelectorComponent } from "./codeCharta/ui/searchPanelMod
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
+		AddCustomConfigButtonComponent,
 		FocusButtonsComponent,
 		MarkFolderRowComponent,
 		RemoveFileButtonComponent,
