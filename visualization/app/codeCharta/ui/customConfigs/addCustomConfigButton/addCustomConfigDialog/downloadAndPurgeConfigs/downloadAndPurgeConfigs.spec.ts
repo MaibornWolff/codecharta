@@ -58,22 +58,33 @@ describe("downloadAndPurgeConfigsComponent", () => {
 		expect(screen.queryByText("Download Error")).not.toBeNull()
 	})
 
-	it("should show 'Conformation Error' dialog when download and purge custom views is possible", async () => {
-		mockedValidateLocalStorageSize.mockReturnValue(false)
-		mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set([{} as CustomConfig]))
-		const spyOnDeleteCustomConfigs = jest.spyOn(CustomConfigHelper, "deleteCustomConfigs").mockImplementation(() => undefined)
-		await render(DownloadAndPurgeConfigsComponent)
+	describe("ConfirmationDialogComponent", () => {
+		let spyOnDeleteCustomConfigs
 
-		userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
-		expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
-		userEvent.click(screen.queryByText("CANCEL"))
-		await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
-		expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
+		beforeEach(() => {
+			mockedValidateLocalStorageSize.mockReturnValue(false)
+			mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set([{} as CustomConfig]))
+			spyOnDeleteCustomConfigs = jest.spyOn(CustomConfigHelper, "deleteCustomConfigs").mockImplementation(() => undefined)
+		})
 
-		userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
-		expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
-		userEvent.click(screen.queryByText("OK"))
-		await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
-		expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
+		it("should let user abort purging old custom views", async () => {
+			await render(DownloadAndPurgeConfigsComponent)
+
+			userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
+			userEvent.click(screen.queryByText("CANCEL"))
+			await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
+			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
+		})
+
+		it("should let user confirm purging old custom views", async () => {
+			await render(DownloadAndPurgeConfigsComponent)
+
+			userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
+			userEvent.click(screen.queryByText("OK"))
+			await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
+			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
+		})
 	})
 })
