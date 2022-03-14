@@ -10,6 +10,9 @@ import { MatButtonToggleModule } from "@angular/material/button-toggle"
 import { MatDialogModule } from "@angular/material/dialog"
 import { MatCardModule } from "@angular/material/card"
 import { MatCheckboxModule } from "@angular/material/checkbox"
+import { MatToolbarModule } from "@angular/material/toolbar"
+import { MatFormFieldModule } from "@angular/material/form-field"
+import { MatInputModule } from "@angular/material/input"
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 
 const materialModules = [
@@ -24,6 +27,9 @@ const materialModules = [
 	MatButtonToggleModule,
 	MatDialogModule,
 	MatCheckboxModule,
+	MatToolbarModule,
+	MatFormFieldModule,
+	MatInputModule,
 	MatProgressSpinnerModule
 ]
 
