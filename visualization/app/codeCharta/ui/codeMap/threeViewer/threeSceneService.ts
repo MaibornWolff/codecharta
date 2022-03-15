@@ -4,7 +4,7 @@ import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
-import { CodeMapNode, LayoutAlgorithm, MapColors, Node } from "../../../codeCharta.model"
+import { CodeMapNode, HEIGHT_OFFSET, LayoutAlgorithm, MapColors, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MapColorsService, MapColorsSubscriber } from "../../../state/store/appSettings/mapColors/mapColors.service"
@@ -140,7 +140,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
 
-		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
+		this.mapGeometry.scale.set(scale.x, scale.y * HEIGHT_OFFSET, scale.z)
 		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
 		this.mapMesh.setScale(scale)
 	}

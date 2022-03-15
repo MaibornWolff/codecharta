@@ -399,3 +399,5 @@ export interface AppStatus {
 	selectedBuildingId: number | null
 	rightClickedNodeData: RightClickedNodeData
 }
+
+export const HEIGHT_OFFSET = 0.3

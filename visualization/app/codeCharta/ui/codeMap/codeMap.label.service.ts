@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { HEIGHT_OFFSET, Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -42,10 +42,10 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
+	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false, isFirst = false) {
 		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
 
-		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
+		const { scaling, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
 		const { margin, heightMetric } = dynamicSettings
 
 		let labelText = ""
@@ -64,40 +64,30 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 
 		const label = this.makeText(labelText, 30, node)
+		const multiplier = scaling.clone()
 
 		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
 		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
 
-		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
-		// todo: tk rename to addLeafLabel
-
-		const multiplier = scaling.clone()
+		this.nodeHeight = this.nodeHeight * multiplier.y > newHighestNode ? this.nodeHeight : newHighestNode
 
 		const x = node.x0 - treeMap.mapSize
 		const y = node.z0
 		const z = node.y0 - treeMap.mapSize
 
 		const labelX = (x + node.width / 2) * multiplier.x
-		const labelY = (y + this.nodeHeight) * multiplier.y
-		const labelYOrigin = y + node.height
+		let labelY =
+			highestNodeInSet > 0
+				? multiplier.y > 1 && !isFirst
+					? y + this.nodeHeight * multiplier.y
+					: y + this.nodeHeight
+				: y + this.nodeHeight * scaling.y
+		labelY = labelY * HEIGHT_OFFSET
 		const labelZ = (z + node.length / 2) * multiplier.z
 
-		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
-		let labelOffset = labelHeightScaled + label.heightValue / 2
+		const labelOffset = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 
-		switch (layoutAlgorithm) {
-			// !remark : algorithm scaling is not same as the squarified layout,
-			// !layout offset needs to be scaled down,the divided by value is just empirical,
-			// TODO !needs further investigation
-			case LayoutAlgorithm.StreetMap:
-			case LayoutAlgorithm.TreeMapStreet:
-				labelOffset /= 10
-				this.LABEL_HEIGHT_POSITION = 0
-				label.line = this.makeLine(labelX, labelY + labelOffset, labelYOrigin, labelZ)
-				break
-			default:
-				label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
-		}
+		label.line = this.makeLine(labelX, node.height + labelOffset, node.height * scaling.y * HEIGHT_OFFSET, labelZ)
 
 		label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
 
@@ -170,18 +160,22 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const { scaling } = this.storeService.getState().appSettings
 		const { margin } = this.storeService.getState().dynamicSettings
 
-		const multiplier = scaling.clone().divide(this.previousScaling)
+		const multiplier = scaling.clone()
 
 		for (const label of this.labels) {
 			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
+
+			if (multiplier.y > 1) {
+				multiplier.y = 1
+			}
 
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
 			const lineGeometry = label.line.geometry as BufferGeometry
 			const lineGeometryPosition = lineGeometry.attributes.position
 
 			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
-			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
+			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y * HEIGHT_OFFSET)
 			lineGeometryPosition.setZ(0, lineGeometryPosition.getZ(0) * multiplier.z)
 
 			lineGeometryPosition.setX(1, label.sprite.position.x)

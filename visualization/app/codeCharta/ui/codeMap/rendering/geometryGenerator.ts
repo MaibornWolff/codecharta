@@ -71,7 +71,7 @@ export class GeometryGenerator {
 		}
 	}
 
-	private ensureMinHeightUnlessDeltaIsNegative(height: number, delta: number) {
+	private static ensureMinHeightUnlessDeltaIsNegative(height: number, delta: number) {
 		return delta <= 0 ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT)
 	}
 
@@ -100,7 +100,7 @@ export class GeometryGenerator {
 		isDeltaState: boolean
 	) {
 		const measures = this.mapNodeToLocalBox(node)
-		measures.height = this.ensureMinHeightUnlessDeltaIsNegative(node.height, node.heightDelta)
+		measures.height = GeometryGenerator.ensureMinHeightUnlessDeltaIsNegative(node.height, node.heightDelta)
 
 		let renderDelta = 0
 
@@ -134,8 +134,42 @@ export class GeometryGenerator {
 
 		geometry.setIndex(new BufferAttribute(data.indices, 1))
 
-		geometry.addGroup(0, Number.POSITIVE_INFINITY, 0)
+		if (data[0] === undefined) {
+			// Add default group
+			geometry.addGroup(0, Number.POSITIVE_INFINITY, 0)
+		} else {
+			GeometryGenerator.addMaterialGroups(data, geometry)
+		}
 
 		return new Mesh(geometry, this.materials)
+	}
+
+	private static addMaterialGroups(data: IntermediateVertexData, geometry: BufferGeometry) {
+		const topSurfaceInfos = data.indices
+
+		// Render with default material until first floor surface
+		geometry.addGroup(0, topSurfaceInfos[0], 0)
+
+		// In general, a plane is rendered by 2 triangles, each with 3 vertices.
+		const verticesPerPlane = 6
+
+		for (let surfaceIndex = 0; surfaceIndex < topSurfaceInfos.length; surfaceIndex++) {
+			const currentSurfaceInfo = topSurfaceInfos[surfaceIndex]
+			// Render the floors surface with the text label texture
+			geometry.addGroup(currentSurfaceInfo, verticesPerPlane, surfaceIndex + 1)
+
+			//	this.createAndAssignFloorLabelTextureMaterial(currentSurfaceInfo)
+
+			let verticesCountUntilNextFloorLabelRenderer = Number.POSITIVE_INFINITY
+			const startOfNextDefaultRenderer = currentSurfaceInfo + verticesPerPlane
+			const nextSurfaceInfo = topSurfaceInfos[surfaceIndex + 1]
+
+			if (nextSurfaceInfo) {
+				verticesCountUntilNextFloorLabelRenderer = nextSurfaceInfo - startOfNextDefaultRenderer
+			}
+
+			// Render the remaining planes (sides, bottom) with the default material
+			geometry.addGroup(startOfNextDefaultRenderer, verticesCountUntilNextFloorLabelRenderer, 0)
+		}
 	}
 }

@@ -97,6 +97,7 @@ export class HeightSettingsPanelController
 
 	onScalingChanged(scaling) {
 		this._viewModel.scalingY = scaling.y
+		this.applyDebouncedTopLabels()
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
@@ -126,7 +127,7 @@ export class HeightSettingsPanelController
 	applySettingsScaling() {
 		const oldScaling = this.storeService.getState().appSettings.scaling
 		const newScaling = new Vector3(oldScaling.x, this._viewModel.scalingY, oldScaling.z)
-
+		this.applyDebouncedTopLabels()
 		this.applyDebouncedScaling(newScaling)
 	}
 }
