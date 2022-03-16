@@ -1,7 +1,7 @@
 import { render } from "@testing-library/angular"
-import { BlacklistType } from "../../codeCharta.model"
-import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { Store } from "../../state/store/store"
+import { BlacklistType } from "../../../codeCharta.model"
+import { addBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { Store } from "../../../state/store/store"
 import { SearchPanelModeSelectorComponent } from "./searchPanelModeSelector.component"
 
 describe("SearchPanelModeSelectorComponent", () => {

@@ -11,9 +11,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Remove blacklist entry on click of name as well [#2712](https://github.com/MaibornWolff/codecharta/pull/2712)
+
+## [1.93.0] - 2022-03-14
+
 ### Added 🚀
 
--   Show amount of added and removed files in attribute sidebar when delta mode is enabled and a folder is selected [#2701](https://github.com/MaibornWolff/codecharta/pull/2701/files)
+-   Show amount of added and removed files in attribute sidebar when delta mode is enabled and a folder is selected [#2701](https://github.com/MaibornWolff/codecharta/pull/2701/files) <br>
     ![xs](https://user-images.githubusercontent.com/72517530/157468180-4e2d052b-63b8-4040-bb22-b633a24d3b8a.png)
 
 ### Changed

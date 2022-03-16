@@ -4,7 +4,7 @@
 			<i class="fa fa-cogs"></i>
 		</md-button>
 
-		<md-menu-content class="custom-configs-drop-down" width="7">
+		<md-menu-content class="custom-configs-drop-down">
 			<md-menu-item class="custom-configs-item">
 				<md-button class="custom-configs-dialog-name" ng-disabled="true">Custom Views</md-button>
 
@@ -23,9 +23,7 @@
 				>
 					<i class="fa fa-download" aria-hidden="true"></i>
 				</md-button>
-				<md-button ng-click="$ctrl.showAddCustomConfigSettings()" class="action-button" title="Create new Custom View">
-					<i class="fa fa-plus" aria-hidden="true"></i>
-				</md-button>
+				<cc-add-custom-config-button></cc-add-custom-config-button>
 			</md-menu-item>
 
 			<md-divider></md-divider>
