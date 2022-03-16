@@ -1,4 +1,4 @@
-# SCMLogParserV2 - Status: unstable/experimental!
+# GitLogParser - Status: stable
 
 Generates visualisation data from git repository logs and repository file list. It supports the following metrics per file:
 
@@ -35,21 +35,21 @@ You can also use the bash script anongit which generates an anonymous git log wi
 
 > `git ls-files > file-name-list.txt`
 
-### Executing the SCMLogParser
+### Executing the GitLogParser
 
 See `ccsh -h` for help. Standard usage:
 
-> `ccsh scmlogparserv2 <log_file> -n <file-name-list>`
+> `ccsh gitlogparser <log_file> -n <file-name-list>`
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
-If a project is piped into the SCMLogParser, the results and the piped project are merged.
-The resulting project has the project name specified for the SCMLogParser.
+If a project is piped into the GitLogParser, the results and the piped project are merged.
+The resulting project has the project name specified for the GitLogParser.
 
 ### Example using Git
 
 -   `cd <my_git_project>`
 -   `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
 -   `git ls-files > file-name-list.txt`
--   `./ccsh scmlogparserv2 git.log -o output.cc.json -n file-name-list.txt`
+-   `./ccsh gitlogparser git.log -o output.cc.json -n file-name-list.txt`
 -   load `output.cc.json` in visualization

@@ -31,8 +31,8 @@ import java.util.concurrent.Callable
 import java.util.stream.Stream
 
 @CommandLine.Command(
-    name = "scmlogparser",
-    description = ["generates cc.json from scm log file (git or svn)"],
+    name = "svnlogparser",
+    description = ["generates cc.json from svn log file"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class SCMLogParser(

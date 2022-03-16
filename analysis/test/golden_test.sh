@@ -70,9 +70,9 @@ check_jasome() {
 }
 
 check_scmlog() {
-  echo " -- expect SCMLogParser gives valid cc.json"
+  echo " -- expect SVNLogParser gives valid cc.json"
   ACTUAL_SCMLOG_JSON="${INSTALL_DIR}/actual_scmlog.json"
-  "${CCSH}" scmlogparser --input-format=SVN_LOG data/codecharta/SVNTestLog.txt --silent > "${ACTUAL_SCMLOG_JSON}"
+  "${CCSH}" svnlogparser --input-format=SVN_LOG data/codecharta/SVNTestLog.txt --silent > "${ACTUAL_SCMLOG_JSON}"
   validate "${ACTUAL_SCMLOG_JSON}"
 }
 
