@@ -121,7 +121,6 @@ export class ArtificialIntelligenceController
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.blacklist = blacklist
 		this.fileState = getVisibleFileStates(this.storeService.getState().files)
-
 		if (this.fileState !== undefined) {
 			this.debounceCalculation()
 		}
@@ -129,12 +128,11 @@ export class ArtificialIntelligenceController
 
 	onFilesSelectionChanged(files: FileState[]) {
 		const fileState = getVisibleFileStates(files)
-		if (fileState === undefined) {
-			return
-		}
 
-		this.fileState = fileState
-		this.debounceCalculation()
+		if (fileState !== undefined) {
+			this.fileState = fileState
+			this.debounceCalculation()
+		}
 	}
 
 	private calculate() {
@@ -149,26 +147,28 @@ export class ArtificialIntelligenceController
 
 		if (mainProgrammingLanguage !== undefined) {
 			this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
-			this.calculateRiskProfile(this.fileState[0])
-			this.calculateSuspiciousMetrics(this.fileState[0], mainProgrammingLanguage)
+			this.calculateRiskProfile(this.fileState)
+			this.calculateSuspiciousMetrics(this.fileState, mainProgrammingLanguage)
 		}
 	}
 
-	private calculateRiskProfile(fileState: FileState) {
+	private calculateRiskProfile(fileState: FileState[]) {
 		const rlocRisk: RiskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 		let totalRloc = 0
-		for (const { data } of hierarchy(fileState.file.map)) {
-			// TODO calculate risk profile only for focused or currently visible but not excluded files.
-			if (this.isFileValid(data, HEIGHT_METRIC)) {
-				const fileExtension = this.getFileExtension(data.name)
-				const languageSpecificThresholds = this.getAssociatedMetricThresholds(fileExtension)
-				const thresholds = languageSpecificThresholds[HEIGHT_METRIC]
-				const nodeMetricValue = data.attributes[HEIGHT_METRIC]
-				const nodeRlocValue = data.attributes[AREA_METRIC]
-				totalRloc += nodeRlocValue
+		for (const { file } of fileState) {
+			for (const { data } of hierarchy(file.map)) {
+				// TODO calculate risk profile only for focused or currently visible but not excluded files.
+				if (this.isFileValid(data, HEIGHT_METRIC)) {
+					const fileExtension = this.getFileExtension(data.name)
+					const languageSpecificThresholds = this.getAssociatedMetricThresholds(fileExtension)
+					const thresholds = languageSpecificThresholds[HEIGHT_METRIC]
+					const nodeMetricValue = data.attributes[HEIGHT_METRIC]
+					const nodeRlocValue = data.attributes[AREA_METRIC]
+					totalRloc += nodeRlocValue
 
-				// Idea: We could calculate risk profiles per directory in the future.
-				this.calculateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue, rlocRisk)
+					// Idea: We could calculate risk profiles per directory in the future.
+					this.calculateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue, rlocRisk)
+				}
 			}
 		}
 
@@ -213,7 +213,7 @@ export class ArtificialIntelligenceController
 		return (rlocRisk.veryHighRisk += nodeRlocValue)
 	}
 
-	private calculateSuspiciousMetrics(fileState: FileState, programmingLanguage: string) {
+	private calculateSuspiciousMetrics(fileState: FileState[], programmingLanguage: string) {
 		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
 		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
 		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
@@ -284,25 +284,25 @@ export class ArtificialIntelligenceController
 		return metricAssessmentResults
 	}
 
-	private getSortedMetricValues(fileState: FileState, programmingLanguage: string): MetricValues {
+	private getSortedMetricValues(fileState: FileState[], programmingLanguage: string): MetricValues {
 		const metricValues: MetricValues = {}
 
-		for (const { data } of hierarchy(fileState.file.map)) {
-			if (
-				data.type !== NodeType.FILE ||
-				isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
-				this.getFileExtension(data.name) !== programmingLanguage
-			) {
-				continue
-			}
-
-			for (const metricIndex of Object.keys(data.attributes)) {
-				const value = data.attributes[metricIndex]
-				if (value > 0) {
-					if (metricValues[metricIndex] === undefined) {
-						metricValues[metricIndex] = []
+		for (const { file } of fileState) {
+			for (const { data } of hierarchy(file.map)) {
+				if (
+					data.type === NodeType.FILE ||
+					!isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
+					this.getFileExtension(data.name) === programmingLanguage
+				) {
+					for (const metricIndex of Object.keys(data.attributes)) {
+						const value = data.attributes[metricIndex]
+						if (value > 0) {
+							if (metricValues[metricIndex] === undefined) {
+								metricValues[metricIndex] = []
+							}
+							pushSorted(metricValues[metricIndex], data.attributes[metricIndex])
+						}
 					}
-					pushSorted(metricValues[metricIndex], data.attributes[metricIndex])
 				}
 			}
 		}
