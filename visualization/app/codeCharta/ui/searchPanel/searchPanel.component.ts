@@ -41,6 +41,7 @@ export class SearchPanelComponent {
 				element =>
 					element["nodeName"] !== "CC-SEARCH-PANEL" &&
 					element["nodeName"] !== "COLOR-CHROME" &&
+					element["nodeName"] !== "MAT-OPTION" &&
 					element["id"] !== "codemap-context-menu"
 			)
 	}
