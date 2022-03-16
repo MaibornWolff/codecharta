@@ -103,7 +103,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		for (const node of sortedNodes) {
 			const metric = node.attributes[dynamicSettings.colorMetric]
 
-			if (node.isLeaf) {
+			if (node.isLeaf && metric) {
 				if (metric < dynamicSettings.colorRange.from) {
 					this.nodesByColor.positive.push(node)
 					continue
