@@ -5,14 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
-### Changed
-
--   Improve sonarimport help message [#2717](https://github.com/MaibornWolff/codecharta/pull/2717)
-
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
 ### Changed
 
+-   Improve sonarimport help message [#2717](https://github.com/MaibornWolff/codecharta/pull/2717)
 -   Remove blacklist entry on click of name as well [#2712](https://github.com/MaibornWolff/codecharta/pull/2712)
 
 ## [1.93.0] - 2022-03-14
