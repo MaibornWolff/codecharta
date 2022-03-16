@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Suspicious metrics and risk profile are calculated for all selected maps [#2721](https://github.com/MaibornWolff/codecharta/pull/2721)
 -   Close search panel and ribbon bar dropdowns on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
 
 ### Fixed 🐞
