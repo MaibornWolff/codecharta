@@ -1,14 +1,13 @@
 import { TestBed } from "@angular/core/testing"
-import { fireEvent, render, RenderResult } from "@testing-library/angular"
+import { fireEvent, render } from "@testing-library/angular"
 import { SearchPanelComponent } from "./searchPanel.component"
 import { SearchPanelModule } from "./searchPanel.module"
 
 describe("SearchPanelComponent", () => {
-	// outside close
-
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [SearchPanelModule]
+			imports: [SearchPanelModule],
+			providers: [SearchPanelComponent]
 		})
 	})
 
@@ -46,23 +45,44 @@ describe("SearchPanelComponent", () => {
 	})
 
 	describe("closing on outside clicks", () => {
-		let renderResult: RenderResult<SearchPanelComponent, SearchPanelComponent>
+		it("should subscribe to mousedown events when opening", () => {
+			const addEventListenerSpy = jest.spyOn(document, "addEventListener")
+			const searchPanelComponent = TestBed.inject(SearchPanelComponent)
+			searchPanelComponent.searchPanelMode = "minimized"
 
-		beforeEach(async () => {
-			renderResult = await render(SearchPanelComponent, { excludeComponentDeclaration: true })
-			fireEvent.click(renderResult.container.querySelector("cc-search-bar"))
+			searchPanelComponent["setSearchPanelMode"]("treeView")
+
+			expect(addEventListenerSpy).toHaveBeenCalledWith("mousedown", searchPanelComponent["closeSearchPanelOnOutsideClick"])
 		})
 
-		it("should close on outside click", async () => {
-			expect(isSearchPanelOpen(renderResult.container)).toBe(true)
-			fireEvent.mouseDown(document)
-			expect(isSearchPanelOpen(renderResult.container)).toBe(false)
+		it("should unsubscribe mousedown events when closing", () => {
+			const removeEventListenerSpy = jest.spyOn(document, "removeEventListener")
+			const searchPanelComponent = TestBed.inject(SearchPanelComponent)
+			searchPanelComponent.searchPanelMode = "treeView"
+
+			searchPanelComponent["setSearchPanelMode"]("minimized")
+
+			expect(removeEventListenerSpy).toHaveBeenCalledWith("mousedown", searchPanelComponent["closeSearchPanelOnOutsideClick"])
+		})
+
+		it("should close when clicking outside", () => {
+			const searchPanelComponent = TestBed.inject(SearchPanelComponent)
+			searchPanelComponent.searchPanelMode = "treeView"
+
+			searchPanelComponent["closeSearchPanelOnOutsideClick"]({ composedPath: () => [] } as MouseEvent)
+
+			expect(searchPanelComponent.searchPanelMode).toBe("minimized")
 		})
 
 		it("should not close when clicking inside", () => {
-			renderResult.container.querySelector("cc-map-tree-view")["click"]()
-			// fireEvent.mouseDown(renderResult.container.querySelector("cc-map-tree-view"))
-			expect(isSearchPanelOpen(renderResult.container)).toBe(true)
+			const searchPanelComponent = TestBed.inject(SearchPanelComponent)
+			searchPanelComponent.searchPanelMode = "treeView"
+
+			searchPanelComponent["closeSearchPanelOnOutsideClick"]({
+				composedPath: () => [{ nodeName: "CC-SEARCH-PANEL" }]
+			} as unknown as MouseEvent)
+
+			expect(searchPanelComponent.searchPanelMode).toBe("treeView")
 		})
 	})
 })
