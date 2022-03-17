@@ -2,7 +2,7 @@ import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 import { CcState } from "../../../../state/store/store"
 import { matchingFilesCounterSelector } from "./matchingFilesCounter.selector"
 
-jest.mock("../../../state/selectors/accumulatedData/unifiedMapNode.selector", () => ({
+jest.mock("../../../../state/selectors/accumulatedData/unifiedMapNode.selector", () => ({
 	unifiedMapNodeSelector: () => ({
 		name: "root",
 		type: "Folder",
@@ -21,10 +21,10 @@ jest.mock("../../../state/selectors/accumulatedData/unifiedMapNode.selector", ()
 		]
 	})
 }))
-jest.mock("../../../state/store/dynamicSettings/searchPattern/searchPattern.selector", () => ({
+jest.mock("../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector", () => ({
 	searchPatternSelector: () => "small leaf"
 }))
-jest.mock("../../../state/store/fileSettings/blacklist/blacklist.selector", () => ({
+jest.mock("../../../../state/store/fileSettings/blacklist/blacklist.selector", () => ({
 	blacklistSelector: () => {
 		const excluded: BlacklistItem = { path: "big Leaf", type: "exclude" as BlacklistType }
 		const flattened: BlacklistItem = { path: "small leaf", type: "flatten" as BlacklistType }

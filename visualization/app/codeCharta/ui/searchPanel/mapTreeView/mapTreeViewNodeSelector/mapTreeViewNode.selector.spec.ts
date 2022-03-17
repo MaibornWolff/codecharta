@@ -3,7 +3,7 @@ import { sortingOrderSelector } from "../../../../state/store/dynamicSettings/so
 import { Store } from "../../../../state/store/store"
 import { mapTreeViewNodeSelector } from "./mapTreeViewNode.selector"
 
-jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
+jest.mock("../../../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
 	accumulatedDataSelector: () => ({
 		// freeze to make sure it is not modified. We cannot test for modification, as jest always returns the untouched mock, but due to this freeze, we would get a JS runtime error leading to a test failure,
 		unifiedMapNode: Object.freeze({
@@ -27,8 +27,10 @@ jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", (
 		})
 	})
 }))
-jest.mock("../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector", () => {
-	const realSelector = jest.requireActual("../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector").sortingOrderSelector
+jest.mock("../../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector", () => {
+	const realSelector = jest.requireActual(
+		"../../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
+	).sortingOrderSelector
 	return {
 		sortingOrderSelector: jest.fn().mockImplementation(realSelector)
 	}

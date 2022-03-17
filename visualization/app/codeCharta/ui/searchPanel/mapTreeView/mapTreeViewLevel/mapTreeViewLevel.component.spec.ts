@@ -8,9 +8,9 @@ import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
 
-jest.mock("../../../state/selectors/searchedNodes/searchedNodePaths.selector", () => ({
+jest.mock("../../../../state/selectors/searchedNodes/searchedNodePaths.selector", () => ({
 	searchedNodePathsSelector: jest.fn(
-		jest.requireActual("../../../state/selectors/searchedNodes/searchedNodePaths.selector").searchedNodePathsSelector
+		jest.requireActual("../../../../state/selectors/searchedNodes/searchedNodePaths.selector").searchedNodePathsSelector
 	)
 }))
 const searchedNodePathsSelectorMock = searchedNodePathsSelector as unknown as jest.Mock<ReturnType<typeof searchedNodePathsSelector>>
