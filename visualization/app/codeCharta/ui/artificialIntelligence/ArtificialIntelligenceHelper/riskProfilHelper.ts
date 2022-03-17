@@ -1,6 +1,6 @@
-import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode } from "../../../codeCharta.model"
 import { metricThresholdsByLanguage, Percentiles } from "./artificialIntelligence.metricThresholds"
-import { isPathBlacklisted } from "../../util/codeMapHelper"
+import { isPathBlacklisted } from "../../../util/codeMapHelper"
 import percentRound from "percent-round"
 
 export interface RiskProfile {

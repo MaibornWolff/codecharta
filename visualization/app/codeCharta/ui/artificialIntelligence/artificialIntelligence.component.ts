@@ -1,21 +1,16 @@
 import "./artificialIntelligence.component.scss"
 import debounce from "lodash.debounce"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
-import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
-import { pushSorted } from "../../util/nodeDecorator"
-import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange, NodeType } from "../../codeCharta.model"
+import { BlacklistItem, CodeMapNode, ColorRange, NodeType } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
-import { getVisibleFileStates } from "../../model/files/files.helper"
 import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { isPathBlacklisted } from "../../util/codeMapHelper"
 import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { metricDescriptions } from "../../util/metric/metricDescriptions"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
@@ -24,32 +19,22 @@ import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/a
 import {
 	AREA_METRIC,
 	calculateRiskProfile,
-	getAssociatedMetricThresholds,
 	isFileValid,
 	RiskProfile,
 	setRiskProfile
-} from "./riskProfilHelper"
-
-interface MetricValues {
-	[metric: string]: number[]
-}
-
-interface MetricValuesByLanguage {
-	[language: string]: MetricValues
-}
-
-interface MetricAssessmentResults {
-	suspiciousMetrics: Map<string, ColorRange>
-	unsuspiciousMetrics: string[]
-	outliersThresholds: Map<string, number>
-}
-
-interface MetricSuggestionParameters {
-	metric: string
-	from: number
-	to: number
-	isOutlier?: boolean
-}
+} from "./ArtificialIntelligenceHelper/riskProfilHelper"
+import {
+	calculateSuspiciousMetrics,
+	findGoodAndBadMetrics,
+	getSortedMetricValues,
+	MetricSuggestionParameters,
+	MetricValues,
+	MetricValuesByLanguage
+} from "./ArtificialIntelligenceHelper/suspiciousMetricsHelper"
+import {
+	detectProgrammingLanguageByOccurrence,
+	getMostFrequentLanguage
+} from "./ArtificialIntelligenceHelper/MainProgrammingLanguageHelper"
 
 interface ArtificialIntelligenceControllerViewModel {
 	analyzedProgrammingLanguage: string
@@ -69,7 +54,6 @@ export class ArtificialIntelligenceController
 	}
 
 	private _viewModel: ArtificialIntelligenceControllerViewModel = { ...this.defaultViewModel }
-	private fileState: FileState[]
 	private blacklist: BlacklistItem[] = []
 	private aggregatedMap: CodeMapNode
 	private debounceCalculation: () => void
@@ -121,8 +105,8 @@ export class ArtificialIntelligenceController
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.blacklist = blacklist
-		this.fileState = getVisibleFileStates(this.storeService.getState().files)
-		if (this.fileState !== undefined) {
+		this.aggregatedMap = accumulatedDataSelector(this.storeService.getState()).unifiedMapNode
+		if (this.aggregatedMap !== undefined) {
 			this.debounceCalculation()
 		}
 	}
@@ -152,8 +136,8 @@ export class ArtificialIntelligenceController
 		for (const { data } of hierarchy(this.aggregatedMap)) {
 			const fileExtension = this.getFileExtension(data.name)
 			if (data.type === NodeType.FILE && fileExtension !== undefined) {
-				this.detectProgrammingLanguageByOccurrence(languageByNumberOfFiles, fileExtension)
-				this.getSortedMetricValues(data, metricValues)
+				detectProgrammingLanguageByOccurrence(languageByNumberOfFiles, fileExtension)
+				getSortedMetricValues(data, metricValues, this.blacklist)
 				metricValuesByLanguage[fileExtension] = metricValues
 
 				// TODO calculate risk profile only for focused or currently visible but not excluded files.
@@ -167,114 +151,13 @@ export class ArtificialIntelligenceController
 			}
 		}
 
-		const mainProgrammingLanguage = this.getMostFrequentLanguage(languageByNumberOfFiles)
+		const mainProgrammingLanguage = getMostFrequentLanguage(languageByNumberOfFiles)
 		this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage.length > 0 ? mainProgrammingLanguage : undefined
 
 		if (mainProgrammingLanguage !== undefined) {
-			this.calculateSuspiciousMetrics(metricValuesByLanguage, mainProgrammingLanguage)
-		}
-	}
-
-	private detectProgrammingLanguageByOccurrence(numberOfFilesPerLanguage: Map<string, number>, fileExtension: string) {
-		const filesPerLanguage = numberOfFilesPerLanguage.get(fileExtension) ?? 0
-		numberOfFilesPerLanguage.set(fileExtension, filesPerLanguage + 1)
-	}
-
-	private getMostFrequentLanguage(numberOfFilesPerLanguage: Map<string, number>) {
-		let language = ""
-		if (numberOfFilesPerLanguage.size > 0) {
-			let max = -1
-			for (const [key, filesPerLanguage] of numberOfFilesPerLanguage) {
-				if (max < filesPerLanguage) {
-					max = filesPerLanguage
-					language = key
-				}
-			}
-		}
-		return language
-	}
-
-	private calculateSuspiciousMetrics(metricValues: MetricValuesByLanguage[], programmingLanguage: string) {
-		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
-		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
-
-		for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {
-			noticeableMetricSuggestionLinks.set(metricName, {
-				metric: metricName,
-				...colorRange
-			})
-
-			const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
-			if (outlierThreshold > 0) {
-				noticeableMetricSuggestionLinks.get(metricName).isOutlier = true
-			}
-		}
-
-		this._viewModel.suspiciousMetricSuggestionLinks = [...noticeableMetricSuggestionLinks.values()].sort(
-			this.compareSuspiciousMetricSuggestionLinks
-		)
-		this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
-	}
-
-	private compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b: MetricSuggestionParameters): number {
-		if (a.isOutlier && !b.isOutlier) {
-			return -1
-		}
-		if (!a.isOutlier && b.isOutlier) {
-			return 1
-		}
-		return 0
-	}
-
-	private findGoodAndBadMetrics(metricValues: MetricValuesByLanguage[], mainProgrammingLanguage: string): MetricAssessmentResults {
-		const metricAssessmentResults: MetricAssessmentResults = {
-			suspiciousMetrics: new Map<string, ColorRange>(),
-			unsuspiciousMetrics: [],
-			outliersThresholds: new Map<string, number>()
-		}
-
-		const languageSpecificMetricThresholds = getAssociatedMetricThresholds(mainProgrammingLanguage)
-
-		for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
-			const valuesOfMetric = metricValues[mainProgrammingLanguage][metricName]
-
-			if (valuesOfMetric === undefined) {
-				continue
-			}
-
-			const thresholdConfig = languageSpecificMetricThresholds[metricName]
-			const maxMetricValue = Math.max(...valuesOfMetric)
-
-			if (maxMetricValue <= thresholdConfig.percentile70) {
-				metricAssessmentResults.unsuspiciousMetrics.push(`${metricName} (${metricDescriptions.get(metricName)})`)
-			} else if (maxMetricValue > thresholdConfig.percentile70) {
-				metricAssessmentResults.suspiciousMetrics.set(metricName, {
-					from: thresholdConfig.percentile70,
-					to: thresholdConfig.percentile80,
-					max: 0,
-					min: 0
-				})
-
-				if (maxMetricValue > thresholdConfig.percentile90) {
-					metricAssessmentResults.outliersThresholds.set(metricName, thresholdConfig.percentile90)
-				}
-			}
-		}
-
-		return metricAssessmentResults
-	}
-
-	private getSortedMetricValues(node: CodeMapNode, metricValues: MetricValues) {
-		if (!isPathBlacklisted(node.path, this.blacklist, BlacklistType.exclude)) {
-			for (const metricIndex of Object.keys(node.attributes)) {
-				const value = node.attributes[metricIndex]
-				if (value > 0) {
-					if (metricValues[metricIndex] === undefined) {
-						metricValues[metricIndex] = []
-					}
-					pushSorted(metricValues[metricIndex], node.attributes[metricIndex])
-				}
-			}
+			const metricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, mainProgrammingLanguage)
+			this._viewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+			this._viewModel.suspiciousMetricSuggestionLinks = calculateSuspiciousMetrics(metricAssessmentResults)
 		}
 	}
 
