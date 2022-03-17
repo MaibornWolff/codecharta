@@ -3,8 +3,6 @@ package de.maibornwolff.codecharta.importer.svnlogparser
 import de.maibornwolff.codecharta.importer.svnlogparser.converter.ProjectConverter
 import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
-import de.maibornwolff.codecharta.importer.svnlogparser.parser.git.GitLogNumstatRawParserStrategy
-import de.maibornwolff.codecharta.importer.svnlogparser.parser.git.GitLogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -37,14 +35,6 @@ class SVNLogProjectCreatorGoldenTest(
         fun data(): Collection<Array<Any>> {
             return Arrays.asList(
                 arrayOf("svn", SVNLogParserStrategy(), true, "example_svn.log", "expected_svn.json"),
-                arrayOf(
-                    "git_numstat",
-                    GitLogNumstatRawParserStrategy(),
-                    true,
-                    "example_git_numstat.log",
-                    "expected_git_numstat.json"
-                ),
-                arrayOf("git", GitLogParserStrategy(), false, "example_git.log", "expected_git.json")
             )
         }
     }
