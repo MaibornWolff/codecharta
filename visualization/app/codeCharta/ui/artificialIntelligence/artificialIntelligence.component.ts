@@ -8,7 +8,6 @@ import { pushSorted } from "../../util/nodeDecorator"
 import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange, NodeType } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { getVisibleFileStates } from "../../model/files/files.helper"
-import { metricThresholdsByLanguage, Percentiles } from "./artificialIntelligence.metricThresholds"
 import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { isPathBlacklisted } from "../../util/codeMapHelper"
@@ -17,12 +16,19 @@ import {
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { metricDescriptions } from "../../util/metric/metricDescriptions"
-import percentRound from "percent-round"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
+import {
+	AREA_METRIC,
+	calculateRiskProfile,
+	getAssociatedMetricThresholds,
+	isFileValid,
+	RiskProfile,
+	setRiskProfile
+} from "./riskProfilHelper"
 
 interface MetricValues {
 	[metric: string]: number[]
@@ -45,23 +51,12 @@ interface MetricSuggestionParameters {
 	isOutlier?: boolean
 }
 
-interface RiskProfile {
-	lowRisk: number
-	moderateRisk: number
-	highRisk: number
-	veryHighRisk: number
-}
-
 interface ArtificialIntelligenceControllerViewModel {
 	analyzedProgrammingLanguage: string
 	suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
 	unsuspiciousMetrics: string[]
 	riskProfile: RiskProfile
 }
-
-const HEIGHT_METRIC = "mcc"
-const AREA_METRIC = "rloc"
-const EXCLUDED_FILE_EXTENSION = new Set(["html", "sass", "css", "scss", "txt", "md", "json", undefined])
 
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
@@ -139,16 +134,6 @@ export class ArtificialIntelligenceController
 		}
 	}
 
-	/*	onFilesSelectionChanged(files: FileState[]) {
-		const fileState = getVisibleFileStates(files)
-		const map = accumulatedDataSelector(this.storeService.getState())
-		console.log(map.unifiedMapNode)
-		if (fileState !== undefined) {
-			this.fileState = fileState
-			this.debounceCalculation()
-		}
-	}*/
-
 	private calculate() {
 		const { experimentalFeaturesEnabled } = this.storeService.getState().appSettings
 		if (!experimentalFeaturesEnabled) {
@@ -172,13 +157,13 @@ export class ArtificialIntelligenceController
 				metricValuesByLanguage[fileExtension] = metricValues
 
 				// TODO calculate risk profile only for focused or currently visible but not excluded files.
-				if (this.isFileValid(data, HEIGHT_METRIC, fileExtension)) {
-					totalRloc = this.calculateRiskProfile(data, totalRloc, rlocRisk, fileExtension)
+				if (isFileValid(data, fileExtension, this.blacklist)) {
+					totalRloc = calculateRiskProfile(data, totalRloc, rlocRisk, fileExtension)
 				}
 			}
 
 			if (totalRloc > 0) {
-				this._viewModel.riskProfile = this.setRiskProfile(rlocRisk)
+				this._viewModel.riskProfile = setRiskProfile(rlocRisk)
 			}
 		}
 
@@ -188,19 +173,6 @@ export class ArtificialIntelligenceController
 		if (mainProgrammingLanguage !== undefined) {
 			this.calculateSuspiciousMetrics(metricValuesByLanguage, mainProgrammingLanguage)
 		}
-	}
-
-	private calculateRiskProfile(node: CodeMapNode, totalRloc: number, rlocRisk: RiskProfile, fileExtension: string) {
-		const languageSpecificThresholds = this.getAssociatedMetricThresholds(fileExtension)
-		const thresholds = languageSpecificThresholds[HEIGHT_METRIC]
-		const nodeMetricValue = node.attributes[HEIGHT_METRIC]
-		const nodeRlocValue = node.attributes[AREA_METRIC]
-		totalRloc += nodeRlocValue
-
-		// Idea: We could calculate risk profiles per directory in the future.
-		this.calculateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue, rlocRisk)
-
-		return totalRloc
 	}
 
 	private detectProgrammingLanguageByOccurrence(numberOfFilesPerLanguage: Map<string, number>, fileExtension: string) {
@@ -220,40 +192,6 @@ export class ArtificialIntelligenceController
 			}
 		}
 		return language
-	}
-
-	private setRiskProfile(rlocRisk: RiskProfile) {
-		const [lowRisk, moderateRisk, highRisk, veryHighRisk] = percentRound([
-			rlocRisk.lowRisk,
-			rlocRisk.moderateRisk,
-			rlocRisk.highRisk,
-			rlocRisk.veryHighRisk
-		])
-
-		return { lowRisk, moderateRisk, highRisk, veryHighRisk }
-	}
-
-	private isFileValid(node: CodeMapNode, metricName: string, fileExtension: string) {
-		return (
-			node.type === NodeType.FILE &&
-			!isPathBlacklisted(node.path, this.blacklist, BlacklistType.exclude) &&
-			node.attributes[metricName] !== undefined &&
-			node.attributes[AREA_METRIC] !== undefined &&
-			!EXCLUDED_FILE_EXTENSION.has(fileExtension)
-		)
-	}
-
-	private calculateRlocRisk(nodeMetricValue: number, thresholds: Percentiles, nodeRlocValue: number, rlocRisk: RiskProfile) {
-		if (nodeMetricValue <= thresholds.percentile70) {
-			return (rlocRisk.lowRisk += nodeRlocValue)
-		}
-		if (nodeMetricValue <= thresholds.percentile80) {
-			return (rlocRisk.moderateRisk += nodeRlocValue)
-		}
-		if (nodeMetricValue <= thresholds.percentile90) {
-			return (rlocRisk.highRisk += nodeRlocValue)
-		}
-		return (rlocRisk.veryHighRisk += nodeRlocValue)
 	}
 
 	private calculateSuspiciousMetrics(metricValues: MetricValuesByLanguage[], programmingLanguage: string) {
@@ -295,7 +233,7 @@ export class ArtificialIntelligenceController
 			outliersThresholds: new Map<string, number>()
 		}
 
-		const languageSpecificMetricThresholds = this.getAssociatedMetricThresholds(mainProgrammingLanguage)
+		const languageSpecificMetricThresholds = getAssociatedMetricThresholds(mainProgrammingLanguage)
 
 		for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
 			const valuesOfMetric = metricValues[mainProgrammingLanguage][metricName]
@@ -333,45 +271,15 @@ export class ArtificialIntelligenceController
 				if (value > 0) {
 					if (metricValues[metricIndex] === undefined) {
 						metricValues[metricIndex] = []
-						//allMetricValues[metricIndex] = []
 					}
 					pushSorted(metricValues[metricIndex], node.attributes[metricIndex])
-					//allMetricValues[metricIndex].push(node.attributes[metricIndex])
 				}
 			}
 		}
 	}
-
-	/*	private getSortedMetricValues(aggregatedMap: CodeMapNode, programmingLanguage: string): MetricValues {
-		const metricValues: MetricValues = {}
-
-		for (const { data } of hierarchy(aggregatedMap)) {
-			if (
-				data.type === NodeType.FILE ||
-				!isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
-				this.getFileExtension(data.name) === programmingLanguage
-			) {
-				for (const metricIndex of Object.keys(data.attributes)) {
-					const value = data.attributes[metricIndex]
-					if (value > 0) {
-						if (metricValues[metricIndex] === undefined) {
-							metricValues[metricIndex] = []
-						}
-						pushSorted(metricValues[metricIndex], data.attributes[metricIndex])
-					}
-				}
-			}
-		}
-
-		return metricValues
-	}*/
 
 	private getFileExtension(fileName: string) {
 		return fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : undefined
-	}
-
-	private getAssociatedMetricThresholds(programmingLanguage: string) {
-		return programmingLanguage === "java" ? metricThresholdsByLanguage.java : metricThresholdsByLanguage.miscellaneous
 	}
 }
 
