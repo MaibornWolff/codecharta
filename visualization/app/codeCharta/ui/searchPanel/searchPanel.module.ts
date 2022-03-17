@@ -5,8 +5,8 @@ import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../material/material.module"
 import { SearchBarModule } from "./searchBar/searchBar.module"
-import { MatchingFilesCounterModule } from "../matchingFilesCounter/matchingFilesCounter.module"
-import { MapTreeViewModule } from "../mapTreeView/mapTreeView.module"
+import { MatchingFilesCounterModule } from "./matchingFilesCounter/matchingFilesCounter.module"
+import { MapTreeViewModule } from "./mapTreeView/mapTreeView.module"
 
 @NgModule({
 	imports: [CommonModule, MaterialModule, SearchBarModule, MatchingFilesCounterModule, MapTreeViewModule],

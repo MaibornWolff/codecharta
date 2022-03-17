@@ -32,8 +32,6 @@ import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
 import { MetricDeltaSelectedComponent } from "./attributeSideBar/metricDeltaSelected/metricDeltaSelected.component"
-import { SortingOptionComponent } from "./sortingOption/sortingOption.component"
-import { SortingButtonComponent } from "./sortingButton/sortingButton.component"
 import { AttributeTypeSelectorComponent } from "./attributeSideBar/attributeTypeSelector/attributeTypeSelector.component"
 import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
 import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
@@ -72,8 +70,6 @@ angular
 		"app.codeCharta.ui.maxTreeMapFiles",
 		"app.codeCharta.ui.filePanel"
 	])
-	.directive("ccSortingButton", downgradeComponent({ component: SortingButtonComponent }))
-	.directive("ccSortingOption", downgradeComponent({ component: SortingOptionComponent }))
 	.directive("ccMetricDeltaSelected", downgradeComponent({ component: MetricDeltaSelectedComponent }))
 	.directive("ccAttributeTypeSelector", downgradeComponent({ component: AttributeTypeSelectorComponent }))
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
