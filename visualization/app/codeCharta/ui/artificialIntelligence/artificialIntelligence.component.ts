@@ -22,9 +22,14 @@ import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colo
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 
 interface MetricValues {
 	[metric: string]: number[]
+}
+
+interface MetricValuesByLanguage {
+	[language: string]: MetricValues
 }
 
 interface MetricAssessmentResults {
@@ -71,6 +76,7 @@ export class ArtificialIntelligenceController
 	private _viewModel: ArtificialIntelligenceControllerViewModel = { ...this.defaultViewModel }
 	private fileState: FileState[]
 	private blacklist: BlacklistItem[] = []
+	private aggregatedMap: CodeMapNode
 	private debounceCalculation: () => void
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -126,14 +132,22 @@ export class ArtificialIntelligenceController
 		}
 	}
 
-	onFilesSelectionChanged(files: FileState[]) {
-		const fileState = getVisibleFileStates(files)
+	onFilesSelectionChanged() {
+		this.aggregatedMap = accumulatedDataSelector(this.storeService.getState()).unifiedMapNode
+		if (this.aggregatedMap !== undefined) {
+			this.debounceCalculation()
+		}
+	}
 
+	/*	onFilesSelectionChanged(files: FileState[]) {
+		const fileState = getVisibleFileStates(files)
+		const map = accumulatedDataSelector(this.storeService.getState())
+		console.log(map.unifiedMapNode)
 		if (fileState !== undefined) {
 			this.fileState = fileState
 			this.debounceCalculation()
 		}
-	}
+	}*/
 
 	private calculate() {
 		const { experimentalFeaturesEnabled } = this.storeService.getState().appSettings
@@ -143,40 +157,69 @@ export class ArtificialIntelligenceController
 
 		this._viewModel = { ...this.defaultViewModel }
 
-		const mainProgrammingLanguage = this.getMostFrequentLanguage(this.fileState)
-
-		if (mainProgrammingLanguage !== undefined) {
-			this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
-			this.calculateRiskProfile(this.fileState)
-			this.calculateSuspiciousMetrics(this.fileState, mainProgrammingLanguage)
-		}
-	}
-
-	private calculateRiskProfile(fileState: FileState[]) {
+		const languageByNumberOfFiles = new Map<string, number>()
 		const rlocRisk: RiskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 		let totalRloc = 0
-		for (const { file } of fileState) {
-			for (const { data } of hierarchy(file.map)) {
-				// TODO calculate risk profile only for focused or currently visible but not excluded files.
-				if (this.isFileValid(data, HEIGHT_METRIC)) {
-					const fileExtension = this.getFileExtension(data.name)
-					const languageSpecificThresholds = this.getAssociatedMetricThresholds(fileExtension)
-					const thresholds = languageSpecificThresholds[HEIGHT_METRIC]
-					const nodeMetricValue = data.attributes[HEIGHT_METRIC]
-					const nodeRlocValue = data.attributes[AREA_METRIC]
-					totalRloc += nodeRlocValue
 
-					// Idea: We could calculate risk profiles per directory in the future.
-					this.calculateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue, rlocRisk)
+		const metricValues: MetricValues = {}
+		const metricValuesByLanguage: MetricValuesByLanguage[] = []
+
+		for (const { data } of hierarchy(this.aggregatedMap)) {
+			const fileExtension = this.getFileExtension(data.name)
+			if (data.type === NodeType.FILE && fileExtension !== undefined) {
+				this.detectProgrammingLanguageByOccurrence(languageByNumberOfFiles, fileExtension)
+				this.getSortedMetricValues(data, metricValues)
+				metricValuesByLanguage[fileExtension] = metricValues
+
+				// TODO calculate risk profile only for focused or currently visible but not excluded files.
+				if (this.isFileValid(data, HEIGHT_METRIC, fileExtension)) {
+					totalRloc = this.calculateRiskProfile(data, totalRloc, rlocRisk, fileExtension)
 				}
+			}
+
+			if (totalRloc > 0) {
+				this._viewModel.riskProfile = this.setRiskProfile(rlocRisk)
 			}
 		}
 
-		if (totalRloc === 0) {
-			return
-		}
+		const mainProgrammingLanguage = this.getMostFrequentLanguage(languageByNumberOfFiles)
+		this._viewModel.analyzedProgrammingLanguage = mainProgrammingLanguage.length > 0 ? mainProgrammingLanguage : undefined
 
-		this._viewModel.riskProfile = this.setRiskProfile(rlocRisk)
+		if (mainProgrammingLanguage !== undefined) {
+			this.calculateSuspiciousMetrics(metricValuesByLanguage, mainProgrammingLanguage)
+		}
+	}
+
+	private calculateRiskProfile(node: CodeMapNode, totalRloc: number, rlocRisk: RiskProfile, fileExtension: string) {
+		const languageSpecificThresholds = this.getAssociatedMetricThresholds(fileExtension)
+		const thresholds = languageSpecificThresholds[HEIGHT_METRIC]
+		const nodeMetricValue = node.attributes[HEIGHT_METRIC]
+		const nodeRlocValue = node.attributes[AREA_METRIC]
+		totalRloc += nodeRlocValue
+
+		// Idea: We could calculate risk profiles per directory in the future.
+		this.calculateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue, rlocRisk)
+
+		return totalRloc
+	}
+
+	private detectProgrammingLanguageByOccurrence(numberOfFilesPerLanguage: Map<string, number>, fileExtension: string) {
+		const filesPerLanguage = numberOfFilesPerLanguage.get(fileExtension) ?? 0
+		numberOfFilesPerLanguage.set(fileExtension, filesPerLanguage + 1)
+	}
+
+	private getMostFrequentLanguage(numberOfFilesPerLanguage: Map<string, number>) {
+		let language = ""
+		if (numberOfFilesPerLanguage.size > 0) {
+			let max = -1
+			for (const [key, filesPerLanguage] of numberOfFilesPerLanguage) {
+				if (max < filesPerLanguage) {
+					max = filesPerLanguage
+					language = key
+				}
+			}
+		}
+		return language
 	}
 
 	private setRiskProfile(rlocRisk: RiskProfile) {
@@ -190,13 +233,13 @@ export class ArtificialIntelligenceController
 		return { lowRisk, moderateRisk, highRisk, veryHighRisk }
 	}
 
-	private isFileValid(node: CodeMapNode, metricName: string) {
+	private isFileValid(node: CodeMapNode, metricName: string, fileExtension: string) {
 		return (
 			node.type === NodeType.FILE &&
 			!isPathBlacklisted(node.path, this.blacklist, BlacklistType.exclude) &&
 			node.attributes[metricName] !== undefined &&
 			node.attributes[AREA_METRIC] !== undefined &&
-			!EXCLUDED_FILE_EXTENSION.has(this.getFileExtension(node.name))
+			!EXCLUDED_FILE_EXTENSION.has(fileExtension)
 		)
 	}
 
@@ -213,8 +256,7 @@ export class ArtificialIntelligenceController
 		return (rlocRisk.veryHighRisk += nodeRlocValue)
 	}
 
-	private calculateSuspiciousMetrics(fileState: FileState[], programmingLanguage: string) {
-		const metricValues = this.getSortedMetricValues(fileState, programmingLanguage)
+	private calculateSuspiciousMetrics(metricValues: MetricValuesByLanguage[], programmingLanguage: string) {
 		const metricAssessmentResults = this.findGoodAndBadMetrics(metricValues, programmingLanguage)
 		const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
 
@@ -246,17 +288,17 @@ export class ArtificialIntelligenceController
 		return 0
 	}
 
-	private findGoodAndBadMetrics(metricValues, programmingLanguage): MetricAssessmentResults {
+	private findGoodAndBadMetrics(metricValues: MetricValuesByLanguage[], mainProgrammingLanguage: string): MetricAssessmentResults {
 		const metricAssessmentResults: MetricAssessmentResults = {
 			suspiciousMetrics: new Map<string, ColorRange>(),
 			unsuspiciousMetrics: [],
 			outliersThresholds: new Map<string, number>()
 		}
 
-		const languageSpecificMetricThresholds = this.getAssociatedMetricThresholds(programmingLanguage)
+		const languageSpecificMetricThresholds = this.getAssociatedMetricThresholds(mainProgrammingLanguage)
 
 		for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
-			const valuesOfMetric = metricValues[metricName]
+			const valuesOfMetric = metricValues[mainProgrammingLanguage][metricName]
 
 			if (valuesOfMetric === undefined) {
 				continue
@@ -284,61 +326,48 @@ export class ArtificialIntelligenceController
 		return metricAssessmentResults
 	}
 
-	private getSortedMetricValues(fileState: FileState[], programmingLanguage: string): MetricValues {
+	private getSortedMetricValues(node: CodeMapNode, metricValues: MetricValues) {
+		if (!isPathBlacklisted(node.path, this.blacklist, BlacklistType.exclude)) {
+			for (const metricIndex of Object.keys(node.attributes)) {
+				const value = node.attributes[metricIndex]
+				if (value > 0) {
+					if (metricValues[metricIndex] === undefined) {
+						metricValues[metricIndex] = []
+						//allMetricValues[metricIndex] = []
+					}
+					pushSorted(metricValues[metricIndex], node.attributes[metricIndex])
+					//allMetricValues[metricIndex].push(node.attributes[metricIndex])
+				}
+			}
+		}
+	}
+
+	/*	private getSortedMetricValues(aggregatedMap: CodeMapNode, programmingLanguage: string): MetricValues {
 		const metricValues: MetricValues = {}
 
-		for (const { file } of fileState) {
-			for (const { data } of hierarchy(file.map)) {
-				if (
-					data.type === NodeType.FILE ||
-					!isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
-					this.getFileExtension(data.name) === programmingLanguage
-				) {
-					for (const metricIndex of Object.keys(data.attributes)) {
-						const value = data.attributes[metricIndex]
-						if (value > 0) {
-							if (metricValues[metricIndex] === undefined) {
-								metricValues[metricIndex] = []
-							}
-							pushSorted(metricValues[metricIndex], data.attributes[metricIndex])
+		for (const { data } of hierarchy(aggregatedMap)) {
+			if (
+				data.type === NodeType.FILE ||
+				!isPathBlacklisted(data.path, this.blacklist, BlacklistType.exclude) ||
+				this.getFileExtension(data.name) === programmingLanguage
+			) {
+				for (const metricIndex of Object.keys(data.attributes)) {
+					const value = data.attributes[metricIndex]
+					if (value > 0) {
+						if (metricValues[metricIndex] === undefined) {
+							metricValues[metricIndex] = []
 						}
+						pushSorted(metricValues[metricIndex], data.attributes[metricIndex])
 					}
 				}
 			}
 		}
 
 		return metricValues
-	}
+	}*/
 
 	private getFileExtension(fileName: string) {
 		return fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : undefined
-	}
-
-	private getMostFrequentLanguage(fileState: FileState[]) {
-		const numberOfFilesPerLanguage = new Map()
-		for (const { file } of fileState) {
-			for (const { data } of hierarchy(file.map)) {
-				if (data.name.includes(".") && data.type === NodeType.FILE) {
-					const fileExtension = data.name.slice(data.name.lastIndexOf(".") + 1)
-					const filesPerLanguage = numberOfFilesPerLanguage.get(fileExtension) ?? 0
-					numberOfFilesPerLanguage.set(fileExtension, filesPerLanguage + 1)
-				}
-			}
-		}
-
-		if (numberOfFilesPerLanguage.size === 0) {
-			return
-		}
-
-		let language = ""
-		let max = -1
-		for (const [key, filesPerLanguage] of numberOfFilesPerLanguage) {
-			if (max < filesPerLanguage) {
-				max = filesPerLanguage
-				language = key
-			}
-		}
-		return language
 	}
 
 	private getAssociatedMetricThresholds(programmingLanguage: string) {
