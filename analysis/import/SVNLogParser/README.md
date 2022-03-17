@@ -1,6 +1,6 @@
 # SVNLogParser
 
-Generates visualisation data from repository (Git or SVN) logs. Deprecated for Git, please use GitLogParser. It supports the following metrics per file:
+Generates visualisation data from svn repository logs. It supports the following metrics per file:
 
 | Metric                 | Description                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------------- |
@@ -28,10 +28,6 @@ The names of authors are saved when the --add-author flag is set.
 | SCM | Log format          | Command for log creation               | tracks renames | ignores deleted files | supports code churn |
 | --- | ------------------- | -------------------------------------- | -------------- | --------------------- | ------------------- |
 | SVN | SVN_LOG             | `svn log --verbose`                    | yes            | yes                   | no                  |
-| git | GIT_LOG             | `git log --name-status --topo-order`   | yes            | yes                   | no                  |
-| git | GIT_LOG_NUMSTAT     | `git log --numstat --topo-order`       | yes            | no                    | yes                 |
-| git | GIT_LOG_NUMSTAT_RAW | `git log --numstat --raw --topo-order` | yes            | yes                   | yes                 |
-| git | GIT_LOG_RAW         | `git log --raw --topo-order`           | yes            | yes                   | no                  |
 
 You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
 
@@ -39,25 +35,16 @@ You can also use the bash script anongit which generates an anonymous git log wi
 
 See `ccsh -h` for help. Standard usage:
 
-> `ccsh svnlogparser <log_file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
+> `ccsh svnlogparser <log_file>`
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
 If a project is piped into the SVNLogParser, the results and the piped project are merged.
 The resulting project has the project name specified for the SVNLogParser.
 
-### Example using Git
-
-**Deprecated, use GitLogParser**
-
--   `cd <my_git_project>`
--   `git log --numstat --raw --topo-order > git.log` (or `anongit > git.log`)
--   `./ccsh svnlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o output.cc.json`
--   load `output.cc.json` in visualization
-
 ### Example using SVN
 
 -   `cd <my_svn_project>`
 -   `svn log --verbose > svn.log`
--   `./ccsh svnlogparser svn.log --input-format SVN_LOG -o output.cc.json`
+-   `./ccsh svnlogparser svn.log -o output.cc.json`
 -   load `output.cc.json` in visualization

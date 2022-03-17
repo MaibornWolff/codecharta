@@ -1,15 +1,10 @@
 package de.maibornwolff.codecharta.importer.svnlogparser
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.importer.svnlogparser.InputFormatNames.GIT_LOG
 import de.maibornwolff.codecharta.importer.svnlogparser.InputFormatNames.SVN_LOG
 import de.maibornwolff.codecharta.importer.svnlogparser.converter.ProjectConverter
 import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
-import de.maibornwolff.codecharta.importer.svnlogparser.parser.git.GitLogNumstatParserStrategy
-import de.maibornwolff.codecharta.importer.svnlogparser.parser.git.GitLogNumstatRawParserStrategy
-import de.maibornwolff.codecharta.importer.svnlogparser.parser.git.GitLogParserStrategy
-import de.maibornwolff.codecharta.importer.svnlogparser.parser.git.GitLogRawParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -56,14 +51,12 @@ class SVNLogParser(
     @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
     private var silent = false
 
-    @CommandLine.Option(names = ["--input-format"], description = ["input format for parsing"])
-    private var inputFormatNames: InputFormatNames = GIT_LOG
+    private var inputFormatNames: InputFormatNames = SVN_LOG
 
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
 
-    private val logParserStrategy: LogParserStrategy
-        get() = getLogParserStrategyByInputFormat(inputFormatNames)
+    private val logParserStrategy: LogParserStrategy = SVNLogParserStrategy()
 
     private val metricsFactory: MetricsFactory
         get() {
@@ -80,8 +73,7 @@ class SVNLogParser(
             )
 
             return when (inputFormatNames) {
-                GIT_LOG, InputFormatNames.GIT_LOG_RAW, SVN_LOG -> MetricsFactory(nonChurnMetrics)
-                else -> MetricsFactory()
+                SVN_LOG -> MetricsFactory(nonChurnMetrics)
             }
         }
 
@@ -113,16 +105,6 @@ class SVNLogParser(
         return null
     }
 
-    private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy {
-        return when (formatName) {
-            GIT_LOG -> GitLogParserStrategy()
-            InputFormatNames.GIT_LOG_NUMSTAT -> GitLogNumstatParserStrategy()
-            InputFormatNames.GIT_LOG_RAW -> GitLogRawParserStrategy()
-            InputFormatNames.GIT_LOG_NUMSTAT_RAW -> GitLogNumstatRawParserStrategy()
-            SVN_LOG -> SVNLogParserStrategy()
-        }
-    }
-
     private fun createProjectFromLog(
         pathToLog: File,
         parserStrategy: LogParserStrategy,
@@ -150,12 +132,7 @@ class SVNLogParser(
     private fun printLogCreation() {
         println("  Log creation via:")
 
-        printLogCreationByInputFormatNames(inputFormatNames)
-    }
-
-    private fun printLogCreationByInputFormatNames(actualInfoFormatName: InputFormatNames?) {
-        val creationCommand = getLogParserStrategyByInputFormat(actualInfoFormatName!!).creationCommand()
-        println(String.format("  \t%s :\t\"%s\".", actualInfoFormatName, creationCommand))
+        println(String.format("  \t%s :\t\"%s\".", inputFormatNames, logParserStrategy.creationCommand()))
     }
 
     private fun printMetricInfo() {

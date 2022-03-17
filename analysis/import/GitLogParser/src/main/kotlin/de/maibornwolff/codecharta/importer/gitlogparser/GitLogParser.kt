@@ -144,7 +144,6 @@ class GitLogParser(
     ): Project {
         val namesInProject = readFileNameListFile(pathToNameTree)
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
-        error.println("ATTENTION: This is an EXPERIMENTAL PARSER, use at your own risk!")
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
