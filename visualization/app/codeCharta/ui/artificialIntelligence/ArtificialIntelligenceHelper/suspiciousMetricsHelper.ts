@@ -1,5 +1,5 @@
 import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange } from "../../../codeCharta.model"
-import { getAssociatedMetricThresholds } from "./riskProfilHelper"
+import { getAssociatedMetricThresholds } from "./riskProfileHelper"
 import { metricDescriptions } from "../../../util/metric/metricDescriptions"
 import { isPathBlacklisted } from "../../../util/codeMapHelper"
 import { pushSorted } from "../../../util/nodeDecorator"
