@@ -3,7 +3,6 @@ import "../codeMap/threeViewer/threeViewer.module"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
-import { DialogService } from "../dialog/dialog.service"
 import { CUSTOM_CONFIG_ITEM_GROUPS, FILE_STATES } from "../../util/dataMocks"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { CustomConfigsController } from "./customConfigs.component"
@@ -19,18 +18,11 @@ describe("CustomConfigsController", () => {
 	let customConfigsController: CustomConfigsController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let dialogService: DialogService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let threeCameraService: ThreeCameraService
 
 	function rebuildController() {
-		customConfigsController = new CustomConfigsController(
-			$rootScope,
-			storeService,
-			dialogService,
-			threeOrbitControlsService,
-			threeCameraService
-		)
+		customConfigsController = new CustomConfigsController($rootScope, storeService, threeOrbitControlsService, threeCameraService)
 	}
 
 	function restartSystem() {
@@ -38,7 +30,6 @@ describe("CustomConfigsController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		dialogService = getService<DialogService>("dialogService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 
@@ -98,16 +89,6 @@ describe("CustomConfigsController", () => {
 			customConfigsController.initView()
 
 			expect(customConfigsController["_viewModel"].hasDownloadableConfigs).toBe(false)
-		})
-	})
-
-	describe("showAddCustomConfigSettings", () => {
-		it("should call showAddCustomConfigSettings", () => {
-			dialogService.showAddCustomConfigSettings = jest.fn()
-
-			customConfigsController.showAddCustomConfigSettings()
-
-			expect(dialogService.showAddCustomConfigSettings).toHaveBeenCalled()
 		})
 	})
 
