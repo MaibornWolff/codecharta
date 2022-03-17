@@ -1,0 +1,75 @@
+.cc-add-custom-config-dialog .mat-dialog-container {
+	padding: 0;
+	width: 500px;
+	overflow: hidden;
+
+	mat-toolbar {
+		&.header {
+			background-color: #009688;
+
+			h2 {
+				color: white;
+			}
+		}
+	}
+
+	.dialog-content {
+		padding: 0 24px;
+		margin: 10px 0;
+
+		mat-form-field {
+			width: 100%;
+		}
+
+		label {
+			color: rgba(0, 0, 0, 0.54);
+			font-size: 13px;
+		}
+
+		input {
+			margin-top: 12px;
+		}
+	}
+
+	.mat-dialog-actions {
+		margin: 0;
+		padding: 0 8px;
+		position: relative;
+
+		cc-download-and-purge-configs {
+			text-align: right;
+
+			.exceed-local-storage-message {
+				display: block;
+				text-align: left;
+				padding: 0 16px;
+				color: #b02929;
+			}
+			.exceed-local-storage-button {
+				margin-right: 89px;
+			}
+		}
+
+		.mat-button {
+			padding: 0 8px;
+			margin: 8px 0 8px 8px;
+
+			&.exceed-local-storage-button {
+				color: #ffffff;
+				background-color: #b02929;
+			}
+
+			&.add-custom-config-button {
+				color: rgb(0, 150, 136);
+				background-color: rgba(138, 132, 132, 0.08);
+				position: absolute;
+				right: 16px;
+				bottom: 0;
+			}
+
+			&.add-custom-config-button[disabled] {
+				color: grey;
+			}
+		}
+	}
+}

@@ -10,7 +10,11 @@ import { MatButtonToggleModule } from "@angular/material/button-toggle"
 import { MatDialogModule } from "@angular/material/dialog"
 import { MatCardModule } from "@angular/material/card"
 import { MatCheckboxModule } from "@angular/material/checkbox"
+import { MatToolbarModule } from "@angular/material/toolbar"
+import { MatFormFieldModule } from "@angular/material/form-field"
+import { MatInputModule } from "@angular/material/input"
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
+import { MatListModule } from "@angular/material/list"
 
 const materialModules = [
 	MatSelectModule,
@@ -24,7 +28,11 @@ const materialModules = [
 	MatButtonToggleModule,
 	MatDialogModule,
 	MatCheckboxModule,
-	MatProgressSpinnerModule
+	MatToolbarModule,
+	MatFormFieldModule,
+	MatInputModule,
+	MatProgressSpinnerModule,
+	MatListModule
 ]
 
 @NgModule({

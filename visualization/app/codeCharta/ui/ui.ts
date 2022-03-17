@@ -13,9 +13,7 @@ import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./centerMapButton/centerMapButton.module"
 import "./searchPanel/searchPanel.module"
-import "./searchPanelModeSelector/searchPanelModeSelector.module"
 import "./areaSettingsPanel/areaSettingsPanel.module"
-import "./blacklistPanel/blacklistPanel.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
 import "./dialog/dialog.module"
@@ -57,10 +55,8 @@ angular
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.centerMapButton",
 		"app.codeCharta.ui.searchPanel",
-		"app.codeCharta.ui.searchPanelModeSelector",
 		"app.codeCharta.ui.metricType",
 		"app.codeCharta.ui.areaSettingsPanel",
-		"app.codeCharta.ui.blacklistPanel",
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.colorSettingsPanel",
 		"app.codeCharta.ui.dialog",
