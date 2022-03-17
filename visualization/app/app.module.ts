@@ -31,7 +31,6 @@ import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/ad
 import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
 import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
-import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
@@ -88,7 +87,6 @@ import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.modul
 		InvertAreaOptionComponent,
 		AddCustomConfigButtonComponent,
 		FocusButtonsComponent,
-		MarkFolderRowComponent,
 		RemoveFileButtonComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
