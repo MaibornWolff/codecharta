@@ -25,9 +25,9 @@ The names of authors are saved when the --add-author flag is set.
 
 ### Creating the repository log for metric generation
 
-| SCM | Log format          | Command for log creation               | tracks renames | ignores deleted files | supports code churn |
-| --- | ------------------- | -------------------------------------- | -------------- | --------------------- | ------------------- |
-| SVN | SVN_LOG             | `svn log --verbose`                    | yes            | yes                   | no                  |
+| SCM | Log format | Command for log creation | tracks renames | ignores deleted files | supports code churn |
+| --- | ---------- | ------------------------ | -------------- | --------------------- | ------------------- |
+| SVN | SVN_LOG    | `svn log --verbose`      | yes            | yes                   | no                  |
 
 You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
 
