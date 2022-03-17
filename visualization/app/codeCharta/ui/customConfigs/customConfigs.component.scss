@@ -3,7 +3,7 @@
 }
 
 .custom-configs-component {
-	.custom-configs-button {
+	cc-add-custom-config-button.custom-configs-button-in-ribbonbar {
 		height: 22px;
 		min-height: 0;
 		line-height: 23px;
@@ -44,7 +44,7 @@
 	}
 
 	.custom-configs-item {
-		cc-add-custom-config-button {
+		cc-add-custom-config-button.custom-configs-button-in-custom-views {
 			padding: 0;
 			margin: 0;
 			display: inline-block;
