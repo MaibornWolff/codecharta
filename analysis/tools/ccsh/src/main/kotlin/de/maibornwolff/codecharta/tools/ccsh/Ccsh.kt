@@ -9,8 +9,8 @@ import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.csv.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
-import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser
-import de.maibornwolff.codecharta.importer.scmlogparserv2.SCMLogParserV2
+import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
+import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
@@ -32,8 +32,8 @@ import java.util.concurrent.Callable
         CSVImporter::class,
         SonarImporterMain::class,
         SourceMonitorImporter::class,
-        SCMLogParser::class,
-        SCMLogParserV2::class,
+        SVNLogParser::class,
+        GitLogParser::class,
         Installer::class,
         CSVExporter::class,
         CrococosmoImporter::class,

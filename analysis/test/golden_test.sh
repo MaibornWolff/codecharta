@@ -108,7 +108,7 @@ check_pipe() {
    echo " -- expect pipes to work"
    sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ \
         | sh "${CCSH}" sourcecodeparser data/codecharta/ \
-        | sh "${CCSH}" scmlogparser --input-format=SVN_LOG data/codecharta/SVNTestLog.txt \
+        | sh "${CCSH}" svnlogparser --input-format=SVN_LOG data/codecharta/SVNTestLog.txt \
         | sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
             -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
     validate ${INSTALL_DIR}/piped_out.json
