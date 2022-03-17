@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Remove blacklist entry on click of name as well [#2712](https://github.com/MaibornWolff/codecharta/pull/2712)
+-   Mark SCMLogParserV2 as stable and deprecate SCMLogParser for Git [2725](https://github.com/MaibornWolff/codecharta/pull/2725)
+    -   Rename SCMLogParserV2 to GitLogParser
+    -   Rename SCMLogParser to SVNLogParser and remove git parsing
 
 ## [1.93.0] - 2022-03-14
 
