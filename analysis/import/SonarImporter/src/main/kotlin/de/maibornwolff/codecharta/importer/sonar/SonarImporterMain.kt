@@ -33,7 +33,7 @@ class SonarImporterMain(
         "-    sonar.login=c123d456\n" +
         "-    sonar.projectKey=de.foo:bar\n" +
         "That you use to upload your code to sonar.\n" +
-        "Then execute [sonarimport https://sonar.foo de.foo:bar -u de.foo:bar]"])
+        "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]"])
     private var help = false
 
     @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])
