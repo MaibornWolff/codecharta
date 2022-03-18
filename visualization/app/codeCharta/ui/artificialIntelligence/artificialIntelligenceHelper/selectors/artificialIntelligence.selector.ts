@@ -5,7 +5,7 @@ import {
 	HEIGHT_METRIC,
 	RiskProfile,
 	getPercentagesOfRiskProfile
-} from "./riskProfileHelper"
+} from "../riskProfileHelper"
 import {
 	calculateSuspiciousMetrics,
 	findGoodAndBadMetrics,
@@ -13,16 +13,16 @@ import {
 	MetricSuggestionParameters,
 	MetricValues,
 	MetricValuesByLanguage
-} from "./suspiciousMetricsHelper"
+} from "../suspiciousMetricsHelper"
 import { hierarchy } from "d3-hierarchy"
-import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../codeCharta.model"
-import { getMostFrequentLanguage } from "./MainProgrammingLanguageHelper"
-import { isPathBlacklisted } from "../../../util/codeMapHelper"
-import { createSelector } from "../../../state/angular-redux/createSelector"
-import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { CcState } from "../../../state/store/store"
-import { unifiedMapNodeSelector } from "../../../state/selectors/accumulatedData/unifiedMapNode.selector"
-import { experimentalFeaturesEnabledSelector } from "../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
+import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../../codeCharta.model"
+import { getMostFrequentLanguage } from "../MainProgrammingLanguageHelper"
+import { isPathBlacklisted } from "../../../../util/codeMapHelper"
+import { createSelector } from "../../../../state/angular-redux/createSelector"
+import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
+import { CcState } from "../../../../state/store/store"
+import { unifiedMapNodeSelector } from "../../../../state/selectors/accumulatedData/unifiedMapNode.selector"
+import { experimentalFeaturesEnabledSelector } from "../../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 
 export interface ArtificialIntelligenceControllerViewModel {
 	analyzedProgrammingLanguage: string

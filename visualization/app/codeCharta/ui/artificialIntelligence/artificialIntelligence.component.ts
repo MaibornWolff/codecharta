@@ -8,12 +8,12 @@ import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colo
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { AREA_METRIC } from "./ArtificialIntelligenceHelper/riskProfileHelper"
-import { MetricSuggestionParameters } from "./ArtificialIntelligenceHelper/suspiciousMetricsHelper"
+import { AREA_METRIC } from "./artificialIntelligenceHelper/riskProfileHelper"
+import { MetricSuggestionParameters } from "./artificialIntelligenceHelper/suspiciousMetricsHelper"
 import {
 	ArtificialIntelligenceControllerViewModel,
 	artificialIntelligenceSelector
-} from "./ArtificialIntelligenceHelper/artificialIntelligenceCalculationHelper"
+} from "./artificialIntelligenceHelper/selectors/artificialIntelligence.selector"
 
 export class ArtificialIntelligenceController implements StoreSubscriber {
 	viewModel: ArtificialIntelligenceControllerViewModel | undefined = {
