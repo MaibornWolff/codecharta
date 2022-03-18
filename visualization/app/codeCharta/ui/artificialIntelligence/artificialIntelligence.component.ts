@@ -30,15 +30,19 @@ export class ArtificialIntelligenceController implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 
 		this.debounceCalculation = debounce(() => {
-			const newViewModel = artificialIntelligenceSelector(this.storeService.getState())
-			if (this.viewModel !== newViewModel) {
-				this.viewModel = newViewModel
-			}
+			this.setViewModel()
 		}, 10)
 	}
 
 	onStoreChanged() {
 		this.debounceCalculation()
+	}
+
+	setViewModel() {
+		const newViewModel = artificialIntelligenceSelector(this.storeService.getState())
+		if (this.viewModel !== newViewModel) {
+			this.viewModel = newViewModel
+		}
 	}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, isOutlier: boolean) {
