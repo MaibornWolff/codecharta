@@ -16,7 +16,7 @@ import {
 } from "../suspiciousMetricsHelper"
 import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../../codeCharta.model"
-import { getMostFrequentLanguage } from "../MainProgrammingLanguageHelper"
+import { getMostFrequentLanguage } from "../mainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
