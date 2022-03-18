@@ -19,6 +19,11 @@ import { AppSettings, BlacklistItem, BlacklistType, CodeMapNode, NodeType } from
 import { getMostFrequentLanguage } from "./MainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../util/codeMapHelper"
 import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
+import { createSelector } from "../../../state/angular-redux/createSelector"
+import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
+import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { CcState } from "../../../state/store/store"
+import { unifiedMapNodeSelector } from "../../../state/selectors/accumulatedData/unifiedMapNode.selector"
 
 export interface ArtificialIntelligenceControllerViewModel {
 	analyzedProgrammingLanguage: string
@@ -27,11 +32,7 @@ export interface ArtificialIntelligenceControllerViewModel {
 	riskProfile: RiskProfile
 }
 
-export function calculate(
-	appSettings: AppSettings,
-	map: CodeMapNode,
-	blacklist: BlacklistItem[]
-): ArtificialIntelligenceControllerViewModel {
+export const calculate = (appSettings: AppSettings, map: CodeMapNode, blacklist: BlacklistItem[]) => {
 	if (!appSettings.experimentalFeaturesEnabled) {
 		return
 	}
@@ -98,3 +99,8 @@ function isFileValid(node: CodeMapNode, fileExtension: string) {
 		!EXCLUDED_FILE_EXTENSION.has(fileExtension)
 	)
 }
+
+export const artificialIntelligenceSelector: (state: CcState) => ArtificialIntelligenceControllerViewModel = createSelector(
+	[appSettingsSelector, unifiedMapNodeSelector, blacklistSelector],
+	calculate
+)

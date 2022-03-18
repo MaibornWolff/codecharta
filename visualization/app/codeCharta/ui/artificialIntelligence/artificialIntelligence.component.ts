@@ -3,7 +3,7 @@ import debounce from "lodash.debounce"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
-import { BlacklistItem, CodeMapNode, ColorRange } from "../../codeCharta.model"
+import { CodeMapNode, ColorRange } from "../../codeCharta.model"
 import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import {
@@ -19,7 +19,7 @@ import { AREA_METRIC } from "./ArtificialIntelligenceHelper/riskProfileHelper"
 import { MetricSuggestionParameters } from "./ArtificialIntelligenceHelper/suspiciousMetricsHelper"
 import {
 	ArtificialIntelligenceControllerViewModel,
-	calculate
+	artificialIntelligenceSelector
 } from "./ArtificialIntelligenceHelper/artificialIntelligenceCalculationHelper"
 
 export class ArtificialIntelligenceController
@@ -32,7 +32,6 @@ export class ArtificialIntelligenceController
 		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	}
 
-	private blacklist: BlacklistItem[] = []
 	private aggregatedMap: CodeMapNode
 	private debounceCalculation: () => void
 
@@ -43,12 +42,26 @@ export class ArtificialIntelligenceController
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 
 		this.debounceCalculation = debounce(() => {
-			this.viewModel = calculate(this.storeService.getState().appSettings, this.aggregatedMap, this.blacklist)
+			this.viewModel = artificialIntelligenceSelector(this.storeService.getState())
 		}, 10)
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
 		if (experimentalFeaturesEnabled) {
+			this.debounceCalculation()
+		}
+	}
+
+	onBlacklistChanged() {
+		this.aggregatedMap = accumulatedDataSelector(this.storeService.getState()).unifiedMapNode
+		if (this.aggregatedMap !== undefined) {
+			this.debounceCalculation()
+		}
+	}
+
+	onFilesSelectionChanged() {
+		this.aggregatedMap = accumulatedDataSelector(this.storeService.getState()).unifiedMapNode
+		if (this.aggregatedMap !== undefined) {
 			this.debounceCalculation()
 		}
 	}
@@ -77,21 +90,6 @@ export class ArtificialIntelligenceController
 		this.storeService.dispatch(setColorMetric(metric.metric))
 		this.storeService.dispatch(setColorRange(colorRange))
 		this.storeService.dispatch(setMapColors(mapColors))
-	}
-
-	onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.blacklist = blacklist
-		this.aggregatedMap = accumulatedDataSelector(this.storeService.getState()).unifiedMapNode
-		if (this.aggregatedMap !== undefined) {
-			this.debounceCalculation()
-		}
-	}
-
-	onFilesSelectionChanged() {
-		this.aggregatedMap = accumulatedDataSelector(this.storeService.getState()).unifiedMapNode
-		if (this.aggregatedMap !== undefined) {
-			this.debounceCalculation()
-		}
 	}
 }
 
