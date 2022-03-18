@@ -1,15 +1,24 @@
-import { calculateRiskProfile, isFileValid, RiskProfile, setRiskProfile } from "./riskProfileHelper"
+import {
+	AREA_METRIC,
+	calculateRiskProfile,
+	EXCLUDED_FILE_EXTENSION,
+	HEIGHT_METRIC,
+	RiskProfile,
+	getPercentagesOfRiskProfile
+} from "./riskProfileHelper"
 import {
 	calculateSuspiciousMetrics,
 	findGoodAndBadMetrics,
-	getSortedMetricValues,
+	setMetricValues,
 	MetricSuggestionParameters,
 	MetricValues,
 	MetricValuesByLanguage
 } from "./suspiciousMetricsHelper"
 import { hierarchy } from "d3-hierarchy"
-import { AppSettings, BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
-import { detectProgrammingLanguageByOccurrence, getMostFrequentLanguage } from "./MainProgrammingLanguageHelper"
+import { AppSettings, BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { getMostFrequentLanguage } from "./MainProgrammingLanguageHelper"
+import { isPathBlacklisted } from "../../../util/codeMapHelper"
+import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
 
 export interface ArtificialIntelligenceControllerViewModel {
 	analyzedProgrammingLanguage: string
@@ -34,9 +43,9 @@ export function calculate(
 		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	}
 
-	const languageByNumberOfFiles = new Map<string, number>()
+	const numberOfFilesByLanguage = new Map<string, number>()
 
-	const rlocRisk: RiskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
+	const rlocRisk = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	let totalRloc = 0
 
 	const metricValues: MetricValues = {}
@@ -44,23 +53,26 @@ export function calculate(
 
 	for (const { data } of hierarchy(map)) {
 		const fileExtension = getFileExtension(data.name)
-		if (data.type === NodeType.FILE && fileExtension !== undefined) {
-			detectProgrammingLanguageByOccurrence(languageByNumberOfFiles, fileExtension)
-			getSortedMetricValues(data, metricValues, blacklist)
+		if (data.type === NodeType.FILE && fileExtension !== undefined && !isPathBlacklisted(data.path, blacklist, BlacklistType.exclude)) {
+			const filesPerLanguage = numberOfFilesByLanguage.get(fileExtension) ?? 0
+			numberOfFilesByLanguage.set(fileExtension, filesPerLanguage + 1)
+
+			setMetricValues(data, metricValues)
 			metricValuesByLanguage[fileExtension] = metricValues
 
-			if (isFileValid(data, fileExtension, blacklist)) {
-				totalRloc = calculateRiskProfile(data, totalRloc, rlocRisk, fileExtension)
+			if (isFileValid(data, fileExtension)) {
+				totalRloc += data.attributes[AREA_METRIC]
+				calculateRiskProfile(data, rlocRisk, fileExtension)
 			}
 		}
 
 		if (totalRloc > 0) {
-			artificialIntelligenceViewModel.riskProfile = setRiskProfile(rlocRisk)
+			artificialIntelligenceViewModel.riskProfile = getPercentagesOfRiskProfile(rlocRisk)
 		}
 	}
 
-	const mainProgrammingLanguage = getMostFrequentLanguage(languageByNumberOfFiles)
-	artificialIntelligenceViewModel.analyzedProgrammingLanguage = mainProgrammingLanguage.length > 0 ? mainProgrammingLanguage : undefined
+	const mainProgrammingLanguage = getMostFrequentLanguage(numberOfFilesByLanguage)
+	artificialIntelligenceViewModel.analyzedProgrammingLanguage = mainProgrammingLanguage
 
 	if (mainProgrammingLanguage !== undefined) {
 		const metricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, mainProgrammingLanguage)
@@ -71,6 +83,18 @@ export function calculate(
 	return artificialIntelligenceViewModel
 }
 
-export function getFileExtension(fileName: string) {
+export function getAssociatedMetricThresholds(programmingLanguage: string) {
+	return programmingLanguage === "java" ? metricThresholdsByLanguage.java : metricThresholdsByLanguage.miscellaneous
+}
+
+function getFileExtension(fileName: string) {
 	return fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : undefined
+}
+
+function isFileValid(node: CodeMapNode, fileExtension: string) {
+	return (
+		node.attributes[HEIGHT_METRIC] !== undefined &&
+		node.attributes[AREA_METRIC] !== undefined &&
+		!EXCLUDED_FILE_EXTENSION.has(fileExtension)
+	)
 }

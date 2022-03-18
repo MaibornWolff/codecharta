@@ -1,8 +1,6 @@
-import { BlacklistItem, BlacklistType, CodeMapNode, ColorRange } from "../../../codeCharta.model"
-import { getAssociatedMetricThresholds } from "./riskProfileHelper"
+import { CodeMapNode, ColorRange } from "../../../codeCharta.model"
 import { metricDescriptions } from "../../../util/metric/metricDescriptions"
-import { isPathBlacklisted } from "../../../util/codeMapHelper"
-import { pushSorted } from "../../../util/nodeDecorator"
+import { getAssociatedMetricThresholds } from "./artificialIntelligenceCalculationHelper"
 
 export interface MetricValues {
 	[metric: string]: number[]
@@ -43,21 +41,20 @@ export function calculateSuspiciousMetrics(metricAssessmentResults: MetricAssess
 	return [...noticeableMetricSuggestionLinks.values()].sort(compareSuspiciousMetricSuggestionLinks)
 }
 
-export function getSortedMetricValues(node: CodeMapNode, metricValues: MetricValues, blacklist: BlacklistItem[]) {
-	if (!isPathBlacklisted(node.path, blacklist, BlacklistType.exclude)) {
-		for (const metricIndex of Object.keys(node.attributes)) {
-			const value = node.attributes[metricIndex]
-			if (value > 0) {
-				if (metricValues[metricIndex] === undefined) {
-					metricValues[metricIndex] = []
-				}
-				pushSorted(metricValues[metricIndex], node.attributes[metricIndex])
-			}
+export function setMetricValues(node: CodeMapNode, metricValues: MetricValues) {
+	for (const [metricName, value] of Object.entries(node.attributes)) {
+		if (value === 0) {
+			continue
 		}
+
+		if (metricValues[metricName] === undefined) {
+			metricValues[metricName] = []
+		}
+		metricValues[metricName].push(value)
 	}
 }
 
-export function compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b: MetricSuggestionParameters): number {
+function compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b: MetricSuggestionParameters): number {
 	if (a.isOutlier && !b.isOutlier) {
 		return -1
 	}
