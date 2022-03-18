@@ -1,20 +1,13 @@
 import "./artificialIntelligence.component.scss"
 import debounce from "lodash.debounce"
-import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { IRootScopeService } from "angular"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
-import { CodeMapNode, ColorRange } from "../../codeCharta.model"
+import { ColorRange } from "../../codeCharta.model"
 import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
-import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import {
-	ExperimentalFeaturesEnabledService,
-	ExperimentalFeaturesEnabledSubscriber
-} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { AREA_METRIC } from "./ArtificialIntelligenceHelper/riskProfileHelper"
 import { MetricSuggestionParameters } from "./ArtificialIntelligenceHelper/suspiciousMetricsHelper"
 import {
@@ -22,56 +15,30 @@ import {
 	artificialIntelligenceSelector
 } from "./ArtificialIntelligenceHelper/artificialIntelligenceCalculationHelper"
 
-export class ArtificialIntelligenceController
-	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber, StoreSubscriber
-{
-	viewModel: ArtificialIntelligenceControllerViewModel = {
+export class ArtificialIntelligenceController implements StoreSubscriber {
+	viewModel: ArtificialIntelligenceControllerViewModel | undefined = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
 		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	}
 
-	private aggregatedMap: CodeMapNode
 	private debounceCalculation: () => void
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
-		FilesService.subscribe(this.$rootScope, this)
-		BlacklistService.subscribe(this.$rootScope, this)
-		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 
 		this.debounceCalculation = debounce(() => {
-			this.viewModel = artificialIntelligenceSelector(this.storeService.getState())
+			const newViewModel = artificialIntelligenceSelector(this.storeService.getState())
+			if (this.viewModel !== newViewModel) {
+				this.viewModel = newViewModel
+			}
 		}, 10)
 	}
 
 	onStoreChanged() {
-		const newViewModel = artificialIntelligenceSelector(this.storeService.getState())
-		if (this.viewModel !== newViewModel) {
-			this.viewModel = artificialIntelligenceSelector(this.storeService.getState())
-		}
-	}
-
-	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
-		if (experimentalFeaturesEnabled) {
-			this.debounceCalculation()
-		}
-	}
-
-	onBlacklistChanged() {
-		this.aggregatedMap = accumulatedDataSelector(this.storeService.getState()).unifiedMapNode
-		if (this.aggregatedMap !== undefined) {
-			this.debounceCalculation()
-		}
-	}
-
-	onFilesSelectionChanged() {
-		this.aggregatedMap = accumulatedDataSelector(this.storeService.getState()).unifiedMapNode
-		if (this.aggregatedMap !== undefined) {
-			this.debounceCalculation()
-		}
+		this.debounceCalculation()
 	}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, isOutlier: boolean) {
