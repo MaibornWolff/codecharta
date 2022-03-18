@@ -25,8 +25,7 @@ import {
 export class ArtificialIntelligenceController
 	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
 {
-	// @ts-ignore
-	private _viewModel: ArtificialIntelligenceControllerViewModel = {
+	viewModel: ArtificialIntelligenceControllerViewModel = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
@@ -44,7 +43,7 @@ export class ArtificialIntelligenceController
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 
 		this.debounceCalculation = debounce(() => {
-			this._viewModel = calculate(this.storeService.getState().appSettings, this.aggregatedMap, this.blacklist)
+			this.viewModel = calculate(this.storeService.getState().appSettings, this.aggregatedMap, this.blacklist)
 		}, 10)
 	}
 
