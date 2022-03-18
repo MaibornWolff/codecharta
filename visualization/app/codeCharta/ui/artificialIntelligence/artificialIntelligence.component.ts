@@ -2,7 +2,7 @@ import "./artificialIntelligence.component.scss"
 import debounce from "lodash.debounce"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
+import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { CodeMapNode, ColorRange } from "../../codeCharta.model"
 import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
@@ -23,7 +23,7 @@ import {
 } from "./ArtificialIntelligenceHelper/artificialIntelligenceCalculationHelper"
 
 export class ArtificialIntelligenceController
-	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber
+	implements FilesSelectionSubscriber, BlacklistSubscriber, ExperimentalFeaturesEnabledSubscriber, StoreSubscriber
 {
 	viewModel: ArtificialIntelligenceControllerViewModel = {
 		analyzedProgrammingLanguage: undefined,
@@ -40,10 +40,18 @@ export class ArtificialIntelligenceController
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 
 		this.debounceCalculation = debounce(() => {
 			this.viewModel = artificialIntelligenceSelector(this.storeService.getState())
 		}, 10)
+	}
+
+	onStoreChanged() {
+		const newViewModel = artificialIntelligenceSelector(this.storeService.getState())
+		if (this.viewModel !== newViewModel) {
+			this.viewModel = artificialIntelligenceSelector(this.storeService.getState())
+		}
 	}
 
 	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
