@@ -1,7 +1,7 @@
 import { CodeMapNode } from "../../../codeCharta.model"
 import { Percentiles } from "./artificialIntelligence.metricThresholds"
 import percentRound from "percent-round"
-import { getAssociatedMetricThresholds } from "./artificialIntelligenceCalculationHelper"
+import { getAssociatedMetricThresholds } from "./util/getMetricThresholds"
 
 export interface RiskProfile {
 	lowRisk: number

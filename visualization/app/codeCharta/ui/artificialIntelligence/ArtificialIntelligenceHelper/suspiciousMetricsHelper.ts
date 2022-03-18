@@ -1,6 +1,6 @@
 import { CodeMapNode, ColorRange } from "../../../codeCharta.model"
 import { metricDescriptions } from "../../../util/metric/metricDescriptions"
-import { getAssociatedMetricThresholds } from "./artificialIntelligenceCalculationHelper"
+import { getAssociatedMetricThresholds } from "./util/getMetricThresholds"
 
 export interface MetricValues {
 	[metric: string]: number[]

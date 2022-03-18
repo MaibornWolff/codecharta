@@ -15,15 +15,14 @@ import {
 	MetricValuesByLanguage
 } from "./suspiciousMetricsHelper"
 import { hierarchy } from "d3-hierarchy"
-import { AppSettings, BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { getMostFrequentLanguage } from "./MainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../util/codeMapHelper"
-import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
 import { createSelector } from "../../../state/angular-redux/createSelector"
 import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
 import { CcState } from "../../../state/store/store"
 import { unifiedMapNodeSelector } from "../../../state/selectors/accumulatedData/unifiedMapNode.selector"
+import { experimentalFeaturesEnabledSelector } from "../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 
 export interface ArtificialIntelligenceControllerViewModel {
 	analyzedProgrammingLanguage: string
@@ -32,8 +31,8 @@ export interface ArtificialIntelligenceControllerViewModel {
 	riskProfile: RiskProfile
 }
 
-export const calculate = (appSettings: AppSettings, map: CodeMapNode, blacklist: BlacklistItem[]) => {
-	if (!appSettings.experimentalFeaturesEnabled) {
+export const calculate = (experimentalFeaturesEnabled: boolean, map: CodeMapNode, blacklist: BlacklistItem[]) => {
+	if (!experimentalFeaturesEnabled) {
 		return
 	}
 
@@ -45,10 +44,8 @@ export const calculate = (appSettings: AppSettings, map: CodeMapNode, blacklist:
 	}
 
 	const numberOfFilesByLanguage = new Map<string, number>()
-
 	const rlocRisk = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	let totalRloc = 0
-
 	const metricValues: MetricValues = {}
 	const metricValuesByLanguage: MetricValuesByLanguage[] = []
 
@@ -84,10 +81,6 @@ export const calculate = (appSettings: AppSettings, map: CodeMapNode, blacklist:
 	return artificialIntelligenceViewModel
 }
 
-export function getAssociatedMetricThresholds(programmingLanguage: string) {
-	return programmingLanguage === "java" ? metricThresholdsByLanguage.java : metricThresholdsByLanguage.miscellaneous
-}
-
 function getFileExtension(fileName: string) {
 	return fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : undefined
 }
@@ -101,6 +94,6 @@ function isFileValid(node: CodeMapNode, fileExtension: string) {
 }
 
 export const artificialIntelligenceSelector: (state: CcState) => ArtificialIntelligenceControllerViewModel = createSelector(
-	[appSettingsSelector, unifiedMapNodeSelector, blacklistSelector],
+	[experimentalFeaturesEnabledSelector, unifiedMapNodeSelector, blacklistSelector],
 	calculate
 )
