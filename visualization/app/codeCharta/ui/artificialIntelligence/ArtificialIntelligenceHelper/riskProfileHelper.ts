@@ -25,15 +25,14 @@ export function calculateRiskProfile(node: CodeMapNode, rlocRisk: RiskProfile, f
 
 function aggregateRlocRisk(nodeMetricValue: number, thresholds: Percentiles, nodeRlocValue: number, rlocRisk: RiskProfile) {
 	if (nodeMetricValue <= thresholds.percentile70) {
-		return (rlocRisk.lowRisk += nodeRlocValue)
+		rlocRisk.lowRisk += nodeRlocValue
+	} else if (nodeMetricValue <= thresholds.percentile80) {
+		rlocRisk.moderateRisk += nodeRlocValue
+	} else if (nodeMetricValue <= thresholds.percentile90) {
+		rlocRisk.highRisk += nodeRlocValue
+	} else {
+		rlocRisk.veryHighRisk += nodeRlocValue
 	}
-	if (nodeMetricValue <= thresholds.percentile80) {
-		return (rlocRisk.moderateRisk += nodeRlocValue)
-	}
-	if (nodeMetricValue <= thresholds.percentile90) {
-		return (rlocRisk.highRisk += nodeRlocValue)
-	}
-	return (rlocRisk.veryHighRisk += nodeRlocValue)
 }
 
 export function getPercentagesOfRiskProfile(rlocRisk: RiskProfile): RiskProfile {
