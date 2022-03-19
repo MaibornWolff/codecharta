@@ -1,6 +1,6 @@
 <div class="metric-value" ng-show="$ctrl._viewModel.hoveredNode">
 	<div class="rounded-box">
-		<metric-type-component metric-selection="areaMetric"></metric-type-component>
+		<cc-metric-type [metric-for]="'areaMetric'"></cc-metric-type>
 		<span class="value">{{ $ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.areaMetric] | number }}</span>
 	</div>
 	<div class="rounded-box" ng-show="$ctrl._viewModel.hoveredNode.deltas">
