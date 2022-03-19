@@ -6,18 +6,18 @@ import { heightMetricSelector } from "../../../state/store/dynamicSettings/heigh
 import { CcState } from "../../../state/store/store"
 
 export type PrimaryMetricNames = {
-	nameOfAreaMetric: string
-	nameOfHeightMetric: string
-	nameOfColorMetric: string
-	nameOfEdgeMetric: string
+	areaMetric: string
+	heightMetric: string
+	colorMetric: string
+	edgeMetric: string
 }
 
 export const primaryMetricNamesSelector: (state: CcState) => PrimaryMetricNames = createSelector(
 	[areaMetricSelector, heightMetricSelector, colorMetricSelector, edgeMetricSelector],
-	(nameOfAreaMetric, nameOfHeightMetric, nameOfColorMetric, nameOfEdgeMetric) => ({
-		nameOfAreaMetric,
-		nameOfHeightMetric,
-		nameOfColorMetric,
-		nameOfEdgeMetric
+	(areaMetric, heightMetric, colorMetric, edgeMetric) => ({
+		areaMetric,
+		heightMetric,
+		colorMetric,
+		edgeMetric
 	})
 )
