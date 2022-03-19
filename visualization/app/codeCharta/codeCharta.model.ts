@@ -112,18 +112,21 @@ export interface FileSettings {
 	markedPackages: MarkedPackage[]
 }
 
-export interface DynamicSettings {
-	colorMode: ColorMode
-	sortingOption: SortingOption
+export interface PrimaryMetrics {
 	areaMetric: string
 	heightMetric: string
-	colorMetric: string
-	distributionMetric: string
 	edgeMetric: string
+	colorMetric: string
+}
+
+export interface DynamicSettings extends PrimaryMetrics {
+	colorMode: ColorMode
+	sortingOption: SortingOption
+	colorRange: ColorRange
+	distributionMetric: string
 	focusedNodePath: string[]
 	searchPattern: string
 	margin: number
-	colorRange: ColorRange
 	recentFiles: string[]
 }
 
