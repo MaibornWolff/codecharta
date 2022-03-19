@@ -2,7 +2,7 @@
 	<div
 		id="{{ node.path }}"
 		class="tree-element-label-{{ depth }} tree-element-label"
-		[class.hovered]="(hoveredBuildingPath$ | async) === node.path"
+		[class.hovered]="(hoveredNodeId$ | async) === node.id"
 		[class.marked]="(rightClickedNodeData$ | async)?.nodeId === node.id"
 		(mouseenter)="onMouseEnter()"
 		(mouseleave)="onMouseLeave()"
@@ -10,15 +10,11 @@
 		(contextmenu)="openNodeContextMenu($event)"
 	>
 		<cc-map-tree-view-item-icon [node]="node" [isOpen]="isOpen"></cc-map-tree-view-item-icon>
-		<cc-map-tree-view-item-name
-			[node]="node"
-			[isHovered]="(hoveredBuildingPath$ | async) === node.path"
-			[unaryValue]="node.attributes.unary"
-		>
+		<cc-map-tree-view-item-name [node]="node" [isHovered]="(hoveredNodeId$ | async) === node.id" [unaryValue]="node.attributes.unary">
 		</cc-map-tree-view-item-name>
 
 		<cc-map-tree-view-item-option-buttons
-			*ngIf="(hoveredBuildingPath$ | async) === node.path"
+			*ngIf="(hoveredNodeId$ | async) === node.id"
 			[isFlattened]="node.isFlattened"
 			[openNodeContextMenu]="openNodeContextMenu"
 		></cc-map-tree-view-item-option-buttons>

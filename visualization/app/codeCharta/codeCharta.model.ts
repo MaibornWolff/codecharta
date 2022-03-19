@@ -395,7 +395,7 @@ export interface CCAction extends Action {
 }
 
 export interface AppStatus {
-	hoveredBuildingPath: string | null
+	hoveredNodeId: number | null
 	selectedBuildingId: number | null
 	rightClickedNodeData: RightClickedNodeData
 }
