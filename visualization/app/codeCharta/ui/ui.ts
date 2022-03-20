@@ -20,7 +20,6 @@ import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./heightSettingsPanel/heightSettingsPanel.module"
 import "./metricChooser/metricChooser.module"
-import "./metricType/metricType.module"
 import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
 import "./filePanel/filePanel.module"
@@ -47,7 +46,6 @@ angular
 		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.centerMapButton",
-		"app.codeCharta.ui.metricType",
 		"app.codeCharta.ui.areaSettingsPanel",
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.colorSettingsPanel",
@@ -56,7 +54,6 @@ angular
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.heightSettingsPanel",
 		"app.codeCharta.ui.metricChooser",
-		"app.codeCharta.ui.metricType",
 		"app.codeCharta.ui.rangeSlider",
 		"app.codeCharta.ui.resetSettingsButton",
 		"app.codeCharta.ui.ribbonBar",
