@@ -2,23 +2,25 @@ import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 import { CcState } from "../../../../state/store/store"
 import { matchingFilesCounterSelector } from "./matchingFilesCounter.selector"
 
-jest.mock("../../../../state/selectors/accumulatedData/unifiedMapNode.selector", () => ({
-	unifiedMapNodeSelector: () => ({
-		name: "root",
-		type: "Folder",
-		path: "/root",
-		children: [
-			{ name: "big leaf", type: "File", path: "/root/big leaf", link: "http://www.google.de" },
-			{
-				name: "Parent Leaf",
-				type: "Folder",
-				path: "/root/Parent Leaf",
-				children: [
-					{ name: "small leaf", type: "File", path: "/root/Parent Leaf/small leaf" },
-					{ name: "other small leaf", type: "File", path: "/root/Parent Leaf/other small leaf" }
-				]
-			}
-		]
+jest.mock("../../../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
+	accumulatedDataSelector: () => ({
+		unifiedMapNode: {
+			name: "root",
+			type: "Folder",
+			path: "/root",
+			children: [
+				{ name: "big leaf", type: "File", path: "/root/big leaf", link: "http://www.google.de" },
+				{
+					name: "Parent Leaf",
+					type: "Folder",
+					path: "/root/Parent Leaf",
+					children: [
+						{ name: "small leaf", type: "File", path: "/root/Parent Leaf/small leaf" },
+						{ name: "other small leaf", type: "File", path: "/root/Parent Leaf/other small leaf" }
+					]
+				}
+			]
+		}
 	})
 }))
 jest.mock("../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector", () => ({

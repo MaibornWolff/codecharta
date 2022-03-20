@@ -4,7 +4,6 @@ import { hoveredNodeIdSelector } from "../../../state/store/appStatus/hoveredNod
 import { isLeaf } from "../../../util/codeMapHelper"
 
 export const isHoveredNodeALeafSelector = createSelector([idToNodeSelector, hoveredNodeIdSelector], (idToNode, hoveredNodeId) => {
-	// todo why can idToNode be undefined?
-	const node = idToNode?.get(hoveredNodeId)
+	const node = idToNode.get(hoveredNodeId)
 	return node && isLeaf(node)
 })

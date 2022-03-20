@@ -19,7 +19,9 @@ const accumulatedDataFallback = Object.freeze({
 	unifiedFileMeta: undefined
 })
 
-export const accumulatedDataSelector: (state: CcState) => { unifiedMapNode: CodeMapNode; unifiedFileMeta: FileMeta } = createSelector(
+export type AccumulatedData = { unifiedMapNode: CodeMapNode; unifiedFileMeta: FileMeta }
+
+export const accumulatedDataSelector: (state: CcState) => AccumulatedData = createSelector(
 	[metricDataSelector, visibleFileStatesSelector, attributeTypesSelector, blacklistSelector, metricNamesSelector],
 	(metricData, fileStates, attributeTypes, blacklist, metricNames) => {
 		if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData) {
