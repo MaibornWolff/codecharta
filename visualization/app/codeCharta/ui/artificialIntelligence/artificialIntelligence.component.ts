@@ -38,7 +38,7 @@ export class ArtificialIntelligenceController implements StoreSubscriber {
 		this.debounceCalculation()
 	}
 
-	setViewModel() {
+	private setViewModel() {
 		const newViewModel = artificialIntelligenceSelector(this.storeService.getState())
 		if (this.viewModel !== newViewModel) {
 			this.viewModel = newViewModel
