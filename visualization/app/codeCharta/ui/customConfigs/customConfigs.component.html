@@ -23,7 +23,7 @@
 				>
 					<i class="fa fa-download" aria-hidden="true"></i>
 				</md-button>
-				<cc-add-custom-config-button></cc-add-custom-config-button>
+				<cc-add-custom-config-button class="custom-configs-button-in-custom-views"></cc-add-custom-config-button>
 			</md-menu-item>
 
 			<md-divider></md-divider>
@@ -91,15 +91,8 @@
 			</button>
 		</md-menu-content>
 	</md-menu>
-
 	<md-menu class="custom-configs-component">
-		<md-button
-			class="custom-configs-button plus"
-			ng-click="$ctrl.showAddCustomConfigSettings();"
-			title="Quick save current view as a Custom View"
-		>
-			<i class="fa fa-plus"></i>
-		</md-button>
+		<cc-add-custom-config-button class="custom-configs-button-in-ribbonbar"></cc-add-custom-config-button>
 		<md-menu-content></md-menu-content>
 	</md-menu>
 </div>

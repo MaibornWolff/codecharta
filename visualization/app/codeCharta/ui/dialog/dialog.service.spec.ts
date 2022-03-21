@@ -23,12 +23,6 @@ describe("DialogService", () => {
 		dialogService = new DialogService($mdDialog)
 	}
 
-	it("should show AddCustomConfigSettings", function () {
-		dialogService.showAddCustomConfigSettings()
-
-		expect(dialogService.showCustomDialog).toHaveBeenCalled()
-	})
-
 	it("should show DownloadDialog", function () {
 		dialogService.showDownloadDialog()
 
