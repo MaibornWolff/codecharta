@@ -1,5 +1,5 @@
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { HoveredBuildingPathActions } from "../../appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
+import { HoveredNodeIdActions } from "../../appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { FocusedNodePathActions } from "../../dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { SortingOptionActions } from "../../dynamicSettings/sortingOption/sortingOption.actions"
 import { CameraTargetActions } from "../cameraTarget/cameraTarget.actions"
@@ -25,7 +25,7 @@ const actionsToExclude = [
 	ExperimentalFeaturesEnabledActions,
 	IsEdgeMetricVisibleActions,
 	ScreenshotToClipboardEnabledActions,
-	HoveredBuildingPathActions,
+	HoveredNodeIdActions,
 	RightClickedNodeDataActions,
 	FocusedNodePathActions,
 	CameraTargetActions,

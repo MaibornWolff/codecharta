@@ -3,9 +3,7 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { NodeMetricDataService } from "./nodeMetricData.service"
-import { STATE, withMockedEventMethods } from "../../../../util/dataMocks"
-import { setState } from "../../state.actions"
-import { AttributeTypeValue } from "../../../../codeCharta.model"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../files/files.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
@@ -65,30 +63,6 @@ describe("NodeMetricDataService", () => {
 			rebuildService()
 
 			expect(AttributeTypesService.subscribe).toHaveBeenCalledWith($rootScope, nodeMetricDataService)
-		})
-	})
-
-	describe("getAttributeTypeByMetric", () => {
-		beforeEach(() => {
-			storeService.dispatch(setState(STATE))
-		})
-
-		it("should return absolute", () => {
-			const actual = nodeMetricDataService.getAttributeTypeByMetric("rloc")
-
-			expect(actual).toBe(AttributeTypeValue.absolute)
-		})
-
-		it("should return relative", () => {
-			const actual = nodeMetricDataService.getAttributeTypeByMetric("coverage")
-
-			expect(actual).toBe(AttributeTypeValue.relative)
-		})
-
-		it("should return undefined if attributeType not available", () => {
-			const actual = nodeMetricDataService.getAttributeTypeByMetric("notfound")
-
-			expect(actual).toBeUndefined()
 		})
 	})
 

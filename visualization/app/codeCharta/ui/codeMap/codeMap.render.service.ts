@@ -92,7 +92,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	private getNodesMatchingColorSelector(sortedNodes: Node[]) {
-		const mapColor = this.storeService.getState().appSettings.mapColors
+		const dynamicSettings = this.storeService.getState().dynamicSettings
 
 		this.nodesByColor = {
 			positive: [],
@@ -102,22 +102,15 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 		for (const node of sortedNodes) {
 			if (node.isLeaf) {
-				switch (node.color) {
-					case mapColor.negative:
-						this.nodesByColor.negative.push(node)
-						break
-
-					case mapColor.positive:
+				const metric = node.attributes[dynamicSettings.colorMetric]
+				if (metric != null) {
+					if (metric < dynamicSettings.colorRange.from) {
 						this.nodesByColor.positive.push(node)
-						break
-
-					default:
-						// TODO: A couple of these are either negative or
-						// positive, depending on the mode! It's not possible to
-						// rely upon the color anymore. We have to add a state
-						// that tracks the color.
+					} else if (metric < dynamicSettings.colorRange.to) {
 						this.nodesByColor.neutral.push(node)
-						break
+					} else {
+						this.nodesByColor.negative.push(node)
+					}
 				}
 			}
 		}
