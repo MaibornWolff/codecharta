@@ -14,10 +14,10 @@ export class AttributeTypeSelectorComponent {
 	@Input() metricName: string
 	@Input() metricType: keyof AttributeTypes
 
-	getAttributeTypeOfNodesByMetric$: Observable<GetAttributeType>
+	getAttributeType$: Observable<GetAttributeType>
 
 	constructor(@Inject(Store) private store: Store) {
-		this.getAttributeTypeOfNodesByMetric$ = this.store.select(getAttributeTypeSelector)
+		this.getAttributeType$ = this.store.select(getAttributeTypeSelector)
 	}
 
 	setToAbsolute() {
