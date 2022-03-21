@@ -6,10 +6,6 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "./material/material.module"
-import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
-import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
-import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
-import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
 import { Export3DMapButtonComponent } from "./codeCharta/ui/export3DMapButton/export3DMapButton.component"
@@ -35,18 +31,16 @@ import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/ad
 import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
 import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
-import { MarkFolderRowComponent } from "./codeCharta/state/effects/nodeContextMenu/markFolderRow/markFolderRow.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
 import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
-import { SearchBarComponent } from "./codeCharta/ui/searchPanel/searchBar/searchBar.component"
-import { SearchBarModule } from "./codeCharta/ui/searchPanel/searchBar/searchBar.module"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
-import { SearchPanelModeSelectorComponent } from "./codeCharta/ui/searchPanel/searchPanelModeSelector/searchPanelModeSelector.component"
-import { BlacklistPanelComponent } from "./codeCharta/ui/searchPanel/blacklistPanel/blacklistPanel.component"
+import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
+import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
+import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
 
 @NgModule({
 	imports: [
@@ -59,8 +53,6 @@ import { BlacklistPanelComponent } from "./codeCharta/ui/searchPanel/blacklistPa
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect
 		]),
-		MapTreeViewModule,
-		MatchingFilesCounterModule,
 		AttributeSideBarModule,
 		MaterialModule,
 		FormsModule,
@@ -72,7 +64,8 @@ import { BlacklistPanelComponent } from "./codeCharta/ui/searchPanel/blacklistPa
 		ReactiveFormsModule,
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
-		SearchBarModule
+		SearchPanelModule,
+		MetricTypeModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
@@ -82,13 +75,9 @@ import { BlacklistPanelComponent } from "./codeCharta/ui/searchPanel/blacklistPa
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
-		SearchPanelModeSelectorComponent,
-		BlacklistPanelComponent,
 		...dialogs
 	],
 	entryComponents: [
-		MapTreeViewComponent,
-		MatchingFilesCounterComponent,
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
 		LegendPanelComponent,
@@ -100,14 +89,11 @@ import { BlacklistPanelComponent } from "./codeCharta/ui/searchPanel/blacklistPa
 		InvertAreaOptionComponent,
 		AddCustomConfigButtonComponent,
 		FocusButtonsComponent,
-		MarkFolderRowComponent,
 		RemoveFileButtonComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
-		SearchBarComponent,
 		EdgeMetricToggleComponent,
-		SearchPanelModeSelectorComponent,
-		BlacklistPanelComponent,
+		SearchPanelComponent,
 		...dialogs
 	]
 })

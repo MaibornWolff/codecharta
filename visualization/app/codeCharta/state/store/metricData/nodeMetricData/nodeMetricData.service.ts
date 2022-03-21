@@ -50,10 +50,6 @@ export class NodeMetricDataService implements FilesSelectionSubscriber, Blacklis
 		return metric ? metric.minValue : 0
 	}
 
-	getAttributeTypeByMetric(metricName: string) {
-		return this.storeService.getState().fileSettings.attributeTypes.nodes[metricName]
-	}
-
 	private updateNodeMetricData() {
 		const nodeMetricData = nodeMetricDataSelector(this.storeService.getState())
 		if (nodeMetricData !== this.nodeMetricData) {

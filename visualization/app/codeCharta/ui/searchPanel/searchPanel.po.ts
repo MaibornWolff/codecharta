@@ -6,18 +6,18 @@ export class SearchPanelPageObject {
 
 	async toggle() {
 		const wasOpen = await this.isOpen()
-		await clickButtonOnPageElement("search-panel-component md-card .section .section-title")
+		await clickButtonOnPageElement("cc-search-panel mat-card .section .section-title")
 
 		await (wasOpen
-			? page.waitForSelector("#search-panel-card", { visible: false })
-			: page.waitForSelector(`#search-panel-card.${this.EXPANDED}`))
+			? page.waitForSelector(".search-panel-card", { visible: false })
+			: page.waitForSelector(`.search-panel-card.${this.EXPANDED}`))
 
 		return !wasOpen
 	}
 
 	async isOpen() {
-		await page.waitForSelector("#search-panel-card")
-		const classNames = await page.$eval("#search-panel-card", element => element["className"])
+		await page.waitForSelector(".search-panel-card")
+		const classNames = await page.$eval(".search-panel-card", element => element["className"])
 		return classNames.includes(this.EXPANDED) && !classNames.includes(this.EXPANDED_REMOVE)
 	}
 }

@@ -1,11 +1,11 @@
 import { createSelector } from "../angular-redux/store"
 import { attributeTypesSelector } from "../store/fileSettings/attributeTypes/attributeTypes.selector"
 import { CcState } from "../store/store"
-import { AttributeTypeValue } from "../../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue } from "../../codeCharta.model"
 
-export type GetAttributeTypeOfNodesByMetric = (metricName: string) => AttributeTypeValue
+export type GetAttributeType = (metricType: keyof AttributeTypes, metricName: string) => AttributeTypeValue
 
-export const getAttributeTypeOfNodesByMetricSelector: (state: CcState) => GetAttributeTypeOfNodesByMetric = createSelector(
+export const getAttributeTypeSelector: (state: CcState) => GetAttributeType = createSelector(
 	[attributeTypesSelector],
-	attributeTypes => (metricName: string) => attributeTypes.nodes[metricName]
+	attributeTypes => (metricType, metricName) => attributeTypes[metricType][metricName]
 )

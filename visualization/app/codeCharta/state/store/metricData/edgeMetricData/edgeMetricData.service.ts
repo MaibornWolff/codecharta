@@ -62,10 +62,6 @@ export class EdgeMetricDataService implements BlacklistSubscriber, FilesSelectio
 		return keys
 	}
 
-	getAttributeTypeByMetric(metricName: string) {
-		return this.storeService.getState().fileSettings.attributeTypes.edges[metricName]
-	}
-
 	private updateEdgeMetricData() {
 		const edgeMetricData = edgeMetricDataSelector(this.storeService.getState())
 		if (edgeMetricData !== this.edgeMetricData) {

@@ -1,16 +1,16 @@
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode, PrimaryMetrics } from "../../../codeCharta.model"
 import { createSelector } from "../../../state/angular-redux/store"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { CcState } from "../../../state/store/store"
-import { PrimaryMetricNames, primaryMetricNamesSelector } from "../attributeSideBarPrimaryMetrics/primaryMetricNames.selector"
+import { primaryMetricNamesSelector } from "../attributeSideBarPrimaryMetrics/primaryMetricNames.selector"
 import { Metric } from "../util/metric"
 
-export const _calculateSecondaryMetrics = (primaryMetricNames: PrimaryMetricNames, node?: Pick<CodeMapNode, "attributes">) => {
+export const _calculateSecondaryMetrics = (primaryMetrics: PrimaryMetrics, node?: Pick<CodeMapNode, "attributes">) => {
 	if (!node) {
 		return [] as Metric[]
 	}
 
-	const primaryMetricNamesList = Object.values(primaryMetricNames)
+	const primaryMetricNamesList = Object.values(primaryMetrics)
 	const secondaryMetricNames = Object.keys(node.attributes)
 		.filter(metricName => metricName !== "unary" && !primaryMetricNamesList.includes(metricName))
 		.sort()

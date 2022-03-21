@@ -14,11 +14,11 @@ import { hierarchy } from "d3-hierarchy"
 import { Intersection, Object3D, Raycaster } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
-import { setHoveredBuildingPath } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
-import { hoveredBuildingPathSelector } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
+import { setHoveredNodeId } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
+import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 
 interface Coordinates {
 	x: number
@@ -60,7 +60,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 	private isMoving = false
 	private raycaster = new Raycaster()
 	private temporaryLabelForBuilding = null
-	private hoveredBuildingPath: string | null = null
+	private hoveredNodeId: number | null = null
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -82,15 +82,15 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 
 		this.storeService["store"].subscribe(() => {
 			const state = this.storeService["store"].getState()
-			const hoveredBuildingPath = hoveredBuildingPathSelector(state)
-			if (this.hoveredBuildingPath === hoveredBuildingPath) {
+			const hoveredNodeId = hoveredNodeIdSelector(state)
+			if (this.hoveredNodeId === hoveredNodeId) {
 				return
 			}
 
-			this.hoveredBuildingPath = hoveredBuildingPath
+			this.hoveredNodeId = hoveredNodeId
 
-			if (this.hoveredBuildingPath) {
-				this.hoverNode(this.hoveredBuildingPath)
+			if (this.hoveredNodeId) {
+				this.hoverNode(this.hoveredNodeId)
 			} else {
 				this.unhoverNode()
 			}
@@ -124,13 +124,13 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
-	hoverNode(path: string) {
+	hoverNode(id: number) {
 		if (this.isGrabbingOrMoving()) {
 			return
 		}
 		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 		for (const building of buildings) {
-			if (building.node.path === path) {
+			if (building.node.id === id) {
 				this.hoverBuilding(building)
 				this.highlightedInTreeView = building
 				break
@@ -406,9 +406,9 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		}
 		this.threeSceneService.highlightBuildings()
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding })
-		if (this.hoveredBuildingPath !== hoveredBuilding.node.path) {
-			this.hoveredBuildingPath = hoveredBuilding.node.path
-			this.storeService.dispatch(setHoveredBuildingPath(hoveredBuilding.node.path))
+		if (this.hoveredNodeId !== hoveredBuilding.node.id) {
+			this.hoveredNodeId = hoveredBuilding.node.id
+			this.storeService.dispatch(setHoveredNodeId(hoveredBuilding.node.id))
 		}
 	}
 
@@ -437,7 +437,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		}
 
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
-		this.hoveredBuildingPath = null
-		this.storeService.dispatch(setHoveredBuildingPath(null))
+		this.hoveredNodeId = null
+		this.storeService.dispatch(setHoveredNodeId(null))
 	}
 }
