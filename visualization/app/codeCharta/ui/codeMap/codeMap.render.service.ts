@@ -101,18 +101,17 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		}
 
 		for (const node of sortedNodes) {
-			const metric = node.attributes[dynamicSettings.colorMetric]
-
-			if (node.isLeaf && metric) {
-				if (metric < dynamicSettings.colorRange.from) {
-					this.nodesByColor.positive.push(node)
-					continue
+			if (node.isLeaf) {
+				const metric = node.attributes[dynamicSettings.colorMetric]
+				if (metric != null) {
+					if (metric < dynamicSettings.colorRange.from) {
+						this.nodesByColor.positive.push(node)
+					} else if (metric < dynamicSettings.colorRange.to) {
+						this.nodesByColor.neutral.push(node)
+					} else {
+						this.nodesByColor.negative.push(node)
+					}
 				}
-				if (metric < dynamicSettings.colorRange.to) {
-					this.nodesByColor.neutral.push(node)
-					continue
-				}
-				this.nodesByColor.negative.push(node)
 			}
 		}
 	}
