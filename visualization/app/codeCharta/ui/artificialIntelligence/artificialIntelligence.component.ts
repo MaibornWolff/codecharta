@@ -45,8 +45,7 @@ export class ArtificialIntelligenceController implements StoreSubscriber {
 		}
 	}
 
-	applySuspiciousMetric(metric: MetricSuggestionParameters, isOutlier: boolean) {
-		const mapColors = { ...this.storeService.getState().appSettings.mapColors }
+	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
 		const colorRange: ColorRange = {
 			from: metric.from,
 			to: metric.to,
@@ -54,14 +53,10 @@ export class ArtificialIntelligenceController implements StoreSubscriber {
 			min: 0
 		}
 
-		if (metric.isOutlier === isOutlier) {
-			mapColors.positive = "#ffffff"
-			mapColors.neutral = "#ffffff"
-			mapColors.negative = "#A900C0"
-		} else {
-			mapColors.positive = defaultMapColors.positive
-			mapColors.neutral = defaultMapColors.neutral
-			mapColors.negative = defaultMapColors.negative
+		const mapColors = {
+			positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
+			neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
+			negative: markOutlier ? "#A900C0" : defaultMapColors.negative
 		}
 
 		this.storeService.dispatch(setAreaMetric(AREA_METRIC))
