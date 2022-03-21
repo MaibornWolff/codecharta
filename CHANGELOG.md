@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Improve sonarimport help message [#2717](https://github.com/MaibornWolff/codecharta/pull/2717)
 -   Remove blacklist entry on click of name as well [#2712](https://github.com/MaibornWolff/codecharta/pull/2712)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate add `custom config button` in ribbonbar to Angular [2736](https://github.com/MaibornWolff/codecharta/pull/2736)
+
 ## [1.93.0] - 2022-03-14
 
 ### Added 🚀
