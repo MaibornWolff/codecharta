@@ -31,7 +31,11 @@ export interface ArtificialIntelligenceControllerViewModel {
 	riskProfile: RiskProfile
 }
 
-export const calculate = (experimentalFeaturesEnabled: boolean, map: CodeMapNode, blacklist: BlacklistItem[]) => {
+export const calculate = (
+	experimentalFeaturesEnabled: boolean,
+	map: CodeMapNode,
+	blacklist: BlacklistItem[]
+): ArtificialIntelligenceControllerViewModel | undefined => {
 	if (!experimentalFeaturesEnabled) {
 		return
 	}
