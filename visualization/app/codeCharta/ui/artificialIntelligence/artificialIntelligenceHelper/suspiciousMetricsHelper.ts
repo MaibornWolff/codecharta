@@ -64,7 +64,10 @@ function compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b
 	return 0
 }
 
-export function findGoodAndBadMetrics(metricValues: MetricValuesByLanguage[], mainProgrammingLanguage: string): MetricAssessmentResults {
+export function findGoodAndBadMetrics(
+	metricValuesByLanguages: MetricValuesByLanguage,
+	mainProgrammingLanguage: string
+): MetricAssessmentResults {
 	const metricAssessmentResults: MetricAssessmentResults = {
 		suspiciousMetrics: new Map<string, ColorRange>(),
 		unsuspiciousMetrics: [],
@@ -74,8 +77,7 @@ export function findGoodAndBadMetrics(metricValues: MetricValuesByLanguage[], ma
 	const languageSpecificMetricThresholds = getAssociatedMetricThresholds(mainProgrammingLanguage)
 
 	for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
-		const valuesOfMetric = metricValues[mainProgrammingLanguage][metricName]
-
+		const valuesOfMetric = metricValuesByLanguages[mainProgrammingLanguage][metricName]
 		if (valuesOfMetric === undefined) {
 			continue
 		}

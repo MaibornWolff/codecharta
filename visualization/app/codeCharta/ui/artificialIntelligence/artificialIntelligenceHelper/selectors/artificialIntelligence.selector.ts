@@ -47,7 +47,7 @@ export const calculate = (experimentalFeaturesEnabled: boolean, map: CodeMapNode
 	const rlocRisk = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	let totalRloc = 0
 	const metricValues: MetricValues = {}
-	const metricValuesByLanguage: MetricValuesByLanguage[] = []
+	const metricValuesByLanguage: MetricValuesByLanguage = {}
 
 	for (const { data } of hierarchy(map)) {
 		const fileExtension = getFileExtension(data.name)
