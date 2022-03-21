@@ -40,7 +40,13 @@ describe("ArtificialIntelligenceController", () => {
 	}
 
 	describe("apply suspicious metric", () => {
-		it("should call store dispatch with all needed states for desired suspicious metric view", () => {
+		it("should set view model to undefined when experimental features are disabled", () => {
+			storeService.dispatch(setExperimentalFeaturesEnabled(false))
+
+			expect(artificialIntelligenceController.viewModel).toBeUndefined()
+		})
+
+		it("should apply suspicious metric view", () => {
 			const testMetricSuggestionParameters = {
 				metric: "loc",
 				from: 365,
@@ -56,10 +62,9 @@ describe("ArtificialIntelligenceController", () => {
 				max: 0,
 				min: 0
 			}
-
 			artificialIntelligenceController.viewModel.suspiciousMetricSuggestionLinks = [testMetricSuggestionParameters]
-
 			const dispatchSpy = jest.spyOn(storeService, "dispatch")
+
 			artificialIntelligenceController.applySuspiciousMetric(testMetricSuggestionParameters, false)
 
 			expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric("rloc"))
@@ -69,12 +74,11 @@ describe("ArtificialIntelligenceController", () => {
 			expect(dispatchSpy).toHaveBeenCalledWith(setMapColors(STATE.appSettings.mapColors))
 		})
 
-		it("should call store.dispatch with all needed states for desired very high risk metric view", () => {
+		it("should apply view for very high risk metric", () => {
 			const mapColors = { ...STATE.appSettings.mapColors }
 			mapColors.positive = "#ffffff"
 			mapColors.neutral = "#ffffff"
 			mapColors.negative = "#A900C0"
-
 			const testMetricSuggestionParameters = {
 				metric: "loc",
 				from: 365,
@@ -83,16 +87,15 @@ describe("ArtificialIntelligenceController", () => {
 				min: 0,
 				isOutlier: true
 			}
-
 			const colorRange: ColorRange = {
 				from: testMetricSuggestionParameters.from,
 				to: testMetricSuggestionParameters.to,
 				max: 0,
 				min: 0
 			}
-
 			artificialIntelligenceController.viewModel.suspiciousMetricSuggestionLinks = [testMetricSuggestionParameters]
 			const dispatchSpy = jest.spyOn(storeService, "dispatch")
+
 			artificialIntelligenceController.applySuspiciousMetric(testMetricSuggestionParameters, true)
 
 			expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric("rloc"))
@@ -102,7 +105,7 @@ describe("ArtificialIntelligenceController", () => {
 			expect(dispatchSpy).toHaveBeenCalledWith(setMapColors(mapColors))
 		})
 
-		it("should calculate suspicious metrics sorted by isOutlier", () => {
+		it("should calculate suspicious metrics sorted by 'isOutlier'", () => {
 			expect(artificialIntelligenceController.viewModel.analyzedProgrammingLanguage).toBe("java")
 			expect(artificialIntelligenceController.viewModel.suspiciousMetricSuggestionLinks).toMatchSnapshot()
 			expect(artificialIntelligenceController.viewModel.unsuspiciousMetrics).toMatchSnapshot()
