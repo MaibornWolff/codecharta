@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Migrate add `custom config button` in ribbonbar to Angular [2736](https://github.com/MaibornWolff/codecharta/pull/2736)
+-   Migrate add `custom config button` in ribbonbar to Angular [#2736](https://github.com/MaibornWolff/codecharta/pull/2736)
 
 ## [1.93.0] - 2022-03-14
 
