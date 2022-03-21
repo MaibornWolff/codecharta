@@ -10,44 +10,10 @@ Array [
     "min": 0,
     "to": 554,
   },
-  Object {
-    "from": 29,
-    "isOutlier": true,
-    "max": 0,
-    "metric": "functions",
-    "min": 0,
-    "to": 44,
-  },
-  Object {
-    "from": 48,
-    "max": 0,
-    "metric": "mcc",
-    "min": 0,
-    "to": 71,
-  },
 ]
 `;
 
 exports[`ArtificialIntelligenceController apply suspicious metric should calculate suspicious metrics sorted by 'isOutlier' 2`] = `
-Array [
-  "rloc (real lines of code)",
-]
-`;
-
-exports[`ArtificialIntelligenceController apply suspicious metric should calculate suspicious metrics sorted by isOutlier 1`] = `
-Array [
-  Object {
-    "from": 365,
-    "isOutlier": true,
-    "max": 0,
-    "metric": "loc",
-    "min": 0,
-    "to": 554,
-  },
-]
-`;
-
-exports[`ArtificialIntelligenceController apply suspicious metric should calculate suspicious metrics sorted by isOutlier 2`] = `
 Array [
   "rloc (real lines of code)",
 ]

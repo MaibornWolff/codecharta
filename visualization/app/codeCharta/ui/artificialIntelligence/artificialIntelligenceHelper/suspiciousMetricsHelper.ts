@@ -76,7 +76,7 @@ export function findGoodAndBadMetrics(
 	const languageSpecificMetricThresholds = getAssociatedMetricThresholds(mainProgrammingLanguage)
 
 	for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
-		const valuesOfMetric = metricValuesByLanguages[mainProgrammingLanguage][metricName]
+		const valuesOfMetric = metricValuesByLanguages[mainProgrammingLanguage]?.[metricName]
 		if (valuesOfMetric === undefined) {
 			continue
 		}

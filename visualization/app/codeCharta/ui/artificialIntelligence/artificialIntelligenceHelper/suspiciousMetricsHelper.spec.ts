@@ -111,6 +111,7 @@ describe("suspiciousMetricsHelper", () => {
 
 	it("should get empty MetricAssessmentResults when no attributes are available", () => {
 		const metricValuesByLanguage: MetricValuesByLanguage = {}
+
 		const actualAssessmentResults: MetricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, "python")
 
 		expect(actualAssessmentResults).toEqual({
