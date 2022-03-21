@@ -32,8 +32,7 @@ export function calculateSuspiciousMetrics(metricAssessmentResults: MetricAssess
 			...colorRange
 		})
 
-		const outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
-		if (outlierThreshold > 0) {
+		if (metricAssessmentResults.outliersThresholds.has(metricName)) {
 			noticeableMetricSuggestionLinks.get(metricName).isOutlier = true
 		}
 	}
