@@ -1,14 +1,15 @@
-import "../../state/state.module"
-import angular from "angular"
-import { searchPanelComponent } from "./searchPanel.component"
-import { downgradeComponent } from "@angular/upgrade/static"
-import { SearchBarComponent } from "./searchBar/searchBar.component"
+import { SearchPanelComponent } from "./searchPanel.component"
 import { SearchPanelModeSelectorComponent } from "./searchPanelModeSelector/searchPanelModeSelector.component"
 import { BlacklistPanelComponent } from "./blacklistPanel/blacklistPanel.component"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { MaterialModule } from "../../../material/material.module"
+import { SearchBarModule } from "./searchBar/searchBar.module"
+import { MatchingFilesCounterModule } from "./matchingFilesCounter/matchingFilesCounter.module"
+import { MapTreeViewModule } from "./mapTreeView/mapTreeView.module"
 
-angular
-	.module("app.codeCharta.ui.searchPanel", ["app.codeCharta.state"])
-	.component(searchPanelComponent.selector, searchPanelComponent)
-	.directive("ccSearchBar", downgradeComponent({ component: SearchBarComponent }))
-	.directive("ccSearchPanelModeSelector", downgradeComponent({ component: SearchPanelModeSelectorComponent }))
-	.directive("ccBlacklistPanel", downgradeComponent({ component: BlacklistPanelComponent }))
+@NgModule({
+	imports: [CommonModule, MaterialModule, SearchBarModule, MatchingFilesCounterModule, MapTreeViewModule],
+	declarations: [SearchPanelComponent, SearchPanelModeSelectorComponent, BlacklistPanelComponent]
+})
+export class SearchPanelModule {}
