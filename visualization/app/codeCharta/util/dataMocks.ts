@@ -1745,8 +1745,8 @@ export const STATE: State = {
 		searchPattern: "",
 		margin: 48,
 		colorRange: {
-			from: 10,
-			to: 30,
+			from: 19,
+			to: 67,
 			min: 1,
 			max: 100
 		},
@@ -2003,7 +2003,7 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.COLOR_METRIC,
 		metricName: "mcc",
-		savedValues: { colorRange: { from: 10, to: 30, min: 1, max: 100 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+		savedValues: { colorRange: { from: 19, to: 67, min: 1, max: 100 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},
@@ -2213,7 +2213,7 @@ export const TEST_NODE_LEAF: Node = {
 	y0: 7,
 	isLeaf: true,
 	deltas: { a: 1, b: 2 },
-	attributes: { a: 20, b: 15, mcc: 15 },
+	attributes: { a: 20, b: 15, mcc: 20 },
 	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
 	heightDelta: 20,
 	visible: true,
@@ -2266,7 +2266,7 @@ export const INCOMING_NODE: Node = {
 	y0: 7,
 	isLeaf: true,
 	deltas: { a: 1, b: 2 },
-	attributes: { a: 20, b: 15, mcc: 41 },
+	attributes: { a: 20, b: 15, mcc: 100 },
 	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
 	heightDelta: 20,
 	visible: true,
