@@ -1809,7 +1809,7 @@ export const STATE: State = {
 	},
 	files: [],
 	appStatus: {
-		hoveredBuildingPath: null,
+		hoveredNodeId: null,
 		selectedBuildingId: null,
 		rightClickedNodeData: null
 	}
@@ -1889,7 +1889,7 @@ export const DEFAULT_STATE: State = {
 	treeMap: { mapSize: 250 },
 	files: [],
 	appStatus: {
-		hoveredBuildingPath: null,
+		hoveredNodeId: null,
 		selectedBuildingId: null,
 		rightClickedNodeData: null
 	}

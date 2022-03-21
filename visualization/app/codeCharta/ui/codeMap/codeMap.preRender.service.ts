@@ -19,7 +19,7 @@ import { MetricDataService, MetricDataSubscriber } from "../../state/store/metri
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { trackMapMetaData } from "../../util/usageDataTracker"
-import { HoveredBuildingPathActions } from "../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
+import { HoveredNodeIdActions } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 import { RightClickedNodeDataActions } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
@@ -78,7 +78,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
 			!isActionOfType(actionType, PresentationModeActions) &&
 			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions) &&
-			!isActionOfType(actionType, HoveredBuildingPathActions) &&
+			!isActionOfType(actionType, HoveredNodeIdActions) &&
 			!isActionOfType(actionType, RightClickedNodeDataActions)
 		) {
 			this.debounceRendering()

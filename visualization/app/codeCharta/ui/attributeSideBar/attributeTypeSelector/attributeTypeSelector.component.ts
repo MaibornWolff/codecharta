@@ -4,10 +4,7 @@ import { Observable } from "rxjs"
 import { AttributeTypes, AttributeTypeValue } from "../../../codeCharta.model"
 import { updateAttributeType } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { Store } from "../../../state/angular-redux/store"
-import {
-	GetAttributeTypeOfNodesByMetric,
-	getAttributeTypeOfNodesByMetricSelector
-} from "../../../state/selectors/getAttributeTypeOfNodesByMetric.selector"
+import { GetAttributeType, getAttributeTypeSelector } from "../../../state/selectors/getAttributeTypeOfNodesByMetric.selector"
 
 @Component({
 	selector: "cc-attribute-type-selector",
@@ -17,10 +14,10 @@ export class AttributeTypeSelectorComponent {
 	@Input() metricName: string
 	@Input() metricType: keyof AttributeTypes
 
-	getAttributeTypeOfNodesByMetric$: Observable<GetAttributeTypeOfNodesByMetric>
+	getAttributeTypeOfNodesByMetric$: Observable<GetAttributeType>
 
 	constructor(@Inject(Store) private store: Store) {
-		this.getAttributeTypeOfNodesByMetric$ = this.store.select(getAttributeTypeOfNodesByMetricSelector)
+		this.getAttributeTypeOfNodesByMetric$ = this.store.select(getAttributeTypeSelector)
 	}
 
 	setToAbsolute() {

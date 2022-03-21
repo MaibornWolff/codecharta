@@ -1,8 +1,8 @@
 import { createSelector } from "../../angular-redux/store"
 import { getNodesByGitignorePath } from "./getNodesByGitignorePath"
-import { unifiedMapNodeSelector } from "../accumulatedData/unifiedMapNode.selector"
 import { searchPatternSelector } from "../../store/dynamicSettings/searchPattern/searchPattern.selector"
+import { accumulatedDataSelector } from "../accumulatedData/accumulatedData.selector"
 
-export const searchedNodesSelector = createSelector([unifiedMapNodeSelector, searchPatternSelector], (unifiedMapNode, searchPattern) =>
-	getNodesByGitignorePath(unifiedMapNode, searchPattern)
+export const searchedNodesSelector = createSelector([accumulatedDataSelector, searchPatternSelector], (accumulatedData, searchPattern) =>
+	getNodesByGitignorePath(accumulatedData.unifiedMapNode, searchPattern)
 )
