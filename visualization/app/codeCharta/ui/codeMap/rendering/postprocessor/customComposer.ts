@@ -45,7 +45,9 @@ export class CustomComposer extends EffectComposer {
 		for (let index = 0; index < this.passes.length; index++) {
 			pass = this.passes[index]
 
-			if (pass.enabled === false) continue
+			if (pass.enabled === false) {
+				continue
+			}
 
 			pass.renderToScreen = this.renderToScreen && this.isLastEnabledPass(index) // nosonar
 			this.info[index] = { ...this.renderer.info.render }

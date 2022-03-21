@@ -9,12 +9,20 @@ export const resultsInEmptyMap = (
 	itemsToBeBlackListened: BlacklistItem[]
 ) => {
 	const newBlacklist = [...currentBlacklist, ...itemsToBeBlackListened]
-	for (const { file } of visibleFiles) if (!resultsInEmptyFile(file, newBlacklist)) return false
+	for (const { file } of visibleFiles) {
+		if (!resultsInEmptyFile(file, newBlacklist)) {
+			return false
+		}
+	}
 	return true
 }
 
 const resultsInEmptyFile = (file: CCFile, blacklist: BlacklistItem[]) => {
-	for (const node of hierarchy(file.map)) if (isNodeIncluded(node, blacklist)) return false
+	for (const node of hierarchy(file.map)) {
+		if (isNodeIncluded(node, blacklist)) {
+			return false
+		}
+	}
 	return true
 }
 

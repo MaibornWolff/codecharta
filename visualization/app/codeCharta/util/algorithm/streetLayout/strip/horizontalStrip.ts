@@ -23,7 +23,9 @@ export default class HorizontalStrip extends Strip {
 	): CodeMapNode[] {
 		let offsetX = rect.topLeft.x
 
-		if (order !== HorizontalOrder.leftToRight) this.nodes.reverse()
+		if (order !== HorizontalOrder.leftToRight) {
+			this.nodes.reverse()
+		}
 		const nodes = this.nodes
 
 		const rootArea = rect.area()

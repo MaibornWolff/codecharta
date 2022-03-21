@@ -11,7 +11,9 @@ export const _getLegendEdgeMetric = (edgeMetric: string, edgeMetricDatas: EdgeMe
 		return someEdgeMetricData.name === edgeMetric
 	})
 	const hasEdgeMetricEdge = edgeMetricData && edgeMetricData.maxValue > 0
-	if (!hasEdgeMetricEdge) return
+	if (!hasEdgeMetricEdge) {
+		return
+	}
 
 	return {
 		metricName: edgeMetric,

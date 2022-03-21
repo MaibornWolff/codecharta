@@ -12,7 +12,5 @@ export const getDeltaFile = (visibleFileStates: FileState[]) => {
 		return DeltaGenerator.getDeltaFile(reference.file, comparison.file)
 	}
 
-	// Compare with itself. This is somewhat questionable.
-	const [{ file }] = visibleFileStates
-	return DeltaGenerator.getDeltaFile(file, file)
+	return visibleFileStates[0].file
 }

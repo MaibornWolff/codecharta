@@ -7,7 +7,6 @@ import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
 export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber, SharpnessModeSubscriber {
 	private _viewModel: {
@@ -22,8 +21,7 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		private $rootScope: IRootScopeService,
 		private $element: Element,
 		private threeViewerService: ThreeViewerService,
-		private codeMapMouseEventService: CodeMapMouseEventService,
-		private codeChartaMouseEventService: CodeChartaMouseEventService
+		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
 		"ngInject"
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
@@ -66,10 +64,6 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		this.threeViewerService.autoFitTo()
 		this.threeViewerService.animate()
 		this.threeViewerService.animateStats()
-	}
-
-	onClick() {
-		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 }
 

@@ -23,7 +23,9 @@ export default class VerticalStrip extends Strip {
 	): CodeMapNode[] {
 		let offsetY = rect.topLeft.y
 
-		if (order !== VerticalOrder.topToBottom) this.nodes.reverse()
+		if (order !== VerticalOrder.topToBottom) {
+			this.nodes.reverse()
+		}
 		const nodes = this.nodes
 		const rootArea = rect.area()
 		const height = rect.height

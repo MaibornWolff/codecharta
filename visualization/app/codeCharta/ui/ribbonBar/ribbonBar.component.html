@@ -1,6 +1,6 @@
-<search-panel-component></search-panel-component>
+<cc-search-panel></cc-search-panel>
 
-<md-card class="scenario-card" ng-attr-id="scenario-card" ng-mouseup="$ctrl.onClick()">
+<md-card class="scenario-card" ng-attr-id="scenario-card">
 	<div class="section">
 		<div class="section-header">
 			<scenario-drop-down-component></scenario-drop-down-component>
@@ -12,7 +12,7 @@
 <md-card class="custom-configs-card" ng-show="$ctrl._viewModel.experimentalFeaturesEnabled" ng-attr-id="custom-configs-card">
 	<div class="section">
 		<div class="section-header">
-			<custom-configs-component></custom-configs-component>
+			<cc-custom-configs-component></cc-custom-configs-component>
 		</div>
 		<span class="section-title no-hover">Custom Views</span>
 	</div>
@@ -30,103 +30,70 @@
 <md-card
 	ng-attr-id="area-metric-card"
 	class="area-metric-card metric-card"
-	ng-class="{
-		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN
-	}"
+	ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'AREA_PANEL_OPEN' }"
 >
 	<div class="section">
 		<div class="section-header">
 			<area-metric-chooser-component></area-metric-chooser-component>
 		</div>
-		<span
-			class="section-title"
-			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN)"
-			title="Show area metric settings"
+		<span class="section-title" ng-click="$ctrl.updatePanelSelection('AREA_PANEL_OPEN')" title="Show area metric settings"
 			>Area Metric Options <i class="fa fa-angle-down"></i
 		></span>
 	</div>
-	<area-settings-panel-component
-		ng-class="{
-			hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN
-		}"
-	></area-settings-panel-component>
+	<cc-area-settings-panel ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'AREA_PANEL_OPEN' }"></cc-area-settings-panel>
 </md-card>
 
 <md-card
 	ng-attr-id="height-metric-card"
 	class="height-metric-card metric-card"
-	ng-class="{
-		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN
-	}"
+	ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'HEIGHT_PANEL_OPEN' }"
 >
 	<div class="section">
 		<div class="section-header">
 			<height-metric-chooser-component></height-metric-chooser-component>
 		</div>
-		<span
-			class="section-title"
-			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN)"
-			title="Show height metric settings"
+		<span class="section-title" ng-click="$ctrl.updatePanelSelection('HEIGHT_PANEL_OPEN')" title="Show height metric settings"
 			>Height Metric Options <i class="fa fa-angle-down"></i
 		></span>
 	</div>
 	<height-settings-panel-component
-		ng-class="{
-			hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN
-		}"
+		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'HEIGHT_PANEL_OPEN' }"
 	></height-settings-panel-component>
 </md-card>
 
 <md-card
 	ng-attr-id="color-metric-card"
 	class="color-metric-card metric-card"
-	ng-class="{
-		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN
-	}"
+	ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'COLOR_PANEL_OPEN' }"
 	ng-show="!$ctrl._viewModel.isDeltaState"
 >
 	<div class="section">
 		<div class="section-header">
 			<color-metric-chooser-component></color-metric-chooser-component>
 		</div>
-		<span
-			class="section-title"
-			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN)"
-			title="Show color metric settings"
+		<span class="section-title" ng-click="$ctrl.updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color metric settings"
 			>Color Metric Options <i class="fa fa-angle-down"></i
 		></span>
 	</div>
 	<color-settings-panel-component
-		ng-class="{
-			hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN
-		}"
+		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'COLOR_PANEL_OPEN' }"
 	></color-settings-panel-component>
 </md-card>
 
 <md-card
 	ng-attr-id="edge-metric-card"
 	class="edge-metric-card metric-card"
-	ng-class="{
-		expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN
-	}"
-	ng-show="!$ctrl._viewModel.isDeltaState"
+	ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'EDGE_PANEL_OPEN' }"
+	ng-show="$ctrl._viewModel.hasEdgeMetric"
 >
 	<div class="section">
 		<div class="section-header">
 			<edge-chooser-component></edge-chooser-component>
 		</div>
-		<span
-			class="section-title"
-			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN)"
-			title="Show edge metric settings"
-		>
+		<span class="section-title" ng-click="$ctrl.updatePanelSelection('EDGE_PANEL_OPEN')" title="Show edge metric settings">
 			Edge Metric Options <i class="fa fa-angle-down"></i>
 		</span>
-		<edge-settings-panel-component
-			ng-class="{
-				hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN
-			}"
-		></edge-settings-panel-component>
+		<cc-edge-settings-panel ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'EDGE_PANEL_OPEN' }"></cc-edge-settings-panel>
 	</div>
 </md-card>
 
@@ -135,7 +102,7 @@
 		class="color-section"
 		layout="row"
 		layout-align="space-between center"
-		ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN)"
+		ng-click="$ctrl.updatePanelSelection('COLOR_PANEL_OPEN')"
 		title="Show color settings"
 	>
 		<span>
@@ -145,8 +112,6 @@
 		<i class="fa fa-sort-down color-dropdown-icon"></i>
 	</div>
 	<color-settings-panel-component
-		ng-class="{
-			hidden: $ctrl._viewModel.panelSelection !== $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN
-		}"
+		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'COLOR_PANEL_OPEN' }"
 	></color-settings-panel-component>
 </md-card>

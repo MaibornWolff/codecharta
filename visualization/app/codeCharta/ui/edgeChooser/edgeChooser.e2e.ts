@@ -1,7 +1,7 @@
 import { goto } from "../../../puppeteer.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
-import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
+import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 
 describe("MapTreeViewLevel", () => {

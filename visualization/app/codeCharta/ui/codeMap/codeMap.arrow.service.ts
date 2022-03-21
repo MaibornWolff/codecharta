@@ -46,8 +46,9 @@ export class CodeMapArrowService
 	}
 
 	onBuildingUnhovered() {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None") {
+		const { isEdgeMetricVisible } = this.storeService.getState().appSettings
+
+		if (isEdgeMetricVisible) {
 			this.clearArrows()
 			this.showEdgesOfBuildings()
 		}
@@ -73,9 +74,11 @@ export class CodeMapArrowService
 	}
 
 	addEdgePreview(nodes?: Node[]) {
-		if (nodes) {
-			this.map = this.getNodesAsMap(nodes)
+		if (!nodes) {
+			return
 		}
+
+		this.map = this.getNodesAsMap(nodes)
 
 		const { edges } = this.storeService.getState().fileSettings
 
@@ -103,7 +106,7 @@ export class CodeMapArrowService
 	}
 
 	private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
-		return this.storeService.getState().dynamicSettings.edgeMetric !== "None" && !codeMapBuilding.node.flat
+		return this.storeService.getState().appSettings.isEdgeMetricVisible && !codeMapBuilding.node.flat
 	}
 
 	private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {

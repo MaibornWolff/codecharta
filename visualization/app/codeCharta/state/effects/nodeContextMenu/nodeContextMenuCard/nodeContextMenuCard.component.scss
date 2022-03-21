@@ -1,0 +1,34 @@
+#codemap-context-menu {
+	padding: 2px;
+
+	.button-group {
+		display: inline-grid;
+		width: 100%;
+	}
+
+	.png-icon {
+		width: 17px;
+		height: 17px;
+		margin: 5px auto auto;
+		padding: 0;
+		display: inline-block;
+		background-repeat: no-repeat no-repeat;
+		pointer-events: none;
+	}
+
+	[mat-button] {
+		width: 100%;
+		text-align: left;
+		margin-top: 0;
+		line-height: 30px;
+		min-height: 30px;
+
+		i {
+			min-width: 15px;
+		}
+
+		&:not(:last-child) {
+			margin-bottom: 0;
+		}
+	}
+}

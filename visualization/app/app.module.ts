@@ -4,12 +4,8 @@ import { Inject, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
-import { FormsModule } from "@angular/forms"
+import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "./material/material.module"
-import { MapTreeViewModule } from "./codeCharta/ui/mapTreeView/mapTreeView.module"
-import { MapTreeViewComponent } from "./codeCharta/ui/mapTreeView/mapTreeView.component"
-import { MatchingFilesCounterComponent } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.component"
-import { MatchingFilesCounterModule } from "./codeCharta/ui/matchingFilesCounter/matchingFilesCounter.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
 import { Export3DMapButtonComponent } from "./codeCharta/ui/export3DMapButton/export3DMapButton.component"
@@ -19,59 +15,83 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
-import { FocusButtonsModule } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.module"
-import { FocusButtonsComponent } from "./codeCharta/ui/nodeContextMenu/focusButtons/focusButtons.component"
 import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
-import { MarkFolderRowComponent } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.component"
-import { MarkFolderRowModule } from "./codeCharta/ui/nodeContextMenu/markFolderRow/markFolderRow.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
-import { FlattenButtonsModule } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.module"
-import { FlattenButtonsComponent } from "./codeCharta/ui/nodeContextMenu/flattenButtons/flattenButtons.component"
+import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { HighlightButtonsModule } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.module"
-import { HighlightButtonsComponent } from "./codeCharta/ui/nodeContextMenu/highlightButtons/highlightButtons.component"
 import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
+import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
+import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
+import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.component"
+import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
+import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
+import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
+import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
+import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
+import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
+import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
+import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
+import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
+import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
+import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
-		EffectsModule.forRoot([UnfocusNodesOnLoadingMapEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect]),
-		MapTreeViewModule,
-		MatchingFilesCounterModule,
+		EffectsModule.forRoot([
+			UnfocusNodesOnLoadingMapEffect,
+			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
+			OpenNodeContextMenuEffect,
+			TrackEventUsageDataEffect,
+			BlacklistSearchPatternEffect
+		]),
 		AttributeSideBarModule,
 		MaterialModule,
 		FormsModule,
 		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
-		FocusButtonsModule,
-		MarkFolderRowModule,
-		FlattenButtonsModule,
-		HighlightButtonsModule
+		NodeContextMenuCardModule,
+		AddCustomConfigButtonModule,
+		ReactiveFormsModule,
+		LoadingFileProgressSpinnerModule,
+		LoadingMapProgressSpinnerModule,
+		SearchPanelModule
 	],
-	providers: [threeSceneServiceProvider],
-	declarations: [FilePanelFileSelectorComponent, FilePanelStateButtonsComponent, FilePanelDeltaSelectorComponent, ...dialogs],
+	providers: [threeSceneServiceProvider, IdToBuildingService],
+	declarations: [
+		FilePanelFileSelectorComponent,
+		FilePanelStateButtonsComponent,
+		FilePanelDeltaSelectorComponent,
+		InvertAreaOptionComponent,
+		EdgeMetricToggleComponent,
+		RemoveFileButtonComponent,
+		...dialogs
+	],
 	entryComponents: [
-		MapTreeViewComponent,
-		MatchingFilesCounterComponent,
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		FocusButtonsComponent,
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
+		InvertAreaOptionComponent,
+		AddCustomConfigButtonComponent,
 		FocusButtonsComponent,
-		MarkFolderRowComponent,
-		FlattenButtonsComponent,
-		HighlightButtonsComponent,
+		RemoveFileButtonComponent,
+		LoadingFileProgressSpinnerComponent,
+		LoadingMapProgressSpinnerComponent,
+		EdgeMetricToggleComponent,
+		SearchPanelComponent,
 		...dialogs
 	]
 })

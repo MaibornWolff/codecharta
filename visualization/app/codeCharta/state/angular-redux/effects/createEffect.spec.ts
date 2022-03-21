@@ -34,4 +34,13 @@ describe("createEffect", () => {
 		source.next({ type: "some-action-type" })
 		expect(MockedStore.dispatch).not.toHaveBeenCalled()
 	})
+
+	it("should return an observable which outputs whenever given source outputs", () => {
+		const effect$ = createEffect(() => source)
+		const onEffect = jest.fn()
+		effect$.subscribe(onEffect)
+
+		source.next({ type: "some-action-type" })
+		expect(onEffect).toBeCalledWith({ type: "some-action-type" })
+	})
 })

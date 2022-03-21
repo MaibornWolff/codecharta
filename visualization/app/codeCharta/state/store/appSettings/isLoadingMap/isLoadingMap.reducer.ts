@@ -9,37 +9,37 @@ import { ExperimentalFeaturesEnabledActions } from "../enableExperimentalFeature
 import { IsAttributeSideBarVisibleActions } from "../isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { IsLoadingFileActions } from "../isLoadingFile/isLoadingFile.actions"
 import { PresentationModeActions } from "../isPresentationMode/isPresentationMode.actions"
-import { PanelSelectionActions } from "../panelSelection/panelSelection.actions"
-import { SearchPanelModeActions } from "../searchPanelMode/searchPanelMode.actions"
 import { SortingOrderAscendingActions } from "../sortingOrderAscending/sortingOrderAscending.actions"
 import { IsLoadingMapAction, IsLoadingMapActions, setIsLoadingMap } from "./isLoadingMap.actions"
-import { IdToNodeActions } from "../../lookUp/idToNode/idToNode.actions"
-import { IdToBuildingActions } from "../../lookUp/idToBuilding/idToBuilding.actions"
+import { RightClickedNodeDataActions } from "../../appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { IsEdgeMetricVisibleActions } from "../isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 // Todo state actions explicit instead of excluding all others; refs #1547
 const actionsToExclude = [
 	IsLoadingMapActions,
 	IsLoadingFileActions,
 	SortingOrderAscendingActions,
-	SearchPanelModeActions,
 	SortingOptionActions,
 	IsAttributeSideBarVisibleActions,
-	PanelSelectionActions,
 	PresentationModeActions,
 	ExperimentalFeaturesEnabledActions,
+	IsEdgeMetricVisibleActions,
 	ScreenshotToClipboardEnabledActions,
 	HoveredBuildingPathActions,
+	RightClickedNodeDataActions,
 	FocusedNodePathActions,
 	CameraTargetActions,
-	CameraActions,
-	IdToNodeActions,
-	IdToBuildingActions
+	CameraActions
 ]
 
 export function isLoadingMap(state = setIsLoadingMap().payload, action: IsLoadingMapAction) {
-	if (action.type === IsLoadingMapActions.SET_IS_LOADING_MAP) return action.payload
+	if (action.type === IsLoadingMapActions.SET_IS_LOADING_MAP) {
+		return action.payload
+	}
 
-	if (actionsToExclude.every(excludeActions => !isActionOfType(action.type, excludeActions))) return true
+	if (actionsToExclude.every(excludeActions => !isActionOfType(action.type, excludeActions))) {
+		return true
+	}
 
 	return state
 }

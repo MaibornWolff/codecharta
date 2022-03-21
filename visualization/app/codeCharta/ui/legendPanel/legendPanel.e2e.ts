@@ -1,8 +1,8 @@
 import { goto, clickButtonOnPageElement } from "../../../puppeteer.helper"
 import { LegendPanelObject } from "./legendPanel.po"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
-import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
-import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
+import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
+import { SearchPanelModeSelectorPageObject } from "../searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"
 
 describe("LegendPanel", () => {
 	let legendPanelObject: LegendPanelObject

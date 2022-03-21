@@ -5,17 +5,12 @@ import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFi
 import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
 import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
-import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
-import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
-import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { FilesService } from "./store/files/files.service"
-import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
-import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
@@ -35,7 +30,6 @@ import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attri
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
-import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
@@ -57,17 +51,12 @@ export class InjectorService {
 		private colorLabelsService: ColorLabelsService,
 		private labelShowMetricValueService: LabelShowMetricValueService,
 		private labelShowNodeNameService: LabelShowNodeNameService,
-		private panelSelectionService: PanelSelectionService,
 		private metricDataService: MetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private cameraTargetService: CameraTargetService,
-		private idToNodeService: IdToNodeService,
-		private idToBuildingService: IdToBuildingService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		private searchPanelModeService: SearchPanelModeService,
 		private isLoadingFileService: IsLoadingFileService,
-		private isLoadingMapService: IsLoadingMapService,
 		private filesService: FilesService,
 		private mapSizeService: MapSizeService,
 		private mapColorsService: MapColorsService,
@@ -76,7 +65,6 @@ export class InjectorService {
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private dynamicMarginService: DynamicMarginService,
 		private invertHeightService: InvertHeightService,
-		private invertAreaService: InvertAreaService,
 		private hideFlatBuildingsService: HideFlatBuildingsService,
 		private cameraService: CameraService,
 		private scalingService: ScalingService,
@@ -89,7 +77,6 @@ export class InjectorService {
 		private edgeMetricService: EdgeMetricService,
 		private colorRangeService: ColorRangeService,
 		private marginService: MarginService,
-		private searchPatternService: SearchPatternService,
 		private focusedNodePathService: FocusedNodePathService,
 		private heightMetricService: HeightMetricService,
 		private distributionMetricService: DistributionMetricService,

@@ -68,7 +68,9 @@ export class ThreeStatsService {
 	resetPanels = () => {
 		if (this.isDevelopmentMode) {
 			for (const panel of [this.trianglesPanel, this.glCallsPanel, this.geometryMemoryPanel, this.textureMemoryPanel]) {
-				if (panel !== undefined) panel.maxHeight = 0
+				if (panel !== undefined) {
+					panel.maxHeight = 0
+				}
 			}
 		}
 	}

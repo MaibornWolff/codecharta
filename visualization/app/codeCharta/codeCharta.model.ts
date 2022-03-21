@@ -1,7 +1,6 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
-import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
@@ -11,12 +10,6 @@ export interface NameDataPair {
 	fileName: string
 	fileSize: number
 	content: ExportCCFile
-}
-
-export enum SearchPanelMode {
-	treeView = "treeView",
-	blacklist = "blacklist",
-	minimized = "minimized"
 }
 
 export enum LayoutAlgorithm {
@@ -40,6 +33,12 @@ export interface CCFile {
 	fileMeta: FileMeta
 }
 
+export interface FileCount {
+	all?: number
+	added: number
+	removed: number
+}
+
 interface squarifiedNode {
 	name: string
 	id?: number
@@ -57,6 +56,7 @@ interface squarifiedNode {
 		[key: string]: number
 	}
 	fixedPosition?: FixedPosition
+	fileCount?: FileCount
 }
 
 interface streetNode {
@@ -142,13 +142,12 @@ export interface AppSettings {
 	mapColors: MapColors
 	isPresentationMode: boolean
 	showOnlyBuildingsWithEdges: boolean
+	isEdgeMetricVisible: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	isLoadingMap: boolean
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
-	searchPanelMode: SearchPanelMode
 	isAttributeSideBarVisible: boolean
-	panelSelection: PanelSelection
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
 	layoutAlgorithm: LayoutAlgorithm
@@ -349,7 +348,6 @@ export interface State {
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
 	files: FileState[]
-	lookUp: LookUp
 	appStatus: AppStatus
 }
 
@@ -385,9 +383,8 @@ export interface CCAction extends Action {
 	//
 	// As a starting point:
 	//
-	// RecursivePartial<MetricData & DynamicSettings & LookUp & FileSettings & AppSettings & TreeMapSettings & FileState> & {
+	// RecursivePartial<MetricData & DynamicSettings & FileSettings & AppSettings & TreeMapSettings & FileState> & {
 	// 	metricData: MetricData
-	// 	lookUp: LookUp
 	// 	dynamicSettings: DynamicSettings
 	// 	fileSettings: FileSettings
 	// 	appSettings: AppSettings
@@ -397,22 +394,8 @@ export interface CCAction extends Action {
 	payload?: any
 }
 
-export interface LookUp {
-	idToNode: Map<number, CodeMapNode>
-	// note that key is id of node and NOT id of building
-	idToBuilding: Map<number, CodeMapBuilding>
-}
-
 export interface AppStatus {
 	hoveredBuildingPath: string | null
 	selectedBuildingId: number | null
 	rightClickedNodeData: RightClickedNodeData
-}
-
-export enum PanelSelection {
-	AREA_PANEL_OPEN = "AREA_PANEL_OPEN",
-	HEIGHT_PANEL_OPEN = "HEIGHT_PANEL_OPEN",
-	COLOR_PANEL_OPEN = "COLOR_PANEL_OPEN",
-	EDGE_PANEL_OPEN = "EDGE_PANEL_OPEN",
-	NONE = "NONE"
 }

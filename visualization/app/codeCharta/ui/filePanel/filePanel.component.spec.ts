@@ -311,6 +311,13 @@ describe("filePanelController", () => {
 			]
 		})
 
+		it("should delete file", () => {
+			filePanelController.onRemoveFile("fileA", new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			expect(remainingFiles.length).toEqual(3)
+		})
+
 		it("should not change selection when partially selected files still exist", () => {
 			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
 

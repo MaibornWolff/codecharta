@@ -1,8 +1,9 @@
 import { DeltaGenerator } from "./deltaGenerator"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "./dataMocks"
-import { CCFile, NodeType } from "../codeCharta.model"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D } from "./dataMocks"
+import { CCFile, KeyValuePair, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { clone } from "./clone"
+import { hierarchy } from "d3-hierarchy"
 
 describe("deltaGenerator", () => {
 	let fileA: CCFile
@@ -38,6 +39,14 @@ describe("deltaGenerator", () => {
 							type: NodeType.FILE,
 							attributes: { special: 42 },
 							path: "/root/onlyA/special/unicorn",
+							isExcluded: false,
+							isFlattened: false
+						},
+						{
+							name: "2ndUnicorn",
+							type: NodeType.FILE,
+							attributes: { special: 10 },
+							path: "/root/onlyA/special/2ndunicorn",
 							isExcluded: false,
 							isFlattened: false
 						}
@@ -89,7 +98,24 @@ describe("deltaGenerator", () => {
 		expect(result.map).toMatchSnapshot()
 	})
 
-	it("should sum the size of the comparison and reference File", () => {
+	it("should detect added and removed files and add result to delta attributes", () => {
+		const actualAmountOfChangedFiles: KeyValuePair = { added: 0, removed: 0 }
+		const referenceMap = { ...TEST_DELTA_MAP_C }
+		const comparisonMap = { ...TEST_DELTA_MAP_D }
+		NodeDecorator.decorateMapWithPathAttribute(referenceMap)
+		NodeDecorator.decorateMapWithPathAttribute(comparisonMap)
+
+		const actualDeltaMap = DeltaGenerator.getDeltaFile(referenceMap, comparisonMap)
+
+		for (const { data } of hierarchy(actualDeltaMap.map)) {
+			actualAmountOfChangedFiles.added += data.fileCount.added
+			actualAmountOfChangedFiles.removed += data.fileCount.removed
+		}
+
+		expect(actualAmountOfChangedFiles).toEqual({ added: 5, removed: 5 })
+	})
+
+	it("should sum exported file size of the comparison and reference File", () => {
 		NodeDecorator.decorateMapWithPathAttribute(fileA)
 		NodeDecorator.decorateMapWithPathAttribute(fileB)
 

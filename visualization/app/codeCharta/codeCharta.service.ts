@@ -31,7 +31,9 @@ export class CodeChartaService {
 
 		this.storeService.dispatch(setIsLoadingFile(false))
 
-		if (fileValidationResults.length > 0) await this.dialogService.showValidationDialog(fileValidationResults)
+		if (fileValidationResults.length > 0) {
+			await this.dialogService.showValidationDialog(fileValidationResults)
+		}
 
 		if (this.recentFiles.length > 0) {
 			this.storeService.dispatch(setRecentFiles(this.recentFiles))
@@ -63,8 +65,9 @@ export class CodeChartaService {
 				this.addFile(nameDataPair)
 			}
 
-			if (fileValidationResult.errors.length > 0 || fileValidationResult.warnings.length > 0)
+			if (fileValidationResult.errors.length > 0 || fileValidationResult.warnings.length > 0) {
 				fileValidationResults.push(fileValidationResult)
+			}
 		}
 	}
 

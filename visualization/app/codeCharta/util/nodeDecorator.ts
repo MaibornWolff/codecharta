@@ -85,6 +85,7 @@ export const NodeDecorator = {
 		// remove the Object.keys calls from then on. They are identical to the
 		// `nodeMetricData` and `edgeMetricData` names.
 		const attributeKeys = Object.keys(map.attributes)
+
 		const edgeKeys = Object.keys(map.edgeAttributes)
 		hierarchy(map).eachAfter(function decorateNode({ data, parent }) {
 			// skip root
@@ -105,6 +106,11 @@ export const NodeDecorator = {
 						parent.data.deltas[name] += data.deltas[name] ?? 0
 					}
 				}
+			}
+
+			if (isDeltaState && parent.data.fileCount) {
+				parent.data.fileCount.added += data.fileCount.added
+				parent.data.fileCount.removed += data.fileCount.removed
 			}
 
 			for (const name of edgeKeys) {
@@ -177,6 +183,9 @@ function mergeFolderChain(data: CodeMapNode) {
 	// Nodes with only one child which also have children are merged into one node
 	// e.g. a /folder which includes anotherFolder that includes other files or folders
 	// will be merged to a node with path /folder/anotherFolder and children are set accordingly
+	if (data.children?.length === 1 && data.children[0]?.fixedPosition) {
+		return
+	}
 
 	if (data.children?.length === 1 && data.children[0].children?.length > 0) {
 		const [child] = data.children
