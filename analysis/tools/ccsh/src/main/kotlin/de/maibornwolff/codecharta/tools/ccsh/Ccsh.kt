@@ -19,38 +19,38 @@ import picocli.CommandLine
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "ccsh",
-        description = ["Command Line Interface for CodeCharta analysis"],
-        subcommands = [
-            ValidationTool::class,
-            MergeFilter::class,
-            EdgeFilter::class,
-            StructureModifier::class,
-            CSVImporter::class,
-            SonarImporterMain::class,
-            SourceMonitorImporter::class,
-            SCMLogParser::class,
-            SCMLogParserV2::class,
-            // Installer::class,
-            CSVExporter::class,
-            // CrococosmoImporter::class,
-            SourceCodeParserMain::class,
-            // UnderstandImporter::class,
-            CodeMaatImporter::class,
-            // JasomeImporter::class,
-            TokeiImporter::class,
-            RawTextParser::class,
-            // AutoComplete.GenerateCompletion::class
-        ],
-        versionProvider = Ccsh.ManifestVersionProvider::class,
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "ccsh",
+    description = ["Command Line Interface for CodeCharta analysis"],
+    subcommands = [
+        ValidationTool::class,
+        MergeFilter::class,
+        EdgeFilter::class,
+        StructureModifier::class,
+        CSVImporter::class,
+        SonarImporterMain::class,
+        SourceMonitorImporter::class,
+        SCMLogParser::class,
+        SCMLogParserV2::class,
+        // Installer::class,
+        CSVExporter::class,
+        // CrococosmoImporter::class,
+        SourceCodeParserMain::class,
+        // UnderstandImporter::class,
+        CodeMaatImporter::class,
+        // JasomeImporter::class,
+        TokeiImporter::class,
+        RawTextParser::class,
+        // AutoComplete.GenerateCompletion::class
+    ],
+    versionProvider = Ccsh.ManifestVersionProvider::class,
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class Ccsh : Callable<Void?> {
 
     @CommandLine.Option(
-            names = ["-v", "--version"],
-            versionHelp = true,
-            description = ["prints version info and exits"]
+        names = ["-v", "--version"],
+        versionHelp = true,
+        description = ["prints version info and exits"]
     )
     var versionRequested: Boolean = false
 
@@ -108,9 +108,9 @@ class Ccsh : Callable<Void?> {
     object ManifestVersionProvider : CommandLine.IVersionProvider {
         override fun getVersion(): Array<String> {
             return arrayOf(
-                    Ccsh::class.java.`package`.implementationTitle + "\n" +
-                            "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
-                            "Copyright(c) 2020, MaibornWolff GmbH"
+                Ccsh::class.java.`package`.implementationTitle + "\n" +
+                        "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
+                        "Copyright(c) 2020, MaibornWolff GmbH"
             )
         }
     }
