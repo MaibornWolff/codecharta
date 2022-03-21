@@ -4,12 +4,12 @@ import { BlacklistItem, BlacklistType, NodeType } from "../../../../codeCharta.m
 
 describe("ArtificialIntelligenceSelector", () => {
 	it("should return undefined when experimental features are disabled ", () => {
-		const actual = calculate(false, VALID_NODE_JAVA, [])
+		const actual = calculate(false, { unifiedMapNode: VALID_NODE_JAVA }, [])
 		expect(actual).toBeUndefined()
 	})
 
 	it("should calculate suspicious metrics and risk profile when experimental features are enabled ", () => {
-		const actual = calculate(true, VALID_NODE_JAVA, [])
+		const actual = calculate(true, { unifiedMapNode: VALID_NODE_JAVA }, [])
 
 		expect(actual).toEqual({
 			analyzedProgrammingLanguage: "java",
@@ -32,7 +32,7 @@ describe("ArtificialIntelligenceSelector", () => {
 			attributes: { rloc: 70, mcc: 1000 }
 		}
 
-		const actual = calculate(true, blacklistedNode, blacklist)
+		const actual = calculate(true, { unifiedMapNode: blacklistedNode }, blacklist)
 
 		expect(actual).toEqual({
 			riskProfile: {

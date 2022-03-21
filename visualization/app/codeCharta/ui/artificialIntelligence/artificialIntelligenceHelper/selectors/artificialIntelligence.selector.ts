@@ -20,9 +20,9 @@ import { getMostFrequentLanguage } from "../mainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { CcState } from "../../../../state/store/store"
-import { unifiedMapNodeSelector } from "../../../../state/selectors/accumulatedData/unifiedMapNode.selector"
 import { experimentalFeaturesEnabledSelector } from "../../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
+import { CcState } from "../../../../state/store/store"
+import { AccumulatedData, accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 
 export interface ArtificialIntelligenceControllerViewModel {
 	analyzedProgrammingLanguage: string
@@ -33,7 +33,7 @@ export interface ArtificialIntelligenceControllerViewModel {
 
 export const calculate = (
 	experimentalFeaturesEnabled: boolean,
-	map: CodeMapNode,
+	accumulatedData: Pick<AccumulatedData, "unifiedMapNode">,
 	blacklist: BlacklistItem[]
 ): ArtificialIntelligenceControllerViewModel | undefined => {
 	if (!experimentalFeaturesEnabled) {
@@ -53,7 +53,7 @@ export const calculate = (
 	const metricValues: MetricValues = {}
 	const metricValuesByLanguage: MetricValuesByLanguage = {}
 
-	for (const { data } of hierarchy(map)) {
+	for (const { data } of hierarchy(accumulatedData.unifiedMapNode)) {
 		const fileExtension = getFileExtension(data.name)
 		if (data.type === NodeType.FILE && fileExtension !== undefined && !isPathBlacklisted(data.path, blacklist, BlacklistType.exclude)) {
 			const filesPerLanguage = numberOfFilesByLanguage.get(fileExtension) ?? 0
@@ -98,6 +98,6 @@ function isFileValid(node: CodeMapNode, fileExtension: string) {
 }
 
 export const artificialIntelligenceSelector: (state: CcState) => ArtificialIntelligenceControllerViewModel = createSelector(
-	[experimentalFeaturesEnabledSelector, unifiedMapNodeSelector, blacklistSelector],
+	[experimentalFeaturesEnabledSelector, accumulatedDataSelector, blacklistSelector],
 	calculate
 )
