@@ -1,10 +1,9 @@
 import "./attributeTypeSelector.component.scss"
 import { Component, Inject, Input } from "@angular/core"
-import { Observable } from "rxjs"
 import { AttributeTypes, AttributeTypeValue } from "../../../codeCharta.model"
 import { updateAttributeType } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { Store } from "../../../state/angular-redux/store"
-import { GetAttributeType, getAttributeTypeSelector } from "../../../state/selectors/getAttributeTypeOfNodesByMetric.selector"
+import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
 
 @Component({
 	selector: "cc-attribute-type-selector",
@@ -14,11 +13,9 @@ export class AttributeTypeSelectorComponent {
 	@Input() metricName: string
 	@Input() metricType: keyof AttributeTypes
 
-	getAttributeType$: Observable<GetAttributeType>
+	attributeTypes$ = this.store.select(attributeTypesSelector)
 
-	constructor(@Inject(Store) private store: Store) {
-		this.getAttributeType$ = this.store.select(getAttributeTypeSelector)
-	}
+	constructor(@Inject(Store) private store: Store) {}
 
 	setToAbsolute() {
 		this.setAttributeType(AttributeTypeValue.absolute)
