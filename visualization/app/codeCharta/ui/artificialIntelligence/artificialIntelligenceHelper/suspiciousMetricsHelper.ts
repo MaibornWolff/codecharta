@@ -23,7 +23,7 @@ export interface MetricSuggestionParameters {
 	isOutlier?: boolean
 }
 
-export function calculateSuspiciousMetrics(metricAssessmentResults: MetricAssessmentResults) {
+export function calculateSuspiciousMetrics(metricAssessmentResults: MetricAssessmentResults): MetricSuggestionParameters[] {
 	const noticeableMetricSuggestionLinks = new Map<string, MetricSuggestionParameters>()
 
 	for (const [metricName, colorRange] of metricAssessmentResults.suspiciousMetrics) {

@@ -4,14 +4,13 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { ArtificialIntelligenceController } from "./artificialIntelligence.component"
 import { setFiles } from "../../state/store/files/files.actions"
-import { FILE_STATES_JAVA, STATE } from "../../util/dataMocks"
-import { ColorRange } from "../../codeCharta.model"
+import { FILE_STATES_JAVA } from "../../util/dataMocks"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 
 jest.mock("lodash.debounce", () => (function_: () => void) => function_)
 
@@ -48,67 +47,67 @@ describe("ArtificialIntelligenceController", () => {
 
 		it("should apply suspicious metric view", () => {
 			const testMetricSuggestionParameters = {
-				metric: "loc",
+				metric: "mcc",
 				from: 365,
 				to: 554,
 				max: 0,
-				min: 0,
-				isOutlier: undefined
-			}
-
-			const colorRange: ColorRange = {
-				from: testMetricSuggestionParameters.from,
-				to: testMetricSuggestionParameters.to,
-				max: 0,
 				min: 0
 			}
-			artificialIntelligenceController.viewModel.suspiciousMetricSuggestionLinks = [testMetricSuggestionParameters]
 			const dispatchSpy = jest.spyOn(storeService, "dispatch")
 
 			artificialIntelligenceController.applySuspiciousMetric(testMetricSuggestionParameters, false)
 
 			expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric("rloc"))
-			expect(dispatchSpy).toHaveBeenCalledWith(setHeightMetric("loc"))
-			expect(dispatchSpy).toHaveBeenCalledWith(setColorMetric("loc"))
-			expect(dispatchSpy).toHaveBeenCalledWith(setColorRange(colorRange))
-			expect(dispatchSpy).toHaveBeenCalledWith(setMapColors(STATE.appSettings.mapColors))
+			expect(dispatchSpy).toHaveBeenCalledWith(setHeightMetric("mcc"))
+			expect(dispatchSpy).toHaveBeenCalledWith(setColorMetric("mcc"))
+			expect(dispatchSpy).toHaveBeenCalledWith(
+				setColorRange({
+					from: testMetricSuggestionParameters.from,
+					to: testMetricSuggestionParameters.to,
+					max: 0,
+					min: 0
+				})
+			)
+			expect(dispatchSpy).toHaveBeenCalledWith(
+				setMapColors({
+					positive: defaultMapColors.positive,
+					neutral: defaultMapColors.neutral,
+					negative: defaultMapColors.negative
+				})
+			)
 		})
 
 		it("should apply view for very high risk metric", () => {
-			const mapColors = { ...STATE.appSettings.mapColors }
-			mapColors.positive = "#ffffff"
-			mapColors.neutral = "#ffffff"
-			mapColors.negative = "#A900C0"
 			const testMetricSuggestionParameters = {
-				metric: "loc",
+				metric: "mcc",
 				from: 365,
 				to: 554,
 				max: 0,
 				min: 0,
 				isOutlier: true
 			}
-			const colorRange: ColorRange = {
-				from: testMetricSuggestionParameters.from,
-				to: testMetricSuggestionParameters.to,
-				max: 0,
-				min: 0
-			}
-			artificialIntelligenceController.viewModel.suspiciousMetricSuggestionLinks = [testMetricSuggestionParameters]
 			const dispatchSpy = jest.spyOn(storeService, "dispatch")
 
 			artificialIntelligenceController.applySuspiciousMetric(testMetricSuggestionParameters, true)
 
 			expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric("rloc"))
-			expect(dispatchSpy).toHaveBeenCalledWith(setHeightMetric("loc"))
-			expect(dispatchSpy).toHaveBeenCalledWith(setColorMetric("loc"))
-			expect(dispatchSpy).toHaveBeenCalledWith(setColorRange(colorRange))
-			expect(dispatchSpy).toHaveBeenCalledWith(setMapColors(mapColors))
-		})
-
-		it("should calculate suspicious metrics sorted by 'isOutlier'", () => {
-			expect(artificialIntelligenceController.viewModel.analyzedProgrammingLanguage).toBe("java")
-			expect(artificialIntelligenceController.viewModel.suspiciousMetricSuggestionLinks).toMatchSnapshot()
-			expect(artificialIntelligenceController.viewModel.unsuspiciousMetrics).toMatchSnapshot()
+			expect(dispatchSpy).toHaveBeenCalledWith(setHeightMetric("mcc"))
+			expect(dispatchSpy).toHaveBeenCalledWith(setColorMetric("mcc"))
+			expect(dispatchSpy).toHaveBeenCalledWith(
+				setColorRange({
+					from: testMetricSuggestionParameters.from,
+					to: testMetricSuggestionParameters.to,
+					max: 0,
+					min: 0
+				})
+			)
+			expect(dispatchSpy).toHaveBeenCalledWith(
+				setMapColors({
+					positive: "#ffffff",
+					neutral: "#ffffff",
+					negative: "#A900C0"
+				})
+			)
 		})
 	})
 })

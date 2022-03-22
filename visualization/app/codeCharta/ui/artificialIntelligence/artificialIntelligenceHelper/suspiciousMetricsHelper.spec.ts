@@ -24,7 +24,12 @@ describe("suspiciousMetricsHelper", () => {
 			setMetricValues(node, actualMetricValues)
 		}
 
-		expect(actualMetricValues).toEqual({ rloc: [1, 10], mcc: [1, 10], statements: [100, 1000], functions: [100, 1000] })
+		expect(actualMetricValues).toEqual({
+			rloc: [1, 10],
+			mcc: [1, 10],
+			statements: [100, 1000],
+			functions: [100, 1000]
+		})
 	})
 
 	it("should not set metrics when node has no attributes", () => {
@@ -129,10 +134,52 @@ describe("suspiciousMetricsHelper", () => {
 			min: 0
 		}
 		const metricAssessmentResults: MetricAssessmentResults = {
-			suspiciousMetrics: new Map<string, ColorRange>([["mcc", colorRange]]),
-			unsuspiciousMetrics: ["function", "statements"],
-			outliersThresholds: new Map<string, number>([["mcc", 1000]])
+			suspiciousMetrics: new Map([["mcc", colorRange]]),
+			unsuspiciousMetrics: [],
+			outliersThresholds: new Map([["mcc", 1000]])
 		}
-		calculateSuspiciousMetrics(metricAssessmentResults)
+
+		const actualMetricSuggestionParameter = calculateSuspiciousMetrics(metricAssessmentResults)
+
+		expect(actualMetricSuggestionParameter).toEqual([
+			{
+				from: 1,
+				isOutlier: true,
+				max: 0,
+				metric: "mcc",
+				min: 0,
+				to: 10
+			}
+		])
+	})
+
+	it("should calculate suspicious metrics sort by outlier", () => {
+		const colorRange: ColorRange = {
+			from: 1,
+			to: 10,
+			max: 0,
+			min: 0
+		}
+		const metricAssessmentResults: MetricAssessmentResults = {
+			suspiciousMetrics: new Map([
+				["mcc", colorRange],
+				["loc", colorRange],
+				["functions", colorRange]
+			]),
+			unsuspiciousMetrics: [],
+			outliersThresholds: new Map([
+				["mcc", 1000],
+				["loc", 2000]
+			])
+		}
+
+		const actualMetricSuggestionParameter = calculateSuspiciousMetrics(metricAssessmentResults)
+
+		expect(actualMetricSuggestionParameter[0].metric).toBe("mcc")
+		expect(actualMetricSuggestionParameter[0].isOutlier).toBe(true)
+		expect(actualMetricSuggestionParameter[1].metric).toBe("loc")
+		expect(actualMetricSuggestionParameter[1].isOutlier).toBe(true)
+		expect(actualMetricSuggestionParameter[2].metric).toBe("functions")
+		expect(actualMetricSuggestionParameter[2].isOutlier).toBeUndefined()
 	})
 })
