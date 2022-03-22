@@ -10,7 +10,7 @@
 				class="ai-badge"
 				ng-show="
 					!hideBadge &&
-					($ctrl.viewModel.riskProfile !== undefined ||
+					($ctrl.viewModel.analyzedProgrammingLanguage !== undefined ||
 						$ctrl.viewModel.suspiciousMetricSuggestionLinks.length ||
 						$ctrl.viewModel.unsuspiciousMetrics.length)
 				"
@@ -20,6 +20,9 @@
 		</md-button>
 
 		<md-menu-content class="ai-drop-down metrics">
+			<md-menu-item ng-show="$ctrl.viewModel.analyzedProgrammingLanguage === undefined">
+				<span> No programming language was found for analyzing suspicious metrics. </span>
+			</md-menu-item>
 			<md-menu-item class="title" ng-show="$ctrl.viewModel.unsuspiciousMetrics.length">
 				<span ng-show="$ctrl.viewModel.analyzedProgrammingLanguage.length">
 					Unsuspicious Metrics in {{ $ctrl.viewModel.analyzedProgrammingLanguage }} code
