@@ -1,22 +1,36 @@
-import { Component, Inject, OnInit } from "@angular/core"
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { CustomConfigFileStateConnector } from "../customConfigFileStateConnector"
 import { State } from "../../../state/angular-redux/state"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { CustomConfig, ExportCustomConfig } from "../../../model/customConfig/customConfig.api.model"
+import { downloadableCustomConfigsSelector } from "../selectors/downloadableCustomConfigs.selector"
+
+import { Subscription } from "rxjs"
+import { Store } from "../../../state/angular-redux/store"
 
 @Component({ template: require("./downloadCustomConfigsButton.component.html") })
-export class DownloadCustomConfigsButtonComponent implements OnInit {
+export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
 	private customConfigFileStateConnector: CustomConfigFileStateConnector
 	private downloadableConfigs: Map<string, ExportCustomConfig> = new Map()
+	testDownloadableConfigs: Map<string, number>
 	hasDownloadableConfigs = false
+	subscription: Subscription
 
-	constructor(@Inject(State) private state: State) {}
+	constructor(@Inject(State) private state: State, @Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
 		const files = filesSelector(this.state.getValue())
+		this.subscription = this.store.select(downloadableCustomConfigsSelector).subscribe(downloadableConfigs => {
+			this.testDownloadableConfigs = downloadableConfigs
+		})
+
 		this.customConfigFileStateConnector = new CustomConfigFileStateConnector(files)
 		this.preloadDownloadableConfigs()
+	}
+
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe()
 	}
 
 	private isConfigApplicableForUploadedMaps(customConfig: CustomConfig) {
