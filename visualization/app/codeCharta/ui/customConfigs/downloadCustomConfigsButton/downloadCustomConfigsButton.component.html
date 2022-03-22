@@ -1,10 +1,8 @@
-<!--
-<md-button
-  ng-click="$ctrl.downloadPreloadedCustomConfigs()"
-  ng-disabled="!$ctrl._viewModel.hasDownloadableConfigs"
-  class="action-button"
-  title="Download Custom View related to currently uploaded maps, if any."
+<button
+	class="action-button"
+	title="Download Custom View related to currently uploaded maps, if any."
+	(click)="downloadPreloadedCustomConfigs()"
+	[disabled]="!hasDownloadableConfigs"
 >
-  <i class="fa fa-download" aria-hidden="true"></i>
-</md-button>-->
-Test Message
+	<i class="fa fa-download"></i>
+</button>
