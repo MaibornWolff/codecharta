@@ -19,8 +19,8 @@ Components that import data from an external source, e.g. SonarQube, and generat
 | generic CSV              | [CSVImporter](import/CSVImporter/README.md)               |
 | Jasome                   | [JasomeImporter](import/JasomeImporter/README.md)         |
 | SCITools' Understand CSV | [UnderstandImporter](import/UnderstandImporter/README.md) |
-| SVN log                  | [SVNLogParser](import/SCMLogParser/README.md)             |
-| Git log                  | [GitLogParser](import/SCMLogParserV2/README.md)           |
+| SVN log                  | [SVNLogParser](import/SVNLogParser/README.md)             |
+| Git log                  | [GitLogParser](import/GitLogParser/README.md)             |
 | SonarQube                | [SonarImporter](import/SonarImporter/README.md)           |
 | Source Code              | [SourceCodeParser](import/SourceCodeParser/README.md)     |
 | SourceMonitor CSV        | [SourceMonitorImporter](import/CSVImporter/README.md)     |
