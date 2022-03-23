@@ -2,10 +2,10 @@ import { DIFFERENT_NODE } from "../../../util/dataMocks"
 import { _calculateSecondaryMetrics } from "./secondaryMetrics.selector"
 
 const primaryMetricNames = {
-	nameOfAreaMetric: "a",
-	nameOfHeightMetric: "a",
-	nameOfColorMetric: "a",
-	nameOfEdgeMetric: "None"
+	areaMetric: "a",
+	heightMetric: "a",
+	colorMetric: "a",
+	edgeMetric: "None"
 }
 
 describe("secondaryMetricsSelector", () => {

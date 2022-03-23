@@ -24,7 +24,7 @@ Array [
       "attributes": Object {
         "a": 20,
         "b": 15,
-        "mcc": 14,
+        "mcc": 100,
       },
       "color": "#820E0E",
       "deltas": Object {
@@ -88,7 +88,7 @@ Array [
       "attributes": Object {
         "a": 20,
         "b": 15,
-        "mcc": 14,
+        "mcc": 100,
       },
       "color": "#820E0E",
       "deltas": Object {

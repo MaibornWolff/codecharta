@@ -5,7 +5,7 @@ import { defaultFileSettings } from "./fileSettings/fileSettings.actions"
 import { defaultDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
 import { defaultTreeMapSettings } from "./treeMap/treeMap.actions"
 import { defaultFiles } from "./files/files.actions"
-import { defaultHoveredBuildingPath } from "./appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
+import { defaultHoveredNodeId } from "./appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { defaultSelectedBuildingId } from "./appStatus/selectedBuildingId/selectedBuildingId.actions"
 import { defaultRightClickedNodeData } from "./appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
@@ -34,7 +34,7 @@ export const defaultState: State = {
 	treeMap: defaultTreeMapSettings,
 	files: defaultFiles,
 	appStatus: {
-		hoveredBuildingPath: defaultHoveredBuildingPath,
+		hoveredNodeId: defaultHoveredNodeId,
 		selectedBuildingId: defaultSelectedBuildingId,
 		rightClickedNodeData: defaultRightClickedNodeData
 	}

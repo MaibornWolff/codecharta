@@ -1,6 +1,6 @@
 import { isLoadingMap } from "./isLoadingMap.reducer"
 import { IsLoadingMapAction, setIsLoadingMap } from "./isLoadingMap.actions"
-import { setHoveredBuildingPath } from "../../appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
+import { setHoveredNodeId } from "../../appStatus/hoveredNodeId/hoveredNodeId.actions"
 
 describe("isLoadingMap", () => {
 	describe("Default State", () => {
@@ -31,7 +31,7 @@ describe("isLoadingMap", () => {
 		})
 
 		it("'should' not set isLoadingMap to true on an explicit excluded action", () => {
-			expect(isLoadingMap(false, setHoveredBuildingPath("/root/child") as unknown as IsLoadingMapAction)).toBe(false)
+			expect(isLoadingMap(false, setHoveredNodeId(null) as unknown as IsLoadingMapAction)).toBe(false)
 		})
 	})
 })

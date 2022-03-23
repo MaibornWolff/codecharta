@@ -3,14 +3,16 @@ import { BlacklistType, CodeMapNode, ColorMode, EdgeVisibility, NodeType, State 
 import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 
-jest.mock("../../../state/selectors/accumulatedData/unifiedMapNode.selector", () => ({
-	unifiedMapNodeSelector: () => ({
-		name: "Anode",
-		path: "/root/Anode",
-		type: "File",
-		attributes: { theHeight: 100 },
-		isExcluded: false,
-		isFlattened: false
+jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
+	accumulatedDataSelector: () => ({
+		unifiedMapNode: {
+			name: "Anode",
+			path: "/root/Anode",
+			type: "File",
+			attributes: { theHeight: 100 },
+			isExcluded: false,
+			isFlattened: false
+		}
 	})
 }))
 

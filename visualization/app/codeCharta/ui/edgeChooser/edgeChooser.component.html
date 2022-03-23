@@ -37,7 +37,7 @@
 
 	<div class="metric-value" ng-show="$ctrl._viewModel.hoveredEdgeValue">
 		<div class="rounded-box" id="edge-count">
-			<metric-type-component metric-selection="edgeMetric"></metric-type-component>
+			<cc-metric-type [attribute-type]="'edges'" [metric-for]="'edgeMetric'"></cc-metric-type>
 			{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
 			{{ ($ctrl._viewModel.hoveredEdgeValue.outgoing | number) || "-" }}
 		</div>
