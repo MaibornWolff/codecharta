@@ -1,72 +1,100 @@
-import "./searchPanel.module"
-import { SearchPanelController } from "./searchPanel.component"
-import { instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { TestBed } from "@angular/core/testing"
+import { fireEvent, render } from "@testing-library/angular"
+import { SearchPanelComponent } from "./searchPanel.component"
+import { SearchPanelModule } from "./searchPanel.module"
 
-describe("SearchPanelController", () => {
-	let searchPanelModeController: SearchPanelController
-
+describe("SearchPanelComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.searchPanel")
-	}
-
-	function rebuildController() {
-		searchPanelModeController = new SearchPanelController()
-	}
-
-	describe("constructor", () => {
-		it("should be minimized initially ", () => {
-			rebuildController()
-
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("minimized")
+		TestBed.configureTestingModule({
+			imports: [SearchPanelModule],
+			providers: [SearchPanelComponent]
 		})
 	})
 
-	describe("updateSearchPanelMode", () => {
-		it("should open search panel, when it was minimized before", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = "minimized"
-
-			searchPanelModeController.updateSearchPanelMode("treeView")
-
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual("treeView")
-		})
-
-		it("should close search panel when called with current mode", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = "minimized"
-
-			searchPanelModeController.updateSearchPanelMode("blacklist")
-
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual("blacklist")
+	it("should be minimized initially", async () => {
+		const { container } = await render(SearchPanelComponent, { excludeComponentDeclaration: true })
+		expect(isSearchPanelOpen(container)).toBe(false)
+		expect(getBodyElementsHidden(container)).toEqual({
+			blackListPanel: true,
+			matchingFilesCounter: true,
+			mapTreeView: true
 		})
 	})
 
-	describe("openSearchPanel", () => {
-		it("should keep the search panel open when it is already open", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = "treeView"
-
-			searchPanelModeController.openSearchPanel()
-
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("treeView")
+	it("should open when clicked on search bar", async () => {
+		const { container } = await render(SearchPanelComponent, { excludeComponentDeclaration: true })
+		fireEvent.click(container.querySelector("cc-search-bar"))
+		expect(isSearchPanelOpen(container)).toBe(true)
+		expect(getBodyElementsHidden(container)).toEqual({
+			blackListPanel: true,
+			matchingFilesCounter: false,
+			mapTreeView: false
 		})
 	})
 
-	describe("closeSearchPanelOnOutsideClick", () => {
-		it("should close when clicked outside", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = "treeView"
-			searchPanelModeController["closeSearchPanelOnOutsideClick"]({ composedPath: () => [] } as MouseEvent)
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("minimized")
+	it("should close, when clicking on opened mode", async () => {
+		const { container, getByText } = await render(SearchPanelComponent, { excludeComponentDeclaration: true })
+		fireEvent.click(container.querySelector("cc-search-bar"))
+		fireEvent.click(getByText("File/Node Explorer"))
+		expect(isSearchPanelOpen(container)).toBe(false)
+		expect(getBodyElementsHidden(container)).toEqual({
+			blackListPanel: true,
+			matchingFilesCounter: true,
+			mapTreeView: true
+		})
+	})
+
+	describe("closing on outside clicks", () => {
+		it("should subscribe to mousedown events when opening", () => {
+			const addEventListenerSpy = jest.spyOn(document, "addEventListener")
+			const searchPanelComponent = TestBed.inject(SearchPanelComponent)
+			searchPanelComponent.searchPanelMode = "minimized"
+
+			searchPanelComponent["setSearchPanelMode"]("treeView")
+
+			expect(addEventListenerSpy).toHaveBeenCalledWith("mousedown", searchPanelComponent["closeSearchPanelOnOutsideClick"])
 		})
 
-		it("should not close when context menu within search panel was opened", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = "treeView"
-			searchPanelModeController["closeSearchPanelOnOutsideClick"]({
-				composedPath: () => [{ id: "codemap-context-menu" }]
+		it("should unsubscribe mousedown events when closing", () => {
+			const removeEventListenerSpy = jest.spyOn(document, "removeEventListener")
+			const searchPanelComponent = TestBed.inject(SearchPanelComponent)
+			searchPanelComponent.searchPanelMode = "treeView"
+
+			searchPanelComponent["setSearchPanelMode"]("minimized")
+
+			expect(removeEventListenerSpy).toHaveBeenCalledWith("mousedown", searchPanelComponent["closeSearchPanelOnOutsideClick"])
+		})
+
+		it("should close when clicking outside", () => {
+			const searchPanelComponent = TestBed.inject(SearchPanelComponent)
+			searchPanelComponent.searchPanelMode = "treeView"
+
+			searchPanelComponent["closeSearchPanelOnOutsideClick"]({ composedPath: () => [] } as MouseEvent)
+
+			expect(searchPanelComponent.searchPanelMode).toBe("minimized")
+		})
+
+		it("should not close when clicking inside", () => {
+			const searchPanelComponent = TestBed.inject(SearchPanelComponent)
+			searchPanelComponent.searchPanelMode = "treeView"
+
+			searchPanelComponent["closeSearchPanelOnOutsideClick"]({
+				composedPath: () => [{ nodeName: "CC-SEARCH-PANEL" }]
 			} as unknown as MouseEvent)
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBe("treeView")
+
+			expect(searchPanelComponent.searchPanelMode).toBe("treeView")
 		})
 	})
 })
+
+function isSearchPanelOpen(container: Element) {
+	return container.querySelector("mat-card").classList.contains("expanded")
+}
+
+function getBodyElementsHidden(container: Element) {
+	return {
+		blackListPanel: container.querySelector("cc-blacklist-panel")["hidden"],
+		matchingFilesCounter: container.querySelector("cc-matching-files-counter")["hidden"],
+		mapTreeView: container.querySelector("cc-map-tree-view")["hidden"]
+	}
+}

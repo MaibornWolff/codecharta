@@ -27,7 +27,13 @@ class SonarImporterMain(
     private val error: PrintStream = System.err
 ) : Callable<Void> {
 
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = [
+        "Please locate:\n" +
+        "-    sonar.host.url=https://sonar.foo\n" +
+        "-    sonar.login=c123d456\n" +
+        "-    sonar.projectKey=de.foo:bar\n" +
+        "That you use to upload your code to sonar.\n" +
+        "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]"])
     private var help = false
 
     @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])

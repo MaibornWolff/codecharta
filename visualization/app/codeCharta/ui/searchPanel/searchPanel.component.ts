@@ -1,31 +1,37 @@
+import { Component } from "@angular/core"
 import "./searchPanel.component.scss"
 
 export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
 
-export class SearchPanelController {
-	private _viewModel: {
-		searchPanelMode: SearchPanelMode
-	} = {
-		searchPanelMode: "minimized"
-	}
-
-	constructor() {
-		"ngInject"
-		document.addEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
-	}
+@Component({
+	selector: "cc-search-panel",
+	template: require("./searchPanel.component.html")
+})
+export class SearchPanelComponent {
+	searchPanelMode: SearchPanelMode = "minimized"
 
 	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
-		this._viewModel.searchPanelMode = this._viewModel.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode
+		this.setSearchPanelMode(this.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode)
 	}
 
 	openSearchPanel() {
-		this._viewModel.searchPanelMode = "treeView"
+		this.setSearchPanelMode("treeView")
 	}
 
-	closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
-		if (this._viewModel.searchPanelMode !== "minimized" && this.isOutside(event)) {
-			this._viewModel.searchPanelMode = "minimized"
+	private closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
+		if (this.isOutside(event)) {
+			this.setSearchPanelMode("minimized")
 		}
+	}
+
+	private setSearchPanelMode(newMode: SearchPanelMode) {
+		if (this.searchPanelMode === "minimized" && newMode !== "minimized") {
+			document.addEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
+		}
+		if (this.searchPanelMode !== "minimized" && newMode === "minimized") {
+			document.removeEventListener("mousedown", this.closeSearchPanelOnOutsideClick)
+		}
+		this.searchPanelMode = newMode
 	}
 
 	private isOutside(event: MouseEvent) {
@@ -33,15 +39,10 @@ export class SearchPanelController {
 			.composedPath()
 			.every(
 				element =>
-					element["nodeName"] !== "SEARCH-PANEL-COMPONENT" &&
+					element["nodeName"] !== "CC-SEARCH-PANEL" &&
 					element["nodeName"] !== "COLOR-CHROME" &&
+					element["nodeName"] !== "MAT-OPTION" &&
 					element["id"] !== "codemap-context-menu"
 			)
 	}
-}
-
-export const searchPanelComponent = {
-	selector: "searchPanelComponent",
-	template: require("./searchPanel.component.html"),
-	controller: SearchPanelController
 }
