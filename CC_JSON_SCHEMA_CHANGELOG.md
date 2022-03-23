@@ -6,7 +6,7 @@ All notable changes to the `cc.json`-schema will be documented in this file.
 
 -   An additional optional property `edges` has been added to the `cc.json`
 -   Defines an array of edges between buildings
--   Use SCMLogParser to generate edges
+-   Use SCMLogParser (SVN or Git) to generate edges
 
 ```ts
 export interface Edge {

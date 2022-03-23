@@ -1,5 +1,5 @@
 ---
-permalink: /docs/scm-log-parser-2
+permalink: /docs/git-log-parser
 title: "Git Log Parser"
 ---
 

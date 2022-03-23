@@ -1,11 +1,11 @@
 ---
-permalink: /docs/scm-log-parser
+permalink: /docs/svn-log-parser
 title: "SVN Log Parser"
 ---
 
 # SVNLogParser - Status: stable/deprecated for git
 
-The SVN-Log-Parser generates visualisation data from repository (Git or SVN) logs. It supports the following metrics per file:
+The SVN-Log-Parser generates visualisation data from repository SVN logs. It supports the following metrics per file:
 
 | Metric                 | Description                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------------- |

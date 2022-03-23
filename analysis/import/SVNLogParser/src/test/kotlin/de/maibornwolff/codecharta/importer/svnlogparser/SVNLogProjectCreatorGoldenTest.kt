@@ -22,7 +22,7 @@ import java.util.Arrays
 
 @RunWith(Parameterized::class)
 class SVNLogProjectCreatorGoldenTest(
-    val scm: String,
+    val svn: String,
     private val strategy: LogParserStrategy,
     private val containsAuthors: Boolean,
     private val logFilename: String,
