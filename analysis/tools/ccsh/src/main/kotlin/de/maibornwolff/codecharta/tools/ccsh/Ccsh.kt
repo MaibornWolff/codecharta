@@ -68,22 +68,21 @@ class Ccsh : Callable<Void?> {
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
             commandLine.execute(*sanitizeArgs(args))
-            checkFirstArgument(args, commandLine)
+            executeInteractiveCLI(args, commandLine)
         }
 
-        private fun checkFirstArgument(args: Array<String>, commandLine: CommandLine) {
-            var firstArg = ""
-
+        private fun executeInteractiveCLI(args: Array<String>, commandLine: CommandLine) {
+            var unknownParser = false
             if (args.isNotEmpty()) {
-                firstArg = args[0]
+                val firstArg = args[0]
+                val subcommands = commandLine.subcommands.keys
+                unknownParser = !subcommands.contains(firstArg)
             }
 
-            val subcommands = commandLine.subcommands.keys
-
-            if (args.isEmpty() || !subcommands.contains(firstArg)) {
+            if (args.isEmpty() || unknownParser) {
                 val chosenParser = ParserService.selectParser(commandLine)
-                println("executing $chosenParser")
-                ParserService.coordinateChosenParser(chosenParser)
+                println("Executing $chosenParser")
+                ParserService.executeSelectedParser(chosenParser)
             }
         }
 

@@ -9,7 +9,6 @@ import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import mu.KotlinLogging
-import kotlin.math.max
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
     private val logger = KotlinLogging.logger {}

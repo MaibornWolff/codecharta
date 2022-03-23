@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.jasome
 
-import de.maibornwolff.codecharta.importer.jasome.UserDialog.Companion.generateDialog
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
@@ -44,8 +43,7 @@ class JasomeImporter : Callable<Void> {
 
         @JvmStatic
         fun main(args: Array<String>) {
-            val commandLine = CommandLine(JasomeImporter())
-            generateDialog(args, commandLine)
+            CommandLine.call(JasomeImporter(), System.out, *args)
         }
     }
 }

@@ -10,49 +10,53 @@ import picocli.CommandLine
 class ParserService {
     companion object {
         fun selectParser(commandLine: CommandLine): String {
-            val chosenParser: String = KInquirer.promptList(message = "Which parser do you want to execute?", choices = getListOfParsers(commandLine))
+            val selectedParser: String = KInquirer.promptList(
+                message = "Which parser do you want to execute?",
+                choices = getParserNamesWithDescription(commandLine)
+            )
 
-            return chosenParser.substring(0, chosenParser.indexOf(' '))
+            return extractParserName(selectedParser)
         }
 
-        fun getListOfParsers(commandLine: CommandLine): MutableList<String> {
-            val subcommands = commandLine.subcommands.values
-            val listOfParsers = mutableListOf<String>()
-            var commandName: String
-
-            for (command in subcommands) {
-                commandName = command.commandName
-                val commandDescription = command.commandSpec.usageMessage().description()
-
-                for (description in commandDescription) {
-                    listOfParsers.add("$commandName - $description")
-                }
-            }
-            return listOfParsers
-        }
-
-        fun coordinateChosenParser(chosenParser: String) {
+        fun executeSelectedParser(selectedParser: String) {
             val args = emptyArray<String>()
 
-            when (chosenParser) {
+            when (selectedParser) {
                 "check" -> ValidationTool.main(args)
-                "merge" -> print("merge")
+                "merge" -> print("Not implemented yet")
                 "edgefilter" -> EdgeFilter.main(args)
-                "modify" -> print("modify")
-                "csvimport" -> print("csvimport")
-                "sonarimport" -> print("sonarimport")
-                "sourcemonitorimport" -> print("sourcemonitorimport")
-                "scmlogparser" -> print("scmlogparser")
-                "scmlogparserv2" -> print("scmlogparserv2")
+                "modify" -> print("Not implemented yet")
+                "csvimport" -> print("Not implemented yet")
+                "sonarimport" -> print("Not implemented yet")
+                "sourcemonitorimport" -> print("Not implemented yet")
+                "scmlogparser" -> print("Not implemented yet")
+                "scmlogparserv2" -> print("Not implemented yet")
                 "csvexport" -> CSVExporter.main(args)
-                "sourcecodeparser" -> print("sourcecodeparser")
-                "codemaatimport" -> print("codemaatimport")
-                "tokeiimporter" -> print("tokeiimporter")
-                "rawtextparser" -> print("rawtextparser")
+                "sourcecodeparser" -> print("Not implemented yet")
+                "codemaatimport" -> print("Not implemented yet")
+                "tokeiimporter" -> print("Not implemented yet")
+                "rawtextparser" -> print("Not implemented yet")
                 else -> {
                     println("No valid parser was selected.")
                 }
             }
+        }
+
+        private fun getParserNamesWithDescription(commandLine: CommandLine): MutableList<String> {
+            val subCommands = commandLine.subcommands.values
+            val parsersList = mutableListOf<String>()
+
+            for (subCommand in subCommands) {
+                val parserName: String = subCommand.commandName
+                val parserDescriptions = subCommand.commandSpec.usageMessage().description()
+                val parserDescription = parserDescriptions[0]
+                parsersList.add("$parserName - $parserDescription")
+            }
+            return parsersList
+        }
+
+        private fun extractParserName(parserNameWithDescription: String): String {
+            return parserNameWithDescription.substring(0, parserNameWithDescription.indexOf(' '))
         }
     }
 }

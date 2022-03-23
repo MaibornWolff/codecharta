@@ -42,7 +42,7 @@ class UserDialog {
             return fileExtension == "xml"
         }
 
-        private fun getOutputFileName(file: String) : String {
+        private fun getOutputFileName(file: String): String {
             if (file.contains("/")) {
                 return file.substringAfterLast("/").substringBeforeLast(".")
             }
