@@ -1,9 +1,10 @@
 import { AttributeTypes, PrimaryMetrics } from "../../../codeCharta.model"
 import { createSelector } from "../../../state/angular-redux/createSelector"
-import { getAttributeTypeSelector } from "../../../state/selectors/getAttributeTypeOfNodesByMetric.selector"
+import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
 import { primaryMetricNamesSelector } from "../../attributeSideBar/attributeSideBarPrimaryMetrics/primaryMetricNames.selector"
 
 export const createAttributeTypeSelector = (metricType: keyof AttributeTypes, metricFor: keyof PrimaryMetrics) =>
-	createSelector([primaryMetricNamesSelector, getAttributeTypeSelector], (primaryMetricNames, getAttributeType) =>
-		getAttributeType(metricType, primaryMetricNames[metricFor]) === "relative" ? "x͂" : "Σ"
-	)
+	createSelector([primaryMetricNamesSelector, attributeTypesSelector], (primaryMetricNames, attributeTypes) => {
+		const metricName = primaryMetricNames[metricFor]
+		return attributeTypes[metricType][metricName] === "relative" ? "x͂" : "Σ"
+	})
