@@ -1,8 +1,31 @@
 .custom-configs {
-	margin-left: 15%;
+	display: flex;
+	justify-content: center;
+	gap: 4px;
 }
 
 .custom-configs-component {
+	display: inline-block;
+	width: 45px;
+
+	cc-add-custom-config-button.custom-configs-button-in-ribbonbar button {
+		height: 22px;
+		min-height: 0;
+		line-height: 23px;
+		font-size: 9pt;
+		text-transform: none;
+		background-color: rgba(230, 230, 230, 0.96);
+		border-radius: 2px;
+
+		&.plus {
+			min-width: 30px;
+		}
+
+		&:hover {
+			background-color: #c8c8c8;
+		}
+	}
+
 	.custom-configs-button {
 		height: 22px;
 		min-height: 0;
@@ -13,10 +36,6 @@
 		font-size: 9pt;
 		text-transform: none;
 		background-color: rgba(230, 230, 230, 0.96);
-
-		&.plus {
-			min-width: 30px;
-		}
 
 		&:hover {
 			background-color: #c8c8c8;
@@ -44,11 +63,15 @@
 	}
 
 	.custom-configs-item {
-		cc-add-custom-config-button {
+		cc-add-custom-config-button.custom-configs-button-in-custom-views {
 			padding: 0;
 			margin: 0;
 			display: inline-block;
 			width: 65px;
+
+			i.fa {
+				color: #ffffff;
+			}
 		}
 		.button-hovering {
 			height: 48px;

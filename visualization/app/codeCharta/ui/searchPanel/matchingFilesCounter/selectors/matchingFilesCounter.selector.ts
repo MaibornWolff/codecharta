@@ -1,6 +1,6 @@
 import { BlacklistItem, BlacklistType, CodeMapNode } from "../../../../codeCharta.model"
 import { createSelector } from "../../../../state/angular-redux/store"
-import { unifiedMapNodeSelector } from "../../../../state/selectors/accumulatedData/unifiedMapNode.selector"
+import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { searchedNodesSelector } from "../../../../state/selectors/searchedNodes/searchedNodes.selector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
 import { CcState } from "../../../../state/store/store"
@@ -16,9 +16,9 @@ export type MatchingFilesCounter = {
 }
 
 export const matchingFilesCounterSelector: (state: CcState) => MatchingFilesCounter = createSelector(
-	[unifiedMapNodeSelector, searchedNodesSelector, blacklistSelector],
-	(unifiedMapNode, searchedNodes, blacklist) => {
-		const allNodes = getAllNodes(unifiedMapNode)
+	[accumulatedDataSelector, searchedNodesSelector, blacklistSelector],
+	(accumulatedData, searchedNodes, blacklist) => {
+		const allNodes = getAllNodes(accumulatedData.unifiedMapNode)
 		const searchedNodeLeaves = searchedNodes.filter(node => isLeaf(node))
 		return {
 			fileCount: `${searchedNodeLeaves.length}/${allNodes.length}`,

@@ -1,5 +1,4 @@
 import "./customConfigs.component.scss"
-import { DialogService } from "../dialog/dialog.service"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
@@ -46,7 +45,6 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private dialogService: DialogService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService
 	) {
@@ -71,10 +69,6 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 
 		this._viewModel.dropDownCustomConfigItemGroups = [...customConfigItemGroups.values()]
 		this._viewModel.dropDownCustomConfigItemGroups.sort(CustomConfigHelper.sortCustomConfigDropDownGroupList)
-	}
-
-	showAddCustomConfigSettings() {
-		this.dialogService.showAddCustomConfigSettings()
 	}
 
 	applyCustomConfig(configId: string) {
@@ -166,7 +160,7 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 }
 
 export const customConfigsComponent = {
-	selector: "ccCustomConfigsComponent",
+	selector: "ccCustomConfigs",
 	template: require("./customConfigs.component.html"),
 	controller: CustomConfigsController
 }

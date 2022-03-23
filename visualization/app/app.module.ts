@@ -40,6 +40,7 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
+import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
 
 @NgModule({
 	imports: [
@@ -63,7 +64,8 @@ import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.modul
 		ReactiveFormsModule,
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
-		SearchPanelModule
+		SearchPanelModule,
+		MetricTypeModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [

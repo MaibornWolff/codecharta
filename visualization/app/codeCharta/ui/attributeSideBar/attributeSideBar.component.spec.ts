@@ -20,10 +20,10 @@ const mockedIsAttributeSideBarVisibleSelector = isAttributeSideBarVisibleSelecto
 
 jest.mock("./attributeSideBarPrimaryMetrics/primaryMetricNames.selector", () => ({
 	primaryMetricNamesSelector: jest.fn(() => ({
-		nameOfAreaMetric: "a",
-		nameOfHeightMetric: "a",
-		nameOfColorMetric: "a",
-		nameOfEdgeMetric: "c"
+		areaMetric: "a",
+		heightMetric: "a",
+		colorMetric: "a",
+		edgeMetric: "c"
 	}))
 }))
 

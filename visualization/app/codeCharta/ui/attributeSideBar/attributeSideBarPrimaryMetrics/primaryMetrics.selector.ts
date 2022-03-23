@@ -20,21 +20,21 @@ export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics | undefi
 
 		return {
 			area: {
-				name: primaryMetricNames.nameOfAreaMetric,
-				value: selectedNode.attributes[primaryMetricNames.nameOfAreaMetric]
+				name: primaryMetricNames.areaMetric,
+				value: selectedNode.attributes[primaryMetricNames.areaMetric]
 			},
 			height: {
-				name: primaryMetricNames.nameOfHeightMetric,
-				value: selectedNode.attributes[primaryMetricNames.nameOfHeightMetric]
+				name: primaryMetricNames.heightMetric,
+				value: selectedNode.attributes[primaryMetricNames.heightMetric]
 			},
 			color: {
-				name: primaryMetricNames.nameOfColorMetric,
-				value: selectedNode.attributes[primaryMetricNames.nameOfColorMetric]
+				name: primaryMetricNames.colorMetric,
+				value: selectedNode.attributes[primaryMetricNames.colorMetric]
 			},
 			edge: {
-				name: primaryMetricNames.nameOfEdgeMetric,
-				incoming: selectedNode.edgeAttributes[primaryMetricNames.nameOfEdgeMetric]?.incoming,
-				outgoing: selectedNode.edgeAttributes[primaryMetricNames.nameOfEdgeMetric]?.outgoing
+				name: primaryMetricNames.edgeMetric,
+				incoming: selectedNode.edgeAttributes[primaryMetricNames.edgeMetric]?.incoming,
+				outgoing: selectedNode.edgeAttributes[primaryMetricNames.edgeMetric]?.outgoing
 			}
 		}
 	}

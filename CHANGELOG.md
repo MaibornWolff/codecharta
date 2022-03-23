@@ -7,10 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Set initially correct attribute type of primary edge metric in attribute side bar [#2731](https://github.com/MaibornWolff/codecharta/issues/2731)
+-   Fix switching secondary metrics to median aggregation in attribute side bar [#2630](https://github.com/MaibornWolff/codecharta/issues/2630)
+
+## [1.94.0] - 2022-03-21
+
 ### Changed
 
 -   Improve sonarimport help message [#2717](https://github.com/MaibornWolff/codecharta/pull/2717)
 -   Remove blacklist entry on click of name as well [#2712](https://github.com/MaibornWolff/codecharta/pull/2712)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate add `custom config button` in ribbonbar to Angular [#2736](https://github.com/MaibornWolff/codecharta/pull/2736)
 
 ## [1.93.0] - 2022-03-14
 

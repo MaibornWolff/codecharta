@@ -1,15 +1,11 @@
 import { Component, Inject, Input, OnInit } from "@angular/core"
-import { Observable } from "rxjs"
 
 import { Store } from "../../../../state/angular-redux/store"
 import { CodeMapNode } from "../../../../codeCharta.model"
-import { hoveredBuildingPathSelector } from "../../../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.selector"
-import { setHoveredBuildingPath } from "../../../../state/store/appStatus/hoveredBuildingPath/hoveredBuildingPath.actions"
-import {
-	RightClickedNodeData,
-	setRightClickedNodeData
-} from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
+import { setRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { rightClickedNodeDataSelector } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
+import { hoveredNodeIdSelector } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 
 @Component({
 	selector: "cc-map-tree-view-level",
@@ -19,15 +15,12 @@ export class MapTreeViewLevelComponent implements OnInit {
 	@Input() node: CodeMapNode
 	@Input() depth: number
 
-	hoveredBuildingPath$: Observable<string | null>
-	rightClickedNodeData$: Observable<RightClickedNodeData>
+	hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
+	rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
 
 	isOpen = false
 
-	constructor(@Inject(Store) private store: Store) {
-		this.hoveredBuildingPath$ = this.store.select(hoveredBuildingPathSelector)
-		this.rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
-	}
+	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
 		// open root folder initially
@@ -37,15 +30,16 @@ export class MapTreeViewLevelComponent implements OnInit {
 	}
 
 	onMouseEnter() {
-		this.store.dispatch(setHoveredBuildingPath(this.node.path))
+		this.store.dispatch(setHoveredNodeId(this.node.id))
 	}
 
 	onMouseLeave() {
-		this.store.dispatch(setHoveredBuildingPath(null))
+		this.store.dispatch(setHoveredNodeId(null))
 	}
 
 	openNodeContextMenu = $event => {
 		$event.preventDefault()
+		$event.stopPropagation()
 
 		this.store.dispatch(
 			setRightClickedNodeData({
