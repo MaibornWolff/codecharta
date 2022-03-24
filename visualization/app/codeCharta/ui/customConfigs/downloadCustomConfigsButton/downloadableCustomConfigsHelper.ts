@@ -1,13 +1,10 @@
-import { CcState } from "../../../state/store/store"
-import { createSelector } from "../../../state/angular-redux/createSelector"
 import { FileState } from "../../../model/files/files"
 import { CustomConfig, ExportCustomConfig } from "../../../model/customConfig/customConfig.api.model"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
-import { visibleFileStatesSelector } from "../../../state/selectors/visibleFileStates.selector"
 
 export type DownloadableConfigs = Map<string, ExportCustomConfig>
 
-export const getDownloadableCustomViews = (files: FileState[]): DownloadableConfigs | undefined => {
+export const getDownloadableCustomConfigs = (files: FileState[]): DownloadableConfigs | undefined => {
 	if (files === undefined) {
 		return
 	}
@@ -36,8 +33,3 @@ function isConfigApplicableForUploadedMaps(customConfig: CustomConfig, mapChecks
 	}
 	return false
 }
-
-export const downloadableCustomConfigsSelector: (state: CcState) => DownloadableConfigs = createSelector(
-	[visibleFileStatesSelector],
-	getDownloadableCustomViews
-)
