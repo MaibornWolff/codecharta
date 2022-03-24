@@ -2,7 +2,7 @@ import { CodeMapNode, ColorRange } from "../../../codeCharta.model"
 import { metricDescriptions } from "../../../util/metric/metricDescriptions"
 import { getAssociatedMetricThresholds } from "./util/getMetricThresholds"
 
-export interface MetricValues {
+interface MetricValues {
 	[metric: string]: number[]
 }
 
@@ -40,16 +40,20 @@ export function calculateSuspiciousMetrics(metricAssessmentResults: MetricAssess
 	return [...noticeableMetricSuggestionLinks.values()].sort(compareSuspiciousMetricSuggestionLinks)
 }
 
-export function setMetricValues(node: CodeMapNode, metricValues: MetricValues) {
+export function setMetricValuesByLanguage(node: CodeMapNode, metricValuesByLanguage: MetricValuesByLanguage, fileExtension: string) {
+	if (metricValuesByLanguage[fileExtension] === undefined) {
+		metricValuesByLanguage[fileExtension] = {}
+	}
+
 	for (const [metricName, value] of Object.entries(node.attributes)) {
 		if (value === 0) {
 			continue
 		}
 
-		if (metricValues[metricName] === undefined) {
-			metricValues[metricName] = []
+		if (metricValuesByLanguage[fileExtension][metricName] === undefined) {
+			metricValuesByLanguage[fileExtension][metricName] = []
 		}
-		metricValues[metricName].push(value)
+		metricValuesByLanguage[fileExtension][metricName].push(value)
 	}
 }
 

@@ -1,5 +1,4 @@
 import { CodeMapNode } from "../../../codeCharta.model"
-import { Percentiles } from "./artificialIntelligence.metricThresholds"
 import percentRound from "percent-round"
 import { getAssociatedMetricThresholds } from "./util/getMetricThresholds"
 
@@ -14,16 +13,12 @@ export const HEIGHT_METRIC = "mcc"
 export const AREA_METRIC = "rloc"
 export const EXCLUDED_FILE_EXTENSION = new Set(["html", "sass", "css", "scss", "txt", "md", "json", undefined])
 
-export function calculateRiskProfile(node: CodeMapNode, rlocRisk: RiskProfile, fileExtension: string) {
+export function aggregateRiskProfile(node: CodeMapNode, rlocRisk: RiskProfile, fileExtension: string) {
 	const languageSpecificThresholds = getAssociatedMetricThresholds(fileExtension)
 	const thresholds = languageSpecificThresholds[HEIGHT_METRIC]
 	const nodeMetricValue = node.attributes[HEIGHT_METRIC]
 	const nodeRlocValue = node.attributes[AREA_METRIC]
 
-	aggregateRlocRisk(nodeMetricValue, thresholds, nodeRlocValue, rlocRisk)
-}
-
-function aggregateRlocRisk(nodeMetricValue: number, thresholds: Percentiles, nodeRlocValue: number, rlocRisk: RiskProfile) {
 	if (nodeMetricValue <= thresholds.percentile70) {
 		rlocRisk.lowRisk += nodeRlocValue
 	} else if (nodeMetricValue <= thresholds.percentile80) {

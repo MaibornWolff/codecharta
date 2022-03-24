@@ -1,6 +1,6 @@
 import {
 	AREA_METRIC,
-	calculateRiskProfile,
+	aggregateRiskProfile,
 	EXCLUDED_FILE_EXTENSION,
 	HEIGHT_METRIC,
 	RiskProfile,
@@ -9,9 +9,8 @@ import {
 import {
 	calculateSuspiciousMetrics,
 	findGoodAndBadMetrics,
-	setMetricValues,
+	setMetricValuesByLanguage,
 	MetricSuggestionParameters,
-	MetricValues,
 	MetricValuesByLanguage
 } from "../suspiciousMetricsHelper"
 import { hierarchy } from "d3-hierarchy"
@@ -50,7 +49,6 @@ export const calculate = (
 	const numberOfFilesByLanguage = new Map<string, number>()
 	const rlocRisk = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	let totalRloc = 0
-	const metricValues: MetricValues = {}
 	const metricValuesByLanguage: MetricValuesByLanguage = {}
 
 	for (const { data } of hierarchy(accumulatedData.unifiedMapNode)) {
@@ -58,13 +56,11 @@ export const calculate = (
 		if (data.type === NodeType.FILE && fileExtension !== undefined && !isPathBlacklisted(data.path, blacklist, BlacklistType.exclude)) {
 			const filesPerLanguage = numberOfFilesByLanguage.get(fileExtension) ?? 0
 			numberOfFilesByLanguage.set(fileExtension, filesPerLanguage + 1)
-
-			setMetricValues(data, metricValues)
-			metricValuesByLanguage[fileExtension] = metricValues
+			setMetricValuesByLanguage(data, metricValuesByLanguage, fileExtension)
 
 			if (isFileValid(data, fileExtension)) {
 				totalRloc += data.attributes[AREA_METRIC]
-				calculateRiskProfile(data, rlocRisk, fileExtension)
+				aggregateRiskProfile(data, rlocRisk, fileExtension)
 			}
 		}
 
