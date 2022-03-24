@@ -63,6 +63,7 @@
 	}
 
 	.custom-configs-item {
+		cc-download-custom-configs-button,
 		cc-add-custom-config-button.custom-configs-button-in-custom-views {
 			padding: 0;
 			margin: 0;
@@ -73,6 +74,7 @@
 				color: #ffffff;
 			}
 		}
+
 		.button-hovering {
 			height: 48px;
 			text-align: left;
