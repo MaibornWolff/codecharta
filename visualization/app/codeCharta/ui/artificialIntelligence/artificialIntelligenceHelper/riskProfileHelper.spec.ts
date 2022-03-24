@@ -1,4 +1,4 @@
-import { calculateRiskProfile, getPercentagesOfRiskProfile, RiskProfile } from "./riskProfileHelper"
+import { aggregateRiskProfile, getPercentagesOfRiskProfile, RiskProfile } from "./riskProfileHelper"
 import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
 
@@ -14,7 +14,7 @@ describe("riskProfileHelper", () => {
 		]
 
 		for (const node of nodes) {
-			calculateRiskProfile(node, actualRlocRisk, fileExtension)
+			aggregateRiskProfile(node, actualRlocRisk, fileExtension)
 		}
 
 		expect(actualRlocRisk).toEqual({ lowRisk: 1, moderateRisk: 10, highRisk: 100, veryHighRisk: 1000 })
@@ -47,7 +47,7 @@ describe("riskProfileHelper", () => {
 		]
 
 		for (const [index, node] of nodes.entries()) {
-			calculateRiskProfile(node, actualRiskProfile, fileExtensions[index])
+			aggregateRiskProfile(node, actualRiskProfile, fileExtensions[index])
 		}
 
 		expect(actualRiskProfile).toEqual({ lowRisk: 1, moderateRisk: 10, highRisk: 1100, veryHighRisk: 0 })

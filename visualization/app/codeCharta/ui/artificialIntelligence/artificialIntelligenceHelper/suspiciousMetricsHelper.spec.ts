@@ -2,38 +2,42 @@ import {
 	calculateSuspiciousMetrics,
 	findGoodAndBadMetrics,
 	MetricAssessmentResults,
-	MetricValues,
 	MetricValuesByLanguage,
-	setMetricValues
+	setMetricValuesByLanguage
 } from "./suspiciousMetricsHelper"
 import { CodeMapNode, ColorRange, NodeType } from "../../../codeCharta.model"
 import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
 import { metricDescriptions } from "../../../util/metric/metricDescriptions"
 
 describe("suspiciousMetricsHelper", () => {
-	it("should set metrics when node has attributes", () => {
-		const actualMetricValues: MetricValues = {}
+	it("should set metrics by language when node has attributes", () => {
+		const actualMetricValuesByLanguage: MetricValuesByLanguage = {}
 		const nodes: CodeMapNode[] = [
 			{ name: "javaFile1", type: NodeType.FILE, attributes: { rloc: 1, mcc: 1 } },
 			{ name: "javaFile2", type: NodeType.FILE, attributes: { rloc: 10, mcc: 10 } },
-			{ name: "javaFile3", type: NodeType.FILE, attributes: { statements: 100, functions: 100 } },
-			{ name: "javaFile4", type: NodeType.FILE, attributes: { statements: 1000, functions: 1000 } }
+			{ name: "tsFile1", type: NodeType.FILE, attributes: { rloc: 100, mcc: 100 } },
+			{ name: "tsFile2", type: NodeType.FILE, attributes: { rloc: 1000, mcc: 1000 } }
 		]
+		const programmingLanguages: string[] = ["java", "java", "ts", "ts"]
 
-		for (const node of nodes) {
-			setMetricValues(node, actualMetricValues)
+		for (const [index, node] of nodes.entries()) {
+			setMetricValuesByLanguage(node, actualMetricValuesByLanguage, programmingLanguages[index])
 		}
 
-		expect(actualMetricValues).toEqual({
-			rloc: [1, 10],
-			mcc: [1, 10],
-			statements: [100, 1000],
-			functions: [100, 1000]
+		expect(actualMetricValuesByLanguage).toEqual({
+			java: {
+				rloc: [1, 10],
+				mcc: [1, 10]
+			},
+			ts: {
+				rloc: [100, 1000],
+				mcc: [100, 1000]
+			}
 		})
 	})
 
 	it("should not set metrics when node has no attributes", () => {
-		const actualMetricValues: MetricValues = {}
+		const actualMetricValuesByLanguage: MetricValuesByLanguage = {}
 		const nodes: CodeMapNode[] = [
 			{ name: "javaFile1", type: NodeType.FILE, attributes: {} },
 			{ name: "javaFile2", type: NodeType.FILE, attributes: {} },
@@ -42,10 +46,10 @@ describe("suspiciousMetricsHelper", () => {
 		]
 
 		for (const node of nodes) {
-			setMetricValues(node, actualMetricValues)
+			setMetricValuesByLanguage(node, actualMetricValuesByLanguage, "java")
 		}
 
-		expect(actualMetricValues).toEqual({})
+		expect(actualMetricValuesByLanguage).toEqual({})
 	})
 
 	it("should find unsuspicious metrics only of main programming language", () => {

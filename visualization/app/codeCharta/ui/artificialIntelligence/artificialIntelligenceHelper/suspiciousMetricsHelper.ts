@@ -41,18 +41,13 @@ export function calculateSuspiciousMetrics(metricAssessmentResults: MetricAssess
 }
 
 export function setMetricValuesByLanguage(node: CodeMapNode, metricValuesByLanguage: MetricValuesByLanguage, fileExtension: string) {
-	if (metricValuesByLanguage[fileExtension] === undefined) {
-		metricValuesByLanguage[fileExtension] = {}
-	}
-
 	for (const [metricName, value] of Object.entries(node.attributes)) {
 		if (value === 0) {
 			continue
 		}
 
-		if (metricValuesByLanguage[fileExtension][metricName] === undefined) {
-			metricValuesByLanguage[fileExtension][metricName] = []
-		}
+		metricValuesByLanguage[fileExtension] ??= {}
+		metricValuesByLanguage[fileExtension][metricName] ??= []
 		metricValuesByLanguage[fileExtension][metricName].push(value)
 	}
 }
