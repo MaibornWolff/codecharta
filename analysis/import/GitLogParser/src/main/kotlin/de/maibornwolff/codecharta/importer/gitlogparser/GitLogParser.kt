@@ -29,7 +29,7 @@ class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-                  ) : Callable<Void> {
+) : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -146,7 +146,8 @@ class GitLogParser(
         val logSizeInByte = file!!.length()
         return GitLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(
             lines,
-            namesInProject)
+            namesInProject
+        )
     }
 
     // not implemented yet #738
