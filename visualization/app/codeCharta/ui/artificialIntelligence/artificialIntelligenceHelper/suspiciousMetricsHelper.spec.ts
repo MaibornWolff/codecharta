@@ -13,10 +13,10 @@ describe("suspiciousMetricsHelper", () => {
 	it("should set metrics by language when node has attributes", () => {
 		const actualMetricValuesByLanguage: MetricValuesByLanguage = {}
 		const nodes: CodeMapNode[] = [
-			{ name: "javaFile1", type: NodeType.FILE, attributes: { rloc: 1, mcc: 1 } },
-			{ name: "javaFile2", type: NodeType.FILE, attributes: { rloc: 10, mcc: 10 } },
-			{ name: "tsFile1", type: NodeType.FILE, attributes: { rloc: 100, mcc: 100 } },
-			{ name: "tsFile2", type: NodeType.FILE, attributes: { rloc: 1000, mcc: 1000 } }
+			{ name: "javaFile1", type: NodeType.FILE, attributes: { rloc: 1, mcc: 5 } },
+			{ name: "javaFile2", type: NodeType.FILE, attributes: { rloc: 10, mcc: 15 } },
+			{ name: "tsFile1", type: NodeType.FILE, attributes: { rloc: 20, mcc: 25 } },
+			{ name: "tsFile2", type: NodeType.FILE, attributes: { rloc: 30, mcc: 35 } }
 		]
 		const programmingLanguages: string[] = ["java", "java", "ts", "ts"]
 
@@ -27,11 +27,11 @@ describe("suspiciousMetricsHelper", () => {
 		expect(actualMetricValuesByLanguage).toEqual({
 			java: {
 				rloc: [1, 10],
-				mcc: [1, 10]
+				mcc: [5, 15]
 			},
 			ts: {
-				rloc: [100, 1000],
-				mcc: [100, 1000]
+				rloc: [20, 30],
+				mcc: [25, 35]
 			}
 		})
 	})
