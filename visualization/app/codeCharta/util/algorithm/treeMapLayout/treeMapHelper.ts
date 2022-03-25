@@ -225,6 +225,10 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 		return calculateTrueGradient(mapColors, colorRange, metricValue)
 	}
 
+	if (colorMode === ColorMode.focusedGradient) {
+		return calculateFocusedGradient(mapColors, colorRange, metricValue)
+	}
+
 	return calculateWeightedGradient(mapColors, colorRange, metricValue)
 }
 
@@ -239,6 +243,33 @@ function calculateTrueGradient(mapColors: MapColors, colorRange: ColorRange, met
 	}
 
 	const negativeFactor = (metricValue - middle) / (colorRange.max - middle)
+	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
+	return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, negativeFactor))
+}
+
+function calculateFocusedGradient(mapColors: MapColors, colorRange: ColorRange, metricValue: number) {
+	const middle = (colorRange.from + colorRange.to) / 2
+	const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
+
+	if (metricValue <= colorRange.from) {
+		return mapColors.positive
+	}
+
+	if (metricValue >= colorRange.to) {
+		return mapColors.negative
+	}
+
+	if (metricValue === middle) {
+		return mapColors.neutral
+	}
+
+	if (metricValue <= middle) {
+		const neutralFactor = metricValue / (middle + colorRange.from)
+		const positiveColorRGB = ColorConverter.convertHexToColorObject(mapColors.positive)
+		return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, neutralFactor))
+	}
+
+	const negativeFactor = (metricValue - middle) / (colorRange.to - middle)
 	const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
 	return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, negativeFactor))
 }
