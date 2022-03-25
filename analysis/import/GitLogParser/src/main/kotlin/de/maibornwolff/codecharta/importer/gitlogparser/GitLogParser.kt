@@ -14,11 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStreamWriter
-import java.io.PrintStream
+import java.io.*
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.util.concurrent.Callable
@@ -150,8 +146,7 @@ class GitLogParser(
         val logSizeInByte = file!!.length()
         return GitLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(
             lines,
-            namesInProject
-                                                                                                                  )
+            namesInProject)
     }
 
     // not implemented yet #738
