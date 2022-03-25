@@ -1,32 +1,26 @@
 import "./downloadCustomConfigsButton.component.scss"
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
-import { ExportCustomConfig } from "../../../model/customConfig/customConfig.api.model"
-import { getDownloadableCustomConfigs } from "./downloadableCustomConfigsHelper"
+import { DownloadableConfigs } from "./downloadableCustomConfigsHelper"
 
-import { combineLatest, Subscription } from "rxjs"
-import { Store } from "../../../state/angular-redux/store"
 import { downloadCustomConfigs } from "./downloadCustomConfigHelper"
-import { CustomConfigHelper } from "../../../util/customConfigHelper"
-import { visibleFileStatesSelector } from "../../../state/selectors/visibleFileStates.selector"
+import { DownloadCustomConfigService } from "./downloadCustomConfig.service"
+import { Subscription } from "rxjs"
 
 @Component({ template: require("./downloadCustomConfigsButton.component.html") })
 export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
-	private downloadableConfigs: Map<string, ExportCustomConfig> = new Map<string, ExportCustomConfig>()
-	getDownloadableConfigsSubscription: Subscription
+	downloadableConfigs: DownloadableConfigs
+	subscription: Subscription
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(@Inject(DownloadCustomConfigService) private downloadCustomConfigService: DownloadCustomConfigService) {}
 
 	ngOnInit(): void {
-		this.getDownloadableConfigsSubscription = combineLatest([
-			this.store.select(visibleFileStatesSelector),
-			CustomConfigHelper.customConfigChange$
-		]).subscribe(([visibleFileStates]) => {
-			this.downloadableConfigs = getDownloadableCustomConfigs(visibleFileStates)
-		})
+		this.subscription = this.downloadCustomConfigService.downloadableCustomConfig$.subscribe(
+			downloadableConfigs => (this.downloadableConfigs = downloadableConfigs)
+		)
 	}
 
 	ngOnDestroy(): void {
-		this.getDownloadableConfigsSubscription.unsubscribe()
+		this.subscription.unsubscribe()
 	}
 
 	downloadPreloadedCustomConfigs() {
