@@ -69,11 +69,11 @@ check_jasome() {
   validate "${ACTUAL_JASOME_JSON}"
 }
 
-check_scmlog() {
-  echo " -- expect SCMLogParser gives valid cc.json"
-  ACTUAL_SCMLOG_JSON="${INSTALL_DIR}/actual_scmlog.json"
-  "${CCSH}" scmlogparser --input-format=SVN_LOG data/codecharta/SVNTestLog.txt --silent > "${ACTUAL_SCMLOG_JSON}"
-  validate "${ACTUAL_SCMLOG_JSON}"
+check_svnlog() {
+  echo " -- expect SVNLogParser gives valid cc.json"
+  ACTUAL_SVNLOG_JSON="${INSTALL_DIR}/actual_svnlog.json"
+  "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt --silent > "${ACTUAL_SVNLOG_JSON}"
+  validate "${ACTUAL_SVNLOG_JSON}"
 }
 
 check_merge() {
@@ -108,7 +108,7 @@ check_pipe() {
    echo " -- expect pipes to work"
    sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ \
         | sh "${CCSH}" sourcecodeparser data/codecharta/ \
-        | sh "${CCSH}" scmlogparser --input-format=SVN_LOG data/codecharta/SVNTestLog.txt \
+        | sh "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt \
         | sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
             -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
     validate ${INSTALL_DIR}/piped_out.json
@@ -126,7 +126,7 @@ run_tests() {
   check_crococosmo
   check_understand
   check_jasome
-  check_scmlog
+  check_svnlog
   check_merge
   check_modify
   check_sourcecodeparser

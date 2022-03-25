@@ -13,7 +13,7 @@ CCSH=../../analysis/build/install/codecharta-analysis/bin/ccsh
 git log --numstat --raw --topo-order --reverse -m > git.log
 git ls-files > file-name-list.txt
 
-$CCSH scmlogparserv2 git.log -o codecharta_git.cc.json -n file-name-list.txt -nc
+$CCSH gitlogparser git.log -o codecharta_git.cc.json -n file-name-list.txt -nc
 
 # Map for visualization
 $CCSH modify --set-root root/visualization -o codecharta_git_mod.cc.json codecharta_git.cc.json

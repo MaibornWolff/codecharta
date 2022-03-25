@@ -3,7 +3,7 @@ categories:
     - How-to
 tags:
     - sourcecodeparser
-    - scmlogparser
+    - gitlogparser
     - merge
 title: Analyzing a java project and it's gitlog to generate a merged cc.json
 ---
@@ -32,7 +32,7 @@ cd junit4
 git log --numstat --raw --topo-order > ../junit4.git.log
 
 # generate a cc.json from that git.log
-./ccsh scmlogparser junit4.git.log -p junit4 -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
+./ccsh gitlogparser junit4.git.log -p junit4 -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
 
 # check structures of both cc.jsons to see if the folder structures are matching (src is on the same level)
 ./ccsh modify junit4.git.cc.json -p 1
