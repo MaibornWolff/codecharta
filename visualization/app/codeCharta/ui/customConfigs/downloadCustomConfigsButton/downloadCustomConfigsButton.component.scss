@@ -7,6 +7,10 @@ cc-download-custom-configs-button {
 		background-color: #00a091;
 		vertical-align: middle;
 
+		&:disabled {
+			background-color: rgba(230, 230, 230, 0.96);
+		}
+
 		i.fa {
 			vertical-align: middle;
 			font-size: 12px;
