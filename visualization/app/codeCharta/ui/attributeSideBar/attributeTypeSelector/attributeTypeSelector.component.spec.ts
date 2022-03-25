@@ -37,7 +37,7 @@ describe("attributeTypeSelector", () => {
 
 	it("should set aggregation symbol to absolute if attributeType is not available", async () => {
 		await render(AttributeTypeSelectorComponent, {
-			componentProperties: { metricName: "non-existing" },
+			componentProperties: { metricType: "nodes", metricName: "non-existing" },
 			excludeComponentDeclaration: true
 		})
 		const initialDisplayedElement = await screen.getByRole("button", { pressed: true })
