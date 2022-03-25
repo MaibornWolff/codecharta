@@ -7,7 +7,7 @@ import { Store } from "../../../state/angular-redux/store"
 
 @Injectable({ providedIn: "root" })
 export class DownloadCustomConfigService {
-	downloadableCustomConfigs$: BehaviorSubject<DownloadableConfigs> = new BehaviorSubject<DownloadableConfigs>(new Map())
+	private downloadableCustomConfigs$: BehaviorSubject<DownloadableConfigs> = new BehaviorSubject<DownloadableConfigs>(new Map())
 
 	constructor(@Inject(Store) private store: Store) {
 		combineLatest([this.store.select(visibleFileStatesSelector), CustomConfigHelper.customConfigChange$]).subscribe(
