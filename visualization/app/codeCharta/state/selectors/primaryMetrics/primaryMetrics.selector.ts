@@ -1,7 +1,7 @@
-import { createSelector } from "../../../state/angular-redux/store"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
-import { CcState } from "../../../state/store/store"
-import { Metric } from "../util/metric"
+import { createSelector } from "../../angular-redux/store"
+import { selectedNodeSelector } from "../selectedNode.selector"
+import { CcState } from "../../store/store"
+import { Metric } from "../../../ui/attributeSideBar/util/metric"
 import { primaryMetricNamesSelector } from "./primaryMetricNames.selector"
 
 export type PrimaryMetrics = {

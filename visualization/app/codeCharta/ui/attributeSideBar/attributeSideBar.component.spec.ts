@@ -18,7 +18,7 @@ jest.mock("../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSi
 }))
 const mockedIsAttributeSideBarVisibleSelector = isAttributeSideBarVisibleSelector as jest.Mock
 
-jest.mock("./attributeSideBarPrimaryMetrics/primaryMetricNames.selector", () => ({
+jest.mock("../../state/selectors/primaryMetrics/primaryMetricNames.selector", () => ({
 	primaryMetricNamesSelector: jest.fn(() => ({
 		areaMetric: "a",
 		heightMetric: "a",
