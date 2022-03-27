@@ -1,9 +1,0 @@
-<div class="metric-value" ng-show="$ctrl._viewModel.hoveredNode">
-	<div class="rounded-box">
-		<cc-metric-type [attribute-type]="'nodes'" [metric-for]="'colorMetric'"></cc-metric-type>
-		{{ $ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.colorMetric] | number }}
-	</div>
-	<div class="rounded-box" ng-show="$ctrl._viewModel.hoveredNode.deltas">
-		&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.colorMetric] | number }}
-	</div>
-</div>
