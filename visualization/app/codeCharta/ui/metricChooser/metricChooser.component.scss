@@ -1,10 +1,28 @@
 $optionHeight: 48;
 
+cc-metric-value-hovered,
 area-metric-chooser-component,
 height-metric-chooser-component,
 color-metric-chooser-component,
 distribution-metric-chooser-component,
 edge-chooser-component {
+	.metric-value {
+		height: 25px;
+		float: right;
+		position: absolute;
+		right: 0;
+		margin-top: -9px;
+
+		.rounded-box {
+			margin-top: -2px;
+			margin-left: -2px;
+			background-color: #e6e6e6;
+			border-radius: 3px;
+			padding: 2px 5px;
+			display: inline-block;
+		}
+	}
+
 	md-input-container {
 		display: block;
 		top: -5px;
@@ -33,23 +51,6 @@ edge-chooser-component {
 				max-height: 18px;
 				overflow: hidden;
 				text-align: inherit !important;
-			}
-		}
-
-		.metric-value {
-			height: 25px;
-			float: right;
-			position: absolute;
-			right: 0;
-			margin-top: -9px;
-
-			.rounded-box {
-				margin-top: -2px;
-				margin-left: -2px;
-				background-color: #e6e6e6;
-				border-radius: 3px;
-				padding: 2px 5px;
-				display: inline-block;
 			}
 		}
 
