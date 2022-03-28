@@ -11,10 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Focused gradient option for color metric. Only applies a gradient between the two set borders. [#2738](https://github.com/MaibornWolff/codecharta/issues/2738)
 
+### Changed
+
+-   Mark SCMLogParserV2 as stable and deprecate SCMLogParser for Git [2725](https://github.com/MaibornWolff/codecharta/pull/2725)
+    -   Rename SCMLogParserV2 to GitLogParser
+    -   Rename SCMLogParser to SVNLogParser and remove git parsing
+
 ### Fixed 🐞
 
--   Set initially correct attribute type of primary edge metric in attribute side bar [#2731](https://github.com/MaibornWolff/codecharta/issues/2731)
--   Fix switching secondary metrics to median aggregation in attribute side bar [#2630](https://github.com/MaibornWolff/codecharta/issues/2630)
+-   Set initially correct attribute type of primary edge metric in attribute sidebar [#2731](https://github.com/MaibornWolff/codecharta/issues/2731)
+-   Fix switching secondary metrics to median aggregation in attribute sidebar [#2630](https://github.com/MaibornWolff/codecharta/issues/2630)
 
 ## [1.94.0] - 2022-03-21
 
