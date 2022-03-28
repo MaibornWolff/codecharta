@@ -7,14 +7,10 @@ import { Store } from "../../../state/angular-redux/store"
 
 @Injectable()
 export class DownloadCustomConfigService {
-	private readonly downloadableCustomConfigs$ = combineLatest([
+	readonly downloadableCustomConfigs$ = combineLatest([
 		this.store.select(visibleFileStatesSelector),
 		CustomConfigHelper.customConfigChange$
 	]).pipe(map(([visibleFileStates]) => getDownloadableCustomConfigs(visibleFileStates)))
 
 	constructor(@Inject(Store) private store: Store) {}
-
-	getDownloadableCustomConfigs$() {
-		return this.downloadableCustomConfigs$
-	}
 }

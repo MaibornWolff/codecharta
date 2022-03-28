@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { FileDownloader } from "../../../util/fileDownloader"
 
-const mockedDownloadCustomConfigService = { getDownloadableCustomConfigs$: jest.fn() }
+const mockedDownloadCustomConfigService = { downloadableCustomConfigs$: null }
 
 describe("DownloadCustomConfigButtonComponent", () => {
 	beforeEach(() => {
@@ -17,14 +17,14 @@ describe("DownloadCustomConfigButtonComponent", () => {
 	})
 
 	it("should disable download button when no custom configs are available ", async () => {
-		mockedDownloadCustomConfigService.getDownloadableCustomConfigs$.mockReturnValue(of(new Map()))
+		mockedDownloadCustomConfigService.downloadableCustomConfigs$ = of(new Map())
 		await render(DownloadCustomConfigsButtonComponent)
 
 		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(true)
 	})
 
 	it("should click download button when custom configs are available ", async () => {
-		mockedDownloadCustomConfigService.getDownloadableCustomConfigs$.mockReturnValue(of(new Map([["invalid-md5", {}]])))
+		mockedDownloadCustomConfigService.downloadableCustomConfigs$ = of(new Map([["invalid-md5", {}]]))
 		await render(DownloadCustomConfigsButtonComponent)
 
 		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(false)
