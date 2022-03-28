@@ -14,7 +14,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
-import java.io.*
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStreamWriter
+import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.util.concurrent.Callable
