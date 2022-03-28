@@ -1,23 +1,20 @@
-import { BehaviorSubject, combineLatest } from "rxjs"
+import { combineLatest, map } from "rxjs"
 import { visibleFileStatesSelector } from "../../../state/selectors/visibleFileStates.selector"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
-import { DownloadableConfigs, getDownloadableCustomConfigs } from "./downloadableCustomConfigsHelper"
+import { getDownloadableCustomConfigs } from "./getDownloadableCustomConfigs"
 import { Inject, Injectable } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class DownloadCustomConfigService {
-	private downloadableCustomConfigs$: BehaviorSubject<DownloadableConfigs> = new BehaviorSubject<DownloadableConfigs>(new Map())
+	private readonly _downloadableCustomConfigs$ = combineLatest([
+		this.store.select(visibleFileStatesSelector),
+		CustomConfigHelper.customConfigChange$
+	]).pipe(map(([visibleFileStates]) => getDownloadableCustomConfigs(visibleFileStates)))
 
-	constructor(@Inject(Store) private store: Store) {
-		combineLatest([this.store.select(visibleFileStatesSelector), CustomConfigHelper.customConfigChange$]).subscribe(
-			([visibleFileStates]) => {
-				this.downloadableCustomConfigs$.next(getDownloadableCustomConfigs(visibleFileStates))
-			}
-		)
-	}
+	constructor(@Inject(Store) private store: Store) {}
 
-	get downloadableCustomConfig$() {
-		return this.downloadableCustomConfigs$
+	get downloadableCustomConfigs$() {
+		return this._downloadableCustomConfigs$
 	}
 }

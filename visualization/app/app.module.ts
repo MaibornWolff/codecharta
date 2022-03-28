@@ -41,7 +41,7 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
 import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
-import { DownloadCustomConfigsButtonComponent } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigsButton.component"
+import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 
 @NgModule({
 	imports: [
@@ -66,7 +66,8 @@ import { DownloadCustomConfigsButtonComponent } from "./codeCharta/ui/customConf
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
 		SearchPanelModule,
-		MetricTypeModule
+		MetricTypeModule,
+		DownloadCustomConfigButtonModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
@@ -76,7 +77,6 @@ import { DownloadCustomConfigsButtonComponent } from "./codeCharta/ui/customConf
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
-		DownloadCustomConfigsButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -96,7 +96,6 @@ import { DownloadCustomConfigsButtonComponent } from "./codeCharta/ui/customConf
 		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
-		DownloadCustomConfigsButtonComponent,
 		...dialogs
 	]
 })

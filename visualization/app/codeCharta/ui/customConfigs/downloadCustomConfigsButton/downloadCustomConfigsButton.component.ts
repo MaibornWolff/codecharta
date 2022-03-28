@@ -1,6 +1,6 @@
 import "./downloadCustomConfigsButton.component.scss"
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
-import { DownloadableConfigs } from "./downloadableCustomConfigsHelper"
+import { DownloadableConfigs } from "./getDownloadableCustomConfigs"
 
 import { downloadCustomConfigs } from "./downloadCustomConfigHelper"
 import { DownloadCustomConfigService } from "./downloadCustomConfig.service"
@@ -14,9 +14,9 @@ export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
 	constructor(@Inject(DownloadCustomConfigService) private downloadCustomConfigService: DownloadCustomConfigService) {}
 
 	ngOnInit(): void {
-		this.subscription = this.downloadCustomConfigService.downloadableCustomConfig$.subscribe(
-			downloadableConfigs => (this.downloadableConfigs = downloadableConfigs)
-		)
+		this.subscription = this.downloadCustomConfigService.downloadableCustomConfigs$.subscribe(downloadableConfigs => {
+			this.downloadableConfigs = downloadableConfigs
+		})
 	}
 
 	ngOnDestroy(): void {
@@ -24,9 +24,6 @@ export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
 	}
 
 	downloadPreloadedCustomConfigs() {
-		if (this.downloadableConfigs.size === 0) {
-			return
-		}
 		downloadCustomConfigs(this.downloadableConfigs)
 	}
 }
