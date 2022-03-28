@@ -4,18 +4,18 @@ import { CustomConfigHelper } from "../../../util/customConfigHelper"
 
 export type DownloadableConfigs = Map<string, ExportCustomConfig>
 
-export const getDownloadableCustomConfigs = (files: FileState[]): DownloadableConfigs => {
+export const getDownloadableCustomConfigs = (fileStates: FileState[]): DownloadableConfigs => {
 	const downloadableConfigs: DownloadableConfigs = new Map()
 
-	if (files === undefined) {
+	if (fileStates === undefined) {
 		return downloadableConfigs
 	}
 
 	const customConfigs = CustomConfigHelper.getCustomConfigs()
 	const mapChecksumsOfFiles = []
 
-	for (const file of files) {
-		mapChecksumsOfFiles.push(file.file.fileMeta.fileChecksum)
+	for (const fileState of fileStates) {
+		mapChecksumsOfFiles.push(fileState.file.fileMeta.fileChecksum)
 	}
 
 	for (const [checksum, customConfig] of customConfigs.entries()) {
