@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Focused gradient option for color metric. Only applies a gradient between the two set borders. [#2738](https://github.com/MaibornWolff/codecharta/issues/2738)
+
 ### Fixed 🐞
 
 -   Set initially correct attribute type of primary edge metric in attribute side bar [#2731](https://github.com/MaibornWolff/codecharta/issues/2731)
