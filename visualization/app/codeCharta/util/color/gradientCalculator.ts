@@ -45,7 +45,7 @@ export const gradientCalculator = {
 		return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, negativeFactor))
 	},
 
-	calculateWeightedGradient(mapColors: MapColors, colorRange: ColorRange, metricValue: number) {
+	getColorByWeightedGradient(mapColors: MapColors, colorRange: ColorRange, metricValue: number) {
 		const endPositive = Math.max(colorRange.from - (colorRange.to - colorRange.from) / 2, colorRange.from / 2)
 		const startNeutral = 2 * colorRange.from - endPositive
 		const endNeutral = colorRange.to - (colorRange.to - colorRange.from) / 2
