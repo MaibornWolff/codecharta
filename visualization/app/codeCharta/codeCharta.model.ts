@@ -203,6 +203,7 @@ export enum AttributeTypeValue {
 export enum ColorMode {
 	trueGradient = "trueGradient",
 	weightedGradient = "weightedGradient",
+	focusedGradient = "focusedGradient",
 	absolute = "absolute"
 }
 
