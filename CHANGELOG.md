@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.95.0] - 2022-03-28
+
 ### Added 🚀
 
 -   Focused gradient option for color metric. Only applies a gradient between the two set borders. [#2750](https://github.com/MaibornWolff/codecharta/pull/2750)
