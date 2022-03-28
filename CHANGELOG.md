@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.95.0] - 2022-03-28
+
+### Added 🚀
+
+-   Focused gradient option for color metric. Only applies a gradient between the two set borders. [#2750](https://github.com/MaibornWolff/codecharta/pull/2750)
+
+### Changed
+
+-   Mark SCMLogParserV2 as stable and deprecate SCMLogParser for Git [2725](https://github.com/MaibornWolff/codecharta/pull/2725)
+    -   Rename SCMLogParserV2 to GitLogParser
+    -   Rename SCMLogParser to SVNLogParser and remove git parsing
+
+### Fixed 🐞
+
+-   Set initially correct attribute type of primary edge metric in attribute sidebar [#2731](https://github.com/MaibornWolff/codecharta/issues/2731)
+-   Fix switching secondary metrics to median aggregation in attribute sidebar [#2630](https://github.com/MaibornWolff/codecharta/issues/2630)
+
 ## [1.94.0] - 2022-03-21
 
 ### Changed
@@ -27,6 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Suspicious metrics and risk profile are calculated for all selected maps [#2721](https://github.com/MaibornWolff/codecharta/pull/2721)
 -   Close search panel and ribbon bar dropdowns on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
 
 ### Fixed 🐞

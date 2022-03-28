@@ -10,7 +10,7 @@
 
 CodeCharta is a beautiful tool to help you visualize and understand code. It can combine code metrics from multiple sources and visualize them using 3D tree maps. CodeCharta's two major parts are:
 
--   [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/): Command-Line-Tool for generating visualization data in the form of `.cc.json` files. It includes some pre-defined importers for e.g. SonarQube, SourceMonitor, SCM log information, generic csv data, as well as a command to validate and merge multiple data files.
+-   [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/): Command-Line-Tool for generating visualization data in the form of `.cc.json` files. It includes some pre-defined importers for e.g. SonarQube, SourceMonitor, SCM (SVN or Git) log information, generic csv data, as well as a command to validate and merge multiple data files.
 -   [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/): GUI to visualize code metrics from `.cc.json` files. Imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
 
 ![Screenshot of visualization](screenshot.png)

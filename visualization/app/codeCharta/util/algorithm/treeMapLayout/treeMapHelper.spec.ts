@@ -371,6 +371,38 @@ describe("TreeMapHelper", () => {
 					expect(buildNode().color).toBe(state.appSettings.mapColors.negative.toLowerCase())
 				})
 			})
+
+			describe("focused gradient", () => {
+				beforeEach(() => {
+					state.dynamicSettings.colorMode = ColorMode.focusedGradient
+				})
+
+				it("colors green below from threshold, red over to threshold and gradient in between", () => {
+					const { from, to } = state.dynamicSettings.colorRange
+					const middle = (from + to) / 2
+
+					node.attributes = { validMetricName: from }
+					expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.positive.toLowerCase())
+
+					node.attributes = { validMetricName: from - 1 }
+					expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.positive.toLowerCase())
+
+					node.attributes = { validMetricName: middle - 1 }
+					expect(buildNode().color).toBe("#a5be1f")
+
+					node.attributes = { validMetricName: middle }
+					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+
+					node.attributes = { validMetricName: middle + 1 }
+					expect(buildNode().color).toBe("#b98006")
+
+					node.attributes = { validMetricName: to }
+					expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.negative.toLowerCase())
+
+					node.attributes = { validMetricName: to + 1 }
+					expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.negative.toLowerCase())
+				})
+			})
 		})
 	})
 
