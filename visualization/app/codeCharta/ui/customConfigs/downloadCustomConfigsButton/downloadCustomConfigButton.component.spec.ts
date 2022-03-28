@@ -1,36 +1,36 @@
 import { DownloadCustomConfigsButtonComponent } from "./downloadCustomConfigsButton.component"
 import { DownloadCustomConfigService } from "./downloadCustomConfig.service"
-import { BehaviorSubject } from "rxjs"
+import { of } from "rxjs"
 import { TestBed } from "@angular/core/testing"
-import { DownloadableConfigs } from "./downloadableCustomConfigsHelper"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { FileDownloader } from "../../../util/fileDownloader"
 
-class MockDownloadCustomConfigService {
-	get downloadableCustomConfig$() {
-		return new BehaviorSubject<DownloadableConfigs>(new Map([["test", null]]))
-	}
-}
+const mockedDownloadCustomConfigService = { getDownloadableCustomConfigs$: jest.fn() }
 
 describe("DownloadCustomConfigButtonComponent", () => {
-	let comp: DownloadCustomConfigsButtonComponent
-	let mockDownloadCustomConfigService
-
 	beforeEach(() => {
-		mockDownloadCustomConfigService = new MockDownloadCustomConfigService()
+		FileDownloader.downloadData = jest.fn()
 		TestBed.configureTestingModule({
-			providers: [
-				DownloadCustomConfigsButtonComponent,
-				{ provide: DownloadCustomConfigService, useValue: mockDownloadCustomConfigService }
-			]
+			providers: [{ provide: DownloadCustomConfigService, useValue: mockedDownloadCustomConfigService }]
 		})
-		comp = TestBed.inject(DownloadCustomConfigsButtonComponent)
 	})
 
-	it("should ", async () => {
-		comp.ngOnInit()
-		/*		const component = await render(DownloadCustomConfigsButtonComponent)
-		const button = component.getByRole("button")
-		console.log(button.title)*/
+	it("should disable download button when no custom configs are available ", async () => {
+		mockedDownloadCustomConfigService.getDownloadableCustomConfigs$.mockReturnValue(of(new Map()))
+		await render(DownloadCustomConfigsButtonComponent)
 
-		expect(comp.downloadableConfigs.get("test")).toEqual(null)
+		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(true)
+	})
+
+	it("should click download button when custom configs are available ", async () => {
+		mockedDownloadCustomConfigService.getDownloadableCustomConfigs$.mockReturnValue(of(new Map([["invalid-md5", {}]])))
+		await render(DownloadCustomConfigsButtonComponent)
+
+		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(false)
+
+		userEvent.click(screen.getByRole("button") as HTMLButtonElement)
+
+		expect(FileDownloader.downloadData).toHaveBeenCalledTimes(1)
 	})
 })
