@@ -14,7 +14,7 @@ export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
 	constructor(@Inject(DownloadCustomConfigService) private downloadCustomConfigService: DownloadCustomConfigService) {}
 
 	ngOnInit(): void {
-		this.subscription = this.downloadCustomConfigService.downloadableCustomConfigs$.subscribe(downloadableConfigs => {
+		this.subscription = this.downloadCustomConfigService.getDownloadableCustomConfigs$().subscribe(downloadableConfigs => {
 			this.downloadableConfigs = downloadableConfigs
 		})
 	}
