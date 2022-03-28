@@ -12,7 +12,7 @@ sidebar:
     - title: "Highest Complexity (mcc)"
       text: "AnnotationTest.java"
     - title: "Utilized Importers"
-      text: SourceCodeParser<br/>ScmlogParser (Git)
+      text: SourceCodeParser<br/>GitLogParser
 gallery:
     - url: /assets/images/showcase/junit4/junit4_2019-10-26[rloc,mcc,mcc].png
       image_path: assets/images/showcase/junit4/junit4_2019-10-26[rloc,mcc,mcc].png

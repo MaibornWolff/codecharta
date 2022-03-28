@@ -16,7 +16,7 @@ sidebar:
     - title: "Max Nesting Level"
       text: "AssertArrayEquals.java"
     - title: "Utilized Importers"
-      text: SourceCodeParser<br/>ScmlogParser (Git)
+      text: SourceCodeParser<br/>GitLogParser
 gallery:
     - url: /assets/images/showcase/junit5/junit5_2019-10-26[rloc,mcc,mcc].png
       image_path: assets/images/showcase/junit5/junit5_2019-10-26[rloc,mcc,mcc].png

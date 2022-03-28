@@ -16,7 +16,7 @@ sidebar:
     - title: "Max Nesting Level"
       text: "S2bConfig.java"
     - title: "Utilized Importers"
-      text: SourceCodeParser<br/>ScmlogParser (Git)
+      text: SourceCodeParser<br/>GitLogParser
 gallery:
     - url: /assets/images/showcase/netbeans/netbeans_2019-10-19[rloc,mcc,mcc].png
       image_path: assets/images/showcase/netbeans/netbeans_2019-10-19[rloc,mcc,mcc].png

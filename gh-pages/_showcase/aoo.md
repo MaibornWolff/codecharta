@@ -14,7 +14,7 @@ sidebar:
     - title: "Highest RLoC"
       text: pdfwriter_impl.cxx
     - title: "Utilized Importers"
-      text: Tokeiimporter<br/>ScmlogParser (SVN)
+      text: Tokeiimporter<br/>SVNLogParser
 gallery:
     - url: /assets/images/showcase/aoo/aoo_2019-08-02[rloc,rloc,rloc_more_than_1000].png
       image_path: assets/images/showcase/aoo/aoo_2019-08-02[rloc,rloc,rloc_more_than_1000].png

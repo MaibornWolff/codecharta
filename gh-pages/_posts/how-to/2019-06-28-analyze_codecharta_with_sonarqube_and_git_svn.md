@@ -33,7 +33,7 @@ As the Codecharta project is managed using git, we want to analyze its git meta 
 -   Clone the repository `git clone https://github.com/MaibornWolff/codecharta.git` and navigate to it `cd codecharta`
 -   Generate a git log file `git log --numstat --raw --topo-order > ../git.log` and navigate back `cd ..`. file and a _git.log_ file.
 -   Ensure that the log file is encoded with UTF-8 if you get `java.lang.IllegalArgumentException`
--   Parse the log file `ccsh scmlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o git.cc.json -p maibornwolff-gmbh_codecharta_visualization`. A new file named _git.cc.json_ should appear in your working directory.
+-   Parse the log file `ccsh gitlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o git.cc.json -p maibornwolff-gmbh_codecharta_visualization`. A new file named _git.cc.json_ should appear in your working directory.
 
 ## SVN
 
@@ -42,7 +42,7 @@ In case your project, which you want to analyse, is managed using SVN (Subversio
 -   Navigate to your svn project `cd <my_svn_project>`
 -   Create a svn log file using `svn log --verbose > ../svn.log` and navigate back `cd ..`
 -   Ensure that the log file is encoded with UTF-8 if you get `java.lang.IllegalArgumentException`
--   Parse the log file `ccsh scmlogparser svn.log --input-format SVN_LOG -o svn.cc.json`
+-   Parse the log file `ccsh svnlogparser svn.log --input-format SVN_LOG -o svn.cc.json`
 
 ## Ensuring the encoding
 

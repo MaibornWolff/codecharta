@@ -80,7 +80,7 @@ Please make sure you have [Git](https://git-scm.com/downloads) installed and tha
 # Generate <project>.git.log
 cd junit4; git log --numstat --raw --topo-order > ../junit4.git.log; cd ..
 # Parse git.log
-ccsh scmlogparser junit4.git.log -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
+ccsh gitlogparser junit4.git.log -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
 ```
 
 We can now merge the files.
@@ -113,7 +113,7 @@ ccsh modify junit4.git.cc.json -p 1
 npm i -g codecharta-analysis
 cd junit4; git log --numstat --raw --topo-order > ../junit4.git.log; cd ..
 ccsh sourcecodeparser junit4 \
-  | ccsh scmlogparser junit4.git.log --input-format GIT_LOG_NUMSTAT_RAW \
+  | ccsh gitlogparser junit4.git.log --input-format GIT_LOG_NUMSTAT_RAW \
   > junit4.cc.json
 ```
 
