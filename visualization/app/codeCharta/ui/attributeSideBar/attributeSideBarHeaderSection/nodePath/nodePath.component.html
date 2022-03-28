@@ -1,5 +1,5 @@
 <p class="cc-node-path">
-	<span *ngIf="node">
+	<span *ngIf="node" style="word-wrap: break-word">
 		{{ node.path }}
 		<span *ngIf="node.children?.length && fileCount$ | async as fileCount" class="cc-node-file-count">
 			(
