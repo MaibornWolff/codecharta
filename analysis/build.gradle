@@ -4,7 +4,7 @@ buildscript {
         boon_version = '0.34'
         commons_lang3_version = '3.12.0'
         gson_version = '2.9.0'
-        jackson_version = '2.13.2'
+        jackson_version = '2.13.2.20220328'
         gradle_module_metadata_maven_plugin = '0.3.0'
         jacoco_version = '0.8.7'
         jaxb_api_version = '2.3.1'
