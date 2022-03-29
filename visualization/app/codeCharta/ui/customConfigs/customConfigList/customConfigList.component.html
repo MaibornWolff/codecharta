@@ -1,6 +1,7 @@
 <mat-list>
 	<mat-list-item *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups">
-		<button mat-button>
+		<cc-custom-config-item-group [test]="'test string'"></cc-custom-config-item-group>
+		<!--		<button mat-button>
 			Custom View(s) in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
 			{{ customConfigItemGroup.mapNames }}
 		</button>
@@ -8,7 +9,7 @@
 			<mat-list-item *ngFor="let customConfig of customConfigItemGroup.customConfigItems">
 				{{ customConfig.mapNames }}
 			</mat-list-item>
-		</mat-list>
+		</mat-list>-->
 	</mat-list-item>
 </mat-list>
 
