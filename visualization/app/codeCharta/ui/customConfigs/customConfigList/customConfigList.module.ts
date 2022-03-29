@@ -8,6 +8,7 @@ import { CustomConfigItemGroupComponent } from "./customConfigItemGroup.componen
 @NgModule({
 	imports: [MaterialModule, CommonModule],
 	declarations: [CustomConfigListComponent, CustomConfigItemGroupComponent],
-	exports: [CustomConfigListComponent]
+	exports: [CustomConfigListComponent],
+	entryComponents: [CustomConfigListComponent]
 })
 export class CustomConfigListModule {}
