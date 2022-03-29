@@ -1,0 +1,53 @@
+<mat-list>
+	<mat-list-item *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups">
+		<button mat-button>
+			Custom View(s) in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
+			{{ customConfigItemGroup.mapNames }}
+		</button>
+		<mat-list>
+			<mat-list-item *ngFor="let customConfig of customConfigItemGroup.customConfigItems">
+				{{ customConfig.mapNames }}
+			</mat-list-item>
+		</mat-list>
+	</mat-list-item>
+</mat-list>
+
+<!--
+<md-menu-item
+  class="custom-configs-item"
+  ng-repeat="customConfigItemGroup in $ctrl._viewModel.dropDownCustomConfigItemGroups |
+                     limitTo: $ctrl._viewModel.visibleEntries"
+>
+  <md-button
+    class="button-hovering"
+    ng-click="collapsed=!collapsed"
+    ng-style="!customConfigItemGroup.hasApplicableItems && { color: 'rgba(0,0,0,0.3)' }"
+    md-prevent-menu-close="md-prevent-menu-close"
+  >
+					<span class="collapse-trigger">
+						Custom View(s) in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
+						<strong>{{ customConfigItemGroup.mapNames }}</strong>
+					</span>
+    <i ng-show="!collapsed" class="collapse-icon fa fa-arrow-down"></i>
+    <i ng-show="collapsed" class="collapse-icon fa fa-arrow-up"></i>
+  </md-button>
+
+  <div class="collapsable" ng-show="collapsed">
+    <div class="custom-configs-item" ng-repeat="customConfig in customConfigItemGroup.customConfigItems">
+      <md-button
+        class="button-hovering"
+        ng-click="$ctrl.applyCustomConfig(customConfig.id)"
+        ng-disabled="!customConfig.isApplicable"
+        title="{{
+								customConfig.isApplicable
+									? 'Apply Custom Config'
+									: 'This one is applicable for map(s) ' +
+									  customConfig.mapNames +
+									  ' in ' +
+									  customConfig.mapSelectionMode +
+									  ' mode only.'
+							}}"
+      >
+        {{ customConfig.name }}
+      </md-button>
+-->

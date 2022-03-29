@@ -21,7 +21,7 @@
 
 			<md-divider></md-divider>
 
-			<md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomConfigItemGroups.length" class="custom-configs-item">
+			<!--				<md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomConfigItemGroups.length" class="custom-configs-item">
 				<md-button disabled>It is time to add your first Custom View.</md-button>
 			</md-menu-item>
 
@@ -81,9 +81,13 @@
 			>
 				{{ $ctrl.isExpanded() ? "Hide non-applicable Custom Views" : "Show non-applicable Custom Views" }}
 				<i ng-class="$ctrl.isExpanded() ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-			</button>
+			</button>-->
+			<cc-custom-config-list
+				[drop-down-custom-config-item-groups]="$ctrl._viewModel.dropDownCustomConfigItemGroups"
+			></cc-custom-config-list>
 		</md-menu-content>
 	</md-menu>
+
 	<div class="custom-configs-component">
 		<cc-add-custom-config-button class="custom-configs-button-in-ribbonbar"></cc-add-custom-config-button>
 	</div>
