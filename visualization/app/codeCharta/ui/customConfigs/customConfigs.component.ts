@@ -6,7 +6,7 @@ import { FileState } from "../../model/files/files"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { IRootScopeService } from "angular"
 import { CustomConfigFileStateConnector } from "./customConfigFileStateConnector"
-import { CustomConfig, CustomConfigMapSelectionMode, ExportCustomConfig } from "../../model/customConfig/customConfig.api.model"
+import { CustomConfigMapSelectionMode, ExportCustomConfig } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 
 export interface CustomConfigItem {
@@ -27,12 +27,10 @@ export interface CustomConfigItemGroup {
 export class CustomConfigsController implements FilesSelectionSubscriber {
 	private _viewModel: {
 		dropDownCustomConfigItemGroups: CustomConfigItemGroup[]
-		hasDownloadableConfigs: boolean
 		showNonApplicableButton: boolean
 		visibleEntries: number
 	} = {
 		dropDownCustomConfigItemGroups: [],
-		hasDownloadableConfigs: false,
 		showNonApplicableButton: false,
 		visibleEntries: 0
 	}
@@ -54,13 +52,10 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 
 	onFilesSelectionChanged(files: FileState[]) {
 		this.customConfigFileStateConnector = new CustomConfigFileStateConnector(files)
-
-		this.preloadDownloadableConfigs()
 	}
 
 	initView() {
 		this.loadCustomConfigs()
-		this.preloadDownloadableConfigs()
 		this.initVisibleEntries()
 	}
 
@@ -118,30 +113,6 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 		}
 
 		CustomConfigHelper.downloadCustomConfigs(this.downloadableConfigs, this.customConfigFileStateConnector)
-	}
-
-	private preloadDownloadableConfigs() {
-		this.downloadableConfigs.clear()
-		const customConfigs = CustomConfigHelper.getCustomConfigs()
-
-		for (const [key, value] of customConfigs.entries()) {
-			// Only Configs which are applicable for at least one of the uploaded maps should be downloaded.
-			if (this.isConfigApplicableForUploadedMaps(value)) {
-				this.downloadableConfigs.set(key, CustomConfigHelper.createExportCustomConfigFromConfig(value))
-			}
-		}
-
-		this._viewModel.hasDownloadableConfigs = this.downloadableConfigs.size > 0
-	}
-
-	private isConfigApplicableForUploadedMaps(customConfig: CustomConfig) {
-		const mapChecksumsOfConfig = customConfig.mapChecksum.split(";")
-		for (const checksumOfConfig of mapChecksumsOfConfig) {
-			if (this.customConfigFileStateConnector.isMapAssigned(checksumOfConfig)) {
-				return true
-			}
-		}
-		return false
 	}
 
 	private isExpanded(): boolean {
