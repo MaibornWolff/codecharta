@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fixes floor labels being drawn next to the map if margin was changed after map height is unequal to 1 [#2763](https://github.com/MaibornWolff/codecharta/pull/2763)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate metric-hovered-value-component to Angular [#2752](https://github.com/MaibornWolff/codecharta/pull/2752)
