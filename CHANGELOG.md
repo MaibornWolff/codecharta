@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate metric-hovered-value-component to Angular [#2752](https://github.com/MaibornWolff/codecharta/pull/2752)
+
 ## [1.95.0] - 2022-03-28
 
 ### Added 🚀
