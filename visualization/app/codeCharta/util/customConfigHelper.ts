@@ -19,6 +19,7 @@ import { setCameraTarget } from "../state/store/appSettings/cameraTarget/cameraT
 import { StoreService } from "../state/store.service"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCameraService"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
+import { BehaviorSubject } from "rxjs"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -27,6 +28,7 @@ export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
 	private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigs()
+	static customConfigChange$: BehaviorSubject<null> = new BehaviorSubject(null)
 
 	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): Map<string, CustomConfigItemGroup> {
 		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
@@ -75,6 +77,7 @@ export class CustomConfigHelper {
 		}
 
 		localStorage.setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement, stateObjectReplacer))
+		CustomConfigHelper.customConfigChange$.next(null)
 	}
 
 	private static loadCustomConfigs() {

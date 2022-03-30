@@ -15,14 +15,7 @@
 				>
 					<i class="fa fa-folder-open" aria-hidden="true"></i>
 				</md-button>
-				<md-button
-					ng-click="$ctrl.downloadPreloadedCustomConfigs()"
-					ng-disabled="!$ctrl._viewModel.hasDownloadableConfigs"
-					class="action-button"
-					title="Download Custom View related to currently uploaded maps, if any."
-				>
-					<i class="fa fa-download" aria-hidden="true"></i>
-				</md-button>
+				<cc-download-custom-configs-button></cc-download-custom-configs-button>
 				<cc-add-custom-config-button class="custom-configs-button-in-custom-views"></cc-add-custom-config-button>
 			</md-menu-item>
 
