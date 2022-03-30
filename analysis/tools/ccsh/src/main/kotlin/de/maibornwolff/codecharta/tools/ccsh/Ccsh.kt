@@ -7,10 +7,11 @@ import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.csv.SourceMonitorImporter
-import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser
-import de.maibornwolff.codecharta.importer.scmlogparserv2.SCMLogParserV2
+import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
+import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
@@ -29,9 +30,9 @@ import java.util.concurrent.Callable
         CSVImporter::class,
         SonarImporterMain::class,
         SourceMonitorImporter::class,
-        SCMLogParser::class,
-        SCMLogParserV2::class,
-        // Installer::class,
+        SVNLogParser::class,
+        GitLogParser::class,
+        Installer::class,
         CSVExporter::class,
         // CrococosmoImporter::class,
         SourceCodeParserMain::class,
@@ -108,8 +109,8 @@ class Ccsh : Callable<Void?> {
         override fun getVersion(): Array<String> {
             return arrayOf(
                 Ccsh::class.java.`package`.implementationTitle + "\n" +
-                        "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
-                        "Copyright(c) 2020, MaibornWolff GmbH"
+                    "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
+                    "Copyright(c) 2020, MaibornWolff GmbH"
             )
         }
     }

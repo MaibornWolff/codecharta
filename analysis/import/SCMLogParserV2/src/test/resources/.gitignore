@@ -1,2 +1,0 @@
-# include previously excluded .log files
-!*.log
