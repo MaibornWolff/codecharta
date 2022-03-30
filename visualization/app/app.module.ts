@@ -41,6 +41,7 @@ import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edg
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
 import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
+import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
 
 @NgModule({
@@ -66,6 +67,8 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
 		SearchPanelModule,
+		MetricTypeModule,
+		DownloadCustomConfigButtonModule,
 		MetricTypeModule,
 		MetricValueHoveredModule
 	],

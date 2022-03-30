@@ -38,6 +38,10 @@ cc-attribute-side-bar-header-section {
 	.cc-node-path {
 		color: grey;
 
+		.file-path {
+			word-wrap: break-word;
+		}
+
 		.cc-node-file-count {
 			background: #f0f0f0;
 			border-radius: 3px;
