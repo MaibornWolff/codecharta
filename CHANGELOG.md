@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fixes floor labels being drawn next to the map if margin was changed after map height is unequal to 1 [#2763](https://github.com/MaibornWolff/codecharta/pull/2763)
+-   Fixes floor labels being stuck inside folder geometry when scaling [#2766](https://github.com/MaibornWolff/codecharta/pull/2766)
 
 ## [1.95.0] - 2022-03-28
 
