@@ -111,7 +111,7 @@ export class FloorLabelDrawer {
 		planeMesh.rotateX((90 * Math.PI) / 180)
 
 		// Position plane over the map
-		const liftToPreventZFighting = 2
+		const liftToPreventZFighting = 10
 		plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -2.01 * this.scaling.y * (floorLevel + 1) - liftToPreventZFighting)
 
 		// Move and scale plane mesh exactly like the squarified map
