@@ -1,7 +1,7 @@
 "use strict"
 
 import { Node } from "../../../../codeCharta.model"
-import { CanvasTexture, BackSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
+import { BackSide, CanvasTexture, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
 import { FloorLabelHelper } from "./floorLabelHelper"
 
 export class FloorLabelDrawer {
@@ -38,7 +38,7 @@ export class FloorLabelDrawer {
 		const scaledMapHeight = rootNodeHeight * mapResolutionScaling
 
 		for (const [floorLevel, floorNodesPerLevel] of this.floorLabelsPerLevel) {
-			const { textCanvas, context } = this.createLabelPlaneCanvas(scaledMapWidth, scaledMapHeight)
+			const { textCanvas, context } = FloorLabelDrawer.createLabelPlaneCanvas(scaledMapWidth, scaledMapHeight)
 			this.writeLabelsOnCanvas(context, floorNodesPerLevel, mapResolutionScaling)
 			this.drawLevelPlaneGeometry(textCanvas, scaledMapWidth, scaledMapHeight, floorLevel, mapResolutionScaling)
 		}
@@ -46,7 +46,7 @@ export class FloorLabelDrawer {
 		return this.floorLabelPlanes
 	}
 
-	private createLabelPlaneCanvas(scaledMapWidth: number, scaledMapHeight: number) {
+	private static createLabelPlaneCanvas(scaledMapWidth: number, scaledMapHeight: number) {
 		const textCanvas = document.createElement("canvas")
 
 		// Flip map width and height to support non squarified maps (e.g. if a rectangular subfolder is focused)
@@ -80,7 +80,7 @@ export class FloorLabelDrawer {
 
 			context.font = `${fontSize}px Arial`
 
-			const textToFill = this.getLabelAndSetContextFont(floorNode, context, mapResolutionScaling, fontSize)
+			const textToFill = FloorLabelDrawer.getLabelAndSetContextFont(floorNode, context, mapResolutionScaling, fontSize)
 
 			context.fillText(
 				textToFill.labelText,
@@ -111,24 +111,29 @@ export class FloorLabelDrawer {
 		planeMesh.rotateX((90 * Math.PI) / 180)
 
 		// Position plane over the map
-		const liftToPreventZFighting = 10
-		plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -2.01 * (floorLevel + 1) - liftToPreventZFighting)
+		const liftToPreventZFighting = 2
+		plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -2.01 * this.scaling.y * (floorLevel + 1) - liftToPreventZFighting)
 
 		// Move and scale plane mesh exactly like the squarified map
-		planeMesh.scale.set(this.scaling.x / mapResolutionScaling, this.scaling.y / mapResolutionScaling, this.scaling.z)
+		planeMesh.scale.set(this.scaling.x / mapResolutionScaling, this.scaling.z / mapResolutionScaling, 1)
 		planeMesh.position.set(-this.mapSize * this.scaling.x, 0, -this.mapSize * this.scaling.z)
 
 		this.floorLabelPlanes.push(planeMesh)
 	}
 
-	private getLabelAndSetContextFont(labelNode: Node, context: CanvasRenderingContext2D, mapResolutionScaling: number, fontSize: number) {
+	private static getLabelAndSetContextFont(
+		labelNode: Node,
+		context: CanvasRenderingContext2D,
+		mapResolutionScaling: number,
+		fontSize: number
+	) {
 		const labelText = labelNode.name
 		const floorWidth = labelNode.length * mapResolutionScaling
 
 		context.font = `${fontSize}px Arial`
 
 		const textMetrics = context.measureText(labelText)
-		const fontScaleFactor = this.getFontScaleFactor(floorWidth, textMetrics.width)
+		const fontScaleFactor = FloorLabelDrawer.getFontScaleFactor(floorWidth, textMetrics.width)
 		if (fontScaleFactor <= 0.5) {
 			// Font will be to small.
 			// So scale text not smaller than 0.5 and shorten it as well
@@ -136,7 +141,7 @@ export class FloorLabelDrawer {
 			fontSize = Math.floor(Math.min(fontSize, labelNode.width * mapResolutionScaling))
 			context.font = `${fontSize}px Arial`
 			return {
-				labelText: this.getFittingLabelText(context, floorWidth, labelText),
+				labelText: FloorLabelDrawer.getFittingLabelText(context, floorWidth, labelText),
 				fontSize
 			}
 		}
@@ -145,11 +150,11 @@ export class FloorLabelDrawer {
 		return { labelText, fontSize }
 	}
 
-	private getFontScaleFactor(canvasWidth: number, widthOfText: number) {
+	private static getFontScaleFactor(canvasWidth: number, widthOfText: number) {
 		return widthOfText < canvasWidth ? 1 : canvasWidth / widthOfText
 	}
 
-	private getFittingLabelText(context: CanvasRenderingContext2D, canvasWidth: number, labelText: string) {
+	private static getFittingLabelText(context: CanvasRenderingContext2D, canvasWidth: number, labelText: string) {
 		const { width } = context.measureText(labelText)
 		let textSplitIndex = Math.floor((labelText.length * canvasWidth) / width)
 		let abbreviatedText = `${labelText.slice(0, textSplitIndex)}…`
