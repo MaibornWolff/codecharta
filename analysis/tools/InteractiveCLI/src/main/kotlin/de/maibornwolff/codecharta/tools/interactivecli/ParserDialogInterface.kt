@@ -8,13 +8,7 @@ interface ParserDialogInterface {
     fun isValidFileName(fileName: String): Boolean
 
     fun getOutputFileName(fullFileName: String): String {
-        if (fullFileName.contains("/")) {
-            return fullFileName.substringAfterLast("/").substringBefore(".")
-        }
-        if (fullFileName.contains("\\")) {
-            return fullFileName.substringAfterLast("\\").substringBefore(".")
-        }
-        return fullFileName.substringBefore(".")
+        return fullFileName.substringAfterLast("/").substringAfterLast("\\").substringBefore(".")
     }
 
     fun checkExtension(fileName: String, expectedFileExtension: String): Boolean {
