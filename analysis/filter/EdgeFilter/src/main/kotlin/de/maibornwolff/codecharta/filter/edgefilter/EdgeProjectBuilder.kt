@@ -60,7 +60,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         val nodeFilename = nodeEdgeName.split(pathSeparator).reversed().first()
         val nodePath = nodeEdgeName.split(pathSeparator)
         if (nodePath.size < 2) {
-            println("Keine übergeordnete Node gefunden.")
+            println("No parent node found")
         } else {
             val nodeParentPath = nodePath.subList(2, nodePath.size - 1)
             val node = Node(nodeFilename, NodeType.File)

@@ -21,17 +21,15 @@ class ParserDialog {
                     hint = defaultOutputFileName,
                     default = defaultOutputFileName
                 )
-                // TODO
-                /* val hasCustomPathSeparator: Boolean = KInquirer.promptConfirm(message = "Do you want to use a different path separator than '/'?", default = false)
 
-                var pathSeparator = '/'
+                val defaultPathSeparator = "/"
+                val pathSeparator: String = KInquirer.promptInput(
+                    message = "What is the path separator?",
+                    hint = defaultPathSeparator,
+                    default = defaultPathSeparator
+                )
 
-                if (hasCustomPathSeparator) {
-                    println("Please type in a new path separator.")
-                    pathSeparator = readLine()!![0]
-                } */
-
-                val selectedArgs = arrayOf(inputFileName, "-o $outputFileName")
+                val selectedArgs = arrayOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
                 return commandLine.execute(*selectedArgs)
             }
             return commandLine.execute(*args)
