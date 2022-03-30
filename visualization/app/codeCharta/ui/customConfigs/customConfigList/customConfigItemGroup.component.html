@@ -1,2 +1,20 @@
-<!--{{test.mapNames}}-->
-{{ test }}
+<button mat-button (click)="toggleSubList()">
+	Custom View(s) in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
+	{{ customConfigItemGroup.mapNames }}
+	<i *ngIf="!isCollapsed" class="collapse-icon fa fa-arrow-down"></i>
+	<i *ngIf="isCollapsed" class="collapse-icon fa fa-arrow-up"></i>
+</button>
+<mat-list *ngIf="isCollapsed">
+	<mat-list-item *ngFor="let customConfig of customConfigItemGroup.customConfigItems">
+		<button
+			mat-button
+			title="{{
+				customConfig.isApplicable
+					? 'Apply Custom Config'
+					: 'This one is applicable for map(s) ' + customConfig.mapNames + ' in ' + customConfig.mapSelectionMode + ' mode only.'
+			}}"
+		>
+			{{ customConfig.mapNames }}
+		</button>
+	</mat-list-item>
+</mat-list>
