@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import de.maibornwolff.codecharta.filter.edgefilter.UserDialog.Companion.generateDialog
+import de.maibornwolff.codecharta.filter.edgefilter.ParserDialog.Companion.generateDialog
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
