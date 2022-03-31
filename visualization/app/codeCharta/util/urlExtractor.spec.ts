@@ -121,7 +121,7 @@ describe("urlExtractor", () => {
 			$http.get = jest.fn().mockImplementation(async () => {
 				return { data: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } }, status: 200 }
 			})
-			const actualNameDataPair = await urlExtractor.getFileDataFromFile("test project")
+			const actualNameDataPair = await urlExtractor.getFileDataFromFile("test.json")
 
 			return expect(actualNameDataPair.fileName).toBe("test project")
 		})
