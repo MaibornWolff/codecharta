@@ -7,13 +7,13 @@ code-charta-component {
 			height: 100px;
 			position: absolute;
 			left: 0;
-			bottom: 30px;
+			bottom: 20px;
 			z-index: 1;
 		}
 
 		a,
 		img {
-			width: 5em;
+			width: 7em;
 			display: block;
 			margin: auto !important;
 		}
@@ -25,6 +25,7 @@ code-charta-component {
 			font-size: 9pt;
 			text-align: center;
 			margin: 0;
+			margin-top: 9px;
 			z-index: -1;
 		}
 	}
