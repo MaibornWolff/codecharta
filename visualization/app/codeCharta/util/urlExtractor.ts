@@ -53,15 +53,7 @@ export class UrlExtractor {
 		throw new Error(`Could not load file "${fileName}"`)
 	}
 
-	getFileName(oldFileName: string, projectName: string) {
-		let fileName: string
-
-		if (projectName?.trim()) {
-			fileName = projectName
-		} else {
-			const fileNameParts = oldFileName.split("/")
-			fileName = fileNameParts[fileNameParts.length - 1]
-		}
-		return fileName
+	getFileName(oldFileName: string, projectName: string): string {
+		return projectName?.trim() || oldFileName.split("/").pop()
 	}
 }
