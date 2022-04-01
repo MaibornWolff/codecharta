@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.95.1] - 2022-04-01
+
 ### Changed
 
 -   Display project name as file name (if not empty or blank) for loaded files via URL [#2767](https://github.com/MaibornWolff/codecharta/pull/2767)
