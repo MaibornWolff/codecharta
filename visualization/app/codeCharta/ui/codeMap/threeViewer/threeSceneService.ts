@@ -141,7 +141,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	scaleHeight() {
 		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
-		this.floorLabelDrawer.translatePlaneCanvases(scale)
+		this.floorLabelDrawer?.translatePlaneCanvases(scale)
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
 		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
 		this.mapMesh.setScale(scale)
