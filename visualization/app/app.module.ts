@@ -42,6 +42,7 @@ import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.co
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
 import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
 import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
+import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
 
 @NgModule({
 	imports: [
@@ -67,7 +68,9 @@ import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/
 		LoadingMapProgressSpinnerModule,
 		SearchPanelModule,
 		MetricTypeModule,
-		DownloadCustomConfigButtonModule
+		DownloadCustomConfigButtonModule,
+		MetricTypeModule,
+		MetricValueHoveredModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
