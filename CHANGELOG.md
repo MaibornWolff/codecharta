@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.95.1] - 2022-04-01
+
+### Changed
+
+-   Display project name as file name (if not empty or blank) for loaded files via URL [#2767](https://github.com/MaibornWolff/codecharta/pull/2767)
+
 ### Fixed 🐞
 
 -   Fixes floor labels being drawn next to the map if margin was changed after map height is unequal to 1 [#2763](https://github.com/MaibornWolff/codecharta/pull/2763)
+-   Fixes floor labels being stuck inside folder geometry when scaling [#2766](https://github.com/MaibornWolff/codecharta/pull/2766)
 
 ### Chore 👨‍💻 👩‍💻
 
