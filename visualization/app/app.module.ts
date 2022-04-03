@@ -43,6 +43,7 @@ import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.modul
 import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
 import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
+import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
 
 @NgModule({
 	imports: [
@@ -70,7 +71,8 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 		MetricTypeModule,
 		DownloadCustomConfigButtonModule,
 		MetricTypeModule,
-		MetricValueHoveredModule
+		MetricValueHoveredModule,
+		UploadCustomConfigButtonModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
