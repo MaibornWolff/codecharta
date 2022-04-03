@@ -1,5 +1,3 @@
-// UPLOAD-FILES-FROM-UPLOAD-CUSTOM-CONFIG-BUTTON
-
 import { Inject, Injectable } from "@angular/core"
 import { tap } from "rxjs"
 import { createEffect } from "../../angular-redux/effects/createEffect"
@@ -9,12 +7,14 @@ import { Store } from "../../angular-redux/store"
 
 @Injectable()
 export class UploadFilesEffect {
+	static uploadActionType = "UploadCCFiles"
+
 	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(Store) private store: Store) {}
 
 	uploadFiles = createEffect(
 		() =>
 			this.actions$.pipe(
-				ofType("UploadFilesFromUploadCustomConfigButtonComponent"),
+				ofType(UploadFilesEffect.uploadActionType),
 				tap(() => {
 					this.openFileChooser()
 				})
