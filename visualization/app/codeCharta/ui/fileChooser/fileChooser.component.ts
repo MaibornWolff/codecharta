@@ -6,7 +6,6 @@ import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { ExportCCFile } from "../../codeCharta.api.model"
 import zlib from "zlib"
-import { CUSTOM_CONFIG_FILE_EXTENSION, CustomConfigHelper } from "../../util/customConfigHelper"
 import { getCCFileAndDecorateFileChecksum } from "../../util/fileHelper"
 import { parseGameObjectsFile } from "../../util/gameObjectsParser/gameObjectsImporter"
 import { validateGameObjects } from "../../util/gameObjectsParser/gameObjectsValidator"
@@ -49,15 +48,8 @@ export class FileChooserController {
 
 				reader.onloadend = () => {
 					readFiles++
-					if (file.name.includes(CUSTOM_CONFIG_FILE_EXTENSION)) {
-						try {
-							CustomConfigHelper.importCustomConfigs(content)
-						} catch {
-							// Explicitly ignored
-						}
-					} else {
-						this.addNameDataPair(file, content, index)
-					}
+
+					this.addNameDataPair(file, content, index)
 
 					if (readFiles === element.files.length) {
 						this.setNewData()

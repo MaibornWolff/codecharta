@@ -1,31 +1,39 @@
 import { Inject, Injectable } from "@angular/core"
 import { tap } from "rxjs"
+import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
 import { ofType } from "../../angular-redux/ofType"
-import { Store } from "../../angular-redux/store"
+import { readFiles } from "./readFiles"
 
 @Injectable()
 export class UploadFilesEffect {
-	static uploadActionType = "UploadCCFiles"
+	static uploadCustomConfigsActionType = "uploadCustomConfigsActionType"
 
-	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(Store) private store: Store) {}
+	constructor(@Inject(ActionsToken) private actions$: Actions) {}
 
 	uploadFiles = createEffect(
 		() =>
 			this.actions$.pipe(
-				ofType(UploadFilesEffect.uploadActionType),
+				ofType(UploadFilesEffect.uploadCustomConfigsActionType),
 				tap(() => {
-					this.openFileChooser()
+					this.loadCustomConfigs()
 				})
 			),
 		{ dispatch: false }
 	)
 
-	private openFileChooser() {
+	private loadCustomConfigs() {
 		const fileInput = this.createFileInput()
-		fileInput.addEventListener("change", () => {
-			// console.log(fileInput.files.length)
+		fileInput.addEventListener("change", async () => {
+			const customConfigsContent = await Promise.all(readFiles(fileInput.files))
+			for (const customConfigContent of customConfigsContent) {
+				try {
+					CustomConfigHelper.importCustomConfigs(customConfigContent)
+				} catch {
+					// Explicitly ignored
+				}
+			}
 		})
 		fileInput.click()
 	}

@@ -10,6 +10,6 @@ export class UploadCustomConfigButtonComponent {
 	constructor(@Inject(Store) private store: Store) {}
 
 	upload() {
-		this.store.dispatch({ type: UploadFilesEffect.uploadActionType })
+		this.store.dispatch({ type: UploadFilesEffect.uploadCustomConfigsActionType })
 	}
 }
