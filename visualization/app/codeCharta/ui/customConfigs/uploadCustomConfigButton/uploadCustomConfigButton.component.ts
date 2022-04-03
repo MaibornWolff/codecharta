@@ -9,6 +9,6 @@ export class UploadCustomConfigButtonComponent {
 	constructor(@Inject(Store) private store: Store) {}
 
 	upload() {
-		this.store.dispatch({ type: "UPLOAD-FILE-FROM-UPLOAD-CUSTOM-CONFIG-BUTTON" })
+		this.store.dispatch({ type: "UploadFilesFromUploadCustomConfigButtonComponent" })
 	}
 }

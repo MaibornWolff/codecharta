@@ -44,6 +44,7 @@ import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metri
 import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
 import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
+import { UploadFilesEffect } from "./codeCharta/state/effects/uploadFiles/uploadFiles.effect"
 
 @NgModule({
 	imports: [
@@ -54,7 +55,8 @@ import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/up
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
 			TrackEventUsageDataEffect,
-			BlacklistSearchPatternEffect
+			BlacklistSearchPatternEffect,
+			UploadFilesEffect
 		]),
 		AttributeSideBarModule,
 		MaterialModule,
