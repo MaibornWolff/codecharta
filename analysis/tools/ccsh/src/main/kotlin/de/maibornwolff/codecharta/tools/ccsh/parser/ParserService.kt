@@ -2,9 +2,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
-import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
-import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.CommandLine
 
 class ParserService {
@@ -22,7 +20,7 @@ class ParserService {
             val args = emptyArray<String>()
 
             when (selectedParser) {
-                "check" -> ValidationTool.main(args)
+                "check" -> print("Not implemented yet")
                 "merge" -> print("Not implemented yet")
                 "edgefilter" -> EdgeFilter.main(args)
                 "modify" -> print("Not implemented yet")
