@@ -76,18 +76,20 @@ class Ccsh : Callable<Void?> {
         }
 
         private fun executeInteractiveCLI(args: Array<String>, commandLine: CommandLine) {
-            var unknownParser = false
-            if (args.isNotEmpty()) {
-                val firstArg = args[0]
-                val subcommands = commandLine.subcommands.keys
-                unknownParser = !subcommands.contains(firstArg)
-            }
-
-            if (args.isEmpty() || unknownParser) {
+            if (args.isEmpty() && !isParserUnknown(args, commandLine)) {
                 val selectedParser = ParserService.selectParser(commandLine)
                 println("Executing $selectedParser")
                 ParserService.executeSelectedParser(selectedParser)
             }
+        }
+
+        private fun isParserUnknown(args: Array<String>, commandLine: CommandLine): Boolean {
+            if (args.isNotEmpty()) {
+                val firstArg = args[0]
+                val subcommands = commandLine.subcommands.keys
+                return !subcommands.contains(firstArg)
+            }
+            return false
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {

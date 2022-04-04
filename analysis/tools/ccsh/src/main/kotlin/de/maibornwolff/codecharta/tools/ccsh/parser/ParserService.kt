@@ -54,7 +54,7 @@ class ParserService {
         }
 
         private fun extractParserName(parserNameWithDescription: String): String {
-            return parserNameWithDescription.substring(0, parserNameWithDescription.indexOf(' '))
+            return parserNameWithDescription.substringBefore(' ')
         }
     }
 }
