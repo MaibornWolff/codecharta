@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.tools.validation
 
-import de.maibornwolff.codecharta.tools.validation.UserDialog.Companion.generateDialog
 import picocli.CommandLine
 import java.io.File
 import java.io.FileInputStream
@@ -32,8 +31,7 @@ class ValidationTool : Callable<Void?> {
 
         @JvmStatic
         fun main(args: Array<String>) {
-            val commandLine = CommandLine(ValidationTool())
-            generateDialog(args, commandLine)
+            CommandLine.call(ValidationTool(), System.out, *args)
         }
     }
 }
