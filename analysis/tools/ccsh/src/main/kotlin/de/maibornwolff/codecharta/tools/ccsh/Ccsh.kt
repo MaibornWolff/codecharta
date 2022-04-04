@@ -80,9 +80,9 @@ class Ccsh : Callable<Void?> {
             }
 
             if (args.isEmpty() || unknownParser) {
-                val chosenParser = ParserService.selectParser(commandLine)
-                println("Executing $chosenParser")
-                ParserService.executeSelectedParser(chosenParser)
+                val selectedParser = ParserService.selectParser(commandLine)
+                println("Executing $selectedParser")
+                ParserService.executeSelectedParser(selectedParser)
             }
         }
 

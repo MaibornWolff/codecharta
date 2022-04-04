@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.tools.interactivecli
 import picocli.CommandLine
 
 interface ParserDialogInterface {
-    fun generateDialog(args: Array<String>, commandLine: CommandLine): Int
+    fun generateParserArgs(args: Array<String>, commandLine: CommandLine): Array<String>
 
     fun isValidFileName(fileName: String): Boolean
 

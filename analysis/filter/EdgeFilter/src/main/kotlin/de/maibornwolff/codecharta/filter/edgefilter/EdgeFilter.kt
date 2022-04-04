@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import de.maibornwolff.codecharta.filter.edgefilter.ParserDialog.Companion.generateDialog
+import de.maibornwolff.codecharta.filter.edgefilter.ParserDialog.Companion.generateParserArgs
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
@@ -10,7 +10,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
     name = "edgefilter",
     description = ["aggregtes edgeAttributes as nodeAttributes into a new cc.json file"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class EdgeFilter : Callable<Void?> {
 
@@ -41,7 +41,8 @@ class EdgeFilter : Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(EdgeFilter())
-            generateDialog(args, commandLine)
+            val selectedArgs = generateParserArgs(args, commandLine)
+            commandLine.execute(*selectedArgs)
         }
     }
 }

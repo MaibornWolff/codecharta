@@ -8,31 +8,27 @@ import picocli.CommandLine
 class ParserDialog {
     companion object : ParserDialogInterface {
         private const val EXTENSION = "cc.json"
-        override fun generateDialog(args: Array<String>, commandLine: CommandLine): Int {
-            if (args.isEmpty() || args[0] == "-h" || args[0] == "--help") {
-                var inputFileName = KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?")
-                if (inputFileName.substringAfter(".") != EXTENSION)
-                    inputFileName += ".$EXTENSION"
-                println("File path: $inputFileName")
+        override fun generateParserArgs(args: Array<String>, commandLine: CommandLine): Array<String> {
 
-                val defaultOutputFileName = getOutputFileName(inputFileName)
-                val outputFileName: String = KInquirer.promptInput(
-                    message = "What is the name of the output file?",
-                    hint = defaultOutputFileName,
-                    default = defaultOutputFileName
-                )
+            var inputFileName = KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?")
+            if (inputFileName.substringAfter(".") != EXTENSION)
+                inputFileName += ".$EXTENSION"
+            println("File path: $inputFileName")
 
-                val defaultPathSeparator = "/"
-                val pathSeparator: String = KInquirer.promptInput(
-                    message = "What is the path separator?",
-                    hint = defaultPathSeparator,
-                    default = defaultPathSeparator
-                )
+            val defaultOutputFileName = getOutputFileName(inputFileName)
+            val outputFileName: String = KInquirer.promptInput(
+                message = "What is the name of the output file?",
+                hint = defaultOutputFileName,
+                default = defaultOutputFileName
+            )
 
-                val selectedArgs = arrayOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
-                return commandLine.execute(*selectedArgs)
-            }
-            return commandLine.execute(*args)
+            val defaultPathSeparator = "/"
+            val pathSeparator: String = KInquirer.promptInput(
+                message = "What is the path separator?",
+                hint = defaultPathSeparator,
+                default = defaultPathSeparator
+            )
+            return arrayOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
         }
 
         override fun isValidFileName(fileName: String): Boolean {
