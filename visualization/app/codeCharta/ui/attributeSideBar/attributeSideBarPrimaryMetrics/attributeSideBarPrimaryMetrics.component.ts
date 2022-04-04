@@ -3,7 +3,7 @@ import { Observable } from "rxjs"
 
 import { Store } from "../../../state/angular-redux/store"
 import { showAttributeTypeSelectorSelector } from "../util/showAttributeTypeSelector.selector"
-import { PrimaryMetrics, primaryMetricsSelector } from "./primaryMetrics.selector"
+import { PrimaryMetrics, primaryMetricsSelector } from "../../../state/selectors/primaryMetrics/primaryMetrics.selector"
 
 @Component({
 	selector: "cc-attribute-side-bar-primary-metrics",

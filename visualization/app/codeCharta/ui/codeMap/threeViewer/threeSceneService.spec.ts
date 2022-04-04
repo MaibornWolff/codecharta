@@ -416,16 +416,28 @@ describe("ThreeSceneService", () => {
 
 	describe("scaleHeight", () => {
 		it("should update mapGeometry scaling to new vector", () => {
+			const translateCanvasesMock = jest.fn()
+			threeSceneService["floorLabelDrawer"] = {
+				translatePlaneCanvases: translateCanvasesMock
+			}
+
 			const scaling = new Vector3(1, 2, 3)
 			storeService.dispatch(setScaling(scaling))
+
 			threeSceneService.scaleHeight()
 
 			const mapGeometry = threeSceneService.mapGeometry
 
 			expect(mapGeometry.scale).toEqual(scaling)
+			expect(translateCanvasesMock).toHaveBeenCalledTimes(1)
 		})
 
 		it("should call mapMesh.scale and apply the correct scaling to the mesh", () => {
+			const translateCanvasesMock = jest.fn()
+			threeSceneService["floorLabelDrawer"] = {
+				translatePlaneCanvases: translateCanvasesMock
+			}
+
 			const scaling = new Vector3(1, 2, 3)
 			storeService.dispatch(setScaling(scaling))
 			threeSceneService["mapMesh"].setScale = jest.fn()
@@ -433,6 +445,7 @@ describe("ThreeSceneService", () => {
 			threeSceneService.scaleHeight()
 
 			expect(threeSceneService["mapMesh"].setScale).toHaveBeenCalledWith(scaling)
+			expect(translateCanvasesMock).toHaveBeenCalledTimes(1)
 		})
 	})
 

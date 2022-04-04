@@ -1,10 +1,30 @@
 $optionHeight: 48;
 
+cc-metric-value-hovered {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+}
+
+cc-metric-value-hovered,
 area-metric-chooser-component,
 height-metric-chooser-component,
 color-metric-chooser-component,
 distribution-metric-chooser-component,
 edge-chooser-component {
+	.metric-value {
+		height: 25px;
+		position: absolute;
+		right: 0;
+
+		.rounded-box {
+			background-color: #e6e6e6;
+			border-radius: 2px;
+			padding: 2px 5px;
+			display: inline-block;
+		}
+	}
+
 	md-input-container {
 		display: block;
 		top: -5px;
@@ -36,23 +56,6 @@ edge-chooser-component {
 			}
 		}
 
-		.metric-value {
-			height: 25px;
-			float: right;
-			position: absolute;
-			right: 0;
-			margin-top: -9px;
-
-			.rounded-box {
-				margin-top: -2px;
-				margin-left: -2px;
-				background-color: #e6e6e6;
-				border-radius: 3px;
-				padding: 2px 5px;
-				display: inline-block;
-			}
-		}
-
 		i.fa {
 			margin-top: 8px;
 			vertical-align: middle;
@@ -68,7 +71,7 @@ edge-chooser-component {
 	font-size: 12pt !important;
 
 	&.ribbonBarDropdown {
-		top: 75px !important;
+		top: 92px !important;
 	}
 
 	&.distributionBarDropdown {
@@ -84,9 +87,8 @@ edge-chooser-component {
 		input {
 			background-color: #f5f5f5;
 			padding: 10px;
-			border: none;
-			border-bottom: solid 2px;
-			border-color: rgba(0, 0, 0, 0.12);
+			border: none rgba(0, 0, 0, 0.12);
+			border-bottom: 2px solid;
 		}
 	}
 

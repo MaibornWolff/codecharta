@@ -117,6 +117,15 @@ describe("urlExtractor", () => {
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
+		it("should return NameDataPair object with project name as file name when a project name is given", async () => {
+			$http.get = jest.fn().mockImplementation(async () => {
+				return { data: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } }, status: 200 }
+			})
+			const actualNameDataPair = await urlExtractor.getFileDataFromFile("test.json")
+
+			return expect(actualNameDataPair.fileName).toBe("test project")
+		})
+
 		it("should resolve data string of version 1.2 and return an object with content and fileName", async () => {
 			$http.get = jest.fn().mockImplementation(async () => {
 				return { data: '{"apiVersion":1.2,"nodes":[]}', status: 200 }
