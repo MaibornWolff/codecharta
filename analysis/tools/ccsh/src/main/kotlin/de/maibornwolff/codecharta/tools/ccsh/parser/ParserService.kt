@@ -31,7 +31,7 @@ class ParserService {
                 "sourcemonitorimport" -> print("Not implemented yet")
                 "gitlogparser" -> print("Not implemented yet")
                 "svnlogparser" -> print("Not implemented yet")
-                "csvexport" -> CSVExporter.main(args)
+                "csvexport" -> print("Not implemented yet")
                 "sourcecodeparser" -> print("Not implemented yet")
                 "codemaatimport" -> print("Not implemented yet")
                 "tokeiimporter" -> print("Not implemented yet")

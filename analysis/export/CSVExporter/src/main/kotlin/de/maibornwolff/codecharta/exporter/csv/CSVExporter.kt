@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.exporter.csv
 
 import com.univocity.parsers.csv.CsvWriter
 import com.univocity.parsers.csv.CsvWriterSettings
-import de.maibornwolff.codecharta.exporter.csv.UserDialog.Companion.generateDialog
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
@@ -92,8 +91,7 @@ class CSVExporter : Callable<Void> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val commandLine = CommandLine(CSVExporter())
-            generateDialog(args, commandLine)
+            CommandLine.call(CSVExporter(), System.out, *args)
         }
     }
 }
