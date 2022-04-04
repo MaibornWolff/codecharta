@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Changed
+
+-   Allow uploaded custom configs to have other suffix than `.cc` before file ending [#2761](https://github.com/MaibornWolff/codecharta/issues/2761)
+
 ## [1.95.1] - 2022-04-01
 
 ### Changed
