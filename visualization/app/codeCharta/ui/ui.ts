@@ -15,7 +15,6 @@ import "./areaSettingsPanel/areaSettingsPanel.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
 import "./dialog/dialog.module"
-import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./heightSettingsPanel/heightSettingsPanel.module"
 import "./metricChooser/metricChooser.module"
@@ -48,7 +47,6 @@ angular
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.colorSettingsPanel",
 		"app.codeCharta.ui.dialog",
-		"app.codeCharta.ui.fileChooser",
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.heightSettingsPanel",
 		"app.codeCharta.ui.metricChooser",
