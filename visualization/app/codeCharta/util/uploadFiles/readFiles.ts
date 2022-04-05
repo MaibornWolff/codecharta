@@ -1,6 +1,6 @@
 import zlib from "zlib"
-import { parseGameObjectsFile } from "../../../util/gameObjectsParser/gameObjectsImporter"
-import { validateGameObjects } from "../../../util/gameObjectsParser/gameObjectsValidator"
+import { parseGameObjectsFile } from "../gameObjectsParser/gameObjectsImporter"
+import { validateGameObjects } from "../gameObjectsParser/gameObjectsValidator"
 
 export const readFiles = (files: FileList): Promise<string>[] => {
 	const readFilesPromises = []

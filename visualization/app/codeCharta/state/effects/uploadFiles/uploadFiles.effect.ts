@@ -4,7 +4,8 @@ import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
 import { ofType } from "../../angular-redux/ofType"
-import { readFiles } from "./readFiles"
+import { readFiles } from "../../../util/uploadFiles/readFiles"
+import { createCCFileInput } from "../../../util/uploadFiles/createCCFileInput"
 
 @Injectable()
 export class UploadFilesEffect {
@@ -12,7 +13,7 @@ export class UploadFilesEffect {
 
 	constructor(@Inject(ActionsToken) private actions$: Actions) {}
 
-	uploadFiles = createEffect(
+	uploadCustomConfigs = createEffect(
 		() =>
 			this.actions$.pipe(
 				ofType(UploadFilesEffect.uploadCustomConfigsActionType),
@@ -24,7 +25,7 @@ export class UploadFilesEffect {
 	)
 
 	private loadCustomConfigs() {
-		const fileInput = this.createFileInput()
+		const fileInput = createCCFileInput()
 		fileInput.addEventListener("change", async () => {
 			const customConfigsContent = await Promise.all(readFiles(fileInput.files))
 			for (const customConfigContent of customConfigsContent) {
@@ -36,13 +37,5 @@ export class UploadFilesEffect {
 			}
 		})
 		fileInput.click()
-	}
-
-	private createFileInput() {
-		const fileInput = document.createElement("INPUT") as HTMLInputElement
-		fileInput.type = "file"
-		fileInput.accept = ".json,.gz"
-		fileInput.multiple = true
-		return fileInput
 	}
 }

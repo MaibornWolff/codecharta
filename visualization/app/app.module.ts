@@ -23,7 +23,7 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import { threeSceneServiceProvider, codeChartaServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
@@ -45,6 +45,7 @@ import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
 import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
 import { UploadFilesEffect } from "./codeCharta/state/effects/uploadFiles/uploadFiles.effect"
+import { UploadFilesButton } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 
 @NgModule({
 	imports: [
@@ -76,7 +77,7 @@ import { UploadFilesEffect } from "./codeCharta/state/effects/uploadFiles/upload
 		MetricValueHoveredModule,
 		UploadCustomConfigButtonModule
 	],
-	providers: [threeSceneServiceProvider, IdToBuildingService],
+	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
 	declarations: [
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
@@ -84,6 +85,7 @@ import { UploadFilesEffect } from "./codeCharta/state/effects/uploadFiles/upload
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
+		UploadFilesButton,
 		...dialogs
 	],
 	entryComponents: [
@@ -103,6 +105,7 @@ import { UploadFilesEffect } from "./codeCharta/state/effects/uploadFiles/upload
 		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
+		UploadFilesButton,
 		...dialogs
 	]
 })
