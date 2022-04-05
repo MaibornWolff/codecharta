@@ -44,8 +44,7 @@ import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metri
 import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
 import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
-import { UploadFilesEffect } from "./codeCharta/state/effects/uploadFiles/uploadFiles.effect"
-import { UploadFilesButton } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
+import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 
 @NgModule({
 	imports: [
@@ -56,8 +55,7 @@ import { UploadFilesButton } from "./codeCharta/ui/toolBar/uploadFilesButton/upl
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
 			TrackEventUsageDataEffect,
-			BlacklistSearchPatternEffect,
-			UploadFilesEffect
+			BlacklistSearchPatternEffect
 		]),
 		AttributeSideBarModule,
 		MaterialModule,
@@ -85,7 +83,7 @@ import { UploadFilesButton } from "./codeCharta/ui/toolBar/uploadFilesButton/upl
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
-		UploadFilesButton,
+		UploadFilesButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -105,7 +103,7 @@ import { UploadFilesButton } from "./codeCharta/ui/toolBar/uploadFilesButton/upl
 		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
-		UploadFilesButton,
+		UploadFilesButtonComponent,
 		...dialogs
 	]
 })
