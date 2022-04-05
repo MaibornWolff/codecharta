@@ -1,5 +1,4 @@
-import { Component, Inject } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
+import { Component } from "@angular/core"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { createCCFileInput } from "../../../util/uploadFiles/createCCFileInput"
 import { readFiles } from "../../../util/uploadFiles/readFiles"
@@ -9,8 +8,6 @@ import { readFiles } from "../../../util/uploadFiles/readFiles"
 	template: require("./uploadCustomConfigButton.component.html")
 })
 export class UploadCustomConfigButtonComponent {
-	constructor(@Inject(Store) private store: Store) {}
-
 	upload() {
 		const fileInput = createCCFileInput()
 		fileInput.addEventListener("change", async () => {
