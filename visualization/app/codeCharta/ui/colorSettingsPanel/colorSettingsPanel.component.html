@@ -9,11 +9,11 @@
 	</div>
 </md-select>
 
-<reset-settings-button-component
-	settings-names="dynamicSettings.colorRange, appSettings.mapColors.positiveDelta, appSettings.mapColors.negativeDelta"
-	tooltip=" Reset slider thresholds to default"
-	text="Reset thresholds"
-></reset-settings-button-component>
+<cc-reset-settings-button
+	[settings-keys]="['dynamicSettings.colorRange', 'appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
+	tooltip="Reset slider thresholds to default"
+	label="Reset thresholds"
+></cc-reset-settings-button>
 
 <md-divider></md-divider>
 
@@ -63,9 +63,14 @@
 	</md-input-container>
 </div>
 
-<reset-settings-button-component
-	settings-names="appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, appSettings.mapColors.selected"
+<cc-reset-settings-button
+	[settings-keys]="[
+		'appSettings.mapColors.positive',
+		'appSettings.mapColors.negative',
+		'appSettings.mapColors.neutral',
+		'appSettings.mapColors.selected'
+	]"
 	tooltip=" Reset color values to default"
-	text="Reset colors"
-	callback="$ctrl.resetInvertColorRangeCheckboxOnly()"
-></reset-settings-button-component>
+	label="Reset colors"
+	[callback]="$ctrl.resetInvertColorRangeCheckboxOnly"
+></cc-reset-settings-button>

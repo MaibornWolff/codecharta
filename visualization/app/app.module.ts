@@ -43,6 +43,7 @@ import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.modul
 import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
 import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
+import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
 
 @NgModule({
 	imports: [
@@ -80,6 +81,7 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
+		ResetSettingsButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -99,6 +101,7 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
+		ResetSettingsButtonComponent,
 		...dialogs
 	]
 })
