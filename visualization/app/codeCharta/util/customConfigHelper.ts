@@ -26,11 +26,21 @@ const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
 const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.1"
 export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
+export interface CustomConfigGroups {
+	applicableItems: Map<string, CustomConfigItemGroup>
+	nonApplicableItems: Map<string, CustomConfigItemGroup>
+}
+
 export class CustomConfigHelper {
 	private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigs()
 	static customConfigChange$: BehaviorSubject<null> = new BehaviorSubject(null)
 
-	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): Map<string, CustomConfigItemGroup> {
+	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): CustomConfigGroups {
+		const customConfigGroups: CustomConfigGroups = {
+			applicableItems: new Map<string, CustomConfigItemGroup>(),
+			nonApplicableItems: new Map<string, CustomConfigItemGroup>()
+		}
+
 		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
 
 		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
@@ -46,6 +56,7 @@ export class CustomConfigHelper {
 			}
 
 			const customConfigItemApplicable = CustomConfigHelper.isCustomConfigApplicable(customConfigFileStateConnector, customConfig)
+
 			customConfigItemGroups.get(groupKey).customConfigItems.push({
 				id: customConfig.id,
 				name: customConfig.name,
@@ -57,9 +68,15 @@ export class CustomConfigHelper {
 			if (customConfigItemApplicable) {
 				customConfigItemGroups.get(groupKey).hasApplicableItems = true
 			}
+
+			if (customConfigItemGroups.get(groupKey).hasApplicableItems) {
+				customConfigGroups.applicableItems.set(groupKey, customConfigItemGroups.get(groupKey))
+			} else {
+				customConfigGroups.nonApplicableItems.set(groupKey, customConfigItemGroups.get(groupKey))
+			}
 		}
 
-		return customConfigItemGroups
+		return customConfigGroups
 	}
 
 	private static isCustomConfigApplicable(customConfigFileStateConnector: CustomConfigFileStateConnector, customConfig: CustomConfig) {
