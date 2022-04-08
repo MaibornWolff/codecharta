@@ -55,16 +55,16 @@ export class CustomConfigsController implements FilesSelectionSubscriber {
 	}
 
 	initView() {
-		this.loadCustomConfigs()
+		//this.loadCustomConfigs()
 		this.initVisibleEntries()
 	}
 
-	loadCustomConfigs() {
+	/*	loadCustomConfigs() {
 		const customConfigItemGroups = CustomConfigHelper.getCustomConfigItemGroups(this.customConfigFileStateConnector)
 
 		this._viewModel.dropDownCustomConfigItemGroups = [...customConfigItemGroups.values()]
 		this._viewModel.dropDownCustomConfigItemGroups.sort(CustomConfigHelper.sortCustomConfigDropDownGroupList)
-	}
+	}*/
 
 	applyCustomConfig(configId: string) {
 		CustomConfigHelper.applyCustomConfig(configId, this.storeService, this.threeCameraService, this.threeOrbitControlsService)
