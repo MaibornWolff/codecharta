@@ -38,12 +38,25 @@ describe("urlExtractor", () => {
 			expect(result).toBe("valid.json")
 		})
 
+		it("should return null when parameter for renderMode is not given", () => {
+			const result = urlExtractor.getParameterByName("mode")
+			expect(result).toBe(null)
+		})
+
 		it("should return renderMode for given parameter name 'mode'", () => {
 			$location.absUrl = jest.fn(() => {
 				return "http://testurl?file=valid.json&mode=Delta"
 			})
 			const result = urlExtractor.getParameterByName("mode")
 			expect(result).toBe("Delta")
+		})
+
+		it("should return an empty string when no value is set for 'mode' parameter", () => {
+			$location.absUrl = jest.fn(() => {
+				return "http://testurl?file=valid.json&mode="
+			})
+			const result = urlExtractor.getParameterByName("mode")
+			expect(result).toBe("")
 		})
 	})
 
@@ -115,6 +128,15 @@ describe("urlExtractor", () => {
 				fileSize: 15
 			}
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+		})
+
+		it("should return NameDataPair object with project name as file name when a project name is given", async () => {
+			$http.get = jest.fn().mockImplementation(async () => {
+				return { data: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } }, status: 200 }
+			})
+			const actualNameDataPair = await urlExtractor.getFileDataFromFile("test.json")
+
+			return expect(actualNameDataPair.fileName).toBe("test project")
 		})
 
 		it("should resolve data string of version 1.2 and return an object with content and fileName", async () => {

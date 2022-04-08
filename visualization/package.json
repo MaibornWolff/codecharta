@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.95.0",
+	"version": "1.95.1",
 	"engines": {
 		"node": ">=16"
 	},
@@ -113,7 +113,6 @@
 		"color-convert": "^2.0.1",
 		"core-js": "^3.15.2",
 		"d3-hierarchy": "^2.0.0",
-		"eslint-plugin-unused-imports": "^2.0.0",
 		"font-awesome": "^4.7.0",
 		"hotkeys-js": "^3.8.2",
 		"ignore": "^5.1.8",
@@ -169,6 +168,7 @@
 		"eslint": "^8.0.0",
 		"eslint-config-prettier": "^8.2.0",
 		"eslint-plugin-unicorn": "^40.0.0",
+		"eslint-plugin-unused-imports": "^2.0.0",
 		"file-loader": "^6.2.0",
 		"html-loader": "^3.0.0",
 		"html-loader-jest": "^0.2.1",

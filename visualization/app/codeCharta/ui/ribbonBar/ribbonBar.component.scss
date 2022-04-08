@@ -113,7 +113,7 @@ ribbon-bar-component {
 			}
 
 			.section-body {
-				reset-settings-button-component .md-button {
+				cc-reset-settings-button button {
 					opacity: 1;
 					pointer-events: all;
 				}
@@ -125,7 +125,7 @@ ribbon-bar-component {
 	mat-card,
 	.section .section-header,
 	.section .section-body,
-	.section-body reset-settings-button-component .md-button {
+	.section-body cc-reset-settings-button button {
 		transition: height 0.1s ease;
 	}
 

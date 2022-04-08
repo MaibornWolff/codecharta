@@ -6,10 +6,10 @@ import { createAttributeTypeSelector } from "./createAttributeTypeSelector.selec
 import { isHoveredNodeALeafSelector } from "./isHoveredNodeALeaf.selector"
 
 @Component({
-	selector: "cc-metric-type",
-	template: require("./metricType.component.html")
+	selector: "cc-metric-type-hovered",
+	template: require("./metricTypeHovered.component.html")
 })
-export class MetricTypeComponent implements OnInit {
+export class MetricTypeHoveredComponent implements OnInit {
 	@Input() metricFor: keyof PrimaryMetrics
 	@Input() attributeType: keyof AttributeTypes
 

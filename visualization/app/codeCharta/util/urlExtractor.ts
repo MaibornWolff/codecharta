@@ -46,8 +46,14 @@ export class UrlExtractor {
 			const responseData: string | ExportCCFile | ExportWrappedCCFile = response.data
 			const content: ExportCCFile = getCCFileAndDecorateFileChecksum(responseData)
 
+			fileName = this.getFileName(fileName, content.projectName)
+
 			return { fileName, fileSize: response.data.toString().length, content }
 		}
 		throw new Error(`Could not load file "${fileName}"`)
+	}
+
+	getFileName(oldFileName: string, projectName: string): string {
+		return projectName?.trim() || oldFileName.split("/").pop()
 	}
 }

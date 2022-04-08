@@ -35,6 +35,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	/** TODO: Fix temporary workaround as soon as mapMesh can be derived from store */
 	static mapMeshInstance: CodeMapMesh
 
+	private floorLabelDrawer
+
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding[] = []
 	private constantHighlight: Map<number, CodeMapBuilding> = new Map()
@@ -87,8 +89,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 		const { mapSize } = this.storeService.getState().treeMap
 		const scaling = this.storeService.getState().appSettings.scaling
 
-		const floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
-		const floorLabels = floorLabelDrawer.draw()
+		this.floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
+		const floorLabels = this.floorLabelDrawer.draw()
 
 		if (floorLabels.length > 0) {
 			this.floorLabelPlanes.add(...floorLabels)
@@ -139,7 +141,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 	scaleHeight() {
 		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
-
+		this.floorLabelDrawer?.translatePlaneCanvases(scale)
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
 		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
 		this.mapMesh.setScale(scale)

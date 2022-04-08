@@ -1,4 +1,3 @@
-import "./downloadCustomConfigsButton.component.scss"
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
 import { DownloadableConfigs } from "./getDownloadableCustomConfigs"
 

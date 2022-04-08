@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Changed
+
+-   Restrict upload in custom configs view to custom configs. Custom configs uploaded in the custom configs view are now allowed to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate reset-settings-button-component to Angular [#2774](https://github.com/MaibornWolff/codecharta/pull/2774)
+
+### Fixed 🐞
+
+-   Set files loaded via URL to multiple mode by default when delta mode is not selected [#2769](https://github.com/MaibornWolff/codecharta/pull/2769)
+
+## [1.95.1] - 2022-04-01
+
+### Changed
+
+-   Display project name as file name (if not empty or blank) for loaded files via URL [#2767](https://github.com/MaibornWolff/codecharta/pull/2767)
+
+### Fixed 🐞
+
+-   Fixes floor labels being drawn next to the map if margin was changed after map height is unequal to 1 [#2763](https://github.com/MaibornWolff/codecharta/pull/2763)
+-   Fixes floor labels being stuck inside folder geometry when scaling [#2766](https://github.com/MaibornWolff/codecharta/pull/2766)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate metric-hovered-value-component to Angular [#2752](https://github.com/MaibornWolff/codecharta/pull/2752)
+
 ## [1.95.0] - 2022-03-28
 
 ### Added 🚀

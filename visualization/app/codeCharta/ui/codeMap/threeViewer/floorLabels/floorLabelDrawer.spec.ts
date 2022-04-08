@@ -3,76 +3,76 @@ import { FloorLabelDrawer } from "./floorLabelDrawer"
 import { Vector3 } from "three"
 
 describe("FloorLabelDrawer", () => {
-	describe("draw", () => {
-		let createElementOrigin
-		afterEach(() => {
-			document.createElement = createElementOrigin
+	let createElementOrigin
+	afterEach(() => {
+		document.createElement = createElementOrigin
+	})
+
+	function createFakeNode(name: string, width: number, length: number, isLeaf: boolean, mapNodeDepth?: number): Node {
+		return {
+			attributes: undefined,
+			color: "",
+			depth: 0,
+			edgeAttributes: {},
+			flat: false,
+			height: 0,
+			heightDelta: 0,
+			id: 0,
+			incomingEdgePoint: undefined,
+			isLeaf,
+			length,
+			link: "",
+			mapNodeDepth,
+			markingColor: undefined,
+			name,
+			outgoingEdgePoint: undefined,
+			path: "",
+			visible: false,
+			width,
+			x0: 0,
+			y0: 0,
+			z0: 0
+		}
+	}
+
+	function initMapCanvas() {
+		const mapCanvas = document.createElement("canvas")
+		mapCanvas.id = "codeMapScene"
+		document.body.appendChild(mapCanvas)
+	}
+
+	function createCanvasMock() {
+		const canvasContextMock = {
+			font: "",
+			measureText: jest.fn((labelText: string) => {
+				return labelText === "text_to_be_shortened_to_fit_onto_the_floor"
+					? ({ width: 500 } as TextMetrics)
+					: ({ width: 40 } as TextMetrics)
+			}),
+			fillText: jest.fn(),
+			fillStyle: undefined,
+			beginPath: jest.fn(),
+			moveTo: jest.fn(),
+			arcTo: jest.fn(),
+			closePath: jest.fn(),
+			fill: jest.fn()
+		}
+
+		createElementOrigin = document.createElement
+
+		document.createElement = jest.fn().mockReturnValue({
+			getContext: () => {
+				return canvasContextMock
+			}
 		})
 
-		function createFakeNode(name: string, width: number, length: number, isLeaf: boolean, mapNodeDepth?: number): Node {
-			return {
-				attributes: undefined,
-				color: "",
-				depth: 0,
-				edgeAttributes: {},
-				flat: false,
-				height: 0,
-				heightDelta: 0,
-				id: 0,
-				incomingEdgePoint: undefined,
-				isLeaf,
-				length,
-				link: "",
-				mapNodeDepth,
-				markingColor: undefined,
-				name,
-				outgoingEdgePoint: undefined,
-				path: "",
-				visible: false,
-				width,
-				x0: 0,
-				y0: 0,
-				z0: 0
-			}
-		}
+		return canvasContextMock
+	}
 
-		function initMapCanvas() {
-			const mapCanvas = document.createElement("canvas")
-			mapCanvas.id = "codeMapScene"
-			document.body.appendChild(mapCanvas)
-		}
+	const mapSize = 500
+	const scaling: Vector3 = { x: 1, y: 1, z: 1 } as Vector3
 
-		function createCanvasMock() {
-			const canvasContextMock = {
-				font: "",
-				measureText: jest.fn((labelText: string) => {
-					return labelText === "text_to_be_shortened_to_fit_onto_the_floor"
-						? ({ width: 500 } as TextMetrics)
-						: ({ width: 40 } as TextMetrics)
-				}),
-				fillText: jest.fn(),
-				fillStyle: undefined,
-				beginPath: jest.fn(),
-				moveTo: jest.fn(),
-				arcTo: jest.fn(),
-				closePath: jest.fn(),
-				fill: jest.fn()
-			}
-
-			createElementOrigin = document.createElement
-
-			document.createElement = jest.fn().mockReturnValue({
-				getContext: () => {
-					return canvasContextMock
-				}
-			})
-
-			return canvasContextMock
-		}
-
-		const mapSize = 500
-		const scaling: Vector3 = { x: 1, y: 1, z: 1 } as Vector3
-
+	describe("draw", () => {
 		it("should draw simple and shortened labels on three levels", () => {
 			initMapCanvas()
 
@@ -140,5 +140,37 @@ describe("FloorLabelDrawer", () => {
 			expect(canvasContextMock.fillText).toHaveBeenCalledTimes(2)
 			expect(floorLabelPlanes.length).toBe(2)
 		})
+	})
+
+	describe("translatePlaneCanvases", () => {
+		it("should translate floor label of root on multiple scaleHeight", () => {
+			initMapCanvas()
+
+			const rootNode = createFakeNode("root", 500, 500, false, 0)
+			const nodes = [
+				rootNode,
+				createFakeNode("simpleLabelNode1", 400, 400, false, 1),
+				createFakeNode("unlabeledNode", 100, 100, true, 1)
+			]
+
+			const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling)
+			const floorLabelPlanes = floorLabelDrawer.draw()
+
+			const geometryPositions = floorLabelPlanes[0].geometry.attributes.position.array
+
+			assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1, 1.5)
+			assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1.5, 1.6)
+			assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1.6, 1.4)
+		})
+
+		function assertFloorLabelTranslation(floorLabelDrawer, startPosition, lastScaling, translateY) {
+			floorLabelDrawer.translatePlaneCanvases(new Vector3(1, translateY, 1))
+
+			const expectedDifference = lastScaling - translateY
+			const additivePositionDelta = 2.01 * expectedDifference
+
+			const translatedPostion = floorLabelDrawer["floorLabelPlanes"][0].geometry.attributes.position.array[2]
+			expect(translatedPostion).toBeCloseTo(startPosition + additivePositionDelta, 5)
+		}
 	})
 })

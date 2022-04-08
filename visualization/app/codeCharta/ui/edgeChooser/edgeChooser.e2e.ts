@@ -1,18 +1,18 @@
 import { goto } from "../../../puppeteer.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
-import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
+import { UploadFileButtonPageObject } from "../toolBar/uploadFilesButton/uploadFilesButton.po"
 
 describe("MapTreeViewLevel", () => {
 	let edgeChooser: EdgeChooserPageObject
-	let fileChooser: FileChooserPageObject
+	let uploadFilesButton: UploadFileButtonPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 	let searchPanel: SearchPanelPageObject
 
 	beforeEach(async () => {
 		edgeChooser = new EdgeChooserPageObject()
-		fileChooser = new FileChooserPageObject()
+		uploadFilesButton = new UploadFileButtonPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanel = new SearchPanelPageObject()
 
@@ -21,7 +21,7 @@ describe("MapTreeViewLevel", () => {
 
 	describe("EdgeChooser", () => {
 		it("should update metrics correctly after switching to a map with different metrics", async () => {
-			await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
+			await uploadFilesButton.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
 			await edgeChooser.open()
 			const metrics = await edgeChooser.getMetrics()
 

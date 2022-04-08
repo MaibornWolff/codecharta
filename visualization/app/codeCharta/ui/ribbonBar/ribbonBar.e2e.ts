@@ -2,13 +2,13 @@ import { goto } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { AreaSettingsPanelPageObject } from "../areaSettingsPanel/areaSettingsPanel.po"
-import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
+import { UploadFileButtonPageObject } from "../toolBar/uploadFilesButton/uploadFilesButton.po"
 
 //Commented out flaky test
 
 describe("RibbonBar", () => {
 	let searchPanel: SearchPanelPageObject
-	let fileChooser: FileChooserPageObject
+	let uploadFilesButton: UploadFileButtonPageObject
 	//let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let ribbonBar: RibbonBarPageObject
 	//let metricChooser: MetricChooserPageObject
@@ -16,7 +16,7 @@ describe("RibbonBar", () => {
 
 	beforeEach(async () => {
 		searchPanel = new SearchPanelPageObject()
-		fileChooser = new FileChooserPageObject()
+		uploadFilesButton = new UploadFileButtonPageObject()
 		//searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		ribbonBar = new RibbonBarPageObject()
 		//metricChooser = new MetricChooserPageObject()
@@ -116,14 +116,14 @@ describe("RibbonBar", () => {
 
 	it("should not find edge-metric-panel when file has no edge metrics", async () => {
 		const edgePanel = "edge-metric"
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
+		await uploadFilesButton.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
 		expect(await ribbonBar.isElementPresent(edgePanel)).toBeFalsy()
 	})
 
 	it("should find edge-metric-panel when file has edge metrics", async () => {
 		const edgePanel = "edge-metric"
-		await fileChooser.openFiles(["./app/codeCharta/assets/sample1.cc.json"])
+		await uploadFilesButton.openFiles(["./app/codeCharta/assets/sample1.cc.json"])
 
 		expect(await ribbonBar.isElementPresent(edgePanel)).toBeTruthy()
 	})
