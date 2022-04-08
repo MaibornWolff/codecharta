@@ -1,11 +1,10 @@
 <mat-dialog-content>
 	<mat-list>
-		<mat-list-item class="test" *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups.applicableItems | keyvalue">
+		<mat-list-item *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups.applicableItems | keyvalue">
 			<cc-custom-config-item-group [customConfigItemGroup]="customConfigItemGroup.value"></cc-custom-config-item-group>
 		</mat-list-item>
-
 		<ng-container *ngIf="!isCollapsed">
-			<mat-list-item class="test" *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups.nonApplicableItems | keyvalue">
+			<mat-list-item *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups.nonApplicableItems | keyvalue">
 				<cc-custom-config-item-group [customConfigItemGroup]="customConfigItemGroup.value"></cc-custom-config-item-group>
 			</mat-list-item>
 		</ng-container>
