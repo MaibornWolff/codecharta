@@ -12,7 +12,7 @@ import { readFiles } from "../../../util/uploadFiles/readFiles"
 export class UploadFilesButtonComponent {
 	constructor(@Inject(CodeChartaServiceToken) private codeChartaService: CodeChartaService) {}
 
-	async uploadFiles() {
+	uploadFiles() {
 		const ccFileInput = createCCFileInput()
 		ccFileInput.addEventListener("change", async () => {
 			const plainFileContents = await Promise.all(readFiles(ccFileInput.files))
@@ -21,7 +21,7 @@ export class UploadFilesButtonComponent {
 				fileSize: ccFileInput.files[index].size,
 				content: getCCFileAndDecorateFileChecksum(jsonString)
 			}))
-			this.codeChartaService.loadFiles(ccFiles)
+			await this.codeChartaService.loadFiles(ccFiles)
 		})
 		ccFileInput.click()
 	}
