@@ -37,10 +37,10 @@
 		</md-checkbox>
 	</md-input-container>
 
-	<reset-settings-button-component
-		settings-names="appSettings.dynamicMargin"
+	<cc-reset-settings-button
+		[settings-keys]="['appSettings.dynamicMargin']"
 		tooltip="Reset area metric settings to their defaults"
-	></reset-settings-button-component>
+	></cc-reset-settings-button>
 </div>
 
 <cc-invert-area-option></cc-invert-area-option>

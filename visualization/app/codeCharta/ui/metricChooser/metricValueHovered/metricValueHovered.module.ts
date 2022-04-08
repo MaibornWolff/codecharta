@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
-import { MetricTypeModule } from "../metricType/metricType.module"
+import { MetricTypeHoveredModule } from "../metricTypeHovered/metricTypeHovered.module"
 import { MetricValueHoveredComponent } from "./metricValueHovered.component"
 
 @NgModule({
-	imports: [CommonModule, MetricTypeModule],
+	imports: [CommonModule, MetricTypeHoveredModule],
 	declarations: [MetricValueHoveredComponent],
 	exports: [MetricValueHoveredComponent],
 	entryComponents: [MetricValueHoveredComponent]

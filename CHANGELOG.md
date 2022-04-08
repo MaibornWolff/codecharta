@@ -9,7 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## Changed
 
--   Allow uploaded custom configs to have other suffix than `.cc` before file ending [#2761](https://github.com/MaibornWolff/codecharta/issues/2761)
+-   Restrict upload in custom configs view to custom configs. Custom configs uploaded in the custom configs view are now allowed to have an arbitrary file suffix [#2761](https://github.com/MaibornWolff/codecharta/issues/2761)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate reset-settings-button-component to Angular [#2774](https://github.com/MaibornWolff/codecharta/pull/2774)
+
+### Fixed 🐞
+
+-   Set files loaded via URL to multiple mode by default when delta mode is not selected [#2769](https://github.com/MaibornWolff/codecharta/pull/2769)
 
 ## [1.95.1] - 2022-04-01
 
