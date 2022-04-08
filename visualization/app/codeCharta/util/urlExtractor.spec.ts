@@ -38,6 +38,11 @@ describe("urlExtractor", () => {
 			expect(result).toBe("valid.json")
 		})
 
+		it("should return null when parameter for renderMode is not given", () => {
+			const result = urlExtractor.getParameterByName("mode")
+			expect(result).toBe(null)
+		})
+
 		it("should return renderMode for given parameter name 'mode'", () => {
 			$location.absUrl = jest.fn(() => {
 				return "http://testurl?file=valid.json&mode=Delta"
