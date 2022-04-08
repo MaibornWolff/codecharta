@@ -82,10 +82,7 @@
         {{ $ctrl.isExpanded() ? "Hide non-applicable Custom Views" : "Show non-applicable Custom Views" }}
         <i ng-class="$ctrl.isExpanded() ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
       </button>-->
-
-			<cc-custom-config-list
-				[drop-down-custom-config-item-groups]="$ctrl._viewModel.dropDownCustomConfigItemGroups"
-			></cc-custom-config-list>
+			<cc-open-custom-configs-button></cc-open-custom-configs-button>
 		</md-menu-content>
 	</md-menu>
 

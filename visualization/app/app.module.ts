@@ -42,7 +42,7 @@ import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.co
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
 import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
 import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
-import { CustomConfigListModule } from "./codeCharta/ui/customConfigs/customConfigList/customConfigList.module"
+import { OpenCustomConfigsButtonModule } from "./codeCharta/ui/customConfigs/openCustomConfigsButton.module"
 
 @NgModule({
 	imports: [
@@ -69,7 +69,7 @@ import { CustomConfigListModule } from "./codeCharta/ui/customConfigs/customConf
 		SearchPanelModule,
 		MetricTypeModule,
 		DownloadCustomConfigButtonModule,
-		CustomConfigListModule
+		OpenCustomConfigsButtonModule
 	],
 	providers: [threeSceneServiceProvider, IdToBuildingService],
 	declarations: [
