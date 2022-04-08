@@ -23,7 +23,7 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import { threeSceneServiceProvider, codeChartaServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
@@ -42,6 +42,8 @@ import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.co
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
 import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
+import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
+import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
 import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
 
@@ -70,9 +72,10 @@ import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButto
 		SearchPanelModule,
 		MetricTypeHoveredModule,
 		DownloadCustomConfigButtonModule,
-		MetricValueHoveredModule
+		MetricValueHoveredModule,
+		UploadCustomConfigButtonModule
 	],
-	providers: [threeSceneServiceProvider, IdToBuildingService],
+	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
 	declarations: [
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
@@ -80,6 +83,7 @@ import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButto
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
+		UploadFilesButtonComponent,
 		ResetSettingsButtonComponent,
 		...dialogs
 	],
@@ -100,6 +104,7 @@ import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButto
 		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
+		UploadFilesButtonComponent,
 		ResetSettingsButtonComponent,
 		...dialogs
 	]
