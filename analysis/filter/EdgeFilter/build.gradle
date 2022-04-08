@@ -6,7 +6,7 @@ repositories {
 
 dependencies {
     implementation project(':model')
-    implementation project(':tools:InteractiveCLI')
+    implementation project(':tools:InteractiveParser')
 
     implementation group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version

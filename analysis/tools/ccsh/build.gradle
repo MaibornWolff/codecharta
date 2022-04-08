@@ -58,6 +58,7 @@ dependencies {
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
+    testImplementation "io.mockk:mockk:1.12.3"
 
     testImplementation("org.junit.platform:junit-platform-runner:$junit_platform_version")
     implementation "org.jetbrains.kotlin:kotlin-script-runtime:1.6.10"
@@ -84,4 +85,8 @@ startScripts{
         unixScript.text = unixScript.text.replaceAll('#!/usr/bin/env sh', '')
         unixScript.text = UNIX_JVM_ARGS_SWITCH + unixScript.text
     }
+}
+
+test {
+  useJUnitPlatform()
 }

@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import de.maibornwolff.codecharta.filter.edgefilter.ParserDialog.Companion.generateParserArgs
+import de.maibornwolff.codecharta.filter.edgefilter.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
@@ -41,8 +41,8 @@ class EdgeFilter : Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(EdgeFilter())
-            val selectedArgs = generateParserArgs(args, commandLine)
-            commandLine.execute(*selectedArgs)
+            val collectedArgs = collectParserArgs()
+            commandLine.execute(*collectedArgs.toTypedArray())
         }
     }
 }

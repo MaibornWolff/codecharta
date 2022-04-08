@@ -2,13 +2,12 @@ package de.maibornwolff.codecharta.filter.edgefilter
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
-import de.maibornwolff.codecharta.tools.interactivecli.ParserDialogInterface
-import picocli.CommandLine
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
         private const val EXTENSION = "cc.json"
-        override fun generateParserArgs(args: Array<String>, commandLine: CommandLine): Array<String> {
+        override fun collectParserArgs(): List<String> {
 
             var inputFileName = KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?")
             if (inputFileName.substringAfter(".") != EXTENSION)
@@ -28,7 +27,7 @@ class ParserDialog {
                 hint = defaultPathSeparator,
                 default = defaultPathSeparator
             )
-            return arrayOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
+            return listOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
         }
 
         override fun isValidFileName(fileName: String): Boolean {

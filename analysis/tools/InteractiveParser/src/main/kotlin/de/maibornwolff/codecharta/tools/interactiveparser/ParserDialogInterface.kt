@@ -1,9 +1,8 @@
-package de.maibornwolff.codecharta.tools.interactivecli
-
-import picocli.CommandLine
+package de.maibornwolff.codecharta.tools.interactiveparser
 
 interface ParserDialogInterface {
-    fun generateParserArgs(args: Array<String>, commandLine: CommandLine): Array<String>
+    // change interactive cli name
+    fun collectParserArgs(): List<String>
 
     fun isValidFileName(fileName: String): Boolean
 
