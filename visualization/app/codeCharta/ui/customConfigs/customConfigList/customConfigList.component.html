@@ -3,12 +3,15 @@
 		<mat-list-item class="test" *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups.applicableItems | keyvalue">
 			<cc-custom-config-item-group [customConfigItemGroup]="customConfigItemGroup.value"></cc-custom-config-item-group>
 		</mat-list-item>
-		<button>
-			{{
-				dropDownCustomConfigItemGroups.nonApplicableItems.size > 0
-					? "Show non-applicable Custom Views"
-					: "Hide non-applicable Custom Views"
-			}}
+
+		<ng-container *ngIf="!isCollapsed">
+			<mat-list-item class="test" *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups.nonApplicableItems | keyvalue">
+				<cc-custom-config-item-group [customConfigItemGroup]="customConfigItemGroup.value"></cc-custom-config-item-group>
+			</mat-list-item>
+		</ng-container>
+		<button *ngIf="dropDownCustomConfigItemGroups.nonApplicableItems.size > 0" (click)="toggleNonApplicableCustomConfigsList()">
+			{{ isCollapsed ? "Show non-applicable Custom Views" : "Hide non-applicable Custom Views" }}
+			<i [ngClass]="isCollapsed ? 'fa fa-angle-down' : 'fa fa-angle-up'"></i>
 		</button>
 	</mat-list>
 </mat-dialog-content>

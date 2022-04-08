@@ -11,6 +11,7 @@ import { DownloadCustomConfigService } from "../downloadCustomConfigsButton/down
 export class CustomConfigListComponent implements OnInit {
 	customConfigFileStateConnector: CustomConfigFileStateConnector
 	dropDownCustomConfigItemGroups: CustomConfigGroups
+	isCollapsed = true
 	subscription: Subscription
 
 	constructor(
@@ -28,5 +29,9 @@ export class CustomConfigListComponent implements OnInit {
 
 	loadCustomConfigs() {
 		this.dropDownCustomConfigItemGroups = CustomConfigHelper.getCustomConfigItemGroups(this.customConfigFileStateConnector)
+	}
+
+	toggleNonApplicableCustomConfigsList() {
+		this.isCollapsed = !this.isCollapsed
 	}
 }

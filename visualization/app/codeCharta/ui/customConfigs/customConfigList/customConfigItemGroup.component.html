@@ -1,8 +1,7 @@
 <button mat-button (click)="toggleSubList()">
 	Custom View(s) in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
 	{{ customConfigItemGroup.mapNames }}
-	<i *ngIf="!isCollapsed" class="collapse-icon fa fa-arrow-down"></i>
-	<i *ngIf="isCollapsed" class="collapse-icon fa fa-arrow-up"></i>
+	<i [ngClass]="isCollapsed ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
 </button>
 <mat-list *ngIf="isCollapsed">
 	<mat-list-item *ngFor="let customConfig of customConfigItemGroup.customConfigItems">
