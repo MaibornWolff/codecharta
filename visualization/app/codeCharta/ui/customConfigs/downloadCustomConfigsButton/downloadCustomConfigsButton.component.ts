@@ -5,7 +5,10 @@ import { downloadCustomConfigs } from "./downloadCustomConfigHelper"
 import { DownloadCustomConfigService } from "./downloadCustomConfig.service"
 import { Subscription } from "rxjs"
 
-@Component({ template: require("./downloadCustomConfigsButton.component.html") })
+@Component({
+	selector: "cc-download-custom-configs-button",
+	template: require("./downloadCustomConfigsButton.component.html")
+})
 export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
 	downloadableConfigs: DownloadableConfigs
 	subscription: Subscription
