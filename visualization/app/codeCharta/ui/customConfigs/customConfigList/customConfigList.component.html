@@ -1,45 +1,14 @@
-<mat-list>
-	<mat-list-item *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups">
-		<cc-custom-config-item-group [customConfigItemGroup]="customConfigItemGroup"></cc-custom-config-item-group>
-	</mat-list-item>
-</mat-list>
-
-<!--
-<md-menu-item
-  class="custom-configs-item"
-  ng-repeat="customConfigItemGroup in $ctrl._viewModel.dropDownCustomConfigItemGroups |
-                     limitTo: $ctrl._viewModel.visibleEntries"
->
-  <md-button
-    class="button-hovering"
-    ng-click="collapsed=!collapsed"
-    ng-style="!customConfigItemGroup.hasApplicableItems && { color: 'rgba(0,0,0,0.3)' }"
-    md-prevent-menu-close="md-prevent-menu-close"
-  >
-					<span class="collapse-trigger">
-						Custom View(s) in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
-						<strong>{{ customConfigItemGroup.mapNames }}</strong>
-					</span>
-    <i ng-show="!collapsed" class="collapse-icon fa fa-arrow-down"></i>
-    <i ng-show="collapsed" class="collapse-icon fa fa-arrow-up"></i>
-  </md-button>
-
-  <div class="collapsable" ng-show="collapsed">
-    <div class="custom-configs-item" ng-repeat="customConfig in customConfigItemGroup.customConfigItems">
-      <md-button
-        class="button-hovering"
-        ng-click="$ctrl.applyCustomConfig(customConfig.id)"
-        ng-disabled="!customConfig.isApplicable"
-        title="{{
-								customConfig.isApplicable
-									? 'Apply Custom Config'
-									: 'This one is applicable for map(s) ' +
-									  customConfig.mapNames +
-									  ' in ' +
-									  customConfig.mapSelectionMode +
-									  ' mode only.'
-							}}"
-      >
-        {{ customConfig.name }}
-      </md-button>
--->
+<mat-dialog-content>
+	<mat-list>
+		<mat-list-item class="test" *ngFor="let customConfigItemGroup of dropDownCustomConfigItemGroups.applicableItems | keyvalue">
+			<cc-custom-config-item-group [customConfigItemGroup]="customConfigItemGroup.value"></cc-custom-config-item-group>
+		</mat-list-item>
+		<button>
+			{{
+				dropDownCustomConfigItemGroups.nonApplicableItems.size > 0
+					? "Show non-applicable Custom Views"
+					: "Hide non-applicable Custom Views"
+			}}
+		</button>
+	</mat-list>
+</mat-dialog-content>

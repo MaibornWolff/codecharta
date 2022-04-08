@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core"
 import { CustomConfigItemGroup } from "../customConfigs.component"
+import { CustomConfigHelper } from "../../../util/customConfigHelper"
 
 @Component({
 	selector: "cc-custom-config-item-group",
@@ -10,6 +11,10 @@ export class CustomConfigItemGroupComponent {
 	isCollapsed = false
 
 	toggleSubList() {
-		this.isCollapsed = this.isCollapsed !== true
+		this.isCollapsed = !this.isCollapsed
+	}
+
+	removeCustomConfig(configId) {
+		CustomConfigHelper.deleteCustomConfig(configId)
 	}
 }
