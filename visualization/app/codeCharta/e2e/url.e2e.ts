@@ -56,7 +56,6 @@ describe("codecharta", () => {
 	it("should load data when file parameters in url are valid", async () => {
 		await mockResponses()
 		await goto(`${CC_URL}?file=fileOne.json&file=fileTwo.json`)
-		await checkSelectedFileName("Sample Project with Edges")
 		await checkAllFileNames(["Sample Project with Edges", "Sample Project"])
 	})
 
