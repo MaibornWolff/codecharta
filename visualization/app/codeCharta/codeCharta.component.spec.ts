@@ -11,7 +11,7 @@ import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
-import { LayoutAlgorithm } from "./codeCharta.model"
+import { CCFile, LayoutAlgorithm } from "./codeCharta.model"
 import { GlobalSettingsHelper } from "./util/globalSettingsHelper"
 import { GLOBAL_SETTINGS } from "./util/dataMocks"
 import { setIsWhiteBackground } from "./state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
@@ -20,6 +20,8 @@ import { setHideFlatBuildings } from "./state/store/appSettings/hideFlatBuilding
 import { setExperimentalFeaturesEnabled } from "./state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { setLayoutAlgorithm } from "./state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "./state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { FileSelectionState, FileState } from "./model/files/files"
+import { setFiles } from "./state/store/files/files.actions"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -233,7 +235,64 @@ describe("codeChartaController", () => {
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
+
+		it("should set files to multiple mode when no 'mode' parameter is given", () => {
+			const fileState: FileState[] = [{ file: {} as CCFile, selectedAs: FileSelectionState.None }]
+			storeService.dispatch(setFiles(fileState))
+			storeService.dispatch = jest.fn()
+			codeChartaController["urlUtils"].getParameterByName = jest.fn().mockReturnValue(null)
+
+			codeChartaController["setRenderStateFromUrl"]()
+
+			expect(storeService.dispatch).toHaveBeenCalledWith({ payload: [{}], type: "SET_MULTIPLE" })
+		})
+
+		it("should set files to multiple mode when empty string is given", () => {
+			const fileState: FileState[] = [{ file: {} as CCFile, selectedAs: FileSelectionState.None }]
+			storeService.dispatch(setFiles(fileState))
+			storeService.dispatch = jest.fn()
+			codeChartaController["urlUtils"].getParameterByName = jest.fn().mockReturnValue("")
+
+			codeChartaController["setRenderStateFromUrl"]()
+
+			expect(storeService.dispatch).toHaveBeenCalledWith({
+				payload: [{}],
+				type: "SET_MULTIPLE"
+			})
+		})
+
+		it("should set files to multiple mode when any string (except 'Delta') is given", () => {
+			const fileState: FileState[] = [{ file: {} as CCFile, selectedAs: FileSelectionState.None }]
+			storeService.dispatch(setFiles(fileState))
+			storeService.dispatch = jest.fn()
+			codeChartaController["urlUtils"].getParameterByName = jest.fn().mockReturnValue("invalidMode")
+
+			codeChartaController["setRenderStateFromUrl"]()
+
+			expect(storeService.dispatch).toHaveBeenCalledWith({
+				payload: [{}],
+				type: "SET_MULTIPLE"
+			})
+		})
+
+		it("should set files to delta mode when 'mode=delta' parameter is given", () => {
+			const fileState: FileState[] = [
+				{ file: {} as CCFile, selectedAs: FileSelectionState.None },
+				{ file: {} as CCFile, selectedAs: FileSelectionState.None }
+			]
+			storeService.dispatch(setFiles(fileState))
+			storeService.dispatch = jest.fn()
+			codeChartaController["urlUtils"].getParameterByName = jest.fn().mockReturnValue("Delta")
+
+			codeChartaController["setRenderStateFromUrl"]()
+
+			expect(storeService.dispatch).toHaveBeenCalledWith({
+				payload: { comparisonFile: {}, referenceFile: {} },
+				type: "SET_DELTA"
+			})
+		})
 	})
+
 	describe("version check", () => {
 		beforeEach(() => {
 			restartSystem()

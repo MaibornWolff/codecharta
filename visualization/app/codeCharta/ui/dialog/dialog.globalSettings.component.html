@@ -3,11 +3,16 @@
 		<h2 class="md-toolbar-tools">Global Settings</h2>
 	</md-toolbar>
 
-	<reset-settings-button-component
-		autofocus="false"
-		settings-names="appSettings.hideFlatBuildings, appSettings.isWhiteBackground, appSettings.resetCameraIfNewFileIsLoaded, appSettings.layoutAlgorithm, appSettings.maxTreeMapFiles"
+	<cc-reset-settings-button
+		[settings-keys]="[
+			'appSettings.hideFlatBuildings',
+			'appSettings.isWhiteBackground',
+			'appSettings.resetCameraIfNewFileIsLoaded',
+			'appSettings.layoutAlgorithm',
+			'appSettings.maxTreeMapFiles'
+		]"
 		tooltip="Reset global settings to their defaults"
-	></reset-settings-button-component>
+	></cc-reset-settings-button>
 
 	<md-dialog-content>
 		<div class="md-dialog-content">

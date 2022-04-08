@@ -1,99 +1,45 @@
-import "./resetSettingsButton.module"
-
+import { TestBed } from "@angular/core/testing"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
-import { ResetSettingsButtonController } from "./resetSettingsButton.component"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { StoreService } from "../../state/store.service"
-import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
-import { defaultMapColors, setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
-import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { Store } from "../../state/angular-redux/store"
+import { setState } from "../../state/store/state.actions"
+import { ResetSettingsButtonComponent } from "./resetSettingsButton.component"
 
-describe("resetSettingsButtonController", () => {
-	let resetSettingsButtonController: ResetSettingsButtonController
-	let storeService: StoreService
-
+describe("resetSettingsButtonComponent", () => {
+	const mockedStore = { dispatch: jest.fn() }
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
+		mockedStore.dispatch = jest.fn()
+		TestBed.configureTestingModule({
+			providers: [{ provide: Store, useValue: mockedStore }]
+		})
 	})
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.resetSettingsButton")
-
-		storeService = getService<StoreService>("storeService")
-	}
-
-	function rebuildController() {
-		resetSettingsButtonController = new ResetSettingsButtonController(storeService)
-	}
-
-	describe("applyDefaultSettings", () => {
-		it("should update store with available default settings objects", () => {
-			resetSettingsButtonController["settingsNames"] =
-				"appSettings.hideFlatBuildings, appSettings.notInAppSettings, notInSettings.something"
-
-			resetSettingsButtonController.applyDefaultSettings()
-
-			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
+	it("should reset given appSetting", async () => {
+		await render(ResetSettingsButtonComponent, {
+			componentProperties: {
+				settingsKeys: ["appSettings.mapColors.selected", "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"]
+			}
 		})
 
-		it("should only reset the color options when specified", () => {
-			resetSettingsButtonController["settingsNames"] =
-				"appSettings.mapColors.positive, appSettings.mapColors.negative, appSettings.mapColors.neutral, " +
-				"appSettings.mapColors.selected"
-			const mapColors = storeService.getState().appSettings.mapColors
-			const colorRange = storeService.getState().dynamicSettings.colorRange
+		userEvent.click(screen.getByRole("button"))
 
-			storeService.dispatch(setMapColors({ ...mapColors, positive: "#176666" }))
-			storeService.dispatch(setColorRange({ ...colorRange, from: 50 }))
-			resetSettingsButtonController.applyDefaultSettings()
+		expect(mockedStore.dispatch).toHaveBeenCalledWith(
+			setState({ appSettings: { mapColors: { selected: "#EB8319" }, scaling: new Vector3(1, 1, 1) } })
+		)
+	})
 
-			expect(storeService.getState().appSettings.mapColors).toEqual(defaultMapColors)
-			expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(50)
+	it("should execute callback", async () => {
+		const callback = jest.fn()
+		await render(ResetSettingsButtonComponent, {
+			componentProperties: {
+				settingsKeys: ["appSettings.mapColors.selected"],
+				callback
+			}
 		})
 
-		it("settingsNames should allow newline", () => {
-			resetSettingsButtonController["settingsNames"] = "appSettings.mapColors.neutral,\nappSettings.hideFlatBuildings"
+		userEvent.click(screen.getByRole("button"))
 
-			resetSettingsButtonController.applyDefaultSettings()
-
-			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
-		})
-
-		it("should do nothing if settingsNames only contains comma characters", () => {
-			storeService.dispatch = jest.fn()
-			resetSettingsButtonController["settingsNames"] = ",,"
-
-			resetSettingsButtonController.applyDefaultSettings()
-
-			expect(storeService.dispatch).not.toHaveBeenCalled()
-		})
-
-		it("should do nothing if settingsNames only contains space characters", () => {
-			storeService.dispatch = jest.fn()
-			resetSettingsButtonController["settingsNames"] = " "
-
-			resetSettingsButtonController.applyDefaultSettings()
-
-			expect(storeService.dispatch).not.toHaveBeenCalled()
-		})
-
-		it("should do nothing if settingsName not in defaultSettings", () => {
-			storeService.dispatch = jest.fn()
-			resetSettingsButtonController["settingsNames"] = "deltas.something.bla"
-
-			resetSettingsButtonController.applyDefaultSettings()
-
-			expect(storeService.dispatch).not.toHaveBeenCalled()
-		})
-
-		it("should update nested settings in service", () => {
-			storeService.dispatch(setScaling(new Vector3(2, 2, 2)))
-			resetSettingsButtonController["settingsNames"] = "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"
-
-			resetSettingsButtonController.applyDefaultSettings()
-
-			expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1, 1))
-		})
+		expect(callback).toHaveBeenCalledTimes(1)
 	})
 })

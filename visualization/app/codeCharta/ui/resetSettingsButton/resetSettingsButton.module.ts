@@ -2,8 +2,9 @@ import "../../state/state.module"
 
 import angular from "angular"
 
-import { resetSettingsButtonComponent } from "./resetSettingsButton.component"
+import { ResetSettingsButtonComponent } from "./resetSettingsButton.component"
+import { downgradeComponent } from "@angular/upgrade/static"
 
 angular
 	.module("app.codeCharta.ui.resetSettingsButton", ["app.codeCharta.state"])
-	.component(resetSettingsButtonComponent.selector, resetSettingsButtonComponent)
+	.directive("ccResetSettingsButton", downgradeComponent({ component: ResetSettingsButtonComponent }))

@@ -79,8 +79,13 @@
 		</md-checkbox>
 	</md-input-container>
 
-	<reset-settings-button-component
-		settings-names="appSettings.showOnlyBuildingsWithEdges, appSettings.amountOfEdgePreviews, appSettings.edgeHeight, appSettings.edgeMetricToggler"
+	<cc-reset-settings-button
+		[settings-keys]="[
+			'appSettings.showOnlyBuildingsWithEdges',
+			'appSettings.amountOfEdgePreviews',
+			'appSettings.edgeHeight',
+			'appSettings.edgeMetricToggler'
+		]"
 		tooltip="Reset edge metric settings to their defaults"
-	></reset-settings-button-component>
+	></cc-reset-settings-button>
 </div>

@@ -100,7 +100,7 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 		)
 	}
 
-	resetInvertColorRangeCheckboxOnly() {
+	resetInvertColorRangeCheckboxOnly = () => {
 		this._viewModel.invertColorRange = null
 		this._viewModel.invertDeltaColors = null
 	}
