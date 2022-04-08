@@ -50,6 +50,14 @@ describe("urlExtractor", () => {
 			const result = urlExtractor.getParameterByName("mode")
 			expect(result).toBe("Delta")
 		})
+
+		it("should return an empty string when no value is set for 'mode' parameter", () => {
+			$location.absUrl = jest.fn(() => {
+				return "http://testurl?file=valid.json&mode="
+			})
+			const result = urlExtractor.getParameterByName("mode")
+			expect(result).toBe("")
+		})
 	})
 
 	describe("getFileDataFromQueryParam", () => {

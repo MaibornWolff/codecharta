@@ -247,6 +247,34 @@ describe("codeChartaController", () => {
 			expect(storeService.dispatch).toHaveBeenCalledWith({ payload: [{}], type: "SET_MULTIPLE" })
 		})
 
+		it("should set files to multiple mode when empty string is given", () => {
+			const fileState: FileState[] = [{ file: {} as CCFile, selectedAs: FileSelectionState.None }]
+			storeService.dispatch(setFiles(fileState))
+			storeService.dispatch = jest.fn()
+			codeChartaController["urlUtils"].getParameterByName = jest.fn().mockReturnValue("")
+
+			codeChartaController["setRenderStateFromUrl"]()
+
+			expect(storeService.dispatch).toHaveBeenCalledWith({
+				payload: [{}],
+				type: "SET_MULTIPLE"
+			})
+		})
+
+		it("should set files to multiple mode when any string (except 'Delta') is given", () => {
+			const fileState: FileState[] = [{ file: {} as CCFile, selectedAs: FileSelectionState.None }]
+			storeService.dispatch(setFiles(fileState))
+			storeService.dispatch = jest.fn()
+			codeChartaController["urlUtils"].getParameterByName = jest.fn().mockReturnValue("invalidMode")
+
+			codeChartaController["setRenderStateFromUrl"]()
+
+			expect(storeService.dispatch).toHaveBeenCalledWith({
+				payload: [{}],
+				type: "SET_MULTIPLE"
+			})
+		})
+
 		it("should set files to delta mode when 'mode=delta' parameter is given", () => {
 			const fileState: FileState[] = [
 				{ file: {} as CCFile, selectedAs: FileSelectionState.None },
@@ -258,7 +286,10 @@ describe("codeChartaController", () => {
 
 			codeChartaController["setRenderStateFromUrl"]()
 
-			expect(storeService.dispatch).toHaveBeenCalledWith({ payload: { comparisonFile: {}, referenceFile: {} }, type: "SET_DELTA" })
+			expect(storeService.dispatch).toHaveBeenCalledWith({
+				payload: { comparisonFile: {}, referenceFile: {} },
+				type: "SET_DELTA"
+			})
 		})
 	})
 
