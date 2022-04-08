@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate reset-settings-button-component to Angular [#2774](https://github.com/MaibornWolff/codecharta/pull/2774)
+
 ### Fixed 🐞
 
 -   Set files loaded via URL to multiple mode by default when delta mode is not selected [#2769](https://github.com/MaibornWolff/codecharta/pull/2769)

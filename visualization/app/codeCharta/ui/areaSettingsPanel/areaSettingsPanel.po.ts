@@ -16,7 +16,7 @@ export const AreaSettingsPanelPageObject = {
 	},
 
 	async resetButtonBoundingBox() {
-		const resetBoxHandle = await page.$("cc-area-settings-panel reset-settings-button-component")
+		const resetBoxHandle = await page.$("cc-area-settings-panel cc-reset-settings-button")
 		return resetBoxHandle.boundingBox()
 	}
 }
