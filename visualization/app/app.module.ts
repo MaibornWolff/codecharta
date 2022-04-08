@@ -28,7 +28,6 @@ import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContex
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.component"
-import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
 import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
@@ -40,13 +39,12 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
-import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
-import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
 import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
 import { OpenCustomConfigsButtonModule } from "./codeCharta/ui/customConfigs/openCustomConfigsButton.module"
+import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
 
 @NgModule({
 	imports: [
@@ -72,9 +70,7 @@ import { OpenCustomConfigsButtonModule } from "./codeCharta/ui/customConfigs/ope
 		LoadingMapProgressSpinnerModule,
 		SearchPanelModule,
 		MetricTypeHoveredModule,
-		DownloadCustomConfigButtonModule,
 		MetricValueHoveredModule,
-		UploadCustomConfigButtonModule,
 		OpenCustomConfigsButtonModule
 	],
 	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
