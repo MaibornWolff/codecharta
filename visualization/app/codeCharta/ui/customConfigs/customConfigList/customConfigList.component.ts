@@ -1,3 +1,4 @@
+import "./customConfigList.component.scss"
 import { Component, Inject, OnInit } from "@angular/core"
 import { CustomConfigGroups, CustomConfigHelper } from "../../../util/customConfigHelper"
 import { State } from "../../../state/angular-redux/state"

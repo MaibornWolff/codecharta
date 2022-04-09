@@ -5,21 +5,7 @@
 		</md-button>
 
 		<md-menu-content class="custom-configs-drop-down">
-			<md-menu-item class="custom-configs-item">
-				<md-button class="custom-configs-dialog-name" ng-disabled="true">Custom Views</md-button>
-
-				<!--				<cc-upload-custom-config-button></cc-upload-custom-config-button>
-				<cc-download-custom-configs-button></cc-download-custom-configs-button>
-				<cc-add-custom-config-button class="custom-configs-button-in-custom-views"></cc-add-custom-config-button>-->
-			</md-menu-item>
-
-			<md-divider></md-divider>
-
-			<!--				<md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomConfigItemGroups.length" class="custom-configs-item">
-        <md-button disabled>It is time to add your first Custom View.</md-button>
-      </md-menu-item>
-
-      <md-menu-item
+			<!--md-menu-item
         class="custom-configs-item"
         ng-repeat="customConfigItemGroup in $ctrl._viewModel.dropDownCustomConfigItemGroups |
                      limitTo: $ctrl._viewModel.visibleEntries"
@@ -67,15 +53,7 @@
             </md-button>
           </div>
         </div>
-      </md-menu-item>
-      <button
-        ng-show="$ctrl._viewModel.showNonApplicableButton"
-        ng-click="$ctrl.toggleNonApplicableItems();"
-        md-prevent-menu-close="md-prevent-menu-close"
-      >
-        {{ $ctrl.isExpanded() ? "Hide non-applicable Custom Views" : "Show non-applicable Custom Views" }}
-        <i ng-class="$ctrl.isExpanded() ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-      </button>-->
+      </md-menu-item>-->
 			<cc-open-custom-configs-button></cc-open-custom-configs-button>
 		</md-menu-content>
 	</md-menu>

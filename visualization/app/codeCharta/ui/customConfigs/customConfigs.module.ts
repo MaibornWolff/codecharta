@@ -9,6 +9,4 @@ angular
 	.module("app.codeCharta.ui.customConfigs", ["app.codeCharta.state"])
 	.component(customConfigsComponent.selector, customConfigsComponent)
 	.directive("ccAddCustomConfigButton", downgradeComponent({ component: AddCustomConfigButtonComponent }))
-	//.directive("ccDownloadCustomConfigsButton", downgradeComponent({ component: DownloadCustomConfigsButtonComponent }))
-	//.directive("ccUploadCustomConfigButton", downgradeComponent({ component: UploadCustomConfigButtonComponent }))
 	.directive("ccOpenCustomConfigsButton", downgradeComponent({ component: OpenCustomConfigsButtonComponent }))

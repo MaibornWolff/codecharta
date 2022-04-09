@@ -1,22 +1,25 @@
-<button mat-button (click)="toggleSubList()">
-	Custom View(s) in <strong>{{ customConfigItemGroup.mapSelectionMode | lowercase }}</strong> mode for
-	{{ customConfigItemGroup.mapNames }}
-	<i [ngClass]="isCollapsed ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-</button>
-<mat-list *ngIf="isCollapsed">
-	<mat-list-item *ngFor="let customConfig of customConfigItemGroup.customConfigItems">
-		<button
+<mat-expansion-panel *ngFor="let customConfigItemGroup of customConfigItemGroups | keyvalue">
+	<mat-expansion-panel-header>
+		<mat-panel-title>
+			Custom View(s) in
+			<span class="highlight-mode"> {{ customConfigItemGroup.value.mapSelectionMode | lowercase }} </span>
+			mode for
+			{{ customConfigItemGroup.value.mapNames }}
+		</mat-panel-title>
+	</mat-expansion-panel-header>
+	<mat-list *ngFor="let customConfig of customConfigItemGroup.value.customConfigItems">
+		<mat-list-item
+			(click)="applyCustomConfig(customConfig.id)"
 			title="{{
 				customConfig.isApplicable
 					? 'Apply Custom Config'
 					: 'This one is applicable for map(s) ' + customConfig.mapNames + ' in ' + customConfig.mapSelectionMode + ' mode only.'
 			}}"
-			mat-dialog-close
 		>
-			{{ customConfig.mapNames }}
-		</button>
-		<button title="Remove Custom Config" (click)="removeCustomConfig(customConfig.id)">
-			<i class="fa fa-minus-square"></i>
-		</button>
-	</mat-list-item>
-</mat-list>
+			{{ customConfig.name }}
+			<button class="remove-button" title="Remove Custom Config" (click)="removeCustomConfig(customConfig.id)">
+				<i class="fa fa-minus-square"></i>
+			</button>
+		</mat-list-item>
+	</mat-list>
+</mat-expansion-panel>
