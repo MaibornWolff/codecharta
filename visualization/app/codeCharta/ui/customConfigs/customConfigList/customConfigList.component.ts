@@ -1,35 +1,29 @@
 import "./customConfigList.component.scss"
-import { Component, Inject, OnInit } from "@angular/core"
-import { CustomConfigGroups, CustomConfigHelper } from "../../../util/customConfigHelper"
-import { State } from "../../../state/angular-redux/state"
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
+import { CustomConfigGroups } from "../../../util/customConfigHelper"
 import { CustomConfigFileStateConnector } from "../customConfigFileStateConnector"
 import { Subscription } from "rxjs"
-import { DownloadCustomConfigService } from "../downloadCustomConfigsButton/downloadCustomConfig.service"
+import { CustomConfigHelperService } from "../customConfigHelper.service"
 
 @Component({
 	template: require("./customConfigList.component.html")
 })
-export class CustomConfigListComponent implements OnInit {
+export class CustomConfigListComponent implements OnInit, OnDestroy {
 	customConfigFileStateConnector: CustomConfigFileStateConnector
 	dropDownCustomConfigItemGroups: CustomConfigGroups
 	isCollapsed = true
 	subscription: Subscription
 
-	constructor(
-		@Inject(State) private state: State,
-		@Inject(DownloadCustomConfigService) private customConfigService: DownloadCustomConfigService
-	) {}
+	constructor(@Inject(CustomConfigHelperService) private customConfigService: CustomConfigHelperService) {}
 
 	ngOnInit() {
-		this.subscription = this.customConfigService.downloadableCustomConfigs$.subscribe(() => {
-			this.loadCustomConfigs()
+		this.subscription = this.customConfigService.customConfigItemGroups$.subscribe(customConfigItemGroups => {
+			this.dropDownCustomConfigItemGroups = customConfigItemGroups
 		})
-		this.customConfigFileStateConnector = new CustomConfigFileStateConnector(this.state.getValue().files)
-		this.loadCustomConfigs()
 	}
 
-	loadCustomConfigs() {
-		this.dropDownCustomConfigItemGroups = CustomConfigHelper.getCustomConfigItemGroups(this.customConfigFileStateConnector)
+	ngOnDestroy() {
+		this.subscription.unsubscribe()
 	}
 
 	toggleNonApplicableCustomConfigsList() {

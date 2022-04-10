@@ -97,7 +97,7 @@ export class CustomConfigHelper {
 		CustomConfigHelper.customConfigChange$.next(null)
 	}
 
-	private static loadCustomConfigs() {
+	static loadCustomConfigs() {
 		const ccLocalStorage = this.getCcLocalStorage()
 		return new Map(ccLocalStorage?.customConfigs)
 	}
