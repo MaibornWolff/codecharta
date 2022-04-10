@@ -2,7 +2,6 @@ import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
 import "./artificialIntelligence/artificialIntelligence.module"
-import "./customConfigs/customConfigs.module"
 import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
 import "./globalSettingsButton/globalSettingsButton.module"
@@ -34,7 +33,6 @@ import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
-		"app.codeCharta.ui.customConfigs",
 		"app.codeCharta.ui.downloadButton",
 		"app.codeCharta.ui.screenshotButton",
 		"app.codeCharta.ui.globalSettingsButton",

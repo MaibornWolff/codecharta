@@ -27,7 +27,6 @@ import { threeSceneServiceProvider, codeChartaServiceProvider } from "./codeChar
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
-import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.component"
 import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
@@ -43,8 +42,7 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
 import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
-import { OpenCustomConfigsButtonModule } from "./codeCharta/ui/customConfigs/openCustomConfigsButton.module"
-import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
+import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 
 @NgModule({
 	imports: [
@@ -64,14 +62,13 @@ import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCu
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule,
-		AddCustomConfigButtonModule,
 		ReactiveFormsModule,
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
 		SearchPanelModule,
 		MetricTypeHoveredModule,
 		MetricValueHoveredModule,
-		OpenCustomConfigsButtonModule
+		CustomConfigsModule
 	],
 	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
 	declarations: [
@@ -95,7 +92,6 @@ import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCu
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
-		AddCustomConfigButtonComponent,
 		FocusButtonsComponent,
 		RemoveFileButtonComponent,
 		LoadingFileProgressSpinnerComponent,

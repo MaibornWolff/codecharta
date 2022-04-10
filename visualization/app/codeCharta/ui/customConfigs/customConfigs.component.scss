@@ -1,174 +1,26 @@
-/*
-.custom-configs {
-	display: flex;
-	justify-content: center;
-	gap: 4px;
-}
-*/
+cc-custom-configs {
+	.custom-configs-panel-buttons {
+		display: flex;
+		justify-content: center;
+		gap: 4px;
 
-.custom-configs-component {
-	display: inline-block;
-	width: 45px;
-
-	cc-add-custom-config-button.custom-configs-button-in-ribbonbar button {
-		height: 22px;
-		width: 45px;
-		margin: 0;
-		line-height: 23px;
-		font-size: 9pt;
-		text-transform: none;
-		background-color: rgba(230, 230, 230, 0.96);
-		border-radius: 2px;
-
-		&.plus {
-			min-width: 30px;
-		}
-
-		&:hover {
-			background-color: #c8c8c8;
-		}
-	}
-
-	.custom-configs-button {
-		height: 22px;
-		min-height: 0;
-		line-height: 23px;
-		min-width: 45px;
-		margin: 0;
-		padding: 0;
-		font-size: 9pt;
-		text-transform: none;
-		background-color: rgba(230, 230, 230, 0.96);
-
-		&:hover {
-			background-color: #c8c8c8;
-		}
-	}
-}
-
-/*
-.custom-configs-drop-down {
-	padding: 0;
-	min-width: 543px;
-
-	md-menu-item {
-		height: auto;
-		min-height: auto;
-		display: block;
-		align-content: unset;
-		justify-content: unset;
-		flex-direction: unset;
-
-		.collapsable {
+		button {
+			height: 22px;
+			width: 45px;
 			margin: 0;
-			padding: 0 0 0 10px;
-			border-bottom: 1px solid grey;
-		}
-	}
+			line-height: 23px;
+			font-size: 9pt;
+			text-transform: none;
+			background-color: rgba(230, 230, 230, 0.96);
+			border-radius: 2px;
 
-	.custom-configs-item {
-		cc-download-custom-configs-button,
-		cc-upload-custom-config-button,
-		cc-add-custom-config-button.custom-configs-button-in-custom-views {
-			padding: 0;
-			display: inline-block;
-			width: 65px;
-
-			button {
-				margin: 0;
-				padding: 0 16px;
-				height: 48px;
-				width: 100%;
-				background-color: #00a091;
-				vertical-align: middle;
-
-				&:disabled {
-					background-color: rgba(230, 230, 230, 0.96);
-				}
-
-				i.fa {
-					vertical-align: middle;
-					font-size: 12px;
-					color: #ffffff;
-				}
+			&:hover {
+				background-color: #c8c8c8;
 			}
-		}
-
-		.button-hovering {
-			height: 48px;
-			text-align: left;
-			background-color: unset;
-			border-bottom: 1px solid grey;
-
-			.collapse-trigger {
-				display: inline-block;
-				width: 91%;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				line-height: 48px;
-			}
-
-			&:hover:not([disabled]) {
-				background-color: rgba(158, 158, 158, 0.2);
-			}
-		}
-
-		i.collapse-icon {
-			font-size: 10px;
-			line-height: 48px;
-			vertical-align: top;
-			color: black;
-		}
-
-		.action-button {
-			display: inline-block;
-			min-width: 12%;
-			height: 48px;
-			width: 65px;
-			text-align: center;
-			line-height: 48px;
-			background-color: #00a091;
-			color: #ffffff;
 
 			i.fa {
-				font-size: 12px;
-				margin-left: 0;
-			}
-
-			&.remove {
-				display: inline-flex;
-				justify-content: center;
-				color: #b30000;
-				background-color: transparent;
-			}
-		}
-
-		.action-button:disabled,
-		.action-button[disabled] {
-			background-color: #e6e6e6;
-			color: #949494;
-		}
-
-		.custom-configs-dialog-name {
-			display: inline-block;
-			width: 60%;
-			min-height: 48px;
-		}
-
-		.collapsable {
-			.button-hovering {
-				width: 80%;
-				border: none;
-				display: inline-block;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				line-height: 48px;
-				text-transform: unset;
-			}
-			.action-button {
-				width: 13%;
+				color: rgb(68, 68, 68);
 			}
 		}
 	}
 }
-*/

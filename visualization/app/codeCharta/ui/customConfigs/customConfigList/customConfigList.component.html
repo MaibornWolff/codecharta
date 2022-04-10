@@ -16,7 +16,7 @@
 	>
 		<span>It is time to add your first Custom View!</span>
 	</div>
-	<mat-accordion class="custom-config-container">
+	<mat-accordion class="custom-config-container" [multi]="true">
 		<cc-custom-config-item-group
 			[customConfigItemGroups]="dropDownCustomConfigItemGroups.applicableItems"
 			[isApplicable]="true"
