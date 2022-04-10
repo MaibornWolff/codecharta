@@ -1,11 +1,11 @@
 .mat-dialog-container {
 	padding: 5px 16px !important;
-}
 
-.mat-dialog-content.content {
-	max-height: 100%;
-	margin: 0;
-	padding: 0;
+	.mat-dialog-content.content {
+		max-height: 100%;
+		margin: 0;
+		padding: 0;
+	}
 }
 
 .row {
@@ -75,6 +75,30 @@ cc-custom-config-item-group {
 		width: 100%;
 		padding: 0;
 	}
+
+	.mat-list-item-content {
+		border-bottom: 1px solid #000000;
+
+		&:hover {
+			background-color: rgba(158, 158, 158, 0.2);
+		}
+
+		button {
+			height: 100%;
+			width: 100%;
+			background-color: transparent;
+			text-align: left;
+
+			&:hover {
+				background: transparent;
+			}
+
+			&.remove-button {
+				color: red;
+				width: 13%;
+			}
+		}
+	}
 }
 
 .mat-accordion > .mat-expansion-panel-spacing:last-child,
@@ -95,31 +119,6 @@ cc-custom-config-item-group {
 	width: 100%;
 	height: 30px;
 	margin: 5px 0;
-}
-
-.mat-list-item-content {
-	border-bottom: 1px solid #000000;
-
-	&:hover {
-		background-color: rgba(158, 158, 158, 0.2);
-	}
-
-	button {
-		height: 100%;
-		width: 100%;
-
-		border-radius: 4px;
-
-		&:hover {
-			background: transparent;
-		}
-
-		&.remove-button {
-			color: red;
-			width: 13%;
-			background-color: transparent;
-		}
-	}
 }
 
 cc-custom-config-item-group.non-applicable-group button {
