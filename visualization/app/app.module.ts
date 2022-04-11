@@ -23,7 +23,12 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { threeSceneServiceProvider, codeChartaServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import {
+	threeSceneServiceProvider,
+	codeChartaServiceProvider,
+	threeOrbitControlsServiceProvider,
+	threeCameraServiceProvider
+} from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
@@ -70,7 +75,13 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 		MetricValueHoveredModule,
 		CustomConfigsModule
 	],
-	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
+	providers: [
+		threeSceneServiceProvider,
+		codeChartaServiceProvider,
+		IdToBuildingService,
+		threeCameraServiceProvider,
+		threeOrbitControlsServiceProvider
+	],
 	declarations: [
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,

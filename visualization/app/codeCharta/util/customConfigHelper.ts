@@ -19,7 +19,7 @@ import { setCameraTarget } from "../state/store/appSettings/cameraTarget/cameraT
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCameraService"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { BehaviorSubject } from "rxjs"
-import { StoreService } from "../state/store.service"
+import { Store } from "../state/angular-redux/store"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -304,7 +304,7 @@ export class CustomConfigHelper {
 
 	static applyCustomConfig(
 		configId: string,
-		storeService: StoreService,
+		store: Store,
 		threeCameraService: ThreeCameraService,
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
@@ -315,13 +315,13 @@ export class CustomConfigHelper {
 
 		// TODO: Check if state properties differ
 		// Create new partial State (updates) for changed values only
-		storeService.dispatch(setState(customConfig.stateSettings))
+		store.dispatch(setState(customConfig.stateSettings))
 
 		// Should we fire another event "ResettingStateFinishedEvent"
 		// We could add a listener then to reset the camera
 
-		storeService.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange as ColorRange))
-		storeService.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
+		store.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange as ColorRange))
+		store.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
 
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
@@ -329,8 +329,8 @@ export class CustomConfigHelper {
 			threeCameraService.setPosition()
 			threeOrbitControlsService.setControlTarget()
 
-			storeService.dispatch(setCamera(customConfig.stateSettings.appSettings.camera as Vector3))
-			storeService.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget as Vector3))
+			store.dispatch(setCamera(customConfig.stateSettings.appSettings.camera as Vector3))
+			store.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget as Vector3))
 		}, 100)
 	}
 }
