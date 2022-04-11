@@ -40,17 +40,14 @@ class ParserService {
             }
         }
 
-        private fun getParserNamesWithDescription(commandLine: CommandLine): MutableList<String> {
+        private fun getParserNamesWithDescription(commandLine: CommandLine): List<String> {
             val subCommands = commandLine.subcommands.values
-            val parsersList = mutableListOf<String>()
-
-            for (subCommand in subCommands) {
-                val parserName: String = subCommand.commandName
+            return subCommands.map { subCommand ->
+                val parserName = subCommand.commandName
                 val parserDescriptions = subCommand.commandSpec.usageMessage().description()
                 val parserDescription = parserDescriptions[0]
-                parsersList.add("$parserName - $parserDescription")
+                "$parserName - $parserDescription"
             }
-            return parsersList
         }
 
         private fun extractParserName(parserNameWithDescription: String): String {

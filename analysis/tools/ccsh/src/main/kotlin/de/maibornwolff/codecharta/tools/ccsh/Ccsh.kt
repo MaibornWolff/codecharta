@@ -18,6 +18,7 @@ import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
+import mu.KotlinLogging
 import picocli.AutoComplete
 import picocli.CommandLine
 import java.util.concurrent.Callable
@@ -49,6 +50,9 @@ import java.util.concurrent.Callable
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
+
+private val logger = KotlinLogging.logger {}
+
 class Ccsh : Callable<Void?> {
 
     @CommandLine.Option(
@@ -78,14 +82,14 @@ class Ccsh : Callable<Void?> {
         private fun executeInteractiveParser(args: Array<String>, commandLine: CommandLine) {
             if (args.isEmpty() && !isParserUnknown(args, commandLine)) {
                 val selectedParser = ParserService.selectParser(commandLine)
-                println("Executing $selectedParser")
+//                logger.info { "Executing $selectedParser" }
                 ParserService.executeSelectedParser(selectedParser)
             }
         }
 
         private fun isParserUnknown(args: Array<String>, commandLine: CommandLine): Boolean {
             if (args.isNotEmpty()) {
-                val firstArg = args[0]
+                val firstArg = args.first()
                 val subcommands = commandLine.subcommands.keys
                 return !subcommands.contains(firstArg)
             }

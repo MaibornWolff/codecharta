@@ -31,7 +31,7 @@ class ParserDialog {
         }
 
         override fun isValidFileName(fileName: String): Boolean {
-            return checkExtension(fileName, EXTENSION)
+            return hasExpectedExtension(fileName, EXTENSION)
         }
     }
 }
