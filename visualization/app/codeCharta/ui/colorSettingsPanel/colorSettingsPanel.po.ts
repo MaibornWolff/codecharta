@@ -5,7 +5,7 @@ export const ColorSettingsPageObject = {
 	},
 
 	async resetButtonBoundingBox() {
-		const resetBoxHandle = await page.$("color-settings-panel-component reset-settings-button-component")
+		const resetBoxHandle = await page.$("color-settings-panel-component cc-reset-settings-button")
 		return resetBoxHandle.boundingBox()
 	}
 }

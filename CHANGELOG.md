@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Changed
+
+-   Restrict upload in custom configs view to custom configs. Custom configs uploaded in the custom configs view are now allowed to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate reset-settings-button-component to Angular [#2774](https://github.com/MaibornWolff/codecharta/pull/2774)
+
+### Fixed 🐞
+
+-   Set files loaded via URL to multiple mode by default when delta mode is not selected [#2769](https://github.com/MaibornWolff/codecharta/pull/2769)
+
 ## [1.95.1] - 2022-04-01
 
 ### Changed

@@ -1,10 +1,10 @@
-import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+import { clickButtonOnPageElement } from "../../../../puppeteer.helper"
 
-export class FileChooserPageObject {
+export class UploadFileButtonPageObject {
 	async openFiles(paths: string[], clickOnFileChooser = true) {
 		const [fileChooser] = await Promise.all([
 			page.waitForFileChooser({ timeout: 60_000 }),
-			clickOnFileChooser && clickButtonOnPageElement("file-chooser-directive .toolbar-button")
+			clickOnFileChooser && clickButtonOnPageElement("button[title='Load cc.json files']")
 		])
 
 		await fileChooser.accept(paths)
@@ -14,10 +14,7 @@ export class FileChooserPageObject {
 	}
 
 	async cancelOpeningFile() {
-		const [fileChooser] = await Promise.all([
-			page.waitForFileChooser(),
-			clickButtonOnPageElement("file-chooser-directive .toolbar-button")
-		])
+		const [fileChooser] = await Promise.all([page.waitForFileChooser(), clickButtonOnPageElement("button[title='Load cc.json files']")])
 
 		fileChooser.cancel()
 	}

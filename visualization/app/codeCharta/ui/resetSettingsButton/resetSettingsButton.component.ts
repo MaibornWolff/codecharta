@@ -1,62 +1,27 @@
 import "./resetSettingsButton.component.scss"
-import { RecursivePartial, Settings } from "../../codeCharta.model"
-import { StoreService } from "../../state/store.service"
-import { defaultState, setState } from "../../state/store/state.actions"
-import { convertToVectors } from "../../util/settingsHelper"
+import { setState } from "../../state/store/state.actions"
+import { getPartialDefaultState } from "./getPartialDefaultState"
+import { Component, Inject, Input } from "@angular/core"
+import { Store } from "../../state/angular-redux/store"
 
-export class ResetSettingsButtonController {
-	private settingsNames = ""
-	private callback?: () => void
+@Component({
+	selector: "cc-reset-settings-button",
+	template: require("./resetSettingsButton.component.html")
+})
+export class ResetSettingsButtonComponent {
+	@Input() settingsKeys: string[]
+	@Input() tooltip?: string
+	@Input() label?: string
+	@Input() callback?: () => void
 
-	constructor(private storeService: StoreService) {
-		"ngInject"
-	}
+	constructor(@Inject(Store) private store: Store) {}
 
 	applyDefaultSettings() {
-		const tokens = this.settingsNames.replace(/ |\n/g, "").split(",")
-		const updatedSettings: RecursivePartial<Settings> = {}
-		let settingsCounter = 0
-
-		for (const token of tokens) {
-			const steps = token.split(".")
-			let defaultSettingsPointer = defaultState
-			let updatedSettingsPointer = updatedSettings
-
-			for (const [index, step] of steps.entries()) {
-				if (defaultSettingsPointer[step] !== undefined) {
-					if (!updatedSettingsPointer[step]) {
-						updatedSettingsPointer[step] = {}
-						settingsCounter++
-					}
-					if (index === steps.length - 1) {
-						updatedSettingsPointer[step] = defaultSettingsPointer[step]
-					} else {
-						defaultSettingsPointer = defaultSettingsPointer[step]
-						updatedSettingsPointer = updatedSettingsPointer[step]
-					}
-				}
-			}
-		}
-
-		if (settingsCounter !== 0) {
-			convertToVectors(updatedSettings)
-			this.storeService.dispatch(setState(updatedSettings))
-		}
+		const partialDefaultState = getPartialDefaultState(this.settingsKeys)
+		this.store.dispatch(setState(partialDefaultState))
 
 		if (this.callback) {
 			this.callback()
 		}
-	}
-}
-
-export const resetSettingsButtonComponent = {
-	selector: "resetSettingsButtonComponent",
-	template: require("./resetSettingsButton.component.html"),
-	controller: ResetSettingsButtonController,
-	bindings: {
-		settingsNames: "@",
-		tooltip: "@",
-		text: "@",
-		callback: "&"
 	}
 }

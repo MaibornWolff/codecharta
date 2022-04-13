@@ -1,22 +1,22 @@
 import { goto } from "../../../puppeteer.helper"
 import { SharpnessMode } from "../../codeCharta.model"
-import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
+import { UploadFileButtonPageObject } from "../toolBar/uploadFilesButton/uploadFilesButton.po"
 import { DialogGlobalSettingsPageObject } from "./dialog.globalSettings.po"
 
 describe("DialogGlobalSettings", () => {
 	let globalSettingsPageObject: DialogGlobalSettingsPageObject
-	let fileChooser: FileChooserPageObject
+	let uploadFilesButton: UploadFileButtonPageObject
 
 	beforeEach(async () => {
 		globalSettingsPageObject = new DialogGlobalSettingsPageObject()
-		fileChooser = new FileChooserPageObject()
+		uploadFilesButton = new UploadFileButtonPageObject()
 
 		await goto()
 		await setupTest()
 	})
 
 	async function setupTest() {
-		await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
+		await uploadFilesButton.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
 		await globalSettingsPageObject.openGlobalSettings()
 	}
 

@@ -8,13 +8,7 @@
 			<md-menu-item class="custom-configs-item">
 				<md-button class="custom-configs-dialog-name" ng-disabled="true">Custom Views</md-button>
 
-				<md-button
-					class="action-button"
-					onclick="document.getElementById('input-file-id').click()"
-					title="Upload Custom View (.cc.config.json file)."
-				>
-					<i class="fa fa-folder-open" aria-hidden="true"></i>
-				</md-button>
+				<cc-upload-custom-config-button></cc-upload-custom-config-button>
 				<cc-download-custom-configs-button></cc-download-custom-configs-button>
 				<cc-add-custom-config-button class="custom-configs-button-in-custom-views"></cc-add-custom-config-button>
 			</md-menu-item>

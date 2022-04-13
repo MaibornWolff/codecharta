@@ -23,7 +23,7 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { threeSceneServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import { threeSceneServiceProvider, codeChartaServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
@@ -40,9 +40,12 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
-import { MetricTypeModule } from "./codeCharta/ui/metricChooser/metricType/metricType.module"
 import { DownloadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
+import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
+import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
+import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
+import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
 
 @NgModule({
 	imports: [
@@ -67,12 +70,12 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
 		SearchPanelModule,
-		MetricTypeModule,
+		MetricTypeHoveredModule,
 		DownloadCustomConfigButtonModule,
-		MetricTypeModule,
-		MetricValueHoveredModule
+		MetricValueHoveredModule,
+		UploadCustomConfigButtonModule
 	],
-	providers: [threeSceneServiceProvider, IdToBuildingService],
+	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
 	declarations: [
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
@@ -80,6 +83,8 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
+		UploadFilesButtonComponent,
+		ResetSettingsButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -99,6 +104,8 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
+		UploadFilesButtonComponent,
+		ResetSettingsButtonComponent,
 		...dialogs
 	]
 })

@@ -1,18 +1,18 @@
 import { goto, clickButtonOnPageElement } from "../../../puppeteer.helper"
 import { LegendPanelObject } from "./legendPanel.po"
-import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"
+import { UploadFileButtonPageObject } from "../toolBar/uploadFilesButton/uploadFilesButton.po"
 
 describe("LegendPanel", () => {
 	let legendPanelObject: LegendPanelObject
-	let fileChooser: FileChooserPageObject
+	let uploadFilesButton: UploadFileButtonPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 
 	beforeEach(async () => {
 		legendPanelObject = new LegendPanelObject()
-		fileChooser = new FileChooserPageObject()
+		uploadFilesButton = new UploadFileButtonPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 
@@ -21,7 +21,7 @@ describe("LegendPanel", () => {
 	})
 
 	async function setupTest() {
-		await fileChooser.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
+		await uploadFilesButton.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
 		await legendPanelObject.open()
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")

@@ -1,4 +1,3 @@
-import "./addCustomConfig.component.scss"
 import { Component, Inject } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { AddCustomConfigDialogComponent } from "./addCustomConfigDialog/addCustomConfigDialog.component"
