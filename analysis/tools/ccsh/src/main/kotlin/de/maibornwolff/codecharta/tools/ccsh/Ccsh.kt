@@ -21,6 +21,8 @@ import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import mu.KotlinLogging
 import picocli.AutoComplete
 import picocli.CommandLine
+import java.io.PrintStream
+import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -75,6 +77,7 @@ class Ccsh : Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
+            commandLine.executionStrategy = CommandLine.RunAll()
             commandLine.execute(*sanitizeArgs(args))
             executeInteractiveParser(args, commandLine)
         }
@@ -82,7 +85,7 @@ class Ccsh : Callable<Void?> {
         private fun executeInteractiveParser(args: Array<String>, commandLine: CommandLine) {
             if (args.isEmpty() && !isParserUnknown(args, commandLine)) {
                 val selectedParser = ParserService.selectParser(commandLine)
-//                logger.info { "Executing $selectedParser" }
+                logger.info { "Executing $selectedParser" }
                 ParserService.executeSelectedParser(selectedParser)
             }
         }
