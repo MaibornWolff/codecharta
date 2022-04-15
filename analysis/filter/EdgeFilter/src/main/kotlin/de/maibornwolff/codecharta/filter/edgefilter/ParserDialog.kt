@@ -3,6 +3,9 @@ package de.maibornwolff.codecharta.filter.edgefilter
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 class ParserDialog {
     companion object : ParserDialogInterface {
@@ -12,7 +15,7 @@ class ParserDialog {
             var inputFileName = KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?")
             if (inputFileName.substringAfter(".") != EXTENSION)
                 inputFileName += ".$EXTENSION"
-            println("File path: $inputFileName")
+            logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String = KInquirer.promptInput(
