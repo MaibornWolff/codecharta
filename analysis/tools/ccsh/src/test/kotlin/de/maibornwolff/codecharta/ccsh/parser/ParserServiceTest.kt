@@ -5,12 +5,12 @@ import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
+import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
-import io.mockk.Runs
-import io.mockk.verify
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import picocli.CommandLine

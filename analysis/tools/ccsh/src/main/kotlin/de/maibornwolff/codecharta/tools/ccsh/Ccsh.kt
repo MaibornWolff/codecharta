@@ -21,8 +21,6 @@ import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import mu.KotlinLogging
 import picocli.AutoComplete
 import picocli.CommandLine
-import java.io.PrintStream
-import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
