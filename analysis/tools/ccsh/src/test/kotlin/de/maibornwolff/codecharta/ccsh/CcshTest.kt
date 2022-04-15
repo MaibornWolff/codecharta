@@ -12,7 +12,7 @@ class CcshTest {
     fun `parameters should be converted to kebab-case`() {
         val outStream = ByteArrayOutputStream()
         val originalOut = System.out
-        System.setOut(PrintStream(outStream))
+        System.setErr(PrintStream(outStream))
 
         Ccsh.main(arrayOf("someparser", ".", "--defaultExcludesS=AbC"))
 
