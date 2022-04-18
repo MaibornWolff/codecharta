@@ -51,8 +51,6 @@ import java.util.concurrent.Callable
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 
-private val logger = KotlinLogging.logger {}
-
 class Ccsh : Callable<Void?> {
 
     @CommandLine.Option(
@@ -72,6 +70,8 @@ class Ccsh : Callable<Void?> {
     }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
+
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
