@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.95.2] - 2022-04-19
+
 ### Changed
 
 -   Restrict upload in custom configs view to custom configs. Custom configs uploaded in the custom configs view are now allowed to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
