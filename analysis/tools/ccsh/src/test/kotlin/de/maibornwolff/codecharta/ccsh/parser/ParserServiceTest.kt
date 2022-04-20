@@ -12,7 +12,7 @@ import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.verify
 import org.assertj.core.api.Assertions
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
