@@ -1,5 +1,4 @@
-@import "~@angular/material/theming";
-@import "../../../../../material/material.scss";
+@use "../../../../../material/theme";
 
 .cc-add-custom-config-dialog .mat-dialog-container {
 	padding: 0;
@@ -8,8 +7,7 @@
 
 	mat-toolbar {
 		&.header {
-			background-color: mat-color($cc-primary);
-
+			background-color: theme.$cc-primary-color;
 			h2 {
 				color: white;
 			}

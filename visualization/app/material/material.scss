@@ -1,70 +1,26 @@
 @use "~@angular/material" as mat;
-@include mat.core();
+@use "./theme";
 
-$cc-palette: (
-	50: #e0f2f1,
-	100: #b2dfdb,
-	200: #80cbc4,
-	300: #4db6ac,
-	400: #26a69a,
-	500: #009688,
-	600: #00897b,
-	700: #00796b,
-	800: #00695c,
-	900: #004d40,
-	A100: #a7ffeb,
-	A200: #64ffda,
-	A400: #1de9b6,
-	A700: #00bfa5,
-	contrast: (
-		50: #000000,
-		100: #000000,
-		200: #000000,
-		300: #000000,
-		400: #000000,
-		500: #ffffff,
-		600: #ffffff,
-		700: #ffffff,
-		800: #ffffff,
-		900: #ffffff,
-		A100: #000000,
-		A200: #000000,
-		A400: #000000,
-		A700: #000000
-	)
-);
-
-$cc-primary: mat.define-palette($cc-palette);
-$cc-accent: mat.define-palette($cc-palette);
-$cc-theme: mat.define-light-theme(
-	(
-		color: (
-			primary: $cc-primary,
-			accent: $cc-accent
-		)
-	)
-);
-
-@include mat.core-theme($cc-theme);
-@include mat.button-theme($cc-theme);
-@include mat.button-toggle-theme($cc-theme);
-@include mat.progress-spinner-theme($cc-theme);
-@include mat.card-theme($cc-theme);
-@include mat.select-theme($cc-theme);
-@include mat.menu-theme($cc-theme);
-@include mat.dialog-theme($cc-theme);
-@include mat.tooltip-theme($cc-theme);
-@include mat.icon-theme($cc-theme);
-@include mat.checkbox-theme($cc-theme);
-@include mat.toolbar-theme($cc-theme);
-@include mat.input-theme($cc-theme);
-@include mat.form-field-theme($cc-theme);
-@include mat.list-theme($cc-theme);
-@include mat.divider-theme($cc-theme);
+@include mat.core-theme(theme.$cc-theme);
+@include mat.button-theme(theme.$cc-theme);
+@include mat.button-toggle-theme(theme.$cc-theme);
+@include mat.progress-spinner-theme(theme.$cc-theme);
+@include mat.card-theme(theme.$cc-theme);
+@include mat.select-theme(theme.$cc-theme);
+@include mat.menu-theme(theme.$cc-theme);
+@include mat.dialog-theme(theme.$cc-theme);
+@include mat.tooltip-theme(theme.$cc-theme);
+@include mat.icon-theme(theme.$cc-theme);
+@include mat.checkbox-theme(theme.$cc-theme);
+@include mat.toolbar-theme(theme.$cc-theme);
+@include mat.input-theme(theme.$cc-theme);
+@include mat.form-field-theme(theme.$cc-theme);
+@include mat.list-theme(theme.$cc-theme);
+@include mat.divider-theme(theme.$cc-theme);
 
 @import "./matSelect.scss";
 @import "./matMenu.scss";
 
 .cc-mat-raised {
-	background-color: rgb(0, 150, 136);
+	background-color: theme.$cc-primary-color;
 }
