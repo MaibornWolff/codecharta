@@ -23,7 +23,7 @@ jobs:
         node-version: '16'
 
     - name: Cache root node modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         cache-name: cache-root-node-modules
       with:
@@ -58,7 +58,7 @@ jobs:
         node-version: '16'
 
     - name: Cache node modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         cache-name: cache-node-modules
       with:
@@ -100,7 +100,7 @@ jobs:
         node-version: '16'
 
     - name: Cache node modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         cache-name: cache-node-modules
       with:
