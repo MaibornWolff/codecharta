@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Restrict upload in custom configs view to custom configs. Custom configs uploaded in the custom configs view are now allowed to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
+-   Restrict upload in custom views menu to custom views. Custom views uploaded in the custom views menu are now allowed to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
 
 ### Chore 👨‍💻 👩‍💻
 
