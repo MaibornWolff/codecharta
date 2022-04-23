@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Introduce custom angular material theme [#2784](https://github.com/MaibornWolff/codecharta/pull/2784)
+
 ## [1.95.2] - 2022-04-19
 
 ### Changed
