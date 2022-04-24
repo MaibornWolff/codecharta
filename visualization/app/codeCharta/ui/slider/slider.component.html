@@ -1,1 +1,7 @@
-<mat-slider [step]="this.step" [min]="this.min" [max]="this.max" [value]="this.value" (input)="this.handleOnChange($event)"> </mat-slider>
+<div class="cc-slider-container">
+	<mat-slider [step]="this.step" [min]="this.min" [max]="this.max" [value]="this.value" (input)="this.handleOnChange($event)">
+	</mat-slider>
+	<mat-form-field>
+		<input matInput type="number" [value]="this.value" />
+	</mat-form-field>
+</div>

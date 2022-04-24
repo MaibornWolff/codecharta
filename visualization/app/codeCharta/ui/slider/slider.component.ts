@@ -1,3 +1,4 @@
+import "./slider.component.scss"
 import { Component, Input } from "@angular/core"
 import { MatSliderChange } from "@angular/material/slider"
 
