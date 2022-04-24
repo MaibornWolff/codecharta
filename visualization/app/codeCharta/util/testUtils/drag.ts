@@ -2,26 +2,6 @@
 
 import { fireEvent } from "@testing-library/dom"
 
-// https://stackoverflow.com/a/53946549/1179377
-function isElement(object) {
-	if (typeof object !== "object") {
-		return false
-	}
-	let prototypeString, prototype
-	do {
-		prototype = Object.getPrototypeOf(object)
-		// to work in iframe
-		prototypeString = Object.prototype.toString.call(prototype)
-		// '[object Document]' is used to detect document
-		if (prototypeString === "[object Element]" || prototypeString === "[object Document]") {
-			return true
-		}
-		object = prototype
-		// null is the terminal of object
-	} while (prototype !== null)
-	return false
-}
-
 function getElementClientCenter(element) {
 	const { left, top, width, height } = element.getBoundingClientRect()
 	return {
@@ -30,27 +10,22 @@ function getElementClientCenter(element) {
 	}
 }
 
-const getCoords = charlie => (isElement(charlie) ? getElementClientCenter(charlie) : charlie)
-
 const sleep = async ms =>
 	new Promise(resolve => {
 		setTimeout(resolve, ms)
 	})
 
 type DragOptions = {
-	to?: number
-	delta?: { x: number; y: number }
+	delta: { x: number; y: number }
 	steps?: number
 	duration?: number
 }
-export async function drag(element: Element, { to: inTo, delta, steps = 20, duration = 500 }: DragOptions) {
+export async function drag(element: Element, { delta, steps = 20, duration = 500 }: DragOptions) {
 	const from = getElementClientCenter(element)
-	const to = delta
-		? {
-				x: from.x + delta.x,
-				y: from.y + delta.y
-		  }
-		: getCoords(inTo)
+	const to = {
+		x: from.x + delta.x,
+		y: from.y + delta.y
+	}
 
 	const step = {
 		x: (to.x - from.x) / steps,
