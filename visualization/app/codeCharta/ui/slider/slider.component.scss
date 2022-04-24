@@ -2,11 +2,21 @@ cc-slider {
 	width: 100%;
 
 	.cc-slider-container {
+		position: relative;
 		display: flex;
+
+		label {
+			position: absolute;
+			top: 0;
+			font-size: 0.8em;
+			color: grey;
+			left: 4px;
+		}
 
 		mat-slider {
 			flex: 1;
 			margin-right: 8px;
+			margin-left: -4px;
 		}
 
 		mat-form-field {

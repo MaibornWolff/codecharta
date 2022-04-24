@@ -13,7 +13,16 @@ export class SliderComponent {
 	@Input() max: number
 	@Input() onChange: (number) => void
 
-	handleOnChange($event: MatSliderChange) {
-		console.log($event.value)
+	handleSliderOnChange($event: MatSliderChange) {
+		if ($event.value !== this.value) {
+			this.onChange($event.value)
+		}
+	}
+
+	handleInputOnChange($event: InputEvent) {
+		const newValue = Number.parseInt(($event.target as HTMLInputElement).value)
+		if (newValue !== this.value) {
+			this.onChange(newValue)
+		}
 	}
 }
