@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787/files)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Introduce custom angular material theme [#2784](https://github.com/MaibornWolff/codecharta/pull/2784)
