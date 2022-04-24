@@ -17,6 +17,7 @@
 @include mat.form-field-theme(theme.$cc-theme);
 @include mat.list-theme(theme.$cc-theme);
 @include mat.divider-theme(theme.$cc-theme);
+@include mat.slider-theme(theme.$cc-theme);
 
 @import "./matSelect.scss";
 @import "./matMenu.scss";
