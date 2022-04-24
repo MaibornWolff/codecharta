@@ -27,6 +27,7 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		FilesService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedMargin = debounce((margin: number) => {
+			this.storeService.dispatch(setDynamicMargin(false))
 			this.storeService.dispatch(setMargin(margin))
 		}, AreaSettingsPanelController.DEBOUNCE_TIME)
 	}
