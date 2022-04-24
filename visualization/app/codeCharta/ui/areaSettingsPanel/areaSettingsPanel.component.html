@@ -2,6 +2,8 @@
 	title="Amount of space between buildings in percent"
 	[value]="$ctrl._viewModel.margin"
 	[on-change]="$ctrl.applyDebouncedMargin"
+	[min]="1"
+	[max]="100"
 ></cc-slider>
 
 <div class="bottom-row">
