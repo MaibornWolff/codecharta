@@ -59,7 +59,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun insertEdgeAsNode(nodeEdgeName: String) {
         val nodeFilename = nodeEdgeName.split(pathSeparator).reversed().first()
         val nodePath = nodeEdgeName.split(pathSeparator)
-        if (nodePath.size < 2) {
+        if (nodePath.size <= 1) {
             println("No parent node found")
         } else {
             val nodeParentPath = nodePath.subList(2, nodePath.size - 1)
@@ -128,7 +128,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             val attributeType = getAttributeTypeByKey(key)
             val filteredAttribute = filteredEdges.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue =
-                    filteredAttribute.sumBy { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
+                filteredAttribute.sumOf { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
 
             if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
 
