@@ -32,9 +32,5 @@ class ParserDialog {
             )
             return listOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
         }
-
-        override fun isValidFileName(fileName: String): Boolean {
-            return hasExpectedExtension(fileName, EXTENSION)
-        }
     }
 }
