@@ -4,6 +4,7 @@ import { ColorLabelsActions } from "./colorLabels.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { colorLabelOptions } from "../../../../codeCharta.model"
 
+// todo delete
 export interface ColorLabelsSubscriber {
 	onColorLabelsChanged(colorLabels: colorLabelOptions)
 }

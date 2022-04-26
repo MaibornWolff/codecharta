@@ -3,6 +3,7 @@ import { IRootScopeService } from "angular"
 import { AmountOfTopLabelsActions } from "./amountOfTopLabels.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
 
+// todo delete
 export interface AmountOfTopLabelsSubscriber {
 	onAmountOfTopLabelsChanged(amountOfTopLabels: number)
 }

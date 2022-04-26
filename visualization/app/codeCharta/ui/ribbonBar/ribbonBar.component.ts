@@ -60,7 +60,7 @@ export class RibbonBarController implements ExperimentalFeaturesEnabledSubscribe
 
 	private panelSelectionComponents = [
 		"CC-AREA-SETTINGS-PANEL",
-		"HEIGHT-SETTINGS-PANEL-COMPONENT",
+		"CC-HEIGHT-SETTINGS-PANEL",
 		"COLOR-SETTINGS-PANEL-COMPONENT",
 		"CC-EDGE-SETTINGS-PANEL",
 		"COLOR-CHROME"

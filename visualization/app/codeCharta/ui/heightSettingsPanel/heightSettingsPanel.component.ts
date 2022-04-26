@@ -1,15 +1,9 @@
-import "./heightSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { Vector3 } from "three"
 import { StoreService } from "../../state/store.service"
-import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setInvertHeight } from "../../state/store/appSettings/invertHeight/invertHeight.actions"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import debounce from "lodash.debounce"
-import {
-	AmountOfTopLabelsService,
-	AmountOfTopLabelsSubscriber
-} from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/appSettings/invertHeight/invertHeight.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
@@ -25,62 +19,43 @@ import {
 	ShowMetricLabelNodeNameSubscriber
 } from "../../state/store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { ColorLabelsService, ColorLabelsSubscriber } from "../../state/store/appSettings/colorLabels/colorLabels.service"
-import { colorLabelOptions } from "../../codeCharta.model"
 
 export class HeightSettingsPanelController
 	implements
 		FilesSelectionSubscriber,
-		AmountOfTopLabelsSubscriber,
 		ScalingSubscriber,
 		InvertHeightSubscriber,
 		ShowMetricLabelNameValueSubscriber,
-		ShowMetricLabelNodeNameSubscriber,
-		ColorLabelsSubscriber
+		ShowMetricLabelNodeNameSubscriber
 {
 	private static DEBOUNCE_TIME = 400
-	private readonly applyDebouncedTopLabels: () => void
 	private readonly applyDebouncedScaling: (newScaling: Vector3) => void
 
 	private _viewModel: {
-		amountOfTopLabels: number
 		scalingY: number
 		invertHeight: boolean
 		isDeltaState: boolean
 		showMetricValue: boolean
 		showNodeName: boolean
-		sliderDisabled: boolean
 	} = {
-		amountOfTopLabels: null,
 		scalingY: null,
 		invertHeight: null,
 		isDeltaState: null,
 		showMetricValue: true,
-		showNodeName: true,
-		sliderDisabled: false
+		showNodeName: true
 	}
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
-		AmountOfTopLabelsService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		InvertHeightService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		LabelShowNodeNameService.subscribe(this.$rootScope, this)
 		LabelShowMetricValueService.subscribe(this.$rootScope, this)
-		ColorLabelsService.subscribe(this.$rootScope, this)
-
-		this.applyDebouncedTopLabels = debounce(() => {
-			this.storeService.dispatch(setAmountOfTopLabels(this._viewModel.amountOfTopLabels))
-		}, HeightSettingsPanelController.DEBOUNCE_TIME)
 
 		this.applyDebouncedScaling = debounce(newScaling => {
 			this.storeService.dispatch(setScaling(newScaling))
 		}, HeightSettingsPanelController.DEBOUNCE_TIME)
-	}
-
-	onAmountOfTopLabelsChanged(amountOfTopLabels: number) {
-		this._viewModel.amountOfTopLabels = amountOfTopLabels
 	}
 
 	onInvertHeightChanged(invertHeight: boolean) {
@@ -101,14 +76,6 @@ export class HeightSettingsPanelController
 
 	onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.isDeltaState = isDeltaState(files)
-	}
-
-	onColorLabelsChanged(colorLabels: colorLabelOptions) {
-		this._viewModel.sliderDisabled = colorLabels.negative || colorLabels.neutral || colorLabels.positive ? true : false
-	}
-
-	applySettingsAmountOfTopLabels() {
-		this.applyDebouncedTopLabels()
 	}
 
 	applySettingsMetricLabelValueChanged() {
