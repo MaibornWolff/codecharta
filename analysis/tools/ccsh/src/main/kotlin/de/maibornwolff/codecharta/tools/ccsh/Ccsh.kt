@@ -76,23 +76,25 @@ class Ccsh : Callable<Void?> {
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
-            commandLine.execute(*sanitizeArgs(args))
-            executeInteractiveParser(args, commandLine)
+            if (args.isEmpty() || isParserUnknown(args, commandLine)) {
+                executeInteractiveParser(commandLine)
+            } else {
+                commandLine.execute(*sanitizeArgs(args))
+            }
         }
 
-        private fun executeInteractiveParser(args: Array<String>, commandLine: CommandLine) {
-            if (args.isEmpty() || isParserUnknown(args, commandLine)) {
+        private fun executeInteractiveParser(commandLine: CommandLine) {
                 val selectedParser = ParserService.selectParser(commandLine)
                 logger.info { "Executing $selectedParser" }
                 ParserService.executeSelectedParser(selectedParser)
-            }
         }
 
         private fun isParserUnknown(args: Array<String>, commandLine: CommandLine): Boolean {
             if (args.isNotEmpty()) {
                 val firstArg = args.first()
                 val parserList = commandLine.subcommands.keys
-                return !parserList.contains(firstArg)
+                val optionsList = commandLine.commandSpec.options().map { it.names().toMutableList() }.flatten()
+                return !parserList.contains(firstArg) && !optionsList.contains(firstArg)
             }
             return false
         }

@@ -27,19 +27,20 @@ class CcshTest {
     }
 
     @Test
-    fun `should convert parameters to kebab-case`() {
+    fun `should convert arguments to kebab-case`() {
         val outStream = ByteArrayOutputStream()
         val originalOut = System.out
         System.setErr(PrintStream(outStream))
 
-        Ccsh.main(arrayOf("someparser", ".", "--defaultExcludesS=AbC"))
+        Ccsh.main(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
 
         Assertions.assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
         System.setOut(originalOut)
     }
 
     @Test
-    fun `should return help message`() {
+    fun `should just show help message`() {
+        mockkObject(ParserService)
         val ccshCLI = CommandLine(Ccsh())
         val contentOutput = StringWriter()
         ccshCLI.out = PrintWriter(contentOutput)
@@ -48,10 +49,11 @@ class CcshTest {
 
         Assertions.assertThat(exitCode).isEqualTo(0)
         Assertions.assertThat(contentOutput.toString()).contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
+        verify(exactly = 0) { ParserService.executeSelectedParser(any()) }
     }
 
     @Test
-    fun `should call interactive parser when no arguments or parameters are passed`() {
+    fun `should star interactive parser when no arguments or parameters are passed`() {
         mockkObject(ParserService)
         every {
             ParserService.selectParser(any())
@@ -66,7 +68,7 @@ class CcshTest {
     }
 
     @Test
-    fun `should call interactive parser`() {
+    fun `should execute interactive parser when passed parser is unknown`() {
         mockkObject(ParserService)
         every {
             ParserService.selectParser(any())
@@ -75,7 +77,7 @@ class CcshTest {
             ParserService.executeSelectedParser(any())
         } just Runs
 
-        Ccsh.main(emptyArray())
+        Ccsh.main(arrayOf("unknownparser"))
 
         verify { ParserService.executeSelectedParser(any()) }
     }
