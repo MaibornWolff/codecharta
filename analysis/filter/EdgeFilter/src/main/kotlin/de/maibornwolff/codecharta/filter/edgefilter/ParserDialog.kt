@@ -30,6 +30,7 @@ class ParserDialog {
                 hint = defaultPathSeparator,
                 default = defaultPathSeparator
             )
+
             return listOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
         }
     }
