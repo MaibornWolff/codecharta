@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787/files)
+-   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
 
 ### Chore 👨‍💻 👩‍💻
 
