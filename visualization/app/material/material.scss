@@ -1,8 +1,26 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@use "~@angular/material" as mat;
+@use "./theme";
+
+@include mat.core-theme(theme.$cc-theme);
+@include mat.button-theme(theme.$cc-theme);
+@include mat.button-toggle-theme(theme.$cc-theme);
+@include mat.progress-spinner-theme(theme.$cc-theme);
+@include mat.card-theme(theme.$cc-theme);
+@include mat.select-theme(theme.$cc-theme);
+@include mat.menu-theme(theme.$cc-theme);
+@include mat.dialog-theme(theme.$cc-theme);
+@include mat.tooltip-theme(theme.$cc-theme);
+@include mat.icon-theme(theme.$cc-theme);
+@include mat.checkbox-theme(theme.$cc-theme);
+@include mat.toolbar-theme(theme.$cc-theme);
+@include mat.input-theme(theme.$cc-theme);
+@include mat.form-field-theme(theme.$cc-theme);
+@include mat.list-theme(theme.$cc-theme);
+@include mat.divider-theme(theme.$cc-theme);
 
 @import "./matSelect.scss";
 @import "./matMenu.scss";
 
 .cc-mat-raised {
-	background-color: rgb(0, 150, 136);
+	background-color: theme.$cc-primary-color;
 }

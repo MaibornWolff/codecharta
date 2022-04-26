@@ -1,3 +1,5 @@
+@use "./theme";
+
 .mat-select {
 	text-align: start;
 	border-bottom-width: 1px;
@@ -7,9 +9,9 @@
 
 .mat-select:focus {
 	border-bottom-width: 2px;
-	border-bottom-color: rgb(0, 150, 136);
+	border-bottom-color: theme.$cc-primary-color;
 }
 
 .mat-option.mat-selected.mat-active {
-	color: rgb(0, 137, 123);
+	color: theme.$cc-emphasized-color;
 }

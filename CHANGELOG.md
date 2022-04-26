@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Introduce custom angular material theme [#2784](https://github.com/MaibornWolff/codecharta/pull/2784)
+
 ## [1.95.2] - 2022-04-19
 
 ### Changed
 
--   Restrict upload in custom configs view to custom configs. Custom configs uploaded in the custom configs view are now allowed to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
+-   Restrict upload in custom views menu to custom views. Custom views uploaded in the custom views menu are now allowed to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
 
 ### Chore 👨‍💻 👩‍💻
 
