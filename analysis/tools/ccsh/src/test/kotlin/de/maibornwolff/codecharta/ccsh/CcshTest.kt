@@ -6,10 +6,9 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockkObject
-import io.mockk.verify
 import io.mockk.unmockkAll
+import io.mockk.verify
 import org.assertj.core.api.Assertions
-import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -23,7 +22,7 @@ import java.io.StringWriter
 class CcshTest {
 
     @AfterAll
-    fun afterTest(){
+    fun afterTest() {
         unmockkAll()
     }
 
@@ -48,7 +47,7 @@ class CcshTest {
         val exitCode = ccshCLI.execute("-h")
 
         Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(contentOutput.toString()).contains("Usage: ccsh [-hv] [COMMAND]","Command Line Interface for CodeCharta analysis")
+        Assertions.assertThat(contentOutput.toString()).contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
     }
 
     @Test
