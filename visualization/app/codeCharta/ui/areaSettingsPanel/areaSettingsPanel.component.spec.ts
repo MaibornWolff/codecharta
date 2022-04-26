@@ -7,7 +7,6 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { DynamicMarginService } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService } from "../../state/store/dynamicSettings/margin/margin.service"
-import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { FilesService } from "../../state/store/files/files.service"
 
 describe("AreaSettingsPanelController", () => {
@@ -90,22 +89,14 @@ describe("AreaSettingsPanelController", () => {
 	})
 
 	describe("onChangeMarginSlider", () => {
-		it("should set dynamicMargin to false", () => {
-			storeService.dispatch(setDynamicMargin(true))
-
-			areaSettingsPanelController.onChangeMarginSlider()
-
-			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
-		})
-
 		it("should update margin and dynamicMargin in store", done => {
 			areaSettingsPanelController["_viewModel"].dynamicMargin = false
 			areaSettingsPanelController["_viewModel"].margin = 28
 
-			areaSettingsPanelController.onChangeMarginSlider()
+			areaSettingsPanelController.applyDebouncedMargin(42)
 
 			setTimeout(() => {
-				expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+				expect(storeService.getState().dynamicSettings.margin).toEqual(42)
 				expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 				done()
 			}, AreaSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)

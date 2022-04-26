@@ -46,6 +46,7 @@ import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/up
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
 import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
+import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 
 @NgModule({
 	imports: [
@@ -58,6 +59,7 @@ import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButto
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect
 		]),
+		SliderModule,
 		AttributeSideBarModule,
 		MaterialModule,
 		FormsModule,
