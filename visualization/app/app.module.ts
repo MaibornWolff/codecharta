@@ -26,7 +26,6 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { threeSceneServiceProvider, codeChartaServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
-import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.component"
 import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
 import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
@@ -45,8 +44,9 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
-import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
+import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
+import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.module"
 
 @NgModule({
 	imports: [
@@ -75,18 +75,18 @@ import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 		MetricTypeHoveredModule,
 		DownloadCustomConfigButtonModule,
 		MetricValueHoveredModule,
-		UploadCustomConfigButtonModule
+		UploadCustomConfigButtonModule,
+		AreaSettingsPanelModule,
+		ResetSettingsButtonModule
 	],
 	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
 	declarations: [
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
-		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
 		UploadFilesButtonComponent,
-		ResetSettingsButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -98,7 +98,6 @@ import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
 		FilePanelDeltaSelectorComponent,
-		InvertAreaOptionComponent,
 		AddCustomConfigButtonComponent,
 		FocusButtonsComponent,
 		RemoveFileButtonComponent,
@@ -107,7 +106,6 @@ import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
 		UploadFilesButtonComponent,
-		ResetSettingsButtonComponent,
 		...dialogs
 	]
 })
