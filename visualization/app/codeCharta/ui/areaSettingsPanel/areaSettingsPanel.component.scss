@@ -20,20 +20,6 @@ cc-area-settings-panel {
 		padding-top: 3px;
 	}
 
-	md-slider-container {
-		position: relative;
-		.slider-title {
-			position: absolute;
-			top: 0;
-			font-size: 0.8em;
-			color: grey;
-			left: 4px;
-		}
-		.margin-input {
-			height: 24px;
-		}
-	}
-
 	.bottom-row {
 		align-items: center;
 		display: flex;

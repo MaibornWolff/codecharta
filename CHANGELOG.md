@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Add interactive dialog support for the parsers [#2737](https://github.com/MaibornWolff/codecharta/pull/2737) <br>
     ![m](https://user-images.githubusercontent.com/48621967/161549546-1463914e-c223-4912-acb1-db4e357e76c5.png)
 
+### Fixed 🐞
+
+-   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Introduce custom angular material theme [#2784](https://github.com/MaibornWolff/codecharta/pull/2784)

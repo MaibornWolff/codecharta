@@ -10,7 +10,7 @@ import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/
 
 export class AreaSettingsPanelController implements FilesSelectionSubscriber, DynamicMarginSubscriber, MarginSubscriber {
 	private static DEBOUNCE_TIME = 400
-	private readonly applyDebouncedMargin: () => void
+	applyDebouncedMargin: (margin: number) => void
 
 	private _viewModel: {
 		margin: number
@@ -26,8 +26,9 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		MarginService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 
-		this.applyDebouncedMargin = debounce(() => {
-			this.storeService.dispatch(setMargin(this._viewModel.margin))
+		this.applyDebouncedMargin = debounce((margin: number) => {
+			this.storeService.dispatch(setDynamicMargin(false))
+			this.storeService.dispatch(setMargin(margin))
 		}, AreaSettingsPanelController.DEBOUNCE_TIME)
 	}
 
@@ -46,11 +47,6 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 
 	private applyDynamicMargin() {
 		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
-	}
-
-	onChangeMarginSlider() {
-		this.applyDebouncedMargin()
-		this.storeService.dispatch(setDynamicMargin(false))
 	}
 }
 

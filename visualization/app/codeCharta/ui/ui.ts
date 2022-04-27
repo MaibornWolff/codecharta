@@ -30,6 +30,7 @@ import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
 import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
 import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
+import { SliderComponent } from "./slider/slider.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -63,3 +64,4 @@ angular
 	])
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
 	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))
+	.directive("ccSlider", downgradeComponent({ component: SliderComponent }))
