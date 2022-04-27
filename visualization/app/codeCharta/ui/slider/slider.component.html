@@ -1,0 +1,8 @@
+<div class="cc-slider-container">
+	<label>Margin</label>
+	<mat-slider [step]="this.step" [min]="this.min" [max]="this.max" [value]="this.value" (input)="this.handleSliderOnChange($event)">
+	</mat-slider>
+	<mat-form-field>
+		<input matInput type="number" [value]="this.value" (input)="this.handleInputOnChange($event)" />
+	</mat-form-field>
+</div>
