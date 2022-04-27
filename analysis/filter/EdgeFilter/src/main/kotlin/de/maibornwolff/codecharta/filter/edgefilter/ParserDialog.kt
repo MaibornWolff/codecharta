@@ -10,10 +10,12 @@ private val logger = KotlinLogging.logger {}
 class ParserDialog {
     companion object : ParserDialogInterface {
         private const val EXTENSION = "cc.json"
+        private val extensionPattern = Regex(".($EXTENSION)$")
+
         override fun collectParserArgs(): List<String> {
 
             var inputFileName = KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?")
-            if (inputFileName.substringAfter(".") != EXTENSION)
+            if (!extensionPattern.containsMatchIn(inputFileName))
                 inputFileName += ".$EXTENSION"
             logger.info { "File path: $inputFileName" }
 
