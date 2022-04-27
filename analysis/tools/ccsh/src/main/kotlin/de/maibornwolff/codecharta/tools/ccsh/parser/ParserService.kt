@@ -20,20 +20,20 @@ class ParserService {
             val args = emptyArray<String>()
 
             when (selectedParser) {
-                "check" -> print("Not implemented yet")
-                "merge" -> print("Not implemented yet")
+                "check" -> printNotSupported(selectedParser)
+                "merge" -> printNotSupported(selectedParser)
                 "edgefilter" -> EdgeFilter.main(args)
-                "modify" -> print("Not implemented yet")
-                "csvimport" -> print("Not implemented yet")
-                "sonarimport" -> print("Not implemented yet")
-                "sourcemonitorimport" -> print("Not implemented yet")
-                "gitlogparser" -> print("Not implemented yet")
-                "svnlogparser" -> print("Not implemented yet")
-                "csvexport" -> print("Not implemented yet")
-                "sourcecodeparser" -> print("Not implemented yet")
-                "codemaatimport" -> print("Not implemented yet")
-                "tokeiimporter" -> print("Not implemented yet")
-                "rawtextparser" -> print("Not implemented yet")
+                "modify" -> printNotSupported(selectedParser)
+                "csvimport" -> printNotSupported(selectedParser)
+                "sonarimport" -> printNotSupported(selectedParser)
+                "sourcemonitorimport" -> printNotSupported(selectedParser)
+                "gitlogparser" -> printNotSupported(selectedParser)
+                "svnlogparser" -> printNotSupported(selectedParser)
+                "csvexport" -> printNotSupported(selectedParser)
+                "sourcecodeparser" -> printNotSupported(selectedParser)
+                "codemaatimport" -> printNotSupported(selectedParser)
+                "tokeiimporter" -> printNotSupported(selectedParser)
+                "rawtextparser" -> printNotSupported(selectedParser)
                 else -> {
                     println("No valid parser was selected.")
                 }
@@ -52,6 +52,11 @@ class ParserService {
 
         private fun extractParserName(parserNameWithDescription: String): String {
             return parserNameWithDescription.substringBefore(' ')
+        }
+
+        private fun printNotSupported(parserName: String) {
+            println("The interactive usage of $parserName is not supported yet.\n" +
+                    "Please specify the full command to run the parser.")
         }
     }
 }

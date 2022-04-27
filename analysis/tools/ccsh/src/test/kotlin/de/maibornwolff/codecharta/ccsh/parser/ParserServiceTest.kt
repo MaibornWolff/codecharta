@@ -52,14 +52,14 @@ class ParserServiceTest {
     fun `should execute check parser`() {
         ParserService.executeSelectedParser("check")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute merge parser`() {
         ParserService.executeSelectedParser("merge")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
@@ -76,63 +76,63 @@ class ParserServiceTest {
     fun `should execute modify parser`() {
         ParserService.executeSelectedParser("modify")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sonarimport parser`() {
         ParserService.executeSelectedParser("sonarimport")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sourcemonitorimport parser`() {
         ParserService.executeSelectedParser("sourcemonitorimport")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute gitlogparser parser`() {
         ParserService.executeSelectedParser("gitlogparser")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute svnlogparser parser`() {
         ParserService.executeSelectedParser("svnlogparser")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute csvexport parser`() {
         ParserService.executeSelectedParser("csvexport")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sourcecodeparser parser`() {
         ParserService.executeSelectedParser("sourcecodeparser")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute tokeiimporter parser`() {
         ParserService.executeSelectedParser("tokeiimporter")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute rawtextparser parser`() {
         ParserService.executeSelectedParser("rawtextparser")
 
-        Assertions.assertThat(outContent.toString()).contains("Not implemented yet")
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
