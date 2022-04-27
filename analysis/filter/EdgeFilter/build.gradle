@@ -12,6 +12,7 @@ dependencies {
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.fastjson', name: 'boon', version: boon_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+    implementation "com.github.kotlin-inquirer:kotlin-inquirer:$kotlin_inquirer_version"
 
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 

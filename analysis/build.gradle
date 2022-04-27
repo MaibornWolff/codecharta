@@ -20,6 +20,7 @@ buildscript {
         sonar_java_version = '6.8.0.23379'
         sonarqube_version = '3.0'
         univocity_parsers_version = '2.9.1'
+        kotlin_inquirer_version = '0.1.0'
 
         // Test dependency versions
         assertj_version = '3.22.0'
@@ -81,7 +82,6 @@ subprojects {
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
         implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: kotlinx_coroutines_version
-        implementation 'com.github.kotlin-inquirer:kotlin-inquirer:0.1.0'
         testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5_version")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5_version")
