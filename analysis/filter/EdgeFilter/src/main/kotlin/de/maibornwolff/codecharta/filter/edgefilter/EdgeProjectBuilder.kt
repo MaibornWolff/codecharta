@@ -119,8 +119,8 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     }
 
     private fun getAggregatedAttributes(
-            listOfAttributes: MutableList<String>,
-            filteredEdges: List<Edge>
+        listOfAttributes: MutableList<String>,
+        filteredEdges: List<Edge>
     ): MutableMap<String, Any> {
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
