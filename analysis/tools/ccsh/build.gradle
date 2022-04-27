@@ -63,7 +63,6 @@ dependencies {
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
 
     testImplementation("org.junit.platform:junit-platform-runner:$junit_platform_version")
-    implementation "org.jetbrains.kotlin:kotlin-script-runtime:1.6.10"
 }
 
 jar {
