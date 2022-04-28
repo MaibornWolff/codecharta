@@ -6,7 +6,7 @@ import { amountOfTopLabelsSelector } from "../../../state/store/appSettings/amou
 import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabled.selector"
 import { debounce } from "lodash"
 import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { showMetricLabelNodeNameSelector } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNodeName.selector"
+import { showMetricLabelNodeNameSelector } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.selector"
 import { showMetricLabelNodeValueSelector } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.selector"
 import { MatCheckboxChange } from "@angular/material/checkbox"
 import { setShowMetricLabelNodeName } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
