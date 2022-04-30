@@ -45,8 +45,9 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
-import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
+import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
+import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.module"
 
 @NgModule({
 	imports: [
@@ -75,7 +76,9 @@ import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 		MetricTypeHoveredModule,
 		DownloadCustomConfigButtonModule,
 		MetricValueHoveredModule,
-		UploadCustomConfigButtonModule
+		UploadCustomConfigButtonModule,
+		HeightSettingsPanelModule,
+		ResetSettingsButtonModule
 	],
 	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
 	declarations: [
@@ -86,7 +89,6 @@ import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
 		UploadFilesButtonComponent,
-		ResetSettingsButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -107,7 +109,6 @@ import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
 		UploadFilesButtonComponent,
-		ResetSettingsButtonComponent,
 		...dialogs
 	]
 })
