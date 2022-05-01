@@ -7,12 +7,12 @@ export enum ScalingActions {
 
 export interface SetScalingAction extends CCAction {
 	type: ScalingActions.SET_SCALING
-	payload: Vector3
+	payload: Partial<Vector3>
 }
 
 export type ScalingAction = SetScalingAction
 
-export function setScaling(scaling: Vector3 = defaultScaling): SetScalingAction {
+export function setScaling(scaling: Partial<Vector3> = defaultScaling): SetScalingAction {
 	return {
 		type: ScalingActions.SET_SCALING,
 		payload: scaling

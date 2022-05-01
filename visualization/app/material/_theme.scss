@@ -1,0 +1,52 @@
+@use "~@angular/material" as mat;
+
+@import "~@angular/material/theming";
+
+@include mat.core();
+
+$cc-palette: (
+	50: #e0f2f1,
+	100: #b2dfdb,
+	200: #80cbc4,
+	300: #4db6ac,
+	400: #26a69a,
+	500: #009688,
+	600: #00897b,
+	700: #00796b,
+	800: #00695c,
+	900: #004d40,
+	A100: #a7ffeb,
+	A200: #64ffda,
+	A400: #1de9b6,
+	A700: #00bfa5,
+	contrast: (
+		50: #000000,
+		100: #000000,
+		200: #000000,
+		300: #000000,
+		400: #000000,
+		500: #ffffff,
+		600: #ffffff,
+		700: #ffffff,
+		800: #ffffff,
+		900: #ffffff,
+		A100: #000000,
+		A200: #000000,
+		A400: #000000,
+		A700: #000000
+	)
+);
+
+$cc-primary: mat.define-palette($cc-palette);
+$cc-accent: mat.define-palette($cc-palette);
+$cc-theme: mat.define-light-theme(
+	(
+		color: (
+			primary: $cc-primary,
+			accent: $cc-accent
+		)
+	)
+);
+
+$cc-primary-color: mat-color($cc-primary);
+$cc-emphasized-color: mat-color($cc-primary, 600);

@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.95.1",
+	"version": "1.95.2",
 	"engines": {
 		"node": ">=16"
 	},
@@ -125,7 +125,7 @@
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
 		"nouislider": "^15.0.0",
-		"nw": "^0.62.0",
+		"nw": "^0.63.0",
 		"percent-round": "^2.2.1",
 		"redux": "^4.0.5",
 		"remark": "^13.0.0",
@@ -180,10 +180,10 @@
 		"lint-staged": "^11.0.0",
 		"makeshift": "^1.1.0",
 		"node-polyfill-webpack-plugin": "^1.1.4",
-		"node-sass": "^7.0.0",
 		"nwjs-builder-phoenix": "^1.15.0",
 		"puppeteer": "^13.0.0",
-		"sass-loader": "^12.0.0",
+		"sass": "^1.50.1",
+		"sass-loader": "^12.6.0",
 		"style-loader": "^2.0.0",
 		"terser-webpack-plugin": "^5.3.1",
 		"ts-jest": "^26.5.5",

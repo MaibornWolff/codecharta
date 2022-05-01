@@ -46,7 +46,9 @@ import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.modul
 import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
-import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
+import { SliderModule } from "./codeCharta/ui/slider/slider.module"
+import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
+import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 
 @NgModule({
@@ -60,6 +62,7 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect
 		]),
+		SliderModule,
 		AttributeSideBarModule,
 		MaterialModule,
 		FormsModule,
@@ -73,7 +76,9 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 		SearchPanelModule,
 		MetricTypeHoveredModule,
 		MetricValueHoveredModule,
-		CustomConfigsModule
+		CustomConfigsModule,
+		HeightSettingsPanelModule,
+		ResetSettingsButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -90,7 +95,6 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 		EdgeMetricToggleComponent,
 		RemoveFileButtonComponent,
 		UploadFilesButtonComponent,
-		ResetSettingsButtonComponent,
 		...dialogs
 	],
 	entryComponents: [
@@ -110,7 +114,6 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
 		UploadFilesButtonComponent,
-		ResetSettingsButtonComponent,
 		...dialogs
 	]
 })

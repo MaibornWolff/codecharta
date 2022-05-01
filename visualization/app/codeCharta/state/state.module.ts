@@ -1,9 +1,6 @@
 import angular from "angular"
 import { ColorModeService } from "./store/dynamicSettings/colorMode/colorMode.service"
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
-import { ColorLabelsService } from "./store/appSettings/colorLabels/colorLabels.service"
-import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
-import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
@@ -15,13 +12,11 @@ import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCa
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
-import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
 import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
 import { AmountOfEdgePreviewsService } from "./store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
-import { AmountOfTopLabelsService } from "./store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
@@ -51,9 +46,6 @@ angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	.service(camelCase(ColorModeService.name), ColorModeService)
 	.service(camelCase(RecentFilesService.name), RecentFilesService)
-	.service(camelCase(ColorLabelsService.name), ColorLabelsService)
-	.service(camelCase(LabelShowMetricValueService.name), LabelShowMetricValueService)
-	.service(camelCase(LabelShowNodeNameService.name), LabelShowNodeNameService)
 	.service(camelCase(MetricDataService.name), MetricDataService)
 	.service(camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(camelCase(NodeMetricDataService.name), NodeMetricDataService)
@@ -67,13 +59,11 @@ angular
 	.service(camelCase(ShowOnlyBuildingsWithEdgesService.name), ShowOnlyBuildingsWithEdgesService)
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
-	.service(camelCase(InvertHeightService.name), InvertHeightService)
 	.service(camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)
 	.service(camelCase(EdgeHeightService.name), EdgeHeightService)
 	.service(camelCase(AmountOfEdgePreviewsService.name), AmountOfEdgePreviewsService)
-	.service(camelCase(AmountOfTopLabelsService.name), AmountOfTopLabelsService)
 	.service(camelCase(MarkedPackagesService.name), MarkedPackagesService)
 	.service(camelCase(EdgesService.name), EdgesService)
 	.service(camelCase(AttributeTypesService.name), AttributeTypesService)

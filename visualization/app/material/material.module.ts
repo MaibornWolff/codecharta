@@ -16,6 +16,7 @@ import { MatInputModule } from "@angular/material/input"
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 import { MatListModule } from "@angular/material/list"
 import { MatExpansionModule } from "@angular/material/expansion"
+import { MatSliderModule } from "@angular/material/slider"
 
 const materialModules = [
 	MatSelectModule,
@@ -34,7 +35,8 @@ const materialModules = [
 	MatInputModule,
 	MatProgressSpinnerModule,
 	MatListModule,
-	MatExpansionModule
+	MatExpansionModule,
+	MatSliderModule
 ]
 
 @NgModule({
