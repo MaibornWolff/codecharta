@@ -56,6 +56,7 @@ cc-custom-config-item-group {
 
 	.mat-expansion-panel-header:not([aria-disabled="true"]) {
 		border-bottom: 1px solid black;
+		padding: 15px 2px;
 	}
 
 	.mat-expansion-panel:not([class*="mat-elevation-z"]) {
