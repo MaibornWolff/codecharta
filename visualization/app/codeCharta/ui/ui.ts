@@ -16,7 +16,6 @@ import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
 import "./dialog/dialog.module"
 import "./fileExtensionBar/fileExtensionBar.module"
-import "./heightSettingsPanel/heightSettingsPanel.module"
 import "./metricChooser/metricChooser.module"
 import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
@@ -49,7 +48,6 @@ angular
 		"app.codeCharta.ui.colorSettingsPanel",
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.fileExtensionBar",
-		"app.codeCharta.ui.heightSettingsPanel",
 		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.rangeSlider",
 		"app.codeCharta.ui.resetSettingsButton",

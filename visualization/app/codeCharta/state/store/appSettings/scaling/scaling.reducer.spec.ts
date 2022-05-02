@@ -18,10 +18,10 @@ describe("scaling", () => {
 			expect(result).toEqual(new Vector3(2, 2, 2))
 		})
 
-		it("should set default scaling", () => {
-			const result = scaling(new Vector3(2, 2, 2), setScaling())
+		it("should update partial scaling", () => {
+			const result = scaling(new Vector3(2, 2, 2), setScaling({ y: 1 }))
 
-			expect(result).toEqual(new Vector3(1, 1, 1))
+			expect(result).toEqual(new Vector3(2, 1, 2))
 		})
 	})
 })
