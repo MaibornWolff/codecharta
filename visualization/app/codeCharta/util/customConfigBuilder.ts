@@ -80,7 +80,6 @@ function initializeAppSettings(target: CustomConfig) {
 			defaultC: "",
 			flat: "",
 			incomingEdge: "",
-			lightGrey: "",
 			markingColors: [],
 			negative: "",
 			negativeDelta: "",
