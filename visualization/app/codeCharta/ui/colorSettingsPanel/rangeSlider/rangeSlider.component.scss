@@ -1,0 +1,26 @@
+cc-range-slider {
+	.cc-range-slider-container {
+		display: flex;
+
+		mat-form-field {
+			width: 42px;
+			height: 48px;
+
+			.mat-form-field-infix {
+				border-top-width: 0;
+				padding-top: 16px;
+			}
+		}
+
+		.cc-range-slider-slider {
+			flex: 1;
+			margin: 0 4px;
+			position: relative;
+			line-height: 28px;
+
+			.cc-range-slider-bar {
+				display: inline-block;
+			}
+		}
+	}
+}

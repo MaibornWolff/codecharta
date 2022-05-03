@@ -48,6 +48,7 @@ import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTyp
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
 import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.module"
+import { RangeSliderModule } from "./codeCharta/ui/colorSettingsPanel/rangeSlider/rangeSlider.module"
 
 @NgModule({
 	imports: [
@@ -78,7 +79,8 @@ import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/r
 		MetricValueHoveredModule,
 		UploadCustomConfigButtonModule,
 		HeightSettingsPanelModule,
-		ResetSettingsButtonModule
+		ResetSettingsButtonModule,
+		RangeSliderModule
 	],
 	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
 	declarations: [
