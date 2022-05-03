@@ -175,7 +175,6 @@ export interface MapColors {
 	negativeDelta: string
 	base: string
 	flat: string
-	angularGreen: string
 	markingColors: string[]
 	outgoingEdge: string
 	incomingEdge: string

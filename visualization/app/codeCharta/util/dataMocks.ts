@@ -1782,7 +1782,6 @@ export const STATE: State = {
 			negativeDelta: "#ff0E0E",
 			base: "#666666",
 			flat: "#AAAAAA",
-			angularGreen: "#00BFA5",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",
@@ -1833,7 +1832,6 @@ export const DEFAULT_STATE: State = {
 		isEdgeMetricVisible: true,
 		isWhiteBackground: false,
 		mapColors: {
-			angularGreen: "#00BFA5",
 			base: "#666666",
 			defaultC: "#89ACB4",
 			flat: "#AAAAAA",
