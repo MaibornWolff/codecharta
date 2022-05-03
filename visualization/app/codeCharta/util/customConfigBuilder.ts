@@ -75,12 +75,9 @@ function initializeAppSettings(target: CustomConfig) {
 		sharpnessMode: undefined,
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
-			angularGreen: "",
 			base: "",
-			defaultC: "",
 			flat: "",
 			incomingEdge: "",
-			lightGrey: "",
 			markingColors: [],
 			negative: "",
 			negativeDelta: "",
