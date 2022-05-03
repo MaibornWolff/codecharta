@@ -170,7 +170,6 @@ export interface MapColors {
 	neutral: string
 	negative: string
 	selected: string
-	defaultC: string
 	positiveDelta: string
 	negativeDelta: string
 	base: string

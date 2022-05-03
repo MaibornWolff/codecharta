@@ -76,7 +76,6 @@ function initializeAppSettings(target: CustomConfig) {
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
 			base: "",
-			defaultC: "",
 			flat: "",
 			incomingEdge: "",
 			markingColors: [],

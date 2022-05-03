@@ -1777,7 +1777,6 @@ export const STATE: State = {
 			neutral: "#ddcc00",
 			negative: "#820E0E",
 			selected: "#EB8319",
-			defaultC: "#89ACB4",
 			positiveDelta: "#64d051",
 			negativeDelta: "#ff0E0E",
 			base: "#666666",
@@ -1833,7 +1832,6 @@ export const DEFAULT_STATE: State = {
 		isWhiteBackground: false,
 		mapColors: {
 			base: "#666666",
-			defaultC: "#89ACB4",
 			flat: "#AAAAAA",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			negative: "#820E0E",
