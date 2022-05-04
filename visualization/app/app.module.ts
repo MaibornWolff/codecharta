@@ -15,9 +15,6 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
-import { FilePanelFileSelectorComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/filePanelFileSelector.component"
-import { FilePanelStateButtonsComponent } from "./codeCharta/ui/filePanel/filePanelStateButtons/filePanelStateButtons.component"
-import { FilePanelDeltaSelectorComponent } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/filePanelDeltaSelector.component"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
 import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
@@ -29,7 +26,6 @@ import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContex
 import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 import { AddCustomConfigButtonComponent } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.component"
 import { AddCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/addCustomConfigButton/addCustomConfigButton.module"
-import { RemoveFileButtonComponent } from "./codeCharta/ui/filePanel/filePanelFileSelector/removeFileButton/removeFileButton.component"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
@@ -46,6 +42,7 @@ import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/up
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
 import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
+import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 
 @NgModule({
 	imports: [
@@ -73,16 +70,13 @@ import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButto
 		MetricTypeHoveredModule,
 		DownloadCustomConfigButtonModule,
 		MetricValueHoveredModule,
-		UploadCustomConfigButtonModule
+		UploadCustomConfigButtonModule,
+		FilePanelModule
 	],
 	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
 	declarations: [
-		FilePanelFileSelectorComponent,
-		FilePanelStateButtonsComponent,
-		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
 		EdgeMetricToggleComponent,
-		RemoveFileButtonComponent,
 		UploadFilesButtonComponent,
 		ResetSettingsButtonComponent,
 		...dialogs
@@ -93,13 +87,9 @@ import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButto
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		FilePanelFileSelectorComponent,
-		FilePanelStateButtonsComponent,
-		FilePanelDeltaSelectorComponent,
 		InvertAreaOptionComponent,
 		AddCustomConfigButtonComponent,
 		FocusButtonsComponent,
-		RemoveFileButtonComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
