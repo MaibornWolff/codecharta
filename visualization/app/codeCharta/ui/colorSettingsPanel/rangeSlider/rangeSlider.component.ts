@@ -1,6 +1,6 @@
 import "./rangeSlider.component.scss"
 import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
-import { calculateSliderRangePosition, SliderRangePosition } from "./utils/SliderRangePosition"
+import { calculateSliderRangePosition, SliderRangePosition, thumbPosition2Value } from "./utils/SliderRangePosition"
 import { CdkDragMove, DragRef, Point } from "@angular/cdk/drag-drop"
 
 @Component({
@@ -43,7 +43,17 @@ export class RangeSliderComponent implements OnChanges {
 			return { x: sliderBoundingClientRect.x, y: point.y }
 		}
 
-		console.log(point)
+		console.log(
+			point,
+			thumbPosition2Value({
+				sliderXStart: sliderBoundingClientRect.x,
+				thumbX: point.x,
+				sliderWidth: this.sliderWidth,
+				minValue: this.minValue,
+				maxValue: this.maxValue,
+				roundFunction: Math.floor
+			})
+		)
 		return point
 	}
 }
