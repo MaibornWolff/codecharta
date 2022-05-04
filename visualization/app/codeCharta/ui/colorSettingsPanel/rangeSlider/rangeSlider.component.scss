@@ -21,6 +21,14 @@ cc-range-slider {
 			.cc-range-slider-bar {
 				display: inline-block;
 			}
+
+			.cc-range-slider-slider-thumb {
+				position: absolute;
+				top: 0;
+				width: 8px;
+				height: 48px;
+				background-color: aquamarine;
+			}
 		}
 	}
 }

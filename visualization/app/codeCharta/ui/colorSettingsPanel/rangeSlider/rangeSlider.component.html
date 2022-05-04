@@ -3,7 +3,7 @@
 		<input matInput [disabled]="disabled" type="number" [value]="this.value" (input)="this.handleInputOnChange($event)" />
 	</mat-form-field>
 
-	<div class="cc-range-slider-slider">
+	<div #rangeSliderContainer class="cc-range-slider-slider">
 		<span
 			[style.width.px]="sliderRangePosition.leftEnd"
 			[style.border-bottom]="'4px solid ' + leftColor"
@@ -19,6 +19,14 @@
 			[style.border-bottom]="'4px solid ' + rightColor"
 			class="cc-range-slider-bar"
 		></span>
+		<div
+			class="cc-range-slider-slider-thumb"
+			[style.left.px]="sliderRangePosition.leftEnd"
+			cdkDrag
+			cdkDragLockAxis="x"
+			(cdkDragMoved)="handleLeftThumbMoved($event)"
+			[cdkDragConstrainPosition]="constrainLeftThumbPosition"
+		></div>
 	</div>
 
 	<mat-form-field>

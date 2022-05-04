@@ -1,6 +1,7 @@
 import "./rangeSlider.component.scss"
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core"
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
 import { calculateSliderRangePosition, SliderRangePosition } from "./utils/SliderRangePosition"
+import { CdkDragMove, DragRef, Point } from "@angular/cdk/drag-drop"
 
 @Component({
 	selector: "cc-range-slider",
@@ -15,6 +16,8 @@ export class RangeSliderComponent implements OnChanges {
 	@Input() middleColor: string
 	@Input() rightColor: string
 
+	@ViewChild("rangeSliderContainer") rangeSliderContainer: ElementRef<HTMLDivElement>
+
 	sliderWidth = 160
 	sliderRangePosition: SliderRangePosition = { leftEnd: 0, rightStart: 0 }
 
@@ -28,5 +31,19 @@ export class RangeSliderComponent implements OnChanges {
 				sliderWidth: this.sliderWidth
 			})
 		}
+	}
+
+	handleLeftThumbMoved($event: CdkDragMove) {
+		console.log($event.delta.x)
+	}
+
+	constrainLeftThumbPosition = (point: Point, dragReference: DragRef) => {
+		const sliderBoundingClientRect = this.rangeSliderContainer.nativeElement.getBoundingClientRect()
+		if (sliderBoundingClientRect.x > point.x) {
+			return { x: sliderBoundingClientRect.x, y: point.y }
+		}
+
+		console.log(point)
+		return point
 	}
 }
