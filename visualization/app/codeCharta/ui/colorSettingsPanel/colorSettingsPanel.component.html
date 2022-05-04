@@ -1,6 +1,14 @@
 <range-slider-component></range-slider-component>
 
-<cc-range-slider></cc-range-slider>
+<cc-range-slider
+	[min-value]="0"
+	[max-value]="100"
+	[current-left-value]="20"
+	[current-right-value]="60"
+	[left-color]="'green'"
+	[middle-color]="'orange'"
+	[right-color]="'red'"
+></cc-range-slider>
 
 <md-select ng-model="$ctrl._viewModel.colorMode" ng-change="$ctrl.applyColorMode()">
 	<div ng-mousedown="$event.stopPropagation()">

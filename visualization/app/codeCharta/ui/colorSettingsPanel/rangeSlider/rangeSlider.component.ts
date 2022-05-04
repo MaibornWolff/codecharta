@@ -1,12 +1,18 @@
 import "./rangeSlider.component.scss"
-import { Component, ElementRef, ViewChild } from "@angular/core"
+import { Component, Input } from "@angular/core"
 
 @Component({
 	selector: "cc-range-slider",
 	template: require("./rangeSlider.component.html")
 })
 export class RangeSliderComponent {
-	@ViewChild("sliderContainer") sliderContainer: ElementRef<HTMLDivElement>
+	@Input() minValue: number
+	@Input() maxValue: number
+	@Input() currentLeftValue: number
+	@Input() currentRightValue: number
+	@Input() leftColor: string
+	@Input() middleColor: string
+	@Input() rightColor: string
 
 	sliderWidth = 160
 }
