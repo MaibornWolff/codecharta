@@ -1,6 +1,6 @@
 import "./rangeSlider.module"
 
-import { RangeSliderController } from "./rangeSlider.component"
+import { lightGrey, RangeSliderController } from "./rangeSlider.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
@@ -132,7 +132,7 @@ describe("RangeSliderController", () => {
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
 			rangeSliderController["applyCssColors"] = jest.fn()
-			const expected = { left: mapColors.lightGrey, middle: mapColors.lightGrey, right: mapColors.lightGrey }
+			const expected = { left: lightGrey, middle: lightGrey, right: lightGrey }
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30, min: 1, max: 100 })
 

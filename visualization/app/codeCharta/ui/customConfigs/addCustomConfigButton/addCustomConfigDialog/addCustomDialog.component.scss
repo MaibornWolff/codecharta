@@ -1,3 +1,5 @@
+@use "../../../../../material/theme";
+
 .cc-add-custom-config-dialog .mat-dialog-container {
 	padding: 0;
 	width: 500px;
@@ -5,8 +7,7 @@
 
 	mat-toolbar {
 		&.header {
-			background-color: #009688;
-
+			background-color: theme.$cc-primary-color;
 			h2 {
 				color: white;
 			}

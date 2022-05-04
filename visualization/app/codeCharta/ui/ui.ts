@@ -16,7 +16,6 @@ import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
 import "./dialog/dialog.module"
 import "./fileExtensionBar/fileExtensionBar.module"
-import "./heightSettingsPanel/heightSettingsPanel.module"
 import "./metricChooser/metricChooser.module"
 import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
@@ -30,6 +29,7 @@ import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./sharpnessModeSelector/sharpnessModeSelector.module"
 import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
 import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
+import { SliderComponent } from "./slider/slider.component"
 
 angular
 	.module("app.codeCharta.ui", [
@@ -48,7 +48,6 @@ angular
 		"app.codeCharta.ui.colorSettingsPanel",
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.fileExtensionBar",
-		"app.codeCharta.ui.heightSettingsPanel",
 		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.rangeSlider",
 		"app.codeCharta.ui.resetSettingsButton",
@@ -63,3 +62,4 @@ angular
 	])
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
 	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))
+	.directive("ccSlider", downgradeComponent({ component: SliderComponent }))

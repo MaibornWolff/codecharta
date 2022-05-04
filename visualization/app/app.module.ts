@@ -41,7 +41,9 @@ import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricVa
 import { UploadCustomConfigButtonModule } from "./codeCharta/ui/customConfigs/uploadCustomConfigButton/uploadCustomConfigButton.module"
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
-import { ResetSettingsButtonComponent } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.component"
+import { SliderModule } from "./codeCharta/ui/slider/slider.module"
+import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
+import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.module"
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 
 @NgModule({
@@ -55,6 +57,7 @@ import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect
 		]),
+		SliderModule,
 		AttributeSideBarModule,
 		MaterialModule,
 		FormsModule,
@@ -71,16 +74,12 @@ import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 		DownloadCustomConfigButtonModule,
 		MetricValueHoveredModule,
 		UploadCustomConfigButtonModule,
-		FilePanelModule
+		FilePanelModule,
+		HeightSettingsPanelModule,
+		ResetSettingsButtonModule
 	],
 	providers: [threeSceneServiceProvider, codeChartaServiceProvider, IdToBuildingService],
-	declarations: [
-		InvertAreaOptionComponent,
-		EdgeMetricToggleComponent,
-		UploadFilesButtonComponent,
-		ResetSettingsButtonComponent,
-		...dialogs
-	],
+	declarations: [InvertAreaOptionComponent, EdgeMetricToggleComponent, UploadFilesButtonComponent, ...dialogs],
 	entryComponents: [
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
@@ -95,7 +94,6 @@ import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
 		UploadFilesButtonComponent,
-		ResetSettingsButtonComponent,
 		...dialogs
 	]
 })
