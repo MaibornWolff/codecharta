@@ -34,7 +34,7 @@ export class FileNameHelper {
 		return fileName
 	}
 
-	static withoutCCJsonExtension(fileName: string) {
-		return fileName.replace(/(\.cc)?\.json?$/, "")
+	static withoutCCExtension(fileName: string) {
+		return fileName.replace(/(\.cc)?(\.json)?(\.gz)?$/, "")
 	}
 }
