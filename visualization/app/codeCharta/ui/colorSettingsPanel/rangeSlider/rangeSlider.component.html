@@ -4,13 +4,21 @@
 	</mat-form-field>
 
 	<div class="cc-range-slider-slider">
-		<span [style.width.px]="currentLeftValue" [style.border-bottom]="'4px solid ' + leftColor" class="cc-range-slider-bar"></span>
 		<span
-			[style.width.px]="sliderWidth - currentLeftValue - currentRightValue"
+			[style.width.px]="sliderRangePosition.leftEnd"
+			[style.border-bottom]="'4px solid ' + leftColor"
+			class="cc-range-slider-bar"
+		></span>
+		<span
+			[style.width.px]="sliderRangePosition.rightStart - sliderRangePosition.leftEnd"
 			[style.border-bottom]="'4px solid ' + middleColor"
 			class="cc-range-slider-bar"
 		></span>
-		<span [style.width.px]="currentRightValue" [style.border-bottom]="'4px solid ' + rightColor" class="cc-range-slider-bar"></span>
+		<span
+			[style.width.px]="sliderWidth - sliderRangePosition.rightStart"
+			[style.border-bottom]="'4px solid ' + rightColor"
+			class="cc-range-slider-bar"
+		></span>
 	</div>
 
 	<mat-form-field>
