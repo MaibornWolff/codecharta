@@ -13,6 +13,7 @@ import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricDa
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { ColorModeService, ColorModeSubscriber } from "../../state/store/dynamicSettings/colorMode/colorMode.service"
 import { defaultColorMode, setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
 
 export class ColorSettingsPanelController implements FilesSelectionSubscriber, ColorRangeSubscriber, ColorModeSubscriber {
 	private _viewModel: {
@@ -31,6 +32,11 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 		colorMode: defaultColorMode,
 		colorLabels: { positive: false, negative: false, neutral: false },
 		maxMetricValue: null
+	}
+
+	currentLeftValue = 62
+	handleValueChange: HandleValueChange = ({ currentLeftValue }) => {
+		this.currentLeftValue = currentLeftValue
 	}
 
 	constructor(

@@ -3,11 +3,12 @@
 <cc-range-slider
 	[min-value]="20"
 	[max-value]="120"
-	[current-left-value]="40"
+	[current-left-value]="$ctrl.currentLeftValue"
 	[current-right-value]="80"
 	[left-color]="'green'"
 	[middle-color]="'orange'"
 	[right-color]="'red'"
+	[handle-value-change]="$ctrl.handleValueChange"
 ></cc-range-slider>
 
 <md-select ng-model="$ctrl._viewModel.colorMode" ng-change="$ctrl.applyColorMode()">
