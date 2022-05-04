@@ -20,6 +20,7 @@ export class RangeSliderComponent implements OnChanges {
 
 	sliderWidth = 160
 	sliderRangePosition: SliderRangePosition = { leftEnd: 0, rightStart: 0 }
+	freeDragLeftThumbPosition: undefined | Point
 
 	ngOnChanges(changes: SimpleChanges) {
 		if (changes.minValue || changes.maxValue || changes.currentLeftValue || changes.currentRightValue) {
@@ -30,11 +31,24 @@ export class RangeSliderComponent implements OnChanges {
 				currentRightValue: changes.currentRightValue?.currentValue ?? this.currentRightValue,
 				sliderWidth: this.sliderWidth
 			})
+			this.freeDragLeftThumbPosition = { x: this.sliderRangePosition.leftEnd, y: 0 }
 		}
 	}
 
 	handleLeftThumbMoved($event: CdkDragMove) {
-		console.log($event.delta.x)
+		this.freeDragLeftThumbPosition = undefined
+
+		const sliderBoundingClientRect = this.rangeSliderContainer.nativeElement.getBoundingClientRect()
+
+		const newMinValue = thumbPosition2Value({
+			sliderXStart: sliderBoundingClientRect.x,
+			thumbX: $event.pointerPosition.x,
+			sliderWidth: this.sliderWidth,
+			minValue: this.minValue,
+			maxValue: this.maxValue,
+			roundFunction: Math.floor
+		})
+		console.log(newMinValue)
 	}
 
 	constrainLeftThumbPosition = (point: Point, dragReference: DragRef) => {
@@ -43,17 +57,6 @@ export class RangeSliderComponent implements OnChanges {
 			return { x: sliderBoundingClientRect.x, y: point.y }
 		}
 
-		console.log(
-			point,
-			thumbPosition2Value({
-				sliderXStart: sliderBoundingClientRect.x,
-				thumbX: point.x,
-				sliderWidth: this.sliderWidth,
-				minValue: this.minValue,
-				maxValue: this.maxValue,
-				roundFunction: Math.floor
-			})
-		)
 		return point
 	}
 }

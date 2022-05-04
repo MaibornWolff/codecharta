@@ -21,9 +21,9 @@
 		></span>
 		<div
 			class="cc-range-slider-slider-thumb"
-			[style.left.px]="sliderRangePosition.leftEnd"
 			cdkDrag
-			cdkDragLockAxis="x"
+			[cdkDragLockAxis]="'x'"
+			[cdkDragFreeDragPosition]="freeDragLeftThumbPosition"
 			(cdkDragMoved)="handleLeftThumbMoved($event)"
 			[cdkDragConstrainPosition]="constrainLeftThumbPosition"
 		></div>
