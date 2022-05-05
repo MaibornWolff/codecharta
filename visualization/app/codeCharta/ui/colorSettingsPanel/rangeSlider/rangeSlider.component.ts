@@ -79,6 +79,11 @@ export class RangeSliderComponent implements OnChanges {
 			return { x: sliderBoundingClientRect.x, y: point.y }
 		}
 
+		const rightThumbX = this.rightThumb.nativeElement.getBoundingClientRect().x
+		if (point.x >= rightThumbX) {
+			return { x: rightThumbX, y: point.y }
+		}
+
 		return point
 	}
 
@@ -105,6 +110,11 @@ export class RangeSliderComponent implements OnChanges {
 		const sliderEnd = sliderBoundingClientRect.x + sliderBoundingClientRect.width
 		if (sliderEnd < point.x) {
 			return { x: sliderEnd, y: point.y }
+		}
+
+		const leftThumbX = this.leftThumb.nativeElement.getBoundingClientRect().x
+		if (point.x <= leftThumbX) {
+			return { x: leftThumbX, y: point.y }
 		}
 
 		return point
