@@ -11,6 +11,8 @@ import { CdkDragMove, Point } from "@angular/cdk/drag-drop"
 
 export type HandleValueChange = ({ currentLeftValue, currentRightValue }: { currentLeftValue: number; currentRightValue: number }) => void
 
+// Todo disabled?
+// Todo handleValueChange as Partial update?
 @Component({
 	selector: "cc-range-slider",
 	template: require("./rangeSlider.component.html")
@@ -113,10 +115,27 @@ export class RangeSliderComponent implements OnChanges {
 		}
 
 		const leftThumbX = this.leftThumb.nativeElement.getBoundingClientRect().x
+		// todo add half thumb width for left and right
 		if (point.x <= leftThumbX) {
 			return { x: leftThumbX, y: point.y }
 		}
 
 		return point
+	}
+
+	handleCurrentLeftInputChanged($event: InputEvent) {
+		const newValue = Number.parseInt(($event.target as HTMLInputElement).value)
+		const isValid = newValue >= this.minValue && newValue <= this.currentRightValue
+		if (newValue !== this.currentLeftValue && isValid) {
+			this.handleValueChange({ currentLeftValue: newValue, currentRightValue: this.currentRightValue })
+		}
+	}
+
+	handleCurrentRightInputChanged($event: InputEvent) {
+		const newValue = Number.parseInt(($event.target as HTMLInputElement).value)
+		const isValid = newValue <= this.maxValue && newValue >= this.currentLeftValue
+		if (newValue !== this.currentLeftValue && isValid) {
+			this.handleValueChange({ currentLeftValue: this.currentLeftValue, currentRightValue: newValue })
+		}
 	}
 }

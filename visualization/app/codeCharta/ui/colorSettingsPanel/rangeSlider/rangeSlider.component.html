@@ -1,6 +1,6 @@
 <div class="cc-range-slider-container">
 	<mat-form-field>
-		<input matInput [disabled]="disabled" type="number" [value]="this.value" (input)="this.handleInputOnChange($event)" />
+		<input matInput type="number" [value]="currentLeftValue" (input)="this.handleCurrentLeftInputChanged($event)" />
 	</mat-form-field>
 
 	<div #rangeSliderContainer class="cc-range-slider-slider">
@@ -40,6 +40,6 @@
 	</div>
 
 	<mat-form-field>
-		<input matInput [disabled]="disabled" type="number" [value]="this.value" (input)="this.handleInputOnChange($event)" />
+		<input matInput type="number" [value]="this.currentRightValue" (input)="this.handleCurrentRightInputChanged($event)" />
 	</mat-form-field>
 </div>
