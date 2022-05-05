@@ -27,7 +27,10 @@
 			[cdkDragFreeDragPosition]="freeDragLeftThumbPosition"
 			(cdkDragMoved)="handleLeftThumbMoved($event)"
 			[cdkDragConstrainPosition]="constrainLeftThumbPosition"
-		></div>
+		>
+			<div class="cc-range-slider-slider-thumb-value">{{ currentLeftValue }}</div>
+			<div class="cc-range-slider-slider-thumb-circle"></div>
+		</div>
 		<div
 			#rightThumb
 			class="cc-range-slider-slider-thumb"
@@ -36,7 +39,10 @@
 			[cdkDragFreeDragPosition]="freeDragRightThumbPosition"
 			(cdkDragMoved)="handleRightThumbMoved($event)"
 			[cdkDragConstrainPosition]="constrainRightThumbPosition"
-		></div>
+		>
+			<div class="cc-range-slider-slider-thumb-value">{{ currentRightValue }}</div>
+			<div class="cc-range-slider-slider-thumb-circle"></div>
+		</div>
 	</div>
 
 	<mat-form-field>
