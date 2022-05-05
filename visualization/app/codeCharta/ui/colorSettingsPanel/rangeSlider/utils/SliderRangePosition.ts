@@ -49,3 +49,16 @@ export const thumbPosition2Value = ({
 	const value = minValue + xPositionWithinSlider * valuePerPixel
 	return roundFunction(value)
 }
+
+export type SliderValues = {
+	minValue: number
+	maxValue: number
+	currentLeftValue: number
+	currentRightValue: number
+}
+
+export const areSliderValuesEqual = (sv1: SliderValues, sv2: SliderValues) =>
+	sv1.minValue === sv2.minValue &&
+	sv1.maxValue === sv2.maxValue &&
+	sv1.currentLeftValue === sv2.currentLeftValue &&
+	sv1.currentRightValue === sv2.currentRightValue

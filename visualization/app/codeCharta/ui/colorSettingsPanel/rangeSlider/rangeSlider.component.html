@@ -20,12 +20,22 @@
 			class="cc-range-slider-bar"
 		></span>
 		<div
+			#leftThumb
 			class="cc-range-slider-slider-thumb"
 			cdkDrag
 			[cdkDragLockAxis]="'x'"
 			[cdkDragFreeDragPosition]="freeDragLeftThumbPosition"
 			(cdkDragMoved)="handleLeftThumbMoved($event)"
 			[cdkDragConstrainPosition]="constrainLeftThumbPosition"
+		></div>
+		<div
+			#rightThumb
+			class="cc-range-slider-slider-thumb"
+			cdkDrag
+			[cdkDragLockAxis]="'x'"
+			[cdkDragFreeDragPosition]="freeDragRightThumbPosition"
+			(cdkDragMoved)="handleRightThumbMoved($event)"
+			[cdkDragConstrainPosition]="constrainRightThumbPosition"
 		></div>
 	</div>
 

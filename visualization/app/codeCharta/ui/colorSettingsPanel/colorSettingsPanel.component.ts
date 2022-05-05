@@ -35,8 +35,10 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 	}
 
 	currentLeftValue = 62
-	handleValueChange: HandleValueChange = ({ currentLeftValue }) => {
+	currentRightValue = 80
+	handleValueChange: HandleValueChange = ({ currentLeftValue, currentRightValue }) => {
 		this.currentLeftValue = currentLeftValue
+		this.currentRightValue = currentRightValue
 	}
 
 	constructor(
