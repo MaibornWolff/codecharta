@@ -1,6 +1,13 @@
 <div class="cc-range-slider-container">
 	<mat-form-field>
-		<input matInput type="number" [value]="currentLeftValue" (input)="this.handleCurrentLeftInputChanged($event)" [min]="minValue" />
+		<input
+			matInput
+			type="number"
+			[value]="currentLeftValue"
+			(input)="this.handleCurrentLeftInputChanged($event)"
+			[min]="minValue"
+			[max]="currentRightValue"
+		/>
 	</mat-form-field>
 
 	<div #rangeSliderContainer class="cc-range-slider-slider">
@@ -23,13 +30,18 @@
 		<div
 			#leftThumb
 			class="cc-range-slider-slider-thumb"
-			[style.left.px]="sliderRangePosition.leftEnd"
+			[style.left.px]="sliderRangePosition.leftEnd - 8"
 			(mousedown)="setCurrentlySliding('leftThumb')"
 		>
 			<div class="cc-range-slider-slider-thumb-value">{{ currentLeftValue }}</div>
 			<div class="cc-range-slider-slider-thumb-circle"></div>
 		</div>
-		<div #rightThumb class="cc-range-slider-slider-thumb" [style.left.px]="sliderRangePosition.rightStart">
+		<div
+			#rightThumb
+			class="cc-range-slider-slider-thumb"
+			[style.left.px]="sliderRangePosition.rightStart - 8"
+			(mousedown)="setCurrentlySliding('rightThumb')"
+		>
 			<div class="cc-range-slider-slider-thumb-value">{{ currentRightValue }}</div>
 			<div class="cc-range-slider-slider-thumb-circle"></div>
 		</div>
@@ -41,6 +53,7 @@
 			type="number"
 			[value]="this.currentRightValue"
 			(input)="this.handleCurrentRightInputChanged($event)"
+			[min]="currentLeftValue"
 			[max]="maxValue"
 		/>
 	</mat-form-field>

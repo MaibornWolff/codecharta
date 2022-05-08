@@ -23,10 +23,6 @@ export const calculateSliderRangePosition = ({
 	const rightFraction = (currentRightValue - minValue) / totalFraction
 	const leftThumbPosition = leftFraction * sliderWidth
 	const rightThumbPosition = rightFraction * sliderWidth
-	console.log({
-		leftEnd: leftThumbPosition - 8, // shift so that middle is on 0
-		rightStart: rightThumbPosition - 8
-	})
 	return {
 		leftEnd: leftThumbPosition,
 		rightStart: rightThumbPosition
@@ -41,9 +37,8 @@ type ThumbPosition2ValueArgument = {
 }
 
 export const thumbPosition2Value = ({ thumbXStart, minValue, maxValue, roundFunction }: ThumbPosition2ValueArgument) => {
-	const xPositionWithinSlider = thumbXStart + 8
 	const valuePerPixel = (maxValue - minValue) / sliderWidth
-	const value = minValue + xPositionWithinSlider * valuePerPixel
+	const value = minValue + (thumbXStart + 8) * valuePerPixel
 	return roundFunction(value)
 }
 
