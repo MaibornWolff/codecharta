@@ -1,6 +1,6 @@
 <div class="cc-range-slider-container">
 	<mat-form-field>
-		<input matInput type="number" [value]="currentLeftValue" (input)="this.handleCurrentLeftInputChanged($event)" />
+		<input matInput type="number" [value]="currentLeftValue" (input)="this.handleCurrentLeftInputChanged($event)" [min]="minValue" />
 	</mat-form-field>
 
 	<div #rangeSliderContainer class="cc-range-slider-slider">
@@ -19,33 +19,29 @@
 			[style.border-bottom]="'4px solid ' + rightColor"
 			class="cc-range-slider-bar"
 		></span>
+
 		<div
 			#leftThumb
 			class="cc-range-slider-slider-thumb"
-			cdkDrag
-			[cdkDragLockAxis]="'x'"
-			[cdkDragFreeDragPosition]="freeDragLeftThumbPosition"
-			(cdkDragMoved)="handleLeftThumbMoved($event)"
-			[cdkDragConstrainPosition]="constrainLeftThumbPosition"
+			[style.left.px]="sliderRangePosition.leftEnd"
+			(mousedown)="setCurrentlySliding('leftThumb')"
 		>
 			<div class="cc-range-slider-slider-thumb-value">{{ currentLeftValue }}</div>
 			<div class="cc-range-slider-slider-thumb-circle"></div>
 		</div>
-		<div
-			#rightThumb
-			class="cc-range-slider-slider-thumb"
-			cdkDrag
-			[cdkDragLockAxis]="'x'"
-			[cdkDragFreeDragPosition]="freeDragRightThumbPosition"
-			(cdkDragMoved)="handleRightThumbMoved($event)"
-			[cdkDragConstrainPosition]="constrainRightThumbPosition"
-		>
+		<div #rightThumb class="cc-range-slider-slider-thumb" [style.left.px]="sliderRangePosition.rightStart">
 			<div class="cc-range-slider-slider-thumb-value">{{ currentRightValue }}</div>
 			<div class="cc-range-slider-slider-thumb-circle"></div>
 		</div>
 	</div>
 
 	<mat-form-field>
-		<input matInput type="number" [value]="this.currentRightValue" (input)="this.handleCurrentRightInputChanged($event)" />
+		<input
+			matInput
+			type="number"
+			[value]="this.currentRightValue"
+			(input)="this.handleCurrentRightInputChanged($event)"
+			[max]="maxValue"
+		/>
 	</mat-form-field>
 </div>

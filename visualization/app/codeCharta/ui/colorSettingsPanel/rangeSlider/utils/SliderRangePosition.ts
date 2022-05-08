@@ -1,3 +1,5 @@
+import { sliderWidth } from "../rangeSlider.component"
+
 export type SliderRangePosition = {
 	leftEnd: number
 	rightStart: number
@@ -8,43 +10,38 @@ export type CalculateSliderRangePositionArgument = {
 	maxValue: number
 	currentLeftValue: number
 	currentRightValue: number
-	sliderWidth: number
 }
 
 export const calculateSliderRangePosition = ({
 	minValue,
 	maxValue,
 	currentLeftValue,
-	currentRightValue,
-	sliderWidth
+	currentRightValue
 }: CalculateSliderRangePositionArgument): SliderRangePosition => {
 	const totalFraction = maxValue - minValue
 	const leftFraction = (currentLeftValue - minValue) / totalFraction
 	const rightFraction = (currentRightValue - minValue) / totalFraction
+	const leftThumbPosition = leftFraction * sliderWidth
+	const rightThumbPosition = rightFraction * sliderWidth
+	console.log({
+		leftEnd: leftThumbPosition - 8, // shift so that middle is on 0
+		rightStart: rightThumbPosition - 8
+	})
 	return {
-		leftEnd: leftFraction * sliderWidth,
-		rightStart: rightFraction * sliderWidth
+		leftEnd: leftThumbPosition,
+		rightStart: rightThumbPosition
 	}
 }
 
 type ThumbPosition2ValueArgument = {
-	sliderXStart: number
-	thumbX: number
-	sliderWidth: number
+	thumbXStart: number
 	minValue: number
 	maxValue: number
 	roundFunction: typeof Math.floor | typeof Math.ceil
 }
 
-export const thumbPosition2Value = ({
-	sliderXStart,
-	thumbX,
-	sliderWidth,
-	minValue,
-	maxValue,
-	roundFunction
-}: ThumbPosition2ValueArgument) => {
-	const xPositionWithinSlider = thumbX - sliderXStart
+export const thumbPosition2Value = ({ thumbXStart, minValue, maxValue, roundFunction }: ThumbPosition2ValueArgument) => {
+	const xPositionWithinSlider = thumbXStart + 8
 	const valuePerPixel = (maxValue - minValue) / sliderWidth
 	const value = minValue + xPositionWithinSlider * valuePerPixel
 	return roundFunction(value)

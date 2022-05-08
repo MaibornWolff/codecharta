@@ -7,12 +7,15 @@ import {
 	SliderValues,
 	thumbPosition2Value
 } from "./utils/SliderRangePosition"
-import { CdkDragMove, Point } from "@angular/cdk/drag-drop"
 
 export type HandleValueChange = ({ currentLeftValue, currentRightValue }: { currentLeftValue: number; currentRightValue: number }) => void
+export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
+
+export const sliderWidth = 160
 
 // Todo disabled?
 // Todo handleValueChange as Partial update?
+// Todo remove material cdkDrag again
 @Component({
 	selector: "cc-range-slider",
 	template: require("./rangeSlider.component.html")
@@ -31,10 +34,10 @@ export class RangeSliderComponent implements OnChanges {
 	@ViewChild("leftThumb") leftThumb: ElementRef<HTMLDivElement>
 	@ViewChild("rightThumb") rightThumb: ElementRef<HTMLDivElement>
 
-	sliderWidth = 160
 	sliderRangePosition: SliderRangePosition = { leftEnd: 0, rightStart: 0 }
-	freeDragLeftThumbPosition: undefined | Point
-	freeDragRightThumbPosition: undefined | Point
+	sliderWidth = sliderWidth
+
+	private currentlySliding: CurrentlySliding = undefined
 	private lastKnownSliderValues: SliderValues = { minValue: -1, maxValue: -1, currentLeftValue: -1, currentRightValue: -1 }
 
 	ngOnChanges(changes: SimpleChanges) {
@@ -44,83 +47,72 @@ export class RangeSliderComponent implements OnChanges {
 			currentLeftValue: changes.currentLeftValue?.currentValue ?? this.currentLeftValue,
 			currentRightValue: changes.currentRightValue?.currentValue ?? this.currentRightValue
 		}
-
-		this.sliderRangePosition = calculateSliderRangePosition({
-			...sliderValuesToBeUpdated,
-			sliderWidth: this.sliderWidth
-		})
-
-		if (!areSliderValuesEqual(sliderValuesToBeUpdated, this.lastKnownSliderValues)) {
-			this.lastKnownSliderValues = sliderValuesToBeUpdated
-			this.freeDragLeftThumbPosition = { x: this.sliderRangePosition.leftEnd, y: 0 }
-			this.freeDragRightThumbPosition = { x: this.sliderRangePosition.rightStart, y: 0 }
+		if (!areSliderValuesEqual(this.lastKnownSliderValues, sliderValuesToBeUpdated)) {
+			console.log("update slider onChanges")
+			this.sliderRangePosition = calculateSliderRangePosition(sliderValuesToBeUpdated)
 		}
 	}
 
-	handleLeftThumbMoved($event: CdkDragMove) {
-		this.freeDragLeftThumbPosition = undefined
-
-		const sliderBoundingClientRect = this.sliderContainer.nativeElement.getBoundingClientRect()
-
-		const currentLeftValue = thumbPosition2Value({
-			sliderXStart: sliderBoundingClientRect.x,
-			thumbX: $event.pointerPosition.x,
-			sliderWidth: this.sliderWidth,
-			minValue: this.minValue,
-			maxValue: this.maxValue,
-			roundFunction: Math.floor
-		})
-		this.lastKnownSliderValues.currentLeftValue = currentLeftValue
-		console.log(currentLeftValue)
-		this.handleValueChange({ currentLeftValue, currentRightValue: this.currentRightValue })
+	setCurrentlySliding(currentlySliding: CurrentlySliding) {
+		this.currentlySliding = currentlySliding
+		switch (this.currentlySliding) {
+			case "leftThumb": {
+				document.addEventListener("mousemove", this.handleLeftThumbMoved)
+				this.resetCurrentlySlidingOnNextMouseUp(this.handleLeftThumbMoved)
+				break
+			}
+			case "rightThumb": {
+				// document.addEventListener("mousemove", this.handleLeftThumbMoved)
+				// this.resetCurrentlySlidingOnNextMouseUp()
+				break
+			}
+		}
 	}
 
-	constrainLeftThumbPosition = (point: Point) => {
-		const sliderBoundingClientRect = this.sliderContainer.nativeElement.getBoundingClientRect()
-		if (sliderBoundingClientRect.x > point.x) {
-			return { x: sliderBoundingClientRect.x, y: point.y }
+	resetCurrentlySlidingOnNextMouseUp = (handler: (event: MouseEvent) => void) => {
+		const mouseUpHandler = () => {
+			this.currentlySliding = undefined
+			console.log("hi from mouseup")
+			document.removeEventListener("mouseup", mouseUpHandler)
+			document.removeEventListener("mousemove", handler)
 		}
-
-		const rightThumbX = this.rightThumb.nativeElement.getBoundingClientRect().x
-		if (point.x >= rightThumbX) {
-			return { x: rightThumbX, y: point.y }
-		}
-
-		return point
+		document.addEventListener("mouseup", mouseUpHandler)
 	}
 
-	handleRightThumbMoved($event: CdkDragMove) {
-		this.freeDragRightThumbPosition = undefined
+	handleLeftThumbMoved = (event: MouseEvent) => {
+		const sliderBoundingClientRectX = this.sliderContainer.nativeElement.getBoundingClientRect().x
+		const newLeftThumbScreenX = this.leftThumb.nativeElement.getBoundingClientRect().x + event.movementX
+		const rightThumbScreenX = this.rightThumb.nativeElement.getBoundingClientRect().x
 
-		const sliderBoundingClientRect = this.sliderContainer.nativeElement.getBoundingClientRect()
+		if (newLeftThumbScreenX < sliderBoundingClientRectX - 8 || newLeftThumbScreenX > rightThumbScreenX) {
+			return
+		}
 
-		const currentRightValue = thumbPosition2Value({
-			sliderXStart: sliderBoundingClientRect.x,
-			thumbX: $event.pointerPosition.x,
-			sliderWidth: this.sliderWidth,
+		const newLeftEnd = newLeftThumbScreenX - sliderBoundingClientRectX
+		const nextLeftValue = thumbPosition2Value({
+			thumbXStart: newLeftEnd,
 			minValue: this.minValue,
 			maxValue: this.maxValue,
 			roundFunction: Math.ceil
 		})
-		this.lastKnownSliderValues.currentRightValue = currentRightValue
-		console.log(currentRightValue)
-		this.handleValueChange({ currentRightValue, currentLeftValue: this.currentLeftValue })
+
+		this.sliderRangePosition.leftEnd = newLeftEnd
+		this.lastKnownSliderValues.currentLeftValue = nextLeftValue
+
+		// this.handleValueChange({ currentLeftValue: nextLeftValue, currentRightValue: this.currentRightValue })
 	}
 
-	constrainRightThumbPosition = (point: Point) => {
-		const sliderBoundingClientRect = this.sliderContainer.nativeElement.getBoundingClientRect()
-		const sliderEnd = sliderBoundingClientRect.x + sliderBoundingClientRect.width
-		if (sliderEnd < point.x) {
-			return { x: sliderEnd, y: point.y }
-		}
-
-		const leftThumbX = this.leftThumb.nativeElement.getBoundingClientRect().x
-		// todo add half thumb width for left and right
-		if (point.x <= leftThumbX) {
-			return { x: leftThumbX, y: point.y }
-		}
-
-		return point
+	handleRightThumbMoved = (event: MouseEvent) => {
+		// this.freeDragRightThumbPosition = undefined
+		// const sliderBoundingClientRect = this.sliderContainer.nativeElement.getBoundingClientRect()
+		// const currentRightValue = thumbPosition2Value({
+		// 	sliderXStart: sliderBoundingClientRect.x,
+		// 	thumbX: $event.source.element.nativeElement.getBoundingClientRect().x,
+		// 	minValue: this.minValue,
+		// 	maxValue: this.maxValue,
+		// 	roundFunction: Math.ceil
+		// })
+		// this.handleValueChange({ currentRightValue, currentLeftValue: this.currentLeftValue })
 	}
 
 	handleCurrentLeftInputChanged($event: InputEvent) {
