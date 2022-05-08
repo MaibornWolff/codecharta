@@ -30,7 +30,7 @@
 		<div
 			#leftThumb
 			class="cc-range-slider-slider-thumb"
-			[style.left.px]="sliderRangePosition.leftEnd - 8"
+			[style.left.px]="sliderRangePosition.leftEnd - thumbRadius"
 			(mousedown)="setCurrentlySliding('leftThumb')"
 		>
 			<div class="cc-range-slider-slider-thumb-value">{{ currentLeftValue }}</div>
@@ -39,7 +39,7 @@
 		<div
 			#rightThumb
 			class="cc-range-slider-slider-thumb"
-			[style.left.px]="sliderRangePosition.rightStart - 8"
+			[style.left.px]="sliderRangePosition.rightStart - thumbRadius"
 			(mousedown)="setCurrentlySliding('rightThumb')"
 		>
 			<div class="cc-range-slider-slider-thumb-value">{{ currentRightValue }}</div>

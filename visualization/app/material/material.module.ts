@@ -16,10 +16,8 @@ import { MatInputModule } from "@angular/material/input"
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 import { MatListModule } from "@angular/material/list"
 import { MatSliderModule } from "@angular/material/slider"
-import { DragDropModule } from "@angular/cdk/drag-drop"
 
 const materialModules = [
-	DragDropModule,
 	MatSelectModule,
 	MatMenuModule,
 	MatButtonModule,

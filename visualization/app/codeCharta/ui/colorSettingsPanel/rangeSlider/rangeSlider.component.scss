@@ -16,7 +16,7 @@ cc-range-slider {
 
 		.cc-range-slider-slider {
 			flex: 1;
-			margin: 0 4px;
+			margin: 0 8px;
 			position: relative;
 			line-height: 48px;
 
@@ -34,7 +34,7 @@ cc-range-slider {
 					position: absolute;
 					top: 20px;
 					border-radius: 100%;
-					border: 8px solid theme.$cc-primary-color;
+					border: 7px solid theme.$cc-primary-color;
 				}
 
 				.cc-range-slider-slider-thumb-value {

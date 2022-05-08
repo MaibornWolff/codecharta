@@ -30,27 +30,13 @@ export const calculateSliderRangePosition = ({
 }
 
 type ThumbPosition2ValueArgument = {
-	thumbXStart: number
+	thumbX: number
 	minValue: number
 	maxValue: number
-	roundFunction: typeof Math.floor | typeof Math.ceil
 }
 
-export const thumbPosition2Value = ({ thumbXStart, minValue, maxValue, roundFunction }: ThumbPosition2ValueArgument) => {
+export const thumbPosition2Value = ({ thumbX, minValue, maxValue }: ThumbPosition2ValueArgument) => {
 	const valuePerPixel = (maxValue - minValue) / sliderWidth
-	const value = minValue + (thumbXStart + 8) * valuePerPixel
-	return roundFunction(value)
+	const value = minValue + thumbX * valuePerPixel
+	return Math.ceil(value)
 }
-
-export type SliderValues = {
-	minValue: number
-	maxValue: number
-	currentLeftValue: number
-	currentRightValue: number
-}
-
-export const areSliderValuesEqual = (sv1: SliderValues, sv2: SliderValues) =>
-	sv1.minValue === sv2.minValue &&
-	sv1.maxValue === sv2.maxValue &&
-	sv1.currentLeftValue === sv2.currentLeftValue &&
-	sv1.currentRightValue === sv2.currentRightValue
