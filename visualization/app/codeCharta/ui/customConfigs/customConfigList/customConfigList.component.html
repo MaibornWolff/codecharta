@@ -1,4 +1,4 @@
-<mat-dialog-content class="content">
+<mat-dialog-content class="content" *ngIf="customConfigService.customConfigItemGroups$ | async; let dropDownCustomConfigItemGroups">
 	<div class="row">
 		<div class="title">
 			<h3>Custom Views</h3>
