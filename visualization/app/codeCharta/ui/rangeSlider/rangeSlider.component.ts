@@ -13,6 +13,8 @@ import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricDa
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { trackEventUsageData } from "../../util/usageDataTracker"
 
+export const lightGrey = "#DDDDDD"
+
 export class RangeSliderController
 	implements ColorMetricSubscriber, ColorRangeSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, MapColorsSubscriber
 {
@@ -165,7 +167,6 @@ export class RangeSliderController
 	}
 
 	private getGreyRangeColors() {
-		const { lightGrey } = this.storeService.getState().appSettings.mapColors
 		return {
 			left: lightGrey,
 			middle: lightGrey,

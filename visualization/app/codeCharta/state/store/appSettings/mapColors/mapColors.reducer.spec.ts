@@ -33,7 +33,7 @@ describe("mapColors", () => {
 
 			const result = mapColors(oldMapColors, setMapColors({ positive: "ABCDEF" } as MapColors))
 
-			expect(Object.values(result)).toHaveLength(15)
+			expect(Object.values(result)).toHaveLength(12)
 			expect(result.positive).toEqual("ABCDEF")
 		})
 	})
