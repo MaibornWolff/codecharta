@@ -1,30 +1,16 @@
 import "./customConfigList.component.scss"
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
-import { CustomConfigGroups } from "../../../util/customConfigHelper"
-import { CustomConfigFileStateConnector } from "../customConfigFileStateConnector"
-import { Subscription } from "rxjs"
+import { Component, Inject } from "@angular/core"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
+import { CustomConfigGroups } from "./getCustomConfigItemGroups"
 
 @Component({
 	template: require("./customConfigList.component.html")
 })
-export class CustomConfigListComponent implements OnInit, OnDestroy {
-	customConfigFileStateConnector: CustomConfigFileStateConnector
+export class CustomConfigListComponent {
 	dropDownCustomConfigItemGroups: CustomConfigGroups
 	isCollapsed = true
-	subscription: Subscription
 
-	constructor(@Inject(CustomConfigHelperService) private customConfigService: CustomConfigHelperService) {}
-
-	ngOnInit() {
-		this.subscription = this.customConfigService.customConfigItemGroups$.subscribe(customConfigItemGroups => {
-			this.dropDownCustomConfigItemGroups = customConfigItemGroups
-		})
-	}
-
-	ngOnDestroy() {
-		this.subscription.unsubscribe()
-	}
+	constructor(@Inject(CustomConfigHelperService) public customConfigService: CustomConfigHelperService) {}
 
 	toggleNonApplicableCustomConfigsList() {
 		this.isCollapsed = !this.isCollapsed
