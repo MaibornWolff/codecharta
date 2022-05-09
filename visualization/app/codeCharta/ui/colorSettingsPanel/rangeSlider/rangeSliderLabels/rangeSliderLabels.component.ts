@@ -20,11 +20,14 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked, 
 	@ViewChild("maxLabel") maxLabel: ElementRef<HTMLDivElement>
 	@ViewChild("currentLeftLabel") currentLeftLabel: ElementRef<HTMLDivElement>
 	@ViewChild("currentRightLabel") currentRightLabel: ElementRef<HTMLDivElement>
+	@ViewChild("combinedCurrentLeftRightLabel") combinedCurrentLeftRightLabel: ElementRef<HTMLDivElement>
 
 	hideMinLabel = false
 	hideMaxLabel = false
-	currentLeftLabelLeftPosition
-	currentRightLabelLeftPosition
+	doLeftRightLabelOverlap = false
+	currentLeftLabelLeftPosition: number
+	currentRightLabelLeftPosition: number
+	combinedCurrentLeftRightLabelLeftPosition: number
 
 	private hasUnhandledChanges = false
 
@@ -47,8 +50,8 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked, 
 
 	private updateLabelDisplays() {
 		const minLabelRightPosition = this.minLabel.nativeElement.getBoundingClientRect().width
-		this.currentLeftLabelLeftPosition =
-			this.sliderRangePosition.leftEnd - this.currentLeftLabel.nativeElement.getBoundingClientRect().width / 2
+		const currentLeftLabelWidth = this.currentLeftLabel.nativeElement.getBoundingClientRect().width
+		this.currentLeftLabelLeftPosition = this.sliderRangePosition.leftEnd - currentLeftLabelWidth / 2
 
 		const currentRightLabelWidth = this.currentRightLabel.nativeElement.getBoundingClientRect().width
 		const maxLabelLeftPosition = sliderWidth - this.maxLabel.nativeElement.getBoundingClientRect().width
@@ -56,6 +59,13 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked, 
 
 		this.hideMinLabel = this.currentLeftLabelLeftPosition <= minLabelRightPosition + minDistanceBetweenLabels
 		this.hideMaxLabel = this.currentRightLabelLeftPosition + currentRightLabelWidth + minDistanceBetweenLabels >= maxLabelLeftPosition
+
+		const currentLeftLabelRightPosition = this.currentLeftLabelLeftPosition + currentLeftLabelWidth
+		this.doLeftRightLabelOverlap = currentLeftLabelRightPosition + minDistanceBetweenLabels >= this.currentRightLabelLeftPosition
+
+		const middleBetweenLeftRight = (currentLeftLabelRightPosition + this.currentRightLabelLeftPosition) / 2
+		const combinedCurrentLeftRightLabelWidth = this.combinedCurrentLeftRightLabel.nativeElement.getBoundingClientRect().width
+		this.combinedCurrentLeftRightLabelLeftPosition = middleBetweenLeftRight - combinedCurrentLeftRightLabelWidth / 2
 
 		this.hasUnhandledChanges = false
 	}
