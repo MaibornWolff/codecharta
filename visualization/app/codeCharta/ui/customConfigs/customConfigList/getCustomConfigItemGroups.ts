@@ -1,6 +1,11 @@
 import { CustomConfigItemGroup } from "../customConfigs.component"
-import { CustomConfigGroups, CustomConfigHelper } from "../../../util/customConfigHelper"
+import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { CustomConfigMapSelectionMode } from "../../../model/customConfig/customConfig.api.model"
+
+export interface CustomConfigGroups {
+	applicableItems: Map<string, CustomConfigItemGroup>
+	nonApplicableItems: Map<string, CustomConfigItemGroup>
+}
 
 export function getCustomConfigItemGroups(
 	fileMapCheckSumsByMapSelectionMode: Map<CustomConfigMapSelectionMode, string[]>

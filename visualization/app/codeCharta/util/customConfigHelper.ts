@@ -1,5 +1,5 @@
 "use strict"
-import { ColorRange, LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
+import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import {
 	CustomConfig,
@@ -14,7 +14,6 @@ import { setState } from "../state/store/state.actions"
 import { setColorRange } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setMargin } from "../state/store/dynamicSettings/margin/margin.actions"
 import { setCamera } from "../state/store/appSettings/camera/camera.actions"
-import { Vector3 } from "three"
 import { setCameraTarget } from "../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCameraService"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
@@ -26,66 +25,9 @@ const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
 const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.1"
 export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
-export interface CustomConfigGroups {
-	applicableItems: Map<string, CustomConfigItemGroup>
-	nonApplicableItems: Map<string, CustomConfigItemGroup>
-}
-
 export class CustomConfigHelper {
 	private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigs()
 	static customConfigChange$: BehaviorSubject<null> = new BehaviorSubject(null)
-
-	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): CustomConfigGroups {
-		const customConfigGroups: CustomConfigGroups = {
-			applicableItems: new Map<string, CustomConfigItemGroup>(),
-			nonApplicableItems: new Map<string, CustomConfigItemGroup>()
-		}
-
-		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
-
-		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
-			const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
-
-			if (!customConfigItemGroups.has(groupKey)) {
-				customConfigItemGroups.set(groupKey, {
-					mapNames: customConfig.assignedMaps.join(" "),
-					mapSelectionMode: customConfig.mapSelectionMode,
-					hasApplicableItems: false,
-					customConfigItems: []
-				})
-			}
-
-			const customConfigItemApplicable = CustomConfigHelper.isCustomConfigApplicable(customConfigFileStateConnector, customConfig)
-
-			customConfigItemGroups.get(groupKey).customConfigItems.push({
-				id: customConfig.id,
-				name: customConfig.name,
-				mapNames: customConfig.assignedMaps.join(" "),
-				mapSelectionMode: customConfig.mapSelectionMode,
-				isApplicable: customConfigItemApplicable
-			})
-
-			if (customConfigItemApplicable) {
-				customConfigItemGroups.get(groupKey).hasApplicableItems = true
-			}
-
-			if (customConfigItemGroups.get(groupKey).hasApplicableItems) {
-				customConfigGroups.applicableItems.set(groupKey, customConfigItemGroups.get(groupKey))
-			} else {
-				customConfigGroups.nonApplicableItems.set(groupKey, customConfigItemGroups.get(groupKey))
-			}
-		}
-
-		return customConfigGroups
-	}
-
-	private static isCustomConfigApplicable(customConfigFileStateConnector: CustomConfigFileStateConnector, customConfig: CustomConfig) {
-		// Configs are applicable if their mapChecksums (and mode) are matching, therefore, map names must not be checked.
-		return (
-			customConfigFileStateConnector.getChecksumOfAssignedMaps() === customConfig.mapChecksum &&
-			customConfigFileStateConnector.getMapSelectionMode() === customConfig.mapSelectionMode
-		)
-	}
 
 	static setCustomConfigsToLocalStorage() {
 		const newLocalStorageElement: LocalStorageCustomConfigs = {
@@ -320,7 +262,7 @@ export class CustomConfigHelper {
 		// Should we fire another event "ResettingStateFinishedEvent"
 		// We could add a listener then to reset the camera
 
-		store.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange as ColorRange))
+		store.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange))
 		store.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
 
 		// TODO: remove this dirty timeout and set camera settings properly
@@ -329,8 +271,8 @@ export class CustomConfigHelper {
 			threeCameraService.setPosition()
 			threeOrbitControlsService.setControlTarget()
 
-			store.dispatch(setCamera(customConfig.stateSettings.appSettings.camera as Vector3))
-			store.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget as Vector3))
+			store.dispatch(setCamera(customConfig.stateSettings.appSettings.camera))
+			store.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget))
 		}, 100)
 	}
 }
