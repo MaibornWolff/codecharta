@@ -25,7 +25,7 @@ export function getCustomConfigItemGroups(
 		}
 
 		const customConfigItemApplicable =
-			fileMapCheckSumsByMapSelectionMode.get(customConfig.mapSelectionMode).join(";") === customConfig.mapChecksum
+			fileMapCheckSumsByMapSelectionMode.get(customConfig.mapSelectionMode)?.join(";") === customConfig.mapChecksum
 
 		customConfigItemGroups.get(groupKey).customConfigItems.push({
 			id: customConfig.id,

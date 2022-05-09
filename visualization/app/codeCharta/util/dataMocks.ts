@@ -2156,7 +2156,7 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 			customConfigItems: [
 				{
 					id: "MULTIPLEfileESampleMap View #1",
-					name: "SampleMap View #1",
+					name: "SampleMap Delta View #1",
 					mapNames: "fileD",
 					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 					isApplicable: false

@@ -21,13 +21,12 @@
 			[customConfigItemGroups]="dropDownCustomConfigItemGroups.applicableItems"
 			[isApplicable]="true"
 		></cc-custom-config-item-group>
-		<ng-container *ngIf="!isCollapsed">
-			<cc-custom-config-item-group
-				class="non-applicable-group"
-				[customConfigItemGroups]="dropDownCustomConfigItemGroups.nonApplicableItems"
-				[isApplicable]="false"
-			></cc-custom-config-item-group>
-		</ng-container>
+		<cc-custom-config-item-group
+			*ngIf="!isCollapsed"
+			class="non-applicable-group"
+			[customConfigItemGroups]="dropDownCustomConfigItemGroups.nonApplicableItems"
+			[isApplicable]="false"
+		></cc-custom-config-item-group>
 		<button
 			class="toggle-non-applicable-configs-button"
 			*ngIf="dropDownCustomConfigItemGroups.nonApplicableItems.size > 0"
