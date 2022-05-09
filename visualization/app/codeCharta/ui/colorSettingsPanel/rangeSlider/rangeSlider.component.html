@@ -32,19 +32,21 @@
 			class="cc-range-slider-slider-thumb"
 			[style.left.px]="sliderRangePosition.leftEnd - thumbRadius"
 			(mousedown)="setCurrentlySliding('leftThumb')"
-		>
-			<div class="cc-range-slider-slider-thumb-value">{{ currentLeftValue }}</div>
-			<div class="cc-range-slider-slider-thumb-circle"></div>
-		</div>
+		></div>
 		<div
 			#rightThumb
 			class="cc-range-slider-slider-thumb"
 			[style.left.px]="sliderRangePosition.rightStart - thumbRadius"
 			(mousedown)="setCurrentlySliding('rightThumb')"
-		>
-			<div class="cc-range-slider-slider-thumb-value">{{ currentRightValue }}</div>
-			<div class="cc-range-slider-slider-thumb-circle"></div>
-		</div>
+		></div>
+		<cc-range-slider-labels
+			[minValue]="minValue"
+			[maxValue]="maxValue"
+			[currentLeftValue]="currentLeftValue"
+			[currentRightValue]="currentRightValue"
+			[sliderRangePosition]="sliderRangePosition"
+			[thumbRadius]="thumbRadius"
+		></cc-range-slider-labels>
 	</div>
 
 	<mat-form-field>

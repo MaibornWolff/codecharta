@@ -25,23 +25,11 @@ cc-range-slider {
 			}
 
 			.cc-range-slider-slider-thumb {
+				cursor: pointer;
 				position: absolute;
-				top: 0;
-				width: 8px;
-				height: 48px;
-
-				.cc-range-slider-slider-thumb-circle {
-					position: absolute;
-					top: 20px;
-					border-radius: 100%;
-					border: 7px solid theme.$cc-primary-color;
-				}
-
-				.cc-range-slider-slider-thumb-value {
-					line-height: 24px;
-					font-size: 14px;
-					color: #aeaeae;
-				}
+				top: 20px;
+				border-radius: 100%;
+				border: 7px solid theme.$cc-primary-color;
 			}
 		}
 	}

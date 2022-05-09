@@ -1,0 +1,8 @@
+<div #minValueLabel class="cc-range-slider-label" [style.left.px]="0">{{ minValue }}</div>
+<div #currentLeftValueLabel class="cc-range-slider-label" [style.left.px]="sliderRangePosition.leftEnd - thumbRadius">
+	{{ currentLeftValue }}
+</div>
+<div #currentRightValueLabel class="cc-range-slider-label" [style.left.px]="sliderRangePosition.rightStart - thumbRadius">
+	{{ currentRightValue }}
+</div>
+<div #maxValueLabel class="cc-range-slider-label" [style.right.px]="0">{{ maxValue }}</div>
