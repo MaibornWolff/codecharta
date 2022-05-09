@@ -6,7 +6,6 @@ import { DownloadCustomConfigsButtonComponent } from "./downloadCustomConfigsBut
 @NgModule({
 	declarations: [DownloadCustomConfigsButtonComponent],
 	exports: [DownloadCustomConfigsButtonComponent],
-	providers: [CustomConfigHelperService],
-	entryComponents: [DownloadCustomConfigsButtonComponent]
+	providers: [CustomConfigHelperService]
 })
 export class DownloadCustomConfigButtonModule {}
