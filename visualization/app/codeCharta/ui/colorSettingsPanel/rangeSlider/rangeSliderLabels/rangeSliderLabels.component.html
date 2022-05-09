@@ -1,8 +1,12 @@
-<div #minValueLabel class="cc-range-slider-label" [style.left.px]="0">{{ minValue }}</div>
-<div #currentLeftValueLabel class="cc-range-slider-label" [style.left.px]="sliderRangePosition.leftEnd - thumbRadius">
+<div #minLabel class="cc-range-slider-label" [style.left.px]="0" [style.visibility]="hideMinLabel ? 'hidden' : 'visible'">
+	{{ minValue }}
+</div>
+<div #currentLeftLabel class="cc-range-slider-label" [style.left.px]="currentLeftLabelLeftPosition">
 	{{ currentLeftValue }}
 </div>
-<div #currentRightValueLabel class="cc-range-slider-label" [style.left.px]="sliderRangePosition.rightStart - thumbRadius">
+<div #currentRightLabel class="cc-range-slider-label" [style.left.px]="currentRightLabelLeftPosition">
 	{{ currentRightValue }}
 </div>
-<div #maxValueLabel class="cc-range-slider-label" [style.right.px]="0">{{ maxValue }}</div>
+<div #maxLabel class="cc-range-slider-label" [style.right.px]="0" [style.visibility]="hideMaxLabel ? 'hidden' : 'visible'">
+	{{ maxValue }}
+</div>
