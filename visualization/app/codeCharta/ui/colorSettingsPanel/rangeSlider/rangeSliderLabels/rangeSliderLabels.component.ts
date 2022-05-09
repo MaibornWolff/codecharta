@@ -1,5 +1,5 @@
 import "./rangeSliderLabels.component.scss"
-import { AfterViewChecked, Component, ElementRef, Input, OnChanges, ViewChild } from "@angular/core"
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnChanges, ViewChild } from "@angular/core"
 import { SliderRangePosition } from "../utils/SliderRangePosition"
 import { sliderWidth } from "../rangeSlider.component"
 
@@ -9,7 +9,7 @@ const minDistanceBetweenLabels = 4
 	selector: "cc-range-slider-labels",
 	template: require("./rangeSliderLabels.component.html")
 })
-export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
+export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked, AfterViewInit {
 	@Input() minValue: number
 	@Input() maxValue: number
 	@Input() currentLeftValue: number
@@ -30,6 +30,13 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 
 	ngOnChanges(): void {
 		this.hasUnhandledChanges = true
+	}
+
+	ngAfterViewInit() {
+		// Todo - why is this needed for initial correct calculation?
+		setTimeout(() => {
+			this.updateLabelDisplays()
+		})
 	}
 
 	ngAfterViewChecked(): void {
