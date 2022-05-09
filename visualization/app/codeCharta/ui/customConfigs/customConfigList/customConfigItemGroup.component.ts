@@ -12,7 +12,7 @@ import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitC
 })
 export class CustomConfigItemGroupComponent {
 	@Input() customConfigItemGroups: Map<string, CustomConfigItemGroup>
-	isCollapsed = false
+	isExpanded = false
 
 	constructor(
 		@Inject(Store) private store: Store,

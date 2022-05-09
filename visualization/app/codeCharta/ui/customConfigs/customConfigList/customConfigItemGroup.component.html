@@ -1,4 +1,9 @@
-<mat-expansion-panel *ngFor="let customConfigItemGroup of customConfigItemGroups | keyvalue">
+<mat-expansion-panel
+	[expanded]="isExpanded"
+	(opened)="isExpanded = true"
+	(closed)="isExpanded = false"
+	*ngFor="let customConfigItemGroup of customConfigItemGroups | keyvalue"
+>
 	<mat-expansion-panel-header>
 		<mat-panel-title>
 			Custom View(s) in
