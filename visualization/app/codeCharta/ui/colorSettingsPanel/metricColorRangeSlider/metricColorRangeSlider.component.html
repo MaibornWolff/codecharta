@@ -1,8 +1,9 @@
 <cc-range-slider
-	[minValue]="0"
-	[maxValue]="100"
-	[currentLeftValue]="currentLeftValue"
-	[currentRightValue]="currentRightValue"
+	*ngIf="colorRange$ | async; let colorRange"
+	[minValue]="colorRange.min"
+	[maxValue]="colorRange.max"
+	[currentLeftValue]="colorRange.from"
+	[currentRightValue]="colorRange.to"
 	[leftColor]="'green'"
 	[middleColor]="'orange'"
 	[rightColor]="'red'"
