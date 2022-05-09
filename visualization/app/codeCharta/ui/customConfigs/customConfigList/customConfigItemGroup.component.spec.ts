@@ -31,7 +31,7 @@ describe("customConfigItemGroupComponent", () => {
 		const customConfigItemGroups = new Map([["fileAfileBMultiple", CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBMultiple")]])
 		await render(CustomConfigItemGroupComponent, {
 			excludeComponentDeclaration: true,
-			componentProperties: { customConfigItemGroups, isApplicable: true }
+			componentProperties: { customConfigItemGroups }
 		})
 
 		fireEvent.click(screen.getByText("SampleMap View #1"))
@@ -45,7 +45,7 @@ describe("customConfigItemGroupComponent", () => {
 		const customConfigItemGroups = new Map([["fileAfileBMultiple", CUSTOM_CONFIG_ITEM_GROUPS.get("fileAfileBMultiple")]])
 		await render(CustomConfigItemGroupComponent, {
 			excludeComponentDeclaration: true,
-			componentProperties: { customConfigItemGroups, isApplicable: true }
+			componentProperties: { customConfigItemGroups }
 		})
 
 		fireEvent.click(screen.getAllByTitle("Remove Custom Config")[0])

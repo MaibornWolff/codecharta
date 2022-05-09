@@ -15,7 +15,7 @@
 					: 'This one is applicable for map(s) ' + customConfig.mapNames + ' in ' + customConfig.mapSelectionMode + ' mode only.'
 			}}"
 		>
-			<button mat-dialog-close [disabled]="!isApplicable" (click)="applyCustomConfig(customConfig.id)">
+			<button mat-dialog-close [disabled]="!customConfig.isApplicable" (click)="applyCustomConfig(customConfig.id)">
 				{{ customConfig.name }}
 			</button>
 			<button class="remove-button" title="Remove Custom Config" (click)="removeCustomConfig(customConfig.id)">
