@@ -5,8 +5,8 @@ import { colorRangeSelector } from "../../../state/store/dynamicSettings/colorRa
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
 import { metricColorRangeSliderColorsSelector } from "./rangeSlider/selectors/metricColorRangeSliderColors.selector"
+import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 
-// Todo disabled?
 // Todo remove RzSlider
 // todo parseInt
 // Todo tracking
@@ -19,6 +19,7 @@ import { metricColorRangeSliderColorsSelector } from "./rangeSlider/selectors/me
 export class MetricColorRangeSliderComponent {
 	colorRange$ = this.store.select(colorRangeSelector)
 	sliderColors$ = this.store.select(metricColorRangeSliderColorsSelector)
+	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
 	constructor(@Inject(Store) private store: Store) {}
 

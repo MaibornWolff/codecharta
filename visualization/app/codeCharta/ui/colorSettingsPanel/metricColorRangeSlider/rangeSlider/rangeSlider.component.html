@@ -2,6 +2,7 @@
 	<mat-form-field>
 		<input
 			matInput
+			[disabled]="disabled"
 			type="number"
 			[value]="currentLeftValue"
 			(input)="this.handleCurrentLeftInputChanged($event)"
@@ -10,7 +11,7 @@
 		/>
 	</mat-form-field>
 
-	<div #rangeSliderContainer class="cc-range-slider-slider">
+	<div #rangeSliderContainer class="cc-range-slider-slider" [class.disabled]="disabled">
 		<span
 			[style.width.px]="sliderRangePosition.leftEnd"
 			[style.border-bottom]="'4px solid ' + leftColor"
@@ -31,13 +32,13 @@
 			#leftThumb
 			class="cc-range-slider-slider-thumb"
 			[style.left.px]="sliderRangePosition.leftEnd - thumbRadius"
-			(mousedown)="setCurrentlySliding('leftThumb')"
+			(mousedown)="!disabled && setCurrentlySliding('leftThumb')"
 		></div>
 		<div
 			#rightThumb
 			class="cc-range-slider-slider-thumb"
 			[style.left.px]="sliderRangePosition.rightStart - thumbRadius"
-			(mousedown)="setCurrentlySliding('rightThumb')"
+			(mousedown)="!disabled && setCurrentlySliding('rightThumb')"
 		></div>
 		<cc-range-slider-labels
 			[minValue]="minValue"
@@ -51,6 +52,7 @@
 	<mat-form-field>
 		<input
 			matInput
+			[disabled]="disabled"
 			type="number"
 			[value]="this.currentRightValue"
 			(input)="this.handleCurrentRightInputChanged($event)"

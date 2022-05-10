@@ -1,4 +1,5 @@
 <cc-range-slider
+	[disabled]="isDeltaState$ | async"
 	[minValue]="(colorRange$ | async).min"
 	[maxValue]="(colorRange$ | async).max"
 	[currentLeftValue]="(colorRange$ | async).from"

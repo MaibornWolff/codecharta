@@ -12,6 +12,7 @@ export const sliderWidth = 150
 	template: require("./rangeSlider.component.html")
 })
 export class RangeSliderComponent implements OnChanges {
+	@Input() disabled: boolean
 	@Input() minValue: number
 	@Input() maxValue: number
 	@Input() currentLeftValue: number
