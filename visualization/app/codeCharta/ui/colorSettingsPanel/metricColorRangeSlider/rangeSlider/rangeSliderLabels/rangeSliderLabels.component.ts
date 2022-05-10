@@ -37,7 +37,12 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 
 	ngAfterViewChecked(): void {
 		if (this.hasUnhandledChanges) {
+			// There is somewhere a bug, that it get rendered with 0 width shortly. Maybe a bug with AngularJS dual booting?
+			if (this.minLabel.nativeElement.getBoundingClientRect().width === 0) {
+				return
+			}
 			this.updateLabelDisplays()
+			this.hasUnhandledChanges = false
 		}
 	}
 
@@ -59,7 +64,5 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 		const middleBetweenLeftRight = (currentLeftLabelRightPosition + this.currentRightLabelLeftPosition) / 2
 		const combinedCurrentLeftRightLabelWidth = this.combinedCurrentLeftRightLabel.nativeElement.getBoundingClientRect().width
 		this.combinedCurrentLeftRightLabelLeftPosition = middleBetweenLeftRight - combinedCurrentLeftRightLabelWidth / 2
-
-		this.hasUnhandledChanges = false
 	}
 }

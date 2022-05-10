@@ -7,8 +7,6 @@ export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
 
 export const sliderWidth = 150
 
-// Todo disabled?
-// Todo handleValueChange as Partial update?
 @Component({
 	selector: "cc-range-slider",
 	template: require("./rangeSlider.component.html")

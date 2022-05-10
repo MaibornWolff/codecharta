@@ -6,6 +6,12 @@ import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/c
 import debounce from "lodash.debounce"
 import { metricColorRangeSliderColorsSelector } from "./rangeSlider/selectors/metricColorRangeSliderColors.selector"
 
+// Todo disabled?
+// Todo remove RzSlider
+// todo parseInt
+// Todo tracking
+// Todo bug ticket for old slider
+// Todo add todo to #2318 for early return of rangeSliderLabels' ngAfterViewChecked
 @Component({
 	selector: "cc-metric-color-range-slider",
 	template: require("./metricColorRangeSlider.component.html")
