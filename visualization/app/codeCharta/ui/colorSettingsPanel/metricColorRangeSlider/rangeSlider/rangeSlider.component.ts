@@ -80,7 +80,10 @@ export class RangeSliderComponent implements OnChanges {
 		if (newLeftThumbScreenX > rightThumbScreenX) {
 			newLeftThumbScreenX = rightThumbScreenX
 		}
-		this.sliderRangePosition.leftEnd = newLeftThumbScreenX - sliderBoundingClientRectX + this.thumbRadius
+		this.sliderRangePosition = {
+			leftEnd: newLeftThumbScreenX - sliderBoundingClientRectX + this.thumbRadius,
+			rightStart: this.sliderRangePosition.rightStart
+		}
 
 		const nextLeftValue = thumbPosition2Value({
 			thumbX: this.sliderRangePosition.leftEnd,
@@ -102,6 +105,10 @@ export class RangeSliderComponent implements OnChanges {
 			newRightThumbScreenX = leftThumbScreenX
 		}
 		this.sliderRangePosition.rightStart = newRightThumbScreenX - sliderBoundingClientRectX + this.thumbRadius
+		this.sliderRangePosition = {
+			leftEnd: this.sliderRangePosition.leftEnd,
+			rightStart: newRightThumbScreenX - sliderBoundingClientRectX + this.thumbRadius
+		}
 
 		const nextRightValue = thumbPosition2Value({
 			thumbX: this.sliderRangePosition.rightStart,
