@@ -14,14 +14,11 @@ export class MetricColorRangeSliderComponent {
 	constructor(@Inject(Store) private store: Store) {}
 
 	handleValueChange: HandleValueChange = ({ currentLeftValue, currentRightValue }) => {
-		// todo check initial reducing from
 		// todo add debounce
 		this.store.dispatch(
 			setColorRange({
 				from: currentLeftValue,
-				to: currentRightValue,
-				min: 0,
-				max: 100 // todo make action partial
+				to: currentRightValue
 			})
 		)
 	}

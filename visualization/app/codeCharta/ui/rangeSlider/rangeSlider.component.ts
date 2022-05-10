@@ -129,7 +129,7 @@ export class RangeSliderController
 			setColorRange({
 				to: this._viewModel.colorRangeTo,
 				from: this._viewModel.colorRangeFrom,
-				min: this._viewModel.sliderOptions.floor,
+				min: this._viewModel.sliderOptions.floor ?? 0,
 				max: this._viewModel.sliderOptions.ceil
 			})
 		)

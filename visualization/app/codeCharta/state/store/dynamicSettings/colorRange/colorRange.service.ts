@@ -54,6 +54,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		const maxMetricValue = this.nodeMetricDataService.getMaxValueOfMetric(colorMetric)
 		const minMetricValue = this.nodeMetricDataService.getMinValueOfMetric(colorMetric)
 
+		// TODO when migrating this service, we should remove min and max from colorRange as they are derived from nodeMetricData
 		const newColorRange = getResetColorRange(maxMetricValue, minMetricValue)
 		this.storeService.dispatch(setColorRange(newColorRange))
 	}

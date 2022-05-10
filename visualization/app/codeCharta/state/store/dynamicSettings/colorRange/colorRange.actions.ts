@@ -6,16 +6,16 @@ export enum ColorRangeActions {
 
 export interface SetColorRangeAction extends CCAction {
 	type: ColorRangeActions.SET_COLOR_RANGE
-	payload: ColorRange
+	payload: Partial<ColorRange>
 }
 
 export type ColorRangeAction = SetColorRangeAction
 
-export function setColorRange(colorRange: ColorRange = defaultColorRange): SetColorRangeAction {
+export function setColorRange(colorRange: Partial<ColorRange> = defaultColorRange): SetColorRangeAction {
 	return {
 		type: ColorRangeActions.SET_COLOR_RANGE,
 		payload: colorRange
 	}
 }
 
-export const defaultColorRange: ColorRange = { from: null, to: null, min: null, max: null }
+export const defaultColorRange: ColorRange = { from: 33, to: 66, min: 0, max: 100 }
