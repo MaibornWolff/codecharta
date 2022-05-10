@@ -4,6 +4,7 @@ import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
 import { colorRangeSelector } from "../../../state/store/dynamicSettings/colorRange/colorRange.selector"
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
+import { metricColorRangeSliderColorsSelector } from "./rangeSlider/selectors/metricColorRangeSliderColors.selector"
 
 @Component({
 	selector: "cc-metric-color-range-slider",
@@ -11,6 +12,7 @@ import debounce from "lodash.debounce"
 })
 export class MetricColorRangeSliderComponent {
 	colorRange$ = this.store.select(colorRangeSelector)
+	sliderColors$ = this.store.select(metricColorRangeSliderColorsSelector)
 
 	constructor(@Inject(Store) private store: Store) {}
 

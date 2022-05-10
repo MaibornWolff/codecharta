@@ -1,11 +1,10 @@
 <cc-range-slider
-	*ngIf="colorRange$ | async; let colorRange"
-	[minValue]="colorRange.min"
-	[maxValue]="colorRange.max"
-	[currentLeftValue]="colorRange.from"
-	[currentRightValue]="colorRange.to"
-	[leftColor]="'green'"
-	[middleColor]="'orange'"
-	[rightColor]="'red'"
+	[minValue]="(colorRange$ | async).min"
+	[maxValue]="(colorRange$ | async).max"
+	[currentLeftValue]="(colorRange$ | async).from"
+	[currentRightValue]="(colorRange$ | async).to"
+	[leftColor]="(sliderColors$ | async).leftColor"
+	[middleColor]="(sliderColors$ | async).middleColor"
+	[rightColor]="(sliderColors$ | async).rightColor"
 	[handleValueChange]="handleValueChange"
 ></cc-range-slider>
