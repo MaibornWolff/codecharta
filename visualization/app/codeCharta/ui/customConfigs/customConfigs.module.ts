@@ -1,14 +1,18 @@
 import "../../state/state.module"
-import angular from "angular"
-import { customConfigsComponent } from "./customConfigs.component"
-import { AddCustomConfigButtonComponent } from "./addCustomConfigButton/addCustomConfigButton.component"
-import { downgradeComponent } from "@angular/upgrade/static"
-import { DownloadCustomConfigsButtonComponent } from "./downloadCustomConfigsButton/downloadCustomConfigsButton.component"
-import { UploadCustomConfigButtonComponent } from "./uploadCustomConfigButton/uploadCustomConfigButton.component"
+import { CustomConfigsComponent } from "./customConfigs.component"
+import { NgModule } from "@angular/core"
+import { MaterialModule } from "../../../material/material.module"
+import { CommonModule } from "@angular/common"
+import { UploadCustomConfigButtonModule } from "./uploadCustomConfigButton/uploadCustomConfigButton.module"
+import { AddCustomConfigButtonModule } from "./addCustomConfigButton/addCustomConfigButton.module"
+import { DownloadCustomConfigButtonModule } from "./downloadCustomConfigsButton/downloadCustomConfigButton.module"
+import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
+import { CustomConfigItemGroupComponent } from "./customConfigList/customConfigItemGroup.component"
 
-angular
-	.module("app.codeCharta.ui.customConfigs", ["app.codeCharta.state"])
-	.component(customConfigsComponent.selector, customConfigsComponent)
-	.directive("ccAddCustomConfigButton", downgradeComponent({ component: AddCustomConfigButtonComponent }))
-	.directive("ccDownloadCustomConfigsButton", downgradeComponent({ component: DownloadCustomConfigsButtonComponent }))
-	.directive("ccUploadCustomConfigButton", downgradeComponent({ component: UploadCustomConfigButtonComponent }))
+@NgModule({
+	imports: [MaterialModule, CommonModule, UploadCustomConfigButtonModule, AddCustomConfigButtonModule, DownloadCustomConfigButtonModule],
+	declarations: [CustomConfigsComponent, CustomConfigListComponent, CustomConfigItemGroupComponent],
+	exports: [CustomConfigsComponent],
+	entryComponents: [CustomConfigsComponent, CustomConfigListComponent]
+})
+export class CustomConfigsModule {}
