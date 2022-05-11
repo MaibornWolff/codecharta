@@ -10,7 +10,7 @@ import { of } from "rxjs"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../util/dataMocks"
 import { DownloadableConfigs } from "../downloadCustomConfigsButton/getDownloadableCustomConfigs"
 import { CustomConfigItemGroup } from "../customConfigs.component"
-import { CustomConfigGroups } from "../../../util/customConfigHelper"
+import { CustomConfigGroups } from "./getCustomConfigItemGroups"
 
 const mockedCustomConfigHelperService = {
 	customConfigItemGroups$: of({
