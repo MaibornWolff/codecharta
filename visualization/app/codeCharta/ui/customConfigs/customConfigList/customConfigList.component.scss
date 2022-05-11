@@ -1,136 +1,123 @@
+@use "../../../../material/theme";
+
 .cc-custom-config-list .mat-dialog-container {
-	padding: 5px 16px !important;
+	padding: 5px 16px;
+	max-height: 90vh;
 
 	.mat-dialog-content.content {
 		max-height: 100%;
 		margin: 0;
 		padding: 0;
 	}
-}
 
-.row {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	grid-gap: 100px;
-}
-
-.action-buttons button {
-	margin: 0 3px;
-	min-width: 12%;
-	height: 48px;
-	width: 65px;
-	line-height: 48px;
-	background-color: #00a091;
-	color: #ffffff;
-
-	&:disabled,
-	&[disabled] {
-		background-color: #e6e6e6;
-		color: #949494;
-	}
-
-	i.fa {
-		font-size: 12px;
-		margin-left: 0;
-	}
-}
-
-.no-custom-configs-box {
-	padding: 16px;
-}
-
-cc-custom-config-item-group {
-	.mat-expansion-panel-spacing {
-		margin: 0;
-	}
-
-	.mat-expansion-panel-header {
-		padding: 0 16px;
-	}
-
-	.highlight-mode {
-		font-weight: bold;
-		white-space: break-spaces;
-	}
-
-	.mat-expansion-panel-header:not([aria-disabled="true"]) {
-		border-bottom: 1px solid black;
-		padding: 15px 2px;
-	}
-
-	.mat-expansion-panel:not([class*="mat-elevation-z"]) {
-		box-shadow: none !important;
-	}
-
-	&.non-applicable-group {
-		.mat-expansion-panel-header-title,
-		.mat-list-item-content {
-			color: rgba(0, 0, 0, 0.3);
-		}
-	}
-
-	.mat-list-base .mat-list-item .mat-list-item-content,
-	.mat-list-base .mat-list-option .mat-list-item-content {
+	.row {
+		display: flex;
 		justify-content: space-between;
-		width: 100%;
-		padding: 0;
+		align-items: center;
 	}
 
-	.mat-list-item-content {
-		border-bottom: 1px solid #000000;
+	.action-buttons button {
+		margin: 0 3px;
+		min-width: 12%;
+		height: 48px;
+		width: 65px;
+		line-height: 48px;
+		background-color: theme.$cc-primary-color;
+		color: #ffffff;
 
-		&:hover {
-			background-color: rgba(158, 158, 158, 0.2);
+		&:disabled,
+		&[disabled] {
+			background-color: #e6e6e6;
+			color: #949494;
 		}
 
-		button {
-			height: 100%;
-			width: 100%;
-			background-color: transparent;
-			text-align: left;
+		i.fa {
+			font-size: 12px;
+			margin-left: 0;
+		}
+	}
+
+	.no-custom-configs-box {
+		padding: 16px;
+	}
+
+	cc-custom-config-item-group {
+		.mat-expansion-panel-spacing {
+			margin: 0;
+		}
+
+		.mat-expansion-panel-header {
+			padding: 0 16px;
+		}
+
+		.highlight-mode {
+			font-weight: bold;
+			white-space: break-spaces;
+		}
+
+		.mat-expansion-panel-body {
+			padding: 0 16px;
+		}
+		.mat-expansion-panel-header:not([aria-disabled="true"]) {
+			border-bottom: 1px solid black;
+			padding: 15px 2px;
+		}
+
+		.mat-expansion-panel:not([class*="mat-elevation-z"]) {
+			box-shadow: none;
+		}
+
+		&.non-applicable-group {
+			.mat-expansion-panel-header-title,
+			.mat-list-item-content {
+				color: rgba(0, 0, 0, 0.3);
+			}
+		}
+
+		.mat-list-item-content {
+			border-bottom: 1px solid #000000;
+			padding: 0;
 
 			&:hover {
-				background: transparent;
+				background-color: rgba(158, 158, 158, 0.2);
 			}
 
-			&.remove-button {
-				color: red;
-				width: 13%;
+			button {
+				height: 100%;
+				width: 100%;
+				background-color: transparent;
+				text-align: left;
+
+				&.remove-button {
+					color: red;
+					width: 13%;
+				}
 			}
 		}
 	}
-}
 
-.mat-accordion > .mat-expansion-panel-spacing:last-child,
-.mat-accordion > *:last-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing,
-.mat-accordion > .mat-expansion-panel-spacing:first-child,
-.mat-accordion > *:first-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing {
-	margin: 2px 0;
-}
-
-.mat-accordion.custom-config-container {
-	.mat-expansion-panel:first-of-type,
-	.mat-expansion-panel:last-of-type {
-		border-radius: 0px;
-	}
-}
-
-.toggle-non-applicable-configs-button {
-	width: 100%;
-	height: 30px;
-	margin: 5px 0;
-}
-
-cc-custom-config-item-group.non-applicable-group button {
-	color: rgba(0, 0, 0, 0.3);
-
-	&:hover {
-		background-color: transparent;
+	.mat-accordion > .mat-expansion-panel-spacing:last-child,
+	.mat-accordion > *:last-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing,
+	.mat-accordion > .mat-expansion-panel-spacing:first-child,
+	.mat-accordion > *:first-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing {
+		margin: 2px 0;
 	}
 
-	&:disabled,
-	&[disabled] {
-		background-color: transparent;
+	.mat-accordion.custom-config-container {
+		.mat-expansion-panel:first-of-type,
+		.mat-expansion-panel:last-of-type {
+			border-radius: 0px;
+		}
+	}
+
+	.toggle-non-applicable-configs-button {
+		width: 100%;
+		height: 30px;
+		margin: 5px 0;
+	}
+
+	mat-list-base .mat-list-item .mat-list-item-content,
+	.mat-list-base .mat-list-option .mat-list-item-content {
+		padding: 0;
 	}
 }
