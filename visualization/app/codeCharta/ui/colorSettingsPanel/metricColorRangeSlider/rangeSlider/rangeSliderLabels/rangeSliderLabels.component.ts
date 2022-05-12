@@ -59,11 +59,14 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 		const currentRightLabelWidth = this.currentRightLabel.nativeElement.getBoundingClientRect().width
 		const maxLabelLeftPosition = sliderWidth - this.maxLabel.nativeElement.getBoundingClientRect().width
 		this.currentRightLabelLeftPosition = this.sliderRangePosition.rightStart - currentRightLabelWidth / 2
-		this.rightLabel = thumbPosition2Value({
-			thumbX: this.sliderRangePosition.rightStart,
-			minValue: this.minValue,
-			maxValue: this.maxValue
-		})
+		this.rightLabel = Math.max(
+			thumbPosition2Value({
+				thumbX: this.sliderRangePosition.rightStart,
+				minValue: this.minValue,
+				maxValue: this.maxValue
+			}),
+			this.minValue
+		)
 
 		this.hideMinLabel = this.currentLeftLabelLeftPosition <= minLabelRightPosition + minDistanceBetweenLabels
 		this.hideMaxLabel = this.currentRightLabelLeftPosition + currentRightLabelWidth + minDistanceBetweenLabels >= maxLabelLeftPosition
