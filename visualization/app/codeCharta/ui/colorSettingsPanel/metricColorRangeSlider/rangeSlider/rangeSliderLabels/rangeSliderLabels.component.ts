@@ -1,6 +1,6 @@
 import "./rangeSliderLabels.component.scss"
 import { AfterViewChecked, Component, ElementRef, Input, OnChanges, ViewChild } from "@angular/core"
-import { SliderRangePosition } from "../utils/SliderRangePosition"
+import { SliderRangePosition, thumbPosition2Value } from "../utils/SliderRangePosition"
 import { sliderWidth } from "../rangeSlider.component"
 
 const minDistanceBetweenLabels = 4
@@ -12,8 +12,6 @@ const minDistanceBetweenLabels = 4
 export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 	@Input() minValue: number
 	@Input() maxValue: number
-	@Input() currentLeftValue: number
-	@Input() currentRightValue: number
 	@Input() sliderRangePosition: SliderRangePosition
 
 	@ViewChild("minLabel") minLabel: ElementRef<HTMLDivElement>
@@ -26,7 +24,9 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 	hideMaxLabel = false
 	doLeftRightLabelOverlap = false
 	currentLeftLabelLeftPosition: number
+	leftLabel: number
 	currentRightLabelLeftPosition: number
+	rightLabel: number
 	combinedCurrentLeftRightLabelLeftPosition: number
 
 	private hasUnhandledChanges = false
@@ -50,10 +50,20 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 		const minLabelRightPosition = this.minLabel.nativeElement.getBoundingClientRect().width
 		const currentLeftLabelWidth = this.currentLeftLabel.nativeElement.getBoundingClientRect().width
 		this.currentLeftLabelLeftPosition = this.sliderRangePosition.leftEnd - currentLeftLabelWidth / 2
+		this.leftLabel = thumbPosition2Value({
+			thumbX: this.sliderRangePosition.leftEnd,
+			minValue: this.minValue,
+			maxValue: this.maxValue
+		})
 
 		const currentRightLabelWidth = this.currentRightLabel.nativeElement.getBoundingClientRect().width
 		const maxLabelLeftPosition = sliderWidth - this.maxLabel.nativeElement.getBoundingClientRect().width
 		this.currentRightLabelLeftPosition = this.sliderRangePosition.rightStart - currentRightLabelWidth / 2
+		this.rightLabel = thumbPosition2Value({
+			thumbX: this.sliderRangePosition.rightStart,
+			minValue: this.minValue,
+			maxValue: this.maxValue
+		})
 
 		this.hideMinLabel = this.currentLeftLabelLeftPosition <= minLabelRightPosition + minDistanceBetweenLabels
 		this.hideMaxLabel = this.currentRightLabelLeftPosition + currentRightLabelWidth + minDistanceBetweenLabels >= maxLabelLeftPosition

@@ -7,7 +7,7 @@
 	[style.left.px]="currentLeftLabelLeftPosition"
 	[style.visibility]="doLeftRightLabelOverlap ? 'hidden' : 'visible'"
 >
-	{{ currentLeftValue }}
+	{{ leftLabel }}
 </div>
 <div
 	#currentRightLabel
@@ -15,7 +15,7 @@
 	[style.left.px]="currentRightLabelLeftPosition"
 	[style.visibility]="doLeftRightLabelOverlap ? 'hidden' : 'visible'"
 >
-	{{ currentRightValue }}
+	{{ rightLabel }}
 </div>
 <div
 	#combinedCurrentLeftRightLabel
@@ -23,7 +23,7 @@
 	[style.left.px]="combinedCurrentLeftRightLabelLeftPosition"
 	[style.visibility]="doLeftRightLabelOverlap ? 'visible' : 'hidden'"
 >
-	{{ currentLeftValue }} - {{ currentRightValue }}
+	{{ leftLabel }} - {{ rightLabel }}
 </div>
 <div #maxLabel class="cc-range-slider-label" [style.right.px]="0" [style.visibility]="hideMaxLabel ? 'hidden' : 'visible'">
 	{{ maxValue }}

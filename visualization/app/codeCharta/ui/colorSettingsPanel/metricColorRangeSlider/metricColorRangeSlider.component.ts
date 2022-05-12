@@ -11,7 +11,6 @@ import { State } from "../../../state/angular-redux/state"
 
 // Todo remove RzSlider
 // Todo bug ticket for old slider
-// Todo update label on slide
 // Todo add todo to #2318 for early return of rangeSliderLabels' ngAfterViewChecked
 @Component({
 	selector: "cc-metric-color-range-slider",
