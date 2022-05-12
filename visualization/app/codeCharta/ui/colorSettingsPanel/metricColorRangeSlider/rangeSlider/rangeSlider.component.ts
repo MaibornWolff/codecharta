@@ -2,7 +2,7 @@ import "./rangeSlider.component.scss"
 import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
 import { calculateSliderRangePosition, SliderRangePosition, thumbPosition2Value } from "./utils/SliderRangePosition"
 
-export type HandleValueChange = (changedValue: { newLeftValue: number } | { newRightValue: number }) => void
+export type HandleValueChange = (changedValue: { newLeftValue?: number; newRightValue?: number }) => void
 export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
 
 export const sliderWidth = 150
@@ -29,17 +29,25 @@ export class RangeSliderComponent implements OnChanges {
 	sliderRangePosition: SliderRangePosition = { leftEnd: 0, rightStart: 0 }
 	sliderWidth = sliderWidth
 	thumbRadius = 7
+	leftValueLabel: number
+	rightValueLabel: number
 
 	private currentlySliding: CurrentlySliding = undefined
 
 	ngOnChanges(changes: SimpleChanges) {
 		if (!this.currentlySliding) {
 			this.sliderRangePosition = calculateSliderRangePosition({
-				minValue: changes.minValue?.currentValue ?? this.minValue,
-				maxValue: changes.maxValue?.currentValue ?? this.maxValue,
-				currentLeftValue: changes.currentLeftValue?.currentValue ?? this.currentLeftValue,
-				currentRightValue: changes.currentRightValue?.currentValue ?? this.currentRightValue
+				minValue: this.minValue,
+				maxValue: this.maxValue,
+				currentLeftValue: this.currentLeftValue,
+				currentRightValue: this.currentRightValue
 			})
+			if (changes.currentLeftValue) {
+				this.leftValueLabel = this.currentLeftValue
+			}
+			if (changes.currentRightValue) {
+				this.rightValueLabel = this.currentRightValue
+			}
 		}
 	}
 
@@ -89,6 +97,7 @@ export class RangeSliderComponent implements OnChanges {
 			minValue: this.minValue,
 			maxValue: this.maxValue
 		})
+		this.leftValueLabel = newLeftValue
 		this.handleValueChange({ newLeftValue })
 	}
 
@@ -103,7 +112,6 @@ export class RangeSliderComponent implements OnChanges {
 		if (newRightThumbScreenX < leftThumbScreenX) {
 			newRightThumbScreenX = leftThumbScreenX
 		}
-		this.sliderRangePosition.rightStart = newRightThumbScreenX - sliderBoundingClientRectX + this.thumbRadius
 		this.sliderRangePosition = {
 			leftEnd: this.sliderRangePosition.leftEnd,
 			rightStart: newRightThumbScreenX - sliderBoundingClientRectX + this.thumbRadius
@@ -114,6 +122,7 @@ export class RangeSliderComponent implements OnChanges {
 			minValue: this.minValue,
 			maxValue: this.maxValue
 		})
+		this.rightValueLabel = newRightValue
 		this.handleValueChange({ newRightValue })
 	}
 

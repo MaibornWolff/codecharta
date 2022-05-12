@@ -38,5 +38,5 @@ type ThumbPosition2ValueArgument = {
 export const thumbPosition2Value = ({ thumbX, minValue, maxValue }: ThumbPosition2ValueArgument) => {
 	const valuePerPixel = (maxValue - minValue) / sliderWidth
 	const value = minValue + thumbX * valuePerPixel
-	return Math.ceil(value)
+	return Math.round(value)
 }

@@ -8,6 +8,7 @@ import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.sele
 import { metricColorRangeSelector } from "./rangeSlider/selectors/metricColorRange.selector"
 import { trackEventUsageData } from "../../../util/usageDataTracker"
 import { State } from "../../../state/angular-redux/state"
+import { ColorRange } from "../../../codeCharta.model"
 
 // Todo testing
 // Todo add todo to #2318 for early return of rangeSliderLabels' ngAfterViewChecked
@@ -20,21 +21,40 @@ export class MetricColorRangeSliderComponent {
 	sliderColors$ = this.store.select(metricColorRangeSliderColorsSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
+	private newLeftValue: null | number = null
+	private newRightValue: null | number = null
+
 	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State) {}
 
-	handleValueChange: HandleValueChange = debounce(({ newLeftValue, newRightValue }) => {
+	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
 		if (newLeftValue !== undefined) {
+			this.newLeftValue = newLeftValue
+		}
+		if (newRightValue !== undefined) {
+			this.newRightValue = newRightValue
+		}
+		this.updateColorRangeDebounced()
+	}
+
+	private updateColorRangeDebounced = debounce(() => {
+		const newColorRange: Partial<ColorRange> = {}
+		if (this.newLeftValue !== null) {
+			newColorRange.from = this.newLeftValue
 			trackEventUsageData("color-range-from-updated", this.state.getValue().files, {
 				colorMetric: this.state.getValue().dynamicSettings.colorMetric,
-				fromValue: newLeftValue
+				fromValue: newColorRange.from
 			})
-			this.store.dispatch(setColorRange({ from: newLeftValue }))
-		} else {
+		}
+		if (this.newRightValue !== null) {
+			newColorRange.to = this.newRightValue
 			trackEventUsageData("color-range-to-updated", this.state.getValue().files, {
 				colorMetric: this.state.getValue().dynamicSettings.colorMetric,
-				toValue: newRightValue
+				toValue: newColorRange.to
 			})
-			this.store.dispatch(setColorRange({ to: newRightValue }))
 		}
+		this.store.dispatch(setColorRange(newColorRange))
+
+		this.newLeftValue = null
+		this.newRightValue = null
 	}, 400)
 }
