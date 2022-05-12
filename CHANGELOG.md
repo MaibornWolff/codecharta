@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Introduce custom angular material theme [#2784](https://github.com/MaibornWolff/codecharta/pull/2784)
 -   Migrate height-settings-panel-component [#2790](https://github.com/MaibornWolff/codecharta/pull/2790)
 -   Fully migrate custom-config-component [#2760](https://github.com/MaibornWolff/codecharta/pull/2760)
+-   Track not only changes to color metric options by slider but also by related input field [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 
 ## [1.95.2] - 2022-04-19
 
