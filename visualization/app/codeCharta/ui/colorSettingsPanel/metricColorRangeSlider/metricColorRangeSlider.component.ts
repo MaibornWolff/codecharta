@@ -9,7 +9,7 @@ import { metricColorRangeSelector } from "./rangeSlider/selectors/metricColorRan
 import { trackEventUsageData } from "../../../util/usageDataTracker"
 import { State } from "../../../state/angular-redux/state"
 
-// Todo remove RzSlider
+// Todo testing
 // Todo add todo to #2318 for early return of rangeSliderLabels' ngAfterViewChecked
 @Component({
 	selector: "cc-metric-color-range-slider",

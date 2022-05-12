@@ -16,7 +16,6 @@ import "./colorSettingsPanel/colorSettingsPanel.module"
 import "./dialog/dialog.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./metricChooser/metricChooser.module"
-import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
 import "./filePanel/filePanel.module"
 import "./ribbonBar/ribbonBar.module"
@@ -47,7 +46,6 @@ angular
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.metricChooser",
-		"app.codeCharta.ui.rangeSlider",
 		"app.codeCharta.ui.resetSettingsButton",
 		"app.codeCharta.ui.ribbonBar",
 		"app.codeCharta.ui.scenarioDropDown",

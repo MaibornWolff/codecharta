@@ -106,7 +106,6 @@
 		"angular-mocks": "^1.8.2",
 		"angular-sanitize": "^1.8.2",
 		"angularjs-nouislider": "^14.1.3",
-		"angularjs-slider": "^7.0.0",
 		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
 		"browserify-zlib": "^0.2.0",
 		"changelog-parser": "^2.8.0",
