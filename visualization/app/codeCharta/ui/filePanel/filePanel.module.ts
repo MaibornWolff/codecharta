@@ -33,6 +33,7 @@ angular
 		RemoveFileButtonComponent,
 		RemoveExtensionPipe
 	],
+	exports: [RemoveExtensionPipe],
 	entryComponents: [FilePanelDeltaSelectorComponent, FilePanelFileSelectorComponent, FilePanelStateButtonsComponent]
 })
 export class FilePanelModule {}

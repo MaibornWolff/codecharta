@@ -10,9 +10,10 @@ import { AttributeSideBarPrimaryMetricComponent } from "./attributeSideBarPrimar
 import { AttributeSideBarHeaderSectionComponent } from "./attributeSideBarHeaderSection/attributeSideBarHeaderSection.component"
 import { NodePathComponent } from "./attributeSideBarHeaderSection/nodePath/nodePath.component"
 import { MaterialModule } from "../../../material/material.module"
+import { FilePanelModule } from "../filePanel/filePanel.module"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, AttributeTypeSelectorModule, MetricDeltaSelectedModule],
+	imports: [CommonModule, MaterialModule, AttributeTypeSelectorModule, MetricDeltaSelectedModule, FilePanelModule],
 	declarations: [
 		AttributeSideBarComponent,
 		AttributeSideBarHeaderSectionComponent,
