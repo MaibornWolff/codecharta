@@ -10,6 +10,14 @@
 	>
 	</mat-slider>
 	<mat-form-field>
-		<input matInput [disabled]="disabled" type="number" [value]="this.value" (input)="this.handleInputOnChange($event)" />
+		<input
+			matInput
+			[disabled]="disabled"
+			type="number"
+			[value]="this.value"
+			(input)="this.handleInputOnChange($event)"
+			[min]="this.min"
+			[max]="this.max"
+		/>
 	</mat-form-field>
 </div>
