@@ -1,5 +1,5 @@
 import { DownloadCustomConfigsButtonComponent } from "./downloadCustomConfigsButton.component"
-import { DownloadCustomConfigService } from "./downloadCustomConfig.service"
+import { CustomConfigHelperService } from "../customConfigHelper.service"
 import { of } from "rxjs"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
@@ -12,7 +12,7 @@ describe("DownloadCustomConfigButtonComponent", () => {
 	beforeEach(() => {
 		FileDownloader.downloadData = jest.fn()
 		TestBed.configureTestingModule({
-			providers: [{ provide: DownloadCustomConfigService, useValue: mockedDownloadCustomConfigService }]
+			providers: [{ provide: CustomConfigHelperService, useValue: mockedDownloadCustomConfigService }]
 		})
 	})
 

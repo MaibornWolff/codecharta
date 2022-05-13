@@ -61,7 +61,7 @@
 			}
 
 			&.add-custom-config-button {
-				color: rgb(0, 150, 136);
+				color: theme.$cc-primary-color;
 				background-color: rgba(138, 132, 132, 0.08);
 				position: absolute;
 				right: 16px;
