@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Remove all mentions of regular `.cc` `.json` `.gz` file extensions from file panel and sidebar [#2793](https://github.com/MaibornWolff/codecharta/pull/2793)
+
 ### Fixed 🐞
 
 -   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)

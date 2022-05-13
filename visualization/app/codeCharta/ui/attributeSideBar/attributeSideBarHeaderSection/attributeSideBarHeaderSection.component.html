@@ -8,7 +8,7 @@
 		</a>
 	</div>
 
-	<p class="node-origin">{{ fileName }}</p>
+	<p class="node-origin">{{ fileName | removeExtension }}</p>
 
 	<cc-node-path [node]="node"></cc-node-path>
 </ng-container>
