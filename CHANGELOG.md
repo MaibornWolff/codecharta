@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Removed all mentions of regular `.cc` `.json` `.gz` file extensions from file panel and sidebar [#2793](https://github.com/MaibornWolff/codecharta/pull/2793)
+-   Remove all mentions of regular `.cc` `.json` `.gz` file extensions from file panel and sidebar [#2793](https://github.com/MaibornWolff/codecharta/pull/2793)
 
 ### Fixed 🐞
 
