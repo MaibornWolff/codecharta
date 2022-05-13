@@ -12,9 +12,9 @@ import { FilePanelDeltaSelectorComponent } from "./filePanelDeltaSelector/filePa
 import { RemoveFileButtonComponent } from "./filePanelFileSelector/removeFileButton/removeFileButton.component"
 import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { RemoveExtensionPipe } from "./removeExtension.pipe"
 import { MaterialModule } from "../../../material/material.module"
 import { FormsModule } from "@angular/forms"
+import { RemoveExtensionModule } from "../../util/removeExtensionModule"
 
 angular
 	.module("app.codeCharta.ui.filePanel", ["app.codeCharta.state"])
@@ -25,15 +25,13 @@ angular
 	.directive("ccRemoveFileButton", downgradeComponent({ component: RemoveFileButtonComponent }))
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, FormsModule],
+	imports: [CommonModule, MaterialModule, FormsModule, RemoveExtensionModule],
 	declarations: [
 		FilePanelDeltaSelectorComponent,
 		FilePanelFileSelectorComponent,
 		FilePanelStateButtonsComponent,
-		RemoveFileButtonComponent,
-		RemoveExtensionPipe
+		RemoveFileButtonComponent
 	],
-	exports: [RemoveExtensionPipe],
 	entryComponents: [FilePanelDeltaSelectorComponent, FilePanelFileSelectorComponent, FilePanelStateButtonsComponent]
 })
 export class FilePanelModule {}
