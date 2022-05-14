@@ -18,4 +18,4 @@ export function setColorRange(colorRange: Partial<ColorRange> = defaultColorRang
 	}
 }
 
-export const defaultColorRange: ColorRange = { from: 33, to: 66, min: 0, max: 100 }
+export const defaultColorRange: ColorRange = { from: 0, to: 0, min: 0, max: 0 }

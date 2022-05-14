@@ -1,26 +1,16 @@
 import { colorRange } from "./colorRange.reducer"
-import { ColorRangeAction, setColorRange } from "./colorRange.actions"
+import { defaultColorRange, setColorRange } from "./colorRange.actions"
 
 describe("colorRange", () => {
-	describe("Default State", () => {
-		it("should initialize the default state", () => {
-			const result = colorRange(undefined, {} as ColorRangeAction)
+	it("should set new colorRange", () => {
+		const result = colorRange({ from: 0, to: 0, min: 0, max: 0 }, setColorRange({ from: 21, to: 42, min: 0, max: 100 }))
 
-			expect(result).toEqual({ from: null, to: null, min: null, max: null })
-		})
+		expect(result).toEqual({ from: 21, to: 42, min: 0, max: 100 })
 	})
 
-	describe("Action: SET_COLOR_RANGE", () => {
-		it("should set new colorRange", () => {
-			const result = colorRange({ from: null, to: null, min: null, max: null }, setColorRange({ from: 33, to: 66, min: 0, max: 10 }))
+	it("should set default colorRange", () => {
+		const result = colorRange({ from: 33, to: 66, min: 0, max: 10 }, setColorRange())
 
-			expect(result).toEqual({ from: 33, to: 66, min: 0, max: 10 })
-		})
-
-		it("should set default colorRange", () => {
-			const result = colorRange({ from: 33, to: 66, min: 0, max: 10 }, setColorRange())
-
-			expect(result).toEqual({ from: null, to: null, min: null, max: null })
-		})
+		expect(result).toEqual(defaultColorRange)
 	})
 })
