@@ -1989,7 +1989,7 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.COLOR_METRIC,
 		metricName: "mcc",
-		savedValues: { colorRange: { from: 19, to: 67, min: 1, max: 100 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+		savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},

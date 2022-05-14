@@ -5,7 +5,7 @@ describe("colorRange", () => {
 	it("should set new colorRange", () => {
 		const result = colorRange({ from: 0, to: 0 }, setColorRange({ from: 21, to: 42 }))
 
-		expect(result).toEqual({ from: 21, to: 42, min: 0, max: 100 })
+		expect(result).toEqual({ from: 21, to: 42 })
 	})
 
 	it("should set default colorRange", () => {
