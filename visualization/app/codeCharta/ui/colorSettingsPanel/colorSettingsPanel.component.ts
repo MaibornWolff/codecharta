@@ -7,9 +7,6 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { ColorMode } from "../../codeCharta.model"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { ColorModeService, ColorModeSubscriber } from "../../state/store/dynamicSettings/colorMode/colorMode.service"
 import { defaultColorMode, setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
 
@@ -20,30 +17,18 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 		isDeltaState: boolean
 		colorMode: ColorMode
 		colorLabels: { positive: boolean; negative: boolean; neutral: boolean }
-		maxMetricValue: number
 	} = {
 		invertColorRange: null,
 		invertDeltaColors: null,
 		isDeltaState: null,
 		colorMode: defaultColorMode,
-		colorLabels: { positive: false, negative: false, neutral: false },
-		maxMetricValue: null
+		colorLabels: { positive: false, negative: false, neutral: false }
 	}
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private nodeMetricDataService: NodeMetricDataService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
-		BlacklistService.subscribe(this.$rootScope, this)
-		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorModeService.subscribe(this.$rootScope, this)
-	}
-
-	onBlacklistChanged() {
-		this.updateMaxMetricValue()
 	}
 
 	onColorModeChanged(colorMode: ColorMode) {
@@ -52,11 +37,6 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 
 	onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.isDeltaState = isDeltaState(files)
-		this.updateMaxMetricValue()
-	}
-
-	onColorMetricChanged() {
-		this.updateMaxMetricValue()
 	}
 
 	applyColorMode() {
@@ -95,12 +75,6 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 	resetInvertColorRangeCheckboxOnly = () => {
 		this._viewModel.invertColorRange = null
 		this._viewModel.invertDeltaColors = null
-	}
-
-	private updateMaxMetricValue() {
-		this._viewModel.maxMetricValue = this.nodeMetricDataService.getMaxValueOfMetric(
-			this.storeService.getState().dynamicSettings.colorMetric
-		)
 	}
 
 	invertDeltaColors() {
