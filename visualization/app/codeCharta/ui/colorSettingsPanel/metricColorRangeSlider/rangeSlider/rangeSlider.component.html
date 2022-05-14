@@ -6,7 +6,7 @@
 			[value]="currentLeftValue"
 			(input)="this.handleCurrentLeftInputChanged($event)"
 			[min]="minValue"
-			[max]="currentRightValue"
+			[max]="upcomingRightValue"
 		/>
 	</mat-form-field>
 
@@ -42,8 +42,8 @@
 		<cc-range-slider-labels
 			[minValue]="minValue"
 			[maxValue]="maxValue"
-			[rightValueLabel]="rightValueLabel"
-			[leftValueLabel]="leftValueLabel"
+			[leftValueLabel]="upcomingLeftValue"
+			[rightValueLabel]="upcomingRightValue"
 			[sliderRangePosition]="sliderRangePosition"
 			[sliderWidth]="sliderWidth"
 		></cc-range-slider-labels>
@@ -55,7 +55,7 @@
 			type="number"
 			[value]="this.currentRightValue"
 			(input)="this.handleCurrentRightInputChanged($event)"
-			[min]="currentLeftValue"
+			[min]="upcomingLeftValue"
 			[max]="maxValue"
 		/>
 	</mat-form-field>

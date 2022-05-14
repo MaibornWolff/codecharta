@@ -1,6 +1,7 @@
 import "./rangeSlider.component.scss"
 import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
 import { calculateSliderRangePosition, SliderRangePosition, thumbPosition2Value } from "./utils/SliderRangePosition"
+import { parseNumberInput } from "../../../../util/parseNumberInput"
 
 export type HandleValueChange = (changedValue: { newLeftValue?: number; newRightValue?: number }) => void
 export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
@@ -26,8 +27,8 @@ export class RangeSliderComponent implements OnChanges {
 	sliderRangePosition: SliderRangePosition = { leftEnd: 0, rightStart: 0 }
 	sliderWidth = 150
 	thumbRadius = 7
-	leftValueLabel: number
-	rightValueLabel: number
+	upcomingLeftValue: number
+	upcomingRightValue: number
 
 	private currentlySliding: CurrentlySliding = undefined
 
@@ -41,10 +42,10 @@ export class RangeSliderComponent implements OnChanges {
 				sliderWidth: this.sliderWidth
 			})
 			if (changes.currentLeftValue) {
-				this.leftValueLabel = this.currentLeftValue
+				this.upcomingLeftValue = this.currentLeftValue
 			}
 			if (changes.currentRightValue) {
-				this.rightValueLabel = this.currentRightValue
+				this.upcomingRightValue = this.currentRightValue
 			}
 		}
 	}
@@ -100,7 +101,7 @@ export class RangeSliderComponent implements OnChanges {
 			maxValue: this.maxValue,
 			sliderWidth: this.sliderWidth
 		})
-		this.leftValueLabel = newLeftValue
+		this.upcomingLeftValue = newLeftValue
 		this.handleValueChange({ newLeftValue })
 	}
 
@@ -126,20 +127,20 @@ export class RangeSliderComponent implements OnChanges {
 			maxValue: this.maxValue,
 			sliderWidth: this.sliderWidth
 		})
-		this.rightValueLabel = newRightValue
+		this.upcomingRightValue = newRightValue
 		this.handleValueChange({ newRightValue })
 	}
 
 	handleCurrentLeftInputChanged($event: InputEvent) {
-		const newLeftValue = Number.parseInt(($event.target as HTMLInputElement).value)
+		const newLeftValue = parseNumberInput($event, this.minValue, this.currentRightValue)
 		if (newLeftValue !== this.currentLeftValue) {
 			this.handleValueChange({ newLeftValue })
 		}
 	}
 
 	handleCurrentRightInputChanged($event: InputEvent) {
-		const newRightValue = Number.parseInt(($event.target as HTMLInputElement).value)
-		if (newRightValue !== this.currentLeftValue) {
+		const newRightValue = parseNumberInput($event, this.currentLeftValue, this.maxValue)
+		if (newRightValue !== this.currentRightValue) {
 			this.handleValueChange({ newRightValue })
 		}
 	}
