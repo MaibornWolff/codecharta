@@ -11,19 +11,15 @@
 	</mat-form-field>
 
 	<div #rangeSliderContainer class="cc-range-slider-slider">
-		<span
-			[style.width.px]="sliderRangePosition.leftEnd"
-			[style.border-bottom]="'4px solid ' + leftColor"
-			class="cc-range-slider-bar"
-		></span>
+		<span [style.width.px]="sliderRangePosition.leftEnd" [style.border-bottom-color]="leftColor" class="cc-range-slider-bar"></span>
 		<span
 			[style.width.px]="sliderRangePosition.rightStart - sliderRangePosition.leftEnd"
-			[style.border-bottom]="'4px solid ' + middleColor"
+			[style.border-bottom-color]="middleColor"
 			class="cc-range-slider-bar"
 		></span>
 		<span
 			[style.width.px]="sliderWidth - sliderRangePosition.rightStart"
-			[style.border-bottom]="'4px solid ' + rightColor"
+			[style.border-bottom-color]="rightColor"
 			class="cc-range-slider-bar"
 		></span>
 

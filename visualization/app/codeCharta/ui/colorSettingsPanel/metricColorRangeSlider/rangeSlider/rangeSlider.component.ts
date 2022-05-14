@@ -19,13 +19,13 @@ export class RangeSliderComponent implements OnChanges {
 	@Input() middleColor: string
 	@Input() rightColor: string
 	@Input() handleValueChange: HandleValueChange
+	@Input() sliderWidth = 150
 
 	@ViewChild("rangeSliderContainer") sliderContainer: ElementRef<HTMLDivElement>
 	@ViewChild("leftThumb") leftThumb: ElementRef<HTMLDivElement>
 	@ViewChild("rightThumb") rightThumb: ElementRef<HTMLDivElement>
 
 	sliderRangePosition: SliderRangePosition = { leftEnd: 0, rightStart: 0 }
-	sliderWidth = 150
 	thumbRadius = 7
 	upcomingLeftValue: number
 	upcomingRightValue: number
