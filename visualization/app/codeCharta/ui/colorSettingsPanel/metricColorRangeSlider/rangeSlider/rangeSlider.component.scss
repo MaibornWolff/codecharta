@@ -20,18 +20,12 @@ cc-range-slider {
 			position: relative;
 			line-height: 48px;
 
-			&.disabled {
-				cursor: not-allowed;
-			}
-			&:not(.disabled) .cc-range-slider-slider-thumb {
-				cursor: pointer;
-			}
-
 			.cc-range-slider-bar {
 				display: inline-block;
 			}
 
 			.cc-range-slider-slider-thumb {
+				cursor: pointer;
 				position: absolute;
 				top: 20px;
 				border-radius: 100%;

@@ -10,11 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Remove all mentions of regular `.cc` `.json` `.gz` file extensions from file panel and sidebar [#2793](https://github.com/MaibornWolff/codecharta/pull/2793)
+-   Hide color metric range-slider in color metric options of ribbon bar in delta mode instead of disabling it [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 
 ### Fixed 🐞
 
 -   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
--   Display thumbs of range-slider in color metric options of ribbon bar in delta mode at correct position [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 -   Prevent invalid input for margin in area metric options to be submitted [#2799](https://github.com/MaibornWolff/codecharta/pull/2799)
 
 ### Chore 👨‍💻 👩‍💻
