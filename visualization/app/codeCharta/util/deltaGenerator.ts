@@ -121,9 +121,9 @@ export class DeltaGenerator {
 
 	private static getFileMetaData(referenceFile: CCFile, comparisonFile: CCFile): FileMeta {
 		return {
-			fileName: `delta_between_${FileNameHelper.withoutCCJsonExtension(
+			fileName: `delta_between_${FileNameHelper.withoutCCExtension(
 				referenceFile.fileMeta.fileName
-			)}_and_${FileNameHelper.withoutCCJsonExtension(comparisonFile.fileMeta.fileName)}`,
+			)}_and_${FileNameHelper.withoutCCExtension(comparisonFile.fileMeta.fileName)}`,
 			fileChecksum: `${referenceFile.fileMeta.fileChecksum};${comparisonFile.fileMeta.fileChecksum}`,
 			apiVersion: packageJson.codecharta.apiVersion,
 			projectName: `delta_between_${referenceFile.fileMeta.projectName}_and_${comparisonFile.fileMeta.projectName}`,

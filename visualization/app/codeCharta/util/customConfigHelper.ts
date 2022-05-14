@@ -180,7 +180,7 @@ export class CustomConfigHelper {
 			customConfigFileStateConnector.isEachFileSelected()
 		) {
 			// If only one map is uploaded/present in SINGLE mode, prefix the .cc.config.json file with its name.
-			fileName = `${FileNameHelper.withoutCCJsonExtension(customConfigFileStateConnector.getJointMapName())}_${fileName}`
+			fileName = `${FileNameHelper.withoutCCExtension(customConfigFileStateConnector.getJointMapName())}_${fileName}`
 		}
 
 		FileDownloader.downloadData(JSON.stringify(customConfigsDownloadFile, stateObjectReplacer), fileName)
