@@ -1,6 +1,6 @@
 import "./rangeSlider.component.scss"
 import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
-import { calculateSliderRangePosition, SliderRangePosition, thumbPosition2Value } from "./utils/SliderRangePosition"
+import { calculateSliderRangePosition, SliderRangePosition, updateLeftThumb, updateRightThumb } from "./utils/SliderRangePosition"
 import { parseNumberInput } from "../../../../util/parseNumberInput"
 
 export type HandleValueChange = (changedValue: { newLeftValue?: number; newRightValue?: number }) => void
@@ -80,55 +80,41 @@ export class RangeSliderComponent implements OnChanges {
 	}
 
 	handleLeftThumbMoved = (event: MouseEvent) => {
-		const sliderBoundingClientRectX = this.sliderContainer.nativeElement.getBoundingClientRect().x
-		let newLeftThumbScreenX = this.leftThumb.nativeElement.getBoundingClientRect().x + event.movementX
-		const rightThumbScreenX = this.rightThumb.nativeElement.getBoundingClientRect().x
-
-		if (newLeftThumbScreenX < sliderBoundingClientRectX - this.thumbRadius) {
-			newLeftThumbScreenX = sliderBoundingClientRectX - this.thumbRadius
-		}
-		if (newLeftThumbScreenX > rightThumbScreenX) {
-			newLeftThumbScreenX = rightThumbScreenX
-		}
+		const updates = updateLeftThumb({
+			deltaX: event.movementX,
+			thumbScreenX: this.leftThumb.nativeElement.getBoundingClientRect().x,
+			thumbRadius: this.thumbRadius,
+			otherThumbScreenX: this.rightThumb.nativeElement.getBoundingClientRect().x,
+			sliderBoundingClientRectX: this.sliderContainer.nativeElement.getBoundingClientRect().x,
+			sliderWidth: this.sliderWidth,
+			minValue: this.minValue,
+			maxValue: this.maxValue
+		})
 		this.sliderRangePosition = {
-			leftEnd: newLeftThumbScreenX - sliderBoundingClientRectX + this.thumbRadius,
+			leftEnd: updates.updatedThumbX,
 			rightStart: this.sliderRangePosition.rightStart
 		}
-
-		const newLeftValue = thumbPosition2Value({
-			thumbX: this.sliderRangePosition.leftEnd,
-			minValue: this.minValue,
-			maxValue: this.maxValue,
-			sliderWidth: this.sliderWidth
-		})
-		this.upcomingLeftValue = newLeftValue
-		this.handleValueChange({ newLeftValue })
+		this.upcomingLeftValue = updates.upcomingValue
+		this.handleValueChange({ newLeftValue: updates.upcomingValue })
 	}
 
 	handleRightThumbMoved = (event: MouseEvent) => {
-		const sliderBoundingClientRectX = this.sliderContainer.nativeElement.getBoundingClientRect().x
-		let newRightThumbScreenX = this.rightThumb.nativeElement.getBoundingClientRect().x + event.movementX
-		const leftThumbScreenX = this.leftThumb.nativeElement.getBoundingClientRect().x
-
-		if (newRightThumbScreenX > sliderBoundingClientRectX + this.sliderWidth - this.thumbRadius) {
-			newRightThumbScreenX = sliderBoundingClientRectX + this.sliderWidth - this.thumbRadius
-		}
-		if (newRightThumbScreenX < leftThumbScreenX) {
-			newRightThumbScreenX = leftThumbScreenX
-		}
+		const updates = updateRightThumb({
+			deltaX: event.movementX,
+			thumbScreenX: this.rightThumb.nativeElement.getBoundingClientRect().x,
+			thumbRadius: this.thumbRadius,
+			otherThumbScreenX: this.leftThumb.nativeElement.getBoundingClientRect().x,
+			sliderBoundingClientRectX: this.sliderContainer.nativeElement.getBoundingClientRect().x,
+			sliderWidth: this.sliderWidth,
+			minValue: this.minValue,
+			maxValue: this.maxValue
+		})
 		this.sliderRangePosition = {
 			leftEnd: this.sliderRangePosition.leftEnd,
-			rightStart: newRightThumbScreenX - sliderBoundingClientRectX + this.thumbRadius
+			rightStart: updates.updatedThumbX
 		}
-
-		const newRightValue = thumbPosition2Value({
-			thumbX: this.sliderRangePosition.rightStart,
-			minValue: this.minValue,
-			maxValue: this.maxValue,
-			sliderWidth: this.sliderWidth
-		})
-		this.upcomingRightValue = newRightValue
-		this.handleValueChange({ newRightValue })
+		this.upcomingRightValue = updates.upcomingValue
+		this.handleValueChange({ newRightValue: updates.upcomingValue })
 	}
 
 	handleCurrentLeftInputChanged($event: InputEvent) {
