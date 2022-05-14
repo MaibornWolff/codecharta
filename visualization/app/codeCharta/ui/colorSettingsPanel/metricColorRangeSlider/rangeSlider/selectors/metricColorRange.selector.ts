@@ -1,9 +1,10 @@
 import { createSelector } from "../../../../../state/angular-redux/createSelector"
+import { nodeMetricRangeSelector } from "../../../../../state/selectors/accumulatedData/metricData/nodeMetricRange.selector"
 import { colorRangeSelector } from "../../../../../state/store/dynamicSettings/colorRange/colorRange.selector"
 
-export const metricColorRangeSelector = createSelector([colorRangeSelector], colorRange => ({
-	min: Math.round(colorRange.min),
-	max: Math.round(colorRange.max),
-	from: Math.round(colorRange.from),
-	to: Math.round(colorRange.to)
+export const metricColorRangeSelector = createSelector([nodeMetricRangeSelector, colorRangeSelector], (nodeMetricRange, colorRange) => ({
+	min: nodeMetricRange.minValue,
+	max: nodeMetricRange.maxValue,
+	from: colorRange.from,
+	to: colorRange.to
 }))

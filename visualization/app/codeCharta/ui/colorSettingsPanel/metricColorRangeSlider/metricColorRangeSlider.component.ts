@@ -10,8 +10,6 @@ import { trackEventUsageData } from "../../../util/usageDataTracker"
 import { State } from "../../../state/angular-redux/state"
 import { ColorRange } from "../../../codeCharta.model"
 
-// Todo testing
-// Todo add todo to #2318 for early return of rangeSliderLabels' ngAfterViewChecked
 @Component({
 	selector: "cc-metric-color-range-slider",
 	template: require("./metricColorRangeSlider.component.html")

@@ -1,9 +1,10 @@
 import { ColorRange, MapColors } from "../../codeCharta.model"
 import { ColorConverter } from "./colorConverter"
 import { Color } from "three"
+import { NodeMetricRange } from "../../state/selectors/accumulatedData/metricData/nodeMetricRange.selector"
 
 export const gradientCalculator = {
-	getColorByTrueGradient(mapColors: MapColors, colorRange: ColorRange, metricValue: number) {
+	getColorByTrueGradient(mapColors: MapColors, colorRange: ColorRange, nodeMetricDataRange: NodeMetricRange, metricValue: number) {
 		const middle = (colorRange.from + colorRange.to) / 2
 		const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
 
@@ -13,7 +14,7 @@ export const gradientCalculator = {
 			return ColorConverter.convertColorToHex(new Color().lerpColors(positiveColorRGB, neutralColorRGB, neutralFactor))
 		}
 
-		const negativeFactor = (metricValue - middle) / (colorRange.max - middle)
+		const negativeFactor = (metricValue - middle) / (nodeMetricDataRange.maxValue - middle)
 		const negativeColorRGB = ColorConverter.convertHexToColorObject(mapColors.negative)
 		return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, negativeFactor))
 	},

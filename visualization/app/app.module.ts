@@ -48,6 +48,7 @@ import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/r
 import { MetricColorRangeSliderModule } from "./codeCharta/ui/colorSettingsPanel/metricColorRangeSlider/metricColorRangeSlider.module"
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
+import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
 
 @NgModule({
 	imports: [
@@ -58,7 +59,8 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
 			TrackEventUsageDataEffect,
-			BlacklistSearchPatternEffect
+			BlacklistSearchPatternEffect,
+			ResetColorRangeEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,

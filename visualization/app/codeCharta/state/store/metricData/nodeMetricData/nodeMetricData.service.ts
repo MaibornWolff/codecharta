@@ -36,20 +36,6 @@ export class NodeMetricDataService implements FilesSelectionSubscriber, Blacklis
 		this.$rootScope.$broadcast(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, { nodeMetricData: this.nodeMetricData })
 	}
 
-	getMetrics() {
-		return this.nodeMetricData.map(x => x.name)
-	}
-
-	getMaxValueOfMetric(metricName: string) {
-		const metric = this.nodeMetricData.find(x => x.name === metricName)
-		return metric?.maxValue
-	}
-
-	getMinValueOfMetric(metricName: string) {
-		const metric = this.nodeMetricData.find(x => x.name === metricName)
-		return metric ? metric.minValue : 0
-	}
-
 	private updateNodeMetricData() {
 		const nodeMetricData = nodeMetricDataSelector(this.storeService.getState())
 		if (nodeMetricData !== this.nodeMetricData) {

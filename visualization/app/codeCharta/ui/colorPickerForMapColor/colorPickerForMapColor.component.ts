@@ -1,8 +1,8 @@
 import { Component, Inject, Input } from "@angular/core"
-import { Observable } from "rxjs"
 
-import { ColorRange, MapColors } from "../../codeCharta.model"
+import { MapColors } from "../../codeCharta.model"
 import { Store } from "../../state/angular-redux/store"
+import { nodeMetricRangeSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricRange.selector"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange/colorRange.selector"
@@ -14,13 +14,11 @@ import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange
 export class ColorPickerForMapColorComponent {
 	@Input() mapColorFor: keyof MapColors
 
-	mapColors$: Observable<MapColors>
-	colorRange$: Observable<ColorRange>
+	mapColors$ = this.store.select(mapColorsSelector)
+	colorRange$ = this.store.select(colorRangeSelector)
+	nodeMetricRange$ = this.store.select(nodeMetricRangeSelector)
 
-	constructor(@Inject(Store) private store: Store) {
-		this.mapColors$ = this.store.select(mapColorsSelector)
-		this.colorRange$ = this.store.select(colorRangeSelector)
-	}
+	constructor(@Inject(Store) private store: Store) {}
 
 	handleColorChange(newHexColor: string) {
 		this.store.dispatch(
