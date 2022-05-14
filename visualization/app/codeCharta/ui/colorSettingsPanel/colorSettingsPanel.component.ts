@@ -5,21 +5,19 @@ import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
-import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { ColorMode, ColorRange } from "../../codeCharta.model"
+import { ColorMode } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { ColorModeService, ColorModeSubscriber } from "../../state/store/dynamicSettings/colorMode/colorMode.service"
 import { defaultColorMode, setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
 
-export class ColorSettingsPanelController implements FilesSelectionSubscriber, ColorRangeSubscriber, ColorModeSubscriber {
+export class ColorSettingsPanelController implements FilesSelectionSubscriber, ColorModeSubscriber {
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean
 		isDeltaState: boolean
-		colorRange: { from: number; to: number }
 		colorMode: ColorMode
 		colorLabels: { positive: boolean; negative: boolean; neutral: boolean }
 		maxMetricValue: number
@@ -27,7 +25,6 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 		invertColorRange: null,
 		invertDeltaColors: null,
 		isDeltaState: null,
-		colorRange: { from: null, to: null },
 		colorMode: defaultColorMode,
 		colorLabels: { positive: false, negative: false, neutral: false },
 		maxMetricValue: null
@@ -40,7 +37,6 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 	) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
-		ColorRangeService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorModeService.subscribe(this.$rootScope, this)
@@ -48,10 +44,6 @@ export class ColorSettingsPanelController implements FilesSelectionSubscriber, C
 
 	onBlacklistChanged() {
 		this.updateMaxMetricValue()
-	}
-
-	onColorRangeChanged(colorRange: ColorRange) {
-		this._viewModel.colorRange = colorRange
 	}
 
 	onColorModeChanged(colorMode: ColorMode) {
