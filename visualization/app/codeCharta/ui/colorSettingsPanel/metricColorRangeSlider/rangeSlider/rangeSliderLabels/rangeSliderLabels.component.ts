@@ -1,7 +1,6 @@
 import "./rangeSliderLabels.component.scss"
 import { AfterViewChecked, Component, ElementRef, Input, OnChanges, ViewChild } from "@angular/core"
 import { SliderRangePosition } from "../utils/SliderRangePosition"
-import { sliderWidth } from "../rangeSlider.component"
 
 const minDistanceBetweenLabels = 4
 
@@ -15,6 +14,7 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 	@Input() leftValueLabel: number
 	@Input() rightValueLabel: number
 	@Input() sliderRangePosition: SliderRangePosition
+	@Input() sliderWidth: number
 
 	@ViewChild("minLabel") minLabel: ElementRef<HTMLDivElement>
 	@ViewChild("maxLabel") maxLabel: ElementRef<HTMLDivElement>
@@ -54,7 +54,7 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 		this.currentLeftLabelLeftPosition = this.sliderRangePosition.leftEnd - currentLeftLabelWidth / 2
 
 		const currentRightLabelWidth = this.currentRightLabel.nativeElement.getBoundingClientRect().width
-		const maxLabelLeftPosition = sliderWidth - this.maxLabel.nativeElement.getBoundingClientRect().width
+		const maxLabelLeftPosition = this.sliderWidth - this.maxLabel.nativeElement.getBoundingClientRect().width
 		this.currentRightLabelLeftPosition = this.sliderRangePosition.rightStart - currentRightLabelWidth / 2
 
 		this.hideMinLabel = this.currentLeftLabelLeftPosition <= minLabelRightPosition + minDistanceBetweenLabels

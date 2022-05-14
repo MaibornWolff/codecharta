@@ -1,5 +1,3 @@
-import { sliderWidth } from "../rangeSlider.component"
-
 export type SliderRangePosition = {
 	leftEnd: number
 	rightStart: number
@@ -10,13 +8,15 @@ export type CalculateSliderRangePositionArgument = {
 	maxValue: number
 	currentLeftValue: number
 	currentRightValue: number
+	sliderWidth: number
 }
 
 export const calculateSliderRangePosition = ({
 	minValue,
 	maxValue,
 	currentLeftValue,
-	currentRightValue
+	currentRightValue,
+	sliderWidth
 }: CalculateSliderRangePositionArgument): SliderRangePosition => {
 	const totalFraction = maxValue - minValue
 	const leftFraction = (currentLeftValue - minValue) / totalFraction
@@ -33,9 +33,10 @@ type ThumbPosition2ValueArgument = {
 	thumbX: number
 	minValue: number
 	maxValue: number
+	sliderWidth: number
 }
 
-export const thumbPosition2Value = ({ thumbX, minValue, maxValue }: ThumbPosition2ValueArgument) => {
+export const thumbPosition2Value = ({ thumbX, minValue, maxValue, sliderWidth }: ThumbPosition2ValueArgument) => {
 	const valuePerPixel = (maxValue - minValue) / sliderWidth
 	const value = minValue + thumbX * valuePerPixel
 	return Math.round(value)
