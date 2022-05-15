@@ -16,6 +16,21 @@ describe("SliderRangePosition", () => {
 		})
 	})
 
+	it("should put thumbs at right end, when min value is equal to max value", () => {
+		expect(
+			calculateSliderRangePosition({
+				minValue: 0,
+				maxValue: 0,
+				currentLeftValue: 0,
+				currentRightValue: 0,
+				sliderWidth: 100
+			})
+		).toEqual({
+			leftEnd: 100,
+			rightStart: 100
+		})
+	})
+
 	it("should calculate min value when thumbX is at beginning of slider", () => {
 		expect(
 			thumbPosition2Value({

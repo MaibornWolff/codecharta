@@ -19,14 +19,15 @@ export const calculateSliderRangePosition = ({
 	sliderWidth
 }: CalculateSliderRangePositionArgument): SliderRangePosition => {
 	const totalFraction = maxValue - minValue
+	if (totalFraction <= 0) {
+		return { leftEnd: sliderWidth, rightStart: sliderWidth }
+	}
+
 	const leftFraction = (currentLeftValue - minValue) / totalFraction
 	const rightFraction = (currentRightValue - minValue) / totalFraction
 	const leftThumbPosition = leftFraction * sliderWidth
 	const rightThumbPosition = rightFraction * sliderWidth
-	return {
-		leftEnd: leftThumbPosition,
-		rightStart: rightThumbPosition
-	}
+	return { leftEnd: leftThumbPosition, rightStart: rightThumbPosition }
 }
 
 type ThumbPosition2ValueArgument = {

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Prevent invalid input for margin in area metric options to be submitted [#2799](https://github.com/MaibornWolff/codecharta/pull/2799)
 -   Handle invalid input of range-slider correctly [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 -   Use real color range min value instead of 0 and take color range min value into account for calculating initial first third of positive color [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Fix range slider in case of min value equal to max value [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 
 ### Chore 👨‍💻 👩‍💻
 
