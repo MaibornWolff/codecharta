@@ -117,7 +117,7 @@ jobs:
 
     - name: Test and Linter
       run: |
-        npm run build:web
+        npm run build
         npm run e2e:ci
       working-directory: ${{env.working-directory}}
 

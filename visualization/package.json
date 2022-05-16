@@ -64,7 +64,6 @@
 	"scripts": {
 		"start": "nw .",
 		"build": "webpack --config ./conf/webpack.config.js --env DEV=false",
-		"build:web": "webpack --config ./conf/webpack.config.js --env DEV=false",
 		"dev": "webpack serve --config ./conf/webpack.config.js --env DEV=true",
 		"test": "jest --config ./jest.config.json .*\\.spec\\.ts --env=jsdom",
 		"test:auto": "npm test -- --watch",
