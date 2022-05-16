@@ -108,8 +108,6 @@
 		"angularjs-nouislider": "^14.1.3",
 		"angularjs-slider": "^7.0.0",
 		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-		"browserify-zlib": "^0.2.0",
-		"changelog-parser": "^2.8.0",
 		"color-convert": "^2.0.1",
 		"core-js": "^3.15.2",
 		"d3-hierarchy": "^2.0.0",
@@ -161,7 +159,6 @@
 		"babel-loader": "^8.2.2",
 		"babel-plugin-angularjs-annotate": "^0.10.0",
 		"bestzip": "^2.2.0",
-		"canvas": "^2.7.0",
 		"clean-webpack-plugin": "^4.0.0",
 		"cross-env": "^7.0.3",
 		"css-loader": "^6.0.0",
@@ -178,7 +175,6 @@
 		"jest-puppeteer": "^6.0.0",
 		"jest-serializer-html": "^7.0.0",
 		"lint-staged": "^11.0.0",
-		"makeshift": "^1.1.0",
 		"node-polyfill-webpack-plugin": "^1.1.4",
 		"nwjs-builder-phoenix": "^1.15.0",
 		"puppeteer": "^13.0.0",
@@ -193,10 +189,5 @@
 		"webpack-cli": "^4.7.2",
 		"webpack-dev-server": "^4.0.0",
 		"webpack-glsl-loader": "^1.0.1"
-	},
-	"optionalDependencies": {
-		"7zip-bin-linux": "^1.3.1",
-		"7zip-bin-mac": "^1.0.1",
-		"7zip-bin-win": "^2.2.0"
 	}
 }
