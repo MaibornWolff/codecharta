@@ -26,6 +26,8 @@ cc-legend-panel {
 		right: 40px;
 		visibility: hidden;
 		border-radius: 5px;
+		min-width: 200px;
+		max-width: 30%;
 
 		&.isAttributeSideBarVisible {
 			right: 390px;
@@ -70,19 +72,16 @@ cc-legend-panel {
 			.set-left-margin {
 				margin-left: 18px;
 			}
-
-			.marked-package {
-				overflow: hidden;
-				vertical-align: middle;
-				direction: rtl;
-				text-overflow: ellipsis;
-				max-width: 220px;
-				white-space: nowrap;
-				margin-top: -2px;
-			}
 		}
+
 		.bold {
 			font-weight: 600;
+		}
+
+		.cc-labelled-color-picker-container > .cc-labelled-color-picker-label {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 	}
 }
