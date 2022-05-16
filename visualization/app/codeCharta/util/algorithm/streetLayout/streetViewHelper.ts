@@ -1,6 +1,6 @@
 import { Vector3 } from "three"
 import { CodeMapNode, Node, State } from "../../../codeCharta.model"
-import { nodeMetricRangeSelector } from "../../../state/selectors/accumulatedData/metricData/nodeMetricRange.selector"
+import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { getBuildingColor, getIncomingEdgePoint, isNodeFlat, isVisible, TreeMapHelper } from "../treeMapLayout/treeMapHelper"
 
@@ -84,7 +84,7 @@ function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: 
 		link: layoutNode.link,
 		markingColor: getMarkingColor(layoutNode, s.fileSettings.markedPackages),
 		flat: flattened,
-		color: getBuildingColor(layoutNode, s, nodeMetricRangeSelector(s), isDeltaState, flattened),
+		color: getBuildingColor(layoutNode, s, selectedColorMetricDataSelector(s), isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(layoutNode.rect.width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),
 		outgoingEdgePoint: getIncomingEdgePoint(layoutNode.rect.width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize)
 	}

@@ -3,12 +3,12 @@ import { colorMetricSelector } from "../../../store/dynamicSettings/colorMetric/
 import { CcState } from "../../../store/store"
 import { nodeMetricDataSelector } from "./nodeMetricData.selector"
 
-export type NodeMetricRange = {
+export type MetricMinMax = {
 	minValue: number
 	maxValue: number
 }
 
-export const nodeMetricRangeSelector: (state: CcState) => NodeMetricRange = createSelector(
+export const selectedColorMetricDataSelector: (state: CcState) => MetricMinMax = createSelector(
 	[nodeMetricDataSelector, colorMetricSelector],
 	(nodeMetricData, colorMetric) => {
 		const data = nodeMetricData.find(x => x.name === colorMetric)

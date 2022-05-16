@@ -5,7 +5,10 @@ import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 import { gradientCalculator } from "../../color/gradientCalculator"
-import { NodeMetricRange, nodeMetricRangeSelector } from "../../../state/selectors/accumulatedData/metricData/nodeMetricRange.selector"
+import {
+	MetricMinMax,
+	selectedColorMetricDataSelector
+} from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
@@ -69,7 +72,7 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
 		link: map.link,
 		markingColor: getMarkingColor(map, state.fileSettings.markedPackages),
 		flat: false,
-		color: getBuildingColor(map, state, nodeMetricRangeSelector(state), isDeltaState, flattened),
+		color: getBuildingColor(map, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize),
 		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize)
 	} as Node
@@ -116,7 +119,7 @@ function buildNodeFrom(
 		link: data.link,
 		markingColor: getMarkingColor(data, state.fileSettings.markedPackages),
 		flat: flattened,
-		color: getBuildingColor(data, state, nodeMetricRangeSelector(state), isDeltaState, flattened),
+		color: getBuildingColor(data, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), state.treeMap.mapSize),
 		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), state.treeMap.mapSize)
 	}
@@ -197,7 +200,7 @@ function isNodeNonSearched(squaredNode: CodeMapNode, state: State) {
 export function getBuildingColor(
 	node: CodeMapNode,
 	{ appSettings, dynamicSettings }: State,
-	nodeMetricDataRange: NodeMetricRange,
+	nodeMetricDataRange: MetricMinMax,
 	isDeltaState: boolean,
 	flattened: boolean
 ) {

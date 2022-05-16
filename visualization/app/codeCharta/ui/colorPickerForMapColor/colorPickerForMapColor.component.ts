@@ -2,7 +2,7 @@ import { Component, Inject, Input } from "@angular/core"
 
 import { MapColors } from "../../codeCharta.model"
 import { Store } from "../../state/angular-redux/store"
-import { nodeMetricRangeSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricRange.selector"
+import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange/colorRange.selector"
@@ -16,7 +16,7 @@ export class ColorPickerForMapColorComponent {
 
 	mapColors$ = this.store.select(mapColorsSelector)
 	colorRange$ = this.store.select(colorRangeSelector)
-	nodeMetricRange$ = this.store.select(nodeMetricRangeSelector)
+	nodeMetricRange$ = this.store.select(selectedColorMetricDataSelector)
 
 	constructor(@Inject(Store) private store: Store) {}
 

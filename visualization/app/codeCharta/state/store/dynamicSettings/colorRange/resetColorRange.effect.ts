@@ -4,14 +4,17 @@ import { isActionOfType } from "../../../../util/reduxHelper"
 import { createEffect } from "../../../angular-redux/effects/createEffect"
 import { Actions, ActionsToken } from "../../../angular-redux/effects/effects.module"
 import { Store } from "../../../angular-redux/store"
-import { NodeMetricRange, nodeMetricRangeSelector } from "../../../selectors/accumulatedData/metricData/nodeMetricRange.selector"
+import {
+	MetricMinMax,
+	selectedColorMetricDataSelector
+} from "../../../selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { FilesSelectionActions } from "../../files/files.actions"
 import { ColorMetricActions } from "../colorMetric/colorMetric.actions"
 import { setColorRange } from "./colorRange.actions"
 
 @Injectable()
 export class ResetColorRangeEffect {
-	private nodeMetricRange$ = this.store.select(nodeMetricRangeSelector)
+	private selectedNodeMetricData$ = this.store.select(selectedColorMetricDataSelector)
 	private resetActions$ = this.actions$.pipe(
 		filter(action => isActionOfType(action.type, FilesSelectionActions) || isActionOfType(action.type, ColorMetricActions))
 	)
@@ -19,16 +22,16 @@ export class ResetColorRangeEffect {
 	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(Store) private store: Store) {}
 
 	resetColorRange$ = createEffect(() =>
-		combineLatest([this.resetActions$, this.nodeMetricRange$]).pipe(
-			map(([, nodeMetricRange]) => setColorRange(_nodeMetricRangeToInitialColorRange(nodeMetricRange)))
+		combineLatest([this.resetActions$, this.selectedNodeMetricData$]).pipe(
+			map(([, selectedNodeMetricData]) => setColorRange(_nodeMetricRangeToInitialColorRange(selectedNodeMetricData)))
 		)
 	)
 }
 
-export const _nodeMetricRangeToInitialColorRange = (nodeMetricRange: NodeMetricRange) => {
-	const totalRange = nodeMetricRange.maxValue - nodeMetricRange.minValue
+export const _nodeMetricRangeToInitialColorRange = (selectedNodeMetricData: MetricMinMax) => {
+	const totalRange = selectedNodeMetricData.maxValue - selectedNodeMetricData.minValue
 	const aThird = Math.round(totalRange / 3)
-	const firstThird = aThird + nodeMetricRange.minValue
-	const secondThird = aThird * 2 + nodeMetricRange.minValue
+	const firstThird = aThird + selectedNodeMetricData.minValue
+	const secondThird = aThird * 2 + selectedNodeMetricData.minValue
 	return { from: firstThird, to: secondThird }
 }

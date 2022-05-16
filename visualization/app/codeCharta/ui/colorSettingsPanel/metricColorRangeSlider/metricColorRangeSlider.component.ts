@@ -5,7 +5,7 @@ import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/c
 import debounce from "lodash.debounce"
 import { metricColorRangeSliderColorsSelector } from "./rangeSlider/selectors/metricColorRangeSliderColors.selector"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
-import { metricColorRangeSelector } from "./rangeSlider/selectors/metricColorRange.selector"
+import { metricColorRangeSliderValuesSelector } from "./rangeSlider/selectors/metricColorRangeSliderValues.selector"
 import { trackEventUsageData } from "../../../util/usageDataTracker"
 import { State } from "../../../state/angular-redux/state"
 import { ColorRange } from "../../../codeCharta.model"
@@ -15,7 +15,7 @@ import { ColorRange } from "../../../codeCharta.model"
 	template: require("./metricColorRangeSlider.component.html")
 })
 export class MetricColorRangeSliderComponent {
-	colorRange$ = this.store.select(metricColorRangeSelector)
+	colorRange$ = this.store.select(metricColorRangeSliderValuesSelector)
 	sliderColors$ = this.store.select(metricColorRangeSliderColorsSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
