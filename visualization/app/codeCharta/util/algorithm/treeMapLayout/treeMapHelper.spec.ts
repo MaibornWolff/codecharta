@@ -15,6 +15,9 @@ jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", (
 		}
 	})
 }))
+jest.mock("../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector", () => ({
+	selectedColorMetricDataSelector: () => ({ minValue: 0, maxValue: 100 })
+}))
 
 describe("TreeMapHelper", () => {
 	describe("build node", () => {
@@ -292,7 +295,7 @@ describe("TreeMapHelper", () => {
 
 				it("colors green to yellow to red according to weighted gradient", () => {
 					const { positive, neutral, negative } = state.appSettings.mapColors
-					const { from, to, max } = state.dynamicSettings.colorRange
+					const { from, to } = state.dynamicSettings.colorRange
 					const endPositive = Math.max(from - (to - from) / 2, from / 2)
 					const startNeutral = 2 * from - endPositive
 					const endNeutral = to - (to - from) / 2
@@ -325,7 +328,7 @@ describe("TreeMapHelper", () => {
 					node.attributes = { validMetricName: startNegative }
 					expect(buildNode().color).toBe(negative)
 
-					node.attributes = { validMetricName: max }
+					node.attributes = { validMetricName: 100 }
 					expect(buildNode().color).toBe(negative)
 				})
 			})
@@ -356,19 +359,16 @@ describe("TreeMapHelper", () => {
 				})
 
 				it("colors a reddish color according to true gradient", () => {
-					const { to, max } = state.dynamicSettings.colorRange
+					const { to } = state.dynamicSettings.colorRange
 
 					node.attributes = { validMetricName: to + 1 }
-
 					expect(buildNode().color).toBe("#dac501")
 
-					node.attributes = { validMetricName: max - 1 }
-
+					node.attributes = { validMetricName: 99 }
 					expect(buildNode().color).toBe("#83100e")
 
-					node.attributes = { validMetricName: max }
-
-					expect(buildNode().color).toBe(state.appSettings.mapColors.negative.toLowerCase())
+					node.attributes = { validMetricName: 100 }
+					expect(buildNode().color).toBe("#820e0e")
 				})
 			})
 

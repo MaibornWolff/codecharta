@@ -5,6 +5,10 @@ import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 import { gradientCalculator } from "../../color/gradientCalculator"
+import {
+	MetricMinMax,
+	selectedColorMetricDataSelector
+} from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
@@ -68,7 +72,7 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
 		link: map.link,
 		markingColor: getMarkingColor(map, state.fileSettings.markedPackages),
 		flat: false,
-		color: getBuildingColor(map, state, isDeltaState, flattened),
+		color: getBuildingColor(map, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize),
 		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize)
 	} as Node
@@ -115,7 +119,7 @@ function buildNodeFrom(
 		link: data.link,
 		markingColor: getMarkingColor(data, state.fileSettings.markedPackages),
 		flat: flattened,
-		color: getBuildingColor(data, state, isDeltaState, flattened),
+		color: getBuildingColor(data, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), state.treeMap.mapSize),
 		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), state.treeMap.mapSize)
 	}
@@ -193,7 +197,13 @@ function isNodeNonSearched(squaredNode: CodeMapNode, state: State) {
 	return !searchedNodePaths.has(squaredNode.path)
 }
 
-export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettings }: State, isDeltaState: boolean, flattened: boolean) {
+export function getBuildingColor(
+	node: CodeMapNode,
+	{ appSettings, dynamicSettings }: State,
+	nodeMetricDataRange: MetricMinMax,
+	isDeltaState: boolean,
+	flattened: boolean
+) {
 	const { mapColors } = appSettings
 
 	if (isDeltaState) {
@@ -221,7 +231,7 @@ export function getBuildingColor(node: CodeMapNode, { appSettings, dynamicSettin
 	}
 
 	if (colorMode === ColorMode.trueGradient) {
-		return gradientCalculator.getColorByTrueGradient(mapColors, colorRange, metricValue)
+		return gradientCalculator.getColorByTrueGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
 	}
 
 	if (colorMode === ColorMode.focusedGradient) {

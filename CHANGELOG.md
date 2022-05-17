@@ -14,6 +14,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Hide color metric range-slider in color metric options of ribbon bar in delta mode instead of disabling it [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+
+### Fixed 🐞
+
+-   Handle invalid input of range-slider correctly [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Use real color range min value instead of 0 and take color range min value into account for calculating initial first third of positive color [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Fix range-slider in case of min value equal to max value [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Track not only changes to color metric options by slider but also by related input field [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+
+## [1.96.0] - 2022-05-17
+
+### Changed
+
 -   Remove all mentions of regular `.cc` `.json` `.gz` file extensions from file panel and sidebar [#2793](https://github.com/MaibornWolff/codecharta/pull/2793)
 
 ### Fixed 🐞

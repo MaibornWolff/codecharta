@@ -23,7 +23,6 @@ import { MarkedPackagesService } from "./store/fileSettings/markedPackages/marke
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
-import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
@@ -65,7 +64,6 @@ export class InjectorService {
 		private edgesService: EdgesService,
 		private attributeTypesService: AttributeTypesService,
 		private edgeMetricService: EdgeMetricService,
-		private colorRangeService: ColorRangeService,
 		private marginService: MarginService,
 		private focusedNodePathService: FocusedNodePathService,
 		private heightMetricService: HeightMetricService,
