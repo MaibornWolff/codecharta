@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
+-   Limit length of labels in legend panel #2329
 
 ### Chore 👨‍💻 👩‍💻
 
