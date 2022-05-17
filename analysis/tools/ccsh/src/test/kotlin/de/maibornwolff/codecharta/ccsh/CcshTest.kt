@@ -1,22 +1,84 @@
 package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
+import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import io.mockk.verify
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import java.io.PrintWriter
+import java.io.StringWriter
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CcshTest {
 
+    @AfterAll
+    fun afterTest() {
+        unmockkAll()
+    }
+
     @Test
-    fun `parameters should be converted to kebab-case`() {
+    fun `should convert arguments to kebab-case`() {
         val outStream = ByteArrayOutputStream()
         val originalOut = System.out
-        System.setOut(PrintStream(outStream))
+        System.setErr(PrintStream(outStream))
 
-        Ccsh.main(arrayOf("someparser", ".", "--defaultExcludesS=AbC"))
+        Ccsh.main(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
 
         Assertions.assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
         System.setOut(originalOut)
+    }
+
+    @Test
+    fun `should just show help message`() {
+        mockkObject(ParserService)
+        val ccshCLI = CommandLine(Ccsh())
+        val contentOutput = StringWriter()
+        ccshCLI.out = PrintWriter(contentOutput)
+
+        val exitCode = ccshCLI.execute("-h")
+
+        Assertions.assertThat(exitCode).isEqualTo(0)
+        Assertions.assertThat(contentOutput.toString()).contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
+        verify(exactly = 0) { ParserService.executeSelectedParser(any()) }
+    }
+
+    @Test
+    fun `should star interactive parser when no arguments or parameters are passed`() {
+        mockkObject(ParserService)
+        every {
+            ParserService.selectParser(any())
+        } returns "someparser"
+        every {
+            ParserService.executeSelectedParser(any())
+        } just Runs
+
+        Ccsh.main(emptyArray())
+
+        verify { ParserService.executeSelectedParser(any()) }
+    }
+
+    @Test
+    fun `should execute interactive parser when passed parser is unknown`() {
+        mockkObject(ParserService)
+        every {
+            ParserService.selectParser(any())
+        } returns "someparser"
+        every {
+            ParserService.executeSelectedParser(any())
+        } just Runs
+
+        Ccsh.main(arrayOf("unknownparser"))
+
+        verify { ParserService.executeSelectedParser(any()) }
     }
 }

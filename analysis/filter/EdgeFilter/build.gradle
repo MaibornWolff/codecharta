@@ -6,11 +6,13 @@ repositories {
 
 dependencies {
     implementation project(':model')
+    implementation project(':tools:InteractiveParser')
 
     implementation group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.fastjson', name: 'boon', version: boon_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+    implementation "com.github.kotlin-inquirer:kotlin-inquirer:$kotlin_inquirer_version"
 
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
@@ -19,6 +21,8 @@ dependencies {
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
+    testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
 
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
@@ -27,7 +31,5 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform {
-        includeEngines 'spek2'
-    }
+    useJUnitPlatform()
 }

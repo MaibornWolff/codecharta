@@ -16,7 +16,9 @@ import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
+import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
+import mu.KotlinLogging
 import picocli.AutoComplete
 import picocli.CommandLine
 import java.util.concurrent.Callable
@@ -48,6 +50,7 @@ import java.util.concurrent.Callable
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
+
 class Ccsh : Callable<Void?> {
 
     @CommandLine.Option(
@@ -67,10 +70,33 @@ class Ccsh : Callable<Void?> {
     }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
+
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
-            commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
+            commandLine.executionStrategy = CommandLine.RunAll()
+            if (args.isEmpty() || isParserUnknown(args, commandLine)) {
+                executeInteractiveParser(commandLine)
+            } else {
+                commandLine.execute(*sanitizeArgs(args))
+            }
+        }
+
+        private fun executeInteractiveParser(commandLine: CommandLine) {
+                val selectedParser = ParserService.selectParser(commandLine)
+                logger.info { "Executing $selectedParser" }
+                ParserService.executeSelectedParser(selectedParser)
+        }
+
+        private fun isParserUnknown(args: Array<String>, commandLine: CommandLine): Boolean {
+            if (args.isNotEmpty()) {
+                val firstArg = args.first()
+                val parserList = commandLine.subcommands.keys
+                val optionsList = commandLine.commandSpec.options().map { it.names().toMutableList() }.flatten()
+                return !parserList.contains(firstArg) && !optionsList.contains(firstArg)
+            }
+            return false
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
@@ -80,7 +106,7 @@ class Ccsh : Callable<Void?> {
                     var skip = false
                     argument.forEach {
                         if (it == '=') skip = true
-                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.toLowerCase()
+                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.lowercaseChar()
                         else sanitizedArg += it
                     }
                 } else {
@@ -96,7 +122,7 @@ class Ccsh : Callable<Void?> {
             return arrayOf(
                 Ccsh::class.java.`package`.implementationTitle + "\n" +
                     "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
-                    "Copyright(c) 2020, MaibornWolff GmbH"
+                    "Copyright(c) 2022, MaibornWolff GmbH"
             )
         }
     }
