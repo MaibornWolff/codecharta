@@ -3,11 +3,10 @@ import { render } from "@testing-library/angular"
 import { mocked } from "ts-jest/utils"
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { Store } from "../../../state/store/store"
+import { wait } from "../../../util/testUtils/wait"
 import { trackEventUsageData } from "../../../util/usageDataTracker"
 import { MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
 import { MetricColorRangeSliderModule } from "./metricColorRangeSlider.module"
-
-const wait = async (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
 
 jest.mock("../../../util/usageDataTracker", () => ({
 	trackEventUsageData: jest.fn()
