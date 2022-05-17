@@ -11,7 +11,7 @@ describe("areDynamicSettingsAvailable", () => {
 
 	it("should return false when colorRange.from isn't set", () => {
 		const dynamicSettings = {
-			colorRange: { from: null, to: 25, min: 0, max: 100 }
+			colorRange: { from: null, to: 25 }
 		}
 		expect(areDynamicSettingsAvailable(dynamicSettings)).toBe(false)
 	})
@@ -28,7 +28,7 @@ describe("areDynamicSettingsAvailable", () => {
 			focusedNodePath: [],
 			searchPattern: "",
 			margin: 2,
-			colorRange: { from: 0, to: 25, min: 0, max: 100 },
+			colorRange: { from: 0, to: 25 },
 			recentFiles: ["test.cc.json"]
 		}
 		expect(areDynamicSettingsAvailable(dynamicSettings)).toBe(true)

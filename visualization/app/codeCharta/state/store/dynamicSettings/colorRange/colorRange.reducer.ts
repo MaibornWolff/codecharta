@@ -1,9 +1,9 @@
-import { ColorRangeAction, ColorRangeActions, setColorRange } from "./colorRange.actions"
+import { ColorRangeAction, ColorRangeActions, defaultColorRange } from "./colorRange.actions"
 
-export function colorRange(state = setColorRange().payload, action: ColorRangeAction) {
+export function colorRange(state = defaultColorRange, action: ColorRangeAction) {
 	switch (action.type) {
 		case ColorRangeActions.SET_COLOR_RANGE:
-			return action.payload
+			return { ...state, ...action.payload }
 		default:
 			return state
 	}

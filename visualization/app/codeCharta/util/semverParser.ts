@@ -5,11 +5,6 @@ export interface semverObject {
 	patch: number
 }
 
-export function isValidSemverCore(semverString: string): boolean {
-	const semverCore = /^(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)){2}$/
-	return semverCore.test(semverString)
-}
-
 export function parseSemver(semverString: string): semverObject {
 	const semver: semverObject = { version: "", major: 0, minor: 0, patch: 0 }
 	semver.version = semverString

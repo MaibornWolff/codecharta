@@ -49,9 +49,7 @@ describe("ArtificialIntelligenceController", () => {
 			const testMetricSuggestionParameters = {
 				metric: "mcc",
 				from: 365,
-				to: 554,
-				max: 0,
-				min: 0
+				to: 554
 			}
 			const dispatchSpy = jest.spyOn(storeService, "dispatch")
 
@@ -63,9 +61,7 @@ describe("ArtificialIntelligenceController", () => {
 			expect(dispatchSpy).toHaveBeenCalledWith(
 				setColorRange({
 					from: testMetricSuggestionParameters.from,
-					to: testMetricSuggestionParameters.to,
-					max: 0,
-					min: 0
+					to: testMetricSuggestionParameters.to
 				})
 			)
 			expect(dispatchSpy).toHaveBeenCalledWith(
@@ -82,8 +78,6 @@ describe("ArtificialIntelligenceController", () => {
 				metric: "mcc",
 				from: 365,
 				to: 554,
-				max: 0,
-				min: 0,
 				isOutlier: true
 			}
 			const dispatchSpy = jest.spyOn(storeService, "dispatch")
@@ -96,9 +90,7 @@ describe("ArtificialIntelligenceController", () => {
 			expect(dispatchSpy).toHaveBeenCalledWith(
 				setColorRange({
 					from: testMetricSuggestionParameters.from,
-					to: testMetricSuggestionParameters.to,
-					max: 0,
-					min: 0
+					to: testMetricSuggestionParameters.to
 				})
 			)
 			expect(dispatchSpy).toHaveBeenCalledWith(

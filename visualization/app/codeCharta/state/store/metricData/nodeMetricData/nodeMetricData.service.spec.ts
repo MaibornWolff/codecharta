@@ -7,16 +7,6 @@ import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../files/files.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
-import { nodeMetricDataSelector } from "../../../selectors/accumulatedData/metricData/nodeMetricData.selector"
-
-const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
-jest.mock("../../../selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
-	nodeMetricDataSelector: jest.fn(() => [
-		{ name: "rloc", maxValue: 999_999, minValue: 1 },
-		{ name: "functions", maxValue: 999_999, minValue: 1 },
-		{ name: "mcc", maxValue: 999_999, minValue: 1 }
-	])
-}))
 
 describe("NodeMetricDataService", () => {
 	let nodeMetricDataService: NodeMetricDataService
@@ -63,44 +53,6 @@ describe("NodeMetricDataService", () => {
 			rebuildService()
 
 			expect(AttributeTypesService.subscribe).toHaveBeenCalledWith($rootScope, nodeMetricDataService)
-		})
-	})
-
-	describe("getMetrics", () => {
-		it("should return an empty array if metricData is empty", () => {
-			mockedNodeMetricDataSelector.mockImplementationOnce(() => [])
-			nodeMetricDataService["updateNodeMetricData"]()
-
-			const result = nodeMetricDataService.getMetrics()
-
-			expect(result).toHaveLength(0)
-		})
-
-		it("should return an array of all metric names used in metricData", () => {
-			nodeMetricDataService["updateNodeMetricData"]()
-
-			const result = nodeMetricDataService.getMetrics()
-
-			expect(result).toEqual(["rloc", "functions", "mcc"])
-		})
-	})
-
-	describe("getMaxMetricByMetricName", () => {
-		beforeEach(() => {
-			nodeMetricDataService["updateNodeMetricData"]()
-		})
-
-		it("should return the possible maxValue of a metric by name", () => {
-			const result = nodeMetricDataService.getMaxValueOfMetric("rloc")
-			const expected = 999_999
-
-			expect(result).toBe(expected)
-		})
-
-		it("should return undefined if metric doesn't exist in metricData", () => {
-			const result = nodeMetricDataService.getMaxValueOfMetric("some metric")
-
-			expect(result).not.toBeDefined()
 		})
 	})
 })

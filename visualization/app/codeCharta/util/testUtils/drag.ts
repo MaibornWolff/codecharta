@@ -1,6 +1,7 @@
 // Taken from https://testing-library.com/docs/example-drag/
 
 import { fireEvent } from "@testing-library/dom"
+import { wait } from "./wait"
 
 function getElementClientCenter(element) {
 	const { left, top, width, height } = element.getBoundingClientRect()
@@ -9,11 +10,6 @@ function getElementClientCenter(element) {
 		y: top + height / 2
 	}
 }
-
-const sleep = async ms =>
-	new Promise(resolve => {
-		setTimeout(resolve, ms)
-	})
 
 type DragOptions = {
 	delta: { x: number; y: number }
@@ -44,7 +40,7 @@ export async function drag(element: Element, { delta, steps = 20, duration = 500
 	for (let index = 0; index < steps; index++) {
 		current.clientX += step.x
 		current.clientY += step.y
-		await sleep(duration / steps)
+		await wait(duration / steps)
 		fireEvent.mouseMove(element, current)
 	}
 	fireEvent.mouseUp(element, current)

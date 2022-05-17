@@ -9,13 +9,11 @@ import { FilesService } from "../../state/store/files/files.service"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
 import { colorLabelOptions } from "../../codeCharta.model"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let nodeMetricDataService: NodeMetricDataService
 
 	beforeEach(() => {
 		restartSystem()
@@ -28,11 +26,10 @@ describe("ColorSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 	}
 
 	function rebuildController() {
-		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, storeService, nodeMetricDataService)
+		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, storeService)
 	}
 
 	function initFiles() {
@@ -96,40 +93,10 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should detect not delta mode selection", () => {
-			nodeMetricDataService.getMaxValueOfMetric = jest.fn()
-
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
-		})
-
-		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
-
-			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
-
-			expect(colorSettingsPanelController["_viewModel"].maxMetricValue).toBe(34)
-		})
-	})
-
-	describe("onBlackListChanged", () => {
-		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
-
-			colorSettingsPanelController.onBlacklistChanged()
-
-			expect(colorSettingsPanelController["_viewModel"].maxMetricValue).toBe(34)
-		})
-	})
-
-	describe("onColorMetricChanged", () => {
-		it("should update _viewModel.maxMetricValue", () => {
-			nodeMetricDataService.getMaxValueOfMetric = jest.fn(() => 34)
-
-			colorSettingsPanelController.onColorMetricChanged()
-
-			expect(colorSettingsPanelController["_viewModel"].maxMetricValue).toBe(34)
 		})
 	})
 

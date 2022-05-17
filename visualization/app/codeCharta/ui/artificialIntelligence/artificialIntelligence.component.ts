@@ -48,9 +48,7 @@ export class ArtificialIntelligenceController implements StoreSubscriber {
 	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
 		const colorRange: ColorRange = {
 			from: metric.from,
-			to: metric.to,
-			max: 0,
-			min: 0
+			to: metric.to
 		}
 
 		const mapColors = {

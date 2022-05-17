@@ -1746,9 +1746,7 @@ export const STATE: State = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67,
-			min: 1,
-			max: 100
+			to: 67
 		},
 		colorMode: ColorMode.weightedGradient,
 		sortingOption: SortingOption.NAME,
@@ -1870,9 +1868,7 @@ export const DEFAULT_STATE: State = {
 		margin: null,
 		colorRange: {
 			from: null,
-			to: null,
-			min: null,
-			max: null
+			to: null
 		},
 		colorMode: ColorMode.weightedGradient,
 		searchPattern: "",
@@ -1904,9 +1900,7 @@ export const SCENARIO: RecursivePartial<Scenario> = {
 		colorMetric: "mcc",
 		colorRange: {
 			from: 19,
-			to: 67,
-			max: 100,
-			min: 1
+			to: 67
 		},
 		mapColors: DEFAULT_STATE.appSettings.mapColors
 	},
@@ -1930,9 +1924,7 @@ export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67,
-			max: 100,
-			min: 1
+			to: 67
 		}
 	},
 	appSettings: {
@@ -1997,7 +1989,7 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.COLOR_METRIC,
 		metricName: "mcc",
-		savedValues: { colorRange: { from: 19, to: 67, min: 1, max: 100 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+		savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},

@@ -58,14 +58,12 @@ describe("suspiciousMetricsHelper", () => {
 			ts: { functions: [1, 10, 20, 29], rloc: [366, 554, 1001, 1002] }
 		}
 
-		const expecteColorRange: ColorRange = {
+		const expectedColorRange: ColorRange = {
 			from: metricThresholdsByLanguage.java.rloc.percentile70,
-			to: metricThresholdsByLanguage.java.rloc.percentile80,
-			max: 0,
-			min: 0
+			to: metricThresholdsByLanguage.java.rloc.percentile80
 		}
 		const expectedMetricAssessmentResults: MetricAssessmentResults = {
-			suspiciousMetrics: new Map<string, ColorRange>([["rloc", expecteColorRange]]),
+			suspiciousMetrics: new Map<string, ColorRange>([["rloc", expectedColorRange]]),
 			unsuspiciousMetrics: ["functions (number of functions)"],
 			outliersThresholds: new Map<string, number>([["rloc", metricThresholdsByLanguage.java.rloc.percentile90]])
 		}
@@ -97,9 +95,7 @@ describe("suspiciousMetricsHelper", () => {
 		metricValuesByLanguage["ts"] = { functions: [1, 10, 20, 29], rloc: [366, 554, 1001, 1002] }
 		const expectedColorRange: ColorRange = {
 			from: metricThresholdsByLanguage.java.rloc.percentile70,
-			to: metricThresholdsByLanguage.java.rloc.percentile80,
-			max: 0,
-			min: 0
+			to: metricThresholdsByLanguage.java.rloc.percentile80
 		}
 		const expected = new Map<string, ColorRange>([["rloc", expectedColorRange]])
 		const actualAssessmentResults: MetricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, "java")
@@ -133,9 +129,7 @@ describe("suspiciousMetricsHelper", () => {
 	it("should calculate suspicious metrics", () => {
 		const colorRange: ColorRange = {
 			from: 1,
-			to: 10,
-			max: 0,
-			min: 0
+			to: 10
 		}
 		const metricAssessmentResults: MetricAssessmentResults = {
 			suspiciousMetrics: new Map([["mcc", colorRange]]),
@@ -149,9 +143,7 @@ describe("suspiciousMetricsHelper", () => {
 			{
 				from: 1,
 				isOutlier: true,
-				max: 0,
 				metric: "mcc",
-				min: 0,
 				to: 10
 			}
 		])
@@ -160,9 +152,7 @@ describe("suspiciousMetricsHelper", () => {
 	it("should calculate suspicious metrics sort by outlier", () => {
 		const colorRange: ColorRange = {
 			from: 1,
-			to: 10,
-			max: 0,
-			min: 0
+			to: 10
 		}
 		const metricAssessmentResults: MetricAssessmentResults = {
 			suspiciousMetrics: new Map([
