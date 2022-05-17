@@ -55,9 +55,7 @@
 			>Height Metric Options <i class="fa fa-angle-down"></i
 		></span>
 	</div>
-	<height-settings-panel-component
-		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'HEIGHT_PANEL_OPEN' }"
-	></height-settings-panel-component>
+	<cc-height-settings-panel ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'HEIGHT_PANEL_OPEN' }"></cc-height-settings-panel>
 </md-card>
 
 <md-card

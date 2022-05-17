@@ -1777,13 +1777,10 @@ export const STATE: State = {
 			neutral: "#ddcc00",
 			negative: "#820E0E",
 			selected: "#EB8319",
-			defaultC: "#89ACB4",
 			positiveDelta: "#64d051",
 			negativeDelta: "#ff0E0E",
 			base: "#666666",
 			flat: "#AAAAAA",
-			lightGrey: "#DDDDDD",
-			angularGreen: "#00BFA5",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",
@@ -1834,11 +1831,8 @@ export const DEFAULT_STATE: State = {
 		isEdgeMetricVisible: true,
 		isWhiteBackground: false,
 		mapColors: {
-			angularGreen: "#00BFA5",
 			base: "#666666",
-			defaultC: "#89ACB4",
 			flat: "#AAAAAA",
-			lightGrey: "#DDDDDD",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			negative: "#820E0E",
 			negativeDelta: "#ff0E0E",
@@ -2156,7 +2150,7 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 			customConfigItems: [
 				{
 					id: "MULTIPLEfileESampleMap View #1",
-					name: "SampleMap View #1",
+					name: "SampleMap Delta View #1",
 					mapNames: "fileD",
 					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 					isApplicable: false

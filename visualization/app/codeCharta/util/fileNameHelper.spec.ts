@@ -43,11 +43,11 @@ describe("FileNameHelper", () => {
 		})
 	})
 
-	describe("withoutCCJsonExtension", () => {
+	describe("withoutCCExtension", () => {
 		it("should remove .cc.json", () => {
 			const fileName = "prefix.name.suffix.cc.json"
 
-			const actual = FileNameHelper.withoutCCJsonExtension(fileName)
+			const actual = FileNameHelper.withoutCCExtension(fileName)
 
 			expect(actual).toBe("prefix.name.suffix")
 		})
@@ -55,7 +55,7 @@ describe("FileNameHelper", () => {
 		it("should remove .json", () => {
 			const fileName = "prefix.name.suffix.json"
 
-			const actual = FileNameHelper.withoutCCJsonExtension(fileName)
+			const actual = FileNameHelper.withoutCCExtension(fileName)
 
 			expect(actual).toBe("prefix.name.suffix")
 		})
@@ -63,9 +63,41 @@ describe("FileNameHelper", () => {
 		it("should not remove .cc.json as part of a filename", () => {
 			const fileName = "prefix.name.cc.json.suffix.cc.json"
 
-			const actual = FileNameHelper.withoutCCJsonExtension(fileName)
+			const actual = FileNameHelper.withoutCCExtension(fileName)
 
 			expect(actual).toBe("prefix.name.cc.json.suffix")
+		})
+
+		it("should remove .json extension once", () => {
+			const fileName = "prefix.name.cc.json.gz.json"
+
+			const actual = FileNameHelper.withoutCCExtension(fileName)
+
+			expect(actual).toBe("prefix.name.cc.json.gz")
+		})
+
+		it("should remove .cc.json extension once", () => {
+			const fileName = "prefix.name.cc.json.cc.json"
+
+			const actual = FileNameHelper.withoutCCExtension(fileName)
+
+			expect(actual).toBe("prefix.name.cc.json")
+		})
+
+		it("should remove .cc.json.gz extension once", () => {
+			const fileName = "prefix.name.cc.json.gz.cc.json.gz"
+
+			const actual = FileNameHelper.withoutCCExtension(fileName)
+
+			expect(actual).toBe("prefix.name.cc.json.gz")
+		})
+
+		it("should not remove any extensions that are not .cc.json.gz", () => {
+			const fileName = "prefix.name.something.txt.jsonl.tar"
+
+			const actual = FileNameHelper.withoutCCExtension(fileName)
+
+			expect(actual).toBe("prefix.name.something.txt.jsonl.tar")
 		})
 	})
 })

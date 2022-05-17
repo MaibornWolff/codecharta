@@ -19,19 +19,19 @@ describe("UploadFileButton", () => {
 	it("should load a valid gameObjects file", async () => {
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/gameObjectsFile.json"])
 
-		expect(await filePanel.getSelectedName()).toEqual("gameObjectsFile.json")
+		expect(await filePanel.getSelectedName()).toEqual("gameObjectsFile")
 	})
 
 	it("should load another cc.json", async () => {
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
-		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
+		expect(await filePanel.getSelectedName()).toEqual("sample3")
 	})
 
 	it("should load another .gz", async () => {
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/output.cc.json.gz"])
 
-		expect(await filePanel.getSelectedName()).toEqual("output.cc.json.gz")
+		expect(await filePanel.getSelectedName()).toEqual("output")
 	})
 
 	it("should load multiple cc.json files", async () => {
@@ -39,17 +39,17 @@ describe("UploadFileButton", () => {
 
 		const loadedMapsName = await filePanel.getAllNames()
 
-		expect(loadedMapsName[0]).toEqual("sample1.cc.json")
-		expect(loadedMapsName[1]).toEqual("sample2.cc.json")
-		expect(loadedMapsName[2]).toEqual("sample3.cc.json")
-		expect(loadedMapsName[3]).toEqual("sample4.cc.json")
+		expect(loadedMapsName[0]).toEqual("sample1")
+		expect(loadedMapsName[1]).toEqual("sample2")
+		expect(loadedMapsName[2]).toEqual("sample3")
+		expect(loadedMapsName[3]).toEqual("sample4")
 	})
 
 	it("should keep the old map if opening a file was cancelled", async () => {
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 		await uploadFileButton.cancelOpeningFile()
 
-		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
+		expect(await filePanel.getSelectedName()).toEqual("sample3")
 		expect(await page.$eval("#loading-gif-map", element => element["style"]["visibility"])).toBe("hidden")
 	})
 
@@ -61,7 +61,7 @@ describe("UploadFileButton", () => {
 
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
-		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
+		expect(await filePanel.getSelectedName()).toEqual("sample3")
 	})
 
 	it("should open an valid and an invalid file, close the dialog and open a valid file", async () => {
@@ -72,7 +72,7 @@ describe("UploadFileButton", () => {
 
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
-		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
+		expect(await filePanel.getSelectedName()).toEqual("sample3")
 	})
 
 	it("should not load a map and show error, when loading a map with warning and a map with error", async () => {
@@ -88,12 +88,12 @@ describe("UploadFileButton", () => {
 
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
-		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
+		expect(await filePanel.getSelectedName()).toEqual("sample3")
 	})
 
 	it("should be able to open a cc.json with a lower minor api version without a warning", async () => {
 		await uploadFileButton.openFiles(["./app/codeCharta/resources/sample1_with_lower_minor_api.cc.json"])
 
-		expect(await filePanel.getSelectedName()).toEqual("sample1_with_lower_minor_api.cc.json")
+		expect(await filePanel.getSelectedName()).toEqual("sample1_with_lower_minor_api")
 	})
 })
