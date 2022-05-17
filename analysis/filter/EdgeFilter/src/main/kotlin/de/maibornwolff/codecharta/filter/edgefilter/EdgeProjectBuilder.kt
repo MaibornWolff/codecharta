@@ -9,7 +9,6 @@ import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import mu.KotlinLogging
-import kotlin.math.max
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
     private val logger = KotlinLogging.logger {}
@@ -60,9 +59,13 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun insertEdgeAsNode(nodeEdgeName: String) {
         val nodeFilename = nodeEdgeName.split(pathSeparator).reversed().first()
         val nodePath = nodeEdgeName.split(pathSeparator)
-        val nodeParentPath = nodePath.subList(2, max(2, nodePath.size - 1))
-        val node = Node(nodeFilename, NodeType.File)
-        insertNodeInProjectBuilder(node, nodeParentPath)
+        if (nodePath.size <= 1) {
+            logger.error { "The Edge for $nodeEdgeName could not be resolved and therefore was skipped: No parent node was found." }
+        } else {
+            val nodeParentPath = nodePath.subList(2, nodePath.size - 1)
+            val node = Node(nodeFilename, NodeType.File)
+            insertNodeInProjectBuilder(node, nodeParentPath)
+        }
     }
 
     private fun insertEdgeAttributesIntoNodes(nodes: Set<Node>, parentPath: MutableList<String> = mutableListOf()) {
@@ -125,7 +128,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             val attributeType = getAttributeTypeByKey(key)
             val filteredAttribute = filteredEdges.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue =
-                filteredAttribute.sumBy { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
+                filteredAttribute.sumOf { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
 
             if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
 

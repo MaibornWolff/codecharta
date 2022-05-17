@@ -15,7 +15,7 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: hamcrest_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
-    testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
+    testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: wiremock_version
 
     testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5_version
