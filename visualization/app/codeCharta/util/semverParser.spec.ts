@@ -1,15 +1,5 @@
-import { isValidSemverCore, parseSemver, compareSemver, semverObject } from "./semverParser"
-describe("is valid semver core", () => {
-	it("should check if the given semantic version core string is valid", () => {
-		//Trues
-		expect(isValidSemverCore("1.4.5")).toEqual(true)
-		expect(isValidSemverCore("21.75.0")).toEqual(true)
-		//Falsies
-		expect(isValidSemverCore("")).toEqual(false)
-		expect(isValidSemverCore("..")).toEqual(false)
-		expect(isValidSemverCore("1.6.2.5.6")).toEqual(false)
-	})
-})
+import { parseSemver, compareSemver, semverObject } from "./semverParser"
+
 describe("parse semantic version", () => {
 	it("should parse the given semantic version core string", () => {
 		let semverString = "1.4.5"
@@ -18,7 +8,6 @@ describe("parse semantic version", () => {
 		semverString = "0.0.0"
 		actual = { version: "0.0.0", major: 0, minor: 0, patch: 0 }
 		expect(parseSemver(semverString)).toEqual(actual)
-		//fail
 	})
 })
 describe("compare semantic versions", () => {
