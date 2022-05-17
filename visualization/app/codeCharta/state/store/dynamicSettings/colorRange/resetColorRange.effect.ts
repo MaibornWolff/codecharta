@@ -14,7 +14,7 @@ import { setColorRange } from "./colorRange.actions"
 
 @Injectable()
 export class ResetColorRangeEffect {
-	private selectedNodeMetricData$ = this.store.select(selectedColorMetricDataSelector)
+	private selectedColorMetricData$ = this.store.select(selectedColorMetricDataSelector)
 	private resetActions$ = this.actions$.pipe(
 		filter(action => isActionOfType(action.type, FilesSelectionActions) || isActionOfType(action.type, ColorMetricActions))
 	)
@@ -22,16 +22,16 @@ export class ResetColorRangeEffect {
 	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(Store) private store: Store) {}
 
 	resetColorRange$ = createEffect(() =>
-		combineLatest([this.resetActions$, this.selectedNodeMetricData$]).pipe(
-			map(([, selectedNodeMetricData]) => setColorRange(_nodeMetricRangeToInitialColorRange(selectedNodeMetricData)))
+		combineLatest([this.resetActions$, this.selectedColorMetricData$]).pipe(
+			map(([, selectedColorMetricData]) => setColorRange(_metricMinMaxToInitialColorRange(selectedColorMetricData)))
 		)
 	)
 }
 
-export const _nodeMetricRangeToInitialColorRange = (selectedNodeMetricData: MetricMinMax) => {
-	const totalRange = selectedNodeMetricData.maxValue - selectedNodeMetricData.minValue
+export const _metricMinMaxToInitialColorRange = (metricMinMax: MetricMinMax) => {
+	const totalRange = metricMinMax.maxValue - metricMinMax.minValue
 	const aThird = Math.round(totalRange / 3)
-	const firstThird = aThird + selectedNodeMetricData.minValue
-	const secondThird = aThird * 2 + selectedNodeMetricData.minValue
-	return { from: firstThird, to: secondThird }
+	const firstThird = aThird + metricMinMax.minValue
+	const secondThird = aThird * 2 + metricMinMax.minValue
+	return {from: firstThird, to: secondThird}
 }

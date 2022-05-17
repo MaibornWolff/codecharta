@@ -1,21 +1,21 @@
-import { Component, Inject } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
-import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
-import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import {Component, Inject} from "@angular/core"
+import {Store} from "../../../state/angular-redux/store"
+import {HandleValueChange} from "./rangeSlider/rangeSlider.component"
+import {setColorRange} from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import debounce from "lodash.debounce"
-import { metricColorRangeSliderColorsSelector } from "./rangeSlider/selectors/metricColorRangeSliderColors.selector"
-import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
-import { metricColorRangeSliderValuesSelector } from "./rangeSlider/selectors/metricColorRangeSliderValues.selector"
-import { trackEventUsageData } from "../../../util/usageDataTracker"
-import { State } from "../../../state/angular-redux/state"
-import { ColorRange } from "../../../codeCharta.model"
+import {metricColorRangeSliderColorsSelector} from "./selectors/metricColorRangeSliderColors.selector"
+import {isDeltaStateSelector} from "../../../state/selectors/isDeltaState.selector"
+import {metricColorRangeSliderValuesSelector} from "./selectors/metricColorRangeSliderValues.selector"
+import {trackEventUsageData} from "../../../util/usageDataTracker"
+import {State} from "../../../state/angular-redux/state"
+import {ColorRange} from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-metric-color-range-slider",
 	template: require("./metricColorRangeSlider.component.html")
 })
 export class MetricColorRangeSliderComponent {
-	colorRange$ = this.store.select(metricColorRangeSliderValuesSelector)
+	sliderValues$ = this.store.select(metricColorRangeSliderValuesSelector)
 	sliderColors$ = this.store.select(metricColorRangeSliderColorsSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
