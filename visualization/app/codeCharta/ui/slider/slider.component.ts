@@ -1,7 +1,7 @@
 import "./slider.component.scss"
 import { Component, Input } from "@angular/core"
 import { MatSliderChange } from "@angular/material/slider"
-import { parseNumberInput } from "./util/parseNumberInput"
+import { parseNumberInput } from "../../util/parseNumberInput"
 
 @Component({
 	selector: "cc-slider",

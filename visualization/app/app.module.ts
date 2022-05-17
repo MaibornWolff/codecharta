@@ -45,8 +45,10 @@ import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTyp
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
 import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.module"
+import { MetricColorRangeSliderModule } from "./codeCharta/ui/colorSettingsPanel/metricColorRangeSlider/metricColorRangeSlider.module"
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
+import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
 
 @NgModule({
 	imports: [
@@ -57,7 +59,8 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
 			TrackEventUsageDataEffect,
-			BlacklistSearchPatternEffect
+			BlacklistSearchPatternEffect,
+			ResetColorRangeEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
@@ -76,7 +79,8 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 		CustomConfigsModule,
 		FilePanelModule,
 		HeightSettingsPanelModule,
-		ResetSettingsButtonModule
+		ResetSettingsButtonModule,
+		MetricColorRangeSliderModule
 	],
 	providers: [
 		threeSceneServiceProvider,

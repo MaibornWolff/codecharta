@@ -15,9 +15,9 @@ describe("ArtificialIntelligenceSelector", () => {
 			analyzedProgrammingLanguage: "java",
 			riskProfile: { highRisk: 37, lowRisk: 46, moderateRisk: 17, veryHighRisk: 0 },
 			suspiciousMetricSuggestionLinks: [
-				{ from: 365, isOutlier: true, max: 0, metric: "loc", min: 0, to: 554 },
-				{ from: 29, isOutlier: true, max: 0, metric: "functions", min: 0, to: 44 },
-				{ from: 48, max: 0, metric: "mcc", min: 0, to: 71 }
+				{ from: 365, isOutlier: true, metric: "loc", to: 554 },
+				{ from: 29, isOutlier: true, metric: "functions", to: 44 },
+				{ from: 48, metric: "mcc", to: 71 }
 			],
 			unsuspiciousMetrics: ["rloc (real lines of code)"]
 		})
