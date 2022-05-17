@@ -33,5 +33,5 @@ export const _metricMinMaxToInitialColorRange = (metricMinMax: MetricMinMax) => 
 	const aThird = Math.round(totalRange / 3)
 	const firstThird = aThird + metricMinMax.minValue
 	const secondThird = aThird * 2 + metricMinMax.minValue
-	return {from: firstThird, to: secondThird}
+	return { from: firstThird, to: secondThird }
 }
