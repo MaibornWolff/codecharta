@@ -14,9 +14,9 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private val logger = KotlinLogging.logger {}
 
     private val projectBuilder = ProjectBuilder(
-            listOf(MutableNode("root", NodeType.Folder)),
-            mutableListOf(),
-            getAttributeTypes()
+        listOf(MutableNode("root", NodeType.Folder)),
+        mutableListOf(),
+        getAttributeTypes()
     )
 
     private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {

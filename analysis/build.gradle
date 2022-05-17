@@ -70,7 +70,7 @@ allprojects {
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 
     jacoco {
-      toolVersion = jacoco_version
+        toolVersion = jacoco_version
     }
 }
 
