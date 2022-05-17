@@ -15,8 +15,8 @@ jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", (
 		}
 	})
 }))
-jest.mock("../../../state/selectors/accumulatedData/metricData/nodeMetricRange.selector", () => ({
-	nodeMetricRangeSelector: () => ({ minValue: 0, maxValue: 100 })
+jest.mock("../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector", () => ({
+	selectedColorMetricDataSelector: () => ({ minValue: 0, maxValue: 100 })
 }))
 
 describe("TreeMapHelper", () => {
