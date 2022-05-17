@@ -82,6 +82,15 @@ cc-legend-panel {
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			overflow: hidden;
+
+			/* This tricks the browser into cutting off the beginning instead of the end of the label. However,
+			   changing the text direction has side effects, like moving punctuation around.  */
+			direction: rtl;
+
+			span {
+				/* This should prevent the browser from moving punctuation around.  */
+				unicode-bidi: plaintext;
+			}
 		}
 	}
 }
