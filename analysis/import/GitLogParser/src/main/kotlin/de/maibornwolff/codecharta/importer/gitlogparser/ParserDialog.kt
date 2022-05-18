@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.gitlogparser
 
 import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import mu.KotlinLogging
@@ -9,12 +10,17 @@ private val logger = KotlinLogging.logger {}
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        private const val EXTENSION = "cc.json"
+        private const val EXTENSION = "log"
         private val extensionPattern = Regex(".($EXTENSION)$")
 
         override fun collectParserArgs(): List<String> {
-
-            var inputFileName = KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?")
+            logger.info { "You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log" }
+            val defaultInputFileName = "git.$EXTENSION"
+            var inputFileName = KInquirer.promptInput(
+                message = "What is the $EXTENSION file that has to be parsed?",
+                hint = defaultInputFileName,
+                default = defaultInputFileName
+            )
             if (!extensionPattern.containsMatchIn(inputFileName))
                 inputFileName += ".$EXTENSION"
             logger.info { "File path: $inputFileName" }
@@ -26,14 +32,31 @@ class ParserDialog {
                 default = defaultOutputFileName
             )
 
-            val defaultPathSeparator = "/"
-            val pathSeparator: String = KInquirer.promptInput(
-                message = "What is the path separator?",
-                hint = defaultPathSeparator,
-                default = defaultPathSeparator
+            logger.info { "You can generate this file with: git ls-files > file-name-list.txt" }
+            val defaultFileNameList = "file-name-list.txt"
+            val fileNameList = KInquirer.promptInput(
+                message = "What is the path to the file name list?",
+                hint = defaultFileNameList,
+                default = defaultFileNameList
             )
 
-            return listOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
+            val isCompressed: Boolean =
+                KInquirer.promptConfirm(message = "Do you want to compress the file?", default = false)
+
+            val isSilent: Boolean =
+                KInquirer.promptConfirm(message = "Do you want to suppress command line output?", default = false)
+
+            val addAuthor: Boolean =
+                KInquirer.promptConfirm(message = "Do you want to add authors to every file?", default = false)
+
+            return listOf(
+                inputFileName,
+                "-o $outputFileName",
+                "--file-name-list=$fileNameList",
+                "--not-compressed=$isCompressed",
+                "--silent=$isSilent",
+                "--add-author=$addAuthor"
+            )
         }
     }
 }
