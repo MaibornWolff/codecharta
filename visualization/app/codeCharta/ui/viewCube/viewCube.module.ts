@@ -3,8 +3,11 @@ import "../codeMap/threeViewer/threeViewer.module"
 import { viewCubeComponent } from "./viewCube.component"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import camelCase from "lodash.camelcase"
+import { downgradeComponent } from "@angular/upgrade/static"
+import { CenterMapButtonComponent } from "./centerMapButton/centerMapButton.component"
 
 angular
 	.module("app.codeCharta.ui.viewCube", ["app.codeCharta.ui.codeMap.threeViewer"])
 	.component(viewCubeComponent.selector, viewCubeComponent)
 	.service(camelCase(ViewCubeMouseEventsService.name), ViewCubeMouseEventsService)
+	.directive("ccCenterMapButton", downgradeComponent({ component: CenterMapButtonComponent }))
