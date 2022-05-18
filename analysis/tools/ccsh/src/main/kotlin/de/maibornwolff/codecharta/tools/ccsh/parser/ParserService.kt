@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
 import picocli.CommandLine
 
 class ParserService {
@@ -28,7 +29,7 @@ class ParserService {
                 "sonarimport" -> printNotSupported(selectedParser)
                 "sourcemonitorimport" -> printNotSupported(selectedParser)
                 "gitlogparser" -> printNotSupported(selectedParser)
-                "svnlogparser" -> printNotSupported(selectedParser)
+                "svnlogparser" -> SVNLogParser.main(args)
                 "csvexport" -> printNotSupported(selectedParser)
                 "sourcecodeparser" -> printNotSupported(selectedParser)
                 "codemaatimport" -> printNotSupported(selectedParser)
