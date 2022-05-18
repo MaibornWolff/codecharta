@@ -11,12 +11,12 @@ private val logger = KotlinLogging.logger {}
 class ParserDialog {
     companion object : ParserDialogInterface {
 
-        private const val EXTENSION = "svn"
+        private const val EXTENSION = "log"
         private val extensionPattern = Regex(".($EXTENSION)$")
 
         override fun collectParserArgs(): List<String> {
             logger.info { "You can generate this file with: svn log --verbose > svn.log" }
-            val defaultInputFileName = "git.$EXTENSION"
+            val defaultInputFileName = "svn.$EXTENSION"
             var inputFileName = KInquirer.promptInput(
                 message = "What is the $EXTENSION file that has to be parsed?",
                 hint = defaultInputFileName,
