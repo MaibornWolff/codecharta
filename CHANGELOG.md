@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Track not only changes to color metric options by slider but also by related input field [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Migrate center-map-button-component to Angular [#2809](https://github.com/MaibornWolff/codecharta/pull/2809)
 
 ## [1.96.0] - 2022-05-17
 

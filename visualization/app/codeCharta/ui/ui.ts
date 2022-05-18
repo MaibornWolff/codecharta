@@ -9,7 +9,6 @@ import "./nodePathPanel/nodePathPanel.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
-import "./centerMapButton/centerMapButton.module"
 import "./areaSettingsPanel/areaSettingsPanel.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
@@ -39,7 +38,6 @@ angular
 		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",
-		"app.codeCharta.ui.centerMapButton",
 		"app.codeCharta.ui.areaSettingsPanel",
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.colorSettingsPanel",
