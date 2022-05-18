@@ -2,11 +2,11 @@ package de.maibornwolff.codecharta.importer.svnlogparser
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.svnlogparser.InputFormatNames.SVN_LOG
+import de.maibornwolff.codecharta.importer.svnlogparser.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.importer.svnlogparser.converter.ProjectConverter
 import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
-import de.maibornwolff.codecharta.importer.svnlogparser.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
