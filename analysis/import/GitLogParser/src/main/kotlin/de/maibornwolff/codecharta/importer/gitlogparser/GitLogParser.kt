@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.gitlogparser
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.gitlogparser.InputFormatNames.GIT_LOG_NUMSTAT_RAW_REVERSED
+import de.maibornwolff.codecharta.importer.gitlogparser.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.importer.gitlogparser.converter.ProjectConverter
 import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogParserStrategy
@@ -191,7 +192,9 @@ class GitLogParser(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(GitLogParser(), System.out, *args)
+            val commandLine = CommandLine(GitLogParser())
+            val collectedArgs = collectParserArgs()
+            commandLine.execute(*collectedArgs.toTypedArray())
         }
 
         private fun guessEncoding(pathToLog: File): String? {
