@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.converter.ProjectConvert
 import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
+import de.maibornwolff.codecharta.importer.svnlogparser.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -152,7 +153,9 @@ class SVNLogParser(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(SVNLogParser(), System.out, *args)
+            val commandLine = CommandLine(SVNLogParser())
+            val collectedArgs = collectParserArgs()
+            commandLine.execute(*collectedArgs.toTypedArray())
         }
 
         @JvmStatic
