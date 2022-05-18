@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.ccsh.parser
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import io.mockk.Runs
@@ -95,9 +96,12 @@ class ParserServiceTest {
 
     @Test
     fun `should execute gitlogparser parser`() {
+        mockkObject(GitLogParser)
+        every {
+            GitLogParser.main(any())
+        } just Runs
         ParserService.executeSelectedParser("gitlogparser")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
+        verify { GitLogParser.main(emptyArray()) }
     }
 
     @Test
