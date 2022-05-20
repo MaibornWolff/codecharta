@@ -50,6 +50,7 @@ import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
 import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
+import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
 
 @NgModule({
 	imports: [
@@ -82,7 +83,8 @@ import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/
 		HeightSettingsPanelModule,
 		ResetSettingsButtonModule,
 		MetricColorRangeSliderModule,
-		CenterMapButtonModule
+		CenterMapButtonModule,
+		GlobalConfigurationButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
