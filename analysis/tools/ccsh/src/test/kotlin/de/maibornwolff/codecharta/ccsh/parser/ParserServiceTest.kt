@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.ccsh.parser
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import io.mockk.Runs
@@ -81,9 +82,12 @@ class ParserServiceTest {
 
     @Test
     fun `should execute sonarimport parser`() {
+        mockkObject(SonarImporterMain)
+        every {
+            SonarImporterMain.main(any())
+        } just Runs
         ParserService.executeSelectedParser("sonarimport")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
+        verify { SonarImporterMain.main(emptyArray()) }
     }
 
     @Test
