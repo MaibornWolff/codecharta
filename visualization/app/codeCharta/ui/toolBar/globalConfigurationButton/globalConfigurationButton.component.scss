@@ -14,3 +14,12 @@ cc-global-configuration-button button {
 		margin-left: 4px;
 	}
 }
+
+.cc-global-configuration-dialog .mat-dialog-container {
+	padding: 0;
+
+	[mat-dialog-close] {
+		margin: 8px;
+		color: theme.$cc-primary-color;
+	}
+}
