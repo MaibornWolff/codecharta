@@ -11,6 +11,22 @@ class EveritValidatorTest : Spek({
     describe("a validator") {
         val validator = EveritValidator(SCHEMA_PATH)
 
+        it("should extract and validate a valid file") {
+            validator.validate(this.javaClass.classLoader.getResourceAsStream("validCompressed.gz"))
+        }
+
+        it("should throw exception if extracted file is invalid json") {
+            assertFailsWith(JSONException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidJSONCompressed.gz"))
+            }
+        }
+
+        it("should throw exception on compressed json with no project") {
+            assertFailsWith(ValidationException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidProjectCompressed.gz"))
+            }
+        }
+
         it("should validate valid File") {
             validator.validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
         }
