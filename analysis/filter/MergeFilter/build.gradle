@@ -6,10 +6,11 @@ repositories {
 
 dependencies {
     implementation project(':model')
+    implementation project(':tools:InteractiveParser')
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
-
+    implementation "com.github.kotlin-inquirer:kotlin-inquirer:$kotlin_inquirer_version"
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
@@ -17,6 +18,7 @@ dependencies {
     }
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation project(path: ':model', configuration: 'testOutput')
+    testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
 
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
