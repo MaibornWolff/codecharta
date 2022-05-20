@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import de.maibornwolff.codecharta.filter.mergefilter.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -89,7 +90,13 @@ class MergeFilter : Callable<Void?> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(MergeFilter(), System.out, *args)
+            val commandLine = CommandLine(MergeFilter())
+            if (args.isEmpty()) {
+                val collectedArgs = collectParserArgs()
+                commandLine.execute(*collectedArgs.toTypedArray())
+            } else {
+                commandLine.execute(*args)
+            }
         }
 
         fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
