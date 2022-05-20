@@ -98,15 +98,11 @@ class SonarImporterMain(
     }
 
     companion object {
-
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(SonarImporterMain(), System.out, *args)
-        }
-
-        @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(SonarImporterMain(input, output, error), output, *args)
+            val commandLine = CommandLine(SonarImporterMain())
+            val collectedArgs = ParserDialog.collectParserArgs()
+            commandLine.execute(*collectedArgs.toTypedArray())
         }
     }
 }
