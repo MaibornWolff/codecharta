@@ -1,0 +1,8 @@
+<mat-form-field appearance="fill">
+	<mat-label>Map Layout</mat-label>
+	<mat-select [value]="layoutAlgorithm$ | async" (selectionChange)="handleSelectedLayoutAlgorithmChanged($event)">
+		<mat-option *ngFor="let layoutAlgorithm of layoutAlgorithms" [value]="layoutAlgorithm">
+			{{ layoutAlgorithm }}
+		</mat-option>
+	</mat-select>
+</mat-form-field>
