@@ -61,9 +61,9 @@ class ParserDialogTest {
         fun provideArguments(): List<Arguments> {
             return listOf(
                 Arguments.of(
-                    "https://sonar.foo", "de.foo:bar", "c123d456","codecharta.cc.json", "metric1, metric2", false, false
+                    "https://sonar.foo", "de.foo:bar", "c123d456", "codecharta.cc.json", "metric1, metric2", false, false
                 ), Arguments.of(
-                    "", "de.foo:bar", "c123d456","codecharta.cc.json", "metric1, metric2", false, false
+                    "", "de.foo:bar", "c123d456", "codecharta.cc.json", "metric1, metric2", false, false
                 )
             )
         }
