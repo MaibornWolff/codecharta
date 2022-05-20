@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sonar
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.importer.sonar.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarVersionAPIDatasource
@@ -101,8 +102,12 @@ class SonarImporterMain(
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(SonarImporterMain())
-            val collectedArgs = ParserDialog.collectParserArgs()
-            commandLine.execute(*collectedArgs.toTypedArray())
+            if (args.isEmpty()) {
+                val collectedArgs = collectParserArgs()
+                commandLine.execute(*collectedArgs.toTypedArray())
+            } else {
+                commandLine.execute(*args)
+            }
         }
     }
 }

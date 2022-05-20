@@ -11,12 +11,9 @@ private val logger = KotlinLogging.logger {}
 class ParserDialog {
     companion object : ParserDialogInterface {
 
-        private const val EXTENSION = "svn"
-        private val extensionPattern = Regex(".($EXTENSION)$")
-
         override fun collectParserArgs(): List<String> {
             val hostUrl = KInquirer.promptInput(
-                message = "What is the sonar.host.url of your project_",
+                message = "What is the sonar.host.url of your project?",
                 hint = "https://sonar.foo"
             )
 
