@@ -18,8 +18,11 @@ cc-global-configuration-button button {
 .cc-global-configuration-dialog .mat-dialog-container {
 	padding: 0;
 
-	[mat-dialog-close] {
+	.cc-global-configuration-dialog-content {
 		margin: 8px;
+	}
+
+	[mat-dialog-close] {
 		color: theme.$cc-primary-color;
 	}
 }

@@ -1,9 +1,20 @@
 <mat-toolbar color="primary">Global Configuration</mat-toolbar>
 
-todo
+<div class="cc-global-configuration-dialog-content">
+	<div align="end">
+		<cc-reset-settings-button
+			[settingsKeys]="[
+				'appSettings.hideFlatBuildings',
+				'appSettings.isWhiteBackground',
+				'appSettings.resetCameraIfNewFileIsLoaded',
+				'appSettings.layoutAlgorithm',
+				'appSettings.maxTreeMapFiles'
+			]"
+			tooltip="Reset global settings to their defaults"
+		></cc-reset-settings-button>
+	</div>
 
-<mat-divider></mat-divider>
-
-<div align="end">
-	<button mat-button mat-dialog-close>CLOSE</button>
+	<div align="end">
+		<button mat-button mat-dialog-close>CLOSE</button>
+	</div>
 </div>
