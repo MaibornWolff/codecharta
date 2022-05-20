@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import picocli.CommandLine
 
 class ParserService {
@@ -21,7 +22,7 @@ class ParserService {
 
             when (selectedParser) {
                 "check" -> printNotSupported(selectedParser)
-                "merge" -> printNotSupported(selectedParser)
+                "merge" -> MergeFilter.main(args)
                 "edgefilter" -> EdgeFilter.main(args)
                 "modify" -> printNotSupported(selectedParser)
                 "csvimport" -> printNotSupported(selectedParser)

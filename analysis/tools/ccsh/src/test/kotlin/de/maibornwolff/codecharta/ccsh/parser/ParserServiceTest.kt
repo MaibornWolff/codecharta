@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.ccsh.parser
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import io.mockk.Runs
@@ -57,9 +58,12 @@ class ParserServiceTest {
 
     @Test
     fun `should execute merge parser`() {
+        mockkObject(MergeFilter)
+        every {
+            MergeFilter.main(any())
+        } just Runs
         ParserService.executeSelectedParser("merge")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
+        verify { MergeFilter.main(emptyArray()) }
     }
 
     @Test
