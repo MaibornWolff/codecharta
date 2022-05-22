@@ -25,4 +25,10 @@ cc-global-configuration-button button {
 	[mat-dialog-close] {
 		color: theme.$cc-primary-color;
 	}
+
+	cc-map-layout-selection,
+	cc-display-quality-selection {
+		display: block;
+		margin-bottom: 8px;
+	}
 }
