@@ -21,21 +21,13 @@ import {
 	ExperimentalFeaturesEnabledSubscriber
 } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithm, SharpnessMode } from "../../codeCharta.model"
-import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { MaxTreeMapFilesService, MaxTreeMapFilesSubscriber } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
-import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
-import { SharpnessModeService, SharpnessModeSubscriber } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.service"
-import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
-import { FileDownloader } from "../../util/fileDownloader"
-import { getVisibleFileStates, isSingleState } from "../../model/files/files.helper"
 import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import {
 	ScreenshotToClipboardEnabledService,
 	ScreenshotToClipboardEnabledSubscriber
 } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
-import { TRACKING_DATA_LOCAL_STORAGE_ELEMENT } from "../../util/usageDataTracker"
 
 export class DialogGlobalSettingsController
 	implements
@@ -43,10 +35,7 @@ export class DialogGlobalSettingsController
 		IsWhiteBackgroundSubscriber,
 		ResetCameraIfNewFileIsLoadedSubscriber,
 		ExperimentalFeaturesEnabledSubscriber,
-		ScreenshotToClipboardEnabledSubscriber,
-		LayoutAlgorithmSubscriber,
-		SharpnessModeSubscriber,
-		MaxTreeMapFilesSubscriber
+		ScreenshotToClipboardEnabledSubscriber
 {
 	private _viewModel: {
 		hideFlatBuildings: boolean
@@ -75,16 +64,12 @@ export class DialogGlobalSettingsController
 		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)
 		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 		ScreenshotToClipboardEnabledService.subscribe(this.$rootScope, this)
-		LayoutAlgorithmService.subscribe(this.$rootScope, this)
-		MaxTreeMapFilesService.subscribe(this.$rootScope, this)
-		SharpnessModeService.subscribe(this.$rootScope, this)
 
 		const { appSettings } = this.storeService.getState()
 
 		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)
 		this.onIsWhiteBackgroundChanged(appSettings.isWhiteBackground)
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
-		this.onLayoutAlgorithmChanged(appSettings.layoutAlgorithm)
 		this.onExperimentalFeaturesEnabledChanged(appSettings.experimentalFeaturesEnabled)
 		this.onScreenshotToClipboardEnabledChanged(appSettings.screenshotToClipboardEnabled)
 		this.onMaxTreeMapFilesChanged(appSettings.maxTreeMapFiles)
@@ -103,11 +88,6 @@ export class DialogGlobalSettingsController
 
 	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
 		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
-		this.changeGlobalSettingsInLocalStorage()
-	}
-
-	onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
-		this._viewModel.layoutAlgorithm = layoutAlgorithm
 		this.changeGlobalSettingsInLocalStorage()
 	}
 
@@ -153,39 +133,6 @@ export class DialogGlobalSettingsController
 
 	applySettingsAlgorithm() {
 		this.storeService.dispatch(setLayoutAlgorithm(this._viewModel.layoutAlgorithm))
-	}
-
-	applySettingsMaxTreeMapFiles() {
-		this.storeService.dispatch(setMaxTreeMapFiles(this._viewModel.maxTreeMapFiles))
-	}
-
-	applySettingsSharpnessMode() {
-		this.storeService.dispatch(setSharpnessMode(this._viewModel.sharpnessMode))
-	}
-
-	mapTrackingDataAvailable() {
-		const files = this.storeService.getState().files
-		return isSingleState(files) && getVisibleFileStates(files)
-	}
-
-	downloadTrackingData() {
-		//TODO: this should be removed as soon as we send the data to a server
-
-		// Make sure that only file within usageData can be read
-		const fileChecksum = this.storeService.getState().files[0].file.fileMeta.fileChecksum.replace(/\//g, "")
-
-		let trackedMapMetaData = ""
-		try {
-			trackedMapMetaData = localStorage.getItem(`${TRACKING_DATA_LOCAL_STORAGE_ELEMENT}/${fileChecksum}-meta`)
-		} catch {
-			// ignore, it no events item exists
-		}
-
-		FileDownloader.downloadData(trackedMapMetaData, `${fileChecksum}.tracking.json`)
-	}
-
-	hide() {
-		this.$mdDialog.hide()
 	}
 
 	changeGlobalSettingsInLocalStorage() {

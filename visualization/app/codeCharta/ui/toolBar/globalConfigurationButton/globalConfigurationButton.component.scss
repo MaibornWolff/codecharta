@@ -16,6 +16,7 @@ cc-global-configuration-button button {
 }
 
 .cc-global-configuration-dialog .mat-dialog-container {
+	width: 50vw;
 	padding: 0;
 
 	.cc-global-configuration-dialog-content {
@@ -30,6 +31,15 @@ cc-global-configuration-button button {
 	cc-display-quality-selection {
 		display: block;
 		margin-bottom: 8px;
+
+		> mat-form-field {
+			width: 100%;
+		}
+
+		.cc-tree-maps-max-tree-map-files {
+			display: inline-block;
+			padding-left: 16px;
+		}
 	}
 
 	.weblink {

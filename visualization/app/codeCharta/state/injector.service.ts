@@ -34,7 +34,6 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
-import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 export class InjectorService {
@@ -73,7 +72,6 @@ export class InjectorService {
 		private blacklistService: BlacklistService,
 		private isPresentationModeService: IsPresentationModeService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
-		private maxTreeMapFilesService: MaxTreeMapFilesService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService,
 		private screenshotToClipboardEnabledService: ScreenshotToClipboardEnabledService
