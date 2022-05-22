@@ -12,7 +12,6 @@ import { isWhiteBackgroundSelector } from "../../../../state/store/appSettings/i
 import { setResetCameraIfNewFileIsLoaded } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 
-// TODO globalConfiguration Effect
 @Component({
 	template: require("./globalConfigurationDialog.component.html")
 })
