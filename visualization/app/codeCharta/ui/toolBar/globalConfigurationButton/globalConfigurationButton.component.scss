@@ -31,4 +31,14 @@ cc-global-configuration-button button {
 		display: block;
 		margin-bottom: 8px;
 	}
+
+	.weblink {
+		display: block;
+		color: rgba(0, 0, 0, 0.870588);
+		text-decoration: none;
+
+		i {
+			margin-right: 16px;
+		}
+	}
 }
