@@ -10,11 +10,9 @@ import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
-import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
-import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
@@ -50,11 +48,9 @@ export class InjectorService {
 		private filesService: FilesService,
 		private mapSizeService: MapSizeService,
 		private mapColorsService: MapColorsService,
-		private resetCameraIfNewFileIsLoadedService: ResetCameraIfNewFileIsLoadedService,
 		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private dynamicMarginService: DynamicMarginService,
-		private hideFlatBuildingsService: HideFlatBuildingsService,
 		private cameraService: CameraService,
 		private scalingService: ScalingService,
 		private edgeHeightService: EdgeHeightService,

@@ -8,11 +8,9 @@ import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadin
 import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
-import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
-import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
@@ -53,11 +51,9 @@ angular
 	.service(camelCase(FilesService.name), FilesService)
 	.service(camelCase(MapSizeService.name), MapSizeService)
 	.service(camelCase(MapColorsService.name), MapColorsService)
-	.service(camelCase(ResetCameraIfNewFileIsLoadedService.name), ResetCameraIfNewFileIsLoadedService)
 	.service(camelCase(ShowOnlyBuildingsWithEdgesService.name), ShowOnlyBuildingsWithEdgesService)
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
-	.service(camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)
 	.service(camelCase(EdgeHeightService.name), EdgeHeightService)
