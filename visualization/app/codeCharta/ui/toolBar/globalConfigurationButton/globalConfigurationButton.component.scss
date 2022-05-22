@@ -19,6 +19,10 @@ cc-global-configuration-button button {
 	width: 50vw;
 	padding: 0;
 
+	.cc-global-configuration-align-right {
+		float: right;
+	}
+
 	.cc-global-configuration-dialog-content {
 		margin: 8px;
 	}
