@@ -21,9 +21,7 @@ import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
 import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
-import "./layoutSelection/layoutSelection.module"
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
-import "./sharpnessModeSelector/sharpnessModeSelector.module"
 import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
 import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 import { SliderComponent } from "./slider/slider.component"
@@ -49,8 +47,6 @@ angular
 		"app.codeCharta.ui.scenarioDropDown",
 		"app.codeCharta.ui.toolBar",
 		"app.codeCharta.ui.viewCube",
-		"app.codeCharta.ui.layoutSelection",
-		"app.codeCharta.ui.sharpnessModeSelector",
 		"app.codeCharta.ui.maxTreeMapFiles",
 		"app.codeCharta.ui.filePanel"
 	])
