@@ -47,23 +47,6 @@ cc-reset-settings-button {
 	}
 }
 
-// Todo delete
-.global-settings {
-	.md-dialog-content {
-		position: relative;
-	}
-
-	.md-dialog-content-body p {
-		white-space: pre;
-	}
-
-	cc-reset-settings-button button {
-		top: 0px;
-		bottom: initial;
-		right: 0;
-	}
-}
-
 .scenario-dialog {
 	min-width: 50%;
 	.dialog-list {
