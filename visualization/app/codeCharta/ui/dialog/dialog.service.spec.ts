@@ -35,12 +35,6 @@ describe("DialogService", () => {
 		expect(dialogService.showCustomDialog).toHaveBeenCalled()
 	})
 
-	it("should show GlobalSettingsDialog", function () {
-		dialogService.showGlobalSettingsDialog()
-
-		expect(dialogService.showCustomDialog).toHaveBeenCalled()
-	})
-
 	it("should show ChangelogDialog", function () {
 		dialogService.showChangelogDialog()
 

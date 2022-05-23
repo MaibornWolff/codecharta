@@ -4,7 +4,6 @@ import { downgradeComponent } from "@angular/upgrade/static"
 import "./artificialIntelligence/artificialIntelligence.module"
 import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
-import "./globalSettingsButton/globalSettingsButton.module"
 import "./nodePathPanel/nodePathPanel.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./edgeChooser/edgeChooser.module"
@@ -21,9 +20,6 @@ import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
 import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
-import "./layoutSelection/layoutSelection.module"
-import "./maxTreeMapFiles/maxTreeMapFiles.module"
-import "./sharpnessModeSelector/sharpnessModeSelector.module"
 import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
 import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 import { SliderComponent } from "./slider/slider.component"
@@ -33,7 +29,6 @@ angular
 		"app.codeCharta.ui.artificialIntelligence",
 		"app.codeCharta.ui.downloadButton",
 		"app.codeCharta.ui.screenshotButton",
-		"app.codeCharta.ui.globalSettingsButton",
 		"app.codeCharta.ui.nodePathPanel",
 		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.edgeChooser",
@@ -49,9 +44,6 @@ angular
 		"app.codeCharta.ui.scenarioDropDown",
 		"app.codeCharta.ui.toolBar",
 		"app.codeCharta.ui.viewCube",
-		"app.codeCharta.ui.layoutSelection",
-		"app.codeCharta.ui.sharpnessModeSelector",
-		"app.codeCharta.ui.maxTreeMapFiles",
 		"app.codeCharta.ui.filePanel"
 	])
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
