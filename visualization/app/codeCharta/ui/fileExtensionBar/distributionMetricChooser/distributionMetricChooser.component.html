@@ -1,7 +1,14 @@
 <i class="fa fa-pie-chart"></i>
 
-<mat-select [value]="distributionMetric$ | async" (selectionChange)="handleDistributionMetricChanged($event)">
-	<mat-option *ngFor="let option of nodeMetricData$ | async" [value]="option.name">
+<mat-select
+	[value]="distributionMetric$ | async"
+	(selectionChange)="handleDistributionMetricChanged($event)"
+	(openedChange)="handleOpenedChanged($event)"
+>
+	<i class="fa fa-search search-icon"></i>
+	<input #searchTermInput type="text" placeholder="Distribution Metric (highest value)" [(ngModel)]="searchTerm" />
+
+	<mat-option *ngFor="let option of nodeMetricData$ | async | filterNodeMetricDataBySearchTerm: searchTerm" [value]="option.name">
 		{{ option.name }}
 		<span class="metric-max-value">({{ option.maxValue }})</span>
 	</mat-option>

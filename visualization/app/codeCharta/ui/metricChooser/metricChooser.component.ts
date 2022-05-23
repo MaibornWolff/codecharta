@@ -41,6 +41,7 @@ export class MetricChooserController
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
+		// todo remove this and service
 		DistributionMetricService.subscribe(this.$rootScope, this)
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}
@@ -94,6 +95,7 @@ export class MetricChooserController
 		this.storeService.dispatch(setHeightMetric(this._viewModel.heightMetric))
 	}
 
+	// todo remove
 	applySettingsDistributionMetric() {
 		this.storeService.dispatch(setDistributionMetric(this._viewModel.distributionMetric))
 	}
@@ -117,6 +119,7 @@ export const colorMetricChooserComponent = {
 	controller: MetricChooserController
 }
 
+// todo delete
 export const distribitionMetricChooserComponent = {
 	selector: "distributionMetricChooserComponent",
 	template: require("./metricChooser.distribution.component.html"),
