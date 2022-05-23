@@ -52,6 +52,7 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
 import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effects/syncGlobalSettingsInLocalStorage/syncGlobalSettingsInLocalStorage.effect"
+import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBar/distributionMetricChooser/distributionMetricChooser..module"
 
 @NgModule({
 	imports: [
@@ -86,7 +87,8 @@ import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effec
 		ResetSettingsButtonModule,
 		MetricColorRangeSliderModule,
 		CenterMapButtonModule,
-		GlobalConfigurationButtonModule
+		GlobalConfigurationButtonModule,
+		DistributionMetricChooserModule
 	],
 	providers: [
 		threeSceneServiceProvider,
