@@ -1,0 +1,38 @@
+@use "../../../../../material/theme";
+
+cc-range-slider {
+	.cc-range-slider-container {
+		display: flex;
+
+		mat-form-field {
+			width: 42px;
+			height: 48px;
+
+			.mat-form-field-infix {
+				border-top-width: 0;
+				padding-top: 16px;
+			}
+		}
+
+		.cc-range-slider-slider {
+			flex: 1;
+			margin: 0 8px;
+			position: relative;
+			line-height: 48px;
+
+			.cc-range-slider-bar {
+				display: inline-block;
+				border-bottom-width: 4px;
+				border-bottom-style: solid;
+			}
+
+			.cc-range-slider-slider-thumb {
+				cursor: pointer;
+				position: absolute;
+				top: 20px;
+				border-radius: 100%;
+				border: 7px solid theme.$cc-primary-color;
+			}
+		}
+	}
+}

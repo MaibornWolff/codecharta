@@ -11,7 +11,7 @@ dependencies {
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
-    testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
+    testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 
     testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5_version

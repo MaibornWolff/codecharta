@@ -2,7 +2,6 @@ import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
 import "./artificialIntelligence/artificialIntelligence.module"
-import "./customConfigs/customConfigs.module"
 import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
 import "./globalSettingsButton/globalSettingsButton.module"
@@ -10,14 +9,12 @@ import "./nodePathPanel/nodePathPanel.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
-import "./centerMapButton/centerMapButton.module"
 import "./areaSettingsPanel/areaSettingsPanel.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
 import "./dialog/dialog.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./metricChooser/metricChooser.module"
-import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
 import "./filePanel/filePanel.module"
 import "./ribbonBar/ribbonBar.module"
@@ -34,7 +31,6 @@ import { SliderComponent } from "./slider/slider.component"
 angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
-		"app.codeCharta.ui.customConfigs",
 		"app.codeCharta.ui.downloadButton",
 		"app.codeCharta.ui.screenshotButton",
 		"app.codeCharta.ui.globalSettingsButton",
@@ -42,14 +38,12 @@ angular
 		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",
-		"app.codeCharta.ui.centerMapButton",
 		"app.codeCharta.ui.areaSettingsPanel",
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.colorSettingsPanel",
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.metricChooser",
-		"app.codeCharta.ui.rangeSlider",
 		"app.codeCharta.ui.resetSettingsButton",
 		"app.codeCharta.ui.ribbonBar",
 		"app.codeCharta.ui.scenarioDropDown",

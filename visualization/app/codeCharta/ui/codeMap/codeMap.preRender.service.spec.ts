@@ -21,10 +21,9 @@ import { clone } from "../../util/clone"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { calculateNodeMetricData } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { calculateEdgeMetricData } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
+import { wait } from "../../util/testUtils/wait"
 
 describe("codeMapPreRenderService", () => {
-	const wait = async (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
-
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService

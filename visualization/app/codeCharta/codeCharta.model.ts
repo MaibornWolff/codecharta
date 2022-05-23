@@ -183,8 +183,6 @@ export interface MapColors {
 export interface ColorRange {
 	from: number
 	to: number
-	min: number
-	max: number
 }
 
 export interface AttributeTypes {

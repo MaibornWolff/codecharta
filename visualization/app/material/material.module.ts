@@ -15,6 +15,7 @@ import { MatFormFieldModule } from "@angular/material/form-field"
 import { MatInputModule } from "@angular/material/input"
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 import { MatListModule } from "@angular/material/list"
+import { MatExpansionModule } from "@angular/material/expansion"
 import { MatSliderModule } from "@angular/material/slider"
 
 const materialModules = [
@@ -34,6 +35,7 @@ const materialModules = [
 	MatInputModule,
 	MatProgressSpinnerModule,
 	MatListModule,
+	MatExpansionModule,
 	MatSliderModule
 ]
 
