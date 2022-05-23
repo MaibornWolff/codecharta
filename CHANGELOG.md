@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
+-   Limit length of labels in legend panel [#2804](https://github.com/MaibornWolff/codecharta/pull/2804)
 -   Prevent invalid input for margin in area metric options to be submitted [#2799](https://github.com/MaibornWolff/codecharta/pull/2799)
 
 ### Chore 👨‍💻 👩‍💻
