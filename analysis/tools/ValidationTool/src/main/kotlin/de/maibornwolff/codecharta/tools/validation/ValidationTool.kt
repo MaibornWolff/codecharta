@@ -35,5 +35,4 @@ class ValidationTool : Callable<Void?>, InteractiveParser {
     companion object {
         val SCHEMA_PATH = "cc.json"
     }
-
 }
