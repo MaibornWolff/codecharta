@@ -61,9 +61,9 @@ class ParserDialogTest {
         fun provideArguments(): List<Arguments> {
             return listOf(
                 Arguments.of(
-                    "file", "fileout", false, false, false, false, false
+                    "folder", "combinedFile", false, false, false, false, false
                 ), Arguments.of(
-                    "file", "fileout", false, false, false, false, false
+                    "folder", "combinedFile", true, true, true, true, true
                 )
             )
         }
