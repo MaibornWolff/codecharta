@@ -5,6 +5,7 @@ import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONTokener
+import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.zip.GZIPInputStream
 
@@ -18,18 +19,21 @@ class EveritValidator(private var schemaPath: String) : Validator {
     }
 
     override fun validate(input: InputStream) {
-        var content = input.readNBytes(2)
+        var content = input
+        if (!input.markSupported()) content = BufferedInputStream(input)
 
-        if (content.isEmpty()) {
+        content.mark(2)
+        val fileHeader = content.readNBytes(2)
+        content.reset()
+        if (fileHeader.isEmpty()) {
             throw JSONException("Empty file found!")
         }
-        content += input.readBytes()
-        input.close()
-        if (isGzipSteam(content)) {
-            schema.validate(JSONObject(JSONTokener(GZIPInputStream(content.inputStream()))))
+        if (isGzipSteam(fileHeader)) {
+            schema.validate(JSONObject(JSONTokener(GZIPInputStream(content))))
         } else {
-            schema.validate(JSONObject(JSONTokener(String(content))))
+            schema.validate(JSONObject(JSONTokener(content)))
         }
+        content.close()
     }
 
     private fun isGzipSteam(bytes: ByteArray): Boolean {
