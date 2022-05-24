@@ -75,12 +75,9 @@ function initializeAppSettings(target: CustomConfig) {
 		sharpnessMode: undefined,
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
-			angularGreen: "",
 			base: "",
-			defaultC: "",
 			flat: "",
 			incomingEdge: "",
-			lightGrey: "",
 			markingColors: [],
 			negative: "",
 			negativeDelta: "",
@@ -106,9 +103,7 @@ function initializeDynamicSettings(target: CustomConfig) {
 		sortingOption: undefined,
 		colorRange: {
 			from: 0,
-			to: 0,
-			min: 0,
-			max: 0
+			to: 0
 		},
 		colorMode: undefined,
 		recentFiles: []

@@ -170,13 +170,10 @@ export interface MapColors {
 	neutral: string
 	negative: string
 	selected: string
-	defaultC: string
 	positiveDelta: string
 	negativeDelta: string
 	base: string
 	flat: string
-	lightGrey: string
-	angularGreen: string
 	markingColors: string[]
 	outgoingEdge: string
 	incomingEdge: string
@@ -186,8 +183,6 @@ export interface MapColors {
 export interface ColorRange {
 	from: number
 	to: number
-	min: number
-	max: number
 }
 
 export interface AttributeTypes {

@@ -1,4 +1,3 @@
-import "./viewCube.component.scss"
 import {
 	AmbientLight,
 	AxesHelper,

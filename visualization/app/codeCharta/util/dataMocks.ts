@@ -1746,9 +1746,7 @@ export const STATE: State = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67,
-			min: 1,
-			max: 100
+			to: 67
 		},
 		colorMode: ColorMode.weightedGradient,
 		sortingOption: SortingOption.NAME,
@@ -1777,13 +1775,10 @@ export const STATE: State = {
 			neutral: "#ddcc00",
 			negative: "#820E0E",
 			selected: "#EB8319",
-			defaultC: "#89ACB4",
 			positiveDelta: "#64d051",
 			negativeDelta: "#ff0E0E",
 			base: "#666666",
 			flat: "#AAAAAA",
-			lightGrey: "#DDDDDD",
-			angularGreen: "#00BFA5",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff",
@@ -1834,11 +1829,8 @@ export const DEFAULT_STATE: State = {
 		isEdgeMetricVisible: true,
 		isWhiteBackground: false,
 		mapColors: {
-			angularGreen: "#00BFA5",
 			base: "#666666",
-			defaultC: "#89ACB4",
 			flat: "#AAAAAA",
-			lightGrey: "#DDDDDD",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
 			negative: "#820E0E",
 			negativeDelta: "#ff0E0E",
@@ -1876,9 +1868,7 @@ export const DEFAULT_STATE: State = {
 		margin: null,
 		colorRange: {
 			from: null,
-			to: null,
-			min: null,
-			max: null
+			to: null
 		},
 		colorMode: ColorMode.weightedGradient,
 		searchPattern: "",
@@ -1910,9 +1900,7 @@ export const SCENARIO: RecursivePartial<Scenario> = {
 		colorMetric: "mcc",
 		colorRange: {
 			from: 19,
-			to: 67,
-			max: 100,
-			min: 1
+			to: 67
 		},
 		mapColors: DEFAULT_STATE.appSettings.mapColors
 	},
@@ -1936,9 +1924,7 @@ export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
 		margin: 48,
 		colorRange: {
 			from: 19,
-			to: 67,
-			max: 100,
-			min: 1
+			to: 67
 		}
 	},
 	appSettings: {
@@ -2003,7 +1989,7 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.COLOR_METRIC,
 		metricName: "mcc",
-		savedValues: { colorRange: { from: 19, to: 67, min: 1, max: 100 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+		savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},
@@ -2156,7 +2142,7 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 			customConfigItems: [
 				{
 					id: "MULTIPLEfileESampleMap View #1",
-					name: "SampleMap View #1",
+					name: "SampleMap Delta View #1",
 					mapNames: "fileD",
 					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 					isApplicable: false

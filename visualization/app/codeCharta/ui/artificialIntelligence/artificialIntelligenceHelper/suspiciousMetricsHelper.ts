@@ -88,9 +88,7 @@ export function findGoodAndBadMetrics(
 		} else if (maxMetricValue > thresholdConfig.percentile70) {
 			metricAssessmentResults.suspiciousMetrics.set(metricName, {
 				from: thresholdConfig.percentile70,
-				to: thresholdConfig.percentile80,
-				max: 0,
-				min: 0
+				to: thresholdConfig.percentile80
 			})
 
 			if (maxMetricValue > thresholdConfig.percentile90) {
