@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Track not only changes to color metric options by slider but also by related input field [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Migrate center-map-button-component to Angular [#2809](https://github.com/MaibornWolff/codecharta/pull/2809)
+-   Migrate the following components to Angular: globalSettingsButton.component, dialog.globalSettings.component, layoutSelection.component, sharpnessModeSelector.component, maxTreeMapFiles.component, maxTreeMapFiles.service, hideFlatBuildings.service, resetCameraIfNewFileIsLoaded.service [#2815](https://github.com/MaibornWolff/codecharta/pull/2815)
 
 ## [1.96.0] - 2022-05-17
 
@@ -35,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
+-   Limit length of labels in legend panel [#2804](https://github.com/MaibornWolff/codecharta/pull/2804)
 -   Prevent invalid input for margin in area metric options to be submitted [#2799](https://github.com/MaibornWolff/codecharta/pull/2799)
 
 ### Chore 👨‍💻 👩‍💻

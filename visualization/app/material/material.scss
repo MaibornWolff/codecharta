@@ -18,6 +18,7 @@
 @include mat.list-theme(theme.$cc-theme);
 @include mat.divider-theme(theme.$cc-theme);
 @include mat.slider-theme(theme.$cc-theme);
+@include mat.slide-toggle-theme(theme.$cc-theme);
 
 @import "./matSelect.scss";
 @import "./matMenu.scss";

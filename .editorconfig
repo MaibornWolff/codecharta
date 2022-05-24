@@ -13,6 +13,14 @@ quote_type = double
 indent_size = 4
 indent_style = tab
 
+[*.scss]
+indent_size = 4
+indent_style = tab
+
+[*.html]
+indent_size = 4
+indent_style = tab
+
 [*.kt]
 indent_size = unset
 quote_type = unset

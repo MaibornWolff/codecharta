@@ -49,6 +49,9 @@ import { MetricColorRangeSliderModule } from "./codeCharta/ui/colorSettingsPanel
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
+import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
+import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
+import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effects/syncGlobalSettingsInLocalStorage/syncGlobalSettingsInLocalStorage.effect"
 
 @NgModule({
 	imports: [
@@ -60,7 +63,8 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 			OpenNodeContextMenuEffect,
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect,
-			ResetColorRangeEffect
+			ResetColorRangeEffect,
+			SyncGlobalSettingsInLocalStorageEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
@@ -80,7 +84,9 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 		FilePanelModule,
 		HeightSettingsPanelModule,
 		ResetSettingsButtonModule,
-		MetricColorRangeSliderModule
+		MetricColorRangeSliderModule,
+		CenterMapButtonModule,
+		GlobalConfigurationButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
