@@ -39,7 +39,7 @@ class EdgeFilter : Callable<Void?>, InteractiveParser {
     }
 
     override fun callInteractive() {
-        val commandLine = CommandLine(EdgeFilter())
+        val commandLine = CommandLine(this)
         val collectedArgs = collectParserArgs()
         commandLine.execute(*collectedArgs.toTypedArray())
     }

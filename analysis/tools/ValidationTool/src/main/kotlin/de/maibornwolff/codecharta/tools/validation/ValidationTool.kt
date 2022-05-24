@@ -27,7 +27,7 @@ class ValidationTool : Callable<Void?>, InteractiveParser {
     }
 
     override fun callInteractive() {
-        val commandLine = CommandLine(ValidationTool())
+        val commandLine = CommandLine(this)
         val collectedArgs = collectParserArgs()
         commandLine.execute(*collectedArgs.toTypedArray())
     }
