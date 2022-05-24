@@ -13,11 +13,6 @@ import { MatCheckboxChange } from "@angular/material/checkbox"
 	template: require("./areaSettingsPanel.component.html")
 })
 export class AreaSettingsPanelComponent {
-	// TODO: onFilesSelectionChanged() {
-	//     this._viewModel.dynamicMargin = true
-	//     this.applyDynamicMargin()
-	//   }
-
 	static DEBOUNCE_TIME = 400
 
 	margin$ = this.store.select(marginSelector)

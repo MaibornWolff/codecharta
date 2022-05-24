@@ -51,6 +51,7 @@ import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
 import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effects/syncGlobalSettingsInLocalStorage/syncGlobalSettingsInLocalStorage.effect"
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
+import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 
 @NgModule({
 	imports: [
@@ -63,7 +64,8 @@ import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsP
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect,
 			ResetColorRangeEffect,
-			SyncGlobalSettingsInLocalStorageEffect
+			SyncGlobalSettingsInLocalStorageEffect,
+			ResetDynamicMarginEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
