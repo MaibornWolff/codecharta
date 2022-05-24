@@ -14,14 +14,14 @@ class ParserDialog {
 
         override fun collectParserArgs(): List<String> {
 
-            val inputFileName =
+            val inputFolderName =
                 KInquirer.promptInput(message = "What is the folder of $EXTENSION files that has to be merged?")
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file?"
             )
 
-            val isCompressed: Boolean =
+            val compress: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to compress the file?", default = false)
 
             val addMissing: Boolean =
@@ -40,9 +40,9 @@ class ParserDialog {
                 )
 
             return listOf(
-                inputFileName,
+                inputFolderName,
                 "-o $outputFileName",
-                "--not-compressed=$isCompressed",
+                "--not-compressed=$compress",
                 "--add-missing=$addMissing",
                 "--recursive=$recursive",
                 "--leaf=$leaf",
