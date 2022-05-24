@@ -15,12 +15,13 @@ describe("AreaSettingsPanelComponent", () => {
 	})
 
 	it("should handle default margin", async function () {
-		const { container } = await render(AreaSettingsPanelComponent, { excludeComponentDeclaration: true })
+		const { container, detectChanges } = await render(AreaSettingsPanelComponent, { excludeComponentDeclaration: true })
 		expect(screen.queryByRole("checkbox", { checked: true, name: "Default margin (50px)" })).not.toBe(null)
 
 		const marginInput = container.querySelector("input")
 		userEvent.type(marginInput, "1")
 		await wait(AreaSettingsPanelComponent.DEBOUNCE_TIME)
+		detectChanges()
 		expect(screen.queryByRole("checkbox", { checked: false, name: "Default margin (50px)" })).not.toBe(null)
 	})
 })
