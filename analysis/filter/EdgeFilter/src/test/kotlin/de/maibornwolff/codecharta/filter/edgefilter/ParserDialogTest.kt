@@ -6,24 +6,27 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
-class ParserDialogTest: Spek({
-    describe("Parser dialog for Validator") {
-        it("should output correct arguments for file with correct extension") {
-            mockkStatic("com.github.kinquirer.components.InputKt")
-            every {
-                KInquirer.promptInput(any(), any(), any())
-            } returns "sampleFile.cc.json" andThen "sampleOutputFile" andThen "/"
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class ParserDialogTest {
 
-            val parserArguments = ParserDialog.collectParserArgs()
-
-            Assertions.assertThat(parserArguments).isEqualTo(listOf("sampleFile.cc.json", "-o sampleOutputFile", "--path-separator=/"))
-        }
-
-        afterEachTest {
-            unmockkAll()
-        }
+    @AfterAll
+    fun afterTest() {
+        unmockkAll()
     }
-})
+
+    @Test
+    fun `should output correct arguments`() {
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any())
+        } returns "sampleFile.cc.json" andThen "sampleOutputFile" andThen "/"
+
+        val parserArguments = ParserDialog.collectParserArgs()
+
+        Assertions.assertThat(parserArguments).isEqualTo(listOf("sampleFile.cc.json", "-o sampleOutputFile", "--path-separator=/"))
+    }
+}
