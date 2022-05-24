@@ -49,22 +49,22 @@ class CcshTest {
 
         Assertions.assertThat(exitCode).isEqualTo(0)
         Assertions.assertThat(contentOutput.toString()).contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
-        verify(exactly = 0) { ParserService.executeSelectedParser(any()) }
+        verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
     }
 
     @Test
-    fun `should star interactive parser when no arguments or parameters are passed`() {
+    fun `should start interactive parser when no arguments or parameters are passed`() {
         mockkObject(ParserService)
         every {
             ParserService.selectParser(any())
         } returns "someparser"
         every {
-            ParserService.executeSelectedParser(any())
+            ParserService.executeSelectedParser(any(), any())
         } just Runs
 
         Ccsh.main(emptyArray())
 
-        verify { ParserService.executeSelectedParser(any()) }
+        verify { ParserService.executeSelectedParser(any(), any()) }
     }
 
     @Test
@@ -74,11 +74,11 @@ class CcshTest {
             ParserService.selectParser(any())
         } returns "someparser"
         every {
-            ParserService.executeSelectedParser(any())
+            ParserService.executeSelectedParser(any(), any())
         } just Runs
 
         Ccsh.main(arrayOf("unknownparser"))
 
-        verify { ParserService.executeSelectedParser(any()) }
+        verify { ParserService.executeSelectedParser(any(), any()) }
     }
 }

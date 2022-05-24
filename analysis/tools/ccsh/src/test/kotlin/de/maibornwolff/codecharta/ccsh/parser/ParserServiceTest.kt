@@ -50,94 +50,108 @@ class ParserServiceTest {
 
     @Test
     fun `should execute check parser`() {
-        ParserService.executeSelectedParser("check")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "check")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute merge parser`() {
-        ParserService.executeSelectedParser("merge")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "merge")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute edgefilter parser`() {
-        mockkObject(EdgeFilter)
+        val cmdLine = CommandLine(Ccsh())
+        val parser = cmdLine.subcommands["edgefilter"]!!.commandSpec.userObject() as EdgeFilter
+        mockkObject(parser)
         every {
-            EdgeFilter.main(any())
+            parser.callInteractive()
         } just Runs
-        ParserService.executeSelectedParser("edgefilter")
-        verify { EdgeFilter.main(emptyArray()) }
+        ParserService.executeSelectedParser(cmdLine, "edgefilter")
+        verify { parser.callInteractive() }
     }
 
     @Test
     fun `should execute modify parser`() {
-        ParserService.executeSelectedParser("modify")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "modify")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sonarimport parser`() {
-        ParserService.executeSelectedParser("sonarimport")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "sonarimport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sourcemonitorimport parser`() {
-        ParserService.executeSelectedParser("sourcemonitorimport")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "sourcemonitorimport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute gitlogparser parser`() {
-        ParserService.executeSelectedParser("gitlogparser")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "gitlogparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute svnlogparser parser`() {
-        ParserService.executeSelectedParser("svnlogparser")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "svnlogparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute csvexport parser`() {
-        ParserService.executeSelectedParser("csvexport")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "csvexport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sourcecodeparser parser`() {
-        ParserService.executeSelectedParser("sourcecodeparser")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "sourcecodeparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute tokeiimporter parser`() {
-        ParserService.executeSelectedParser("tokeiimporter")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "tokeiimporter")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute rawtextparser parser`() {
-        ParserService.executeSelectedParser("rawtextparser")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "rawtextparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should not execute any parser`() {
-        ParserService.executeSelectedParser("unkownparser")
+        val cmdLine = CommandLine(Ccsh())
+        ParserService.executeSelectedParser(cmdLine, "unkownparser")
 
         Assertions.assertThat(outContent.toString()).contains("No valid parser was selected.")
     }
