@@ -2,9 +2,9 @@ package de.maibornwolff.codecharta.ccsh.parser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
-import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -25,6 +25,7 @@ class ParserServiceTest {
 
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
+    private val cmdLine = CommandLine(Ccsh())
 
     @BeforeAll
     fun setUpStreams() {
@@ -50,15 +51,17 @@ class ParserServiceTest {
 
     @Test
     fun `should execute check parser`() {
-        val cmdLine = CommandLine(Ccsh())
-        ParserService.executeSelectedParser(cmdLine, "check")
+        val parser = mockParserObject("check")
+        every {
+            parser.callInteractive()
+        } just Runs
 
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
+        ParserService.executeSelectedParser(cmdLine, "check")
+        verify { parser.callInteractive() }
     }
 
     @Test
     fun `should execute merge parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "merge")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -66,19 +69,17 @@ class ParserServiceTest {
 
     @Test
     fun `should execute edgefilter parser`() {
-        val cmdLine = CommandLine(Ccsh())
-        val parser = cmdLine.subcommands["edgefilter"]!!.commandSpec.userObject() as EdgeFilter
-        mockkObject(parser)
+        val parser = mockParserObject("edgefilter")
         every {
             parser.callInteractive()
         } just Runs
+
         ParserService.executeSelectedParser(cmdLine, "edgefilter")
         verify { parser.callInteractive() }
     }
 
     @Test
     fun `should execute modify parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "modify")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -86,7 +87,6 @@ class ParserServiceTest {
 
     @Test
     fun `should execute sonarimport parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "sonarimport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -94,7 +94,6 @@ class ParserServiceTest {
 
     @Test
     fun `should execute sourcemonitorimport parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "sourcemonitorimport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -102,7 +101,6 @@ class ParserServiceTest {
 
     @Test
     fun `should execute gitlogparser parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "gitlogparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -110,7 +108,6 @@ class ParserServiceTest {
 
     @Test
     fun `should execute svnlogparser parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "svnlogparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -118,7 +115,6 @@ class ParserServiceTest {
 
     @Test
     fun `should execute csvexport parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "csvexport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -126,7 +122,6 @@ class ParserServiceTest {
 
     @Test
     fun `should execute sourcecodeparser parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "sourcecodeparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -134,7 +129,6 @@ class ParserServiceTest {
 
     @Test
     fun `should execute tokeiimporter parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "tokeiimporter")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -142,7 +136,6 @@ class ParserServiceTest {
 
     @Test
     fun `should execute rawtextparser parser`() {
-        val cmdLine = CommandLine(Ccsh())
         ParserService.executeSelectedParser(cmdLine, "rawtextparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
@@ -150,9 +143,15 @@ class ParserServiceTest {
 
     @Test
     fun `should not execute any parser`() {
-        val cmdLine = CommandLine(Ccsh())
-        ParserService.executeSelectedParser(cmdLine, "unkownparser")
 
-        Assertions.assertThat(outContent.toString()).contains("No valid parser was selected.")
+        Assertions.assertThatExceptionOfType(NoSuchElementException::class.java).isThrownBy {
+            ParserService.executeSelectedParser(cmdLine, "unknownparser")
+        }
+    }
+
+    private fun mockParserObject(name: String): InteractiveParser {
+        val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser
+        mockkObject(obj)
+        return obj
     }
 }
