@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Track not only changes to color metric options by slider but also by related input field [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 -   Migrate center-map-button-component to Angular [#2809](https://github.com/MaibornWolff/codecharta/pull/2809)
 -   Migrate the following components to Angular: globalSettingsButton.component, dialog.globalSettings.component, layoutSelection.component, sharpnessModeSelector.component, maxTreeMapFiles.component, maxTreeMapFiles.service, hideFlatBuildings.service, resetCameraIfNewFileIsLoaded.service [#2815](https://github.com/MaibornWolff/codecharta/pull/2815)
+-   Migrate area-settings-panel-component to Angular [#2821](https://github.com/MaibornWolff/codecharta/pull/2821)
 
 ## [1.96.0] - 2022-05-17
 
