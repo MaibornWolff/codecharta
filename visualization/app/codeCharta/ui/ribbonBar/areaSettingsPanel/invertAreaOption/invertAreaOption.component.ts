@@ -1,9 +1,8 @@
-import "./invertAreaOption.component.scss"
 import { Component, Inject, OnInit } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
-import { invertAreaSelector } from "../../../state/store/appSettings/invertArea/invertArea.selector"
+import { Store } from "../../../../state/angular-redux/store"
+import { invertAreaSelector } from "../../../../state/store/appSettings/invertArea/invertArea.selector"
+import { toggleInvertingArea } from "../../../../state/store/appSettings/invertArea/invertArea.actions"
 import { Observable } from "rxjs"
-import { toggleInvertingArea } from "../../../state/store/appSettings/invertArea/invertArea.actions"
 
 @Component({
 	selector: "cc-invert-area-option",
