@@ -14,7 +14,7 @@ describe("AreaSettingsPanelComponent", () => {
 		})
 	})
 
-	it("should handle default margin", async function () {
+	it("should reset default margin checkbox on changes of margin slider", async function () {
 		const { container, detectChanges } = await render(AreaSettingsPanelComponent, { excludeComponentDeclaration: true })
 		expect(screen.queryByRole("checkbox", { checked: true, name: "Default margin (50px)" })).not.toBe(null)
 
