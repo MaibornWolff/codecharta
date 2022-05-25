@@ -2,7 +2,7 @@ import { Component, Inject } from "@angular/core"
 import "./areaSettingsPanel.component.scss"
 import { Store } from "../../../state/angular-redux/store"
 import { marginSelector } from "../../../state/store/dynamicSettings/margin/margin.selector"
-import { debounce } from "lodash"
+import debounce from "lodash.debounce"
 import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.actions"
 import { dynamicMarginSelector } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.selector"
 import { setDynamicMargin } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
@@ -13,11 +13,6 @@ import { MatCheckboxChange } from "@angular/material/checkbox"
 	template: require("./areaSettingsPanel.component.html")
 })
 export class AreaSettingsPanelComponent {
-	// TODO: onFilesSelectionChanged() {
-	//     this._viewModel.dynamicMargin = true
-	//     this.applyDynamicMargin()
-	//   }
-
 	static DEBOUNCE_TIME = 400
 
 	margin$ = this.store.select(marginSelector)
