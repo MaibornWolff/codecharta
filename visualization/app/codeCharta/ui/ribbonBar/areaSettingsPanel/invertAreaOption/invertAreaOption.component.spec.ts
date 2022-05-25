@@ -1,9 +1,9 @@
-import { Store } from "../../../state/store/store"
 import { InvertAreaOptionComponent } from "./invertAreaOption.component"
 import { fireEvent, render } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
-import { MaterialModule } from "../../../../material/material.module"
-import { invertAreaSelector } from "../../../state/store/appSettings/invertArea/invertArea.selector"
+import { MaterialModule } from "../../../../../material/material.module"
+import { invertAreaSelector } from "../../../../state/store/appSettings/invertArea/invertArea.selector"
+import { Store } from "../../../../state/store/store"
 
 describe("InvertAreaOptionComponent", () => {
 	beforeEach(() => {
