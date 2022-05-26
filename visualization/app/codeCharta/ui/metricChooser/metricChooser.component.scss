@@ -1,3 +1,5 @@
+@use "../../../material/theme";
+
 cc-metric-chooser {
 	width: 100%;
 
@@ -6,8 +8,28 @@ cc-metric-chooser {
 	}
 }
 
-.cc-metric-chooser {
-	mat-option .metric-max-value {
-		color: #ccc;
+.mat-select-panel.cc-metric-chooser {
+	margin-top: 16px;
+	width: 360px;
+	max-width: 360px;
+
+	.cc-metric-chooser-search-field {
+		width: 100%;
+		color: theme.$cc-primary-color;
+		font-size: 14px;
+
+		.search-icon {
+			margin-right: 8px;
+		}
+	}
+
+	.cc-metric-chooser-option-container {
+		margin-top: -18px;
+		max-height: 216px;
+		overflow-y: auto;
+
+		.metric-max-value {
+			color: #ccc;
+		}
 	}
 }
