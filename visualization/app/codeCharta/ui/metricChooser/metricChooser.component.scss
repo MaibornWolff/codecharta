@@ -20,6 +20,8 @@ cc-metric-chooser {
 
 		.search-icon {
 			margin-right: 8px;
+			margin-left: 8px;
+			font-size: 18px;
 		}
 	}
 
@@ -27,6 +29,7 @@ cc-metric-chooser {
 		margin-top: -18px;
 		max-height: 216px;
 		overflow-y: auto;
+		font-size: 16px;
 
 		.metric-max-value {
 			color: #ccc;
