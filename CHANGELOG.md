@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Hide color metric range-slider in color metric options of ribbon bar in delta mode instead of disabling it [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Display max value of selected distribution metric in file extension bar [#2824](https://github.com/MaibornWolff/codecharta/pull/2824)
 
 ### Fixed 🐞
 
