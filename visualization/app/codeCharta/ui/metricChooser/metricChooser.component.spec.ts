@@ -55,8 +55,10 @@ describe("metricChooserComponent", () => {
 
 		userEvent.click(await screen.findByText("aMetric (1)"))
 		await screen.findByText("search metric (max value)")
-		userEvent.type(getSearchBox(), "b")
+		const searchBox = getSearchBox()
+		expect(document.activeElement).toBe(searchBox)
 
+		userEvent.type(getSearchBox(), "b")
 		const options = await screen.queryAllByRole("option")
 		expect(options.length).toBe(1)
 		expect(options[0].textContent).toMatch("bMetric (2)")
