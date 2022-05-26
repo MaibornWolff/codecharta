@@ -28,7 +28,6 @@ import {
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
-import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
@@ -44,7 +43,6 @@ import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesB
 import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
-import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.module"
 import { MetricColorRangeSliderModule } from "./codeCharta/ui/colorSettingsPanel/metricColorRangeSlider/metricColorRangeSlider.module"
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
@@ -53,6 +51,8 @@ import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
 import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effects/syncGlobalSettingsInLocalStorage/syncGlobalSettingsInLocalStorage.effect"
 import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBar/distributionMetricChooser/distributionMetricChooser..module"
+import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
+import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 
 @NgModule({
 	imports: [
@@ -65,7 +65,8 @@ import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBa
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect,
 			ResetColorRangeEffect,
-			SyncGlobalSettingsInLocalStorageEffect
+			SyncGlobalSettingsInLocalStorageEffect,
+			ResetDynamicMarginEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
@@ -84,11 +85,11 @@ import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBa
 		CustomConfigsModule,
 		FilePanelModule,
 		HeightSettingsPanelModule,
-		ResetSettingsButtonModule,
 		MetricColorRangeSliderModule,
 		CenterMapButtonModule,
 		GlobalConfigurationButtonModule,
-		DistributionMetricChooserModule
+		DistributionMetricChooserModule,
+		AreaSettingsPanelModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -97,14 +98,13 @@ import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBa
 		threeCameraServiceProvider,
 		threeOrbitControlsServiceProvider
 	],
-	declarations: [InvertAreaOptionComponent, EdgeMetricToggleComponent, UploadFilesButtonComponent, ...dialogs],
+	declarations: [EdgeMetricToggleComponent, UploadFilesButtonComponent, ...dialogs],
 	entryComponents: [
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		InvertAreaOptionComponent,
 		FocusButtonsComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
