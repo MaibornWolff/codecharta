@@ -7,7 +7,6 @@ import { StoreService } from "../../state/store.service"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
 import { NodeMetricData } from "../../codeCharta.model"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
@@ -62,14 +61,6 @@ describe("MetricChooserController", () => {
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
-		it("should subscribe to DistributionMetricService", () => {
-			DistributionMetricService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(DistributionMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
-		})
-
 		it("should subscribe to NodeMetricDataService", () => {
 			NodeMetricDataService.subscribe = jest.fn()
 
@@ -100,14 +91,6 @@ describe("MetricChooserController", () => {
 			metricChooserController.onColorMetricChanged("rloc")
 
 			expect(metricChooserController["_viewModel"].colorMetric).toEqual("rloc")
-		})
-	})
-
-	describe("onDistributionMetricChanged", () => {
-		it("should update the viewModel", () => {
-			metricChooserController.onDistributionMetricChanged("rloc")
-
-			expect(metricChooserController["_viewModel"].distributionMetric).toEqual("rloc")
 		})
 	})
 
@@ -151,16 +134,6 @@ describe("MetricChooserController", () => {
 			metricChooserController.applySettingsHeightMetric()
 
 			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("b")
-		})
-	})
-
-	describe("applySettingsDistributionMetric", () => {
-		it("should update distribution metric  settings", () => {
-			metricChooserController["_viewModel"].distributionMetric = "d"
-
-			metricChooserController.applySettingsDistributionMetric()
-
-			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("d")
 		})
 	})
 

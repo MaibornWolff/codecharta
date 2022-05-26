@@ -4,19 +4,15 @@ import { NodeMetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import {
-	DistributionMetricService,
-	DistributionMetricSubscriber
-} from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
+
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export class MetricChooserController
-	implements NodeMetricDataSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber
+	implements NodeMetricDataSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber
 {
 	private originalMetricData: NodeMetricData[]
 
@@ -25,14 +21,12 @@ export class MetricChooserController
 		areaMetric: string
 		colorMetric: string
 		heightMetric: string
-		distributionMetric: string
 		searchTerm: string
 	} = {
 		metricData: [],
 		areaMetric: null,
 		colorMetric: null,
 		heightMetric: null,
-		distributionMetric: null,
 		searchTerm: ""
 	}
 
@@ -41,8 +35,6 @@ export class MetricChooserController
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
-		// todo remove this and service
-		DistributionMetricService.subscribe(this.$rootScope, this)
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
@@ -56,10 +48,6 @@ export class MetricChooserController
 
 	onColorMetricChanged(colorMetric: string) {
 		this._viewModel.colorMetric = colorMetric
-	}
-
-	onDistributionMetricChanged(distributionMetric: string) {
-		this._viewModel.distributionMetric = distributionMetric
 	}
 
 	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
@@ -94,11 +82,6 @@ export class MetricChooserController
 	applySettingsHeightMetric() {
 		this.storeService.dispatch(setHeightMetric(this._viewModel.heightMetric))
 	}
-
-	// todo remove
-	applySettingsDistributionMetric() {
-		this.storeService.dispatch(setDistributionMetric(this._viewModel.distributionMetric))
-	}
 }
 
 export const areaMetricChooserComponent = {
@@ -116,12 +99,5 @@ export const heightMetricChooserComponent = {
 export const colorMetricChooserComponent = {
 	selector: "colorMetricChooserComponent",
 	template: require("./metricChooser.color.component.html"),
-	controller: MetricChooserController
-}
-
-// todo delete
-export const distribitionMetricChooserComponent = {
-	selector: "distributionMetricChooserComponent",
-	template: require("./metricChooser.distribution.component.html"),
 	controller: MetricChooserController
 }

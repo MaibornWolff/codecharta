@@ -2,7 +2,11 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ColorMetricActions, setColorMetric } from "./colorMetric.actions"
 import { NodeMetricData } from "../../../../codeCharta.model"
-import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
+import {
+	getMetricNameFromIndexOrLast,
+	isAnyMetricAvailable,
+	isMetricUnavailable
+} from "../../../effects/resetChosenMetrics/utils/metricHelper"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "../../metricData/nodeMetricData/nodeMetricData.service"
 

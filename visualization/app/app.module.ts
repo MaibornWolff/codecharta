@@ -54,6 +54,7 @@ import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBa
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
+import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 
 @NgModule({
 	imports: [
@@ -67,7 +68,8 @@ import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser
 			BlacklistSearchPatternEffect,
 			ResetColorRangeEffect,
 			SyncGlobalSettingsInLocalStorageEffect,
-			ResetDynamicMarginEffect
+			ResetDynamicMarginEffect,
+			ResetChosenMetricsEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
