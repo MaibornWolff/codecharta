@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core"
-import { NodeMetricData } from "../../../codeCharta.model"
+import { NodeMetricData } from "../../codeCharta.model"
 
 @Pipe({ name: "filterNodeMetricDataBySearchTerm" })
 export class FilterNodeMetricDataBySearchTermPipe implements PipeTransform {

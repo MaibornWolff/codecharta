@@ -53,6 +53,7 @@ import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effec
 import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBar/distributionMetricChooser/distributionMetricChooser..module"
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
+import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
 
 @NgModule({
 	imports: [
@@ -89,7 +90,8 @@ import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynami
 		CenterMapButtonModule,
 		GlobalConfigurationButtonModule,
 		DistributionMetricChooserModule,
-		AreaSettingsPanelModule
+		AreaSettingsPanelModule,
+		MetricChooserModule
 	],
 	providers: [
 		threeSceneServiceProvider,

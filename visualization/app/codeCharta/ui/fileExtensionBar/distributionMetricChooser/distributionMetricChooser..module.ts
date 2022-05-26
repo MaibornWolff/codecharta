@@ -1,13 +1,11 @@
 import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
-import { FormsModule } from "@angular/forms"
-import { MaterialModule } from "../../../../material/material.module"
 import { DistributionMetricChooserComponent } from "./distributionMetricChooser.component"
-import { FilterNodeMetricDataBySearchTermPipe } from "./filterNodeMetricDataBySearchTerm.pipe"
+import { MetricChooserModule } from "../../metricChooser/metricChooser.module"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, FormsModule],
-	declarations: [DistributionMetricChooserComponent, FilterNodeMetricDataBySearchTermPipe],
+	imports: [CommonModule, MetricChooserModule],
+	declarations: [DistributionMetricChooserComponent],
 	exports: [DistributionMetricChooserComponent],
 	entryComponents: [DistributionMetricChooserComponent]
 })

@@ -1,0 +1,9 @@
+<mat-select [value]="selectedMetricName" (selectionChange)="handleMetricChanged($event.value)" (openedChange)="handleOpenedChanged($event)">
+	<i class="fa fa-search search-icon"></i>
+	<input #searchTermInput type="text" [placeholder]="searchPlaceholder" [(ngModel)]="searchTerm" />
+
+	<mat-option *ngFor="let option of nodeMetricData$ | async | filterNodeMetricDataBySearchTerm: searchTerm" [value]="option.name">
+		{{ option.name }}
+		<span class="metric-max-value">({{ option.maxValue }})</span>
+	</mat-option>
+</mat-select>
