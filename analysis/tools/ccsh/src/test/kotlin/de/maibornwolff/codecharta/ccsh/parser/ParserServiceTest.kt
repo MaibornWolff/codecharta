@@ -53,11 +53,11 @@ class ParserServiceTest {
     fun `should execute check parser`() {
         val parser = mockParserObject("check")
         every {
-            parser.callInteractive()
+            parser.executeWithInteractiveDialog()
         } just Runs
 
         ParserService.executeSelectedParser(cmdLine, "check")
-        verify { parser.callInteractive() }
+        verify { parser.executeWithInteractiveDialog() }
     }
 
     @Test
@@ -71,11 +71,11 @@ class ParserServiceTest {
     fun `should execute edgefilter parser`() {
         val parser = mockParserObject("edgefilter")
         every {
-            parser.callInteractive()
+            parser.executeWithInteractiveDialog()
         } just Runs
 
         ParserService.executeSelectedParser(cmdLine, "edgefilter")
-        verify { parser.callInteractive() }
+        verify { parser.executeWithInteractiveDialog() }
     }
 
     @Test

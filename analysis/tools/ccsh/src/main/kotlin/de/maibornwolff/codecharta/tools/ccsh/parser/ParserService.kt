@@ -21,7 +21,7 @@ class ParserService {
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser
             if (interactive != null) {
-                interactive.callInteractive()
+                interactive.executeWithInteractiveDialog()
             } else {
                 printNotSupported(selectedParser)
             }
