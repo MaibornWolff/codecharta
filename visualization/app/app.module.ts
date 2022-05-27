@@ -38,9 +38,7 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
-import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooserDeprecated/metricValueHovered/metricValueHovered.module"
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
-import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooserDeprecated/metricTypeHovered/metricTypeHovered.module"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
 import { MetricColorRangeSliderModule } from "./codeCharta/ui/colorSettingsPanel/metricColorRangeSlider/metricColorRangeSlider.module"
@@ -56,6 +54,7 @@ import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynami
 import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { RibbonBarModule } from "./codeCharta/ui/ribbonBar/ribbonBar.module"
+import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
 
 @NgModule({
 	imports: [
@@ -70,7 +69,8 @@ import { RibbonBarModule } from "./codeCharta/ui/ribbonBar/ribbonBar.module"
 			ResetColorRangeEffect,
 			SyncGlobalSettingsInLocalStorageEffect,
 			ResetDynamicMarginEffect,
-			ResetChosenMetricsEffect
+			ResetChosenMetricsEffect,
+			UpdateEdgePreviewsEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
@@ -84,8 +84,6 @@ import { RibbonBarModule } from "./codeCharta/ui/ribbonBar/ribbonBar.module"
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
 		SearchPanelModule,
-		MetricTypeHoveredModule,
-		MetricValueHoveredModule,
 		CustomConfigsModule,
 		FilePanelModule,
 		HeightSettingsPanelModule,

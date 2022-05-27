@@ -4,7 +4,8 @@ cc-metric-chooser {
 	position: relative;
 	width: 100%;
 
-	cc-metric-chooser-value-hovered {
+	cc-metric-chooser-value-hovered,
+	.cc-metric-chooser-hovered-container {
 		position: absolute;
 		bottom: 0;
 		right: 0;

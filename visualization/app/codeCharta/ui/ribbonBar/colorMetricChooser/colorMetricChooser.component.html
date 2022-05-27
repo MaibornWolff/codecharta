@@ -4,5 +4,6 @@
 	[selectedMetricName]="colorMetric$ | async"
 	[searchPlaceholder]="'Color Metric (highest value)'"
 	[handleMetricChanged]="handleColorMetricChanged"
-	[showHoveredMetricValueOf]="'colorMetric'"
-></cc-metric-chooser>
+>
+	<cc-metric-chooser-value-hovered hoveredInformation [metricFor]="'colorMetric'"></cc-metric-chooser-value-hovered>
+</cc-metric-chooser>

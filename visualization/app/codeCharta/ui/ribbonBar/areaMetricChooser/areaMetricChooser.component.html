@@ -4,5 +4,6 @@
 	[selectedMetricName]="areaMetric$ | async"
 	[searchPlaceholder]="'Area Metric (highest value)'"
 	[handleMetricChanged]="handleAreaMetricChanged"
-	[showHoveredMetricValueOf]="'areaMetric'"
-></cc-metric-chooser>
+>
+	<cc-metric-chooser-value-hovered hoveredInformation [metricFor]="'areaMetric'"></cc-metric-chooser-value-hovered>
+</cc-metric-chooser>

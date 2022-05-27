@@ -4,5 +4,6 @@
 	[selectedMetricName]="heightMetric$ | async"
 	[searchPlaceholder]="'Height Metric (highest value)'"
 	[handleMetricChanged]="handleHeightMetricChanged"
-	[showHoveredMetricValueOf]="'heightMetric'"
-></cc-metric-chooser>
+>
+	<cc-metric-chooser-value-hovered hoveredInformation [metricFor]="'heightMetric'"></cc-metric-chooser-value-hovered>
+</cc-metric-chooser>

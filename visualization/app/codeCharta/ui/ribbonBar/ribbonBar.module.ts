@@ -14,6 +14,8 @@ import { HeightMetricChooserModule } from "./heightMetricChooser/heightMetricCho
 import { HeightMetricChooserComponent } from "./heightMetricChooser/areaMetricChooser.component"
 import { ColorMetricChooserModule } from "./colorMetricChooser/heightMetricChooser.module"
 import { ColorMetricChooserComponent } from "./colorMetricChooser/colorMetricChooser.component"
+import { EdgeMetricChooserComponent } from "./edgeMetricChooser/edgeMetricChooser.component"
+import { EdgeMetricChooserModule } from "./edgeMetricChooser/edgeMetricChooser.module"
 
 angular.module("app.codeCharta.ui.ribbonBar", ["app.codeCharta.state"])
 
@@ -27,9 +29,10 @@ angular
 	.directive("ccAreaMetricChooser", downgradeComponent({ component: AreaMetricChooserComponent }))
 	.directive("ccHeightMetricChooser", downgradeComponent({ component: HeightMetricChooserComponent }))
 	.directive("ccColorMetricChooser", downgradeComponent({ component: ColorMetricChooserComponent }))
+	.directive("ccEdgeMetricChooser", downgradeComponent({ component: EdgeMetricChooserComponent }))
 
 @NgModule({
-	imports: [AreaMetricChooserModule, HeightMetricChooserModule, ColorMetricChooserModule],
-	entryComponents: [AreaMetricChooserComponent, HeightMetricChooserComponent, ColorMetricChooserComponent]
+	imports: [AreaMetricChooserModule, HeightMetricChooserModule, ColorMetricChooserModule, EdgeMetricChooserModule],
+	entryComponents: [AreaMetricChooserComponent, HeightMetricChooserComponent, ColorMetricChooserComponent, EdgeMetricChooserComponent]
 })
 export class RibbonBarModule {}
