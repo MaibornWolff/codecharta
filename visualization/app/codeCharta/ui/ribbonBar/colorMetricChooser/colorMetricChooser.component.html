@@ -1,0 +1,8 @@
+<i class="fa fa-paint-brush"></i>
+
+<cc-metric-chooser
+	[selectedMetricName]="colorMetric$ | async"
+	[searchPlaceholder]="'Color Metric (highest value)'"
+	[handleMetricChanged]="handleColorMetricChanged"
+	[showHoveredMetricValueOf]="'colorMetric'"
+></cc-metric-chooser>
