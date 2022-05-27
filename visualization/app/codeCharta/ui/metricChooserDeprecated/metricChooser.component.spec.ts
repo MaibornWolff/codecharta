@@ -70,14 +70,6 @@ describe("MetricChooserController", () => {
 		})
 	})
 
-	describe("onAreaMetricChanged", () => {
-		it("should update the viewModel", () => {
-			metricChooserController.onAreaMetricChanged("rloc")
-
-			expect(metricChooserController["_viewModel"].areaMetric).toEqual("rloc")
-		})
-	})
-
 	describe("onHeightMetricChanged", () => {
 		it("should update the viewModel", () => {
 			metricChooserController.onHeightMetricChanged("rloc")
@@ -104,16 +96,6 @@ describe("MetricChooserController", () => {
 			metricChooserController.onNodeMetricDataChanged(metricData)
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
-		})
-	})
-
-	describe("applySettingsAreaMetric", () => {
-		it("should update areaMetric", () => {
-			metricChooserController["_viewModel"].areaMetric = "mcc"
-
-			metricChooserController.applySettingsAreaMetric()
-
-			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("mcc")
 		})
 	})
 
