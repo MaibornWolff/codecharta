@@ -38,9 +38,9 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
-import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
+import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooserDeprecated/metricValueHovered/metricValueHovered.module"
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
-import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
+import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooserDeprecated/metricTypeHovered/metricTypeHovered.module"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
 import { MetricColorRangeSliderModule } from "./codeCharta/ui/colorSettingsPanel/metricColorRangeSlider/metricColorRangeSlider.module"
@@ -50,8 +50,11 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
 import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effects/syncGlobalSettingsInLocalStorage/syncGlobalSettingsInLocalStorage.effect"
+import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBar/distributionMetricChooser/distributionMetricChooser..module"
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
+import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
+import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 
 @NgModule({
 	imports: [
@@ -65,7 +68,8 @@ import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynami
 			BlacklistSearchPatternEffect,
 			ResetColorRangeEffect,
 			SyncGlobalSettingsInLocalStorageEffect,
-			ResetDynamicMarginEffect
+			ResetDynamicMarginEffect,
+			ResetChosenMetricsEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
@@ -87,7 +91,9 @@ import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynami
 		MetricColorRangeSliderModule,
 		CenterMapButtonModule,
 		GlobalConfigurationButtonModule,
-		AreaSettingsPanelModule
+		DistributionMetricChooserModule,
+		AreaSettingsPanelModule,
+		MetricChooserModule
 	],
 	providers: [
 		threeSceneServiceProvider,

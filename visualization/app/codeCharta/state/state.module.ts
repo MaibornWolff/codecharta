@@ -22,7 +22,6 @@ import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
-import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
 import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMetric.service"
 import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
@@ -65,7 +64,6 @@ angular
 	.service(camelCase(MarginService.name), MarginService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
 	.service(camelCase(HeightMetricService.name), HeightMetricService)
-	.service(camelCase(DistributionMetricService.name), DistributionMetricService)
 	.service(camelCase(ColorMetricService.name), ColorMetricService)
 	.service(camelCase(AreaMetricService.name), AreaMetricService)
 	.service(camelCase(IsPresentationModeService.name), IsPresentationModeService)

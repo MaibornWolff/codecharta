@@ -1,0 +1,17 @@
+<mat-select
+	[panelClass]="'cc-metric-chooser'"
+	[value]="selectedMetricName"
+	(selectionChange)="handleMetricChanged($event.value)"
+	(openedChange)="handleOpenedChanged($event)"
+>
+	<mat-form-field class="cc-metric-chooser-search-field">
+		<i matPrefix class="fa fa-search search-icon"></i>
+		<input #searchTermInput matInput type="text" [placeholder]="searchPlaceholder" [(ngModel)]="searchTerm" />
+	</mat-form-field>
+	<div class="cc-metric-chooser-option-container">
+		<mat-option *ngFor="let option of nodeMetricData$ | async | filterNodeMetricDataBySearchTerm: searchTerm" [value]="option.name">
+			{{ option.name }}
+			<span class="metric-max-value">({{ option.maxValue }})</span>
+		</mat-option>
+	</div>
+</mat-select>

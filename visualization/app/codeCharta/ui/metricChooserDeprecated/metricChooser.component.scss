@@ -1,0 +1,135 @@
+$optionHeight: 48;
+
+cc-metric-value-hovered {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+}
+
+cc-metric-value-hovered,
+area-metric-chooser-component,
+height-metric-chooser-component,
+color-metric-chooser-component,
+edge-chooser-component {
+	.metric-value {
+		height: 25px;
+		position: absolute;
+		right: 0;
+
+		.rounded-box {
+			background-color: #e6e6e6;
+			border-radius: 2px;
+			padding: 2px 5px;
+			display: inline-block;
+		}
+	}
+
+	md-input-container {
+		display: block;
+		top: -5px;
+		margin: 0;
+		text-align: left;
+
+		> * {
+			display: inline-block;
+		}
+
+		md-select {
+			display: inline-block;
+			position: absolute;
+			left: 30px;
+			right: 0;
+
+			.metric-max-value {
+				display: none;
+			}
+
+			.attribute-type-select {
+				display: none;
+			}
+
+			.md-select-value span {
+				max-height: 18px;
+				overflow: hidden;
+				text-align: inherit !important;
+			}
+		}
+
+		i.fa {
+			margin-top: 8px;
+			vertical-align: middle;
+			margin-left: 5px;
+			margin-right: 5px;
+			width: 16px;
+			text-align: center;
+		}
+	}
+}
+
+.md-select-menu-container {
+	font-size: 12pt !important;
+
+	&.ribbonBarDropdown {
+		top: 92px !important;
+	}
+
+	&.distributionBarDropdown {
+		top: 45px !important;
+	}
+
+	.md-overflow {
+		display: initial;
+	}
+
+	.search-bar {
+		i,
+		input {
+			background-color: #f5f5f5;
+			padding: 10px;
+			border: none rgba(0, 0, 0, 0.12);
+			border-bottom: 2px solid;
+		}
+	}
+
+	.search-bar:focus-within {
+		i,
+		input {
+			border-color: rgb(0, 150, 136);
+			color: rgb(0, 150, 136);
+		}
+	}
+
+	.search-icon {
+		position: absolute;
+		left: 0;
+		width: 12%;
+		height: $optionHeight - 8 + px;
+		top: 8px;
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+	}
+
+	.metric-search {
+		display: block;
+		position: fixed;
+		top: 8px;
+		left: 12%;
+		width: 88%;
+		height: $optionHeight - 8 + px;
+		outline: none;
+		font-family: Arial, FontAwesome, sans-serif;
+		font-size: 11pt;
+		box-shadow: 5px 1px 5px 0 rgba(0, 0, 0, 0.2);
+	}
+
+	md-content.option-group {
+		top: $optionHeight + px !important;
+		min-height: auto;
+		margin-bottom: 40px;
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+
+		.metric-max-value {
+			color: #ccc !important;
+			margin-left: 5px !important;
+		}
+	}
+}
