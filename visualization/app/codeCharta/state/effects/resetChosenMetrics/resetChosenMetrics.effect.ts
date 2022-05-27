@@ -11,14 +11,16 @@ import { getDefaultDistribution } from "./utils/getDefaultDistributionMetric"
 export class ResetChosenMetricsEffect {
 	constructor(@Inject(Store) private store: Store) {}
 
-	resetChosenDistributionMetric$ = createEffect(() =>
-		this.store.select(nodeMetricDataSelector).pipe(
-			tap(nodeMetricData => {
-				if (isAnyMetricAvailable(nodeMetricData)) {
-					// when migrating area, height and color service, their resetting will be added here as well
-					this.store.dispatch(setDistributionMetric(getDefaultDistribution(nodeMetricData)))
-				}
-			})
-		)
+	resetChosenDistributionMetric$ = createEffect(
+		() =>
+			this.store.select(nodeMetricDataSelector).pipe(
+				tap(nodeMetricData => {
+					if (isAnyMetricAvailable(nodeMetricData)) {
+						// when migrating area, height and color service, their resetting will be added here as well
+						this.store.dispatch(setDistributionMetric(getDefaultDistribution(nodeMetricData)))
+					}
+				})
+			),
+		{ dispatch: false }
 	)
 }
