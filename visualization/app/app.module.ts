@@ -55,6 +55,7 @@ import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsP
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
+import { RibbonBarModule } from "./codeCharta/ui/ribbonBar/ribbonBar.module"
 
 @NgModule({
 	imports: [
@@ -93,7 +94,8 @@ import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosen
 		GlobalConfigurationButtonModule,
 		DistributionMetricChooserModule,
 		AreaSettingsPanelModule,
-		MetricChooserModule
+		MetricChooserModule,
+		RibbonBarModule
 	],
 	providers: [
 		threeSceneServiceProvider,

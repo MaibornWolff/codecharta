@@ -11,6 +11,7 @@ export class MetricChooserComponent {
 	@Input() selectedMetricName: string
 	@Input() searchPlaceholder: string
 	@Input() handleMetricChanged: (newSelectedMetricName: string) => void
+	@Input() showHoveredMetricValueOf?: string
 	@ViewChild("searchTermInput") searchTermInput: ElementRef<HTMLInputElement>
 	nodeMetricData$ = this.store.select(nodeMetricDataSelector)
 	searchTerm = ""

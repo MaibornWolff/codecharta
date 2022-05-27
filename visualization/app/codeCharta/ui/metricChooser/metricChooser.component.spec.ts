@@ -71,4 +71,29 @@ describe("metricChooserComponent", () => {
 			return selectContainer.querySelector("input")
 		}
 	})
+
+	it("should not contain cc-metric-chooser-value-hovered when showHoveredMetricValueOf is not set", async () => {
+		const { container } = await render(MetricChooserComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: {
+				searchPlaceholder: "search metric (max value)",
+				selectedMetricName: "aMetric",
+				handleMetricChanged: jest.fn()
+			}
+		})
+		expect(container.querySelector("cc-metric-chooser-value-hovered")).toBe(null)
+	})
+
+	it("should contain cc-metric-chooser-value-hovered when showHoveredMetricValueOf is set", async () => {
+		const { container } = await render(MetricChooserComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: {
+				searchPlaceholder: "search metric (max value)",
+				selectedMetricName: "aMetric",
+				handleMetricChanged: jest.fn(),
+				showHoveredMetricValueOf: "areaMetric"
+			}
+		})
+		expect(container.querySelector("cc-metric-chooser-value-hovered")).not.toBe(null)
+	})
 })

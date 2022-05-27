@@ -144,4 +144,13 @@ ribbon-bar-component {
 		max-width: 100px;
 		min-width: 100px;
 	}
+
+	cc-area-metric-chooser {
+		display: flex;
+		margin: 4px;
+
+		i {
+			margin-right: 8px;
+		}
+	}
 }
