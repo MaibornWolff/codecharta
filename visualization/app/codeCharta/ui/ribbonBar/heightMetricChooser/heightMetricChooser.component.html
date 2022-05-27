@@ -1,0 +1,8 @@
+<i class="fa fa-arrows-alt"></i>
+
+<cc-metric-chooser
+	[selectedMetricName]="heightMetric$ | async"
+	[searchPlaceholder]="'Height Metric (highest value)'"
+	[handleMetricChanged]="handleHeightMetricChanged"
+	[showHoveredMetricValueOf]="'heightMetric'"
+></cc-metric-chooser>

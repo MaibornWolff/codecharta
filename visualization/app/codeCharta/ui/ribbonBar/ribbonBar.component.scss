@@ -145,7 +145,8 @@ ribbon-bar-component {
 		min-width: 100px;
 	}
 
-	cc-area-metric-chooser {
+	cc-area-metric-chooser,
+	cc-height-metric-chooser {
 		display: flex;
 		margin: 4px;
 
