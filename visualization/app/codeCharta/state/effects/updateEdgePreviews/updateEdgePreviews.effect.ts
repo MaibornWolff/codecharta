@@ -1,7 +1,6 @@
 import { Inject, Injectable } from "@angular/core"
 import { combineLatest, filter, map, withLatestFrom } from "rxjs"
 import { createEffect } from "../../angular-redux/effects/createEffect"
-import { State } from "../../angular-redux/state"
 import { Store } from "../../angular-redux/store"
 import { amountOfEdgePreviewsSelector } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
 import { edgeHeightSelector } from "../../store/appSettings/edgeHeight/edgeHeight.selector"
@@ -11,13 +10,12 @@ import { showOnlyBuildingsWithEdgesSelector } from "../../store/appSettings/show
 import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { setEdges } from "../../store/fileSettings/edges/edges.actions"
 import { edgesSelector } from "../../store/fileSettings/edges/edges.selector"
-import { CcState } from "../../store/store"
 import { edgePreviewNodesSelector } from "./utils/edgePreviewNodes.selector"
 import { setEdgeVisibility } from "./utils/setEdgeVisibility"
 
 @Injectable()
 export class UpdateEdgePreviewsEffect {
-	constructor(@Inject(Store) private store: Store, @Inject(State) private state: CcState) {}
+	constructor(@Inject(Store) private store: Store) {}
 
 	resetIsEdgeMetricVisible$ = createEffect(() =>
 		this.store.select(edgeMetricSelector).pipe(

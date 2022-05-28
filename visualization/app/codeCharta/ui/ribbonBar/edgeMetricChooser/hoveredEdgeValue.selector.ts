@@ -1,8 +1,11 @@
+import { CodeMapNode } from "../../../codeCharta.model"
 import { createSelector } from "../../../state/angular-redux/createSelector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 
-export const hoveredEdgeValueSelector = createSelector([hoveredNodeSelector, edgeMetricSelector], (hoveredNode, edgeMetric) => {
+const _formatValue = (x?: number) => (typeof x === "number" ? x.toLocaleString() : "-")
+
+export const _formatHoveredEdgeValue = (edgeMetric: string, hoveredNode?: Pick<CodeMapNode, "edgeAttributes">) => {
 	if (!hoveredNode) {
 		return null
 	}
@@ -13,6 +16,6 @@ export const hoveredEdgeValueSelector = createSelector([hoveredNodeSelector, edg
 	}
 
 	return `${_formatValue(hoveredEdgeValues.incoming)} / ${_formatValue(hoveredEdgeValues.outgoing)}`
-})
+}
 
-const _formatValue = (x?: number) => (typeof x === "number" ? x.toLocaleString() : "-")
+export const hoveredEdgeValueSelector = createSelector([edgeMetricSelector, hoveredNodeSelector], _formatHoveredEdgeValue)

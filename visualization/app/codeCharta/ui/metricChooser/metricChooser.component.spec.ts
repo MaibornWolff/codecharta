@@ -1,5 +1,6 @@
+import { Component } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import { waitFor } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
 import { MetricChooserComponent } from "./metricChooser.component"
@@ -38,7 +39,6 @@ describe("metricChooserComponent", () => {
 		expect(options[2].textContent).toMatch("cMetric (3)")
 
 		userEvent.click(options[1])
-		await waitForElementToBeRemoved(options[2])
 		expect(screen.queryByText("aMetric (1)")).toBe(null)
 		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
 	})
@@ -72,28 +72,21 @@ describe("metricChooserComponent", () => {
 		}
 	})
 
-	it("should not contain cc-metric-chooser-value-hovered when showHoveredMetricValueOf is not set", async () => {
-		const { container } = await render(MetricChooserComponent, {
-			excludeComponentDeclaration: true,
-			componentProperties: {
-				searchPlaceholder: "search metric (max value)",
-				selectedMetricName: "aMetric",
-				handleMetricChanged: jest.fn()
-			}
+	it("should project hoveredInformation as last child", async () => {
+		@Component({
+			template: `<cc-metric-chooser
+				[searchPlaceholder]="''"
+				[selectedMetricName]="'aMetric'"
+				[handleMetricChanged]="handleMetricChanged"
+			>
+				<div hoveredInformation>projected hovered information</div>
+			</cc-metric-chooser>`
 		})
-		expect(container.querySelector("cc-metric-chooser-value-hovered")).toBe(null)
-	})
+		class TestMetricChooser {
+			handleMetricChanged = jest.fn()
+		}
+		const { container } = await render(TestMetricChooser)
 
-	it("should contain cc-metric-chooser-value-hovered when showHoveredMetricValueOf is set", async () => {
-		const { container } = await render(MetricChooserComponent, {
-			excludeComponentDeclaration: true,
-			componentProperties: {
-				searchPlaceholder: "search metric (max value)",
-				selectedMetricName: "aMetric",
-				handleMetricChanged: jest.fn(),
-				showHoveredMetricValueOf: "areaMetric"
-			}
-		})
-		expect(container.querySelector("cc-metric-chooser-value-hovered")).not.toBe(null)
+		expect(container.lastChild.textContent).toBe("projected hovered information")
 	})
 })

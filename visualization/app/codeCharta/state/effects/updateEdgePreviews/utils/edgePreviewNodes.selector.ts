@@ -5,10 +5,10 @@ import { edgeMetricSelector } from "../../../store/dynamicSettings/edgeMetric/ed
 
 export const edgePreviewNodesSelector = createSelector(
 	[edgeMetricMapSelector, edgeMetricSelector, amountOfEdgePreviewsSelector],
-	(edgeMetricMap, edgeMetric, amountOfEdgePreviews) => new Set(getNodesWithHighestValue(edgeMetricMap, edgeMetric, amountOfEdgePreviews))
+	(edgeMetricMap, edgeMetric, amountOfEdgePreviews) => new Set(_getNodesWithHighestValue(edgeMetricMap, edgeMetric, amountOfEdgePreviews))
 )
 
-const getNodesWithHighestValue = (edgeMetricMap: NodeEdgeMetricsMap, edgeMetric: string, amountOfEdgePreviews: number) => {
+export const _getNodesWithHighestValue = (edgeMetricMap: NodeEdgeMetricsMap, edgeMetric: string, amountOfEdgePreviews: number) => {
 	const keys: string[] = []
 
 	if (amountOfEdgePreviews === 0) {
@@ -21,6 +21,7 @@ const getNodesWithHighestValue = (edgeMetricMap: NodeEdgeMetricsMap, edgeMetric:
 		return keys
 	}
 
+	// note that this depends on the fact, that edgeMetricMap is created by a list which is sorted by max value
 	for (const key of nodeEdgeMetrics.keys()) {
 		keys.push(key)
 		if (keys.length === amountOfEdgePreviews) {
