@@ -1,8 +1,8 @@
-import { goto } from "../../../puppeteer.helper"
+import { goto } from "../../../../puppeteer.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
-import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
-import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
-import { UploadFileButtonPageObject } from "../toolBar/uploadFilesButton/uploadFilesButton.po"
+import { MapTreeViewLevelPageObject } from "../../searchPanel/mapTreeView/mapTreeView.level.po"
+import { SearchPanelPageObject } from "../../searchPanel/searchPanel.po"
+import { UploadFileButtonPageObject } from "../../toolBar/uploadFilesButton/uploadFilesButton.po"
 
 describe("MapTreeViewLevel", () => {
 	let edgeChooser: EdgeChooserPageObject
@@ -27,19 +27,6 @@ describe("MapTreeViewLevel", () => {
 
 			expect(metrics).toHaveLength(2)
 		})
-		//Flaky since node 16; disabled for now
-		/*
-		it("should display the amount of incoming and outgoing edges next to the metric name", async () => {
-			await edgeChooser.selectEdgeMetric("pairingRate")
-			await searchPanel.toggle()
-			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
-			await mapTreeViewLevel.hoverNode("/root/ParentLeaf/smallLeaf.html")
-
-			const edgeCount = await edgeChooser.getAmountOfEdges()
-
-			expect(edgeCount).toEqual({ incoming: 2, outgoing: 0 })
-		})
-		*/
 
 		it("should not display the amount of incoming and outgoing edges of buildings for the none metric", async () => {
 			await searchPanel.toggle()
