@@ -11,6 +11,7 @@ export interface MarginSubscriber {
 	onMarginChanged(margin: number)
 }
 
+// todo delte
 export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, AreaMetricSubscriber {
 	private static MARGIN_CHANGED_EVENT = "margin-changed"
 
@@ -32,11 +33,11 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 	}
 
 	onAreaMetricChanged() {
-		this.reset()
+		// this.reset()
 	}
 
 	onDynamicMarginChanged() {
-		this.reset()
+		// this.reset()
 	}
 
 	reset() {
