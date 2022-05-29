@@ -1,19 +1,18 @@
 import { Inject, Injectable } from "@angular/core"
 import { filter, map } from "rxjs"
-import { isActionOfType } from "../../../util/reduxHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
-import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
-import { setDynamicMargin } from "../../store/appSettings/dynamicMargin/dynamicMargin.actions"
-import { FilesSelectionActions } from "../../store/files/files.actions"
+import { Store } from "../../angular-redux/store"
+import { dynamicMarginSelector } from "../../store/appSettings/dynamicMargin/dynamicMargin.selector"
+import { defaultMargin, setMargin } from "../../store/dynamicSettings/margin/margin.actions"
 
 @Injectable()
 export class ResetDynamicMarginEffect {
-	constructor(@Inject(ActionsToken) private actions$: Actions) {}
+	constructor(@Inject(Store) private store: Store) {}
 
-	resetDynamicMargin$ = createEffect(() =>
-		this.actions$.pipe(
-			filter(action => isActionOfType(action.type, FilesSelectionActions)),
-			map(() => setDynamicMargin(true))
+	resetMargin$ = createEffect(() =>
+		this.store.select(dynamicMarginSelector).pipe(
+			filter(dynamicMargin => dynamicMargin),
+			map(() => setMargin(defaultMargin))
 		)
 	)
 }

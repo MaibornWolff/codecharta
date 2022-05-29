@@ -1,42 +1,42 @@
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { Action } from "redux"
 import { Subject } from "rxjs"
-import { mocked } from "ts-jest/utils"
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
-import { setDynamicMargin } from "../../store/appSettings/dynamicMargin/dynamicMargin.actions"
-import { resetSelection } from "../../store/files/files.actions"
-import { Store } from "../../store/store"
+import { Store } from "../../angular-redux/store"
+import { defaultMargin, setMargin } from "../../store/dynamicSettings/margin/margin.actions"
+import { Store as PlainStoreUsedByEffects } from "../../store/store"
 import { ResetDynamicMarginEffect } from "./resetDynamicMargin.effect"
 
-jest.mock("../../store/store", () => ({
-	Store: {}
-}))
-
 describe("resetDynamicMarginEffect", () => {
-	const MockedStore = mocked(Store)
+	let mockedDynamicMarginSelector = new Subject()
+
+	const mockedStore = {
+		select: () => mockedDynamicMarginSelector,
+		dispatch: jest.fn()
+	}
 
 	beforeEach(async () => {
-		MockedStore.dispatch = jest.fn()
-
-		EffectsModule.actions$ = new Subject<Action>()
+		mockedStore.dispatch = jest.fn()
+		PlainStoreUsedByEffects.store.dispatch = mockedStore.dispatch
+		mockedDynamicMarginSelector = new Subject()
 		TestBed.configureTestingModule({
-			imports: [EffectsModule.forRoot([ResetDynamicMarginEffect])]
+			imports: [EffectsModule.forRoot([ResetDynamicMarginEffect])],
+			providers: [{ provide: Store, useValue: mockedStore }]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise
 	})
 
 	afterEach(() => {
-		EffectsModule.actions$.complete()
+		mockedDynamicMarginSelector.complete()
 	})
 
-	it("should ignore a not relevant action", () => {
-		EffectsModule.actions$.next({ type: "whatever" })
-		expect(MockedStore.dispatch).not.toHaveBeenCalled()
+	it("should do nothing, when dynamicMargin changes to false", () => {
+		mockedDynamicMarginSelector.next(false)
+		expect(mockedStore.dispatch).not.toHaveBeenCalled()
 	})
 
-	it("should reset default margin to true on file selection actions", () => {
-		EffectsModule.actions$.next(resetSelection())
-		expect(MockedStore.dispatch).toHaveBeenLastCalledWith(setDynamicMargin(true))
+	it("should reset margin to its default when dynamicMargin changes to true", () => {
+		mockedDynamicMarginSelector.next(true)
+		expect(mockedStore.dispatch).toHaveBeenCalledWith(setMargin(defaultMargin))
 	})
 })
