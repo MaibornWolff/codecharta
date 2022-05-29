@@ -22,7 +22,6 @@ import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
@@ -57,7 +56,6 @@ export class InjectorService {
 		private attributeTypesService: AttributeTypesService,
 		private edgeMetricService: EdgeMetricService,
 		private focusedNodePathService: FocusedNodePathService,
-		private heightMetricService: HeightMetricService,
 		private blacklistService: BlacklistService,
 		private isPresentationModeService: IsPresentationModeService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
