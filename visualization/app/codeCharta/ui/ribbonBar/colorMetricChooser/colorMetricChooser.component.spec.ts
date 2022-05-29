@@ -20,7 +20,7 @@ describe("colorMetricChooserComponent", () => {
 		})
 	})
 
-	it("should be a select for area metric", async () => {
+	it("should be a select for color metric", async () => {
 		Store.dispatch(setColorMetric("aMetric"))
 		await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 

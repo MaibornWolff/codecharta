@@ -36,7 +36,7 @@ describe("edgeMetricChooserComponent", () => {
 		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
 	})
 
-	it("should reflect edge metric visibility in its class name", async () => {
+	it("should reflect edge metric's visibility in its class name", async () => {
 		const { container, detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
 
 		let metricChoser = container.querySelector("cc-metric-chooser")

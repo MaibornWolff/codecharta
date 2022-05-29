@@ -20,7 +20,7 @@ describe("heightMetricChooserComponent", () => {
 		})
 	})
 
-	it("should be a select for area metric", async () => {
+	it("should be a select for height metric", async () => {
 		Store.dispatch(setHeightMetric("aMetric"))
 		await render(HeightMetricChooserComponent, { excludeComponentDeclaration: true })
 
