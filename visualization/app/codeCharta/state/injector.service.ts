@@ -21,7 +21,6 @@ import { MarkedPackagesService } from "./store/fileSettings/markedPackages/marke
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
-import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMetric.service"
@@ -33,6 +32,7 @@ import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableEx
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
+import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
@@ -58,7 +58,6 @@ export class InjectorService {
 		private edgesService: EdgesService,
 		private attributeTypesService: AttributeTypesService,
 		private edgeMetricService: EdgeMetricService,
-		private marginService: MarginService,
 		private focusedNodePathService: FocusedNodePathService,
 		private heightMetricService: HeightMetricService,
 		private colorMetricService: ColorMetricService,
@@ -68,7 +67,8 @@ export class InjectorService {
 		private layoutAlgorithmService: LayoutAlgorithmService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService,
-		private screenshotToClipboardEnabledService: ScreenshotToClipboardEnabledService
+		private screenshotToClipboardEnabledService: ScreenshotToClipboardEnabledService,
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		"ngInject"
 	}
