@@ -20,7 +20,6 @@ import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
@@ -59,7 +58,6 @@ angular
 	.service(camelCase(AttributeTypesService.name), AttributeTypesService)
 	.service(camelCase(EdgeMetricService.name), EdgeMetricService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
-	.service(camelCase(HeightMetricService.name), HeightMetricService)
 	.service(camelCase(IsPresentationModeService.name), IsPresentationModeService)
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
