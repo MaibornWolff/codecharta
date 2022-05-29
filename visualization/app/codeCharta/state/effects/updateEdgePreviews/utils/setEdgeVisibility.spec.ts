@@ -22,7 +22,7 @@ describe("setEdgeVisibility", () => {
 		expect(edges[0].visible).toBe(EdgeVisibility.from)
 	})
 
-	it("should set edge's visibility to 'to' if edge has only from for given metric", () => {
+	it("should set edge's visibility to 'to' if edge has only to for given metric", () => {
 		const edges: Edge[] = [{ attributes: { loc: 12 }, fromNodeName: "from", toNodeName: "aNode" }]
 		setEdgeVisibility(edgePreviewNodes, edges, "loc")
 		expect(edges[0].visible).toBe(EdgeVisibility.to)

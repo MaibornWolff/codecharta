@@ -6,7 +6,7 @@ describe("edgePreviewNodesSelector", () => {
 		expect(_getNodesWithHighestValue(new Map(), "rloc", 10)).toEqual([])
 	})
 
-	it("should return an first x keys for given metric", () => {
+	it("should return a first x keys for given metric", () => {
 		const nodeEdgeMetricsOfRloc = new Map<string, EdgeMetricCount>([
 			["0", { incoming: 10, outgoing: 5 }],
 			["1", { incoming: 1, outgoing: 2 }]
