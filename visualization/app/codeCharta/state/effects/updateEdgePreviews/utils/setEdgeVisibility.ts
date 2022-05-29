@@ -8,13 +8,11 @@ export const setEdgeVisibility = (edgePreviewNodes: Set<string>, edges: Edge[], 
 			const hasFromNodeEdgePreview = edgePreviewNodes.has(edge.fromNodeName)
 			const hasToNodeEdgePreview = edgePreviewNodes.has(edge.toNodeName)
 
-			if (hasFromNodeEdgePreview === hasToNodeEdgePreview) {
-				if (hasFromNodeEdgePreview) {
-					edge.visible = EdgeVisibility.both
-				}
+			if (hasFromNodeEdgePreview && hasToNodeEdgePreview) {
+				edge.visible = EdgeVisibility.both
 			} else if (hasFromNodeEdgePreview) {
 				edge.visible = EdgeVisibility.from
-			} else {
+			} else if (hasToNodeEdgePreview) {
 				edge.visible = EdgeVisibility.to
 			}
 		}

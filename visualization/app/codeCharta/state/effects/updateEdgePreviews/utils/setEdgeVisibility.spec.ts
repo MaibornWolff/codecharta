@@ -10,6 +10,12 @@ describe("setEdgeVisibility", () => {
 		expect(edges[0].visible).toBe(EdgeVisibility.none)
 	})
 
+	it("should set edge's visibility to 'none' if edge has neither from nor to", () => {
+		const edges: Edge[] = [{ attributes: { loc: 12 }, fromNodeName: "from", toNodeName: "to" }]
+		setEdgeVisibility(edgePreviewNodes, edges, "loc")
+		expect(edges[0].visible).toBe(EdgeVisibility.none)
+	})
+
 	it("should set edge's visibility to 'both' if edge has from and to for given metric", () => {
 		const edges: Edge[] = [{ attributes: { loc: 12 }, fromNodeName: "aNode", toNodeName: "anotherNode" }]
 		setEdgeVisibility(edgePreviewNodes, edges, "loc")
