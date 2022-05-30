@@ -1,6 +1,6 @@
 import "./app" // load AngularJS app first
 import "zone.js" // needs to be loaded before "@angular/core"
-import { Inject, NgModule } from "@angular/core"
+import { APP_INITIALIZER, Inject, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { UpgradeModule } from "@angular/upgrade/static"
@@ -55,6 +55,8 @@ import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { RibbonBarModule } from "./codeCharta/ui/ribbonBar/ribbonBar.module"
 import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
+import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
+import { VersionService } from "./codeCharta/services/version/version.service"
 
 @NgModule({
 	imports: [
@@ -93,14 +95,22 @@ import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgeP
 		DistributionMetricChooserModule,
 		AreaSettingsPanelModule,
 		MetricChooserModule,
-		RibbonBarModule
+		RibbonBarModule,
+		ChangelogDialogModule
 	],
 	providers: [
 		threeSceneServiceProvider,
 		codeChartaServiceProvider,
 		IdToBuildingService,
 		threeCameraServiceProvider,
-		threeOrbitControlsServiceProvider
+		threeOrbitControlsServiceProvider,
+		VersionService,
+		{
+			provide: APP_INITIALIZER,
+			useFactory: (config: VersionService) => () => config.synchronizeLocalCodeChartaVersion(),
+			deps: [VersionService],
+			multi: true
+		}
 	],
 	declarations: [EdgeMetricToggleComponent, UploadFilesButtonComponent, ...dialogs],
 	entryComponents: [

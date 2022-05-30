@@ -1,27 +1,18 @@
-import markdownFile from "../../../../../CHANGELOG.md"
-import packageJson from "../../../../package.json"
-import "./dialog.changelog.component.scss"
+import "./changelogDialog.component.scss"
+import markdownFile from "../../../../../../CHANGELOG.md"
+import { Component, Inject } from "@angular/core"
+import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 
-export class DialogChangelogController {
-	private _viewModel: {
-		currentVersion: string
-		lastOpenedVersion: string
-		changes: Record<string, string>
-	} = {
-		currentVersion: "",
-		lastOpenedVersion: "",
-		changes: null
-	}
+@Component({
+	template: require("./changelogDialog.component.html")
+})
+export class ChangelogDialogComponent {
+	changes: Record<string, string>
 
-	constructor(private $mdDialog) {
-		"ngInject"
-		this._viewModel.currentVersion = packageJson.version
-		this._viewModel.lastOpenedVersion = localStorage.getItem("codeChartaVersion")
-
-		localStorage.setItem("codeChartaVersion", packageJson.version)
+	constructor(@Inject(MAT_DIALOG_DATA) public data: { previousVersion: string; currentVersion: string }) {
 		let changelogLines = markdownFile.split("\n")
-		const currentVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.currentVersion)
-		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this._viewModel.lastOpenedVersion)
+		const currentVersionFirstLine = this.findVersionLine(changelogLines, this.data.currentVersion)
+		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this.data.previousVersion)
 
 		//Add 1 to keep the version line so that it detects the end of the last set of changes
 		changelogLines = changelogLines.slice(currentVersionFirstLine, lastOpenedVersionFirstLine + 1)
@@ -43,11 +34,7 @@ export class DialogChangelogController {
 				changes[title] = changelogTypes.join("\n")
 			}
 		}
-		this._viewModel.changes = changes
-	}
-
-	hide() {
-		this.$mdDialog.hide()
+		this.changes = changes
 	}
 
 	private getAllIndexes(titles: string[], pattern: RegExp) {
@@ -67,12 +54,4 @@ export class DialogChangelogController {
 	private findEndChangesLine(lines: string[], startLine: number): number {
 		return startLine + lines.slice(startLine + 1).findIndex(element => /<h3>/.test(element) || /<h2>/.test(element))
 	}
-}
-
-export const dialogChangelogComponent = {
-	selector: "dialogChangelogComponent",
-	template: require("./dialog.changelog.component.html"),
-	controller: DialogChangelogController,
-	clickOutsideToClose: true,
-	controllerAs: "$ctrl"
 }

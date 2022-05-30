@@ -1,0 +1,44 @@
+@use "../../../../material/theme";
+
+.cc-changelog-dialog .mat-dialog-container {
+	padding: 0 0 24px 0;
+
+	[mat-dialog-title] {
+		padding: 10px 0 10px 16px;
+		color: white;
+		background-color: theme.$cc-primary-color;
+	}
+
+	mat-dialog-content {
+		padding: 0 24px;
+		margin: 10px 0;
+
+		img[alt$="xs"] {
+			height: 32px;
+		}
+		img[alt$="s"] {
+			height: 64px;
+		}
+		img[alt$="m"] {
+			height: 256px;
+		}
+		img[alt$="l"] {
+			height: 350px;
+		}
+		img[alt$="xl"] {
+			height: 512px;
+		}
+	}
+
+	mat-dialog-actions {
+		justify-content: flex-end;
+
+		a {
+			color: theme.$cc-primary-color;
+		}
+
+		button {
+			margin: 0 8px;
+		}
+	}
+}
