@@ -6,13 +6,11 @@ import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
 import "./nodePathPanel/nodePathPanel.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
-import "./edgeChooser/edgeChooser.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
 import "./dialog/dialog.module"
 import "./fileExtensionBar/fileExtensionBar.module"
-import "./metricChooserDeprecated/metricChooser.module"
 import "./resetSettingsButton/resetSettingsButton.module"
 import "./filePanel/filePanel.module"
 import "./ribbonBar/ribbonBar.module"
@@ -30,13 +28,11 @@ angular
 		"app.codeCharta.ui.screenshotButton",
 		"app.codeCharta.ui.nodePathPanel",
 		"app.codeCharta.ui.edgeSettingsPanel",
-		"app.codeCharta.ui.edgeChooser",
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.colorSettingsPanel",
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.fileExtensionBar",
-		"app.codeCharta.ui.metricChooser",
 		"app.codeCharta.ui.resetSettingsButton",
 		"app.codeCharta.ui.ribbonBar",
 		"app.codeCharta.ui.scenarioDropDown",

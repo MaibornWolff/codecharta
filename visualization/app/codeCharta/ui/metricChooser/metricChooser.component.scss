@@ -1,10 +1,25 @@
 @use "../../../material/theme";
 
 cc-metric-chooser {
+	position: relative;
 	width: 100%;
 
-	.mat-select {
-		border-bottom: 0;
+	cc-metric-chooser-value-hovered,
+	.cc-metric-chooser-hovered-container {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+
+		.metric-value {
+			height: 25px;
+
+			.rounded-box {
+				background-color: #e6e6e6;
+				border-radius: 2px;
+				padding: 2px 5px;
+				display: inline-block;
+			}
+		}
 	}
 }
 
@@ -22,6 +37,10 @@ cc-metric-chooser {
 			margin-right: 8px;
 			margin-left: 8px;
 			font-size: 18px;
+		}
+
+		.mat-form-field-label {
+			margin-top: 4px;
 		}
 	}
 

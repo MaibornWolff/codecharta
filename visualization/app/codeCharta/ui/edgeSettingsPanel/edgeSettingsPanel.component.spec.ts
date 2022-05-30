@@ -2,7 +2,6 @@ import "./edgeSettingsPanel.module"
 import { EdgeSettingsPanelController } from "./edgeSettingsPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { DEFAULT_STATE } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
@@ -16,12 +15,10 @@ describe("EdgeSettingsPanelController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let edgeMetricDataService: EdgeMetricDataService
-	let codeMapActionsService: CodeMapActionsService
 
 	beforeEach(() => {
 		restartSystem()
 		withMockedEdgeMetricDataService()
-		withMockedCodeMapActionsService()
 		rebuildController()
 	})
 
@@ -31,24 +28,14 @@ describe("EdgeSettingsPanelController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 	}
 
 	function rebuildController() {
-		edgeSettingsPanelController = new EdgeSettingsPanelController(
-			$rootScope,
-			storeService,
-			edgeMetricDataService,
-			codeMapActionsService
-		)
+		edgeSettingsPanelController = new EdgeSettingsPanelController($rootScope, storeService, edgeMetricDataService)
 	}
 
 	function withMockedEdgeMetricDataService(amountOfAffectedBuildings = 0) {
 		edgeMetricDataService.getAmountOfAffectedBuildings = jest.fn().mockReturnValue(amountOfAffectedBuildings)
-	}
-
-	function withMockedCodeMapActionsService() {
-		codeMapActionsService.updateEdgePreviews = jest.fn()
 	}
 
 	describe("constructor", () => {
@@ -90,7 +77,6 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.onAmountOfEdgePreviewsChanged(42)
 
 			expect(edgeSettingsPanelController["_viewModel"].amountOfEdgePreviews).toBe(42)
-			expect(codeMapActionsService.updateEdgePreviews).toHaveBeenCalled()
 		})
 	})
 
@@ -99,7 +85,6 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.onEdgeHeightChanged(7)
 
 			expect(edgeSettingsPanelController["_viewModel"].edgeHeight).toBe(7)
-			expect(codeMapActionsService.updateEdgePreviews).toHaveBeenCalled()
 		})
 	})
 
@@ -108,7 +93,6 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.onShowOnlyBuildingsWithEdgesChanged(true)
 
 			expect(edgeSettingsPanelController["_viewModel"].showOnlyBuildingsWithEdges).toBe(true)
-			expect(codeMapActionsService.updateEdgePreviews).toHaveBeenCalled()
 		})
 	})
 

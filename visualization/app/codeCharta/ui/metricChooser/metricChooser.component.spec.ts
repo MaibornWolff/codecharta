@@ -1,5 +1,6 @@
+import { Component } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import { waitFor } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
 import { MetricChooserComponent } from "./metricChooser.component"
@@ -38,7 +39,6 @@ describe("metricChooserComponent", () => {
 		expect(options[2].textContent).toMatch("cMetric (3)")
 
 		userEvent.click(options[1])
-		await waitForElementToBeRemoved(options[2])
 		expect(screen.queryByText("aMetric (1)")).toBe(null)
 		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
 	})
@@ -70,5 +70,23 @@ describe("metricChooserComponent", () => {
 			const selectContainer = screen.getByRole("listbox")
 			return selectContainer.querySelector("input")
 		}
+	})
+
+	it("should project hoveredInformation as last child", async () => {
+		@Component({
+			template: `<cc-metric-chooser
+				[searchPlaceholder]="''"
+				[selectedMetricName]="'aMetric'"
+				[handleMetricChanged]="handleMetricChanged"
+			>
+				<div hoveredInformation>projected hovered information</div>
+			</cc-metric-chooser>`
+		})
+		class TestMetricChooser {
+			handleMetricChanged = jest.fn()
+		}
+		const { container } = await render(TestMetricChooser)
+
+		expect(container.lastChild.textContent).toBe("projected hovered information")
 	})
 })
