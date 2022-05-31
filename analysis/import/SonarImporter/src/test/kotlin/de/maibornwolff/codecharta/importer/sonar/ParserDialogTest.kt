@@ -6,12 +6,11 @@ import com.github.kinquirer.components.promptInput
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
+import picocli.CommandLine
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
@@ -21,17 +20,16 @@ class ParserDialogTest {
         unmockkAll()
     }
 
-    @ParameterizedTest
-    @MethodSource("provideArguments")
-    fun `should output correct arguments`(
-        hostUrl: String,
-        projectKey: String,
-        user: String,
-        outputFileName: String,
-        metrics: String,
-        compress: Boolean,
-        mergeModules: Boolean,
-    ) {
+    @Test
+    fun `should output correct arguments`() {
+        val hostUrl = "https://sonar.foo"
+        val projectKey = "de.foo:bar"
+        val user = "c123d456"
+        val outputFileName = "codecharta.cc.json"
+        val metrics = "metric1, metric2"
+        val compress = false
+        val mergeModules = false
+
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any())
@@ -43,29 +41,14 @@ class ParserDialogTest {
 
         val parserArguments = ParserDialog.collectParserArgs()
 
-        Assertions.assertThat(parserArguments).isEqualTo(
-            listOf(
-                hostUrl,
-                projectKey,
-                "--user=$user",
-                "--output-file=$outputFileName",
-                "--metrics=$metrics",
-                "--not-compressed=$compress",
-                "--merge-modules=$mergeModules",
-            )
-        )
-    }
-
-    companion object {
-        @JvmStatic
-        fun provideArguments(): List<Arguments> {
-            return listOf(
-                Arguments.of(
-                    "https://sonar.foo", "de.foo:bar", "c123d456", "codecharta.cc.json", "metric1, metric2", false, false
-                ), Arguments.of(
-                    "https://sonar.foo", "de.foo:bar", "c123d456", "codecharta.cc.json", "metric1, metric2", false, false
-                )
-            )
-        }
+        val commandLine = CommandLine(SonarImporterMain())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
+        assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
+        assertThat(parseResult.matchedOption("user").getValue<String>()).isEqualTo(user)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>()).isEqualTo(listOf("metric1, metric2"))
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
+        assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }
 }
