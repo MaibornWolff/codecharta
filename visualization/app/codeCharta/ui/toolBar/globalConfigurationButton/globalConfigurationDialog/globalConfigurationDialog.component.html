@@ -1,0 +1,51 @@
+<mat-toolbar color="primary">Global Configuration</mat-toolbar>
+
+<div class="cc-global-configuration-dialog-content">
+	<div class="cc-global-configuration-align-right">
+		<cc-reset-settings-button
+			[settingsKeys]="[
+				'appSettings.hideFlatBuildings',
+				'appSettings.isWhiteBackground',
+				'appSettings.resetCameraIfNewFileIsLoaded',
+				'appSettings.layoutAlgorithm',
+				'appSettings.maxTreeMapFiles'
+			]"
+			tooltip="Reset global settings to their defaults"
+		></cc-reset-settings-button>
+	</div>
+
+	<cc-map-layout-selection></cc-map-layout-selection>
+	<cc-display-quality-selection></cc-display-quality-selection>
+
+	<div class="cc-global-configuration-toggle-option">
+		<mat-slide-toggle [checked]="hideFlatBuildings$ | async" (change)="handleHideFlatBuildingsChanged($event)">
+			Hide Flattened Buildings
+		</mat-slide-toggle>
+		<mat-slide-toggle [checked]="resetCameraIfNewFileIsLoaded$ | async" (change)="handleResetCameraIfNewFileIsLoadedChanged($event)">
+			Reset Camera when changing map
+		</mat-slide-toggle>
+		<mat-slide-toggle [checked]="isWhiteBackground$ | async" (change)="handleIsWhiteBackgroundChanged($event)">
+			White Background
+		</mat-slide-toggle>
+		<mat-slide-toggle [checked]="experimentalFeaturesEnabled$ | async" (change)="handleExperimentalFeaturesEnabledChanged($event)">
+			Enable Experimental Features
+		</mat-slide-toggle>
+		<mat-slide-toggle [checked]="screenshotToClipboardEnabled$ | async" (change)="handleScreenshotToClipboardEnabledChanged($event)">
+			Screenshot to clipboard
+		</mat-slide-toggle>
+	</div>
+
+	<a class="weblink" href="https://github.com/MaibornWolff/codecharta/blob/main/README.md" target="_blank" rel="noopener noreferrer">
+		<em class="fa fa-external-link icon-link"></em>Manual
+	</a>
+	<a class="weblink" href="https://github.com/MaibornWolff/codecharta/" target="_blank" rel="noopener noreferrer">
+		<em class="fa fa-external-link icon-link"></em>Github
+	</a>
+	<a class="weblink" href="https://github.com/MaibornWolff/codecharta/wiki" target="_blank" rel="noopener noreferrer">
+		<em class="fa fa-external-link icon-link"></em>Wiki
+	</a>
+
+	<div class="cc-global-configuration-align-right">
+		<button mat-button mat-dialog-close>CLOSE</button>
+	</div>
+</div>

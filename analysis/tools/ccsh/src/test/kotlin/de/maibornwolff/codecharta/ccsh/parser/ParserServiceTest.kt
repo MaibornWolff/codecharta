@@ -2,21 +2,26 @@ package de.maibornwolff.codecharta.ccsh.parser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
-import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
-import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import io.mockk.Runs
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import io.mockk.every
-import io.mockk.just
+import io.mockk.mockkClass
+import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -26,6 +31,7 @@ class ParserServiceTest {
 
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
+    private val cmdLine = CommandLine(Ccsh())
 
     @BeforeAll
     fun setUpStreams() {
@@ -35,6 +41,21 @@ class ParserServiceTest {
     @AfterAll
     fun restoreStreams() {
         System.setOut(originalOut)
+    }
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
+
+    companion object {
+        @JvmStatic
+        fun provideArguments(): List<Arguments> {
+            return listOf(
+                Arguments.of("check"),
+                Arguments.of("edgefilter")
+            )
+        }
     }
 
     @Test
@@ -49,100 +70,107 @@ class ParserServiceTest {
         Assertions.assertThat(selectedParserName).isEqualTo("parser")
     }
 
-    @Test
-    fun `should execute check parser`() {
-        ParserService.executeSelectedParser("check")
+    @ParameterizedTest
+    @MethodSource("provideArguments")
+    fun `should execute parser`(parser: String) {
+        mockParserObject(parser)
 
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
+        ParserService.executeSelectedParser(cmdLine, parser)
+
+        verify { anyConstructed<CommandLine>().execute(any()) }
     }
 
     @Test
     fun `should execute merge parser`() {
-        ParserService.executeSelectedParser("merge")
+        ParserService.executeSelectedParser(cmdLine, "merge")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
-    fun `should execute edgefilter parser`() {
-        mockkObject(EdgeFilter)
-        every {
-            EdgeFilter.main(any())
-        } just Runs
-        ParserService.executeSelectedParser("edgefilter")
-        verify { EdgeFilter.main(emptyArray()) }
-    }
-
-    @Test
     fun `should execute modify parser`() {
-        ParserService.executeSelectedParser("modify")
+        ParserService.executeSelectedParser(cmdLine, "modify")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sonarimport parser`() {
-        mockkObject(SonarImporterMain)
-        every {
-            SonarImporterMain.main(any())
-        } just Runs
-        ParserService.executeSelectedParser("sonarimport")
-        verify { SonarImporterMain.main(emptyArray()) }
+        ParserService.executeSelectedParser(cmdLine, "sonarimport")
+
+        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sourcemonitorimport parser`() {
-        ParserService.executeSelectedParser("sourcemonitorimport")
+        ParserService.executeSelectedParser(cmdLine, "sourcemonitorimport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute gitlogparser parser`() {
-        ParserService.executeSelectedParser("gitlogparser")
+        ParserService.executeSelectedParser(cmdLine, "gitlogparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute svnlogparser parser`() {
-        ParserService.executeSelectedParser("svnlogparser")
+        ParserService.executeSelectedParser(cmdLine, "svnlogparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute csvexport parser`() {
-        ParserService.executeSelectedParser("csvexport")
+        ParserService.executeSelectedParser(cmdLine, "csvexport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute sourcecodeparser parser`() {
-        ParserService.executeSelectedParser("sourcecodeparser")
+        ParserService.executeSelectedParser(cmdLine, "sourcecodeparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute tokeiimporter parser`() {
-        ParserService.executeSelectedParser("tokeiimporter")
+        ParserService.executeSelectedParser(cmdLine, "tokeiimporter")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should execute rawtextparser parser`() {
-        ParserService.executeSelectedParser("rawtextparser")
+        ParserService.executeSelectedParser(cmdLine, "rawtextparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
     fun `should not execute any parser`() {
-        ParserService.executeSelectedParser("unkownparser")
 
-        Assertions.assertThat(outContent.toString()).contains("No valid parser was selected.")
+        Assertions.assertThatExceptionOfType(NoSuchElementException::class.java).isThrownBy {
+            ParserService.executeSelectedParser(cmdLine, "unknownparser")
+        }
+    }
+
+    private fun mockParserObject(name: String): InteractiveParser {
+        val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser
+        mockkObject(obj)
+        val dialogInterface = mockkClass(ParserDialogInterface::class)
+        val dummyArgs = listOf("dummyArg")
+        every {
+            dialogInterface.collectParserArgs()
+        } returns dummyArgs
+        every {
+            obj.getDialog()
+        } returns dialogInterface
+        mockkConstructor(CommandLine::class)
+        every { anyConstructed<CommandLine>().execute(*dummyArgs.toTypedArray()) } returns 0
+        return obj
     }
 }
