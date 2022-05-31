@@ -54,8 +54,7 @@ class GitLogParser(
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
 
-    // confusing name: it should be --compress because when this flag is set to true it will compress the file
-    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"], arity = "0")
     private var compress = true
 
     @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])

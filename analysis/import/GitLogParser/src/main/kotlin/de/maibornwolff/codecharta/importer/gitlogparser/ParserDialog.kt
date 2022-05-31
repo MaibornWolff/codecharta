@@ -42,11 +42,11 @@ class ParserDialog {
             val addAuthor: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to add authors to every file?", default = false)
 
-            return listOf(
+            return listOfNotNull(
                 inputFileName,
                 "--output-file=$outputFileName",
                 "--file-name-list=$fileNameList",
-                "--not-compressed=$isCompressed",
+                if (isCompressed) null else "--not-compressed",
                 "--silent=$isSilent",
                 "--add-author=$addAuthor"
             )
