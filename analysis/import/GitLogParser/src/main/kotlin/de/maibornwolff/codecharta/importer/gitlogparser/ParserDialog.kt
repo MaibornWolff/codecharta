@@ -16,14 +16,11 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             logger.info { "You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log" }
             val defaultInputFileName = "git.$EXTENSION"
-            var inputFileName = KInquirer.promptInput(
+            val inputFileName = KInquirer.promptInput(
                 message = "What is the $EXTENSION file that has to be parsed?",
                 hint = defaultInputFileName,
                 default = defaultInputFileName
             )
-            if (!extensionPattern.containsMatchIn(inputFileName))
-                inputFileName += ".$EXTENSION"
-            logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String = KInquirer.promptInput(
@@ -51,7 +48,7 @@ class ParserDialog {
 
             return listOf(
                 inputFileName,
-                "-o $outputFileName",
+                "--output-file=$outputFileName",
                 "--file-name-list=$fileNameList",
                 "--not-compressed=$isCompressed",
                 "--silent=$isSilent",

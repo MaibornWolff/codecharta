@@ -12,6 +12,8 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import picocli.CommandLine
+import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
@@ -42,16 +44,15 @@ class ParserDialogTest {
 
         val parserArguments = ParserDialog.collectParserArgs()
 
-        Assertions.assertThat(parserArguments).isEqualTo(
-            listOf(
-                "git.log",
-                "-o $outputFileName",
-                "--file-name-list=$fileNameList",
-                "--not-compressed=$isCompressed",
-                "--silent=$isSilent",
-                "--add-author=$addAuthor"
-            )
-        )
+        val cmdLine = CommandLine(GitLogParser())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>())
+                .isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("file-name-list").getValue<File>().name).isEqualTo(fileNameList)
+        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+        Assertions.assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
+        Assertions.assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
     }
 
     companion object {
