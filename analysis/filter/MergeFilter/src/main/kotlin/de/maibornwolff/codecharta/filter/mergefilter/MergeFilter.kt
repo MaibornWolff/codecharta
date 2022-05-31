@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.filter.mergefilter
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -14,7 +16,7 @@ import java.util.concurrent.Callable
     description = ["merges multiple cc.json files"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class MergeFilter : Callable<Void?> {
+class MergeFilter : Callable<Void?>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -87,11 +89,6 @@ class MergeFilter : Callable<Void?> {
     }
 
     companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine.call(MergeFilter(), System.out, *args)
-        }
-
         fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
             return ProjectMerger(
                 listOf(pipedProject, currentProject),
@@ -99,4 +96,6 @@ class MergeFilter : Callable<Void?> {
             ).merge()
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
