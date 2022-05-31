@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import de.maibornwolff.codecharta.filter.edgefilter.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
@@ -38,9 +38,5 @@ class EdgeFilter : Callable<Void?>, InteractiveParser {
         return null
     }
 
-    override fun executeWithInteractiveDialog() {
-        val commandLine = CommandLine(this)
-        val collectedArgs = collectParserArgs()
-        commandLine.execute(*collectedArgs.toTypedArray())
-    }
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }

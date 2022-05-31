@@ -2,12 +2,15 @@ package de.maibornwolff.codecharta.ccsh.parser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
+import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
-import io.mockk.Runs
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import io.mockk.every
-import io.mockk.just
+import io.mockk.mockkClass
+import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.verify
@@ -52,12 +55,13 @@ class ParserServiceTest {
     @Test
     fun `should execute check parser`() {
         val parser = mockParserObject("check")
+        val filter = parser as ValidationTool
         every {
-            parser.executeWithInteractiveDialog()
-        } just Runs
+            filter.call()
+        } returns null
 
         ParserService.executeSelectedParser(cmdLine, "check")
-        verify { parser.executeWithInteractiveDialog() }
+        verify { anyConstructed<CommandLine>().execute(any()) }
     }
 
     @Test
@@ -70,12 +74,13 @@ class ParserServiceTest {
     @Test
     fun `should execute edgefilter parser`() {
         val parser = mockParserObject("edgefilter")
+        val filter = parser as EdgeFilter
         every {
-            parser.executeWithInteractiveDialog()
-        } just Runs
+            filter.call()
+        } returns null
 
         ParserService.executeSelectedParser(cmdLine, "edgefilter")
-        verify { parser.executeWithInteractiveDialog() }
+        verify { anyConstructed<CommandLine>().execute(any()) }
     }
 
     @Test
@@ -152,6 +157,16 @@ class ParserServiceTest {
     private fun mockParserObject(name: String): InteractiveParser {
         val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser
         mockkObject(obj)
+        val dialogInterface = mockkClass(ParserDialogInterface::class)
+        val dummyArgs = listOf("dummyArg")
+        every {
+            dialogInterface.collectParserArgs()
+        } returns dummyArgs
+        every {
+            obj.getDialog()
+        } returns dialogInterface
+        mockkConstructor(CommandLine::class)
+        every { anyConstructed<CommandLine>().execute(*dummyArgs.toTypedArray()) } returns 0
         return obj
     }
 }

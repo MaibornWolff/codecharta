@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.tools.validation
 
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.tools.validation.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import java.io.File
 import java.io.FileInputStream
@@ -26,13 +26,9 @@ class ValidationTool : Callable<Void?>, InteractiveParser {
         return null
     }
 
-    override fun executeWithInteractiveDialog() {
-        val commandLine = CommandLine(this)
-        val collectedArgs = collectParserArgs()
-        commandLine.execute(*collectedArgs.toTypedArray())
+    companion object {
+        const val SCHEMA_PATH = "cc.json"
     }
 
-    companion object {
-        val SCHEMA_PATH = "cc.json"
-    }
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }

@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.tools.validation
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
 import org.everit.json.schema.ValidationException
 import org.json.JSONException
 import org.junit.jupiter.api.Test
@@ -8,7 +7,7 @@ import kotlin.test.assertFailsWith
 
 class EveritValidatorTest {
 
-    private val validator = EveritValidator(SCHEMA_PATH)
+    private val validator = EveritValidator(ValidationTool.SCHEMA_PATH)
 
     @Test
     fun `should validate valid File`() {
