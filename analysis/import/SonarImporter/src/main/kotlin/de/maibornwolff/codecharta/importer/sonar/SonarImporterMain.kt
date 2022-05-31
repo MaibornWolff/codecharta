@@ -1,12 +1,13 @@
 package de.maibornwolff.codecharta.importer.sonar
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.importer.sonar.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarVersionAPIDatasource
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.FileWriter
@@ -24,9 +25,8 @@ import java.util.concurrent.Callable
 )
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : Callable<Void> {
+    private val output: PrintStream = System.out
+) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = [
         "Please locate:\n" +
@@ -84,7 +84,7 @@ class SonarImporterMain(
     }
 
     override fun call(): Void? {
-        print(" ")
+
         val importer = createMeasuresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, metrics)
 
@@ -98,16 +98,5 @@ class SonarImporterMain(
         return null
     }
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val commandLine = CommandLine(SonarImporterMain())
-            if (args.isEmpty()) {
-                val collectedArgs = collectParserArgs()
-                commandLine.execute(*collectedArgs.toTypedArray())
-            } else {
-                commandLine.execute(*args)
-            }
-        }
-    }
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
