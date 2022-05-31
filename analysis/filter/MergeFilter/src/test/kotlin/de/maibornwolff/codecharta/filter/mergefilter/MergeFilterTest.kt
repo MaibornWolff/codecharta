@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
@@ -23,7 +24,7 @@ class MergeFilterTest : Spek({
 
             System.setOut(PrintStream(outContent))
             System.setErr(PrintStream(errContent))
-            MergeFilter.main(arrayOf(projectLocation)).toString()
+            CommandLine(MergeFilter()).execute(projectLocation).toString()
             System.setOut(originalOut)
             System.setErr(originalErr)
 
@@ -43,11 +44,8 @@ class MergeFilterTest : Spek({
 
         context("merging files") {
             System.setOut(PrintStream(outContent))
-            MergeFilter.main(
-                arrayOf(
-                    "src/test/resources/mergeFolderTest/file1.cc.json",
-                    "src/test/resources/mergeFolderTest/file2.cc.json"
-                )
+            CommandLine(MergeFilter()).execute(
+                "src/test/resources/mergeFolderTest/file1.cc.json", "src/test/resources/mergeFolderTest/file2.cc.json"
             ).toString()
             System.setOut(originalOut)
             val valueInFile1 = "SourceMonCsvConverterTest.java"
