@@ -84,9 +84,9 @@ class Ccsh : Callable<Void?> {
         }
 
         private fun executeInteractiveParser(commandLine: CommandLine) {
-                val selectedParser = ParserService.selectParser(commandLine)
-                logger.info { "Executing $selectedParser" }
-                ParserService.executeSelectedParser(selectedParser)
+            val selectedParser = ParserService.selectParser(commandLine)
+            logger.info { "Executing $selectedParser" }
+            ParserService.executeSelectedParser(commandLine, selectedParser)
         }
 
         private fun isParserUnknown(args: Array<String>, commandLine: CommandLine): Boolean {

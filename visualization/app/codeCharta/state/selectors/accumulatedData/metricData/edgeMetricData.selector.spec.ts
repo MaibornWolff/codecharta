@@ -12,30 +12,40 @@ describe("edgeMetricDataSelector", () => {
 	})
 
 	it("should create correct edge Metrics", () => {
-		const result = calculateEdgeMetricData(fileStates, [])
+		const { sortedEdgeMetricList } = calculateEdgeMetricData(fileStates, [])
 
-		expect(result.map(x => x.name)).toContain("pairingRate")
-		expect(result.map(x => x.name)).toContain("otherMetric")
+		expect(sortedEdgeMetricList.map(x => x.name)).toContain("pairingRate")
+		expect(sortedEdgeMetricList.map(x => x.name)).toContain("otherMetric")
 	})
 
 	it("should calculate correct maximum value for edge Metrics", () => {
-		const result = calculateEdgeMetricData(fileStates, [])
+		const { sortedEdgeMetricList } = calculateEdgeMetricData(fileStates, [])
 
-		expect(result.find(x => x.name === "pairingRate").maxValue).toEqual(2)
-		expect(result.find(x => x.name === "otherMetric").maxValue).toEqual(1)
+		expect(sortedEdgeMetricList.find(x => x.name === "pairingRate").maxValue).toEqual(2)
+		expect(sortedEdgeMetricList.find(x => x.name === "otherMetric").maxValue).toEqual(1)
 	})
 
 	it("should sort the metrics after calculating them", () => {
-		const result = calculateEdgeMetricData(fileStates, [])
+		const { sortedEdgeMetricList } = calculateEdgeMetricData(fileStates, [])
 
-		expect(result).toHaveLength(3)
-		expect(result[0].name).toBe("avgCommits")
-		expect(result[1].name).toBe("otherMetric")
-		expect(result[2].name).toBe("pairingRate")
+		expect(sortedEdgeMetricList).toHaveLength(3)
+		expect(sortedEdgeMetricList[0].name).toBe("avgCommits")
+		expect(sortedEdgeMetricList[1].name).toBe("otherMetric")
+		expect(sortedEdgeMetricList[2].name).toBe("pairingRate")
 	})
 
-	it("metrics Map should contain correct entries", () => {
+	it("should sync with deprecated public exposed metrics Map", () => {
 		calculateEdgeMetricData(fileStates, [])
+
+		const pairingRateMapKeys = [...nodeEdgeMetricsMap.get("pairingRate").keys()]
+
+		expect(pairingRateMapKeys[0]).toEqual("/root/big leaf")
+		expect(pairingRateMapKeys[1]).toEqual("/root/Parent Leaf/small leaf")
+		expect(pairingRateMapKeys[2]).toEqual("/root/Parent Leaf/other small leaf")
+	})
+
+	it("should provide nodeEdgeMetricsMap", () => {
+		const { nodeEdgeMetricsMap } = calculateEdgeMetricData(fileStates, [])
 
 		const pairingRateMapKeys = [...nodeEdgeMetricsMap.get("pairingRate").keys()]
 

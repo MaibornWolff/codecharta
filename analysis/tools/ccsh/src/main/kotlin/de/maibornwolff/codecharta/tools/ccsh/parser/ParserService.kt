@@ -2,8 +2,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptList
-import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
-import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import picocli.CommandLine
 
 class ParserService {
@@ -17,37 +16,28 @@ class ParserService {
             return extractParserName(selectedParser)
         }
 
-        fun executeSelectedParser(selectedParser: String) {
-            val args = emptyArray<String>()
-
-            when (selectedParser) {
-                "check" -> printNotSupported(selectedParser)
-                "merge" -> printNotSupported(selectedParser)
-                "edgefilter" -> EdgeFilter.main(args)
-                "modify" -> printNotSupported(selectedParser)
-                "csvimport" -> printNotSupported(selectedParser)
-                "sonarimport" -> printNotSupported(selectedParser)
-                "sourcemonitorimport" -> printNotSupported(selectedParser)
-                "gitlogparser" -> printNotSupported(selectedParser)
-                "svnlogparser" -> SVNLogParser.main(args)
-                "csvexport" -> printNotSupported(selectedParser)
-                "sourcecodeparser" -> printNotSupported(selectedParser)
-                "codemaatimport" -> printNotSupported(selectedParser)
-                "tokeiimporter" -> printNotSupported(selectedParser)
-                "rawtextparser" -> printNotSupported(selectedParser)
-                else -> {
-                    println("No valid parser was selected.")
-                }
+        fun executeSelectedParser(commandLine: CommandLine, selectedParser: String) {
+            val subCommand = commandLine.subcommands.getValue(selectedParser)
+            val parserObject = subCommand.commandSpec.userObject()
+            val interactive = parserObject as? InteractiveParser
+            if (interactive != null) {
+                val collectedArgs = interactive.getDialog().collectParserArgs()
+                val subCommandLine = CommandLine(interactive)
+                subCommandLine.execute(*collectedArgs.toTypedArray())
+            } else {
+                printNotSupported(selectedParser)
             }
         }
 
         private fun getParserNamesWithDescription(commandLine: CommandLine): List<String> {
             val subCommands = commandLine.subcommands.values
-            return subCommands.map { subCommand ->
+            return subCommands.mapNotNull { subCommand ->
                 val parserName = subCommand.commandName
-                val parserDescriptions = subCommand.commandSpec.usageMessage().description()
-                val parserDescription = parserDescriptions[0]
-                "$parserName - $parserDescription"
+                if (subCommand.commandSpec.userObject() is InteractiveParser) {
+                    val parserDescriptions = subCommand.commandSpec.usageMessage().description()
+                    val parserDescription = parserDescriptions[0]
+                    "$parserName - $parserDescription"
+                } else null
             }
         }
 

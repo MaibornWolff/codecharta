@@ -40,28 +40,6 @@ export class EdgeMetricDataService implements BlacklistSubscriber, FilesSelectio
 		return nodeEdgeMetrics === undefined ? 0 : nodeEdgeMetrics.size
 	}
 
-	getNodesWithHighestValue(metricName: string, amountOfEdgePreviews: number) {
-		const keys: string[] = []
-
-		if (amountOfEdgePreviews === 0) {
-			return keys
-		}
-
-		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
-
-		if (nodeEdgeMetrics === undefined) {
-			return keys
-		}
-
-		for (const key of nodeEdgeMetrics.keys()) {
-			keys.push(key)
-			if (keys.length === amountOfEdgePreviews) {
-				break
-			}
-		}
-		return keys
-	}
-
 	private updateEdgeMetricData() {
 		const edgeMetricData = edgeMetricDataSelector(this.storeService.getState())
 		if (edgeMetricData !== this.edgeMetricData) {

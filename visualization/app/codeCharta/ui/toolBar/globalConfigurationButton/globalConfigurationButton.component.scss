@@ -1,0 +1,67 @@
+@use "../../../../material/theme";
+
+cc-global-configuration-button button {
+	display: inline-flex;
+	align-items: center;
+	margin: 0;
+
+	i {
+		background-color: theme.$cc-primary-color;
+		color: white;
+		border-radius: 100%;
+		padding: 5px;
+		font-size: 14px;
+		margin-left: 4px;
+	}
+}
+
+.cc-global-configuration-dialog .mat-dialog-container {
+	width: 50vw;
+	padding: 0;
+
+	.cc-global-configuration-align-right {
+		float: right;
+	}
+
+	.cc-global-configuration-dialog-content {
+		margin: 8px;
+	}
+
+	[mat-dialog-close] {
+		color: theme.$cc-primary-color;
+	}
+
+	cc-map-layout-selection,
+	cc-display-quality-selection {
+		display: block;
+		margin-bottom: 8px;
+
+		> mat-form-field {
+			width: 100%;
+		}
+
+		.cc-tree-maps-max-tree-map-files {
+			display: inline-block;
+			padding-left: 16px;
+		}
+	}
+
+	.cc-global-configuration-toggle-option {
+		margin-bottom: 16px;
+
+		mat-slide-toggle {
+			display: block;
+			margin-bottom: 8px;
+		}
+	}
+
+	.weblink {
+		display: block;
+		color: rgba(0, 0, 0, 0.870588);
+		text-decoration: none;
+
+		i {
+			margin-right: 16px;
+		}
+	}
+}
