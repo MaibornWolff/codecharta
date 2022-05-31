@@ -10,13 +10,10 @@ private val logger = KotlinLogging.logger {}
 class ParserDialog {
     companion object : ParserDialogInterface {
         private const val EXTENSION = "cc.json"
-        private val extensionPattern = Regex(".($EXTENSION)$")
 
         override fun collectParserArgs(): List<String> {
 
-            var inputFileName = KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?")
-            if (!extensionPattern.containsMatchIn(inputFileName))
-                inputFileName += ".$EXTENSION"
+            val inputFileName = KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?")
             logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
@@ -33,7 +30,7 @@ class ParserDialog {
                 default = defaultPathSeparator
             )
 
-            return listOf(inputFileName, "-o $outputFileName", "--path-separator=$pathSeparator")
+            return listOf(inputFileName, "--output-file=$outputFileName", "--path-separator=$pathSeparator")
         }
     }
 }
