@@ -4,17 +4,13 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import mu.KotlinLogging
-
-private val logger = KotlinLogging.logger {}
 
 class ParserDialog {
     companion object : ParserDialogInterface {
         private const val EXTENSION = "log"
-        private val extensionPattern = Regex(".($EXTENSION)$")
 
         override fun collectParserArgs(): List<String> {
-            logger.info { "You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log" }
+            print("You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log")
             val defaultInputFileName = "git.$EXTENSION"
             val inputFileName = KInquirer.promptInput(
                 message = "What is the $EXTENSION file that has to be parsed?",
@@ -29,7 +25,7 @@ class ParserDialog {
                 default = defaultOutputFileName
             )
 
-            logger.info { "You can generate this file with: git ls-files > file-name-list.txt" }
+            print("You can generate this file with: git ls-files > file-name-list.txt")
             val defaultFileNameList = "file-name-list.txt"
             val fileNameList = KInquirer.promptInput(
                 message = "What is the path to the file name list?",
