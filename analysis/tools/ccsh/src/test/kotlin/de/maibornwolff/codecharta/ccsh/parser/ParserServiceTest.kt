@@ -54,7 +54,8 @@ class ParserServiceTest {
             return listOf(
                 Arguments.of("check"),
                 Arguments.of("edgefilter"),
-                Arguments.of("merge")
+                Arguments.of("svnlogparser"),
+                Arguments.of("merge"),
             )
         }
     }
@@ -105,13 +106,6 @@ class ParserServiceTest {
     @Test
     fun `should execute gitlogparser parser`() {
         ParserService.executeSelectedParser(cmdLine, "gitlogparser")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
-    }
-
-    @Test
-    fun `should execute svnlogparser parser`() {
-        ParserService.executeSelectedParser(cmdLine, "svnlogparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
