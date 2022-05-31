@@ -39,13 +39,13 @@ class ParserDialog {
             val mergeModules: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to merge modules in multi-module projects?", default = false)
 
-            return listOf(
+            return listOfNotNull(
                 hostUrl,
                 projectKey,
                 "--user=$user",
                 "--output-file=$outputFileName",
                 "--metrics=$metrics",
-                "--not-compressed=$compress",
+                if (isCompressed) null else "--not-compressed",
                 "--merge-modules=$mergeModules",
             )
         }
