@@ -4,18 +4,14 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import mu.KotlinLogging
-
-private val logger = KotlinLogging.logger {}
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        private const val EXTENSION = "cc.json"
 
         override fun collectParserArgs(): List<String> {
 
             val inputFolderName =
-                KInquirer.promptInput(message = "What is the folder of $EXTENSION files that has to be merged?")
+                KInquirer.promptInput(message = "What is the folder of cc.json files that has to be merged?")
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file?"
@@ -41,7 +37,7 @@ class ParserDialog {
 
             return listOf(
                 inputFolderName,
-                "-o $outputFileName",
+                "--output-file=$outputFileName",
                 "--not-compressed=$compress",
                 "--add-missing=$addMissing",
                 "--recursive=$recursive",
