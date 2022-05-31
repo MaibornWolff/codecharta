@@ -18,7 +18,7 @@ class SonarMeasuresAPIImporter @JvmOverloads constructor(
 
     fun getProjectFromMeasureAPI(projectKey: String, metrics: List<String>): Project {
         val metricsList = getMetricList(metrics)
-        logger.error { "Get values for metrics $metricsList." }
+        logger.info { "Get values for metrics $metricsList." }
 
         val componentMap = measuresDS!!.getComponentMap(projectKey, metricsList)
 
