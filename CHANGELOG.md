@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.97.0] - 2022-05-31
+
 ### Added 🚀
 
 -   Add interactive dialog support for the parsers [#2737](https://github.com/MaibornWolff/codecharta/pull/2737) [#2822](https://github.com/MaibornWolff/codecharta/pull/2822) <br>
