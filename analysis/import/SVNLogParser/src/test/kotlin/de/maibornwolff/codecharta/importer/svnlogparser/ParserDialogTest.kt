@@ -8,10 +8,8 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
 import java.io.File
 
@@ -23,15 +21,14 @@ class ParserDialogTest {
         unmockkAll()
     }
 
-    @ParameterizedTest
-    @MethodSource("provideArguments")
-    fun `should output correct arguments that can be parsed`(
-        fileName: String,
-        outputFileName: String,
-        isCompressed: Boolean,
-        isSilent: Boolean,
-        addAuthor: Boolean
-    ) {
+    @Test
+    fun `should output correct arguments that can be parsed`() {
+        val fileName = "svn.log"
+        val outputFileName = "codecharta.cc.json"
+        val isCompressed = false
+        val isSilent = false
+        val addAuthor = false
+
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any())
@@ -53,16 +50,4 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
     }
 
-    companion object {
-        @JvmStatic
-        fun provideArguments(): List<Arguments> {
-            return listOf(
-                Arguments.of(
-                    "svn", "codecharta.cc.json", false, false, false
-                ), Arguments.of(
-                    "svn.log", "codecharta.cc.json", false, false, false
-                )
-            )
-        }
-    }
 }
