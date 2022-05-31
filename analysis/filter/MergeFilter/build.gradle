@@ -29,6 +29,6 @@ dependencies {
 
 test {
     useJUnitPlatform {
-        includeEngines 'spek2'
+        includeEngines 'junit-jupiter', 'spek2'
     }
 }
