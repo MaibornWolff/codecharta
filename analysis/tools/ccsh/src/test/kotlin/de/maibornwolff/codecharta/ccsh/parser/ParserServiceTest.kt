@@ -54,6 +54,7 @@ class ParserServiceTest {
             return listOf(
                 Arguments.of("check"),
                 Arguments.of("edgefilter"),
+                Arguments.of("merge"),
                 Arguments.of("gitlogparser"),
             )
         }
@@ -79,13 +80,6 @@ class ParserServiceTest {
         ParserService.executeSelectedParser(cmdLine, parser)
 
         verify { anyConstructed<CommandLine>().execute(any()) }
-    }
-
-    @Test
-    fun `should execute merge parser`() {
-        ParserService.executeSelectedParser(cmdLine, "merge")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
