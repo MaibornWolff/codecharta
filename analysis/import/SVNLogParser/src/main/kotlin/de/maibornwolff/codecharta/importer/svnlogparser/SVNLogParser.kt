@@ -23,7 +23,7 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.util.*
+import java.util.Arrays
 import java.util.concurrent.Callable
 import java.util.stream.Stream
 
@@ -72,7 +72,7 @@ class SVNLogParser(
                 "weeks_with_commits",
                 "highly_coupled_files",
                 "median_coupled_files"
-            )
+                                               )
 
             return when (inputFormatNames) {
                 SVN_LOG -> MetricsFactory(nonChurnMetrics)
