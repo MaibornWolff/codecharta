@@ -1,26 +1,12 @@
 import { margin } from "./margin.reducer"
-import { MarginAction, setMargin } from "./margin.actions"
+import { defaultMargin, MarginAction, setMargin } from "./margin.actions"
 
 describe("margin", () => {
-	describe("Default State", () => {
-		it("should initialize the default state", () => {
-			const result = margin(undefined, {} as MarginAction)
-
-			expect(result).toBeNull()
-		})
+	it("should initialize the default state", () => {
+		expect(margin(undefined, {} as MarginAction)).toBe(defaultMargin)
 	})
 
-	describe("Action: SET_MARGIN", () => {
-		it("should set new margin", () => {
-			const result = margin(21, setMargin(42))
-
-			expect(result).toEqual(42)
-		})
-
-		it("should set default margin", () => {
-			const result = margin(21, setMargin())
-
-			expect(result).toBeNull()
-		})
+	it("should set new margin", () => {
+		expect(margin(21, setMargin(42))).toEqual(42)
 	})
 })

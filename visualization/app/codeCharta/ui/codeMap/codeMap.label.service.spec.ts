@@ -185,7 +185,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(35.5)
+			expect(positionWithoutDelta.y).toBe(166.75)
 		})
 
 		it("should calculate correct height without delta with metric values only", () => {
@@ -195,7 +195,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(35.5)
+			expect(positionWithoutDelta.y).toBe(166.75)
 		})
 
 		it("should use node height value if nodeHeight is greater than the nodes height ", () => {
@@ -209,7 +209,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(133.5)
+			expect(positionWithoutDelta.y).toBe(264.75)
 		})
 
 		it("should use the nodes actual height if its greater then nodeHeight", () => {
@@ -221,7 +221,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(43.5)
+			expect(positionWithoutDelta.y).toBe(174.75)
 		})
 
 		it("should calculate correct height without delta for two line label: node name and metric value", () => {
@@ -231,7 +231,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(50.5)
+			expect(positionWithoutDelta.y).toBe(181.75)
 		})
 
 		it("should use the nodes actual height if its greater then nodeHeight and update nodeHeight correctly", () => {
@@ -241,7 +241,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeafDelta, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(48.5)
+			expect(positionWithoutDelta.y).toBe(179.75)
 			expect(codeMapLabelService["nodeHeight"]).toEqual(15)
 		})
 
@@ -252,7 +252,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeafDelta, 20)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(53.5)
+			expect(positionWithoutDelta.y).toBe(184.75)
 			expect(codeMapLabelService["nodeHeight"]).toEqual(20)
 		})
 
@@ -265,14 +265,14 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeafDelta, 0)
 
 			const positionSampleDeltaLeaf: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionSampleDeltaLeaf.y).toBe(48.5)
+			expect(positionSampleDeltaLeaf.y).toBe(179.75)
 
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLabel(sampleLeaf, 0)
 			const positionSampleLeafWithAppliedDeltaNodeHeight: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionSampleLeafWithAppliedDeltaNodeHeight.y).toBe(48.5)
+			expect(positionSampleLeafWithAppliedDeltaNodeHeight.y).toBe(179.75)
 		})
 
 		it("should set the text correctly, creating a two line label", () => {
@@ -296,11 +296,9 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("scaling existing labels multiple times should scale their position correctly", () => {
-			const { margin } = storeService.getState().dynamicSettings
 			const SX = 1
 			const SY = 2
 			const SZ = 3
-			const SCALE_CONSTANT_LABEL = codeMapLabelService["LABEL_HEIGHT_COEFFICIENT"]
 
 			storeService.dispatch(setShowMetricLabelNameValue(true))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
@@ -319,11 +317,7 @@ describe("CodeMapLabelService", () => {
 
 			storeService.dispatch(setScaling(new Vector3(SX, SY, SZ)))
 
-			const expectedScaledSpritePositions = new Vector3(
-				originalSpritePositionsA.x * SX,
-				(originalSpritePositionsA.y - SCALE_CONSTANT_LABEL * margin) * SY + SCALE_CONSTANT_LABEL * margin,
-				originalSpritePositionsA.z * SZ
-			)
+			const expectedScaledSpritePositions = new Vector3(originalSpritePositionsA.x * SX, 232.25, originalSpritePositionsA.z * SZ)
 
 			const expectedScaledLineGeometryStart = new Vector3(
 				originalLineGeometryStartVertices.getX(0) * SX,
@@ -352,7 +346,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService.addLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-			expect(positionWithoutDelta.y).toBe(43.5)
+			expect(positionWithoutDelta.y).toBe(174.75)
 		})
 
 		function assertLabelPositions(scaledLabel, expectedSpritePositions: Vector3, expectedScaledLineGeometryStart: Vector3) {

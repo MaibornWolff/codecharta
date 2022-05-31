@@ -117,7 +117,7 @@ jobs:
 
     - name: Test and Linter
       run: |
-        npm run build:web
+        npm run build
         npm run e2e:ci
       working-directory: ${{env.working-directory}}
 
@@ -169,7 +169,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: coverage
           path: ./visualization/dist/

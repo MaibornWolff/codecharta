@@ -1,26 +1,17 @@
 import { dynamicMargin } from "./dynamicMargin.reducer"
 import { DynamicMarginAction, setDynamicMargin } from "./dynamicMargin.actions"
+import { resetSelection } from "../../files/files.actions"
 
 describe("dynamicMargin", () => {
-	describe("Default State", () => {
-		it("should initialize the default state", () => {
-			const result = dynamicMargin(undefined, {} as DynamicMarginAction)
-
-			expect(result).toBeTruthy()
-		})
+	it("should initialize the default state", () => {
+		expect(dynamicMargin(undefined, {} as DynamicMarginAction)).toBe(true)
 	})
 
-	describe("Action: SET_DYNAMIC_MARGIN", () => {
-		it("should set new dynamicMargin", () => {
-			const result = dynamicMargin(true, setDynamicMargin(false))
+	it("should set new dynamicMargin", () => {
+		expect(dynamicMargin(true, setDynamicMargin(false))).toBe(false)
+	})
 
-			expect(result).toBeFalsy()
-		})
-
-		it("should set default dynamicMargin", () => {
-			const result = dynamicMargin(false, setDynamicMargin())
-
-			expect(result).toBeTruthy()
-		})
+	it("should reset to true on file selection changed", () => {
+		expect(dynamicMargin(false, resetSelection())).toBe(true)
 	})
 })

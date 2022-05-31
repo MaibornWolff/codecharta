@@ -8,11 +8,8 @@ import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadin
 import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
-import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
-import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
-import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
@@ -21,12 +18,7 @@ import { MarkedPackagesService } from "./store/fileSettings/markedPackages/marke
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
-import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
-import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
-import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMetric.service"
-import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
@@ -37,7 +29,6 @@ import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMet
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
-import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 
@@ -54,11 +45,8 @@ angular
 	.service(camelCase(FilesService.name), FilesService)
 	.service(camelCase(MapSizeService.name), MapSizeService)
 	.service(camelCase(MapColorsService.name), MapColorsService)
-	.service(camelCase(ResetCameraIfNewFileIsLoadedService.name), ResetCameraIfNewFileIsLoadedService)
 	.service(camelCase(ShowOnlyBuildingsWithEdgesService.name), ShowOnlyBuildingsWithEdgesService)
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
-	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
-	.service(camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)
 	.service(camelCase(EdgeHeightService.name), EdgeHeightService)
@@ -67,18 +55,12 @@ angular
 	.service(camelCase(EdgesService.name), EdgesService)
 	.service(camelCase(AttributeTypesService.name), AttributeTypesService)
 	.service(camelCase(EdgeMetricService.name), EdgeMetricService)
-	.service(camelCase(MarginService.name), MarginService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
-	.service(camelCase(HeightMetricService.name), HeightMetricService)
-	.service(camelCase(DistributionMetricService.name), DistributionMetricService)
-	.service(camelCase(ColorMetricService.name), ColorMetricService)
-	.service(camelCase(AreaMetricService.name), AreaMetricService)
 	.service(camelCase(IsPresentationModeService.name), IsPresentationModeService)
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
 	.service(camelCase(StoreService.name), StoreService)
 	.service(camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)
-	.service(camelCase(MaxTreeMapFilesService.name), MaxTreeMapFilesService)
 	.service(camelCase(SharpnessModeService.name), SharpnessModeService)
 	.service(camelCase(ExperimentalFeaturesEnabledService.name), ExperimentalFeaturesEnabledService)
 	.service(camelCase(ScreenshotToClipboardEnabledService.name), ScreenshotToClipboardEnabledService)
