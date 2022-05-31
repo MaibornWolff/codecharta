@@ -1865,7 +1865,7 @@ export const DEFAULT_STATE: State = {
 		heightMetric: null,
 		distributionMetric: null,
 		edgeMetric: null,
-		margin: null,
+		margin: 50,
 		colorRange: {
 			from: null,
 			to: null
