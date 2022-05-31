@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.svnlogparser
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.svnlogparser.InputFormatNames.SVN_LOG
-import de.maibornwolff.codecharta.importer.svnlogparser.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.importer.svnlogparser.converter.ProjectConverter
 import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
@@ -10,6 +9,8 @@ import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserS
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -22,7 +23,7 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.util.Arrays
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
 
@@ -35,7 +36,7 @@ class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-                  ) : Callable<Void> {
+                  ) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -152,13 +153,6 @@ class SVNLogParser(
     companion object {
 
         @JvmStatic
-        fun main(args: Array<String>) {
-            val commandLine = CommandLine(SVNLogParser())
-            val collectedArgs = collectParserArgs()
-            commandLine.execute(*collectedArgs.toTypedArray())
-        }
-
-        @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine.call(SVNLogParser(input, output, error), output, *args)
         }
@@ -178,4 +172,6 @@ class SVNLogParser(
             return detector.detectedCharset
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }

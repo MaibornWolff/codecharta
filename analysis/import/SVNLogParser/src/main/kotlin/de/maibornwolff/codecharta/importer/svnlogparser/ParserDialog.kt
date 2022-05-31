@@ -22,8 +22,6 @@ class ParserDialog {
                 hint = defaultInputFileName,
                 default = defaultInputFileName
             )
-            if (!extensionPattern.containsMatchIn(inputFileName))
-                inputFileName += ".$EXTENSION"
             logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
@@ -44,7 +42,7 @@ class ParserDialog {
 
             return listOf(
                 inputFileName,
-                "-o $outputFileName",
+                "--output-file=$outputFileName",
                 "--not-compressed=$isCompressed",
                 "--silent=$isSilent",
                 "--add-author=$addAuthor"
