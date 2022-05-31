@@ -53,7 +53,8 @@ class ParserServiceTest {
         fun provideArguments(): List<Arguments> {
             return listOf(
                 Arguments.of("check"),
-                Arguments.of("edgefilter")
+                Arguments.of("edgefilter"),
+                Arguments.of("sonarimport")
             )
         }
     }
@@ -90,13 +91,6 @@ class ParserServiceTest {
     @Test
     fun `should execute modify parser`() {
         ParserService.executeSelectedParser(cmdLine, "modify")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
-    }
-
-    @Test
-    fun `should execute sonarimport parser`() {
-        ParserService.executeSelectedParser(cmdLine, "sonarimport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
