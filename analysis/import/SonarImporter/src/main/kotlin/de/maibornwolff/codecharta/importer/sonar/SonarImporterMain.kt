@@ -57,7 +57,7 @@ class SonarImporterMain(
     @CommandLine.Option(names = ["-u", "--user"], description = ["user token for connecting to remote sonar instance"])
     private var user = ""
 
-    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"], arity = "0")
     private var compress = true
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
