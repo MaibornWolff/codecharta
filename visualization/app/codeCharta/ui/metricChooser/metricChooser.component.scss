@@ -1,162 +1,57 @@
-$optionHeight: 48;
+@use "../../../material/theme";
 
-cc-metric-value-hovered {
-	position: absolute;
-	top: 2px;
-	right: 2px;
-}
+cc-metric-chooser {
+	position: relative;
+	width: 100%;
 
-cc-metric-value-hovered,
-area-metric-chooser-component,
-height-metric-chooser-component,
-color-metric-chooser-component,
-distribution-metric-chooser-component,
-edge-chooser-component {
-	.metric-value {
-		height: 25px;
+	cc-metric-chooser-value-hovered,
+	.cc-metric-chooser-hovered-container {
 		position: absolute;
+		bottom: 0;
 		right: 0;
 
-		.rounded-box {
-			background-color: #e6e6e6;
-			border-radius: 2px;
-			padding: 2px 5px;
-			display: inline-block;
-		}
-	}
+		.metric-value {
+			height: 25px;
 
-	md-input-container {
-		display: block;
-		top: -5px;
-		margin: 0;
-		text-align: left;
-
-		> * {
-			display: inline-block;
-		}
-
-		md-select {
-			display: inline-block;
-			position: absolute;
-			left: 30px;
-			right: 0;
-
-			.metric-max-value {
-				display: none;
+			.rounded-box {
+				background-color: #e6e6e6;
+				border-radius: 2px;
+				padding: 2px 5px;
+				display: inline-block;
 			}
-
-			.attribute-type-select {
-				display: none;
-			}
-
-			.md-select-value span {
-				max-height: 18px;
-				overflow: hidden;
-				text-align: inherit !important;
-			}
-		}
-
-		i.fa {
-			margin-top: 8px;
-			vertical-align: middle;
-			margin-left: 5px;
-			margin-right: 5px;
-			width: 16px;
-			text-align: center;
 		}
 	}
 }
 
-.md-select-menu-container {
-	font-size: 12pt !important;
+.mat-select-panel.cc-metric-chooser {
+	margin-top: 16px;
+	width: 360px;
+	max-width: 360px;
 
-	&.ribbonBarDropdown {
-		top: 92px !important;
-	}
+	.cc-metric-chooser-search-field {
+		width: 100%;
+		color: theme.$cc-primary-color;
+		font-size: 14px;
 
-	&.distributionBarDropdown {
-		top: 45px !important;
-	}
+		.search-icon {
+			margin-right: 8px;
+			margin-left: 8px;
+			font-size: 18px;
+		}
 
-	.md-overflow {
-		display: initial;
-	}
-
-	.search-bar {
-		i,
-		input {
-			background-color: #f5f5f5;
-			padding: 10px;
-			border: none rgba(0, 0, 0, 0.12);
-			border-bottom: 2px solid;
+		.mat-form-field-label {
+			margin-top: 4px;
 		}
 	}
 
-	.search-bar:focus-within {
-		i,
-		input {
-			border-color: rgb(0, 150, 136);
-			color: rgb(0, 150, 136);
-		}
-	}
-
-	.search-icon {
-		position: absolute;
-		left: 0;
-		width: 12%;
-		height: $optionHeight - 8 + px;
-		top: 8px;
-		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-	}
-
-	.metric-search {
-		display: block;
-		position: fixed;
-		top: 8px;
-		left: 12%;
-		width: 88%;
-		height: $optionHeight - 8 + px;
-		outline: none;
-		font-family: Arial, FontAwesome, sans-serif;
-		font-size: 11pt;
-		box-shadow: 5px 1px 5px 0 rgba(0, 0, 0, 0.2);
-	}
-
-	md-content.option-group {
-		top: $optionHeight + px !important;
-		min-height: auto;
-		margin-bottom: 40px;
-		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+	.cc-metric-chooser-option-container {
+		margin-top: -18px;
+		max-height: 216px;
+		overflow-y: auto;
+		font-size: 16px;
 
 		.metric-max-value {
-			color: #ccc !important;
-			margin-left: 5px !important;
-		}
-	}
-}
-
-distribution-metric-chooser-component {
-	md-input-container {
-		width: 210px;
-		top: 0;
-		padding: 0;
-		font-size: 12px;
-		background-color: white;
-
-		md-select-value {
-			min-height: 0 !important;
-			height: 15px;
-			padding: 0 !important;
-			border-bottom: none !important;
-
-			span {
-				margin-bottom: 2px;
-			}
-		}
-
-		i.fa {
-			margin-top: 2px;
-			margin-right: 5px;
+			color: #ccc;
 		}
 	}
 }

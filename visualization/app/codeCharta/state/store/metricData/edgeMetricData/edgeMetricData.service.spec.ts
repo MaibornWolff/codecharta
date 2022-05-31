@@ -87,24 +87,4 @@ describe("EdgeMetricDataService", () => {
 			expect(affectedNodes).toEqual(3)
 		})
 	})
-
-	describe("getNodesWithHighestValues", () => {
-		it("should return empty if metric is non-existent", () => {
-			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("something", 11)
-
-			expect(nodePaths).toEqual([])
-		})
-
-		it("should return the correct nodes", () => {
-			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("pairingRate", 2)
-
-			expect(nodePaths).toEqual(["/root/big leaf", "/root/Parent Leaf/small leaf"])
-		})
-
-		it("should return an empty set if amount of edges is 0", () => {
-			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("pairingRate", 0)
-
-			expect(nodePaths).toEqual([])
-		})
-	})
 })

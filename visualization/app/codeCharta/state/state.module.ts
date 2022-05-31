@@ -10,7 +10,6 @@ import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
-import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
@@ -19,12 +18,7 @@ import { MarkedPackagesService } from "./store/fileSettings/markedPackages/marke
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
-import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
-import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
-import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMetric.service"
-import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
@@ -53,7 +47,6 @@ angular
 	.service(camelCase(MapColorsService.name), MapColorsService)
 	.service(camelCase(ShowOnlyBuildingsWithEdgesService.name), ShowOnlyBuildingsWithEdgesService)
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
-	.service(camelCase(DynamicMarginService.name), DynamicMarginService)
 	.service(camelCase(CameraService.name), CameraService)
 	.service(camelCase(ScalingService.name), ScalingService)
 	.service(camelCase(EdgeHeightService.name), EdgeHeightService)
@@ -62,12 +55,7 @@ angular
 	.service(camelCase(EdgesService.name), EdgesService)
 	.service(camelCase(AttributeTypesService.name), AttributeTypesService)
 	.service(camelCase(EdgeMetricService.name), EdgeMetricService)
-	.service(camelCase(MarginService.name), MarginService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
-	.service(camelCase(HeightMetricService.name), HeightMetricService)
-	.service(camelCase(DistributionMetricService.name), DistributionMetricService)
-	.service(camelCase(ColorMetricService.name), ColorMetricService)
-	.service(camelCase(AreaMetricService.name), AreaMetricService)
 	.service(camelCase(IsPresentationModeService.name), IsPresentationModeService)
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
