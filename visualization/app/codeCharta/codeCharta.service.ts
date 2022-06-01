@@ -3,13 +3,10 @@ import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { setFiles, setMultipleByNames } from "./state/store/files/files.actions"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { setState } from "./state/store/state.actions"
-import { ScenarioHelper } from "./util/scenarioHelper"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { setRecentFiles } from "./state/store/dynamicSettings/recentFiles/recentFiles.actions"
-import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { NameDataPair } from "./codeCharta.model"
 
 export class CodeChartaService {
@@ -44,7 +41,6 @@ export class CodeChartaService {
 			this.storeService.dispatch(setMultipleByNames(this.recentFiles))
 
 			CodeChartaService.updateRootData(rootName)
-			this.setDefaultScenario()
 
 			this.fileStates = []
 			this.recentFiles = []
@@ -121,16 +117,6 @@ export class CodeChartaService {
 			fileNameOccurrence++
 		}
 		return newFileName
-	}
-
-	private setDefaultScenario() {
-		const { areaMetric, heightMetric, colorMetric } = ScenarioHelper.getDefaultScenarioSetting().dynamicSettings
-		const names = [areaMetric, heightMetric, colorMetric]
-		const metricNames = new Set(nodeMetricDataSelector(this.storeService.getState()).map(x => x.name))
-
-		if (names.every(metric => metricNames.has(metric))) {
-			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
-		}
 	}
 
 	static updateRootData(rootName: string) {
