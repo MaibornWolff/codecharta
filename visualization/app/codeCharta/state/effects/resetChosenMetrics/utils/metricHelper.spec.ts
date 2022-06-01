@@ -1,4 +1,4 @@
-import { defaultNMetrics, isAnyMetricAvailable, isScenarioApplicable } from "./metricHelper"
+import { defaultNMetrics, isAnyMetricAvailable, areScenarioSettingsApplicable } from "./metricHelper"
 
 describe("metricHelper", () => {
 	describe("isAnyMetricAvailable", () => {
@@ -35,17 +35,17 @@ describe("metricHelper", () => {
 		})
 	})
 
-	describe("isScenarioApplicable", () => {
+	describe("areScenarioSettingsApplicable", () => {
 		it("should return true when area-, height- and colorMetric is available", () => {
 			const scenario = { dynamicSettings: { areaMetric: "a", heightMetric: "a", colorMetric: "a" } }
 			const metricData = [{ name: "a", maxValue: 3 }]
-			expect(isScenarioApplicable(scenario, metricData)).toBe(true)
+			expect(areScenarioSettingsApplicable(scenario, metricData)).toBe(true)
 		})
 
 		it("should return false when there is no colorMetric", () => {
 			const scenario = { dynamicSettings: { areaMetric: "a", heightMetric: "a", colorMetric: "b" } }
 			const metricData = [{ name: "a", maxValue: 3 }]
-			expect(isScenarioApplicable(scenario, metricData)).toBe(false)
+			expect(areScenarioSettingsApplicable(scenario, metricData)).toBe(false)
 		})
 	})
 })

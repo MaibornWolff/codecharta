@@ -4,7 +4,7 @@ export function isAnyMetricAvailable<T extends Pick<NodeMetricData, "maxValue">[
 	return metricData.some(x => x.maxValue > 0)
 }
 
-export function isScenarioApplicable(scenario: RecursivePartial<Settings>, nodeMetricData: Pick<NodeMetricData, "name">[]) {
+export function areScenarioSettingsApplicable(scenario: RecursivePartial<Settings>, nodeMetricData: Pick<NodeMetricData, "name">[]) {
 	const { areaMetric, heightMetric, colorMetric } = scenario.dynamicSettings
 	const relevantMetrics = [areaMetric, heightMetric, colorMetric]
 	const existingMetrics = new Set(nodeMetricData.map(x => x.name))
