@@ -56,6 +56,7 @@ class ParserServiceTest {
                 Arguments.of("edgefilter"),
                 Arguments.of("svnlogparser"),
                 Arguments.of("merge"),
+                Arguments.of("gitlogparser"),
             )
         }
     }
@@ -99,13 +100,6 @@ class ParserServiceTest {
     @Test
     fun `should execute sourcemonitorimport parser`() {
         ParserService.executeSelectedParser(cmdLine, "sourcemonitorimport")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
-    }
-
-    @Test
-    fun `should execute gitlogparser parser`() {
-        ParserService.executeSelectedParser(cmdLine, "gitlogparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
