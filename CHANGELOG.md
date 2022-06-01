@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## Fixed 🐞
+### Added 🚀
+
+-   Added missing documentation for ccsh filters and csv exporter [#2577]()
+
+### Fixed 🐞
 
 -   Default selected metrics on file changes when default scenario is not applicable [#2828](https://github.com/MaibornWolff/codecharta/pull/2828)
 
