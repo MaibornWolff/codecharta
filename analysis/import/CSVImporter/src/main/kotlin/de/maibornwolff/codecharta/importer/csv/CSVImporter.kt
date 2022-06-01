@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -16,12 +18,12 @@ import java.util.concurrent.Callable
     description = ["generates cc.json from csv with header"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class CSVImporter : Callable<Void> {
+class CSVImporter : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-d", "--delimeter"], description = ["delimeter in csv file"])
+    @CommandLine.Option(names = ["-d", "--delimiter"], description = ["delimiter in csv file"])
     private var csvDelimiter = ','
 
     @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
@@ -64,4 +66,6 @@ class CSVImporter : Callable<Void> {
             CommandLine.call(CSVImporter(), System.out, *args)
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
