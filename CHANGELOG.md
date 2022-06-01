@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Fixed 🐞
+
+-   Default selected metrics on file changes when default scenario is not applicable [#2828](https://github.com/MaibornWolff/codecharta/pull/2828)
+
 ## [1.97.0] - 2022-05-31
 
 ### Added 🚀

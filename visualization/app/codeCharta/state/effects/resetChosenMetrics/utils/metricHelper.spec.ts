@@ -1,4 +1,4 @@
-import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "./metricHelper"
+import { defaultNMetrics, isAnyMetricAvailable, areScenarioSettingsApplicable } from "./metricHelper"
 
 describe("metricHelper", () => {
 	describe("isAnyMetricAvailable", () => {
@@ -11,31 +11,41 @@ describe("metricHelper", () => {
 		})
 	})
 
-	describe("isMetricUnavailable", () => {
-		it("should return true, when given metric is not available", () => {
-			expect(isMetricUnavailable([{ name: "a", maxValue: 1 }], "b")).toBe(true)
+	describe("defaultNMetrics", () => {
+		it("should default first n metrics with value", () => {
+			const metricData = [
+				{ name: "a", maxValue: 0 },
+				{ name: "b", maxValue: 2 }
+			]
+			expect(defaultNMetrics(metricData, 1)).toEqual(["b"])
 		})
 
-		it("should return false, when given metric is available", () => {
-			expect(isMetricUnavailable([{ name: "a", maxValue: 1 }], "a")).toBe(false)
+		it("should fill up default metrics with last metric which had a value", () => {
+			const metricData = [
+				{ name: "a", maxValue: 0 },
+				{ name: "b", maxValue: 2 },
+				{ name: "c", maxValue: 0 }
+			]
+			expect(defaultNMetrics(metricData, 2)).toEqual(["b", "b"])
+		})
+
+		it("should throw in case there are no metrics available", () => {
+			const metricData = [{ name: "a", maxValue: 0 }]
+			expect(() => defaultNMetrics(metricData, 2)).toThrow()
 		})
 	})
 
-	describe("getMetricNameFromIndexOrLast", () => {
-		it("should return metric at given index if it exists", () => {
-			expect(
-				getMetricNameFromIndexOrLast(
-					[
-						{ name: "a", maxValue: 1 },
-						{ name: "b", maxValue: 2 }
-					],
-					0
-				)
-			).toBe("a")
+	describe("areScenarioSettingsApplicable", () => {
+		it("should return true when area-, height- and colorMetric is available", () => {
+			const scenario = { dynamicSettings: { areaMetric: "a", heightMetric: "a", colorMetric: "a" } }
+			const metricData = [{ name: "a", maxValue: 3 }]
+			expect(areScenarioSettingsApplicable(scenario, metricData)).toBe(true)
 		})
 
-		it("should return metric at last index if given index is to large", () => {
-			expect(getMetricNameFromIndexOrLast([{ name: "a", maxValue: 1 }], 1)).toBe("a")
+		it("should return false when there is no colorMetric", () => {
+			const scenario = { dynamicSettings: { areaMetric: "a", heightMetric: "a", colorMetric: "b" } }
+			const metricData = [{ name: "a", maxValue: 3 }]
+			expect(areScenarioSettingsApplicable(scenario, metricData)).toBe(false)
 		})
 	})
 })
