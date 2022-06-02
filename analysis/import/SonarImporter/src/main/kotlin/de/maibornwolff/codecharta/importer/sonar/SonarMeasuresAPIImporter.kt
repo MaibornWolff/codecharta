@@ -4,6 +4,9 @@ import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIData
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 class SonarMeasuresAPIImporter @JvmOverloads constructor(
     private val measuresDS: SonarMeasuresAPIDatasource?,
@@ -15,7 +18,7 @@ class SonarMeasuresAPIImporter @JvmOverloads constructor(
 
     fun getProjectFromMeasureAPI(projectKey: String, metrics: List<String>): Project {
         val metricsList = getMetricList(metrics)
-        System.err.println("Get values for metrics $metricsList.")
+        logger.info { "Get values for metrics $metricsList." }
 
         val componentMap = measuresDS!!.getComponentMap(projectKey, metricsList)
 

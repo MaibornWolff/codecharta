@@ -5,11 +5,11 @@ import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.junit.WireMockRule
-import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain.Companion.main
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import picocli.CommandLine
 import javax.ws.rs.core.MediaType
 import kotlin.jvm.Throws
 
@@ -51,7 +51,7 @@ class SonarImporterMainTest {
                 )
         )
 
-        main(arrayOf("http://localhost:8089/", "someproject"))
+        CommandLine(SonarImporterMain()).execute(*arrayOf("http://localhost:8089/", "someproject"))
 
         verify(1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)))
     }
@@ -69,7 +69,7 @@ class SonarImporterMainTest {
                 )
         )
 
-        main(arrayOf("http://localhost:8089", "someproject"))
+        CommandLine(SonarImporterMain()).execute(*arrayOf("http://localhost:8089", "someproject"))
 
         verify(1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)))
     }

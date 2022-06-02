@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatas
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarVersionAPIDatasource
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.FileWriter
@@ -23,9 +25,8 @@ import java.util.concurrent.Callable
 )
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : Callable<Void> {
+    private val output: PrintStream = System.out
+) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = [
         "Please locate:\n" +
@@ -56,7 +57,7 @@ class SonarImporterMain(
     @CommandLine.Option(names = ["-u", "--user"], description = ["user token for connecting to remote sonar instance"])
     private var user = ""
 
-    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"], arity = "0")
     private var compress = true
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
@@ -83,7 +84,7 @@ class SonarImporterMain(
     }
 
     override fun call(): Void? {
-        print(" ")
+
         val importer = createMeasuresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, metrics)
 
@@ -97,16 +98,5 @@ class SonarImporterMain(
         return null
     }
 
-    companion object {
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine.call(SonarImporterMain(), System.out, *args)
-        }
-
-        @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(SonarImporterMain(input, output, error), output, *args)
-        }
-    }
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
