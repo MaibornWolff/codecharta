@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Added missing documentation for ccsh filters and csv exporter [#2577]()
+-   Added missing documentation for ccsh filters and csv exporter [#2831](https://github.com/MaibornWolff/codecharta/pull/2831)
 
 ### Fixed 🐞
 
