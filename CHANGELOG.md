@@ -9,12 +9,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add interactive dialog support for the parsers [#2737](https://github.com/MaibornWolff/codecharta/pull/2737) <br>
+-   Added missing documentation for ccsh filters and csv exporter [#2831](https://github.com/MaibornWolff/codecharta/pull/2831)
+-   Added support for compressed files to all analysis filters and to `check` validation
+
+### Fixed 🐞
+
+-   Default selected metrics on file changes when default scenario is not applicable [#2828](https://github.com/MaibornWolff/codecharta/pull/2828)
+
+## [1.97.0] - 2022-05-31
+
+### Added 🚀
+
+-   Add interactive dialog support for the parsers [#2737](https://github.com/MaibornWolff/codecharta/pull/2737) [#2822](https://github.com/MaibornWolff/codecharta/pull/2822) <br>
     ![m](https://user-images.githubusercontent.com/48621967/161549546-1463914e-c223-4912-acb1-db4e357e76c5.png)
 
 ### Changed
 
 -   Hide color metric range-slider in color metric options of ribbon bar in delta mode instead of disabling it [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Display max value of selected distribution metric in file extension bar [#2824](https://github.com/MaibornWolff/codecharta/pull/2824)
+-   Display max value of selected metric in all metric chooser of ribbon bar [#2825](https://github.com/MaibornWolff/codecharta/pull/2825)
 
 ### Fixed 🐞
 
@@ -25,6 +38,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Track not only changes to color metric options by slider but also by related input field [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Migrate center-map-button-component to Angular [#2809](https://github.com/MaibornWolff/codecharta/pull/2809)
+-   Migrate the following components to Angular: globalSettingsButton.component, dialog.globalSettings.component, layoutSelection.component, sharpnessModeSelector.component, maxTreeMapFiles.component, maxTreeMapFiles.service, hideFlatBuildings.service, resetCameraIfNewFileIsLoaded.service [#2815](https://github.com/MaibornWolff/codecharta/pull/2815)
+-   Migrate area-settings-panel-component to Angular [#2821](https://github.com/MaibornWolff/codecharta/pull/2821)
 
 ## [1.96.0] - 2022-05-17
 
@@ -35,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
+-   Limit length of labels in legend panel [#2804](https://github.com/MaibornWolff/codecharta/pull/2804)
 -   Prevent invalid input for margin in area metric options to be submitted [#2799](https://github.com/MaibornWolff/codecharta/pull/2799)
 
 ### Chore 👨‍💻 👩‍💻

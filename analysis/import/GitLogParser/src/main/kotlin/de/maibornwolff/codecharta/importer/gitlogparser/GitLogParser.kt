@@ -9,6 +9,8 @@ import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstat
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -33,7 +35,7 @@ class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void> {
+) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -52,7 +54,7 @@ class GitLogParser(
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
 
-    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
+    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"], arity = "0")
     private var compress = true
 
     @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
@@ -189,11 +191,6 @@ class GitLogParser(
 
     companion object {
 
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine.call(GitLogParser(), System.out, *args)
-        }
-
         private fun guessEncoding(pathToLog: File): String? {
             val inputStream = pathToLog.inputStream()
             val buffer = ByteArray(4096)
@@ -209,4 +206,6 @@ class GitLogParser(
             return detector.detectedCharset
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }

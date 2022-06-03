@@ -5,24 +5,22 @@ repositories {
 }
 
 dependencies {
-    implementation project(':model')
 
+    implementation project(':tools:InteractiveParser')
+    implementation project(':model')
     implementation group: 'com.github.everit-org.json-schema', name: 'org.everit.json.schema', version: json_schema_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
+    implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+    implementation "com.github.kotlin-inquirer:kotlin-inquirer:$kotlin_inquirer_version"
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
-    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
-        exclude group: 'org.jetbrains.kotlin'
-    }
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
+    testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
 
-    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek2_version") {
-        exclude group: 'org.jetbrains.kotlin'
-    }
     testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 }
 
 test {
     useJUnitPlatform {
-        includeEngines 'spek2'
     }
 }

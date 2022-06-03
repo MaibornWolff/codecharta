@@ -2,7 +2,7 @@ import { IsEdgeMetricVisibleActions, IsEdgeMetricVisibleAction, defaultIsEdgeMet
 
 export function isEdgeMetricVisible(state = defaultIsEdgeMetricVisible, action: IsEdgeMetricVisibleAction) {
 	switch (action.type) {
-		case IsEdgeMetricVisibleActions.SET_IS_EDGE_METRIC_VISIBLE:
+		case IsEdgeMetricVisibleActions.TOGGLE_IS_EDGE_METRIC_VISIBLE:
 			return !state
 		default:
 			return state

@@ -1,20 +1,14 @@
-import { downgradeComponent } from "@angular/upgrade/static"
-import angular from "angular"
-import "../../state/state.module"
-import {
-	areaMetricChooserComponent,
-	colorMetricChooserComponent,
-	heightMetricChooserComponent,
-	distribitionMetricChooserComponent
-} from "./metricChooser.component"
-import { MetricValueHoveredComponent } from "./metricValueHovered/metricValueHovered.component"
+import { CommonModule } from "@angular/common"
+import { NgModule } from "@angular/core"
+import { FormsModule } from "@angular/forms"
+import { MaterialModule } from "../../../material/material.module"
+import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
+import { MetricChooserComponent } from "./metricChooser.component"
 
-angular.module("app.codeCharta.ui.metricChooser", ["app.codeCharta.state"])
-
-angular
-	.module("app.codeCharta.ui.metricChooser")
-	.component(areaMetricChooserComponent.selector, areaMetricChooserComponent)
-	.component(heightMetricChooserComponent.selector, heightMetricChooserComponent)
-	.component(colorMetricChooserComponent.selector, colorMetricChooserComponent)
-	.component(distribitionMetricChooserComponent.selector, distribitionMetricChooserComponent)
-	.directive("ccMetricValueHovered", downgradeComponent({ component: MetricValueHoveredComponent }))
+@NgModule({
+	imports: [CommonModule, MaterialModule, FormsModule],
+	declarations: [MetricChooserComponent, FilterMetricDataBySearchTermPipe],
+	exports: [MetricChooserComponent],
+	entryComponents: [MetricChooserComponent]
+})
+export class MetricChooserModule {}

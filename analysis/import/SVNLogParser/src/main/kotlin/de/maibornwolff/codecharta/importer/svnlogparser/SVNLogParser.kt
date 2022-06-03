@@ -9,6 +9,8 @@ import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserS
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -34,7 +36,7 @@ class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-                  ) : Callable<Void> {
+                  ) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -70,7 +72,7 @@ class SVNLogParser(
                 "weeks_with_commits",
                 "highly_coupled_files",
                 "median_coupled_files"
-            )
+                                               )
 
             return when (inputFormatNames) {
                 SVN_LOG -> MetricsFactory(nonChurnMetrics)
@@ -151,11 +153,6 @@ class SVNLogParser(
     companion object {
 
         @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine.call(SVNLogParser(), System.out, *args)
-        }
-
-        @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine.call(SVNLogParser(input, output, error), output, *args)
         }
@@ -175,4 +172,6 @@ class SVNLogParser(
             return detector.detectedCharset
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }

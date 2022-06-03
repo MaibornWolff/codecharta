@@ -1,8 +1,22 @@
 file-extension-bar-component {
 	z-index: 30;
 
-	.metric-chooser {
+	cc-distribution-metric-chooser {
 		float: left;
+		width: 210px;
+		height: 17px;
+		display: inline-flex;
+		font-size: 12px;
+
+		i.fa {
+			margin-top: 2px;
+			margin-left: 4px;
+			margin-right: 8px;
+		}
+
+		.mat-select {
+			border-bottom: 0;
+		}
 	}
 
 	.expand-button {

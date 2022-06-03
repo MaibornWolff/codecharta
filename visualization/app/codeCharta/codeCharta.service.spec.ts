@@ -254,36 +254,6 @@ describe("codeChartaService", () => {
 			expect(storeService.getState().files[1].selectedAs).toEqual("Partial")
 		})
 
-		it("should load the default scenario after loading a valid file", async () => {
-			await codeChartaService.loadFiles([
-				{
-					fileName,
-					content: validFileContent,
-					fileSize: 42
-				}
-			])
-
-			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("rloc")
-			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("mcc")
-			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("mcc")
-		})
-
-		it("should not load the default scenario after loading a valid file, that does not have the required metrics", async () => {
-			metricData.pop()
-
-			await codeChartaService.loadFiles([
-				{
-					fileName,
-					content: validFileContent,
-					fileSize: 42
-				}
-			])
-
-			expect(storeService.getState().dynamicSettings.areaMetric).toBeNull()
-			expect(storeService.getState().dynamicSettings.heightMetric).toBeNull()
-			expect(storeService.getState().dynamicSettings.colorMetric).toBeNull()
-		})
-
 		it("should show error on invalid file", async () => {
 			const expectedError: CCFileValidationResult[] = [
 				{

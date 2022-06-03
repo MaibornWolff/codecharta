@@ -9,11 +9,20 @@ import { sortByMetricName } from "./sortByMetricName"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
-// Required for performance improvements
-// TODO move this as soon as edgeMetricData.service is deleted, to prevent random access / non unidirectional data flow
+/** @deprecated use edgeMetricMapSelector instead to ensure unidirectional data flow and prevent random manipulation */
 export let nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
-export const edgeMetricDataSelector = createSelector([visibleFileStatesSelector, blacklistSelector], calculateEdgeMetricData)
+const edgeMetricDataAndMapSelector = createSelector([visibleFileStatesSelector, blacklistSelector], calculateEdgeMetricData)
+
+export const edgeMetricDataSelector = createSelector(
+	[edgeMetricDataAndMapSelector],
+	edgeMetricDataAndMap => edgeMetricDataAndMap.sortedEdgeMetricList
+)
+
+export const edgeMetricMapSelector = createSelector(
+	[edgeMetricDataAndMapSelector],
+	edgeMetricDataAndMap => edgeMetricDataAndMap.nodeEdgeMetricsMap
+)
 
 export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
@@ -38,7 +47,7 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
 	}
 	const newEdgeMetricData = getMetricDataFromMap()
 	sortByMetricName(newEdgeMetricData)
-	return newEdgeMetricData
+	return { sortedEdgeMetricList: newEdgeMetricData, nodeEdgeMetricsMap }
 }
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]) {

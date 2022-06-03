@@ -3,7 +3,7 @@ import { Component, Inject, OnInit } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { Observable } from "rxjs"
 import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
-import { setIsEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 @Component({
 	selector: "cc-edge-metric-toggle",
@@ -19,6 +19,6 @@ export class EdgeMetricToggleComponent implements OnInit {
 	}
 
 	toggleEdgeMetric() {
-		this.store.dispatch(setIsEdgeMetricVisible())
+		this.store.dispatch(toggleEdgeMetricVisible())
 	}
 }

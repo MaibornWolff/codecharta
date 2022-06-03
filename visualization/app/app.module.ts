@@ -28,7 +28,6 @@ import {
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
-import { InvertAreaOptionComponent } from "./codeCharta/ui/areaSettingsPanel/invertAreaOption/invertAreaOption.component"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
@@ -39,16 +38,23 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
-import { MetricValueHoveredModule } from "./codeCharta/ui/metricChooser/metricValueHovered/metricValueHovered.module"
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
-import { MetricTypeHoveredModule } from "./codeCharta/ui/metricChooser/metricTypeHovered/metricTypeHovered.module"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
-import { ResetSettingsButtonModule } from "./codeCharta/ui/resetSettingsButton/resetSettingsButton.module"
 import { MetricColorRangeSliderModule } from "./codeCharta/ui/colorSettingsPanel/metricColorRangeSlider/metricColorRangeSlider.module"
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
+import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
+import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
+import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effects/syncGlobalSettingsInLocalStorage/syncGlobalSettingsInLocalStorage.effect"
+import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBar/distributionMetricChooser/distributionMetricChooser..module"
+import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
+import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
+import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
+import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
+import { RibbonBarModule } from "./codeCharta/ui/ribbonBar/ribbonBar.module"
+import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
 
 @NgModule({
 	imports: [
@@ -60,7 +66,11 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 			OpenNodeContextMenuEffect,
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect,
-			ResetColorRangeEffect
+			ResetColorRangeEffect,
+			SyncGlobalSettingsInLocalStorageEffect,
+			ResetDynamicMarginEffect,
+			ResetChosenMetricsEffect,
+			UpdateEdgePreviewsEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
@@ -74,13 +84,16 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 		LoadingFileProgressSpinnerModule,
 		LoadingMapProgressSpinnerModule,
 		SearchPanelModule,
-		MetricTypeHoveredModule,
-		MetricValueHoveredModule,
 		CustomConfigsModule,
 		FilePanelModule,
 		HeightSettingsPanelModule,
-		ResetSettingsButtonModule,
-		MetricColorRangeSliderModule
+		MetricColorRangeSliderModule,
+		CenterMapButtonModule,
+		GlobalConfigurationButtonModule,
+		DistributionMetricChooserModule,
+		AreaSettingsPanelModule,
+		MetricChooserModule,
+		RibbonBarModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -89,14 +102,13 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 		threeCameraServiceProvider,
 		threeOrbitControlsServiceProvider
 	],
-	declarations: [InvertAreaOptionComponent, EdgeMetricToggleComponent, UploadFilesButtonComponent, ...dialogs],
+	declarations: [EdgeMetricToggleComponent, UploadFilesButtonComponent, ...dialogs],
 	entryComponents: [
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
 		LegendPanelComponent,
 		LabelledColorPickerComponent,
 		ColorPickerForMapColorComponent,
-		InvertAreaOptionComponent,
 		FocusButtonsComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,

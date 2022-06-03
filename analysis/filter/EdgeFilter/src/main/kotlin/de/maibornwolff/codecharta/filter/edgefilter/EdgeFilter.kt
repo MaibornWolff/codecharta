@@ -1,8 +1,9 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import de.maibornwolff.codecharta.filter.edgefilter.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
@@ -12,7 +13,7 @@ import java.util.concurrent.Callable
     description = ["aggregtes edgeAttributes as nodeAttributes into a new cc.json file"],
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
-class EdgeFilter : Callable<Void?> {
+class EdgeFilter : Callable<Void?>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -37,12 +38,5 @@ class EdgeFilter : Callable<Void?> {
         return null
     }
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val commandLine = CommandLine(EdgeFilter())
-            val collectedArgs = collectParserArgs()
-            commandLine.execute(*collectedArgs.toTypedArray())
-        }
-    }
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
