@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
 import model.src.main.kotlin.de.maibornwolff.codecharta.serialization.NodeJsonDeserializer
 import mu.KotlinLogging
+import java.io.FileInputStream
 import java.io.InputStream
 import java.io.Reader
 
@@ -28,8 +29,14 @@ object ProjectDeserializer {
         return projectWrapper.data
     }
 
+    fun deserializeProject(input: FileInputStream): Project {
+        val projectWrapper = GSON.fromJson(CompressedStreamHandler.handleInput(input).bufferedReader(), ProjectWrapper::class.java)
+        return projectWrapper.data
+    }
+
     fun deserializeProject(input: InputStream): Project? {
-        val projectString = input.mapLines { it }.joinToString(separator = "") { it }
+        val content = CompressedStreamHandler.handleInput(input)
+        val projectString = content.mapLines { it }.joinToString(separator = "") { it }
         if (projectString.length <= 1) return null
 
         return try {
