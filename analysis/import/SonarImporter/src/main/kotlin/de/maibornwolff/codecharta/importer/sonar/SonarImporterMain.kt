@@ -21,7 +21,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
     name = "sonarimport",
     description = ["generates cc.json from metric data from SonarQube"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
