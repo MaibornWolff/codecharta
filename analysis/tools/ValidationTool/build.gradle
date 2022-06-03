@@ -5,6 +5,8 @@ repositories {
 }
 
 dependencies {
+    implementation project(':model')
+
     implementation group: 'com.github.everit-org.json-schema', name: 'org.everit.json.schema', version: json_schema_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 
