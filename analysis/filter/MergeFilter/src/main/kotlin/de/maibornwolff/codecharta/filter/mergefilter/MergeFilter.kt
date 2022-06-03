@@ -59,9 +59,9 @@ class MergeFilter : Callable<Void?> {
 
         val srcProjects = sourceFiles
             .mapNotNull {
-                val bufferedReader = it.bufferedReader()
+                val input = it.inputStream()
                 try {
-                    ProjectDeserializer.deserializeProject(bufferedReader)
+                    ProjectDeserializer.deserializeProject(input)
                 } catch (e: Exception) {
                     logger.warn("${it.name} is not a valid project file and is therefore skipped.")
                     null
