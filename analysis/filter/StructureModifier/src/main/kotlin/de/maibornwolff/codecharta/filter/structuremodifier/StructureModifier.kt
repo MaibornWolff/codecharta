@@ -10,6 +10,7 @@ import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
+import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -96,7 +97,7 @@ class StructureModifier(
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine(StructureModifier(input, output, error)).execute()
+            CommandLine.call(StructureModifier(input, output, error), *args)
         }
     }
 
