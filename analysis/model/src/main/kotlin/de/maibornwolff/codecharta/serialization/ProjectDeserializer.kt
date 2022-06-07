@@ -30,12 +30,12 @@ object ProjectDeserializer {
     }
 
     fun deserializeProject(input: FileInputStream): Project {
-        val projectWrapper = GSON.fromJson(CompressedStreamHandler.handleInput(input).bufferedReader(), ProjectWrapper::class.java)
+        val projectWrapper = GSON.fromJson(CompressedStreamHandler.wrapInput(input).bufferedReader(), ProjectWrapper::class.java)
         return projectWrapper.data
     }
 
     fun deserializeProject(input: InputStream): Project? {
-        val content = CompressedStreamHandler.handleInput(input)
+        val content = CompressedStreamHandler.wrapInput(input)
         val projectString = content.mapLines { it }.joinToString(separator = "") { it }
         if (projectString.length <= 1) return null
 

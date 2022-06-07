@@ -17,7 +17,7 @@ class EveritValidator(private var schemaPath: String) : Validator {
     }
 
     override fun validate(input: InputStream) {
-        val content = CompressedStreamHandler.handleInput(input)
+        val content = CompressedStreamHandler.wrapInput(input)
         schema.validate(JSONObject(JSONTokener(content)))
         content.close()
     }

@@ -12,7 +12,7 @@ class CompressedStreamHandlerTest {
     @Test
     fun `should be able to read text from compressed input stream`() {
         var input = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_COMPRESSED)
-        input = CompressedStreamHandler.handleInput(input)
+        input = CompressedStreamHandler.wrapInput(input)
         val content = input.reader().readText()
         assertSame("hello world\n", content)
         input.close()
@@ -21,7 +21,7 @@ class CompressedStreamHandlerTest {
     @Test
     fun `should be able to read text from uncompressed input stream`() {
         var input = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_UNCOMPRESSED)
-        input = CompressedStreamHandler.handleInput(input)
+        input = CompressedStreamHandler.wrapInput(input)
         val content = input.reader().readText()
         assertSame("hello world\n", content)
         input.close()
@@ -30,7 +30,7 @@ class CompressedStreamHandlerTest {
     @Test
     fun `should be able to handle empty files`() {
         var input = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_EMPTY)
-        input = CompressedStreamHandler.handleInput(input)
+        input = CompressedStreamHandler.wrapInput(input)
         val content = input.reader().readText()
         assertSame("", content)
         input.close()
@@ -39,7 +39,7 @@ class CompressedStreamHandlerTest {
     @Test
     fun `should be able to handle one byte files`() {
         var input = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_ONE_BYTE)
-        input = CompressedStreamHandler.handleInput(input)
+        input = CompressedStreamHandler.wrapInput(input)
         val content = input.read()
         assertSame(0, content)
         input.close()
