@@ -16,7 +16,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
     name = "csvimport",
     description = ["generates cc.json from csv with header"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class CSVImporter : Callable<Void>, InteractiveParser {
 
