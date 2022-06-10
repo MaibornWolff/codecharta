@@ -28,7 +28,7 @@ class EdgeFilter : Callable<Void?>, InteractiveParser {
     private var outputFile: File? = null
 
     override fun call(): Void? {
-        val srcProject = ProjectDeserializer.deserializeProject(File(source).bufferedReader())
+        val srcProject = ProjectDeserializer.deserializeProject(File(source).inputStream())
 
         val newProject = EdgeProjectBuilder(srcProject, pathSeparator).merge()
 

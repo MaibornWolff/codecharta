@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Added missing documentation for ccsh filters and csv exporter [#2831](https://github.com/MaibornWolff/codecharta/pull/2831)
+-   Added support for compressed files to all analysis filters and to `check` validation [#2820](https://github.com/MaibornWolff/codecharta/pull/2820)
 
 ### Fixed 🐞
 

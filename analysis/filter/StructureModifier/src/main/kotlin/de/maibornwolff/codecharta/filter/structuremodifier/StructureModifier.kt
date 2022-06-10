@@ -76,12 +76,12 @@ class StructureModifier(
             return null
         }
 
-        val bufferedReader = source!!.bufferedReader()
+        val input = source!!.inputStream()
         return try {
-            ProjectDeserializer.deserializeProject(bufferedReader)
+            ProjectDeserializer.deserializeProject(input)
         } catch (e: Exception) {
-            val input = source!!.name
-            logger.error("$input is not a valid project file and is therefore skipped.")
+            val sourceName = source!!.name
+            logger.error("$sourceName is not a valid project file and is therefore skipped.")
             null
         }
     }
