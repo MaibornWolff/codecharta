@@ -21,7 +21,7 @@ class ParserDialog {
             )
 
             val maxHierarchy: BigDecimal =
-                KInquirer.promptInputNumber(message = "Do you want to compress the file?", hint = "10", default = "10")
+                KInquirer.promptInputNumber(message = "What is the maximum depth of hierarchy", hint = "10", default = "10")
 
             return listOfNotNull(
                 inputFileName,
