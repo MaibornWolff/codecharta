@@ -1,6 +1,6 @@
 import { CodeMapNode, FileMeta } from "../../../codeCharta.model"
 import { FileState } from "../../../model/files/files"
-import { fileStatesAvailable, isSingleState, isPartialState, isDeltaState } from "../../../model/files/files.helper"
+import { fileStatesAvailable, isPartialState, isDeltaState } from "../../../model/files/files.helper"
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
@@ -49,9 +49,6 @@ const getUndecoratedAccumulatedData = (fileStates: FileState[]) => {
 	// we should find and eliminate the responsible side effects
 	const visibleFileStates = clone(fileStates)
 
-	if (isSingleState(fileStates)) {
-		return visibleFileStates[0].file
-	}
 	if (isPartialState(fileStates)) {
 		return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 	}

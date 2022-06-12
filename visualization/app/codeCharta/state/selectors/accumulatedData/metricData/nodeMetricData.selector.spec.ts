@@ -14,7 +14,7 @@ describe("nodeMetricDataSelector", () => {
 		NodeDecorator.decorateMapWithPathAttribute(file)
 		fileState = {
 			file,
-			selectedAs: FileSelectionState.Single
+			selectedAs: FileSelectionState.Partial
 		}
 	})
 

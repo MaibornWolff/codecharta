@@ -6,7 +6,6 @@ export interface FileState {
 }
 
 export enum FileSelectionState {
-	Single = "Single",
 	Reference = "Reference",
 	Comparison = "Comparison",
 	Partial = "Partial",

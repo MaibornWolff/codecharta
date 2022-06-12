@@ -238,7 +238,7 @@ describe("filePanelController", () => {
 		})
 	})
 
-	describe("onRemoveFile in single state", () => {
+	describe("onRemoveFile in partial state", () => {
 		beforeEach(() => {
 			filePanelController["_viewModel"].files = [
 				{
@@ -247,17 +247,24 @@ describe("filePanelController", () => {
 				},
 				{
 					file: TEST_DELTA_MAP_B,
-					selectedAs: FileSelectionState.Single
+					selectedAs: FileSelectionState.Partial
 				},
 				{
 					file: TEST_DELTA_MAP_C,
-					selectedAs: FileSelectionState.None
+					selectedAs: FileSelectionState.Partial
 				},
 				{
 					file: TEST_DELTA_MAP_D,
 					selectedAs: FileSelectionState.None
 				}
 			]
+		})
+
+		it("should delete file", () => {
+			filePanelController.onRemoveFile("fileA", new Event("mouseEvent"))
+
+			const remainingFiles = storeService.getState().files
+			expect(remainingFiles.length).toEqual(3)
 		})
 
 		it("should call onPartialFilesChange when partial state", () => {
@@ -286,36 +293,6 @@ describe("filePanelController", () => {
 			const fileD = remainingFiles[2]
 			expect(fileA.selectedAs).toEqual(FileSelectionState.None)
 			expect(fileD.selectedAs).toEqual(FileSelectionState.Partial)
-		})
-	})
-
-	describe("onRemoveFile in partial state", () => {
-		beforeEach(() => {
-			filePanelController["_viewModel"].files = [
-				{
-					file: TEST_DELTA_MAP_A,
-					selectedAs: FileSelectionState.None
-				},
-				{
-					file: TEST_DELTA_MAP_B,
-					selectedAs: FileSelectionState.Partial
-				},
-				{
-					file: TEST_DELTA_MAP_C,
-					selectedAs: FileSelectionState.Partial
-				},
-				{
-					file: TEST_DELTA_MAP_D,
-					selectedAs: FileSelectionState.None
-				}
-			]
-		})
-
-		it("should delete file", () => {
-			filePanelController.onRemoveFile("fileA", new Event("mouseEvent"))
-
-			const remainingFiles = storeService.getState().files
-			expect(remainingFiles.length).toEqual(3)
 		})
 
 		it("should not change selection when partially selected files still exist", () => {

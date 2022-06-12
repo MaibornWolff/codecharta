@@ -25,10 +25,6 @@ export function getVisibleFileStates(fileStates: FileState[]) {
 	return fileStates.filter(x => x.selectedAs !== FileSelectionState.None)
 }
 
-export function isSingleState(fileStates: FileState[]) {
-	return fileStates.some(x => x.selectedAs === FileSelectionState.Single)
-}
-
 export function isDeltaState(fileStates: FileState[]) {
 	return fileStates.some(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
 }

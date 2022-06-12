@@ -1,6 +1,6 @@
 "use strict"
 
-import { getVisibleFileStates, isSingleState } from "../model/files/files.helper"
+import { getVisibleFileStates } from "../model/files/files.helper"
 import { CodeMapNode, NodeType } from "../codeCharta.model"
 import { isActionOfType } from "./reduxHelper"
 import { AreaMetricActions } from "../state/store/dynamicSettings/areaMetric/areaMetric.actions"
@@ -59,7 +59,7 @@ export const TRACKING_DATA_LOCAL_STORAGE_ELEMENT = "CodeCharta::usageData"
 function isTrackingAllowed(files: FileState[]) {
 	const singleFileStates = getVisibleFileStates(files)
 
-	if (!isSingleState(files) || singleFileStates.length > 1) {
+	if (singleFileStates.length > 1) {
 		return false
 	}
 

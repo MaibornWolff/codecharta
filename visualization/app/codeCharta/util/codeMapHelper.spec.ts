@@ -27,7 +27,7 @@ describe("CodeMapHelper", () => {
 				}
 			} as CCFile
 
-			const fileStateSingle: FileState[] = [{ file: smallFile1, selectedAs: FileSelectionState.Single }]
+			const fileStateSingle: FileState[] = [{ file: smallFile1, selectedAs: FileSelectionState.Partial }]
 
 			expect(getMapResolutionScaleFactor(fileStateSingle)).toBe(MAP_RESOLUTION_SCALE.SMALL_MAP)
 
@@ -56,7 +56,7 @@ describe("CodeMapHelper", () => {
 				}
 			} as CCFile
 
-			const fileStateSingle: FileState[] = [{ file: oneMBFile, selectedAs: FileSelectionState.Single }]
+			const fileStateSingle: FileState[] = [{ file: oneMBFile, selectedAs: FileSelectionState.Partial }]
 
 			expect(getMapResolutionScaleFactor(fileStateSingle)).toBe(MAP_RESOLUTION_SCALE.MEDIUM_MAP)
 		})

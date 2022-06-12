@@ -1691,7 +1691,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 export const FILE_STATES: FileState[] = [
 	{
 		file: TEST_FILE_DATA,
-		selectedAs: FileSelectionState.Single
+		selectedAs: FileSelectionState.Partial
 	}
 ]
 
@@ -1705,7 +1705,7 @@ export const FILE_STATES_UNSELECTED: FileState[] = [
 export const FILE_STATES_JAVA: FileState[] = [
 	{
 		file: TEST_FILE_DATA_JAVA,
-		selectedAs: FileSelectionState.Single
+		selectedAs: FileSelectionState.Partial
 	}
 ]
 

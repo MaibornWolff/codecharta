@@ -14,10 +14,6 @@ export default function files(state = setFiles().payload, action: FilesAction) {
 			return reset()
 		case FilesSelectionActions.RESET_SELECTION:
 			return resetSelection(state)
-		case FilesSelectionActions.SET_SINGLE:
-			return setSingle(state, action.payload)
-		case FilesSelectionActions.SET_SINGLE_BY_NAME:
-			return setSingleByName(state, action.payload)
 		case FilesSelectionActions.SET_DELTA:
 			return setDelta(state, action.payload.referenceFile, action.payload.comparisonFile)
 		case FilesSelectionActions.SET_DELTA_BY_NAMES:
@@ -47,20 +43,6 @@ function addFile(state: FileState[], file: CCFile) {
 
 function removeFile(state: FileState[], fileName: string) {
 	return state.filter(file => file.file.fileMeta.fileName !== fileName)
-}
-
-function setSingleByName(state: FileState[], fileName: string): FileState[] {
-	return state.map(x => {
-		let selectedAs = FileSelectionState.None
-		if (x.file.fileMeta.fileName === fileName) {
-			selectedAs = FileSelectionState.Single
-		}
-		return { ...x, selectedAs }
-	})
-}
-
-function setSingle(state: FileState[], file: CCFile) {
-	return setSingleByName(state, file.fileMeta.fileName)
 }
 
 function setDeltaByNames(state: FileState[], referenceFileName: string, comparisonFileName: string): FileState[] {
