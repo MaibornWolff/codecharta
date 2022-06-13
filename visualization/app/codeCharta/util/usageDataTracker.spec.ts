@@ -35,7 +35,7 @@ describe("UsageDataTracker", () => {
 	})
 
 	function mockTrackingToBeAllowed() {
-		jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
+		jest.spyOn(FilesHelper, "isPartialState").mockReturnValue(true)
 		jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
 	}
 
@@ -45,12 +45,12 @@ describe("UsageDataTracker", () => {
 			window.localStorage.__proto__.setItem = jest.fn()
 		})
 		it("should not track in multi/delta mode or for more than one uploaded file", () => {
-			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(false)
+			jest.spyOn(FilesHelper, "isPartialState").mockReturnValue(false)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([{} as FileState])
 
 			trackMapMetaData(stateStub.files)
 
-			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
+			jest.spyOn(FilesHelper, "isPartialState").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([{} as FileState, {} as FileState])
 
 			trackMapMetaData(stateStub.files)
@@ -117,7 +117,7 @@ describe("UsageDataTracker", () => {
 		beforeEach(() => {
 			jest.restoreAllMocks()
 
-			jest.spyOn(FilesHelper, "isSingleState").mockReturnValue(true)
+			jest.spyOn(FilesHelper, "isPartialState").mockReturnValue(true)
 			jest.spyOn(FilesHelper, "getVisibleFileStates").mockReturnValue([singleFileState])
 			jest.spyOn(Date, "now").mockReturnValue(1_612_428_357_566)
 
