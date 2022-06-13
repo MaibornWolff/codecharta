@@ -2,8 +2,6 @@ import { CCAction, CCFile } from "../../../codeCharta.model"
 import { FileState } from "../../../model/files/files"
 
 export enum FilesSelectionActions {
-	SET_SINGLE = "SET_SINGLE",
-	SET_SINGLE_BY_NAME = "SET_SINGLE_BY_NAME",
 	SET_MULTIPLE = "SET_MULTIPLE",
 	SET_MULTIPLE_BY_NAMES = "SET_MULTIPLE_BY_NAMES",
 	SET_DELTA = "SET_DELTA",
@@ -37,16 +35,6 @@ export interface ResetFilesAction extends CCAction {
 	type: NewFilesImportedActions.RESET_FILES
 }
 
-export interface SetSingleAction extends CCAction {
-	type: FilesSelectionActions.SET_SINGLE
-	payload: CCFile
-}
-
-export interface SetSingleByNameAction extends CCAction {
-	type: FilesSelectionActions.SET_SINGLE_BY_NAME
-	payload: string
-}
-
 export interface SetMultipleAction extends CCAction {
 	type: FilesSelectionActions.SET_MULTIPLE
 	payload: CCFile[]
@@ -77,8 +65,6 @@ export type FilesAction =
 	| ResetSelectionAction
 	| AddFileAction
 	| RemoveFileAction
-	| SetSingleAction
-	| SetSingleByNameAction
 	| SetMultipleAction
 	| SetMultipleByNamesAction
 	| SetDeltaAction
@@ -114,20 +100,6 @@ export function removeFile(fileName: string): RemoveFileAction {
 	return {
 		type: NewFilesImportedActions.REMOVE_FILE,
 		payload: fileName
-	}
-}
-
-export function setSingle(file: CCFile): SetSingleAction {
-	return {
-		type: FilesSelectionActions.SET_SINGLE,
-		payload: file
-	}
-}
-
-export function setSingleByName(name: string): SetSingleByNameAction {
-	return {
-		type: FilesSelectionActions.SET_SINGLE_BY_NAME,
-		payload: name
 	}
 }
 

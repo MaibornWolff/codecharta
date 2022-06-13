@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
-import { addFile, resetFiles, resetSelection, setDelta, setMultiple, setSingle } from "../../state/store/files/files.actions"
+import { addFile, resetFiles, resetSelection, setDelta, setMultiple } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
 import { getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
 import { FileSelectionState } from "../../model/files/files"
@@ -285,7 +285,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should select most recent file when a selected file is removed", () => {
-			storeService.dispatch(setSingle(TEST_DELTA_MAP_B))
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B]))
 			filePanelController.onRemoveFile("fileB", new Event("mouseEvent"))
 
 			const remainingFiles = storeService.getState().files
