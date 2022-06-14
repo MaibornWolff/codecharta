@@ -11,6 +11,8 @@ import java.io.StringReader
 class ProjectDeserializerTest : Spek({
     val EXAMPLE_JSON_VERSION_1_0 = "example.cc.json"
     val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
+    val EXAMPLE_JSON_GZ_VERSION_1_0 = "example.cc.json.gz"
+    val EXAMPLE_JSON_GZ_VERSION_1_3 = "example_api_version_1.3.cc.json.gz"
 
     describe("A ProjectDeserializer") {
         it("should deserialize project from cc json with api version 1.2 or lower") {
@@ -58,6 +60,23 @@ class ProjectDeserializerTest : Spek({
             assertThat(node.link, nullValue())
             assertThat(node.attributes, not(nullValue()))
             assertThat(node.children, not(nullValue()))
+        }
+
+        it("should deserialize project from cc json gz with api version 1.2 or lower") {
+            val expectedInputStream = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_GZ_VERSION_1_0)
+            val project = ProjectDeserializer.deserializeProject(expectedInputStream)
+            assertThat(project, not(nullValue()))
+            assertThat(project!!.projectName, `is`("201701poolobject"))
+            assertThat(project.size, `is`(6))
+        }
+
+        it("should deserialize project from cc json gz with api version greater or equal than 1.3") {
+            val expectedInputStream = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_GZ_VERSION_1_3)
+
+            val project = ProjectDeserializer.deserializeProject(expectedInputStream)
+            assertThat(project, not(nullValue()))
+            assertThat(project!!.projectName, `is`("201701poolobject"))
+            assertThat(project.size, `is`(6))
         }
     }
 })

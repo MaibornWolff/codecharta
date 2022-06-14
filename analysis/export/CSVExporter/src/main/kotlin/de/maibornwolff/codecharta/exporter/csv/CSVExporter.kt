@@ -50,7 +50,7 @@ class CSVExporter : Callable<Void>, InteractiveParser {
             throw IllegalArgumentException("depth-of-hierarchy must not be negative")
         }
 
-        val projects = sources.map { ProjectDeserializer.deserializeProject(it.reader()) }
+        val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
 
         projects.forEach { writeUsingWriter(it, writer()) }
 
