@@ -22,6 +22,7 @@
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
+  <a href="#experimental-features">Experimental Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#feedback">Feedback</a> •
   <a href="#further-information">Further Info</a> •
@@ -34,30 +35,35 @@
 
 -   [CodeCharta Visualization](https://maibornwolff.github.io/codecharta/docs/visualization/):
 
-    -   CC visualizes code bases as 3D cities, so that you can understand it fastly - view the [Web Demo](<(https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)>).
-    -   GUI to visualize code metrics from `.cc.json` files.
-    -   Imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
+    -   CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json).
+    -   It uses code metrics from `.cc.json` files.
+    -   The imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
 
 -   [CodeCharta Analysis](https://maibornwolff.github.io/codecharta/docs/analysis/):
     -   CC Analysis is used to calculate or to import metrics from third party tools for a code base.
-    -   It includes some pre-defined importers (Sonar, Tokei, CSV, ...) and parsers (Source Code, Text, SVN, Git Log).
-    -   Command-Line-Tool for generating visualization data in the form of `.cc.json` files.
-    -   It includes some pre-defined importers for e.g. [SonarQube](https://maibornwolff.github.io/codecharta/docs/sonar-importer), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter), [Git log information](https://maibornwolff.github.io/codecharta/docs/git-log-parser), generic [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer) data
+    -   It generates `.cc.json` files for CC Visualization through a Command-Line-Tool.
+    -   It includes some pre-defined importers for e.g. [SonarQube](https://maibornwolff.github.io/codecharta/docs/sonar-importer), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter), [Git](https://maibornwolff.github.io/codecharta/docs/git-log-parser), generic [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer) data
     -   It also includes commands to [validate]() and [merge]() multiple `.cc.json` files.
 
-## Experimental features
+## Experimental Features
 
--   Custom Views allows to download and upload custom configuration files, in order to share them between other devices, browsers and people.
--   Suspicious Metrics display suspicious files with the very high risk and a risk profile of the code based on the cyclomatic complexity.
+-   **In CodeCharta Visualization:**
+
+    -   **Custom Views:** Download and upload custom configuration files, share them between other devices, browsers and people.
+    -   **Suspicious Metrics:** Highlight files with suspicious metrics and a _risk profile analysis_ of the code based on the cyclomatic complexity.
+
+> **NOTE:** You can enable them from the settings panel.
 
 ## How To Use
 
 ### How to use **Visualization**?
 
 -   **Online:** You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) without any installation and explore the CodeCharta code (shown by default).
--   **Local:** To clone and run this application, you'll need [Git](https://git-scm.com)
-    and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed.
-    From your command line run:
+-   **Local:**
+    -   _Standalone:_ You can find different versions (MacOS, Linux, Windows, Web) for CC on the [release](https://github.com/MaibornWolff/codecharta/releases) page (you don't need internet to run them).
+    -   _Dev:_ To clone and run this application, you'll need [Git](https://git-scm.com)
+        and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed.
+        From your command line run:
 
 ```bash
 # Clone the CodeCharta repo
