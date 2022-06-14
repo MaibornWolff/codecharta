@@ -52,7 +52,7 @@
     From your command line run:
 
 ```bash
-# Close the CodeCharta repo
+# Clone the CodeCharta repo
 $ git clone https://github.com/MaibornWolff/codecharta.git
 # Navigate to Visualization
 $ cd visualization
