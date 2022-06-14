@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.tokeiimporter
 
-
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
@@ -50,5 +49,4 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
         Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
     }
-
 }
