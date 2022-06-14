@@ -30,15 +30,15 @@ class ParserDialog {
                 hint = "metric1, metric2, metric3 (leave empty for all metrics)"
             )
 
-            val tabWidth : BigDecimal = KInquirer.promptInputNumber(message = "What is the tab width used (estimated if not provided)?")
+            val tabWidth: BigDecimal = KInquirer.promptInputNumber(message = "What is the tab width used (estimated if not provided)?")
 
-            val maxIndentationLevel : BigDecimal = KInquirer.promptInputNumber(message = "What is the maximum Indentation Level?", default="10", hint="10")
+            val maxIndentationLevel: BigDecimal = KInquirer.promptInputNumber(message = "What is the maximum Indentation Level?", default = "10", hint = "10")
 
             val exclude: String =
-                KInquirer.promptInput(message = "Do you want to exclude file/folder according to regex pattern?", default="", hint="regex1, regex2.. (leave empty if you don't want to exclude anything)")
+                KInquirer.promptInput(message = "Do you want to exclude file/folder according to regex pattern?", default = "", hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)")
 
             val fileExtensions: String =
-                KInquirer.promptInput(message = "Do you want to exclude file/folder according to regex pattern?", default="", hint="regex1, regex2.. (leave empty if you don't want to exclude anything)")
+                KInquirer.promptInput(message = "Do you want to exclude file/folder according to regex pattern?", default = "", hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)")
 
             val withoutDefaultExcludes: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to include build, target, dist, resources and out folders as well as files/folders starting with '.'?", default = false)
