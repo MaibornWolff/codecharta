@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.98.0] - 2022-06-14
+
 ### Added 🚀
 
 -   Add missing documentation for ccsh filters and csv exporter [#2831](https://github.com/MaibornWolff/codecharta/pull/2831)
