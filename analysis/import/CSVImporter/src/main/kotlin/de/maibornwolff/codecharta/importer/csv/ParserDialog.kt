@@ -13,7 +13,7 @@ class ParserDialog {
                     message = "Please specify the name of the first sourcemonitor CSV file to be parsed:",
                     hint = "input.csv"
             ))
-            while(true) {
+            while (true) {
                 val additionalFile = KInquirer.promptInput(
                         message = "If you want to parse additional sourcemonitor CSV files, specify the name of the next file. Otherwise, leave this field empty to skip.",
                 )

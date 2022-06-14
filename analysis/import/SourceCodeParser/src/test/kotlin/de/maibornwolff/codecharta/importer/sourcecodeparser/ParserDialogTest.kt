@@ -84,7 +84,6 @@ class ParserDialogTest {
             KInquirer.promptListObject<OutputFormat>(any(), any())
         } returns outputFormat
 
-
         val parserArguments = ParserDialog.collectParserArgs()
 
         val cmdLine = CommandLine(SourceCodeParserMain())
@@ -100,4 +99,3 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("verbose")).isNull()
     }
 }
-

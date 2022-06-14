@@ -7,11 +7,11 @@ import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
-import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
