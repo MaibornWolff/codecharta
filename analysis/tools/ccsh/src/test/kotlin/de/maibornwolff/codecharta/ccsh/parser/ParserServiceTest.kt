@@ -58,7 +58,8 @@ class ParserServiceTest {
                 Arguments.of("svnlogparser"),
                 Arguments.of("merge"),
                 Arguments.of("gitlogparser"),
-            )
+                Arguments.of("rawtextparser")
+                )
         }
     }
 
@@ -115,13 +116,6 @@ class ParserServiceTest {
     @Test
     fun `should execute tokeiimporter parser`() {
         ParserService.executeSelectedParser(cmdLine, "tokeiimporter")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
-    }
-
-    @Test
-    fun `should execute rawtextparser parser`() {
-        ParserService.executeSelectedParser(cmdLine, "rawtextparser")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
