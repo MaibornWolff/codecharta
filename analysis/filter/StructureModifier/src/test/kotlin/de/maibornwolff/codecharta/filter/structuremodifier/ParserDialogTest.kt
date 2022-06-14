@@ -120,5 +120,4 @@ class ParserDialogTest {
         assertThat(parseResult.matchedOption("move-from").getValue<String>()).isEqualTo(moveFrom)
         assertThat(parseResult.matchedOption("remove")).isNull()
     }
-
 }
