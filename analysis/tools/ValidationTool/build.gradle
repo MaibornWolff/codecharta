@@ -5,7 +5,9 @@ repositories {
 }
 
 dependencies {
+
     implementation project(':tools:InteractiveParser')
+    implementation project(':model')
     implementation group: 'com.github.everit-org.json-schema', name: 'org.everit.json.schema', version: json_schema_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version

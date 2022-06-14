@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.tools.validation
 
+import de.maibornwolff.codecharta.serialization.CompressedStreamHandler
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
@@ -16,6 +17,8 @@ class EveritValidator(private var schemaPath: String) : Validator {
     }
 
     override fun validate(input: InputStream) {
-        schema.validate(JSONObject(JSONTokener(input)))
+        val content = CompressedStreamHandler.wrapInput(input)
+        schema.validate(JSONObject(JSONTokener(content)))
+        content.close()
     }
 }

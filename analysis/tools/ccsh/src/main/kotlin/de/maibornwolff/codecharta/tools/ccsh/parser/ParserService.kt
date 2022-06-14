@@ -23,6 +23,8 @@ class ParserService {
             if (interactive != null) {
                 val collectedArgs = interactive.getDialog().collectParserArgs()
                 val subCommandLine = CommandLine(interactive)
+                println("You can run the same command again by using the following command line arguments:")
+                println("ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" "))
                 subCommandLine.execute(*collectedArgs.toTypedArray())
             } else {
                 printNotSupported(selectedParser)
