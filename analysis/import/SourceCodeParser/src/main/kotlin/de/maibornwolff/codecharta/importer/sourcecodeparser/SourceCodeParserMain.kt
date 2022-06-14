@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMet
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import picocli.CommandLine.call
 import java.io.BufferedWriter
@@ -16,7 +18,6 @@ import java.io.PrintStream
 import java.io.Writer
 import java.nio.file.Paths
 import java.util.concurrent.Callable
-import kotlin.jvm.Throws
 
 @CommandLine.Command(
     name = "sourcecodeparser",
@@ -27,7 +28,7 @@ class SourceCodeParserMain(
     private val outputStream: PrintStream,
     private val input: InputStream = System.`in`,
     private val error: PrintStream = System.err
-) : Callable<Void> {
+) : Callable<Void>, InteractiveParser {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -116,4 +117,6 @@ class SourceCodeParserMain(
             call(SourceCodeParserMain(outputStream, input, error), outputStream, *args)
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
