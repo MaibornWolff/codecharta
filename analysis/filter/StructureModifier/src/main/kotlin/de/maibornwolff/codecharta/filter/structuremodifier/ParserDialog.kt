@@ -18,19 +18,19 @@ class ParserDialog {
             )
 
             val setRoot: String =
-                KInquirer.promptInput(message = "What path within project to be extracted?", default = "")
+                KInquirer.promptInput(message = "What path within project to be extracted? (Optional)", default = "")
 
             val printLevels: BigDecimal =
-                KInquirer.promptInputNumber(message = "How many print levels do you want to print?", default = "0", hint = "0")
+                KInquirer.promptInputNumber(message = "How many print levels do you want to print? (Optional)", default = "0", hint = "0")
 
             val moveTo: String = KInquirer.promptInput(
-                message = "What are the nodes to be moved?"
+                message = "What are the nodes to be moved? (Optional)"
             )
             val moveFrom: String = KInquirer.promptInput(
-                message = "Where to move them?"
+                message = "Where to move them? (Optional)"
             )
             val remove: String = KInquirer.promptInput(
-                message = "What are the nodes to be removed?"
+                message = "What are the nodes to be removed? (Optional)"
             )
             return listOf(
                 inputFolderName,
