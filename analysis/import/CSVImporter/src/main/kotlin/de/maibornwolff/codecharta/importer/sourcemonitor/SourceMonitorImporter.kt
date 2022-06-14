@@ -1,6 +1,9 @@
-package de.maibornwolff.codecharta.importer.csv
+package de.maibornwolff.codecharta.importer.sourcemonitor
 
+import de.maibornwolff.codecharta.importer.csv.CSVProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
 import java.io.BufferedWriter
@@ -17,7 +20,7 @@ import java.util.concurrent.Callable
     description = ["generates cc.json from sourcemonitor csv"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class SourceMonitorImporter : Callable<Void> {
+class SourceMonitorImporter : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -89,4 +92,6 @@ class SourceMonitorImporter : Callable<Void> {
             CommandLine.call(SourceMonitorImporter(), System.out, *args)
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
