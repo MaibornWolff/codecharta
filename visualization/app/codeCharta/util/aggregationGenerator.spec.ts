@@ -3,87 +3,91 @@ import { AggregationGenerator } from "./aggregationGenerator"
 import packageJson from "../../../package.json"
 
 describe("AggregationGenerator", () => {
-	const file1: CCFile = {
-		fileMeta: {
-			fileName: "file1",
-			fileChecksum: "md5-file1",
-			projectName: "Sample Project",
-			apiVersion: packageJson.codecharta.apiVersion,
-			exportedFileSize: 300_000
-		},
-		map: {
-			name: "root",
-			type: NodeType.FOLDER,
-			path: "/root",
-			attributes: { rloc: 170, functions: 1010, mcc: 11 },
-			children: [
-				{
-					name: "big leaf",
-					type: NodeType.FILE,
-					path: "/root/big leaf",
-					attributes: { rloc: 100, functions: 10, mcc: 1 },
-					link: "http://www.google.de"
-				},
-				{
-					name: "Parent Leaf",
-					type: NodeType.FOLDER,
-					path: "/root/Parent Leaf",
-					attributes: { rloc: 70, functions: 1000, mcc: 10 },
-					children: [
-						{
-							name: "other small leaf",
-							type: NodeType.FILE,
-							path: "/root/Parent Leaf/other small leaf",
-							attributes: { rloc: 70, functions: 1000, mcc: 10 }
-						}
-					]
-				}
-			]
-		},
-		settings: {} as Settings
-	}
-
-	const file2: CCFile = {
-		fileMeta: {
-			fileName: "file2",
-			fileChecksum: "md5-file2",
-			projectName: "Sample Project",
-			apiVersion: packageJson.codecharta.apiVersion,
-			exportedFileSize: 300_000
-		},
-		map: {
-			name: "root",
-			type: NodeType.FOLDER,
-			path: "/root",
-			attributes: { rloc: 260, functions: 220, mcc: 202, customMetric: 7 },
-			children: [
-				{
-					name: "big leaf",
-					type: NodeType.FILE,
-					path: "/root/big leaf",
-					attributes: { rloc: 200, functions: 20, mcc: 2 },
-					link: "http://www.google.de"
-				},
-				{
-					name: "Parent Leaf",
-					type: NodeType.FOLDER,
-					path: "/root/Parent Leaf",
-					attributes: { rloc: 60, functions: 200, mcc: 200 },
-					children: [
-						{
-							name: "small leaf",
-							type: NodeType.FILE,
-							path: "/root/Parent Leaf/small leaf",
-							attributes: { rloc: 60, functions: 200, mcc: 200 }
-						}
-					]
-				}
-			]
-		},
-		settings: {} as Settings
-	}
+	let file1: CCFile
+	let file2: CCFile
 
 	describe("multipleService", () => {
+		beforeEach(() => {
+			file1 = {
+				fileMeta: {
+					fileName: "file1",
+					fileChecksum: "md5-file1",
+					projectName: "Sample Project",
+					apiVersion: packageJson.codecharta.apiVersion,
+					exportedFileSize: 300_000
+				},
+				map: {
+					name: "root",
+					type: NodeType.FOLDER,
+					path: "/root",
+					attributes: { rloc: 170, functions: 1010, mcc: 11 },
+					children: [
+						{
+							name: "big leaf",
+							type: NodeType.FILE,
+							path: "/root/big leaf",
+							attributes: { rloc: 100, functions: 10, mcc: 1 },
+							link: "http://www.google.de"
+						},
+						{
+							name: "Parent Leaf",
+							type: NodeType.FOLDER,
+							path: "/root/Parent Leaf",
+							attributes: { rloc: 70, functions: 1000, mcc: 10 },
+							children: [
+								{
+									name: "other small leaf",
+									type: NodeType.FILE,
+									path: "/root/Parent Leaf/other small leaf",
+									attributes: { rloc: 70, functions: 1000, mcc: 10 }
+								}
+							]
+						}
+					]
+				},
+				settings: {} as Settings
+			}
+
+			file2 = {
+				fileMeta: {
+					fileName: "file2",
+					fileChecksum: "md5-file2",
+					projectName: "Sample Project",
+					apiVersion: packageJson.codecharta.apiVersion,
+					exportedFileSize: 300_000
+				},
+				map: {
+					name: "root",
+					type: NodeType.FOLDER,
+					path: "/root",
+					attributes: { rloc: 260, functions: 220, mcc: 202, customMetric: 7 },
+					children: [
+						{
+							name: "big leaf",
+							type: NodeType.FILE,
+							path: "/root/big leaf",
+							attributes: { rloc: 200, functions: 20, mcc: 2 },
+							link: "http://www.google.de"
+						},
+						{
+							name: "Parent Leaf",
+							type: NodeType.FOLDER,
+							path: "/root/Parent Leaf",
+							attributes: { rloc: 60, functions: 200, mcc: 200 },
+							children: [
+								{
+									name: "small leaf",
+									type: NodeType.FILE,
+									path: "/root/Parent Leaf/small leaf",
+									attributes: { rloc: 60, functions: 200, mcc: 200 }
+								}
+							]
+						}
+					]
+				},
+				settings: {} as Settings
+			}
+		})
 		it("aggregation of two maps", () => {
 			const aggregationFile = AggregationGenerator.getAggregationFile([file1, file2])
 			expect(aggregationFile).toMatchSnapshot()

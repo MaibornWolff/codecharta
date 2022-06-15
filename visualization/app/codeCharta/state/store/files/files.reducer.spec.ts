@@ -9,13 +9,11 @@ import {
 	setDeltaByNames,
 	setFiles,
 	setMultiple,
-	setMultipleByNames,
-	setSingle,
-	setSingleByName
+	setMultipleByNames
 } from "./files.actions"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
-import { fileStatesAvailable, isDeltaState, isPartialState, isSingleState } from "../../../model/files/files.helper"
+import { fileStatesAvailable, isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 
 describe("files", () => {
@@ -37,7 +35,7 @@ describe("files", () => {
 
 	describe("Action: SET_FILES", () => {
 		it("should set new files", () => {
-			const newFiles: FileState[] = [{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Single }]
+			const newFiles: FileState[] = [{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Partial }]
 
 			const result = files(state, setFiles(newFiles))
 
@@ -61,27 +59,11 @@ describe("files", () => {
 
 	describe("Action: RESET_SELECTION", () => {
 		it("should unselect all files", () => {
-			files(state, setSingle(TEST_DELTA_MAP_A))
+			files(state, setMultiple([TEST_DELTA_MAP_A]))
 
 			const result = files(state, resetSelection())
 
 			expect(fileStatesAvailable(result)).toBeFalsy()
-		})
-	})
-
-	describe("Action: SET_SINGLE", () => {
-		it("should select a file to view in single mode", () => {
-			const result = files(state, setSingle(TEST_DELTA_MAP_A))
-
-			expect(isSingleState(result)).toBeTruthy()
-		})
-	})
-
-	describe("Action: SET_SINGLE_BY_NAME", () => {
-		it("should select a file by name to view in single mode", () => {
-			const result = files(state, setSingleByName(TEST_DELTA_MAP_A.fileMeta.fileName))
-
-			expect(isSingleState(result)).toBeTruthy()
 		})
 	})
 

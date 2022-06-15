@@ -6,8 +6,7 @@ import {
 	getVisibleFiles,
 	getVisibleFileStates,
 	isDeltaState,
-	isPartialState,
-	isSingleState
+	isPartialState
 } from "./files.helper"
 import { FileSelectionState, FileState } from "./files"
 
@@ -28,7 +27,7 @@ describe("files", () => {
 
 		it("should return an array when all files are selected", () => {
 			files[0].selectedAs = FileSelectionState.Partial
-			files[1].selectedAs = FileSelectionState.Single
+			files[1].selectedAs = FileSelectionState.Partial
 
 			const result = getVisibleFiles(files)
 
@@ -57,7 +56,7 @@ describe("files", () => {
 
 		it("should return an array when all files are selected", () => {
 			files[0].selectedAs = FileSelectionState.Partial
-			files[1].selectedAs = FileSelectionState.Single
+			files[1].selectedAs = FileSelectionState.Partial
 
 			const result = getVisibleFileStates(files)
 
@@ -98,22 +97,6 @@ describe("files", () => {
 		})
 	})
 
-	describe("isSingleState", () => {
-		it("should return true if fileStates contains SINGLE", () => {
-			files[0].selectedAs = FileSelectionState.Single
-
-			const result = isSingleState(files)
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return false if fileStates does not contain SINGLE", () => {
-			const result = isSingleState(files)
-
-			expect(result).toBeFalsy()
-		})
-	})
-
 	describe("isDeltaState", () => {
 		it("should return true if fileStates contains COMPARISON and REFERENCE", () => {
 			files[0].selectedAs = FileSelectionState.Reference
@@ -131,12 +114,12 @@ describe("files", () => {
 		})
 
 		it("should reset the previous selection", () => {
-			files[0].selectedAs = FileSelectionState.Single
+			files[0].selectedAs = FileSelectionState.Partial
 			files[0].selectedAs = FileSelectionState.Reference
 			files[1].selectedAs = FileSelectionState.Comparison
 
 			expect(isDeltaState(files)).toBeTruthy()
-			expect(isSingleState(files)).toBeFalsy()
+			expect(isPartialState(files)).toBeFalsy()
 		})
 	})
 
@@ -157,12 +140,13 @@ describe("files", () => {
 		})
 
 		it("should reset the previous selection", () => {
-			files[0].selectedAs = FileSelectionState.Single
+			files[0].selectedAs = FileSelectionState.Reference
+			files[1].selectedAs = FileSelectionState.Comparison
 			files[0].selectedAs = FileSelectionState.Partial
 			files[1].selectedAs = FileSelectionState.Partial
 
 			expect(isPartialState(files)).toBeTruthy()
-			expect(isSingleState(files)).toBeFalsy()
+			expect(isDeltaState(files)).toBeFalsy()
 		})
 	})
 
@@ -199,7 +183,7 @@ describe("files", () => {
 		})
 
 		it("should be true if visible file states are available", () => {
-			files[0].selectedAs = FileSelectionState.Single
+			files[0].selectedAs = FileSelectionState.Partial
 
 			expect(fileStatesAvailable(files)).toBeTruthy()
 		})
