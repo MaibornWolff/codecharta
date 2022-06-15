@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -13,13 +15,13 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
     name = "modify",
     description = ["changes the structure of cc.json files"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class StructureModifier(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void?> {
+) : Callable<Void?>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -94,7 +96,9 @@ class StructureModifier(
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(StructureModifier(input, output, error), output, *args)
+            CommandLine.call(StructureModifier(input, output, error), *args)
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }

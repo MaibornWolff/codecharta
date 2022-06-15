@@ -58,8 +58,10 @@ class ParserServiceTest {
                 Arguments.of("svnlogparser"),
                 Arguments.of("merge"),
                 Arguments.of("gitlogparser"),
-                Arguments.of("rawtextparser")
-                )
+                Arguments.of("rawtextparser"),
+                Arguments.of("modify"),
+                Arguments.of("csvexport"),
+            )
         }
     }
 
@@ -86,22 +88,8 @@ class ParserServiceTest {
     }
 
     @Test
-    fun `should execute modify parser`() {
-        ParserService.executeSelectedParser(cmdLine, "modify")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
-    }
-
-    @Test
     fun `should execute sourcemonitorimport parser`() {
         ParserService.executeSelectedParser(cmdLine, "sourcemonitorimport")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
-    }
-
-    @Test
-    fun `should execute csvexport parser`() {
-        ParserService.executeSelectedParser(cmdLine, "csvexport")
 
         Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
