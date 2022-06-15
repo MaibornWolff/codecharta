@@ -1,7 +1,7 @@
 import { CCFileValidationResult, checkErrors, checkWarnings } from "./util/fileValidator"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
-import { setFiles, setMultipleByNames } from "./state/store/files/files.actions"
+import { setFiles, setStandardByNames } from "./state/store/files/files.actions"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
@@ -38,7 +38,7 @@ export class CodeChartaService {
 
 			const recentFile = this.storeService.getState().dynamicSettings.recentFiles[0]
 			const rootName = this.storeService.getState().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-			this.storeService.dispatch(setMultipleByNames(this.recentFiles))
+			this.storeService.dispatch(setStandardByNames(this.recentFiles))
 
 			CodeChartaService.updateRootData(rootName)
 

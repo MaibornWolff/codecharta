@@ -244,7 +244,7 @@ describe("codeChartaController", () => {
 
 			codeChartaController["setRenderStateFromUrl"]()
 
-			expect(storeService.dispatch).toHaveBeenCalledWith({ payload: [{}], type: "SET_MULTIPLE" })
+			expect(storeService.dispatch).toHaveBeenCalledWith({ payload: [{}], type: "SET_STANDARD" })
 		})
 
 		it("should set files to multiple mode when empty string is given", () => {
@@ -257,7 +257,7 @@ describe("codeChartaController", () => {
 
 			expect(storeService.dispatch).toHaveBeenCalledWith({
 				payload: [{}],
-				type: "SET_MULTIPLE"
+				type: "SET_STANDARD"
 			})
 		})
 
@@ -271,7 +271,7 @@ describe("codeChartaController", () => {
 
 			expect(storeService.dispatch).toHaveBeenCalledWith({
 				payload: [{}],
-				type: "SET_MULTIPLE"
+				type: "SET_STANDARD"
 			})
 		})
 

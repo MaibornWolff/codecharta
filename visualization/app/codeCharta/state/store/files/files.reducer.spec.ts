@@ -8,8 +8,8 @@ import {
 	setDelta,
 	setDeltaByNames,
 	setFiles,
-	setMultiple,
-	setMultipleByNames
+	setStandard,
+	setStandardByNames
 } from "./files.actions"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
@@ -59,7 +59,7 @@ describe("files", () => {
 
 	describe("Action: RESET_SELECTION", () => {
 		it("should unselect all files", () => {
-			files(state, setMultiple([TEST_DELTA_MAP_A]))
+			files(state, setStandard([TEST_DELTA_MAP_A]))
 
 			const result = files(state, resetSelection())
 
@@ -85,7 +85,7 @@ describe("files", () => {
 
 	describe("Action: SET_MULTIPLE", () => {
 		it("should select two files to view in multiple mode", () => {
-			const result = files(state, setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
+			const result = files(state, setStandard([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 
 			expect(isPartialState(result)).toBeTruthy()
 		})
@@ -93,7 +93,7 @@ describe("files", () => {
 
 	describe("Action: SET_MULTIPLE_BY_NAMES", () => {
 		it("should select two files by name to view in multiple mode", () => {
-			const result = files(state, setMultipleByNames([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]))
+			const result = files(state, setStandardByNames([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]))
 
 			expect(isPartialState(result)).toBeTruthy()
 		})
