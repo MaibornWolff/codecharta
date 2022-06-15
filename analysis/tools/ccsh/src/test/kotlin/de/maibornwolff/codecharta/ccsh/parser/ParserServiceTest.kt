@@ -64,6 +64,7 @@ class ParserServiceTest {
                 Arguments.of("sourcecodeparser"),
                 Arguments.of("modify"),
                 Arguments.of("csvexport"),
+                Arguments.of("codemaatimport"),
             )
         }
     }
