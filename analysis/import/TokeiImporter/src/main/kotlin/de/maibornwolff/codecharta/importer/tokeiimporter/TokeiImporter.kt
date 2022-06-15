@@ -10,6 +10,8 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -34,7 +36,7 @@ class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void> {
+) : Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
 
@@ -146,4 +148,6 @@ class TokeiImporter(
         @JvmStatic
         val TOP_LEVEL_OBJECT = "inner"
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
