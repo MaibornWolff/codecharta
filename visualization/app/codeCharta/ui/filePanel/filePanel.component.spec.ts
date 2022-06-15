@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
-import { addFile, resetFiles, resetSelection, setDelta, setMultiple } from "../../state/store/files/files.actions"
+import { addFile, resetFiles, resetSelection, setDelta, setStandard } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
 import { getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
 import { FileSelectionState } from "../../model/files/files"
@@ -76,8 +76,8 @@ describe("filePanelController", () => {
 			expect(filePanelController["lastRenderState"]).toEqual(filePanelController["_viewModel"].renderState)
 		})
 
-		it("should update selected filenames in viewModel correctly if multiple mode is active", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
+		it("should update selected filenames in viewModel correctly if standard mode is active", () => {
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_A]))
 
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
@@ -86,7 +86,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should update selected filenames in viewModel correctly if partial mode is active", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
@@ -153,7 +153,7 @@ describe("filePanelController", () => {
 
 	describe("onPartialSelectionClosed", () => {
 		it("should set the filenames of the maps that are visible again", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 			filePanelController["_viewModel"].selectedFileNames.partial = []
 
@@ -276,7 +276,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should keep selection when a non-selected file is removed", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_B]))
 			filePanelController.onRemoveFile("fileA", new Event("mouseEvent"))
 
 			const remainingFiles = storeService.getState().files
@@ -285,7 +285,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should select most recent file when a selected file is removed", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_B]))
 			filePanelController.onRemoveFile("fileB", new Event("mouseEvent"))
 
 			const remainingFiles = storeService.getState().files
@@ -296,7 +296,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should not change selection when partially selected files still exist", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
 
 			filePanelController.onRemoveFile("fileB", new Event("mouseEvent"))
 
@@ -310,7 +310,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should select most recent file when no partially selected file exists", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
 
 			filePanelController.onRemoveFile("fileB", new Event("mouseEvent"))
 			filePanelController.onRemoveFile("fileC", new Event("mouseEvent"))
@@ -323,7 +323,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should not change selection when non-selected file is removed", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_B, TEST_DELTA_MAP_C]))
 
 			filePanelController.onRemoveFile("fileA", new Event("mouseEvent"))
 
@@ -338,8 +338,8 @@ describe("filePanelController", () => {
 	})
 
 	describe("selectAllPartialFiles", () => {
-		it("should select all files and enable multiple mode", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
+		it("should select all files and enable standard mode", () => {
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_A]))
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			filePanelController.selectAllPartialFiles()
@@ -351,7 +351,7 @@ describe("filePanelController", () => {
 
 	describe("selectZeroPartialFiles", () => {
 		it("should only set the viewModel to prevent rendering of an empty map when nothing is selected", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			filePanelController.selectZeroPartialFiles()
@@ -365,7 +365,7 @@ describe("filePanelController", () => {
 
 	describe("invertPartialFileSelection", () => {
 		it("should invert the partially selected files", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_B]))
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			filePanelController.invertPartialFileSelection()

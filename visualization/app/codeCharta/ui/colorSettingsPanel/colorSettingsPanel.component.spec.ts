@@ -6,7 +6,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { FilesService } from "../../state/store/files/files.service"
-import { addFile, resetFiles, setDelta, setMultiple } from "../../state/store/files/files.actions"
+import { addFile, resetFiles, setDelta, setStandard } from "../../state/store/files/files.actions"
 import { colorLabelOptions } from "../../codeCharta.model"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 
@@ -93,7 +93,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should detect not delta mode selection", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
+			storeService.dispatch(setStandard([TEST_DELTA_MAP_A]))
 			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()

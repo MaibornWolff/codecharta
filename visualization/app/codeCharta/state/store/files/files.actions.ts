@@ -2,8 +2,8 @@ import { CCAction, CCFile } from "../../../codeCharta.model"
 import { FileState } from "../../../model/files/files"
 
 export enum FilesSelectionActions {
-	SET_MULTIPLE = "SET_MULTIPLE",
-	SET_MULTIPLE_BY_NAMES = "SET_MULTIPLE_BY_NAMES",
+	SET_STANDARD = "SET_STANDARD",
+	SET_STANDARD_BY_NAMES = "SET_STANDARD_BY_NAMES",
 	SET_DELTA = "SET_DELTA",
 	SET_DELTA_BY_NAMES = "SET_DELTA_BY_NAMES",
 	RESET_SELECTION = "RESET_SELECTION"
@@ -35,13 +35,13 @@ export interface ResetFilesAction extends CCAction {
 	type: NewFilesImportedActions.RESET_FILES
 }
 
-export interface SetMultipleAction extends CCAction {
-	type: FilesSelectionActions.SET_MULTIPLE
+export interface SetStandardAction extends CCAction {
+	type: FilesSelectionActions.SET_STANDARD
 	payload: CCFile[]
 }
 
-export interface SetMultipleByNamesAction extends CCAction {
-	type: FilesSelectionActions.SET_MULTIPLE_BY_NAMES
+export interface SetStandardByNamesAction extends CCAction {
+	type: FilesSelectionActions.SET_STANDARD_BY_NAMES
 	payload: string[]
 }
 
@@ -65,8 +65,8 @@ export type FilesAction =
 	| ResetSelectionAction
 	| AddFileAction
 	| RemoveFileAction
-	| SetMultipleAction
-	| SetMultipleByNamesAction
+	| SetStandardAction
+	| SetStandardByNamesAction
 	| SetDeltaAction
 	| SetDeltaByNamesAction
 
@@ -103,16 +103,16 @@ export function removeFile(fileName: string): RemoveFileAction {
 	}
 }
 
-export function setMultiple(files: CCFile[]): SetMultipleAction {
+export function setStandard(files: CCFile[]): SetStandardAction {
 	return {
-		type: FilesSelectionActions.SET_MULTIPLE,
+		type: FilesSelectionActions.SET_STANDARD,
 		payload: files
 	}
 }
 
-export function setMultipleByNames(fileNames: string[]): SetMultipleByNamesAction {
+export function setStandardByNames(fileNames: string[]): SetStandardByNamesAction {
 	return {
-		type: FilesSelectionActions.SET_MULTIPLE_BY_NAMES,
+		type: FilesSelectionActions.SET_STANDARD_BY_NAMES,
 		payload: fileNames
 	}
 }

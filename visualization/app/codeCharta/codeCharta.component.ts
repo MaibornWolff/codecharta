@@ -9,7 +9,7 @@ import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import packageJson from "../../package.json"
-import { setDelta, setMultiple } from "./state/store/files/files.actions"
+import { setDelta, setStandard } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
@@ -85,7 +85,7 @@ export class CodeChartaController {
 		if (renderState === "Delta" && files.length >= 2) {
 			this.storeService.dispatch(setDelta(files[0], files[1]))
 		} else {
-			this.storeService.dispatch(setMultiple(files))
+			this.storeService.dispatch(setStandard(files))
 		}
 	}
 

@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Remove old references to single mode states and actions [#2574](https://github.com/MaibornWolff/codecharta/pull/2841)
+-   Rename multiple mode references to standard [#2574](https://github.com/MaibornWolff/codecharta/pull/2848)
 
 ## [1.97.0] - 2022-05-31
 

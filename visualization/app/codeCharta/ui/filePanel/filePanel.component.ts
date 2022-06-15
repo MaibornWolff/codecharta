@@ -1,7 +1,7 @@
 import "./filePanel.component.scss"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
-import { removeFile, setDeltaByNames, setMultipleByNames } from "../../state/store/files/files.actions"
+import { removeFile, setDeltaByNames, setStandardByNames } from "../../state/store/files/files.actions"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { fileStatesAvailable, getFileNameOf, getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
@@ -128,7 +128,7 @@ export class FilePanelController implements FilesSelectionSubscriber, MapColorsS
 
 	onPartialFilesChange = (partialFileNames: string[]) => {
 		if (partialFileNames.length > 0) {
-			this.storeService.dispatch(setMultipleByNames(partialFileNames))
+			this.storeService.dispatch(setStandardByNames(partialFileNames))
 		} else {
 			this._viewModel.selectedFileNames.partial = []
 		}

@@ -12,7 +12,7 @@ import { ScalingService } from "../../state/store/appSettings/scaling/scaling.se
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { addFile, resetFiles, setDelta, setMultiple, setMultipleByNames } from "../../state/store/files/files.actions"
+import { addFile, resetFiles, setDelta, setStandard, setStandardByNames } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3-hierarchy"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
@@ -61,7 +61,7 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(resetFiles())
 		storeService.dispatch(addFile(fileStates[0].file))
 		storeService.dispatch(addFile(ccFile))
-		storeService.dispatch(setMultipleByNames([fileStates[0].file.fileMeta.fileName]))
+		storeService.dispatch(setStandardByNames([fileStates[0].file.fileMeta.fileName]))
 		storeService.dispatch(setBlacklist())
 		calculateEdgeMetricData(storeService.getState().files, [])
 		calculateNodeMetricData(storeService.getState().files, [])
@@ -203,7 +203,7 @@ describe("codeMapPreRenderService", () => {
 		})
 
 		it("should change map to multiple mode and check that no id exists twice", async () => {
-			storeService.dispatch(setMultiple(getCCFiles(storeService.getState().files)))
+			storeService.dispatch(setStandard(getCCFiles(storeService.getState().files)))
 
 			codeMapPreRenderService.onMetricDataChanged()
 

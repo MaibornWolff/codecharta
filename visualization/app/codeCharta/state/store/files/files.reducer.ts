@@ -18,10 +18,10 @@ export default function files(state = setFiles().payload, action: FilesAction) {
 			return setDelta(state, action.payload.referenceFile, action.payload.comparisonFile)
 		case FilesSelectionActions.SET_DELTA_BY_NAMES:
 			return setDeltaByNames(state, action.payload.referenceFileName, action.payload.comparisonFileName)
-		case FilesSelectionActions.SET_MULTIPLE:
-			return setMultiple(state, action.payload)
-		case FilesSelectionActions.SET_MULTIPLE_BY_NAMES:
-			return setMultipleByNames(state, action.payload)
+		case FilesSelectionActions.SET_STANDARD:
+			return setStandard(state, action.payload)
+		case FilesSelectionActions.SET_STANDARD_BY_NAMES:
+			return setStandardByNames(state, action.payload)
 		default:
 			return state
 	}
@@ -61,7 +61,7 @@ function setDelta(state: FileState[], reference: CCFile, comparison: CCFile) {
 	return setDeltaByNames(state, reference.fileMeta.fileName, comparison.fileMeta.fileName)
 }
 
-function setMultipleByNames(state: FileState[], partialFileNames: string[]): FileState[] {
+function setStandardByNames(state: FileState[], partialFileNames: string[]): FileState[] {
 	return state.map(x => {
 		let selectedAs = FileSelectionState.None
 		if (partialFileNames.includes(x.file.fileMeta.fileName)) {
@@ -71,8 +71,8 @@ function setMultipleByNames(state: FileState[], partialFileNames: string[]): Fil
 	})
 }
 
-function setMultiple(state: FileState[], multipleFiles: CCFile[]) {
-	return setMultipleByNames(
+function setStandard(state: FileState[], multipleFiles: CCFile[]) {
+	return setStandardByNames(
 		state,
 		multipleFiles.map(x => x.fileMeta.fileName)
 	)

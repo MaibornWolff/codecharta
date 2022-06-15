@@ -41,12 +41,12 @@ describe("FilesService", () => {
 	describe("onStoreChanged", () => {
 		it("should notify all subscribers that the selection changed", () => {
 			const action: FilesAction = {
-				type: FilesSelectionActions.SET_MULTIPLE,
+				type: FilesSelectionActions.SET_STANDARD,
 				payload: [TEST_DELTA_MAP_A]
 			}
 			storeService["store"].dispatch(action)
 
-			filesService.onStoreChanged(FilesSelectionActions.SET_MULTIPLE)
+			filesService.onStoreChanged(FilesSelectionActions.SET_STANDARD)
 
 			expect($rootScope.$broadcast).toBeCalledWith("files-selection-changed", {
 				files: storeService.getState().files
