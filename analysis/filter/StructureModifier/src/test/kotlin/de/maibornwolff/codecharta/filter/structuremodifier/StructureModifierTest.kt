@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -12,7 +12,7 @@ class StructureModifierTest {
     fun `reads project from file`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/does/not/exist"))
 
-        Assertions.assertThat(cliResult).contains(listOf("otherFile.java"))
+        assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
@@ -21,7 +21,7 @@ class StructureModifierTest {
 
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
-        Assertions.assertThat(cliResult).contains(listOf("otherFile.java"))
+        assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
@@ -33,7 +33,7 @@ class StructureModifierTest {
         executeForOutput("", arrayOf("src/test/resources/invalid_project.cc.json", "-p=2"))
         System.setErr(originalError)
 
-        Assertions.assertThat(errorStream.toString()).contains("invalid_project.cc.json is not a valid project")
+        assertThat(errorStream.toString()).contains("invalid_project.cc.json is not a valid project")
     }
 
     @Disabled
@@ -42,7 +42,7 @@ class StructureModifierTest {
         val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
-        Assertions.assertThat(cliResult).contains(listOf("otherFile.java"))
+        assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
@@ -56,37 +56,37 @@ class StructureModifierTest {
 
         System.setErr(originalError)
 
-        Assertions.assertThat(errorStream.toString()).contains("The piped input is not a valid project")
+        assertThat(errorStream.toString()).contains("The piped input is not a valid project")
     }
 
     @Test
     fun `sets root for new subproject`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
 
-        Assertions.assertThat(cliResult).contains("otherFile2.java")
-        Assertions.assertThat(cliResult).doesNotContain(listOf("src", "otherFile.java", "folder3"))
+        assertThat(cliResult).contains("otherFile2.java")
+        assertThat(cliResult).doesNotContain(listOf("src", "otherFile.java", "folder3"))
     }
 
     @Test
     fun `removes nodes`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/root/src"))
 
-        Assertions.assertThat(cliResult).contains(listOf("root"))
-        Assertions.assertThat(cliResult).doesNotContain(listOf("src", "otherFile.java"))
+        assertThat(cliResult).contains(listOf("root"))
+        assertThat(cliResult).doesNotContain(listOf("src", "otherFile.java"))
     }
 
     @Test
     fun `moves nodes`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-f=/root/src", "-t=/root/new123"))
 
-        Assertions.assertThat(cliResult).contains("new123")
-        Assertions.assertThat(cliResult).doesNotContain("src")
+        assertThat(cliResult).contains("new123")
+        assertThat(cliResult).doesNotContain("src")
     }
 
     @Test
     fun `prints structure`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-p=2"))
 
-        Assertions.assertThat(cliResult).contains(listOf("folder3", "- - "))
+        assertThat(cliResult).contains(listOf("folder3", "- - "))
     }
 }
