@@ -27,7 +27,6 @@ class ParserDialogTest {
         val outputFileName = "cmi.cc.json"
         val isCompressed = false
 
-
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any())

@@ -5,7 +5,6 @@ import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
-
 class ParserDialog {
     companion object : ParserDialogInterface {
         private const val EXTENSION = "csv"
@@ -27,7 +26,6 @@ class ParserDialog {
 
             val isCompressed: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to compress the file?", default = false)
-
 
             return listOfNotNull(
                 inputFileName,
