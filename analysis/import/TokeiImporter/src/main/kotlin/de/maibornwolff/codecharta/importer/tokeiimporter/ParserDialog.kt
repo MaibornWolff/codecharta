@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.csv
+package de.maibornwolff.codecharta.importer.tokeiimporter
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
@@ -9,30 +9,20 @@ class ParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-            val inputFileNames = mutableListOf(KInquirer.promptInput(
-                    message = "Please specify the name of the first sourcemonitor CSV file to be parsed:",
-                    hint = "input.csv"
-            ))
-            while (true) {
-                val additionalFile = KInquirer.promptInput(
-                        message = "If you want to parse additional sourcemonitor CSV files, specify the name of the next file. Otherwise, leave this field empty to skip.",
-                )
-                if (additionalFile.isNotBlank()) {
-                    inputFileNames.add(additionalFile)
-                } else {
-                    break
-                }
-            }
+            val inputFileName = KInquirer.promptInput(
+                    message = "Please specify the name of the Tokei JSON file to be parsed:",
+                    hint = "input.json"
+            )
 
             val outputFileName: String = KInquirer.promptInput(
                     message = "What is the name of the output file?",
                     hint = "output.cc.json"
             )
 
-            val delimiter = KInquirer.promptInput(
-                    message = "Which column delimiter is used in the CSV file?",
-                    hint = ",",
-                    default = ","
+            val rootName = KInquirer.promptInput(
+                    message = "Which root folder was specified when executing tokei?",
+                    hint = ".",
+                    default = "."
             )
 
             val pathSeparator = KInquirer.promptInput(
@@ -44,9 +34,10 @@ class ParserDialog {
             val isCompressed: Boolean =
                     KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = false)
 
-            return inputFileNames + listOfNotNull(
+            return listOfNotNull(
+                    inputFileName,
                     "--output-file=$outputFileName",
-                    "--delimiter=$delimiter",
+                    "--root-name=$rootName",
                     "--path-separator=$pathSeparator",
                     if (isCompressed) null else "--not-compressed",
             )

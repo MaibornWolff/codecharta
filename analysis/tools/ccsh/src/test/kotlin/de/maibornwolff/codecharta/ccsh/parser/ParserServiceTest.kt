@@ -58,6 +58,9 @@ class ParserServiceTest {
                 Arguments.of("svnlogparser"),
                 Arguments.of("merge"),
                 Arguments.of("gitlogparser"),
+                Arguments.of("sourcemonitorimport"),
+                Arguments.of("tokeiimporter"),
+                Arguments.of("sourcecodeparser"),
                 Arguments.of("modify"),
                 Arguments.of("csvexport"),
             )
@@ -84,27 +87,6 @@ class ParserServiceTest {
         ParserService.executeSelectedParser(cmdLine, parser)
 
         verify { anyConstructed<CommandLine>().execute(any()) }
-    }
-
-    @Test
-    fun `should execute sourcemonitorimport parser`() {
-        ParserService.executeSelectedParser(cmdLine, "sourcemonitorimport")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
-    }
-
-    @Test
-    fun `should execute sourcecodeparser parser`() {
-        ParserService.executeSelectedParser(cmdLine, "sourcecodeparser")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
-    }
-
-    @Test
-    fun `should execute tokeiimporter parser`() {
-        ParserService.executeSelectedParser(cmdLine, "tokeiimporter")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test

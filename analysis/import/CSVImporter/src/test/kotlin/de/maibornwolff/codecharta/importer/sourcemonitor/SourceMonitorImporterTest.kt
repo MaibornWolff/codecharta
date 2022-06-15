@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.importer.csv
+package de.maibornwolff.codecharta.importer.sourcemonitor
 
-import de.maibornwolff.codecharta.importer.csv.SourceMonitorImporter.Companion.main
+import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter.Companion.main
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
