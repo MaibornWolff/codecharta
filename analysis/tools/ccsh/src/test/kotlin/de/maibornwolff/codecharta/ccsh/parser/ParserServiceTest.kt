@@ -58,6 +58,7 @@ class ParserServiceTest {
                 Arguments.of("svnlogparser"),
                 Arguments.of("merge"),
                 Arguments.of("gitlogparser"),
+                Arguments.of("codemaatimport"),
             )
         }
     }
