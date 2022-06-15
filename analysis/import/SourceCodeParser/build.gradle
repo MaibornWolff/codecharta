@@ -1,19 +1,29 @@
 dependencies {
     implementation project(':model')
     implementation project(':filter:MergeFilter')
+    implementation project(':tools:InteractiveParser')
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
+
     implementation group: 'org.sonarsource.java', name: 'sonar-java-plugin', version: sonar_java_version
+    // TODO: remove this after a new, non-broken org.eclipse.equinox.preferences is released (ver. 3.10.0 references a non-existant dependency)
+    implementation('org.eclipse.platform:org.eclipse.equinox.preferences') {
+        version {
+            strictly '3.9.100'
+        }
+    }
     implementation group: 'org.json', name: 'json', version: json_version
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: jaxb_api_version
 
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+    implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'com.nhaarman.mockitokotlin2', name: 'mockito-kotlin', version: mockito_kotlin_version
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockito_core_version
+    testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 }
 

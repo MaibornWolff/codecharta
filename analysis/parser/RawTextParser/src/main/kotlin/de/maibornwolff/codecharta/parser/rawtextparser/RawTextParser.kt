@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import picocli.CommandLine.call
 import java.io.BufferedWriter
@@ -19,13 +21,13 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
     name = "rawtextparser",
     description = ["generates cc.json from projects or source code files"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void> {
+) : Callable<Void>, InteractiveParser {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
@@ -48,7 +50,7 @@ class RawTextParser(
     private var compress = true
 
     @CommandLine.Option(names = ["--tab-width"], description = ["tab width used (estimated if not provided)"])
-    private var tabWith: Int? = null
+    private var tabWidth: Int? = null
 
     @CommandLine.Option(names = ["--max-indentation-level"], description = ["maximum Indentation Level (default 10)"])
     private var maxIndentLvl: Int? = null
@@ -101,7 +103,7 @@ class RawTextParser(
         return mapOf(
             "verbose" to verbose.toInt(),
             "maxIndentationLevel" to maxIndentLvl,
-            "tabWidth" to tabWith
+            "tabWidth" to tabWidth
         ).filterValues { it != null }.mapValues { it.value as Int }
     }
 
@@ -121,4 +123,6 @@ class RawTextParser(
             call(RawTextParser(input, outputStream, error), outputStream, *args)
         }
     }
+
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
