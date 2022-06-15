@@ -58,11 +58,13 @@ class ParserServiceTest {
                 Arguments.of("svnlogparser"),
                 Arguments.of("merge"),
                 Arguments.of("gitlogparser"),
+                Arguments.of("rawtextparser"),
                 Arguments.of("sourcemonitorimport"),
                 Arguments.of("tokeiimporter"),
                 Arguments.of("sourcecodeparser"),
                 Arguments.of("modify"),
                 Arguments.of("csvexport"),
+                Arguments.of("codemaatimport"),
             )
         }
     }
@@ -87,13 +89,6 @@ class ParserServiceTest {
         ParserService.executeSelectedParser(cmdLine, parser)
 
         verify { anyConstructed<CommandLine>().execute(any()) }
-    }
-
-    @Test
-    fun `should execute rawtextparser parser`() {
-        ParserService.executeSelectedParser(cmdLine, "rawtextparser")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test

@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.importer.codemaat
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
 import java.io.BufferedWriter
@@ -17,9 +19,9 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
     name = "codemaatimport",
     description = ["generates cc.json from codemaat coupling csv"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
-class CodeMaatImporter : Callable<Void> {
+class CodeMaatImporter : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -90,4 +92,5 @@ class CodeMaatImporter : Callable<Void> {
             CommandLine.call(CodeMaatImporter(), System.out, *args)
         }
     }
+    override fun getDialog(): ParserDialogInterface = ParserDialog
 }
