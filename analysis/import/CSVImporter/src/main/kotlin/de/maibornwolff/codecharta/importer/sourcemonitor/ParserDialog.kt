@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.csv
+package de.maibornwolff.codecharta.importer.sourcemonitor
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
@@ -10,12 +10,12 @@ class ParserDialog {
 
         override fun collectParserArgs(): List<String> {
             val inputFileNames = mutableListOf(KInquirer.promptInput(
-                    message = "Please specify the name of the first sourcemonitor CSV file to be parsed:",
-                    hint = "input.csv"
+                    message = "What is the sourcemonitor CSV file that has to be parsed?",
+                    hint = "sourcemonitor.csv"
             ))
             while (true) {
                 val additionalFile = KInquirer.promptInput(
-                        message = "If you want to parse additional sourcemonitor CSV files, specify the name of the next file. Otherwise, leave this field empty to skip.",
+                    message = "If you want to parse additional sourcemonitor CSV files, specify the name of the next file. Otherwise, leave this field empty to skip.",
                 )
                 if (additionalFile.isNotBlank()) {
                     inputFileNames.add(additionalFile)
@@ -29,25 +29,11 @@ class ParserDialog {
                     hint = "output.cc.json"
             )
 
-            val delimiter = KInquirer.promptInput(
-                    message = "Which column delimiter is used in the CSV file?",
-                    hint = ",",
-                    default = ","
-            )
-
-            val pathSeparator = KInquirer.promptInput(
-                    message = "Which path separator is used in the path names?",
-                    hint = "/",
-                    default = "/"
-            )
-
             val isCompressed: Boolean =
                     KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = false)
 
             return inputFileNames + listOfNotNull(
                     "--output-file=$outputFileName",
-                    "--delimiter=$delimiter",
-                    "--path-separator=$pathSeparator",
                     if (isCompressed) null else "--not-compressed",
             )
         }
