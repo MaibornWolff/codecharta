@@ -58,6 +58,7 @@ class ParserServiceTest {
                 Arguments.of("svnlogparser"),
                 Arguments.of("merge"),
                 Arguments.of("gitlogparser"),
+                Arguments.of("modify"),
                 Arguments.of("csvexport"),
             )
         }
@@ -83,13 +84,6 @@ class ParserServiceTest {
         ParserService.executeSelectedParser(cmdLine, parser)
 
         verify { anyConstructed<CommandLine>().execute(any()) }
-    }
-
-    @Test
-    fun `should execute modify parser`() {
-        ParserService.executeSelectedParser(cmdLine, "modify")
-
-        Assertions.assertThat(outContent.toString()).contains("not supported yet")
     }
 
     @Test
