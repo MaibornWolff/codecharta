@@ -35,12 +35,6 @@ describe("DialogService", () => {
 		expect(dialogService.showCustomDialog).toHaveBeenCalled()
 	})
 
-	it("should show ChangelogDialog", function () {
-		dialogService.showChangelogDialog()
-
-		expect(dialogService.showCustomDialog).toHaveBeenCalled()
-	})
-
 	it("should show ValidationDialog", function () {
 		const fileValidationResults: CCFileValidationResult[] = [
 			{ fileName: "file_1", errors: ["Error"], warnings: [] },

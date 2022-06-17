@@ -1,7 +1,6 @@
 import { dialogDownloadComponent } from "./dialog.download.component"
 import { addScenarioSettingsComponent } from "./dialog.addScenarioSettings.component"
 import { CCFileValidationResult } from "../../util/fileValidator"
-import { dialogChangelogComponent } from "./dialog.changelog.component"
 
 export class DialogService {
 	constructor(private $mdDialog) {
@@ -14,10 +13,6 @@ export class DialogService {
 
 	showAddScenarioSettings() {
 		this.showCustomDialog(addScenarioSettingsComponent)
-	}
-
-	showChangelogDialog() {
-		this.showCustomDialog(dialogChangelogComponent)
 	}
 
 	showCustomDialog(dialog) {

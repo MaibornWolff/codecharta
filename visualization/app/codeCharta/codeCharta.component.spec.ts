@@ -5,7 +5,6 @@ import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { InjectorService } from "./state/injector.service"
-import packageJson from "../../package.json"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
@@ -81,13 +80,6 @@ describe("codeChartaController", () => {
 		withMockedCodeChartaService()
 		withMockedDialogService()
 		localStorage.clear()
-	}
-
-	function initControllerChangelog() {
-		rebuildController()
-		initThreeCameraService()
-		withMockedUrlUtils()
-		withMockedCodeChartaService()
 	}
 
 	describe("constructor", () => {
@@ -290,25 +282,6 @@ describe("codeChartaController", () => {
 				payload: { comparisonFile: {}, referenceFile: {} },
 				type: "SET_DELTA"
 			})
-		})
-	})
-
-	describe("version check", () => {
-		beforeEach(() => {
-			restartSystem()
-			jest.spyOn(Storage.prototype, "getItem")
-			dialogService.showChangelogDialog = jest.fn()
-		})
-
-		it("should call changelog dialog on version update", () => {
-			Storage.prototype.getItem = jest.fn(() => "1.70.0")
-			initControllerChangelog()
-			expect(dialogService.showChangelogDialog).toHaveBeenCalled()
-		})
-		it("should not call changelog dialog", () => {
-			Storage.prototype.getItem = jest.fn().mockReturnValue(packageJson.version)
-			initControllerChangelog()
-			expect(dialogService.showChangelogDialog).not.toHaveBeenCalled()
 		})
 	})
 })
