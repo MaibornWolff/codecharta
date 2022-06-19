@@ -1,11 +1,11 @@
+import { CodeMapNode } from "../../../codeCharta.model"
 import { createSelector } from "../../../state/angular-redux/createSelector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 
-export const hoveredNodePathPanelDataSelector = createSelector(
-	[hoveredNodeSelector],
-	hoveredNode =>
-		hoveredNode && {
-			path: hoveredNode.path.slice(1).split("/"),
-			isFile: hoveredNode.type === "File"
-		}
-)
+export const _getHoveredNodePathPanelData = (hoveredNode?: Pick<CodeMapNode, "path" | "type">) =>
+	hoveredNode && {
+		path: hoveredNode.path.slice(1).split("/"),
+		isFile: hoveredNode.type === "File"
+	}
+
+export const hoveredNodePathPanelDataSelector = createSelector([hoveredNodeSelector], _getHoveredNodePathPanelData)
