@@ -57,6 +57,7 @@ import { RibbonBarModule } from "./codeCharta/ui/ribbonBar/ribbonBar.module"
 import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
 import { VersionService } from "./codeCharta/services/version/version.service"
+import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 
 @NgModule({
 	imports: [
@@ -96,7 +97,8 @@ import { VersionService } from "./codeCharta/services/version/version.service"
 		AreaSettingsPanelModule,
 		MetricChooserModule,
 		RibbonBarModule,
-		ChangelogDialogModule
+		ChangelogDialogModule,
+		ActionIconModule
 	],
 	providers: [
 		threeSceneServiceProvider,

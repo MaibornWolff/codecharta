@@ -1,0 +1,23 @@
+@use "../../../material/theme";
+
+cc-action-icon {
+	display: inline-block;
+	cursor: pointer;
+	width: 24px;
+	height: 24px;
+	border-radius: 100%;
+	background-color: theme.$cc-primary-color;
+	font-size: 16px;
+
+	&:hover {
+		background-color: rgb(0, 124, 112);
+	}
+
+	i,
+	i.fa {
+		margin: auto;
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+		line-height: 1.5;
+		color: white;
+	}
+}
