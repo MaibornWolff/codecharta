@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate changelog dialog to Angular [#2849](https://github.com/MaibornWolff/codecharta/pull/2849)
+-   Migrate node path panel to Angular [#2855](https://github.com/MaibornWolff/codecharta/pull/2855)
 
 ## [1.98.0] - 2022-06-14
 
