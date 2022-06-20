@@ -7,6 +7,7 @@ import { downgradeComponent } from "@angular/upgrade/static"
 import { LoadingMapProgressSpinnerComponent } from "./loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 import { UploadFilesButtonComponent } from "./uploadFilesButton/uploadFilesButton.component"
 import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton/globalConfigurationButton.component"
+import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel/hoveredNodePathPanel.component"
 
 angular
 	.module("app.codeCharta.ui.toolBar", ["app.codeCharta.state", "app.codeCharta.ui.dialog"])
@@ -14,3 +15,4 @@ angular
 	.directive("ccLoadingMapProgressSpinner", downgradeComponent({ component: LoadingMapProgressSpinnerComponent }))
 	.directive("ccUploadFilesButton", downgradeComponent({ component: UploadFilesButtonComponent }))
 	.directive("ccGlobalConfigurationButton", downgradeComponent({ component: GlobalConfigurationButtonComponent }))
+	.directive("ccHoveredNodePathPanel", downgradeComponent({ component: HoveredNodePathPanelComponent }))

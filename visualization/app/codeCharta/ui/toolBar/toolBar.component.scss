@@ -50,8 +50,7 @@ tool-bar-component {
 	}
 }
 
-file-panel-component,
-node-path-panel-component {
+file-panel-component {
 	&.hidden {
 		display: none;
 	}
