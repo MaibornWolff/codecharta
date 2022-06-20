@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add interactive dialog support for the remaining parsers [#2833](https://github.com/MaibornWolff/codecharta/pull/2833) [#2836](https://github.com/MaibornWolff/codecharta/pull/2836) [#2842](https://github.com/MaibornWolff/codecharta/pull/2842) [#2843](https://github.com/MaibornWolff/codecharta/pull/2843) [#2846](https://github.com/MaibornWolff/codecharta/pull/2846)
 
+### Fixed 🐞
+
+-   Fix analysis bug where importers would get stuck before file output [#2854](https://github.com/MaibornWolff/codecharta/pull/2854)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate changelog dialog to Angular [#2849](https://github.com/MaibornWolff/codecharta/pull/2849)
