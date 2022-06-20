@@ -39,7 +39,10 @@
 			>Area Metric Options <i class="fa fa-angle-down"></i
 		></span>
 	</div>
-	<cc-area-settings-panel ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'AREA_PANEL_OPEN' }"></cc-area-settings-panel>
+	<cc-area-settings-panel
+		class="cc-metric-settings-panel"
+		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'AREA_PANEL_OPEN' }"
+	></cc-area-settings-panel>
 </md-card>
 
 <md-card
@@ -55,7 +58,10 @@
 			>Height Metric Options <i class="fa fa-angle-down"></i
 		></span>
 	</div>
-	<cc-height-settings-panel ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'HEIGHT_PANEL_OPEN' }"></cc-height-settings-panel>
+	<cc-height-settings-panel
+		class="cc-metric-settings-panel"
+		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'HEIGHT_PANEL_OPEN' }"
+	></cc-height-settings-panel>
 </md-card>
 
 <md-card
