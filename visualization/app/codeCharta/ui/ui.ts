@@ -4,7 +4,6 @@ import { downgradeComponent } from "@angular/upgrade/static"
 import "./artificialIntelligence/artificialIntelligence.module"
 import "./downloadButton/downloadButton.module"
 import "./screenshotButton/screenshotButton.module"
-import "./nodePathPanel/nodePathPanel.module"
 import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./codeMap/codeMap.module"
@@ -26,7 +25,6 @@ angular
 		"app.codeCharta.ui.artificialIntelligence",
 		"app.codeCharta.ui.downloadButton",
 		"app.codeCharta.ui.screenshotButton",
-		"app.codeCharta.ui.nodePathPanel",
 		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.codeMap",
