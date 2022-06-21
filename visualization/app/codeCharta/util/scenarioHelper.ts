@@ -198,8 +198,14 @@ export class ScenarioHelper {
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	static getDefaultScenarioSetting() {
-		return this.getScenarioSettingsByName("Complexity")
+	static getMatchingScenarioSetting(nodeMetricData) {
+		const metricData = { nodeMetricData, edgeMetricData: [] } as MetricData
+		for (const scenario of this.scenarios.values()) {
+			if (this.isScenarioApplicable(scenario, metricData)) {
+				return this.getScenarioSettingsByName(scenario.name)
+			}
+		}
+		return null
 	}
 
 	static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {

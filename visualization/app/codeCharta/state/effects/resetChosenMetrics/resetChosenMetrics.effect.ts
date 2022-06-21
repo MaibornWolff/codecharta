@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@angular/core"
 import { filter, tap } from "rxjs"
-import { defaultNMetrics, isAnyMetricAvailable, areScenarioSettingsApplicable } from "./utils/metricHelper"
+import { defaultNMetrics, isAnyMetricAvailable } from "./utils/metricHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Store } from "../../angular-redux/store"
 import { nodeMetricDataSelector } from "../../selectors/accumulatedData/metricData/nodeMetricData.selector"
@@ -22,10 +22,9 @@ export class ResetChosenMetricsEffect {
 				filter(isAnyMetricAvailable),
 				tap(nodeMetricData => {
 					this.store.dispatch(setDistributionMetric(getDefaultDistribution(nodeMetricData)))
-
-					const defaultScenarioSettings = ScenarioHelper.getDefaultScenarioSetting()
-					if (areScenarioSettingsApplicable(defaultScenarioSettings, nodeMetricData)) {
-						this.store.dispatch(setState(defaultScenarioSettings))
+					const matchingScenarioSetting = ScenarioHelper.getMatchingScenarioSetting(nodeMetricData)
+					if (matchingScenarioSetting) {
+						this.store.dispatch(setState(matchingScenarioSetting))
 					} else {
 						const [defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = defaultNMetrics(nodeMetricData, 3)
 						this.store.dispatch(setAreaMetric(defaultedAreaMetric))
