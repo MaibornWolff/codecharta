@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix analysis bug where importers would get stuck before file output [#2854](https://github.com/MaibornWolff/codecharta/pull/2854)
 -   Use correct icon for height metric chooser again [#2851](https://github.com/MaibornWolff/codecharta/pull/2851)
 -   Close height metric option instead of making it only invisible on close [#2853](https://github.com/MaibornWolff/codecharta/pull/2853)
 
