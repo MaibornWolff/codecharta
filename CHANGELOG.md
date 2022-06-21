@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
-## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
+## [unreleased] (Added 🚀 | Changed | Removed 🗑 | | Chore 👨‍💻 👩‍💻)
+
+### Fixed 🐞
+
+-   Fix dialogparser test of sourcecode parser[#2860](https://github.com/MaibornWolff/codecharta/pull/2860)
 
 ## [1.99.0] - 2022-06-21
 
