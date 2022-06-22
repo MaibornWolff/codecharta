@@ -5,17 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
-## [unreleased] (Added 🚀 | Changed | Removed 🗑 | | Chore 👨‍💻 👩‍💻)
+## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Fixed 🐞
-
--   Fix dialogparser test of sourcecode parser[#2860](https://github.com/MaibornWolff/codecharta/pull/2860)
+## [1.99.1] - 2022-06-22
 
 ### Added 🚀
 
 ### Fixed 🐞
 
 -   Fix packaging of standalone app for macOS and Windows [#2847](https://github.com/MaibornWolff/codecharta/pull/2847)
+-   Fix dialogparser test of sourcecode parser[#2860](https://github.com/MaibornWolff/codecharta/pull/2860)
 
 ### Chore 👨‍💻 👩‍💻
 
