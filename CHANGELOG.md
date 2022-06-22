@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+### Fixed 🐞
+
+-   Fix packaging of standalone app for macOS [#2847](https://github.com/MaibornWolff/codecharta/pull/2847)
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.99.0] - 2022-06-21
 
 ### Added 🚀
