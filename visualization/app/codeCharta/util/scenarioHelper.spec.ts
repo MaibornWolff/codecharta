@@ -139,13 +139,25 @@ describe("scenarioHelper", () => {
 		})
 	})
 
-	describe("getDefaultScenario", () => {
-		it("should return Complexity ExportScenario", () => {
+	describe("getMatchingScenarioSetting", () => {
+		it("should return matching ExportScenario", () => {
 			ScenarioHelper.getScenarioSettingsByName = jest.fn()
 
-			ScenarioHelper.getDefaultScenarioSetting()
+			ScenarioHelper.getMatchingScenarioSetting([
+				{ name: "mcc", maxValue: 56, minValue: 1 },
+				{ name: "rloc", maxValue: 56, minValue: 1 }
+			])
 
 			expect(ScenarioHelper.getScenarioSettingsByName).toHaveBeenCalledWith("Complexity")
+		})
+
+		it("should return the second ExportScenario if the first ExportScenario does not match", () => {
+			ScenarioHelper.getMatchingScenarioSetting([
+				{ name: "unary", maxValue: 1, minValue: 1 },
+				{ name: "Average Complexity*", maxValue: 56, minValue: 1 }
+			])
+
+			expect(ScenarioHelper.getScenarioSettingsByName).toHaveBeenCalledWith("Average Complexity*")
 		})
 	})
 

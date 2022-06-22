@@ -38,13 +38,12 @@ describe("resetChosenMetricsEffect", () => {
 		expect(mockedStore.dispatch).not.toHaveBeenCalled()
 	})
 
-	it("should apply default scenario, when area-, height- and color-metric of default scenario are available", () => {
+	it("should apply any template scenario, when area-, height- and color-metric of default scenario are available", () => {
 		const defaultScenario = {
 			dynamicSettings: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" }
 		} as RecursivePartial<Settings>
-		ScenarioHelper.getDefaultScenarioSetting = () => defaultScenario
+		ScenarioHelper.getMatchingScenarioSetting = () => defaultScenario
 		mockedNodeMetricDataSelector.next([{ name: "rloc", maxValue: 9001 }])
-
 		expect(mockedStore.dispatch).toHaveBeenCalledTimes(2)
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setDistributionMetric("rloc"))
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setState(defaultScenario))
@@ -54,7 +53,7 @@ describe("resetChosenMetricsEffect", () => {
 		const defaultScenario = {
 			dynamicSettings: { areaMetric: "rloc", heightMetric: "loc", colorMetric: "mcc" }
 		} as RecursivePartial<Settings>
-		ScenarioHelper.getDefaultScenarioSetting = () => defaultScenario
+		ScenarioHelper.getMatchingScenarioSetting = () => defaultScenario
 		mockedNodeMetricDataSelector.next([
 			{ name: "rloc", maxValue: 9001 },
 			{ name: "loc", maxValue: 9001 }
