@@ -7,16 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.99.1] - 2022-06-22
+### Changed
 
-### Added 🚀
+-   Select matching metric combination based on available metrics [#2862](https://github.com/MaibornWolff/codecharta/pull/2862)
+
+## [1.99.1] - 2022-06-22
 
 ### Fixed 🐞
 
 -   Fix packaging of standalone app for macOS and Windows [#2847](https://github.com/MaibornWolff/codecharta/pull/2847)
 -   Fix dialogparser test of sourcecode parser[#2860](https://github.com/MaibornWolff/codecharta/pull/2860)
-
-### Chore 👨‍💻 👩‍💻
 
 ## [1.99.0] - 2022-06-21
 
