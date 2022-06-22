@@ -51,7 +51,7 @@ class ParserDialog {
             }
 
             val isCompressed: Boolean =
-                    KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = false)
+                    KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
 
             val isVerbose: Boolean =
                     KInquirer.promptConfirm(message = "Display info messages from sonar plugins?", default = false)
