@@ -24,6 +24,9 @@ jobs:
         with:
           node-version: '16'
 
+      - name: Install wine
+        run: sudo apt-get install -y wine-stable
+
       - name: Build analysis
         working-directory: ./analysis
         run: |

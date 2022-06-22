@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix packaging of standalone app for macOS [#2847](https://github.com/MaibornWolff/codecharta/pull/2847)
+-   Fix packaging of standalone app for macOS and Windows [#2847](https://github.com/MaibornWolff/codecharta/pull/2847)
 
 ### Chore 👨‍💻 👩‍💻
 
