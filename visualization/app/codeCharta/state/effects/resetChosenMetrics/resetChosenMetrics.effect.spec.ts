@@ -38,22 +38,21 @@ describe("resetChosenMetricsEffect", () => {
 		expect(mockedStore.dispatch).not.toHaveBeenCalled()
 	})
 
-	it("should apply any template scenario, when area-, height- and color-metric of default scenario are available", () => {
-		const defaultScenario = {
+	it("should apply matching scenario, when area, height and color metrics of matching scenario are available", () => {
+		const matchingScenario = {
 			dynamicSettings: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" }
 		} as RecursivePartial<Settings>
-		ScenarioHelper.getMatchingScenarioSetting = () => defaultScenario
+
+		ScenarioHelper.getMatchingScenarioSetting = () => matchingScenario
 		mockedNodeMetricDataSelector.next([{ name: "rloc", maxValue: 9001 }])
+
 		expect(mockedStore.dispatch).toHaveBeenCalledTimes(2)
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setDistributionMetric("rloc"))
-		expect(mockedStore.dispatch).toHaveBeenCalledWith(setState(defaultScenario))
+		expect(mockedStore.dispatch).toHaveBeenCalledWith(setState(matchingScenario))
 	})
 
-	it("should not apply default scenario, when area-, height- or color-metric of default scenario are not available but default to first existing metrics", () => {
-		const defaultScenario = {
-			dynamicSettings: { areaMetric: "rloc", heightMetric: "loc", colorMetric: "mcc" }
-		} as RecursivePartial<Settings>
-		ScenarioHelper.getMatchingScenarioSetting = () => defaultScenario
+	it("should apply available metrics when no matching scenario was found", () => {
+		ScenarioHelper.getMatchingScenarioSetting = () => null
 		mockedNodeMetricDataSelector.next([
 			{ name: "rloc", maxValue: 9001 },
 			{ name: "loc", maxValue: 9001 }
