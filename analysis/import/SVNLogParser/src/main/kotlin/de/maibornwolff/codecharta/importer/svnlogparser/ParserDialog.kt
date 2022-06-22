@@ -4,9 +4,6 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import mu.KotlinLogging
-
-private val logger = KotlinLogging.logger {}
 
 class ParserDialog {
     companion object : ParserDialogInterface {
@@ -30,7 +27,7 @@ class ParserDialog {
             )
 
             val isCompressed: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to compress the file?", default = false)
+                KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
 
             val isSilent: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to suppress command line output?", default = false)

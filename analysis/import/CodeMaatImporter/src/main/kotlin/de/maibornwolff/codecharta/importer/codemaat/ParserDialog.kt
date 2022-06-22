@@ -25,7 +25,7 @@ class ParserDialog {
             )
 
             val isCompressed: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to compress the file?", default = true)
+                KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
 
             return listOfNotNull(
                 inputFileName,

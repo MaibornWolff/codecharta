@@ -18,7 +18,7 @@ class ParserDialog {
             )
 
             val compress: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to compress the file?", default = false)
+                KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
 
             val addMissing: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to add missing nodes to reference?", default = false)
