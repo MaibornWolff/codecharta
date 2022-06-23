@@ -7,7 +7,6 @@ import { FileState } from "../../../model/files/files"
 })
 export class FilePanelDeltaSelectorComponent {
 	@Input() files: FileState[]
-	@Input() pictogramFirstColor: string
 	@Input() pictogramUpperColor: string
 	@Input() pictogramLowerColor: string
 	@Input() handleDeltaReferenceFileChange: (referenceFileName: string) => void
