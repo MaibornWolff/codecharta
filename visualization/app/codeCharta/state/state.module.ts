@@ -7,7 +7,6 @@ import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttribut
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
-import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
@@ -44,7 +43,6 @@ angular
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(FilesService.name), FilesService)
 	.service(camelCase(MapSizeService.name), MapSizeService)
-	.service(camelCase(MapColorsService.name), MapColorsService)
 	.service(camelCase(ShowOnlyBuildingsWithEdgesService.name), ShowOnlyBuildingsWithEdgesService)
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(CameraService.name), CameraService)
