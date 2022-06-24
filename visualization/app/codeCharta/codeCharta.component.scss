@@ -1,3 +1,4 @@
+@use "../material/theme";
 @import "../mixins.scss";
 
 code-charta-component {
@@ -141,7 +142,7 @@ code-charta-component {
 		}
 
 		&.current:hover {
-			background-color: rgb(0, 124, 112) !important;
+			background-color: theme.$cc-emphasized-color !important;
 		}
 	}
 }
