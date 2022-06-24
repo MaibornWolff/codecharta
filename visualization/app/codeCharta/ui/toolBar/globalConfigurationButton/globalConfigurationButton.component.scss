@@ -3,10 +3,6 @@
 cc-global-configuration-button button {
 	margin: 0;
 
-	&:hover cc-action-icon {
-		background-color: rgb(0, 124, 112);
-	}
-
 	cc-action-icon {
 		margin-left: 4px;
 	}

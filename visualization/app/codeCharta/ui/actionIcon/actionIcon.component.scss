@@ -8,10 +8,10 @@ cc-action-icon {
 	height: 24px;
 	border-radius: 100%;
 	background-color: theme.$cc-primary-color;
-	font-size: 16px;
+	font-size: 14px;
 
 	&:hover {
-		background-color: rgb(0, 124, 112);
+		background-color: theme.$cc-emphasized-color;
 	}
 
 	i,
