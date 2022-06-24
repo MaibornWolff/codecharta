@@ -6,6 +6,10 @@ cc-global-configuration-button button {
 	cc-action-icon {
 		margin-left: 4px;
 	}
+
+	&:hover cc-action-icon {
+		background-color: rgb(0, 124, 112);
+	}
 }
 
 .cc-global-configuration-dialog .mat-dialog-container {
