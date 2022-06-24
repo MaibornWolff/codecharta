@@ -4,6 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptListObject
+import com.github.kinquirer.core.Choice
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
@@ -42,7 +43,7 @@ class ParserDialogTest {
         } returns findIssues andThen defaultExcludes andThen isCompressed andThen isVerbose
         mockkStatic("com.github.kinquirer.components.ListKt")
         every {
-            KInquirer.promptListObject<OutputFormat>(any(), any())
+            KInquirer.promptListObject(any(), any<List<Choice<OutputFormat>>>(), any(), any(), any())
         } returns outputFormat
 
         val parserArguments = ParserDialog.collectParserArgs()
@@ -81,7 +82,7 @@ class ParserDialogTest {
         } returns findIssues andThen defaultExcludes andThen isCompressed andThen isVerbose
         mockkStatic("com.github.kinquirer.components.ListKt")
         every {
-            KInquirer.promptListObject<OutputFormat>(any(), any())
+            KInquirer.promptListObject(any(), any<List<Choice<OutputFormat>>>(), any(), any(), any())
         } returns outputFormat
 
         val parserArguments = ParserDialog.collectParserArgs()

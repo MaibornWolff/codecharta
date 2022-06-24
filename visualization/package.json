@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.98.0",
+	"version": "1.99.1",
 	"engines": {
 		"node": ">=16"
 	},
@@ -39,6 +39,7 @@
 	},
 	"main": "dist/webpack/index.html",
 	"build": {
+		"nwVersion": "0.65.1",
 		"output": "./dist/packages/",
 		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
 		"files": "./dist/webpack/**/*",

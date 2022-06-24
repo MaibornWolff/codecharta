@@ -9,7 +9,7 @@
 	</mat-option>
 </mat-select>
 
-<div class="pictogram" [style.background]="'linear-gradient(' + pictogramUpperColor + ' 50%, ' + pictogramLowerColor + ' 50%)'"></div>
+<div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
 
 <mat-select
 	class="delta-select"

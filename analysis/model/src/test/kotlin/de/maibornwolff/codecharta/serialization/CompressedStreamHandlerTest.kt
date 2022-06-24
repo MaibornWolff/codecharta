@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.serialization
 
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class CompressedStreamHandlerTest {
@@ -14,7 +15,7 @@ class CompressedStreamHandlerTest {
         var input = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_COMPRESSED)
         input = CompressedStreamHandler.wrapInput(input)
         val content = input.reader().readText()
-        assertSame("hello world\n", content)
+        assertEquals("hello world\n", content)
         input.close()
     }
 
@@ -23,7 +24,7 @@ class CompressedStreamHandlerTest {
         var input = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_UNCOMPRESSED)
         input = CompressedStreamHandler.wrapInput(input)
         val content = input.reader().readText()
-        assertSame("hello world\n", content)
+        assertEquals("hello world\n", content)
         input.close()
     }
 
@@ -32,7 +33,7 @@ class CompressedStreamHandlerTest {
         var input = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_EMPTY)
         input = CompressedStreamHandler.wrapInput(input)
         val content = input.reader().readText()
-        assertSame("", content)
+        assertEquals("", content)
         input.close()
     }
 

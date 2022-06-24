@@ -13,6 +13,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: jsonassert_version
@@ -50,6 +51,6 @@ jacocoTestReport {
 
 test {
     useJUnitPlatform {
-        includeEngines 'spek2'
+        includeEngines 'junit-jupiter', 'spek2'
     }
 }

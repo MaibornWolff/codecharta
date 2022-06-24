@@ -7,12 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.99.1] - 2022-06-22
+
+### Added 🚀
+
+### Fixed 🐞
+
+-   Fix packaging of standalone app for macOS and Windows [#2847](https://github.com/MaibornWolff/codecharta/pull/2847)
+-   Fix dialogparser test of sourcecode parser[#2860](https://github.com/MaibornWolff/codecharta/pull/2860)
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.99.0] - 2022-06-21
+
 ### Added 🚀
 
 -   Add interactive dialog support for the remaining parsers [#2833](https://github.com/MaibornWolff/codecharta/pull/2833) [#2836](https://github.com/MaibornWolff/codecharta/pull/2836) [#2842](https://github.com/MaibornWolff/codecharta/pull/2842) [#2843](https://github.com/MaibornWolff/codecharta/pull/2843) [#2846](https://github.com/MaibornWolff/codecharta/pull/2846)
 
 ### Fixed 🐞
 
+-   Fix analysis bug where importers would get stuck before file output [#2854](https://github.com/MaibornWolff/codecharta/pull/2854)
 -   Use correct icon for height metric chooser again [#2851](https://github.com/MaibornWolff/codecharta/pull/2851)
 -   Close height metric option instead of making it only invisible on close [#2853](https://github.com/MaibornWolff/codecharta/pull/2853)
 

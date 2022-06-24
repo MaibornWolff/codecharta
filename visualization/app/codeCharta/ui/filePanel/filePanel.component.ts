@@ -7,8 +7,6 @@ import { fileStatesAvailable, getFileNameOf, getVisibleFileStates, isDeltaState,
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
 import { removeRecentFile } from "../../state/store/dynamicSettings/recentFiles/recentFiles.actions"
-import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
-import { MapColors } from "../../codeCharta.model"
 
 interface SelectedFileNames {
 	delta: {
@@ -18,7 +16,7 @@ interface SelectedFileNames {
 	partial: string[]
 }
 
-export class FilePanelController implements FilesSelectionSubscriber, MapColorsSubscriber {
+export class FilePanelController implements FilesSelectionSubscriber {
 	private lastRenderState: FileSelectionState
 
 	private _viewModel: {
@@ -27,8 +25,6 @@ export class FilePanelController implements FilesSelectionSubscriber, MapColorsS
 		files: FileState[]
 		renderState: FileSelectionState
 		selectedFileNames: SelectedFileNames
-		pictogramUpperColor: string
-		pictogramLowerColor: string
 	} = {
 		isPartialState: null,
 		isDeltaState: null,
@@ -40,20 +36,12 @@ export class FilePanelController implements FilesSelectionSubscriber, MapColorsS
 				comparison: null
 			},
 			partial: []
-		},
-		pictogramUpperColor: null,
-		pictogramLowerColor: null
+		}
 	}
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
-		MapColorsService.subscribe(this.$rootScope, this)
-	}
-
-	onMapColorsChanged(mapColors: MapColors) {
-		this._viewModel.pictogramUpperColor = mapColors.positiveDelta
-		this._viewModel.pictogramLowerColor = mapColors.negativeDelta
 	}
 
 	onRemoveFile = (filename: string, $event): void => {
