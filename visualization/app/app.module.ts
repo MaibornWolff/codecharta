@@ -100,7 +100,6 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 		RibbonBarModule,
 		ChangelogDialogModule,
 		HoveredNodePathPanelModule,
-		ChangelogDialogModule,
 		ActionIconModule
 	],
 	providers: [
