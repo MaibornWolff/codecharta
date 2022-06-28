@@ -198,16 +198,6 @@ export class ScenarioHelper {
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	static getMatchingScenarioSetting(nodeMetricData) {
-		const metricData = { nodeMetricData, edgeMetricData: [] } as MetricData
-		for (const scenario of this.scenarios.values()) {
-			if (this.isScenarioApplicable(scenario, metricData)) {
-				return this.getScenarioSettingsByName(scenario.name)
-			}
-		}
-		return null
-	}
-
 	static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
 		const scenario = this.scenarios.get(name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}

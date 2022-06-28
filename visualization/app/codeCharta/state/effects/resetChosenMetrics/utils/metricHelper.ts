@@ -1,4 +1,17 @@
-import { NodeMetricData, RecursivePartial, Settings } from "../../../../codeCharta.model"
+import { MetricData, NodeMetricData, RecursivePartial, Settings } from "../../../../codeCharta.model"
+
+const metricCombinations = [
+	{
+		settings: {
+			appSettings: {},
+			dynamicSettings: {
+				areaMetric: "rloc",
+				heightMetric: "mcc",
+				colorMetric: "mcc"
+			}
+		}
+	}
+]
 
 export function isAnyMetricAvailable<T extends Pick<NodeMetricData, "maxValue">[]>(metricData: T) {
 	return metricData.some(x => x.maxValue > 0)
@@ -33,4 +46,14 @@ export function defaultNMetrics<T extends Pick<NodeMetricData, "maxValue" | "nam
 		defaultedMetrics.push(lastMetricNameWithValue)
 	}
 	return defaultedMetrics
+}
+
+export function getMatchingMetric(nodeMetricData) {
+	const metricData = { nodeMetricData, edgeMetricData: [] } as MetricData
+	for (const metricCombination of metricCombinations) {
+		if (areScenarioSettingsApplicable(metricCombination.settings, metricData.nodeMetricData)) {
+			return metricCombination.settings
+		}
+	}
+	return null
 }
