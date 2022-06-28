@@ -28,7 +28,7 @@ jobs:
         run: |
           sudo dpkg --add-architecture i386
           sudo apt update
-          sudo apt-get install -y wine-stable wine32
+          sudo apt-get install -y wine-stable wine32 libwine:i386
 
       - name: Build analysis
         working-directory: ./analysis
