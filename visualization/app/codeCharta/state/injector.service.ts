@@ -1,6 +1,5 @@
 //@ts-nocheck
 
-import { ColorModeService } from "./store/dynamicSettings/colorMode/colorMode.service"
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
@@ -31,7 +30,6 @@ import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
-		private colorModeService: ColorModeService,
 		private recentFilesService: RecentFilesService,
 		private metricDataService: MetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
