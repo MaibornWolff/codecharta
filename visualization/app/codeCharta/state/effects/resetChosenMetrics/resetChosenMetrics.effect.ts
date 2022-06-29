@@ -1,10 +1,9 @@
 import { Inject, Injectable } from "@angular/core"
 import { filter, tap } from "rxjs"
-import { defaultNMetrics, getMatchingMetric, isAnyMetricAvailable } from "./utils/metricHelper"
+import { defaultNMetrics, isAnyMetricAvailable, preselectCombination } from "./utils/metricHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Store } from "../../angular-redux/store"
 import { nodeMetricDataSelector } from "../../selectors/accumulatedData/metricData/nodeMetricData.selector"
-import { setState } from "../../store/state.actions"
 import { setDistributionMetric } from "../../store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { getDefaultDistribution } from "./utils/getDefaultDistributionMetric"
 import { setAreaMetric } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"
@@ -21,9 +20,11 @@ export class ResetChosenMetricsEffect {
 				filter(isAnyMetricAvailable),
 				tap(nodeMetricData => {
 					this.store.dispatch(setDistributionMetric(getDefaultDistribution(nodeMetricData)))
-					const matchingMetricSetting = getMatchingMetric(nodeMetricData)
-					if (matchingMetricSetting) {
-						this.store.dispatch(setState(matchingMetricSetting))
+					const matchingMetricSettings = preselectCombination(nodeMetricData)
+					if (matchingMetricSettings.length === 3) {
+						this.store.dispatch(setAreaMetric(matchingMetricSettings[0]))
+						this.store.dispatch(setHeightMetric(matchingMetricSettings[1]))
+						this.store.dispatch(setColorMetric(matchingMetricSettings[2]))
 					} else {
 						const [defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = defaultNMetrics(nodeMetricData, 3)
 						this.store.dispatch(setAreaMetric(defaultedAreaMetric))

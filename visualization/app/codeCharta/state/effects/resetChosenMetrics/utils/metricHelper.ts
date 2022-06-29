@@ -1,17 +1,7 @@
-import { MetricData, NodeMetricData, RecursivePartial, Settings } from "../../../../codeCharta.model"
+import { NodeMetricData, RecursivePartial, Settings } from "../../../../codeCharta.model"
 
-const metricCombinations = [
-	{
-		settings: {
-			appSettings: {},
-			dynamicSettings: {
-				areaMetric: "rloc",
-				heightMetric: "mcc",
-				colorMetric: "mcc"
-			}
-		}
-	}
-]
+const sizeMetrics = ["rloc", "loc"]
+const qualityMetrics = ["mcc", "cognitive_complexity"]
 
 export function isAnyMetricAvailable<T extends Pick<NodeMetricData, "maxValue">[]>(metricData: T) {
 	return metricData.some(x => x.maxValue > 0)
@@ -48,12 +38,18 @@ export function defaultNMetrics<T extends Pick<NodeMetricData, "maxValue" | "nam
 	return defaultedMetrics
 }
 
-export function getMatchingMetric(nodeMetricData) {
-	const metricData = { nodeMetricData, edgeMetricData: [] } as MetricData
-	for (const metricCombination of metricCombinations) {
-		if (areScenarioSettingsApplicable(metricCombination.settings, metricData.nodeMetricData)) {
-			return metricCombination.settings
+export function preselectCombination(nodeMetricData) {
+	const preselectCombinationMetrics: string[] = []
+	// combinations might be a parameter for this function for different scenarios
+	const combination = { AreaMetric: sizeMetrics, HeightMetric: qualityMetrics, ColorMetric: qualityMetrics }
+	const nodeMetricSet = new Set(nodeMetricData.map(data => data.name))
+	for (const key in combination) {
+		for (const metric of combination[key]) {
+			if (nodeMetricSet.has(metric)) {
+				preselectCombinationMetrics.push(metric)
+				break
+			}
 		}
 	}
-	return null
+	return preselectCombinationMetrics
 }
