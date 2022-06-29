@@ -139,42 +139,42 @@ describe("scenarioHelper", () => {
 		})
 	})
 
-	describe("getMatchingScenarioSetting", () => {
-		beforeEach(() => {
-			ScenarioHelper["scenarios"].clear()
-			ScenarioHelper["scenarios"].set("Complexity", {
-				name: "Complexity",
-				area: { areaMetric: "mcc", margin: 48 },
-				height: { heightMetric: "rloc" }
-			})
-			ScenarioHelper["scenarios"].set("Average Complexity*", {
-				name: "Average Complexity*",
-				area: { areaMetric: "unary", margin: 48 },
-				height: { heightMetric: "Average Complexity*" }
-			})
-		})
-		it("should return matching ExportScenario", () => {
-			ScenarioHelper.getScenarioSettingsByName = jest.fn()
+	// describe("getMatchingScenarioSetting", () => {
+	// 	beforeEach(() => {
+	// 		ScenarioHelper["scenarios"].clear()
+	// 		ScenarioHelper["scenarios"].set("Complexity", {
+	// 			name: "Complexity",
+	// 			area: { areaMetric: "mcc", margin: 48 },
+	// 			height: { heightMetric: "rloc" }
+	// 		})
+	// 		ScenarioHelper["scenarios"].set("Average Complexity*", {
+	// 			name: "Average Complexity*",
+	// 			area: { areaMetric: "unary", margin: 48 },
+	// 			height: { heightMetric: "Average Complexity*" }
+	// 		})
+	// 	})
+	// 	it("should return matching ExportScenario", () => {
+	// 		ScenarioHelper.getScenarioSettingsByName = jest.fn()
+	//
+	// 		ScenarioHelper.getMatchingScenarioSetting([
+	// 			{ name: "mcc", maxValue: 56, minValue: 1 },
+	// 			{ name: "rloc", maxValue: 56, minValue: 1 }
+	// 		])
+	//
+	// 		expect(ScenarioHelper.getScenarioSettingsByName).toHaveBeenCalledWith("Complexity")
+	// 	})
 
-			ScenarioHelper.getMatchingScenarioSetting([
-				{ name: "mcc", maxValue: 56, minValue: 1 },
-				{ name: "rloc", maxValue: 56, minValue: 1 }
-			])
-
-			expect(ScenarioHelper.getScenarioSettingsByName).toHaveBeenCalledWith("Complexity")
-		})
-
-		it("should return the second ExportScenario if the first ExportScenario does not match", () => {
-			ScenarioHelper.getScenarioSettingsByName = jest.fn()
-
-			ScenarioHelper.getMatchingScenarioSetting([
-				{ name: "unary", maxValue: 1, minValue: 1 },
-				{ name: "Average Complexity*", maxValue: 56, minValue: 1 }
-			])
-
-			expect(ScenarioHelper.getScenarioSettingsByName).toHaveBeenCalledWith("Average Complexity*")
-		})
-	})
+	// it("should return the second ExportScenario if the first ExportScenario does not match", () => {
+	// 	ScenarioHelper.getScenarioSettingsByName = jest.fn()
+	//
+	// 	ScenarioHelper.getMatchingScenarioSetting([
+	// 		{ name: "unary", maxValue: 1, minValue: 1 },
+	// 		{ name: "Average Complexity*", maxValue: 56, minValue: 1 }
+	// 	])
+	//
+	// 	expect(ScenarioHelper.getScenarioSettingsByName).toHaveBeenCalledWith("Average Complexity*")
+	// })
+	//})
 
 	describe("addScenario", () => {
 		beforeEach(() => {
