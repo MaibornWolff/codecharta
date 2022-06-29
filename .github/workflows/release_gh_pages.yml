@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v3.3.0
+        uses: actions/setup-java@v3.4.0
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -25,7 +25,10 @@ jobs:
           node-version: '16'
 
       - name: Install wine
-        run: sudo apt-get install -y wine-stable
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt-get install -y wine-stable wine32 libwine:i386
 
       - name: Build analysis
         working-directory: ./analysis
@@ -103,7 +106,7 @@ jobs:
           workdir: ./visualization
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4.3.4
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages

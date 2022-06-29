@@ -58,6 +58,7 @@ import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgeP
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
 import { VersionService } from "./codeCharta/services/version/version.service"
 import { HoveredNodePathPanelModule } from "./codeCharta/ui/toolBar/hoveredNodePathPanel/hoveredNodePathPanel.module"
+import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 
 @NgModule({
 	imports: [
@@ -98,7 +99,8 @@ import { HoveredNodePathPanelModule } from "./codeCharta/ui/toolBar/hoveredNodeP
 		MetricChooserModule,
 		RibbonBarModule,
 		ChangelogDialogModule,
-		HoveredNodePathPanelModule
+		HoveredNodePathPanelModule,
+		ActionIconModule
 	],
 	providers: [
 		threeSceneServiceProvider,

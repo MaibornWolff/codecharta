@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Changed
+## Changed
 
 -   Select matching metric combination based on available metrics [#2862](https://github.com/MaibornWolff/codecharta/pull/2862)
+
+## [1.99.3] - 2022-06-28
+
+## [1.99.2] - 2022-06-28
+
+### Changed
+
+-   Unify UI of buttons in toolbar [#2857](https://github.com/MaibornWolff/codecharta/pull/2857)
 
 ## [1.99.1] - 2022-06-22
 
