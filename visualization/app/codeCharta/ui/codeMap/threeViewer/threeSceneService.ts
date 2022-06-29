@@ -4,14 +4,15 @@ import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
-import { CodeMapNode, LayoutAlgorithm, MapColors, Node } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { MapColorsService, MapColorsSubscriber } from "../../../state/store/appSettings/mapColors/mapColors.service"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
+import { onStoreChanged } from "../../../state/angular-redux/onStoreChanged/onStoreChanged"
+import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -21,7 +22,7 @@ export interface BuildingDeselectedEventSubscriber {
 	onBuildingDeselected()
 }
 
-export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, MapColorsSubscriber {
+export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
 
@@ -54,7 +55,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private idToBuilding: IdToBuildingService) {
 		"ngInject"
-		MapColorsService.subscribe(this.$rootScope, this)
+		onStoreChanged(mapColorsSelector, (_, mapColors) => {
+			this.folderLabelColorSelected = mapColors.selected
+			this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+		})
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
 		this.scene = new Scene()
@@ -100,11 +104,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Map
 
 	private getRootNode(nodes: Node[]) {
 		return nodes.find(node => node.id === 0)
-	}
-
-	onMapColorsChanged(mapColors: MapColors) {
-		this.folderLabelColorSelected = mapColors.selected
-		this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
 	}
 
 	onRenderMapChanged() {
