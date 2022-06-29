@@ -1,9 +1,9 @@
-import { ColorLabelsAction, ColorLabelsActions, setColorLabels } from "./colorLabels.actions"
+import { ColorLabelsAction, ColorLabelsActions, defaultColorLabels } from "./colorLabels.actions"
 
-export function colorLabels(state = setColorLabels().payload, action: ColorLabelsAction) {
+export function colorLabels(state = defaultColorLabels, action: ColorLabelsAction) {
 	switch (action.type) {
 		case ColorLabelsActions.SET_COLOR_LABELS:
-			return action.payload
+			return { ...state, ...action.payload }
 		default:
 			return state
 	}

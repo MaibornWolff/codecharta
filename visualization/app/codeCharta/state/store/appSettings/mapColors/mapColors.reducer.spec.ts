@@ -1,40 +1,42 @@
 import { mapColors } from "./mapColors.reducer"
-import { defaultMapColors, MapColorsAction, setMapColors } from "./mapColors.actions"
+import { defaultMapColors, invertColorRange, invertDeltaColors, MapColorsAction, setMapColors } from "./mapColors.actions"
 import { MapColors } from "../../../../codeCharta.model"
 
 describe("mapColors", () => {
-	describe("Default State", () => {
-		it("should initialize the default state", () => {
-			const result = mapColors(undefined, {} as MapColorsAction)
+	it("should initialize the default state", () => {
+		const result = mapColors(undefined, {} as MapColorsAction)
 
-			expect(result).toEqual(defaultMapColors)
-		})
+		expect(result).toEqual(defaultMapColors)
 	})
 
-	describe("Action: SET_MAP_COLORS", () => {
-		it("should set new mapColors", () => {
-			const newMapColors = { ...defaultMapColors, positive: "ABCDEF" }
+	it("should set new mapColors", () => {
+		const newMapColors = { ...defaultMapColors, positive: "ABCDEF" }
 
-			const result = mapColors(defaultMapColors, setMapColors(newMapColors))
+		const result = mapColors(defaultMapColors, setMapColors(newMapColors))
 
-			expect(result).toEqual(newMapColors)
-		})
+		expect(result).toEqual(newMapColors)
+	})
 
-		it("should set default mapColors", () => {
-			const oldMapColors = { ...defaultMapColors, positive: "ABCDEF" }
+	it("should update mapColors with partial mapColors object", () => {
+		const oldMapColors = { ...defaultMapColors }
 
-			const result = mapColors(oldMapColors, setMapColors())
+		const result = mapColors(oldMapColors, setMapColors({ positive: "ABCDEF" } as MapColors))
 
-			expect(result).toEqual(defaultMapColors)
-		})
+		expect(Object.values(result)).toHaveLength(12)
+		expect(result.positive).toEqual("ABCDEF")
+	})
 
-		it("should update mapColors with partial mapColors object", () => {
-			const oldMapColors = { ...defaultMapColors }
+	it("should invert color range", () => {
+		const oldMapColors = { ...defaultMapColors }
+		const result = mapColors(oldMapColors, invertColorRange())
+		expect(result.positive).toBe(oldMapColors.negative)
+		expect(result.negative).toBe(oldMapColors.positive)
+	})
 
-			const result = mapColors(oldMapColors, setMapColors({ positive: "ABCDEF" } as MapColors))
-
-			expect(Object.values(result)).toHaveLength(12)
-			expect(result.positive).toEqual("ABCDEF")
-		})
+	it("should invert delta colors", () => {
+		const oldMapColors = { ...defaultMapColors }
+		const result = mapColors(oldMapColors, invertDeltaColors())
+		expect(result.positiveDelta).toBe(oldMapColors.negativeDelta)
+		expect(result.negativeDelta).toBe(oldMapColors.positiveDelta)
 	})
 })

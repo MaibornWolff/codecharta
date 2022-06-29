@@ -1,5 +1,4 @@
 <cc-range-slider
-	*ngIf="!(isDeltaState$ | async)"
 	[minValue]="(sliderValues$ | async).min"
 	[maxValue]="(sliderValues$ | async).max"
 	[currentLeftValue]="(sliderValues$ | async).from"

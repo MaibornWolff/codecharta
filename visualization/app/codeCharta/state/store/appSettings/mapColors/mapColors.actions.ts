@@ -1,20 +1,29 @@
-import { CCAction, MapColors } from "../../../../codeCharta.model"
+import { MapColors } from "../../../../codeCharta.model"
 
 export enum MapColorsActions {
-	SET_MAP_COLORS = "SET_MAP_COLORS"
+	SET_MAP_COLORS = "SET_MAP_COLORS",
+	INVERT_COLOR_RANGE = "INVERT_COLOR_RANGE",
+	INVERT_DELTA_COLORS = "INVERT_DELTA_COLORS"
 }
 
-export interface SetMapColorsAction extends CCAction {
-	type: MapColorsActions.SET_MAP_COLORS
-	payload: Partial<MapColors>
-}
+export type MapColorsAction = ReturnType<typeof setMapColors> | ReturnType<typeof invertColorRange> | ReturnType<typeof invertDeltaColors>
 
-export type MapColorsAction = SetMapColorsAction
-
-export function setMapColors(mapColors: Partial<MapColors> = defaultMapColors): SetMapColorsAction {
+export function setMapColors(mapColors: Partial<MapColors> = defaultMapColors) {
 	return {
 		type: MapColorsActions.SET_MAP_COLORS,
 		payload: mapColors
+	}
+}
+
+export function invertColorRange() {
+	return {
+		type: MapColorsActions.INVERT_COLOR_RANGE
+	}
+}
+
+export function invertDeltaColors() {
+	return {
+		type: MapColorsActions.INVERT_DELTA_COLORS
 	}
 }
 
