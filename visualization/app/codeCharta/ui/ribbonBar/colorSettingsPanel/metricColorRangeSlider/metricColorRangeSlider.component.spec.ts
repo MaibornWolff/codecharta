@@ -8,7 +8,7 @@ import { trackEventUsageData } from "../../../../util/usageDataTracker"
 import { MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
 import { MetricColorRangeSliderModule } from "./metricColorRangeSlider.module"
 
-jest.mock("../../../util/usageDataTracker", () => ({
+jest.mock("../../../../util/usageDataTracker", () => ({
 	trackEventUsageData: jest.fn()
 }))
 const trackEventUsageDataMock = mocked(trackEventUsageData)
