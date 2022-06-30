@@ -14,10 +14,10 @@ import { setScreenshotToClipboardEnabled } from "../state/store/appSettings/enab
 export class GlobalSettingsHelper {
 	static readonly GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT = "globalSettings"
 
-	static setGlobalSettingsInLocalStorage(globalSettings: GlobalSettings) {
+	static setGlobalSettingsInLocalStorage(globalSettings: Partial<GlobalSettings>) {
 		const newLocalStorageElement: LocalStorageGlobalSettings = {
 			version: packageJson.version,
-			globalSettings
+			globalSettings: { ...GlobalSettingsHelper.getGlobalSettings(), ...globalSettings }
 		}
 		localStorage.setItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement))
 	}

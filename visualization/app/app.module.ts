@@ -47,7 +47,6 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
 import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
-import { SyncGlobalSettingsInLocalStorageEffect } from "./codeCharta/state/effects/syncGlobalSettingsInLocalStorage/syncGlobalSettingsInLocalStorage.effect"
 import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBar/distributionMetricChooser/distributionMetricChooser..module"
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
@@ -71,7 +70,6 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect,
 			ResetColorRangeEffect,
-			SyncGlobalSettingsInLocalStorageEffect,
 			ResetDynamicMarginEffect,
 			ResetChosenMetricsEffect,
 			UpdateEdgePreviewsEffect
