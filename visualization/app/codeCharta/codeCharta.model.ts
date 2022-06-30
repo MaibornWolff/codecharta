@@ -181,8 +181,10 @@ export interface MapColors {
 }
 
 export interface ColorRange {
-	from: number
-	to: number
+	/** null means to be reset */
+	from: number | null
+	/** null means to be reset */
+	to: number | null
 }
 
 export interface AttributeTypes {
