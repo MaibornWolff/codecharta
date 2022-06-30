@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+-   Migrate color settings panel to Angular [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
+
 ## [1.99.0] - 2022-06-21
 
 ### Added 🚀
