@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix packaging of standalone app for macOS and Windows [#2847](https://github.com/MaibornWolff/codecharta/pull/2847)
 -   Fix dialogparser test of sourcecode parser[#2860](https://github.com/MaibornWolff/codecharta/pull/2860)
+-   Restore global settings on page load again [#2878](https://github.com/MaibornWolff/codecharta/pull/2878)
 
 ### Chore 👨‍💻 👩‍💻
 
