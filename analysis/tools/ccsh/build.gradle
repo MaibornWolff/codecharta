@@ -36,7 +36,7 @@ dependencies {
     def csvExporter = project(':export:CSVExporter')
     def rawTextParser = project(':parser:RawTextParser')
     def interactiveParser = project(':tools:InteractiveParser')
-    def metricGardenerImporter = project('import:MetricGardenerImporter')
+    def metricGardenerImporter = project(':import:MetricGardenerImporter')
 
     // first implementation is for dependency in main, testImplementation is so our test suite can find all other tests
     implementation codeMaatImporter; testImplementation codeMaatImporter.sourceSets.test.output
