@@ -50,12 +50,16 @@
 </div>
 
 <cc-reset-settings-button
-	[settingsKeys]="[
-		'appSettings.mapColors.positive',
-		'appSettings.mapColors.negative',
-		'appSettings.mapColors.neutral',
-		'appSettings.mapColors.selected'
-	]"
+	[settingsKeys]="
+		(isDeltaState$ | async)
+			? ['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta', 'appSettings.mapColors.selected']
+			: [
+					'appSettings.mapColors.positive',
+					'appSettings.mapColors.negative',
+					'appSettings.mapColors.neutral',
+					'appSettings.mapColors.selected'
+			  ]
+	"
 	tooltip="Reset color values to default"
 	label="Reset colors"
 	[callback]="resetInvertColorCheckboxes"
