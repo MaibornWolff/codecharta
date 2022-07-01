@@ -1,0 +1,23 @@
+cc-color-settings-panel {
+	&.cc-metric-settings-panel {
+		width: 266px;
+
+		cc-reset-settings-button {
+			display: block;
+		}
+
+		.color-row {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.invert-colors {
+			display: flex;
+			justify-content: end;
+		}
+
+		cc-reset-settings-button button {
+			margin: 0;
+		}
+	}
+}

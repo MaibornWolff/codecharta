@@ -10,11 +10,9 @@ import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attribu
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
 import { Export3DMapButtonComponent } from "./codeCharta/ui/export3DMapButton/export3DMapButton.component"
 import { Export3DMapButtonModule } from "./codeCharta/ui/export3DMapButton/export3DMapButton.module"
-import { LabelledColorPickerComponent } from "./codeCharta/ui/labelledColorPicker/labelledColorPicker.component"
 import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.component"
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
-import { ColorPickerForMapColorComponent } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.component"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
 import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
@@ -41,7 +39,6 @@ import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.modul
 import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
-import { MetricColorRangeSliderModule } from "./codeCharta/ui/colorSettingsPanel/metricColorRangeSlider/metricColorRangeSlider.module"
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
@@ -58,6 +55,7 @@ import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/c
 import { VersionService } from "./codeCharta/services/version/version.service"
 import { HoveredNodePathPanelModule } from "./codeCharta/ui/toolBar/hoveredNodePathPanel/hoveredNodePathPanel.module"
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
+import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
 
 @NgModule({
 	imports: [
@@ -89,7 +87,6 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 		CustomConfigsModule,
 		FilePanelModule,
 		HeightSettingsPanelModule,
-		MetricColorRangeSliderModule,
 		CenterMapButtonModule,
 		GlobalConfigurationButtonModule,
 		DistributionMetricChooserModule,
@@ -98,7 +95,8 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 		RibbonBarModule,
 		ChangelogDialogModule,
 		HoveredNodePathPanelModule,
-		ActionIconModule
+		ActionIconModule,
+		ColorSettingsPanelModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -119,8 +117,6 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
 		LegendPanelComponent,
-		LabelledColorPickerComponent,
-		ColorPickerForMapColorComponent,
 		FocusButtonsComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
