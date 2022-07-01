@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix resetting of color range within color settings panel [#2877](https://github.com/MaibornWolff/codecharta/pull/2877)
 -   Fix resetting of colors in delta mode within color settings panel [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
+-   Restore global settings on page load again [#2878](https://github.com/MaibornWolff/codecharta/pull/2878)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate color settings panel to Angular [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
 
 ## [1.99.3] - 2022-06-28
 
@@ -28,10 +33,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix packaging of standalone app for macOS and Windows [#2847](https://github.com/MaibornWolff/codecharta/pull/2847)
 -   Fix dialogparser test of sourcecode parser[#2860](https://github.com/MaibornWolff/codecharta/pull/2860)
-
-### Chore 👨‍💻 👩‍💻
-
--   Migrate color settings panel to Angular [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
 
 ## [1.99.0] - 2022-06-21
 
