@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import java.io.File
+import java.io.InputStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -12,7 +13,7 @@ import java.util.concurrent.Callable
         footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 
-class MetricGardenerImporter : Callable<Void>, InteractiveParser {
+class MetricGardenerImporter: Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = [
         "Specify : path/to/input/folder/or/file -o path/to/outputfile.json"])
@@ -27,8 +28,12 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["path for the outputfile"])
     private var outputFile: File? = null
 
-    override fun call(): Void {
-        TODO("Not yet implemented")
+    override fun call() : Void? {
+
+        val metricGardenerInputFile: InputStream = inputFile.inputStream()
+        println(metricGardenerInputFile)
+        return null
     }
+
     override fun getDialog(): ParserDialogInterface = ParserDialog
 }
