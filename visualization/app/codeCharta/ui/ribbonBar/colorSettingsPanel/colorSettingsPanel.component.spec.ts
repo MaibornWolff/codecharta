@@ -12,6 +12,9 @@ import { ColorSettingsPanelModule } from "./colorSettingsPanel.module"
 jest.mock("../../../state/selectors/isDeltaState.selector", () => ({
 	isDeltaStateSelector: jest.fn()
 }))
+jest.mock("../../../state/store/dynamicSettings/colorRange/colorRange.selector", () => ({
+	colorRangeSelector: () => ({ from: 33, to: 66 })
+}))
 
 const mockedIsDeltaStateSelector = mocked(isDeltaStateSelector)
 
