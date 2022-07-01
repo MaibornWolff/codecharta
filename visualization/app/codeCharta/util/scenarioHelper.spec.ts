@@ -17,24 +17,24 @@ describe("scenarioHelper", () => {
 
 	describe("importScenarios", () => {
 		it("should convert vectors when importing scenarios", () => {
-			scenarios[0].settings.appSettings.camera = { x: 0, y: 1, z: 2 } as Vector3
-			expect(scenarios[0].settings.appSettings.camera.clone).toBeUndefined()
+			scenarios[0].settings.camera = { x: 0, y: 1, z: 2 } as Vector3
+			expect(scenarios[0].settings.camera.clone).toBeUndefined()
 
 			const result = ScenarioHelper.importScenarios(scenarios)
 
-			expect(result[0].settings.appSettings.camera.clone).not.toBeUndefined()
+			expect(result[0].settings.camera.clone).not.toBeUndefined()
 		})
 
 		it("should assume 0 as default value if only one dimension is given", () => {
-			scenarios[0].settings.appSettings.camera = { y: 24 } as Vector3
-			expect(scenarios[0].settings.appSettings.camera.clone).toBeUndefined()
+			scenarios[0].settings.camera = { y: 24 } as Vector3
+			expect(scenarios[0].settings.camera.clone).toBeUndefined()
 
 			const result = ScenarioHelper.importScenarios(scenarios)
 
-			expect(result[0].settings.appSettings.camera.clone).not.toBeUndefined()
-			expect(result[0].settings.appSettings.camera.x).toBe(1)
-			expect(result[0].settings.appSettings.camera.y).toBe(24)
-			expect(result[0].settings.appSettings.camera.z).toBe(1)
+			expect(result[0].settings.camera.clone).not.toBeUndefined()
+			expect(result[0].settings.camera.x).toBe(1)
+			expect(result[0].settings.camera.y).toBe(24)
+			expect(result[0].settings.camera.z).toBe(1)
 		})
 	})
 	describe("getScenarioSettingsByName", () => {

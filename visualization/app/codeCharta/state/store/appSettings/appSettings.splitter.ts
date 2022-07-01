@@ -16,7 +16,6 @@ import { splitIsWhiteBackgroundAction } from "./isWhiteBackground/isWhiteBackgro
 import { splitDynamicMarginAction } from "./dynamicMargin/dynamicMargin.splitter"
 import { splitInvertHeightAction } from "./invertHeight/invertHeight.splitter"
 import { splitHideFlatBuildingsAction } from "./hideFlatBuildings/hideFlatBuildings.splitter"
-import { splitCameraAction } from "./camera/camera.splitter"
 import { splitScalingAction } from "./scaling/scaling.splitter"
 import { splitEdgeHeightAction } from "./edgeHeight/edgeHeight.splitter"
 import { splitAmountOfEdgePreviewsAction } from "./amountOfEdgePreviews/amountOfEdgePreviews.splitter"
@@ -84,10 +83,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.hideFlatBuildings !== undefined) {
 		actions.push(splitHideFlatBuildingsAction(payload.hideFlatBuildings))
-	}
-
-	if (payload.camera !== undefined) {
-		actions.push(splitCameraAction(payload.camera as Vector3))
 	}
 
 	if (payload.scaling !== undefined) {

@@ -10,11 +10,14 @@ import {
 	STATE
 } from "../../util/dataMocks"
 import { ScenarioHelper } from "../../util/scenarioHelper"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { Vector3 } from "three"
 
 describe("DialogAddScenarioSettingsComponent", () => {
 	let dialogAddScenarioSettings: DialogAddScenarioSettingsComponent
 	let $mdDialog
 	let storeService: StoreService
+	let threeCameraService: ThreeCameraService
 
 	beforeEach(() => {
 		restartSystem()
@@ -22,7 +25,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 	})
 
 	function rebuildController() {
-		dialogAddScenarioSettings = new DialogAddScenarioSettingsComponent($mdDialog, storeService)
+		dialogAddScenarioSettings = new DialogAddScenarioSettingsComponent($mdDialog, storeService, threeCameraService)
 	}
 
 	function restartSystem() {
@@ -30,6 +33,8 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 		$mdDialog = getService("$mdDialog")
 		storeService = getService<StoreService>("storeService")
+		// @ts-ignore
+		threeCameraService = { camera: { position: new Vector3(0, 300, 1000) } }
 	}
 
 	describe("constructor", () => {

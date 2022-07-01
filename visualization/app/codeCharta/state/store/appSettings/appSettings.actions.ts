@@ -8,7 +8,6 @@ import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdge
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
 import { defaultScaling } from "./scaling/scaling.actions"
-import { defaultCamera } from "./camera/camera.actions"
 import { defaultHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
 import { defaultInvertHeight } from "./invertHeight/invertHeight.actions"
 import { defaultDynamicMargin } from "./dynamicMargin/dynamicMargin.actions"
@@ -56,7 +55,6 @@ export const defaultAppSettings: AppSettings = {
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
 	edgeHeight: defaultEdgeHeight,
 	scaling: defaultScaling,
-	camera: defaultCamera,
 	cameraTarget: defaultCameraTarget,
 	hideFlatBuildings: defaultHideFlatBuildings,
 	invertHeight: defaultInvertHeight,

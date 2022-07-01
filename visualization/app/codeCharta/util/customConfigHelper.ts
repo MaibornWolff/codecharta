@@ -13,7 +13,6 @@ import { FileDownloader } from "./fileDownloader"
 import { setState } from "../state/store/state.actions"
 import { setColorRange } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setMargin } from "../state/store/dynamicSettings/margin/margin.actions"
-import { setCamera } from "../state/store/appSettings/camera/camera.actions"
 import { setCameraTarget } from "../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCameraService"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
@@ -155,7 +154,8 @@ export class CustomConfigHelper {
 				customConfigVersion: exportedConfig.customConfigVersion,
 				mapChecksum: exportedConfig.mapChecksum,
 				mapSelectionMode: exportedConfig.mapSelectionMode,
-				stateSettings: exportedConfig.stateSettings
+				stateSettings: exportedConfig.stateSettings,
+				camera: exportedConfig.camera
 			}
 
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)
@@ -268,10 +268,8 @@ export class CustomConfigHelper {
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
 		setTimeout(() => {
-			threeCameraService.setPosition()
 			threeOrbitControlsService.setControlTarget()
-
-			store.dispatch(setCamera(customConfig.stateSettings.appSettings.camera))
+			threeCameraService.setPosition(customConfig.camera)
 			store.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget))
 		}, 100)
 	}

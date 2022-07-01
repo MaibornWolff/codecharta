@@ -3,7 +3,6 @@ import { HoveredNodeIdActions } from "../../appStatus/hoveredNodeId/hoveredNodeI
 import { FocusedNodePathActions } from "../../dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { SortingOptionActions } from "../../dynamicSettings/sortingOption/sortingOption.actions"
 import { CameraTargetActions } from "../cameraTarget/cameraTarget.actions"
-import { CameraActions } from "../../appSettings/camera/camera.actions"
 import { ScreenshotToClipboardEnabledActions } from "../enableClipboard/screenshotToClipboardEnabled.actions"
 import { ExperimentalFeaturesEnabledActions } from "../enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { IsAttributeSideBarVisibleActions } from "../isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
@@ -28,8 +27,7 @@ const actionsToExclude = [
 	HoveredNodeIdActions,
 	RightClickedNodeDataActions,
 	FocusedNodePathActions,
-	CameraTargetActions,
-	CameraActions
+	CameraTargetActions
 ]
 
 export function isLoadingMap(state = setIsLoadingMap().payload, action: IsLoadingMapAction) {

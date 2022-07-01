@@ -1,5 +1,5 @@
 "use strict"
-import { AppSettings, LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, Settings, MetricData } from "../codeCharta.model"
+import { LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, MetricData, AppSettings, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
@@ -80,7 +80,7 @@ export class ScenarioHelper {
 
 	private static transformScenarioAsSettingsToScenario(scenarioAsSettings: ExportScenario) {
 		const scenario: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
-		const { dynamicSettings, appSettings } = scenarioAsSettings.settings
+		const { dynamicSettings, appSettings, camera } = scenarioAsSettings.settings
 
 		if (dynamicSettings.areaMetric !== undefined) {
 			scenario.area = {
@@ -109,9 +109,9 @@ export class ScenarioHelper {
 				edgePreview: appSettings.amountOfEdgePreviews
 			}
 		}
-		if (appSettings.camera) {
+		if (camera) {
 			scenario.camera = {
-				camera: appSettings.camera,
+				camera,
 				cameraTarget: appSettings.cameraTarget
 			}
 		}
@@ -228,12 +228,11 @@ export class ScenarioHelper {
 				partialAppSettings.amountOfEdgePreviews = scenario.edge.edgePreview
 			}
 			if (scenario.camera) {
-				partialAppSettings.camera = scenario.camera.camera
 				partialAppSettings.cameraTarget = scenario.camera.cameraTarget
 			}
 		}
 
-		return { appSettings: partialAppSettings, dynamicSettings: partialDynamicSettings }
+		return { appSettings: partialAppSettings, dynamicSettings: partialDynamicSettings, camera: scenario?.camera?.camera }
 	}
 
 	static importScenarios(scenarios: ExportScenario[]) {

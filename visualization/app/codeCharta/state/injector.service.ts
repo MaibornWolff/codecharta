@@ -10,7 +10,6 @@ import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadin
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
-import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
 import { AmountOfEdgePreviewsService } from "./store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
@@ -41,7 +40,6 @@ export class InjectorService {
 		private mapSizeService: MapSizeService,
 		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
-		private cameraService: CameraService,
 		private scalingService: ScalingService,
 		private edgeHeightService: EdgeHeightService,
 		private amountOfEdgePreviewsService: AmountOfEdgePreviewsService,

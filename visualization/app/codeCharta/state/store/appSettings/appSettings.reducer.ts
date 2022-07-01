@@ -13,7 +13,6 @@ import { isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer
 import { dynamicMargin } from "./dynamicMargin/dynamicMargin.reducer"
 import { invertHeight } from "./invertHeight/invertHeight.reducer"
 import { hideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.reducer"
-import { camera } from "./camera/camera.reducer"
 import { scaling } from "./scaling/scaling.reducer"
 import { edgeHeight } from "./edgeHeight/edgeHeight.reducer"
 import { amountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.reducer"
@@ -46,7 +45,6 @@ const appSettings = combineReducers({
 	invertHeight,
 	invertArea,
 	hideFlatBuildings,
-	camera,
 	scaling,
 	edgeHeight,
 	amountOfEdgePreviews,
