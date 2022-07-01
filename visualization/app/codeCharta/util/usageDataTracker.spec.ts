@@ -12,8 +12,7 @@ describe("UsageDataTracker", () => {
 		appSettings: {
 			experimentalFeaturesEnabled: true,
 			showMetricLabelNameValue: undefined,
-			isWhiteBackground: false,
-			camera: { x: 1, y: 2, z: 3 }
+			isWhiteBackground: false
 		},
 		dynamicSettings: {},
 		fileSettings: {}
