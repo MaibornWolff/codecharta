@@ -16,7 +16,6 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 	private readonly throttledCameraChange: () => void
 
 	camera: PerspectiveCamera
-	threeCameraService: jest.Mock
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
