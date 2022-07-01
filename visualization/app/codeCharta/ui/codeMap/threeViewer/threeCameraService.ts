@@ -2,26 +2,17 @@
 
 import { PerspectiveCamera, Vector3 } from "three"
 import { IRootScopeService } from "angular"
-import throttle from "lodash.throttle"
-import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { StoreService } from "../../../state/store.service"
-import { setCamera } from "../../../state/store/appSettings/camera/camera.actions"
 import { CameraService, CameraSubscriber } from "../../../state/store/appSettings/camera/camera.service"
 
-export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscriber {
+export class ThreeCameraService implements CameraSubscriber {
 	static VIEW_ANGLE = 45
 	static NEAR = 50
 	static FAR = 200_000 //TODO optimize renderer for far objects
-	private static DEBOUNCE_TIME = 400
-	private readonly throttledCameraChange: () => void
-
 	camera: PerspectiveCamera
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
-		this.throttledCameraChange = throttle(() => {
-			this.storeService.dispatch(setCamera(this.camera.position), { silent: true })
-		}, ThreeCameraService.DEBOUNCE_TIME)
 		CameraService.subscribe(this.$rootScope, this)
 	}
 
@@ -30,15 +21,10 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 		this.camera.lookAt(0, 0, 0)
 	}
 
-	onCameraChanged() {
-		this.throttledCameraChange()
-	}
-
 	init(containerWidth: number, containerHeight: number) {
 		const aspect = containerWidth / containerHeight
 		this.camera = new PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
 		this.setPosition()
-		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
 	setPosition() {
