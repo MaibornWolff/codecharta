@@ -8,6 +8,10 @@ import { FileSelectionState, FileState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
 import { removeRecentFile } from "../../state/store/dynamicSettings/recentFiles/recentFiles.actions"
 
+// Todo:
+// - remove recentFiles from Store, as it can be derived from files
+// - apply partial selection only when at least one is selected
+
 interface SelectedFileNames {
 	delta: {
 		reference: string
