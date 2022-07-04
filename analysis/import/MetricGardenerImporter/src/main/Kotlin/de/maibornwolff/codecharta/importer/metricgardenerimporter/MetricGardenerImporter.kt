@@ -2,7 +2,9 @@ package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import java.io.BufferedReader
 import picocli.CommandLine
+import java.io.InputStreamReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -12,13 +14,14 @@ import java.util.concurrent.Callable
         description = ["generates a cc.json file from a project parsed with metric-gardener"],
         footer = ["Copyright(c) 2022, MaibornWolff GmbH"])
 
-class MetricGardenerImporter : Callable<Void>, InteractiveParser {
+class MetricGardenerImporter: Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true,
             description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"])
     private var help = false
 
-    @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["path for project folder or code file"])
+    @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE",
+            description = ["path for project folder or code file"])
     private var inputFile: File = File("")
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["path for the outputfile"])
@@ -31,7 +34,18 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
     override fun call(): Void? {
 
         val metricGardenerInputFile: InputStream = inputFile.inputStream()
-        println(metricGardenerInputFile)
+        val stringBuilder = java.lang.StringBuilder()
+
+        val buffReader = BufferedReader(InputStreamReader(metricGardenerInputFile))
+        var line = buffReader.readLine()
+
+        while (line != null) {
+            stringBuilder.append(line)
+            line = buffReader.readLine()
+        }
+        buffReader.close()
+        println(stringBuilder)
+
         return null
     }
 
