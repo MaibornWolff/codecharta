@@ -2,9 +2,9 @@
 
 const NwBuilder = require('nw-builder');
 const nw = new NwBuilder({
-  macIcns: './app/assets/icon.icns',
-  winIco:'./app/assets/icon.ico',
   buildDir: "./dist/packages/",
+  cacheDir: "build",
+  forceDownload: true,
   files: [
     "./dist/webpack/**/*",
     "package.json"
@@ -14,15 +14,16 @@ const nw = new NwBuilder({
   platforms: ["osx64", "win32", "win64", "linux32", "linux64"],
   appName: null,
   appVersion: null,
-  cacheDir: "build",
   buildType: "versioned",
   zip: true,
   useRcedit: true,
+  macIcns: './app/assets/icon.icns',
+  winIco:'./app/assets/icon.ico',
   winVersionString: {
     'CompanyName': 'MaibornWolff GmbH',
     'FileDescription': 'CodeCharta Visualization',
     'ProductName': 'codecharta-visualization',
-    'LegalCopyright': 'Copyright MaibornWolff GmbH',
+    'LegalCopyright': 'Copyright MaibornWolff GmbH'
   }
 });
 nw.build().then(function () {
