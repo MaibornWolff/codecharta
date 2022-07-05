@@ -35,4 +35,8 @@ describe("mapColorLabelPipe", () => {
 	it("should transform 'incomingEdge'", () => {
 		expect(new MapColorLabelPipe().transform("incomingEdge", colorRange, nodeMetricDataRange)).toBe("Incoming Edge")
 	})
+
+	it("should not throw when called with default null color range values", () => {
+		expect(() => new MapColorLabelPipe().transform("incomingEdge", { from: null, to: null }, nodeMetricDataRange)).not.toThrow()
+	})
 })
