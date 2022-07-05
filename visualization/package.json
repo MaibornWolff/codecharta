@@ -38,26 +38,6 @@
 		"height": 768
 	},
 	"main": "dist/webpack/index.html",
-	"build": {
-		"nwVersion": "0.65.1",
-		"output": "./dist/packages/",
-		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
-		"files": "./dist/webpack/**/*",
-		"packed": true,
-		"targets": [
-			"zip"
-		],
-		"appId": "io.github.maibornwolff.codecharta",
-		"win": {
-			"productName": "codecharta-visualization",
-			"companyName": "MaibornWolff GmbH",
-			"icon": "app/assets/icon.ico"
-		},
-		"mac": {
-			"icon": "app/assets/icon.icns",
-			"displayName": "codecharta-visualization"
-		}
-	},
 	"browserslist": [
 		"last 2 versions",
 		"not IE 11"
@@ -73,7 +53,7 @@
 		"e2e": "cross-env TEST_TYPE=\"e2e\" jest --config ./jest.config.json .*\\.e2e\\.ts --coverage false",
 		"e2e:auto": "npm run e2e -- --watch",
 		"e2e:ci": "npm run e2e -- --runInBand",
-		"package": "node -e 'fs.rmSync(\"dist/packages\", { recursive: true, force: true })' && node script/build-nwjs.js && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
+		"package": "node -e \"fs.rmSync('dist/packages', { recursive: true, force: true })\" && node script/build-nwjs.js && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "npm run lint -- --fix",
 		"precommit": "lint-staged",
