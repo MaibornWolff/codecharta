@@ -82,7 +82,7 @@ describe("RibbonBarController", () => {
 		it("should not close when clicking inside", () => {
 			ribbonBarController["_viewModel"].panelSelection = "COLOR_PANEL_OPEN"
 			ribbonBarController["closePanelSelectionOnOutsideClick"]({
-				composedPath: () => [{ nodeName: "COLOR-SETTINGS-PANEL-COMPONENT" }]
+				composedPath: () => [{ nodeName: "CC-COLOR-SETTINGS-PANEL" }]
 			} as unknown as MouseEvent)
 			expect(ribbonBarController["_viewModel"].panelSelection).toBe("COLOR_PANEL_OPEN")
 		})
