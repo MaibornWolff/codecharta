@@ -9,6 +9,7 @@ const nw = new NwBuilder({
     "./dist/webpack/**/*",
     "package.json"
   ],
+  flavor: "normal",
   version: "latest",
   platforms: ["osx64", "win32", "win64", "linux32", "linux64"],
   appName: null,
