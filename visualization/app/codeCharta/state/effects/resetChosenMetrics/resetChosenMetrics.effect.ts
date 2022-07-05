@@ -20,17 +20,15 @@ export class ResetChosenMetricsEffect {
 				filter(isAnyMetricAvailable),
 				tap(nodeMetricData => {
 					this.store.dispatch(setDistributionMetric(getDefaultDistribution(nodeMetricData)))
-					const matchingMetricSettings = preselectCombination(nodeMetricData)
-					if (matchingMetricSettings.length === 3) {
-						this.store.dispatch(setAreaMetric(matchingMetricSettings[0]))
-						this.store.dispatch(setHeightMetric(matchingMetricSettings[1]))
-						this.store.dispatch(setColorMetric(matchingMetricSettings[2]))
-					} else {
-						const [defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = defaultNMetrics(nodeMetricData, 3)
-						this.store.dispatch(setAreaMetric(defaultedAreaMetric))
-						this.store.dispatch(setHeightMetric(defaultedHeightMetric))
-						this.store.dispatch(setColorMetric(defaultedColorMetric))
+
+					let [defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = preselectCombination(nodeMetricData)
+					if (!defaultedAreaMetric || !defaultedHeightMetric || !defaultedColorMetric) {
+						;[defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = defaultNMetrics(nodeMetricData, 3)
 					}
+
+					this.store.dispatch(setAreaMetric(defaultedAreaMetric))
+					this.store.dispatch(setHeightMetric(defaultedHeightMetric))
+					this.store.dispatch(setColorMetric(defaultedColorMetric))
 				})
 			),
 		{ dispatch: false }
