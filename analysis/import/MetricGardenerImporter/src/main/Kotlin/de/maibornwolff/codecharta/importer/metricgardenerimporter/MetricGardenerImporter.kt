@@ -1,20 +1,22 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import java.io.BufferedReader
 import picocli.CommandLine
-import java.io.InputStreamReader
+import java.io.BufferedWriter
 import java.io.File
+import java.io.FileWriter
 import java.io.IOException
-import java.io.InputStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "metricgardenerimport",
         description = ["generates a cc.json file from a project parsed with metric-gardener"],
         footer = ["Copyright(c) 2022, MaibornWolff GmbH"])
 
-class MetricGardenerImporter: Callable<Void>, InteractiveParser {
+class MetricGardenerImporter : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true,
             description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"])
@@ -32,19 +34,12 @@ class MetricGardenerImporter: Callable<Void>, InteractiveParser {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-
-        val metricGardenerInputFile: InputStream = inputFile.inputStream()
-        val stringBuilder = java.lang.StringBuilder()
-
-        val buffReader = BufferedReader(InputStreamReader(metricGardenerInputFile))
-        var line = buffReader.readLine()
-
-        while (line != null) {
-            stringBuilder.append(line)
-            line = buffReader.readLine()
-        }
-        buffReader.close()
-        println(stringBuilder)
+        val outputWriter = BufferedWriter(FileWriter(outputFile))
+        val outputFilePath = outputFile.absolutePath
+        val metricGardenerParser = ProjectBuilder()
+        val mgMetrics = ProjectMetrics().addFile(inputFile)
+        val metricWriter = JSONMetricWriter(outputWriter, outputFilePath, compress)
+        metricWriter.generate(inputFile)
 
         return null
     }

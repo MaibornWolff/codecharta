@@ -5,7 +5,6 @@ import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
-
 class ParserDialog {
     companion object : ParserDialogInterface {
 
