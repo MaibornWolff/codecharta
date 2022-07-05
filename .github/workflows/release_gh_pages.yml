@@ -25,10 +25,7 @@ jobs:
           node-version: '16'
 
       - name: Install wine
-        run: |
-          sudo dpkg --add-architecture i386
-          sudo apt update
-          sudo apt-get install -y wine-stable wine32 libwine:i386
+        run: sudo apt-get install -y wine-stable
 
       - name: Build analysis
         working-directory: ./analysis
