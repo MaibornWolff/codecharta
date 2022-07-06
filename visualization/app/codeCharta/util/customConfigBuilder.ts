@@ -105,8 +105,7 @@ function initializeDynamicSettings(target: CustomConfig) {
 			from: 0,
 			to: 0
 		},
-		colorMode: undefined,
-		recentFiles: []
+		colorMode: undefined
 	}
 }
 

@@ -1749,8 +1749,7 @@ export const STATE: State = {
 			to: 67
 		},
 		colorMode: ColorMode.weightedGradient,
-		sortingOption: SortingOption.NAME,
-		recentFiles: ["fileA", "fileB"]
+		sortingOption: SortingOption.NAME
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -1872,8 +1871,7 @@ export const DEFAULT_STATE: State = {
 		},
 		colorMode: ColorMode.weightedGradient,
 		searchPattern: "",
-		sortingOption: SortingOption.NAME,
-		recentFiles: []
+		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },

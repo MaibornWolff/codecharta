@@ -6,7 +6,6 @@ import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/
 import { fileStatesAvailable, getFileNameOf, getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { CodeChartaService } from "../../codeCharta.service"
-import { removeRecentFile } from "../../state/store/dynamicSettings/recentFiles/recentFiles.actions"
 
 interface SelectedFileNames {
 	delta: {
@@ -46,7 +45,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 
 	onRemoveFile = (filename: string, $event): void => {
 		this.storeService.dispatch(removeFile(filename))
-		this.storeService.dispatch(removeRecentFile(filename))
 
 		const files = this.storeService.getState().files
 		this.partialStateFileRemove(files)
@@ -133,7 +131,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	}
 
 	selectRecentPartialFiles = () => {
-		const recentFileNames = this.storeService.getState().dynamicSettings.recentFiles
+		const recentFileNames = this.storeService.getState().files.map(f => f.file.fileMeta.fileName)
 		if (recentFileNames.length > 0) {
 			this.onPartialFilesChange(recentFileNames)
 		} else {
