@@ -126,6 +126,19 @@ describe("suspiciousMetricsHelper", () => {
 		})
 	})
 
+	it("should get description of metric or else should write nothing", () => {
+		const metricValuesByLanguage: MetricValuesByLanguage = {}
+		metricValuesByLanguage["java"] = { rloc: [1, 1, 1, 1], cognitive_complexity: [3, 5, 1, 1] }
+
+		const actualAssessmentResults: MetricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, "java")
+
+		expect(actualAssessmentResults).toEqual({
+			suspiciousMetrics: new Map<string, ColorRange>(),
+			unsuspiciousMetrics: ["rloc (real lines of code)", "cognitive_complexity"],
+			outliersThresholds: new Map<string, number>()
+		})
+	})
+
 	it("should calculate suspicious metrics", () => {
 		const colorRange: ColorRange = {
 			from: 1,
