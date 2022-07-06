@@ -2,9 +2,9 @@ import { ColorMode, DynamicSettings, SortingOption } from "../../../../codeChart
 import { areDynamicSettingsAvailable, _isDynamicSettingAvailable } from "./areDynamicSettingsAvailable"
 
 describe("areDynamicSettingsAvailable", () => {
-	it("should return false when recent files aren't set", () => {
+	it("should return false when colorRange aren't set", () => {
 		const dynamicSettings = {
-			recentFiles: null
+			colorRange: null
 		}
 		expect(areDynamicSettingsAvailable(dynamicSettings)).toBe(false)
 	})
@@ -28,8 +28,7 @@ describe("areDynamicSettingsAvailable", () => {
 			focusedNodePath: [],
 			searchPattern: "",
 			margin: 2,
-			colorRange: { from: 0, to: 25 },
-			recentFiles: ["test.cc.json"]
+			colorRange: { from: 0, to: 25 }
 		}
 		expect(areDynamicSettingsAvailable(dynamicSettings)).toBe(true)
 	})

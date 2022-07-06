@@ -6,7 +6,6 @@ import { DialogService } from "./ui/dialog/dialog.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
-import { setRecentFiles } from "./state/store/dynamicSettings/recentFiles/recentFiles.actions"
 import { NameDataPair } from "./codeCharta.model"
 
 export class CodeChartaService {
@@ -33,10 +32,9 @@ export class CodeChartaService {
 		}
 
 		if (this.recentFiles.length > 0) {
-			this.storeService.dispatch(setRecentFiles(this.recentFiles))
 			this.storeService.dispatch(setFiles(this.fileStates))
 
-			const recentFile = this.storeService.getState().dynamicSettings.recentFiles[0]
+			const recentFile = this.recentFiles[0]
 			const rootName = this.storeService.getState().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
 			this.storeService.dispatch(setStandardByNames(this.recentFiles))
 

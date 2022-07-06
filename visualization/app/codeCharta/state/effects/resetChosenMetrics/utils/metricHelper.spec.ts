@@ -1,4 +1,4 @@
-import { defaultNMetrics, isAnyMetricAvailable, areScenarioSettingsApplicable } from "./metricHelper"
+import { defaultNMetrics, isAnyMetricAvailable, areScenarioSettingsApplicable, preselectCombination } from "./metricHelper"
 
 describe("metricHelper", () => {
 	describe("isAnyMetricAvailable", () => {
@@ -46,6 +46,25 @@ describe("metricHelper", () => {
 			const scenario = { dynamicSettings: { areaMetric: "a", heightMetric: "a", colorMetric: "b" } }
 			const metricData = [{ name: "a", maxValue: 3 }]
 			expect(areScenarioSettingsApplicable(scenario, metricData)).toBe(false)
+		})
+	})
+
+	describe("matchingScenarioSetting", () => {
+		it("should select the first matching metric of each category", () => {
+			const metricData = [
+				{ name: "rloc", maxValue: 0 },
+				{ name: "mcc", maxValue: 0 }
+			]
+
+			expect(preselectCombination(metricData)).toEqual(["rloc", "mcc", "mcc"])
+		})
+		it("should select the next matching metric if the fist one does not match", () => {
+			const metricData = [
+				{ name: "loc", maxValue: 0 },
+				{ name: "mcc", maxValue: 0 }
+			]
+
+			expect(preselectCombination(metricData)).toEqual(["loc", "mcc", "mcc"])
 		})
 	})
 })
