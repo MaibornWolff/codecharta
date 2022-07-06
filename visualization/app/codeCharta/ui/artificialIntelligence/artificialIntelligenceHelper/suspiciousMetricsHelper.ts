@@ -63,8 +63,9 @@ function compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b
 }
 
 function getNameAndDescriptionOfMetric(metricName: string): string {
-	if (metricDescriptions.get(metricName)) {
-		return `${metricName} (${metricDescriptions.get(metricName)})`
+	const metricDescription = metricDescriptions.get(metricName)
+	if (metricDescription) {
+		return `${metricName} (${metricDescription})`
 	}
 	return `${metricName}`
 }
