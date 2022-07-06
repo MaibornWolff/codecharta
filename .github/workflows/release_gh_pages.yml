@@ -27,6 +27,9 @@ jobs:
       - name: Install wine
         run: sudo apt-get install -y wine-stable
 
+      - name: Install zip
+        run: sudo apt-get install -y zip
+
       - name: Build analysis
         working-directory: ./analysis
         run: |
@@ -36,7 +39,6 @@ jobs:
       - name: Build visualization
         working-directory: ./visualization
         run: |
-          rm -rf node_modules/nwjs-builder-phoenix/caches/*
           npm ci
           npm run test
           npm run build
