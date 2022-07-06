@@ -62,6 +62,14 @@ function compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b
 	return 0
 }
 
+function getNameAndDescriptionOfMetric(metricName: string): string {
+	const metricDescription = metricDescriptions.get(metricName)
+	if (metricDescription) {
+		return `${metricName} (${metricDescription})`
+	}
+	return `${metricName}`
+}
+
 export function findGoodAndBadMetrics(
 	metricValuesByLanguages: MetricValuesByLanguage,
 	mainProgrammingLanguage: string
@@ -84,7 +92,7 @@ export function findGoodAndBadMetrics(
 		const maxMetricValue = Math.max(...valuesOfMetric)
 
 		if (maxMetricValue <= thresholdConfig.percentile70) {
-			metricAssessmentResults.unsuspiciousMetrics.push(`${metricName} (${metricDescriptions.get(metricName)})`)
+			metricAssessmentResults.unsuspiciousMetrics.push(getNameAndDescriptionOfMetric(metricName))
 		} else if (maxMetricValue > thresholdConfig.percentile70) {
 			metricAssessmentResults.suspiciousMetrics.set(metricName, {
 				from: thresholdConfig.percentile70,
