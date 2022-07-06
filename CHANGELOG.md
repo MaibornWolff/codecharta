@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate color settings panel to Angular [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
+-   Remove `recentFiles.service` [#2882](https://github.com/MaibornWolff/codecharta/pull/2882)
 
 ## [1.99.3] - 2022-06-28
 
