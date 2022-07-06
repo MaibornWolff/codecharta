@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Changed
+
+-   Select matching metric combination based on available metrics [#2862](https://github.com/MaibornWolff/codecharta/pull/2862)
+
 ### Fixed 🐞
 
 -   Fix resetting of color range within color settings panel [#2877](https://github.com/MaibornWolff/codecharta/pull/2877)
@@ -26,8 +30,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Unify UI of buttons in toolbar [#2857](https://github.com/MaibornWolff/codecharta/pull/2857)
 
 ## [1.99.1] - 2022-06-22
-
-### Added 🚀
 
 ### Fixed 🐞
 
