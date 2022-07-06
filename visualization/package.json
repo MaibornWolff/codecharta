@@ -53,7 +53,7 @@
 		"e2e": "cross-env TEST_TYPE=\"e2e\" jest --config ./jest.config.json .*\\.e2e\\.ts --coverage false",
 		"e2e:auto": "npm run e2e -- --watch",
 		"e2e:ci": "npm run e2e -- --runInBand",
-		"package": "node script/build-nwjs.js && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
+		"package": "node script/build-nwjs.js",
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "npm run lint -- --fix",
 		"precommit": "lint-staged",
