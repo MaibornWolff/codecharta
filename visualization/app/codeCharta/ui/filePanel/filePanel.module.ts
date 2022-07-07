@@ -15,6 +15,7 @@ import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../material/material.module"
 import { FormsModule } from "@angular/forms"
 import { RemoveExtensionModule } from "../../util/removeExtensionModule"
+import { FileSelectionModeService } from "./fileSelectionMode.service"
 
 angular
 	.module("app.codeCharta.ui.filePanel", ["app.codeCharta.state"])
@@ -32,6 +33,7 @@ angular
 		FilePanelStateButtonsComponent,
 		RemoveFileButtonComponent
 	],
+	providers: [FileSelectionModeService],
 	entryComponents: [FilePanelDeltaSelectorComponent, FilePanelFileSelectorComponent, FilePanelStateButtonsComponent]
 })
 export class FilePanelModule {}
