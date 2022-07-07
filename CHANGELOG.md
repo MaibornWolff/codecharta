@@ -11,11 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Select matching metric combination based on available metrics [#2862](https://github.com/MaibornWolff/codecharta/pull/2862)
 
+### Added 🚀
+
+-   Add a description for the statements metric [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
+
 ### Fixed 🐞
 
 -   Fix resetting of color range within color settings panel [#2877](https://github.com/MaibornWolff/codecharta/pull/2877)
 -   Fix resetting of colors in delta mode within color settings panel [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
 -   Restore global settings on page load again [#2878](https://github.com/MaibornWolff/codecharta/pull/2878)
+-   Fix 'undefinded' being displayed as a metric description when no description was available [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
 
 ### Chore 👨‍💻 👩‍💻
 
