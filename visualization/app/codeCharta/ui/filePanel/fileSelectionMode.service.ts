@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@angular/core"
 import { pairwise, tap, filter } from "rxjs"
 import { FileState } from "../../model/files/files"
 import { isDeltaState } from "../../model/files/files.helper"
+import { State } from "../../state/angular-redux/state"
 import { Store } from "../../state/angular-redux/store"
 import { setDelta, setStandard } from "../../state/store/files/files.actions"
 import { filesSelector } from "../../state/store/files/files.selector"
@@ -10,7 +11,7 @@ import { filesSelector } from "../../state/store/files/files.selector"
 export class FileSelectionModeService {
 	lastSetFilesOfPreviousMode: FileState[] = []
 
-	constructor(@Inject(Store) private store: Store) {
+	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State) {
 		// todo unsubscribe
 		this.store.select(filesSelector).pipe(
 			pairwise(),
@@ -31,13 +32,13 @@ export class FileSelectionModeService {
 		// todo filter out removed files from lastSetFilesOfPreviousMode
 		// Todo rename isDeltaState -> isDeltaMode
 		if (isDeltaState(this.lastSetFilesOfPreviousMode)) {
+			this.store.dispatch(setStandard(this.lastSetFilesOfPreviousMode.map(f => f.file)))
+		} else {
 			const referenceFile =
 				this.lastSetFilesOfPreviousMode.find(file => file.selectedAs === "Reference") ??
-				this.lastSetFilesOfPreviousMode.find(file => file.selectedAs === "Partial")
+				filesSelector(this.state.getValue()).find(file => file.selectedAs === "Partial")
 			const comparisonFile = this.lastSetFilesOfPreviousMode.find(file => file.selectedAs === "Comparison")
 			this.store.dispatch(setDelta(referenceFile.file, comparisonFile?.file))
-		} else {
-			this.store.dispatch(setStandard(this.lastSetFilesOfPreviousMode.map(f => f.file)))
 		}
 	}
 }

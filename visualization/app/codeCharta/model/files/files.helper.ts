@@ -26,7 +26,7 @@ export function getVisibleFileStates(fileStates: FileState[]) {
 }
 
 export function isDeltaState(fileStates: FileState[]) {
-	return fileStates.some(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
+	return fileStates.some(x => x.selectedAs === FileSelectionState.Reference)
 }
 
 export function isPartialState(fileStates: FileState[]) {

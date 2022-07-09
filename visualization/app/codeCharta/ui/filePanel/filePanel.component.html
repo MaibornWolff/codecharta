@@ -1,24 +1,3 @@
-<cc-file-panel-state-buttons
-	[is-delta-state]="$ctrl._viewModel.isDeltaState"
-	[handle-standard-button-clicked]="$ctrl.selectRecentPartialFiles"
-	[handle-delta-button-clicked]="$ctrl.onDeltaStateSelected"
-></cc-file-panel-state-buttons>
-
-<cc-file-panel-file-selector
-	style="display: inline-block; width: 200px"
-	ng-show="!$ctrl._viewModel.isDeltaState"
-	[selected-file-names]="$ctrl._viewModel.selectedFileNames.partial"
-	[handle-selected-files-changed]="$ctrl.onPartialFilesChange"
-	[handle-select-all-partial-files]="$ctrl.selectAllPartialFiles"
-	[handle-select-zero-partial-files]="$ctrl.selectZeroPartialFiles"
-	[handle-invert-selected-partial-files]="$ctrl.invertPartialFileSelection"
-	[handle-on-selection-closed]="$ctrl.onPartialSelectionClosed"
-	[handle-on-remove-file]="$ctrl.onRemoveFile"
-></cc-file-panel-file-selector>
-
-<cc-file-panel-delta-selector
-	ng-show="$ctrl._viewModel.isDeltaState"
-	[handle-delta-reference-file-change]="$ctrl.onDeltaReferenceFileChange"
-	[handle-delta-comparison-file-change]="$ctrl.onDeltaComparisonFileChange"
-	[files]="$ctrl._viewModel.files"
-></cc-file-panel-delta-selector>
+<cc-file-panel-state-buttons></cc-file-panel-state-buttons>
+<cc-file-panel-file-selector *ngIf="!(isDeltaState$ | async)" style="display: inline-block; width: 200px"></cc-file-panel-file-selector>
+<cc-file-panel-delta-selector *ngIf="isDeltaState$ | async"></cc-file-panel-delta-selector>

@@ -10,31 +10,21 @@ export default function files(state = setFiles().payload, action: FilesAction) {
 			return addFile(state, action.payload)
 		case NewFilesImportedActions.REMOVE_FILE:
 			return removeFile(state, action.payload)
-		case NewFilesImportedActions.RESET_FILES:
-			return reset()
-		case FilesSelectionActions.RESET_SELECTION:
-			return resetSelection(state)
 		case FilesSelectionActions.SET_DELTA:
 			return setDelta(state, action.payload.referenceFile, action.payload.comparisonFile)
-		case FilesSelectionActions.SET_DELTA_BY_NAMES:
-			return setDeltaByNames(state, action.payload.referenceFileName, action.payload.comparisonFileName)
+		case FilesSelectionActions.SET_DELTA_REFERENCE:
+			return setDeltaReference(state, action.payload)
+		case FilesSelectionActions.SET_DELTA_COMPARISON:
+			return setDeltaComparison(state, action.payload)
 		case FilesSelectionActions.SET_STANDARD:
 			return setStandard(state, action.payload)
 		case FilesSelectionActions.SET_STANDARD_BY_NAMES:
 			return setStandardByNames(state, action.payload)
+		case FilesSelectionActions.INVERT_STANDARD:
+			return invertStandard(state)
 		default:
 			return state
 	}
-}
-
-function reset(): FileState[] {
-	return []
-}
-
-function resetSelection(state: FileState[]): FileState[] {
-	return state.map(x => {
-		return { ...x, selectedAs: FileSelectionState.None }
-	})
 }
 
 function addFile(state: FileState[], file: CCFile) {
@@ -45,20 +35,40 @@ function removeFile(state: FileState[], fileName: string) {
 	return state.filter(file => file.file.fileMeta.fileName !== fileName)
 }
 
-function setDeltaByNames(state: FileState[], referenceFileName: string, comparisonFileName: string): FileState[] {
-	return state.map(x => {
-		let selectedAs = FileSelectionState.None
-		if (x.file.fileMeta.fileName === referenceFileName) {
-			selectedAs = FileSelectionState.Reference
-		} else if (x.file.fileMeta.fileName === comparisonFileName) {
-			selectedAs = FileSelectionState.Comparison
+function setDelta(state: FileState[], reference: CCFile, comparison?: CCFile) {
+	return state.map(file => {
+		if (file.file === reference) {
+			return { ...file, selectedAs: FileSelectionState.Reference }
 		}
-		return { ...x, selectedAs }
+		if (file.file === comparison) {
+			return { ...file, selectedAs: FileSelectionState.Comparison }
+		}
+		return { ...file, selectedAs: FileSelectionState.None }
 	})
 }
 
-function setDelta(state: FileState[], reference: CCFile, comparison: CCFile) {
-	return setDeltaByNames(state, reference.fileMeta.fileName, comparison.fileMeta.fileName)
+function setDeltaReference(state: FileState[], reference: CCFile) {
+	return state.map(file => {
+		if (file.file === reference) {
+			return { ...file, selectedAs: FileSelectionState.Reference }
+		}
+		if (file.selectedAs === FileSelectionState.Comparison) {
+			return file
+		}
+		return { ...file, selectedAs: FileSelectionState.None }
+	})
+}
+
+function setDeltaComparison(state: FileState[], comparison: CCFile) {
+	return state.map(file => {
+		if (file.file === comparison) {
+			return { ...file, selectedAs: FileSelectionState.Comparison }
+		}
+		if (file.selectedAs === FileSelectionState.Reference) {
+			return file
+		}
+		return { ...file, selectedAs: FileSelectionState.None }
+	})
 }
 
 function setStandardByNames(state: FileState[], partialFileNames: string[]): FileState[] {
@@ -76,4 +86,11 @@ function setStandard(state: FileState[], multipleFiles: CCFile[]) {
 		state,
 		multipleFiles.map(x => x.fileMeta.fileName)
 	)
+}
+
+function invertStandard(state: FileState[]) {
+	return state.map(fileState => ({
+		...fileState,
+		selectedAs: fileState.selectedAs === FileSelectionState.Partial ? FileSelectionState.None : FileSelectionState.Partial
+	}))
 }

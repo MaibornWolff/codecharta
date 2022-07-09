@@ -1,5 +1,7 @@
 import "./removeFileButton.component.scss"
-import { Component, Input } from "@angular/core"
+import { Component, Inject, Input } from "@angular/core"
+import { Store } from "../../../../state/angular-redux/store"
+import { removeFile } from "../../../../state/store/files/files.actions"
 
 @Component({
 	selector: "cc-remove-file-button",
@@ -7,5 +9,13 @@ import { Component, Input } from "@angular/core"
 })
 export class RemoveFileButtonComponent {
 	@Input() filename: string
-	@Input() onRemoveFile: (filename: string, event) => void
+
+	constructor(@Inject(Store) private store: Store) {}
+
+	onRemoveFile(filename: string, $event: MouseEvent) {
+		this.store.dispatch(removeFile(filename))
+
+		$event.stopPropagation()
+		$event.preventDefault()
+	}
 }

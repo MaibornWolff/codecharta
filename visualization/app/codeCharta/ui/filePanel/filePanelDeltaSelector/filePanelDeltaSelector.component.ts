@@ -1,6 +1,10 @@
-import { Component, Inject, Input } from "@angular/core"
-import { FileState } from "../../../model/files/files"
+import { Component, Inject } from "@angular/core"
+import { map } from "rxjs"
+import { CCFile } from "../../../codeCharta.model"
+import { FileSelectionState } from "../../../model/files/files"
 import { Store } from "../../../state/angular-redux/store"
+import { setDeltaComparison, setDeltaReference } from "../../../state/store/files/files.actions"
+import { filesSelector } from "../../../state/store/files/files.selector"
 import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
 
 @Component({
@@ -8,14 +12,18 @@ import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
 	template: require("./filePanelDeltaSelector.component.html")
 })
 export class FilePanelDeltaSelectorComponent {
-	@Input() files: FileState[]
-	@Input() handleDeltaReferenceFileChange: (referenceFileName: string) => void
-	@Input() handleDeltaComparisonFileChange: (comparisonFileName: string) => void
-
+	files$ = this.store.select(filesSelector)
+	referenceFile$ = this.files$.pipe(map(files => files.find(file => file.selectedAs === FileSelectionState.Reference)?.file))
+	comparisonFile$ = this.files$.pipe(map(files => files.find(file => file.selectedAs === FileSelectionState.Comparison)?.file))
 	pictogramBackground$ = this.store.select(pictogramBackgroundSelector)
 
 	constructor(@Inject(Store) private store: Store) {}
 
-	selectedDeltaReferenceFile: string
-	selectedDeltaComparisonFile: string
+	handleDeltaReferenceFileChange(file: CCFile) {
+		this.store.dispatch(setDeltaReference(file))
+	}
+
+	handleDeltaComparisonFileChange(file: CCFile) {
+		this.store.dispatch(setDeltaComparison(file))
+	}
 }

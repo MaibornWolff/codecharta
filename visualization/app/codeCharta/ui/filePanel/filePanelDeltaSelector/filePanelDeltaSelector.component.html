@@ -1,10 +1,5 @@
-<mat-select
-	class="delta-select"
-	placeholder="select reference file"
-	[(ngModel)]="selectedDeltaReferenceFile"
-	(selectionChange)="handleDeltaReferenceFileChange(selectedDeltaReferenceFile)"
->
-	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
+<mat-select class="delta-select" [value]="referenceFile$ | async" (selectionChange)="handleDeltaReferenceFileChange($event.value)">
+	<mat-option *ngFor="let file of files$ | async" [value]="file.file">
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>
@@ -14,10 +9,10 @@
 <mat-select
 	class="delta-select"
 	placeholder="select comparison file"
-	[(ngModel)]="selectedDeltaComparisonFile"
-	(selectionChange)="handleDeltaComparisonFileChange(selectedDeltaComparisonFile)"
+	[value]="comparisonFile$ | async"
+	(selectionChange)="handleDeltaComparisonFileChange($event.value)"
 >
-	<mat-option *ngFor="let file of files" [value]="file.file.fileMeta.fileName">
+	<mat-option *ngFor="let file of files$ | async" [value]="file.file">
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>
