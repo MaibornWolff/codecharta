@@ -103,7 +103,6 @@ export interface Settings {
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
 	treeMapSettings: TreeMapSettings
-	camera?: Vector3
 }
 
 export interface FileSettings {
@@ -136,7 +135,6 @@ export interface AppSettings {
 	amountOfEdgePreviews: number
 	edgeHeight: number
 	scaling: Vector3
-	cameraTarget: Vector3
 	hideFlatBuildings: boolean
 	invertHeight: boolean
 	invertArea: boolean

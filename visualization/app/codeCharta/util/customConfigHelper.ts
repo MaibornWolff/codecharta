@@ -13,7 +13,6 @@ import { FileDownloader } from "./fileDownloader"
 import { setState } from "../state/store/state.actions"
 import { setColorRange } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setMargin } from "../state/store/dynamicSettings/margin/margin.actions"
-import { setCameraTarget } from "../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCameraService"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { BehaviorSubject } from "rxjs"
@@ -251,6 +250,7 @@ export class CustomConfigHelper {
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
+		CustomConfigHelper.transformLegacyCustomConfig(customConfig)
 
 		// TODO: Setting state from loaded CustomConfig not working at the moment
 		//  due to issues of the event architecture.
@@ -262,15 +262,31 @@ export class CustomConfigHelper {
 		// Should we fire another event "ResettingStateFinishedEvent"
 		// We could add a listener then to reset the camera
 
+		// Todo: Are these still necessary?
 		store.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange))
 		store.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
 
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
-		setTimeout(() => {
-			threeOrbitControlsService.setControlTarget()
-			threeCameraService.setPosition(customConfig.camera)
-			store.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget))
-		}, 100)
+		if (customConfig.camera) {
+			setTimeout(() => {
+				threeOrbitControlsService.setControlTarget(customConfig.camera.cameraTarget)
+				threeCameraService.setPosition(customConfig.camera.camera)
+			}, 100)
+		}
+	}
+
+	// Todo test
+	// TODO [2023-01-01] remove support
+	private static transformLegacyCustomConfig(customConfig: any) {
+		const appSettings = customConfig.stateSettings.appSettings
+		if (appSettings.camera || appSettings.cameraTarget) {
+			customConfig.camera = {
+				camera: appSettings.camera,
+				cameraTarget: appSettings.cameraTarget
+			}
+			delete customConfig.stateSettings.appSettings.camera
+			delete customConfig.stateSettings.appSettings.cameraTarget
+		}
 	}
 }

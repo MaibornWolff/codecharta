@@ -2,6 +2,7 @@ import "./dialog.component.scss"
 import { StoreService } from "../../state/store.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 export interface AddScenarioContent {
 	metricType: ScenarioMetricType
@@ -30,7 +31,12 @@ export class DialogAddScenarioSettingsComponent {
 		scenarioContent: []
 	}
 
-	constructor(private $mdDialog, private storeService: StoreService, private threeCameraService: ThreeCameraService) {
+	constructor(
+		private $mdDialog,
+		private storeService: StoreService,
+		private threeCameraService: ThreeCameraService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
+	) {
 		"ngInject"
 		this.initDialogFields()
 	}
@@ -71,7 +77,7 @@ export class DialogAddScenarioSettingsComponent {
 		const { appSettings } = this.storeService.getState()
 		this.pushScenarioContent(ScenarioMetricType.CAMERA_POSITION, "", {
 			camera: this.threeCameraService.camera.position,
-			cameraTarget: appSettings.cameraTarget
+			cameraTarget: this.threeOrbitControlsService.controls.target
 		})
 		this.pushScenarioContent(ScenarioMetricType.AREA_METRIC, dynamicSettings.areaMetric, dynamicSettings.margin)
 		this.pushScenarioContent(ScenarioMetricType.HEIGHT_METRIC, dynamicSettings.heightMetric, {

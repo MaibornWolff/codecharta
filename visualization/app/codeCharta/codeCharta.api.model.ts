@@ -1,3 +1,4 @@
+import { Vector3 } from "three"
 import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage, RecursivePartial, Settings } from "./codeCharta.model"
 
 export interface ExportCCFile {
@@ -38,6 +39,10 @@ export enum APIVersions {
 export interface ExportScenario {
 	name: string
 	settings: RecursivePartial<Settings>
+	camera?: {
+		camera: Vector3
+		cameraTarget: Vector3
+	}
 }
 
 export interface OldAttributeTypes {

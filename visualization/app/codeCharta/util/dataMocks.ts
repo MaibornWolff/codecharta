@@ -1762,7 +1762,6 @@ export const STATE: State = {
 		},
 		edgeHeight: 4,
 		scaling: new Vector3(1, 1.8, 1),
-		cameraTarget: new Vector3(177, 0, 299),
 		hideFlatBuildings: true,
 		invertHeight: true,
 		invertArea: false,
@@ -1819,7 +1818,6 @@ export const DEFAULT_STATE: State = {
 			neutral: false
 		},
 		edgeHeight: 4,
-		cameraTarget: new Vector3(177, 0, 299),
 		dynamicMargin: true,
 		hideFlatBuildings: false,
 		invertHeight: false,
@@ -1930,10 +1928,8 @@ export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
 		amountOfEdgePreviews: 5,
 		edgeHeight: 4,
 		scaling: new Vector3(1, 1.8, 1),
-		cameraTarget: new Vector3(1, 1, 1),
 		mapColors: DEFAULT_STATE.appSettings.mapColors
-	},
-	camera: new Vector3(0, 300, 1000)
+	}
 }
 
 export const TEST_NODE_ROOT: Node = {

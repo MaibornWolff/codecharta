@@ -3,7 +3,6 @@
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
-import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
@@ -33,7 +32,6 @@ export class InjectorService {
 		private metricDataService: MetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private nodeMetricDataService: NodeMetricDataService,
-		private cameraTargetService: CameraTargetService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		private isLoadingFileService: IsLoadingFileService,
 		private filesService: FilesService,

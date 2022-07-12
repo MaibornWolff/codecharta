@@ -3,11 +3,10 @@ import { State, stateObjectReplacer } from "../codeCharta.model"
 import { CustomConfig } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 import md5 from "md5"
-import { Vector3 } from "three"
 
 const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
-export function buildCustomConfigFromState(configName: string, state: State, cameraPosition: Vector3): CustomConfig {
+export function buildCustomConfigFromState(configName: string, state: State, camera: CustomConfig["camera"]): CustomConfig {
 	const customConfigFileStateConnector = new CustomConfigFileStateConnector(state.files)
 
 	const customConfig: CustomConfig = {
@@ -24,7 +23,7 @@ export function buildCustomConfigFromState(configName: string, state: State, cam
 			fileSettings: undefined,
 			treeMap: undefined
 		},
-		camera: cameraPosition
+		camera
 	}
 
 	// Initialize all necessary state settings with default values right here
@@ -53,7 +52,6 @@ function initializeAppSettings(target: CustomConfig) {
 		},
 		amountOfEdgePreviews: 0,
 		amountOfTopLabels: 0,
-		cameraTarget: undefined,
 		dynamicMargin: false,
 		edgeHeight: 0,
 		hideFlatBuildings: false,

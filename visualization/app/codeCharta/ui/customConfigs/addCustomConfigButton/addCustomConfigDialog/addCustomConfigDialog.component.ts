@@ -7,7 +7,8 @@ import { filesSelector } from "../../../../state/store/files/files.selector"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
 import { State } from "../../../../state/angular-redux/state"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCameraService"
-import { ThreeCameraServiceToken } from "../../../../services/ajs-upgraded-providers"
+import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
+import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControlsService"
 
 @Component({
 	template: require("./addCustomConfigDialog.component.html")
@@ -16,7 +17,11 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	customConfigFileStateConnector: CustomConfigFileStateConnector
 	customConfigName: FormControl
 
-	constructor(@Inject(State) private state: State, @Inject(ThreeCameraServiceToken) private threeCameraService: ThreeCameraService) {}
+	constructor(
+		@Inject(State) private state: State,
+		@Inject(ThreeCameraServiceToken) private threeCameraService: ThreeCameraService,
+		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService
+	) {}
 
 	ngOnInit(): void {
 		const files = filesSelector(this.state.getValue())
@@ -36,11 +41,10 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	}
 
 	addCustomConfig() {
-		const newCustomConfig = buildCustomConfigFromState(
-			this.customConfigName.value,
-			this.state.getValue(),
-			this.threeCameraService.camera.position
-		)
+		const newCustomConfig = buildCustomConfigFromState(this.customConfigName.value, this.state.getValue(), {
+			camera: this.threeCameraService.camera.position,
+			cameraTarget: this.threeOrbitControlsService.controls.target
+		})
 		CustomConfigHelper.addCustomConfig(newCustomConfig)
 	}
 }

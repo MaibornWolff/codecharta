@@ -22,7 +22,10 @@ export interface CustomConfig {
 		fileSettings: FileSettings
 		treeMap: TreeMapSettings
 	}
-	camera: Vector3
+	camera: {
+		camera: Vector3
+		cameraTarget: Vector3
+	}
 }
 
 export type ExportCustomConfig = CustomConfig
