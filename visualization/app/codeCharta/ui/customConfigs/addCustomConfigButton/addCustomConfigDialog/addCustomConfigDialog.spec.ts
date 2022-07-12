@@ -6,7 +6,7 @@ import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import userEvent from "@testing-library/user-event"
 import { MatDialog } from "@angular/material/dialog"
 import { Vector3 } from "three"
-import { ThreeCameraServiceToken } from "../../../../services/ajs-upgraded-providers"
+import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
 
 describe("addCustomConfigDialogComponent", () => {
 	jest.spyOn(CustomConfigHelper, "getConfigNameSuggestionByFileState").mockReturnValue("new custom view name")
@@ -17,7 +17,8 @@ describe("addCustomConfigDialogComponent", () => {
 			imports: [AddCustomConfigButtonModule],
 			providers: [
 				{ provide: MatDialog, useValue: mockedDialog },
-				{ provide: ThreeCameraServiceToken, useValue: { camera: { position: new Vector3(0, 300, 1000) } } }
+				{ provide: ThreeCameraServiceToken, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
+				{ provide: ThreeOrbitControlsServiceToken, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
 			]
 		})
 	})

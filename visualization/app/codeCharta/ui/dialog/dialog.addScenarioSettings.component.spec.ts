@@ -12,12 +12,14 @@ import {
 import { ScenarioHelper } from "../../util/scenarioHelper"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { Vector3 } from "three"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 describe("DialogAddScenarioSettingsComponent", () => {
 	let dialogAddScenarioSettings: DialogAddScenarioSettingsComponent
 	let $mdDialog
 	let storeService: StoreService
 	let threeCameraService: ThreeCameraService
+	let threeOrbitControlsService: ThreeOrbitControlsService
 
 	beforeEach(() => {
 		restartSystem()
@@ -25,7 +27,12 @@ describe("DialogAddScenarioSettingsComponent", () => {
 	})
 
 	function rebuildController() {
-		dialogAddScenarioSettings = new DialogAddScenarioSettingsComponent($mdDialog, storeService, threeCameraService)
+		dialogAddScenarioSettings = new DialogAddScenarioSettingsComponent(
+			$mdDialog,
+			storeService,
+			threeCameraService,
+			threeOrbitControlsService
+		)
 	}
 
 	function restartSystem() {
@@ -33,8 +40,8 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 		$mdDialog = getService("$mdDialog")
 		storeService = getService<StoreService>("storeService")
-		// @ts-ignore
-		threeCameraService = { camera: { position: new Vector3(0, 300, 1000) } }
+		threeCameraService = { camera: { position: new Vector3(0, 300, 1000) } } as unknown as ThreeCameraService
+		threeOrbitControlsService = { controls: { target: new Vector3(177, 0, 299) } } as unknown as ThreeOrbitControlsService
 	}
 
 	describe("constructor", () => {

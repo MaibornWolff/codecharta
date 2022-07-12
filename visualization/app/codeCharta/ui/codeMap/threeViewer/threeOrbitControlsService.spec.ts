@@ -8,7 +8,6 @@ import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
 import { StoreService } from "../../../state/store.service"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { setResetCameraIfNewFileIsLoaded } from "../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { FilesService } from "../../../state/store/files/files.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
@@ -150,9 +149,7 @@ describe("ThreeOrbitControlsService", () => {
 	describe("setControlTarget", () => {
 		it("should set the controlTarget to the store cameraTarget", () => {
 			const result: Vector3 = new Vector3(1, 1, 1)
-			storeService.dispatch(setCameraTarget(result))
-
-			threeOrbitControlsService.setControlTarget()
+			threeOrbitControlsService.setControlTarget(new Vector3(1, 1, 1))
 
 			expect(threeOrbitControlsService.controls.target).toEqual(result)
 		})

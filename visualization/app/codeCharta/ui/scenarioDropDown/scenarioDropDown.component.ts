@@ -49,7 +49,7 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 	applyScenario(scenarioName: string) {
 		const scenario = ScenarioHelper.scenarios.get(scenarioName)
 
-		const scenarioSettings = ScenarioHelper.getScenarioSettingsByName(scenario)
+		const scenarioSettings = ScenarioHelper.getScenarioSettings(scenario)
 		this.storeService.dispatch(setState(scenarioSettings))
 		this.storeService.dispatch(setColorRange(scenarioSettings.dynamicSettings.colorRange as ColorRange))
 		this.storeService.dispatch(setMapColors(scenarioSettings.appSettings.mapColors as MapColors))

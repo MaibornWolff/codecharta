@@ -24,7 +24,10 @@ describe("CustomConfigBuilder", () => {
 				}
 			}
 
-			const customConfig = buildCustomConfigFromState("test", fromState, new Vector3(1, 2, 3))
+			const customConfig = buildCustomConfigFromState("test", fromState, {
+				camera: new Vector3(1, 2, 3),
+				cameraTarget: new Vector3(4, 5, 6)
+			})
 
 			expect(customConfig.name).toBe("test")
 
@@ -36,9 +39,12 @@ describe("CustomConfigBuilder", () => {
 			expect(customConfig.stateSettings.appSettings.experimentalFeaturesEnabled).toBe(true)
 			expect(customConfig.stateSettings.appSettings.showMetricLabelNameValue).toBe(undefined)
 			expect(customConfig.stateSettings.appSettings.isWhiteBackground).toBe(false)
-			expect(customConfig.camera.x).toBe(1)
-			expect(customConfig.camera.y).toBe(2)
-			expect(customConfig.camera.z).toBe(3)
+			expect(customConfig.camera.camera.x).toBe(1)
+			expect(customConfig.camera.camera.y).toBe(2)
+			expect(customConfig.camera.camera.z).toBe(3)
+			expect(customConfig.camera.cameraTarget.x).toBe(4)
+			expect(customConfig.camera.cameraTarget.y).toBe(5)
+			expect(customConfig.camera.cameraTarget.z).toBe(6)
 
 			// expect optional properties to have been copied
 			expect(typeof customConfig.stateSettings.fileSettings.attributeTypes.nodes !== "undefined").toBe(true)

@@ -262,7 +262,6 @@ export class CustomConfigHelper {
 		// Should we fire another event "ResettingStateFinishedEvent"
 		// We could add a listener then to reset the camera
 
-		// Todo: Are these still necessary?
 		store.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange))
 		store.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
 
@@ -276,7 +275,6 @@ export class CustomConfigHelper {
 		}
 	}
 
-	// Todo test
 	// TODO [2023-01-01] remove support
 	private static transformLegacyCustomConfig(customConfig: any) {
 		const appSettings = customConfig.stateSettings.appSettings

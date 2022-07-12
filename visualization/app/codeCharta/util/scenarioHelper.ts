@@ -5,6 +5,7 @@ import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addS
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import scenarios from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
+import { Vector3 } from "three"
 
 export class ScenarioHelper {
 	private static readonly SCENARIOS_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -192,7 +193,7 @@ export class ScenarioHelper {
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	static getScenarioSettingsByName(scenario: RecursivePartial<Scenario>): RecursivePartial<Settings> {
+	static getScenarioSettings(scenario: RecursivePartial<Scenario>): RecursivePartial<Settings> {
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
 
@@ -224,6 +225,10 @@ export class ScenarioHelper {
 	static importScenarios(scenarios: ExportScenario[]) {
 		for (const scenario of scenarios) {
 			convertToVectors(scenario.settings)
+			if (scenario.camera) {
+				scenario.camera.camera = new Vector3(scenario.camera.camera.x, scenario.camera.camera.y, scenario.camera.camera.z)
+				scenario.camera.cameraTarget = new Vector3(scenario.camera.camera.x, scenario.camera.camera.y, scenario.camera.camera.z)
+			}
 		}
 		return scenarios
 	}
