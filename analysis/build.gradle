@@ -13,7 +13,7 @@ buildscript {
         json_version = '20190722'
         juniversalchardet_version = '1.0.3'
         kotlin_logging_version = '2.1.23'
-        kotlin_version = '1.7.0'
+        kotlin_version = '1.7.10'
         kotlinx_coroutines_version = '1.6.3'
         picocli_version = '4.6.3'
         slf4j_version = '1.7.36'
@@ -36,7 +36,7 @@ buildscript {
         mockk_version = '1.12.4'
         spek2_version = '2.0.18'
         wiremock_version = '2.33.2'
-        jsonassert_version = '1.5.0'
+        jsonassert_version = '1.5.1'
     }
 
     repositories {
