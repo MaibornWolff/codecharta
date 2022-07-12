@@ -8,7 +8,7 @@ import { FileSelectionModeService } from "../fileSelectionMode.service"
 	template: require("./filePanelStateButtons.component.html")
 })
 export class FilePanelStateButtonsComponent {
-	isDeltasState$ = this.store.select(isDeltaStateSelector)
+	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
 	constructor(
 		@Inject(Store) private store,
