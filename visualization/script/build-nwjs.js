@@ -59,6 +59,6 @@ const nw = new NwBuilder({
     cwd: nw.options.buildDir
   }));
 
-  await Promise.all([zipPromises]);
+  await Promise.all(zipPromises);
   console.log('Everything zipped')
 })();
