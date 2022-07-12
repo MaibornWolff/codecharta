@@ -7,28 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## Changed
+## [1.100.0] - 2022-07-12
+
+### Added 🚀
+
+-   Add a description for the statements metric [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
+
+### Changed
 
 -   Select matching metric combination based on available metrics [#2862](https://github.com/MaibornWolff/codecharta/pull/2862)
+-   Unify UI of buttons in toolbar [#2857](https://github.com/MaibornWolff/codecharta/pull/2857)
 
 ### Fixed 🐞
 
 -   Fix resetting of color range within color settings panel [#2877](https://github.com/MaibornWolff/codecharta/pull/2877)
 -   Fix resetting of colors in delta mode within color settings panel [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
 -   Restore global settings on page load again [#2878](https://github.com/MaibornWolff/codecharta/pull/2878)
+-   Fix 'undefinded' being displayed as a metric description when no description was available [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
+-   Fix windows standalone builds [#2881](https://github.com/MaibornWolff/codecharta/pull/2881)
 
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate color settings panel to Angular [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
 -   Remove `recentFiles.service` [#2882](https://github.com/MaibornWolff/codecharta/pull/2882)
-
-## [1.99.3] - 2022-06-28
-
-## [1.99.2] - 2022-06-28
-
-### Changed
-
--   Unify UI of buttons in toolbar [#2857](https://github.com/MaibornWolff/codecharta/pull/2857)
 
 ## [1.99.1] - 2022-06-22
 
