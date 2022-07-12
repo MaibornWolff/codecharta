@@ -124,7 +124,6 @@ export class ScenarioHelper {
 	private static loadScenarios() {
 		const ccLocalStorage: LocalStorageScenarios = JSON.parse(localStorage.getItem(this.SCENARIOS_LOCAL_STORAGE_ELEMENT))
 		if (ccLocalStorage) {
-			// todo parse old format here
 			return new Map(ccLocalStorage.scenarios)
 		}
 		const scenarios = this.getPreLoadScenarios()
