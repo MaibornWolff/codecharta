@@ -12,7 +12,7 @@
 	[value]="comparisonFile$ | async"
 	(selectionChange)="handleDeltaComparisonFileChange($event.value)"
 >
-	<mat-option *ngFor="let file of files$ | async" [value]="file.file">
+	<mat-option *ngFor="let file of possibleComparisonFiles$ | async" [value]="file.file">
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>

@@ -15,6 +15,7 @@ export class FilePanelDeltaSelectorComponent {
 	files$ = this.store.select(filesSelector)
 	referenceFile$ = this.files$.pipe(map(files => files.find(file => file.selectedAs === FileSelectionState.Reference)?.file))
 	comparisonFile$ = this.files$.pipe(map(files => files.find(file => file.selectedAs === FileSelectionState.Comparison)?.file))
+	possibleComparisonFiles$ = this.files$.pipe(map(files => files.filter(file => file.selectedAs !== FileSelectionState.Reference)))
 	pictogramBackground$ = this.store.select(pictogramBackgroundSelector)
 
 	constructor(@Inject(Store) private store: Store) {}

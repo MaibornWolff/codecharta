@@ -1,6 +1,7 @@
 import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles } from "./files.actions"
 import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
+import { isEqual } from "../../../model/files/files.helper"
 
 export default function files(state = setFiles().payload, action: FilesAction) {
 	switch (action.type) {
@@ -37,10 +38,10 @@ function removeFile(state: FileState[], fileName: string) {
 
 function setDelta(state: FileState[], reference: CCFile, comparison?: CCFile) {
 	return state.map(file => {
-		if (file.file === reference) {
+		if (isEqual(file.file, reference)) {
 			return { ...file, selectedAs: FileSelectionState.Reference }
 		}
-		if (file.file === comparison) {
+		if (comparison && isEqual(file.file, comparison)) {
 			return { ...file, selectedAs: FileSelectionState.Comparison }
 		}
 		return { ...file, selectedAs: FileSelectionState.None }
