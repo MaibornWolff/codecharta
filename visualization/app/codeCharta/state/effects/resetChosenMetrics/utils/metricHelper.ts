@@ -1,5 +1,8 @@
 import { NodeMetricData, RecursivePartial, Settings } from "../../../../codeCharta.model"
 
+const sizeMetrics = ["rloc", "loc"]
+const complexityMetrics = ["mcc", "cognitive_complexity"]
+
 export function isAnyMetricAvailable<T extends Pick<NodeMetricData, "maxValue">[]>(metricData: T) {
 	return metricData.some(x => x.maxValue > 0)
 }
@@ -33,4 +36,20 @@ export function defaultNMetrics<T extends Pick<NodeMetricData, "maxValue" | "nam
 		defaultedMetrics.push(lastMetricNameWithValue)
 	}
 	return defaultedMetrics
+}
+
+export function preselectCombination(nodeMetricData: Pick<NodeMetricData, "name">[]) {
+	const preselectCombinationMetrics: string[] = []
+	// combinations might be a parameter for this function for different scenarios
+	const combination = { AreaMetric: sizeMetrics, HeightMetric: complexityMetrics, ColorMetric: complexityMetrics }
+	const nodeMetricSet = new Set(nodeMetricData.map(data => data.name))
+	for (const key in combination) {
+		for (const metric of combination[key]) {
+			if (nodeMetricSet.has(metric)) {
+				preselectCombinationMetrics.push(metric)
+				break
+			}
+		}
+	}
+	return preselectCombinationMetrics
 }

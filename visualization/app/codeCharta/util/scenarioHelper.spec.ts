@@ -139,16 +139,6 @@ describe("scenarioHelper", () => {
 		})
 	})
 
-	describe("getDefaultScenario", () => {
-		it("should return Complexity ExportScenario", () => {
-			ScenarioHelper.getScenarioSettingsByName = jest.fn()
-
-			ScenarioHelper.getDefaultScenarioSetting()
-
-			expect(ScenarioHelper.getScenarioSettingsByName).toHaveBeenCalledWith("Complexity")
-		})
-	})
-
 	describe("addScenario", () => {
 		beforeEach(() => {
 			ScenarioHelper["scenarios"].clear()

@@ -198,10 +198,6 @@ export class ScenarioHelper {
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	static getDefaultScenarioSetting() {
-		return this.getScenarioSettingsByName("Complexity")
-	}
-
 	static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
 		const scenario = this.scenarios.get(name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
