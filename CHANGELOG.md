@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## Changed
 
 -   Select matching metric combination based on available metrics [#2862](https://github.com/MaibornWolff/codecharta/pull/2862)
+-   Rework internal camera handling [#2880](https://github.com/MaibornWolff/codecharta/pull/2880). As a consequence there is an internal wrapper needed for existing metric templates and custom views, which will be removed on 01.01.2023. Afterwards previously saved metric templates and custom views will not be applicable anymore.
 
 ### Added 🚀
 
@@ -25,7 +26,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate color settings panel to Angular [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
--   Rework internal camera handling [#2880](https://github.com/MaibornWolff/codecharta/pull/2880)
 
 ## [1.99.3] - 2022-06-28
 
