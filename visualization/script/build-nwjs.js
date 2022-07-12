@@ -4,10 +4,8 @@ const fs = require('fs');
 const zip = require('bestzip');
 const path = require('node:path');
 
-(async () => {
-  fs.rmSync('./build', {recursive: true, force: true});
-  fs.rmSync('dist/packages', {recursive: true, force: true});
-})();
+fs.rmSync('./build', {recursive: true, force: true});
+fs.rmSync('dist/packages', {recursive: true, force: true});
 
 const NwBuilder = require('nw-builder');
 const {log} = require("util");
@@ -21,6 +19,7 @@ const nw = new NwBuilder({
   ],
   flavor: "normal",
   version: "latest",
+  // For debugging under Windows, remove osx64
   platforms: ["osx64", "win32", "win64", "linux32", "linux64"],
   appName: null,
   appVersion: null,
@@ -44,20 +43,22 @@ const nw = new NwBuilder({
   console.log("nw-build done!");
   fs.mkdirSync(nw.options.buildDir, {recursive: true});
   const baseZipPath = path.resolve(nw.options.buildDir, nw.options.appName + "-" + nw.options.appVersion + "-");
-  await Promise.all([
-    nw._forEachPlatform((name, platform) => {
+  const zipPromises = []
+  nw._forEachPlatform((name, platform) => {
+    zipPromises.push(
       zip({
         source: name,
         destination: baseZipPath + name + ".zip",
         cwd: path.join(platform.releasePath, "..")
       })
-      console.log('%s zipped', name)
-    }),
-    zip({
-      source: path.join("..", "webpack"),
-      destination: baseZipPath + "web.zip",
-      cwd: nw.options.buildDir
-    })
-  ]);
-  console.log('web zipped')
+    )
+  });
+  zipPromises.push(zip({
+    source: path.join("..", "webpack"),
+    destination: baseZipPath + "web.zip",
+    cwd: nw.options.buildDir
+  }));
+
+  await Promise.all([zipPromises]);
+  console.log('Everything zipped')
 })();
