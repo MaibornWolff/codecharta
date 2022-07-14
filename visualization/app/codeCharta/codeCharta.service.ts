@@ -7,6 +7,8 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { NameDataPair } from "./codeCharta.model"
+import { onStoreChanged } from "./state/angular-redux/onStoreChanged/onStoreChanged"
+import { referenceFileSelector } from "./state/selectors/referenceFile/referenceFile.selector"
 
 export class CodeChartaService {
 	static ROOT_NAME = "root"
@@ -14,6 +16,11 @@ export class CodeChartaService {
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 	private recentFiles: string[] = []
+	unsubscribeReferenceFileSubscription = onStoreChanged(referenceFileSelector, (_, newReferenceFile) => {
+		if (newReferenceFile) {
+			CodeChartaService.updateRootData(newReferenceFile.map.name)
+		}
+	})
 
 	constructor(private storeService: StoreService, private dialogService: DialogService) {
 		"ngInject"

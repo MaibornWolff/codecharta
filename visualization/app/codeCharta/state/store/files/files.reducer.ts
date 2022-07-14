@@ -50,7 +50,7 @@ function setDelta(state: FileState[], reference: CCFile, comparison?: CCFile) {
 
 function setDeltaReference(state: FileState[], reference: CCFile) {
 	return state.map(file => {
-		if (file.file === reference) {
+		if (isEqual(file.file, reference)) {
 			return { ...file, selectedAs: FileSelectionState.Reference }
 		}
 		if (file.selectedAs === FileSelectionState.Comparison) {
