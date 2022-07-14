@@ -5,7 +5,6 @@ import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selecto
 
 // Todo:
 // - apply partial selection only when at least one is selected
-// - effect which ensures that at least one file is selected after file deletion
 
 @Component({
 	selector: "cc-file-panel",

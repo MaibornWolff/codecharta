@@ -33,7 +33,15 @@ function addFile(state: FileState[], file: CCFile) {
 }
 
 function removeFile(state: FileState[], fileName: string) {
-	return state.filter(file => file.file.fileMeta.fileName !== fileName)
+	const newState = state.filter(fileState => fileState.file.fileMeta.fileName !== fileName)
+	const isAnyFileSelected = newState.some(fileState => fileState.selectedAs === FileSelectionState.Partial)
+	if (!isAnyFileSelected) {
+		newState[0] = {
+			...newState[0],
+			selectedAs: FileSelectionState.Partial
+		}
+	}
+	return newState
 }
 
 function setDelta(state: FileState[], reference: CCFile, comparison?: CCFile) {

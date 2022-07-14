@@ -5,7 +5,7 @@ import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 
 describe("files", () => {
-	let state = []
+	let state: FileState[] = []
 
 	beforeEach(() => {
 		state = []
@@ -67,6 +67,13 @@ describe("files", () => {
 
 			expect(result[0].file).toEqual(TEST_DELTA_MAP_B)
 			expect(result.length).toBe(1)
+		})
+
+		it("should select first file as partial when there is no other file selected", () => {
+			state[1].selectedAs = FileSelectionState.None
+			const result = files(state, removeFile(state[0].file.fileMeta.fileName))
+			expect(result.length).toBe(1)
+			expect(result[0].selectedAs).toBe(FileSelectionState.Partial)
 		})
 	})
 })
