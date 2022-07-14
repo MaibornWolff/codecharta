@@ -1,9 +1,8 @@
-<mat-select panelClass="file-select" [value]="selectedFiles$ | async" (selectionChange)="handleSelectedFilesChanged($event.value)" multiple>
-	<!-- Todo "not resetting" of no selection cool? -->
+<mat-select panelClass="file-select" [(value)]="selectedFiles" (selectionChange)="handleSelectedFilesChanged($event.value)" multiple>
 	<div class="actions">
-		<button mat-button (click)="handleSelectAllPartialFiles()">All</button>
-		<button mat-button (click)="handleSelectZeroPartialFiles()">None</button>
-		<button mat-button (click)="handleInvertSelectedPartialFiles()">Invert</button>
+		<button mat-button (click)="handleSelectAllFiles()">All</button>
+		<button mat-button (click)="handleSelectZeroFiles()">None</button>
+		<button mat-button (click)="handleInvertSelectedFiles()">Invert</button>
 	</div>
 	<mat-option class="filenames" *ngFor="let file of files$ | async" [value]="file.file">
 		{{ file.file.fileMeta.fileName | removeExtension }}

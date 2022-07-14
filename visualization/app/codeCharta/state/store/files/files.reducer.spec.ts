@@ -1,4 +1,14 @@
-import { addFile, defaultFiles, FilesAction, removeFile, setDelta, setFiles, setStandard, setStandardByNames } from "./files.actions"
+import {
+	addFile,
+	defaultFiles,
+	FilesAction,
+	removeFile,
+	setAll,
+	setDelta,
+	setFiles,
+	setStandard,
+	setStandardByNames
+} from "./files.actions"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
 import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
@@ -74,6 +84,16 @@ describe("files", () => {
 			const result = files(state, removeFile(state[0].file.fileMeta.fileName))
 			expect(result.length).toBe(1)
 			expect(result[0].selectedAs).toBe(FileSelectionState.Partial)
+		})
+	})
+
+	describe("Action: SET_ALL", () => {
+		it("should select all", () => {
+			state[0].selectedAs = FileSelectionState.None
+			state[1].selectedAs = FileSelectionState.None
+			const result = files(state, setAll())
+			expect(result[0].selectedAs).toBe(FileSelectionState.Partial)
+			expect(result[1].selectedAs).toBe(FileSelectionState.Partial)
 		})
 	})
 })

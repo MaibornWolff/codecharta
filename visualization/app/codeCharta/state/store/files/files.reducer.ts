@@ -8,7 +8,7 @@ export default function files(state = setFiles().payload, action: FilesAction) {
 		case NewFilesImportedActions.SET_FILES:
 			return action.payload
 		case NewFilesImportedActions.ADD_FILE:
-			return addFile(state, action.payload)
+			return [...state, { file: action.payload, selectedAs: FileSelectionState.None }]
 		case NewFilesImportedActions.REMOVE_FILE:
 			return removeFile(state, action.payload)
 		case FilesSelectionActions.SET_DELTA:
@@ -18,18 +18,22 @@ export default function files(state = setFiles().payload, action: FilesAction) {
 		case FilesSelectionActions.SET_DELTA_COMPARISON:
 			return setDeltaComparison(state, action.payload)
 		case FilesSelectionActions.SET_STANDARD:
-			return setStandard(state, action.payload)
+			return setStandardByNames(
+				state,
+				action.payload.map(x => x.fileMeta.fileName)
+			)
 		case FilesSelectionActions.SET_STANDARD_BY_NAMES:
 			return setStandardByNames(state, action.payload)
 		case FilesSelectionActions.INVERT_STANDARD:
-			return invertStandard(state)
+			return state.map(fileState => ({
+				...fileState,
+				selectedAs: fileState.selectedAs === FileSelectionState.Partial ? FileSelectionState.None : FileSelectionState.Partial
+			}))
+		case FilesSelectionActions.SET_ALL:
+			return state.map(fileState => ({ ...fileState, selectedAs: FileSelectionState.Partial }))
 		default:
 			return state
 	}
-}
-
-function addFile(state: FileState[], file: CCFile) {
-	return [...state, { file, selectedAs: FileSelectionState.None }]
 }
 
 function removeFile(state: FileState[], fileName: string) {
@@ -88,18 +92,4 @@ function setStandardByNames(state: FileState[], partialFileNames: string[]): Fil
 		}
 		return { ...x, selectedAs }
 	})
-}
-
-function setStandard(state: FileState[], multipleFiles: CCFile[]) {
-	return setStandardByNames(
-		state,
-		multipleFiles.map(x => x.fileMeta.fileName)
-	)
-}
-
-function invertStandard(state: FileState[]) {
-	return state.map(fileState => ({
-		...fileState,
-		selectedAs: fileState.selectedAs === FileSelectionState.Partial ? FileSelectionState.None : FileSelectionState.Partial
-	}))
 }

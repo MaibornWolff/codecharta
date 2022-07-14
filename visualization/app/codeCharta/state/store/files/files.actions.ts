@@ -5,6 +5,7 @@ export enum FilesSelectionActions {
 	SET_STANDARD = "SET_STANDARD",
 	SET_STANDARD_BY_NAMES = "SET_STANDARD_BY_NAMES",
 	INVERT_STANDARD = "INVERT_STANDARD",
+	SET_ALL = "SET_ALL",
 	SET_DELTA = "SET_DELTA",
 	SET_DELTA_REFERENCE = "SET_DELTA_REFERENCE",
 	SET_DELTA_COMPARISON = "SET_DELTA_COMPARISON"
@@ -45,6 +46,10 @@ export interface InvertStandardAction extends CCAction {
 	type: FilesSelectionActions.INVERT_STANDARD
 }
 
+export interface SetAllAction extends CCAction {
+	type: FilesSelectionActions.SET_ALL
+}
+
 export interface SetDeltaAction extends CCAction {
 	type: FilesSelectionActions.SET_DELTA
 	payload: { referenceFile: CCFile; comparisonFile: CCFile }
@@ -67,6 +72,7 @@ export type FilesAction =
 	| SetStandardAction
 	| SetStandardByNamesAction
 	| InvertStandardAction
+	| SetAllAction
 	| SetDeltaAction
 	| SetDeltaReferenceAction
 	| SetDeltaComparisonAction
@@ -109,6 +115,12 @@ export function setStandardByNames(fileNames: string[]): SetStandardByNamesActio
 export function invertStandard(): InvertStandardAction {
 	return {
 		type: FilesSelectionActions.INVERT_STANDARD
+	}
+}
+
+export function setAll(): SetAllAction {
+	return {
+		type: FilesSelectionActions.SET_ALL
 	}
 }
 

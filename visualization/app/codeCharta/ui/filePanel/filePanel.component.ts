@@ -3,9 +3,6 @@ import { Component, Inject } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 
-// Todo:
-// - apply partial selection only when at least one is selected
-
 @Component({
 	selector: "cc-file-panel",
 	template: require("./filePanel.component.html")
