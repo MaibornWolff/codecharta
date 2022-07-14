@@ -1,26 +1,14 @@
-import {
-	addFile,
-	defaultFiles,
-	FilesAction,
-	removeFile,
-	resetFiles,
-	resetSelection,
-	setDelta,
-	setDeltaByNames,
-	setFiles,
-	setStandard,
-	setStandardByNames
-} from "./files.actions"
+import { addFile, defaultFiles, FilesAction, removeFile, setDelta, setFiles, setStandard, setStandardByNames } from "./files.actions"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
-import { fileStatesAvailable, isDeltaState, isPartialState } from "../../../model/files/files.helper"
+import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 
 describe("files", () => {
 	let state = []
 
 	beforeEach(() => {
-		state = files(state, resetFiles())
+		state = []
 		state = files(state, addFile(TEST_DELTA_MAP_A))
 		state = files(state, addFile(TEST_DELTA_MAP_B))
 	})
@@ -49,35 +37,9 @@ describe("files", () => {
 		})
 	})
 
-	describe("Action: RESET_FILES", () => {
-		it("should clear and reset the state", () => {
-			const result = files(state, resetFiles())
-
-			expect(result.length).toBe(0)
-		})
-	})
-
-	describe("Action: RESET_SELECTION", () => {
-		it("should unselect all files", () => {
-			files(state, setStandard([TEST_DELTA_MAP_A]))
-
-			const result = files(state, resetSelection())
-
-			expect(fileStatesAvailable(result)).toBeFalsy()
-		})
-	})
-
 	describe("Action: SET_DELTA", () => {
 		it("should select a file as reference and another as comparison", () => {
 			const result = files(state, setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
-
-			expect(isDeltaState(result)).toBeTruthy()
-		})
-	})
-
-	describe("Action: SET_DELTA_BY_NAMES", () => {
-		it("should select a file as reference and another as comparison by name", () => {
-			const result = files(state, setDeltaByNames(TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName))
 
 			expect(isDeltaState(result)).toBeTruthy()
 		})

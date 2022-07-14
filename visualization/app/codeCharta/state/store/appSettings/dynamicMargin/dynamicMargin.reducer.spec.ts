@@ -1,6 +1,6 @@
 import { dynamicMargin } from "./dynamicMargin.reducer"
 import { DynamicMarginAction, setDynamicMargin } from "./dynamicMargin.actions"
-import { resetSelection } from "../../files/files.actions"
+import { setStandard } from "../../files/files.actions"
 
 describe("dynamicMargin", () => {
 	it("should initialize the default state", () => {
@@ -12,6 +12,6 @@ describe("dynamicMargin", () => {
 	})
 
 	it("should reset to true on file selection changed", () => {
-		expect(dynamicMargin(false, resetSelection())).toBe(true)
+		expect(dynamicMargin(false, setStandard([]))).toBe(true)
 	})
 })
