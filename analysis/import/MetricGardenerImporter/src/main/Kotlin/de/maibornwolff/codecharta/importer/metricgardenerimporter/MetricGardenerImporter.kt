@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
-import de.maibornwolff.codecharta.model.ProjectBuilder
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.Nodes
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
@@ -10,6 +10,9 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.io.PrintStream
+import java.nio.charset.Charset
+import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "metricgardenerimport",
@@ -17,6 +20,10 @@ import java.util.concurrent.Callable
         footer = ["Copyright(c) 2022, MaibornWolff GmbH"])
 
 class MetricGardenerImporter : Callable<Void>, InteractiveParser {
+
+    private val error: PrintStream = System.err
+
+    private val mapper = jacksonObjectMapper()
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true,
             description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"])
@@ -34,13 +41,21 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
 
     @Throws(IOException::class)
     override fun call(): Void? {
+        if (!inputFile.exists()) {
+            val path = Paths.get("").toAbsolutePath().toString()
+            error.println("Current working directory = $path")
+            error.println("Could not find $inputFile")
+            return null
+        }
+        // 1. Inputfile to Data class - deserialize Project
+        val pipedProject = ProjectDeserializer.deserializeProject(inputFile.reader(Charset.defaultCharset()))
+        val nodes: Nodes = mapper.readValue(inputFile.reader(Charset.defaultCharset()), Nodes::class.java)
+        // 2. übersetzen
+        // 3. serialisieren (müsste es schon geben)
         val outputWriter = BufferedWriter(FileWriter(outputFile))
-        val outputFilePath = outputFile.absolutePath
-        val metricGardenerParser = ProjectBuilder()
-        val mgMetrics = ProjectMetrics().addFile(inputFile)
-        val metricWriter = JSONMetricWriter(outputWriter, outputFilePath, compress)
-        metricWriter.generate(inputFile)
 
+        val outputFilePath = outputFile.absolutePath
+        // outputWriter.write(mapper.)
         return null
     }
 
