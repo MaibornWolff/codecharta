@@ -2,19 +2,27 @@ package de.maibornwolff.codecharta.importer.metricgardenerimporter.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.maibornwolff.codecharta.model.Path
 
 @JsonIgnoreProperties("types")
-class Node(
+class MetricGardenerNode(
     @JsonProperty("name") var name: String?,
     @JsonProperty("type") var type: String?,
     @JsonProperty("metrics") var metrics: Metrics?
-           ) {
+                        ) {
+
+    fun getPath(): Path {
+        if (checkNotNull(name).isNotEmpty()) {
+            return Path(name!!.split("\\").dropLast(1))
+        }
+        return Path(emptyList())
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Node
+        other as MetricGardenerNode
 
         if (name != other.name) return false
         if (type != other.type) return false

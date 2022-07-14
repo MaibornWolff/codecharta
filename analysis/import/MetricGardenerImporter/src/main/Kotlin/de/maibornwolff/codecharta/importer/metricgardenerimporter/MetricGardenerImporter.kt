@@ -1,16 +1,17 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.Nodes
-import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
-import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Paths
 import java.util.concurrent.Callable
@@ -21,7 +22,7 @@ import java.util.concurrent.Callable
 
 class MetricGardenerImporter : Callable<Void>, InteractiveParser {
 
-    private val error: PrintStream = System.err
+    private val logger = KotlinLogging.logger {}
 
     private val mapper = jacksonObjectMapper()
 
@@ -43,19 +44,17 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
     override fun call(): Void? {
         if (!inputFile.exists()) {
             val path = Paths.get("").toAbsolutePath().toString()
-            error.println("Current working directory = $path")
-            error.println("Could not find $inputFile")
+            logger.error { "Current working directory = $path" }
+            logger.error { "Could not find $inputFile" }
             return null
         }
-        // 1. Inputfile to Data class - deserialize Project
-        val pipedProject = ProjectDeserializer.deserializeProject(inputFile.reader(Charset.defaultCharset()))
-        val nodes: Nodes = mapper.readValue(inputFile.reader(Charset.defaultCharset()), Nodes::class.java)
-        // 2. übersetzen
-        // 3. serialisieren (müsste es schon geben)
+        val metricGardenerNodes: MetricGardenerNodes = mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
+        val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
+        val project = metricGardenerProjectBuilder.build()
         val outputWriter = BufferedWriter(FileWriter(outputFile))
+        //TODO: Compression handlen
+        ProjectSerializer.serializeProject(project, outputWriter)
 
-        val outputFilePath = outputFile.absolutePath
-        // outputWriter.write(mapper.)
         return null
     }
 

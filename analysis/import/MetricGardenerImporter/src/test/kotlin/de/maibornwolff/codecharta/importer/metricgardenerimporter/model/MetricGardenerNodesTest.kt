@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
-internal class NodesTest {
+internal class MetricGardenerNodesTest {
 
     private val mapper = jacksonObjectMapper()
 
@@ -41,15 +41,12 @@ internal class NodesTest {
              ],
     "relationships": []
 }"""
-        val nodes: Nodes = mapper.readValue(json, Nodes::class.java)
-        val metrics1 = Metrics(3, 3, 1, 79, 32, 40)
-        val metrics2 = Metrics(34, 8, 1, 188, 0, 155)
-        val node1 =
-                Node("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt",
-                        "File", metrics1)
-        val node2 = Node("\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt",
-                "File", metrics2)
-        val nodes2 = Nodes(mutableListOf(node1, node2))
-        assertEquals(nodes, nodes2)
+        val metricGardenerNodes: MetricGardenerNodes = mapper.readValue(json, MetricGardenerNodes::class.java)
+        val metricGardenerNode1 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt",
+                        "File", Metrics(3, 3, 1, 79, 32, 40))
+        val metricGardenerNode2 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt",
+                "File", Metrics(34, 8, 1, 188, 0, 155))
+        val metricGardenerNodes2 = MetricGardenerNodes(mutableListOf(metricGardenerNode1, metricGardenerNode2))
+        assertEquals(metricGardenerNodes, metricGardenerNodes2)
     }
 }

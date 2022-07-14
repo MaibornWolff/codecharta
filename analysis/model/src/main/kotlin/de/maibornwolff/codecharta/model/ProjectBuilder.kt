@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import mu.KotlinLogging
+
 
 open class ProjectBuilder(
     private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
@@ -16,7 +16,7 @@ open class ProjectBuilder(
         if (nodes.size != 1) throw IllegalStateException("No unique root node was found, instead ${nodes.size} candidates identified.")
     }
 
-    private val logger = KotlinLogging.logger {}
+
 
     val rootNode: MutableNode
         get() = nodes[0]
@@ -48,7 +48,7 @@ open class ProjectBuilder(
         return this
     }
 
-    fun build(): Project {
+    open fun build(): Project {
         nodes.flatMap { it.nodes.values }
             .mapNotNull { it.filterChildren(filterRule, false) }
             .map { it.translateMetrics(metricNameTranslator, false) }

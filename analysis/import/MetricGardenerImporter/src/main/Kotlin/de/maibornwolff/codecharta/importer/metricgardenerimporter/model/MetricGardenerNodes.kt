@@ -4,22 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties("relationships")
-class Nodes(
-    @JsonProperty("nodes") var nodes: MutableList<Node>
-            ) {
+class MetricGardenerNodes(
+    @JsonProperty("nodes") var metricGardenerNodes: MutableList<MetricGardenerNode>
+                         ) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Nodes
+        other as MetricGardenerNodes
 
-        if (nodes != other.nodes) return false
+        if (metricGardenerNodes != other.metricGardenerNodes) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return nodes.hashCode()
+        return metricGardenerNodes.hashCode()
     }
 }

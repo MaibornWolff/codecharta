@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
-internal class NodeTest {
+internal class MetricGardenerNodeTest {
 
     private val mapper = jacksonObjectMapper()
 
@@ -23,9 +23,9 @@ internal class NodeTest {
             },
             "types": []
         }"""
-        val node: Node = mapper.readValue(json, Node::class.java)
+        val metricGardenerNode: MetricGardenerNode = mapper.readValue(json, MetricGardenerNode::class.java)
         val metrics1 = Metrics(3, 3, 1, 79, 32, 40)
-        val node1 = Node("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File", metrics1)
-        assertEquals(node, node1)
+        val metricGardenerNode1 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File", metrics1)
+        assertEquals(metricGardenerNode, metricGardenerNode1)
     }
 }
