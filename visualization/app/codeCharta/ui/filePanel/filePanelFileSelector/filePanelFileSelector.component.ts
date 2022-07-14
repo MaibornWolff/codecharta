@@ -2,45 +2,53 @@ import "./filePanelFileSelector.component.scss"
 import { Component, Inject, OnDestroy } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { filesSelector } from "../../../state/store/files/files.selector"
-import { map, tap } from "rxjs"
 import { invertStandard, setAll, setStandard } from "../../../state/store/files/files.actions"
 import { CCFile } from "../../../codeCharta.model"
+import { FileState } from "../../../model/files/files"
 
 @Component({
 	selector: "cc-file-panel-file-selector",
 	template: require("./filePanelFileSelector.component.html")
 })
 export class FilePanelFileSelectorComponent implements OnDestroy {
-	files$ = this.store.select(filesSelector)
-	selectedFiles: CCFile[] = []
-	private selectedFilesSubscription = this.files$
-		.pipe(
-			map(files => files.filter(file => file.selectedAs === "Partial").map(file => file.file)),
-			tap(files => {
-				this.selectedFiles = files
-			})
-		)
-		.subscribe()
+	fileStates: FileState[] = []
+	selectedFilesInUI: CCFile[] = []
+	selectedFilesInStore: CCFile[] = []
+	private filesSubscription = this.store.select(filesSelector).subscribe(files => {
+		this.fileStates = files
+		this.selectedFilesInStore = files.filter(file => file.selectedAs === "Partial").map(file => file.file)
+		this.selectedFilesInUI = this.selectedFilesInStore
+	})
 
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnDestroy(): void {
-		this.selectedFilesSubscription.unsubscribe()
+		this.filesSubscription.unsubscribe()
 	}
 
 	handleSelectedFilesChanged(selectedFiles: CCFile[]) {
-		this.selectedFiles = selectedFiles
+		this.selectedFilesInUI = selectedFiles
 		if (selectedFiles.length > 0) {
 			this.store.dispatch(setStandard(selectedFiles))
 		}
 	}
 
+	handleOpenedChanged(isOpen: boolean) {
+		if (!isOpen) {
+			this.selectedFilesInUI = this.selectedFilesInStore
+		}
+	}
+
 	handleSelectZeroFiles() {
-		this.selectedFiles = []
+		this.selectedFilesInUI = []
 	}
 
 	handleInvertSelectedFiles() {
-		this.store.dispatch(invertStandard())
+		if (this.selectedFilesInUI.length === this.fileStates.length) {
+			this.selectedFilesInUI = []
+		} else {
+			this.store.dispatch(invertStandard())
+		}
 	}
 
 	handleSelectAllFiles() {

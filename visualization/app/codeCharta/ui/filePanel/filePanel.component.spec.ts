@@ -31,18 +31,3 @@ describe("filePanelComponent", () => {
 		expect(container.querySelector("cc-file-panel-delta-selector")).toBe(null)
 	})
 })
-
-// describe("onPartialSelectionClosed", () => {
-// 	it("should set the filenames of the maps that are visible again", () => {
-// 		storeService.dispatch(setStandard([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
-// 		filePanelController.onFilesSelectionChanged(storeService.getState().files)
-// 		filePanelController["_viewModel"].selectedFileNames.partial = []
-
-// 		filePanelController.onPartialSelectionClosed()
-
-// 		expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([
-// 			TEST_DELTA_MAP_A.fileMeta.fileName,
-// 			TEST_DELTA_MAP_B.fileMeta.fileName
-// 		])
-// 	})
-// })

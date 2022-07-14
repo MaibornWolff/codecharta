@@ -1,12 +1,18 @@
-<mat-select panelClass="file-select" [(value)]="selectedFiles" (selectionChange)="handleSelectedFilesChanged($event.value)" multiple>
+<mat-select
+	panelClass="file-select"
+	[(value)]="selectedFilesInUI"
+	(selectionChange)="handleSelectedFilesChanged($event.value)"
+	(openedChange)="handleOpenedChanged($event)"
+	multiple
+>
 	<div class="actions">
 		<button mat-button (click)="handleSelectAllFiles()">All</button>
 		<button mat-button (click)="handleSelectZeroFiles()">None</button>
 		<button mat-button (click)="handleInvertSelectedFiles()">Invert</button>
 	</div>
-	<mat-option class="filenames" *ngFor="let file of files$ | async" [value]="file.file">
+	<mat-option class="filenames" *ngFor="let file of fileStates" [value]="file.file">
 		{{ file.file.fileMeta.fileName | removeExtension }}
 
-		<cc-remove-file-button *ngIf="(files$ | async).length > 1" [filename]="file.file.fileMeta.fileName"></cc-remove-file-button>
+		<cc-remove-file-button *ngIf="fileStates.length > 1" [filename]="file.file.fileMeta.fileName"></cc-remove-file-button>
 	</mat-option>
 </mat-select>
