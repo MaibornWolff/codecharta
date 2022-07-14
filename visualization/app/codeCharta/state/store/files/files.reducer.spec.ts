@@ -2,9 +2,12 @@ import {
 	addFile,
 	defaultFiles,
 	FilesAction,
+	invertStandard,
 	removeFile,
 	setAll,
 	setDelta,
+	setDeltaComparison,
+	setDeltaReference,
 	setFiles,
 	setStandard,
 	setStandardByNames
@@ -13,6 +16,7 @@ import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
 import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
+import { clone } from "../../../util/clone"
 
 describe("files", () => {
 	let state: FileState[] = []
@@ -93,6 +97,58 @@ describe("files", () => {
 			state[1].selectedAs = FileSelectionState.None
 			const result = files(state, setAll())
 			expect(result[0].selectedAs).toBe(FileSelectionState.Partial)
+			expect(result[1].selectedAs).toBe(FileSelectionState.Partial)
+		})
+	})
+
+	describe("Action: SET_DELTA_REFERENCE", () => {
+		it("should set delta reference file", () => {
+			state[0].selectedAs = FileSelectionState.Partial
+			state[1].selectedAs = FileSelectionState.Partial
+			const result = files(state, setDeltaReference(state[0].file))
+			expect(result[0].selectedAs).toBe(FileSelectionState.Reference)
+			expect(result[1].selectedAs).toBe(FileSelectionState.None)
+		})
+
+		it("should not overwrite comparison file", () => {
+			state[0].selectedAs = FileSelectionState.Reference
+			state[1].selectedAs = FileSelectionState.Comparison
+			state[2] = { file: clone(state[1].file), selectedAs: FileSelectionState.None }
+			state[2].file.fileMeta.fileChecksum += "1"
+			const result = files(state, setDeltaReference(state[2].file))
+			expect(result[0].selectedAs).toBe(FileSelectionState.None)
+			expect(result[1].selectedAs).toBe(FileSelectionState.Comparison)
+			expect(result[2].selectedAs).toBe(FileSelectionState.Reference)
+		})
+	})
+
+	describe("Action: SET_DELTA_COMPARISON", () => {
+		it("should set delta comparison file", () => {
+			state[0].selectedAs = FileSelectionState.Partial
+			state[1].selectedAs = FileSelectionState.Reference
+			const result = files(state, setDeltaComparison(state[0].file))
+			expect(result[0].selectedAs).toBe(FileSelectionState.Comparison)
+			expect(result[1].selectedAs).toBe(FileSelectionState.Reference)
+		})
+
+		it("should not overwrite reference file", () => {
+			state[0].selectedAs = FileSelectionState.Reference
+			state[1].selectedAs = FileSelectionState.Comparison
+			state[2] = { file: clone(state[1].file), selectedAs: FileSelectionState.None }
+			state[2].file.fileMeta.fileChecksum += "1"
+			const result = files(state, setDeltaComparison(state[2].file))
+			expect(result[0].selectedAs).toBe(FileSelectionState.Reference)
+			expect(result[1].selectedAs).toBe(FileSelectionState.None)
+			expect(result[2].selectedAs).toBe(FileSelectionState.Comparison)
+		})
+	})
+
+	describe("Action: INVERT_STANDARD", () => {
+		it("should invert selection", () => {
+			state[0].selectedAs = FileSelectionState.Partial
+			state[1].selectedAs = FileSelectionState.None
+			const result = files(state, invertStandard())
+			expect(result[0].selectedAs).toBe(FileSelectionState.None)
 			expect(result[1].selectedAs).toBe(FileSelectionState.Partial)
 		})
 	})
