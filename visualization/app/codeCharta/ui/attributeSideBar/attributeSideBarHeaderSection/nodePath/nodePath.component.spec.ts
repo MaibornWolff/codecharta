@@ -64,4 +64,38 @@ describe("nodePathComponent", () => {
 
 		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2)")
 	})
+	it("should display amount of files with correct english grammar, when an empty folder is selected and delta mode is enabled", async () => {
+		const node = {
+			children: [{}] as CodeMapNode[],
+			path: "some/emptyFolder",
+			attributes: { unary: 0 },
+			fileCount: {
+				added: 0,
+				removed: 2
+			}
+		}
+		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
+		selectedNodeSelectorMock.mockImplementation(() => node)
+
+		const { container } = await render(NodePathComponent, { componentProperties: { node } })
+
+		expect(container.textContent).toContain(" 0 files ") // because "zero file" is not grammatically correct
+	})
+	it("should display amount of files with correct english grammar, when a folder with 1 file is selected and delta mode is enabled", async () => {
+		const node = {
+			children: [{}] as CodeMapNode[],
+			path: "some/folderWithOneFile",
+			attributes: { unary: 1 },
+			fileCount: {
+				added: 1,
+				removed: 0
+			}
+		}
+		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
+		selectedNodeSelectorMock.mockImplementation(() => node)
+
+		const { container } = await render(NodePathComponent, { componentProperties: { node } })
+
+		expect(container.textContent).toContain(" 1 file ") // because "one files" is not grammatically correct
+	})
 })
