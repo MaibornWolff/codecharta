@@ -7,7 +7,7 @@
 			<span *ngIf="node.children?.length && (isDeltaMode$ | async)" class="cc-node-file-count">
 				| <span class="added-files" title="Number of added files"> Δ{{ fileCount.added }}</span> |
 				<span class="removed-files" title="Number of removed files"> Δ{{ fileCount.removed > 0 ? -fileCount.removed : 0 }}</span> |
-				<span class="changed-files" title="Number of changed files"> Δ{{ 0 }}</span> </span
+				<span class="files-with-metric-changes" title="Number of files with metric changes"> Δ{{ 0 }}</span> </span
 			>)
 		</span>
 	</span>
