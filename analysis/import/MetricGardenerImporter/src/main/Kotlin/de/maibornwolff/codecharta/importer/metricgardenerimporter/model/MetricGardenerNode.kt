@@ -11,7 +11,7 @@ class MetricGardenerNode(
     @JsonProperty("metrics") var metrics: Metrics?
                         ) {
 
-    fun getPath(): Path {
+    fun getPathWithoutFileName(): Path {
         if (checkNotNull(name).isNotEmpty()) {
             return Path(name!!.split("\\").dropLast(1))
         }

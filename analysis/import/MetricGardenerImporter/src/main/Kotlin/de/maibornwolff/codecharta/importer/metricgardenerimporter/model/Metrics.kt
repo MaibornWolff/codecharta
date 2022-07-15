@@ -9,7 +9,7 @@ class Metrics(
     @JsonProperty("lines_of_code") var linesOfCode: Int,
     @JsonProperty("comment_lines") var commentLines: Int,
     @JsonProperty("real_lines_of_code") var realLinesOfCode: Int
-              ) {
+             ) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

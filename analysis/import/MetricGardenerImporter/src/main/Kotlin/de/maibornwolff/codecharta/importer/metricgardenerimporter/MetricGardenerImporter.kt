@@ -16,22 +16,28 @@ import java.nio.charset.Charset
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "metricgardenerimport",
-        description = ["generates a cc.json file from a project parsed with metric-gardener"],
-        footer = ["Copyright(c) 2022, MaibornWolff GmbH"])
+@CommandLine.Command(
+    name = "metricgardenerimport",
+    description = ["generates a cc.json file from a project parsed with metric-gardener"],
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+                    )
 
-class MetricGardenerImporter : Callable<Void>, InteractiveParser {
+class MetricGardenerImporter: Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
 
     private val mapper = jacksonObjectMapper()
 
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true,
-            description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"])
+    @CommandLine.Option(
+        names = ["-h", "--help"], usageHelp = true,
+        description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"]
+                       )
     private var help = false
 
-    @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE",
-            description = ["path for project folder or code file"])
+    @CommandLine.Parameters(
+        arity = "1", paramLabel = "FOLDER or FILE",
+        description = ["path for project folder or code file"]
+                           )
     private var inputFile: File = File("")
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["path for the outputfile"])
@@ -48,7 +54,8 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
             logger.error { "Could not find $inputFile" }
             return null
         }
-        val metricGardenerNodes: MetricGardenerNodes = mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
+        val metricGardenerNodes: MetricGardenerNodes =
+            mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
         val project = metricGardenerProjectBuilder.build()
         val outputWriter = BufferedWriter(FileWriter(outputFile))
