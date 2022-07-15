@@ -38,14 +38,5 @@
 		}
 	],
 	"timezone": "Europe/Berlin",
-	"schedule": ["on the 2nd and 4th day instance on sunday after 9pm"],
-	"regexManagers": [
-		{
-			"fileMatch": ["^visualization/package.json$"],
-			"matchStrings": ["\"nwVersion\": \"(?<currentValue>.*?)\""],
-			"depNameTemplate": "nwjs/nw.js",
-			"datasourceTemplate": "github-tags",
-			"extractVersionTemplate": "^nw-v(?<version>.*)$"
-		}
-	]
+	"schedule": ["on the 2nd and 4th day instance on sunday after 9pm"]
 }

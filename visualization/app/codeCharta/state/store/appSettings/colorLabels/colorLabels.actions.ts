@@ -7,12 +7,12 @@ export enum ColorLabelsActions {
 
 export interface SetColorLabelsAction extends Action {
 	type: ColorLabelsActions.SET_COLOR_LABELS
-	payload: colorLabelOptions
+	payload: Partial<colorLabelOptions>
 }
 
 export type ColorLabelsAction = SetColorLabelsAction
 
-export function setColorLabels(colorLabels: colorLabelOptions = defaultColorLabels): SetColorLabelsAction {
+export function setColorLabels(colorLabels: Partial<colorLabelOptions> = defaultColorLabels): SetColorLabelsAction {
 	return {
 		type: ColorLabelsActions.SET_COLOR_LABELS,
 		payload: colorLabels

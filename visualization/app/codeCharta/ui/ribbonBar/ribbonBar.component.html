@@ -78,9 +78,10 @@
 			>Color Metric Options <i class="fa fa-angle-down"></i
 		></span>
 	</div>
-	<color-settings-panel-component
+	<cc-color-settings-panel
+		class="cc-metric-settings-panel"
 		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'COLOR_PANEL_OPEN' }"
-	></color-settings-panel-component>
+	></cc-color-settings-panel>
 </md-card>
 
 <md-card
@@ -114,7 +115,8 @@
 		</span>
 		<i class="fa fa-sort-down color-dropdown-icon"></i>
 	</div>
-	<color-settings-panel-component
+	<cc-color-settings-panel
+		class="cc-metric-settings-panel"
 		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'COLOR_PANEL_OPEN' }"
-	></color-settings-panel-component>
+	></cc-color-settings-panel>
 </md-card>
