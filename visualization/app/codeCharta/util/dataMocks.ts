@@ -1576,21 +1576,6 @@ export const TEST_DELTA_MAP_D: CCFile = {
 						attributes: { rloc: 400, functions: 30, mcc: 20, more: 20 },
 						isExcluded: false,
 						isFlattened: false
-					},
-					{
-						name: "D file 1.2",
-						type: NodeType.FILE,
-						attributes: { rloc: 40, functions: 3 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "D file 1.3",
-						type: NodeType.FILE,
-						attributes: { rloc: 200, functions: 20, mcc: 30 },
-						link: "https://www.google.de",
-						isExcluded: false,
-						isFlattened: false
 					}
 				]
 			}

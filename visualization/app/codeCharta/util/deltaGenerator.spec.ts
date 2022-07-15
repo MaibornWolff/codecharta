@@ -112,7 +112,7 @@ describe("deltaGenerator", () => {
 			actualAmountOfChangedFiles.removed += data.fileCount.removed
 		}
 
-		expect(actualAmountOfChangedFiles).toEqual({ added: 5, removed: 5 })
+		expect(actualAmountOfChangedFiles).toEqual({ added: 3, removed: 5 })
 	})
 
 	it("should sum exported file size of the comparison and reference File", () => {
