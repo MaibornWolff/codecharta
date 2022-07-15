@@ -62,7 +62,7 @@ describe("nodePathComponent", () => {
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
 
-		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2)")
+		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2 | Δ0)")
 	})
 	it("should display amount of files with correct english grammar, when an empty folder is selected and delta mode is enabled", async () => {
 		const node = {
