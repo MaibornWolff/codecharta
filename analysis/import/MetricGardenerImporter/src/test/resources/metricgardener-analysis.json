@@ -1,0 +1,5140 @@
+{
+  "nodes": [
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\export\\CSVExporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\exporter\\csv\\CSVExporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 111,
+        "comment_lines": 0,
+        "real_lines_of_code": 86
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\export\\CSVExporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\exporter\\csv\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 34,
+        "comment_lines": 0,
+        "real_lines_of_code": 28
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\export\\CSVExporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\exporter\\csvexporter\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 46,
+        "comment_lines": 0,
+        "real_lines_of_code": 39
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\EdgeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\edgefilter\\EdgeFilter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 43,
+        "comment_lines": 0,
+        "real_lines_of_code": 31
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\EdgeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\edgefilter\\EdgeProjectBuilder.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 25,
+        "functions": 15,
+        "classes": 1,
+        "lines_of_code": 153,
+        "comment_lines": 2,
+        "real_lines_of_code": 128
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\EdgeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\edgefilter\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 37,
+        "comment_lines": 0,
+        "real_lines_of_code": 28
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\EdgeFilter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\edgefilter\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 51,
+        "comment_lines": 0,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\EdgeFilter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\edgefilter\\ProjectMergerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 147,
+        "comment_lines": 12,
+        "real_lines_of_code": 106
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\LeafNodeMergerStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 16,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 87,
+        "comment_lines": 0,
+        "real_lines_of_code": 70
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\MergeException.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 4,
+        "comment_lines": 0,
+        "real_lines_of_code": 2
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\MergeFilter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 16,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 102,
+        "comment_lines": 0,
+        "real_lines_of_code": 79
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\NodeMergerStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 10,
+        "comment_lines": 0,
+        "real_lines_of_code": 6
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 50,
+        "comment_lines": 0,
+        "real_lines_of_code": 38
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\ProjectMerger.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 15,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 88,
+        "comment_lines": 0,
+        "real_lines_of_code": 74
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\RecursiveNodeMergerStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 64,
+        "comment_lines": 0,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\LeafNodeMergerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 127,
+        "comment_lines": 5,
+        "real_lines_of_code": 98
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\MergeFilterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 61,
+        "comment_lines": 0,
+        "real_lines_of_code": 51
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 56,
+        "comment_lines": 0,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\ProjectMergerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 157,
+        "comment_lines": 0,
+        "real_lines_of_code": 126
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\MergeFilter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\mergefilter\\RecursiveNodeMergerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 81,
+        "comment_lines": 2,
+        "real_lines_of_code": 62
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\FolderMover.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 18,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 113,
+        "comment_lines": 0,
+        "real_lines_of_code": 95
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\NodeRemover.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 64,
+        "comment_lines": 0,
+        "real_lines_of_code": 53
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 50,
+        "comment_lines": 0,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\ProjectStructurePrinter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 20,
+        "comment_lines": 0,
+        "real_lines_of_code": 14
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\StructureModifier.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 15,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 105,
+        "comment_lines": 0,
+        "real_lines_of_code": 83
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\SubProjectExtractor.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 11,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 76,
+        "comment_lines": 0,
+        "real_lines_of_code": 62
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\FolderMoverTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 12,
+        "functions": 12,
+        "classes": 1,
+        "lines_of_code": 146,
+        "comment_lines": 0,
+        "real_lines_of_code": 108
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\NodeRemoverTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 95,
+        "comment_lines": 0,
+        "real_lines_of_code": 70
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 124,
+        "comment_lines": 0,
+        "real_lines_of_code": 108
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\PipedInputTestHelper.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 0,
+        "lines_of_code": 27,
+        "comment_lines": 0,
+        "real_lines_of_code": 22
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\ProjectStructurePrinterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 60,
+        "comment_lines": 0,
+        "real_lines_of_code": 43
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\StructureModifierTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 9,
+        "classes": 1,
+        "lines_of_code": 93,
+        "comment_lines": 0,
+        "real_lines_of_code": 69
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\filter\\StructureModifier\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\filter\\structuremodifier\\SubProjectExtractorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 84,
+        "comment_lines": 0,
+        "real_lines_of_code": 61
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CodeMaatImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\codemaat\\CodeMaatImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 1,
+        "classes": 0,
+        "lines_of_code": 97,
+        "comment_lines": 0,
+        "real_lines_of_code": 78
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CodeMaatImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\codemaat\\CSVHeader.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 1,
+        "classes": 0,
+        "lines_of_code": 38,
+        "comment_lines": 0,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CodeMaatImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\codemaat\\CSVProjectBuilder.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 67,
+        "comment_lines": 0,
+        "real_lines_of_code": 57
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CodeMaatImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\codemaat\\CSVRow.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 48,
+        "comment_lines": 0,
+        "real_lines_of_code": 38
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CodeMaatImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\codemaat\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 38,
+        "comment_lines": 0,
+        "real_lines_of_code": 31
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CodeMaatImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\codemaat\\CodeMaatImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 55,
+        "comment_lines": 0,
+        "real_lines_of_code": 46
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CodeMaatImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\codemaat\\CSVCodeMaatTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 59,
+        "comment_lines": 0,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CodeMaatImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\codemaat\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 48,
+        "comment_lines": 0,
+        "real_lines_of_code": 40
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\CrococosmoConverter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 20,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 80,
+        "comment_lines": 0,
+        "real_lines_of_code": 69
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\CrococosmoDeserializer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 17,
+        "comment_lines": 0,
+        "real_lines_of_code": 14
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\CrococosmoImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 60,
+        "comment_lines": 0,
+        "real_lines_of_code": 46
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\model\\Attribute.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 9,
+        "comment_lines": 0,
+        "real_lines_of_code": 6
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\model\\Graph.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 11,
+        "comment_lines": 0,
+        "real_lines_of_code": 8
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\model\\Node.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 13,
+        "comment_lines": 0,
+        "real_lines_of_code": 10
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\model\\Schema.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 3,
+        "lines_of_code": 20,
+        "comment_lines": 0,
+        "real_lines_of_code": 14
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\model\\Version.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 9,
+        "comment_lines": 0,
+        "real_lines_of_code": 6
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\CrococosmoConverterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 94,
+        "comment_lines": 0,
+        "real_lines_of_code": 74
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\CrococosmoDeserializerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 14,
+        "comment_lines": 0,
+        "real_lines_of_code": 10
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CrococosmoImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\crococosmo\\CrococosmoImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 29,
+        "comment_lines": 0,
+        "real_lines_of_code": 23
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\CSVHeader.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 39,
+        "comment_lines": 0,
+        "real_lines_of_code": 30
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\CSVImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 72,
+        "comment_lines": 0,
+        "real_lines_of_code": 56
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\CSVProjectBuilder.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 70,
+        "comment_lines": 0,
+        "real_lines_of_code": 59
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\CSVRow.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 51,
+        "comment_lines": 0,
+        "real_lines_of_code": 40
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 56,
+        "comment_lines": 0,
+        "real_lines_of_code": 47
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcemonitor\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 42,
+        "comment_lines": 0,
+        "real_lines_of_code": 35
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcemonitor\\SourceMonitorImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 1,
+        "classes": 0,
+        "lines_of_code": 98,
+        "comment_lines": 0,
+        "real_lines_of_code": 80
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\CSVHeaderTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 76,
+        "comment_lines": 0,
+        "real_lines_of_code": 61
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\CSVImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 40,
+        "comment_lines": 0,
+        "real_lines_of_code": 31
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\CSVProjectBuilderTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 118,
+        "comment_lines": 0,
+        "real_lines_of_code": 97
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\CSVRowTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 78,
+        "comment_lines": 0,
+        "real_lines_of_code": 64
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\csv\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 86,
+        "comment_lines": 0,
+        "real_lines_of_code": 74
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcemonitor\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 49,
+        "comment_lines": 0,
+        "real_lines_of_code": 41
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\CSVImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcemonitor\\SourceMonitorImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 34,
+        "comment_lines": 0,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\converter\\AttributeTypesFactory.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 2,
+        "classes": 0,
+        "lines_of_code": 26,
+        "comment_lines": 0,
+        "real_lines_of_code": 21
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\converter\\ProjectConverter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 81,
+        "comment_lines": 2,
+        "real_lines_of_code": 61
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\GitLogParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 18,
+        "functions": 10,
+        "classes": 1,
+        "lines_of_code": 212,
+        "comment_lines": 1,
+        "real_lines_of_code": 177
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\GitLogProjectCreator.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 29,
+        "comment_lines": 0,
+        "real_lines_of_code": 21
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\Commit.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 27,
+        "comment_lines": 0,
+        "real_lines_of_code": 19
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AbsoluteCodeChurn.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 26,
+        "comment_lines": 0,
+        "real_lines_of_code": 19
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AbsoluteCoupledChurn.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 34,
+        "comment_lines": 0,
+        "real_lines_of_code": 25
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AddedLines.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 25,
+        "comment_lines": 0,
+        "real_lines_of_code": 18
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AgeInWeeks.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 31,
+        "comment_lines": 0,
+        "real_lines_of_code": 23
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AverageCodeChurnPerCommit.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 38,
+        "comment_lines": 0,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\CalendarWeek.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 11,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 60,
+        "comment_lines": 1,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\DeletedLines.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 25,
+        "comment_lines": 0,
+        "real_lines_of_code": 18
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\HighlyCoupledFiles.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 14,
+        "functions": 10,
+        "classes": 1,
+        "lines_of_code": 88,
+        "comment_lines": 0,
+        "real_lines_of_code": 70
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\MedianCoupledFiles.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 41,
+        "comment_lines": 0,
+        "real_lines_of_code": 31
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\Metric.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 9,
+        "classes": 1,
+        "lines_of_code": 40,
+        "comment_lines": 2,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\MetricsFactory.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 52,
+        "comment_lines": 0,
+        "real_lines_of_code": 44
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\NumberOfAuthors.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 29,
+        "comment_lines": 0,
+        "real_lines_of_code": 21
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\NumberOfOccurencesInCommits.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 24,
+        "comment_lines": 0,
+        "real_lines_of_code": 17
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\NumberOfRenames.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 26,
+        "comment_lines": 0,
+        "real_lines_of_code": 19
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\RangeOfWeeksWithCommits.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 33,
+        "comment_lines": 0,
+        "real_lines_of_code": 24
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\SuccessiveWeeksWithCommits.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 45,
+        "comment_lines": 0,
+        "real_lines_of_code": 34
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\WeeksWithCommits.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 31,
+        "comment_lines": 0,
+        "real_lines_of_code": 22
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\Modification.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 7,
+        "classes": 7,
+        "lines_of_code": 67,
+        "comment_lines": 0,
+        "real_lines_of_code": 51
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\VersionControlledFile.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 23,
+        "functions": 14,
+        "classes": 1,
+        "lines_of_code": 114,
+        "comment_lines": 2,
+        "real_lines_of_code": 84
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\InputFormatNames.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 2,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\CommitCollector.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 38,
+        "comment_lines": 0,
+        "real_lines_of_code": 30
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\CommitParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 11,
+        "comment_lines": 0,
+        "real_lines_of_code": 6
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\AuthorParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 0,
+        "lines_of_code": 12,
+        "comment_lines": 0,
+        "real_lines_of_code": 9
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\CommitDateParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 0,
+        "lines_of_code": 16,
+        "comment_lines": 0,
+        "real_lines_of_code": 12
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\GitLogNumstatRawParserStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 17,
+        "functions": 9,
+        "classes": 1,
+        "lines_of_code": 98,
+        "comment_lines": 0,
+        "real_lines_of_code": 79
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\helper\\GitLogNumstatParsingHelper.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 15,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 78,
+        "comment_lines": 0,
+        "real_lines_of_code": 64
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\helper\\GitLogRawParsingHelper.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 37,
+        "comment_lines": 0,
+        "real_lines_of_code": 28
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\MergeCommitDetector.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 0,
+        "lines_of_code": 7,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\Status.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 3,
+        "classes": 9,
+        "lines_of_code": 45,
+        "comment_lines": 1,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\LogLineCollector.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 10,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 65,
+        "comment_lines": 0,
+        "real_lines_of_code": 53
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\LogLineParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 65,
+        "comment_lines": 0,
+        "real_lines_of_code": 52
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\LogParserStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 22,
+        "comment_lines": 0,
+        "real_lines_of_code": 13
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\MergeCommitParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 10,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 37,
+        "comment_lines": 3,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\StandardCommitParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 17,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 100,
+        "comment_lines": 10,
+        "real_lines_of_code": 72
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\VersionControlledFilesInGitProject.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 61,
+        "comment_lines": 4,
+        "real_lines_of_code": 45
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\VersionControlledFilesList.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 23,
+        "functions": 12,
+        "classes": 1,
+        "lines_of_code": 131,
+        "comment_lines": 10,
+        "real_lines_of_code": 84
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 56,
+        "comment_lines": 0,
+        "real_lines_of_code": 46
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\converter\\AttributeTypesFactoryTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 56,
+        "comment_lines": 0,
+        "real_lines_of_code": 38
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\converter\\ProjectConverterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 91,
+        "comment_lines": 9,
+        "real_lines_of_code": 64
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AbsoluteCodeChurnTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 47,
+        "comment_lines": 8,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AbsoluteCoupledChurnTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 86,
+        "comment_lines": 11,
+        "real_lines_of_code": 56
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AddedLinesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 74,
+        "comment_lines": 14,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AgeInWeeksTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 49,
+        "comment_lines": 0,
+        "real_lines_of_code": 35
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\AverageCodeChurnPerCommitTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 47,
+        "comment_lines": 8,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\CalendarWeekTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 92,
+        "comment_lines": 17,
+        "real_lines_of_code": 53
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\DeletedLinesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 74,
+        "comment_lines": 14,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\HighlyCoupledFilesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 105,
+        "comment_lines": 14,
+        "real_lines_of_code": 70
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\MedianCoupledFilesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 91,
+        "comment_lines": 14,
+        "real_lines_of_code": 56
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\MetricsFactoryTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 34,
+        "comment_lines": 0,
+        "real_lines_of_code": 25
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\NumberOfAuthorsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 57,
+        "comment_lines": 11,
+        "real_lines_of_code": 33
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\NumberOfOccurencesInCommitsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 29,
+        "comment_lines": 5,
+        "real_lines_of_code": 17
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\NumberOfRenamesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 37,
+        "comment_lines": 0,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\RangeOfWeeksWithCommitsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 79,
+        "comment_lines": 14,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\SuccessiveWeeksWithCommitsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 79,
+        "comment_lines": 14,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\metrics\\WeeksWithCommitsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 79,
+        "comment_lines": 14,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\input\\VersionControlledFileTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 83,
+        "comment_lines": 9,
+        "real_lines_of_code": 57
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\CommitCollectorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 15,
+        "functions": 15,
+        "classes": 1,
+        "lines_of_code": 261,
+        "comment_lines": 1,
+        "real_lines_of_code": 199
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\AuthorParserTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 20,
+        "comment_lines": 0,
+        "real_lines_of_code": 15
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\CommitDateParserTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 15,
+        "comment_lines": 0,
+        "real_lines_of_code": 12
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\GitLogNumstatRawParserStrategyTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 109,
+        "comment_lines": 0,
+        "real_lines_of_code": 96
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\helper\\GitLogNumstatParsingHelperRenamingTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 58,
+        "comment_lines": 0,
+        "real_lines_of_code": 50
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\helper\\GitLogNumstatParsingHelperTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 27,
+        "comment_lines": 0,
+        "real_lines_of_code": 21
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\helper\\GitLogRawParsingHelperTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 42,
+        "comment_lines": 0,
+        "real_lines_of_code": 35
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\git\\VersionControlledFilesInGitProjectTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 95,
+        "comment_lines": 0,
+        "real_lines_of_code": 67
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\LogLineCollectorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 0,
+        "lines_of_code": 0,
+        "comment_lines": 0,
+        "real_lines_of_code": 0
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\LogLineParserTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 46,
+        "comment_lines": 3,
+        "real_lines_of_code": 34
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\ParserStrategyContractTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 67,
+        "comment_lines": 0,
+        "real_lines_of_code": 54
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\parser\\VersionControlledFilesListTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 118,
+        "comment_lines": 0,
+        "real_lines_of_code": 89
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 55,
+        "comment_lines": 0,
+        "real_lines_of_code": 47
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\GitLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\gitlogparser\\ParsingIntegrationTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 71,
+        "comment_lines": 2,
+        "real_lines_of_code": 53
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\JasomeDeserializer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 19,
+        "comment_lines": 0,
+        "real_lines_of_code": 16
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\JasomeImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 50,
+        "comment_lines": 0,
+        "real_lines_of_code": 37
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\JasomeProjectBuilder.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 16,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 75,
+        "comment_lines": 0,
+        "real_lines_of_code": 63
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\model\\Class.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 10,
+        "comment_lines": 0,
+        "real_lines_of_code": 7
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\model\\Metric.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 11,
+        "comment_lines": 0,
+        "real_lines_of_code": 8
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\model\\Package.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 12,
+        "comment_lines": 0,
+        "real_lines_of_code": 9
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\model\\Project.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 9,
+        "comment_lines": 0,
+        "real_lines_of_code": 6
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\JasomeDeserializerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 47,
+        "comment_lines": 0,
+        "real_lines_of_code": 39
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\JasomeImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 38,
+        "comment_lines": 0,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\JasomeImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\jasome\\JasomeProjectBuilderTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 82,
+        "comment_lines": 0,
+        "real_lines_of_code": 69
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\main\\Kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\json\\MetricGardenerProjectBuilder.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 3,
+        "classes": 0,
+        "lines_of_code": 0,
+        "comment_lines": 1,
+        "real_lines_of_code": 0
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\main\\Kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\MetricGardenerImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 82,
+        "comment_lines": 0,
+        "real_lines_of_code": 67
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\main\\Kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\model\\MetricGardenerNode.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 12,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 41,
+        "comment_lines": 0,
+        "real_lines_of_code": 32
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\main\\Kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\model\\MetricGardenerNodes.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 26,
+        "comment_lines": 0,
+        "real_lines_of_code": 18
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\main\\Kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\model\\Metrics.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 10,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 40,
+        "comment_lines": 0,
+        "real_lines_of_code": 32
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\main\\Kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 33,
+        "comment_lines": 0,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\json\\MetricGardenerProjectBuilderTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 42,
+        "comment_lines": 3,
+        "real_lines_of_code": 30
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\MetricGardenerImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 48,
+        "comment_lines": 0,
+        "real_lines_of_code": 39
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\model\\MetricGardenerNodesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 53,
+        "comment_lines": 0,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\model\\MetricGardenerNodeTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 32,
+        "comment_lines": 0,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\model\\MetricsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 20,
+        "comment_lines": 0,
+        "real_lines_of_code": 15
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\metricgardenerimporter\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 49,
+        "comment_lines": 0,
+        "real_lines_of_code": 41
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\AuthentificationHandler.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 0,
+        "lines_of_code": 15,
+        "comment_lines": 1,
+        "real_lines_of_code": 9
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\GsonProvider.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 55,
+        "comment_lines": 0,
+        "real_lines_of_code": 45
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\SonarMeasuresAPIDatasource.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 141,
+        "comment_lines": 0,
+        "real_lines_of_code": 120
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\SonarMetricsAPIDatasource.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 88,
+        "comment_lines": 1,
+        "real_lines_of_code": 69
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\SonarVersionAPIDatasource.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 55,
+        "comment_lines": 0,
+        "real_lines_of_code": 44
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\filter\\ErrorResponseFilter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 48,
+        "comment_lines": 0,
+        "real_lines_of_code": 39
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\Component.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 11,
+        "comment_lines": 0,
+        "real_lines_of_code": 9
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\ComponentMap.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 18,
+        "comment_lines": 0,
+        "real_lines_of_code": 14
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\ErrorEntity.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 4,
+        "comment_lines": 0,
+        "real_lines_of_code": 2
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\ErrorResponse.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 21,
+        "comment_lines": 0,
+        "real_lines_of_code": 14
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\Measure.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 4,
+        "comment_lines": 0,
+        "real_lines_of_code": 2
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\Measures.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 4,
+        "comment_lines": 0,
+        "real_lines_of_code": 2
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\MetricObject.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 15,
+        "comment_lines": 0,
+        "real_lines_of_code": 8
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\Metrics.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 7,
+        "comment_lines": 0,
+        "real_lines_of_code": 2
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\PagingInfo.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 8,
+        "comment_lines": 0,
+        "real_lines_of_code": 6
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\Qualifier.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 6,
+        "lines_of_code": 10,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\Scope.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 4,
+        "lines_of_code": 10,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\Version.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 30,
+        "comment_lines": 0,
+        "real_lines_of_code": 22
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 54,
+        "comment_lines": 0,
+        "real_lines_of_code": 43
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarCodeURLLinker.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 31,
+        "comment_lines": 0,
+        "real_lines_of_code": 22
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarComponentProjectBuilder.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 26,
+        "functions": 13,
+        "classes": 1,
+        "lines_of_code": 135,
+        "comment_lines": 3,
+        "real_lines_of_code": 104
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarImporterException.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 10,
+        "comment_lines": 0,
+        "real_lines_of_code": 6
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarImporterMain.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 103,
+        "comment_lines": 0,
+        "real_lines_of_code": 83
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarMeasuresAPIImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 35,
+        "comment_lines": 0,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarMetricTranslatorFactory.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 0,
+        "lines_of_code": 27,
+        "comment_lines": 0,
+        "real_lines_of_code": 21
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\AuthentificationHandlerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 30,
+        "comment_lines": 0,
+        "real_lines_of_code": 24
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\SonarMeasuresAPIDatasourceIntegrationTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 16,
+        "functions": 15,
+        "classes": 1,
+        "lines_of_code": 298,
+        "comment_lines": 14,
+        "real_lines_of_code": 241
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\SonarMetricsAPIDatasourceIntegrationTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 12,
+        "functions": 11,
+        "classes": 1,
+        "lines_of_code": 207,
+        "comment_lines": 18,
+        "real_lines_of_code": 160
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\dataaccess\\SonarVersionAPIDatasourceIntegrationTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 104,
+        "comment_lines": 0,
+        "real_lines_of_code": 87
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\filter\\ErrorResponseFilterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 11,
+        "comment_lines": 0,
+        "real_lines_of_code": 8
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\model\\VersionTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 9,
+        "classes": 1,
+        "lines_of_code": 77,
+        "comment_lines": 0,
+        "real_lines_of_code": 58
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 55,
+        "comment_lines": 0,
+        "real_lines_of_code": 47
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarCodeURLLinkerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 35,
+        "comment_lines": 3,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarComponentProjectBuilderTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 154,
+        "comment_lines": 24,
+        "real_lines_of_code": 103
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarImporterMainTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 77,
+        "comment_lines": 0,
+        "real_lines_of_code": 65
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SonarImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sonar\\SonarMeasuresAPIImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 72,
+        "comment_lines": 9,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metrics\\FileMetricMap.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 16,
+        "comment_lines": 0,
+        "real_lines_of_code": 11
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metrics\\ProjectMetrics.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 35,
+        "comment_lines": 2,
+        "real_lines_of_code": 25
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metricwriters\\CSVMetricWriter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 42,
+        "comment_lines": 0,
+        "real_lines_of_code": 34
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metricwriters\\JSONMetricWriter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 49,
+        "comment_lines": 0,
+        "real_lines_of_code": 40
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metricwriters\\MetricWriter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 9,
+        "comment_lines": 0,
+        "real_lines_of_code": 6
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\NullFileLinesContextFactory.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 16,
+        "comment_lines": 0,
+        "real_lines_of_code": 13
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\OutputFormat.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 1,
+        "classes": 4,
+        "lines_of_code": 18,
+        "comment_lines": 0,
+        "real_lines_of_code": 14
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 71,
+        "comment_lines": 0,
+        "real_lines_of_code": 59
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\ProjectParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 35,
+        "comment_lines": 0,
+        "real_lines_of_code": 28
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\ProjectTraverser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 61,
+        "comment_lines": 0,
+        "real_lines_of_code": 50
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\sonaranalyzers\\JavaSonarAnalyzer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 22,
+        "functions": 13,
+        "classes": 1,
+        "lines_of_code": 255,
+        "comment_lines": 3,
+        "real_lines_of_code": 218
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\sonaranalyzers\\SonarAnalyzer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 20,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 79,
+        "comment_lines": 0,
+        "real_lines_of_code": 66
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\SourceCodeParserMain.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 123,
+        "comment_lines": 1,
+        "real_lines_of_code": 97
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\visitors\\MaxNestingLevelVisitor.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 12,
+        "classes": 1,
+        "lines_of_code": 127,
+        "comment_lines": 0,
+        "real_lines_of_code": 84
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\e2e\\ExcludeFilesAndFolders.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 48,
+        "comment_lines": 0,
+        "real_lines_of_code": 39
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\e2e\\FileDoesNotExist.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 21,
+        "comment_lines": 0,
+        "real_lines_of_code": 16
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\e2e\\ParseFileToJson.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 39,
+        "comment_lines": 0,
+        "real_lines_of_code": 30
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\e2e\\ParseFileToTable.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 31,
+        "comment_lines": 0,
+        "real_lines_of_code": 23
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\e2e\\ParseFolderToJson.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 47,
+        "comment_lines": 0,
+        "real_lines_of_code": 39
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\e2e\\ParseFolderToTable.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 31,
+        "comment_lines": 1,
+        "real_lines_of_code": 22
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\e2e\\PipedInputStream.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 65,
+        "comment_lines": 0,
+        "real_lines_of_code": 54
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\e2e\\StreamHelper.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 18,
+        "comment_lines": 0,
+        "real_lines_of_code": 13
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metrics\\FileMetricsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 33,
+        "comment_lines": 0,
+        "real_lines_of_code": 24
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metrics\\ProjectMetricsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 68,
+        "comment_lines": 0,
+        "real_lines_of_code": 49
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metricwriters\\CSVMetricWriterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 78,
+        "comment_lines": 0,
+        "real_lines_of_code": 60
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\metricwriters\\JSONMetricWriterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 69,
+        "comment_lines": 0,
+        "real_lines_of_code": 53
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 103,
+        "comment_lines": 0,
+        "real_lines_of_code": 91
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\ProjectParserTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 116,
+        "comment_lines": 0,
+        "real_lines_of_code": 91
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\ProjectTraverserTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 86,
+        "comment_lines": 0,
+        "real_lines_of_code": 66
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\sourcecodeparser\\JavaSonarAnalyzerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 9,
+        "classes": 1,
+        "lines_of_code": 133,
+        "comment_lines": 0,
+        "real_lines_of_code": 103
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\sourcecodeparser\\visitors\\MaxNestingLevelVisitorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 69,
+        "comment_lines": 0,
+        "real_lines_of_code": 55
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\max-nesting-level\\golden_test.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 10,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 33,
+        "comment_lines": 0,
+        "real_lines_of_code": 30
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\max-nesting-level\\if_else.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 14,
+        "comment_lines": 0,
+        "real_lines_of_code": 12
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\max-nesting-level\\lambda_function.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 13,
+        "comment_lines": 0,
+        "real_lines_of_code": 10
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\max-nesting-level\\nested_ifs.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 19,
+        "comment_lines": 0,
+        "real_lines_of_code": 17
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sampleproject\\.whatever\\something.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 5
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sampleproject\\bar\\foo.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 7,
+        "classes": 2,
+        "lines_of_code": 65,
+        "comment_lines": 7,
+        "real_lines_of_code": 44
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sampleproject\\bar\\hello.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 5
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sampleproject\\foo.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 42,
+        "comment_lines": 2,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sampleproject\\foo.py",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 0,
+        "classes": 0,
+        "lines_of_code": 13,
+        "comment_lines": 2,
+        "real_lines_of_code": 8
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sampleproject\\Java14.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 11,
+        "comment_lines": 0,
+        "real_lines_of_code": 10
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\ScriptShellSample.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 42,
+        "comment_lines": 2,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sonar_issues_java\\Clean.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 19,
+        "comment_lines": 1,
+        "real_lines_of_code": 14
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sonar_issues_java\\CodeSmell.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 14,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 71,
+        "comment_lines": 4,
+        "real_lines_of_code": 55
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SourceCodeParser\\src\\test\\resources\\sonar_issues_java\\CommentedOutCode.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 17,
+        "comment_lines": 5,
+        "real_lines_of_code": 7
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\converter\\AttributeTypesFactory.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 2,
+        "classes": 0,
+        "lines_of_code": 26,
+        "comment_lines": 0,
+        "real_lines_of_code": 21
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\converter\\ProjectConverter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 65,
+        "comment_lines": 0,
+        "real_lines_of_code": 50
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\Commit.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 35,
+        "comment_lines": 0,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AbsoluteCodeChurn.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 26,
+        "comment_lines": 0,
+        "real_lines_of_code": 19
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AbsoluteCoupledChurn.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 36,
+        "comment_lines": 0,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AddedLines.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 25,
+        "comment_lines": 0,
+        "real_lines_of_code": 18
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AgeInWeeks.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 31,
+        "comment_lines": 0,
+        "real_lines_of_code": 23
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AverageCodeChurnPerCommit.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 38,
+        "comment_lines": 0,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\CalendarWeek.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 12,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 58,
+        "comment_lines": 1,
+        "real_lines_of_code": 46
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\DeletedLines.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 25,
+        "comment_lines": 0,
+        "real_lines_of_code": 18
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\HighlyCoupledFiles.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 12,
+        "functions": 10,
+        "classes": 1,
+        "lines_of_code": 80,
+        "comment_lines": 0,
+        "real_lines_of_code": 62
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\MedianCoupledFiles.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 41,
+        "comment_lines": 0,
+        "real_lines_of_code": 31
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\Metric.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 9,
+        "classes": 1,
+        "lines_of_code": 40,
+        "comment_lines": 2,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\MetricsFactory.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 52,
+        "comment_lines": 0,
+        "real_lines_of_code": 44
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\NumberOfAuthors.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 29,
+        "comment_lines": 0,
+        "real_lines_of_code": 21
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\NumberOfOccurencesInCommits.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 24,
+        "comment_lines": 0,
+        "real_lines_of_code": 17
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\NumberOfRenames.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 26,
+        "comment_lines": 0,
+        "real_lines_of_code": 19
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\RangeOfWeeksWithCommits.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 33,
+        "comment_lines": 0,
+        "real_lines_of_code": 24
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\SuccessiveWeeksWithCommits.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 45,
+        "comment_lines": 0,
+        "real_lines_of_code": 34
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\WeeksWithCommits.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 31,
+        "comment_lines": 0,
+        "real_lines_of_code": 22
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\Modification.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 7,
+        "lines_of_code": 36,
+        "comment_lines": 0,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\VersionControlledFile.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 12,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 93,
+        "comment_lines": 3,
+        "real_lines_of_code": 71
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\InputFormatNames.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 2,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\CommitCollector.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 74,
+        "comment_lines": 0,
+        "real_lines_of_code": 63
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\LogLineCollector.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 10,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 65,
+        "comment_lines": 0,
+        "real_lines_of_code": 53
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\LogLineParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 65,
+        "comment_lines": 0,
+        "real_lines_of_code": 51
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\LogParserStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 20,
+        "comment_lines": 0,
+        "real_lines_of_code": 12
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\svn\\Status.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 3,
+        "classes": 5,
+        "lines_of_code": 40,
+        "comment_lines": 0,
+        "real_lines_of_code": 25
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\svn\\SVNLogParserStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 20,
+        "functions": 12,
+        "classes": 0,
+        "lines_of_code": 147,
+        "comment_lines": 0,
+        "real_lines_of_code": 123
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 48,
+        "comment_lines": 0,
+        "real_lines_of_code": 38
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\SVNLogParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 14,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 178,
+        "comment_lines": 1,
+        "real_lines_of_code": 148
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\SVNLogProjectCreator.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 28,
+        "comment_lines": 0,
+        "real_lines_of_code": 20
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\converter\\AttributeTypesFactoryTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 58,
+        "comment_lines": 0,
+        "real_lines_of_code": 40
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\converter\\ProjectConverterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 97,
+        "comment_lines": 12,
+        "real_lines_of_code": 65
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AbsoluteCodeChurnTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 47,
+        "comment_lines": 8,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AbsoluteCoupledChurnTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 86,
+        "comment_lines": 11,
+        "real_lines_of_code": 56
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AddedLinesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 74,
+        "comment_lines": 14,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AgeInWeeksTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 49,
+        "comment_lines": 0,
+        "real_lines_of_code": 35
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\AverageCodeChurnPerCommitTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 47,
+        "comment_lines": 8,
+        "real_lines_of_code": 27
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\CalendarWeekTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 92,
+        "comment_lines": 17,
+        "real_lines_of_code": 53
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\DeletedLinesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 74,
+        "comment_lines": 14,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\HighlyCoupledFilesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 105,
+        "comment_lines": 14,
+        "real_lines_of_code": 70
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\MedianCoupledFilesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 91,
+        "comment_lines": 14,
+        "real_lines_of_code": 56
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\MetricsFactoryTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 34,
+        "comment_lines": 0,
+        "real_lines_of_code": 25
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\NumberOfAuthorsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 57,
+        "comment_lines": 11,
+        "real_lines_of_code": 33
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\NumberOfOccurencesInCommitsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 29,
+        "comment_lines": 5,
+        "real_lines_of_code": 17
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\NumberOfRenamesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 37,
+        "comment_lines": 0,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\RangeOfWeeksWithCommitsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 79,
+        "comment_lines": 14,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\SuccessiveWeeksWithCommitsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 79,
+        "comment_lines": 14,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\metrics\\WeeksWithCommitsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 79,
+        "comment_lines": 14,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\input\\VersionControlledFileTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 172,
+        "comment_lines": 19,
+        "real_lines_of_code": 122
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\CommitCollectorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 69,
+        "comment_lines": 0,
+        "real_lines_of_code": 60
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\LogLineCollectorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 0,
+        "lines_of_code": 0,
+        "comment_lines": 0,
+        "real_lines_of_code": 0
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\LogLineParserTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 45,
+        "comment_lines": 3,
+        "real_lines_of_code": 33
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\ParserStrategyContractTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 99,
+        "comment_lines": 8,
+        "real_lines_of_code": 73
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\parser\\svn\\SVNLogParserStrategyTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 117,
+        "comment_lines": 0,
+        "real_lines_of_code": 99
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 53,
+        "comment_lines": 0,
+        "real_lines_of_code": 45
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\SVNLogParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\svnlogparser\\SVNLogProjectCreatorGoldenTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 80,
+        "comment_lines": 4,
+        "real_lines_of_code": 67
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\analysisObject\\AnalysisObject.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 2,
+        "lines_of_code": 23,
+        "comment_lines": 0,
+        "real_lines_of_code": 20
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\analysisObject\\AnalysisObjectTwelve.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 5,
+        "lines_of_code": 23,
+        "comment_lines": 0,
+        "real_lines_of_code": 17
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 47,
+        "comment_lines": 0,
+        "real_lines_of_code": 38
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\strategy\\ImporterStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 14,
+        "comment_lines": 0,
+        "real_lines_of_code": 10
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\strategy\\TokeiInnerStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 56,
+        "comment_lines": 0,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\strategy\\TokeiTwelveStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 56,
+        "comment_lines": 0,
+        "real_lines_of_code": 47
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\TokeiImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 14,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 154,
+        "comment_lines": 0,
+        "real_lines_of_code": 129
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 53,
+        "comment_lines": 0,
+        "real_lines_of_code": 45
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\TokeiImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\tokeiimporter\\TokeiImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 13,
+        "classes": 1,
+        "lines_of_code": 137,
+        "comment_lines": 0,
+        "real_lines_of_code": 108
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\HelperFunctions.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 29,
+        "functions": 2,
+        "classes": 0,
+        "lines_of_code": 36,
+        "comment_lines": 0,
+        "real_lines_of_code": 31
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\UnderstandCSVHeader.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 48,
+        "comment_lines": 0,
+        "real_lines_of_code": 36
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\UnderstandCSVRow.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 21,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 90,
+        "comment_lines": 0,
+        "real_lines_of_code": 73
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\UnderstandImporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 67,
+        "comment_lines": 0,
+        "real_lines_of_code": 52
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\UnderstandProjectBuilder.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 7,
+        "classes": 0,
+        "lines_of_code": 228,
+        "comment_lines": 3,
+        "real_lines_of_code": 198
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\HelperFunctionsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 0,
+        "classes": 2,
+        "lines_of_code": 84,
+        "comment_lines": 0,
+        "real_lines_of_code": 75
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\UnderstandCSVHeaderTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 79,
+        "comment_lines": 0,
+        "real_lines_of_code": 64
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\UnderstandCSVRowTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 129,
+        "comment_lines": 0,
+        "real_lines_of_code": 110
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\UnderstandImporterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 38,
+        "comment_lines": 0,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\UnderstandImporter\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\importer\\understand\\UnderstandProjectBuilderTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 59,
+        "comment_lines": 0,
+        "real_lines_of_code": 47
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\AttributeType.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 3,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\AttributeTypes.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 13,
+        "comment_lines": 0,
+        "real_lines_of_code": 10
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\BlacklistItem.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 12,
+        "comment_lines": 0,
+        "real_lines_of_code": 9
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\BlacklistType.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 3,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\Edge.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 28,
+        "comment_lines": 0,
+        "real_lines_of_code": 22
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\MutableNode.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 71,
+        "comment_lines": 0,
+        "real_lines_of_code": 57
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\Node.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 36,
+        "comment_lines": 0,
+        "real_lines_of_code": 28
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\NodeInserter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 5,
+        "classes": 0,
+        "lines_of_code": 59,
+        "comment_lines": 2,
+        "real_lines_of_code": 40
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\NodeMaxAttributeMerger.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 25,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 65,
+        "comment_lines": 0,
+        "real_lines_of_code": 50
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\NodeMergerStrategy.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\NodeType.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 8,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\Path.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 74,
+        "comment_lines": 0,
+        "real_lines_of_code": 37
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\PathFactory.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 0,
+        "lines_of_code": 13,
+        "comment_lines": 0,
+        "real_lines_of_code": 10
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\Project.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 45,
+        "comment_lines": 0,
+        "real_lines_of_code": 35
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\ProjectBuilder.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 10,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 88,
+        "comment_lines": 0,
+        "real_lines_of_code": 66
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\ProjectWrapper.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 27,
+        "comment_lines": 0,
+        "real_lines_of_code": 20
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\model\\Tree.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 5,
+        "classes": 2,
+        "lines_of_code": 88,
+        "comment_lines": 2,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\progresstracker\\ParsingUnit.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 3,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\progresstracker\\ProgressTracker.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 58,
+        "comment_lines": 1,
+        "real_lines_of_code": 51
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\CompressedStreamHandler.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 2,
+        "classes": 0,
+        "lines_of_code": 25,
+        "comment_lines": 0,
+        "real_lines_of_code": 20
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\NodeJsonDeserializer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 11,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 61,
+        "comment_lines": 0,
+        "real_lines_of_code": 47
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\PipedInputScanner.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 0,
+        "classes": 0,
+        "lines_of_code": 29,
+        "comment_lines": 8,
+        "real_lines_of_code": 17
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\ProjectDeserializer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 51,
+        "comment_lines": 0,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\ProjectJsonDeserializer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 38,
+        "comment_lines": 0,
+        "real_lines_of_code": 32
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\ProjectSerializer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 6,
+        "classes": 0,
+        "lines_of_code": 95,
+        "comment_lines": 6,
+        "real_lines_of_code": 49
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\ProjectWrapperJsonDeserializer.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 26,
+        "comment_lines": 0,
+        "real_lines_of_code": 21
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\translator\\MetricNameTranslator.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 10,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 54,
+        "comment_lines": 0,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\AttributeTypesTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 34,
+        "comment_lines": 0,
+        "real_lines_of_code": 24
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\NodeInserterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 103,
+        "comment_lines": 0,
+        "real_lines_of_code": 85
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\NodeMatcher.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 18,
+        "functions": 9,
+        "classes": 0,
+        "lines_of_code": 56,
+        "comment_lines": 0,
+        "real_lines_of_code": 44
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\NodeMergerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 63,
+        "comment_lines": 0,
+        "real_lines_of_code": 51
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\NodeTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 76,
+        "comment_lines": 0,
+        "real_lines_of_code": 57
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\PathFactoryTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 75,
+        "comment_lines": 0,
+        "real_lines_of_code": 59
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\PathMatcher.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 0,
+        "lines_of_code": 35,
+        "comment_lines": 0,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\PathTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 181,
+        "comment_lines": 0,
+        "real_lines_of_code": 144
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\ProjectBuilderTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 58,
+        "comment_lines": 0,
+        "real_lines_of_code": 46
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\ProjectMatcher.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 9,
+        "functions": 8,
+        "classes": 0,
+        "lines_of_code": 44,
+        "comment_lines": 0,
+        "real_lines_of_code": 33
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\ProjectTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 24,
+        "comment_lines": 0,
+        "real_lines_of_code": 18
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\TreeCreator.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 0,
+        "lines_of_code": 25,
+        "comment_lines": 0,
+        "real_lines_of_code": 19
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\model\\TreeTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 90,
+        "comment_lines": 0,
+        "real_lines_of_code": 72
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\CompressedStreamHandlerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 4,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 49,
+        "comment_lines": 0,
+        "real_lines_of_code": 42
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\NodeJsonDeserializerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 119,
+        "comment_lines": 0,
+        "real_lines_of_code": 95
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\ProjectDeserializerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 83,
+        "comment_lines": 0,
+        "real_lines_of_code": 62
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\serialization\\ProjectSerializerTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 42,
+        "comment_lines": 0,
+        "real_lines_of_code": 32
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\model\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\translator\\MetricNameTranslatorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 0,
+        "functions": 0,
+        "classes": 1,
+        "lines_of_code": 81,
+        "comment_lines": 0,
+        "real_lines_of_code": 66
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\MetricCollector.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 12,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 100,
+        "comment_lines": 0,
+        "real_lines_of_code": 81
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\metrics\\IndentationCounter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 21,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 91,
+        "comment_lines": 2,
+        "real_lines_of_code": 75
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\metrics\\Metric.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 3,
+        "classes": 1,
+        "lines_of_code": 17,
+        "comment_lines": 0,
+        "real_lines_of_code": 10
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\metrics\\MetricsFactory.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 3,
+        "functions": 2,
+        "classes": 0,
+        "lines_of_code": 22,
+        "comment_lines": 0,
+        "real_lines_of_code": 17
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\model\\BoolIntConversion.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 0,
+        "classes": 0,
+        "lines_of_code": 5,
+        "comment_lines": 0,
+        "real_lines_of_code": 3
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\model\\FileMetrics.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 11,
+        "comment_lines": 0,
+        "real_lines_of_code": 8
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 61,
+        "comment_lines": 0,
+        "real_lines_of_code": 47
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\ProjectGenerator.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 45,
+        "comment_lines": 0,
+        "real_lines_of_code": 37
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\parser\\rawtextparser\\RawTextParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 12,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 129,
+        "comment_lines": 0,
+        "real_lines_of_code": 101
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\indentationlevelparser\\MetricCollectorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 51,
+        "comment_lines": 0,
+        "real_lines_of_code": 39
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\indentationlevelparser\\metrics\\IndentationCounterTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 117,
+        "comment_lines": 0,
+        "real_lines_of_code": 92
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\indentationlevelparser\\metrics\\MetricsFactoryTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 23,
+        "comment_lines": 0,
+        "real_lines_of_code": 16
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\indentationlevelparser\\model\\FileMetricsTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 19,
+        "comment_lines": 0,
+        "real_lines_of_code": 14
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\indentationlevelparser\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 69,
+        "comment_lines": 0,
+        "real_lines_of_code": 61
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\indentationlevelparser\\ProjectGeneratorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 46,
+        "comment_lines": 0,
+        "real_lines_of_code": 37
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\parser\\RawTextParser\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\indentationlevelparser\\RawTextParserTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 6,
+        "functions": 6,
+        "classes": 1,
+        "lines_of_code": 83,
+        "comment_lines": 0,
+        "real_lines_of_code": 68
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\test\\data\\codecharta\\foo.java",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 4,
+        "classes": 1,
+        "lines_of_code": 42,
+        "comment_lines": 2,
+        "real_lines_of_code": 29
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ccsh\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\tools\\ccsh\\Ccsh.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 16,
+        "functions": 7,
+        "classes": 2,
+        "lines_of_code": 141,
+        "comment_lines": 1,
+        "real_lines_of_code": 124
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ccsh\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\tools\\ccsh\\parser\\ParserService.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 56,
+        "comment_lines": 0,
+        "real_lines_of_code": 48
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ccsh\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\ccsh\\CcshTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 5,
+        "functions": 5,
+        "classes": 1,
+        "lines_of_code": 85,
+        "comment_lines": 0,
+        "real_lines_of_code": 69
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ccsh\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\ccsh\\parser\\ParserServiceTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 8,
+        "functions": 8,
+        "classes": 1,
+        "lines_of_code": 118,
+        "comment_lines": 0,
+        "real_lines_of_code": 101
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\InteractiveParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\tools\\interactiveparser\\InteractiveParser.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 6,
+        "comment_lines": 0,
+        "real_lines_of_code": 4
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\InteractiveParser\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\tools\\interactiveparser\\ParserDialogInterface.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 10,
+        "comment_lines": 0,
+        "real_lines_of_code": 7
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ValidationTool\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\tools\\validation\\EveritValidator.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 25,
+        "comment_lines": 0,
+        "real_lines_of_code": 20
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ValidationTool\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\tools\\validation\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 22,
+        "comment_lines": 0,
+        "real_lines_of_code": 16
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ValidationTool\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\tools\\validation\\ValidationTool.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 35,
+        "comment_lines": 0,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ValidationTool\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\tools\\validation\\Validator.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 8,
+        "comment_lines": 0,
+        "real_lines_of_code": 5
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ValidationTool\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\tools\\validation\\EveritValidatorTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 7,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 57,
+        "comment_lines": 0,
+        "real_lines_of_code": 46
+      },
+      "types": []
+    },
+    {
+      "name": "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\tools\\ValidationTool\\src\\test\\kotlin\\de\\maibornwolff\\codecharta\\tools\\validation\\ParserDialogTest.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 2,
+        "functions": 2,
+        "classes": 1,
+        "lines_of_code": 33,
+        "comment_lines": 0,
+        "real_lines_of_code": 26
+      },
+      "types": []
+    }
+  ],
+  "relationships": []
+}
