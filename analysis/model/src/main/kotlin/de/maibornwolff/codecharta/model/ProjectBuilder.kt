@@ -2,21 +2,18 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
-
 open class ProjectBuilder(
     private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
     private var edges: MutableList<Edge> = mutableListOf(),
     private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
     private var blacklist: MutableList<BlacklistItem> = mutableListOf()
-) {
+                         ) {
 
     val DUMMY_PROJECT_NAME = ""
 
     init {
         if (nodes.size != 1) throw IllegalStateException("No unique root node was found, instead ${nodes.size} candidates identified.")
     }
-
-
 
     val rootNode: MutableNode
         get() = nodes[0]
@@ -63,7 +60,7 @@ open class ProjectBuilder(
             edges = edges.toList(),
             attributeTypes = attributeTypes.toMap(),
             blacklist = blacklist.toList()
-        )
+                             )
 
         System.err.println()
         System.err.println("Created Project with ${project.size} leaves.")

@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import mu.KotlinLogging
 
-class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes):
+class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) :
     de.maibornwolff.codecharta.model.ProjectBuilder() {
 
     private val logger = KotlinLogging.logger {}
@@ -24,7 +24,7 @@ class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes)
         return super.build()
     }
 
-    //TODO: Methode müsste private sein. Java Reflections funktionieren hier aber nicht
+    // TODO: Methode müsste private sein. Java Reflections funktionieren hier aber nicht
     fun generateCodeChartaFileNode(metricGardenerNode: MetricGardenerNode): MutableNode {
         return MutableNode(
             extractFileNameFromPath(metricGardenerNode.name),
