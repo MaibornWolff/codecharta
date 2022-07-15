@@ -22,7 +22,7 @@ import java.util.concurrent.Callable
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
                     )
 
-class MetricGardenerImporter: Callable<Void>, InteractiveParser {
+class MetricGardenerImporter : Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
     private val mapper = jacksonObjectMapper()

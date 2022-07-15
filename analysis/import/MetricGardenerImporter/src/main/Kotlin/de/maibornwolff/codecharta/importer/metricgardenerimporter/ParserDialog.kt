@@ -6,7 +6,7 @@ import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
-    companion object: ParserDialogInterface {
+    companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
             val inputFile = KInquirer.promptInput(
