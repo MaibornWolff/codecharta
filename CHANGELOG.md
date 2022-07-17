@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Fixed 🐞
+
+-   Let file selection always show what is actual rendered within the map [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
+
 ## [1.100.0] - 2022-07-12
 
 ### Added 🚀
@@ -29,7 +33,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate color settings panel to Angular [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
--   Remove `recentFiles.service` [#2882](https://github.com/MaibornWolff/codecharta/pull/2882)
 
 ## [1.99.1] - 2022-06-22
 
