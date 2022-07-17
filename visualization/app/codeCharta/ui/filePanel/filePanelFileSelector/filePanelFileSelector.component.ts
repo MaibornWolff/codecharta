@@ -4,7 +4,7 @@ import { Store } from "../../../state/angular-redux/store"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { invertStandard, setAll, setStandard } from "../../../state/store/files/files.actions"
 import { CCFile } from "../../../codeCharta.model"
-import { FileState } from "../../../model/files/files"
+import { FileSelectionState, FileState } from "../../../model/files/files"
 
 @Component({
 	selector: "cc-file-panel-file-selector",
@@ -16,7 +16,7 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
 	selectedFilesInStore: CCFile[] = []
 	private filesSubscription = this.store.select(filesSelector).subscribe(files => {
 		this.fileStates = files
-		this.selectedFilesInStore = files.filter(file => file.selectedAs === "Partial").map(file => file.file)
+		this.selectedFilesInStore = files.filter(file => file.selectedAs === FileSelectionState.Partial).map(file => file.file)
 		this.selectedFilesInUI = this.selectedFilesInStore
 	})
 
