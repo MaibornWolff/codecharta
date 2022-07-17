@@ -27,14 +27,14 @@ describe("getDownloadableCustomConfigs", () => {
 
 	it("should get a map with downloadable custom configs when no applicable custom configs are available", () => {
 		const customConfigStub = {
-			id: "md5-fileA",
+			id: "md5-fileB",
 			name: "stubbedConfig2",
-			mapChecksum: "md5-fileA",
+			mapChecksum: "md5-fileB",
 			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 			assignedMaps: ["test.cc.json"],
 			stateSettings: {}
 		} as CustomConfig
-		CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map([["md5-fileA", customConfigStub]]))
+		CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map([["md5-fileB", customConfigStub]]))
 		const actualDownloadableCustomConfigs = getDownloadableCustomConfigs(FILE_STATES_JAVA)
 
 		expect(actualDownloadableCustomConfigs.size).toBe(1)
