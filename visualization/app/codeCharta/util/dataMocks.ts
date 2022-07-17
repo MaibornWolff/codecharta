@@ -739,7 +739,7 @@ export const TEST_FILE_DATA: CCFile = {
 }
 
 export const TEST_FILE_DATA_JAVA: CCFile = {
-	fileMeta: FILE_META,
+	fileMeta: { ...FILE_META, fileChecksum: "md5-fileB", fileName: "fileB" },
 	map: VALID_NODE_JAVA,
 	settings: {
 		fileSettings: {

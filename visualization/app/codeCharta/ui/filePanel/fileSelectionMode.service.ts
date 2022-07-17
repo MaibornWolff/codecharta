@@ -4,7 +4,7 @@ import { FileSelectionState, FileState } from "../../model/files/files"
 import { isDeltaState, isEqual } from "../../model/files/files.helper"
 import { State } from "../../state/angular-redux/state"
 import { Store } from "../../state/angular-redux/store"
-import { setDelta, setStandard } from "../../state/store/files/files.actions"
+import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { filesSelector } from "../../state/store/files/files.selector"
 
 @Injectable()
@@ -45,7 +45,7 @@ export class FileSelectionModeService implements OnDestroy {
 			const comparisonFile = this.lastSetFilesOfPreviousMode.find(file => file.selectedAs === FileSelectionState.Comparison)
 			this.store.dispatch(setDelta(referenceFile.file, comparisonFile?.file))
 		} else {
-			this.store.dispatch(setStandard(this.lastSetFilesOfPreviousMode.map(f => f.file)))
+			this.store.dispatch(setFiles(this.lastSetFilesOfPreviousMode))
 		}
 	}
 

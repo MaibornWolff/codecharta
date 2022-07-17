@@ -85,11 +85,8 @@ function setDeltaComparison(state: FileState[], comparison: CCFile) {
 }
 
 function setStandardByNames(state: FileState[], partialFileNames: string[]): FileState[] {
-	return state.map(x => {
-		let selectedAs = FileSelectionState.None
-		if (partialFileNames.includes(x.file.fileMeta.fileName)) {
-			selectedAs = FileSelectionState.Partial
-		}
-		return { ...x, selectedAs }
-	})
+	return state.map(fileState => ({
+		...fileState,
+		selectedAs: partialFileNames.includes(fileState.file.fileMeta.fileName) ? FileSelectionState.Partial : FileSelectionState.None
+	}))
 }
