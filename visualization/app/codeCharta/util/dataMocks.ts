@@ -1238,7 +1238,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 	name: "root",
 	attributes: {},
 	deltas: {},
-	fileCount: { added: 0, removed: 0 },
+	fileCount: { added: 0, removed: 0, metricsChanged: 0 },
 	type: NodeType.FOLDER,
 	path: "/root",
 	isExcluded: false,
@@ -1250,7 +1250,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			deltas: { rloc: 300, functions: -15, mcc: 12 },
-			fileCount: { added: 0, removed: 1 },
+			fileCount: { added: 0, removed: 1, metricsChanged: 0 },
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -1260,7 +1260,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 120, functions: 20, mcc: 2 },
 			deltas: { rloc: -150, functions: 9, mcc: 33 },
-			fileCount: { added: 0, removed: 1 },
+			fileCount: { added: 0, removed: 1, metricsChanged: 0 },
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -1269,7 +1269,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			type: NodeType.FOLDER,
 			attributes: {},
 			deltas: {},
-			fileCount: { added: 0, removed: 0 },
+			fileCount: { added: 0, removed: 0, metricsChanged: 0 },
 			path: "/root/Parent Leaf",
 			isExcluded: false,
 			isFlattened: false,
@@ -1280,7 +1280,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/small leaf.json",
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
 					deltas: { rloc: -55, functions: 38, mcc: -40 },
-					fileCount: { added: 0, removed: 1 },
+					fileCount: { added: 0, removed: 1, metricsChanged: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
@@ -1290,7 +1290,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/other small leaf.json",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
 					deltas: { rloc: 200, functions: -27, mcc: 65 },
-					fileCount: { added: 1, removed: 0 },
+					fileCount: { added: 1, removed: 0, metricsChanged: 2 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -1578,6 +1578,107 @@ export const TEST_DELTA_MAP_D: CCFile = {
 						isFlattened: false
 					}
 				]
+			}
+		]
+	},
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
+	}
+}
+
+export const TEST_DELTA_MAP_E: CCFile = {
+	fileMeta: {
+		fileName: "fileE",
+		fileChecksum: "md5-delta-fileE",
+		projectName: "Sample Project",
+		apiVersion: packageJson.codecharta.apiVersion,
+		exportedFileSize: 300_000
+	},
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "File with different attributes",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, functions: 12 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			},
+			{
+				name: "File without metric changes",
+				type: NodeType.FILE,
+				attributes: { rloc: 271 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			},
+			{
+				name: "File with mcc changes",
+				type: NodeType.FILE,
+				attributes: { mcc: 4 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			}
+		]
+	},
+	settings: {
+		fileSettings: {
+			attributeTypes: { nodes: {}, edges: {} },
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
+	}
+}
+export const TEST_DELTA_MAP_F: CCFile = {
+	fileMeta: {
+		fileName: "fileF",
+		fileChecksum: "md5-delta-fileF",
+		projectName: "Sample Project",
+		apiVersion: packageJson.codecharta.apiVersion,
+		exportedFileSize: 300_000
+	},
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "File with different attributes",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, mcc: 7 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			},
+			{
+				name: "File without metric changes",
+				type: NodeType.FILE,
+				attributes: { rloc: 271 },
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
+			},
+			{
+				name: "File with mcc changes",
+				type: NodeType.FILE,
+				attributes: { mcc: 9001 }, // its over 9000!!!
+				link: "https://www.google.de",
+				isExcluded: false,
+				isFlattened: false
 			}
 		]
 	},

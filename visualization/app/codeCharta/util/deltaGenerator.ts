@@ -62,7 +62,8 @@ export class DeltaGenerator {
 				// attributes and is not specific about the attributes from the
 				// reference node.
 				referenceNode.attributes = comparisonNode.attributes
-				referenceNode.fileCount = { added: 0, removed: 0 }
+				const metricsChanged = this.compareCommonAttributes(referenceNode, comparisonNode).differenceExists ? 1 : 0
+				referenceNode.fileCount = { added: 0, removed: 0, metricsChanged }
 			} else {
 				if (comparisonNode.children) {
 					comparisonNode.children = []
@@ -71,7 +72,8 @@ export class DeltaGenerator {
 
 				comparisonNode.fileCount = {
 					added: comparisonNode.type === NodeType.FILE ? 1 : 0,
-					removed: 0
+					removed: 0,
+					metricsChanged: 0
 				}
 			}
 
@@ -79,6 +81,21 @@ export class DeltaGenerator {
 			deltaNodesByPath.set(node.path, node)
 			referenceNodesByPath.delete(node.path)
 		}
+	}
+
+	private static compareCommonAttributes(nodeA: CodeMapNode, nodeB: CodeMapNode): { differenceExists: boolean } {
+		const nodesAreComparable = nodeA.type === NodeType.FILE && nodeB.type === NodeType.FILE && nodeA.attributes && nodeB.attributes
+
+		if (!nodesAreComparable) {
+			return { differenceExists: false }
+		}
+
+		const differenceExists = Object.keys(nodeA.attributes).some(attribute => {
+			const bHasAttribute = nodeB.attributes[attribute] !== undefined
+			const valuesDiffer = nodeB.attributes[attribute] !== nodeA.attributes[attribute]
+			return bHasAttribute && valuesDiffer
+		})
+		return { differenceExists }
 	}
 
 	private static addDeletedNodesToDeltaMap(referenceNodesByPath: Map<string, CodeMapNode>, deltaNodesByPath: Map<string, CodeMapNode>) {
@@ -89,7 +106,8 @@ export class DeltaGenerator {
 			node.deltas = {}
 			node.fileCount = {
 				added: 0,
-				removed: node.type === NodeType.FILE ? 1 : 0
+				removed: node.type === NodeType.FILE ? 1 : 0,
+				metricsChanged: 0
 			}
 
 			for (const [key, value] of Object.entries(node.attributes)) {
