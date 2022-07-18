@@ -59,7 +59,7 @@ describe("files", () => {
 		})
 	})
 
-	describe("Action: SET_MULTIPLE", () => {
+	describe("Action: SET_STANDARD", () => {
 		it("should select two files to view in multiple mode", () => {
 			const result = files(state, setStandard([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 
@@ -67,7 +67,7 @@ describe("files", () => {
 		})
 	})
 
-	describe("Action: SET_MULTIPLE_BY_NAMES", () => {
+	describe("Action: SET_STANDARD_BY_NAMES", () => {
 		it("should select two files by name to view in multiple mode", () => {
 			const result = files(state, setStandardByNames([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]))
 
