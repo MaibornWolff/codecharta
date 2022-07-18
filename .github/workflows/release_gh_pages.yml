@@ -20,15 +20,15 @@ jobs:
           java-version: '11'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
       - name: Install wine
-        run: |
-          sudo dpkg --add-architecture i386
-          sudo apt update
-          sudo apt-get install -y wine-stable wine32 libwine:i386
+        run: sudo apt-get install -y wine-stable
+
+      - name: Install zip
+        run: sudo apt-get install -y zip
 
       - name: Build analysis
         working-directory: ./analysis
@@ -39,7 +39,6 @@ jobs:
       - name: Build visualization
         working-directory: ./visualization
         run: |
-          rm -rf node_modules/nwjs-builder-phoenix/caches/*
           npm ci
           npm run test
           npm run build
@@ -68,7 +67,7 @@ jobs:
           asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
 
       - name: Publish visualization npm package
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
       - run: npm ci
@@ -81,7 +80,7 @@ jobs:
           working-directory: ./visualization
 
       - name: Publish analysis npm package
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
       - run: npm ci

@@ -14,5 +14,6 @@ export const metricDescriptions: Map<string, string> = new Map([
 	["line_coverage", "number of code lines covered by tests"],
 	["sonar_code_smells", "number of smells Sonar has identified"],
 	["avg_code_churn", "average number of lines added or removed from this file"],
-	["number_of_authors", "number of authors that have edited this file"]
+	["number_of_authors", "number of authors that have edited this file"],
+	["statements", "number of statements"]
 ])

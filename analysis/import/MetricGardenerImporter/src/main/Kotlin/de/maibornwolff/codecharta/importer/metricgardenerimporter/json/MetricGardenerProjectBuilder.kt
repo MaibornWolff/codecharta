@@ -7,7 +7,8 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import mu.KotlinLogging
 
-class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) : de.maibornwolff.codecharta.model.ProjectBuilder() {
+class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) :
+    de.maibornwolff.codecharta.model.ProjectBuilder() {
 
     private val logger = KotlinLogging.logger {}
 
@@ -15,7 +16,7 @@ class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes)
         var i = 0
         for (inputNode in metricGardenerNodes.metricGardenerNodes) {
             val node = generateCodeChartaFileNode(inputNode)
-            insertByPath(inputNode.getPath(), node)
+            insertByPath(inputNode.getPathWithoutFileName(), node)
             i = i.inc()
             logger.info { "$i. Node  von ${metricGardenerNodes.metricGardenerNodes.size} MetricGardenerNodes wurde eingelesen." }
         }
@@ -26,11 +27,11 @@ class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes)
         return MutableNode(extractFileNameFromPath(metricGardenerNode.name), NodeType.File, metricGardenerNode.metrics, "", setOf())
     }
 
-     private fun extractFileNameFromPath(path: String?): String {
-         if (checkNotNull(path).isNotEmpty()) {
-             return path.split("\\").reversed().get(0)
-         }
-         return ""
+    private fun extractFileNameFromPath(path: String?): String {
+        if (checkNotNull(path).isNotEmpty()) {
+            return path.split("\\").reversed().get(0)
+        }
+        return ""
     }
 
 }

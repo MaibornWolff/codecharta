@@ -1,5 +1,4 @@
 import angular from "angular"
-import { ColorModeService } from "./store/dynamicSettings/colorMode/colorMode.service"
 import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
@@ -33,7 +32,6 @@ import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableC
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
-	.service(camelCase(ColorModeService.name), ColorModeService)
 	.service(camelCase(RecentFilesService.name), RecentFilesService)
 	.service(camelCase(MetricDataService.name), MetricDataService)
 	.service(camelCase(EdgeMetricDataService.name), EdgeMetricDataService)

@@ -11,6 +11,7 @@ import { setIsWhiteBackground } from "../../../../state/store/appSettings/isWhit
 import { isWhiteBackgroundSelector } from "../../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
 import { setResetCameraIfNewFileIsLoaded } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
+import { GlobalSettingsHelper } from "../../../../util/globalSettingsHelper"
 
 @Component({
 	template: require("./globalConfigurationDialog.component.html")
@@ -26,21 +27,26 @@ export class GlobalConfigurationDialogComponent {
 
 	handleResetCameraIfNewFileIsLoadedChanged(event: MatSlideToggleChange) {
 		this.store.dispatch(setResetCameraIfNewFileIsLoaded(event.checked))
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ resetCameraIfNewFileIsLoaded: event.checked })
 	}
 
 	handleHideFlatBuildingsChanged(event: MatSlideToggleChange) {
 		this.store.dispatch(setHideFlatBuildings(event.checked))
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ hideFlatBuildings: event.checked })
 	}
 
 	handleIsWhiteBackgroundChanged(event: MatSlideToggleChange) {
 		this.store.dispatch(setIsWhiteBackground(event.checked))
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ isWhiteBackground: event.checked })
 	}
 
 	handleExperimentalFeaturesEnabledChanged(event: MatSlideToggleChange) {
 		this.store.dispatch(setExperimentalFeaturesEnabled(event.checked))
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ experimentalFeaturesEnabled: event.checked })
 	}
 
 	handleScreenshotToClipboardEnabledChanged(event: MatSlideToggleChange) {
 		this.store.dispatch(setScreenshotToClipboardEnabled(event.checked))
+		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ screenshotToClipboardEnabled: event.checked })
 	}
 }

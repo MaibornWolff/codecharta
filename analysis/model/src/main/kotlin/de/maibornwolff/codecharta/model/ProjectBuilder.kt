@@ -7,7 +7,7 @@ open class ProjectBuilder(
     private var edges: MutableList<Edge> = mutableListOf(),
     private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
     private var blacklist: MutableList<BlacklistItem> = mutableListOf()
-) {
+                         ) {
 
     val DUMMY_PROJECT_NAME = ""
 
@@ -60,7 +60,7 @@ open class ProjectBuilder(
             edges = edges.toList(),
             attributeTypes = attributeTypes.toMap(),
             blacklist = blacklist.toList()
-        )
+                             )
 
         System.err.println()
         System.err.println("Created Project with ${project.size} leaves.")
