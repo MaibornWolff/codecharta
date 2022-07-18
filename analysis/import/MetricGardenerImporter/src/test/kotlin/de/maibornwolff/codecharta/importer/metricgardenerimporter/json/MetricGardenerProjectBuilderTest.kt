@@ -22,7 +22,6 @@ internal class MetricGardenerProjectBuilderTest {
         assertEquals("TestService.kt", fileName)
     }
 
-
     @Test
     fun whenGenerateFileNodeThenSuccess() {
         /**
@@ -35,5 +34,4 @@ internal class MetricGardenerProjectBuilderTest {
         assertEquals(fileNode.name, node.name)
         assertEquals(fileNode.attributes, node.attributes)
     }
-
 }
