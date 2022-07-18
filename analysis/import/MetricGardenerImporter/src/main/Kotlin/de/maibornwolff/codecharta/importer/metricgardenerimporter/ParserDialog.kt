@@ -9,6 +9,9 @@ class ParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
+            val isMetricGardenerJsonAvailable: Boolean =
+                KInquirer.promptConfirm(message = "Do you already have a MetricGardener json-File?", default = true)
+
             val inputFile = KInquirer.promptInput(
                 message = "What Project do you want to parse?",
                 hint = "path/to/my/project"
@@ -26,6 +29,7 @@ class ParserDialog {
                 inputFile,
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
+                if (!isMetricGardenerJsonAvailable) "--with-MG-run" else null,
                                 )
         }
     }
