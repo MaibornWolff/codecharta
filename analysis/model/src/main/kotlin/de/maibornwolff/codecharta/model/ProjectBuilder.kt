@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
-
 open class ProjectBuilder(
     private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
     private var edges: MutableList<Edge> = mutableListOf(),
@@ -15,8 +14,6 @@ open class ProjectBuilder(
     init {
         if (nodes.size != 1) throw IllegalStateException("No unique root node was found, instead ${nodes.size} candidates identified.")
     }
-
-
 
     val rootNode: MutableNode
         get() = nodes[0]

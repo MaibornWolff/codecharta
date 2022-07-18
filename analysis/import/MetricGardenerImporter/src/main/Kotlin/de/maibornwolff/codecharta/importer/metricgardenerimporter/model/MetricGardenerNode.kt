@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.model.Path
 class MetricGardenerNode(
     @JsonProperty("name") var name: String?,
     @JsonProperty("type") var type: String?,
-    @JsonProperty("metrics") var metrics: Metrics?
+    @JsonProperty("metrics") var metrics: Map<String, Any>
                         ) {
 
     fun getPath(): Path {
@@ -34,7 +34,7 @@ class MetricGardenerNode(
     override fun hashCode(): Int {
         var result = name?.hashCode() ?: 0
         result = 31 * result + (type?.hashCode() ?: 0)
-        result = 31 * result + (metrics?.hashCode() ?: 0)
+        result = 31 * result + metrics.hashCode()
         return result
     }
 }

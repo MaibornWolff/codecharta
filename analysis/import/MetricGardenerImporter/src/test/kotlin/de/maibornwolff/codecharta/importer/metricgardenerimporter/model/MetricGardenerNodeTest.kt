@@ -24,8 +24,8 @@ internal class MetricGardenerNodeTest {
             "types": []
         }"""
         val metricGardenerNode: MetricGardenerNode = mapper.readValue(json, MetricGardenerNode::class.java)
-        val metrics1 = Metrics(3, 3, 1, 79, 32, 40)
-        val metricGardenerNode1 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File", metrics1)
+        val metricGardenerNode1 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File",
+                mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40))
         assertEquals(metricGardenerNode, metricGardenerNode1)
     }
 }
