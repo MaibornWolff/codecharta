@@ -33,6 +33,11 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
                        )
     private var help = false
 
+    @CommandLine.Option(
+            names = ["--with-MG-run"],
+            description = ["Do you have a Metric Gardener Json? "])
+    private var metricGardenJsonAvailable: Boolean = true
+
     @CommandLine.Parameters(
         arity = "1", paramLabel = "FOLDER or FILE",
         description = ["path for project folder or code file"]
@@ -40,7 +45,7 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
     private var inputFile: File = File("")
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    private var outputFile: File = File("")
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress: Boolean = true
@@ -51,6 +56,12 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
             printErrorLog()
             return null
         }
+        /**
+        if (!metricGardenJsonAvailable) {
+            // TODO:call shell script
+            Runtime.getRuntime().exec("runMetricGardener.sh")
+        }
+        **/
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
