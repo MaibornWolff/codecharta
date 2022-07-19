@@ -99,6 +99,7 @@ describe("deltaGenerator", () => {
 	})
 
 	it("should detect added and removed files and add result to delta attributes", () => {
+		// Here, "changed" means "added" or "removed"
 		const actualAmountOfChangedFiles: Pick<FileCount, "added" | "removed"> = { added: 0, removed: 0 }
 		const referenceMap = { ...TEST_DELTA_MAP_C }
 		const comparisonMap = { ...TEST_DELTA_MAP_D }
@@ -167,7 +168,7 @@ describe("deltaGenerator", () => {
 		expect(result).toEqual({ differenceExists: false })
 	})
 
-	it("should detect files with metric changes and add result to delta attributes", () => {
+	it.only("should detect files with metric changes and add result to delta attributes", () => {
 		const actualAmountOfChangedFiles: Pick<FileCount, "metricsChanged"> = { metricsChanged: 0 }
 		const referenceMap = { ...TEST_DELTA_MAP_E }
 		const comparisonMap = { ...TEST_DELTA_MAP_F }

@@ -1606,29 +1606,22 @@ export const TEST_DELTA_MAP_E: CCFile = {
 		isExcluded: false,
 		isFlattened: false,
 		children: [
+			{ name: "File which exists in E but not in F", type: NodeType.FILE, attributes: { mcc: 12, rloc: 5 } },
+			{ name: "Folder with different attributes", type: NodeType.FOLDER, attributes: { mcc: 12, rloc: 5 } },
 			{
-				name: "File with different attributes",
+				name: "File with same rloc-value and either mcc or functions",
 				type: NodeType.FILE,
-				attributes: { rloc: 400, functions: 12 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
+				attributes: { rloc: 400, functions: 12 }
 			},
 			{
 				name: "File without metric changes",
 				type: NodeType.FILE,
-				attributes: { rloc: 271 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
+				attributes: { rloc: 271 }
 			},
 			{
-				name: "File with mcc changes",
+				name: "File with mcc and rloc changes",
 				type: NodeType.FILE,
-				attributes: { mcc: 4 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
+				attributes: { mcc: 4, rloc: 7 }
 			}
 		]
 	},
@@ -1656,29 +1649,21 @@ export const TEST_DELTA_MAP_F: CCFile = {
 		isExcluded: false,
 		isFlattened: false,
 		children: [
+			{ name: "Folder with different attributes", type: NodeType.FOLDER, attributes: { mcc: 120, rloc: 50 } },
 			{
-				name: "File with different attributes",
+				name: "File with same rloc-value and either mcc or functions",
 				type: NodeType.FILE,
-				attributes: { rloc: 400, mcc: 7 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
+				attributes: { rloc: 400, mcc: 7 }
 			},
 			{
 				name: "File without metric changes",
 				type: NodeType.FILE,
-				attributes: { rloc: 271 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
+				attributes: { rloc: 271 }
 			},
 			{
-				name: "File with mcc changes",
+				name: "File with mcc and rloc changes",
 				type: NodeType.FILE,
-				attributes: { mcc: 9001 }, // its over 9000!!!
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
+				attributes: { mcc: 9001, rloc: 9002 } // its over 9000!!!
 			}
 		]
 	},

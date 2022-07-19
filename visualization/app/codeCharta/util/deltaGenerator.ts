@@ -56,13 +56,13 @@ export class DeltaGenerator {
 				if (referenceNode.children || comparisonNode.children) {
 					referenceNode.children = []
 				}
+				const metricsChanged = this.compareCommonAttributes(referenceNode, comparisonNode).differenceExists ? 1 : 0
 				referenceNode.deltas = this.getDeltaAttributeList(referenceNode.attributes, comparisonNode.attributes)
 				// TODO: The attributes have to be consolidated to have a single set of
 				// attributes instead of conflicting attributes. This applies to all
 				// attributes and is not specific about the attributes from the
 				// reference node.
 				referenceNode.attributes = comparisonNode.attributes
-				const metricsChanged = this.compareCommonAttributes(referenceNode, comparisonNode).differenceExists ? 1 : 0
 				referenceNode.fileCount = { added: 0, removed: 0, metricsChanged }
 			} else {
 				if (comparisonNode.children) {
