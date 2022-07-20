@@ -20,7 +20,6 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import mu.KotlinLogging
-import picocli.AutoComplete
 import picocli.CommandLine
 import java.util.concurrent.Callable
 
@@ -47,7 +46,6 @@ import java.util.concurrent.Callable
         TokeiImporter::class,
         RawTextParser::class,
         MetricGardenerImporter::class,
-        AutoComplete.GenerateCompletion::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
