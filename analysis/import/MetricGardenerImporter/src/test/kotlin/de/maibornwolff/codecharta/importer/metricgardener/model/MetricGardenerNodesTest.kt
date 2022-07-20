@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.metricgardenerimporter.model
+package de.maibornwolff.codecharta.importer.metricgardener.model
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.Test

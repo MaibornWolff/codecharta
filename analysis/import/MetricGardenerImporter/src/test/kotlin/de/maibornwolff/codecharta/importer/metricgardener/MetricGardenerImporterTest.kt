@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.importer.metricgardenerimporter
+package de.maibornwolff.codecharta.importer.metricgardener
 
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter.Companion.main
+import de.maibornwolff.codecharta.importer.metricgardener.MetricGardenerImporter.Companion.main
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File

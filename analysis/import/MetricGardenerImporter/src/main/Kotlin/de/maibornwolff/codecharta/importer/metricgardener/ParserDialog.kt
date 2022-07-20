@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.metricgardenerimporter
+package de.maibornwolff.codecharta.importer.metricgardener
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
