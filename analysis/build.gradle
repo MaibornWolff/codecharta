@@ -15,7 +15,7 @@ buildscript {
         kotlin_logging_version = '2.1.23'
         kotlin_version = '1.7.10'
         kotlinx_coroutines_version = '1.6.3'
-        picocli_version = '4.6.3'
+        picocli_version = '4.6.2'
         slf4j_version = '1.7.36'
         sonar_java_version = '6.8.0.23379'
         sonarqube_version = '3.0'
@@ -98,11 +98,11 @@ subprojects {
     }
 
     compileJava {
-        options.compilerArgs += ['--release', '11']
+        options.compilerArgs += ['--release', '8']
     }
 
     compileTestJava {
-        options.compilerArgs += ['--release', '11']
+        options.compilerArgs += ['--release', '8']
     }
 
     compileKotlin {
