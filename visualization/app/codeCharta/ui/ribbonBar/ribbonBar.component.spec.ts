@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { RibbonBarController } from "./ribbonBar.component"
 import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { addFile, resetFiles, setDelta } from "../../state/store/files/files.actions"
+import { addFile, setDelta, setFiles } from "../../state/store/files/files.actions"
 import { METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
@@ -98,7 +98,7 @@ describe("RibbonBarController", () => {
 
 	describe("onFilesSelectionChanged", () => {
 		it("should detect delta mode selection", () => {
-			storeService.dispatch(resetFiles())
+			storeService.dispatch(setFiles([]))
 			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
 			storeService.dispatch(addFile(TEST_DELTA_MAP_B))
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))

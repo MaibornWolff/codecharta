@@ -1,6 +1,6 @@
 import { searchPattern } from "./searchPattern.reducer"
 import { SearchPatternAction, setSearchPattern } from "./searchPattern.actions"
-import { resetSelection } from "../../files/files.actions"
+import { setStandard } from "../../files/files.actions"
 
 describe("searchPattern", () => {
 	it("should initialize the default state", () => {
@@ -19,7 +19,7 @@ describe("searchPattern", () => {
 	})
 
 	it("should reset searchPattern on FilesSelectionActions", () => {
-		const result = searchPattern("mySearch/*.ts", resetSelection())
+		const result = searchPattern("mySearch/*.ts", setStandard([]))
 		expect(result).toBe("")
 	})
 })
