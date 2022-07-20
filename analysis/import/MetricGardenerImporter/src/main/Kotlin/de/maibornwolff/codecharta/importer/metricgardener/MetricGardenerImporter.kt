@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.importer.metricgardenerimporter
+package de.maibornwolff.codecharta.importer.metricgardener
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
+import de.maibornwolff.codecharta.importer.metricgardener.json.MetricGardenerProjectBuilder
+import de.maibornwolff.codecharta.importer.metricgardener.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -20,7 +20,7 @@ import java.util.concurrent.Callable
     name = "metricgardenerimport",
     description = ["generates a cc.json file from a project parsed with metric-gardener"],
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
-                    )
+)
 
 class MetricGardenerImporter : Callable<Void>, InteractiveParser {
 
@@ -30,18 +30,19 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
     @CommandLine.Option(
         names = ["-h", "--help"], usageHelp = true,
         description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"]
-                       )
+    )
     private var help = false
 
     @CommandLine.Option(
-            names = ["--with-MG-run"],
-            description = ["Do you have a Metric Gardener Json? "])
+        names = ["--with-MG-run"],
+        description = ["Do you have a Metric Gardener Json? "]
+    )
     private var metricGardenJsonAvailable: Boolean = true
 
     @CommandLine.Parameters(
         arity = "1", paramLabel = "FOLDER or FILE",
         description = ["path for project folder or code file"]
-                           )
+    )
     private var inputFile: File = File("")
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -58,10 +59,10 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
         }
         /**
         if (!metricGardenJsonAvailable) {
-            // TODO:call shell script
-            Runtime.getRuntime().exec("runMetricGardener.sh")
+        // TODO:call shell script
+        Runtime.getRuntime().exec("runMetricGardener.sh")
         }
-        **/
+         **/
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)

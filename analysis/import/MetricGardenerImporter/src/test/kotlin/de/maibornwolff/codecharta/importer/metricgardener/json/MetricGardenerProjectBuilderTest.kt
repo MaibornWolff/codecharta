@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.metricgardenerimporter.json
+package de.maibornwolff.codecharta.importer.metricgardener.json
 
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNode
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
+import de.maibornwolff.codecharta.importer.metricgardener.model.MetricGardenerNode
+import de.maibornwolff.codecharta.importer.metricgardener.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import org.junit.Test
