@@ -98,11 +98,11 @@ subprojects {
     }
 
     compileJava {
-        options.compilerArgs += ['--release', '11']
+        options.compilerArgs += ['--release', '8']
     }
 
     compileTestJava {
-        options.compilerArgs += ['--release', '11']
+        options.compilerArgs += ['--release', '8']
     }
 
     compileKotlin {
