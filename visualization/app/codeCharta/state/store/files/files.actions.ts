@@ -4,15 +4,16 @@ import { FileState } from "../../../model/files/files"
 export enum FilesSelectionActions {
 	SET_STANDARD = "SET_STANDARD",
 	SET_STANDARD_BY_NAMES = "SET_STANDARD_BY_NAMES",
+	INVERT_STANDARD = "INVERT_STANDARD",
+	SET_ALL = "SET_ALL",
 	SET_DELTA = "SET_DELTA",
-	SET_DELTA_BY_NAMES = "SET_DELTA_BY_NAMES",
-	RESET_SELECTION = "RESET_SELECTION"
+	SET_DELTA_REFERENCE = "SET_DELTA_REFERENCE",
+	SET_DELTA_COMPARISON = "SET_DELTA_COMPARISON"
 }
 
 export enum NewFilesImportedActions {
 	SET_FILES = "SET_FILES",
 	ADD_FILE = "ADD_FILE",
-	RESET_FILES = "RESET_FILES",
 	REMOVE_FILE = "REMOVE_FILE"
 }
 
@@ -31,10 +32,6 @@ export interface AddFileAction extends CCAction {
 	payload: CCFile
 }
 
-export interface ResetFilesAction extends CCAction {
-	type: NewFilesImportedActions.RESET_FILES
-}
-
 export interface SetStandardAction extends CCAction {
 	type: FilesSelectionActions.SET_STANDARD
 	payload: CCFile[]
@@ -45,47 +42,45 @@ export interface SetStandardByNamesAction extends CCAction {
 	payload: string[]
 }
 
+export interface InvertStandardAction extends CCAction {
+	type: FilesSelectionActions.INVERT_STANDARD
+}
+
+export interface SetAllAction extends CCAction {
+	type: FilesSelectionActions.SET_ALL
+}
+
 export interface SetDeltaAction extends CCAction {
 	type: FilesSelectionActions.SET_DELTA
 	payload: { referenceFile: CCFile; comparisonFile: CCFile }
 }
 
-export interface SetDeltaByNamesAction extends CCAction {
-	type: FilesSelectionActions.SET_DELTA_BY_NAMES
-	payload: { referenceFileName: string; comparisonFileName: string }
+export interface SetDeltaReferenceAction extends CCAction {
+	type: FilesSelectionActions.SET_DELTA_REFERENCE
+	payload: CCFile
 }
 
-export interface ResetSelectionAction extends CCAction {
-	type: FilesSelectionActions.RESET_SELECTION
+export interface SetDeltaComparisonAction extends CCAction {
+	type: FilesSelectionActions.SET_DELTA_COMPARISON
+	payload: CCFile
 }
 
 export type FilesAction =
 	| SetFilesAction
-	| ResetFilesAction
-	| ResetSelectionAction
 	| AddFileAction
 	| RemoveFileAction
 	| SetStandardAction
 	| SetStandardByNamesAction
+	| InvertStandardAction
+	| SetAllAction
 	| SetDeltaAction
-	| SetDeltaByNamesAction
+	| SetDeltaReferenceAction
+	| SetDeltaComparisonAction
 
 export function setFiles(files: FileState[] = defaultFiles): SetFilesAction {
 	return {
 		type: NewFilesImportedActions.SET_FILES,
 		payload: files
-	}
-}
-
-export function resetFiles(): ResetFilesAction {
-	return {
-		type: NewFilesImportedActions.RESET_FILES
-	}
-}
-
-export function resetSelection(): ResetSelectionAction {
-	return {
-		type: FilesSelectionActions.RESET_SELECTION
 	}
 }
 
@@ -117,17 +112,36 @@ export function setStandardByNames(fileNames: string[]): SetStandardByNamesActio
 	}
 }
 
-export function setDelta(referenceFile: CCFile, comparisonFile: CCFile): SetDeltaAction {
+export function invertStandard(): InvertStandardAction {
+	return {
+		type: FilesSelectionActions.INVERT_STANDARD
+	}
+}
+
+export function setAll(): SetAllAction {
+	return {
+		type: FilesSelectionActions.SET_ALL
+	}
+}
+
+export function setDelta(referenceFile: CCFile, comparisonFile?: CCFile): SetDeltaAction {
 	return {
 		type: FilesSelectionActions.SET_DELTA,
 		payload: { referenceFile, comparisonFile }
 	}
 }
 
-export function setDeltaByNames(referenceFileName: string, comparisonFileName: string): SetDeltaByNamesAction {
+export function setDeltaReference(file: CCFile): SetDeltaReferenceAction {
 	return {
-		type: FilesSelectionActions.SET_DELTA_BY_NAMES,
-		payload: { referenceFileName, comparisonFileName }
+		type: FilesSelectionActions.SET_DELTA_REFERENCE,
+		payload: file
+	}
+}
+
+export function setDeltaComparison(file: CCFile): SetDeltaComparisonAction {
+	return {
+		type: FilesSelectionActions.SET_DELTA_COMPARISON,
+		payload: file
 	}
 }
 
