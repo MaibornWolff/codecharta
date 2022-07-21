@@ -128,7 +128,6 @@ export interface DynamicSettings extends PrimaryMetrics {
 	focusedNodePath: string[]
 	searchPattern: string
 	margin: number
-	recentFiles: string[]
 }
 
 export interface AppSettings {

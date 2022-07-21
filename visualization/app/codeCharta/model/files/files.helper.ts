@@ -1,3 +1,4 @@
+import { CCFile } from "../../codeCharta.model"
 import { FileSelectionState, FileState } from "./files"
 
 export function getCCFiles(fileStates: FileState[]) {
@@ -26,9 +27,13 @@ export function getVisibleFileStates(fileStates: FileState[]) {
 }
 
 export function isDeltaState(fileStates: FileState[]) {
-	return fileStates.some(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
+	return fileStates.some(x => x.selectedAs === FileSelectionState.Reference)
 }
 
 export function isPartialState(fileStates: FileState[]) {
 	return fileStates.some(x => x.selectedAs === FileSelectionState.Partial)
+}
+
+export function isEqual(file1: CCFile, file2: CCFile) {
+	return file1.fileMeta.fileChecksum === file2.fileMeta.fileChecksum
 }
