@@ -387,7 +387,7 @@ describe("nodeDecorator", () => {
 			expect(actualDeltaMapWithAggregatedAttributes.data.deltas.rloc).toBe(295)
 			expect(actualDeltaMapWithAggregatedAttributes.data.fileCount.added).toBe(1)
 			expect(actualDeltaMapWithAggregatedAttributes.data.fileCount.removed).toBe(3)
-			expect(actualDeltaMapWithAggregatedAttributes.data.fileCount.metricsChanged).toBe(2)
+			expect(actualDeltaMapWithAggregatedAttributes.data.fileCount.changed).toBe(2)
 			expect(actualDeltaMapWithAggregatedAttributes.children[0].data.deltas.rloc).toBe(300)
 		})
 

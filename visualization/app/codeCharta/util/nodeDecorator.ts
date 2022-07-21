@@ -110,7 +110,7 @@ export const NodeDecorator = {
 
 			if (isDeltaState && parent.data.fileCount) {
 				parent.data.fileCount.added += data.fileCount.added
-				parent.data.fileCount.metricsChanged += data.fileCount.metricsChanged
+				parent.data.fileCount.changed += data.fileCount.changed
 				parent.data.fileCount.removed += data.fileCount.removed
 			}
 

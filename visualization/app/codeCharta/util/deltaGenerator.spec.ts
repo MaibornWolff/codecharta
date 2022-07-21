@@ -168,8 +168,8 @@ describe("deltaGenerator", () => {
 		expect(result).toEqual({ differenceExists: false })
 	})
 
-	it.only("should detect files with metric changes and add result to delta attributes", () => {
-		const actualAmountOfChangedFiles: Pick<FileCount, "metricsChanged"> = { metricsChanged: 0 }
+	it("should detect files with metric changes and add result to delta attributes", () => {
+		const actualAmountOfChangedFiles: Pick<FileCount, "changed"> = { changed: 0 }
 		const referenceMap = { ...TEST_DELTA_MAP_E }
 		const comparisonMap = { ...TEST_DELTA_MAP_F }
 		NodeDecorator.decorateMapWithPathAttribute(referenceMap)
@@ -178,10 +178,10 @@ describe("deltaGenerator", () => {
 		const actualDeltaMap = DeltaGenerator.getDeltaFile(referenceMap, comparisonMap)
 
 		for (const { data } of hierarchy(actualDeltaMap.map)) {
-			actualAmountOfChangedFiles.metricsChanged += data.fileCount.metricsChanged
+			actualAmountOfChangedFiles.changed += data.fileCount.changed
 		}
 
-		expect(actualAmountOfChangedFiles).toEqual({ metricsChanged: 1 })
+		expect(actualAmountOfChangedFiles).toEqual({ changed: 1 })
 	})
 
 	it("should sum exported file size of the comparison and reference File", () => {

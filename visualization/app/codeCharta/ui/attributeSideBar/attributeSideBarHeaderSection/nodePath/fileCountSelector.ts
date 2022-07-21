@@ -11,7 +11,7 @@ export const getFileCount = (node?: Pick<CodeMapNode, "attributes" | "fileCount"
 		all: node.attributes?.unary ?? 0,
 		added: node.fileCount?.added ?? 0,
 		removed: node.fileCount?.removed ?? 0,
-		metricsChanged: node.fileCount?.metricsChanged ?? 0
+		changed: node.fileCount?.changed ?? 0
 	}
 }
 

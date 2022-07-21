@@ -55,7 +55,7 @@ describe("nodePathComponent", () => {
 			fileCount: {
 				added: 1,
 				removed: 2,
-				metricsChanged: 3
+				changed: 3
 			}
 		}
 		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
@@ -73,7 +73,7 @@ describe("nodePathComponent", () => {
 			fileCount: {
 				added: 0,
 				removed: 2,
-				metricsChanged: 0
+				changed: 0
 			}
 		}
 		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
