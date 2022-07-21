@@ -1265,6 +1265,16 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			isFlattened: false
 		},
 		{
+			name: "leaf.java with changes",
+			type: NodeType.FILE,
+			path: "/root/leaf.java with changes",
+			attributes: { rloc: 0, functions: 0, mcc: 0 },
+			deltas: { rloc: 0, functions: 0, mcc: 0 },
+			fileCount: { added: 0, removed: 0, metricsChanged: 1 },
+			isExcluded: false,
+			isFlattened: false
+		},
+		{
 			name: "Parent Leaf",
 			type: NodeType.FOLDER,
 			attributes: {},
@@ -1280,7 +1290,17 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/small leaf.json",
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
 					deltas: { rloc: -55, functions: 38, mcc: -40 },
-					fileCount: { added: 0, removed: 1, metricsChanged: 1 },
+					fileCount: { added: 0, removed: 1, metricsChanged: 0 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "leaf.jpg with changes",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/leaf.jpg with changes",
+					attributes: { rloc: 0, functions: 0, mcc: 0 },
+					deltas: { rloc: 0, functions: 0, mcc: 0 },
+					fileCount: { added: 0, removed: 0, metricsChanged: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
@@ -1290,7 +1310,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/other small leaf.json",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
 					deltas: { rloc: 200, functions: -27, mcc: 65 },
-					fileCount: { added: 1, removed: 0, metricsChanged: 2 },
+					fileCount: { added: 1, removed: 0, metricsChanged: 0 },
 					isExcluded: false,
 					isFlattened: false
 				}
