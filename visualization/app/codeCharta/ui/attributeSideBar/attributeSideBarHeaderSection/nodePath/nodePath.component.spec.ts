@@ -54,7 +54,8 @@ describe("nodePathComponent", () => {
 			attributes: { unary: 2 },
 			fileCount: {
 				added: 1,
-				removed: 2
+				removed: 2,
+				metricsChanged: 3
 			}
 		}
 		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
@@ -62,7 +63,7 @@ describe("nodePathComponent", () => {
 
 		const { container } = await render(NodePathComponent, { componentProperties: { node } })
 
-		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2 | Δ0)")
+		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2 | Δ3)")
 	})
 	it("should display amount of files with correct english grammar, when an empty folder is selected and delta mode is enabled", async () => {
 		const node = {
@@ -71,7 +72,8 @@ describe("nodePathComponent", () => {
 			attributes: { unary: 0 },
 			fileCount: {
 				added: 0,
-				removed: 2
+				removed: 2,
+				metricsChanged: 0
 			}
 		}
 		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
