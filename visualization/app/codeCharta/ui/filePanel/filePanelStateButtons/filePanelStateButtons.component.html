@@ -2,16 +2,18 @@
 	<button
 		mat-button
 		class="state-selector-button mode-selector left"
-		(click)="handleStandardButtonClicked()"
-		[class.current]="!isDeltaState"
+		(click)="fileSelectionModeService.toggle()"
+		[class.current]="!(isDeltaState$ | async)"
+		[disabled]="!(isDeltaState$ | async)"
 	>
 		<span class="text">Standard</span>
 	</button>
 	<button
 		mat-button
 		class="state-selector-button mode-selector right"
-		(click)="handleDeltaButtonClicked()"
-		[class.current]="isDeltaState"
+		(click)="fileSelectionModeService.toggle()"
+		[class.current]="isDeltaState$ | async"
+		[disabled]="isDeltaState$ | async"
 	>
 		<span class="text">Delta</span>
 	</button>
