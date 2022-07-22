@@ -68,7 +68,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
-            "changed": 0,
+            "changed": 1,
             "removed": 0,
           },
           "isExcluded": false,
@@ -89,7 +89,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
-            "changed": 0,
+            "changed": 1,
             "removed": 0,
           },
           "isExcluded": false,
@@ -217,7 +217,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
-            "changed": 0,
+            "changed": 1,
             "removed": 0,
           },
           "isExcluded": false,
@@ -238,7 +238,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
-            "changed": 0,
+            "changed": 1,
             "removed": 0,
           },
           "isExcluded": false,

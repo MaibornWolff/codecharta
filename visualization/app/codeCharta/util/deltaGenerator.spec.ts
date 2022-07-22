@@ -1,6 +1,6 @@
 import { DeltaGenerator } from "./deltaGenerator"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D, TEST_DELTA_MAP_E, TEST_DELTA_MAP_F } from "./dataMocks"
-import { CCFile, CodeMapNode, FileCount, NodeType } from "../codeCharta.model"
+import { CCFile, FileCount, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { clone } from "./clone"
 import { hierarchy } from "d3-hierarchy"
@@ -116,58 +116,6 @@ describe("deltaGenerator", () => {
 		expect(actualAmountOfChangedFiles).toEqual({ added: 3, removed: 5 })
 	})
 
-	it("should detect value differences in common attributes of two files", () => {
-		const fileA: CodeMapNode = { type: NodeType.FILE, attributes: { mcc: 5, functions: 0 }, name: "A" }
-		const fileB: CodeMapNode = { type: NodeType.FILE, attributes: { mcc: 0 }, name: "A" }
-
-		const result = DeltaGenerator["compareCommonAttributes"](fileA, fileB)
-
-		expect(result).toEqual({ differenceExists: true })
-	})
-
-	it("should not detect differences when comparing a folder and a file", () => {
-		const file: CodeMapNode = { type: NodeType.FOLDER, attributes: { mcc: 5 }, name: "one" }
-		const folder: CodeMapNode = { type: NodeType.FILE, attributes: { functions: 0 }, name: "two" }
-
-		const result = DeltaGenerator["compareCommonAttributes"](file, folder)
-
-		expect(result).toEqual({ differenceExists: false })
-	})
-
-	it("should not detect differences when comparing two folders", () => {
-		const folderA: CodeMapNode = { type: NodeType.FOLDER, attributes: { mcc: 12 }, name: "folder" }
-		const folderB: CodeMapNode = { type: NodeType.FOLDER, attributes: { mcc: 7 }, name: "other folder" }
-
-		const result = DeltaGenerator["compareCommonAttributes"](folderA, folderB)
-
-		expect(result).toEqual({ differenceExists: false })
-	})
-	it("should not detect differences when comparing a file withouit attributes to another file", () => {
-		const folderA: CodeMapNode = { type: NodeType.FILE, attributes: { mcc: 12 }, name: "folder" }
-		const folderB: CodeMapNode = { type: NodeType.FILE, name: "other folder" }
-
-		const result = DeltaGenerator["compareCommonAttributes"](folderA, folderB)
-
-		expect(result).toEqual({ differenceExists: false })
-	})
-
-	it("should not detect differences when comparing a file to a clone with less attributes", () => {
-		const file: CodeMapNode = { type: NodeType.FILE, attributes: { mcc: 5, functions: -3 }, name: "file" }
-		const cloneWithLessAttributes: CodeMapNode = { type: NodeType.FILE, attributes: { mcc: 5 }, name: "smaller clone" }
-
-		const result = DeltaGenerator["compareCommonAttributes"](file, cloneWithLessAttributes)
-
-		expect(result).toEqual({ differenceExists: false })
-	})
-	it("should not detect differences when comparing two files which have no attributes in common", () => {
-		const file: CodeMapNode = { type: NodeType.FILE, attributes: { mcc: 5, functions: 10 }, name: "file" }
-		const cloneWithLessAttributes: CodeMapNode = { type: NodeType.FILE, attributes: { comments: 2, staticMethods: 7 }, name: "file" }
-
-		const result = DeltaGenerator["compareCommonAttributes"](file, cloneWithLessAttributes)
-
-		expect(result).toEqual({ differenceExists: false })
-	})
-
 	it("should detect files with metric changes and add result to delta attributes", () => {
 		const actualAmountOfChangedFiles: Pick<FileCount, "changed"> = { changed: 0 }
 		const referenceMap = { ...TEST_DELTA_MAP_E }
@@ -181,7 +129,7 @@ describe("deltaGenerator", () => {
 			actualAmountOfChangedFiles.changed += data.fileCount.changed
 		}
 
-		expect(actualAmountOfChangedFiles).toEqual({ changed: 1 })
+		expect(actualAmountOfChangedFiles).toEqual({ changed: 5 })
 	})
 
 	it("should sum exported file size of the comparison and reference File", () => {
@@ -201,23 +149,23 @@ describe("deltaGenerator", () => {
 		// eslint-disable-next-line unicorn/prevent-abbreviations
 		const e = { d: 110, e: 11 }
 
-		const ab = DeltaGenerator["getDeltaAttributeList"](a, b)
+		const ab = DeltaGenerator["compareAttributeValues"](a, b).deltaList
 		expect(ab.a).toBe(b.a - a.a)
 		expect(ab.b).toBe(b.b - a.b)
 		expect(ab.c).toBe(b.c - a.c)
 
-		const ac = DeltaGenerator["getDeltaAttributeList"](a, c)
+		const ac = DeltaGenerator["compareAttributeValues"](a, c).deltaList
 		expect(ac.a).toBe(c.a - a.a)
 		expect(ac.b).toBe(c.b - a.b)
 		expect(ac.c).toBe(c.c - a.c)
 		expect(ac.d).toBe(c.d)
 
-		const ad = DeltaGenerator["getDeltaAttributeList"](a, d)
+		const ad = DeltaGenerator["compareAttributeValues"](a, d).deltaList
 		expect(ad.a).toBe(d.a - a.a)
 		expect(ad.b).toBe(d.b - a.b)
 		expect(ad.c).toBe(-a.c)
 
-		const ae = DeltaGenerator["getDeltaAttributeList"](a, e)
+		const ae = DeltaGenerator["compareAttributeValues"](a, e).deltaList
 		expect(ae.a).toBe(-a.a)
 		expect(ae.b).toBe(-a.b)
 		expect(ae.c).toBe(-a.c)
