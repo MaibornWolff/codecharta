@@ -20,8 +20,7 @@
 	},
 	"license": "BSD-3-Clause",
 	"dependencies": {
-    "makeshift": "^1.1.0",
-    "shelljs": "^0.8.1",
-    "metric-gardener": "^0.1.1"
-  }
+		"makeshift": "^1.1.0",
+		"shelljs": "^0.8.1"
+	}
 }
