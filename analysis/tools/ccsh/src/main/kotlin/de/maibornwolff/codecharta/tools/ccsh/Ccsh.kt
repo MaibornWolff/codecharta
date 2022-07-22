@@ -9,7 +9,7 @@ import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
-import de.maibornwolff.codecharta.importer.metricgardener.MetricGardenerImporter
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
@@ -45,7 +45,7 @@ import java.util.concurrent.Callable
         JasomeImporter::class,
         TokeiImporter::class,
         RawTextParser::class,
-        MetricGardenerImporter::class,
+        MetricGardenerImporter::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
