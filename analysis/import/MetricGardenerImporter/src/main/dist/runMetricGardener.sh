@@ -18,7 +18,7 @@ check_runtime_ennvironment() {
 check_supplied_path() {
 
   if [ ! -d "$1" ]; then
-    echo "The supplied path is invalid."
+    echo "The supplied path $1 is invalid."
     exit 0
   fi
 
@@ -27,4 +27,4 @@ check_supplied_path() {
 check_runtime_ennvironment "$@"
 check_supplied_path "$@"
 npm install metric-gardener
-npm exec metric-gardener "$1" -o "$1"/output.json
+npm exec metric-gardener -- parse "$1" -o "$1"\\output.json
