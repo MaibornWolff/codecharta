@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.importer.metricgardener
+package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import de.maibornwolff.codecharta.importer.metricgardener.json.MetricGardenerProjectBuilder
-import de.maibornwolff.codecharta.importer.metricgardener.model.MetricGardenerNodes
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
