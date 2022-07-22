@@ -26,6 +26,7 @@ class ParserDialogTest {
         val fileName = "metricGardenIn.json"
         val outputFileName = "out.cc.json"
         val isCompressed = false
+        val isMetricGardenJsonAvailable = false
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -44,5 +45,7 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<File>().name)
             .isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+        Assertions.assertThat(parseResult.matchedOption("with-MG-run").getValue<Boolean>())
+            .isEqualTo(isMetricGardenJsonAvailable)
     }
 }

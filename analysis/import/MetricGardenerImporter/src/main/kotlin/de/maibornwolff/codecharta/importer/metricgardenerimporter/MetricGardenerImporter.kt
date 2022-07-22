@@ -39,19 +39,19 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
         names = ["--with-MG-run"],
         description = ["Do you have a Metric Gardener Json? "]
                        )
-    private var metricGardenJsonAvailable: Boolean = true
+    private var isMetricGardenJsonAvailable = true
 
     @CommandLine.Parameters(
         arity = "1", paramLabel = "FOLDER or FILE",
         description = ["path for project folder or code file"]
                            )
-    private var inputFile: File = File("")
+    private var inputFile = File("")
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File = File("")
+    private var outputFile = File("")
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
-    private var compress: Boolean = true
+    private var compress = true
 
     @Throws(IOException::class)
     override fun call(): Void? {
@@ -60,7 +60,7 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
             return null
         }
 
-        if (!metricGardenJsonAvailable) {
+        if (!isMetricGardenJsonAvailable) {
             val shellLocation = ShellLocation.HOME
             println(shellLocation)
             // val output = shellRun("npm exec metric-gardener --", listOf(inputFile.absolutePath, "-o ${inputFile.absolutePath}/output.json"), shellLocation)
