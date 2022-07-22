@@ -44,8 +44,7 @@ import java.util.concurrent.Callable
         CodeMaatImporter::class,
         JasomeImporter::class,
         TokeiImporter::class,
-        RawTextParser::class,
-        MetricGardenerImporter::class
+        RawTextParser::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
