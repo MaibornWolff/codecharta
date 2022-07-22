@@ -17,6 +17,7 @@ Object {
       },
       "fileCount": Object {
         "added": 0,
+        "changed": 1,
         "removed": 0,
       },
       "isExcluded": false,
@@ -39,6 +40,7 @@ Object {
       },
       "fileCount": Object {
         "added": 1,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
@@ -66,6 +68,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
@@ -86,6 +89,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
@@ -107,6 +111,7 @@ Object {
           },
           "fileCount": Object {
             "added": 1,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
@@ -120,6 +125,7 @@ Object {
       "deltas": Object {},
       "fileCount": Object {
         "added": 0,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
@@ -132,6 +138,7 @@ Object {
   "deltas": Object {},
   "fileCount": Object {
     "added": 0,
+    "changed": 0,
     "removed": 0,
   },
   "isExcluded": false,
@@ -159,6 +166,7 @@ Object {
       },
       "fileCount": Object {
         "added": 0,
+        "changed": 1,
         "removed": 0,
       },
       "isExcluded": false,
@@ -181,6 +189,7 @@ Object {
       },
       "fileCount": Object {
         "added": 1,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
@@ -208,6 +217,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
@@ -228,6 +238,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
@@ -249,6 +260,7 @@ Object {
           },
           "fileCount": Object {
             "added": 1,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
@@ -262,6 +274,7 @@ Object {
       "deltas": Object {},
       "fileCount": Object {
         "added": 0,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
@@ -285,6 +298,7 @@ Object {
               },
               "fileCount": Object {
                 "added": 1,
+                "changed": 0,
                 "removed": 0,
               },
               "isExcluded": false,
@@ -302,6 +316,7 @@ Object {
               },
               "fileCount": Object {
                 "added": 0,
+                "changed": 0,
                 "removed": 1,
               },
               "isExcluded": false,
@@ -319,6 +334,7 @@ Object {
               },
               "fileCount": Object {
                 "added": 0,
+                "changed": 0,
                 "removed": 1,
               },
               "isExcluded": false,
@@ -331,6 +347,7 @@ Object {
           "deltas": Object {},
           "fileCount": Object {
             "added": 0,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
@@ -343,6 +360,7 @@ Object {
       "deltas": Object {},
       "fileCount": Object {
         "added": 0,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
@@ -355,6 +373,7 @@ Object {
   "deltas": Object {},
   "fileCount": Object {
     "added": 0,
+    "changed": 0,
     "removed": 0,
   },
   "isExcluded": false,
