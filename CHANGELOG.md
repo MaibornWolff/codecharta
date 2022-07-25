@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## Changed
+### Changed
 
 -   Restore previous selected files when switching back from delta to standard mode [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
 
-## Fixed 🐞
+### Fixed 🐞
 
 -   Let file selection always show what is actual rendered within the map [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Add more metrics that can be preselected when loading a cc.json file
 
 ## [1.100.0] - 2022-07-12
 
