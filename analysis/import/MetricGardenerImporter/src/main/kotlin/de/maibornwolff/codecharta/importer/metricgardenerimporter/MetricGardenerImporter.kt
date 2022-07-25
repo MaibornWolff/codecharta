@@ -1,8 +1,6 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.lordcodes.turtle.ShellLocation
-import com.lordcodes.turtle.shellRun
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -35,12 +33,6 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
                        )
     private var help = false
 
-    @CommandLine.Option(
-        names = ["--with-MG-run"],
-        description = ["Do you have a Metric Gardener Json? "]
-                       )
-    private var isMetricGardenJsonAvailable = true
-
     @CommandLine.Parameters(
         arity = "1", paramLabel = "FOLDER or FILE",
         description = ["path for project folder or code file"]
@@ -58,20 +50,6 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
         if (!inputFile.exists()) {
             printErrorLog()
             return null
-        }
-
-        if (!isMetricGardenJsonAvailable) {
-            val shellLocation = ShellLocation.HOME
-            println(shellLocation)
-            // val output = shellRun("npm exec metric-gardener --", listOf(inputFile.absolutePath, "-o ${inputFile.absolutePath}/output.json"), shellLocation)
-            val output = shellRun(
-                "sh", listOf(
-                    "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\main\\dist\\runMetricGardener.sh",
-                    inputFile.absolutePath
-                            )
-                                 )
-            println(output)
-            // Runtime.getRuntime().exec("npm exec metric-gardener -- $inputFile -o $inputFile/output.json", null, File("C:\\Users\\FriedrichR\\AppData\\Local\\Temp"))
         }
 
         val metricGardenerNodes: MetricGardenerNodes =

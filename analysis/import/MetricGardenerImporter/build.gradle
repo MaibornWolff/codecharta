@@ -17,7 +17,6 @@ dependencies {
     implementation group: 'com.fasterxml.jackson', name: 'jackson-base', version: jackson_version
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jackson_version
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: jackson_version
-    implementation group: 'com.lordcodes.turtle', name: 'turtle', version: '0.7.0'
 
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
     implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: jersey_version
