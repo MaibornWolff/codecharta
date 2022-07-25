@@ -28,7 +28,7 @@ class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes)
     }
 
     private fun extractFileNameFromPath(path: String?): String {
-        if (checkNotNull(path).isNotEmpty()) {
+        if (!path.isNullOrBlank()) {
             return path.split("\\").reversed().get(0)
         }
         return ""
