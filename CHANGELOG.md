@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Add a description for the statements metric [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
+-   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
 
 ### Changed
 
