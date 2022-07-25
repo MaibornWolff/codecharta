@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGa
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import mu.KotlinLogging
 
 class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) : ProjectBuilder() {
