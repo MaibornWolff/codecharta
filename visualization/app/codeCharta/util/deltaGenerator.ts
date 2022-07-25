@@ -108,7 +108,10 @@ export class DeltaGenerator {
 		const deltaList: KeyValuePair = {}
 		let differenceExists = false
 
-		const attributeKeys = [...Object.keys(reference), ...Object.keys(comparison)]
+		const attributeKeys = new Set(Object.keys(reference))
+		for (const key of Object.keys(comparison)) {
+			attributeKeys.add(key)
+		}
 
 		for (const key of attributeKeys) {
 			const referenceAttribute = reference[key]
