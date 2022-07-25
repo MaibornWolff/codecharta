@@ -13,7 +13,7 @@ internal class MetricGardenerProjectBuilderTest {
             "File",
             mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40)), MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt",
             "File", mapOf("mcc" to 34, "functions" to 8, "classes" to 1, "lines_of_code" to 188, "comment_lines" to 0, "real_lines_of_code" to 155)))))
-/**
+
     @Test
     fun whenExtractFileNameFromPathThenSuccess() {
         val privateExtractFileNameFromPathMethod = metricGardenerprojectBuilder.javaClass.getDeclaredMethod("extractFileNameFromPath", String::class.java)
@@ -21,14 +21,9 @@ internal class MetricGardenerProjectBuilderTest {
         val fileName = privateExtractFileNameFromPathMethod.invoke(metricGardenerprojectBuilder, "\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt")
         assertEquals("TestService.kt", fileName)
     }
-**/
+
     @Test
     fun whenGenerateFileNodeThenSuccess() {
-        /**
-        val privateGenerateFileNodeMethod=metricGardenerprojectBuilder.javaClass.getDeclaredMethod("generateCodeChartaFileNode", MutableNode::class.java)
-        privateGenerateFileNodeMethod.isAccessible=true
-        val fileNode=privateGenerateFileNodeMethod.invoke(metricGardenerprojectBuilder,metricGardenerprojectBuilder.metricGardenerNodes.metricGardenerNodes.elementAt(0))
-        **/
         val fileNode = metricGardenerprojectBuilder.generateCodeChartaFileNode(metricGardenerprojectBuilder.metricGardenerNodes.metricGardenerNodes.elementAt(0))
         val node = MutableNode("TestService.kt", NodeType.File, mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40), "", setOf())
         assertEquals(fileNode.name, node.name)
