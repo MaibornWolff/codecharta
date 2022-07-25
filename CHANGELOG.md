@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## Changed
+### Added 🚀
+
+-   Transform a metric gardener json file into a code charta json file, that can be correctly visualized [#2675](https://github.com/MaibornWolff/codecharta/pull/2875)
+
+### Changed
 
 -   Restore previous selected files when switching back from delta to standard mode [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
 
-## Fixed 🐞
+### Fixed 🐞
 
 -   Let file selection always show what is actual rendered within the map [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
 
