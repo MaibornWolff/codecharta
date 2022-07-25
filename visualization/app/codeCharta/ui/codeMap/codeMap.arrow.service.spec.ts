@@ -120,6 +120,18 @@ describe("CodeMapArrowService", () => {
 			expect(threeSceneService["highlighted"]).toMatchSnapshot()
 			expect(threeSceneService["selected"]).toMatchSnapshot()
 		})
+		it("should debounce the edge reset of buildings to improve perfomance", async () => {
+			codeMapArrowService["resetEdgesOfBuildings"] = () => {}
+			const resetEdgesOfBuildingMock = jest.fn().mockImplementation()
+			codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingMock
+			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
+
+			expect(resetEdgesOfBuildingMock).not.toHaveBeenCalled()
+
+			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 1)
+
+			expect(resetEdgesOfBuildingMock).toHaveBeenCalled()
+		})
 	})
 
 	describe("SelectionMethods", () => {

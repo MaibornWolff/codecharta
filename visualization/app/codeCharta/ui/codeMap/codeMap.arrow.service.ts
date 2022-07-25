@@ -24,14 +24,15 @@ export class CodeMapArrowService
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
+		this.debounceCalculation = debounce(hoveredBuildings => this.resetEdgesOfBuildings(hoveredBuildings), this.HIGHLIGHT_BUILDING_DELAY)
+	}
 
-		this.debounceCalculation = debounce(hoveredBuilding => {
-			if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
-				this.clearArrows()
-				this.showEdgesOfBuildings(hoveredBuilding)
-			}
-			this.scale()
-		}, this.HIGHLIGHT_BUILDING_DELAY)
+	private resetEdgesOfBuildings = hoveredBuilding => {
+		if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
+			this.clearArrows()
+			this.showEdgesOfBuildings(hoveredBuilding)
+		}
+		this.scale()
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
