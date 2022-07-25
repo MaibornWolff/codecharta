@@ -8,6 +8,8 @@ import java.io.File
 
 class MetricGardenerImporterTest {
 
+    private val metricGardenerImporter = MetricGardenerImporter()
+
     @Test
     fun `should create json uncompressed file`() {
         main(
@@ -45,7 +47,7 @@ class MetricGardenerImporterTest {
             )
         val file = File("src/test/resources/metricgardener-analysis.cc.json.gz")
         file.deleteOnExit()
-
+        metricGardenerImporter.call()
         assertFalse(file.exists())
     }
 }

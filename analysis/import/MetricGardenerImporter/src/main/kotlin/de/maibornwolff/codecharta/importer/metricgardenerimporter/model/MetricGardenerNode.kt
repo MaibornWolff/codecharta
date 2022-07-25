@@ -12,7 +12,7 @@ class MetricGardenerNode(
                         ) {
 
     fun getPathWithoutFileName(): Path {
-        if (checkNotNull(name).isNotEmpty()) {
+        if (!name.isNullOrBlank()) {
             return Path(name!!.split("\\").dropLast(1))
         }
         return Path(emptyList())
