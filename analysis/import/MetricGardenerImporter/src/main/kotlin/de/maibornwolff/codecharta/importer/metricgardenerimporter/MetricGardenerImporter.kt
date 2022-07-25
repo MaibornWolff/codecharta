@@ -51,16 +51,17 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
             printErrorLog()
             return null
         }
-
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
         val project = metricGardenerProjectBuilder.build()
-        val outputWriter = BufferedWriter(FileWriter(outputFile))
-
         val filePath = outputFile.absolutePath ?: "notSpecified"
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath)
-        else ProjectSerializer.serializeProject(project, outputWriter)
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
+        } else {
+            val outputWriter = BufferedWriter(FileWriter(outputFile))
+            ProjectSerializer.serializeProject(project, outputWriter)
+        }
 
         return null
     }

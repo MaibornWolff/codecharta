@@ -7,8 +7,7 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import mu.KotlinLogging
 
-class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) :
-    de.maibornwolff.codecharta.model.ProjectBuilder() {
+class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) : ProjectBuilder() {
 
     private val logger = KotlinLogging.logger {}
 
