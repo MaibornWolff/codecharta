@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Add more metrics that can be preselected when loading a cc.json file
+-   Add more metrics that can be preselected when opening a cc.json file [#2907](https://github.com/MaibornWolff/codecharta/pull/2907)
 
 ## [1.100.0] - 2022-07-12
 
