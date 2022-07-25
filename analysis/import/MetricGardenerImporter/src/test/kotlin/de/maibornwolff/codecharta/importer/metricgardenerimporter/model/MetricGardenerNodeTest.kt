@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter.model
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import de.maibornwolff.codecharta.model.Path
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
@@ -24,8 +25,20 @@ internal class MetricGardenerNodeTest {
             "types": []
         }"""
         val metricGardenerNode: MetricGardenerNode = mapper.readValue(json, MetricGardenerNode::class.java)
-        val metricGardenerNode1 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File",
-                mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40))
+        val metricGardenerNode1 =
+                MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File",
+                        mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79,
+                                "comment_lines" to 32, "real_lines_of_code" to 40))
         assertEquals(metricGardenerNode, metricGardenerNode1)
+    }
+
+    @Test
+    fun whenGetPathWithoutFileName_thenSuccess() {
+        val metricGardenerNode1 =
+                MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File",
+                        mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79,
+                                "comment_lines" to 32, "real_lines_of_code" to 40))
+        val pathWithoutFileName = metricGardenerNode1.getPathWithoutFileName()
+        assertEquals(Path(listOf("", "test-project", "path1", "test-project.path1.Logic", "Service")), pathWithoutFileName)
     }
 }
