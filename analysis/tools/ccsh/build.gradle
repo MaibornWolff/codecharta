@@ -36,6 +36,7 @@ dependencies {
     def csvExporter = project(':export:CSVExporter')
     def rawTextParser = project(':parser:RawTextParser')
     def interactiveParser = project(':tools:InteractiveParser')
+    def metricGardenerImporter = project(':import:MetricGardenerImporter')
 
     // first implementation is for dependency in main, testImplementation is so our test suite can find all other tests
     implementation codeMaatImporter; testImplementation codeMaatImporter.sourceSets.test.output
@@ -55,6 +56,7 @@ dependencies {
     implementation structureModifier; testImplementation structureModifier.sourceSets.test.output
     implementation rawTextParser; testImplementation rawTextParser.sourceSets.test.output
     implementation interactiveParser; testImplementation interactiveParser.sourceSets.test.output
+    implementation metricGardenerImporter; testImplementation metricGardenerImporter.sourceSets.test.output
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
