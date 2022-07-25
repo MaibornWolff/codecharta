@@ -23,7 +23,6 @@ angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
 		"app.codeCharta.ui.downloadButton",
-		"app.codeCharta.ui.screenshotButton",
 		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.codeMap",

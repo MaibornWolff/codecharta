@@ -3,6 +3,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { ScreenshotToClipboardEnabledActions } from "./screenshotToClipboardEnabled.actions"
 
+// todo delete
 export interface ScreenshotToClipboardEnabledSubscriber {
 	onScreenshotToClipboardEnabledChanged(screenshotToClipboardEnabled: boolean)
 }
