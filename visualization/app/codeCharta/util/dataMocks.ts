@@ -37,12 +37,10 @@ import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
+const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType.FOLDER, isExcluded: false, isFlattened: false }
+
 export const VALID_NODE: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+	...DEFAULT_ROOT,
 	children: [
 		{
 			name: "big leaf",
@@ -79,11 +77,7 @@ export const VALID_NODE: CodeMapNode = {
 }
 
 export const VALID_NODE_JAVA: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+	...DEFAULT_ROOT,
 	children: [
 		{
 			name: "main",
@@ -135,11 +129,9 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 }
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "big leaf",
@@ -185,11 +177,9 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 }
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "Folder3",
@@ -235,11 +225,9 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 }
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "Folder3",
@@ -285,11 +273,9 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 }
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "Folder1",
@@ -335,11 +321,9 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 }
 
 export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "Folder1",
@@ -399,11 +383,9 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 }
 
 export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "big leaf",
@@ -543,11 +525,11 @@ export const VALID_NODES_WITH_ID: CodeMapNode = {
 
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 2 },
 	type: NodeType.FOLDER,
-	path: "/root",
 	isExcluded: false,
 	isFlattened: false,
+	path: "/root",
+	attributes: { [NodeMetricDataService.UNARY_METRIC]: 2 },
 	children: [
 		{
 			name: "first leaf",
@@ -570,11 +552,11 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 
 export const VALID_NODE_DECORATED: CodeMapNode = {
 	name: "root",
-	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 5 },
 	type: NodeType.FOLDER,
-	path: "/root",
 	isExcluded: false,
 	isFlattened: false,
+	path: "/root",
+	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 5 },
 	children: [
 		{
 			name: "big leaf",
@@ -1734,8 +1716,8 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	nodes: [
 		{
 			name: "root",
-			attributes: {},
 			type: NodeType.FOLDER,
+			attributes: {},
 			children: [
 				{
 					name: "big leaf",
