@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Restore previous selected files when switching back from delta to standard mode [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
+-   Add more metrics that can be preselected when opening a cc.json file [#2907](https://github.com/MaibornWolff/codecharta/pull/2907) [#2908](https://github.com/MaibornWolff/codecharta/pull/2908)
 
 ### Fixed 🐞
 
