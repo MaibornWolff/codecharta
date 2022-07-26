@@ -114,15 +114,14 @@ export class DeltaGenerator {
 		}
 
 		for (const key of attributeKeys) {
-			const referenceAttribute = reference[key]
-			const compAttribute = comparison[key]
+			const referenceAttribute = reference[key] ?? 0
+			const compAttribute = comparison[key] ?? 0
 
-			// NOTE: One of these attributes will often be undefined
 			if (referenceAttribute !== compAttribute) {
 				differenceExists = true
 			}
 
-			const attributeDelta = (compAttribute || 0) - (referenceAttribute || 0)
+			const attributeDelta = compAttribute - referenceAttribute
 			deltaList[key] = attributeDelta
 		}
 

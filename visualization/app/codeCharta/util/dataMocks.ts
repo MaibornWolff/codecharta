@@ -1641,12 +1641,17 @@ export const TEST_DELTA_MAP_E: CCFile = {
 			{
 				name: "File with mcc in E, but no attributes in F",
 				type: NodeType.FILE,
-				attributes: { mcc: 0 }
+				attributes: { mcc: 2 }
 			},
 			{
 				name: "File without attributes in E, but with functions in F",
 				attributes: {},
 				type: NodeType.FILE
+			},
+			{
+				name: "File with mcc=0 in E, but no attributes in F, which does not count as difference",
+				type: NodeType.FILE,
+				attributes: { mcc: 0 }
 			},
 			{
 				name: "File with mcc and rloc changes",
@@ -1698,7 +1703,12 @@ export const TEST_DELTA_MAP_F: CCFile = {
 			{
 				name: "File without attributes in E, but with functions in F",
 				type: NodeType.FILE,
-				attributes: { functions: 0 }
+				attributes: { functions: 1 }
+			},
+			{
+				name: "File with mcc=0 in E, but no attributes in F, which does not count as difference",
+				type: NodeType.FILE,
+				attributes: {}
 			},
 			{
 				name: "File with mcc and rloc changes",
