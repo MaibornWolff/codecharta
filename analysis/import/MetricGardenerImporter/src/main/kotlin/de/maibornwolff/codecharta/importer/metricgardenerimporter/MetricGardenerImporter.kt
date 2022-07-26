@@ -63,7 +63,7 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
         if (!isMetricGardenJsonAvailable) {
             val shellLocation = ShellLocation.HOME
             println(shellLocation)
-            // val output = shellRun("npm exec metric-gardener --", listOf(inputFile.absolutePath, "-o ${inputFile.absolutePath}/output.json"), shellLocation)
+            // val output = shellRun("npm exec metric-gardener --", listOf(inputFile.absolutePath, "--output-file ${inputFile.absolutePath}/output.json"), shellLocation)
             val output = shellRun(
                 "sh", listOf(
                     "C:\\Users\\FriedrichR\\IdeaProjects\\codecharta\\analysis\\import\\MetricGardenerImporter\\src\\main\\dist\\runMetricGardener.sh",
