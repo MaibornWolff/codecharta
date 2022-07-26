@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Add more metrics that can be preselected when opening a cc.json file [#2907](https://github.com/MaibornWolff/codecharta/pull/2907)
+-   Improve performance by slightly delaying node-name popups and removing unused functionality [#2897](https://github.com/MaibornWolff/codecharta/pull/2897)
 
 ## [1.100.0] - 2022-07-12
 
