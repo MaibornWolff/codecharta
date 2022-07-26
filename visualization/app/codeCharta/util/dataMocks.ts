@@ -50,7 +50,7 @@ export const VALID_NODE: CodeMapNode = {
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			isExcluded: false,
 			isFlattened: false,
-			link: "http://www.google.de"
+			link: "https://www.google.de"
 		},
 		{
 			name: "Parent Leaf",
@@ -145,7 +145,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -227,7 +227,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -277,7 +277,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -327,7 +327,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -391,7 +391,7 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -409,7 +409,7 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -475,7 +475,7 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 			type: NodeType.FILE,
 			path: "/root/big leaf",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -523,7 +523,7 @@ export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
 	type: NodeType.FILE,
 	path: "/root/big leaf",
 	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-	link: "http://www.google.de",
+	link: "https://www.google.de",
 	isExcluded: false,
 	isFlattened: false
 }
@@ -581,7 +581,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 			type: NodeType.FILE,
 			path: "/root/big leaf",
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -1074,7 +1074,7 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 				type: NodeType.FILE,
 				path: "/root/big leaf",
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1365,7 +1365,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 				name: "big leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1423,7 +1423,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 				name: "big leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 20, functions: 10, mcc: 1 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1431,7 +1431,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 				name: "additional leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 10, functions: 11, mcc: 5 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1460,7 +1460,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 						name: "big leaf",
 						type: NodeType.FILE,
 						attributes: { rloc: 20, functions: 10, mcc: 1 },
-						link: "http://www.google.de",
+						link: "https://www.google.de",
 						isExcluded: false,
 						isFlattened: false
 					}
@@ -1745,7 +1745,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 						functions: 10,
 						mcc: 1
 					},
-					link: "http://www.google.de"
+					link: "https://www.google.de"
 				},
 				{
 					name: "Parent Leaf",
