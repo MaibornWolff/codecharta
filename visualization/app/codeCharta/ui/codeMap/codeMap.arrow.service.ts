@@ -6,6 +6,7 @@ import { IRootScopeService } from "angular"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
+import debounce from "lodash.debounce"
 
 export class CodeMapArrowService
 	implements BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber
@@ -13,6 +14,8 @@ export class CodeMapArrowService
 	private VERTICES_PER_LINE = 5
 	private map: Map<string, Node>
 	private arrows: Object3D[]
+	private debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void
+	private HIGHLIGHT_BUILDING_DELAY = 15
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
 		"ngInject"
@@ -21,6 +24,15 @@ export class CodeMapArrowService
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
+		this.debounceCalculation = debounce(hoveredBuildings => this.resetEdgesOfBuildings(hoveredBuildings), this.HIGHLIGHT_BUILDING_DELAY)
+	}
+
+	private resetEdgesOfBuildings = hoveredBuilding => {
+		if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
+			this.clearArrows()
+			this.showEdgesOfBuildings(hoveredBuilding)
+		}
+		this.scale()
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
@@ -38,11 +50,7 @@ export class CodeMapArrowService
 	}
 
 	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
-			this.clearArrows()
-			this.showEdgesOfBuildings(hoveredBuilding)
-		}
-		this.scale()
+		this.debounceCalculation(hoveredBuilding)
 	}
 
 	onBuildingUnhovered() {
