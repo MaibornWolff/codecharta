@@ -50,7 +50,7 @@ class ParserDialogTest {
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(
             parseResult.matchedOption("metrics").getValue<ArrayList<String>>()
-                  ).isEqualTo(listOf("metric1, metric2"))
+                  ).isEqualTo(listOf("metric1,metric2"))
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }

@@ -30,7 +30,7 @@ class ParserDialog {
 
             val metrics: String = KInquirer.promptInput(
                 message = "What are the metrics to import (comma separated)?",
-                hint = "metric1, metric2, metric3 (leave empty for all metrics)"
+                hint = "metric1,metric2,metric3 (leave empty for all metrics)"
             )
 
             val isCompressed: Boolean =
@@ -44,10 +44,12 @@ class ParserDialog {
                 projectKey,
                 "--user=$user",
                 "--output-file=$outputFileName",
-                "--metrics=$metrics",
+                if (metrics.isEmpty()) null else "--metrics=${eraseWhitespace(metrics)}",
                 if (isCompressed) null else "--not-compressed",
                 "--merge-modules=$mergeModules",
-            )
+                                )
         }
+
+        private fun eraseWhitespace(input: String) = input.replace(" ", "")
     }
 }
