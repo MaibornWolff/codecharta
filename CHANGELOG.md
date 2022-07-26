@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.101.0] - 2022-07-26
+
 ### Added 🚀
 
 -   Transform a metric gardener json file into a code charta json file, that can be correctly visualized [#2675](https://github.com/MaibornWolff/codecharta/pull/2875)
