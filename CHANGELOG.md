@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.101.1] - 2022-07-27
+
+### Chore 👨‍💻 👩‍💻
+
+-   Modify build script for GitHub pages in order to provide zipped maps.
+
 ## [1.101.0] - 2022-07-26
 
 ### Added 🚀
