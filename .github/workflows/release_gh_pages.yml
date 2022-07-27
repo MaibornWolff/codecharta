@@ -66,6 +66,11 @@ jobs:
         with:
           asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
 
+      - name: Add Changelog Entries to Release
+        uses: rasmus-saks/release-a-changelog-action@v1.0.1
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+
       - name: Publish visualization npm package
         uses: actions/setup-node@v3
         with:
