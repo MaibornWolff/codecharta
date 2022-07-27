@@ -1,6 +1,5 @@
 //@ts-nocheck
 
-import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
@@ -28,7 +27,6 @@ import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
-		private recentFilesService: RecentFilesService,
 		private metricDataService: MetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private nodeMetricDataService: NodeMetricDataService,

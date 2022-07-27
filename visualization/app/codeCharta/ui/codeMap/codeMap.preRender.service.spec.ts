@@ -12,7 +12,7 @@ import { ScalingService } from "../../state/store/appSettings/scaling/scaling.se
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { addFile, resetFiles, setDelta, setStandard, setStandardByNames } from "../../state/store/files/files.actions"
+import { addFile, setDelta, setFiles, setStandard, setStandardByNames } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3-hierarchy"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
@@ -58,7 +58,7 @@ describe("codeMapPreRenderService", () => {
 		NodeDecorator.decorateMapWithPathAttribute(fileStates[0].file)
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 
-		storeService.dispatch(resetFiles())
+		storeService.dispatch(setFiles([]))
 		storeService.dispatch(addFile(fileStates[0].file))
 		storeService.dispatch(addFile(ccFile))
 		storeService.dispatch(setStandardByNames([fileStates[0].file.fileMeta.fileName]))

@@ -23,6 +23,7 @@ import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { toggleEdgeMetricVisible } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { wait } from "../../util/testUtils/wait"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
@@ -100,7 +101,7 @@ describe("CodeMapArrowService", () => {
 		})
 	})
 	describe("Arrow Behaviour when selecting and hovering a building", () => {
-		it("should only highlight small leaf when big leaf is selected", () => {
+		it("should only highlight small leaf when big leaf is selected", async () => {
 			storeService.dispatch(setEdges(VALID_EDGES_DECORATED))
 			const nodes: Node[] = [
 				CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node,
@@ -114,8 +115,22 @@ describe("CodeMapArrowService", () => {
 			threeSceneService.selectBuilding(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
 			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
 
+			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 1)
+
 			expect(threeSceneService["highlighted"]).toMatchSnapshot()
 			expect(threeSceneService["selected"]).toMatchSnapshot()
+		})
+		it("should debounce the edge reset of buildings to improve perfomance", async () => {
+			codeMapArrowService["resetEdgesOfBuildings"] = () => {}
+			const resetEdgesOfBuildingMock = jest.fn().mockImplementation()
+			codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingMock
+			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
+
+			expect(resetEdgesOfBuildingMock).not.toHaveBeenCalled()
+
+			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 1)
+
+			expect(resetEdgesOfBuildingMock).toHaveBeenCalled()
 		})
 	})
 
@@ -135,8 +150,10 @@ describe("CodeMapArrowService", () => {
 			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalledTimes(0)
 		})
 
-		it("should call clearArrows and showEdgesOfBuildings through BuildingHovered", () => {
+		it("should call clearArrows and showEdgesOfBuildings through BuildingHovered", async () => {
 			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
+
+			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 1)
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
 			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()

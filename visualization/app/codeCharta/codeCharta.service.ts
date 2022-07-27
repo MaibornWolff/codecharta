@@ -6,8 +6,9 @@ import { DialogService } from "./ui/dialog/dialog.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
-import { setRecentFiles } from "./state/store/dynamicSettings/recentFiles/recentFiles.actions"
 import { NameDataPair } from "./codeCharta.model"
+import { onStoreChanged } from "./state/angular-redux/onStoreChanged/onStoreChanged"
+import { referenceFileSelector } from "./state/selectors/referenceFile/referenceFile.selector"
 
 export class CodeChartaService {
 	static ROOT_NAME = "root"
@@ -15,6 +16,11 @@ export class CodeChartaService {
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 	private recentFiles: string[] = []
+	unsubscribeReferenceFileSubscription = onStoreChanged(referenceFileSelector, (_, newReferenceFile) => {
+		if (newReferenceFile) {
+			CodeChartaService.updateRootData(newReferenceFile.map.name)
+		}
+	})
 
 	constructor(private storeService: StoreService, private dialogService: DialogService) {
 		"ngInject"
@@ -33,10 +39,9 @@ export class CodeChartaService {
 		}
 
 		if (this.recentFiles.length > 0) {
-			this.storeService.dispatch(setRecentFiles(this.recentFiles))
 			this.storeService.dispatch(setFiles(this.fileStates))
 
-			const recentFile = this.storeService.getState().dynamicSettings.recentFiles[0]
+			const recentFile = this.recentFiles[0]
 			const rootName = this.storeService.getState().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
 			this.storeService.dispatch(setStandardByNames(this.recentFiles))
 

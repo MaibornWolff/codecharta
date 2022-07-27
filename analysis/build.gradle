@@ -14,7 +14,7 @@ buildscript {
         juniversalchardet_version = '1.0.3'
         kotlin_logging_version = '2.1.23'
         kotlin_version = '1.7.10'
-        kotlinx_coroutines_version = '1.6.3'
+        kotlinx_coroutines_version = '1.6.4'
         picocli_version = '4.6.3'
         slf4j_version = '1.7.36'
         sonar_java_version = '6.8.0.23379'
@@ -150,11 +150,15 @@ task integrationTest(type: Exec) {
     if (System.properties['os.name'].toLowerCase().contains('windows')) {
         println "In order to run the integration tests a bash script is executed."
         println "Make sure to use a shell with bash capability (e.g. GitBash) to run this task."
+        executable 'bash'
+        workingDir('test')
+        args '-c', "./golden_test.sh $version"
     }
-
-    executable 'sh'
-    workingDir('test')
-    args '-c', "./golden_test.sh $version"
+    else {
+        executable 'sh'
+        workingDir('test')
+        args '-c', "./golden_test.sh $version"
+    }
 }
 
 task jacocoTestReport(type: JacocoReport) {

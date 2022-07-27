@@ -1,5 +1,4 @@
 import angular from "angular"
-import { RecentFilesService } from "./store/dynamicSettings/recentFiles/recentFiles.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
@@ -30,7 +29,6 @@ import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableC
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
-	.service(camelCase(RecentFilesService.name), RecentFilesService)
 	.service(camelCase(MetricDataService.name), MetricDataService)
 	.service(camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(camelCase(NodeMetricDataService.name), NodeMetricDataService)
