@@ -37,6 +37,7 @@ export interface FileCount {
 	all?: number
 	added: number
 	removed: number
+	changed: number
 }
 
 interface squarifiedNode {

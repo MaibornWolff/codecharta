@@ -82,7 +82,7 @@ describe("codeChartaService", () => {
 				children: [
 					{
 						attributes: { functions: 10, mcc: 1, rloc: 100 },
-						link: "http://www.google.de",
+						link: "https://www.google.de",
 						name: "big leaf",
 						path: "/root/big leaf",
 						type: NodeType.FILE,

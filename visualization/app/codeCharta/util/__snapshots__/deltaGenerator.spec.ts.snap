@@ -17,11 +17,12 @@ Object {
       },
       "fileCount": Object {
         "added": 0,
+        "changed": 1,
         "removed": 0,
       },
       "isExcluded": false,
       "isFlattened": false,
-      "link": "http://www.google.de",
+      "link": "https://www.google.de",
       "name": "big leaf",
       "path": "/root/big leaf",
       "type": "File",
@@ -39,11 +40,12 @@ Object {
       },
       "fileCount": Object {
         "added": 1,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
       "isFlattened": false,
-      "link": "http://www.google.de",
+      "link": "https://www.google.de",
       "name": "additional leaf",
       "path": "/root/additional leaf",
       "type": "File",
@@ -66,6 +68,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
+            "changed": 1,
             "removed": 0,
           },
           "isExcluded": false,
@@ -86,6 +89,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
+            "changed": 1,
             "removed": 0,
           },
           "isExcluded": false,
@@ -107,11 +111,12 @@ Object {
           },
           "fileCount": Object {
             "added": 1,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
           "isFlattened": false,
-          "link": "http://www.google.de",
+          "link": "https://www.google.de",
           "name": "big leaf",
           "path": "/root/Parent Leaf/big leaf",
           "type": "File",
@@ -120,6 +125,7 @@ Object {
       "deltas": Object {},
       "fileCount": Object {
         "added": 0,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
@@ -132,6 +138,7 @@ Object {
   "deltas": Object {},
   "fileCount": Object {
     "added": 0,
+    "changed": 0,
     "removed": 0,
   },
   "isExcluded": false,
@@ -159,11 +166,12 @@ Object {
       },
       "fileCount": Object {
         "added": 0,
+        "changed": 1,
         "removed": 0,
       },
       "isExcluded": false,
       "isFlattened": false,
-      "link": "http://www.google.de",
+      "link": "https://www.google.de",
       "name": "big leaf",
       "path": "/root/big leaf",
       "type": "File",
@@ -181,11 +189,12 @@ Object {
       },
       "fileCount": Object {
         "added": 1,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
       "isFlattened": false,
-      "link": "http://www.google.de",
+      "link": "https://www.google.de",
       "name": "additional leaf",
       "path": "/root/additional leaf",
       "type": "File",
@@ -208,6 +217,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
+            "changed": 1,
             "removed": 0,
           },
           "isExcluded": false,
@@ -228,6 +238,7 @@ Object {
           },
           "fileCount": Object {
             "added": 0,
+            "changed": 1,
             "removed": 0,
           },
           "isExcluded": false,
@@ -249,11 +260,12 @@ Object {
           },
           "fileCount": Object {
             "added": 1,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
           "isFlattened": false,
-          "link": "http://www.google.de",
+          "link": "https://www.google.de",
           "name": "big leaf",
           "path": "/root/Parent Leaf/big leaf",
           "type": "File",
@@ -262,6 +274,7 @@ Object {
       "deltas": Object {},
       "fileCount": Object {
         "added": 0,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
@@ -285,6 +298,7 @@ Object {
               },
               "fileCount": Object {
                 "added": 1,
+                "changed": 0,
                 "removed": 0,
               },
               "isExcluded": false,
@@ -302,6 +316,7 @@ Object {
               },
               "fileCount": Object {
                 "added": 0,
+                "changed": 0,
                 "removed": 1,
               },
               "isExcluded": false,
@@ -319,6 +334,7 @@ Object {
               },
               "fileCount": Object {
                 "added": 0,
+                "changed": 0,
                 "removed": 1,
               },
               "isExcluded": false,
@@ -331,6 +347,7 @@ Object {
           "deltas": Object {},
           "fileCount": Object {
             "added": 0,
+            "changed": 0,
             "removed": 0,
           },
           "isExcluded": false,
@@ -343,6 +360,7 @@ Object {
       "deltas": Object {},
       "fileCount": Object {
         "added": 0,
+        "changed": 0,
         "removed": 0,
       },
       "isExcluded": false,
@@ -355,6 +373,7 @@ Object {
   "deltas": Object {},
   "fileCount": Object {
     "added": 0,
+    "changed": 0,
     "removed": 0,
   },
   "isExcluded": false,
