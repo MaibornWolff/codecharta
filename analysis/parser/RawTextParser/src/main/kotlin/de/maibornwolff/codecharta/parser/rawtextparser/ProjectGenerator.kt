@@ -22,7 +22,7 @@ class ProjectGenerator(private val writer: Writer, private val filePath: String,
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
 
-        if (toCompress && filePath != "notSpecified") {
+        if (toCompress && filePath != "default.cc.json") {
             serializeCompressedFileAndDeleteJsonFile(project, filePath, writer)
         } else {
             ProjectSerializer.serializeProject(project, writer)

@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.serialization
 object FileExtensionHandler {
 
     fun checkAndFixFileExtension(outputName: String): String {
-        if (outputName.isEmpty()) return "output.cc.json"
+        if (outputName.isEmpty()) return "default.cc.json"
         val delimiter = extractDelimiter(outputName)
         if (delimiter.isEmpty()) {
             return outputName.substringBefore(".") + ".cc.json"
@@ -19,7 +19,7 @@ object FileExtensionHandler {
     private fun extractFileName(outputName: String, delimiter: String): String {
         val fileName = outputName.split(delimiter).reversed().get(0)
         if (fileName.isEmpty()) {
-            return "output.cc.json"
+            return "default.cc.json"
         }
         return fileName.substringBefore(".") + ".cc.json"
     }

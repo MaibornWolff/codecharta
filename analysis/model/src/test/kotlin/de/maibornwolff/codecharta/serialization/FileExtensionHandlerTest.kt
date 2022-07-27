@@ -26,7 +26,7 @@ internal class FileExtensionHandlerTest {
     @Test
     fun checkAndFixFileExtensionDefault() {
         val correctFilename = FileExtensionHandler.checkAndFixFileExtension("")
-        assertEquals("output.cc.json", correctFilename)
+        assertEquals("default.cc.json", correctFilename)
     }
 
     @Test
@@ -38,6 +38,6 @@ internal class FileExtensionHandlerTest {
     @Test
     fun checkAndFixFileExtensionPathWithoutFilename() {
         val correctFilename = FileExtensionHandler.checkAndFixFileExtension("\\test-project\\path1\\test-project.path1.Logic\\Service\\")
-        assertEquals("\\test-project\\path1\\test-project.path1.Logic\\Service\\output.cc.json", correctFilename)
+        assertEquals("\\test-project\\path1\\test-project.path1.Logic\\Service\\default.cc.json", correctFilename)
     }
 }

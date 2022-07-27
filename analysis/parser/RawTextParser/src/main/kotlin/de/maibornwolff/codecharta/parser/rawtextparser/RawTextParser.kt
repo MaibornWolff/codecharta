@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -26,7 +27,8 @@ import java.util.concurrent.Callable
 class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+    private val error: PrintStream = System.err,
+    private val test: Boolean = false
 ) : Callable<Void>, InteractiveParser {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
@@ -79,7 +81,7 @@ class RawTextParser(
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
 
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
+        val filePath = FileExtensionHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: "")
 
         ProjectGenerator(getWriter(), filePath, compress).generate(results, pipedProject)
         return null
@@ -92,11 +94,11 @@ class RawTextParser(
     }
 
     private fun getWriter(): Writer {
-        return if (outputFile != null) {
-            BufferedWriter(FileWriter(outputFile!!))
-        } else {
-            OutputStreamWriter(output)
+        if (!test) {
+            return BufferedWriter(
+                    FileWriter(File(FileExtensionHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: ""))))
         }
+            return OutputStreamWriter(output)
     }
 
     private fun assembleParameterMap(): Map<String, Int> {
@@ -120,7 +122,7 @@ class RawTextParser(
 
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            call(RawTextParser(input, outputStream, error), outputStream, *args)
+            call(RawTextParser(input, outputStream, error, true), outputStream, *args)
         }
     }
 

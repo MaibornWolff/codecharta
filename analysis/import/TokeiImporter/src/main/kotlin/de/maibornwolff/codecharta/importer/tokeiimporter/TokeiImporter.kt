@@ -36,7 +36,8 @@ import java.util.concurrent.Callable
 class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+    private val error: PrintStream = System.err,
+    private val test: Boolean = false
 ) : Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
@@ -128,13 +129,11 @@ class TokeiImporter(
     }
 
     private fun writer(): Writer {
-        return if (outputFile == null) {
-            OutputStreamWriter(output)
-        } else {
-            BufferedWriter(FileWriter(outputFile!!))
+         if (test) {
+          return OutputStreamWriter(output)
         }
+            return BufferedWriter(FileWriter(FileExtensionHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: "")))
     }
-
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
@@ -143,7 +142,7 @@ class TokeiImporter(
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(TokeiImporter(input, output, error), output, *args)
+            CommandLine.call(TokeiImporter(input, output, error, true), output, *args)
         }
 
         @JvmStatic
