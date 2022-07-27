@@ -37,7 +37,43 @@ import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
+export const VALID_EDGES: Edge[] = [
+	{
+		fromNodeName: "/root/big leaf",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			avgCommits: 34
+		}
+	},
+	{
+		fromNodeName: "/root/Parent Leaf/other small leaf",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			otherMetric: 34
+		}
+	},
+	{
+		fromNodeName: "/root/not available",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			avgCommits: 34
+		}
+	}
+]
+
 const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType.FOLDER, isExcluded: false, isFlattened: false }
+
+const DEFAULT_SETTINGS = {
+	fileSettings: {
+		attributeTypes: { nodes: {}, edges: {} },
+		blacklist: [],
+		edges: VALID_EDGES,
+		markedPackages: []
+	}
+}
 
 export const VALID_NODE: CodeMapNode = {
 	...DEFAULT_ROOT,
@@ -597,33 +633,6 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 	]
 }
 
-export const VALID_EDGES: Edge[] = [
-	{
-		fromNodeName: "/root/big leaf",
-		toNodeName: "/root/Parent Leaf/small leaf",
-		attributes: {
-			pairingRate: 89,
-			avgCommits: 34
-		}
-	},
-	{
-		fromNodeName: "/root/Parent Leaf/other small leaf",
-		toNodeName: "/root/Parent Leaf/small leaf",
-		attributes: {
-			pairingRate: 89,
-			otherMetric: 34
-		}
-	},
-	{
-		fromNodeName: "/root/not available",
-		toNodeName: "/root/Parent Leaf/small leaf",
-		attributes: {
-			pairingRate: 89,
-			avgCommits: 34
-		}
-	}
-]
-
 export const VALID_EDGES_DECORATED: Edge[] = [
 	{
 		fromNodeName: "/root/big leaf",
@@ -710,27 +719,13 @@ export const FILE_META: FileMeta = {
 export const TEST_FILE_DATA: CCFile = {
 	fileMeta: FILE_META,
 	map: VALID_NODE,
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_FILE_DATA_JAVA: CCFile = {
 	fileMeta: { ...FILE_META, fileChecksum: "md5-fileB", fileName: "fileB" },
 	map: VALID_NODE_JAVA,
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
@@ -1097,14 +1092,7 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const METRIC_DISTRIBUTION: MetricDistribution[] = [
@@ -1376,14 +1364,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_DELTA_MAP_B: CCFile = {
@@ -1450,14 +1431,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_DELTA_MAP_C: CCFile = {
@@ -1524,14 +1498,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_DELTA_MAP_D: CCFile = {
@@ -1583,14 +1550,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_DELTA_MAP_E: CCFile = {
@@ -1642,14 +1602,7 @@ export const TEST_DELTA_MAP_E: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 export const TEST_DELTA_MAP_F: CCFile = {
 	fileMeta: {
@@ -1699,14 +1652,7 @@ export const TEST_DELTA_MAP_F: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_FILE_DATA_DOWNLOADED = {
