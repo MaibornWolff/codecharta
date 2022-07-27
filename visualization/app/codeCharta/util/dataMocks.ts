@@ -37,6 +37,12 @@ import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
+const DEFAULT_FILE_META = {
+	projectName: "Sample Project",
+	apiVersion: packageJson.codecharta.apiVersion,
+	exportedFileSize: 300_000
+}
+
 export const VALID_EDGES: Edge[] = [
 	{
 		fromNodeName: "/root/big leaf",
@@ -709,11 +715,9 @@ export const TEST_FILE_CONTENT_NO_API: ExportCCFile = {
 }
 
 export const FILE_META: FileMeta = {
+	...DEFAULT_FILE_META,
 	fileName: "fileA",
-	fileChecksum: "md5-fileA",
-	projectName: "Sample Project",
-	apiVersion: packageJson.codecharta.apiVersion,
-	exportedFileSize: 300_000
+	fileChecksum: "md5-fileA"
 }
 
 export const TEST_FILE_DATA: CCFile = {
@@ -1318,11 +1322,9 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
+		...DEFAULT_FILE_META,
 		fileName: "fileA",
-		fileChecksum: "md5-delta-fileA",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
+		fileChecksum: "md5-delta-fileA"
 	},
 	map: {
 		name: "root",
@@ -1369,11 +1371,9 @@ export const TEST_DELTA_MAP_A: CCFile = {
 
 export const TEST_DELTA_MAP_B: CCFile = {
 	fileMeta: {
+		...DEFAULT_FILE_META,
 		fileName: "fileB",
-		fileChecksum: "md5-delta-fileB",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
+		fileChecksum: "md5-delta-fileB"
 	},
 	map: {
 		name: "root",
@@ -1436,11 +1436,9 @@ export const TEST_DELTA_MAP_B: CCFile = {
 
 export const TEST_DELTA_MAP_C: CCFile = {
 	fileMeta: {
+		...DEFAULT_FILE_META,
 		fileName: "fileC",
-		fileChecksum: "md5-delta-fileB",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
+		fileChecksum: "md5-delta-fileB"
 	},
 	map: {
 		name: "root",
@@ -1503,11 +1501,9 @@ export const TEST_DELTA_MAP_C: CCFile = {
 
 export const TEST_DELTA_MAP_D: CCFile = {
 	fileMeta: {
+		...DEFAULT_FILE_META,
 		fileName: "fileD",
-		fileChecksum: "md5-delta-fileB",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
+		fileChecksum: "md5-delta-fileB"
 	},
 	map: {
 		name: "root",
@@ -1555,11 +1551,9 @@ export const TEST_DELTA_MAP_D: CCFile = {
 
 export const TEST_DELTA_MAP_E: CCFile = {
 	fileMeta: {
+		...DEFAULT_FILE_META,
 		fileName: "fileE",
-		fileChecksum: "md5-delta-fileE",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
+		fileChecksum: "md5-delta-fileE"
 	},
 	map: {
 		name: "root",
@@ -1606,11 +1600,9 @@ export const TEST_DELTA_MAP_E: CCFile = {
 }
 export const TEST_DELTA_MAP_F: CCFile = {
 	fileMeta: {
+		...DEFAULT_FILE_META,
 		fileName: "fileF",
-		fileChecksum: "md5-delta-fileF",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
+		fileChecksum: "md5-delta-fileF"
 	},
 	map: {
 		name: "root",
