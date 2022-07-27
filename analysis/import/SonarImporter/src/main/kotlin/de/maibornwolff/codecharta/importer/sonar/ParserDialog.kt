@@ -42,7 +42,7 @@ class ParserDialog {
             return listOfNotNull(
                 hostUrl,
                 projectKey,
-                "--user=$user",
+                if (user.isEmpty()) null else "--user=$user",
                 "--output-file=$outputFileName",
                 if (metrics.isEmpty()) null else "--metrics=${eraseWhitespace(metrics)}",
                 if (isCompressed) null else "--not-compressed",
