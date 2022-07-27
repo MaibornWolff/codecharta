@@ -13,7 +13,6 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
 import java.io.Writer
 import java.util.concurrent.Callable
 
@@ -28,7 +27,7 @@ class CodeMaatImporter : Callable<Void>, InteractiveParser {
     private var help = false
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    private var outputFile: File = File("")
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -47,7 +46,7 @@ class CodeMaatImporter : Callable<Void>, InteractiveParser {
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
+        val filePath = outputFile.absolutePath ?: "notSpecified"
 
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
             project,
@@ -80,11 +79,7 @@ class CodeMaatImporter : Callable<Void>, InteractiveParser {
         }
 
     private fun writer(): Writer {
-        return if (outputFile == null) {
-            OutputStreamWriter(System.out)
-        } else {
-            BufferedWriter(FileWriter(outputFile!!))
-        }
+        return BufferedWriter(FileWriter(FileExtensionHandler.checkAndFixFileExtension(outputFile.absolutePath)))
     }
 
     companion object {
