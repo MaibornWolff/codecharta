@@ -30,8 +30,14 @@ internal class FileExtensionHandlerTest {
     }
 
     @Test
-    fun checkAndFixFileExtensionPath() {
+    fun checkAndFixFileExtensionPathWithFilename() {
         val correctFilename = FileExtensionHandler.checkAndFixFileExtension("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt")
         assertEquals("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.cc.json", correctFilename)
+    }
+
+    @Test
+    fun checkAndFixFileExtensionPathWithoutFilename() {
+        val correctFilename = FileExtensionHandler.checkAndFixFileExtension("\\test-project\\path1\\test-project.path1.Logic\\Service\\")
+        assertEquals("\\test-project\\path1\\test-project.path1.Logic\\Service\\output.cc.json", correctFilename)
     }
 }

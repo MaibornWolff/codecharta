@@ -9,7 +9,7 @@ object FileExtensionHandler {
             return outputName.substringBefore(".") + ".cc.json"
                 }
         return extractPath(outputName, delimiter) +
-               extractFileName(outputName, delimiter).substringBefore(".") + ".cc.json"
+               extractFileName(outputName, delimiter)
     }
 
     private fun extractPath(outputName: String, delimiter: String): String {
@@ -17,7 +17,11 @@ object FileExtensionHandler {
     }
 
     private fun extractFileName(outputName: String, delimiter: String): String {
-        return outputName.split(delimiter).reversed().get(0)
+        val fileName = outputName.split(delimiter).reversed().get(0)
+        if (fileName.isEmpty()) {
+            return "output.cc.json"
+        }
+        return fileName.substringBefore(".") + ".cc.json"
     }
 
     private fun extractDelimiter(outputName: String): String {
