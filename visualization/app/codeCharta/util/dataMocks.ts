@@ -182,12 +182,6 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 	]
 }
 
-export const test = { a: 5, b: 7 } //nosonar
-export const test2 = { a: 5, b: 7 } //nosonar
-export const test3 = { a: 5, b: 7 }
-export const test4 = { a: 5, b: 7 }
-export const test5 = { a: 5, b: 7 }
-
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
