@@ -40,7 +40,18 @@ import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig
 const DEFAULT_FILE_META = {
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
-	exportedFileSize: 300_000
+	exportedFileSize: 300_000,
+	fileName: "file",
+	fileChecksum: "md5-delta-file"
+}
+
+const DEFAULT_FILE_MAP: CodeMapNode = {
+	name: "root",
+	type: NodeType.FOLDER,
+	attributes: {},
+	isExcluded: false,
+	isFlattened: false,
+	children: []
 }
 
 export const VALID_EDGES: Edge[] = [
@@ -80,6 +91,7 @@ const DEFAULT_SETTINGS = {
 		markedPackages: []
 	}
 }
+export const DEFAULT_FILE_MOCK: CCFile = { fileMeta: DEFAULT_FILE_META, map: DEFAULT_FILE_MAP, settings: DEFAULT_SETTINGS }
 
 export const VALID_NODE: CodeMapNode = {
 	...DEFAULT_ROOT,
@@ -1327,11 +1339,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 		fileChecksum: "md5-delta-fileA"
 	},
 	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
+		...DEFAULT_FILE_MAP,
 		children: [
 			{
 				name: "big leaf",
@@ -1376,11 +1384,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		fileChecksum: "md5-delta-fileB"
 	},
 	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
+		...DEFAULT_FILE_MAP,
 		children: [
 			{
 				name: "big leaf",
@@ -1441,11 +1445,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 		fileChecksum: "md5-delta-fileB"
 	},
 	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
+		...DEFAULT_FILE_MAP,
 		children: [
 			{
 				name: "big leaf",
@@ -1506,11 +1506,7 @@ export const TEST_DELTA_MAP_D: CCFile = {
 		fileChecksum: "md5-delta-fileB"
 	},
 	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
+		...DEFAULT_FILE_MAP,
 		children: [
 			{
 				name: "D file 1",
@@ -1556,11 +1552,7 @@ export const TEST_DELTA_MAP_E: CCFile = {
 		fileChecksum: "md5-delta-fileE"
 	},
 	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
+		...DEFAULT_FILE_MAP,
 		children: [
 			{ name: "File which exists in E but not in F", type: NodeType.FILE, attributes: { mcc: 12, rloc: 5 } },
 			{ name: "Folder with different attributes", type: NodeType.FOLDER, attributes: { mcc: 12, rloc: 5 } },
@@ -1605,11 +1597,7 @@ export const TEST_DELTA_MAP_F: CCFile = {
 		fileChecksum: "md5-delta-fileF"
 	},
 	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
+		...DEFAULT_FILE_MAP,
 		children: [
 			{ name: "Folder with different attributes", type: NodeType.FOLDER, attributes: { mcc: 120, rloc: 50 } },
 			{
