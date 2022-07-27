@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.jasome
 
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
@@ -30,7 +31,8 @@ class JasomeImporter : Callable<Void> {
         val project = JasomeProjectBuilder().add(jasomeProject).build()
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath) else ProjectSerializer.serializeProject(project, writer())
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,
+                FileExtensionHandler.checkAndFixFileExtension(filePath)) else ProjectSerializer.serializeProject(project, writer())
 
         return null
     }

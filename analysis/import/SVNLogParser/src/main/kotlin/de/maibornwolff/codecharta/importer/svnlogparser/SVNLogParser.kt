@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -96,6 +97,7 @@ class SVNLogParser(
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         if (outputFile.isNotEmpty()) {
+            outputFile = FileExtensionHandler.checkAndFixFileExtension(outputFile)
             if (compress) ProjectSerializer.serializeAsCompressedFile(
                 project,
                 outputFile

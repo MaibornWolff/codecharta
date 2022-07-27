@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.csv
 
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -46,7 +47,8 @@ class CSVImporter : Callable<Void>, InteractiveParser {
         val project = csvProjectBuilder.build()
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath)
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,
+                FileExtensionHandler.checkAndFixFileExtension(filePath))
         else ProjectSerializer.serializeProject(project, writer())
 
         return null

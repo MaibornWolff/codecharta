@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -50,7 +51,7 @@ class CodeMaatImporter : Callable<Void>, InteractiveParser {
 
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
             project,
-            filePath
+            FileExtensionHandler.checkAndFixFileExtension(filePath)
         ) else ProjectSerializer.serializeProject(project, writer())
 
         return null

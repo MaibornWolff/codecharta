@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarVersionAPIDatasource
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -93,7 +94,7 @@ class SonarImporterMain(
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
 
-        if (compress) ProjectSerializer.serializeAsCompressedFile(project, outputFile) else ProjectSerializer.serializeProject(project, writer())
+        if (compress) ProjectSerializer.serializeAsCompressedFile(project, FileExtensionHandler.checkAndFixFileExtension(outputFile)) else ProjectSerializer.serializeProject(project, writer())
 
         return null
     }

@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiTwelveStr
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -84,7 +85,7 @@ class TokeiImporter(
 
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
             projectBuilder.build(),
-            filePath
+            FileExtensionHandler.checkAndFixFileExtension(filePath)
         ) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
 
         return null

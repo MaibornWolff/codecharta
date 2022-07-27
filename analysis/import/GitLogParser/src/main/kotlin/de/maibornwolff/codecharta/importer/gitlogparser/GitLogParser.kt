@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstatRawParserStrategy
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -110,6 +111,7 @@ class GitLogParser(
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         if (outputFile.isNotEmpty()) {
+            outputFile = FileExtensionHandler.checkAndFixFileExtension(outputFile)
             if (compress) ProjectSerializer.serializeAsCompressedFile(
                 project,
                 outputFile

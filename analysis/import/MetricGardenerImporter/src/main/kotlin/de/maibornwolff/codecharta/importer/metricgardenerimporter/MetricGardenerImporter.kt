@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.metricgardenerimporter
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
+import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -40,7 +41,7 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
     private var inputFile = File("")
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile = File("")
+    private var outputFilePathName = ""
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -51,6 +52,7 @@ class MetricGardenerImporter : Callable<Void>, InteractiveParser {
             printErrorLog()
             return null
         }
+       var outputFile = File(FileExtensionHandler.checkAndFixFileExtension(outputFilePathName))
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
