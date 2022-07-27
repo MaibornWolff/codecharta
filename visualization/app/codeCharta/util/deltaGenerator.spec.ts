@@ -1,5 +1,5 @@
 import { DeltaGenerator } from "./deltaGenerator"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D, TEST_DELTA_MAP_E, TEST_DELTA_MAP_F } from "./dataMocks"
+import { DEFAULT_CC_FILE_MOCK, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "./dataMocks"
 import { CCFile, FileCount, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { clone } from "./clone"
@@ -173,3 +173,180 @@ describe("deltaGenerator", () => {
 		expect(ae.e).toBe(e.e)
 	})
 })
+
+export const TEST_DELTA_MAP_C: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileC",
+		fileChecksum: "md5-delta-fileB"
+	},
+	map: {
+		...DEFAULT_CC_FILE_MOCK.map,
+		children: [
+			{
+				name: "big leaf",
+				type: NodeType.FILE,
+				attributes: { rloc: 20, functions: 10, mcc: 1 },
+				link: "https://www.google.de"
+			},
+			{
+				name: "additional leaf",
+				type: NodeType.FILE,
+				attributes: { rloc: 10, functions: 11, mcc: 5 },
+				link: "https://www.google.de"
+			},
+			{
+				name: "Parent Leaf",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 30, functions: 100, mcc: 100, more: 20 }
+					},
+					{
+						name: "other small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 70, functions: 1000 }
+					},
+					{
+						name: "big leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 200, functions: 50, mcc: 30 },
+						link: "https://www.google.de"
+					}
+				]
+			}
+		]
+	},
+	settings: DEFAULT_CC_FILE_MOCK.settings
+}
+
+export const TEST_DELTA_MAP_D: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileD",
+		fileChecksum: "md5-delta-fileB"
+	},
+	map: {
+		...DEFAULT_CC_FILE_MOCK.map,
+		children: [
+			{
+				name: "D file 1",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, functions: 12, mcc: 34 },
+				link: "https://www.google.de"
+			},
+			{
+				name: "D file 2",
+				type: NodeType.FILE,
+				attributes: { rloc: 230, functions: 14, mcc: 9 },
+				link: "https://www.google.de"
+			},
+			{
+				name: "D folder 1",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "D file 1.1",
+						type: NodeType.FILE,
+						attributes: { rloc: 400, functions: 30, mcc: 20, more: 20 }
+					}
+				]
+			}
+		]
+	},
+	settings: DEFAULT_CC_FILE_MOCK.settings
+}
+
+export const TEST_DELTA_MAP_E: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileE",
+		fileChecksum: "md5-delta-fileE"
+	},
+	map: {
+		...DEFAULT_CC_FILE_MOCK.map,
+		children: [
+			{ name: "File which exists in E but not in F", type: NodeType.FILE, attributes: { mcc: 12, rloc: 5 } },
+			{ name: "Folder with different attributes", type: NodeType.FOLDER, attributes: { mcc: 12, rloc: 5 } },
+			{
+				name: "File with same rloc-value and either mcc or functions",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, functions: 12 }
+			},
+			{
+				name: "File without metric changes",
+				type: NodeType.FILE,
+				attributes: { rloc: 271 }
+			},
+			{
+				name: "File with mcc in E, but no attributes in F",
+				type: NodeType.FILE,
+				attributes: { mcc: 2 }
+			},
+			{
+				name: "File without attributes in E, but with functions in F",
+				attributes: {},
+				type: NodeType.FILE
+			},
+			{
+				name: "File with mcc=0 in E, but no attributes in F, which does not count as difference",
+				type: NodeType.FILE,
+				attributes: { mcc: 0 }
+			},
+			{
+				name: "File with mcc and rloc changes",
+				type: NodeType.FILE,
+				attributes: { mcc: 4, rloc: 7 }
+			}
+		]
+	},
+	settings: DEFAULT_CC_FILE_MOCK.settings
+}
+export const TEST_DELTA_MAP_F: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileF",
+		fileChecksum: "md5-delta-fileF"
+	},
+	map: {
+		...DEFAULT_CC_FILE_MOCK.map,
+		children: [
+			{ name: "Folder with different attributes", type: NodeType.FOLDER, attributes: { mcc: 120, rloc: 50 } },
+			{
+				name: "File with same rloc-value and either mcc or functions",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, mcc: 7 }
+			},
+			{
+				name: "File without metric changes",
+				type: NodeType.FILE,
+				attributes: { rloc: 271 }
+			},
+			{
+				name: "File with mcc in E, but no attributes in F",
+				type: NodeType.FILE,
+				attributes: {}
+			},
+			{
+				name: "File without attributes in E, but with functions in F",
+				type: NodeType.FILE,
+				attributes: { functions: 1 }
+			},
+			{
+				name: "File with mcc=0 in E, but no attributes in F, which does not count as difference",
+				type: NodeType.FILE,
+				attributes: {}
+			},
+			{
+				name: "File with mcc and rloc changes",
+				type: NodeType.FILE,
+				attributes: { mcc: 9001, rloc: 9002 } // its over 9000!!!
+			}
+		]
+	},
+	settings: DEFAULT_CC_FILE_MOCK.settings
+}
