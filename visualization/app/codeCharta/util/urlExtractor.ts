@@ -1,8 +1,9 @@
 "use strict"
-import { ILocationService, IHttpService } from "angular"
+import { IHttpService, ILocationService } from "angular"
 import { NameDataPair } from "../codeCharta.model"
-import { ExportCCFile, ExportWrappedCCFile } from "../codeCharta.api.model"
+import zlib from "zlib"
 import { getCCFileAndDecorateFileChecksum } from "./fileHelper"
+import { ExportCCFile, ExportWrappedCCFile } from "../codeCharta.api.model"
 
 export class UrlExtractor {
 	constructor(private $location: ILocationService, private $http: IHttpService) {}
@@ -39,15 +40,43 @@ export class UrlExtractor {
 		if (!fileName) {
 			throw new Error(`Filename is missing`)
 		}
+		if (fileName.endsWith(".gz")) {
+			return this.getUnzippedFile(fileName)
+		}
+		return this.getFile(fileName)
+	}
 
+	private async getUnzippedFile(fileName: string): Promise<NameDataPair> {
+		const options = { responseType: "blob" as const }
+		const response = await this.$http.get<Blob>(fileName, options)
+
+		return new Promise(resolve => {
+			const reader = new FileReader()
+			reader.readAsArrayBuffer(response.data)
+			let content: ExportCCFile
+
+			reader.onload = event => {
+				const readerContent = zlib.unzipSync(Buffer.from(<string>event.target.result)).toString()
+				const responseData: string | ExportCCFile | ExportWrappedCCFile = readerContent
+				content = getCCFileAndDecorateFileChecksum(responseData)
+				fileName = this.getFileName(fileName, content.projectName)
+			}
+
+			reader.onloadend = () => {
+				resolve({ fileName, fileSize: response.data.toString().length, content })
+			}
+		})
+		throw new Error(`Could not load file "${fileName}"`)
+	}
+
+	private async getFile(fileName: string): Promise<NameDataPair> {
 		const response = await this.$http.get(fileName)
+
 		if (response.status >= 200 && response.status < 300) {
 			// @ts-ignore
 			const responseData: string | ExportCCFile | ExportWrappedCCFile = response.data
 			const content: ExportCCFile = getCCFileAndDecorateFileChecksum(responseData)
-
 			fileName = this.getFileName(fileName, content.projectName)
-
 			return { fileName, fileSize: response.data.toString().length, content }
 		}
 		throw new Error(`Could not load file "${fileName}"`)
