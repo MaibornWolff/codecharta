@@ -12,10 +12,6 @@ import { State } from "../../state/angular-redux/state"
 import { Store } from "../../state/angular-redux/store"
 import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 
-declare class ClipboardItem {
-	constructor(data: { [mimeType: string]: Blob })
-}
-
 @Component({
 	selector: "cc-screenshot-button",
 	template: require("./screenshotButton.component.html")
@@ -69,9 +65,8 @@ export class ScreenshotButtonComponent {
 		const renderer = this.threeRendererService.renderer
 		this.buildScreenShotCanvas(renderer)
 
-		renderer.domElement.toBlob(async function (blob) {
-			// @ts-ignore
-			navigator.clipboard.write([{ [blob.type]: blob }])
+		renderer.domElement.toBlob(blob => {
+			navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
 		})
 	}
 
