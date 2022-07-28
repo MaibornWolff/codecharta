@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Load compressed files (cc.json.gz) via URL parameter [#2917](https://github.com/MaibornWolff/codecharta/pull/2917)
+
 ### Fixed 🐞
 
 -   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
