@@ -9,7 +9,7 @@ jest.mock("../../../../state/selectors/accumulatedData/accumulatedData.selector"
 			type: "Folder",
 			path: "/root",
 			children: [
-				{ name: "big leaf", type: "File", path: "/root/big leaf", link: "http://www.google.de" },
+				{ name: "big leaf", type: "File", path: "/root/big leaf", link: "https://www.google.de" },
 				{
 					name: "Parent Leaf",
 					type: "Folder",

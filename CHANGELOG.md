@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
+
 ## [1.101.1] - 2022-07-27
 
 ### Chore 👨‍💻 👩‍💻
@@ -37,6 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Add a description for the statements metric [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
+-   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
 
 ### Changed
 
