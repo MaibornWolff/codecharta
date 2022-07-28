@@ -49,23 +49,24 @@ export class UrlExtractor {
 	private async getUnzippedFile(fileName: string): Promise<NameDataPair> {
 		const options = { responseType: "blob" as const }
 		const response = await this.$http.get<Blob>(fileName, options)
+		if (response.status >= 200 && response.status < 300) {
+			return new Promise(resolve => {
+				const reader = new FileReader()
+				reader.readAsArrayBuffer(response.data)
+				let content: ExportCCFile
 
-		return new Promise(resolve => {
-			const reader = new FileReader()
-			reader.readAsArrayBuffer(response.data)
-			let content: ExportCCFile
+				reader.onload = event => {
+					const readerContent = zlib.unzipSync(Buffer.from(<string>event.target.result)).toString()
+					const responseData: string | ExportCCFile | ExportWrappedCCFile = readerContent
+					content = getCCFileAndDecorateFileChecksum(responseData)
+					fileName = this.getFileName(fileName, content.projectName)
+				}
 
-			reader.onload = event => {
-				const readerContent = zlib.unzipSync(Buffer.from(<string>event.target.result)).toString()
-				const responseData: string | ExportCCFile | ExportWrappedCCFile = readerContent
-				content = getCCFileAndDecorateFileChecksum(responseData)
-				fileName = this.getFileName(fileName, content.projectName)
-			}
-
-			reader.onloadend = () => {
-				resolve({ fileName, fileSize: response.data.toString().length, content })
-			}
-		})
+				reader.onloadend = () => {
+					resolve({ fileName, fileSize: response.data.toString().length, content })
+				}
+			})
+		}
 		throw new Error(`Could not load file "${fileName}"`)
 	}
 
