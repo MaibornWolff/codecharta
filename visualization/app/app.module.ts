@@ -15,7 +15,6 @@ import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.modul
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
 import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
-import { TrackEventUsageDataEffect } from "./codeCharta/state/effects/trackEventUsageData/trackEventUsageData.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
@@ -67,7 +66,6 @@ import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screens
 			UnfocusNodesOnLoadingMapEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
-			TrackEventUsageDataEffect,
 			BlacklistSearchPatternEffect,
 			ResetColorRangeEffect,
 			ResetDynamicMarginEffect,

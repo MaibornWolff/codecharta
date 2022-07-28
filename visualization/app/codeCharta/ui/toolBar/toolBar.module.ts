@@ -8,6 +8,7 @@ import { LoadingMapProgressSpinnerComponent } from "./loadingMapProgressSpinner/
 import { UploadFilesButtonComponent } from "./uploadFilesButton/uploadFilesButton.component"
 import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton/globalConfigurationButton.component"
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel/hoveredNodePathPanel.component"
+import { FilePanelComponent } from "../filePanel/filePanel.component"
 import { ScreenshotButtonComponent } from "../screenshotButton/screenshotButton.component"
 
 angular
@@ -18,3 +19,4 @@ angular
 	.directive("ccGlobalConfigurationButton", downgradeComponent({ component: GlobalConfigurationButtonComponent }))
 	.directive("ccHoveredNodePathPanel", downgradeComponent({ component: HoveredNodePathPanelComponent }))
 	.directive("ccScreenshotButton", downgradeComponent({ component: ScreenshotButtonComponent }))
+	.directive("ccFilePanel", downgradeComponent({ component: FilePanelComponent }))

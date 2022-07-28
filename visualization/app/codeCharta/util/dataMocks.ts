@@ -37,12 +37,64 @@ import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
-export const VALID_NODE: CodeMapNode = {
+const DEFAULT_FILE_META = {
+	projectName: "Sample Project",
+	apiVersion: packageJson.codecharta.apiVersion,
+	exportedFileSize: 300_000,
+	fileName: "file",
+	fileChecksum: "md5-delta-file"
+}
+
+const DEFAULT_FILE_MAP: CodeMapNode = {
 	name: "root",
-	attributes: {},
 	type: NodeType.FOLDER,
+	attributes: {},
 	isExcluded: false,
 	isFlattened: false,
+	children: []
+}
+
+export const VALID_EDGES: Edge[] = [
+	{
+		fromNodeName: "/root/big leaf",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			avgCommits: 34
+		}
+	},
+	{
+		fromNodeName: "/root/Parent Leaf/other small leaf",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			otherMetric: 34
+		}
+	},
+	{
+		fromNodeName: "/root/not available",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			avgCommits: 34
+		}
+	}
+]
+
+const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType.FOLDER, isExcluded: false, isFlattened: false }
+
+const DEFAULT_SETTINGS = {
+	fileSettings: {
+		attributeTypes: { nodes: {}, edges: {} },
+		blacklist: [],
+		edges: VALID_EDGES,
+		markedPackages: []
+	}
+}
+export const DEFAULT_CC_FILE_MOCK: CCFile = { fileMeta: DEFAULT_FILE_META, map: DEFAULT_FILE_MAP, settings: DEFAULT_SETTINGS }
+
+export const VALID_NODE: CodeMapNode = {
+	...DEFAULT_ROOT,
 	children: [
 		{
 			name: "big leaf",
@@ -50,7 +102,7 @@ export const VALID_NODE: CodeMapNode = {
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			isExcluded: false,
 			isFlattened: false,
-			link: "http://www.google.de"
+			link: "https://www.google.de"
 		},
 		{
 			name: "Parent Leaf",
@@ -79,11 +131,7 @@ export const VALID_NODE: CodeMapNode = {
 }
 
 export const VALID_NODE_JAVA: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+	...DEFAULT_ROOT,
 	children: [
 		{
 			name: "main",
@@ -135,17 +183,15 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 }
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -185,11 +231,9 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 }
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "Folder3",
@@ -227,7 +271,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -235,11 +279,9 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 }
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "Folder3",
@@ -277,7 +319,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -285,11 +327,9 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 }
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "Folder1",
@@ -327,7 +367,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -335,11 +375,9 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 }
 
 export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "Folder1",
@@ -391,7 +429,7 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -399,17 +437,15 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 }
 
 export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
-	name: "root",
+	...DEFAULT_ROOT,
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
-	type: NodeType.FOLDER,
-	isExcluded: false,
-	isFlattened: false,
+
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -475,7 +511,7 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 			type: NodeType.FILE,
 			path: "/root/big leaf",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -523,7 +559,7 @@ export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
 	type: NodeType.FILE,
 	path: "/root/big leaf",
 	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-	link: "http://www.google.de",
+	link: "https://www.google.de",
 	isExcluded: false,
 	isFlattened: false
 }
@@ -543,11 +579,11 @@ export const VALID_NODES_WITH_ID: CodeMapNode = {
 
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 2 },
 	type: NodeType.FOLDER,
-	path: "/root",
 	isExcluded: false,
 	isFlattened: false,
+	path: "/root",
+	attributes: { [NodeMetricDataService.UNARY_METRIC]: 2 },
 	children: [
 		{
 			name: "first leaf",
@@ -570,18 +606,18 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 
 export const VALID_NODE_DECORATED: CodeMapNode = {
 	name: "root",
-	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 5 },
 	type: NodeType.FOLDER,
-	path: "/root",
 	isExcluded: false,
 	isFlattened: false,
+	path: "/root",
+	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 5 },
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
 			path: "/root/big leaf",
 			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -614,33 +650,6 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 		}
 	]
 }
-
-export const VALID_EDGES: Edge[] = [
-	{
-		fromNodeName: "/root/big leaf",
-		toNodeName: "/root/Parent Leaf/small leaf",
-		attributes: {
-			pairingRate: 89,
-			avgCommits: 34
-		}
-	},
-	{
-		fromNodeName: "/root/Parent Leaf/other small leaf",
-		toNodeName: "/root/Parent Leaf/small leaf",
-		attributes: {
-			pairingRate: 89,
-			otherMetric: 34
-		}
-	},
-	{
-		fromNodeName: "/root/not available",
-		toNodeName: "/root/Parent Leaf/small leaf",
-		attributes: {
-			pairingRate: 89,
-			avgCommits: 34
-		}
-	}
-]
 
 export const VALID_EDGES_DECORATED: Edge[] = [
 	{
@@ -718,37 +727,21 @@ export const TEST_FILE_CONTENT_NO_API: ExportCCFile = {
 }
 
 export const FILE_META: FileMeta = {
+	...DEFAULT_FILE_META,
 	fileName: "fileA",
-	fileChecksum: "md5-fileA",
-	projectName: "Sample Project",
-	apiVersion: packageJson.codecharta.apiVersion,
-	exportedFileSize: 300_000
+	fileChecksum: "md5-fileA"
 }
 
 export const TEST_FILE_DATA: CCFile = {
 	fileMeta: FILE_META,
 	map: VALID_NODE,
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_FILE_DATA_JAVA: CCFile = {
-	fileMeta: FILE_META,
+	fileMeta: { ...FILE_META, fileChecksum: "md5-fileB", fileName: "fileB" },
 	map: VALID_NODE_JAVA,
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
@@ -1074,7 +1067,7 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 				type: NodeType.FILE,
 				path: "/root/big leaf",
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1115,14 +1108,7 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const METRIC_DISTRIBUTION: MetricDistribution[] = [
@@ -1238,7 +1224,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 	name: "root",
 	attributes: {},
 	deltas: {},
-	fileCount: { added: 0, removed: 0 },
+	fileCount: { added: 0, removed: 0, changed: 0 },
 	type: NodeType.FOLDER,
 	path: "/root",
 	isExcluded: false,
@@ -1250,7 +1236,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			deltas: { rloc: 300, functions: -15, mcc: 12 },
-			fileCount: { added: 0, removed: 1 },
+			fileCount: { added: 0, removed: 1, changed: 0 },
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -1260,7 +1246,17 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 120, functions: 20, mcc: 2 },
 			deltas: { rloc: -150, functions: 9, mcc: 33 },
-			fileCount: { added: 0, removed: 1 },
+			fileCount: { added: 0, removed: 1, changed: 0 },
+			isExcluded: false,
+			isFlattened: false
+		},
+		{
+			name: "leaf.java with changes",
+			type: NodeType.FILE,
+			path: "/root/leaf.java with changes",
+			attributes: { rloc: 0, functions: 0, mcc: 0 },
+			deltas: { rloc: 0, functions: 0, mcc: 0 },
+			fileCount: { added: 0, removed: 0, changed: 1 },
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -1269,7 +1265,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			type: NodeType.FOLDER,
 			attributes: {},
 			deltas: {},
-			fileCount: { added: 0, removed: 0 },
+			fileCount: { added: 0, removed: 0, changed: 0 },
 			path: "/root/Parent Leaf",
 			isExcluded: false,
 			isFlattened: false,
@@ -1280,7 +1276,17 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/small leaf.json",
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
 					deltas: { rloc: -55, functions: 38, mcc: -40 },
-					fileCount: { added: 0, removed: 1 },
+					fileCount: { added: 0, removed: 1, changed: 0 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "leaf.jpg with changes",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/leaf.jpg with changes",
+					attributes: { rloc: 0, functions: 0, mcc: 0 },
+					deltas: { rloc: 0, functions: 0, mcc: 0 },
+					fileCount: { added: 0, removed: 0, changed: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
@@ -1290,7 +1296,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/other small leaf.json",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
 					deltas: { rloc: 200, functions: -27, mcc: 65 },
-					fileCount: { added: 1, removed: 0 },
+					fileCount: { added: 1, removed: 0, changed: 0 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -1328,24 +1334,18 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
+		...DEFAULT_FILE_META,
 		fileName: "fileA",
-		fileChecksum: "md5-delta-fileA",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
+		fileChecksum: "md5-delta-fileA"
 	},
 	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
+		...DEFAULT_FILE_MAP,
 		children: [
 			{
 				name: "big leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1374,36 +1374,23 @@ export const TEST_DELTA_MAP_A: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_DELTA_MAP_B: CCFile = {
 	fileMeta: {
+		...DEFAULT_FILE_META,
 		fileName: "fileB",
-		fileChecksum: "md5-delta-fileB",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
+		fileChecksum: "md5-delta-fileB"
 	},
 	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
+		...DEFAULT_FILE_MAP,
 		children: [
 			{
 				name: "big leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 20, functions: 10, mcc: 1 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1411,7 +1398,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 				name: "additional leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 10, functions: 11, mcc: 5 },
-				link: "http://www.google.de",
+				link: "https://www.google.de",
 				isExcluded: false,
 				isFlattened: false
 			},
@@ -1440,80 +1427,6 @@ export const TEST_DELTA_MAP_B: CCFile = {
 						name: "big leaf",
 						type: NodeType.FILE,
 						attributes: { rloc: 20, functions: 10, mcc: 1 },
-						link: "http://www.google.de",
-						isExcluded: false,
-						isFlattened: false
-					}
-				]
-			}
-		]
-	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
-}
-
-export const TEST_DELTA_MAP_C: CCFile = {
-	fileMeta: {
-		fileName: "fileC",
-		fileChecksum: "md5-delta-fileB",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
-	},
-	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
-		children: [
-			{
-				name: "big leaf",
-				type: NodeType.FILE,
-				attributes: { rloc: 20, functions: 10, mcc: 1 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
-			},
-			{
-				name: "additional leaf",
-				type: NodeType.FILE,
-				attributes: { rloc: 10, functions: 11, mcc: 5 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
-			},
-			{
-				name: "Parent Leaf",
-				type: NodeType.FOLDER,
-				attributes: {},
-				isExcluded: false,
-				isFlattened: false,
-				children: [
-					{
-						name: "small leaf",
-						type: NodeType.FILE,
-						attributes: { rloc: 30, functions: 100, mcc: 100, more: 20 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "other small leaf",
-						type: NodeType.FILE,
-						attributes: { rloc: 70, functions: 1000 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "big leaf",
-						type: NodeType.FILE,
-						attributes: { rloc: 200, functions: 50, mcc: 30 },
 						link: "https://www.google.de",
 						isExcluded: false,
 						isFlattened: false
@@ -1522,88 +1435,7 @@ export const TEST_DELTA_MAP_C: CCFile = {
 			}
 		]
 	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
-}
-
-export const TEST_DELTA_MAP_D: CCFile = {
-	fileMeta: {
-		fileName: "fileD",
-		fileChecksum: "md5-delta-fileB",
-		projectName: "Sample Project",
-		apiVersion: packageJson.codecharta.apiVersion,
-		exportedFileSize: 300_000
-	},
-	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
-		children: [
-			{
-				name: "D file 1",
-				type: NodeType.FILE,
-				attributes: { rloc: 400, functions: 12, mcc: 34 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
-			},
-			{
-				name: "D file 2",
-				type: NodeType.FILE,
-				attributes: { rloc: 230, functions: 14, mcc: 9 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
-			},
-			{
-				name: "D folder 1",
-				type: NodeType.FOLDER,
-				attributes: {},
-				isExcluded: false,
-				isFlattened: false,
-				children: [
-					{
-						name: "D file 1.1",
-						type: NodeType.FILE,
-						attributes: { rloc: 400, functions: 30, mcc: 20, more: 20 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "D file 1.2",
-						type: NodeType.FILE,
-						attributes: { rloc: 40, functions: 3 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "D file 1.3",
-						type: NodeType.FILE,
-						attributes: { rloc: 200, functions: 20, mcc: 30 },
-						link: "https://www.google.de",
-						isExcluded: false,
-						isFlattened: false
-					}
-				]
-			}
-		]
-	},
-	settings: {
-		fileSettings: {
-			attributeTypes: { nodes: {}, edges: {} },
-			blacklist: [],
-			edges: VALID_EDGES,
-			markedPackages: []
-		}
-	}
+	settings: DEFAULT_SETTINGS
 }
 
 export const TEST_FILE_DATA_DOWNLOADED = {
@@ -1613,8 +1445,8 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	nodes: [
 		{
 			name: "root",
-			attributes: {},
 			type: NodeType.FOLDER,
+			attributes: {},
 			children: [
 				{
 					name: "big leaf",
@@ -1624,7 +1456,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 						functions: 10,
 						mcc: 1
 					},
-					link: "http://www.google.de"
+					link: "https://www.google.de"
 				},
 				{
 					name: "Parent Leaf",
@@ -1749,8 +1581,7 @@ export const STATE: State = {
 			to: 67
 		},
 		colorMode: ColorMode.weightedGradient,
-		sortingOption: SortingOption.NAME,
-		recentFiles: ["fileA", "fileB"]
+		sortingOption: SortingOption.NAME
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -1872,8 +1703,7 @@ export const DEFAULT_STATE: State = {
 		},
 		colorMode: ColorMode.weightedGradient,
 		searchPattern: "",
-		sortingOption: SortingOption.NAME,
-		recentFiles: []
+		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },

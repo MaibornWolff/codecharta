@@ -18,7 +18,6 @@ import { PresentationModeActions } from "../../state/store/appSettings/isPresent
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
-import { trackMapMetaData } from "../../util/usageDataTracker"
 import { HoveredNodeIdActions } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
@@ -35,7 +34,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	private unifiedFileMeta: FileMeta
 
 	private readonly debounceRendering: () => void
-	private readonly debounceTracking: (actionType: string, payload?: unknown) => void
 	private DEBOUNCE_TIME = 0
 
 	constructor(
@@ -52,10 +50,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
-
-		this.debounceTracking = debounce(() => {
-			trackMapMetaData(this.storeService.getState().files)
-		}, 1000)
 	}
 
 	getRenderMap() {
@@ -82,7 +76,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			!isActionOfType(actionType, RightClickedNodeDataActions)
 		) {
 			this.debounceRendering()
-			this.debounceTracking(actionType)
 		} else {
 			this.codeMapRenderService.update()
 		}

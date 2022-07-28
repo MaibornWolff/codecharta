@@ -37,6 +37,7 @@ export interface FileCount {
 	all?: number
 	added: number
 	removed: number
+	changed: number
 }
 
 interface squarifiedNode {
@@ -127,7 +128,6 @@ export interface DynamicSettings extends PrimaryMetrics {
 	focusedNodePath: string[]
 	searchPattern: string
 	margin: number
-	recentFiles: string[]
 }
 
 export interface AppSettings {

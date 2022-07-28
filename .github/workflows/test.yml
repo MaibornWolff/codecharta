@@ -80,7 +80,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
           name: coverage
           path: ./visualization/dist/
@@ -133,7 +133,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v3.4.0
+        uses: actions/setup-java@v3.4.1
         with:
           distribution: 'zulu'
           java-version: '11'

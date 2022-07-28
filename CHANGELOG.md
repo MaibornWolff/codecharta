@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics
+    changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
+
+### Fixed 🐞
+
+-   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
+
+## [1.101.1] - 2022-07-27
+
+### Chore 👨‍💻 👩‍💻
+
+-   Modify build script for GitHub pages in order to provide zipped maps.
+
+## [1.101.0] - 2022-07-26
+
+### Added 🚀
+
+-   Transform a metric gardener json file into a code charta json file, that can be correctly visualized [#2675](https://github.com/MaibornWolff/codecharta/pull/2875)
+
+### Changed
+
+-   Restore previous selected files when switching back from delta to standard mode [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
+-   Add more metrics that can be preselected when opening a cc.json file [#2907](https://github.com/MaibornWolff/codecharta/pull/2907) [#2908](https://github.com/MaibornWolff/codecharta/pull/2908)
+
+### Fixed 🐞
+
+-   Let file selection always show what is actual rendered within the map [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Improve performance by slightly delaying node-name popups and removing unused functionality [#2897](https://github.com/MaibornWolff/codecharta/pull/2897)
+
 ## [1.100.0] - 2022-07-12
 
 ### Added 🚀

@@ -10,7 +10,6 @@ import "./codeMap/codeMap.module"
 import "./dialog/dialog.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./resetSettingsButton/resetSettingsButton.module"
-import "./filePanel/filePanel.module"
 import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
 import "./toolBar/toolBar.module"
@@ -32,8 +31,7 @@ angular
 		"app.codeCharta.ui.ribbonBar",
 		"app.codeCharta.ui.scenarioDropDown",
 		"app.codeCharta.ui.toolBar",
-		"app.codeCharta.ui.viewCube",
-		"app.codeCharta.ui.filePanel"
+		"app.codeCharta.ui.viewCube"
 	])
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
 	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))

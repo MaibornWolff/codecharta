@@ -4,7 +4,7 @@ import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
 import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
 import { StoreService } from "./state/store.service"
-import { removeFile, resetFiles } from "./state/store/files/files.actions"
+import { removeFile, setDeltaReference, setFiles, setStandard } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isPartialState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
@@ -13,6 +13,7 @@ import packageJson from "../../package.json"
 import { clone } from "./util/clone"
 import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { klona } from "klona"
+import { Store } from "./state/store/store"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("./state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -38,12 +39,17 @@ describe("codeChartaService", () => {
 			{ name: "mcc", maxValue: 1, minValue: 1 },
 			{ name: "rloc", maxValue: 2, minValue: 1 }
 		])
-		storeService.dispatch(resetFiles())
+		storeService.dispatch(setFiles([]))
+	})
+
+	afterEach(() => {
+		codeChartaService.unsubscribeReferenceFileSubscription()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 		storeService = getService<StoreService>("storeService")
+		Store["_store"] = storeService["store"]
 		dialogService = getService<DialogService>("dialogService")
 	}
 
@@ -76,7 +82,7 @@ describe("codeChartaService", () => {
 				children: [
 					{
 						attributes: { functions: 10, mcc: 1, rloc: 100 },
-						link: "http://www.google.de",
+						link: "https://www.google.de",
 						name: "big leaf",
 						path: "/root/big leaf",
 						type: NodeType.FILE,
@@ -364,5 +370,19 @@ describe("codeChartaService", () => {
 			expect(storeService.getState().files).toHaveLength(1)
 			expect(storeService.getState().files[0].file.fileMeta.fileName).toEqual("SecondFile")
 		})
+	})
+
+	it("should update its ROOT_PATH when reference file is being set to a file", async () => {
+		await codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+		const updateRootDataSpy = jest.spyOn(CodeChartaService, "updateRootData")
+
+		const newReferenceFile = storeService.getState().files[0].file
+		storeService.dispatch(setDeltaReference(newReferenceFile))
+		expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
+		expect(updateRootDataSpy).toHaveBeenCalledWith(storeService.getState().files[0].file.map.name)
+
+		// set reference file to a partial selected file. Therefore reference file becomes undefined
+		storeService.dispatch(setStandard([storeService.getState().files[0].file]))
+		expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
 	})
 })
