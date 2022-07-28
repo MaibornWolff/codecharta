@@ -79,8 +79,6 @@ class SourceMonitorImporter(
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }
 
-
-
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {

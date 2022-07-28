@@ -125,8 +125,6 @@ class TokeiImporter(
         return root
     }
 
-
-
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {

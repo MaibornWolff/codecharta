@@ -20,8 +20,6 @@ class CSVImporter(
         private val output: PrintStream = System.out,
         private val test: Boolean = false) : Callable<Void>, InteractiveParser {
 
-
-
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 

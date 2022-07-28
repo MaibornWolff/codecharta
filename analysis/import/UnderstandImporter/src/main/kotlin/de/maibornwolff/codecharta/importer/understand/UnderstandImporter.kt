@@ -48,8 +48,6 @@ class UnderstandImporter(private val output: PrintStream = System.out,
         return null
     }
 
-
-
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
