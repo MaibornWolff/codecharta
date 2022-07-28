@@ -27,7 +27,6 @@ import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
-import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
@@ -57,4 +56,3 @@ angular
 	.service(camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)
 	.service(camelCase(SharpnessModeService.name), SharpnessModeService)
 	.service(camelCase(ExperimentalFeaturesEnabledService.name), ExperimentalFeaturesEnabledService)
-	.service(camelCase(ScreenshotToClipboardEnabledService.name), ScreenshotToClipboardEnabledService)
