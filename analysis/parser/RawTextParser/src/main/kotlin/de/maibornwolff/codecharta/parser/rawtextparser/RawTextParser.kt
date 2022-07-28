@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
-import de.maibornwolff.codecharta.serialization.FileExtensionHandler
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -81,7 +81,7 @@ class RawTextParser(
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
 
-        val filePath = FileExtensionHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: "")
+        val filePath = OutputFileHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: "")
 
         ProjectGenerator(getWriter(), filePath, compress).generate(results, pipedProject)
         return null
@@ -96,7 +96,7 @@ class RawTextParser(
     private fun getWriter(): Writer {
         if (!test) {
             return BufferedWriter(
-                    FileWriter(File(FileExtensionHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: ""))))
+                    FileWriter(File(OutputFileHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: ""))))
         }
             return OutputStreamWriter(output)
     }

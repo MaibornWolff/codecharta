@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.crococosmo
 
-import de.maibornwolff.codecharta.serialization.FileExtensionHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
@@ -38,7 +37,7 @@ class CrococosmoImporter : Callable<Void> {
             val filePath = file?.absolutePath ?: "notSpecified"
 
             if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(it.value,
-                    FileExtensionHandler.checkAndFixFileExtension(filePath))
+                    filePath)
             else ProjectSerializer.serializeProject(it.value, writer(suffix))
         }
 

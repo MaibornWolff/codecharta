@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiTwelveStr
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.serialization.FileExtensionHandler
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -18,14 +18,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import picocli.CommandLine
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
 import java.io.PrintStream
-import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -60,7 +56,7 @@ class TokeiImporter(
     private var pathSeparator = "/"
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -82,12 +78,13 @@ class TokeiImporter(
         }
         projectBuilder.addAttributeTypes(attributeTypes)
 
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
+        val filePath = outputFile ?: "notSpecified"
 
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
             projectBuilder.build(),
-            FileExtensionHandler.checkAndFixFileExtension(filePath)
-        ) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+            OutputFileHandler.checkAndFixFileExtension(filePath)
+        ) else
+            ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", test, output))
 
         return null
     }
@@ -128,12 +125,8 @@ class TokeiImporter(
         return root
     }
 
-    private fun writer(): Writer {
-         if (test) {
-          return OutputStreamWriter(output)
-        }
-            return BufferedWriter(FileWriter(FileExtensionHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: "")))
-    }
+
+
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {

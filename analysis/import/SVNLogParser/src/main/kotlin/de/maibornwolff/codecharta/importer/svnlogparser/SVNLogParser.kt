@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.serialization.FileExtensionHandler
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -20,11 +20,10 @@ import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.util.Arrays
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
 
@@ -36,7 +35,8 @@ import java.util.stream.Stream
 class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+    private val error: PrintStream = System.err,
+    private val test: Boolean = false
                   ) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -46,7 +46,7 @@ class SVNLogParser(
     private var file: File? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile = ""
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -96,16 +96,10 @@ class SVNLogParser(
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
-        if (outputFile.isNotEmpty()) {
-            outputFile = FileExtensionHandler.checkAndFixFileExtension(outputFile)
-            if (compress) ProjectSerializer.serializeAsCompressedFile(
-                project,
-                outputFile
-            ) else ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputStreamWriter(output))
-        }
-
+        val filePath = outputFile ?: "notSpecified"
+        if (compress && filePath != "notSpecified")
+            ProjectSerializer.serializeAsCompressedFile(project, OutputFileHandler.checkAndFixFileExtension(filePath)) else
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", test, output))
         return null
     }
 

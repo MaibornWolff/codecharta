@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstatRawParserStrategy
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.serialization.FileExtensionHandler
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -20,7 +20,6 @@ import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
@@ -35,7 +34,8 @@ import java.util.stream.Stream
 class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+    private val error: PrintStream = System.err,
+    private val test: Boolean = false
 ) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -53,7 +53,7 @@ class GitLogParser(
     private var nameFile: File? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile = ""
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"], arity = "0")
     private var compress = true
@@ -110,15 +110,12 @@ class GitLogParser(
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
-        if (outputFile.isNotEmpty()) {
-            outputFile = FileExtensionHandler.checkAndFixFileExtension(outputFile)
-            if (compress) ProjectSerializer.serializeAsCompressedFile(
+        val filePath = outputFile ?: "notSpecified"
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
                 project,
-                outputFile
-            ) else ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputStreamWriter(output))
-        }
+                OutputFileHandler.checkAndFixFileExtension(filePath)
+                                                                                               )
+        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", test, output))
 
         return null
     }
