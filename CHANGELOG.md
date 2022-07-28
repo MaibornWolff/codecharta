@@ -14,8 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left
-    empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
+-   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
 
 ## [1.101.1] - 2022-07-27
 
