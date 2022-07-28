@@ -21,7 +21,7 @@ Object {
         },
         "isExcluded": false,
         "isFlattened": false,
-        "link": "http://www.google.de",
+        "link": "https://www.google.de",
         "name": "big leaf",
         "type": "File",
       },

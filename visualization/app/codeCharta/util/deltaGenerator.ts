@@ -56,13 +56,15 @@ export class DeltaGenerator {
 				if (referenceNode.children || comparisonNode.children) {
 					referenceNode.children = []
 				}
-				referenceNode.deltas = this.getDeltaAttributeList(referenceNode.attributes, comparisonNode.attributes)
+				const { deltaList, differenceExists } = this.compareAttributeValues(referenceNode.attributes, comparisonNode.attributes)
+				referenceNode.deltas = deltaList
+				const changed = differenceExists ? 1 : 0
 				// TODO: The attributes have to be consolidated to have a single set of
 				// attributes instead of conflicting attributes. This applies to all
 				// attributes and is not specific about the attributes from the
 				// reference node.
 				referenceNode.attributes = comparisonNode.attributes
-				referenceNode.fileCount = { added: 0, removed: 0 }
+				referenceNode.fileCount = { added: 0, removed: 0, changed }
 			} else {
 				if (comparisonNode.children) {
 					comparisonNode.children = []
@@ -71,7 +73,8 @@ export class DeltaGenerator {
 
 				comparisonNode.fileCount = {
 					added: comparisonNode.type === NodeType.FILE ? 1 : 0,
-					removed: 0
+					removed: 0,
+					changed: 0
 				}
 			}
 
@@ -89,7 +92,8 @@ export class DeltaGenerator {
 			node.deltas = {}
 			node.fileCount = {
 				added: 0,
-				removed: node.type === NodeType.FILE ? 1 : 0
+				removed: node.type === NodeType.FILE ? 1 : 0,
+				changed: 0
 			}
 
 			for (const [key, value] of Object.entries(node.attributes)) {
@@ -100,23 +104,31 @@ export class DeltaGenerator {
 		}
 	}
 
-	private static getDeltaAttributeList(referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
-		const deltaAttribute: KeyValuePair = {}
+	private static compareAttributeValues(reference: KeyValuePair, comparison: KeyValuePair) {
+		const deltaList: KeyValuePair = {}
+		let differenceExists = false
+
+		const attributeKeys = new Set(Object.keys(reference))
+		for (const key of Object.keys(comparison)) {
+			attributeKeys.add(key)
+		}
+
+		for (const key of attributeKeys) {
+			const referenceAttribute = reference[key] ?? 0
+			const compAttribute = comparison[key] ?? 0
+
+			if (referenceAttribute !== compAttribute) {
+				differenceExists = true
+			}
+
+			const attributeDelta = compAttribute - referenceAttribute
+			deltaList[key] = attributeDelta
+		}
 
 		// TODO: All entries should have the combined attributes and deltas set,
 		// even if they do not exist on one side. Calculate these attributes up
 		// front. This operation is otherwise costly.
-		for (const key of Object.keys(comparisonAttribute)) {
-			deltaAttribute[key] = referenceAttribute[key] ? comparisonAttribute[key] - referenceAttribute[key] : comparisonAttribute[key]
-		}
-
-		for (const key of Object.keys(referenceAttribute)) {
-			if (!comparisonAttribute[key]) {
-				deltaAttribute[key] = -referenceAttribute[key]
-			}
-		}
-
-		return deltaAttribute
+		return { deltaList, differenceExists }
 	}
 
 	private static getFileMetaData(referenceFile: CCFile, comparisonFile: CCFile): FileMeta {

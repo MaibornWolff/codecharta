@@ -27,7 +27,7 @@ describe("AggregationGenerator", () => {
 							type: NodeType.FILE,
 							path: "/root/big leaf",
 							attributes: { rloc: 100, functions: 10, mcc: 1 },
-							link: "http://www.google.de"
+							link: "https://www.google.de"
 						},
 						{
 							name: "Parent Leaf",
@@ -67,7 +67,7 @@ describe("AggregationGenerator", () => {
 							type: NodeType.FILE,
 							path: "/root/big leaf",
 							attributes: { rloc: 200, functions: 20, mcc: 2 },
-							link: "http://www.google.de"
+							link: "https://www.google.de"
 						},
 						{
 							name: "Parent Leaf",
