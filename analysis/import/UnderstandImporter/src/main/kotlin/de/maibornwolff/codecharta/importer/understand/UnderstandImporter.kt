@@ -14,14 +14,16 @@ import java.util.concurrent.Callable
     description = ["generates cc.json from SciTools (TM) Understand csv"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class UnderstandImporter(private val output: PrintStream = System.out,
-                         private val test: Boolean = false) : Callable<Void> {
+class UnderstandImporter(private val output: PrintStream = System.out, private val test: Boolean = false) : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: String? = null
+
+    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
+    private var systemout = false
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -41,7 +43,7 @@ class UnderstandImporter(private val output: PrintStream = System.out,
         val project = projectBuilder.build()
         val filePath = outputFile ?: "notSpecified"
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, OutputFileHandler.checkAndFixFileExtension(filePath)) else ProjectSerializer.serializeProject(project,
-                OutputFileHandler.writer(outputFile ?: "", test, output))
+                OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
 
         logger.info { "Created project with ${project.size} leafs." }
 

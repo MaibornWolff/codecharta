@@ -46,8 +46,11 @@ class SonarImporterMain(
     )
     private var projectId = ""
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
+
+    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
+    private var systemout = false
 
     @CommandLine.Option(names = ["-m", "--metrics"], description = ["comma-separated list of metrics to import"])
     private var metrics = mutableListOf<String>()
@@ -60,16 +63,6 @@ class SonarImporterMain(
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
     private var usePath = false
-
-    /**
-    private fun writer(): Writer {
-        return if (outputFile.isEmpty()) {
-            OutputStreamWriter(output)
-        } else {
-            BufferedWriter(FileWriter(outputFile))
-        }
-    }
-    **/
 
     private fun createMeasuresAPIImporter(): SonarMeasuresAPIImporter {
         if (url.endsWith("/")) url = url.substring(0, url.length - 1)
@@ -95,7 +88,7 @@ class SonarImporterMain(
         val filePath = outputFile ?: "notSpecified"
         if (compress && filePath != "notSpecified")
             ProjectSerializer.serializeAsCompressedFile(project, OutputFileHandler.checkAndFixFileExtension(filePath)) else
-                ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", test, output))
+                ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", test || systemout, output))
 
         return null
     }

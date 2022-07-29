@@ -26,11 +26,14 @@ class CodeMaatImporter(
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
+
+    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
+    private var systemout = false
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["codemaat coupling csv files"])
     private var files: List<File> = mutableListOf()
@@ -51,7 +54,7 @@ class CodeMaatImporter(
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
             project,
             OutputFileHandler.checkAndFixFileExtension(filePath)
-        ) else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", test, output))
+        ) else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
 
         return null
     }

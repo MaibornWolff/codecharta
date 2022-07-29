@@ -52,8 +52,11 @@ class GitLogParser(
     )
     private var nameFile: File? = null
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
+
+    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
+    private var systemout = false
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"], arity = "0")
     private var compress = true
@@ -115,7 +118,7 @@ class GitLogParser(
                 project,
                 OutputFileHandler.checkAndFixFileExtension(filePath)
                                                                                                )
-        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", test, output))
+        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
 
         return null
     }

@@ -55,8 +55,11 @@ class TokeiImporter(
     @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = "/"
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File "])
     private var outputFile: String? = null
+
+    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
+    private var systemout = false
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -84,7 +87,7 @@ class TokeiImporter(
             projectBuilder.build(),
             OutputFileHandler.checkAndFixFileExtension(filePath)
         ) else
-            ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", test, output))
+            ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
 
         return null
     }

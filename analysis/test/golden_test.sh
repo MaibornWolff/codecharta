@@ -44,14 +44,14 @@ validate() {
 check_sourcemonitor() {
   echo " -- expect SourceMonitorImporter gives valid cc.json"
   ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
-  "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
+  "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv --systemout > "${ACTUAL_SOURCEMON_JSON}"
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
 check_understand() {
   echo " -- expect UnderstandImporter gives valid cc.json"
   ACTUAL_UNDERSTAND_JSON="${INSTALL_DIR}/actual_understandimporter.json"
-  "${CCSH}" understandimport data/codecharta/understand.csv > "${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
+  "${CCSH}" understandimport data/codecharta/understand.csv --systemout > "${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
   validate "${ACTUAL_UNDERSTAND_JSON}"
 }
 
@@ -65,14 +65,14 @@ check_crococosmo() {
 check_jasome() {
   echo " -- expect JasomeImporter gives valid cc.json"
   ACTUAL_JASOME_JSON="${INSTALL_DIR}/actual_jasomeimport.json"
-  "${CCSH}" jasomeimport data/codecharta/jasome.xml > "${ACTUAL_JASOME_JSON}"
+  "${CCSH}" jasomeimport data/codecharta/jasome.xml --systemout > "${ACTUAL_JASOME_JSON}"
   validate "${ACTUAL_JASOME_JSON}"
 }
 
 check_svnlog() {
   echo " -- expect SVNLogParser gives valid cc.json"
   ACTUAL_SVNLOG_JSON="${INSTALL_DIR}/actual_svnlog.json"
-  "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt --silent > "${ACTUAL_SVNLOG_JSON}"
+  "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt --silent --systemout > "${ACTUAL_SVNLOG_JSON}"
   validate "${ACTUAL_SVNLOG_JSON}"
 }
 
@@ -100,16 +100,16 @@ check_sourcecodeparser() {
 check_tokei() {
     echo " -- expect TokeiImporter gives valid cc.json"
     ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_tokei.json"
-    "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ > "${ACTUAL_TOKEI_JSON}"
+    "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --systemout --path-separator \\ > "${ACTUAL_TOKEI_JSON}"
     validate "${ACTUAL_TOKEI_JSON}"
 }
 
 check_pipe() {
    echo " -- expect pipes to work"
-   sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ \
+   sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ --systemout   \
         | sh "${CCSH}" sourcecodeparser data/codecharta/ \
-        | sh "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt \
-        | sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
+        | sh "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt --systemout  \
+        | sh "${CCSH}" modify --move-from=root/src --move-to=root/bar  \
             -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
     validate ${INSTALL_DIR}/piped_out.json
     if ! grep -q "Created Project with 9 leaves." ${INSTALL_DIR}/piped_out_log.json; then
