@@ -7,7 +7,6 @@ import { ColorMetricActions } from "./dynamicSettings/colorMetric/colorMetric.ac
 import { FocusedNodePathActions } from "./dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { Vector3 } from "three"
 import { EdgeHeightActions } from "./appSettings/edgeHeight/edgeHeight.actions"
-import { CameraActions } from "./appSettings/camera/camera.actions"
 import { BlacklistActions } from "./fileSettings/blacklist/blacklist.actions"
 import { setDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
 import { setFileSettings } from "./fileSettings/fileSettings.actions"
@@ -18,7 +17,7 @@ function getItemsOfType(array: CCAction[], actionTypes: string[]) {
 	return array.filter(action => actionTypes.includes(action.type))
 }
 
-describe("state.splitter", () => {
+describe("stateSplitter", () => {
 	describe("setState", () => {
 		it("should return 3 atomic actions", () => {
 			const partialState: RecursivePartial<State> = {
@@ -51,15 +50,14 @@ describe("state.splitter", () => {
 			expect(result[0].type).toEqual(FocusedNodePathActions.SET_ALL_FOCUSED_NODES)
 		})
 
-		it("should return 3 atomic actions from different parts of the state", () => {
+		it("should return 4 atomic actions from different parts of the state", () => {
 			const partialState: RecursivePartial<State> = {
 				dynamicSettings: {
 					areaMetric: "another_area_metric",
 					heightMetric: "another_height_metric"
 				},
 				appSettings: {
-					edgeHeight: 42,
-					camera: new Vector3(20, 40, 60)
+					edgeHeight: 42
 				},
 				fileSettings: {
 					blacklist: [{ path: "/some/path", type: BlacklistType.exclude }]
@@ -68,11 +66,10 @@ describe("state.splitter", () => {
 
 			const result: CCAction[] = splitStateActions(setState(partialState))
 
-			expect(result.length).toEqual(5)
+			expect(result.length).toEqual(4)
 			expect(getItemsOfType(result, Object.values(AreaMetricActions))).toHaveLength(1)
 			expect(getItemsOfType(result, Object.values(HeightMetricActions))).toHaveLength(1)
 			expect(getItemsOfType(result, Object.values(EdgeHeightActions))).toHaveLength(1)
-			expect(getItemsOfType(result, Object.values(CameraActions))).toHaveLength(1)
 			expect(getItemsOfType(result, Object.values(BlacklistActions))).toHaveLength(1)
 		})
 	})

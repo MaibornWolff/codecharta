@@ -8,7 +8,6 @@ import { DEFAULT_STATE, STATE, withMockedEventMethods } from "../util/dataMocks"
 import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
-import { setCamera } from "./store/appSettings/camera/camera.actions"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { toggleSortingOrderAscending } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 
@@ -102,12 +101,6 @@ describe("StoreService", () => {
 			storeService.dispatch(setState(STATE))
 
 			expect(storeService.getState()).toEqual(STATE)
-		})
-
-		it("should dispatch an action silently and not notify subscribers", () => {
-			storeService.dispatch(setCamera(), { silent: true })
-
-			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 
 		it("should show not the loading-gif when an action is triggered, that doesn't change the loading-gif state", () => {

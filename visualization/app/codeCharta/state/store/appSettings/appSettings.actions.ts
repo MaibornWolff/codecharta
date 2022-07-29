@@ -8,7 +8,6 @@ import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdge
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
 import { defaultScaling } from "./scaling/scaling.actions"
-import { defaultCamera } from "./camera/camera.actions"
 import { defaultHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
 import { defaultInvertHeight } from "./invertHeight/invertHeight.actions"
 import { defaultDynamicMargin } from "./dynamicMargin/dynamicMargin.actions"
@@ -20,7 +19,6 @@ import { defaultResetIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/re
 import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
 import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
-import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
 import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { defaultLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
 import { defaultMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
@@ -56,8 +54,6 @@ export const defaultAppSettings: AppSettings = {
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
 	edgeHeight: defaultEdgeHeight,
 	scaling: defaultScaling,
-	camera: defaultCamera,
-	cameraTarget: defaultCameraTarget,
 	hideFlatBuildings: defaultHideFlatBuildings,
 	invertHeight: defaultInvertHeight,
 	invertArea: defaultInvertArea,
