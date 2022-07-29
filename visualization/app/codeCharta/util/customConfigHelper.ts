@@ -250,7 +250,7 @@ export class CustomConfigHelper {
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
-		CustomConfigHelper.transformLegacyCustomConfig(customConfig)
+		CustomConfigHelper.transformLegacyCameraSettingsOfCustomConfig(customConfig)
 
 		// TODO: Setting state from loaded CustomConfig not working at the moment
 		//  due to issues of the event architecture.
@@ -276,7 +276,7 @@ export class CustomConfigHelper {
 	}
 
 	// TODO [2023-01-01] remove support
-	private static transformLegacyCustomConfig(customConfig: any) {
+	private static transformLegacyCameraSettingsOfCustomConfig(customConfig: any) {
 		const appSettings = customConfig.stateSettings.appSettings
 		if (appSettings.camera || appSettings.cameraTarget) {
 			customConfig.camera = {
