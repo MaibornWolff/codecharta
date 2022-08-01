@@ -57,12 +57,14 @@ import { HoveredNodePathPanelModule } from "./codeCharta/ui/toolBar/hoveredNodeP
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
+import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
 		EffectsModule.forRoot([
+			SplitStateActionsEffect,
 			UnfocusNodesOnLoadingMapEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
