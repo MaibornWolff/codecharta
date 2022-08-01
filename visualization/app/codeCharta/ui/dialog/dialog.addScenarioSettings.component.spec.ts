@@ -13,6 +13,7 @@ import { ScenarioHelper } from "../../util/scenarioHelper"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { Vector3 } from "three"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { splitStateActions } from "../../state/store/state.splitter"
 
 describe("DialogAddScenarioSettingsComponent", () => {
 	let dialogAddScenarioSettings: DialogAddScenarioSettingsComponent
@@ -46,7 +47,9 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 	describe("constructor", () => {
 		it("should call initDialogFields and set the fileContent", () => {
-			storeService.dispatch(setState(STATE))
+			for (const splittedActions of splitStateActions(setState(STATE))) {
+				storeService.dispatch(splittedActions)
+			}
 
 			rebuildController()
 
