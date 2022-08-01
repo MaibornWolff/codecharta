@@ -36,12 +36,6 @@ internal class OutputFileHandlerTest {
     }
 
     @Test
-    fun checkAndFixFileExtensionPathWithoutFilenameBackslash() {
-        val correctFilename = OutputFileHandler.checkAndFixFileExtension("\\test-project\\path1\\test-project.path1.Logic\\Service\\")
-        assertEquals("\\test-project\\path1\\test-project.path1.Logic\\Service.cc.json", correctFilename)
-    }
-
-    @Test
     fun checkAndFixFileExtensionPathWithoutFilename2() {
         val correctFilename = OutputFileHandler.checkAndFixFileExtension("")
         assertEquals("default.cc.json", correctFilename)
