@@ -2,6 +2,7 @@ import { getService } from "../../../mocks/ng.mockhelper"
 import { ILocationService, IHttpService } from "angular"
 import { UrlExtractor } from "./urlExtractor"
 import sample1 from "../assets/sample1.cc.json"
+import zlib from "zlib"
 
 describe("urlExtractor", () => {
 	let urlExtractor: UrlExtractor
@@ -141,16 +142,14 @@ describe("urlExtractor", () => {
 						checksum: "fake-md5",
 						data: {apiVersion: 1.3, nodes: []}
 					}*/
-			const mockBlob = new Blob([JSON.stringify(sample1, null, 2)])
-			// const compressMobFile = zlib.gzipSync(await mockBlob, Buffer)
-			/*const fileFromExample = new File([mockBlob], "file.json.gz");
-			const compressedSample = new File([zlib.gzipSync(fileFromExample.toString())], "file.json.gz")*/
+
+			const compressedSample = zlib.gzipSync(JSON.stringify(sample1))
 
 			$location.absUrl = jest.fn(() => {
 				return "http://testurl?file=file.json.gz"
 			})
 			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: mockBlob, status: 200 }
+				return { data: new Blob([compressedSample]), status: 200 }
 			})
 			const expected = {
 				content: {
@@ -161,8 +160,6 @@ describe("urlExtractor", () => {
 				fileName: "file.json.gz",
 				fileSize: 13
 			}
-			//const compressedMock: File = new File([zlib.gzipSync(JSON.stringify(expected))], "file.json")
-
 			const readContent = await urlExtractor.getFileDataFromFile("file.json.gz")
 			expect(readContent).toBe(expected)
 		})
