@@ -1,7 +1,6 @@
 import { getService } from "../../../mocks/ng.mockhelper"
 import { ILocationService, IHttpService } from "angular"
 import { UrlExtractor } from "./urlExtractor"
-import sample1 from "../assets/sample1.cc.json"
 import zlib from "zlib"
 
 describe("urlExtractor", () => {
@@ -137,31 +136,26 @@ describe("urlExtractor", () => {
 		})
 
 		it("should resolve data from compressed file", async () => {
-			/*const mockBlobData =
-					{
-						checksum: "fake-md5",
-						data: {apiVersion: 1.3, nodes: []}
-					}*/
+			const mockFile = {
+				checksum: "fake-md5",
+				data: { apiVersion: 1.3, nodes: [] }
+			}
+			const compressedSample = zlib.gzipSync(JSON.stringify(mockFile))
 
-			const compressedSample = zlib.gzipSync(JSON.stringify(sample1))
-
-			$location.absUrl = jest.fn(() => {
-				return "http://testurl?file=file.json.gz"
-			})
 			$http.get = jest.fn().mockImplementation(async () => {
 				return { data: new Blob([compressedSample]), status: 200 }
 			})
 			const expected = {
 				content: {
 					apiVersion: 1.3,
-					fileChecksum: "99914b932bd37a50b983c5e7c90ae93b",
+					fileChecksum: "fake-md5",
 					nodes: []
 				},
 				fileName: "file.json.gz",
 				fileSize: 13
 			}
 			const readContent = await urlExtractor.getFileDataFromFile("file.json.gz")
-			expect(readContent).toBe(expected)
+			expect(readContent).toEqual(expected)
 		})
 
 		it("should return NameDataPair object with project name as file name when a project name is given", async () => {
