@@ -9,6 +9,7 @@ import { UploadFilesButtonComponent } from "./uploadFilesButton/uploadFilesButto
 import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton/globalConfigurationButton.component"
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel/hoveredNodePathPanel.component"
 import { FilePanelComponent } from "../filePanel/filePanel.component"
+import { ScreenshotButtonComponent } from "../screenshotButton/screenshotButton.component"
 
 angular
 	.module("app.codeCharta.ui.toolBar", ["app.codeCharta.state", "app.codeCharta.ui.dialog"])
@@ -17,4 +18,5 @@ angular
 	.directive("ccUploadFilesButton", downgradeComponent({ component: UploadFilesButtonComponent }))
 	.directive("ccGlobalConfigurationButton", downgradeComponent({ component: GlobalConfigurationButtonComponent }))
 	.directive("ccHoveredNodePathPanel", downgradeComponent({ component: HoveredNodePathPanelComponent }))
+	.directive("ccScreenshotButton", downgradeComponent({ component: ScreenshotButtonComponent }))
 	.directive("ccFilePanel", downgradeComponent({ component: FilePanelComponent }))

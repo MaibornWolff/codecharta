@@ -1,20 +1,14 @@
-<md-button
-	class="toolbar-button"
-	ng-show="!$ctrl._viewModel.screenshotToClipboardEnabled"
-	ng-click="$ctrl.makeScreenshotToFile()"
-	title="Export screenshot as file ({{ $ctrl.SCREENSHOT_HOTKEY_TO_FILE }}), copy it to clipboard by ({{
-		$ctrl.SCREENSHOT_HOTKEY_TO_CLIPBOARD
-	}})"
+<cc-action-icon
+	*ngIf="isScreenshotToClipboardEnabled$ | async"
+	icon="fa fa-camera"
+	title="Copy screenshot to clipboard ({{ SCREENSHOT_HOTKEY_TO_CLIPBOARD }}), export it as a file by ({{ SCREENSHOT_HOTKEY_TO_FILE }})"
+	(click)="makeScreenshotToClipBoard()"
 >
-	<i class="fa fa-camera"></i>
-</md-button>
-<md-button
-	class="toolbar-button"
-	ng-show="$ctrl._viewModel.screenshotToClipboardEnabled"
-	ng-click="$ctrl.makeScreenshotToClipBoard()"
-	title="Copy screenshot to clipboard ({{ $ctrl.SCREENSHOT_HOTKEY_TO_CLIPBOARD }}), export it as a file by ({{
-		$ctrl.SCREENSHOT_HOTKEY_TO_FILE
-	}})"
+</cc-action-icon>
+<cc-action-icon
+	*ngIf="!(isScreenshotToClipboardEnabled$ | async)"
+	icon="fa fa-camera"
+	title="Export screenshot as file ({{ SCREENSHOT_HOTKEY_TO_FILE }}), copy it to clipboard by ({{ SCREENSHOT_HOTKEY_TO_CLIPBOARD }})"
+	(click)="makeScreenshotToFile()"
 >
-	<i class="fa fa-camera"></i>
-</md-button>
+</cc-action-icon>

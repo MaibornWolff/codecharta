@@ -1,9 +1,12 @@
-import "../../state/state.module"
-import "../dialog/dialog.module"
+import { CommonModule } from "@angular/common"
+import { NgModule } from "@angular/core"
+import { ActionIconModule } from "../actionIcon/actionIcon.module"
+import { ScreenshotButtonComponent } from "./screenshotButton.component"
 
-import angular from "angular"
-import { screenshotButtonComponent } from "./screenshotButton.component"
-
-angular
-	.module("app.codeCharta.ui.screenshotButton", ["app.codeCharta.state", "app.codeCharta.ui.dialog"])
-	.component(screenshotButtonComponent.selector, screenshotButtonComponent)
+@NgModule({
+	imports: [CommonModule, ActionIconModule],
+	declarations: [ScreenshotButtonComponent],
+	exports: [ScreenshotButtonComponent],
+	entryComponents: [ScreenshotButtonComponent]
+})
+export class ScreenshotButtonModule {}

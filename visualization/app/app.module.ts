@@ -21,7 +21,8 @@ import {
 	threeSceneServiceProvider,
 	codeChartaServiceProvider,
 	threeOrbitControlsServiceProvider,
-	threeCameraServiceProvider
+	threeCameraServiceProvider,
+	threeRendererServiceProvider
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
@@ -55,6 +56,7 @@ import { VersionService } from "./codeCharta/services/version/version.service"
 import { HoveredNodePathPanelModule } from "./codeCharta/ui/toolBar/hoveredNodePathPanel/hoveredNodePathPanel.module"
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
+import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 
 @NgModule({
@@ -96,7 +98,8 @@ import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateAc
 		ChangelogDialogModule,
 		HoveredNodePathPanelModule,
 		ActionIconModule,
-		ColorSettingsPanelModule
+		ColorSettingsPanelModule,
+		ScreenshotButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -104,6 +107,7 @@ import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateAc
 		IdToBuildingService,
 		threeCameraServiceProvider,
 		threeOrbitControlsServiceProvider,
+		threeRendererServiceProvider,
 		VersionService,
 		{
 			provide: APP_INITIALIZER,
