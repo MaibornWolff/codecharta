@@ -1,9 +1,9 @@
 "use strict"
 import { IHttpService, ILocationService } from "angular"
 import { NameDataPair } from "../codeCharta.model"
-import zlib from "zlib"
 import { getCCFileAndDecorateFileChecksum } from "./fileHelper"
 import { ExportCCFile, ExportWrappedCCFile } from "../codeCharta.api.model"
+import { ungzip } from "pako"
 
 export class UrlExtractor {
 	constructor(private $location: ILocationService, private $http: IHttpService) {}
@@ -56,8 +56,7 @@ export class UrlExtractor {
 				let content: ExportCCFile
 
 				reader.onload = event => {
-					const readerContent = zlib.unzipSync(Buffer.from(<string>event.target.result)).toString()
-					const responseData: string | ExportCCFile | ExportWrappedCCFile = readerContent
+					const responseData: string | ExportCCFile | ExportWrappedCCFile = ungzip(event.target.result, { to: "string" })
 					content = getCCFileAndDecorateFileChecksum(responseData)
 					fileName = this.getFileName(fileName, content.projectName)
 				}
