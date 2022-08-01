@@ -7,10 +7,6 @@ export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
 }
 
-export interface DispatchOptions {
-	silent: boolean
-}
-
 export class StoreService {
 	static STORE_CHANGED_EVENT = "store-changed"
 	private store = Store.store
@@ -28,12 +24,10 @@ export class StoreService {
 		Store.store.dispatch = this.dispatch.bind(this)
 	}
 
-	dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {
+	dispatch(action: CCAction) {
 		for (const atomicAction of splitStateActions(action)) {
 			this.originalDispatch(atomicAction)
-			if (!options.silent) {
-				this.notify(atomicAction.type)
-			}
+			this.notify(atomicAction.type)
 		}
 	}
 
