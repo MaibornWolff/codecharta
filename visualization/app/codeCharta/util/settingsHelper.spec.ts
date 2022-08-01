@@ -27,7 +27,6 @@ describe("SettingsHelper", () => {
 				appSettings: {
 					scaling: { y: 27 },
 					invertHeight: false,
-					camera: { x: 10, y: 20, z: 30 },
 					amountOfTopLabels: 23
 				}
 			}
@@ -36,7 +35,6 @@ describe("SettingsHelper", () => {
 				appSettings: {
 					scaling: new Vector3(1, 27, 1),
 					invertHeight: false,
-					camera: new Vector3(10, 20, 30),
 					amountOfTopLabels: 23
 				}
 			}

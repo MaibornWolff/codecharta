@@ -1,16 +1,16 @@
 "use strict"
-import { AppSettings, LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, Settings, MetricData } from "../codeCharta.model"
+import { LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, MetricData, AppSettings, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import scenarios from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
+import { Vector3 } from "three"
 
 export class ScenarioHelper {
 	private static readonly SCENARIOS_LOCAL_STORAGE_VERSION = "1.0.0"
 	private static readonly SCENARIOS_LOCAL_STORAGE_ELEMENT = "scenarios"
-	//TODO: Move Scenarios to Redux Store
-	private static scenarios: Map<string, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
+	static scenarios: Map<string, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
 	static getScenarioItems(metricData: MetricData) {
 		const scenarioItems: ScenarioItem[] = []
@@ -78,9 +78,9 @@ export class ScenarioHelper {
 		return scenario
 	}
 
-	private static transformScenarioAsSettingsToScenario(scenarioAsSettings: ExportScenario) {
-		const scenario: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
-		const { dynamicSettings, appSettings } = scenarioAsSettings.settings
+	private static transformScenarioAsSettingsToScenario(exportScenario: ExportScenario) {
+		const scenario: RecursivePartial<Scenario> = { name: exportScenario.name }
+		const { dynamicSettings, appSettings } = exportScenario.settings
 
 		if (dynamicSettings.areaMetric !== undefined) {
 			scenario.area = {
@@ -107,12 +107,6 @@ export class ScenarioHelper {
 				edgeMetric: dynamicSettings.edgeMetric,
 				edgeHeight: appSettings.edgeHeight,
 				edgePreview: appSettings.amountOfEdgePreviews
-			}
-		}
-		if (appSettings.camera) {
-			scenario.camera = {
-				camera: appSettings.camera,
-				cameraTarget: appSettings.cameraTarget
 			}
 		}
 
@@ -198,8 +192,7 @@ export class ScenarioHelper {
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
-		const scenario = this.scenarios.get(name)
+	static getScenarioSettings(scenario: RecursivePartial<Scenario>): RecursivePartial<Settings> {
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
 
@@ -223,10 +216,6 @@ export class ScenarioHelper {
 				partialAppSettings.edgeHeight = scenario.edge.edgeHeight
 				partialAppSettings.amountOfEdgePreviews = scenario.edge.edgePreview
 			}
-			if (scenario.camera) {
-				partialAppSettings.camera = scenario.camera.camera
-				partialAppSettings.cameraTarget = scenario.camera.cameraTarget
-			}
 		}
 
 		return { appSettings: partialAppSettings, dynamicSettings: partialDynamicSettings }
@@ -235,6 +224,10 @@ export class ScenarioHelper {
 	static importScenarios(scenarios: ExportScenario[]) {
 		for (const scenario of scenarios) {
 			convertToVectors(scenario.settings)
+			if (scenario.camera) {
+				scenario.camera.camera = new Vector3(scenario.camera.camera.x, scenario.camera.camera.y, scenario.camera.camera.z)
+				scenario.camera.cameraTarget = new Vector3(scenario.camera.camera.x, scenario.camera.camera.y, scenario.camera.camera.z)
+			}
 		}
 		return scenarios
 	}

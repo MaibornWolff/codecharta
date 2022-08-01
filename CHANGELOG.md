@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Changed storing format for camera position within custom views and scenarios. Loading of created custom views or scenarios in old format will stop working in 2023 [2880](https://github.com/MaibornWolff/codecharta/pull/2880)
+
+### Added 🚀
+
+-   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics
+    changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
+
 ### Fixed 🐞
 
 -   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
@@ -41,7 +50,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Add a description for the statements metric [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
--   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
 
 ### Changed
 

@@ -4,7 +4,6 @@ import { Vector3 } from "three"
 import { splitColorLabelsAction } from "./colorLabels/colorLabels.splitter"
 import { splitShowMetricLabelNodeNameAction } from "./showMetricLabelNodeName/showMetricLabelNodeName.splitter"
 import { splitShowMetricLabelNameValueAction } from "./showMetricLabelNameValue/showMetricLabelNameValue.splitter"
-import { splitCameraTargetAction } from "./cameraTarget/cameraTarget.splitter"
 import { splitIsAttributeSideBarVisibleAction } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.splitter"
 import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
@@ -16,7 +15,6 @@ import { splitIsWhiteBackgroundAction } from "./isWhiteBackground/isWhiteBackgro
 import { splitDynamicMarginAction } from "./dynamicMargin/dynamicMargin.splitter"
 import { splitInvertHeightAction } from "./invertHeight/invertHeight.splitter"
 import { splitHideFlatBuildingsAction } from "./hideFlatBuildings/hideFlatBuildings.splitter"
-import { splitCameraAction } from "./camera/camera.splitter"
 import { splitScalingAction } from "./scaling/scaling.splitter"
 import { splitEdgeHeightAction } from "./edgeHeight/edgeHeight.splitter"
 import { splitAmountOfEdgePreviewsAction } from "./amountOfEdgePreviews/amountOfEdgePreviews.splitter"
@@ -36,10 +34,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.showMetricLabelNameValue !== undefined) {
 		actions.push(splitShowMetricLabelNameValueAction(payload.showMetricLabelNameValue))
-	}
-
-	if (payload.cameraTarget !== undefined) {
-		actions.push(splitCameraTargetAction(payload.cameraTarget as Vector3))
 	}
 
 	if (payload.isAttributeSideBarVisible !== undefined) {
@@ -84,10 +78,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.hideFlatBuildings !== undefined) {
 		actions.push(splitHideFlatBuildingsAction(payload.hideFlatBuildings))
-	}
-
-	if (payload.camera !== undefined) {
-		actions.push(splitCameraAction(payload.camera as Vector3))
 	}
 
 	if (payload.scaling !== undefined) {

@@ -7,11 +7,11 @@ import { ScenarioHelper } from "../../util/scenarioHelper"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
-import { METRIC_DATA, PARTIAL_SETTINGS, SCENARIO_ITEMS } from "../../util/dataMocks"
+import { METRIC_DATA, SCENARIO_ITEMS } from "../../util/dataMocks"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
-import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -24,9 +24,16 @@ describe("ScenarioDropDownController", () => {
 	let storeService: StoreService
 	let dialogService: DialogService
 	let threeOrbitControlsService: ThreeOrbitControlsService
+	let threeCameraService: ThreeCameraService
 
 	function rebuildController() {
-		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, dialogService, threeOrbitControlsService)
+		scenarioButtonsController = new ScenarioDropDownController(
+			$rootScope,
+			storeService,
+			dialogService,
+			threeOrbitControlsService,
+			threeCameraService
+		)
 	}
 
 	function restartSystem() {
@@ -36,6 +43,7 @@ describe("ScenarioDropDownController", () => {
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 
 		mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
 	}
@@ -77,16 +85,30 @@ describe("ScenarioDropDownController", () => {
 
 	describe("applyScenario", () => {
 		it("should call setControl and call store.dispatch with scenarioSettings", () => {
-			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(PARTIAL_SETTINGS)
+			ScenarioHelper.scenarios.set("Scenario1", {
+				name: "Scenario1",
+				area: { areaMetric: "rloc", margin: 50 },
+				edge: { edgeHeight: 42 },
+				camera: {
+					camera: { x: 1, y: 1, z: 1 },
+					cameraTarget: { x: 2, y: 2, z: 2 }
+				}
+			})
 			scenarioButtonsController["isScenarioApplicable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
+			threeCameraService.setPosition = jest.fn()
 
 			scenarioButtonsController.applyScenario("Scenario1")
 
-			expect(storeService.dispatch).toHaveBeenCalledWith(setState(PARTIAL_SETTINGS))
-			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange({ from: 19, to: 67 }))
-			expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalled()
+			expect(storeService.dispatch).toHaveBeenCalledWith(
+				setState({
+					dynamicSettings: { areaMetric: "rloc", margin: 50 },
+					appSettings: { edgeHeight: 42 }
+				})
+			)
+			expect(threeCameraService.setPosition).toHaveBeenCalledWith({ x: 1, y: 1, z: 1 })
+			expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalledWith({ x: 2, y: 2, z: 2 })
 		})
 	})
 

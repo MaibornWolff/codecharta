@@ -12,6 +12,7 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 
 export interface ScenarioItem {
 	scenarioName: string
@@ -30,7 +31,8 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private dialogService: DialogService,
-		private threeOrbitControlsService: ThreeOrbitControlsService
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private threeCameraService: ThreeCameraService
 	) {
 		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
@@ -45,12 +47,19 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 	}
 
 	applyScenario(scenarioName: string) {
-		const scenarioSettings = ScenarioHelper.getScenarioSettingsByName(scenarioName)
+		const scenario = ScenarioHelper.scenarios.get(scenarioName)
 
+		const scenarioSettings = ScenarioHelper.getScenarioSettings(scenario)
 		this.storeService.dispatch(setState(scenarioSettings))
 		this.storeService.dispatch(setColorRange(scenarioSettings.dynamicSettings.colorRange as ColorRange))
 		this.storeService.dispatch(setMapColors(scenarioSettings.appSettings.mapColors as MapColors))
-		this.threeOrbitControlsService.setControlTarget()
+
+		if (scenario.camera) {
+			// @ts-ignore -- we know that it is not a partial when it is set
+			this.threeCameraService.setPosition(scenario.camera.camera)
+			// @ts-ignore -- we know that it is not a partial when it is set
+			this.threeOrbitControlsService.setControlTarget(scenario.camera.cameraTarget)
+		}
 	}
 
 	showAddScenarioSettings() {
