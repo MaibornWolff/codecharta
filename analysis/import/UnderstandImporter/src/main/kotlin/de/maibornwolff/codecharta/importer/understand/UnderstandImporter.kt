@@ -42,7 +42,7 @@ class UnderstandImporter(private val output: PrintStream = System.out, private v
         files.forEach { projectBuilder.parseCSVStream(it.inputStream()) }
         val project = projectBuilder.build()
         val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, OutputFileHandler.checkAndFixFileExtension(filePath)) else ProjectSerializer.serializeProject(project,
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath) else ProjectSerializer.serializeProject(project,
                 OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
 
         logger.info { "Created project with ${project.size} leafs." }

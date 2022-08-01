@@ -87,7 +87,7 @@ class SonarImporterMain(
         }
         val filePath = outputFile ?: "notSpecified"
         if (compress && filePath != "notSpecified")
-            ProjectSerializer.serializeAsCompressedFile(project, OutputFileHandler.checkAndFixFileExtension(filePath)) else
+            ProjectSerializer.serializeAsCompressedFile(project, filePath) else
                 ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", test || systemout, output))
 
         return null

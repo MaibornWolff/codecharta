@@ -12,17 +12,17 @@ import java.io.Writer
 
 class ProjectGenerator(private val writer: Writer, private val filePath: String, private val toCompress: Boolean) {
     private lateinit var projectBuilder: ProjectBuilder
+    private val default = "default.cc.json"
 
     fun generate(metricMap: Map<String, FileMetrics>, pipedProject: Project?) {
         projectBuilder = ProjectBuilder()
         metricMap.forEach { addAsNode(it) }
-
         var project = projectBuilder.build()
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
 
-        if (toCompress && filePath != "default.cc.json") {
+        if (toCompress && filePath != default) {
             serializeCompressedFileAndDeleteJsonFile(project, filePath, writer)
         } else {
             ProjectSerializer.serializeProject(project, writer)

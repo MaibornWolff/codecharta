@@ -53,7 +53,7 @@ class CodeMaatImporter(
 
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
             project,
-            OutputFileHandler.checkAndFixFileExtension(filePath)
+            filePath
         ) else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
 
         return null

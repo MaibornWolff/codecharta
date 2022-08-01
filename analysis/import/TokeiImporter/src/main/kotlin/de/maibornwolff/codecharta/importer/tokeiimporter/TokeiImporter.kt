@@ -85,7 +85,7 @@ class TokeiImporter(
 
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
             projectBuilder.build(),
-            OutputFileHandler.checkAndFixFileExtension(filePath)
+            filePath
         ) else
             ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
 

@@ -61,7 +61,8 @@ object ProjectSerializer {
     fun serializeAsCompressedFile(project: Project, absolutePath: String) {
         val wrappedProject = getWrappedProject(project)
         val jsonFile: String = GSON.toJson(wrappedProject, ProjectWrapper::class.java)
-        File("$absolutePath.gz").writeBytes(compress(jsonFile))
+        val fixedPath = OutputFileHandler.checkAndFixFileExtension(absolutePath)
+        File("$fixedPath.gz").writeBytes(compress(jsonFile))
     }
 
     /**
