@@ -4,7 +4,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Node, CodeMapNode, State, colorLabelOptions } from "../../codeCharta.model"
+import { Node, CodeMapNode, colorLabelOptions } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import {
 	COLOR_TEST_NODES,
@@ -32,6 +32,7 @@ import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { splitStateActions } from "../../state/store/state.splitter"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -48,7 +49,6 @@ describe("codeMapRenderService", () => {
 	let threeStatsService: ThreeStatsService
 	let threeUpdateCycleService: ThreeUpdateCycleService
 
-	let state: State
 	let map: CodeMapNode
 
 	beforeEach(() => {
@@ -71,11 +71,12 @@ describe("codeMapRenderService", () => {
 		threeStatsService = getService<ThreeStatsService>("threeStatsService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 
-		state = klona(STATE)
 		map = klona(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
-		storeService.dispatch(setState(state))
+		for (const splittedAction of splitStateActions(setState(STATE))) {
+			storeService.dispatch(splittedAction)
+		}
 		storeService.dispatch(unfocusNode())
 		mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
 	}

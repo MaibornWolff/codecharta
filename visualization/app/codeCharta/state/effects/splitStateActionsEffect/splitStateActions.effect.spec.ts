@@ -2,23 +2,16 @@ import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { Action } from "redux"
 import { Subject } from "rxjs"
-import { mocked } from "ts-jest/utils"
+import { STATE } from "../../../util/dataMocks"
 
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
-import { setAreaMetric } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setDynamicSettings } from "../../store/dynamicSettings/dynamicSettings.actions"
+import { setState } from "../../store/state.actions"
 import { Store } from "../../store/store"
 import { SplitStateActionsEffect } from "./splitStateActions.effect"
 
-jest.mock("../../store/store", () => ({
-	Store: {}
-}))
-const MockedStore = mocked(Store)
-
 describe("SplitStateActionsEffect", () => {
 	beforeEach(async () => {
-		MockedStore.dispatch = jest.fn()
-
 		EffectsModule.actions$ = new Subject<Action>()
 		TestBed.configureTestingModule({
 			imports: [EffectsModule.forRoot([SplitStateActionsEffect])]
@@ -31,12 +24,18 @@ describe("SplitStateActionsEffect", () => {
 	})
 
 	it("should do nothing on not splitable actions", () => {
+		const dispatchSpy = jest.spyOn(Store.store, "dispatch")
 		EffectsModule.actions$.next({ type: "whatever" })
-		expect(MockedStore.dispatch).not.toHaveBeenCalled()
+		expect(dispatchSpy).not.toHaveBeenCalled()
 	})
 
 	it("should dispatch splitted actions on splitable actions", () => {
 		EffectsModule.actions$.next(setDynamicSettings({ areaMetric: "rloc" }))
-		expect(MockedStore.dispatch).toHaveBeenCalledWith(setAreaMetric("rloc"))
+		expect(Store.store.getState().dynamicSettings.areaMetric).toBe("rloc")
+	})
+
+	it("should update the whole state", () => {
+		EffectsModule.actions$.next(setState(STATE))
+		expect(Store.store.getState()).toEqual(STATE)
 	})
 })
