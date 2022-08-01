@@ -1,7 +1,7 @@
 import { getService } from "../../../mocks/ng.mockhelper"
 import { ILocationService, IHttpService } from "angular"
 import { UrlExtractor } from "./urlExtractor"
-import zlib from "zlib"
+import { gzip } from "pako"
 
 describe("urlExtractor", () => {
 	let urlExtractor: UrlExtractor
@@ -140,7 +140,7 @@ describe("urlExtractor", () => {
 				checksum: "fake-md5",
 				data: { apiVersion: 1.3, nodes: [] }
 			}
-			const compressedSample = zlib.gzipSync(JSON.stringify(mockFile))
+			const compressedSample = gzip(JSON.stringify(mockFile))
 
 			$http.get = jest.fn().mockImplementation(async () => {
 				return { data: new Blob([compressedSample]), status: 200 }
