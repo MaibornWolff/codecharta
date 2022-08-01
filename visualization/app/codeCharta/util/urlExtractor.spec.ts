@@ -1,6 +1,7 @@
 import { getService } from "../../../mocks/ng.mockhelper"
 import { ILocationService, IHttpService } from "angular"
 import { UrlExtractor } from "./urlExtractor"
+import sample1 from "../assets/sample1.cc.json"
 
 describe("urlExtractor", () => {
 	let urlExtractor: UrlExtractor
@@ -114,7 +115,11 @@ describe("urlExtractor", () => {
 		})
 
 		it("should resolve data string of version 1.3 and return an object with content and fileName", async () => {
-			const expected = { content: { apiVersion: 1.3, fileChecksum: "fake-md5", nodes: [] }, fileName: "test.json", fileSize: 66 }
+			const expected = {
+				content: { apiVersion: 1.3, fileChecksum: "fake-md5", nodes: [] },
+				fileName: "test.json",
+				fileSize: 66
+			}
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
@@ -130,9 +135,44 @@ describe("urlExtractor", () => {
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
+		it("should resolve data from compressed file", async () => {
+			/*const mockBlobData =
+					{
+						checksum: "fake-md5",
+						data: {apiVersion: 1.3, nodes: []}
+					}*/
+			const mockBlob = new Blob([JSON.stringify(sample1, null, 2)])
+			// const compressMobFile = zlib.gzipSync(await mockBlob, Buffer)
+			/*const fileFromExample = new File([mockBlob], "file.json.gz");
+			const compressedSample = new File([zlib.gzipSync(fileFromExample.toString())], "file.json.gz")*/
+
+			$location.absUrl = jest.fn(() => {
+				return "http://testurl?file=file.json.gz"
+			})
+			$http.get = jest.fn().mockImplementation(async () => {
+				return { data: mockBlob, status: 200 }
+			})
+			const expected = {
+				content: {
+					apiVersion: 1.3,
+					fileChecksum: "99914b932bd37a50b983c5e7c90ae93b",
+					nodes: []
+				},
+				fileName: "file.json.gz",
+				fileSize: 13
+			}
+			//const compressedMock: File = new File([zlib.gzipSync(JSON.stringify(expected))], "file.json")
+
+			const readContent = await urlExtractor.getFileDataFromFile("file.json.gz")
+			expect(readContent).toBe(expected)
+		})
+
 		it("should return NameDataPair object with project name as file name when a project name is given", async () => {
 			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } }, status: 200 }
+				return {
+					data: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } },
+					status: 200
+				}
 			})
 			const actualNameDataPair = await urlExtractor.getFileDataFromFile("test.json")
 
