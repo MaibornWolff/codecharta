@@ -29,10 +29,18 @@ With output in CLI:
 
 `ccsh csvexport visual.cc.json`
 
-The following generates result.csv as output, while truncating path lists after length 4:
+The following generates result.csv as output, while truncating the file paths to length 2:
 
-`ccsh csvexport visual.cc.json --depth-of-hierarchy=4 -o result.csv`
+`ccsh csvexport visual.cc.json --depth-of-hierarchy=2 -o result.csv`
 
-Further usage information may be retrieved through
+NOTE: The flag `--depth-of-hierarchy=2` truncates the following example row of a CSV file
+
+> adt4j/src/main/java/com/github/sviperll/adt4j/Caching.java,Caching.java,File,13.0,1.0,2.0,2.0,8.0,2.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,adt4j,src,main,java,com,github,sviperll,adt4j,,
+
+into simply
+
+> adt4j/src/main/java/com/github/sviperll/adt4j/Caching.java,Caching.java,File,13.0,1.0,2.0,2.0,8.0,2.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,adt4j,src
+
+Further information about other topics can be found by
 
 `ccsh csvexport -h`
