@@ -6,7 +6,7 @@ import md5 from "md5"
 
 const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
-export function buildCustomConfigFromState(configName: string, state: State): CustomConfig {
+export function buildCustomConfigFromState(configName: string, state: State, camera: CustomConfig["camera"]): CustomConfig {
 	const customConfigFileStateConnector = new CustomConfigFileStateConnector(state.files)
 
 	const customConfig: CustomConfig = {
@@ -22,7 +22,8 @@ export function buildCustomConfigFromState(configName: string, state: State): Cu
 			dynamicSettings: undefined,
 			fileSettings: undefined,
 			treeMap: undefined
-		}
+		},
+		camera
 	}
 
 	// Initialize all necessary state settings with default values right here
@@ -51,8 +52,6 @@ function initializeAppSettings(target: CustomConfig) {
 		},
 		amountOfEdgePreviews: 0,
 		amountOfTopLabels: 0,
-		camera: undefined,
-		cameraTarget: undefined,
 		dynamicMargin: false,
 		edgeHeight: 0,
 		hideFlatBuildings: false,

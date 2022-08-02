@@ -1,3 +1,4 @@
+import { Vector3 } from "three"
 import { AttributeTypeValue, State } from "../codeCharta.model"
 import { buildCustomConfigFromState } from "./customConfigBuilder"
 
@@ -9,8 +10,7 @@ describe("CustomConfigBuilder", () => {
 				appSettings: {
 					experimentalFeaturesEnabled: true,
 					showMetricLabelNameValue: undefined,
-					isWhiteBackground: false,
-					camera: { x: 1, y: 2, z: 3 }
+					isWhiteBackground: false
 				},
 				dynamicSettings: {},
 				fileSettings: {}
@@ -24,7 +24,10 @@ describe("CustomConfigBuilder", () => {
 				}
 			}
 
-			const customConfig = buildCustomConfigFromState("test", fromState)
+			const customConfig = buildCustomConfigFromState("test", fromState, {
+				camera: new Vector3(1, 2, 3),
+				cameraTarget: new Vector3(4, 5, 6)
+			})
 
 			expect(customConfig.name).toBe("test")
 
@@ -36,9 +39,12 @@ describe("CustomConfigBuilder", () => {
 			expect(customConfig.stateSettings.appSettings.experimentalFeaturesEnabled).toBe(true)
 			expect(customConfig.stateSettings.appSettings.showMetricLabelNameValue).toBe(undefined)
 			expect(customConfig.stateSettings.appSettings.isWhiteBackground).toBe(false)
-			expect(customConfig.stateSettings.appSettings.camera.x).toBe(1)
-			expect(customConfig.stateSettings.appSettings.camera.y).toBe(2)
-			expect(customConfig.stateSettings.appSettings.camera.z).toBe(3)
+			expect(customConfig.camera.camera.x).toBe(1)
+			expect(customConfig.camera.camera.y).toBe(2)
+			expect(customConfig.camera.camera.z).toBe(3)
+			expect(customConfig.camera.cameraTarget.x).toBe(4)
+			expect(customConfig.camera.cameraTarget.y).toBe(5)
+			expect(customConfig.camera.cameraTarget.z).toBe(6)
 
 			// expect optional properties to have been copied
 			expect(typeof customConfig.stateSettings.fileSettings.attributeTypes.nodes !== "undefined").toBe(true)

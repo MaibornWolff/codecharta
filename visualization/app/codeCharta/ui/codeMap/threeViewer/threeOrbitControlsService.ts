@@ -10,7 +10,6 @@ import {
 	UnfocusNodeSubscriber
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
-import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 // TODO remove this old orbital control and use the jsm examples oneW
@@ -66,8 +65,7 @@ export class ThreeOrbitControlsService
 
 	// TODO add autofit for SharpnessMode ?
 
-	setControlTarget() {
-		const { cameraTarget } = this.storeService.getState().appSettings
+	setControlTarget(cameraTarget: Vector3) {
 		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
 	}
 
@@ -163,7 +161,7 @@ export class ThreeOrbitControlsService
 	}
 
 	onInput(camera: PerspectiveCamera) {
-		this.storeService.dispatch(setCameraTarget(this.controls.target), { silent: true })
+		this.setControlTarget(this.controls.target)
 		this.$rootScope.$broadcast(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, camera)
 	}
 

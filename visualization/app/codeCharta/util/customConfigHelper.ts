@@ -13,8 +13,6 @@ import { FileDownloader } from "./fileDownloader"
 import { setState } from "../state/store/state.actions"
 import { setColorRange } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setMargin } from "../state/store/dynamicSettings/margin/margin.actions"
-import { setCamera } from "../state/store/appSettings/camera/camera.actions"
-import { setCameraTarget } from "../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCameraService"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { BehaviorSubject } from "rxjs"
@@ -155,7 +153,8 @@ export class CustomConfigHelper {
 				customConfigVersion: exportedConfig.customConfigVersion,
 				mapChecksum: exportedConfig.mapChecksum,
 				mapSelectionMode: exportedConfig.mapSelectionMode,
-				stateSettings: exportedConfig.stateSettings
+				stateSettings: exportedConfig.stateSettings,
+				camera: exportedConfig.camera
 			}
 
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)
@@ -251,6 +250,7 @@ export class CustomConfigHelper {
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
+		CustomConfigHelper.transformLegacyCameraSettingsOfCustomConfig(customConfig)
 
 		// TODO: Setting state from loaded CustomConfig not working at the moment
 		//  due to issues of the event architecture.
@@ -267,12 +267,24 @@ export class CustomConfigHelper {
 
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
-		setTimeout(() => {
-			threeCameraService.setPosition()
-			threeOrbitControlsService.setControlTarget()
+		if (customConfig.camera) {
+			setTimeout(() => {
+				threeOrbitControlsService.setControlTarget(customConfig.camera.cameraTarget)
+				threeCameraService.setPosition(customConfig.camera.camera)
+			}, 100)
+		}
+	}
 
-			store.dispatch(setCamera(customConfig.stateSettings.appSettings.camera))
-			store.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget))
-		}, 100)
+	// TODO [2023-01-01] remove support
+	private static transformLegacyCameraSettingsOfCustomConfig(customConfig: any) {
+		const appSettings = customConfig.stateSettings.appSettings
+		if (appSettings.camera || appSettings.cameraTarget) {
+			customConfig.camera = {
+				camera: appSettings.camera,
+				cameraTarget: appSettings.cameraTarget
+			}
+			delete customConfig.stateSettings.appSettings.camera
+			delete customConfig.stateSettings.appSettings.cameraTarget
+		}
 	}
 }

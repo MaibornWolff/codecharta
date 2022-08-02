@@ -14,14 +14,15 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
-import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap.effect"
+import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap/unfocusNodesOnLoadingMap.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
 	threeSceneServiceProvider,
 	codeChartaServiceProvider,
 	threeOrbitControlsServiceProvider,
-	threeCameraServiceProvider
+	threeCameraServiceProvider,
+	threeRendererServiceProvider
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
@@ -55,12 +56,15 @@ import { VersionService } from "./codeCharta/services/version/version.service"
 import { HoveredNodePathPanelModule } from "./codeCharta/ui/toolBar/hoveredNodePathPanel/hoveredNodePathPanel.module"
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
+import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
+import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
 		EffectsModule.forRoot([
+			SplitStateActionsEffect,
 			UnfocusNodesOnLoadingMapEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
@@ -94,7 +98,8 @@ import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSetting
 		ChangelogDialogModule,
 		HoveredNodePathPanelModule,
 		ActionIconModule,
-		ColorSettingsPanelModule
+		ColorSettingsPanelModule,
+		ScreenshotButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -102,6 +107,7 @@ import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSetting
 		IdToBuildingService,
 		threeCameraServiceProvider,
 		threeOrbitControlsServiceProvider,
+		threeRendererServiceProvider,
 		VersionService,
 		{
 			provide: APP_INITIALIZER,

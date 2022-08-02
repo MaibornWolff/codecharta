@@ -2,14 +2,12 @@
 
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
-import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
-import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
 import { AmountOfEdgePreviewsService } from "./store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
@@ -24,7 +22,6 @@ import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
-import { ScreenshotToClipboardEnabledService } from "./store/appSettings/enableClipboard/screenshotToClipboardEnabled.service"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 export class InjectorService {
 	constructor(
@@ -32,14 +29,12 @@ export class InjectorService {
 		private metricDataService: MetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private nodeMetricDataService: NodeMetricDataService,
-		private cameraTargetService: CameraTargetService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		private isLoadingFileService: IsLoadingFileService,
 		private filesService: FilesService,
 		private mapSizeService: MapSizeService,
 		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
-		private cameraService: CameraService,
 		private scalingService: ScalingService,
 		private edgeHeightService: EdgeHeightService,
 		private amountOfEdgePreviewsService: AmountOfEdgePreviewsService,
@@ -53,7 +48,6 @@ export class InjectorService {
 		private layoutAlgorithmService: LayoutAlgorithmService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService,
-		private screenshotToClipboardEnabledService: ScreenshotToClipboardEnabledService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		"ngInject"
