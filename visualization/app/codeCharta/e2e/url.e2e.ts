@@ -3,6 +3,8 @@ import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import sample1 from "../assets/sample1.cc.json"
 import sample3 from "../assets/sample3.cc.json"
+import sample2 from "../assets/sample2.cc.json"
+// import {gzip} from "pako";
 
 async function mockResponses() {
 	await page.setRequestInterception(true)
@@ -18,6 +20,23 @@ async function mockResponses() {
 				contentType: "application/json",
 				headers: { "Access-Control-Allow-Origin": "*" },
 				body: JSON.stringify(sample3)
+			})
+		} else {
+			request.continue()
+		}
+	})
+}
+
+async function mockResponsesCompressed() {
+	await page.setRequestInterception(true)
+	page.on("request", request => {
+		if (request.url().includes("/fileThree.json")) {
+			// const compressFile = gzip(JSON.stringify(sample2))
+			//const blobFile = new Blob([compressFile])
+			request.respond({
+				contentType: "application/json",
+				headers: { "Access-Control-Allow-Origin": "*" },
+				body: JSON.stringify(sample2)
 			})
 		} else {
 			request.continue()
@@ -52,6 +71,12 @@ describe("codecharta", () => {
 		const names = await filePanel.getAllNames()
 		expect(names).toEqual(shouldBe)
 	}
+
+	it("should load data when compressed file parameters in url are valid", async () => {
+		await mockResponsesCompressed()
+		await goto(`${CC_URL}?file=fileThree.json`)
+		await checkAllFileNames(["Sample Project"])
+	})
 
 	it("should load data when file parameters in url are valid", async () => {
 		await mockResponses()
