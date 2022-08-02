@@ -34,8 +34,7 @@ import java.util.stream.Stream
 class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err,
-    private val test: Boolean = false
+    private val error: PrintStream = System.err
 ) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -118,7 +117,7 @@ class GitLogParser(
                 project,
                 filePath
                                                                                                )
-        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
+        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout, output))
 
         return null
     }

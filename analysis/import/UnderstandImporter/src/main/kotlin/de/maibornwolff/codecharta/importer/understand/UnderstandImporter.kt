@@ -14,7 +14,7 @@ import java.util.concurrent.Callable
     description = ["generates cc.json from SciTools (TM) Understand csv"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class UnderstandImporter(private val output: PrintStream = System.out, private val test: Boolean = false) : Callable<Void> {
+class UnderstandImporter(private val output: PrintStream = System.out) : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -43,7 +43,7 @@ class UnderstandImporter(private val output: PrintStream = System.out, private v
         val project = projectBuilder.build()
         val filePath = outputFile ?: "notSpecified"
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath) else ProjectSerializer.serializeProject(project,
-                OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
+                OutputFileHandler.writer(outputFile ?: "", systemout, output))
 
         logger.info { "Created project with ${project.size} leafs." }
 

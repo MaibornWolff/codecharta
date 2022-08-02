@@ -13,8 +13,7 @@ import java.util.concurrent.Callable
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class JasomeImporter(
-        private val output: PrintStream = System.out,
-        private val test: Boolean = false) : Callable<Void> {
+        private val output: PrintStream = System.out) : Callable<Void> {
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
@@ -37,7 +36,7 @@ class JasomeImporter(
         val filePath = outputFile ?: "notSpecified"
 
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,
-                OutputFileHandler.checkAndFixFileExtension(filePath)) else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
+                OutputFileHandler.checkAndFixFileExtension(filePath)) else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout, output))
 
         return null
     }

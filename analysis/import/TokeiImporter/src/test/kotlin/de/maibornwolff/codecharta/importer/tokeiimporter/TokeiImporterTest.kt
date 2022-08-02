@@ -15,21 +15,21 @@ class TokeiImporterTest {
 
     @Test
     fun `reads tokei from file`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\", "--systemout"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }
 
     @Test
     fun `reads tokei 12 new json scheme from file`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json", "--systemout"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"rloc\":450"))
     }
 
     @Test
     fun `tokei 12 should include the loc metric`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json", "--systemout"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":461"))
     }
@@ -39,7 +39,7 @@ class TokeiImporterTest {
         val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines()
             .joinToString(separator = "") { it }
 
-        val cliResult = executeForOutput(input, arrayOf())
+        val cliResult = executeForOutput(input, arrayOf("--systemout"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }
@@ -49,7 +49,7 @@ class TokeiImporterTest {
         val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines()
             .joinToString(separator = "") { it }
 
-        val cliResult = executeForOutput(input, arrayOf("--path-separator=\\"))
+        val cliResult = executeForOutput(input, arrayOf("--path-separator=\\", "--systemout"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.size).isEqualTo(3)
@@ -64,7 +64,7 @@ class TokeiImporterTest {
         val input = File("src/test/resources/tokei_without_inner.json").bufferedReader().readLines()
             .joinToString(separator = "") { it }
 
-        val cliResult = executeForOutput(input)
+        val cliResult = executeForOutput(input, arrayOf("--systemout"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.size).isEqualTo(2)
@@ -79,14 +79,14 @@ class TokeiImporterTest {
     fun `reads project piped input multiline`() {
         val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines()
             .joinToString(separator = "\n") { it }
-        val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
+        val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist", "--systemout"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }
 
     @Test
     fun `sets root correctly`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar", "--systemout"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
@@ -94,7 +94,7 @@ class TokeiImporterTest {
 
     @Test
     fun `handles path separator correctly`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\", "--systemout"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
@@ -102,7 +102,7 @@ class TokeiImporterTest {
 
     @Test
     fun `attributeTypes are set`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar", "--systemout"))
         val expected = mapOf(
             "comment_lines" to AttributeType.absolute,
             "empty_lines" to AttributeType.absolute,

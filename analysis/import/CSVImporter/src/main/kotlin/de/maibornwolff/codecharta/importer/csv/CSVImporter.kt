@@ -17,8 +17,7 @@ import java.util.concurrent.Callable
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class CSVImporter(
-        private val output: PrintStream = System.out,
-        private val test: Boolean = false) : Callable<Void>, InteractiveParser {
+        private val output: PrintStream = System.out) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -50,7 +49,7 @@ class CSVImporter(
         val filePath = outputFile ?: "notSpecified"
         if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,
                 filePath)
-        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
+        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout, output))
 
         return null
     }

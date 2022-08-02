@@ -32,8 +32,7 @@ import java.util.concurrent.Callable
 class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err,
-    private val test: Boolean = false
+    private val error: PrintStream = System.err
 ) : Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
@@ -87,7 +86,7 @@ class TokeiImporter(
             projectBuilder.build(),
             filePath
         ) else
-            ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", systemout || test, output))
+            ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", systemout, output))
 
         return null
     }
@@ -136,7 +135,8 @@ class TokeiImporter(
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(TokeiImporter(input, output, error, true), output, *args)
+
+            CommandLine.call(TokeiImporter(input, output, error), output, *args)
         }
 
         @JvmStatic
