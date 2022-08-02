@@ -15,7 +15,7 @@
 			[checked]="property.isSelected"
 			(change)="handleScenarioMetricPropertySelectionChange(property)"
 		>
-			{{ property.metricName ? property.metricType + "(" + property.metricName + ")" : property.metricType }}
+			{{ property.metricName ? property.metricType + " (" + property.metricName + ")" : property.metricType }}
 		</mat-slide-toggle>
 		<mat-error *ngIf="!areAnyScenarioMetricPropertiesSelected">You cannot create an empty Scenario</mat-error>
 	</div>
