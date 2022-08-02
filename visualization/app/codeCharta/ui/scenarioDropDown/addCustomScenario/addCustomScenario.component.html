@@ -3,8 +3,8 @@
 <div class="cc-add-custom-scenario-content">
 	<mat-form-field class="cc-add-custom-scenario-name-field">
 		<label>Scenario Name</label>
-		<input matInput required [(ngModel)]="scenarioName" (input)="validateScenarioName($event)" />
-		<mat-error *ngIf="scenarioNameErrorField">{{ scenarioNameErrorField }}</mat-error>
+		<input matInput [formControl]="scenarioName" />
+		<mat-error *ngIf="scenarioName.invalid">{{ scenarioName.getError("Error") }}</mat-error>
 	</mat-form-field>
 
 	<p>The scenario includes:</p>
@@ -24,7 +24,7 @@
 		<button
 			mat-button
 			mat-dialog-close
-			[disabled]="scenarioName.length === 0 || !areAnyScenarioMetricPropertiesSelected"
+			[disabled]="scenarioName.invalid || !areAnyScenarioMetricPropertiesSelected"
 			(click)="addCustomScenario()"
 		>
 			ADD
