@@ -1,30 +1,14 @@
 import "./dialog.component.scss"
 import { StoreService } from "../../state/store.service"
-import { ScenarioHelper } from "../../util/scenarioHelper"
+import { ScenarioHelper, ScenarioMetricProperty, ScenarioMetricType } from "../../util/scenarioHelper"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-
-export interface AddScenarioContent {
-	metricType: ScenarioMetricType
-	metricName: string
-	isSelected: boolean
-	isDisabled: boolean
-	savedValues: unknown
-}
-
-export enum ScenarioMetricType {
-	CAMERA_POSITION = "Camera-Position",
-	EDGE_METRIC = "Edge-Metric",
-	AREA_METRIC = "Area-Metric",
-	HEIGHT_METRIC = "Height-Metric",
-	COLOR_METRIC = "Color-Metric"
-}
 
 export class DialogAddScenarioSettingsComponent {
 	private _viewModel: {
 		scenarioName: string
 		currentAttribute: string
-		scenarioContent: AddScenarioContent[]
+		scenarioContent: ScenarioMetricProperty[]
 	} = {
 		scenarioName: "",
 		currentAttribute: null,
@@ -75,20 +59,20 @@ export class DialogAddScenarioSettingsComponent {
 	private setScenarioContentList() {
 		const { dynamicSettings } = this.storeService.getState()
 		const { appSettings } = this.storeService.getState()
-		this.pushScenarioContent(ScenarioMetricType.CAMERA_POSITION, "", {
+		this.pushScenarioContent("Camera-Position", "", {
 			camera: this.threeCameraService.camera.position,
 			cameraTarget: this.threeOrbitControlsService.controls.target
 		})
-		this.pushScenarioContent(ScenarioMetricType.AREA_METRIC, dynamicSettings.areaMetric, dynamicSettings.margin)
-		this.pushScenarioContent(ScenarioMetricType.HEIGHT_METRIC, dynamicSettings.heightMetric, {
+		this.pushScenarioContent("Area-Metric", dynamicSettings.areaMetric, dynamicSettings.margin)
+		this.pushScenarioContent("Height-Metric", dynamicSettings.heightMetric, {
 			heightSlider: appSettings.scaling,
 			labelSlider: appSettings.amountOfTopLabels
 		})
-		this.pushScenarioContent(ScenarioMetricType.COLOR_METRIC, dynamicSettings.colorMetric, {
+		this.pushScenarioContent("Color-Metric", dynamicSettings.colorMetric, {
 			colorRange: dynamicSettings.colorRange,
 			mapColors: appSettings.mapColors
 		})
-		this.pushScenarioContent(ScenarioMetricType.EDGE_METRIC, dynamicSettings.edgeMetric, {
+		this.pushScenarioContent("Edge-Metric", dynamicSettings.edgeMetric, {
 			edgePreview: appSettings.amountOfEdgePreviews,
 			edgeHeight: appSettings.edgeHeight
 		})

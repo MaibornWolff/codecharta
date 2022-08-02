@@ -1,11 +1,20 @@
 "use strict"
 import { LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, MetricData, AppSettings, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
-import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import scenarios from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
 import { Vector3 } from "three"
+
+export type ScenarioMetricType = "Camera-Position" | "Edge-Metric" | "Area-Metric" | "Height-Metric" | "Color-Metric"
+
+export type ScenarioMetricProperty = {
+	metricType: ScenarioMetricType
+	metricName: string
+	isSelected: boolean
+	isDisabled: boolean
+	savedValues: unknown
+}
 
 export class ScenarioHelper {
 	private static readonly SCENARIOS_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -136,26 +145,26 @@ export class ScenarioHelper {
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
+	static createNewScenario(scenarioName: string, scenarioAttributes: ScenarioMetricProperty[]) {
 		const newScenario: RecursivePartial<Scenario> = { name: scenarioName }
 
 		for (const attribute of scenarioAttributes) {
 			switch (attribute.metricType) {
-				case ScenarioMetricType.CAMERA_POSITION: {
+				case "Camera-Position": {
 					newScenario.camera = {
 						camera: attribute.savedValues["camera"],
 						cameraTarget: attribute.savedValues["cameraTarget"]
 					}
 					break
 				}
-				case ScenarioMetricType.AREA_METRIC: {
+				case "Area-Metric": {
 					newScenario.area = {
 						areaMetric: attribute.metricName,
 						margin: attribute.savedValues as number
 					}
 					break
 				}
-				case ScenarioMetricType.HEIGHT_METRIC: {
+				case "Height-Metric": {
 					newScenario.height = {
 						heightMetric: attribute.metricName,
 						heightSlider: attribute.savedValues["heightSlider"],
@@ -163,7 +172,7 @@ export class ScenarioHelper {
 					}
 					break
 				}
-				case ScenarioMetricType.COLOR_METRIC: {
+				case "Color-Metric": {
 					newScenario.color = {
 						colorMetric: attribute.metricName,
 						colorRange: attribute.savedValues["colorRange"],
@@ -171,7 +180,7 @@ export class ScenarioHelper {
 					}
 					break
 				}
-				case ScenarioMetricType.EDGE_METRIC: {
+				case "Edge-Metric": {
 					newScenario.edge = {
 						edgeMetric: attribute.metricName,
 						edgePreview: attribute.savedValues["edgePreview"],
