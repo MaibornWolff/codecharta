@@ -1,6 +1,7 @@
 import { getService } from "../../../mocks/ng.mockhelper"
 import { ILocationService, IHttpService } from "angular"
 import { UrlExtractor } from "./urlExtractor"
+import { gzip } from "pako"
 
 describe("urlExtractor", () => {
 	let urlExtractor: UrlExtractor
@@ -114,7 +115,11 @@ describe("urlExtractor", () => {
 		})
 
 		it("should resolve data string of version 1.3 and return an object with content and fileName", async () => {
-			const expected = { content: { apiVersion: 1.3, fileChecksum: "fake-md5", nodes: [] }, fileName: "test.json", fileSize: 66 }
+			const expected = {
+				content: { apiVersion: 1.3, fileChecksum: "fake-md5", nodes: [] },
+				fileName: "test.json",
+				fileSize: 66
+			}
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
@@ -130,9 +135,35 @@ describe("urlExtractor", () => {
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
+		it("should resolve data from compressed file", async () => {
+			const mockFile = {
+				checksum: "fake-md5",
+				data: { apiVersion: 1.3, nodes: [] }
+			}
+			const compressedSample = gzip(JSON.stringify(mockFile))
+
+			$http.get = jest.fn().mockImplementation(async () => {
+				return { data: new Blob([compressedSample]), status: 200 }
+			})
+			const expected = {
+				content: {
+					apiVersion: 1.3,
+					fileChecksum: "fake-md5",
+					nodes: []
+				},
+				fileName: "file.json.gz",
+				fileSize: 13
+			}
+			const readContent = await urlExtractor.getFileDataFromFile("file.json.gz")
+			expect(readContent).toEqual(expected)
+		})
+
 		it("should return NameDataPair object with project name as file name when a project name is given", async () => {
 			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } }, status: 200 }
+				return {
+					data: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } },
+					status: 200
+				}
 			})
 			const actualNameDataPair = await urlExtractor.getFileDataFromFile("test.json")
 
