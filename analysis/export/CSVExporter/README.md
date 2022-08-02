@@ -1,10 +1,18 @@
 # CSVExporter (experimental)
 
-Generates CSV file with header from visualization data
+Generates a CSV file from a cc.json File. The CSV file will have a header as described below.
 
 ## Usage
 
-### CSV Export
+`ccsh csvexport <file>` Input file
+
+`--depth-of-hierarchy=<maxHierarchy>` Optional: Defines how many layers of the project structure should be listed. DEFAULT: 10.
+
+`--output-file=<output> , -o=<output>` Optional: Generates csv file instead of output in CLI.
+
+`--help , -help` Gives list of flags.
+
+### CSV Export Header
 
 _Conventions for csv output:_
 
@@ -17,8 +25,14 @@ _Conventions for csv output:_
 
 ### Example
 
-> ccsh csvexport visual.cc.json
+With output in CLI:
+
+`ccsh csvexport visual.cc.json`
+
+The following generates result.csv as output, while truncating path lists after length 4:
+
+`ccsh csvexport visual.cc.json --depth-of-hierarchy=4 -o result.csv`
 
 Further usage information may be retrieved through
 
-> ccsh csvexport -h
+`ccsh csvexport -h`
