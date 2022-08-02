@@ -34,6 +34,7 @@ export class AddCustomScenarioComponent {
 	}
 
 	addCustomScenario() {
-		ScenarioHelper.addScenario(this.scenarioName.value, this.scenarioContent)
+		const selectedProperties = this.scenarioContent.filter(x => x.isSelected)
+		ScenarioHelper.addScenario(this.scenarioName.value, selectedProperties)
 	}
 }

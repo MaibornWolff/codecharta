@@ -4,7 +4,7 @@ import { ScenarioMetricProperty } from "../../../../util/scenarioHelper"
 
 export const getInitialScenarioMetricProperties = (state: CcState, camera: Scenario["camera"]): ScenarioMetricProperty[] => {
 	const { dynamicSettings, appSettings, fileSettings } = state
-	return [
+	const properties: ScenarioMetricProperty[] = [
 		{
 			metricType: "Camera-Position",
 			metricName: "",
@@ -38,16 +38,19 @@ export const getInitialScenarioMetricProperties = (state: CcState, camera: Scena
 			},
 			isSelected: true,
 			isDisabled: false
-		},
-		{
+		}
+	]
+	if (fileSettings.edges.length > 0) {
+		properties.push({
 			metricType: "Edge-Metric",
 			metricName: dynamicSettings.edgeMetric,
 			savedValues: {
 				edgePreview: appSettings.amountOfEdgePreviews,
 				edgeHeight: appSettings.edgeHeight
 			},
-			isSelected: fileSettings.edges.length > 0,
-			isDisabled: fileSettings.edges.length === 0
-		}
-	]
+			isSelected: true,
+			isDisabled: false
+		})
+	}
+	return properties
 }
