@@ -11,7 +11,8 @@ object CompressedStreamHandler {
         var content = input
         if (!input.markSupported()) { content = BufferedInputStream(input) }
         content.mark(2)
-        val byteArray = content.readNBytes(2)
+        val byteArray = ByteArray(2)
+        content.readNBytes(byteArray, 0, 2)
         content.reset()
         if (isGzipByteHeader(byteArray)) { return GZIPInputStream(content) }
         return content
