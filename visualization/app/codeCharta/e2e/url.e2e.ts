@@ -4,7 +4,7 @@ import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import sample1 from "../assets/sample1.cc.json"
 import sample3 from "../assets/sample3.cc.json"
 import sample2 from "../assets/sample2.cc.json"
-// import {gzip} from "pako";
+import { gzip } from "pako"
 
 async function mockResponses() {
 	await page.setRequestInterception(true)
@@ -30,13 +30,14 @@ async function mockResponses() {
 async function mockResponsesCompressed() {
 	await page.setRequestInterception(true)
 	page.on("request", request => {
-		if (request.url().includes("/fileThree.json")) {
-			// const compressFile = gzip(JSON.stringify(sample2))
-			//const blobFile = new Blob([compressFile])
+		if (request.url().includes("/fileThree.json.gz")) {
+			const compressFile = gzip(JSON.stringify(sample2))
+			const buffer = Buffer.from(compressFile)
 			request.respond({
-				contentType: "application/json",
+				status: 200,
+				contentType: "blob",
 				headers: { "Access-Control-Allow-Origin": "*" },
-				body: JSON.stringify(sample2)
+				body: buffer
 			})
 		} else {
 			request.continue()
@@ -74,8 +75,8 @@ describe("codecharta", () => {
 
 	it("should load data when compressed file parameters in url are valid", async () => {
 		await mockResponsesCompressed()
-		await goto(`${CC_URL}?file=fileThree.json`)
-		await checkAllFileNames(["Sample Project"])
+		await goto(`${CC_URL}?file=fileThree.json.gz`)
+		await checkSelectedFileName("Sample Project")
 	})
 
 	it("should load data when file parameters in url are valid", async () => {
