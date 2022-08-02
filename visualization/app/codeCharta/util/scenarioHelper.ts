@@ -140,15 +140,16 @@ export class ScenarioHelper {
 		return scenarios
 	}
 
-	static addScenario(newScenario: RecursivePartial<Scenario>) {
+	static addScenario(scenarioName: string, scenarioMetricProperties: ScenarioMetricProperty[]) {
+		const newScenario = ScenarioHelper.createNewScenario(scenarioName, scenarioMetricProperties)
 		this.scenarios.set(newScenario.name, newScenario)
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	static createNewScenario(scenarioName: string, scenarioAttributes: ScenarioMetricProperty[]) {
+	static createNewScenario(scenarioName: string, scenarioMetricProperties: ScenarioMetricProperty[]) {
 		const newScenario: RecursivePartial<Scenario> = { name: scenarioName }
 
-		for (const attribute of scenarioAttributes) {
+		for (const attribute of scenarioMetricProperties) {
 			switch (attribute.metricType) {
 				case "Camera-Position": {
 					newScenario.camera = {

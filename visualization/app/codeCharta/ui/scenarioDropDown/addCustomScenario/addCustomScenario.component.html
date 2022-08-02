@@ -1,3 +1,33 @@
 <mat-toolbar color="primary">Add Scenario</mat-toolbar>
 
-yolo
+<div class="cc-add-custom-scenario-content">
+	<mat-form-field class="cc-add-custom-scenario-name-field">
+		<label>Scenario Name</label>
+		<input matInput required [(ngModel)]="scenarioName" (input)="validateScenarioName($event)" />
+		<mat-error *ngIf="scenarioNameErrorField">{{ scenarioNameErrorField }}</mat-error>
+	</mat-form-field>
+
+	<p>The scenario includes:</p>
+
+	<div>
+		<mat-slide-toggle
+			*ngFor="let property of scenarioContent"
+			[checked]="property.isSelected"
+			(change)="handleScenarioMetricPropertySelectionChange(property)"
+		>
+			{{ property.metricName ? property.metricType + "(" + property.metricName + ")" : property.metricType }}
+		</mat-slide-toggle>
+		<mat-error *ngIf="!areAnyScenarioMetricPropertiesSelected">You cannot create an empty Scenario</mat-error>
+	</div>
+
+	<div class="cc-add-custom-scenario-buttons">
+		<button
+			mat-button
+			mat-dialog-close
+			[disabled]="scenarioName.length === 0 || !areAnyScenarioMetricPropertiesSelected"
+			(click)="addCustomScenario()"
+		>
+			ADD
+		</button>
+	</div>
+</div>
