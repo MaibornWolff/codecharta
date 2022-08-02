@@ -7,6 +7,7 @@ import sample2 from "../assets/sample2.cc.json"
 import { gzip } from "pako"
 
 async function mockResponses() {
+	page.removeAllListeners("request")
 	await page.setRequestInterception(true)
 	page.on("request", request => {
 		if (request.url().includes("/fileOne.json")) {
@@ -15,22 +16,7 @@ async function mockResponses() {
 				headers: { "Access-Control-Allow-Origin": "*" },
 				body: JSON.stringify(sample1)
 			})
-		} else if (request.url().includes("/fileTwo.json")) {
-			request.respond({
-				contentType: "application/json",
-				headers: { "Access-Control-Allow-Origin": "*" },
-				body: JSON.stringify(sample3)
-			})
-		} else {
-			request.continue()
-		}
-	})
-}
-
-async function mockResponsesCompressed() {
-	await page.setRequestInterception(true)
-	page.on("request", request => {
-		if (request.url().includes("/fileThree.json.gz")) {
+		} else if (request.url().includes("/fileThree.json.gz")) {
 			const compressFile = gzip(JSON.stringify(sample2))
 			const buffer = Buffer.from(compressFile)
 			request.respond({
@@ -38,6 +24,12 @@ async function mockResponsesCompressed() {
 				contentType: "blob",
 				headers: { "Access-Control-Allow-Origin": "*" },
 				body: buffer
+			})
+		} else if (request.url().includes("/fileTwo.json")) {
+			request.respond({
+				contentType: "application/json",
+				headers: { "Access-Control-Allow-Origin": "*" },
+				body: JSON.stringify(sample3)
 			})
 		} else {
 			request.continue()
@@ -74,7 +66,7 @@ describe("codecharta", () => {
 	}
 
 	it("should load data when compressed file parameters in url are valid", async () => {
-		await mockResponsesCompressed()
+		await mockResponses()
 		await goto(`${CC_URL}?file=fileThree.json.gz`)
 		await checkSelectedFileName("Sample Project")
 	})
