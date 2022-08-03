@@ -10,7 +10,8 @@ import {
 	setDeltaReference,
 	setFiles,
 	setStandard,
-	setStandardByNames
+	setStandardByNames,
+	switchReferenceAndComparison
 } from "./files.actions"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
@@ -140,6 +141,16 @@ describe("files", () => {
 			expect(result[0].selectedAs).toBe(FileSelectionState.Reference)
 			expect(result[1].selectedAs).toBe(FileSelectionState.None)
 			expect(result[2].selectedAs).toBe(FileSelectionState.Comparison)
+		})
+	})
+
+	describe("Action: SWITCH_REFERENCE_AND_COMPARISON", () => {
+		it("should switch reference and comparison file", () => {
+			state[0].selectedAs = FileSelectionState.Reference
+			state[1].selectedAs = FileSelectionState.Comparison
+			const result = files(state, switchReferenceAndComparison())
+			expect(result[0].selectedAs).toBe(FileSelectionState.Comparison)
+			expect(result[1].selectedAs).toBe(FileSelectionState.Reference)
 		})
 	})
 
