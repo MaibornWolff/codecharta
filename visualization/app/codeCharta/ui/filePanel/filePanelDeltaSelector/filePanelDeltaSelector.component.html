@@ -5,7 +5,6 @@
 </mat-select>
 
 <div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
-
 <mat-select
 	class="delta-select"
 	placeholder="select comparison file"
@@ -16,3 +15,7 @@
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>
+
+<button class="direction-switch" [disabled]="(comparisonFile$ | async) === undefined">
+	<i class="fa fa-arrows-h" (click)="exchangeFiles()"></i>
+</button>

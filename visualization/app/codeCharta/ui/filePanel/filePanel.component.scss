@@ -44,6 +44,16 @@ cc-file-panel {
 		}
 	}
 
+	.direction-switch {
+		background-color: rgba(230, 230, 230, 0.96);
+		margin: 0;
+		height: 24px;
+		border-radius: 5px;
+
+		.fa {
+			vertical-align: middle;
+		}
+	}
 	.pictogram {
 		display: inline-flex;
 		width: 10px;
