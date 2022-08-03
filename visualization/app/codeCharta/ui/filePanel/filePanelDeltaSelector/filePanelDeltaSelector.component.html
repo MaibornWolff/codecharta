@@ -16,6 +16,6 @@
 	</mat-option>
 </mat-select>
 
-<button class="direction-switch" [disabled]="(comparisonFile$ | async) === undefined">
-	<i class="fa fa-arrows-h" (click)="exchangeFiles()"></i>
+<button class="direction-switch" [disabled]="(comparisonFile$ | async) === undefined" (click)="exchangeFiles()">
+	<i class="fa fa-arrows-h"></i>
 </button>
