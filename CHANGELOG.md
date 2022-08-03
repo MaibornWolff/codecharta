@@ -13,8 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Switch reference and comparison file by button click in delta mode [#2933](https://github.com/MaibornWolff/codecharta/pull/2933)
+    ![image](https://user-images.githubusercontent.com/72517530/182630368-2d2b177d-8b4b-4850-8486-8d9afc7153c5.png)
 -   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics
     changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
+    ![image](https://user-images.githubusercontent.com/72517530/182631857-6192dea1-7a01-4684-90a6-d5da8615434a.png)
 -   Load compressed files (cc.json.gz) via URL parameter [#2917](https://github.com/MaibornWolff/codecharta/pull/2917)
 
 ### Fixed 🐞
