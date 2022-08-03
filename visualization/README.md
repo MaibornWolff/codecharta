@@ -11,51 +11,104 @@
 -   [JSON structure](#json-structure)
 -   [License](LICENSE.md)
 
-## Installation
+# Installation
 
-Change working directory `cd <projectpath>/codecharta/visualization/`
+First, change working directory via
 
-#### Install application for desktop usage with npm
+`cd <projectpath>/codecharta/visualization/`
 
--   install with `npm install codecharta-visualization -g`
--   run with `codecharta-visualization`
+## Install for desktop usage with npm
 
-#### Install application for desktop usage
+Install with
 
--   Download or build [latest version](https://github.com/MaibornWolff/codecharta/releases/latest) for your system.
--   Doubleclick the system specific Runnable. You may be required to give it executable rights.
+`npm install codecharta-visualization -g`
 
-#### Install project for development
+then run
 
--   Install node >= 8
--   Install dependencies `npm install`.
+`codecharta-visualization`
+
+## Install for desktop usage
+
+Download or build [latest version](https://github.com/MaibornWolff/codecharta/releases/latest) for your system.
+Then Doubleclick the system specific Runnable. You may be required to give it executable rights.
+
+(If you get an error on macOS because of a missing license, try https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0).
+
+## Install for development
+
+Make sure you have node >= 8 installed. Then run
+
+`npm install`
 
 Once you have installed the project, you can use all tasks described in the next section.
 
-## Tasks
+# Tasks
 
-#### Build
+## Build
 
-`npm run build` builds the project in dist/app. This artifact is ready to be served as a web application.
+Build the project in dist/app via
 
-#### Test
+`npm run build`
 
--   `npm run test` runs all unit tests on the source files in app/ and generates a coverage report in dist/coverage/.
--   `npm run e2e` runs all e2e tests on the built app in headless mode. **You have to stop your running dev-webserver and execute `npm run build` first**.
-    To follow/watch the steps the e2e test is performing, deactivate headless mode in jest-puppeteer.config.js (and maybe set the slowMo parameter).
+The resulting artifact is ready to be served as a web application.
 
-adding ":auto" to run target will run the tests in watch mode
+## Test
 
-#### Run
+### Unit
 
-`npm run dev` starts a simple web server and serves the project on localhost:3000.
-`npm run start` starts the nwjs app
+Run unit tests in app/ and generate a coverage report in dist/coverage/ via
 
-#### Package
+`npm run test`
 
-`npm run package` packages the nwjs app
+To run the tests in watch mode, use
 
-## JSON structure
+`npm run test:auto`
+
+### E2E
+
+First, you have to stop your running dev-webserver and execute
+
+`npm run build`
+
+Then, run the e2e-tests on the fresh build via
+
+`npm run e2e`
+
+To run the tests in watch mode, use
+
+`npm run e2e:auto`
+
+To follow/watch the steps the e2e test is performing, deactivate headless mode in jest-puppeteer.config.js (and maybe set the slowMo parameter).
+
+## Run
+
+### Development
+
+Serve the project on localhost:3000 via
+
+`npm run dev`
+
+### Production
+
+First, build via
+
+`npm run build`
+
+and then start the nwjs app via
+
+`npm run start`
+
+### Package
+
+Package the nwjs app via
+
+`npm run package`
+
+If you get WrapperError on macOS:
+
+Try to use Homebrew by running `brew install --cask wine-stable`, then try `npm run package` again.
+
+# JSON structure
 
 [Example Data](/visualization/app/codeCharta/assets/sample1.cc.json)
 
