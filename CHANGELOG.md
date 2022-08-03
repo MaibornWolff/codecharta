@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
--   Change CompressionStreamHandler usage of Java11 Method to Java9 [#2930](https://github.com/MaibornWolff/codecharta/pull/2930)
+-   Change CompressionStreamHandler's wrapInput usage of method readNBytes to read (java8) [#2930](https://github.com/MaibornWolff/codecharta/pull/2930)
 
 ## [1.101.1] - 2022-07-27
 

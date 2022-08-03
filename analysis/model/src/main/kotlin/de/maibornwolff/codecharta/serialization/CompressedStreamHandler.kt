@@ -7,12 +7,23 @@ import java.util.zip.GZIPInputStream
 object CompressedStreamHandler {
 
     fun wrapInput(input: InputStream): InputStream {
-        if (input.available() == 0) { return input }
+        if (input.available() == 2) { return input }
         var content = input
         if (!input.markSupported()) { content = BufferedInputStream(input) }
         content.mark(2)
-        val byteArray = ByteArray(2)
-        content.readNBytes(byteArray, 0, 2)
+
+        val firstValue = content.read()
+        if (firstValue == -1) {
+            content.reset()
+            return content
+        }
+        val secondValue = content.read()
+        if (secondValue == -1) {
+            content.reset()
+            return content
+        }
+        val byteArray = byteArrayOf(firstValue.toByte(), secondValue.toByte())
+
         content.reset()
         if (isGzipByteHeader(byteArray)) { return GZIPInputStream(content) }
         return content
