@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
+-   Fix of NoSuchMethodException due to a call of method `readNBytes()` that is not available in Java 9 with replacement call `read()` [#2930](https://github.com/MaibornWolff/codecharta/pull/2930)
 
 ## [1.101.1] - 2022-07-27
 
