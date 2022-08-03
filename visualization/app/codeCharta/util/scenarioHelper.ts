@@ -149,48 +149,48 @@ export class ScenarioHelper {
 	static createNewScenario(scenarioName: string, scenarioMetricProperties: ScenarioMetricProperty[]) {
 		const newScenario: RecursivePartial<Scenario> = { name: scenarioName }
 
-		for (const attribute of scenarioMetricProperties) {
-			switch (attribute.metricType) {
+		for (const property of scenarioMetricProperties.filter(p => p.isSelected)) {
+			switch (property.metricType) {
 				case "Camera-Position": {
 					newScenario.camera = {
-						camera: attribute.savedValues["camera"],
-						cameraTarget: attribute.savedValues["cameraTarget"]
+						camera: property.savedValues["camera"],
+						cameraTarget: property.savedValues["cameraTarget"]
 					}
 					break
 				}
 				case "Area-Metric": {
 					newScenario.area = {
-						areaMetric: attribute.metricName,
-						margin: attribute.savedValues as number
+						areaMetric: property.metricName,
+						margin: property.savedValues as number
 					}
 					break
 				}
 				case "Height-Metric": {
 					newScenario.height = {
-						heightMetric: attribute.metricName,
-						heightSlider: attribute.savedValues["heightSlider"],
-						labelSlider: attribute.savedValues["labelSlider"]
+						heightMetric: property.metricName,
+						heightSlider: property.savedValues["heightSlider"],
+						labelSlider: property.savedValues["labelSlider"]
 					}
 					break
 				}
 				case "Color-Metric": {
 					newScenario.color = {
-						colorMetric: attribute.metricName,
-						colorRange: attribute.savedValues["colorRange"],
-						mapColors: attribute.savedValues["mapColors"]
+						colorMetric: property.metricName,
+						colorRange: property.savedValues["colorRange"],
+						mapColors: property.savedValues["mapColors"]
 					}
 					break
 				}
 				case "Edge-Metric": {
 					newScenario.edge = {
-						edgeMetric: attribute.metricName,
-						edgePreview: attribute.savedValues["edgePreview"],
-						edgeHeight: attribute.savedValues["edgeHeight"]
+						edgeMetric: property.metricName,
+						edgePreview: property.savedValues["edgePreview"],
+						edgeHeight: property.savedValues["edgeHeight"]
 					}
 					break
 				}
 				default:
-					throw new Error(`Unknown metric type "${attribute.metricType}" detected`)
+					throw new Error(`Unknown metric type "${property.metricType}" detected`)
 			}
 		}
 

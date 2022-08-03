@@ -238,6 +238,13 @@ describe("scenarioHelper", () => {
 					savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 					isSelected: true,
 					isDisabled: false
+				},
+				{
+					metricType: "Color-Metric",
+					metricName: "mcc",
+					savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+					isSelected: false,
+					isDisabled: false
 				}
 			]
 
