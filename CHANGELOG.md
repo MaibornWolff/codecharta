@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Changed storing format for camera position within custom views and scenarios. Loading of created custom views or scenarios in old format will stop working in 2023 [2880](https://github.com/MaibornWolff/codecharta/pull/2880)
+-   Add error messages for the user to "Add Scenario Dialog" [#2928](https://github.com/MaibornWolff/codecharta/pull/2928)
 
 ### Added 🚀
 
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
+-   Exclude edge metrics from custom scenarios, when there are no edge metrics available. Before it was impossible to apply those custom configs [#2928](https://github.com/MaibornWolff/codecharta/pull/2928)
 -   Fix of NoSuchMethodException due to a call of method `readNBytes()` that is not available in Java 9 with replacement call `read()` [#2930](https://github.com/MaibornWolff/codecharta/pull/2930)
 
 ## [1.101.1] - 2022-07-27
