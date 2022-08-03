@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics
     changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
+-   Load compressed files (cc.json.gz) via URL parameter [#2917](https://github.com/MaibornWolff/codecharta/pull/2917)
 
 ### Fixed 🐞
 
