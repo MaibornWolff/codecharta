@@ -47,20 +47,6 @@ cc-reset-settings-button {
 	}
 }
 
-.scenario-dialog {
-	min-width: 50%;
-	.dialog-list {
-		margin: 5px 0 5px 0;
-
-		&.md-block {
-			display: block;
-		}
-	}
-	.scenario-input {
-		width: 80%;
-	}
-}
-
 .custom-config-dialog {
 	.warning {
 		color: #ff6161;

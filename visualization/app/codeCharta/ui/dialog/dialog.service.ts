@@ -1,5 +1,4 @@
 import { dialogDownloadComponent } from "./dialog.download.component"
-import { addScenarioSettingsComponent } from "./dialog.addScenarioSettings.component"
 import { CCFileValidationResult } from "../../util/fileValidator"
 
 export class DialogService {
@@ -9,10 +8,6 @@ export class DialogService {
 
 	showDownloadDialog() {
 		this.showCustomDialog(dialogDownloadComponent)
-	}
-
-	showAddScenarioSettings() {
-		this.showCustomDialog(addScenarioSettingsComponent)
 	}
 
 	showCustomDialog(dialog) {

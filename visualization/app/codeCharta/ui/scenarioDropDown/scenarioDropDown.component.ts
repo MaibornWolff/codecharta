@@ -1,6 +1,7 @@
 "use strict"
 
 import "./scenarioDropDown.component.scss"
+import "./addCustomScenario/addCustomScenario.component.scss"
 import { ScenarioHelper } from "../../util/scenarioHelper"
 import { ColorRange, MapColors } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
@@ -13,6 +14,8 @@ import { MetricDataService, MetricDataSubscriber } from "../../state/store/metri
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { MatDialog } from "@angular/material/dialog"
+import { AddCustomScenarioComponent } from "./addCustomScenario/addCustomScenario.component"
 
 export interface ScenarioItem {
 	scenarioName: string
@@ -32,7 +35,8 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 		private storeService: StoreService,
 		private dialogService: DialogService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
-		private threeCameraService: ThreeCameraService
+		private threeCameraService: ThreeCameraService,
+		private dialog: MatDialog
 	) {
 		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
@@ -63,7 +67,7 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 	}
 
 	showAddScenarioSettings() {
-		this.dialogService.showAddScenarioSettings()
+		this.dialog.open(AddCustomScenarioComponent, { panelClass: "cc-add-custom-scenario" })
 	}
 
 	removeScenario(scenarioName) {
