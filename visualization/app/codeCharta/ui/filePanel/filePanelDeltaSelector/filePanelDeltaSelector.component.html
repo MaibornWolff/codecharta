@@ -3,8 +3,10 @@
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>
+<button class="direction-switch" [disabled]="(comparisonFile$ | async) === undefined" (click)="exchangeFiles()">
+	<i class="fa fa-arrows-h"></i>
+</button>
 
-<div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
 <mat-select
 	class="delta-select"
 	placeholder="select comparison file"
@@ -15,7 +17,4 @@
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>
-
-<button class="direction-switch" [disabled]="(comparisonFile$ | async) === undefined" (click)="exchangeFiles()">
-	<i class="fa fa-arrows-h"></i>
-</button>
+<div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
