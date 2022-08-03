@@ -15,7 +15,7 @@ class ParserDialog {
                                                  )
 
             val outputFileName: String = KInquirer.promptInput(
-                message = "What is the name of the output file?",
+                message = "What is the name of the output file? If empty, the result will be returned in the terminal",
                 hint = "path/to/output/filename.cc.json"
                                                               )
 

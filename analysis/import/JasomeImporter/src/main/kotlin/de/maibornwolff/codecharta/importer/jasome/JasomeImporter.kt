@@ -41,11 +41,6 @@ class JasomeImporter(
         return null
     }
 
-    /**
-    private fun writer(): Writer {
-        return outputFile?.writer() ?: System.out.writer()
-    }
-**/
     companion object {
 
         @JvmStatic
