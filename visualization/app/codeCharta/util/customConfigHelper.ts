@@ -42,31 +42,11 @@ export class CustomConfigHelper {
 		return new Map(ccLocalStorage?.customConfigs)
 	}
 
-	// TODO [2022-08-01]: remove replace method for SINGLE mode when deadline is reached
 	private static getCcLocalStorage() {
 		const ccLocalStorage: LocalStorageCustomConfigs = JSON.parse(
 			localStorage.getItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT),
 			stateObjectReviver
 		)
-		if (ccLocalStorage?.version === "1.0.0") {
-			return this.replaceSingleModeInLocalStorage(ccLocalStorage)
-		}
-
-		return ccLocalStorage
-	}
-
-	// TODO [2022-08-01]: remove replace method for SINGLE mode when deadline is reached
-	private static replaceSingleModeInLocalStorage(ccLocalStorage: LocalStorageCustomConfigs) {
-		for (const [, customConfig] of ccLocalStorage?.customConfigs.values() ?? []) {
-			if (customConfig.mapSelectionMode === "SINGLE") {
-				customConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
-			}
-		}
-
-		ccLocalStorage.version = CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION
-		localStorage.removeItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT)
-		localStorage.setItem(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(ccLocalStorage, stateObjectReviver))
-
 		return ccLocalStorage
 	}
 
@@ -126,11 +106,6 @@ export class CustomConfigHelper {
 		const importedCustomConfigsFile: CustomConfigsDownloadFile = JSON.parse(content, stateObjectReviver)
 
 		for (const exportedConfig of importedCustomConfigsFile.customConfigs.values()) {
-			// TODO [2022-08-01]: remove condition for SINGLE mode when deadline is reached
-			if (exportedConfig.mapSelectionMode === "SINGLE") {
-				exportedConfig.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
-			}
-
 			const alreadyExistingConfig = CustomConfigHelper.getCustomConfigSettings(exportedConfig.id)
 
 			// Check for a duplicate Config by matching checksums
