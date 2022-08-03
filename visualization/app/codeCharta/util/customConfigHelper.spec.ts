@@ -375,37 +375,6 @@ describe("CustomConfigHelper", () => {
 	})
 
 	describe("importCustomConfigs", () => {
-		it("should import Configs in SINGLE Mode and change mode to MULTIPLE", () => {
-			const configStub = {
-				id: "invalid-md5-checksum",
-				name: "to-be-imported",
-				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-				assignedMaps: ["exampleMap1.cc.json", "exampleMap2cc.json"]
-			} as ExportCustomConfig
-
-			const exportedCustomConfigs: Map<string, ExportCustomConfig> = new Map()
-			exportedCustomConfigs.set(configStub.id, configStub)
-
-			const mockedDownloadFile: CustomConfigsDownloadFile = {
-				downloadApiVersion: "",
-				timestamp: 0,
-				customConfigs: exportedCustomConfigs
-			}
-
-			spyOn(JSON, "parse")
-			JSON["parse"] = jest.fn().mockReturnValue(mockedDownloadFile)
-
-			// Mock first config to be already existent
-			CustomConfigHelper["customConfigs"].clear()
-			CustomConfigHelper.importCustomConfigs("not-relevant-json-string-due-to-mocking")
-			const customConfigs = CustomConfigHelper.getCustomConfigs()
-
-			expect(customConfigs.size).toBe(1)
-			expect(customConfigs.has(configStub.id)).toBeTruthy()
-			expect(customConfigs.get(configStub.id).name).toBe(configStub.name)
-			expect(customConfigs.get(configStub.id).mapSelectionMode).toBe(CustomConfigMapSelectionMode.MULTIPLE)
-		})
-
 		it("should import not existing Configs and prevent duplicate names, if any", () => {
 			const alreadyExistingConfigStub = {
 				id: "1-invalid-md5-checksum",
