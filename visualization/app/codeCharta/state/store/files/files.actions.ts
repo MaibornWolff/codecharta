@@ -8,17 +8,17 @@ export enum FilesSelectionActions {
 	SET_ALL = "SET_ALL",
 	SET_DELTA = "SET_DELTA",
 	SET_DELTA_REFERENCE = "SET_DELTA_REFERENCE",
-	SET_DELTA_COMPARISON = "SET_DELTA_COMPARISON"
+	SET_DELTA_COMPARISON = "SET_DELTA_COMPARISON",
+	SET_FILES = "SET_FILES"
 }
 
 export enum NewFilesImportedActions {
-	SET_FILES = "SET_FILES",
 	ADD_FILE = "ADD_FILE",
 	REMOVE_FILE = "REMOVE_FILE"
 }
 
 export interface SetFilesAction extends CCAction {
-	type: NewFilesImportedActions.SET_FILES
+	type: FilesSelectionActions.SET_FILES
 	payload: FileState[]
 }
 
@@ -79,7 +79,7 @@ export type FilesAction =
 
 export function setFiles(files: FileState[] = defaultFiles): SetFilesAction {
 	return {
-		type: NewFilesImportedActions.SET_FILES,
+		type: FilesSelectionActions.SET_FILES,
 		payload: files
 	}
 }

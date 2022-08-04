@@ -2,6 +2,7 @@ import {
 	addFile,
 	defaultFiles,
 	FilesAction,
+	FilesSelectionActions,
 	invertStandard,
 	removeFile,
 	setAll,
@@ -17,6 +18,7 @@ import files from "./files.reducer"
 import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { clone } from "../../../util/clone"
+import { isActionOfType } from "../../../util/reduxHelper"
 
 describe("files", () => {
 	let state: FileState[] = []
@@ -48,6 +50,10 @@ describe("files", () => {
 			const result = files(state, setFiles())
 
 			expect(result).toEqual(defaultFiles)
+		})
+
+		it("should be a file selection action, as file selections changes when all files are set", () => {
+			expect(isActionOfType(setFiles().type, FilesSelectionActions)).toBe(true)
 		})
 	})
 
