@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+Y
+
 ### Changed
 
 -   Changed storing format for camera position within custom views and scenarios. Loading of created custom views or scenarios in old format will stop working in 2023 [2880](https://github.com/MaibornWolff/codecharta/pull/2880)
