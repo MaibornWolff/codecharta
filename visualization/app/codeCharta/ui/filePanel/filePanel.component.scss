@@ -54,14 +54,14 @@ cc-file-panel {
 		border-radius: 5px;
 
 		&[disabled] {
-			background-color: rgb(204, 204, 204);
+			background-color: theme.$cc-disabled-color;
 		}
 
 		&:hover {
 			background-color: theme.$cc-emphasized-color;
 
 			&[disabled] {
-				background-color: rgb(204, 204, 204);
+				background-color: theme.$cc-disabled-color;
 			}
 		}
 
