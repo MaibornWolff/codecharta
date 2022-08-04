@@ -4,9 +4,9 @@
 	</mat-option>
 </mat-select>
 <button
-	class="direction-switch"
+	class="reference-comparison-switch"
 	[disabled]="(comparisonFile$ | async) === undefined"
-	(click)="exchangeFiles()"
+	(click)="switchReferenceAndComparison()()"
 	title="Switch reference and comparison file"
 >
 	<i class="fa fa-arrows-h"></i>

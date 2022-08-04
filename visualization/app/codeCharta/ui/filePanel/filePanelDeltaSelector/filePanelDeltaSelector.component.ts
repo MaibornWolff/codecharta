@@ -29,7 +29,7 @@ export class FilePanelDeltaSelectorComponent {
 		this.store.dispatch(setDeltaComparison(file))
 	}
 
-	exchangeFiles() {
+	switchReferenceAndComparison() {
 		this.store.dispatch(switchReferenceAndComparison())
 	}
 }

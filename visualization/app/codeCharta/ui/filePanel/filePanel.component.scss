@@ -46,15 +46,23 @@ cc-file-panel {
 		}
 	}
 
-	.direction-switch {
+	.reference-comparison-switch {
 		background-color: theme.$cc-primary-color;
 		margin: 0;
 		height: 24px;
 		width: 36px;
 		border-radius: 5px;
 
+		&[disabled] {
+			background-color: rgb(204, 204, 204);
+		}
+
 		&:hover {
-			background-color: rgb(0, 124, 112);
+			background-color: theme.$cc-emphasized-color;
+
+			&[disabled] {
+				background-color: rgb(204, 204, 204);
+			}
 		}
 
 		.fa {
