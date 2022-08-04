@@ -57,4 +57,9 @@ describe("nodeMetricDataSelector", () => {
 
 		expect(result.filter(x => x.name === NodeMetricDataService.UNARY_METRIC).length).toBe(1)
 	})
+
+	it("should return empty metricData when there are no files selected. If it would contain default metrics someone might falsely assume all parsing was already done", () => {
+		const result = calculateNodeMetricData([], [])
+		expect(result.length).toBe(0)
+	})
 })

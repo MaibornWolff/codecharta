@@ -11,7 +11,7 @@ import { areMetricsAvailable } from "./utils/areMetricsAvailable"
 
 const areFileStatesAvailableSelector = createSelector([filesSelector], files => fileStatesAvailable(files))
 
-const areChosenMetricsAvailableSelector = createSelector(
+export const areChosenMetricsAvailableSelector = createSelector(
 	[nodeMetricDataSelector, areaMetricSelector, colorMetricSelector, heightMetricSelector],
 	(nodeMetricData, areaMetric, colorMetric, heightMetric) => areMetricsAvailable(nodeMetricData, [areaMetric, colorMetric, heightMetric])
 )
