@@ -18,11 +18,11 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
-	threeSceneServiceProvider,
 	codeChartaServiceProvider,
-	threeOrbitControlsServiceProvider,
 	threeCameraServiceProvider,
-	threeRendererServiceProvider
+	threeOrbitControlsServiceProvider,
+	threeRendererServiceProvider,
+	threeSceneServiceProvider
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
@@ -59,6 +59,7 @@ import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSetting
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { AddCustomScenarioModule } from "./codeCharta/ui/scenarioDropDown/addCustomScenario/addCustomScenario.module"
+import { CopyToClipboardButtonModule } from "./codeCharta/ui/copyToClipboardButton/copyToClipboardButton.module"
 
 @NgModule({
 	imports: [
@@ -101,6 +102,7 @@ import { AddCustomScenarioModule } from "./codeCharta/ui/scenarioDropDown/addCus
 		ActionIconModule,
 		ColorSettingsPanelModule,
 		ScreenshotButtonModule,
+		CopyToClipboardButtonModule,
 		AddCustomScenarioModule
 	],
 	providers: [
@@ -134,6 +136,7 @@ import { AddCustomScenarioModule } from "./codeCharta/ui/scenarioDropDown/addCus
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}
+
 	ngDoBootstrap() {
 		this.upgrade.bootstrap(document.body, ["app"], { strictDi: true })
 	}
