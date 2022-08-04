@@ -3,8 +3,14 @@
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>
-
-<div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
+<button
+	class="reference-comparison-switch"
+	[disabled]="(comparisonFile$ | async) === undefined"
+	(click)="switchReferenceAndComparison()()"
+	title="Switch reference and comparison file"
+>
+	<i class="fa fa-arrows-h"></i>
+</button>
 
 <mat-select
 	class="delta-select"
@@ -16,3 +22,4 @@
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>
+<div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
