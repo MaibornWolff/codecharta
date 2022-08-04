@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
 -   Exclude edge metrics from custom scenarios, when there are no edge metrics available. Before it was impossible to apply those custom configs [#2928](https://github.com/MaibornWolff/codecharta/pull/2928)
 -   Fix of NoSuchMethodException due to a call of method `readNBytes()` that is not available in Java 9 with replacement call `read()` [#2930](https://github.com/MaibornWolff/codecharta/pull/2930)
+-   Update UI correctly when toggling between standard and delta mode [#2937](https://github.com/MaibornWolff/codecharta/pull/2937)
 
 ## [1.101.1] - 2022-07-27
 
