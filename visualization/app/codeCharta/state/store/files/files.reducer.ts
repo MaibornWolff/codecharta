@@ -5,7 +5,7 @@ import { isEqual } from "../../../model/files/files.helper"
 
 export default function files(state = setFiles().payload, action: FilesAction) {
 	switch (action.type) {
-		case NewFilesImportedActions.SET_FILES:
+		case FilesSelectionActions.SET_FILES:
 			return action.payload
 		case NewFilesImportedActions.ADD_FILE:
 			return [...state, { file: action.payload, selectedAs: FileSelectionState.None }]
