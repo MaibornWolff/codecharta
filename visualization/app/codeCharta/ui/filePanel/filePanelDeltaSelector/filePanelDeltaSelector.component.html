@@ -3,7 +3,12 @@
 		{{ file.file.fileMeta.fileName | removeExtension }}
 	</mat-option>
 </mat-select>
-<button class="direction-switch" [disabled]="(comparisonFile$ | async) === undefined" (click)="exchangeFiles()">
+<button
+	class="direction-switch"
+	[disabled]="(comparisonFile$ | async) === undefined"
+	(click)="exchangeFiles()"
+	title="Switch reference and comparison file"
+>
 	<i class="fa fa-arrows-h"></i>
 </button>
 
