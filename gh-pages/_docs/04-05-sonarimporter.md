@@ -30,5 +30,15 @@ Further usage information may be retrieved through
 
 > ccsh sonarimport -h
 
-If a project is piped into the [SourceCodeParser]({{site.baseurl}}{% link _docs/04-02-sourcecodeparser.md %}), the results and the piped project are merged.
+_Alternatively you can use the interactive mode, if you type `ccsh` into your terminal and select the sonar importer._
+
+_Note_: If a project is piped into the [SourceCodeParser]({{site.baseurl}}{% link _docs/04-02-sourcecodeparser.md %}), the results and the piped project are merged.
 The resulting project has the project name specified for the SonarImporter.
+
+### Example
+
+> ccsh sonarimport \<url> \<projectKey> --user=\<userToken> --output-file=\<fileName> --merge-modules=\<Boolean>
+
+If you use SonarQube locally, an example command would look like the following:
+
+> ccsh sonarimport "http://localhost:9000/" "CodeCharta" "--user=squ_12345" "--output-file=output" "--merge-modules=false"

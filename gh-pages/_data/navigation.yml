@@ -28,7 +28,14 @@ docs:
       children:
           - title: "How-Tos"
             url: categories/#how-to
-
+    - title: How To SonarQube
+      children:
+          - title: "Installing SonarQube"
+            url: /docs/install_sonarqube
+          - title: "Analyzing a Project with SonarQube"
+            url: /docs/analyze_sonarqube
+          - title: "Import SonarQube to CC"
+            url: /docs/import_sonarqube
     - title: Analysis
       children:
           - title: "Analysis"
