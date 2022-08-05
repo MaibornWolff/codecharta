@@ -5,6 +5,7 @@ import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/me
 import { Observable } from "rxjs"
 import { EdgeMetricData, NodeMetricData } from "../../codeCharta.model"
 import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
+import { metricDescriptions } from "../../util/metric/metricDescriptions"
 
 type MetricChooserType = "node" | "edge"
 
@@ -20,11 +21,13 @@ export class MetricChooserComponent implements OnInit {
 	@ViewChild("searchTermInput") searchTermInput: ElementRef<HTMLInputElement>
 	searchTerm = ""
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
+	metricDataDescription$: Map<string, string>
 
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
 		this.metricData$ = this.store.select(this.type === "node" ? nodeMetricDataSelector : edgeMetricDataSelector)
+		this.metricDataDescription$ = metricDescriptions
 	}
 
 	handleOpenedChanged(opened: boolean) {
