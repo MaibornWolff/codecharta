@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+-   Fixed installation instructions for Apple Silicon [#2956](https://github.com/MaibornWolff/codecharta/pull/2956).
+
 ## [1.102.0] - 2022-08-04
 
 ### Changed
