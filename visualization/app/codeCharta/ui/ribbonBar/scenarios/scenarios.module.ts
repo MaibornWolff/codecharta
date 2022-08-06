@@ -2,12 +2,13 @@ import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
 import { MaterialModule } from "../../../../material/material.module"
 import { RibbonBarButtonModule } from "../ribbonBarButton/ribbonBarButton.module"
-import { MetricTemplatesComponent } from "./metricTemplates.component"
+import { ScenarioService } from "./scenario.service"
+import { ScenariosComponent } from "./scenarios.component"
 
 @NgModule({
 	imports: [CommonModule, MaterialModule, RibbonBarButtonModule],
-	declarations: [MetricTemplatesComponent],
-	exports: [MetricTemplatesComponent],
-	entryComponents: [MetricTemplatesComponent]
+	providers: [ScenarioService],
+	declarations: [ScenariosComponent],
+	exports: [ScenariosComponent]
 })
-export class MetricTemplatesModule {}
+export class ScenariosModule {}
