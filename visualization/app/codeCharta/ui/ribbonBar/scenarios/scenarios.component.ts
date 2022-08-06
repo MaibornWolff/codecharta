@@ -1,10 +1,10 @@
 import "./scenarios.component.scss"
 import { Component, Inject, ViewChild } from "@angular/core"
 import { MatMenuTrigger } from "@angular/material/menu"
-import { ScenarioItem } from "../../scenarioDropDown/scenarioDropDown.component"
-import { AddCustomScenarioComponent } from "../../scenarioDropDown/addCustomScenario/addCustomScenario.component"
+import { AddCustomScenarioComponent } from "./addCustomScenario/addCustomScenario.component"
 import { MatDialog } from "@angular/material/dialog"
 import { ScenarioService } from "./scenario.service"
+import { ScenarioItem } from "./scenarioHelper"
 
 @Component({
 	selector: "cc-scenarios",

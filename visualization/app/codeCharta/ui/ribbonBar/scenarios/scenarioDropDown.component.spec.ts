@@ -1,17 +1,17 @@
-import "./scenarioDropDown.module"
-import "../codeMap/threeViewer/threeViewer.module"
-import { ScenarioDropDownController } from "./scenarioDropDown.component"
+/* import "../../scenarioDropDown/scenarioDropDown.module"
+import "../../codeMap/threeViewer/threeViewer.module"
+import { ScenarioDropDownController } from "../../scenarioDropDown/scenarioDropDown.component"
 import { IRootScopeService } from "angular"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { ScenarioHelper } from "../../util/scenarioHelper"
-import { StoreService } from "../../state/store.service"
-import { setState } from "../../state/store/state.actions"
-import { DialogService } from "../dialog/dialog.service"
-import { METRIC_DATA, SCENARIO_ITEMS } from "../../util/dataMocks"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { MetricDataService } from "../../state/store/metricData/metricData.service"
-import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
+import { ScenarioHelper } from "../../../util/scenarioHelper"
+import { StoreService } from "../../../state/store.service"
+import { setState } from "../../../state/store/state.actions"
+import { DialogService } from "../../dialog/dialog.service"
+import { METRIC_DATA, SCENARIO_ITEMS } from "../../../util/dataMocks"
+import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControlsService"
+import { MetricDataService } from "../../../state/store/metricData/metricData.service"
+import { nodeMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { ThreeCameraService } from "../../codeMap/threeViewer/threeCameraService"
 import { MatDialog } from "@angular/material/dialog"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
@@ -142,3 +142,4 @@ describe("ScenarioDropDownController", () => {
 		})
 	})
 })
+ */
