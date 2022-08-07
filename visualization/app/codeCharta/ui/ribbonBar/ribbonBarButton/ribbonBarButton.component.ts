@@ -6,7 +6,5 @@ import { Component, Input } from "@angular/core"
 	template: require("./ribbonBarButton.component.html")
 })
 export class RibbonBarButtonComponent {
-	@Input() title: string
 	@Input() iconClass: string
-	@Input() handleClick: () => void
 }

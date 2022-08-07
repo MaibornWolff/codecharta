@@ -1,9 +1,4 @@
-@use "../../../../material/theme";
-
-cc-scenarios {
-	display: flex;
-	justify-content: center;
-}
+@use "../../../../../material/theme";
 
 .mat-menu-panel.cc-scenarios-menu {
 	width: 420px;

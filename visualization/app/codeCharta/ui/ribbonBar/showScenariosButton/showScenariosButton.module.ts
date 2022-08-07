@@ -4,12 +4,13 @@ import { MaterialModule } from "../../../../material/material.module"
 import { RibbonBarButtonModule } from "../ribbonBarButton/ribbonBarButton.module"
 import { AddCustomScenarioModule } from "./addCustomScenario/addCustomScenario.module"
 import { ScenarioService } from "./scenario.service"
-import { ScenariosComponent } from "./scenarios.component"
+import { ScenariosComponent } from "./scenarios/scenarios.component"
+import { ShowScenariosButtonComponent } from "./showScenariosButton.component"
 
 @NgModule({
 	imports: [CommonModule, MaterialModule, RibbonBarButtonModule, AddCustomScenarioModule],
 	providers: [ScenarioService],
-	declarations: [ScenariosComponent],
-	exports: [ScenariosComponent]
+	declarations: [ShowScenariosButtonComponent, ScenariosComponent],
+	exports: [ShowScenariosButtonComponent]
 })
-export class ScenariosModule {}
+export class ShowScenariosButtonModule {}

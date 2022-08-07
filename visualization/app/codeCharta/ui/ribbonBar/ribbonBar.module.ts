@@ -16,8 +16,8 @@ import { ColorMetricChooserComponent } from "./colorMetricChooser/colorMetricCho
 import { EdgeMetricChooserComponent } from "./edgeMetricChooser/edgeMetricChooser.component"
 import { EdgeMetricChooserModule } from "./edgeMetricChooser/edgeMetricChooser.module"
 import { ColorSettingsPanelComponent } from "./colorSettingsPanel/colorSettingsPanel.component"
-import { ScenariosComponent } from "./scenarios/scenarios.component"
-import { ScenariosModule } from "./scenarios/scenarios.module"
+import { ShowScenariosButtonModule } from "./showScenariosButton/showScenariosButton.module"
+import { ShowScenariosButtonComponent } from "./showScenariosButton/showScenariosButton.component"
 
 angular.module("app.codeCharta.ui.ribbonBar", ["app.codeCharta.state"])
 
@@ -33,16 +33,22 @@ angular
 	.directive("ccColorMetricChooser", downgradeComponent({ component: ColorMetricChooserComponent }))
 	.directive("ccEdgeMetricChooser", downgradeComponent({ component: EdgeMetricChooserComponent }))
 	.directive("ccColorSettingsPanel", downgradeComponent({ component: ColorSettingsPanelComponent }))
-	.directive("ccScenarios", downgradeComponent({ component: ScenariosComponent }))
+	.directive("ccShowScenariosButton", downgradeComponent({ component: ShowScenariosButtonComponent }))
 
 @NgModule({
-	imports: [AreaMetricChooserModule, HeightMetricChooserModule, ColorMetricChooserModule, EdgeMetricChooserModule, ScenariosModule],
+	imports: [
+		AreaMetricChooserModule,
+		HeightMetricChooserModule,
+		ColorMetricChooserModule,
+		EdgeMetricChooserModule,
+		ShowScenariosButtonModule
+	],
 	entryComponents: [
 		AreaMetricChooserComponent,
 		HeightMetricChooserComponent,
 		ColorMetricChooserComponent,
 		EdgeMetricChooserComponent,
-		ScenariosComponent
+		ShowScenariosButtonComponent
 	]
 })
 export class RibbonBarModule {}

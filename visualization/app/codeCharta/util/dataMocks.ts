@@ -34,7 +34,7 @@ import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
-import { ScenarioItem, ScenarioMetricProperty } from "../ui/ribbonBar/scenarios/scenarioHelper"
+import { ScenarioItem, ScenarioMetricProperty } from "../ui/ribbonBar/showScenariosButton/scenarioHelper"
 
 const DEFAULT_FILE_META = {
 	projectName: "Sample Project",
