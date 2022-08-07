@@ -12,16 +12,22 @@ describe("scenarioService", () => {
 	let scenarioService: ScenarioService
 	let mockedStore: Store
 	let mockedDialog: MatDialog
-	let threeCameraService: ThreeCameraService
-	let threeOrbitControlsService: ThreeOrbitControlsService
+	let mockedThreeCameraService: ThreeCameraService
+	let mockedThreeOrbitControlsService: ThreeOrbitControlsService
 
 	beforeEach(() => {
 		const mockedState = {} as unknown as State
 		mockedStore = { dispatch: jest.fn() } as unknown as Store
 		mockedDialog = { open: jest.fn() } as unknown as MatDialog
-		threeCameraService = { setPosition: jest.fn() } as unknown as ThreeCameraService
-		threeOrbitControlsService = { setControlTarget: jest.fn() } as unknown as ThreeOrbitControlsService
-		scenarioService = new ScenarioService(mockedState, mockedStore, mockedDialog, threeCameraService, threeOrbitControlsService)
+		mockedThreeCameraService = { setPosition: jest.fn() } as unknown as ThreeCameraService
+		mockedThreeOrbitControlsService = { setControlTarget: jest.fn() } as unknown as ThreeOrbitControlsService
+		scenarioService = new ScenarioService(
+			mockedState,
+			mockedStore,
+			mockedDialog,
+			mockedThreeCameraService,
+			mockedThreeOrbitControlsService
+		)
 
 		ScenarioHelper.scenarios.set("Scenario1", {
 			name: "Scenario1",
@@ -42,8 +48,8 @@ describe("scenarioService", () => {
 				appSettings: { edgeHeight: 42 }
 			})
 		)
-		expect(threeCameraService.setPosition).toHaveBeenCalledWith({ x: 1, y: 1, z: 1 })
-		expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalledWith({ x: 2, y: 2, z: 2 })
+		expect(mockedThreeCameraService.setPosition).toHaveBeenCalledWith({ x: 1, y: 1, z: 1 })
+		expect(mockedThreeOrbitControlsService.setControlTarget).toHaveBeenCalledWith({ x: 2, y: 2, z: 2 })
 	})
 
 	describe("removeScenario", () => {
