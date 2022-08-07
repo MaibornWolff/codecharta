@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Load metric templates lazily and migrate them to Angular [#2960](https://github.com/MaibornWolff/codecharta/pull/2960)
+
 ## [1.102] - 2022-08-04
 
 ### Changed
