@@ -9,7 +9,7 @@ import {
 	Settings
 } from "../../../codeCharta.model"
 import { convertToVectors } from "../../../util/settingsHelper"
-import scenarios from "../../../assets/scenarios.json"
+import defaultScenarios from "../../../assets/scenarios.json"
 import { ExportScenario } from "../../../codeCharta.api.model"
 import { Vector3 } from "three"
 
@@ -92,7 +92,7 @@ export class ScenarioHelper {
 	}
 
 	private static getPreLoadScenarios() {
-		const scenariosAsSettings = this.importScenarios(scenarios)
+		const scenariosAsSettings = this.importScenarios(defaultScenarios)
 		const scenario: Map<string, RecursivePartial<Scenario>> = new Map()
 		for (const setting of scenariosAsSettings) {
 			scenario.set(setting.name, this.transformScenarioAsSettingsToScenario(setting))
