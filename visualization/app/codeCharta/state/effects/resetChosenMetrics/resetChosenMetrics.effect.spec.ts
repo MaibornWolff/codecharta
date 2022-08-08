@@ -1,8 +1,10 @@
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { Subject } from "rxjs"
+import { BehaviorSubject, Subject } from "rxjs"
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
 import { Store } from "../../angular-redux/store"
+import { nodeMetricDataSelector } from "../../selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { areChosenMetricsAvailableSelector } from "../../selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 import { setAreaMetric } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setDistributionMetric } from "../../store/dynamicSettings/distributionMetric/distributionMetric.actions"
@@ -11,8 +13,18 @@ import { ResetChosenMetricsEffect } from "./resetChosenMetrics.effect"
 
 describe("resetChosenMetricsEffect", () => {
 	let mockedNodeMetricDataSelector = new Subject()
+	const mockedAreChosenMetricsAvailableSelector = new BehaviorSubject(false)
 	const mockedStore = {
-		select: () => mockedNodeMetricDataSelector,
+		select: (selector: unknown) => {
+			switch (selector) {
+				case nodeMetricDataSelector:
+					return mockedNodeMetricDataSelector
+				case areChosenMetricsAvailableSelector:
+					return mockedAreChosenMetricsAvailableSelector
+				default:
+					throw new Error("selector is not mocked")
+			}
+		},
 		dispatch: jest.fn()
 	}
 
@@ -59,5 +71,15 @@ describe("resetChosenMetricsEffect", () => {
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setAreaMetric("rloc"))
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setHeightMetric("loc"))
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setColorMetric("loc"))
+	})
+
+	it("should do nothing, when chosen metrics are still available", () => {
+		mockedAreChosenMetricsAvailableSelector.next(true)
+		mockedNodeMetricDataSelector.next([
+			{ name: "rloc", maxValue: 9001 },
+			{ name: "loc", maxValue: 9001 }
+		])
+
+		expect(mockedStore.dispatch).not.toHaveBeenCalled()
 	})
 })

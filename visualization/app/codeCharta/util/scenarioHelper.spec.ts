@@ -1,8 +1,7 @@
-import { ScenarioHelper } from "./scenarioHelper"
+import { ScenarioHelper, ScenarioMetricProperty } from "./scenarioHelper"
 import { RecursivePartial, Scenario, Settings } from "../codeCharta.model"
 import { DEFAULT_STATE, PARTIAL_SETTINGS, SCENARIO, SCENARIO_ITEM_WITH_EVERYTHING_SAVED, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
-import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import scenarioJson from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
@@ -129,11 +128,50 @@ describe("scenarioHelper", () => {
 	})
 
 	describe("addScenario", () => {
+		const scenarioProperties: ScenarioMetricProperty[] = [
+			{
+				metricType: "Camera-Position",
+				metricName: null,
+				savedValues: SCENARIO.camera,
+				isSelected: true,
+				isDisabled: false
+			},
+			{
+				metricType: "Area-Metric",
+				metricName: "rloc",
+				savedValues: SCENARIO.area.margin,
+				isSelected: true,
+				isDisabled: false
+			},
+			{
+				metricType: "Color-Metric",
+				metricName: "mcc",
+				savedValues: { colorRange: SCENARIO.color.colorRange, mapColors: SCENARIO.color.mapColors },
+				isSelected: true,
+				isDisabled: false
+			},
+			{
+				metricType: "Height-Metric",
+				metricName: "mcc",
+				savedValues: { heightSlider: SCENARIO.height.heightSlider, labelSlider: SCENARIO.height.labelSlider },
+				isSelected: true,
+				isDisabled: false
+			},
+			{
+				metricType: "Edge-Metric",
+				metricName: "pairingRate",
+				savedValues: { edgePreview: SCENARIO.edge.edgePreview, edgeHeight: SCENARIO.edge.edgeHeight },
+				isSelected: true,
+				isDisabled: false
+			}
+		]
+
 		beforeEach(() => {
 			ScenarioHelper["scenarios"].clear()
 		})
+
 		it("should add the new Scenario into the scenarios", () => {
-			ScenarioHelper.addScenario(SCENARIO)
+			ScenarioHelper.addScenario(SCENARIO.name, scenarioProperties)
 			const lastScenarioOfScenarios: RecursivePartial<Scenario> = [...ScenarioHelper["scenarios"].values()].pop()
 
 			expect(lastScenarioOfScenarios).toEqual(SCENARIO)
@@ -141,44 +179,44 @@ describe("scenarioHelper", () => {
 		it("should call setScenariosToLocalStorage with scenarios", () => {
 			ScenarioHelper["setScenariosToLocalStorage"] = jest.fn()
 
-			ScenarioHelper.addScenario(SCENARIO)
+			ScenarioHelper.addScenario(SCENARIO.name, scenarioProperties)
 
 			expect(ScenarioHelper["setScenariosToLocalStorage"]).toHaveBeenCalledWith(ScenarioHelper["scenarios"])
 		})
 	})
 
 	describe("createNewScenario", () => {
-		const scenarioAttributeContent = [
+		const scenarioAttributeContent: ScenarioMetricProperty[] = [
 			{
-				metricType: ScenarioMetricType.CAMERA_POSITION,
+				metricType: "Camera-Position",
 				metricName: null,
 				savedValues: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(1, 1, 1) },
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricType: ScenarioMetricType.AREA_METRIC,
+				metricType: "Area-Metric",
 				metricName: "rloc",
 				savedValues: 48,
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricType: ScenarioMetricType.COLOR_METRIC,
+				metricType: "Color-Metric",
 				metricName: "mcc",
 				savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricType: ScenarioMetricType.HEIGHT_METRIC,
+				metricType: "Height-Metric",
 				metricName: "mcc",
 				savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricType: ScenarioMetricType.EDGE_METRIC,
+				metricType: "Edge-Metric",
 				metricName: "pairingRate",
 				savedValues: { edgePreview: 5, edgeHeight: 4 },
 				isSelected: true,
@@ -193,12 +231,19 @@ describe("scenarioHelper", () => {
 		})
 
 		it("should create a Scenario only with height attributes", () => {
-			const scenarioAttributeContentWithOnlyHeight = [
+			const scenarioAttributeContentWithOnlyHeight: ScenarioMetricProperty[] = [
 				{
-					metricType: ScenarioMetricType.HEIGHT_METRIC,
+					metricType: "Height-Metric",
 					metricName: "mcc",
 					savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 					isSelected: true,
+					isDisabled: false
+				},
+				{
+					metricType: "Color-Metric",
+					metricName: "mcc",
+					savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
+					isSelected: false,
 					isDisabled: false
 				}
 			]

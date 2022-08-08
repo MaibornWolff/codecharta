@@ -12,6 +12,7 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { MatDialog } from "@angular/material/dialog"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -25,14 +26,17 @@ describe("ScenarioDropDownController", () => {
 	let dialogService: DialogService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let threeCameraService: ThreeCameraService
+	let mockedDialog: MatDialog
 
 	function rebuildController() {
+		mockedDialog = { open: jest.fn() } as unknown as MatDialog
 		scenarioButtonsController = new ScenarioDropDownController(
 			$rootScope,
 			storeService,
 			dialogService,
 			threeOrbitControlsService,
-			threeCameraService
+			threeCameraService,
+			mockedDialog
 		)
 	}
 
@@ -114,11 +118,9 @@ describe("ScenarioDropDownController", () => {
 
 	describe("showAddScenarioSettings", () => {
 		it("should call showAddScenarioSettings", () => {
-			dialogService.showAddScenarioSettings = jest.fn()
-
 			scenarioButtonsController.showAddScenarioSettings()
 
-			expect(dialogService.showAddScenarioSettings).toHaveBeenCalled()
+			expect(mockedDialog.open).toHaveBeenCalled()
 		})
 	})
 

@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.101.1",
+	"version": "1.102.0",
 	"engines": {
 		"node": ">=16"
 	},
@@ -101,6 +101,7 @@
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
 		"nw": "^0.66.1",
+		"pako": "^2.0.4",
 		"percent-round": "^2.2.1",
 		"redux": "^4.0.5",
 		"remark": "^13.0.0",

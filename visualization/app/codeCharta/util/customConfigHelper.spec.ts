@@ -82,62 +82,6 @@ describe("CustomConfigHelper", () => {
 			expect(JSON.parse).toHaveBeenCalledWith(undefined, stateObjectReviver)
 		})
 
-		it("should load Custom Configs from local storage with version 1.0.0, update SINGLE mode in MULTIPLE and change version to 1.0.1 ", () => {
-			const customConfigStub1 = {
-				id: "invalid-md5-checksum1",
-				name: "stubbedConfig1",
-				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-				assignedMaps: ["test1.cc.json"],
-				stateSettings: {}
-			} as CustomConfig
-
-			const customConfigStub2 = {
-				id: "invalid-md5-checksum2",
-				name: "stubbedConfig2",
-				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-				assignedMaps: ["test2.cc.json"],
-				stateSettings: {}
-			} as CustomConfig
-
-			const customConfigStub3 = {
-				id: "invalid-md5-checksum3",
-				name: "stubbedConfig3",
-				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
-				assignedMaps: ["test3.cc.json"],
-				stateSettings: {}
-			} as CustomConfig
-
-			const localStorageCustomConfigs: LocalStorageCustomConfigs = {
-				version: "1.0.0",
-				customConfigs: [
-					[customConfigStub1.id, customConfigStub1],
-					[customConfigStub2.id, customConfigStub2],
-					[customConfigStub3.id, customConfigStub3]
-				]
-			}
-
-			CustomConfigHelper["customConfigs"].clear()
-			JSON["parse"] = jest.fn().mockImplementation(() => {
-				return localStorageCustomConfigs
-			})
-
-			const spyOnGetItem = spyOn(Storage.prototype, "getItem")
-			const spyOnRemoveItem = spyOn(Storage.prototype, "removeItem")
-			const spyOnSetItem = spyOn(Storage.prototype, "setItem")
-			const spyOnJSON = spyOn(JSON, "stringify")
-
-			const loadedCustomConfigs = CustomConfigHelper["loadCustomConfigs"]()
-
-			expect(spyOnGetItem).toHaveBeenCalledTimes(1)
-			expect(spyOnRemoveItem).toHaveBeenCalledTimes(1)
-			expect(spyOnSetItem).toHaveBeenCalledTimes(1)
-			expect(spyOnJSON).toHaveBeenCalledTimes(1)
-			expect(loadedCustomConfigs.size).toBe(3)
-			expect(loadedCustomConfigs.get("invalid-md5-checksum1").mapSelectionMode).toBe(CustomConfigMapSelectionMode.MULTIPLE)
-			expect(loadedCustomConfigs.get("invalid-md5-checksum2").mapSelectionMode).toBe(CustomConfigMapSelectionMode.MULTIPLE)
-			expect(loadedCustomConfigs.get("invalid-md5-checksum3").mapSelectionMode).toBe(CustomConfigMapSelectionMode.DELTA)
-		})
-
 		it("should load Custom Configs from local storage with version 1.0.1 and should not make any changes to them", () => {
 			const customConfigStub1 = {
 				id: "invalid-md5-checksum1",
@@ -431,37 +375,6 @@ describe("CustomConfigHelper", () => {
 	})
 
 	describe("importCustomConfigs", () => {
-		it("should import Configs in SINGLE Mode and change mode to MULTIPLE", () => {
-			const configStub = {
-				id: "invalid-md5-checksum",
-				name: "to-be-imported",
-				mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-				assignedMaps: ["exampleMap1.cc.json", "exampleMap2cc.json"]
-			} as ExportCustomConfig
-
-			const exportedCustomConfigs: Map<string, ExportCustomConfig> = new Map()
-			exportedCustomConfigs.set(configStub.id, configStub)
-
-			const mockedDownloadFile: CustomConfigsDownloadFile = {
-				downloadApiVersion: "",
-				timestamp: 0,
-				customConfigs: exportedCustomConfigs
-			}
-
-			spyOn(JSON, "parse")
-			JSON["parse"] = jest.fn().mockReturnValue(mockedDownloadFile)
-
-			// Mock first config to be already existent
-			CustomConfigHelper["customConfigs"].clear()
-			CustomConfigHelper.importCustomConfigs("not-relevant-json-string-due-to-mocking")
-			const customConfigs = CustomConfigHelper.getCustomConfigs()
-
-			expect(customConfigs.size).toBe(1)
-			expect(customConfigs.has(configStub.id)).toBeTruthy()
-			expect(customConfigs.get(configStub.id).name).toBe(configStub.name)
-			expect(customConfigs.get(configStub.id).mapSelectionMode).toBe(CustomConfigMapSelectionMode.MULTIPLE)
-		})
-
 		it("should import not existing Configs and prevent duplicate names, if any", () => {
 			const alreadyExistingConfigStub = {
 				id: "1-invalid-md5-checksum",

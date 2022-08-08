@@ -1,95 +1,39 @@
-import "./screenshotButton.module"
-
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { StoreService } from "../../state/store.service"
-import { ScreenshotButtonController } from "./screenshotButton.component"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
-import { ThreeRendererService } from "../codeMap/threeViewer/threeRendererService"
-import { Scene, WebGLRenderer } from "three"
-import { IRootScopeService } from "angular"
+import { ScreenshotButtonComponent } from "./screenshotButton.component"
 import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import { TestBed } from "@angular/core/testing"
+import { Store } from "../../state/store/store"
+import { render, screen } from "@testing-library/angular"
+import { ScreenshotButtonModule } from "./screenshotButton.module"
+import { ThreeCameraServiceToken, ThreeRendererServiceToken, ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
+import userEvent from "@testing-library/user-event"
 
-describe("resetSettingsButtonController", () => {
-	let screenshotButtonController: ScreenshotButtonController
-	let storeService: StoreService
-	let threeSceneService: ThreeSceneService
-	let threeCameraService: ThreeCameraService
-	let threeRendererService: ThreeRendererService
-	let $rootScope: IRootScopeService
-
-	function mockLoadScript() {
-		threeRendererService.renderer = { domElement: { height: 1, width: 1 } } as WebGLRenderer
-		threeRendererService.renderer.setPixelRatio = jest.fn()
-		threeRendererService.renderer.getClearColor = jest.fn()
-		threeRendererService.renderer.setClearColor = jest.fn()
-		threeRendererService.renderer.render = jest.fn()
-		threeRendererService.renderer.domElement.toDataURL = jest.fn()
-		threeSceneService.scene = { background: null } as Scene
-	}
-
+describe("screenshotButtonComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		mockLoadScript()
-		rebuildController()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.screenshotButton")
-
-		storeService = getService<StoreService>("storeService")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		threeSceneService = getService<ThreeSceneService>("storeService")
-		threeCameraService = getService<ThreeCameraService>("storeService")
-		threeRendererService = getService<ThreeRendererService>("storeService")
-	}
-
-	function rebuildController() {
-		screenshotButtonController = new ScreenshotButtonController(
-			threeSceneService,
-			threeCameraService,
-			threeRendererService,
-			storeService,
-			$rootScope
-		)
-	}
-
-	describe("makeScreenshot", () => {
-		it("should call loadScript", () => {
-			screenshotButtonController["loadScript"] = jest.fn()
-			screenshotButtonController.makeScreenshotToFile()
-			expect(screenshotButtonController["loadScript"]).toBeCalled()
-		})
-		it("should call makePNGFileName", () => {
-			screenshotButtonController["makePNGFileName"] = jest.fn()
-			screenshotButtonController.makeScreenshotToFile()
-			expect(screenshotButtonController["makePNGFileName"]).toBeCalled()
-		})
-
-		it("should call buildScreenShotCanvas", () => {
-			screenshotButtonController["buildScreenShotCanvas"] = jest.fn()
-			screenshotButtonController.makeScreenshotToFile()
-			expect(screenshotButtonController["buildScreenShotCanvas"]).toBeCalled()
+		TestBed.configureTestingModule({
+			imports: [ScreenshotButtonModule],
+			providers: [
+				{ provide: ThreeCameraServiceToken, useValue: {} },
+				{ provide: ThreeSceneServiceToken, useValue: {} },
+				{ provide: ThreeRendererServiceToken, useValue: {} }
+			]
 		})
 	})
 
-	describe("onScreenshotToClipboardEnabledChanged", () => {
-		it("should set screenshotToClipboardEnabled in viewModel", () => {
-			storeService.dispatch(setScreenshotToClipboardEnabled(true))
+	it("should copy to clipboard on click, when screenshot to clipboard is enabled", async () => {
+		Store.store.dispatch(setScreenshotToClipboardEnabled(true))
+		const { fixture } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
+		fixture.componentInstance.makeScreenshotToClipBoard = jest.fn()
 
-			screenshotButtonController.onScreenshotToClipboardEnabledChanged(
-				storeService.getState().appSettings.screenshotToClipboardEnabled
-			)
-
-			expect(screenshotButtonController["_viewModel"].screenshotToClipboardEnabled).toBe(true)
-		})
+		userEvent.click(screen.getByTitle("Copy screenshot to clipboard (Ctrl+Alt+F), export it as a file by (Ctrl+Alt+S)"))
+		expect(fixture.componentInstance.makeScreenshotToClipBoard).toHaveBeenCalled()
 	})
 
-	describe("makeScreenshotToClipBoard", () => {
-		it("should call buildScreenShotCanvas", () => {
-			screenshotButtonController["buildScreenShotCanvas"] = jest.fn()
-			screenshotButtonController.makeScreenshotToFile()
-			expect(screenshotButtonController["buildScreenShotCanvas"]).toBeCalled()
-		})
+	it("should save to file on click, when screenshot to clipboard is not enabled", async () => {
+		Store.store.dispatch(setScreenshotToClipboardEnabled(false))
+		const { fixture } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
+		fixture.componentInstance.makeScreenshotToFile = jest.fn()
+
+		userEvent.click(screen.getByTitle("Export screenshot as file (Ctrl+Alt+S), copy it to clipboard by (Ctrl+Alt+F)"))
+		expect(fixture.componentInstance.makeScreenshotToFile).toHaveBeenCalled()
 	})
 })

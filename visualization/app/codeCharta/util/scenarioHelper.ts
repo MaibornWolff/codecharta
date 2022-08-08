@@ -1,11 +1,20 @@
 "use strict"
 import { LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, MetricData, AppSettings, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
-import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import scenarios from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
 import { Vector3 } from "three"
+
+export type ScenarioMetricType = "Camera-Position" | "Edge-Metric" | "Area-Metric" | "Height-Metric" | "Color-Metric"
+
+export type ScenarioMetricProperty = {
+	metricType: ScenarioMetricType
+	metricName: string
+	isSelected: boolean
+	isDisabled: boolean
+	savedValues: unknown
+}
 
 export class ScenarioHelper {
 	private static readonly SCENARIOS_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -131,56 +140,57 @@ export class ScenarioHelper {
 		return scenarios
 	}
 
-	static addScenario(newScenario: RecursivePartial<Scenario>) {
+	static addScenario(scenarioName: string, scenarioMetricProperties: ScenarioMetricProperty[]) {
+		const newScenario = ScenarioHelper.createNewScenario(scenarioName, scenarioMetricProperties)
 		this.scenarios.set(newScenario.name, newScenario)
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
+	static createNewScenario(scenarioName: string, scenarioMetricProperties: ScenarioMetricProperty[]) {
 		const newScenario: RecursivePartial<Scenario> = { name: scenarioName }
 
-		for (const attribute of scenarioAttributes) {
-			switch (attribute.metricType) {
-				case ScenarioMetricType.CAMERA_POSITION: {
+		for (const property of scenarioMetricProperties.filter(p => p.isSelected)) {
+			switch (property.metricType) {
+				case "Camera-Position": {
 					newScenario.camera = {
-						camera: attribute.savedValues["camera"],
-						cameraTarget: attribute.savedValues["cameraTarget"]
+						camera: property.savedValues["camera"],
+						cameraTarget: property.savedValues["cameraTarget"]
 					}
 					break
 				}
-				case ScenarioMetricType.AREA_METRIC: {
+				case "Area-Metric": {
 					newScenario.area = {
-						areaMetric: attribute.metricName,
-						margin: attribute.savedValues as number
+						areaMetric: property.metricName,
+						margin: property.savedValues as number
 					}
 					break
 				}
-				case ScenarioMetricType.HEIGHT_METRIC: {
+				case "Height-Metric": {
 					newScenario.height = {
-						heightMetric: attribute.metricName,
-						heightSlider: attribute.savedValues["heightSlider"],
-						labelSlider: attribute.savedValues["labelSlider"]
+						heightMetric: property.metricName,
+						heightSlider: property.savedValues["heightSlider"],
+						labelSlider: property.savedValues["labelSlider"]
 					}
 					break
 				}
-				case ScenarioMetricType.COLOR_METRIC: {
+				case "Color-Metric": {
 					newScenario.color = {
-						colorMetric: attribute.metricName,
-						colorRange: attribute.savedValues["colorRange"],
-						mapColors: attribute.savedValues["mapColors"]
+						colorMetric: property.metricName,
+						colorRange: property.savedValues["colorRange"],
+						mapColors: property.savedValues["mapColors"]
 					}
 					break
 				}
-				case ScenarioMetricType.EDGE_METRIC: {
+				case "Edge-Metric": {
 					newScenario.edge = {
-						edgeMetric: attribute.metricName,
-						edgePreview: attribute.savedValues["edgePreview"],
-						edgeHeight: attribute.savedValues["edgeHeight"]
+						edgeMetric: property.metricName,
+						edgePreview: property.savedValues["edgePreview"],
+						edgeHeight: property.savedValues["edgeHeight"]
 					}
 					break
 				}
 				default:
-					throw new Error(`Unknown metric type "${attribute.metricType}" detected`)
+					throw new Error(`Unknown metric type "${property.metricType}" detected`)
 			}
 		}
 

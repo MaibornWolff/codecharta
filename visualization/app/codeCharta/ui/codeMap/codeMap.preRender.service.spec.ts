@@ -9,7 +9,6 @@ import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { StoreService } from "../../state/store.service"
 import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
-import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, setDelta, setFiles, setStandard, setStandardByNames } from "../../state/store/files/files.actions"
@@ -22,6 +21,7 @@ import { DeltaGenerator } from "../../util/deltaGenerator"
 import { calculateNodeMetricData } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { calculateEdgeMetricData } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { wait } from "../../util/testUtils/wait"
+import { splitDynamicSettingsActions } from "../../state/store/dynamicSettings/dynamicSettings.splitter"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -38,7 +38,9 @@ describe("codeMapPreRenderService", () => {
 		withMockedEventMethods($rootScope)
 		withMockedCodeMapRenderService()
 		withUnifiedMapAndFileMeta()
-		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
+		for (const dynamicSettingsAction of splitDynamicSettingsActions(STATE.dynamicSettings)) {
+			storeService.dispatch(dynamicSettingsAction)
+		}
 	})
 
 	function restartSystem() {

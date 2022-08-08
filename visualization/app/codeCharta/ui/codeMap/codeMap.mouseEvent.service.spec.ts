@@ -196,10 +196,19 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("start", () => {
-		it("should setup six event listeners", () => {
+		it("should register all event listeners", () => {
 			codeMapMouseEventService.start()
 
-			expect(threeRendererService.renderer.domElement.addEventListener).toHaveBeenCalledTimes(6)
+			const addEventListenerMock = threeRendererService.renderer.domElement.addEventListener as jest.Mock
+
+			expect(addEventListenerMock.mock.calls[0][0]).toEqual("mousemove")
+			expect(addEventListenerMock.mock.calls[1][0]).toEqual("mouseup")
+			expect(addEventListenerMock.mock.calls[2][0]).toEqual("mousedown")
+			expect(addEventListenerMock.mock.calls[3][0]).toEqual("dblclick")
+			expect(addEventListenerMock.mock.calls[4][0]).toEqual("mouseleave")
+			expect(addEventListenerMock.mock.calls[5][0]).toEqual("mouseenter")
+			expect(addEventListenerMock.mock.calls[6][0]).toEqual("wheel")
+			expect(addEventListenerMock).toHaveBeenCalledTimes(7)
 		})
 
 		it("should subscribe to event propagation", () => {

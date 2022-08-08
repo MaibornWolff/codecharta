@@ -27,7 +27,6 @@ import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
-import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
@@ -36,6 +35,7 @@ import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+import { ScenarioMetricProperty } from "./scenarioHelper"
 
 const DEFAULT_FILE_META = {
 	projectName: "Sample Project",
@@ -1788,37 +1788,37 @@ export const TEST_NODE_ROOT: Node = {
 	outgoingEdgePoint: new Vector3()
 }
 
-export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
+export const SCENARIO_ATTRIBUTE_CONTENT: ScenarioMetricProperty[] = [
 	{
-		metricType: ScenarioMetricType.CAMERA_POSITION,
+		metricType: "Camera-Position",
 		metricName: "",
 		savedValues: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(177, 0, 299) },
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.AREA_METRIC,
+		metricType: "Area-Metric",
 		metricName: "rloc",
 		savedValues: 48,
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.HEIGHT_METRIC,
+		metricType: "Height-Metric",
 		metricName: "mcc",
 		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.COLOR_METRIC,
+		metricType: "Color-Metric",
 		metricName: "mcc",
 		savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.EDGE_METRIC,
+		metricType: "Edge-Metric",
 		metricName: "pairingRate",
 		savedValues: { edgePreview: 5, edgeHeight: 4 },
 		isSelected: true,
@@ -1826,37 +1826,37 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	}
 ]
 
-export const SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED: AddScenarioContent[] = [
+export const SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED: ScenarioMetricProperty[] = [
 	{
-		metricType: ScenarioMetricType.CAMERA_POSITION,
+		metricType: "Camera-Position",
 		metricName: null,
 		savedValues: new Vector3(0, 300, 1000),
 		isSelected: false,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.AREA_METRIC,
+		metricType: "Area-Metric",
 		metricName: "rloc",
 		savedValues: 48,
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.HEIGHT_METRIC,
+		metricType: "Height-Metric",
 		metricName: "mcc",
 		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.COLOR_METRIC,
+		metricType: "Color-Metric",
 		metricName: "mcc",
 		savedValues: { from: 19, to: 67 },
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.EDGE_METRIC,
+		metricType: "Edge-Metric",
 		metricName: "pairingRate",
 		savedValues: { edgePreview: 5, edgeHeight: 4 },
 		isSelected: true,
@@ -1864,30 +1864,30 @@ export const SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED: AddScenarioContent[] 
 	}
 ]
 
-export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddScenarioContent[] = [
+export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: ScenarioMetricProperty[] = [
 	{
-		metricType: ScenarioMetricType.AREA_METRIC,
+		metricType: "Area-Metric",
 		metricName: "rloc",
 		savedValues: 48,
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.HEIGHT_METRIC,
+		metricType: "Height-Metric",
 		metricName: "mcc",
 		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.COLOR_METRIC,
+		metricType: "Color-Metric",
 		metricName: "mcc",
 		savedValues: { from: 19, to: 67 },
 		isSelected: true,
 		isDisabled: false
 	},
 	{
-		metricType: ScenarioMetricType.EDGE_METRIC,
+		metricType: "Edge-Metric",
 		metricName: "pairingRate",
 		savedValues: { edgePreview: 5, edgeHeight: 4 },
 		isSelected: true,
