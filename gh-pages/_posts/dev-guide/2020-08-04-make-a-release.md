@@ -36,4 +36,4 @@ The new version depends on what kind of entries are found in the unreleased part
 ## Post-Work
 
 -   Click `Edit` on your latest [release](https://github.com/MaibornWolff/codecharta/releases) and add the release notes from your gh-pages post
--   Quick-test our [web demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) for it's core and new features again
+-   Quick-test our [web demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz) for it's core and new features again
