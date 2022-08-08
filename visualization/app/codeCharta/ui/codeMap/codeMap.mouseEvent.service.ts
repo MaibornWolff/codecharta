@@ -127,11 +127,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		this.threeRendererService.renderer.domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
 		this.threeRendererService.renderer.domElement.addEventListener(
 			"wheel",
-			debounce(() => {
-				// todo: check if wheel only catches touch pad or also mouse scroll
-				// currently not called directly but through threeUpdateCycleService. Is this abstraction useful?
-				this.threeRendererService.render()
-			}, 60)
+			debounce(() => this.threeRendererService.render(), 60)
 		)
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
