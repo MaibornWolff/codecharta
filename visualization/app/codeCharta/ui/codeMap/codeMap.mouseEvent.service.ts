@@ -118,7 +118,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		// TODO: Check if these event listeners should ever be removed again.
 		this.threeRendererService.renderer.domElement.addEventListener(
 			"mousemove",
-			debounce(event => this.onDocumentMouseMove(event), 100)
+			debounce(event => this.onDocumentMouseMove(event), 60)
 		)
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
@@ -131,7 +131,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 				// todo: check if wheel only catches touch pad or also mouse scroll
 				// currently not called directly but through threeUpdateCycleService. Is this abstraction useful?
 				this.threeRendererService.render()
-			}, 100)
+			}, 60)
 		)
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
