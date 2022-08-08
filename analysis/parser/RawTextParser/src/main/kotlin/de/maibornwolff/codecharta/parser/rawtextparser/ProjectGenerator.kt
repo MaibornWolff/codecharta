@@ -6,27 +6,25 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
-import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.serialization.ProjectSerializer.serializeCompressedFileAndDeleteJsonFile
-import java.io.Writer
 
-class ProjectGenerator(private val writer: Writer, private val filePath: String, private val toCompress: Boolean) {
+class ProjectGenerator() {
     private lateinit var projectBuilder: ProjectBuilder
-    private val default = "default.cc.json"
 
-    fun generate(metricMap: Map<String, FileMetrics>, pipedProject: Project?) {
+    fun generate(metricMap: Map<String, FileMetrics>, pipedProject: Project?): Project? {
         projectBuilder = ProjectBuilder()
         metricMap.forEach { addAsNode(it) }
         var project = projectBuilder.build()
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
+            return project
         }
 
-        if (toCompress && filePath != default) {
+       /* if (toCompress && !filePath.isNullOrEmpty() ) {
             serializeCompressedFileAndDeleteJsonFile(project, filePath, writer)
         } else {
             ProjectSerializer.serializeProject(project, writer)
-        }
+        }*/
+        return null
     }
 
     private fun addAsNode(metrics: Map.Entry<String, FileMetrics>) {

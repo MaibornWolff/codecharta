@@ -11,12 +11,7 @@ import kotlin.io.path.name
 
 object OutputFileHandler {
 
-    private val default = "default.cc.json"
-
     fun checkAndFixFileExtension(outputName: String): String {
-        if (outputName.isEmpty()) {
-            return default
-        }
         if (outputName.endsWith("cc.json")) {
             return outputName
         }
@@ -24,8 +19,8 @@ object OutputFileHandler {
                 Paths.get(outputName).root?.toString() ?: "").plus(extractFileName(outputName))
     }
 
-     fun writer(outputName: String?, writeToTerminal: Boolean, output: PrintStream): Writer {
-         return if (writeToTerminal) {
+     fun writer(outputName: String?, output: PrintStream): Writer {
+         return if (outputName.isNullOrBlank()) {
              OutputStreamWriter(output)
          } else {
              BufferedWriter(FileWriter(File(checkAndFixFileExtension(outputName ?: ""))))

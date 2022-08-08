@@ -10,9 +10,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "understandimport",
-    description = ["generates cc.json from SciTools (TM) Understand csv"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+        name = "understandimport",
+        description = ["generates cc.json from SciTools (TM) Understand csv"],
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class UnderstandImporter(private val output: PrintStream = System.out) : Callable<Void> {
 
@@ -21,9 +21,6 @@ class UnderstandImporter(private val output: PrintStream = System.out) : Callabl
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: String? = null
-
-    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
-    private var systemout = false
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -42,9 +39,12 @@ class UnderstandImporter(private val output: PrintStream = System.out) : Callabl
         files.forEach { projectBuilder.parseCSVStream(it.inputStream()) }
         val project = projectBuilder.build()
         val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath) else ProjectSerializer.serializeProject(project,
-                OutputFileHandler.writer(outputFile ?: "", systemout, output))
-
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
+        } else {
+            ProjectSerializer.serializeProject(project,
+                    OutputFileHandler.writer(outputFile ?: "", output))
+        }
         logger.info { "Created project with ${project.size} leafs." }
 
         return null

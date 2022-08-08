@@ -4,31 +4,28 @@ import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import picocli.CommandLine.call
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
 import java.io.PrintStream
-import java.io.Writer
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "rawtextparser",
-    description = ["generates cc.json from projects or source code files"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+        name = "rawtextparser",
+        description = ["generates cc.json from projects or source code files"],
+        footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class RawTextParser(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err,
-    private val test: Boolean = false
+        private val input: InputStream = System.`in`,
+        private val output: PrintStream = System.out,
+        private val error: PrintStream = System.err,
+        private val test: Boolean = false
 ) : Callable<Void>, InteractiveParser {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
@@ -40,13 +37,13 @@ class RawTextParser(
     private var verbose = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
-    private var file: File = File("")
+    private var inputFile: File = File("")
 
     @CommandLine.Option(arity = "0..", names = ["-m", "--metrics"], description = ["metrics to be computed (select all if not specified)"])
     private var metrics: List<String> = listOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -69,7 +66,7 @@ class RawTextParser(
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        if (!file.exists()) {
+        if (!inputFile.exists()) {
             fileNotExistentMessage()
             return null
         }
@@ -77,35 +74,54 @@ class RawTextParser(
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val parameterMap = assembleParameterMap()
-        val results: Map<String, FileMetrics> = MetricCollector(file, exclude, fileExtensions, parameterMap, metrics).parse()
+        val results: Map<String, FileMetrics> = MetricCollector(inputFile, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
 
-        val filePath = OutputFileHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: "")
+        val project = ProjectGenerator().generate(results, pipedProject)
 
-        ProjectGenerator(getWriter(), filePath, compress).generate(results, pipedProject)
+        val filePath = outputFile ?: "notSpecified"
+        if (project != null) {
+            if (compress && filePath !== "notSpecified") {
+
+                ProjectSerializer.serializeAsCompressedFile(project,
+                        filePath)
+            } else {
+                ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
+            }
+        } else {
+            projectError()
+            return null
+        }
+
+// val filePath = OutputFileHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: "")
+
         return null
     }
 
     private fun fileNotExistentMessage() {
         val path = Paths.get("").toAbsolutePath().toString()
         error.println("Current working directory = $path")
-        error.println("Could not find $file")
+        error.println("Could not find $inputFile")
     }
 
-    private fun getWriter(): Writer {
+    private fun projectError() {
+        error.println("Project is empty. Please specify a valid project.")
+    }
+
+ /*   private fun getWriter(): Writer {
         if (!test) {
             return BufferedWriter(
                     FileWriter(File(OutputFileHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: ""))))
         }
-            return OutputStreamWriter(output)
-    }
+        return OutputStreamWriter(output)
+    }*/
 
     private fun assembleParameterMap(): Map<String, Int> {
         return mapOf(
-            "verbose" to verbose.toInt(),
-            "maxIndentationLevel" to maxIndentLvl,
-            "tabWidth" to tabWidth
+                "verbose" to verbose.toInt(),
+                "maxIndentationLevel" to maxIndentLvl,
+                "tabWidth" to tabWidth
         ).filterValues { it != null }.mapValues { it.value as Int }
     }
 

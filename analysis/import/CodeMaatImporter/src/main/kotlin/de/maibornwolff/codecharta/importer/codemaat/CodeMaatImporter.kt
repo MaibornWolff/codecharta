@@ -15,9 +15,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "codemaatimport",
-    description = ["generates cc.json from codemaat coupling csv"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+        name = "codemaatimport",
+        description = ["generates cc.json from codemaat coupling csv"],
+        footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class CodeMaatImporter(
         private val output: PrintStream = System.out) : Callable<Void>, InteractiveParser {
@@ -31,9 +31,6 @@ class CodeMaatImporter(
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
 
-    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
-    private var systemout = false
-
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["codemaat coupling csv files"])
     private var files: List<File> = mutableListOf()
 
@@ -44,16 +41,20 @@ class CodeMaatImporter(
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-            CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
+                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
         val filePath = outputFile ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
-            project,
-            filePath
-        ) else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout, output))
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(
+                    project,
+                    filePath
+            )
+        } else {
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
+        }
 
         return null
     }
@@ -86,5 +87,6 @@ class CodeMaatImporter(
             CommandLine.call(CodeMaatImporter(), System.out, *args)
         }
     }
+
     override fun getDialog(): ParserDialogInterface = ParserDialog
 }

@@ -25,23 +25,23 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "tokeiimporter",
-    description = ["generates cc.json from tokei json"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+        name = "tokeiimporter",
+        description = ["generates cc.json from tokei json"],
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class TokeiImporter(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+        private val input: InputStream = System.`in`,
+        private val output: PrintStream = System.out,
+        private val error: PrintStream = System.err
 ) : Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
 
     private val attributeTypes = AttributeTypes(type = "nodes")
-        .add("rloc", AttributeType.absolute)
-        .add("loc", AttributeType.absolute)
-        .add("empty_lines", AttributeType.absolute)
-        .add("comment_lines", AttributeType.absolute)
+            .add("rloc", AttributeType.absolute)
+            .add("loc", AttributeType.absolute)
+            .add("empty_lines", AttributeType.absolute)
+            .add("comment_lines", AttributeType.absolute)
 
     private lateinit var projectBuilder: ProjectBuilder
 
@@ -56,9 +56,6 @@ class TokeiImporter(
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File "])
     private var outputFile: String? = null
-
-    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
-    private var systemout = false
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -82,11 +79,15 @@ class TokeiImporter(
 
         val filePath = outputFile ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
-            projectBuilder.build(),
-            filePath
-        ) else
-            ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", systemout, output))
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(
+                    projectBuilder.build(),
+                    filePath
+            )
+        } else {
+            ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile
+                    ?: "", output))
+        }
 
         return null
     }

@@ -34,9 +34,6 @@ class CSVImporter(
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
 
-    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
-    private var systemout = false
-
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["sourcemonitor csv files"])
     private var files: List<File> = mutableListOf()
 
@@ -47,10 +44,13 @@ class CSVImporter(
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
         val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,
-                filePath)
-        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout, output))
 
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project,
+                    filePath)
+        } else {
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
+        }
         return null
     }
 

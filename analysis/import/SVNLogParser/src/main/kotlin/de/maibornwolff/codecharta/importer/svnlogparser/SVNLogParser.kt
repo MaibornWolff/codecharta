@@ -47,9 +47,6 @@ class SVNLogParser(
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
 
-    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
-    private var systemout = false
-
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
 
@@ -99,9 +96,11 @@ class SVNLogParser(
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified")
-            ProjectSerializer.serializeAsCompressedFile(project, filePath) else
-            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout, output))
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
+        } else {
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
+        }
         return null
     }
 

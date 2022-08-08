@@ -9,8 +9,7 @@ import java.io.File
 class MetricGardenerImporterTest {
 
     private val metricGardenerImporter = MetricGardenerImporter()
-
-    @Test
+     @Test
     fun `should create json uncompressed file`() {
         main(
             arrayOf(
@@ -45,6 +44,18 @@ class MetricGardenerImporterTest {
                 "-o=src/test/resources/metricgardener-analysis.cc.json"
                    )
             )
+        val file = File("src/test/resources/metricgardener-analysis.cc.json.gz")
+        file.deleteOnExit()
+        metricGardenerImporter.call()
+        assertFalse(file.exists())
+    }
+    @Test
+    fun `should create no file, if no output filename is specified`() {
+        main(
+                arrayOf(
+                        "src/test/resources/metricgardener-analysis.json",
+                        )
+        )
         val file = File("src/test/resources/metricgardener-analysis.cc.json.gz")
         file.deleteOnExit()
         metricGardenerImporter.call()

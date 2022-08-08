@@ -27,14 +27,14 @@ import java.util.concurrent.Callable
 import java.util.stream.Stream
 
 @CommandLine.Command(
-    name = "gitlogparser",
-    description = ["git log parser - generates cc.json from git log file"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+        name = "gitlogparser",
+        description = ["git log parser - generates cc.json from git log file"],
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class GitLogParser(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+        private val input: InputStream = System.`in`,
+        private val output: PrintStream = System.out,
+        private val error: PrintStream = System.err
 ) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -44,18 +44,15 @@ class GitLogParser(
     private var file: File? = null
 
     @CommandLine.Option(
-        names = ["-n", "--file-name-list"],
-        arity = "1",
-        paramLabel = "FILE",
-        description = ["list of all file names in current git project"]
+            names = ["-n", "--file-name-list"],
+            arity = "1",
+            paramLabel = "FILE",
+            description = ["list of all file names in current git project"]
     )
     private var nameFile: File? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
-
-    @CommandLine.Option(names = ["--systemout"], description = ["write output in terminal"])
-    private var systemout = false
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"], arity = "0")
     private var compress = true
@@ -64,9 +61,9 @@ class GitLogParser(
     private var silent = false
 
     @CommandLine.Option(
-        names = ["--input-format"],
-        description = ["input format for parsing, optional only one type is currently supported"],
-        defaultValue = "GIT_LOG_NUMSTAT_RAW_REVERSED"
+            names = ["--input-format"],
+            description = ["input format for parsing, optional only one type is currently supported"],
+            defaultValue = "GIT_LOG_NUMSTAT_RAW_REVERSED"
     )
     private var inputFormatNames: InputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
@@ -79,15 +76,15 @@ class GitLogParser(
     private val metricsFactory: MetricsFactory
         get() {
             val nonChurnMetrics = listOf(
-                "age_in_weeks",
-                "number_of_authors",
-                "number_of_commits",
-                "number_of_renames",
-                "range_of_weeks_with_commits",
-                "successive_weeks_of_commits",
-                "weeks_with_commits",
-                "highly_coupled_files",
-                "median_coupled_files"
+                    "age_in_weeks",
+                    "number_of_authors",
+                    "number_of_commits",
+                    "number_of_renames",
+                    "range_of_weeks_with_commits",
+                    "successive_weeks_of_commits",
+                    "weeks_with_commits",
+                    "highly_coupled_files",
+                    "median_coupled_files"
             )
 
             return when (inputFormatNames) {
@@ -100,12 +97,12 @@ class GitLogParser(
 
         print(" ")
         var project = createProjectFromLog(
-            file!!,
-            nameFile!!,
-            logParserStrategy,
-            metricsFactory,
-            addAuthor,
-            silent
+                file!!,
+                nameFile!!,
+                logParserStrategy,
+                metricsFactory,
+                addAuthor,
+                silent
         )
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
@@ -113,11 +110,14 @@ class GitLogParser(
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
-                project,
-                filePath
-                                                                                               )
-        else ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", systemout, output))
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(
+                    project,
+                    filePath
+            )
+        } else {
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
+        }
 
         return null
     }
@@ -138,12 +138,12 @@ class GitLogParser(
     }
 
     private fun createProjectFromLog(
-        pathToLog: File,
-        pathToNameTree: File,
-        parserStrategy: LogParserStrategy,
-        metricsFactory: MetricsFactory,
-        containsAuthors: Boolean,
-        silent: Boolean = false
+            pathToLog: File,
+            pathToNameTree: File,
+            parserStrategy: LogParserStrategy,
+            metricsFactory: MetricsFactory,
+            containsAuthors: Boolean,
+            silent: Boolean = false
     ): Project {
         val namesInProject = readFileNameListFile(pathToNameTree)
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
@@ -152,8 +152,8 @@ class GitLogParser(
         val projectConverter = ProjectConverter(containsAuthors)
         val logSizeInByte = file!!.length()
         return GitLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(
-            lines,
-            namesInProject
+                lines,
+                namesInProject
         )
     }
 
@@ -182,11 +182,11 @@ class GitLogParser(
         println("  Available metrics:")
         runBlocking(Dispatchers.Default) {
             metricsFactory.createMetrics()
-                .forEach {
-                    launch {
-                        println(String.format(infoFormat, it.metricName(), it.description()))
+                    .forEach {
+                        launch {
+                            println(String.format(infoFormat, it.metricName(), it.description()))
+                        }
                     }
-                }
         }
     }
 
