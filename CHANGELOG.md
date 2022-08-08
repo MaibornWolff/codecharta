@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
+-   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+-   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 
 ## [1.102] - 2022-08-04
 
