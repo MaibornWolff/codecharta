@@ -1,93 +1,45 @@
 cc-file-extension-bar {
 	z-index: 30;
-	display: flex;
-	height: 17px;
+	background-color: white;
 
-	cc-distribution-metric-chooser {
-		width: 210px;
-		display: inline-flex;
-		font-size: 12px;
+	.cc-distribution {
+		display: flex;
+		height: 17px;
 
-		i.fa {
-			margin-top: 2px;
-			margin-left: 4px;
-			margin-right: 8px;
-		}
+		cc-distribution-metric-chooser {
+			width: 210px;
+			display: inline-flex;
+			font-size: 12px;
 
-		.mat-select {
-			border-bottom: 0;
-		}
-	}
-
-	.cc-bar {
-		flex: 1;
-
-		.cc-bar-section {
-			display: inline-block;
-			overflow: hidden;
-			color: white;
-			text-align: center;
-			cursor: pointer;
-			outline: none;
-			&:not(:last-child) {
-				border-right: 1px solid white;
+			i.fa {
+				margin: 2px 8px 0 4px;
 			}
 
-			.cc-bar-section-text {
-				font-size: 10px;
-				margin: 2px 0px 2px 0px;
-				white-space: nowrap;
-				padding: 0px 10px 0px 10px;
-				text-overflow: "";
+			.mat-select {
+				border-bottom: 0;
 			}
 		}
-	}
 
-	.bar-details {
-		display: block;
-		width: 100%;
-		height: 0px;
-		text-align: center;
-		background-color: white;
-		overflow: hidden;
-		transition: all linear 0.2s;
-		outline: none;
+		.cc-bar {
+			flex: 1;
 
-		&.expanded {
-			border-top: 1px solid #cdcdcd;
-			overflow: auto !important;
-			height: 25px !important;
-		}
-
-		&:hover {
-			cursor: pointer;
-		}
-
-		.bar-details-section {
-			float: left;
-			height: 100%;
-
-			.bar-details-text {
-				color: black;
-				font-size: 15px;
-				margin-left: 30px;
-				margin-top: 3px;
-
-				.dot {
-					height: 10px;
-					width: 10px;
-					border-radius: 50%;
-					display: inline-block;
-					margin-right: 8px;
+			.cc-bar-section {
+				display: inline-block;
+				overflow: hidden;
+				color: white;
+				text-align: center;
+				cursor: pointer;
+				outline: none;
+				&:not(:last-child) {
+					border-right: 1px solid white;
 				}
 
-				.metric-value {
-					color: gray;
-					font-size: 15px;
-
-					&.hidden {
-						display: none;
-					}
+				.cc-bar-section-text {
+					font-size: 10px;
+					margin: 2px 0 2px 0;
+					white-space: nowrap;
+					padding: 0 10px 0 10px;
+					text-overflow: "";
 				}
 			}
 		}
@@ -99,5 +51,38 @@ cc-file-extension-bar {
 		margin: 0;
 		padding: 0;
 		background-color: rgba(230, 230, 230, 0.96);
+	}
+
+	.cc-distribution-details {
+		border-top: 1px solid #cdcdcd;
+		height: 25px;
+		transition: all linear 0.2s;
+		&.cc-hidden {
+			height: 0;
+			overflow: hidden;
+		}
+
+		&:hover {
+			cursor: pointer;
+		}
+
+		.cc-distribution-details-entry {
+			display: inline-block;
+			font-size: 15px;
+			color: black;
+			margin: 3px 30px;
+
+			.cc-dot {
+				height: 10px;
+				width: 10px;
+				border-radius: 50%;
+				display: inline-block;
+				margin-right: 8px;
+			}
+
+			.cc-metric-value {
+				color: gray;
+			}
+		}
 	}
 }

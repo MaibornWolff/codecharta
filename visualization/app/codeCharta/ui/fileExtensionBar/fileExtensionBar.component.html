@@ -1,45 +1,42 @@
-<cc-distribution-metric-chooser title="Distribution metric"></cc-distribution-metric-chooser>
+<div class="cc-distribution">
+	<cc-distribution-metric-chooser title="Distribution metric"></cc-distribution-metric-chooser>
 
-<div class="cc-bar">
-	<span
-		*ngFor="let item of metricDistribution"
-		[style.width]="item.relativeMetricValue + '%'"
-		[style.background]="item.color"
-		class="cc-bar-section"
-		(click)="toggleShowAbsoluteValues()"
-	>
-		<div
-			class="cc-bar-section-text"
-			(mouseover)="onHoverFileExtensionBar(item.fileExtension)"
-			(mouseleave)="onUnhoverFileExtensionBar()"
-			title="{{
-				item.fileExtension.toString() +
-					' ' +
-					(showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + '%')
-			}}"
+	<div class="cc-bar">
+		<span
+			*ngFor="let item of metricDistribution"
+			[style.width]="item.relativeMetricValue + '%'"
+			[style.background]="item.color"
+			class="cc-bar-section"
+			(click)="toggleShowAbsoluteValues()"
 		>
-			<span *ngIf="item.relativeMetricValue >= item.fileExtension.length / 2 + 1">
-				{{ item.fileExtension }}
-				{{ showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + "%" }}
-			</span>
-		</div>
-	</span>
+			<div
+				class="cc-bar-section-text"
+				(mouseover)="onHoverFileExtensionBar(item.fileExtension)"
+				(mouseleave)="onUnhoverFileExtensionBar()"
+				title="{{
+					item.fileExtension.toString() +
+						' ' +
+						(showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + '%')
+				}}"
+			>
+				<span *ngIf="item.relativeMetricValue >= item.fileExtension.length / 2 + 1">
+					{{ item.fileExtension }}
+					{{ showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + "%" }}
+				</span>
+			</div>
+		</span>
+	</div>
+
+	<button class="cc-show-details-button" (click)="toggleShowDetails()">
+		<i class="fa {{ showDetails ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+	</button>
 </div>
 
-<!-- <div class="bar-details" ng-class="{ expanded: $ctrl._viewModel.isExtensiveMode }" ng-click="$ctrl.togglePercentageAbsoluteValues()">
-	<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution track by $index">
-		<p class="bar-details-text">
-			<span class="dot" ng-style="{ background: item.color }"></span>{{ item.fileExtension }} :
-			<span class="metric-value" ng-class="{ hidden: $ctrl._viewModel.isAbsoluteValueVisible }"
-				>{{ item.relativeMetricValue.toFixed(2) }}%</span
-			>
-			<span class="metric-value" ng-class="{ hidden: !$ctrl._viewModel.isAbsoluteValueVisible }">{{
-				item.absoluteMetricValue.toFixed(0) | number
-			}}</span>
-		</p>
+<div class="cc-distribution-details" [class.cc-hidden]="!showDetails" (click)="toggleShowAbsoluteValues()">
+	<div class="cc-distribution-details-entry" *ngFor="let item of metricDistribution">
+		<span class="cc-dot" [style.background]="item.color"></span>{{ item.fileExtension }} :
+		<span class="cc-metric-value">
+			{{ showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + "%" }}
+		</span>
 	</div>
-</div> -->
-
-<button class="cc-show-details-button" (click)="toggleShowDetails()">
-	<i class="fa {{ showDetails ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
-</button>
+</div>
