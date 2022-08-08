@@ -11,7 +11,7 @@ assignees: ''
 
 ## Expected Behavior
 
-GIVEN
+<GIVEN>
 
 WHEN
 
