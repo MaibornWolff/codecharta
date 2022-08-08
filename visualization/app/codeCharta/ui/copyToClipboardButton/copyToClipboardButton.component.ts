@@ -19,6 +19,7 @@ export class CopyToClipboardButtonComponent {
 
 	async copyNamesToClipBoard() {
 		const filenames = getFilenamesWithHighestMetrics(this.files)
-		await navigator.clipboard.writeText(JSON.stringify(filenames))
+		const clipboardText = JSON.stringify([...filenames])
+		await navigator.clipboard.writeText(clipboardText)
 	}
 }
