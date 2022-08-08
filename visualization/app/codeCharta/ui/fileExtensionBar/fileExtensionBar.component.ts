@@ -22,8 +22,6 @@ export class FileExtensionBarComponent {
 	}
 
 	onHoverFileExtensionBar(hoveredExtension: string) {
-		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
-
 		const visibleFileExtensions = new Set()
 		for (const metric of this.metricDistribution) {
 			if (metric.fileExtension !== "other") {
@@ -31,7 +29,7 @@ export class FileExtensionBarComponent {
 			}
 		}
 
-		for (const building of buildings) {
+		for (const building of this.threeSceneService.getMapMesh().getMeshDescription().buildings) {
 			if (building.node.isLeaf) {
 				const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
 				if (
