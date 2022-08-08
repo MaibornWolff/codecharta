@@ -4,13 +4,13 @@ import { Action } from "redux"
 import { Subject } from "rxjs"
 import { mocked } from "ts-jest/utils"
 
-import { EffectsModule } from "../angular-redux/effects/effects.module"
-import { setIsLoadingFile } from "../store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { unfocusAllNodes } from "../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { Store } from "../store/store"
+import { EffectsModule } from "../../angular-redux/effects/effects.module"
+import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { unfocusAllNodes } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { Store } from "../../store/store"
 import { UnfocusNodesOnLoadingMapEffect } from "./unfocusNodesOnLoadingMap.effect"
 
-jest.mock("../store/store", () => ({
+jest.mock("../../store/store", () => ({
 	Store: {}
 }))
 const MockedStore = mocked(Store)
