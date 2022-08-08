@@ -21,7 +21,29 @@ Additionally, the following Edge Metrics are calculated:
 
 The names of authors are saved when the --add-author flag is set.
 
-## Usage
+## Usage (Creating required files on the fly)
+
+### Executing the GitLogParser
+
+See `ccsh -h` for help. Standard usage:
+
+> `ccsh gitlogparser <directory>`
+
+If a path to a git repository is provided, all required files are created from that repository automatically.
+If no argument is provided, the current directory is used.
+
+The result is written as JSON to standard out or into an output file (if specified by `-o` option).
+
+If a project is piped into the GitLogParser, the results and the piped project are merged.
+The resulting project has the project name specified for the GitLogParser.
+
+### Example using Git
+
+-   `cd <my_git_project>`
+-   `./ccsh gitlogparser -o output.cc.json`
+-   load `output.cc.json` in visualization
+
+## Usage (Manual creation of required files)
 
 ### Creating the repository log for metric generation
 
