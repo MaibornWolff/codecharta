@@ -196,7 +196,7 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("start", () => {
-		it("should setup six event listeners", () => {
+		it("should register all event listeners", () => {
 			codeMapMouseEventService.start()
 
 			const addEventListenerMock = threeRendererService.renderer.domElement.addEventListener as jest.Mock
