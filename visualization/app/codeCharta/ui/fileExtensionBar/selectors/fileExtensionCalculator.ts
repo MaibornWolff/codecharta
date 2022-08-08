@@ -26,19 +26,19 @@ export class FileExtensionCalculator {
 		for (const node of hierarchy(map)) {
 			if (isLeaf(node) && !node.data.isExcluded) {
 				const metricValue = node.data.attributes[metric]
-				const fileExtension = this.estimateFileExtension(node.data.name)
+				const fileExtension = FileExtensionCalculator.estimateFileExtension(node.data.name)
 				const matchingFileExtensionObject = distributions.get(fileExtension)
 				sumOfAllMetricValues += metricValue
 
 				if (matchingFileExtensionObject) {
 					matchingFileExtensionObject.absoluteMetricValue += metricValue
 				} else {
-					distributions.set(fileExtension, this.getDistributionObject(fileExtension, metricValue))
+					distributions.set(fileExtension, FileExtensionCalculator.getDistributionObject(fileExtension, metricValue))
 				}
 			}
 		}
 		if (sumOfAllMetricValues === 0) {
-			return [this.getNoneExtension()]
+			return [FileExtensionCalculator.getNoneExtension()]
 		}
 
 		let metrics = []
@@ -49,12 +49,12 @@ export class FileExtensionCalculator {
 			}
 		}
 		metrics.sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
-		metrics = this.getMetricDistributionWithOthers(metrics)
+		metrics = FileExtensionCalculator.getMetricDistributionWithOthers(metrics)
 		return metrics.length > 0 ? metrics : [FileExtensionCalculator.getNoneExtension()]
 	}
 
 	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]) {
-		const otherExtension = this.getOtherExtension()
+		const otherExtension = FileExtensionCalculator.getOtherExtension()
 		const visibleDistributions: MetricDistribution[] = []
 
 		for (const metric of distribution) {
@@ -78,7 +78,7 @@ export class FileExtensionCalculator {
 			fileExtension: FileExtensionCalculator.OTHER_EXTENSION,
 			absoluteMetricValue: 0,
 			relativeMetricValue: 0,
-			color: "#676867"
+			color: FileExtensionCalculator.getColor(FileExtensionCalculator.OTHER_EXTENSION)
 		}
 	}
 
@@ -87,7 +87,7 @@ export class FileExtensionCalculator {
 			fileExtension,
 			absoluteMetricValue: metricValue,
 			relativeMetricValue: 0,
-			color: FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(fileExtension)).toString()
+			color: FileExtensionCalculator.getColor(fileExtension)
 		}
 	}
 
@@ -100,25 +100,24 @@ export class FileExtensionCalculator {
 		return FileExtensionCalculator.NO_EXTENSION
 	}
 
-	private static hashCode(fileExtension: string) {
-		let hash = 0
-		for (let index = 0; index < fileExtension.length; index++) {
-			hash = fileExtension.codePointAt(index) + ((hash << 5) - hash)
-		}
-		return hash
-	}
-
-	private static numberToHsl(hashCode: number) {
-		const shortened = hashCode % 360
-		return new HSL(shortened, 40, 50)
-	}
-
 	private static getNoneExtension(): MetricDistribution {
 		return {
 			fileExtension: FileExtensionCalculator.NO_EXTENSION,
 			absoluteMetricValue: null,
 			relativeMetricValue: 100,
-			color: "#676867"
+			color: FileExtensionCalculator.getColor(FileExtensionCalculator.NO_EXTENSION)
 		}
+	}
+
+	private static getColor(fileExtension: string): string {
+		if (fileExtension === FileExtensionCalculator.NO_EXTENSION || fileExtension === FileExtensionCalculator.OTHER_EXTENSION) {
+			return "#676867"
+		}
+
+		let hash = 0
+		for (let index = 0; index < fileExtension.length; index++) {
+			hash = fileExtension.codePointAt(index) + ((hash << 5) - hash)
+		}
+		return new HSL(hash % 360, 40, 50).toString()
 	}
 }
