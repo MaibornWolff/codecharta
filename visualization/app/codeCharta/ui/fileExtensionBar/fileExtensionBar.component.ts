@@ -1,38 +1,31 @@
 import "./fileExtensionBar.component.scss"
-import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
-import { CodeMapNode } from "../../codeCharta.model"
-import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
+import { MetricDistribution, FileExtensionCalculator } from "./selectors/fileExtensionCalculator"
+import { Component, Inject } from "@angular/core"
+import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
+import { onStoreChanged } from "../../state/angular-redux/onStoreChanged/onStoreChanged"
+import { ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
-export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
-	private _viewModel: {
-		distribution: MetricDistribution[]
-		isExtensiveMode: boolean
-		isAbsoluteValueVisible: boolean
-	} = {
-		distribution: [],
-		isExtensiveMode: false,
-		isAbsoluteValueVisible: false
-	}
+@Component({
+	selector: "cc-file-extension-bar",
+	template: require("./fileExtensionBar.component.html")
+})
+export class FileExtensionBarComponent {
+	showAbsoluteValues = false
+	showDetails = false
+	metricDistribution: MetricDistribution[]
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
-		"ngInject"
-		CodeMapPreRenderService.subscribe(this.$rootScope, this)
-	}
-
-	onRenderMapChanged(map: CodeMapNode) {
-		this.setNewDistribution(map)
-		this.setColorForEachExtension()
-		this.potentiallyAddNoneExtension()
+	constructor(@Inject(ThreeSceneServiceToken) private threeSceneService: ThreeSceneService) {
+		onStoreChanged(metricDistributionSelector, (_, metricDistribution) => {
+			this.metricDistribution = metricDistribution
+		})
 	}
 
 	onHoverFileExtensionBar(hoveredExtension: string) {
 		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 
 		const visibleFileExtensions = new Set()
-		for (const metric of this._viewModel.distribution) {
+		for (const metric of this.metricDistribution) {
 			if (metric.fileExtension !== "other") {
 				visibleFileExtensions.add(metric.fileExtension)
 			}
@@ -57,35 +50,11 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.threeSceneService.clearHighlight()
 	}
 
-	toggleExtensiveMode() {
-		this._viewModel.isExtensiveMode = !this._viewModel.isExtensiveMode
+	toggleShowDetails() {
+		this.showDetails = !this.showDetails
 	}
 
-	togglePercentageAbsoluteValues() {
-		this._viewModel.isAbsoluteValueVisible = !this._viewModel.isAbsoluteValueVisible
+	toggleShowAbsoluteValues() {
+		this.showAbsoluteValues = !this.showAbsoluteValues
 	}
-
-	private setNewDistribution(map: CodeMapNode) {
-		const { distributionMetric } = this.storeService.getState().dynamicSettings
-		this._viewModel.distribution = FileExtensionCalculator.getMetricDistribution(map, distributionMetric)
-	}
-
-	private setColorForEachExtension() {
-		for (const metric of this._viewModel.distribution) {
-			metric.color =
-				metric.color ?? FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(metric.fileExtension)).toString()
-		}
-	}
-
-	private potentiallyAddNoneExtension() {
-		if (this._viewModel.distribution.length === 0) {
-			this._viewModel.distribution.push(FileExtensionCalculator.getNoneExtension())
-		}
-	}
-}
-
-export const fileExtensionBarComponent = {
-	selector: "fileExtensionBarComponent",
-	template: require("./fileExtensionBar.component.html"),
-	controller: FileExtensionBarController
 }

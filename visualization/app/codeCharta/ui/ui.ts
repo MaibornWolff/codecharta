@@ -8,7 +8,6 @@ import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./codeMap/codeMap.module"
 import "./dialog/dialog.module"
-import "./fileExtensionBar/fileExtensionBar.module"
 import "./resetSettingsButton/resetSettingsButton.module"
 import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
@@ -26,7 +25,6 @@ angular
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.dialog",
-		"app.codeCharta.ui.fileExtensionBar",
 		"app.codeCharta.ui.resetSettingsButton",
 		"app.codeCharta.ui.ribbonBar",
 		"app.codeCharta.ui.scenarioDropDown",

@@ -1,52 +1,45 @@
-<div>
-	<cc-distribution-metric-chooser title="Distribution metric"></cc-distribution-metric-chooser>
+<cc-distribution-metric-chooser title="Distribution metric"></cc-distribution-metric-chooser>
 
-	<md-button class="expand-button" ng-click="$ctrl.toggleExtensiveMode()">
-		<i class="fa {{ $ctrl._viewModel.isExtensiveMode ? 'fa-caret-up' : 'fa-caret-down' }}" aria-hidden="true"></i>
-	</md-button>
-	<div class="bar">
+<div class="cc-bar">
+	<span
+		*ngFor="let item of metricDistribution"
+		[style.width]="item.relativeMetricValue + '%'"
+		[style.background]="item.color"
+		class="cc-bar-section"
+		(click)="toggleShowAbsoluteValues()"
+	>
 		<div
-			class="bar-section"
-			ng-click="$ctrl.togglePercentageAbsoluteValues()"
-			ng-repeat="item in $ctrl._viewModel.distribution track by $index"
-			ng-style="{ width: item.relativeMetricValue + '%', background: item.color }"
+			class="cc-bar-section-text"
+			(mouseover)="onHoverFileExtensionBar(item.fileExtension)"
+			(mouseleave)="onUnhoverFileExtensionBar()"
+			title="{{
+				item.fileExtension.toString() +
+					' ' +
+					(showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + '%')
+			}}"
 		>
-			<p
-				class="bar-section-text"
-				ng-mouseover="$ctrl.onHoverFileExtensionBar(item.fileExtension)"
-				ng-mouseleave="$ctrl.onUnhoverFileExtensionBar()"
-				title="{{
-					item.fileExtension.toString() +
-						' ' +
-						($ctrl._viewModel.isAbsoluteValueVisible
-							? item.absoluteMetricValue.toFixed(0)
-							: item.relativeMetricValue.toFixed(2) + '%')
-				}}"
-			>
-				<span ng-if="item.relativeMetricValue >= item.fileExtension.length / 2 + 1">
-					{{ item.fileExtension }}
-				</span>
-				<span class="metric-value" ng-class="{ hidden: $ctrl._viewModel.isAbsoluteValueVisible }"
-					>{{ item.relativeMetricValue.toFixed(2) }}%</span
-				>
-				<span class="metric-value" ng-class="{ hidden: !$ctrl._viewModel.isAbsoluteValueVisible }">{{
-					item.absoluteMetricValue.toFixed(0) | number
-				}}</span>
-			</p>
+			<span *ngIf="item.relativeMetricValue >= item.fileExtension.length / 2 + 1">
+				{{ item.fileExtension }}
+				{{ showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + "%" }}
+			</span>
 		</div>
-	</div>
-
-	<div class="bar-details" ng-class="{ expanded: $ctrl._viewModel.isExtensiveMode }" ng-click="$ctrl.togglePercentageAbsoluteValues()">
-		<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution track by $index">
-			<p class="bar-details-text">
-				<span class="dot" ng-style="{ background: item.color }"></span>{{ item.fileExtension }} :
-				<span class="metric-value" ng-class="{ hidden: $ctrl._viewModel.isAbsoluteValueVisible }"
-					>{{ item.relativeMetricValue.toFixed(2) }}%</span
-				>
-				<span class="metric-value" ng-class="{ hidden: !$ctrl._viewModel.isAbsoluteValueVisible }">{{
-					item.absoluteMetricValue.toFixed(0) | number
-				}}</span>
-			</p>
-		</div>
-	</div>
+	</span>
 </div>
+
+<!-- <div class="bar-details" ng-class="{ expanded: $ctrl._viewModel.isExtensiveMode }" ng-click="$ctrl.togglePercentageAbsoluteValues()">
+	<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution track by $index">
+		<p class="bar-details-text">
+			<span class="dot" ng-style="{ background: item.color }"></span>{{ item.fileExtension }} :
+			<span class="metric-value" ng-class="{ hidden: $ctrl._viewModel.isAbsoluteValueVisible }"
+				>{{ item.relativeMetricValue.toFixed(2) }}%</span
+			>
+			<span class="metric-value" ng-class="{ hidden: !$ctrl._viewModel.isAbsoluteValueVisible }">{{
+				item.absoluteMetricValue.toFixed(0) | number
+			}}</span>
+		</p>
+	</div>
+</div> -->
+
+<button class="cc-show-details-button" (click)="toggleShowDetails()">
+	<i class="fa {{ showDetails ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+</button>

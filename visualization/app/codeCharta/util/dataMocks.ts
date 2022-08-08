@@ -23,7 +23,7 @@ import {
 	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import { MetricDistribution } from "./fileExtensionCalculator"
+import { MetricDistribution } from "../ui/fileExtensionBar/selectors/fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
