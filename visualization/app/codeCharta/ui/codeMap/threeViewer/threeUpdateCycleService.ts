@@ -2,7 +2,6 @@ interface UpdateFunction {
 	(): void
 }
 
-// Todo do we need this as render is the only user?
 export class ThreeUpdateCycleService {
 	private updatables: UpdateFunction[] = []
 
