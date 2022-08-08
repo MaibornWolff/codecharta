@@ -7,19 +7,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Show tooltip with explanation for some metrics [#2957](https://github.com/MaibornWolff/codecharta/pull/2957)
+
+### Fixed 🐞
+
+-   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
+-   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+-   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+
+## [1.102] - 2022-08-04
+
 ### Changed
 
 -   Changed storing format for camera position within custom views and scenarios. Loading of created custom views or scenarios in old format will stop working in 2023 [2880](https://github.com/MaibornWolff/codecharta/pull/2880)
+-   Add error messages for the user to "Add Scenario Dialog" [#2928](https://github.com/MaibornWolff/codecharta/pull/2928)
 
 ### Added 🚀
 
+-   Switch reference and comparison file by button click in delta mode [#2933](https://github.com/MaibornWolff/codecharta/pull/2933)
+    ![image](https://user-images.githubusercontent.com/72517530/182630368-2d2b177d-8b4b-4850-8486-8d9afc7153c5.png)
 -   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics
     changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
+    ![image](https://user-images.githubusercontent.com/72517530/182631857-6192dea1-7a01-4684-90a6-d5da8615434a.png)
 -   Load compressed files (cc.json.gz) via URL parameter [#2917](https://github.com/MaibornWolff/codecharta/pull/2917)
 
 ### Fixed 🐞
 
 -   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
+-   Exclude edge metrics from custom scenarios, when there are no edge metrics available. Before it was impossible to apply those custom configs [#2928](https://github.com/MaibornWolff/codecharta/pull/2928)
+-   Fix of NoSuchMethodException due to a call of method `readNBytes()` that is not available in Java 9 with replacement call `read()` [#2930](https://github.com/MaibornWolff/codecharta/pull/2930)
+-   Keep selected metrics when excluding buildings [#2935](https://github.com/MaibornWolff/codecharta/pull/2935)
+-   Update UI correctly when toggling between standard and delta mode [#2937](https://github.com/MaibornWolff/codecharta/pull/2937)
 
 ## [1.101.1] - 2022-07-27
 

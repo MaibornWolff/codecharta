@@ -5,7 +5,7 @@ import { isEqual } from "../../../model/files/files.helper"
 
 export default function files(state = setFiles().payload, action: FilesAction) {
 	switch (action.type) {
-		case NewFilesImportedActions.SET_FILES:
+		case FilesSelectionActions.SET_FILES:
 			return action.payload
 		case NewFilesImportedActions.ADD_FILE:
 			return [...state, { file: action.payload, selectedAs: FileSelectionState.None }]
@@ -17,6 +17,8 @@ export default function files(state = setFiles().payload, action: FilesAction) {
 			return setDeltaReference(state, action.payload)
 		case FilesSelectionActions.SET_DELTA_COMPARISON:
 			return setDeltaComparison(state, action.payload)
+		case FilesSelectionActions.SWITCH_REFERENCE_AND_COMPARISON:
+			return switchReferenceAndComparison(state)
 		case FilesSelectionActions.SET_STANDARD:
 			return setStandardByNames(
 				state,
@@ -81,6 +83,18 @@ function setDeltaComparison(state: FileState[], comparison: CCFile) {
 			return file
 		}
 		return { ...file, selectedAs: FileSelectionState.None }
+	})
+}
+
+function switchReferenceAndComparison(state: FileState[]) {
+	return state.map(file => {
+		if (file.selectedAs === FileSelectionState.Reference) {
+			return { ...file, selectedAs: FileSelectionState.Comparison }
+		}
+		if (file.selectedAs === FileSelectionState.Comparison) {
+			return { ...file, selectedAs: FileSelectionState.Reference }
+		}
+		return file
 	})
 }
 
