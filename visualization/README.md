@@ -27,8 +27,19 @@ Change working directory `cd <projectpath>/codecharta/visualization/`
 
 #### Install project for development
 
--   Install node >= 8
--   Install dependencies `npm install`.
+To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed. From your command line run:
+
+```bash
+# Clone the CodeCharta repo
+$ git clone https://github.com/MaibornWolff/codecharta.git
+# Navigate to Visualization
+$ cd codecharta/visualization
+# Installation. If you're on Apple Silicon, you have to do `npm_config_nwjs_process_arch=x64 npm install` instead (see https://github.com/nwjs/npm-installer/issues/83).
+$ npm install
+# Run the development server
+$ npm run dev
+# Upload any .cc.json!
+```
 
 Once you have installed the project, you can use all tasks described in the next section.
 

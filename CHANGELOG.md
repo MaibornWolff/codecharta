@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix installation instructions for Apple Silicon [#2956](https://github.com/MaibornWolff/codecharta/pull/2956)
 -   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
 -   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
