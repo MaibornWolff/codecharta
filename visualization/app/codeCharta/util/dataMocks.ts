@@ -23,7 +23,6 @@ import {
 	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
@@ -1110,24 +1109,6 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	},
 	settings: DEFAULT_SETTINGS
 }
-
-export const METRIC_DISTRIBUTION: MetricDistribution[] = [
-	{
-		fileExtension: "java",
-		absoluteMetricValue: 20,
-		relativeMetricValue: 100,
-		color: null
-	}
-]
-
-export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
-	{
-		fileExtension: "None",
-		absoluteMetricValue: null,
-		relativeMetricValue: 100,
-		color: "#676867"
-	}
-]
 
 export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 	name: "Scenario2",
