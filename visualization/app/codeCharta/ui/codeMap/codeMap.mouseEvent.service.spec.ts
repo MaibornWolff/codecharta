@@ -353,7 +353,7 @@ describe("codeMapMouseEventService", () => {
 
 		function setAnimatedLabel(label: Object3D) {
 			// At first, animate a label
-			threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService)
+			threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService, threeRendererService)
 			threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 			threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 			threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
