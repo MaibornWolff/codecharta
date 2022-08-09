@@ -19,10 +19,8 @@
 						(showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + '%')
 				}}"
 			>
-				<span *ngIf="item.relativeMetricValue >= item.fileExtension.length / 2 + 1">
-					{{ item.fileExtension }}
-					{{ showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + "%" }}
-				</span>
+				{{ item.relativeMetricValue >= item.fileExtension.length / 2 + 1 ? item.fileExtension : "" }}
+				{{ showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + "%" }}
 			</div>
 		</span>
 	</div>

@@ -8,7 +8,7 @@ import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 import { FileExtensionBarModule } from "./fileExtensionBar.module"
 
 jest.mock("../../state/angular-redux/onStoreChanged/onStoreChanged", () => ({
-	onStoreChanged: (selector, callback) =>
+	onStoreChanged: (_, callback) =>
 		callback(null, [
 			{
 				fileExtension: "ts",
