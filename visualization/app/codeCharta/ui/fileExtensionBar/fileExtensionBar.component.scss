@@ -59,7 +59,7 @@ cc-file-extension-bar {
 		transition: all linear 0.2s;
 		&.cc-hidden {
 			height: 0;
-			overflow: hidden;
+			border-top: 0 solid #cdcdcd;
 		}
 
 		&:hover {
