@@ -36,7 +36,7 @@ export class DownloadDialogComponent {
 				amount: this.getAmountOfNodes(unifiedMapNode),
 				isSelected: true,
 				isDisabled: true,
-				change: (isSelected: boolean) => this.changeSelection(0, isSelected)
+				change: (isSelected: boolean) => (this.downloadableProperties[0].isSelected = isSelected)
 			},
 			{
 				name: "AttributeTypes",
@@ -45,7 +45,7 @@ export class DownloadDialogComponent {
 					(attributeTypes.edges ? Object.keys(attributeTypes.edges).length : 0),
 				isSelected: true,
 				isDisabled: true,
-				change: (isSelected: boolean) => this.changeSelection(1, isSelected)
+				change: (isSelected: boolean) => (this.downloadableProperties[1].isSelected = isSelected)
 			},
 			this.getDownloadableProperty("Edges", edges.length, 2),
 			this.getDownloadableProperty("MarkedPackages", markedPackages.length, 3),
@@ -82,12 +82,8 @@ export class DownloadDialogComponent {
 			amount,
 			isSelected: amount > 0,
 			isDisabled: amount === 0,
-			change: (isSelected: boolean) => this.changeSelection(index, isSelected)
+			change: (isSelected: boolean) => (this.downloadableProperties[index].isSelected = isSelected)
 		}
-	}
-
-	private changeSelection(index: number, isSelected: boolean) {
-		this.downloadableProperties[index].isSelected = isSelected
 	}
 
 	private getAmountOfNodes(unifiedMapNode: CodeMapNode) {

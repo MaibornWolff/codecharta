@@ -4,7 +4,6 @@ import { DialogDownloadController, DownloadCheckboxNames } from "./dialog.downlo
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { AttributeTypes, AttributeTypeValue } from "../../codeCharta.model"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { stubDate } from "../../../../mocks/dateMock.helper"
 import { VALID_NODE_WITH_PATH_AND_EXTENSION, FILE_META, VALID_EDGES, BLACKLIST, MARKED_PACKAGES } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
@@ -13,9 +12,6 @@ import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 describe("DialogDownloadController", () => {
-	stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
-	const newDate = "2018-12-14_09-39"
-
 	let dialogDownloadController: DialogDownloadController
 	let $mdDialog
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -49,42 +45,20 @@ describe("DialogDownloadController", () => {
 	}
 
 	describe("constructor", () => {
-		describe("fileName", () => {
-			it("should set correct fileName", () => {
-				expect(dialogDownloadController["_viewModel"].fileName).toEqual(`fileA_${newDate}`)
-			})
-		})
+		it("should set correct amountOfAttributeTypes with attributeTypes available", () => {
+			const attributeTypes: AttributeTypes = {
+				nodes: {
+					metric1: AttributeTypeValue.relative,
+					metric2: AttributeTypeValue.absolute,
+					metric3: AttributeTypeValue.absolute
+				},
+				edges: { metric4: AttributeTypeValue.absolute, metric5: AttributeTypeValue.relative }
+			}
+			storeService.dispatch(setAttributeTypes(attributeTypes))
 
-		describe("amountOfNodes", () => {
-			it("should set correct amountOfNodes", () => {
-				expect(dialogDownloadController["_viewModel"].amountOfNodes).toEqual(8)
-			})
-		})
+			rebuildController()
 
-		describe("amountOfAttributeTypes", () => {
-			it("should set correct amountOfAttributeTypes with no attributeTypes available", () => {
-				storeService.dispatch(setAttributeTypes())
-
-				rebuildController()
-
-				expect(dialogDownloadController["_viewModel"].amountOfAttributeTypes).toEqual(0)
-			})
-
-			it("should set correct amountOfAttributeTypes with attributeTypes available", () => {
-				const attributeTypes: AttributeTypes = {
-					nodes: {
-						metric1: AttributeTypeValue.relative,
-						metric2: AttributeTypeValue.absolute,
-						metric3: AttributeTypeValue.absolute
-					},
-					edges: { metric4: AttributeTypeValue.absolute, metric5: AttributeTypeValue.relative }
-				}
-				storeService.dispatch(setAttributeTypes(attributeTypes))
-
-				rebuildController()
-
-				expect(dialogDownloadController["_viewModel"].amountOfAttributeTypes).toEqual(5)
-			})
+			expect(dialogDownloadController["_viewModel"].amountOfAttributeTypes).toEqual(5)
 		})
 
 		describe("fileContent edges", () => {
