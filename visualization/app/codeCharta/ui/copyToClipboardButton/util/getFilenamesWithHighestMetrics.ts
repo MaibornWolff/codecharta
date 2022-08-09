@@ -1,13 +1,11 @@
 import { hierarchy } from "d3-hierarchy"
 import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 
-export type ParentNode = Pick<CodeMapNode, "children">
 export type FileToValue = { name: string; value: number }
 
 const MAX_ENTRIES = 10
 
 export function getFilenamesWithHighestMetrics(node: CodeMapNode) {
-	//: FileNamesByMetrics {
 	const fileToValueByAttributes = new Map<string, FileToValue[]>()
 	for (const { data } of hierarchy(node)) {
 		if (data.type === NodeType.FILE && data.attributes) {
@@ -26,28 +24,27 @@ export function maybeAddToMap(key: string, value: number, fileName: string, map:
 		return
 	}
 
-	const add = { name: fileName, value }
+	const newPair = { name: fileName, value }
 	const previousValues = map.get(key)
 	if (previousValues.length < MAX_ENTRIES) {
-		insertSorted(previousValues, add)
+		insertSorted(previousValues, newPair)
 		return
 	}
 
-	insertInFullDescendingList(add, previousValues)
+	insertInFullDescendingList(newPair, previousValues)
 }
 
-function insertSorted(array, key) {
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	let index_
-	for (index_ = array.length - 1; index_ >= 0 && array[index_].value <= key.value; index_--) {
-		array[index_ + 1] = array[index_]
+function insertSorted(array: FileToValue[], newPair: FileToValue) {
+	let index
+	for (index = array.length - 1; index >= 0 && array[index].value <= newPair.value; index--) {
+		array[index + 1] = array[index]
 	}
-	array[index_ + 1] = key
+	array[index + 1] = newPair
 }
 
 function insertInFullDescendingList<T extends { value: number }>(newItem: T, descendingList: T[]): void {
 	let index = descendingList.length - 1
-	while (index > 0) {
+	while (index >= 0) {
 		const oldItem = descendingList[index]
 
 		if (oldItem.value < newItem.value) {

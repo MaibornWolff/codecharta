@@ -7,16 +7,16 @@ beforeEach(() => {
 		[
 			"mcc",
 			[
-				{ name: "file2", value: 11 },
-				{ name: "file3", value: 12 },
-				{ name: "file1", value: 13 },
-				{ name: "file1", value: 13 },
-				{ name: "file1", value: 13 },
-				{ name: "file1", value: 13 },
-				{ name: "file1", value: 13 },
-				{ name: "file1", value: 13 },
-				{ name: "file1", value: 13 },
-				{ name: "file1", value: 13 }
+				{ name: "file2", value: 500 },
+				{ name: "file3", value: 400 },
+				{ name: "file1", value: 300 },
+				{ name: "file1", value: 200 },
+				{ name: "file1", value: 100 },
+				{ name: "file1", value: 50 },
+				{ name: "file1", value: 20 },
+				{ name: "file1", value: 15 },
+				{ name: "file1", value: 10 },
+				{ name: "file1", value: 5 }
 			]
 		]
 	])
