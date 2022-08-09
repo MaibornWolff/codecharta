@@ -25,7 +25,6 @@ class RawTextParser(
         private val input: InputStream = System.`in`,
         private val output: PrintStream = System.out,
         private val error: PrintStream = System.err,
-        private val test: Boolean = false
 ) : Callable<Void>, InteractiveParser {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
@@ -77,25 +76,15 @@ class RawTextParser(
         val results: Map<String, FileMetrics> = MetricCollector(inputFile, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
-
         val project = ProjectGenerator().generate(results, pipedProject)
 
         val filePath = outputFile ?: "notSpecified"
-        if (project != null) {
-            if (compress && filePath !== "notSpecified") {
-
-                ProjectSerializer.serializeAsCompressedFile(project,
-                        filePath)
-            } else {
-                ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
-            }
+        if (compress && filePath !== "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project,
+                    filePath)
         } else {
-            projectError()
-            return null
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
         }
-
-// val filePath = OutputFileHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: "")
-
         return null
     }
 
@@ -104,18 +93,6 @@ class RawTextParser(
         error.println("Current working directory = $path")
         error.println("Could not find $inputFile")
     }
-
-    private fun projectError() {
-        error.println("Project is empty. Please specify a valid project.")
-    }
-
- /*   private fun getWriter(): Writer {
-        if (!test) {
-            return BufferedWriter(
-                    FileWriter(File(OutputFileHandler.checkAndFixFileExtension(outputFile?.absolutePath ?: ""))))
-        }
-        return OutputStreamWriter(output)
-    }*/
 
     private fun assembleParameterMap(): Map<String, Int> {
         return mapOf(
@@ -138,7 +115,7 @@ class RawTextParser(
 
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            call(RawTextParser(input, outputStream, error, true), outputStream, *args)
+            call(RawTextParser(input, outputStream, error), outputStream, *args)
         }
     }
 
