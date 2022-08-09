@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Update links to demo website [#2961](https://github.com/MaibornWolff/codecharta/pull/2961)
+
 ### Added 🚀
 
 -   Show tooltip with explanation for some metrics [#2957](https://github.com/MaibornWolff/codecharta/pull/2957)
@@ -14,6 +18,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
+-   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+-   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+-   Fix webpack build package being corrupt if zipped under linux by changing the compression path [#2934](https://github.com/MaibornWolff/codecharta/pull/2934)
 
 ### Chore 👨‍💻 👩‍💻
 

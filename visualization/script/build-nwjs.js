@@ -54,9 +54,9 @@ const nw = new NwBuilder({
     )
   });
   zipPromises.push(zip({
-    source: path.join("..", "webpack"),
+    source: "webpack",
     destination: baseZipPath + "web.zip",
-    cwd: nw.options.buildDir
+    cwd: path.join(nw.options.buildDir, "..")
   }));
 
   await Promise.all(zipPromises);
