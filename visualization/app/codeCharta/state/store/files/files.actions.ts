@@ -8,17 +8,18 @@ export enum FilesSelectionActions {
 	SET_ALL = "SET_ALL",
 	SET_DELTA = "SET_DELTA",
 	SET_DELTA_REFERENCE = "SET_DELTA_REFERENCE",
-	SET_DELTA_COMPARISON = "SET_DELTA_COMPARISON"
+	SET_DELTA_COMPARISON = "SET_DELTA_COMPARISON",
+	SWITCH_REFERENCE_AND_COMPARISON = "SWITCH_REFERENCE_AND_COMPARISON",
+	SET_FILES = "SET_FILES"
 }
 
 export enum NewFilesImportedActions {
-	SET_FILES = "SET_FILES",
 	ADD_FILE = "ADD_FILE",
 	REMOVE_FILE = "REMOVE_FILE"
 }
 
 export interface SetFilesAction extends CCAction {
-	type: NewFilesImportedActions.SET_FILES
+	type: FilesSelectionActions.SET_FILES
 	payload: FileState[]
 }
 
@@ -65,6 +66,10 @@ export interface SetDeltaComparisonAction extends CCAction {
 	payload: CCFile
 }
 
+export interface SwitchReferenceAndComparisonAction extends CCAction {
+	type: FilesSelectionActions.SWITCH_REFERENCE_AND_COMPARISON
+}
+
 export type FilesAction =
 	| SetFilesAction
 	| AddFileAction
@@ -76,10 +81,11 @@ export type FilesAction =
 	| SetDeltaAction
 	| SetDeltaReferenceAction
 	| SetDeltaComparisonAction
+	| SwitchReferenceAndComparisonAction
 
 export function setFiles(files: FileState[] = defaultFiles): SetFilesAction {
 	return {
-		type: NewFilesImportedActions.SET_FILES,
+		type: FilesSelectionActions.SET_FILES,
 		payload: files
 	}
 }
@@ -142,6 +148,12 @@ export function setDeltaComparison(file: CCFile): SetDeltaComparisonAction {
 	return {
 		type: FilesSelectionActions.SET_DELTA_COMPARISON,
 		payload: file
+	}
+}
+
+export function switchReferenceAndComparison(): SwitchReferenceAndComparisonAction {
+	return {
+		type: FilesSelectionActions.SWITCH_REFERENCE_AND_COMPARISON
 	}
 }
 
