@@ -35,7 +35,7 @@
 <div class="cc-distribution-details" [class.cc-hidden]="!showDetails" (click)="toggleShowAbsoluteValues()">
 	<div class="cc-distribution-details-entry" *ngFor="let item of metricDistribution">
 		<span class="cc-dot" [style.background]="item.color"></span>{{ item.fileExtension }} :
-		<span class="cc-metric-value">
+		<span class="cc-detail-metric-value">
 			{{ showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + "%" }}
 		</span>
 	</div>
