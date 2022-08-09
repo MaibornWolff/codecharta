@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate file extension bar to Angular [#2968](https://github.com/MaibornWolff/codecharta/pull/2968)
+
 ## [1.102] - 2022-08-04
 
 ### Changed
