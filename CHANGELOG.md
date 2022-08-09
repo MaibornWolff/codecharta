@@ -7,10 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Update links to demo website [#2961](https://github.com/MaibornWolff/codecharta/pull/2961)
+
+### Added 🚀
+
+-   Show tooltip with explanation for some metrics [#2957](https://github.com/MaibornWolff/codecharta/pull/2957)
+
 ### Fixed 🐞
 
--   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
 -   Fix installation instructions for Apple Silicon [#2956](https://github.com/MaibornWolff/codecharta/pull/2956)
+-   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
+-   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+-   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 
 ## [1.102] - 2022-08-04
 
