@@ -33,8 +33,8 @@ jobs:
       - name: Build analysis
         working-directory: ./analysis
         run: |
-              chmod +x ./gradlew
-              ./gradlew build
+          chmod +x ./gradlew
+          ./gradlew build
 
       - name: Build visualization
         working-directory: ./visualization
@@ -45,16 +45,10 @@ jobs:
           npm run package
           docker build -t codecharta/codecharta-visualization .
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add Changelog Entries to Release
+        uses: rasmus-saks/release-a-changelog-action@v1.0.1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Run building script build gh pages
         run: sh ./script/build_gh_pages.sh
@@ -65,11 +59,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
-
-      - name: Add Changelog Entries to Release
-        uses: rasmus-saks/release-a-changelog-action@v1.0.1
-        with:
-          github-token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Publish visualization npm package
         uses: actions/setup-node@v3
