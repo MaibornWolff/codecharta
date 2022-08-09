@@ -12,7 +12,7 @@ jest.mock("../../state/angular-redux/onStoreChanged/onStoreChanged", () => ({
 		callback(null, [
 			{
 				fileExtension: "ts",
-				absoluteMetricValue: 20,
+				absoluteMetricValue: 1120,
 				relativeMetricValue: 100,
 				color: "hsl(111, 40%, 50%)"
 			}
@@ -43,11 +43,11 @@ describe("fileExtensionBarComponent", () => {
 	it("should toggle displayed metric relative / absolute values on click", async () => {
 		await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
 		expect(screen.getByText("ts 100.00%")).toBeTruthy()
-		expect(screen.queryByText("ts 20")).toBe(null)
+		expect(screen.queryByText("ts 1,120")).toBe(null)
 
 		userEvent.click(screen.getByText("ts 100.00%"))
 		expect(screen.queryByText("ts 100%")).toBe(null)
-		expect(screen.getByText("ts 20")).toBeTruthy()
+		expect(screen.getByText("ts 1,120")).toBeTruthy()
 	})
 
 	it("should show details on click of details button", async () => {
