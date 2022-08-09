@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.103.0] - 2022-08-09
+
 ### Changed
 
 -   Update links to demo website [#2961](https://github.com/MaibornWolff/codecharta/pull/2961)
@@ -17,9 +19,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix installation instructions for Apple Silicon [#2956](https://github.com/MaibornWolff/codecharta/pull/2956)
 -   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
 -   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+-   Fix webpack build package being corrupt if zipped under linux by changing the compression path [#2934](https://github.com/MaibornWolff/codecharta/pull/2934)
 
 ## [1.102] - 2022-08-04
 
