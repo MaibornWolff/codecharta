@@ -10,6 +10,10 @@ import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
 import { sortByMetricName } from "./sortByMetricName"
 
 export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklist: BlacklistItem[]) => {
+	if (visibleFileStates.length === 0) {
+		return []
+	}
+
 	const metricMaxValues: Map<string, number> = new Map()
 	const metricMinValues: Map<string, number> = new Map()
 

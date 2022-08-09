@@ -34,6 +34,20 @@ Then Doubleclick the system specific Runnable. You may be required to give it ex
 
 (If you get an error on macOS because of a missing license, try https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0).
 
+To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed. From your command line run:
+
+```bash
+# Clone the CodeCharta repo
+$ git clone https://github.com/MaibornWolff/codecharta.git
+# Navigate to Visualization
+$ cd codecharta/visualization
+# Installation. If you're on Apple Silicon, you have to do `npm_config_nwjs_process_arch=x64 npm install` instead (see https://github.com/nwjs/npm-installer/issues/83).
+$ npm install
+# Run the development server
+$ npm run dev
+# Upload any .cc.json!
+```
+
 ## Install for development
 
 Make sure you have node >= 8 installed. Then run

@@ -4,7 +4,7 @@ import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState } from "../../../model/files/files"
 import { Store } from "../../../state/angular-redux/store"
 import { referenceFileSelector } from "../../../state/selectors/referenceFile/referenceFile.selector"
-import { setDeltaComparison, setDeltaReference } from "../../../state/store/files/files.actions"
+import { setDeltaComparison, setDeltaReference, switchReferenceAndComparison } from "../../../state/store/files/files.actions"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
 
@@ -27,5 +27,9 @@ export class FilePanelDeltaSelectorComponent {
 
 	handleDeltaComparisonFileChange(file: CCFile) {
 		this.store.dispatch(setDeltaComparison(file))
+	}
+
+	switchReferenceAndComparison() {
+		this.store.dispatch(switchReferenceAndComparison())
 	}
 }

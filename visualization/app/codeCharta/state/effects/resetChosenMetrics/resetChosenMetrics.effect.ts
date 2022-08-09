@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { filter, tap } from "rxjs"
+import { filter, tap, withLatestFrom } from "rxjs"
 import { defaultNMetrics, isAnyMetricAvailable, preselectCombination } from "./utils/metricHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Store } from "../../angular-redux/store"
@@ -9,6 +9,7 @@ import { getDefaultDistribution } from "./utils/getDefaultDistributionMetric"
 import { setAreaMetric } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setHeightMetric } from "../../store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
+import { areChosenMetricsAvailableSelector } from "../../selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 
 @Injectable()
 export class ResetChosenMetricsEffect {
@@ -18,7 +19,9 @@ export class ResetChosenMetricsEffect {
 		() =>
 			this.store.select(nodeMetricDataSelector).pipe(
 				filter(isAnyMetricAvailable),
-				tap(nodeMetricData => {
+				withLatestFrom(this.store.select(areChosenMetricsAvailableSelector)),
+				filter(([, areChosenMetricsAvailable]) => !areChosenMetricsAvailable),
+				tap(([nodeMetricData]) => {
 					this.store.dispatch(setDistributionMetric(getDefaultDistribution(nodeMetricData)))
 
 					let [defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = preselectCombination(nodeMetricData)
