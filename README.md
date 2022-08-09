@@ -59,7 +59,7 @@
 ### How to use **Visualization**?
 
 -   **Online:** You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) without any installation and explore the CodeCharta code (shown by default).
--   **Local:** See [here](visualization/readme.md).
+-   **Local:** See [here](visualization/README.md).
 
 ### How to use **Analysis**?
 
