@@ -59,6 +59,7 @@ import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSetting
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { AddCustomScenarioModule } from "./codeCharta/ui/scenarioDropDown/addCustomScenario/addCustomScenario.module"
+import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
 
 @NgModule({
 	imports: [
@@ -101,7 +102,8 @@ import { AddCustomScenarioModule } from "./codeCharta/ui/scenarioDropDown/addCus
 		ActionIconModule,
 		ColorSettingsPanelModule,
 		ScreenshotButtonModule,
-		AddCustomScenarioModule
+		AddCustomScenarioModule,
+		DownloadButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
