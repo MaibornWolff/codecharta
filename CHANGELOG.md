@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate file extension bar to Angular [#2968](https://github.com/MaibornWolff/codecharta/pull/2968)
+
 ## [1.103.1] - 2022-08-09
 
 ### Fixed 🐞

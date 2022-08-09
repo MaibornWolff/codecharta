@@ -1,11 +1,12 @@
-import "../../state/state.module"
-import "../../ui/ui"
-import angular from "angular"
-import { fileExtensionBarComponent } from "./fileExtensionBar.component"
-import { downgradeComponent } from "@angular/upgrade/static"
-import { DistributionMetricChooserComponent } from "./distributionMetricChooser/distributionMetricChooser.component"
+import { CommonModule } from "@angular/common"
+import { NgModule } from "@angular/core"
+import { DistributionMetricChooserModule } from "./distributionMetricChooser/distributionMetricChooser..module"
+import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 
-angular
-	.module("app.codeCharta.ui.fileExtensionBar", ["app.codeCharta.state", "app.codeCharta.ui.codeMap"])
-	.component(fileExtensionBarComponent.selector, fileExtensionBarComponent)
-	.directive("ccDistributionMetricChooser", downgradeComponent({ component: DistributionMetricChooserComponent }))
+@NgModule({
+	imports: [CommonModule, DistributionMetricChooserModule],
+	declarations: [FileExtensionBarComponent],
+	exports: [FileExtensionBarComponent],
+	entryComponents: [FileExtensionBarComponent]
+})
+export class FileExtensionBarModule {}
