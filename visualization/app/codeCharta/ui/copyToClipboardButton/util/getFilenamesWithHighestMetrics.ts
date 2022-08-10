@@ -5,7 +5,7 @@ export type FileToValue = { name: string; value: number }
 
 const MAX_ENTRIES = 10
 
-export function getFilenamesWithHighestMetrics(node: CodeMapNode) {
+export function getFilenamesWithHighestMetrics(node: Pick<CodeMapNode, "children" | "type" | "attributes" | "name">) {
 	const fileToValueByAttributes = new Map<string, FileToValue[]>()
 	for (const { data } of hierarchy(node)) {
 		if (data.type === NodeType.FILE && data.attributes) {
