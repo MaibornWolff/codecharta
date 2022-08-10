@@ -191,7 +191,6 @@ class GitLogParser(
     }
 
     companion object {
-
         private fun guessEncoding(pathToLog: File): String? {
             val inputStream = pathToLog.inputStream()
             val buffer = ByteArray(4096)
@@ -205,6 +204,11 @@ class GitLogParser(
             detector.dataEnd()
 
             return detector.detectedCharset
+        }
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine.call(GitLogParser(), System.out, *args)
         }
     }
 

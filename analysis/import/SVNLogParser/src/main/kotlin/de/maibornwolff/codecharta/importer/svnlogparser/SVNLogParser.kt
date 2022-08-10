@@ -23,7 +23,7 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.util.Arrays
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
 
@@ -31,7 +31,7 @@ import java.util.stream.Stream
     name = "svnlogparser",
     description = ["generates cc.json from svn log file"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
-)
+                    )
 class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
@@ -89,7 +89,7 @@ class SVNLogParser(
             metricsFactory,
             addAuthor,
             silent
-        )
+                                          )
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
@@ -110,13 +110,19 @@ class SVNLogParser(
         metricsFactory: MetricsFactory,
         containsAuthors: Boolean,
         silent: Boolean = false
-    ): Project {
+                                    ): Project {
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
         val logSizeInByte = file!!.length()
-        return SVNLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(lines)
+        return SVNLogProjectCreator(
+            parserStrategy,
+            metricsFactory,
+            projectConverter,
+            logSizeInByte,
+            silent
+                                   ).parse(lines)
     }
 
     // not implemented yet.
@@ -150,8 +156,8 @@ class SVNLogParser(
     companion object {
 
         @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(SVNLogParser(input, output, error), output, *args)
+        fun main(args: Array<String>) {
+            CommandLine.call(SVNLogParser(), System.out, *args)
         }
 
         private fun guessEncoding(pathToLog: File): String? {
