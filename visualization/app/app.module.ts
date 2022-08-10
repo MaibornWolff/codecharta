@@ -44,7 +44,7 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
 import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
-import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBar/distributionMetricChooser/distributionMetricChooser..module"
+import { FileExtensionBarModule } from "./codeCharta/ui/fileExtensionBar/fileExtensionBar.module"
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
@@ -91,7 +91,7 @@ import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateAc
 		HeightSettingsPanelModule,
 		CenterMapButtonModule,
 		GlobalConfigurationButtonModule,
-		DistributionMetricChooserModule,
+		FileExtensionBarModule,
 		AreaSettingsPanelModule,
 		MetricChooserModule,
 		RibbonBarModule,
