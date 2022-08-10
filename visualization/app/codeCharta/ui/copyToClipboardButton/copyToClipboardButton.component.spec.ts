@@ -20,10 +20,12 @@ describe("CopyToClipboardButtonComponent", () => {
 		it("temp", async () => {
 			const clipboard = navigator.clipboard
 			const writeToClipboardSpy = jest.spyOn(clipboard, "writeText")
+			const getClipboardTextSpy = jest.spyOn(component["service"], "getClipboardText")
 
 			await component.copyNamesToClipBoard()
 
-			expect(writeToClipboardSpy).toBeCalled()
+			expect(writeToClipboardSpy).toBeCalledWith("Magic Monday")
+			expect(getClipboardTextSpy).toBeCalled()
 		})
 	})
 })
