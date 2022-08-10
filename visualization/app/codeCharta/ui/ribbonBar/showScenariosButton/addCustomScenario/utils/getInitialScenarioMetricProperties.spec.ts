@@ -1,5 +1,5 @@
 import { Vector3 } from "three"
-import { DEFAULT_STATE, STATE } from "../../../../util/dataMocks"
+import { DEFAULT_STATE, STATE } from "../../../../../util/dataMocks"
 import { getInitialScenarioMetricProperties } from "./getInitialScenarioMetricProperties"
 
 describe("getInitialScenarioMetricProperties", () => {

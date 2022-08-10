@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.103.2] - 2022-08-10
+
+### Fixed 🐞
+
+-   Highlight buildings on hover of file extension bar [#2969](https://github.com/MaibornWolff/codecharta/pull/2969)
+-   Fix of the npm visualization installation under MacOS by version bumping nwjs [#2974](https://github.com/MaibornWolff/codecharta/pull/2974)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate file extension bar to Angular [#2968](https://github.com/MaibornWolff/codecharta/pull/2968)
+
+## [1.103.1] - 2022-08-09
+
+### Fixed 🐞
+
+-   Change release action script in order to show changelog in release notes [#2970](https://github.com/MaibornWolff/codecharta/pull/2970)
+
+## [1.103.0] - 2022-08-09
+
+### Changed
+
+-   Update links to demo website [#2961](https://github.com/MaibornWolff/codecharta/pull/2961)
+
+### Added 🚀
+
+-   Show tooltip with explanation for some metrics [#2957](https://github.com/MaibornWolff/codecharta/pull/2957)
+
+### Fixed 🐞
+
+-   Fix installation instructions for Apple Silicon [#2956](https://github.com/MaibornWolff/codecharta/pull/2956)
+-   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
+-   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+-   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
+-   Fix webpack build package being corrupt if zipped under linux by changing the compression path [#2934](https://github.com/MaibornWolff/codecharta/pull/2934)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Load metric templates lazily and migrate them to Angular [#2960](https://github.com/MaibornWolff/codecharta/pull/2960)
+
+## [1.102] - 2022-08-04
+
 ### Changed
 
 -   Changed storing format for camera position within custom views and scenarios. Loading of created custom views or scenarios in old format will stop working in 2023 [2880](https://github.com/MaibornWolff/codecharta/pull/2880)

@@ -1,8 +1,7 @@
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
-import { BlacklistType, CodeMapNode, NodeType } from "../codeCharta.model"
-import { VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC, setIsBlacklisted } from "./dataMocks"
-import { HSL } from "./color/hsl"
-import { clone } from "./clone"
+import { BlacklistType, CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC, setIsBlacklisted } from "../../../util/dataMocks"
+import { clone } from "../../../util/clone"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
@@ -14,10 +13,15 @@ describe("FileExtensionCalculator", () => {
 	describe("getFileExtensionDistribution", () => {
 		it("should get correct absolute distribution of file-extensions for given metric", () => {
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: null },
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 3.978_779_840_848_806_4, color: null }
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: "hsl(58, 40%, 50%)" },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 40%, 50%)" },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 40%, 50%)" },
+				{
+					fileExtension: "None",
+					absoluteMetricValue: 15,
+					relativeMetricValue: 3.978_779_840_848_806_4,
+					color: "#676867"
+				}
 			]
 
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
@@ -29,10 +33,15 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted([map.children[0].path], map, BlacklistType.flatten)
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: null },
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 3.978_779_840_848_806_4, color: null }
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: "hsl(58, 40%, 50%)" },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 40%, 50%)" },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 40%, 50%)" },
+				{
+					fileExtension: "None",
+					absoluteMetricValue: 15,
+					relativeMetricValue: 3.978_779_840_848_806_4,
+					color: "#676867"
+				}
 			]
 
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
@@ -44,10 +53,15 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted([map.children[0].path], map, BlacklistType.exclude)
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 58.483_754_512_635_38, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 25.270_758_122_743_683, color: null },
-				{ fileExtension: "jpg", absoluteMetricValue: 30, relativeMetricValue: 10.830_324_909_747_292, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 5.415_162_454_873_646, color: null }
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 58.483_754_512_635_38, color: "hsl(58, 40%, 50%)" },
+				{
+					fileExtension: "json",
+					absoluteMetricValue: 70,
+					relativeMetricValue: 25.270_758_122_743_683,
+					color: "hsl(232, 40%, 50%)"
+				},
+				{ fileExtension: "jpg", absoluteMetricValue: 30, relativeMetricValue: 10.830_324_909_747_292, color: "hsl(321, 40%, 50%)" },
+				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 5.415_162_454_873_646, color: "#676867" }
 			]
 
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
@@ -59,9 +73,9 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, BlacklistType.exclude)
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 60.465_116_279_069_77, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 32.558_139_534_883_72, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 6.976_744_186_046_512, color: null }
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 60.465_116_279_069_77, color: "hsl(321, 40%, 50%)" },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 32.558_139_534_883_72, color: "hsl(232, 40%, 50%)" },
+				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 6.976_744_186_046_512, color: "#676867" }
 			]
 
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
@@ -75,15 +89,15 @@ describe("FileExtensionCalculator", () => {
 					fileExtension: "java",
 					absoluteMetricValue: 162,
 					relativeMetricValue: 42.970_822_281_167_11,
-					color: null
+					color: "hsl(58, 40%, 50%)"
 				},
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: null },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 40%, 50%)" },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 40%, 50%)" },
 				{
 					fileExtension: "None",
 					absoluteMetricValue: 15,
 					relativeMetricValue: 3.978_779_840_848_806_4,
-					color: null
+					color: "#676867"
 				}
 			]
 
@@ -144,22 +158,22 @@ describe("FileExtensionCalculator", () => {
 					fileExtension: "java",
 					absoluteMetricValue: 162,
 					relativeMetricValue: 40.806_045_340_050_375,
-					color: null
+					color: "hsl(58, 40%, 50%)"
 				},
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 32.745_591_939_546_6, color: null },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 32.745_591_939_546_6, color: "hsl(321, 40%, 50%)" },
 				{
 					fileExtension: "json",
 					absoluteMetricValue: 70,
 					relativeMetricValue: 17.632_241_813_602_015,
-					color: null
+					color: "hsl(232, 40%, 50%)"
 				},
 				{
 					fileExtension: "None",
 					absoluteMetricValue: 15,
 					relativeMetricValue: 3.778_337_531_486_146_3,
-					color: null
+					color: "#676867"
 				},
-				{ fileExtension: "xml", absoluteMetricValue: 8, relativeMetricValue: 2.015_113_350_125_944_6, color: null },
+				{ fileExtension: "xml", absoluteMetricValue: 8, relativeMetricValue: 2.015_113_350_125_944_6, color: "hsl(7, 40%, 50%)" },
 				{
 					fileExtension: "other",
 					absoluteMetricValue: 12,
@@ -193,15 +207,6 @@ describe("FileExtensionCalculator", () => {
 			const fileName = "name_without_extension"
 			const result = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("None")
-		})
-	})
-
-	describe("hashCode => numberToHashCode", () => {
-		it("should generate a hsl-color for file extension", () => {
-			const hashCode = FileExtensionCalculator.hashCode("ts")
-			const result = FileExtensionCalculator.numberToHsl(hashCode)
-
-			expect(result).toEqual(new HSL(111, 40, 50))
 		})
 	})
 })

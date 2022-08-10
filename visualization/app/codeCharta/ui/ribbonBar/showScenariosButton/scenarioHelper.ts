@@ -1,9 +1,16 @@
 "use strict"
-import { LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, MetricData, AppSettings, Settings } from "../codeCharta.model"
-import { convertToVectors } from "./settingsHelper"
-import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
-import scenarios from "../assets/scenarios.json"
-import { ExportScenario } from "../codeCharta.api.model"
+import {
+	LocalStorageScenarios,
+	DynamicSettings,
+	RecursivePartial,
+	Scenario,
+	MetricData,
+	AppSettings,
+	Settings
+} from "../../../codeCharta.model"
+import { convertToVectors } from "../../../util/settingsHelper"
+import defaultScenarios from "../../../assets/scenarios.json"
+import { ExportScenario } from "../../../codeCharta.api.model"
 import { Vector3 } from "three"
 
 export type ScenarioMetricType = "Camera-Position" | "Edge-Metric" | "Area-Metric" | "Height-Metric" | "Color-Metric"
@@ -14,6 +21,12 @@ export type ScenarioMetricProperty = {
 	isSelected: boolean
 	isDisabled: boolean
 	savedValues: unknown
+}
+
+export interface ScenarioItem {
+	scenarioName: string
+	isScenarioApplicable: boolean
+	icons: { faIconClass: string; isSaved: boolean; tooltip: string }[]
 }
 
 export class ScenarioHelper {
@@ -79,7 +92,7 @@ export class ScenarioHelper {
 	}
 
 	private static getPreLoadScenarios() {
-		const scenariosAsSettings = this.importScenarios(scenarios)
+		const scenariosAsSettings = this.importScenarios(defaultScenarios)
 		const scenario: Map<string, RecursivePartial<Scenario>> = new Map()
 		for (const setting of scenariosAsSettings) {
 			scenario.set(setting.name, this.transformScenarioAsSettingsToScenario(setting))

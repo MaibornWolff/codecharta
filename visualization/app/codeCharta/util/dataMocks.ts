@@ -23,11 +23,9 @@ import {
 	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
-import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
@@ -35,7 +33,7 @@ import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
-import { ScenarioMetricProperty } from "./scenarioHelper"
+import { ScenarioItem, ScenarioMetricProperty } from "../ui/ribbonBar/showScenariosButton/scenarioHelper"
 
 const DEFAULT_FILE_META = {
 	projectName: "Sample Project",
@@ -1110,24 +1108,6 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	},
 	settings: DEFAULT_SETTINGS
 }
-
-export const METRIC_DISTRIBUTION: MetricDistribution[] = [
-	{
-		fileExtension: "java",
-		absoluteMetricValue: 20,
-		relativeMetricValue: 100,
-		color: null
-	}
-]
-
-export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
-	{
-		fileExtension: "None",
-		absoluteMetricValue: null,
-		relativeMetricValue: 100,
-		color: "#676867"
-	}
-]
 
 export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 	name: "Scenario2",

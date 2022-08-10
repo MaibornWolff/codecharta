@@ -1,10 +1,15 @@
-import { ScenarioHelper, ScenarioMetricProperty } from "./scenarioHelper"
-import { RecursivePartial, Scenario, Settings } from "../codeCharta.model"
-import { DEFAULT_STATE, PARTIAL_SETTINGS, SCENARIO, SCENARIO_ITEM_WITH_EVERYTHING_SAVED, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
+import { ScenarioHelper, ScenarioItem, ScenarioMetricProperty } from "./scenarioHelper"
+import { RecursivePartial, Scenario, Settings } from "../../../codeCharta.model"
 import { Vector3 } from "three"
-import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
-import scenarioJson from "../assets/scenarios.json"
-import { ExportScenario } from "../codeCharta.api.model"
+import scenarioJson from "../../../assets/scenarios.json"
+import { ExportScenario } from "../../../codeCharta.api.model"
+import {
+	DEFAULT_STATE,
+	PARTIAL_SETTINGS,
+	SCENARIO,
+	SCENARIO_ITEM_WITH_EVERYTHING_SAVED,
+	SCENARIO_WITH_ONLY_HEIGHT
+} from "../../../util/dataMocks"
 
 describe("scenarioHelper", () => {
 	const scenarios: ExportScenario[] = scenarioJson
