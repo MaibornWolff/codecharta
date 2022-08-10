@@ -8,9 +8,9 @@ function getStringHeaderFromAttribute(title: string): string {
 	return `${title.toUpperCase()}\n`
 }
 
-export function buildTextOfFiles(filenames: Map<string, FileToValue[]>): string {
+export function buildTextOfFiles(attributeToFiles: Map<string, FileToValue[]>): string {
 	let clipboardText = ""
-	for (const [key, files] of filenames.entries()) {
+	for (const [key, files] of attributeToFiles.entries()) {
 		clipboardText += getStringHeaderFromAttribute(key)
 		for (const file of files) {
 			clipboardText += getStringLineFromItem(file)
