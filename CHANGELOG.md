@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.103.2] - 2022-08-10
+
 ### Fixed 🐞
 
 -   Highlight buildings on hover of file extension bar [#2969](https://github.com/MaibornWolff/codecharta/pull/2969)
