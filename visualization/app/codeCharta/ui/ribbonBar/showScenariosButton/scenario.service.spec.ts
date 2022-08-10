@@ -60,6 +60,12 @@ describe("scenarioService", () => {
 		it("should call deleteScenario", () => {
 			scenarioService.removeScenario("Scenario1")
 			expect(ScenarioHelper.deleteScenario).toHaveBeenCalledWith("Scenario1")
+			expect(mockedDialog.open).toHaveBeenCalledWith(ErrorDialogComponent, {
+				data: {
+					title: "Info",
+					message: "Scenario1 deleted."
+				}
+			})
 		})
 
 		it("should not delete default 'Complexity' scenario", () => {
