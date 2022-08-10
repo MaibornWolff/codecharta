@@ -15,25 +15,49 @@
 
 You can start with **Codecharta Visualization** on multiple ways:
 
--   Installation as a npm package (Recommended)
--   Run an operating system specific standalone
--   Build it yourself from the github repository
+-   Installation as a [npm package](#npm-package) (Recommended)
+-   Run an operating system specific [standalone](#run-a-standalone)
+-   Build it yourself from the github [repository](#build-it-yourself)
+-   Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
 
 ## NPM Package
 
-> Make sure you have [Node](https://nodejs.org/en/) installed
+> Make sure you have [Node.js](https://nodejs.org/en/download) installed <br>
+> For reference: [Codecharta-Visualization on NPM](https://www.npmjs.com/package/codecharta-visualization)
 
 ```bash
 # Install the package globally via npm
 $ npm i -g codecharta-visualization
-# Run it anywhere
+# Run it anywhere (you might need administrative rights/sudo)
 $ codecharta-visualization
-# (You might need to restart your terminal)
+# You might need to restart your terminal
 ```
 
 ## Run a standalone
 
-Download the correct
+-   Download the correct standalone version for your OS from the [latest release page](https://github.com/MaibornWolff/codecharta/releases) under 'Assets'
+-   Extract & run the application
+
+> If you get an error on macOS because of a missing license, try this [apple support article](https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0) <br>
+> You may be required to give the application executable rights
+
+## Build it yourself
+
+> To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) installed
+
+```bash
+# Clone the CodeCharta repo
+$ git clone https://github.com/MaibornWolff/codecharta.git
+# Navigate to Visualization
+$ cd codecharta/visualization
+# Installation. If you're on Apple Silicon, you have to do `npm_config_nwjs_process_arch=x64 npm install` instead (see https://github.com/nwjs/npm-installer/issues/83).
+$ npm install
+# Run the development server
+$ npm run dev
+# Upload any .cc.json!
+```
+
+# old
 
 First, change working directory via
 
