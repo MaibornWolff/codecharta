@@ -13,6 +13,28 @@
 
 # Installation
 
+You can start with **Codecharta Visualization** on multiple ways:
+
+-   Installation as a npm package (Recommended)
+-   Run an operating system specific standalone
+-   Build it yourself from the github repository
+
+## NPM Package
+
+> Make sure you have [Node](https://nodejs.org/en/) installed
+
+```bash
+# Install the package globally via npm
+$ npm i -g codecharta-visualization
+# Run it anywhere
+$ codecharta-visualization
+# (You might need to restart your terminal)
+```
+
+## Run a standalone
+
+Download the correct
+
 First, change working directory via
 
 `cd <projectpath>/codecharta/visualization/`
