@@ -16,8 +16,8 @@ describe("CopyToClipboardButtonComponent", () => {
 		Object.assign(navigator, { clipboard: { writeText: jest.fn() } })
 	})
 
-	describe("downloadFile", () => {
-		it("temp", async () => {
+	describe("copyToClipboardButtonComponent", () => {
+		it("should write text to clipboard by using text from service", async () => {
 			const clipboard = navigator.clipboard
 			const writeToClipboardSpy = jest.spyOn(clipboard, "writeText")
 			const getClipboardTextSpy = jest.spyOn(component["service"], "getClipboardText")
