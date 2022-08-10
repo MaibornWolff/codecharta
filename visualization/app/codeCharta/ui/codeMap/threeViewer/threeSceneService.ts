@@ -13,6 +13,7 @@ import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToN
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 import { onStoreChanged } from "../../../state/angular-redux/onStoreChanged/onStoreChanged"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
+import { ThreeRendererService } from "./threeRendererService"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -53,7 +54,12 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private highlightedLine = null
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private idToBuilding: IdToBuildingService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private idToBuilding: IdToBuildingService,
+		private threeRendererService: ThreeRendererService
+	) {
 		"ngInject"
 		onStoreChanged(mapColorsSelector, (_, mapColors) => {
 			this.folderLabelColorSelected = mapColors.selected
@@ -120,6 +126,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		if (this.mapGeometry.children[0]) {
 			this.highlightMaterial(this.mapGeometry.children[0]["material"])
 		}
+		this.threeRendererService.render()
 	}
 
 	private selectMaterial(materials: Material[]) {

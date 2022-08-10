@@ -1,5 +1,5 @@
 import { ValidatorFn, AbstractControl, ValidationErrors } from "@angular/forms"
-import { ScenarioHelper } from "../../../../util/scenarioHelper"
+import { ScenarioHelper } from "../../scenarioHelper"
 
 export function customScenarioNameValidator(): ValidatorFn {
 	return (control: AbstractControl): ValidationErrors | null => {

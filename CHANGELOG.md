@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Highlight buildings on hover of file extension bar [#2969](https://github.com/MaibornWolff/codecharta/pull/2969)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate file extension bar to Angular [#2968](https://github.com/MaibornWolff/codecharta/pull/2968)
+
+## [1.103.1] - 2022-08-09
+
+### Fixed 🐞
+
+-   Change release action script in order to show changelog in release notes [#2970](https://github.com/MaibornWolff/codecharta/pull/2970)
+
 ## [1.103.0] - 2022-08-09
 
 ### Changed
@@ -24,6 +38,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Fix webpack build package being corrupt if zipped under linux by changing the compression path [#2934](https://github.com/MaibornWolff/codecharta/pull/2934)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Load metric templates lazily and migrate them to Angular [#2960](https://github.com/MaibornWolff/codecharta/pull/2960)
 
 ## [1.102] - 2022-08-04
 
