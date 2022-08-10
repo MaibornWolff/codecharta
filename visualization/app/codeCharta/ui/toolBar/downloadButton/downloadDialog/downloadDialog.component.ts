@@ -5,23 +5,21 @@ import { FileDownloader } from "../../../../util/fileDownloader"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { FileNameHelper } from "../../../../util/fileNameHelper"
 import { isDeltaState } from "../../../../model/files/files.helper"
-import { hierarchy } from "d3-hierarchy"
-import { BlacklistItem, BlacklistType, CodeMapNode } from "../../../../codeCharta.model"
-
-type DownloadableProperty = {
-	name: string
-	amount: number
-	isSelected: boolean
-	isDisabled: boolean
-	change: (isSelected: boolean) => void
-}
+import { BlacklistType } from "../../../../codeCharta.model"
+import {
+	DownloadableProperty,
+	getAmountOfAttributeTypes,
+	getAmountOfNodes,
+	getDownloadableProperty,
+	getFilteredBlacklistLength
+} from "./util/propertyHelper"
 
 @Component({
 	template: require("./downloadDialog.component.html")
 })
 export class DownloadDialogComponent {
 	fileName: string
-	downloadableProperties: DownloadableProperty[]
+	properties: (DownloadableProperty & { change: (isSelected: boolean) => void })[]
 
 	constructor(@Inject(State) private state: State) {
 		const stateValue = this.state.getValue()
@@ -30,27 +28,23 @@ export class DownloadDialogComponent {
 		const { attributeTypes } = fileSettings
 		const { edges, markedPackages, blacklist } = fileSettings
 		this.fileName = FileNameHelper.getNewFileName(unifiedFileMeta.fileName, isDeltaState(files))
-		this.downloadableProperties = [
-			{
+		this.properties = [
+			this.getProperty(0, {
 				name: "Nodes",
-				amount: this.getAmountOfNodes(unifiedMapNode),
+				amount: getAmountOfNodes(unifiedMapNode),
 				isSelected: true,
-				isDisabled: true,
-				change: (isSelected: boolean) => (this.downloadableProperties[0].isSelected = isSelected)
-			},
-			{
+				isDisabled: true
+			}),
+			this.getProperty(1, {
 				name: "AttributeTypes",
-				amount:
-					(attributeTypes.nodes ? Object.keys(attributeTypes.nodes).length : 0) +
-					(attributeTypes.edges ? Object.keys(attributeTypes.edges).length : 0),
+				amount: getAmountOfAttributeTypes(attributeTypes),
 				isSelected: true,
-				isDisabled: true,
-				change: (isSelected: boolean) => (this.downloadableProperties[1].isSelected = isSelected)
-			},
-			this.getDownloadableProperty("Edges", edges.length, 2),
-			this.getDownloadableProperty("MarkedPackages", markedPackages.length, 3),
-			this.getDownloadableProperty("Excludes", this.getFilteredBlacklistLength(blacklist, BlacklistType.exclude), 4),
-			this.getDownloadableProperty("Flattens", this.getFilteredBlacklistLength(blacklist, BlacklistType.flatten), 5)
+				isDisabled: true
+			}),
+			this.getProperty(2, getDownloadableProperty("Edges", edges.length)),
+			this.getProperty(3, getDownloadableProperty("MarkedPackages", markedPackages.length)),
+			this.getProperty(4, getDownloadableProperty("Excludes", getFilteredBlacklistLength(blacklist, BlacklistType.exclude))),
+			this.getProperty(5, getDownloadableProperty("Flattens", getFilteredBlacklistLength(blacklist, BlacklistType.flatten)))
 		]
 	}
 
@@ -61,34 +55,15 @@ export class DownloadDialogComponent {
 			unifiedMapNode,
 			unifiedFileMeta,
 			state.fileSettings,
-			this.downloadableProperties.filter(property => property.isSelected).map(property => property.name),
+			this.properties.filter(property => property.isSelected).map(property => property.name),
 			this.fileName
 		)
 	}
 
-	private getFilteredBlacklistLength(blacklist: BlacklistItem[], blacklistType: BlacklistType) {
-		let count = 0
-		for (const entry of blacklist) {
-			if (entry.type === blacklistType) {
-				count++
-			}
-		}
-		return count
-	}
-
-	private getDownloadableProperty(name: string, amount: number, index: number): DownloadableProperty {
+	private getProperty(index: number, downloadableProperty: DownloadableProperty) {
 		return {
-			name,
-			amount,
-			isSelected: amount > 0,
-			isDisabled: amount === 0,
-			change: (isSelected: boolean) => (this.downloadableProperties[index].isSelected = isSelected)
+			...downloadableProperty,
+			change: (isSelected: boolean) => (this.properties[index].isSelected = isSelected)
 		}
-	}
-
-	private getAmountOfNodes(unifiedMapNode: CodeMapNode) {
-		let amountOfNodes = 0
-		hierarchy(unifiedMapNode).each(() => amountOfNodes++)
-		return amountOfNodes
 	}
 }

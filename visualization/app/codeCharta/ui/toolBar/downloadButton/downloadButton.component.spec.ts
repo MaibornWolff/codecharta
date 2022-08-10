@@ -36,7 +36,7 @@ describe("downloadButtonComponent", () => {
 					provide: State,
 					useValue: {
 						getValue: () => ({
-							files: [], // we only need to mock the key for the test to pass
+							files: [], // files are only used to decide if in delta mode. So just mocking the key is enough
 							fileSettings: mockedFileSettings
 						})
 					}

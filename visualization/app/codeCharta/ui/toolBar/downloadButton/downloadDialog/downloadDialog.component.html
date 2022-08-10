@@ -14,7 +14,7 @@
 	<div>The file includes:</div>
 
 	<mat-checkbox
-		*ngFor="let property of downloadableProperties"
+		*ngFor="let property of properties"
 		[checked]="property.isSelected"
 		[disabled]="property.isDisabled"
 		(change)="property.change($event.value)"
