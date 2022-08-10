@@ -9,7 +9,6 @@ import "./codeMap/codeMap.module"
 import "./dialog/dialog.module"
 import "./resetSettingsButton/resetSettingsButton.module"
 import "./ribbonBar/ribbonBar.module"
-import "./scenarioDropDown/scenarioDropDown.module"
 import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
 import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
@@ -25,7 +24,6 @@ angular
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.resetSettingsButton",
 		"app.codeCharta.ui.ribbonBar",
-		"app.codeCharta.ui.scenarioDropDown",
 		"app.codeCharta.ui.toolBar",
 		"app.codeCharta.ui.viewCube"
 	])

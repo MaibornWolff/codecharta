@@ -6,6 +6,21 @@ ribbon-bar-component {
 	pointer-events: none;
 	display: flex;
 
+	.cc-ribbon-bar-menu-button {
+		height: 22px;
+		line-height: 22px;
+		min-width: 45px;
+		margin: 0;
+		padding: 0;
+		font-size: 9pt;
+		background-color: rgba(230, 230, 230, 0.96);
+		color: rgb(68, 68, 68);
+
+		&:hover {
+			background-color: #c8c8c8;
+		}
+	}
+
 	cc-search-panel {
 		.search-panel-card {
 			padding: 0;

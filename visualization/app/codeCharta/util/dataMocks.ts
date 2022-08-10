@@ -26,7 +26,6 @@ import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
-import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
@@ -34,7 +33,7 @@ import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
-import { ScenarioMetricProperty } from "./scenarioHelper"
+import { ScenarioItem, ScenarioMetricProperty } from "../ui/ribbonBar/showScenariosButton/scenarioHelper"
 
 const DEFAULT_FILE_META = {
 	projectName: "Sample Project",

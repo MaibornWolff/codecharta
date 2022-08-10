@@ -39,6 +39,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Fix webpack build package being corrupt if zipped under linux by changing the compression path [#2934](https://github.com/MaibornWolff/codecharta/pull/2934)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Load metric templates lazily and migrate them to Angular [#2960](https://github.com/MaibornWolff/codecharta/pull/2960)
+
 ## [1.102] - 2022-08-04
 
 ### Changed
