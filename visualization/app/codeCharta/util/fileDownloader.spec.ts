@@ -1,8 +1,7 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
-import { FileDownloader } from "./fileDownloader"
+import { DownloadableSettingsName, FileDownloader } from "./fileDownloader"
 import { FileMeta, CodeMapNode, FileSettings, BlacklistType } from "../codeCharta.model"
 import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED, VALID_NODE_DECORATED, VALID_EDGES_DECORATED } from "./dataMocks"
-import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { klona } from "klona"
 
 describe("fileDownloader", () => {
@@ -11,7 +10,7 @@ describe("fileDownloader", () => {
 	let filesettings: FileSettings
 	let fileName: string
 	let fileNameWithExtension: string
-	let downloadSettingsNames: string[]
+	let downloadSettingsNames: DownloadableSettingsName[]
 	stubDate(new Date("2018-12-14T09:39:59"))
 
 	beforeEach(() => {
@@ -43,7 +42,7 @@ describe("fileDownloader", () => {
 		})
 
 		it("should call downloadData with undecorated ExportCCFile including undecorated edges", () => {
-			downloadSettingsNames = [DownloadCheckboxNames.edges]
+			downloadSettingsNames = ["Edges"]
 
 			const expected = klona(TEST_FILE_DATA_DOWNLOADED)
 			expected.blacklist = []
@@ -55,7 +54,7 @@ describe("fileDownloader", () => {
 		})
 
 		it("should call downloadData with undecorated ExportCCFile including blacklist", () => {
-			downloadSettingsNames = [DownloadCheckboxNames.excludes, DownloadCheckboxNames.flattens]
+			downloadSettingsNames = ["Excludes", "Flattens"]
 
 			const expected = klona(TEST_FILE_DATA_DOWNLOADED)
 			expected.edges = []

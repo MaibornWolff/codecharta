@@ -1,14 +1,15 @@
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, BlacklistItem, BlacklistType, CodeMapNode } from "../../../../../codeCharta.model"
+import { DownloadableSettingsName } from "../../../../../util/fileDownloader"
 
 export type DownloadableProperty = {
-	name: string
+	name: DownloadableSettingsName
 	amount: number
 	isSelected: boolean
 	isDisabled: boolean
 }
 
-export const getDownloadableProperty = (name: string, amount: number): DownloadableProperty => ({
+export const getDownloadableProperty = (name: DownloadableSettingsName, amount: number): DownloadableProperty => ({
 	name,
 	amount,
 	isSelected: amount > 0,
