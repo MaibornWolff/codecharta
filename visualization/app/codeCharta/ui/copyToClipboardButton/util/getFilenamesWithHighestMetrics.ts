@@ -10,14 +10,14 @@ export function getFilenamesWithHighestMetrics(node: Pick<CodeMapNode, "children
 	for (const { data } of hierarchy(node)) {
 		if (data.type === NodeType.FILE && data.attributes) {
 			for (const [key, value] of Object.entries(data.attributes)) {
-				maybeAddToMap(key, value, data.name, fileToValueByAttributes)
+				updateAttributeMap(key, value, data.name, fileToValueByAttributes)
 			}
 		}
 	}
 	return fileToValueByAttributes
 }
 
-export function maybeAddToMap(key: string, value: number, fileName: string, map: Map<string, FileToValue[]>) {
+export function updateAttributeMap(key: string, value: number, fileName: string, map: Map<string, FileToValue[]>) {
 	const keyIsNew = !map.has(key)
 	if (keyIsNew) {
 		map.set(key, [{ name: fileName, value }])
