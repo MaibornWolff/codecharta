@@ -71,6 +71,12 @@ describe("downloadButtonComponent", () => {
 
 		userEvent.click(checkboxes[2].querySelector("input"))
 		expect(checkboxes[2].querySelector("input").checked).toBe(false)
+		expect(checkboxes[2].querySelector("input").disabled).toBe(false)
+
+		userEvent.click(checkboxes[2].querySelector("input"))
+		expect(checkboxes[2].querySelector("input").checked).toBe(true)
+		expect(checkboxes[2].querySelector("input").disabled).toBe(false)
+		expect(checkboxes[2].querySelector("input").checked).toBe(false)
 
 		userEvent.click(screen.getByText("SAVE"))
 		expect(mockedDownload).toHaveBeenCalled()
