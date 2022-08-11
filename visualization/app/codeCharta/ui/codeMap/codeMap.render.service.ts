@@ -21,6 +21,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		neutral: [],
 		negative: []
 	}
+	static instance: CodeMapRenderService
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -33,6 +34,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	) {
 		"ngInject"
 		IsLoadingFileService.subscribe(this.$rootScope, this)
+		CodeMapRenderService.instance = this
 	}
 	onIsLoadingFileChanged(isLoadingFile: boolean) {
 		if (isLoadingFile) {

@@ -59,6 +59,7 @@ import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSetting
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
+import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 
 @NgModule({
 	imports: [
@@ -73,7 +74,8 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 			ResetColorRangeEffect,
 			ResetDynamicMarginEffect,
 			ResetChosenMetricsEffect,
-			UpdateEdgePreviewsEffect
+			UpdateEdgePreviewsEffect,
+			RenderCodeMapEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,

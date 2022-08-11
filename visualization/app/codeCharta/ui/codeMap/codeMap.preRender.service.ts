@@ -77,7 +77,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		) {
 			this.debounceRendering()
 		} else {
-			this.codeMapRenderService.update()
+			// this.codeMapRenderService.update()
 		}
 	}
 
@@ -105,14 +105,14 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private renderAndNotify() {
-		this.codeMapRenderService.render(this.unifiedMap)
+		// this.codeMapRenderService.render(this.unifiedMap)
 		this.removeLoadingGifs()
 		this.notifyMapChanged()
 	}
 
 	private scaleMapAndNotify() {
 		this.showLoadingMapGif()
-		this.codeMapRenderService.scaleMap()
+		// this.codeMapRenderService.scaleMap()
 		this.removeLoadingGifs()
 	}
 
