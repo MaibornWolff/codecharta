@@ -1,4 +1,4 @@
-# CodeCharta visualization
+# CodeCharta Visualization
 
 [![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=main)](https://travis-ci.org/MaibornWolff/codecharta)
 
@@ -7,7 +7,8 @@
 ## Jump to Section
 
 -   [Installation](#installation)
--   [Tasks](#tasks)
+-   [Development Tasks](#tasks)
+-   [Testing](#testing)
 -   [JSON structure](#json-structure)
 -   [License](LICENSE.md)
 
@@ -38,7 +39,7 @@ $ codecharta-visualization
 -   Download the correct standalone version for your OS from the [latest release page](https://github.com/MaibornWolff/codecharta/releases) under 'Assets'
 -   Extract & run the application
 
-> If you get an error on macOS because of a missing license, try this [apple support article](https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0) <br>
+> If you get an error on MacOS because of a missing license, try this [apple support article](https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0) <br>
 > You may be required to give the application executable rights
 
 ## Build it yourself
@@ -57,116 +58,84 @@ $ npm run dev
 # Upload any .cc.json!
 ```
 
-# old
+### Tasks
 
-First, change working directory via
+After cloning the repository and running the installation as described above, you can use the other available commands and tasks inside the visualization project:
 
-`cd <projectpath>/codecharta/visualization/`
+#### Build
 
-## Install for desktop usage with npm
-
-Install with
-
-`npm install codecharta-visualization -g`
-
-then run
-
-`codecharta-visualization`
-
-## Install for desktop usage
-
-Download or build [latest version](https://github.com/MaibornWolff/codecharta/releases/latest) for your system.
-Then Doubleclick the system specific Runnable. You may be required to give it executable rights.
-
-(If you get an error on macOS because of a missing license, try https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0).
-
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed. From your command line run:
+Build the project in `dist/`. The produced files are required if you want to [package](#package) the application or [start](#start) the standalone version.
 
 ```bash
-# Clone the CodeCharta repo
-$ git clone https://github.com/MaibornWolff/codecharta.git
-# Navigate to Visualization
-$ cd codecharta/visualization
-# Installation. If you're on Apple Silicon, you have to do `npm_config_nwjs_process_arch=x64 npm install` instead (see https://github.com/nwjs/npm-installer/issues/83).
-$ npm install
-# Run the development server
-$ npm run dev
-# Upload any .cc.json!
+# Make sure you are still inside the visualization project
+$ cd visualization
+# Build the webpack without serving it
+$ npm run build
+# The webpack is inside the dist/webpack/ folder, which you can serve as a web application
 ```
 
-## Install for development
+#### Package
 
-Make sure you have node >= 8 installed. Then run
+Package the nwjs application to produce the standalone versions for Windows (32bit/64bit), Linux (32bit/64bit) and MacOS (64bit). Creates `.zip` files for every OS and the webpack in the `dist/packages/` folder.
 
-`npm install`
+> Make sure to run the [build](#build) task beforehand <br>
+> This process might require administrative rights/sudo depending on the OS <br>
+> For UNIX-based systems you need to install [Wine](https://www.winehq.org/) to package the Windows application <br>
+> Currently the MacOS version can't be packaged under Windows (see `sript/build-nwjs.js`)
 
-Once you have installed the project, you can use all tasks described in the next section.
+```bash
+# You might need to edit the build script before you start
+$ npm run package
+```
 
-# Tasks
+#### Dev
 
-## Build
+```bash
+# Build the weebpack and serve it under localhost:3000
+$ npm run dev
+# This server listens to file changes
+```
 
-Build the project in dist/app via
+#### Start
 
-`npm run build`
+> Make sure to run [build](#build) beforehand
 
-The resulting artifact is ready to be served as a web application.
+```bash
+# Start the nwjs application
+$ npm run start
+```
 
-## Test
+<hr>
 
-### Unit
+### Testing
 
-Run unit tests in app/ and generate a coverage report in dist/coverage/ via
+To run tests check out the following tasks:
 
-`npm run test`
+#### Unit
 
-To run the tests in watch mode, use
+Run unit tests in `app/` and generate a coverage report in `dist/coverage/`.
 
-`npm run test:auto`
+```bash
+$ npm run test
+# To run the tests in watch mode, use
+$ npm run test:auto
+```
 
-### E2E
+#### E2E
 
-First, you have to stop your running dev-webserver and execute
+Run end-to-end tests
 
-`npm run build`
+```bash
+# Make sure to stop the dev-webserver before continuing
+# Create an up-to-date build
+$ npm run build
+# Start the e2e tests
+$ npm run e2e
+# To run the tests in watch mode, use
+$ npm run e2e:auto
+```
 
-Then, run the e2e-tests on the fresh build via
-
-`npm run e2e`
-
-To run the tests in watch mode, use
-
-`npm run e2e:auto`
-
-To follow/watch the steps the e2e test is performing, deactivate headless mode in jest-puppeteer.config.js (and maybe set the slowMo parameter).
-
-## Run
-
-### Development
-
-Serve the project on localhost:3000 via
-
-`npm run dev`
-
-### Production
-
-First, build via
-
-`npm run build`
-
-and then start the nwjs app via
-
-`npm run start`
-
-### Package
-
-Package the nwjs app via
-
-`npm run package`
-
-If you get WrapperError on macOS:
-
-Try to use Homebrew by running `brew install --cask wine-stable`, then try `npm run package` again.
+> To follow/watch the steps the e2e test is performing, deactivate headless mode in `jest-puppeteer.config.js` (and maybe set the `slowMo` parameter)
 
 # JSON structure
 
