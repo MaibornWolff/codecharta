@@ -18,4 +18,4 @@ export function setIsLoadingMap(isLoadingMap: boolean = defaultIsLoadingMap): Se
 	}
 }
 
-export const defaultIsLoadingMap = true
+export const defaultIsLoadingMap = false

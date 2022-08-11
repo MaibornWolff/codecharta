@@ -22,7 +22,7 @@ import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
-import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
+import { CodeMapRenderService } from "../ui/codeMap/codeMap.render.service"
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
@@ -48,7 +48,7 @@ export class InjectorService {
 		private layoutAlgorithmService: LayoutAlgorithmService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService,
-		private codeMapPreRenderService: CodeMapPreRenderService
+		private codeMapRenderService: CodeMapRenderService
 	) {
 		"ngInject"
 	}
