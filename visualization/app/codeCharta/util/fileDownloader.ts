@@ -1,20 +1,21 @@
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
-import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
 
+export type DownloadableSetting = "Nodes" | "AttributeTypes" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
+
 export class FileDownloader {
 	static downloadCurrentMap(
 		map: CodeMapNode,
 		fileMeta: FileMeta,
 		fileSettings: FileSettings,
-		downloadSettingsNames: string[],
+		downloadSettings: DownloadableSetting[],
 		fileName: string
 	) {
-		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
+		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettings)
 		const newFileNameWithExtension = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(JSON.stringify(exportCCFile), newFileNameWithExtension)
 	}
@@ -23,7 +24,7 @@ export class FileDownloader {
 		map: CodeMapNode,
 		fileMeta: FileMeta,
 		fileSettings: FileSettings,
-		downloadSettingsNames: string[]
+		downloadSettings: DownloadableSetting[]
 	): ExportCCFile {
 		return {
 			projectName: fileMeta.projectName,
@@ -31,16 +32,16 @@ export class FileDownloader {
 			fileChecksum: fileMeta.fileChecksum,
 			nodes: [this.undecorateMap(map)],
 			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
-			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? this.undecorateEdges(fileSettings.edges) : [],
-			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? fileSettings.markedPackages : [],
-			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist)
+			edges: downloadSettings.includes("Edges") ? this.undecorateEdges(fileSettings.edges) : [],
+			markedPackages: downloadSettings.includes("MarkedPackages") ? fileSettings.markedPackages : [],
+			blacklist: this.getBlacklistToDownload(downloadSettings, fileSettings.blacklist)
 		}
 	}
 
-	private static getBlacklistToDownload(downloadSettingsNames: string[], blacklist: BlacklistItem[]) {
+	private static getBlacklistToDownload(downloadSettings: DownloadableSetting[], blacklist: BlacklistItem[]) {
 		const mergedBlacklist = []
 
-		if (downloadSettingsNames.includes(DownloadCheckboxNames.flattens)) {
+		if (downloadSettings.includes("Flattens")) {
 			mergedBlacklist.push(
 				...this.getFilteredBlacklist(blacklist, BlacklistType.flatten).map(x => {
 					return { path: x.path, type: "hide" }
@@ -48,7 +49,7 @@ export class FileDownloader {
 			)
 		}
 
-		if (downloadSettingsNames.includes(DownloadCheckboxNames.excludes)) {
+		if (downloadSettings.includes("Excludes")) {
 			mergedBlacklist.push(...this.getFilteredBlacklist(blacklist, BlacklistType.exclude))
 		}
 		return mergedBlacklist

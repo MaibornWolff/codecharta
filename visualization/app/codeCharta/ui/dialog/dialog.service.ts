@@ -1,13 +1,8 @@
-import { dialogDownloadComponent } from "./dialog.download.component"
 import { CCFileValidationResult } from "../../util/fileValidator"
 
 export class DialogService {
 	constructor(private $mdDialog) {
 		"ngInject"
-	}
-
-	showDownloadDialog() {
-		this.showCustomDialog(dialogDownloadComponent)
 	}
 
 	showCustomDialog(dialog) {
