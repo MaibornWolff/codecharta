@@ -7,15 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate download button to Angular [#2973](https://github.com/MaibornWolff/codecharta/pull/2973)
+
 ## [1.103.3] - 2022-08-10
 
 ### Fixed 🐞
 
 -   Update Ubuntu images package list as part of the wine action [#2976](https://github.com/MaibornWolff/codecharta/pull/2976)
-
-### Chore 👨‍💻 👩‍💻
-
--   Migrate download button to Angular [#2973](https://github.com/MaibornWolff/codecharta/pull/2973)
 
 ## [1.103.2] - 2022-08-10
 
