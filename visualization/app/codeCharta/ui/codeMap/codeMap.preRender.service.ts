@@ -48,14 +48,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}, this.DEBOUNCE_TIME)
 	}
 
-	getRenderMap() {
-		return this.unifiedMap
-	}
-
-	getRenderFileMeta() {
-		return this.unifiedFileMeta
-	}
-
 	onStoreChanged(actionType: string) {
 		// TODO: Get rid of this if else block. Why do we sometimes call this.debounceRendering() and sometimes this.codeMapRenderService.update()?
 		if (
