@@ -1,181 +1,69 @@
-import "./fileExtensionBar.module"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
-import {
-	METRIC_DISTRIBUTION,
-	NONE_METRIC_DISTRIBUTION,
-	TEST_FILE_WITH_PATHS,
-	CODE_MAP_BUILDING_TS_NODE,
-	VALID_NODE_WITH_PATH_AND_EXTENSION
-} from "../../util/dataMocks"
-import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
-import { FileExtensionBarController } from "./fileExtensionBar.component"
-import { NodeType } from "../../codeCharta.model"
-import { StoreService } from "../../state/store.service"
+import { TestBed } from "@angular/core/testing"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
+import { CODE_MAP_BUILDING_TS_NODE } from "../../util/dataMocks"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
-import { klona } from "klona"
+import { FileExtensionBarComponent } from "./fileExtensionBar.component"
+import { FileExtensionBarModule } from "./fileExtensionBar.module"
 
-describe("FileExtensionBarController", () => {
-	let fileExtensionBarController: FileExtensionBarController
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
-	let threeSceneService: ThreeSceneService
+jest.mock("../../state/angular-redux/onStoreChanged/onStoreChanged", () => ({
+	onStoreChanged: (_, callback) =>
+		callback(null, [
+			{
+				fileExtension: "ts",
+				absoluteMetricValue: 1120,
+				relativeMetricValue: 100,
+				color: "hsl(111, 40%, 50%)"
+			}
+		])
+}))
 
-	const distribution: MetricDistribution[] = METRIC_DISTRIBUTION
-	let codeMapBuilding: CodeMapBuilding
-
+describe("fileExtensionBarComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-		withMockedThreeSceneService()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.fileExtensionBar")
-
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-
-		codeMapBuilding = klona(CODE_MAP_BUILDING_TS_NODE)
-	}
-
-	function rebuildController() {
-		fileExtensionBarController = new FileExtensionBarController($rootScope, storeService, threeSceneService)
-	}
-
-	function withMockedThreeSceneService() {
-		threeSceneService = fileExtensionBarController["threeSceneService"] = jest.fn().mockReturnValue({
-			getMapMesh: jest.fn().mockReturnValue({
-				getMeshDescription: jest.fn().mockReturnValue({
-					buildings: [codeMapBuilding]
-				})
-			}),
-			addBuildingToHighlightingList: jest.fn(),
-			highlightBuildings: jest.fn()
-		})()
-	}
-
-	describe("onRenderMapChanged", () => {
-		beforeEach(() => {
-			FileExtensionCalculator.getMetricDistribution = jest.fn().mockReturnValue(distribution)
-		})
-		it("should set viewModel.distribution for given metric", () => {
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
-
-			expect(fileExtensionBarController["_viewModel"].distribution).toEqual(distribution)
-		})
-
-		it("should call getMetricDistribution with mcc", () => {
-			storeService.dispatch(setDistributionMetric("mcc"))
-
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
-
-			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(TEST_FILE_WITH_PATHS.map, "mcc")
-		})
-
-		it("should call getMetricDistribution", () => {
-			storeService.dispatch(setDistributionMetric("mcc"))
-
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
-
-			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(TEST_FILE_WITH_PATHS.map, "mcc")
-		})
-
-		it("should set the color of given extension attribute", () => {
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
-
-			expect(distribution[0].color).toEqual("hsl(58, 40%, 50%)")
-		})
-
-		it("should remain the color property of the extension, if it already has one", () => {
-			distribution[0].color = "#4286f4"
-
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
-
-			expect(distribution[0].color).toEqual("#4286f4")
-		})
-
-		it("should set viewModel.distribution with just the none Object, if no extension was found for the metric", () => {
-			FileExtensionCalculator.getMetricDistribution = jest.fn().mockReturnValue([])
-
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
-
-			expect(fileExtensionBarController["_viewModel"].distribution).toEqual(NONE_METRIC_DISTRIBUTION)
+		TestBed.configureTestingModule({
+			imports: [FileExtensionBarModule],
+			providers: [
+				{
+					provide: ThreeSceneServiceToken,
+					useValue: {
+						getMapMesh: jest.fn().mockReturnValue({
+							getMeshDescription: jest.fn().mockReturnValue({
+								buildings: [CODE_MAP_BUILDING_TS_NODE]
+							})
+						}),
+						addBuildingToHighlightingList: jest.fn(),
+						highlightBuildings: jest.fn()
+					}
+				}
+			]
 		})
 	})
 
-	describe("toggleExtensiveMode", () => {
-		it("should set viewModel.isExtensiveMode to false", () => {
-			fileExtensionBarController["_viewModel"].isExtensiveMode = true
+	it("should toggle displayed metric relative / absolute values on click", async () => {
+		await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
+		expect(screen.getByText("ts 100.00%")).toBeTruthy()
+		expect(screen.queryByText("ts 1,120")).toBe(null)
 
-			fileExtensionBarController.toggleExtensiveMode()
-
-			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeFalsy()
-		})
-
-		it("should set viewModel.isExtensiveMode to true", () => {
-			fileExtensionBarController["_viewModel"].isExtensiveMode = false
-
-			fileExtensionBarController.toggleExtensiveMode()
-
-			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeTruthy()
-		})
+		userEvent.click(screen.getByText("ts 100.00%"))
+		expect(screen.queryByText("ts 100%")).toBe(null)
+		expect(screen.getByText("ts 1,120")).toBeTruthy()
 	})
 
-	describe("togglePercentageAbsoluteValues", () => {
-		it("should set viewModel.isAbsoluteValueVisible to false", () => {
-			fileExtensionBarController["_viewModel"].isAbsoluteValueVisible = true
+	it("should show details on click of details button", async () => {
+		const { container } = await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
+		expect(container.querySelector(".cc-distribution-details").classList).toContain("cc-hidden")
 
-			fileExtensionBarController.togglePercentageAbsoluteValues()
-
-			expect(fileExtensionBarController["_viewModel"].isAbsoluteValueVisible).toBeFalsy()
-		})
-
-		it("should set viewModel.isAbsoluteValueVisible to true", () => {
-			fileExtensionBarController["_viewModel"].isAbsoluteValueVisible = false
-
-			fileExtensionBarController.togglePercentageAbsoluteValues()
-
-			expect(fileExtensionBarController["_viewModel"].isAbsoluteValueVisible).toBeTruthy()
-		})
+		userEvent.click(container.querySelector(".cc-show-details-button"))
+		expect(container.querySelector(".cc-distribution-details").classList).not.toContain("cc-hidden")
 	})
 
-	describe("highlightBarHoveredBuildings", () => {
-		beforeEach(() => {
-			const map = klona(VALID_NODE_WITH_PATH_AND_EXTENSION)
-			map.children.push({
-				name: "README.md",
-				type: NodeType.FILE,
-				path: "/root/README.md",
-				attributes: { rloc: 120, functions: 20, mcc: 2 },
-				isExcluded: false,
-				isFlattened: false
-			})
-			fileExtensionBarController.onRenderMapChanged(map)
-		})
+	it("should highlight buildings on hover", async () => {
+		await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
+		userEvent.hover(screen.getByText("ts 100.00%"))
 
-		it("should highlight all buildings with 'other' extension", () => {
-			fileExtensionBarController.onHoverFileExtensionBar("other")
-
-			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledTimes(1)
-			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
-			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
-		})
-
-		it("should call addBuilding to addBuildingToHighlightingList, when a Building with the given file Extension exists ", () => {
-			fileExtensionBarController.onHoverFileExtensionBar("ts")
-
-			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
-			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
-		})
-
-		it("should not call addBuilding to addBuildingToHighlightingList, when Building with the given file Extension does not exists ", () => {
-			fileExtensionBarController.onHoverFileExtensionBar("ne")
-
-			expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
-			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
-		})
+		const threeSceneService = TestBed.inject<ThreeSceneService>(ThreeSceneServiceToken)
+		expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING_TS_NODE)
+		expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 	})
 })

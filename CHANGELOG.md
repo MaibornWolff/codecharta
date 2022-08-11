@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate download button to Angular [#2973](https://github.com/MaibornWolff/codecharta/pull/2973)
+
+## [1.103.3] - 2022-08-10
+
+### Fixed 🐞
+
+-   Update Ubuntu images package list as part of the wine action [#2976](https://github.com/MaibornWolff/codecharta/pull/2976)
+
+## [1.103.2] - 2022-08-10
+
+### Fixed 🐞
+
+-   Highlight buildings on hover of file extension bar [#2969](https://github.com/MaibornWolff/codecharta/pull/2969)
+-   Fix of the npm visualization installation under MacOS by version bumping nwjs [#2974](https://github.com/MaibornWolff/codecharta/pull/2974)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate file extension bar to Angular [#2968](https://github.com/MaibornWolff/codecharta/pull/2968)
+
+## [1.103.1] - 2022-08-09
+
+### Fixed 🐞
+
+-   Change release action script in order to show changelog in release notes [#2970](https://github.com/MaibornWolff/codecharta/pull/2970)
+
+## [1.103.0] - 2022-08-09
+
 ### Changed
 
 -   Update links to demo website [#2961](https://github.com/MaibornWolff/codecharta/pull/2961)
@@ -22,6 +51,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Fix webpack build package being corrupt if zipped under linux by changing the compression path [#2934](https://github.com/MaibornWolff/codecharta/pull/2934)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Load metric templates lazily and migrate them to Angular [#2960](https://github.com/MaibornWolff/codecharta/pull/2960)
 
 ## [1.102] - 2022-08-04
 
