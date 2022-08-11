@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Copy-to-Clipboard-Button to paste the top 10 of files with highest metric values [#2942](https://github.com/MaibornWolff/codecharta/pull/2942)<br/>![image](https://user-images.githubusercontent.com/46388280/184089603-ecfa8e31-8241-42a2-9954-2de554347381.png)<br/>![image](https://user-images.githubusercontent.com/46388280/184089577-5cd2eec0-5293-4083-b629-0e3c5621047c.png)
+
 ## [1.103.3] - 2022-08-10
 
 ### Fixed 🐞
@@ -19,10 +23,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Highlight buildings on hover of file extension bar [#2969](https://github.com/MaibornWolff/codecharta/pull/2969)
 -   Fix of the npm visualization installation under MacOS by version bumping nwjs [#2974](https://github.com/MaibornWolff/codecharta/pull/2974)
-
-### Added 🚀
-
--   Copy-to-Clipboard-Button to paste the top 10 of files with highest metric values [#2942](https://github.com/MaibornWolff/codecharta/pull/2942)
 
 ### Chore 👨‍💻 👩‍💻
 
