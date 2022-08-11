@@ -4,7 +4,6 @@ import { CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
-import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import debounce from "lodash.debounce"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
@@ -17,7 +16,6 @@ import { fileStatesAvailable } from "../../model/files/files.helper"
 import { PresentationModeActions } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
-import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { HoveredNodeIdActions } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { areAllNecessaryRenderDataAvailableSelector } from "../../state/selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
@@ -27,7 +25,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber, LayoutAlgorithmSubscriber {
+export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -44,8 +42,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		"ngInject"
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
-		ScalingService.subscribe(this.$rootScope, this)
-		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 
 		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
@@ -81,16 +77,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}
 	}
 
-	onLayoutAlgorithmChanged() {
-		this.debounceRendering()
-	}
-
-	onScalingChanged() {
-		if (this.allNecessaryRenderDataAvailable()) {
-			this.scaleMapAndNotify()
-		}
-	}
-
 	onMetricDataChanged() {
 		const state = this.storeService.getState()
 		if (fileStatesAvailable(state.files)) {
@@ -110,12 +96,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		this.notifyMapChanged()
 	}
 
-	private scaleMapAndNotify() {
-		this.showLoadingMapGif()
-		// this.codeMapRenderService.scaleMap()
-		this.removeLoadingGifs()
-	}
-
 	private allNecessaryRenderDataAvailable() {
 		return areAllNecessaryRenderDataAvailableSelector(this.storeService.getState())
 	}
@@ -127,10 +107,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		if (this.storeService.getState().appSettings.isLoadingMap) {
 			this.storeService.dispatch(setIsLoadingMap(false))
 		}
-	}
-
-	private showLoadingMapGif() {
-		this.storeService.dispatch(setIsLoadingMap(true))
 	}
 
 	private notifyMapChanged() {
