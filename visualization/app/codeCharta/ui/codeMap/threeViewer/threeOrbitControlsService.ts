@@ -9,7 +9,6 @@ import {
 	FocusNodeSubscriber,
 	UnfocusNodeSubscriber
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 // TODO remove this old orbital control and use the jsm examples oneW
@@ -22,10 +21,9 @@ export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
-export class ThreeOrbitControlsService
-	implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber, LayoutAlgorithmSubscriber
-{
+export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, LayoutAlgorithmSubscriber {
 	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
+	static instance: ThreeOrbitControlsService
 
 	controls: OrbitControls
 	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
@@ -39,9 +37,9 @@ export class ThreeOrbitControlsService
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
 		"ngInject"
+		ThreeOrbitControlsService.instance = this
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
 	}
 
@@ -51,12 +49,6 @@ export class ThreeOrbitControlsService
 
 	onUnfocusNode() {
 		this.autoFitTo()
-	}
-
-	onFilesSelectionChanged() {
-		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
-			this.autoFitTo()
-		}
 	}
 
 	onLayoutAlgorithmChanged() {

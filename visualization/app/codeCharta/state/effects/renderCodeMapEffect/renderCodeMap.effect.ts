@@ -1,12 +1,15 @@
 import { Inject, Injectable } from "@angular/core"
-import { asyncScheduler, combineLatest, filter, tap, throttleTime } from "rxjs"
+import { asyncScheduler, combineLatest, filter, take, tap, throttleTime } from "rxjs"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
+import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
 import { isActionOfType } from "../../../util/reduxHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
+import { State } from "../../angular-redux/state"
 import { Store } from "../../angular-redux/store"
 import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumulatedData.selector"
+import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { AmountOfEdgePreviewsActions } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { AmountOfTopLabelsActions } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { ColorLabelsActions } from "../../store/appSettings/colorLabels/colorLabels.actions"
@@ -18,6 +21,7 @@ import { IsWhiteBackgroundActions } from "../../store/appSettings/isWhiteBackgro
 import { LayoutAlgorithmActions } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { MapColorsActions } from "../../store/appSettings/mapColors/mapColors.actions"
 import { MaxTreeMapFilesActions } from "../../store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 import { ScalingActions } from "../../store/appSettings/scaling/scaling.actions"
 import { SharpnessModeActions } from "../../store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { ShowMetricLabelNameValueActions } from "../../store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
@@ -32,9 +36,14 @@ import { HeightMetricActions } from "../../store/dynamicSettings/heightMetric/he
 import { MarginActions } from "../../store/dynamicSettings/margin/margin.actions"
 import { SearchPatternActions } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 
+// don't inject those AngularJS services, as AngularJS is not yet bootstrapped, when Effects are bootstrapped
 @Injectable()
 export class RenderCodeMapEffect {
-	constructor(@Inject(Store) private store: Store, @Inject(ActionsToken) private actions$: Actions) {}
+	constructor(
+		@Inject(Store) private store: Store,
+		@Inject(ActionsToken) private actions$: Actions,
+		@Inject(State) private state: State
+	) {}
 
 	private actionsRequiringRender$ = this.actions$.pipe(
 		filter(
@@ -74,13 +83,26 @@ export class RenderCodeMapEffect {
 				throttleTime(1000 / 60, asyncScheduler, { leading: true, trailing: true }),
 				tap(([accumulatedData, action]) => {
 					setTimeout(() => {
-						// don't inject those AngularJS services, as AngularJS is not yet bootstrapped, when Effects are bootstrapped
 						CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
 						ThreeRendererService.instance.render()
 						if (isActionOfType(action.type, ScalingActions)) {
 							CodeMapRenderService.instance.scaleMap()
 						}
 					})
+				})
+			),
+		{ dispatch: false }
+	)
+
+	autoFitCodeMapOnFileSelectionChange$ = createEffect(
+		() =>
+			this.store.select(visibleFileStatesSelector).pipe(
+				tap(() => {
+					if (resetCameraIfNewFileIsLoadedSelector(this.state.getValue())) {
+						this.renderCodeMap$.pipe(take(1)).subscribe(() => {
+							ThreeOrbitControlsService.instance.autoFitTo()
+						})
+					}
 				})
 			),
 		{ dispatch: false }
