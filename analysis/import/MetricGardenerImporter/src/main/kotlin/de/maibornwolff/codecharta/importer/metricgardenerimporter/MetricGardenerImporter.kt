@@ -17,26 +17,27 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "metricgardenerimport",
-        description = ["generates a cc.json file from a project parsed with metric-gardener"],
-        footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = "metricgardenerimport",
+    description = ["generates a cc.json file from a project parsed with metric-gardener"],
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 
 class MetricGardenerImporter(
-        private val output: PrintStream = System.out) : Callable<Void>, InteractiveParser {
+    private val output: PrintStream = System.out
+) : Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
     private val mapper = jacksonObjectMapper()
 
     @CommandLine.Option(
-            names = ["-h", "--help"], usageHelp = true,
-            description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"]
+        names = ["-h", "--help"], usageHelp = true,
+        description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"]
     )
     private var help = false
 
     @CommandLine.Parameters(
-            arity = "1", paramLabel = "FOLDER or FILE",
-            description = ["path for project folder or code file"]
+        arity = "1", paramLabel = "FOLDER or FILE",
+        description = ["path for project folder or code file"]
     )
     private var inputFile = File("")
 
@@ -53,13 +54,15 @@ class MetricGardenerImporter(
             return null
         }
         val metricGardenerNodes: MetricGardenerNodes =
-                mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
+            mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
         val project = metricGardenerProjectBuilder.build()
         val filePath = outputFile ?: "notSpecified"
         if (compress && filePath !== "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project,
-                    filePath)
+            ProjectSerializer.serializeAsCompressedFile(
+                project,
+                filePath
+            )
         } else {
             ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
         }

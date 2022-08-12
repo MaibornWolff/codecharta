@@ -10,22 +10,26 @@ import java.nio.file.Paths
 import kotlin.io.path.name
 
 object OutputFileHandler {
+    fun writer(outputName: String?, output: PrintStream): Writer {
+        return if (outputName.isNullOrBlank()) {
+            OutputStreamWriter(output)
+        } else {
+            BufferedWriter(FileWriter(File(checkAndFixFileExtension(outputName))))
+        }
+    }
 
     fun checkAndFixFileExtension(outputName: String): String {
         if (outputName.endsWith("cc.json")) {
             return outputName
         }
-        return (Paths.get(outputName).parent?.toString() ?: "").plus(
-                Paths.get(outputName).root?.toString() ?: "").plus(extractFileName(outputName))
+        val sb = StringBuilder()
+        sb.append(Paths.get(outputName).parent?.toString() ?: "")
+        if (sb.isNotEmpty()) {
+            sb.append(File.separator)
+        }
+        sb.append(extractFileName(outputName))
+        return sb.toString()
     }
-
-     fun writer(outputName: String?, output: PrintStream): Writer {
-         return if (outputName.isNullOrBlank()) {
-             OutputStreamWriter(output)
-         } else {
-             BufferedWriter(FileWriter(File(checkAndFixFileExtension(outputName ?: ""))))
-         }
-     }
 
     private fun extractFileName(outputName: String): String {
         val fileName = Paths.get(outputName).fileName.name

@@ -14,7 +14,7 @@ class MetricGardenerImporterTest {
         main(
             arrayOf(
                 "src/test/resources/metricgardener-analysis.json", "-nc",
-                "-o=src/test/resources/metricgardener-analysis.cc.json"
+                "-o=src/test/resources/metricgardener-analysis"
                    )
             )
         val file = File("src/test/resources/metricgardener-analysis.cc.json")
@@ -28,7 +28,7 @@ class MetricGardenerImporterTest {
         main(
             arrayOf(
                 "src/test/resources/metricgardener-analysis.json",
-                "-o=src/test/resources/metricgardener-analysis.cc.json"
+                "-o=src/test/resources/metricgardener-analysis"
                    )
             )
         val file = File("src/test/resources/metricgardener-analysis.cc.json.gz")
@@ -41,7 +41,7 @@ class MetricGardenerImporterTest {
     fun `should create no file when the input file was not specified`() {
         main(
             arrayOf(
-                "-o=src/test/resources/metricgardener-analysis.cc.json"
+                "-o=src/test/resources/metricgardener-analysis.json"
                    )
             )
         val file = File("src/test/resources/metricgardener-analysis.cc.json.gz")

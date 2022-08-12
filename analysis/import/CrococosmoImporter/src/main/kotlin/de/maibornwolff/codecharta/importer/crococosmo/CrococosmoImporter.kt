@@ -33,29 +33,18 @@ class CrococosmoImporter(private val output: PrintStream = System.out) : Callabl
         val projects = CrococosmoConverter().convertToProjectsMap(graph)
         projects.forEach {
             val suffix = if (projects.isNotEmpty()) "_" + it.key else ""
-            val filePath = inputFile?.absolutePath ?: "notSpecified"
+            val filePath = outputFile ?: "notSpecified"
 
             if (compress && filePath !== "notSpecified") {
                 ProjectSerializer.serializeAsCompressedFile(
-                    it.value, filePath + suffix
+                    it.value,
+                    filePath + suffix
                 )
             } else {
                 ProjectSerializer.serializeProject(
-                    it.value, OutputFileHandler.writer(appendSuffixToOutputFileIfNotNull(suffix) ?: "", output)
+                    it.value, OutputFileHandler.writer(filePath + suffix, output)
                 )
             }
-        }
-        return null
-    }
-
-    private fun writer(name: String = "") = when {
-        outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
-        else -> File(outputFile + name).bufferedWriter()
-    }
-
-    private fun appendSuffixToOutputFileIfNotNull(suffix: String): String? {
-        if (!outputFile.isNullOrEmpty()) {
-            return outputFile + suffix
         }
         return null
     }
