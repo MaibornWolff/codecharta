@@ -2,7 +2,6 @@ import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService, IAngularEvent, ITimeoutService } from "angular"
 import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"
-import { StoreService } from "../../../state/store.service"
 import { LayoutAlgorithmSubscriber, LayoutAlgorithmService } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import {
 	FocusedNodePathService,
@@ -31,7 +30,6 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
-		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
