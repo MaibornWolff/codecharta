@@ -23,12 +23,6 @@ describe("DialogService", () => {
 		dialogService = new DialogService($mdDialog)
 	}
 
-	it("should show DownloadDialog", function () {
-		dialogService.showDownloadDialog()
-
-		expect(dialogService.showCustomDialog).toHaveBeenCalled()
-	})
-
 	it("should show ValidationDialog", function () {
 		const fileValidationResults: CCFileValidationResult[] = [
 			{ fileName: "file_1", errors: ["Error"], warnings: [] },

@@ -25,7 +25,9 @@ jobs:
           node-version: '16'
 
       - name: Install wine
-        run: sudo apt-get install -y wine-stable
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wine-stable
 
       - name: Install zip
         run: sudo apt-get install -y zip
@@ -54,6 +56,8 @@ jobs:
         run: sh ./script/build_gh_pages.sh
 
       - name: Upload Release Files to tagged release
+        permissions:
+          contents: write
         uses: alexellis/upload-assets@0.3.0
         env:
           GITHUB_TOKEN: ${{ github.token }}

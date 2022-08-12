@@ -27,26 +27,6 @@ cc-reset-settings-button {
 	min-width: 50%;
 }
 
-.download-dialog {
-	.dialog-list {
-		margin: 5px 0 5px 0;
-
-		&.md-block {
-			display: block;
-			margin-top: 8px;
-		}
-	}
-
-	.filename-input {
-		width: 80%;
-	}
-
-	.cc-file-extension {
-		color: grey;
-		vertical-align: -webkit-baseline-middle;
-	}
-}
-
 .custom-config-dialog {
 	.warning {
 		color: #ff6161;

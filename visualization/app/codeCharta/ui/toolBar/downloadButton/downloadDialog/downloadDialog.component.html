@@ -1,0 +1,28 @@
+<mat-toolbar class="header">
+	<h2>Export File</h2>
+</mat-toolbar>
+
+<mat-dialog-content>
+	<div class="file-name-wrapper">
+		<mat-form-field>
+			<label>File Name</label>
+			<input matInput [(ngModel)]="fileName" />
+		</mat-form-field>
+		<div class="file-extension">.cc.json</div>
+	</div>
+
+	<div>The file includes:</div>
+
+	<mat-checkbox
+		*ngFor="let property of properties"
+		[checked]="property.isSelected"
+		[disabled]="property.isDisabled"
+		(change)="property.change($event.value)"
+	>
+		{{ property.name }} ({{ property.amount }})
+	</mat-checkbox>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+	<button mat-button class="save-button" (click)="download()" mat-dialog-close>SAVE</button>
+</mat-dialog-actions>
