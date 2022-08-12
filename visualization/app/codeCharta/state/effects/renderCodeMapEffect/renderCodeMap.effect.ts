@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { asyncScheduler, bufferCount, combineLatest, debounceTime, filter, skip, switchMap, take, tap, throttleTime } from "rxjs"
+import { asyncScheduler, combineLatest, delay, filter, switchMap, tap, throttleTime } from "rxjs"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
@@ -28,6 +28,7 @@ import { ScalingActions } from "../../store/appSettings/scaling/scaling.actions"
 import { SharpnessModeActions } from "../../store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { ShowMetricLabelNameValueActions } from "../../store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { ShowMetricLabelNodeNameActions } from "../../store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { ShowOnlyBuildingsWithEdgesActions } from "../../store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { AreaMetricActions } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"
 import { ColorMetricActions } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 import { ColorModeActions } from "../../store/dynamicSettings/colorMode/colorMode.actions"
@@ -37,6 +38,8 @@ import { FocusedNodePathActions } from "../../store/dynamicSettings/focusedNodeP
 import { HeightMetricActions } from "../../store/dynamicSettings/heightMetric/heightMetric.actions"
 import { MarginActions } from "../../store/dynamicSettings/margin/margin.actions"
 import { SearchPatternActions } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
+
+const maxFPS = 1000 / 60
 
 // don't inject those AngularJS services, as AngularJS is not yet bootstrapped, when Effects are bootstrapped
 @Injectable()
@@ -59,14 +62,14 @@ export class RenderCodeMapEffect {
 				isActionOfType(action.type, InvertHeightActions) ||
 				isActionOfType(action.type, HideFlatBuildingsActions) ||
 				isActionOfType(action.type, ScalingActions) ||
-				isActionOfType(action.type, EdgeHeightActions) || // todo check this and the next 2
+				isActionOfType(action.type, EdgeHeightActions) ||
 				isActionOfType(action.type, AmountOfEdgePreviewsActions) ||
 				isActionOfType(action.type, AmountOfTopLabelsActions) ||
 				isActionOfType(action.type, LayoutAlgorithmActions) ||
 				isActionOfType(action.type, MaxTreeMapFilesActions) ||
 				isActionOfType(action.type, SharpnessModeActions) ||
 				isActionOfType(action.type, ColorModeActions) ||
-				isActionOfType(action.type, EdgeMetricActions) || // todo check
+				isActionOfType(action.type, EdgeMetricActions) ||
 				isActionOfType(action.type, ColorRangeActions) ||
 				isActionOfType(action.type, MarginActions) ||
 				isActionOfType(action.type, SearchPatternActions) ||
@@ -74,6 +77,7 @@ export class RenderCodeMapEffect {
 				isActionOfType(action.type, HeightMetricActions) ||
 				isActionOfType(action.type, AreaMetricActions) ||
 				isActionOfType(action.type, ColorMetricActions) ||
+				isActionOfType(action.type, ShowOnlyBuildingsWithEdgesActions) ||
 				false
 		)
 	)
@@ -82,11 +86,13 @@ export class RenderCodeMapEffect {
 		() =>
 			combineLatest([this.store.select(accumulatedDataSelector), this.actionsRequiringRender$]).pipe(
 				filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
-				// leading: true and afterwards debounce 0 shouldn't be necessary. But that is probably another deep refactoring
-				throttleTime(1000 / 60, asyncScheduler, { leading: true, trailing: true }),
-				debounceTime(0),
+				// leading: true and afterwards delay 0 shouldn't be necessary. But that is probably another deep refactoring
+				throttleTime(maxFPS, asyncScheduler, { leading: true, trailing: true }),
+				delay(0),
 				tap(([accumulatedData, action]) => {
-					CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
+					if (!isActionOfType(action.type, EdgeHeightActions)) {
+						CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
+					}
 					ThreeRendererService.instance.render()
 					if (isActionOfType(action.type, ScalingActions)) {
 						CodeMapRenderService.instance.scaleMap()
@@ -96,7 +102,7 @@ export class RenderCodeMapEffect {
 		{ dispatch: false }
 	)
 
-	codeMapRendered$ = this.renderCodeMap$.pipe(bufferCount(2))
+	codeMapRendered$ = this.renderCodeMap$.pipe(throttleTime(maxFPS, asyncScheduler, { leading: true, trailing: true }), delay(0))
 	// Todo extract into own effect
 	removeLoadingIndicator$ = createEffect(
 		() =>
@@ -109,9 +115,7 @@ export class RenderCodeMapEffect {
 		{ dispatch: false }
 	)
 
-	private renderedAfterFileSelectionChange$ = this.store
-		.select(visibleFileStatesSelector)
-		.pipe(switchMap(() => this.renderCodeMap$.pipe(skip(1), take(1))))
+	private renderedAfterFileSelectionChange$ = this.store.select(visibleFileStatesSelector).pipe(switchMap(() => this.codeMapRendered$))
 
 	autoFitCodeMapOnFileSelectionChange$ = createEffect(
 		() =>
