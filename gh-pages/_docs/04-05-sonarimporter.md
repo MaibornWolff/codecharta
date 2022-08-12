@@ -20,7 +20,7 @@ The Sonar-Importer generates visualisation data from SonarQube data through an A
 
 The command
 
-> ccsh sonarimport \<url of server> \<projectBuilder id>
+> ccsh sonarimport \<url of server> \<project id>
 
 prints the visualisation data to stdout (or a file if option `-o <filename>` is given).
 

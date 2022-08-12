@@ -4,7 +4,7 @@ categories:
 tags:
     - sonarimport
     - analysis
-title: "Install SonarQube locally"
+title: "Analyze a project with SonarQube"
 ---
 
 CodeCharta can import project metrics from SonarQube. SonarQube can generate a wide variety of project metrics for a variety of [languages](https://www.sonarqube.org/features/multi-languages/?gads_campaign=Europe4-SonarQube&gads_ad_group=Multi-Language&gads_keyword=c%20sonarqube&gclid=Cj0KCQjw_7KXBhCoARIsAPdPTfi5EtH4UHwuVjj4psqfPfzK2IQu-37u-0XL-lHpzY63-29XuxGOYDIaArF0EALw_wcB). It can be used for a local analysis, or it can be added to the build pipeline. In the following the installation and usage of a local sonar server is described.
@@ -44,3 +44,23 @@ You can also run SonarQube with Docker, for further information read [here](http
 #### Install SonarScanner
 
 1. [Download](https://hub.docker.com/r/sonarsource/sonar-scanner-cli) the latest version of SonarScanner CLI
+
+## Analyze project
+
+After you installed SonarQube do the following steps to analyze your Project:
+
+1. Click on the plus icon to create a new project
+2. Specify the project key and display name
+3. Click the respective button to generate a token
+4. Specify the main language for the project
+5. Follow the instructions from SonarQube
+
+When using SonarQube version >= 9.5, you need to create a user token. In your account settings select the security settings.
+
+![Generate user token]({{site.baseurl}}/assets/images/docs/how-to/generate_user_token.png)
+
+For further information read [here](https://docs.sonarqube.org/latest/project-administration/project-existence/)
+
+## Extract project metrics from Sonar Server
+
+To visualize your project metrics created by Sonar use CodeCharta's [sonar importer]({{site.baseurl}}{% link _docs/04-05-sonarimporter.md %}) to generate a `cc.json` file.
