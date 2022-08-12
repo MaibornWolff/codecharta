@@ -33,13 +33,6 @@ describe("getFilenamesWithHighestMetrics", () => {
 		expect(mccResults).toBeTruthy()
 		expect(rlocResults).toBeTruthy()
 	})
-	it("should restrict to at most 10 files for each attribute", () => {
-		const resultMap = getFilenamesWithHighestMetrics(BIG_NODE_WITH_TWO_ATTRIBUTES)
-
-		for (const files of resultMap) {
-			expect(files.length).toBeLessThanOrEqual(10)
-		}
-	})
 	it("should return correct values for rloc and mcc", () => {
 		const resultMap = getFilenamesWithHighestMetrics(BIG_NODE_WITH_TWO_ATTRIBUTES)
 		const mccResults = resultMap.get("mcc")
