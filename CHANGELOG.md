@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   File types get appended to the names of the output file when using the interactive
+    ccsh [2914](https://github.com/MaibornWolff/codecharta/pull/2914)
+
 ### Fixed 🐞
 
 -   Add permission to upload-assets action [#2979](https://github.com/MaibornWolff/codecharta/pull/2979)
