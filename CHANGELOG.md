@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.103.5] - 2022-08-12
+
 ### Changed
 
 -   Update visualization readme file [#2932](https://github.com/MaibornWolff/codecharta/pull/2932)
