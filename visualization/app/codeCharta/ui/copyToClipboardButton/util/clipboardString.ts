@@ -1,6 +1,6 @@
 import { FileToValue } from "./getFilenamesWithHighestMetrics"
 
-function getStringLineFromItem(item: FileToValue): string {
+function getLineFromItem(item: FileToValue): string {
 	return `\t• ${item.name} (${item.value})` + `\n`
 }
 
@@ -13,7 +13,7 @@ export function buildTextOfFiles(attributeToFiles: Map<string, FileToValue[]>): 
 	for (const [key, files] of attributeToFiles.entries()) {
 		result += getStringHeaderFromAttribute(key)
 		for (const file of files) {
-			result += getStringLineFromItem(file)
+			result += getLineFromItem(file)
 		}
 	}
 
