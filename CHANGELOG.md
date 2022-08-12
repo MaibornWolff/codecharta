@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Update visualization readme file [#2932](https://github.com/MaibornWolff/codecharta/pull/2932)
+
 ### Fixed 🐞
 
 -   Add permission to upload-assets action [#2979](https://github.com/MaibornWolff/codecharta/pull/2979)
