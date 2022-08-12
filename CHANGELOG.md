@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add permission to upload-assets action [#2979](https://github.com/MaibornWolff/codecharta/pull/2979)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate download button to Angular [#2973](https://github.com/MaibornWolff/codecharta/pull/2973)
+
 ## [1.103.3] - 2022-08-10
 
 ### Fixed 🐞

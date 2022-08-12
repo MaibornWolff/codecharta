@@ -1,4 +1,3 @@
-import "./export3DMapButton.component.scss"
 import { Component, Inject, OnDestroy } from "@angular/core"
 import { FileDownloader } from "../../util/fileDownloader"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"

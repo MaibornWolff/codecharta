@@ -58,6 +58,7 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
+import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
 
 @NgModule({
 	imports: [
@@ -99,7 +100,8 @@ import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateAc
 		HoveredNodePathPanelModule,
 		ActionIconModule,
 		ColorSettingsPanelModule,
-		ScreenshotButtonModule
+		ScreenshotButtonModule,
+		DownloadButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
