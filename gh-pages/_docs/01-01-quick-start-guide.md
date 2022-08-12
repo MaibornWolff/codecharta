@@ -74,7 +74,7 @@ codecharta-visualization
 
 # 10 min SonarQube Quickstart
 
-1. Install SonarQube and Analyze your project as described [here]({{site.baseurl}}{% link _docs/05-05-analyze-with-sonarqube.md %}).
+1. Install SonarQube and analyze your project as described [here]({{site.baseurl}}{% link _docs/05-05-analyze-with-sonarqube.md %}).
 2. Parse analyzed project to the sonar importer to generate `cc.json` file.
 
 ```bash

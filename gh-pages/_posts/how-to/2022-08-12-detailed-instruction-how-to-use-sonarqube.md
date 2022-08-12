@@ -1,6 +1,6 @@
 ---
 categories:
-    - How-To-SonarQube
+    - How-to
 tags:
     - sonarimport
     - analysis

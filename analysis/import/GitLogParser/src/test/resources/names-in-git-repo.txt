@@ -430,6 +430,7 @@ gh-pages/README.md
 gh-pages/_config.yml
 gh-pages/_data/navigation.yml
 gh-pages/_docs/01-01-quick-start-guide.md
+gh-pages/_docs/01-02-step-by-step.md
 gh-pages/_docs/01-03-installation.md
 gh-pages/_docs/01-05-versioning.md
 gh-pages/_docs/01-06-price.md
