@@ -76,12 +76,12 @@ $ npm run build
 
 #### Package
 
-Package the nwjs application to produce the standalone versions for Windows (32bit/64bit), Linux (32bit/64bit) and MacOS (64bit). Creates `.zip` files for every OS and the webpack in the `dist/packages/` folder.
+Package the nwjs application to produce the standalone versions for Windows (32bit/64bit), Linux (32bit/64bit) and MacOS (64bit) for distribution and testing. Creates `.zip` files for every OS and the webpack in the `dist/packages/` folder.
 
 > Make sure to run the [build](#build) task beforehand <br>
 > This process might require administrative rights/sudo depending on the OS <br>
 > For UNIX-based systems you need to install [Wine](https://www.winehq.org/) to package the Windows application <br>
-> Currently the MacOS version can't be packaged under Windows (see `sript/build-nwjs.js`)
+> Currently the MacOS version can't be packaged while using Windows (see `sript/build-nwjs.js`)
 
 ```bash
 # You might need to edit the build script before you start
@@ -109,7 +109,7 @@ $ npm run start
 
 ### Testing
 
-To run tests check out the following tasks:
+To run tests check out the following **tasks**:
 
 #### Unit
 
