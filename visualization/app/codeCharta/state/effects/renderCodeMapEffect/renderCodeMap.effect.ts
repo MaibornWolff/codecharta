@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { asyncScheduler, combineLatest, filter, take, tap, throttleTime } from "rxjs"
+import { asyncScheduler, combineLatest, debounceTime, filter, skip, switchMap, take, tap, throttleTime } from "rxjs"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
@@ -80,29 +80,30 @@ export class RenderCodeMapEffect {
 		() =>
 			combineLatest([this.store.select(accumulatedDataSelector), this.actionsRequiringRender$]).pipe(
 				filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
+				// leading: true and afterwards debounce 0 shouldn't be necessary. But that is probably another deep refactoring
 				throttleTime(1000 / 60, asyncScheduler, { leading: true, trailing: true }),
+				debounceTime(0),
 				tap(([accumulatedData, action]) => {
-					setTimeout(() => {
-						CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
-						ThreeRendererService.instance.render()
-						if (isActionOfType(action.type, ScalingActions)) {
-							CodeMapRenderService.instance.scaleMap()
-						}
-					})
+					CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
+					ThreeRendererService.instance.render()
+					if (isActionOfType(action.type, ScalingActions)) {
+						CodeMapRenderService.instance.scaleMap()
+					}
 				})
 			),
 		{ dispatch: false }
 	)
 
+	private renderedAfterFileSelectionChange$ = this.store
+		.select(visibleFileStatesSelector)
+		.pipe(switchMap(() => this.renderCodeMap$.pipe(skip(1), take(1))))
+
 	autoFitCodeMapOnFileSelectionChange$ = createEffect(
 		() =>
-			this.store.select(visibleFileStatesSelector).pipe(
+			this.renderedAfterFileSelectionChange$.pipe(
+				filter(() => resetCameraIfNewFileIsLoadedSelector(this.state.getValue())),
 				tap(() => {
-					if (resetCameraIfNewFileIsLoadedSelector(this.state.getValue())) {
-						this.renderCodeMap$.pipe(take(1)).subscribe(() => {
-							ThreeOrbitControlsService.instance.autoFitTo()
-						})
-					}
+					ThreeOrbitControlsService.instance.autoFitTo()
 				})
 			),
 		{ dispatch: false }
