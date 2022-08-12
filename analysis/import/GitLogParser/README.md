@@ -27,10 +27,10 @@ The names of authors are saved when the --add-author flag is set.
 
 See `ccsh -h` for help. Standard usage:
 
-> `ccsh gitlogparser <directory>`
+> `ccsh gitlogparser repo-scan --repo-path <path>`
 
-If a path to a git repository is provided, all required files are created from that repository automatically.
-If no argument is provided, the current directory is used.
+With the sub command `repo-scan`, the git log and the file name list are created automatically either from the
+current working directory or from the directory at `repo-path`.
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
@@ -40,7 +40,7 @@ The resulting project has the project name specified for the GitLogParser.
 ### Example using Git
 
 -   `cd <my_git_project>`
--   `./ccsh gitlogparser -o output.cc.json`
+-   `./ccsh gitlogparser repo-scan -o output.cc.json`
 -   load `output.cc.json` in visualization
 
 ## Usage (Manual creation of required files)
@@ -61,7 +61,9 @@ You can also use the bash script anongit which generates an anonymous git log wi
 
 See `ccsh -h` for help. Standard usage:
 
-> `ccsh gitlogparser <log_file> -n <file-name-list>`
+> `ccsh gitlogparser log-scan --git-log <path> --repo-files <path>`
+
+With the sub command `log-scan`, an existing git log and file name list are used for parsing.
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
