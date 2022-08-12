@@ -3,13 +3,13 @@ import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { setFiles, setStandardByNames } from "./state/store/files/files.actions"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { NameDataPair } from "./codeCharta.model"
 import { onStoreChanged } from "./state/angular-redux/onStoreChanged/onStoreChanged"
 import { referenceFileSelector } from "./state/selectors/referenceFile/referenceFile.selector"
 
+// todo migrate immediately?
 export class CodeChartaService {
 	static ROOT_NAME = "root"
 	static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
@@ -22,8 +22,11 @@ export class CodeChartaService {
 		}
 	})
 
+	static instance: CodeChartaService
+
 	constructor(private storeService: StoreService, private dialogService: DialogService) {
 		"ngInject"
+		CodeChartaService.instance = this
 	}
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
@@ -31,8 +34,6 @@ export class CodeChartaService {
 		const fileValidationResults: CCFileValidationResult[] = []
 
 		this.getValidationResults(nameDataPairs, fileValidationResults)
-
-		this.storeService.dispatch(setIsLoadingFile(false))
 
 		if (fileValidationResults.length > 0) {
 			await this.dialogService.showValidationDialog(fileValidationResults)

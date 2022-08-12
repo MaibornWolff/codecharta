@@ -3,6 +3,7 @@ import { asyncScheduler, combineLatest, delay, filter, switchMap, tap, throttleT
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
+import { UploadFilesService } from "../../../ui/toolBar/uploadFilesButton/uploadFiles.service"
 import { isActionOfType } from "../../../util/reduxHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
@@ -47,7 +48,8 @@ export class RenderCodeMapEffect {
 	constructor(
 		@Inject(Store) private store: Store,
 		@Inject(ActionsToken) private actions$: Actions,
-		@Inject(State) private state: State
+		@Inject(State) private state: State,
+		@Inject(UploadFilesService) private uploadFilesService: UploadFilesService
 	) {}
 
 	private actionsRequiringRender$ = this.actions$.pipe(
@@ -107,6 +109,7 @@ export class RenderCodeMapEffect {
 	removeLoadingIndicator$ = createEffect(
 		() =>
 			this.codeMapRendered$.pipe(
+				filter(() => !this.uploadFilesService.isUploading),
 				tap(() => {
 					this.store.dispatch(setIsLoadingFile(false))
 					this.store.dispatch(setIsLoadingMap(false))

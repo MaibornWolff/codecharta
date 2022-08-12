@@ -60,6 +60,7 @@ import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screens
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
+import { UploadFilesService } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFiles.service"
 
 @NgModule({
 	imports: [
@@ -113,6 +114,7 @@ import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEff
 		threeOrbitControlsServiceProvider,
 		threeRendererServiceProvider,
 		VersionService,
+		UploadFilesService,
 		{
 			provide: APP_INITIALIZER,
 			useFactory: (config: VersionService) => () => config.synchronizeLocalCodeChartaVersion(),

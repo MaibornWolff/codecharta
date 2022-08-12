@@ -13,6 +13,7 @@ import { RightClickedNodeDataActions } from "../../appStatus/rightClickedNodeDat
 import { IsEdgeMetricVisibleActions } from "../isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 // Todo state actions explicit instead of excluding all others; refs #1547
+// todo reuse from renderEffect
 const actionsToExclude = [
 	IsLoadingFileActions,
 	SortingOrderAscendingActions,
