@@ -7,6 +7,7 @@ import { NameDataPair } from "./codeCharta.model"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
+import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import packageJson from "../../package.json"
 import { setDelta, setStandard } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
@@ -36,6 +37,7 @@ export class CodeChartaController {
 		"ngInject"
 		this._viewModel.version = packageJson.version
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
+		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
 	}
 

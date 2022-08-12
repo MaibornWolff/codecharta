@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { asyncScheduler, combineLatest, debounceTime, filter, skip, switchMap, take, tap, throttleTime } from "rxjs"
+import { asyncScheduler, bufferCount, combineLatest, debounceTime, filter, skip, switchMap, take, tap, throttleTime } from "rxjs"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
@@ -17,6 +17,8 @@ import { EdgeHeightActions } from "../../store/appSettings/edgeHeight/edgeHeight
 import { HideFlatBuildingsActions } from "../../store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { InvertAreaActions } from "../../store/appSettings/invertArea/invertArea.actions"
 import { InvertHeightActions } from "../../store/appSettings/invertHeight/invertHeight.actions"
+import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsWhiteBackgroundActions } from "../../store/appSettings/isWhiteBackground/isWhiteBackground.actions"
 import { LayoutAlgorithmActions } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { MapColorsActions } from "../../store/appSettings/mapColors/mapColors.actions"
@@ -89,6 +91,19 @@ export class RenderCodeMapEffect {
 					if (isActionOfType(action.type, ScalingActions)) {
 						CodeMapRenderService.instance.scaleMap()
 					}
+				})
+			),
+		{ dispatch: false }
+	)
+
+	codeMapRendered$ = this.renderCodeMap$.pipe(bufferCount(2))
+	// Todo extract into own effect
+	removeLoadingIndicator$ = createEffect(
+		() =>
+			this.codeMapRendered$.pipe(
+				tap(() => {
+					this.store.dispatch(setIsLoadingFile(false))
+					this.store.dispatch(setIsLoadingMap(false))
 				})
 			),
 		{ dispatch: false }
