@@ -9,13 +9,13 @@ function getStringHeaderFromAttribute(title: string): string {
 }
 
 export function buildTextOfFiles(attributeToFiles: Map<string, FileToValue[]>): string {
-	let clipboardText = ""
+	let result = ""
 	for (const [key, files] of attributeToFiles.entries()) {
-		clipboardText += getStringHeaderFromAttribute(key)
+		result += getStringHeaderFromAttribute(key)
 		for (const file of files) {
-			clipboardText += getStringLineFromItem(file)
+			result += getStringLineFromItem(file)
 		}
 	}
 
-	return clipboardText
+	return result
 }
