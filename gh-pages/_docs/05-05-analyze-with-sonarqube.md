@@ -7,7 +7,7 @@ tags:
 title: "Analyze a project with SonarQube"
 ---
 
-CodeCharta can import project metrics from SonarQube. SonarQube can generate a wide variety of project metrics for a variety of [languages](https://www.sonarqube.org/features/multi-languages/?gads_campaign=Europe4-SonarQube&gads_ad_group=Multi-Language&gads_keyword=c%20sonarqube&gclid=Cj0KCQjw_7KXBhCoARIsAPdPTfi5EtH4UHwuVjj4psqfPfzK2IQu-37u-0XL-lHpzY63-29XuxGOYDIaArF0EALw_wcB). It can be used for a local analysis, or it can be added to the build pipeline. In the following the installation and usage of a local sonar server is described.
+CodeCharta can import project metrics from SonarQube. SonarQube can generate a wide variety of project metrics for a variety of [languages](https://www.sonarqube.org/features/multi-languages/). It can be used for a local analysis, or it can be added to the build pipeline. In the following the installation and usage of a local sonar server is described.
 
 ## Run SonarQube Server locally
 
