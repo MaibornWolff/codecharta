@@ -10,19 +10,12 @@ describe("buildTextOfFiles", () => {
 	it("should return valid string if there two attributes", () => {
 		const result = buildTextOfFiles(WITH_TWO_ATTRIBUTES)
 
-		expect(result).toBe(
-			`RLOC\n` + `\t${String.fromCodePoint(8226)} fileA (12)\n` + `COMMENTS\n` + `\t${String.fromCodePoint(8226)} fileA (14)\n`
-		)
+		expect(result).toBe(`RLOC\n` + `\t• fileA (12)\n` + `COMMENTS\n` + `\t• fileA (14)\n`)
 	})
 	it("should return valid string if there is one attribute with many files", () => {
 		const result = buildTextOfFiles(WITH_ONE_ATTRIBUTE)
 
-		expect(result).toBe(
-			`MCC\n` +
-				`\t${String.fromCodePoint(8226)} file1 (100)\n` +
-				`\t${String.fromCodePoint(8226)} file2 (84)\n` +
-				`\t${String.fromCodePoint(8226)} file3 (122)\n`
-		)
+		expect(result).toBe(`MCC\n` + `\t• file1 (100)\n` + `\t• file2 (84)\n` + `\t• file3 (122)\n`)
 	})
 })
 const WITH_ONE_ATTRIBUTE = new Map<string, FileToValue[]>([

@@ -1,7 +1,7 @@
 import { FileToValue } from "./getFilenamesWithHighestMetrics"
 
 function getStringLineFromItem(item: FileToValue): string {
-	return `\t${String.fromCodePoint(8226)} ${item.name} (${item.value})` + `\n`
+	return `\t• ${item.name} (${item.value})` + `\n`
 }
 
 function getStringHeaderFromAttribute(title: string): string {
