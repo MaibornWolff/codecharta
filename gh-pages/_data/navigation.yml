@@ -13,8 +13,6 @@ docs:
       children:
           - title: "Quick-Start Guide"
             url: /docs/quick-start-guide/
-          - title: "Step-by-Step Example"
-            url: /docs/step-by-step/
           - title: "Installation"
             url: /docs/installation/
           - title: "Versioning"
@@ -28,14 +26,6 @@ docs:
       children:
           - title: "How-Tos"
             url: categories/#how-to
-    - title: How To SonarQube
-      children:
-          - title: "Installing SonarQube"
-            url: /docs/install_sonarqube
-          - title: "Analyzing a Project with SonarQube"
-            url: /docs/analyze_sonarqube
-          - title: "Import SonarQube to CC"
-            url: /docs/import_sonarqube
     - title: Analysis
       children:
           - title: "Analysis"
@@ -46,6 +36,8 @@ docs:
             url: /docs/ccsh/
           - title: "Custom Metrics"
             url: /docs/custom-metrics/
+          - title: "Analyze with SonarQube"
+            url: /docs/analyze-with-sonarqube/
 
     - title: Analysing-Tools
       children:
