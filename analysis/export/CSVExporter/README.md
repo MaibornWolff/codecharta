@@ -10,7 +10,7 @@ Generates a CSV file from a cc.json File. The CSV file will have a header as des
 
 `--output-file=<output> , -o=<output>` Optional: Generates csv file instead of output in CLI.
 
-`--help , -help` Gives list of flags.
+`--help , -h` Gives list of flags.
 
 ### CSV Export Header
 

@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json"><img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta" width="200"/></a>
+  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz"><img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta" width="200"/></a>
   <br>
   CodeCharta
   <br>
@@ -35,7 +35,7 @@
 
 -   [CodeCharta Visualization](https://maibornwolff.github.io/codecharta/docs/visualization/):
 
-    -   CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json).
+    -   CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
     -   It uses code metrics from `.cc.json` files.
     -   The imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
 
@@ -66,21 +66,7 @@ For using CodeCharta the following needs to be installed on your system:
 ### How to use **Visualization**?
 
 -   **Online:** You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) without any installation and explore the CodeCharta code (shown by default).
--   **Local:**
-    -   _Standalone:_ You can find different versions (MacOS, Linux, Windows, Web) for CC on the [release](https://github.com/MaibornWolff/codecharta/releases) page (you don't need internet to run them).
-    -   _Dev:_ To clone and run this application, you'll need [Git](https://git-scm.com)
-        and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed.
-        From your command line run:
-
-```bash
-# Clone the CodeCharta repo
-$ git clone https://github.com/MaibornWolff/codecharta.git
-# Navigate to Visualization
-$ cd visualization
-# Run the development server
-$ npm run dev
-# Upload any .cc.json!
-```
+-   **Local:** See [here](visualization/README.md).
 
 ### How to use **Analysis**?
 

@@ -24,6 +24,7 @@ import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { mocked } from "ts-jest/utils"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
+import { ThreeRendererService } from "./threeRendererService"
 
 jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -35,6 +36,7 @@ describe("ThreeSceneService", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let idToBuildingService: IdToBuildingService
+	let renderSpy: jest.Mock
 
 	let codeMapBuilding: CodeMapBuilding
 
@@ -55,7 +57,9 @@ describe("ThreeSceneService", () => {
 	}
 
 	function rebuildService() {
-		threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService)
+		renderSpy = jest.fn()
+		const mockedThreeRendererService = { render: renderSpy } as unknown as ThreeRendererService
+		threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService, mockedThreeRendererService)
 	}
 
 	beforeEach(() => {
@@ -97,6 +101,7 @@ describe("ThreeSceneService", () => {
 				storeService.getState(),
 				threeSceneService["constantHighlight"]
 			)
+			expect(renderSpy).toHaveBeenCalled()
 		})
 	})
 

@@ -44,7 +44,7 @@ import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
 import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
-import { DistributionMetricChooserModule } from "./codeCharta/ui/fileExtensionBar/distributionMetricChooser/distributionMetricChooser..module"
+import { FileExtensionBarModule } from "./codeCharta/ui/fileExtensionBar/fileExtensionBar.module"
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
@@ -58,7 +58,7 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
-import { AddCustomScenarioModule } from "./codeCharta/ui/scenarioDropDown/addCustomScenario/addCustomScenario.module"
+import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
 
 @NgModule({
 	imports: [
@@ -92,7 +92,7 @@ import { AddCustomScenarioModule } from "./codeCharta/ui/scenarioDropDown/addCus
 		HeightSettingsPanelModule,
 		CenterMapButtonModule,
 		GlobalConfigurationButtonModule,
-		DistributionMetricChooserModule,
+		FileExtensionBarModule,
 		AreaSettingsPanelModule,
 		MetricChooserModule,
 		RibbonBarModule,
@@ -101,7 +101,7 @@ import { AddCustomScenarioModule } from "./codeCharta/ui/scenarioDropDown/addCus
 		ActionIconModule,
 		ColorSettingsPanelModule,
 		ScreenshotButtonModule,
-		AddCustomScenarioModule
+		DownloadButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
