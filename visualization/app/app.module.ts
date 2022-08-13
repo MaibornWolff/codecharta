@@ -36,7 +36,7 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
-import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
+import { UploadFilesButtonModule } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.module"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
@@ -101,7 +101,8 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 		ActionIconModule,
 		ColorSettingsPanelModule,
 		ScreenshotButtonModule,
-		DownloadButtonModule
+		DownloadButtonModule,
+		UploadFilesButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -118,7 +119,7 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 			multi: true
 		}
 	],
-	declarations: [EdgeMetricToggleComponent, UploadFilesButtonComponent, ...dialogs],
+	declarations: [EdgeMetricToggleComponent, ...dialogs],
 	entryComponents: [
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
@@ -128,7 +129,6 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 		LoadingMapProgressSpinnerComponent,
 		EdgeMetricToggleComponent,
 		SearchPanelComponent,
-		UploadFilesButtonComponent,
 		...dialogs
 	]
 })
