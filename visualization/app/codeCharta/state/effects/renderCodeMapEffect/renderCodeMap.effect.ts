@@ -103,12 +103,10 @@ export class RenderCodeMapEffect {
 			),
 		{ dispatch: false }
 	)
-
-	codeMapRendered$ = this.renderCodeMap$.pipe(throttleTime(maxFPS, asyncScheduler, { leading: true, trailing: true }), delay(0))
 	// Todo extract into own effect
 	removeLoadingIndicator$ = createEffect(
 		() =>
-			this.codeMapRendered$.pipe(
+			this.renderCodeMap$.pipe(
 				filter(() => !this.uploadFilesService.isUploading),
 				tap(() => {
 					this.store.dispatch(setIsLoadingFile(false))
@@ -118,7 +116,7 @@ export class RenderCodeMapEffect {
 		{ dispatch: false }
 	)
 
-	private renderedAfterFileSelectionChange$ = this.store.select(visibleFileStatesSelector).pipe(switchMap(() => this.codeMapRendered$))
+	private renderedAfterFileSelectionChange$ = this.store.select(visibleFileStatesSelector).pipe(switchMap(() => this.renderCodeMap$))
 
 	autoFitCodeMapOnFileSelectionChange$ = createEffect(
 		() =>
