@@ -1,16 +1,6 @@
 import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 
 export class CustomConfigsPageObject {
-	async enableExperimentalFeatures() {
-		await clickButtonOnPageElement("global-settings-button-component .toolbar-button")
-		await page.waitForSelector("md-dialog.global-settings", { visible: true })
-		await clickButtonOnPageElement("md-dialog.global-settings div.md-dialog-content md-input-container:nth-child(4) md-checkbox")
-
-		// Close Global Settings dialog
-		await clickButtonOnPageElement("code-charta-component")
-		await page.waitForSelector("md-dialog.global-settings", { hidden: true })
-	}
-
 	async openCustomConfigPanel() {
 		await page.waitForSelector(".custom-configs-button", { hidden: false })
 		await clickButtonOnPageElement("custom-configs-component md-menu:nth-child(1) .custom-configs-button")
