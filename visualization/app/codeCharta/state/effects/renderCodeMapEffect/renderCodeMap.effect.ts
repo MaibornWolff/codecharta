@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { asyncScheduler, combineLatest, delay, filter, switchMap, tap, throttleTime } from "rxjs"
+import { asyncScheduler, combineLatest, filter, switchMap, tap, throttleTime } from "rxjs"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
@@ -88,9 +88,7 @@ export class RenderCodeMapEffect {
 		() =>
 			combineLatest([this.store.select(accumulatedDataSelector), this.actionsRequiringRender$]).pipe(
 				filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
-				// leading: true and afterwards delay 0 shouldn't be necessary. But that is probably another deep refactoring
-				throttleTime(maxFPS, asyncScheduler, { leading: true, trailing: true }),
-				delay(0),
+				throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
 				tap(([accumulatedData, action]) => {
 					if (!isActionOfType(action.type, EdgeHeightActions)) {
 						CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
