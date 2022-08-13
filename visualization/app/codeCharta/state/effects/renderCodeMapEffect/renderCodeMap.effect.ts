@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { asyncScheduler, combineLatest, filter, switchMap, tap, throttleTime } from "rxjs"
+import { asyncScheduler, combineLatest, concatMap, filter, skip, take, tap, throttleTime } from "rxjs"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControlsService"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
@@ -114,14 +114,14 @@ export class RenderCodeMapEffect {
 		{ dispatch: false }
 	)
 
-	private renderedAfterFileSelectionChange$ = this.store.select(visibleFileStatesSelector).pipe(switchMap(() => this.renderCodeMap$))
-
 	autoFitCodeMapOnFileSelectionChange$ = createEffect(
 		() =>
-			this.renderedAfterFileSelectionChange$.pipe(
+			this.store.select(visibleFileStatesSelector).pipe(
+				skip(1), // initial map load is already fitted
 				filter(() => resetCameraIfNewFileIsLoadedSelector(this.state.getValue())),
+				concatMap(() => this.renderCodeMap$.pipe(take(1))),
 				tap(() => {
-					ThreeOrbitControlsService.instance.autoFitTo()
+					ThreeOrbitControlsService.instance?.autoFitTo()
 				})
 			),
 		{ dispatch: false }
