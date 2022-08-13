@@ -1,3 +1,4 @@
+import "./uploadFilesButton.component.scss"
 import { Component, Inject } from "@angular/core"
 import { CodeChartaService } from "../../../codeCharta.service"
 import { CodeChartaServiceToken } from "../../../services/ajs-upgraded-providers"
