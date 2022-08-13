@@ -6,7 +6,7 @@ import { UploadFilesService } from "./uploadFiles.service"
 	template: require("./uploadFilesButton.component.html")
 })
 export class UploadFilesButtonComponent {
-	constructor(@Inject(UploadFilesService) private uploadFilesService) {}
+	constructor(@Inject(UploadFilesService) private uploadFilesService: UploadFilesService) {}
 
 	uploadFiles() {
 		this.uploadFilesService.uploadFiles()

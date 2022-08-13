@@ -50,6 +50,8 @@ export class CodeChartaService {
 
 			this.fileStates = []
 			this.recentFiles = []
+		} else {
+			throw new Error("No files could be uploaded")
 		}
 	}
 
