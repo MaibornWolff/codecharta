@@ -9,7 +9,6 @@ import { NameDataPair } from "./codeCharta.model"
 import { onStoreChanged } from "./state/angular-redux/onStoreChanged/onStoreChanged"
 import { referenceFileSelector } from "./state/selectors/referenceFile/referenceFile.selector"
 
-// todo migrate immediately?
 export class CodeChartaService {
 	static ROOT_NAME = "root"
 	static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
