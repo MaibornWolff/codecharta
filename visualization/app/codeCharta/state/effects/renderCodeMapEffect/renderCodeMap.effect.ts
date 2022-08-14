@@ -42,7 +42,7 @@ import { SearchPatternActions } from "../../store/dynamicSettings/searchPattern/
 
 const maxFPS = 1000 / 60
 
-// don't inject those AngularJS services, as AngularJS is not yet bootstrapped, when Effects are bootstrapped
+// don't inject AngularJS services, as AngularJS is not yet bootstrapped when Effects are bootstrapped
 @Injectable()
 export class RenderCodeMapEffect {
 	constructor(
@@ -90,9 +90,7 @@ export class RenderCodeMapEffect {
 				filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
 				throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
 				tap(([accumulatedData, action]) => {
-					if (!isActionOfType(action.type, EdgeHeightActions)) {
-						CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
-					}
+					CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
 					ThreeRendererService.instance.render()
 					if (isActionOfType(action.type, ScalingActions)) {
 						CodeMapRenderService.instance.scaleMap()
