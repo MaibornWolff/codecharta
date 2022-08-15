@@ -24,7 +24,7 @@ beforeEach(() => {
 })
 
 describe("getFilenamesWithHighestMetrics", () => {
-	it("should give map which has exactly two keys (mcc, rloc)", () => {
+	it("should return a map with keys for each attribute", () => {
 		const resultMap = getFilenamesWithHighestMetrics(BIG_NODE_WITH_TWO_ATTRIBUTES)
 		const mccResults = resultMap.get("mcc")
 		const rlocResults = resultMap.get("rloc")
