@@ -27,7 +27,6 @@ export function updateAttributeMap(key: string, value: number, fileName: string,
 	const newPair = { name: fileName, value }
 	const previousValues = map.get(key)
 
-	// NOTE: Perfomance can be improved by 10% to 25% by optimizing insertion algorithm for full arrays. See getFilenamesWithHighestMetrics.md-file for details
 	insertSorted(previousValues, newPair)
 	map.set(key, previousValues.slice(0, MAX_ENTRIES))
 }
