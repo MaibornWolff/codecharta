@@ -33,6 +33,7 @@ describe("getFilenamesWithHighestMetrics", () => {
 		expect(mccResults).toBeTruthy()
 		expect(rlocResults).toBeTruthy()
 	})
+
 	it("should return correct values for rloc and mcc", () => {
 		const resultMap = getFilenamesWithHighestMetrics(BIG_NODE_WITH_TWO_ATTRIBUTES)
 		const mccResults = resultMap.get("mcc")
@@ -52,6 +53,7 @@ describe("getFilenamesWithHighestMetrics", () => {
 			{ name: "leaf10", value: 1 }
 		])
 	})
+
 	it("should ignore folders", () => {
 		const map = getFilenamesWithHighestMetrics(CONTAINS_FOLDER_WITH_ATTRIBUTES)
 
@@ -67,12 +69,14 @@ describe("updateAttributeMap", () => {
 		expect(MAP.get("mcc")).not.toContainEqual({ name: "file with low value", value: 0 })
 		expect(MAP.get("mcc").length).toBe(10)
 	})
+
 	it("should add if value is high", () => {
 		updateAttributeMap("mcc", 9001, "file with highest value", MAP)
 
 		expect(MAP.get("mcc")).toContainEqual({ name: "file with highest value", value: 9001 })
 		expect(MAP.get("mcc").length).toBe(10)
 	})
+
 	it("should add if map is empty", () => {
 		const EMPTY_MAP = new Map<string, FileToValue[]>()
 
@@ -81,6 +85,7 @@ describe("updateAttributeMap", () => {
 		expect(EMPTY_MAP.get("mcc")).toContainEqual({ name: "first file", value: 0 })
 		expect(EMPTY_MAP.get("mcc").length).toBe(1)
 	})
+
 	it("should add if key has less than 10 values", () => {
 		const TINY_MAP = new Map<string, FileToValue[]>([["mcc", [{ name: "first file", value: 424_242 }]]])
 
@@ -89,6 +94,7 @@ describe("updateAttributeMap", () => {
 		expect(TINY_MAP.get("mcc")).toContainEqual({ name: "second file", value: 0 })
 		expect(TINY_MAP.get("mcc").length).toBe(2)
 	})
+
 	it("should add if key is different", () => {
 		updateAttributeMap("rloc", 0, "first rloc file", MAP)
 
