@@ -1,0 +1,50 @@
+@use "../../../../../material/theme";
+
+.cc-download-dialog .mat-dialog-container {
+	padding: 0 0 8px 0;
+	width: 500px;
+	overflow: hidden;
+
+	mat-toolbar {
+		&.header {
+			background-color: theme.$cc-primary-color;
+			h2 {
+				color: white;
+			}
+		}
+	}
+
+	.mat-dialog-content {
+		margin: 0;
+		padding: 16px;
+
+		.file-name-wrapper {
+			display: flex;
+
+			.mat-form-field {
+				flex: 1;
+			}
+
+			.file-extension {
+				margin-top: 41px;
+				color: grey;
+				font-size: 17px;
+			}
+		}
+
+		mat-checkbox {
+			display: block;
+		}
+	}
+
+	.mat-dialog-actions {
+		flex-direction: column;
+		align-items: flex-end;
+
+		.save-button {
+			color: theme.$cc-primary-color;
+			background-color: rgba(138, 132, 132, 0.08);
+			margin-right: 8px;
+		}
+	}
+}

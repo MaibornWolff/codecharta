@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Copy-to-Clipboard-Button to paste the top 10 files with highest metric values [#2942](https://github.com/MaibornWolff/codecharta/pull/2942)<br/>![image](https://user-images.githubusercontent.com/46388280/184089603-ecfa8e31-8241-42a2-9954-2de554347381.png)<br/>![image](https://user-images.githubusercontent.com/46388280/184089577-5cd2eec0-5293-4083-b629-0e3c5621047c.png)
+-
+
+## [1.103.5] - 2022-08-12
+
+### Changed
+
+-   Update visualization readme file [#2932](https://github.com/MaibornWolff/codecharta/pull/2932)
+
+### Fixed 🐞
+
+-   Add permission to upload-assets action [#2979](https://github.com/MaibornWolff/codecharta/pull/2979), [#2982](https://github.com/MaibornWolff/codecharta/pull/2982)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate download button to Angular [#2973](https://github.com/MaibornWolff/codecharta/pull/2973)
 
 ## [1.103.3] - 2022-08-10
 

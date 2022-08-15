@@ -59,6 +59,7 @@ import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSetting
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { CopyToClipboardButtonModule } from "./codeCharta/ui/copyToClipboardButton/copyToClipboardButton.module"
+import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
 
 @NgModule({
 	imports: [
@@ -101,7 +102,8 @@ import { CopyToClipboardButtonModule } from "./codeCharta/ui/copyToClipboardButt
 		ActionIconModule,
 		ColorSettingsPanelModule,
 		ScreenshotButtonModule,
-		CopyToClipboardButtonModule
+		CopyToClipboardButtonModule,
+		DownloadButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
