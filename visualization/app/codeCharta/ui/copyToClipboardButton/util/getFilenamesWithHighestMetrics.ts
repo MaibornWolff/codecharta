@@ -18,13 +18,14 @@ export function getFilenamesWithHighestMetrics(node: Pick<CodeMapNode, "children
 }
 
 export function updateAttributeMap(key: string, value: number, fileName: string, map: Map<string, FileToValue[]>) {
+	const newPair = { name: fileName, value }
+
 	const keyIsNew = !map.has(key)
 	if (keyIsNew) {
-		map.set(key, [{ name: fileName, value }])
+		map.set(key, [newPair])
 		return
 	}
 
-	const newPair = { name: fileName, value }
 	const previousValues = map.get(key)
 
 	insertSorted(previousValues, newPair)
