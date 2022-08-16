@@ -12,7 +12,7 @@ import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = "edgefilter",
-    description = ["aggregtes edgeAttributes as nodeAttributes into a new cc.json file"],
+    description = ["aggregates edgeAttributes as nodeAttributes into a new cc.json file"],
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class EdgeFilter(
@@ -39,6 +39,13 @@ class EdgeFilter(
         ProjectSerializer.serializeProject(newProject, OutputFileHandler.writer(outputFile ?: "", output))
 
         return null
+    }
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine.call(EdgeFilter(), System.out, *args)
+        }
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
