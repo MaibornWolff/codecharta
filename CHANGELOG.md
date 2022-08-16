@@ -9,11 +9,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   File types get appended to the names of the output file when using the interactive ccsh [2914](https://github.com/MaibornWolff/codecharta/pull/2914)
+-   Correct file types now get appended to the name of the output file when using the interactive ccsh [2914](https://github.com/MaibornWolff/codecharta/pull/2914)
 
 ### Fixed 🐞
 
--   Add permission to upload-assets action [#2979](https://github.com/MaibornWolff/codecharta/pull/2979)
+-   Fix bug in CompressionStreamHandler's input stream validation, that caused endless blocking reads from System.In [#2987](https://github.com/MaibornWolff/codecharta/pull/2987)
+
+## [1.103.5] - 2022-08-12
+
+### Changed
+
+-   Update visualization readme file [#2932](https://github.com/MaibornWolff/codecharta/pull/2932)
+
+### Fixed 🐞
+
+-   Add permission to upload-assets action [#2979](https://github.com/MaibornWolff/codecharta/pull/2979), [#2982](https://github.com/MaibornWolff/codecharta/pull/2982)
 
 ### Chore 👨‍💻 👩‍💻
 

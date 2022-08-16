@@ -9,6 +9,10 @@ jobs:
     name: Build Project
 
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -56,8 +60,6 @@ jobs:
         run: sh ./script/build_gh_pages.sh
 
       - name: Upload Release Files to tagged release
-        permissions:
-          contents: write
         uses: alexellis/upload-assets@0.3.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
