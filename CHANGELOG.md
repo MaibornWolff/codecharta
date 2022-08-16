@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Update visualization readme file [#2932](https://github.com/MaibornWolff/codecharta/pull/2932)
+-   Update the documentation for the usage of SonarQube [#2965](https://github.com/MaibornWolff/codecharta/pull/2965)
 
 ### Fixed 🐞
 

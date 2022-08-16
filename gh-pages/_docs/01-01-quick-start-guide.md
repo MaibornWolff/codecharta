@@ -72,6 +72,15 @@ The generated file can be opened in the web or the desktop client:
 codecharta-visualization
 ```
 
+# 10 min SonarQube Quickstart
+
+1. Install SonarQube and analyze your project as described [here]({{site.baseurl}}{% link _docs/05-05-analyze-with-sonarqube.md %}).
+2. Parse analyzed project to the sonar importer to generate `cc.json` file.
+
+```bash
+ccsh sonarimport [options] [file] [url] [project-id]
+```
+
 # 5+2 min Combine Metrics Quickstart
 
 Please make sure you have [Git](https://git-scm.com/downloads) installed and that you have completed one of the previous quickstarts. Otherwise you won't have a `.cc.json` to combine with git metrics.
@@ -119,4 +128,4 @@ ccsh sourcecodeparser junit4 \
 
 # Next Steps
 
-CodeCharta is not limited to the importers mentioned here. The [analysis docs]({{site.baseurl}}{% link _docs/05-01-analysis.md %}) show the way. They are also worth checking out if you need some custom metrics. Furthermore you should read the [visualization docs]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) to find out more about the available features.
+CodeCharta is not limited to the importers mentioned here. The [analysis docs]({{site.baseurl}}{% link _docs/05-01-analysis.md %}) show the way. They are also worth checking out if you need some custom metrics. Furthermore, you should read the [visualization docs]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) to find out more about the available features.
