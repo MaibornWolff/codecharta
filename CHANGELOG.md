@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix bug in CompressionStreamHandler's input stream validation, that caused endless blocking reads from System.In [#2987](https://github.com/MaibornWolff/codecharta/pull/2987)
+
 ## [1.103.5] - 2022-08-12
 
 ### Changed
