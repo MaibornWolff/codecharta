@@ -7,11 +7,13 @@ describe("buildTextOfFiles", () => {
 
 		expect(result).toBe("FUNCTIONS\n")
 	})
+
 	it("should return valid string if there two attributes", () => {
 		const result = buildTextOfFiles(WITH_TWO_ATTRIBUTES)
 
 		expect(result).toBe(`RLOC\n` + `\t• fileA (12)\n` + `COMMENTS\n` + `\t• fileA (14)\n`)
 	})
+
 	it("should return valid string if there is one attribute with many files", () => {
 		const result = buildTextOfFiles(WITH_ONE_ATTRIBUTE)
 
