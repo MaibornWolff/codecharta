@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Correct file types now get appended to the name of the output file when using the interactive ccsh [2914](https://github.com/MaibornWolff/codecharta/pull/2914)
 
+## [1.103.6] - 2022-08-17
+
 ### Fixed 🐞
 
 -   Fix bug in CompressionStreamHandler's input stream validation, that caused endless blocking reads from System.In [#2987](https://github.com/MaibornWolff/codecharta/pull/2987)
