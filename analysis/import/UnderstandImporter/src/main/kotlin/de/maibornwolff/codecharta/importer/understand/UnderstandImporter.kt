@@ -10,9 +10,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "understandimport",
-        description = ["generates cc.json from SciTools (TM) Understand csv"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "understandimport",
+    description = ["generates cc.json from SciTools (TM) Understand csv"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class UnderstandImporter(private val output: PrintStream = System.out) : Callable<Void> {
 
@@ -42,8 +42,7 @@ class UnderstandImporter(private val output: PrintStream = System.out) : Callabl
         if (compress && filePath != "notSpecified") {
             ProjectSerializer.serializeAsCompressedFile(project, filePath)
         } else {
-            ProjectSerializer.serializeProject(project,
-                    OutputFileHandler.writer(outputFile ?: "", output))
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
         }
         logger.info { "Created project with ${project.size} leafs." }
 

@@ -25,23 +25,23 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "tokeiimporter",
-        description = ["generates cc.json from tokei json"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "tokeiimporter",
+    description = ["generates cc.json from tokei json"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class TokeiImporter(
-        private val input: InputStream = System.`in`,
-        private val output: PrintStream = System.out,
-        private val error: PrintStream = System.err
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
 ) : Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
 
     private val attributeTypes = AttributeTypes(type = "nodes")
-            .add("rloc", AttributeType.absolute)
-            .add("loc", AttributeType.absolute)
-            .add("empty_lines", AttributeType.absolute)
-            .add("comment_lines", AttributeType.absolute)
+        .add("rloc", AttributeType.absolute)
+        .add("loc", AttributeType.absolute)
+        .add("empty_lines", AttributeType.absolute)
+        .add("comment_lines", AttributeType.absolute)
 
     private lateinit var projectBuilder: ProjectBuilder
 
@@ -80,13 +80,11 @@ class TokeiImporter(
         val filePath = outputFile ?: "notSpecified"
 
         if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(
-                    projectBuilder.build(),
-                    filePath
-            )
+            ProjectSerializer.serializeAsCompressedFile(projectBuilder.build(), filePath)
         } else {
-            ProjectSerializer.serializeProject(projectBuilder.build(), OutputFileHandler.writer(outputFile
-                    ?: "", output))
+            ProjectSerializer.serializeProject(
+                projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", output)
+            )
         }
 
         return null
@@ -136,7 +134,6 @@ class TokeiImporter(
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-
             CommandLine.call(TokeiImporter(input, output, error), output, *args)
         }
 

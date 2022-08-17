@@ -19,7 +19,8 @@ import java.util.concurrent.Callable
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class SourceMonitorImporter(
-        private val output: PrintStream = System.out) : Callable<Void>, InteractiveParser {
+    private val output: PrintStream = System.out
+) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -46,8 +47,7 @@ class SourceMonitorImporter(
         val filePath = outputFile ?: "notSpecified"
 
         if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project,
-                    filePath)
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
         } else {
             ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
         }

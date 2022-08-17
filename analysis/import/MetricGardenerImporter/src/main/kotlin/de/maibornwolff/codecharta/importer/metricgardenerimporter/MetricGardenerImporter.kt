@@ -59,10 +59,7 @@ class MetricGardenerImporter(
         val project = metricGardenerProjectBuilder.build()
         val filePath = outputFile ?: "notSpecified"
         if (compress && filePath !== "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(
-                project,
-                filePath
-            )
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
         } else {
             ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
         }

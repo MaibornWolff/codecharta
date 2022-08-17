@@ -8,12 +8,13 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "jasomeimport",
-        description = ["generates cc.json from jasome xml file"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "jasomeimport",
+    description = ["generates cc.json from jasome xml file"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class JasomeImporter(
-        private val output: PrintStream = System.out) : Callable<Void> {
+    private val output: PrintStream = System.out
+) : Callable<Void> {
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
@@ -33,8 +34,7 @@ class JasomeImporter(
         val filePath = outputFile ?: "notSpecified"
 
         if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project,
-                    OutputFileHandler.checkAndFixFileExtension(filePath))
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
         } else {
             ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
         }
@@ -43,7 +43,6 @@ class JasomeImporter(
     }
 
     companion object {
-
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine.call(JasomeImporter(), System.out, *args)

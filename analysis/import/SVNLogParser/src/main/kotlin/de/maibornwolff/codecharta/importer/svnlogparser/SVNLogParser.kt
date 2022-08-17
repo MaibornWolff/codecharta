@@ -31,12 +31,12 @@ import java.util.stream.Stream
     name = "svnlogparser",
     description = ["generates cc.json from svn log file"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
-                    )
+)
 class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-                  ) : Callable<Void>, InteractiveParser {
+) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -72,7 +72,7 @@ class SVNLogParser(
                 "weeks_with_commits",
                 "highly_coupled_files",
                 "median_coupled_files"
-                                               )
+            )
 
             return when (inputFormatNames) {
                 SVN_LOG -> MetricsFactory(nonChurnMetrics)
@@ -89,7 +89,7 @@ class SVNLogParser(
             metricsFactory,
             addAuthor,
             silent
-                                          )
+        )
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
@@ -110,7 +110,7 @@ class SVNLogParser(
         metricsFactory: MetricsFactory,
         containsAuthors: Boolean,
         silent: Boolean = false
-                                    ): Project {
+    ): Project {
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
@@ -122,7 +122,7 @@ class SVNLogParser(
             projectConverter,
             logSizeInByte,
             silent
-                                   ).parse(lines)
+        ).parse(lines)
     }
 
     // not implemented yet.

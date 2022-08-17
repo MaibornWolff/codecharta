@@ -10,11 +10,11 @@ import java.nio.file.Paths
 import kotlin.io.path.name
 
 object OutputFileHandler {
-    fun writer(outputName: String?, output: PrintStream): Writer {
-        return if (outputName.isNullOrBlank()) {
+    fun writer(outputFilePath: String?, output: PrintStream): Writer {
+        return if (outputFilePath.isNullOrBlank()) {
             OutputStreamWriter(output)
         } else {
-            BufferedWriter(FileWriter(File(checkAndFixFileExtension(outputName))))
+            BufferedWriter(FileWriter(File(checkAndFixFileExtension(outputFilePath))))
         }
     }
 

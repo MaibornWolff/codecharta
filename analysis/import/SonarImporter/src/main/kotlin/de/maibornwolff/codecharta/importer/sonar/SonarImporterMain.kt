@@ -16,32 +16,34 @@ import java.net.URL
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "sonarimport",
-        description = ["generates cc.json from metric data from SonarQube"],
-        footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = "sonarimport",
+    description = ["generates cc.json from metric data from SonarQube"],
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class SonarImporterMain(
-        private val input: InputStream = System.`in`,
-        private val output: PrintStream = System.out
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out
 ) : Callable<Void>, InteractiveParser {
 
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = [
-        "Please locate:\n" +
-                "-    sonar.host.url=https://sonar.foo\n" +
-                "-    sonar.login=c123d456\n" +
-                "-    sonar.projectKey=de.foo:bar\n" +
-                "That you use to upload your code to sonar.\n" +
-                "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]"])
+    @CommandLine.Option(
+        names = ["-h", "--help"], usageHelp = true, description = [
+            "Please locate:\n" +
+                    "-    sonar.host.url=https://sonar.foo\n" +
+                    "-    sonar.login=c123d456\n" +
+                    "-    sonar.projectKey=de.foo:bar\n" +
+                    "That you use to upload your code to sonar.\n" +
+                    "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]"]
+    )
     private var help = false
 
     @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])
     private var url: String = "http://localhost"
 
     @CommandLine.Parameters(
-            index = "1",
-            arity = "1..1",
-            paramLabel = "PROJECT_ID",
-            description = ["sonarqube project id"]
+        index = "1",
+        arity = "1..1",
+        paramLabel = "PROJECT_ID",
+        description = ["sonarqube project id"]
     )
     private var projectId = ""
 
@@ -54,7 +56,11 @@ class SonarImporterMain(
     @CommandLine.Option(names = ["-u", "--user"], description = ["user token for connecting to remote sonar instance"])
     private var user = ""
 
-    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"], arity = "0")
+    @CommandLine.Option(
+        names = ["-nc", "--not-compressed"],
+        description = ["save uncompressed output File"],
+        arity = "0"
+    )
     private var compress = true
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])

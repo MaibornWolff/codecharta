@@ -17,14 +17,14 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "rawtextparser",
-        description = ["generates cc.json from projects or source code files"],
-        footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = "rawtextparser",
+    description = ["generates cc.json from projects or source code files"],
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class RawTextParser(
-        private val input: InputStream = System.`in`,
-        private val output: PrintStream = System.out,
-        private val error: PrintStream = System.err,
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err,
 ) : Callable<Void>, InteractiveParser {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
@@ -38,7 +38,11 @@ class RawTextParser(
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
     private var inputFile: File = File("")
 
-    @CommandLine.Option(arity = "0..", names = ["-m", "--metrics"], description = ["metrics to be computed (select all if not specified)"])
+    @CommandLine.Option(
+        arity = "0..",
+        names = ["-m", "--metrics"],
+        description = ["metrics to be computed (select all if not specified)"]
+    )
     private var metrics: List<String> = listOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -56,10 +60,16 @@ class RawTextParser(
     @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["-f", "--file-extensions"], description = ["parse only files with specified extensions (defualt: any)"])
+    @CommandLine.Option(
+        names = ["-f", "--file-extensions"],
+        description = ["parse only files with specified extensions (defualt: any)"]
+    )
     private var fileExtensions: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["--without-default-excludes"], description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "])
+    @CommandLine.Option(
+        names = ["--without-default-excludes"],
+        description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "]
+    )
     private var withoutDefaultExcludes = false
 
     @Throws(IOException::class)
@@ -73,15 +83,15 @@ class RawTextParser(
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val parameterMap = assembleParameterMap()
-        val results: Map<String, FileMetrics> = MetricCollector(inputFile, exclude, fileExtensions, parameterMap, metrics).parse()
+        val results: Map<String, FileMetrics> =
+            MetricCollector(inputFile, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         val project = ProjectGenerator().generate(results, pipedProject)
 
         val filePath = outputFile ?: "notSpecified"
         if (compress && filePath !== "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project,
-                    filePath)
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
         } else {
             ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
         }
@@ -96,9 +106,9 @@ class RawTextParser(
 
     private fun assembleParameterMap(): Map<String, Int> {
         return mapOf(
-                "verbose" to verbose.toInt(),
-                "maxIndentationLevel" to maxIndentLvl,
-                "tabWidth" to tabWidth
+            "verbose" to verbose.toInt(),
+            "maxIndentationLevel" to maxIndentLvl,
+            "tabWidth" to tabWidth
         ).filterValues { it != null }.mapValues { it.value as Int }
     }
 
