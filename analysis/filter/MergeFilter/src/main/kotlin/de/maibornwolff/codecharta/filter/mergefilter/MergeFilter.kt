@@ -100,6 +100,11 @@ class MergeFilter(
                 RecursiveNodeMergerStrategy(false)
             ).merge()
         }
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine.call(MergeFilter(), System.out, *args)
+        }
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
