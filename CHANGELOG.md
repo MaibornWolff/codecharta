@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Correct file types now get appended to the name of the output file when using the interactive ccsh [2914](https://github.com/MaibornWolff/codecharta/pull/2914)
+
 ## [1.103.6] - 2022-08-17
 
 ### Fixed 🐞

@@ -44,8 +44,12 @@ class ParserDialogTest {
 
         val commandLine = CommandLine(MergeFilter())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-        assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().map { it.name }).isEqualTo(listOf(inputFolderName))
-        assertThat(parseResult.matchedOption("output-file").getValue<File>().name).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().map { it.name }).isEqualTo(
+            listOf(
+                inputFolderName
+            )
+        )
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
         assertThat(parseResult.matchedOption("recursive").getValue<Boolean>()).isEqualTo(recursive)
