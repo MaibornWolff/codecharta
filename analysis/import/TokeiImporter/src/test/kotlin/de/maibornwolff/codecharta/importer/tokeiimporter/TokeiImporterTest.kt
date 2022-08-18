@@ -39,7 +39,7 @@ class TokeiImporterTest {
         val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines()
             .joinToString(separator = "") { it }
 
-        val cliResult = executeForOutput(input, arrayOf())
+        val cliResult = executeForOutput(input)
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }

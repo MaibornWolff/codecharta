@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -19,7 +20,6 @@ import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
@@ -36,7 +36,7 @@ class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-                  ) : Callable<Void>, InteractiveParser {
+) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -44,8 +44,8 @@ class SVNLogParser(
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile = ""
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -72,7 +72,7 @@ class SVNLogParser(
                 "weeks_with_commits",
                 "highly_coupled_files",
                 "median_coupled_files"
-                                               )
+            )
 
             return when (inputFormatNames) {
                 SVN_LOG -> MetricsFactory(nonChurnMetrics)
@@ -95,15 +95,12 @@ class SVNLogParser(
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
-        if (outputFile.isNotEmpty()) {
-            if (compress) ProjectSerializer.serializeAsCompressedFile(
-                project,
-                outputFile
-            ) else ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
+        val filePath = outputFile ?: "notSpecified"
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
         } else {
-            ProjectSerializer.serializeProject(project, OutputStreamWriter(output))
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
         }
-
         return null
     }
 
@@ -119,7 +116,13 @@ class SVNLogParser(
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
         val logSizeInByte = file!!.length()
-        return SVNLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(lines)
+        return SVNLogProjectCreator(
+            parserStrategy,
+            metricsFactory,
+            projectConverter,
+            logSizeInByte,
+            silent
+        ).parse(lines)
     }
 
     // not implemented yet.
@@ -153,8 +156,8 @@ class SVNLogParser(
     companion object {
 
         @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(SVNLogParser(input, output, error), output, *args)
+        fun main(args: Array<String>) {
+            CommandLine.call(SVNLogParser(), System.out, *args)
         }
 
         private fun guessEncoding(pathToLog: File): String? {

@@ -13,11 +13,29 @@ class CrococosmoImporterTest {
             arrayOf(
                 "src/test/resources/test.xml",
                 "-nc",
-                "-o=src/test/resources/test.cc.json"
-                   )
+                "-o=src/test/resources/test"
             )
-        val file1 = File("src/test/resources/test.cc.json_1")
-        val file2 = File("src/test/resources/test.cc.json_2")
+        )
+        val file1 = File("src/test/resources/test_1.cc.json")
+        val file2 = File("src/test/resources/test_2.cc.json")
+
+        file1.deleteOnExit()
+        file2.deleteOnExit()
+
+        assertTrue(file1.exists())
+        assertTrue(file2.exists())
+    }
+
+    @Test
+    fun `should create json compressed file`() {
+        main(
+            arrayOf(
+                "src/test/resources/test.xml",
+                "-o=src/test/resources/test"
+            )
+        )
+        val file1 = File("src/test/resources/test_1.cc.json.gz")
+        val file2 = File("src/test/resources/test_2.cc.json.gz")
 
         file1.deleteOnExit()
         file2.deleteOnExit()

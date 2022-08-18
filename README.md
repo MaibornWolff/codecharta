@@ -54,6 +54,13 @@
 
 > **NOTE:** You can enable them from the settings panel.
 
+## Requirements
+
+For using CodeCharta the following needs to be installed on your system:
+
+-   Node >= 16
+-   Java >= 11
+
 ## How To Use
 
 ### How to use **Visualization**?

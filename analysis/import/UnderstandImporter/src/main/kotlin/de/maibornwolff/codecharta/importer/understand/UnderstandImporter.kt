@@ -1,14 +1,12 @@
 package de.maibornwolff.codecharta.importer.understand
 
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import mu.KotlinLogging
 import picocli.CommandLine
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
-import java.io.OutputStreamWriter
-import java.io.Writer
+import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -16,13 +14,13 @@ import java.util.concurrent.Callable
     description = ["generates cc.json from SciTools (TM) Understand csv"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class UnderstandImporter : Callable<Void> {
+class UnderstandImporter(private val output: PrintStream = System.out) : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -40,21 +38,15 @@ class UnderstandImporter : Callable<Void> {
         val projectBuilder = UnderstandProjectBuilder(pathSeparator)
         files.forEach { projectBuilder.parseCSVStream(it.inputStream()) }
         val project = projectBuilder.build()
-
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath) else ProjectSerializer.serializeProject(project, writer())
-
+        val filePath = outputFile ?: "notSpecified"
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
+        } else {
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
+        }
         logger.info { "Created project with ${project.size} leafs." }
 
         return null
-    }
-
-    private fun writer(): Writer {
-        return if (outputFile == null) {
-            OutputStreamWriter(System.out)
-        } else {
-            BufferedWriter(FileWriter(outputFile))
-        }
     }
 
     companion object {

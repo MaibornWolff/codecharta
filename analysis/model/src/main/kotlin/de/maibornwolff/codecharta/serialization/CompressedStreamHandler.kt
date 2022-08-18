@@ -7,7 +7,7 @@ import java.util.zip.GZIPInputStream
 object CompressedStreamHandler {
 
     fun wrapInput(input: InputStream): InputStream {
-        if (input.available() == 2) { return input }
+        if (input.available() == 0) { return input }
         var content = input
         if (!input.markSupported()) { content = BufferedInputStream(input) }
         content.mark(2)
