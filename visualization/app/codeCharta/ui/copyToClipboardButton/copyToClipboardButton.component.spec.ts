@@ -1,31 +1,32 @@
 import { TestBed } from "@angular/core/testing"
+import { CopyToClipboardService } from "./copyToClipboard.service"
 import { CopyToClipboardButtonComponent } from "./copyToClipboardButton.component"
 import { CopyToClipboardButtonModule } from "./copyToClipboardButton.module"
-
+let component: CopyToClipboardButtonComponent
 describe("CopyToClipboardButtonComponent", () => {
-	let component: CopyToClipboardButtonComponent
+	const writeToClipboardMock = jest.fn()
+	const getClipboardTextMock = jest.fn().mockReturnValue("Magic Monday")
 
-	beforeEach(() => {
-		const test = TestBed.configureTestingModule({
-			imports: [CopyToClipboardButtonModule]
+	beforeAll(() => {
+		TestBed.configureTestingModule({
+			imports: [CopyToClipboardButtonModule],
+			providers: [
+				{ provide: CopyToClipboardService, useValue: { getClipboardText: getClipboardTextMock } },
+				CopyToClipboardButtonComponent
+			]
 		})
-		component = test.createComponent<CopyToClipboardButtonComponent>(CopyToClipboardButtonComponent).componentInstance
-		component["service"].getClipboardText = () => "Magic Monday"
+
+		component = TestBed.inject(CopyToClipboardButtonComponent)
+		TestBed.inject(CopyToClipboardService)
 
 		//clipboard does not exist in jest's JSdom, see https://stackoverflow.com/questions/62351935/how-to-mock-navigator-clipboard-writetext-in-jest
-		Object.assign(navigator, { clipboard: { writeText: jest.fn() } })
+		Object.assign(navigator, { clipboard: { writeText: writeToClipboardMock } })
 	})
 
-	describe("copyToClipboardButtonComponent", () => {
-		it("should write text to clipboard by using text from service", async () => {
-			const clipboard = navigator.clipboard
-			const writeToClipboardSpy = jest.spyOn(clipboard, "writeText")
-			const getClipboardTextSpy = jest.spyOn(component["service"], "getClipboardText")
+	it("should use a get-text-method of service and write resulting text to clipboard", async () => {
+		await component.copyNamesToClipBoard()
 
-			await component.copyNamesToClipBoard()
-
-			expect(writeToClipboardSpy).toBeCalledWith("Magic Monday")
-			expect(getClipboardTextSpy).toBeCalled()
-		})
+		expect(getClipboardTextMock).toBeCalled()
+		expect(writeToClipboardMock).toBeCalledWith("Magic Monday")
 	})
 })
