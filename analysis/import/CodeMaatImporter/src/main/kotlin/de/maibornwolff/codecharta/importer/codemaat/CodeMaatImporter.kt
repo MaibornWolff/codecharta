@@ -2,32 +2,31 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
-import java.io.Writer
+import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "codemaatimport",
-    description = ["generates cc.json from codemaat coupling csv"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+        name = "codemaatimport",
+        description = ["generates cc.json from codemaat coupling csv"],
+        footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
-class CodeMaatImporter : Callable<Void>, InteractiveParser {
+class CodeMaatImporter(
+        private val output: PrintStream = System.out) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -42,16 +41,17 @@ class CodeMaatImporter : Callable<Void>, InteractiveParser {
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-            CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
+                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
+        val filePath = outputFile ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
-            project,
-            filePath
-        ) else ProjectSerializer.serializeProject(project, writer())
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
+        } else {
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
+        }
 
         return null
     }
@@ -78,19 +78,12 @@ class CodeMaatImporter : Callable<Void>, InteractiveParser {
             return AttributeTypes(attributeTypes.toMutableMap(), type)
         }
 
-    private fun writer(): Writer {
-        return if (outputFile == null) {
-            OutputStreamWriter(System.out)
-        } else {
-            BufferedWriter(FileWriter(outputFile!!))
-        }
-    }
-
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine.call(CodeMaatImporter(), System.out, *args)
         }
     }
+
     override fun getDialog(): ParserDialogInterface = ParserDialog
 }

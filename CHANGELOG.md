@@ -7,11 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Correct file types now get appended to the name of the output file when using the interactive ccsh [2914](https://github.com/MaibornWolff/codecharta/pull/2914)
+
+## [1.103.6] - 2022-08-17
+
+### Fixed 🐞
+
+-   Fix bug in CompressionStreamHandler's input stream validation, that caused endless blocking reads from System.In [#2987](https://github.com/MaibornWolff/codecharta/pull/2987)
+
 ## [1.103.5] - 2022-08-12
 
 ### Changed
 
 -   Update visualization readme file [#2932](https://github.com/MaibornWolff/codecharta/pull/2932)
+-   Update the documentation for the usage of SonarQube [#2965](https://github.com/MaibornWolff/codecharta/pull/2965)
 
 ### Fixed 🐞
 

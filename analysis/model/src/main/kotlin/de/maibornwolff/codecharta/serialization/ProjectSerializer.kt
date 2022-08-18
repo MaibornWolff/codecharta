@@ -52,6 +52,16 @@ object ProjectSerializer {
     }
 
     /**
+     * This method serializes a Project-Object to JSON and returns the string value
+     *
+     * @param project the Project-Object to be serialized
+     */
+    fun returnProjectAsJSON(project: Project): String {
+        val wrappedProject = getWrappedProject(project)
+        return GSON.toJson(wrappedProject)
+    }
+
+    /**
      * This method serializes a Project-Object to json and compresses it to gzip
      *
      * @param project the Project-Object to be serialized
@@ -61,7 +71,8 @@ object ProjectSerializer {
     fun serializeAsCompressedFile(project: Project, absolutePath: String) {
         val wrappedProject = getWrappedProject(project)
         val jsonFile: String = GSON.toJson(wrappedProject, ProjectWrapper::class.java)
-        File("$absolutePath.gz").writeBytes(compress(jsonFile))
+        val fixedPath = OutputFileHandler.checkAndFixFileExtension(absolutePath)
+        File("$fixedPath.gz").writeBytes(compress(jsonFile))
     }
 
     /**
