@@ -1,18 +1,16 @@
 package de.maibornwolff.codecharta.importer.sourcemonitor
 
 import de.maibornwolff.codecharta.importer.csv.CSVProjectBuilder
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
-import java.io.Writer
+import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -20,7 +18,9 @@ import java.util.concurrent.Callable
     description = ["generates cc.json from sourcemonitor csv"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class SourceMonitorImporter : Callable<Void>, InteractiveParser {
+class SourceMonitorImporter(
+    private val output: PrintStream = System.out
+) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -28,8 +28,8 @@ class SourceMonitorImporter : Callable<Void>, InteractiveParser {
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
+    private var outputFile: String? = null
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["sourcemonitor csv files"])
     private var files: List<File> = mutableListOf()
@@ -44,9 +44,13 @@ class SourceMonitorImporter : Callable<Void>, InteractiveParser {
             CSVProjectBuilder(pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
+        val filePath = outputFile ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath) else ProjectSerializer.serializeProject(project, writer())
+        if (compress && filePath != "notSpecified") {
+            ProjectSerializer.serializeAsCompressedFile(project, filePath)
+        } else {
+            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
+        }
 
         return null
     }
@@ -77,14 +81,6 @@ class SourceMonitorImporter : Callable<Void>, InteractiveParser {
 
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }
-
-    private fun writer(): Writer {
-        return if (outputFile == null) {
-            OutputStreamWriter(System.out)
-        } else {
-            BufferedWriter(FileWriter(outputFile))
-        }
-    }
 
     companion object {
         @JvmStatic
