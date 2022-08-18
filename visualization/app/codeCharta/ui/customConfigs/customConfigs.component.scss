@@ -3,24 +3,5 @@ cc-custom-configs {
 		display: flex;
 		justify-content: center;
 		gap: 4px;
-
-		button {
-			height: 22px;
-			width: 45px;
-			margin: 0;
-			line-height: 23px;
-			font-size: 9pt;
-			text-transform: none;
-			background-color: rgba(230, 230, 230, 0.96);
-			border-radius: 2px;
-
-			&:hover {
-				background-color: #c8c8c8;
-			}
-
-			i.fa {
-				color: rgb(68, 68, 68);
-			}
-		}
 	}
 }
