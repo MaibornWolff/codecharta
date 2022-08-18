@@ -63,14 +63,14 @@ describe("getFilenamesWithHighestMetrics", () => {
 })
 
 describe("updateAttributeMap", () => {
-	it("should not add item to attribute if value is too low", () => {
+	it("should not add item to attribute if value is lower than old values", () => {
 		updateAttributeMap("mcc", 0, "file with low value", MAP)
 
 		expect(MAP.get("mcc")).not.toContainEqual({ name: "file with low value", value: 0 })
 		expect(MAP.get("mcc").length).toBe(10)
 	})
 
-	it("should add item to attribute if value is high enough", () => {
+	it("should add item to attribute if value is higher than old values", () => {
 		updateAttributeMap("mcc", 9001, "file with highest value", MAP)
 
 		expect(MAP.get("mcc")).toContainEqual({ name: "file with highest value", value: 9001 })
