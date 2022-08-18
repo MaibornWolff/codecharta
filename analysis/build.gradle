@@ -147,6 +147,7 @@ distributions {
 }
 
 task integrationTest(type: Exec) {
+    standardInput = System.in
     if (System.properties['os.name'].toLowerCase().contains('windows')) {
         println "In order to run the integration tests a bash script is executed."
         println "Make sure to use a shell with bash capability (e.g. GitBash) to run this task."

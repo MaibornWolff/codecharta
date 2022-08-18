@@ -16,6 +16,7 @@ fi
 CC_VERSION=$1
 CC_TAR_NAME="codecharta-analysis-${CC_VERSION}.tar"
 CCSH="${INSTALL_DIR}/codecharta-analysis-${CC_VERSION}/bin/ccsh"
+DATA="data/codecharta"
 
 install_codecharta() {
     echo
@@ -41,12 +42,76 @@ validate() {
   fi
 }
 
+check_gitlogparser() {
+  echo " -- expect GitLogParser to produce valid cc.json"
+  ACTUAL_GITLOG_JSON="${INSTALL_DIR}/actual_gitlogparser.cc.json"
+  timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.log" -n "${DATA}/gitlogparser-cc-filelist.log" -o "${ACTUAL_GITLOG_JSON}" -nc
+  if [ "$?" -eq 124 ]; then
+    exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
+  fi
+  validate "${ACTUAL_GITLOG_JSON}"
+}
+
+check_csvexporter() {
+  echo " -- expect CSVexporter to produce correct csv table"
+  ACTUAL_CSVEXPORT="${INSTALL_DIR}/actual_csvexport.csv"
+  "${CCSH}" csvexport "${DATA}/csvexport_input.cc.json" --depth-of-hierarchy=2 -o "${ACTUAL_CSVEXPORT}"
+  if ! cmp --silent -- "${ACTUAL_CSVEXPORT}" "${DATA}/csvexport_gold.csv"; then
+    exit_with_err "${ACTUAL_CSVEXPORT} could not be found or is not equal to gold"
+  fi
+}
+
+check_edgefilter() {
+  echo " -- expect Edgefilter to produce valid cc.json"
+  ACTUAL_EDGEFILTER_JSON="${INSTALL_DIR}/actual_edgefilter.cc.json"
+  "${CCSH}" edgefilter "${DATA}/edgefilter.cc.json" -o "${ACTUAL_EDGEFILTER_JSON}"
+  validate "${ACTUAL_EDGEFILTER_JSON}"
+}
+
+check_mergefilter() {
+  echo " -- expect MergeFilter to produce valid cc.json"
+  ACTUAL_MERGEFILTER_JSON="${INSTALL_DIR}/actual_mergefilter.cc.json"
+  "${CCSH}" merge "${DATA}/mergefilter_a.cc.json" "${DATA}/mergefilter_b.cc.json" -o "${ACTUAL_MERGEFILTER_JSON}" -nc
+  validate "${ACTUAL_MERGEFILTER_JSON}"
+}
+
+check_codemaatimporter() {
+  echo " -- expect CodeMaatImporter to produce valid cc.json"
+  ACTUAL_CODEMAAT_JSON="${INSTALL_DIR}/actual_codemaatimporter.cc.json.gz"
+  "${CCSH}" codemaatimport "${DATA}/codemaat.csv" -o "${ACTUAL_CODEMAAT_JSON}"
+  validate "${ACTUAL_CODEMAAT_JSON}"
+}
+
+check_crococosmo_importer() {
+  echo " -- expect CrococosmoImporter to produce valid cc.json"
+  ACTUAL_COSMO_JSON="${INSTALL_DIR}/actual_cosmoimport"
+  "${CCSH}" crococosmoimport "${DATA}/crococosmo.xml" -o "${ACTUAL_COSMO_JSON}" -nc
+  validate "${ACTUAL_COSMO_JSON}_1.cc.json"
+  validate "${ACTUAL_COSMO_JSON}_2.cc.json"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 check_sourcemonitor() {
   echo " -- expect SourceMonitorImporter gives valid cc.json"
   ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
   "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
+
+
 
 check_understand() {
   echo " -- expect UnderstandImporter gives valid cc.json"
@@ -55,12 +120,7 @@ check_understand() {
   validate "${ACTUAL_UNDERSTAND_JSON}"
 }
 
-check_crococosmo() {
-  echo " -- expect CrococosmoImporter gives valid cc.json"
-  ACTUAL_COSMO_JSON="${INSTALL_DIR}/actual_cosmoimport.json"
-  "${CCSH}" crococosmoimport data/codecharta/crococosmo.xml > "${ACTUAL_COSMO_JSON}"
-  validate "${ACTUAL_COSMO_JSON}"
-}
+
 
 check_jasome() {
   echo " -- expect JasomeImporter gives valid cc.json"
@@ -117,22 +177,39 @@ check_pipe() {
     fi
 }
 
+check_sonar() {
+  echo " -- expect sonar to work and system.in to be controled"
+  timeout 15 "${CCSH}" sonarimport -nc https://sonarcloud.io maibornwolff-gmbh_codecharta_visualization -o ${INSTALL_DIR}/sonarGoldTest.cc.json
+    if [ "$?" -eq 124 ]; then
+      exit_with_err "system.in blocks endless "
+    fi
+}
+
 run_tests() {
   echo
   echo "Running Tests..."
   echo
 
-  check_sourcemonitor
-  check_crococosmo
-  check_understand
-  check_jasome
-  check_svnlog
-  check_merge
-  check_modify
-  check_sourcecodeparser
-  check_tokei
 
-  check_pipe
+  check_gitlogparser
+  check_csvexporter
+  check_edgefilter
+  check_mergefilter
+  check_codemaatimporter
+  check_crococosmo_importer
+  #check_sonar
+  #check_sourcemonitor
+
+  #check_understand
+  #check_jasome
+  #check_svnlog
+  #check_merge
+  #check_modify
+  #check_sourcecodeparser
+  #check_tokei
+  #check_sonar
+
+  #check_pipe
 
   echo
   echo "... Testing finished."
