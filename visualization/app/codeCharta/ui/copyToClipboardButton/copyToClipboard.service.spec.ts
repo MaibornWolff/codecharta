@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing"
+import { State } from "../../state/angular-redux/state"
 import { CopyToClipboardService } from "./copyToClipboard.service"
 import { buildTextOfFiles } from "./util/clipboardString"
 import { getFilenamesWithHighestMetrics } from "./util/getFilenamesWithHighestMetrics"
@@ -9,18 +9,24 @@ jest.mock("./util/clipboardString", () => {
 jest.mock("./util/getFilenamesWithHighestMetrics", () => {
 	return { getFilenamesWithHighestMetrics: jest.fn() }
 })
-describe("copyToClipboardService", () => {
+describe("CopyToClipboardService", () => {
 	beforeEach(() => {
-		TestBed.configureTestingModule({ providers: [CopyToClipboardService] })
-		service = TestBed.inject(CopyToClipboardService)
+		const stateStub = {} as unknown as State
+		service = new CopyToClipboardService(stateStub)
+		service["getUnifiedMapNode"] = jest.fn()
 
 		jest.clearAllMocks()
 	})
-	it("should call text function and mapNode function on getClipboardText", () => {
-		const clipboardText = service.getClipboardText()
+	describe("getClipboardText", () => {
+		it("should call functions to convert state and to build text", () => {
+			const stateConverterMock = getFilenamesWithHighestMetrics
+			const buildTextMock = buildTextOfFiles
 
-		expect(clipboardText).toBe("Magic Monday")
-		expect(buildTextOfFiles).toHaveBeenCalled()
-		expect(getFilenamesWithHighestMetrics).toHaveBeenCalled()
+			const clipboardText = service.getClipboardText()
+
+			expect(clipboardText).toBe("Magic Monday")
+			expect(stateConverterMock).toHaveBeenCalled()
+			expect(buildTextMock).toHaveBeenCalled()
+		})
 	})
 })
