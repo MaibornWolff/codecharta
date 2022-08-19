@@ -43,7 +43,7 @@ validate() {
 }
 
 check_gitlogparser() {
-  echo " -- expect GitLogParser to produce valid cc.json"
+  echo " -- expect GitLogParser to produce valid cc.json file"
   ACTUAL_GITLOG_JSON="${INSTALL_DIR}/actual_gitlogparser.cc.json"
   timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.log" -n "${DATA}/gitlogparser-cc-filelist.log" -o "${ACTUAL_GITLOG_JSON}" -nc
   if [ "$?" -eq 124 ]; then
@@ -62,52 +62,45 @@ check_csvexporter() {
 }
 
 check_edgefilter() {
-  echo " -- expect Edgefilter to produce valid cc.json"
+  echo " -- expect Edgefilter to produce valid cc.json file"
   ACTUAL_EDGEFILTER_JSON="${INSTALL_DIR}/actual_edgefilter.cc.json"
   "${CCSH}" edgefilter "${DATA}/edgefilter.cc.json" -o "${ACTUAL_EDGEFILTER_JSON}"
   validate "${ACTUAL_EDGEFILTER_JSON}"
 }
 
 check_mergefilter() {
-  echo " -- expect MergeFilter to produce valid cc.json"
+  echo " -- expect MergeFilter to produce valid cc.json file"
   ACTUAL_MERGEFILTER_JSON="${INSTALL_DIR}/actual_mergefilter.cc.json"
   "${CCSH}" merge "${DATA}/mergefilter_a.cc.json" "${DATA}/mergefilter_b.cc.json" -o "${ACTUAL_MERGEFILTER_JSON}" -nc
   validate "${ACTUAL_MERGEFILTER_JSON}"
 }
 
 check_codemaatimporter() {
-  echo " -- expect CodeMaatImporter to produce valid cc.json"
+  echo " -- expect CodeMaatImporter to produce valid cc.json.gz file"
   ACTUAL_CODEMAAT_JSON="${INSTALL_DIR}/actual_codemaatimporter.cc.json.gz"
   "${CCSH}" codemaatimport "${DATA}/codemaat.csv" -o "${ACTUAL_CODEMAAT_JSON}"
   validate "${ACTUAL_CODEMAAT_JSON}"
 }
 
 check_crococosmo_importer() {
-  echo " -- expect CrococosmoImporter to produce valid cc.json"
+  echo " -- expect CrococosmoImporter to produce valid cc.json files"
   ACTUAL_COSMO_JSON="${INSTALL_DIR}/actual_cosmoimport"
   "${CCSH}" crococosmoimport "${DATA}/crococosmo.xml" -o "${ACTUAL_COSMO_JSON}" -nc
   validate "${ACTUAL_COSMO_JSON}_1.cc.json"
   validate "${ACTUAL_COSMO_JSON}_2.cc.json"
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+check_csvimporter() {
+  echo " -- expect CSVimporter to produce valid cc.json file"
+  ACTUAL_CSVIMPORT_JSON="${INSTALL_DIR}/actual_csvimport.cc.json"
+  "${CCSH}" csvimport "${DATA}/csvimport.csv" -o "${ACTUAL_CSVIMPORT_JSON}" -nc
+  validate "${ACTUAL_CSVIMPORT_JSON}"
+}
 
 check_sourcemonitor() {
-  echo " -- expect SourceMonitorImporter gives valid cc.json"
+  echo " -- expect SourceMonitorImporter to produce valid cc.json on system.out"
   ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
-  "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
+  "${CCSH}" sourcemonitorimport ${DATA}/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
@@ -195,10 +188,12 @@ run_tests() {
   check_csvexporter
   check_edgefilter
   check_mergefilter
-  check_codemaatimporter
+  #check_codemaatimporter
   check_crococosmo_importer
+  check_csvimporter
+  check_sourcemonitor
+
   #check_sonar
-  #check_sourcemonitor
 
   #check_understand
   #check_jasome
