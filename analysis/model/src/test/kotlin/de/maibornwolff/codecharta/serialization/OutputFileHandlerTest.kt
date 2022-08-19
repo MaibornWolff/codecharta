@@ -25,7 +25,8 @@ internal class OutputFileHandlerTest {
 
     @Test
     fun checkAndFixFileExtensionPathWithFilenameBackslash() {
-        val correctFilename = OutputFileHandler.checkAndFixFileExtension("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService")
+        val correctFilename =
+            OutputFileHandler.checkAndFixFileExtension("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService")
         assertEquals("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.cc.json", correctFilename)
     }
 
@@ -33,6 +34,12 @@ internal class OutputFileHandlerTest {
     fun checkAndFixFileExtensionPathFilenameWithDotsAndSuffix() {
         val correctFilename = OutputFileHandler.checkAndFixFileExtension("my.long.map.name.cc.json")
         assertEquals("my.long.map.name.cc.json", correctFilename)
+    }
+
+    @Test
+    fun checkAndFixFileExtensionPathFilenameWithDotsAndGzSuffix() {
+        val correctFilename = OutputFileHandler.checkAndFixFileExtension("my.long.map.name.cc.json.gz")
+        assertEquals("my.long.map.name.cc.json.gz", correctFilename)
     }
 
     @Test
