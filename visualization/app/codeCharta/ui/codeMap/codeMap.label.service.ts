@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { Node, LayoutAlgorithm } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -29,6 +29,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private previousScaling: Vector3 = new Vector3(1, 1, 1)
 	private lineCount = 1
 	private nodeHeight = 0
+	private HEIGHT_OFFSET = 1
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -42,7 +43,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
+	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
 		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
 
 		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
@@ -170,18 +171,22 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const { scaling } = this.storeService.getState().appSettings
 		const { margin } = this.storeService.getState().dynamicSettings
 
-		const multiplier = scaling.clone().divide(this.previousScaling)
+		const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 
 		for (const label of this.labels) {
-			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
-			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
+			const multiplier = scaling.clone()
 
+			label.sprite.position.sub(labelHeightDifference).divide(this.previousScaling).multiply(multiplier).add(labelHeightDifference)
+
+			if (multiplier.y > 1) {
+				multiplier.y = 1
+			}
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
 			const lineGeometry = label.line.geometry as BufferGeometry
 			const lineGeometryPosition = lineGeometry.attributes.position
 
 			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
-			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
+			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y * this.HEIGHT_OFFSET)
 			lineGeometryPosition.setZ(0, lineGeometryPosition.getZ(0) * multiplier.z)
 
 			lineGeometryPosition.setX(1, label.sprite.position.x)
@@ -225,7 +230,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.lineCap = "round"
 		context.lineWidth = 5
 
-		this.drawRectangleWithRoundedCorners(context, 0, 0, canvas.width, canvas.height, this.LABEL_CORNER_RADIUS)
+		CodeMapLabelService.drawRectangleWithRoundedCorners(context, 0, 0, canvas.width, canvas.height, this.LABEL_CORNER_RADIUS)
 
 		// after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
 		context.fillStyle = "rgba(0,0,0,1)"
@@ -255,7 +260,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	private drawRectangleWithRoundedCorners(context, x, y, width, height, radius) {
+	private static drawRectangleWithRoundedCorners(context, x, y, width, height, radius) {
 		if (width < 2 * radius) {
 			radius = width / 2
 		}

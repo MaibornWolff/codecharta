@@ -162,7 +162,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(true))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			expect(codeMapLabelService["labels"].length).toBe(1)
 		})
@@ -173,7 +173,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(true))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			expect(codeMapLabelService["labels"].length).toBe(1)
 		})
@@ -182,7 +182,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(166.75)
@@ -192,7 +192,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(166.75)
@@ -206,7 +206,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(264.75)
@@ -218,7 +218,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(174.75)
@@ -228,7 +228,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(true))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(181.75)
@@ -238,7 +238,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeafDelta, 0)
+			codeMapLabelService.addLeafLabel(sampleLeafDelta, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(179.75)
@@ -249,7 +249,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeafDelta, 20)
+			codeMapLabelService.addLeafLabel(sampleLeafDelta, 20)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(184.75)
@@ -262,7 +262,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeafDelta, 0)
+			codeMapLabelService.addLeafLabel(sampleLeafDelta, 0)
 
 			const positionSampleDeltaLeaf: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionSampleDeltaLeaf.y).toBe(179.75)
@@ -270,7 +270,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 			const positionSampleLeafWithAppliedDeltaNodeHeight: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionSampleLeafWithAppliedDeltaNodeHeight.y).toBe(179.75)
 		})
@@ -279,7 +279,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(true))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const lineCount = codeMapLabelService["labels"][0].lineCount
 			expect(lineCount).toBe(2)
@@ -289,7 +289,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const lineCount = codeMapLabelService["labels"][0].lineCount
 			expect(lineCount).toBe(1)
@@ -303,8 +303,8 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(true))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const originalSpritePositionsA = codeMapLabelService["labels"][0].sprite.position.clone()
 
@@ -343,7 +343,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(174.75)
@@ -383,8 +383,8 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
-			codeMapLabelService.addLabel(otherSampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
 
 			threeSceneService.labels.children = generateSceneLabelChild(4)
 
@@ -406,7 +406,7 @@ describe("CodeMapLabelService", () => {
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(true))
 
-			codeMapLabelService.addLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 			threeSceneService.labels.children.length = 2
 
 			codeMapLabelService.clearTemporaryLabel(otherSampleLeaf)

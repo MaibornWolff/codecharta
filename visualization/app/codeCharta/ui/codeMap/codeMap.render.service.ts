@@ -118,7 +118,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 	private setBuildingLabel(nodes: Node[], highestNodeInSet: number) {
 		for (const node of nodes) {
-			this.codeMapLabelService.addLabel(node, highestNodeInSet)
+			this.codeMapLabelService.addLeafLabel(node, highestNodeInSet)
 		}
 	}
 
