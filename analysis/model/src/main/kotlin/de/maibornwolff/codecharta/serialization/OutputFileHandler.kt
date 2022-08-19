@@ -19,16 +19,20 @@ object OutputFileHandler {
     }
 
     fun checkAndFixFileExtension(outputName: String): String {
-        if (outputName.endsWith("cc.json")) {
+        if (outputName.endsWith("cc.json") || outputName.endsWith(".cc.json.gz")) {
             return outputName
         }
         val sb = StringBuilder()
+        appendFilePathIfSpecified(sb, outputName)
+        sb.append(extractFileName(outputName))
+        return sb.toString()
+    }
+
+    private fun appendFilePathIfSpecified(sb: StringBuilder, outputName: String) {
         sb.append(Paths.get(outputName).parent?.toString() ?: "")
         if (sb.isNotEmpty()) {
             sb.append(File.separator)
         }
-        sb.append(extractFileName(outputName))
-        return sb.toString()
     }
 
     private fun extractFileName(outputName: String): String {
