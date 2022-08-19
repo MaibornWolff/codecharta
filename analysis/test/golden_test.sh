@@ -83,7 +83,7 @@ check_codemaatimporter() {
 }
 
 check_crococosmo_importer() {
-  echo " -- expect CrococosmoImporter to produce valid cc.json files"
+  echo " -- expect CrococosmoImporter to produce valid cc.json files with added extensions"
   ACTUAL_COSMO_JSON="${INSTALL_DIR}/actual_cosmoimport"
   "${CCSH}" crococosmoimport "${DATA}/crococosmo.xml" -o "${ACTUAL_COSMO_JSON}" -nc
   validate "${ACTUAL_COSMO_JSON}_1.cc.json"
@@ -91,10 +91,10 @@ check_crococosmo_importer() {
 }
 
 check_csvimporter() {
-  echo " -- expect CSVimporter to produce valid cc.json file"
-  ACTUAL_CSVIMPORT_JSON="${INSTALL_DIR}/actual_csvimport.cc.json"
-  "${CCSH}" csvimport "${DATA}/csvimport.csv" -o "${ACTUAL_CSVIMPORT_JSON}" -nc
-  validate "${ACTUAL_CSVIMPORT_JSON}"
+  echo " -- expect CSVimporter to produce valid cc.json with corrected name"
+  ACTUAL_CSVIMPORT_JSON="${INSTALL_DIR}/actual_csvimport"
+  "${CCSH}" csvimport "${DATA}/csvimport.csv" -o "${ACTUAL_CSVIMPORT_JSON}.json" -nc
+  validate "${ACTUAL_CSVIMPORT_JSON}.cc.json"
 }
 
 check_sourcemonitor() {
@@ -104,7 +104,19 @@ check_sourcemonitor() {
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
+check_jasome() {
+  echo " -- expect JasomeImporter to produce valid cc.json file"
+  ACTUAL_JASOME_JSON="${INSTALL_DIR}/actual_jasomeimport.cc.json"
+  "${CCSH}" jasomeimport "${DATA}/jasome.xml" -o "${ACTUAL_JASOME_JSON}" -nc
+  validate "${ACTUAL_JASOME_JSON}"
+}
 
+check_metricgardener() {
+  echo " -- expect MetricGardenerImporter to produce valid cc.json file with added extensions"
+  ACTUAL_METRICGARDENER_JSON="${INSTALL_DIR}/actual_metricgardener"
+  "${CCSH}" metricgardenerimport "${DATA}/metricgardener.json" -o "${ACTUAL_METRICGARDENER_JSON}"
+  validate "${ACTUAL_METRICGARDENER_JSON}.cc.json.gz"
+}
 
 check_understand() {
   echo " -- expect UnderstandImporter gives valid cc.json"
@@ -113,14 +125,6 @@ check_understand() {
   validate "${ACTUAL_UNDERSTAND_JSON}"
 }
 
-
-
-check_jasome() {
-  echo " -- expect JasomeImporter gives valid cc.json"
-  ACTUAL_JASOME_JSON="${INSTALL_DIR}/actual_jasomeimport.json"
-  "${CCSH}" jasomeimport data/codecharta/jasome.xml > "${ACTUAL_JASOME_JSON}"
-  validate "${ACTUAL_JASOME_JSON}"
-}
 
 check_svnlog() {
   echo " -- expect SVNLogParser gives valid cc.json"
@@ -192,11 +196,13 @@ run_tests() {
   check_crococosmo_importer
   check_csvimporter
   check_sourcemonitor
+  check_jasome
+  check_metricgardener
 
   #check_sonar
 
   #check_understand
-  #check_jasome
+
   #check_svnlog
   #check_merge
   #check_modify
