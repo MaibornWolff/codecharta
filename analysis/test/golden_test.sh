@@ -91,7 +91,7 @@ check_crococosmo_importer() {
 }
 
 check_csvimporter() {
-  echo " -- expect CSVimporter to produce valid cc.json with corrected name"
+  echo " -- expect CSVimporter to produce valid cc.json file with corrected name"
   ACTUAL_CSVIMPORT_JSON="${INSTALL_DIR}/actual_csvimport"
   "${CCSH}" csvimport "${DATA}/csvimport.csv" -o "${ACTUAL_CSVIMPORT_JSON}.json" -nc
   validate "${ACTUAL_CSVIMPORT_JSON}.cc.json"
@@ -113,74 +113,67 @@ check_jasome() {
 
 check_metricgardener() {
   echo " -- expect MetricGardenerImporter to produce valid cc.json file with added extensions"
-  ACTUAL_METRICGARDENER_JSON="${INSTALL_DIR}/actual_metricgardener"
+  ACTUAL_METRICGARDENER_JSON="${INSTALL_DIR}/actual_metricgardenerparser"
   "${CCSH}" metricgardenerimport "${DATA}/metricgardener.json" -o "${ACTUAL_METRICGARDENER_JSON}"
   validate "${ACTUAL_METRICGARDENER_JSON}.cc.json.gz"
 }
 
-check_understand() {
-  echo " -- expect UnderstandImporter gives valid cc.json"
-  ACTUAL_UNDERSTAND_JSON="${INSTALL_DIR}/actual_understandimporter.json"
-  "${CCSH}" understandimport data/codecharta/understand.csv > "${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
-  validate "${ACTUAL_UNDERSTAND_JSON}"
-}
-
-
-check_svnlog() {
-  echo " -- expect SVNLogParser gives valid cc.json"
-  ACTUAL_SVNLOG_JSON="${INSTALL_DIR}/actual_svnlog.json"
-  "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt --silent > "${ACTUAL_SVNLOG_JSON}"
-  validate "${ACTUAL_SVNLOG_JSON}"
-}
-
-check_merge() {
-  echo " -- expect MergeFilter gives valid cc.json"
-  ACTUAL_MERGE_JSON="${INSTALL_DIR}/actual_merge.json"
-  "${CCSH}" merge data/codecharta/tomerge.json data/codecharta/tomerge2.json > "${ACTUAL_MERGE_JSON}"
-  validate "${ACTUAL_MERGE_JSON}"
-}
-
-check_modify() {
-    echo " -- expect StructureModifier gives valid cc.json"
-    ACTUAL_MODIFY_JSON="${INSTALL_DIR}/actual_modify.json"
-    "${CCSH}" modify data/codecharta/tomerge.json --move-from=root/src --move-to=root/bar > "${ACTUAL_MODIFY_JSON}"
-    validate "${ACTUAL_MODIFY_JSON}"
+check_sonar() {
+  echo " -- expect SonarImporter to produce valid cc.json file with multiple extensions"
+  ACTUAL_SONAR_JASON="${INSTALL_DIR}/actual_sonarimport.drive0.storage"
+  "${CCSH}" sonarimport https://sonarcloud.io maibornwolff-gmbh_codecharta_visualization -o ${ACTUAL_SONAR_JASON} -nc
+  validate "${ACTUAL_SONAR_JASON}.cc.json"
 }
 
 check_sourcecodeparser() {
-    echo " -- expect SourceCodeParser gives valid cc.json"
-    ACTUAL_SCP_JSON="${INSTALL_DIR}/actual_scp.json"
-    "${CCSH}" sourcecodeparser data/codecharta/ > "${ACTUAL_SCP_JSON}"
+    echo " -- expect SourceCodeParser to produce valid cc.json file"
+    ACTUAL_SCP_JSON="${INSTALL_DIR}/actual_scpparser.cc.json"
+    "${CCSH}" sourcecodeparser "${DATA}/" -o "${ACTUAL_SCP_JSON}" -nc
     validate "${ACTUAL_SCP_JSON}"
 }
 
+check_svnlog() {
+  echo " -- expect SVNLogParser to produce valid cc.json to system.out"
+  ACTUAL_SVNLOG_JSON="${INSTALL_DIR}/actual_svnlogparser.json"
+  "${CCSH}" svnlogparser "${DATA}/SVNTestLog.txt" --silent > "${ACTUAL_SVNLOG_JSON}"
+  validate "${ACTUAL_SVNLOG_JSON}"
+}
+
 check_tokei() {
-    echo " -- expect TokeiImporter gives valid cc.json"
-    ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_tokei.json"
-    "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ > "${ACTUAL_TOKEI_JSON}"
+    echo " -- expect TokeiImporter to produce valid cc.json file"
+    ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_tokeiparser.cc.json"
+    "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ -o "${ACTUAL_TOKEI_JSON}" -nc
     validate "${ACTUAL_TOKEI_JSON}"
 }
 
+check_understand() {
+  echo " -- expect UnderstandImporter to produce valid cc.json to system.out"
+  ACTUAL_UNDERSTAND_JSON="${INSTALL_DIR}/actual_understandparser.json"
+  "${CCSH}" understandimport "${DATA}/understand.csv" > "${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
+  validate "${ACTUAL_UNDERSTAND_JSON}"
+}
+
+check_rawtext() {
+  echo " -- expect RawTextParser to produce valid cc.json file"
+  ACTUAL_RAWTEXT_JSON="${INSTALL_DIR}/actual_rawtextparser.cc.json"
+  "${CCSH}" rawtextparser "${DATA}/rawText/" -o "${ACTUAL_RAWTEXT_JSON}" -nc
+  validate "${ACTUAL_RAWTEXT_JSON}"
+}
+
 check_pipe() {
-   echo " -- expect pipes to work"
+   echo " -- expect pipe chain from tokei, sourcecodeparser, svnlogparser and modify to work"
    sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ \
         | sh "${CCSH}" sourcecodeparser data/codecharta/ \
         | sh "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt \
         | sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
             -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
-    validate ${INSTALL_DIR}/piped_out.json
+    validate ${INSTALL_DIR}/piped_out.cc.json
     if ! grep -q "Created Project with 9 leaves." ${INSTALL_DIR}/piped_out_log.json; then
       exit_with_err "ERR: Pipes broken."
     fi
 }
 
-check_sonar() {
-  echo " -- expect sonar to work and system.in to be controled"
-  timeout 15 "${CCSH}" sonarimport -nc https://sonarcloud.io maibornwolff-gmbh_codecharta_visualization -o ${INSTALL_DIR}/sonarGoldTest.cc.json
-    if [ "$?" -eq 124 ]; then
-      exit_with_err "system.in blocks endless "
-    fi
-}
+
 
 run_tests() {
   echo
@@ -198,19 +191,14 @@ run_tests() {
   check_sourcemonitor
   check_jasome
   check_metricgardener
+  check_sonar
+  check_sourcecodeparser
+  check_svnlog
+  check_tokei
+  check_understand
+  check_rawtext
 
-  #check_sonar
-
-  #check_understand
-
-  #check_svnlog
-  #check_merge
-  #check_modify
-  #check_sourcecodeparser
-  #check_tokei
-  #check_sonar
-
-  #check_pipe
+  check_pipe
 
   echo
   echo "... Testing finished."
