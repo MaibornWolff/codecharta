@@ -1,0 +1,41 @@
+<cc-edge-metric-toggle></cc-edge-metric-toggle>
+
+<cc-slider
+	*ngIf="amountOfBuildingsWithSelectedEdgeMetric$ | async; let amountOfBuildingsWithSelectedEdgeMetric"
+	title="edgePreviewLabel$ | async"
+	[label]="'Preview'"
+	[value]="amountOfEdgePreviews$ | async"
+	[onChange]="applySettingsAmountOfEdgePreviews"
+	[min]="0"
+	[max]="amountOfBuildingsWithSelectedEdgeMetric$ | async"
+	[disabled]="(amountOfBuildingsWithSelectedEdgeMetric$ | async) === 0"
+></cc-slider>
+<cc-slider
+	title="Adjust the curve height"
+	[label]="'Height'"
+	[value]="edgeHeight$ | async"
+	[onChange]="applySettingsEdgeHeight"
+	[min]="1"
+	[max]="9"
+	[disabled]="(amountOfBuildingsWithSelectedEdgeMetric$ | async) === 0"
+></cc-slider>
+
+<div class="wrapper">
+	<cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'"></cc-color-picker-for-map-color>
+	<cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
+</div>
+
+<div class="bottom-row">
+	<mat-checkbox
+		[checked]="showOnlyBuildingsWithEdges$$ | async"
+		(change)="applyShowOnlyBuildingsWithEdges($event)"
+		[disabled]="(amountOfBuildingsWithSelectedEdgeMetric$ | async) === 0"
+	>
+		Only nodes with edges
+	</mat-checkbox>
+
+	<cc-reset-settings-button
+		[settingsKeys]="['appSettings.showOnlyBuildingsWithEdges', 'appSettings.amountOfEdgePreviews', 'appSettings.edgeHeight']"
+		tooltip="Reset edge metric settings to their defaults"
+	></cc-reset-settings-button>
+</div>

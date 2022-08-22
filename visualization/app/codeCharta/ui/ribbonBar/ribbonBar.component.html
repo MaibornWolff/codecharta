@@ -97,7 +97,10 @@
 		<span class="section-title" ng-click="$ctrl.updatePanelSelection('EDGE_PANEL_OPEN')" title="Show edge metric settings">
 			Edge Metric Options <i class="fa fa-angle-down"></i>
 		</span>
-		<cc-edge-settings-panel ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'EDGE_PANEL_OPEN' }"></cc-edge-settings-panel>
+		<cc-edge-settings-panel
+			class="cc-metric-settings-panel"
+			ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'EDGE_PANEL_OPEN' }"
+		></cc-edge-settings-panel>
 	</div>
 </md-card>
 
