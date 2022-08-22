@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Correct file types now get appended to the name of the output file when using the interactive ccsh [#2914](https://github.com/MaibornWolff/codecharta/pull/2914)
+-   Fix missing color pickers within edge metric options [#2993](https://github.com/MaibornWolff/codecharta/pull/2993)
 
 ## [1.103.6] - 2022-08-17
 
