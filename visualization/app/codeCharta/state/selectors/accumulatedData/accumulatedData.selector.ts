@@ -13,6 +13,7 @@ import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.
 import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
 import { visibleFileStatesSelector } from "../visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
+import { compareCollapsedRoots } from "./utils/compareCollapsedRoot"
 
 const accumulatedDataFallback = Object.freeze({
 	unifiedMapNode: undefined,
@@ -54,9 +55,16 @@ const getUndecoratedAccumulatedData = (fileStates: FileState[]) => {
 	}
 	if (isDeltaState(fileStates)) {
 		const [reference, comparison] = visibleFileStates
-		if (comparison && reference.file.map.name !== comparison.file.map.name) {
+
+		if (!comparison) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 		}
+
+		const nodesAreUncomparable = !compareCollapsedRoots(reference.file.map, comparison.file.map)
+		if (nodesAreUncomparable) {
+			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
+		}
+
 		return getDeltaFile(visibleFileStates)
 	}
 }
