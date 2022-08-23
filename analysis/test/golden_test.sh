@@ -36,8 +36,7 @@ deinstall_codecharta() {
 }
 
 validate() {
-  "${CCSH}" check "$1"
-  if [ "$?" -ne 0 ]; then
+  if ! "${CCSH}" check "$1"; then
     exit_with_err "$1 no valid cc.json"
   fi
 }
@@ -45,9 +44,12 @@ validate() {
 check_gitlogparser() {
   echo " -- expect GitLogParser to produce valid cc.json file"
   ACTUAL_GITLOG_JSON="${INSTALL_DIR}/actual_gitlogparser.cc.json"
-  timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.log" -n "${DATA}/gitlogparser-cc-filelist.log" -o "${ACTUAL_GITLOG_JSON}" -nc
-  if [ "$?" -eq 124 ]; then
-    exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
+  if ! timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.log" -n "${DATA}/gitlogparser-cc-filelist.log" -o "${ACTUAL_GITLOG_JSON}" -nc; then
+    if [ "$?" -eq 124 ]; then
+      exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
+    else
+      exit_with_err "Parser exited with code $?"
+    fi
   fi
   validate "${ACTUAL_GITLOG_JSON}"
 }
