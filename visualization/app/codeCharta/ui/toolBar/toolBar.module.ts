@@ -10,6 +10,7 @@ import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton/
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel/hoveredNodePathPanel.component"
 import { FilePanelComponent } from "../filePanel/filePanel.component"
 import { ScreenshotButtonComponent } from "../screenshotButton/screenshotButton.component"
+import { CopyToClipboardButtonComponent } from "../copyToClipboardButton/copyToClipboardButton.component"
 import { DownloadButtonComponent } from "./downloadButton/downloadButton.component"
 
 angular
@@ -21,4 +22,5 @@ angular
 	.directive("ccHoveredNodePathPanel", downgradeComponent({ component: HoveredNodePathPanelComponent }))
 	.directive("ccScreenshotButton", downgradeComponent({ component: ScreenshotButtonComponent }))
 	.directive("ccFilePanel", downgradeComponent({ component: FilePanelComponent }))
+	.directive("ccCopyToClipboardButton", downgradeComponent({ component: CopyToClipboardButtonComponent }))
 	.directive("ccDownloadButton", downgradeComponent({ component: DownloadButtonComponent }))

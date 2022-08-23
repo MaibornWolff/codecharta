@@ -18,11 +18,11 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
-	threeSceneServiceProvider,
 	codeChartaServiceProvider,
-	threeOrbitControlsServiceProvider,
 	threeCameraServiceProvider,
-	threeRendererServiceProvider
+	threeOrbitControlsServiceProvider,
+	threeRendererServiceProvider,
+	threeSceneServiceProvider
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
@@ -58,6 +58,7 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
+import { CopyToClipboardButtonModule } from "./codeCharta/ui/copyToClipboardButton/copyToClipboardButton.module"
 import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
 
 @NgModule({
@@ -102,7 +103,8 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 		ColorSettingsPanelModule,
 		ScreenshotButtonModule,
 		DownloadButtonModule,
-		UploadFilesButtonModule
+		UploadFilesButtonModule,
+		CopyToClipboardButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -134,6 +136,7 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}
+
 	ngDoBootstrap() {
 		this.upgrade.bootstrap(document.body, ["app"], { strictDi: true })
 	}
