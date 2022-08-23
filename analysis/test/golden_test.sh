@@ -44,10 +44,11 @@ validate() {
 check_gitlogparser() {
   echo " -- expect GitLogParser to produce valid cc.json file"
   ACTUAL_GITLOG_JSON="${INSTALL_DIR}/actual_gitlogparser.cc.json"
-  timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.txt" -n "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON}" -nc || returnCode=$?
-  if [[ "$returnCode" -eq 124 ]] ; then
+  returnCode="0"
+  timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.txt" -n "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON}" -nc || returnCode="$?"
+  if [ "$returnCode" -eq 124 ] ; then
     exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
-  elif [[ "$returnCode" -ne 0 ]] ; then
+  elif [ "$returnCode" -ne 0 ] ; then
     exit_with_err "Parser exited with code $returnCode"
   fi
   validate "${ACTUAL_GITLOG_JSON}"
