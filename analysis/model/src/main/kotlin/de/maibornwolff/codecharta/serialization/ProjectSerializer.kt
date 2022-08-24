@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.io.Writer
@@ -70,18 +69,6 @@ object ProjectSerializer {
     fun serializeToString(project: Project): String {
         val wrappedProject = getWrappedProject(project)
         return GSON.toJson(wrappedProject)
-    }
-
-    /**
-     * This method serializes a Project-Object to json and compresses it to gzip
-     *
-     * @param project the Project-Object to be serialized
-     * @param absolutePath the path of the compressed file
-     */
-
-    fun serializeAsCompressedFile(project: Project, absolutePath: String) {
-        val fixedPath = OutputFileHandler.checkAndFixFileExtension(absolutePath, true)
-        serializeProject(project, FileOutputStream(fixedPath), true)
     }
 
     private fun getWrappedProject(project: Project): ProjectWrapper {
