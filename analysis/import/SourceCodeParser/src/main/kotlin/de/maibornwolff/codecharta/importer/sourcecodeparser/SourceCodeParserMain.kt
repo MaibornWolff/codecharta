@@ -91,7 +91,7 @@ class SourceCodeParserMain(
 
     private fun getMetricWriter(): MetricWriter {
         return when (outputFormat) {
-            OutputFormat.JSON -> JSONMetricWriter(getJsonOutputStream(), compress)
+            OutputFormat.JSON -> JSONMetricWriter(getJsonOutputStream(), compress && outputFile != null)
             OutputFormat.TABLE -> CSVMetricWriter(getCsvOutputWriter())
         }
     }
