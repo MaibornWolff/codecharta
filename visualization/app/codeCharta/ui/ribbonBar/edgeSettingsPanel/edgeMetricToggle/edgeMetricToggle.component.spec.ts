@@ -1,9 +1,9 @@
-import { Store } from "../../../state/store/store"
+import { Store } from "../../../../state/store/store"
 import { fireEvent, render } from "@testing-library/angular"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 import { TestBed } from "@angular/core/testing"
-import { MaterialModule } from "../../../../material/material.module"
-import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
+import { MaterialModule } from "../../../../../material/material.module"
+import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 
 describe("edgeMetricToggleComponent", () => {
 	beforeEach(() => {

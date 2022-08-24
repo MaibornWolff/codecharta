@@ -9,8 +9,6 @@ import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
-import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
-import { AmountOfEdgePreviewsService } from "./store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
@@ -36,8 +34,6 @@ export class InjectorService {
 		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private scalingService: ScalingService,
-		private edgeHeightService: EdgeHeightService,
-		private amountOfEdgePreviewsService: AmountOfEdgePreviewsService,
 		private markedPackagesService: MarkedPackagesService,
 		private edgesService: EdgesService,
 		private attributeTypesService: AttributeTypesService,

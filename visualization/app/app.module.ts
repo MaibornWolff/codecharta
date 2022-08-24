@@ -1,3 +1,4 @@
+import "@angular/compiler" // todo this is needed for JIT compiler for ngColor within a downgraded component. Latest after full migration we can likely remove it again
 import "./app" // load AngularJS app first
 import "zone.js" // needs to be loaded before "@angular/core"
 import { APP_INITIALIZER, Inject, NgModule } from "@angular/core"
@@ -33,7 +34,6 @@ import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFile
 import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
 import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
-import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
 import { UploadFilesButtonModule } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.module"
@@ -121,7 +121,7 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 			multi: true
 		}
 	],
-	declarations: [EdgeMetricToggleComponent, ...dialogs],
+	declarations: [...dialogs],
 	entryComponents: [
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
@@ -129,7 +129,6 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 		FocusButtonsComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
-		EdgeMetricToggleComponent,
 		SearchPanelComponent,
 		...dialogs
 	]

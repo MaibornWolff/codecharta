@@ -18,6 +18,8 @@ import { EdgeMetricChooserModule } from "./edgeMetricChooser/edgeMetricChooser.m
 import { ColorSettingsPanelComponent } from "./colorSettingsPanel/colorSettingsPanel.component"
 import { ShowScenariosButtonModule } from "./showScenariosButton/showScenariosButton.module"
 import { ShowScenariosButtonComponent } from "./showScenariosButton/showScenariosButton.component"
+import { EdgeSettingsPanelModule } from "./edgeSettingsPanel/edgeSettingsPanel.module"
+import { EdgeSettingsPanelComponent } from "./edgeSettingsPanel/edgeSettingsPanel.component"
 
 angular.module("app.codeCharta.ui.ribbonBar", ["app.codeCharta.state"])
 
@@ -34,6 +36,7 @@ angular
 	.directive("ccEdgeMetricChooser", downgradeComponent({ component: EdgeMetricChooserComponent }))
 	.directive("ccColorSettingsPanel", downgradeComponent({ component: ColorSettingsPanelComponent }))
 	.directive("ccShowScenariosButton", downgradeComponent({ component: ShowScenariosButtonComponent }))
+	.directive("ccEdgeSettingsPanel", downgradeComponent({ component: EdgeSettingsPanelComponent }))
 
 @NgModule({
 	imports: [
@@ -41,14 +44,16 @@ angular
 		HeightMetricChooserModule,
 		ColorMetricChooserModule,
 		EdgeMetricChooserModule,
-		ShowScenariosButtonModule
+		ShowScenariosButtonModule,
+		EdgeSettingsPanelModule
 	],
 	entryComponents: [
 		AreaMetricChooserComponent,
 		HeightMetricChooserComponent,
 		ColorMetricChooserComponent,
 		EdgeMetricChooserComponent,
-		ShowScenariosButtonComponent
+		ShowScenariosButtonComponent,
+		EdgeSettingsPanelComponent
 	]
 })
 export class RibbonBarModule {}

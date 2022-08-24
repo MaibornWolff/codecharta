@@ -6,17 +6,13 @@ import { MetricMinMax } from "../../state/selectors/accumulatedData/metricData/s
 @Pipe({ name: "mapColorLabel" })
 export class MapColorLabelPipe implements PipeTransform {
 	transform(metricName: keyof MapColors, colorRange: ColorRange, nodeMetricRange: MetricMinMax): string {
-		if (colorRange.from === null && colorRange.to === null) {
-			return ""
-		}
-
 		switch (metricName) {
 			case "positive":
 				return `${nodeMetricRange.minValue} to < ${this.formatNumber(colorRange.from)}`
 			case "neutral":
-				return `≥ ${this.formatNumber(colorRange.from)} to ≤ ${this.formatNumber(colorRange.to)}`
+				return `≥ ${this.formatNumber(colorRange.from || 0)} to ≤ ${this.formatNumber(colorRange.to || 0)}`
 			case "negative":
-				return `> ${this.formatNumber(colorRange.to)} to ${this.formatNumber(nodeMetricRange.maxValue)}`
+				return `> ${this.formatNumber(colorRange.to || 0)} to ${this.formatNumber(nodeMetricRange.maxValue || 0)}`
 			case "positiveDelta":
 				return "+Δ positive delta"
 			case "negativeDelta":
