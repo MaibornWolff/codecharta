@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.crococosmo
 
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
@@ -32,19 +31,10 @@ class CrococosmoImporter(private val output: PrintStream = System.out) : Callabl
         val graph = CrococosmoDeserializer().deserializeCrococosmoXML(inputFile!!.inputStream())
         val projects = CrococosmoConverter().convertToProjectsMap(graph)
         projects.forEach {
-            val suffix = if (projects.isNotEmpty()) "_" + it.key else ""
-            val filePath = outputFile ?: "notSpecified"
+            val suffix = "_" + it.key
+            val filePath = if(outputFile == null) null else outputFile + suffix
 
-            if (compress && filePath !== "notSpecified") {
-                ProjectSerializer.serializeAsCompressedFile(
-                    it.value,
-                    filePath + suffix
-                )
-            } else {
-                ProjectSerializer.serializeProject(
-                    it.value, OutputFileHandler.writer(filePath + suffix, output)
-                )
-            }
+            ProjectSerializer.serializeToFileOrStream(it.value, filePath, output, compress)
         }
         return null
     }

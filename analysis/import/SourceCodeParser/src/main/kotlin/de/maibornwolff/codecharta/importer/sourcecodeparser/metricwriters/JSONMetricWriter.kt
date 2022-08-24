@@ -10,12 +10,10 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.OutputStream
 
-class JSONMetricWriter(private val outputStream: OutputStream, private val toCompress: Boolean) :
-    MetricWriter {
+class JSONMetricWriter(private val outputStream: OutputStream, private val toCompress: Boolean) : MetricWriter {
     private val projectBuilder = ProjectBuilder()
 
     override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
-
         projectMetrics.projectMetrics.forEach { addAsNode(it) }
 
         var project = projectBuilder.build()
