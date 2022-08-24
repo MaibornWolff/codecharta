@@ -11,11 +11,9 @@ import picocli.CommandLine
 import picocli.CommandLine.call
 import java.io.BufferedWriter
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.io.Writer
@@ -104,13 +102,7 @@ class SourceCodeParserMain(
         }
     }
 
-    private fun getJsonOutputStream(): OutputStream {
-        return if (outputFile == null) {
-            outputStream
-        } else {
-            FileOutputStream(OutputFileHandler.checkAndFixFileExtension(outputFile!!.absolutePath, compress))
-        }
-    }
+    private fun getJsonOutputStream() = OutputFileHandler.stream(outputFile?.absolutePath, outputStream, compress)
 
     companion object {
         @JvmStatic
