@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.jasome
 
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
@@ -31,13 +30,8 @@ class JasomeImporter(
     override fun call(): Void? {
         val jasomeProject = JasomeDeserializer().deserializeJasomeXML(file!!.inputStream())
         val project = JasomeProjectBuilder().add(jasomeProject).build()
-        val filePath = outputFile ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project, filePath)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
-        }
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }

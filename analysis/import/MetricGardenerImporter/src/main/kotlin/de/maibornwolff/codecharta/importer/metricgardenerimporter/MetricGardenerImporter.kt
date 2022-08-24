@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.importer.metricgardenerimporter
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -57,12 +56,9 @@ class MetricGardenerImporter(
             mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
         val project = metricGardenerProjectBuilder.build()
-        val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath !== "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project, filePath)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
-        }
+
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
+
         return null
     }
 

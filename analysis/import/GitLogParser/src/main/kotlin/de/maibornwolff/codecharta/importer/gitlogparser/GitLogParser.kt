@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstatRawParserStrategy
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -113,12 +112,8 @@ class GitLogParser(
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
-        val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project, filePath)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
-        }
+
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }

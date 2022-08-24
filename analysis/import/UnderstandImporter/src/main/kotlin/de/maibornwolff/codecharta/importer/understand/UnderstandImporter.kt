@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -38,12 +37,9 @@ class UnderstandImporter(private val output: PrintStream = System.out) : Callabl
         val projectBuilder = UnderstandProjectBuilder(pathSeparator)
         files.forEach { projectBuilder.parseCSVStream(it.inputStream()) }
         val project = projectBuilder.build()
-        val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project, filePath)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
-        }
+
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
+
         logger.info { "Created project with ${project.size} leafs." }
 
         return null

@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -95,12 +94,9 @@ class SVNLogParser(
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
-        val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project, filePath)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
-        }
+
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
+
         return null
     }
 
