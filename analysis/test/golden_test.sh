@@ -187,7 +187,7 @@ run_tests() {
   check_csvexporter
   check_edgefilter
   check_mergefilter
-  #check_codemaatimporter
+  check_codemaatimporter
   check_crococosmo_importer
   check_csvimporter
   check_sourcemonitor
