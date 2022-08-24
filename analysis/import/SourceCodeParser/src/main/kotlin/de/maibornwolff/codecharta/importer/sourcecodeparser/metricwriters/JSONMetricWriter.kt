@@ -8,9 +8,9 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import java.io.Writer
+import java.io.OutputStream
 
-class JSONMetricWriter(private val writer: Writer, private val filePath: String, private val toCompress: Boolean) :
+class JSONMetricWriter(private val outputStream: OutputStream, private val toCompress: Boolean) :
     MetricWriter {
     private val projectBuilder = ProjectBuilder()
 
@@ -23,11 +23,7 @@ class JSONMetricWriter(private val writer: Writer, private val filePath: String,
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
 
-        if (toCompress && filePath != "notSpecified") ProjectSerializer.serializeCompressedFileAndDeleteJsonFile(
-            project,
-            filePath,
-            writer
-        ) else ProjectSerializer.serializeProject(project, writer)
+        ProjectSerializer.serializeProject(project, outputStream, toCompress)
     }
 
     private fun addAsNode(metrics: Map.Entry<String, FileMetricMap>) {

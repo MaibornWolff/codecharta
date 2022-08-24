@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -10,9 +11,11 @@ import picocli.CommandLine
 import picocli.CommandLine.call
 import java.io.BufferedWriter
 import java.io.File
+import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.io.Writer
@@ -87,18 +90,25 @@ class SourceCodeParserMain(
     }
 
     private fun getMetricWriter(): MetricWriter {
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
         return when (outputFormat) {
-            OutputFormat.JSON -> JSONMetricWriter(getOutputWriter(), filePath, compress)
-            OutputFormat.TABLE -> CSVMetricWriter(getOutputWriter())
+            OutputFormat.JSON -> JSONMetricWriter(getJsonOutputStream(), compress)
+            OutputFormat.TABLE -> CSVMetricWriter(getCsvOutputWriter())
         }
     }
 
-    private fun getOutputWriter(): Writer {
+    private fun getCsvOutputWriter(): Writer {
         return if (outputFile == null) {
             OutputStreamWriter(outputStream)
         } else {
             BufferedWriter(FileWriter(outputFile!!))
+        }
+    }
+
+    private fun getJsonOutputStream(): OutputStream {
+        return if (outputFile == null) {
+            outputStream
+        } else {
+            FileOutputStream(OutputFileHandler.checkAndFixFileExtension(outputFile!!.absolutePath, compress))
         }
     }
 

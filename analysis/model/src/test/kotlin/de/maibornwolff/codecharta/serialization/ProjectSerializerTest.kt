@@ -7,6 +7,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.File
+import java.io.FileOutputStream
 import kotlin.test.assertTrue
 
 class ProjectSerializerTest : Spek({
@@ -21,7 +22,7 @@ class ProjectSerializerTest : Spek({
             val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json").readText()
             val testProject = ProjectDeserializer.deserializeProject(jsonReader)
 
-            ProjectSerializer.serializeProjectAndWriteToFile(testProject, filename)
+            ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false)
 
             val testJsonString = File(filename).readText()
 
