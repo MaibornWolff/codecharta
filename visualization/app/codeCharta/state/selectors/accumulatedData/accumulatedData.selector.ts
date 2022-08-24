@@ -60,6 +60,8 @@ const getUndecoratedAccumulatedData = (fileStates: FileState[]) => {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 		}
 
+		//NOTE: Delete this if-part you always want to show the delta values (green and red buildings), even if the (collapsed) root folders are different.
+		//      After deleting the if-part, compareCollapsedRoot.ts and delete compareCollapsedRoot.spec.ts)
 		const nodesAreUncomparable = !compareCollapsedRoots(reference.file.map, comparison.file.map)
 		if (nodesAreUncomparable) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
