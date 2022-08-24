@@ -151,7 +151,7 @@ describe("CodeMapLabelService", () => {
 		})
 	})
 
-	describe("addLabel", () => {
+	describe("addLeafLabel", () => {
 		beforeEach(() => {
 			storeService.dispatch(setAmountOfTopLabels(1))
 			storeService.dispatch(setHeightMetric("mcc"))

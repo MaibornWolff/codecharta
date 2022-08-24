@@ -807,7 +807,7 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("drawTemporaryLabelFor", () => {
-		it("should call addLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
+		it("should call addLeafLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
 			codeMapLabelService.addLeafLabel = jest.fn()
 
@@ -819,7 +819,7 @@ describe("codeMapMouseEventService", () => {
 			expect(nodeHeight).toBeGreaterThan(0)
 		})
 
-		it("should call addLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
+		it("should call addLeafLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
 			codeMapLabelService.addLeafLabel = jest.fn()
 			storeService.dispatch(setShowMetricLabelNameValue(false))

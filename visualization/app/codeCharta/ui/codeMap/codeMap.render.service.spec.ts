@@ -109,7 +109,7 @@ describe("codeMapRenderService", () => {
 		codeMapLabelService = codeMapRenderService["codeMapLabelService"] = jest.fn().mockReturnValue({
 			scale: jest.fn(),
 			clearLabels: jest.fn(),
-			addLabel: jest.fn()
+			addLeafLabel: jest.fn()
 		})()
 	}
 
@@ -225,7 +225,7 @@ describe("codeMapRenderService", () => {
 			expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
 		})
 
-		it("should call codeMapLabelService.addLabels for each shown leaf label", () => {
+		it("should call codeMapLabelService.addLeafLabel for each shown leaf label", () => {
 			codeMapRenderService["setLabels"](nodes)
 
 			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
