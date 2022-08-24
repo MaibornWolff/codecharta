@@ -31,8 +31,7 @@ class CrococosmoImporter(private val output: PrintStream = System.out) : Callabl
         val graph = CrococosmoDeserializer().deserializeCrococosmoXML(inputFile!!.inputStream())
         val projects = CrococosmoConverter().convertToProjectsMap(graph)
         projects.forEach {
-            val suffix = "_" + it.key
-            val filePath = if(outputFile == null) null else outputFile + suffix
+            val filePath = outputFile?.plus("_" + it.key)
 
             ProjectSerializer.serializeToFileOrStream(it.value, filePath, output, compress)
         }
