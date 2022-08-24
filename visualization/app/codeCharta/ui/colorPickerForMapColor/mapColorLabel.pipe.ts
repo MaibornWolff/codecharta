@@ -10,9 +10,9 @@ export class MapColorLabelPipe implements PipeTransform {
 			case "positive":
 				return `${nodeMetricRange.minValue} to < ${this.formatNumber(colorRange.from)}`
 			case "neutral":
-				return `≥ ${this.formatNumber(colorRange.from || 0)} to ≤ ${this.formatNumber(colorRange.to || 0)}`
+				return `≥ ${this.formatNumber(colorRange.from)} to ≤ ${this.formatNumber(colorRange.to)}`
 			case "negative":
-				return `> ${this.formatNumber(colorRange.to || 0)} to ${this.formatNumber(nodeMetricRange.maxValue || 0)}`
+				return `> ${this.formatNumber(colorRange.to)} to ${this.formatNumber(nodeMetricRange.maxValue)}`
 			case "positiveDelta":
 				return "+Δ positive delta"
 			case "negativeDelta":
@@ -26,7 +26,7 @@ export class MapColorLabelPipe implements PipeTransform {
 		}
 	}
 
-	private formatNumber(n: number) {
-		return n.toLocaleString()
+	private formatNumber(n?: number) {
+		return (n || 0).toLocaleString()
 	}
 }
