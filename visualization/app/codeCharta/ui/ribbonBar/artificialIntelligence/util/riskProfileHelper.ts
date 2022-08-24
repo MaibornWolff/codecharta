@@ -1,6 +1,6 @@
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../../codeCharta.model"
 import percentRound from "percent-round"
-import { getAssociatedMetricThresholds } from "./util/getMetricThresholds"
+import { getAssociatedMetricThresholds } from "./getMetricThresholds"
 
 export interface RiskProfile {
 	lowRisk: number

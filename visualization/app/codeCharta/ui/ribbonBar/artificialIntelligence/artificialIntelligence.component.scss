@@ -3,3 +3,107 @@ cc-artificial-intelligence {
 	justify-content: center;
 	gap: 4px;
 }
+
+cc-artificial-intelligence {
+	.ai-badge {
+		position: absolute;
+		top: 12px;
+		padding: 4px 6px;
+		border-radius: 50%;
+		background: red;
+		color: white;
+		font-size: 10px;
+		width: 18px;
+		height: 18px;
+		line-height: 10px;
+	}
+}
+
+.mat-menu-panel.ai-drop-down {
+	padding: 16px;
+	max-width: unset;
+
+	.title {
+		font-weight: bold;
+		div {
+			padding-bottom: 8px;
+		}
+	}
+
+	&.metrics {
+		.title span {
+			padding: 0;
+			margin: 0;
+			font-weight: bold;
+		}
+
+		.suspicious-metrics {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+			width: max-content;
+		}
+
+		.suspicious-metric {
+			.metric-button {
+				border-radius: 5px;
+				background-color: rgba(230, 230, 230, 0.96);
+				padding: 0 12px;
+				text-transform: none;
+				margin: 0;
+			}
+
+			.risk-button {
+				border-radius: 0 5px 5px 0;
+				background-color: rgba(230, 230, 230, 0.96);
+				margin: 0;
+				min-width: 36px;
+				height: 36px;
+				color: #9c0e6a;
+			}
+
+			.risk-button:hover,
+			.metric-button:hover {
+				background-color: #c8c8c8;
+			}
+
+			&:not(:last-child) {
+				margin-bottom: 12px;
+			}
+		}
+	}
+
+	&.high-risk-profile {
+		.suspicious-metrics-summary {
+			padding: 8px 0 16px 0;
+		}
+
+		.risk-profiles {
+			display: flex;
+			.risk-profile {
+				height: 36px;
+				text-align: center;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				overflow: hidden;
+			}
+
+			.low-risk {
+				background-color: #5cb34d;
+			}
+
+			.moderate-risk {
+				background-color: #eef432;
+			}
+
+			.high-risk {
+				background-color: #cc2900;
+			}
+
+			.very-high-risk {
+				background-color: #9c0e6a;
+			}
+		}
+	}
+}

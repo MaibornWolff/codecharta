@@ -2,4 +2,58 @@
 	<i class="fa fa-bar-chart"></i>
 </button>
 
-<mat-menu #menu="matMenu" class="cc-scenarios-menu"> bla </mat-menu>
+<mat-menu #menu="matMenu" class="ai-drop-down high-risk-profile">
+	<ng-container *ngIf="data?.analyzedProgrammingLanguage.length">
+		<div class="title">
+			<div>Risk Profile</div>
+			<div>Calculations are always based on mcc (cyclomatic complexity)</div>
+		</div>
+		<div class="suspicious-metrics-summary">
+			<li>{{ data.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
+			<li>{{ data.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
+			<li>{{ data.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
+			<li>{{ data.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
+		</div>
+		<div class="risk-profiles">
+			<div
+				*ngIf="data.riskProfile.lowRisk > 0"
+				title="Low Risk ({{ data.riskProfile.lowRisk }}% of code)"
+				class="risk-profile low-risk"
+				[style.width]="data.riskProfile.lowRisk + '%'"
+				[style.color]="data.riskProfile.lowRisk < 5 ? 'rgba(0,0,0,0)' : 'black'"
+			>
+				{{ data.riskProfile.lowRisk }}%
+			</div>
+			<div
+				*ngIf="data.riskProfile.moderateRisk > 0"
+				title="Moderate Risk ({{ data.riskProfile.moderateRisk }}% of code)"
+				class="risk-profile moderate-risk"
+				[style.width]="data.riskProfile.moderateRisk + '%'"
+				[style.color]="data.riskProfile.moderateRisk < 5 ? 'rgba(0,0,0,0)' : 'black'"
+			>
+				{{ data.riskProfile.moderateRisk }}%
+			</div>
+			<div
+				*ngIf="data.riskProfile.highRisk > 0"
+				title="High Risk ({{ data.riskProfile.highRisk }}% of code)"
+				class="risk-profile high-risk"
+				[style.width]="data.riskProfile.highRisk + '%'"
+				[style.color]="data.riskProfile.highRisk < 5 ? 'rgba(0,0,0,0)' : 'black'"
+			>
+				{{ data.riskProfile.highRisk }}%
+			</div>
+			<div
+				*ngIf="data.riskProfile.veryHighRisk > 0"
+				title="Very High Risk ({{ data.riskProfile.veryHighRisk }}% of code)"
+				class="risk-profile very-high-risk"
+				[style.width]="data.riskProfile.veryHighRisk + '%'"
+				[style.color]="data.riskProfile.veryHighRisk < 5 ? 'black' : 'black'"
+			>
+				{{ data.riskProfile.veryHighRisk }}%
+			</div>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="!data || data.analyzedProgrammingLanguage.length === 0">
+		Could not calculate Risk Profile. Metrics rloc and mcc not available.
+	</ng-container>
+</mat-menu>
