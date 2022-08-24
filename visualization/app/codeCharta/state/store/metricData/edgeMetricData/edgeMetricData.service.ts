@@ -4,7 +4,7 @@ import { EdgeMetricData } from "../../../../codeCharta.model"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
-import { edgeMetricDataSelector, nodeEdgeMetricsMap } from "../../../selectors/accumulatedData/metricData/edgeMetricData.selector"
+import { edgeMetricDataSelector } from "../../../selectors/accumulatedData/metricData/edgeMetricData.selector"
 
 export interface EdgeMetricDataSubscriber {
 	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[])
@@ -33,11 +33,6 @@ export class EdgeMetricDataService implements BlacklistSubscriber, FilesSelectio
 	// This shouldn't be needed, as edgeMetricData is not dependent on AttributeTypesChanged, but switching to median in attribute side bar breaks without it
 	onAttributeTypesChanged() {
 		this.$rootScope.$broadcast(EdgeMetricDataService.EDGE_METRIC_DATA_CHANGED_EVENT, { edgeMetricData: this.edgeMetricData })
-	}
-
-	getAmountOfAffectedBuildings(metricName: string) {
-		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
-		return nodeEdgeMetrics === undefined ? 0 : nodeEdgeMetrics.size
 	}
 
 	private updateEdgeMetricData() {
