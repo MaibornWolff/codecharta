@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../../../codeCharta.model"
 import percentRound from "percent-round"
 import { getAssociatedMetricThresholds } from "./getMetricThresholds"
 

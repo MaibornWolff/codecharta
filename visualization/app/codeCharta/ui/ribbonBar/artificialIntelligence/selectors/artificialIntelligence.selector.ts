@@ -5,17 +5,17 @@ import {
 	HEIGHT_METRIC,
 	RiskProfile,
 	getPercentagesOfRiskProfile
-} from "../util/riskProfileHelper"
+} from "./util/riskProfileHelper"
 import {
 	calculateSuspiciousMetrics,
 	findGoodAndBadMetrics,
 	setMetricValuesByLanguage,
 	MetricSuggestionParameters,
 	MetricValuesByLanguage
-} from "../util/suspiciousMetricsHelper"
+} from "./util/suspiciousMetricsHelper"
 import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../../codeCharta.model"
-import { getMostFrequentLanguage } from "../util/mainProgrammingLanguageHelper"
+import { getMostFrequentLanguage } from "./util/mainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
