@@ -1,5 +1,16 @@
-<button [matMenuTriggerFor]="menu" title="Open Suspicious Metrics Panel" class="cc-ribbon-bar-menu-button">
+<button [matMenuTriggerFor]="menu" title="Open Suspicious Metrics Panel" class="cc-ribbon-bar-menu-button" (click)="hideBadge = true">
 	<i class="fa fa-exclamation-triangle"></i>
+	<span
+		class="suspicious-metrics-badge"
+		*ngIf="
+			!hideBadge &&
+			(data?.analyzedProgrammingLanguage !== undefined ||
+				data?.suspiciousMetricSuggestionLinks.length ||
+				data?.unsuspiciousMetrics.length)
+		"
+	>
+		{{ data?.suspiciousMetricSuggestionLinks.length }}
+	</span>
 </button>
 
 <mat-menu #menu="matMenu" class="cc-scenarios-menu"> bla </mat-menu>

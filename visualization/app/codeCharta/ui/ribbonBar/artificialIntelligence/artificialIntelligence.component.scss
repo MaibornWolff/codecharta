@@ -2,19 +2,15 @@ cc-artificial-intelligence {
 	display: flex;
 	justify-content: center;
 	gap: 4px;
-}
 
-cc-artificial-intelligence {
-	.ai-badge {
+	.suspicious-metrics-badge {
 		position: absolute;
-		top: 12px;
+		bottom: 10px;
 		padding: 4px 6px;
 		border-radius: 50%;
 		background: red;
 		color: white;
 		font-size: 10px;
-		width: 18px;
-		height: 18px;
 		line-height: 10px;
 	}
 }
