@@ -16,38 +16,30 @@
 		</div>
 		<div class="risk-profiles">
 			<div
-				*ngIf="data.riskProfile.lowRisk > 0"
+				[ccRiskProfileBar]="data.riskProfile.lowRisk"
 				title="Low Risk ({{ data.riskProfile.lowRisk }}% of code)"
 				class="risk-profile low-risk"
-				[style.width]="data.riskProfile.lowRisk + '%'"
-				[style.color]="data.riskProfile.lowRisk < 5 ? 'rgba(0,0,0,0)' : 'black'"
 			>
 				{{ data.riskProfile.lowRisk }}%
 			</div>
 			<div
-				*ngIf="data.riskProfile.moderateRisk > 0"
+				[ccRiskProfileBar]="data.riskProfile.moderateRisk"
 				title="Moderate Risk ({{ data.riskProfile.moderateRisk }}% of code)"
 				class="risk-profile moderate-risk"
-				[style.width]="data.riskProfile.moderateRisk + '%'"
-				[style.color]="data.riskProfile.moderateRisk < 5 ? 'rgba(0,0,0,0)' : 'black'"
 			>
 				{{ data.riskProfile.moderateRisk }}%
 			</div>
 			<div
-				*ngIf="data.riskProfile.highRisk > 0"
+				[ccRiskProfileBar]="data.riskProfile.highRisk"
 				title="High Risk ({{ data.riskProfile.highRisk }}% of code)"
 				class="risk-profile high-risk"
-				[style.width]="data.riskProfile.highRisk + '%'"
-				[style.color]="data.riskProfile.highRisk < 5 ? 'rgba(0,0,0,0)' : 'black'"
 			>
 				{{ data.riskProfile.highRisk }}%
 			</div>
 			<div
-				*ngIf="data.riskProfile.veryHighRisk > 0"
+				[ccRiskProfileBar]="data.riskProfile.veryHighRisk"
 				title="Very High Risk ({{ data.riskProfile.veryHighRisk }}% of code)"
 				class="risk-profile very-high-risk"
-				[style.width]="data.riskProfile.veryHighRisk + '%'"
-				[style.color]="data.riskProfile.veryHighRisk < 5 ? 'rgba(0,0,0,0)' : 'black'"
 			>
 				{{ data.riskProfile.veryHighRisk }}%
 			</div>
