@@ -65,6 +65,31 @@
 					</md-button>
 				</li>
 			</ul>
+			<br />
+
+			<!-- UntrackedMetrics -->
+			<md-menu-item class="title" ng-show="$ctrl.viewModel.untrackedMetrics.length">
+				<div>
+					<span ng-show="$ctrl.viewModel.analyzedProgrammingLanguage.length">
+						Untracked metrics in {{ $ctrl.viewModel.analyzedProgrammingLanguage }} code
+					</span>
+
+					<!-- Todo: Fix matTooltip -->
+					<em
+						class="fa fa-question-circle-o"
+						matTooltip="The given metrics are not covered by this feature, so no finding could be made."
+					>
+					</em>
+				</div>
+			</md-menu-item>
+
+			<md-menu-item ng-show="$ctrl.viewModel.untrackedMetrics.length">
+				<ul>
+					<li ng-repeat="untrackedMetric in $ctrl.viewModel.untrackedMetrics">{{ untrackedMetric }}</li>
+				</ul>
+			</md-menu-item>
+
+			<!-- /UntrackedMetrics -->
 		</md-menu-content>
 	</md-menu>
 
