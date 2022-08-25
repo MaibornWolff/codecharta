@@ -47,7 +47,7 @@
 				title="Very High Risk ({{ data.riskProfile.veryHighRisk }}% of code)"
 				class="risk-profile very-high-risk"
 				[style.width]="data.riskProfile.veryHighRisk + '%'"
-				[style.color]="data.riskProfile.veryHighRisk < 5 ? 'black' : 'black'"
+				[style.color]="data.riskProfile.veryHighRisk < 5 ? 'rgba(0,0,0,0)' : 'black'"
 			>
 				{{ data.riskProfile.veryHighRisk }}%
 			</div>

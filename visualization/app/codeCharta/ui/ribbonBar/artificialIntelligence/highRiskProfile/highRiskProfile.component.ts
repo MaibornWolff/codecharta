@@ -6,5 +6,5 @@ import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.
 	template: require("./highRiskProfile.component.html")
 })
 export class HighRiskProfileComponent {
-	@Input() data: ArtificialIntelligenceData
+	@Input() data: Pick<ArtificialIntelligenceData, "analyzedProgrammingLanguage" | "riskProfile">
 }
