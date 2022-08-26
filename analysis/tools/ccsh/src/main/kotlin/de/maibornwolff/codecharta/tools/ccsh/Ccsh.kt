@@ -22,6 +22,7 @@ import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.util.concurrent.Callable
+import kotlin.system.exitProcess
 
 @CommandLine.Command(
     name = "ccsh",
@@ -74,19 +75,23 @@ class Ccsh : Callable<Void?> {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            exitProcess(executeCommandLine(args))
+        }
+
+        fun executeCommandLine(args: Array<String>): Int {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
             if (args.isEmpty() || isParserUnknown(args, commandLine)) {
-                executeInteractiveParser(commandLine)
+                return executeInteractiveParser(commandLine)
             } else {
-                commandLine.execute(*sanitizeArgs(args))
+                return commandLine.execute(*sanitizeArgs(args))
             }
         }
 
-        private fun executeInteractiveParser(commandLine: CommandLine) {
+        private fun executeInteractiveParser(commandLine: CommandLine): Int {
             val selectedParser = ParserService.selectParser(commandLine)
             logger.info { "Executing $selectedParser" }
-            ParserService.executeSelectedParser(commandLine, selectedParser)
+            return ParserService.executeSelectedParser(commandLine, selectedParser)
         }
 
         private fun isParserUnknown(args: Array<String>, commandLine: CommandLine): Boolean {

@@ -16,7 +16,7 @@ class PipedInputStream {
 
     private fun getResultString(): String {
         val input = File("src/test/resources/cc_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
-        return executeForOutput(input, arrayOf(resource, "--format=json"))
+        return executeForOutput(input, arrayOf(resource, "--format=json", "-nc"))
     }
 
     @Test

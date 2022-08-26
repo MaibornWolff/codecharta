@@ -16,7 +16,7 @@ class ParserService {
             return extractParserName(selectedParser)
         }
 
-        fun executeSelectedParser(commandLine: CommandLine, selectedParser: String) {
+        fun executeSelectedParser(commandLine: CommandLine, selectedParser: String): Int {
             val subCommand = commandLine.subcommands.getValue(selectedParser)
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser
@@ -25,9 +25,10 @@ class ParserService {
                 val subCommandLine = CommandLine(interactive)
                 println("You can run the same command again by using the following command line arguments:")
                 println("ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" "))
-                subCommandLine.execute(*collectedArgs.toTypedArray())
+                return subCommandLine.execute(*collectedArgs.toTypedArray())
             } else {
                 printNotSupported(selectedParser)
+                return 42
             }
         }
 
