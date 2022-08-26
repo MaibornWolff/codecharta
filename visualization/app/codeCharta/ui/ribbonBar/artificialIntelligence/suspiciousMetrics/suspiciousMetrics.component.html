@@ -4,13 +4,47 @@
 		class="suspicious-metrics-badge"
 		*ngIf="
 			!hideBadge &&
-			(data?.analyzedProgrammingLanguage !== undefined ||
-				data?.suspiciousMetricSuggestionLinks.length ||
-				data?.unsuspiciousMetrics.length)
+			(data.analyzedProgrammingLanguage !== undefined ||
+				data.suspiciousMetricSuggestionLinks.length ||
+				data.unsuspiciousMetrics.length)
 		"
 	>
-		{{ data?.suspiciousMetricSuggestionLinks.length }}
+		{{ data.suspiciousMetricSuggestionLinks.length }}
 	</span>
 </button>
 
-<mat-menu #menu="matMenu" class="cc-scenarios-menu"> bla </mat-menu>
+<mat-menu #menu="matMenu" class="ai-drop-down suspicious-metric-panel">
+	<div *ngIf="data.unsuspiciousMetrics.length">
+		<div class="title">
+			{{
+				data.suspiciousMetricSuggestionLinks.length
+					? "Unsuspicious Metrics in " + data.analyzedProgrammingLanguage + " code"
+					: "Unsuspicious Metrics"
+			}}
+		</div>
+		<li *ngFor="let unsuspiciousMetric of data.unsuspiciousMetrics">{{ unsuspiciousMetric }}</li>
+	</div>
+	<div *ngIf="data.suspiciousMetricSuggestionLinks.length" class="title">
+		{{
+			data.analyzedProgrammingLanguage.length
+				? "Suspicious Metrics in " + analyzedProgrammingLanguage + "code"
+				: "Suspicious Metrics (click below to view)"
+		}}
+	</div>
+	<div class="suspicious-metric" *ngFor="let item of data.suspiciousMetricSuggestionLinks">
+		<button
+			class="metric-button"
+			(click)="applySuspiciousMetric(item, false)"
+			title="Apply Map Configuration to show files with suspicious metric {{
+				item.metric
+			}} and high risk or very high risk depending on selection"
+		>
+			Suspicious {{ item.metric | uppercase }} Files
+		</button>
+
+		<button class="risk-button" (click)="applySuspiciousMetric(item, true)" *ngIf="item.isOutlier" title="Show very high risk files">
+			<i class="fa fa-exclamation-triangle"></i>
+		</button>
+	</div>
+	<div *ngIf="data.analyzedProgrammingLanguage === undefined">No programming language was found for analyzing suspicious metrics.</div>
+</mat-menu>

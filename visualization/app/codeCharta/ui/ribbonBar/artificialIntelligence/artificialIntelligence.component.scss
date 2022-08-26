@@ -16,56 +16,40 @@ cc-artificial-intelligence {
 }
 
 .mat-menu-panel.ai-drop-down {
-	padding: 16px;
+	padding: 8px 16px;
 	max-width: unset;
 
 	.title {
+		margin: 8px 0;
 		font-weight: bold;
 		div {
-			padding-bottom: 8px;
+			margin-bottom: 8px;
 		}
 	}
 
-	&.metrics {
-		.title span {
-			padding: 0;
-			margin: 0;
-			font-weight: bold;
+	&.suspicious-metric-panel .suspicious-metric {
+		&:not(:last-child) {
+			margin-bottom: 12px;
 		}
 
-		.suspicious-metrics {
-			margin: 0;
-			padding: 0;
-			list-style: none;
-			width: max-content;
-		}
-
-		.suspicious-metric {
-			.metric-button {
-				border-radius: 5px;
-				background-color: rgba(230, 230, 230, 0.96);
-				padding: 0 12px;
-				text-transform: none;
-				margin: 0;
-			}
-
-			.risk-button {
-				border-radius: 0 5px 5px 0;
-				background-color: rgba(230, 230, 230, 0.96);
-				margin: 0;
-				min-width: 36px;
-				height: 36px;
-				color: #9c0e6a;
-			}
-
-			.risk-button:hover,
-			.metric-button:hover {
+		button {
+			height: 36px;
+			background-color: rgba(230, 230, 230, 0.96);
+			&:hover {
 				background-color: #c8c8c8;
 			}
+		}
 
-			&:not(:last-child) {
-				margin-bottom: 12px;
-			}
+		.metric-button {
+			border-radius: 5px;
+			padding: 0 12px;
+		}
+
+		.risk-button {
+			border-radius: 0 5px 5px 0;
+			margin-left: 4px;
+			width: 36px;
+			color: #9c0e6a;
 		}
 	}
 

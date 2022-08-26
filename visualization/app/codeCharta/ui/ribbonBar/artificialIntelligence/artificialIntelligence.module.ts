@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
 import { MaterialModule } from "../../../../material/material.module"
 import { ArtificialIntelligenceComponent } from "./artificialIntelligence.component"
@@ -6,7 +7,7 @@ import { RiskProfileBarDirective } from "./highRiskProfile/riskProfileBar.direct
 import { SuspiciousMetricComponent } from "./suspiciousMetrics/suspiciousMetrics.component"
 
 @NgModule({
-	imports: [MaterialModule],
+	imports: [CommonModule, MaterialModule],
 	declarations: [ArtificialIntelligenceComponent, HighRiskProfileComponent, SuspiciousMetricComponent, RiskProfileBarDirective],
 	exports: [ArtificialIntelligenceComponent],
 	entryComponents: [ArtificialIntelligenceComponent]
