@@ -130,7 +130,7 @@ check_sonar() {
 check_sourcecodeparser() {
     echo " -- expect SourceCodeParser to produce valid cc.json file"
     ACTUAL_SCP_JSON="${INSTALL_DIR}/actual_scpparser.cc.json"
-    "${CCSH}" sourcecodeparser "${DATA}/" -o "${ACTUAL_SCP_JSON}" -nc
+    "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" -o "${ACTUAL_SCP_JSON}" -nc
     validate "${ACTUAL_SCP_JSON}"
 }
 
@@ -164,9 +164,9 @@ check_rawtext() {
 
 check_pipe() {
    echo " -- expect pipe chain from tokei, sourcecodeparser, svnlogparser and modify to work"
-   sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ \
-        | sh "${CCSH}" sourcecodeparser data/codecharta/ \
-        | sh "${CCSH}" svnlogparser data/codecharta/SVNTestLog.txt \
+   sh "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ \
+        | sh "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" \
+        | sh "${CCSH}" svnlogparser "${DATA}/SVNTestLog.txt" \
         | sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
             -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
     validate ${INSTALL_DIR}/piped_out.cc.json
