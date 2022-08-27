@@ -45,7 +45,7 @@
 			</div>
 		</div>
 	</ng-container>
-	<ng-container *ngIf="!data || data.analyzedProgrammingLanguage.length === 0">
+	<ng-container *ngIf="data.analyzedProgrammingLanguage.length === 0">
 		Could not calculate Risk Profile. Metrics rloc and mcc not available.
 	</ng-container>
 </mat-menu>

@@ -17,7 +17,7 @@
 	<div *ngIf="data.unsuspiciousMetrics.length">
 		<div class="title">
 			{{
-				data.suspiciousMetricSuggestionLinks.length
+				data.analyzedProgrammingLanguage?.length
 					? "Unsuspicious Metrics in " + data.analyzedProgrammingLanguage + " code"
 					: "Unsuspicious Metrics"
 			}}
