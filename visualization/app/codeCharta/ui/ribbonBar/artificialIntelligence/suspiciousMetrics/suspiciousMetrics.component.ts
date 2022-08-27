@@ -14,7 +14,10 @@ import { MetricSuggestionParameters } from "../selectors/util/suspiciousMetricsH
 	template: require("./suspiciousMetrics.component.html")
 })
 export class SuspiciousMetricComponent {
-	@Input() data: ArtificialIntelligenceData
+	@Input() data: Pick<
+		ArtificialIntelligenceData,
+		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks"
+	>
 
 	constructor(@Inject(Store) private store: Store) {}
 

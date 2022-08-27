@@ -24,8 +24,9 @@
 		</div>
 		<li *ngFor="let unsuspiciousMetric of data.unsuspiciousMetrics">{{ unsuspiciousMetric }}</li>
 	</div>
+
 	<div *ngIf="data.suspiciousMetricSuggestionLinks.length" class="title">
-		Suspicious Metrics in {{ analyzedProgrammingLanguage }} code
+		Suspicious Metrics in {{ data.analyzedProgrammingLanguage }} code
 	</div>
 	<div class="suspicious-metric" *ngFor="let item of data.suspiciousMetricSuggestionLinks">
 		<button
