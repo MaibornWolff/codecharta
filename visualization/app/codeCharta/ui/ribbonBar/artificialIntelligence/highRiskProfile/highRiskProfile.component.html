@@ -9,10 +9,12 @@
 			<div>Calculations are always based on mcc (cyclomatic complexity)</div>
 		</div>
 		<div class="suspicious-metrics-summary">
-			<li>{{ data.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
-			<li>{{ data.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
-			<li>{{ data.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
-			<li>{{ data.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
+			<ul>
+				<li>{{ data.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
+				<li>{{ data.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
+				<li>{{ data.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
+				<li>{{ data.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
+			</ul>
 		</div>
 		<div class="risk-profiles">
 			<div

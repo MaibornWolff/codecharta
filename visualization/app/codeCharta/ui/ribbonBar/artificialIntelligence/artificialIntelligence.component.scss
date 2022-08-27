@@ -27,6 +27,11 @@ cc-artificial-intelligence {
 		}
 	}
 
+	ul {
+		margin-block: 0;
+		padding-inline: 32px;
+	}
+
 	&.suspicious-metric-panel .suspicious-metric {
 		&:not(:last-child) {
 			margin-bottom: 12px;

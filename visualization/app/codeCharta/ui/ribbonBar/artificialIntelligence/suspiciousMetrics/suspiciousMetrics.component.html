@@ -22,7 +22,9 @@
 					: "Unsuspicious Metrics"
 			}}
 		</div>
-		<li *ngFor="let unsuspiciousMetric of data.unsuspiciousMetrics">{{ unsuspiciousMetric }}</li>
+		<ul>
+			<li *ngFor="let unsuspiciousMetric of data.unsuspiciousMetrics">{{ unsuspiciousMetric }}</li>
+		</ul>
 	</div>
 
 	<div *ngIf="data.suspiciousMetricSuggestionLinks.length" class="title">
