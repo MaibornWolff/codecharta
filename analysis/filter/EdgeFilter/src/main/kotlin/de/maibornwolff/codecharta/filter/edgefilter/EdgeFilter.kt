@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -36,7 +35,7 @@ class EdgeFilter(
 
         val newProject = EdgeProjectBuilder(srcProject, pathSeparator).merge()
 
-        ProjectSerializer.serializeProject(newProject, OutputFileHandler.writer(outputFile ?: "", output))
+        ProjectSerializer.serializeToFileOrStream(newProject, outputFile, output, false)
 
         return null
     }

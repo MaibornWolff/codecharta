@@ -19,7 +19,7 @@ class ProjectGeneratorTest {
         metricsMap["foo.java"] = FileMetrics().addMetric("barx", 42)
 
         val project = ProjectGenerator().generate(metricsMap, null)
-        val resultFromGenerator = ProjectSerializer.returnProjectAsJSON(project)
+        val resultFromGenerator = ProjectSerializer.serializeToString(project)
 
         val resultJSON = JsonParser.parseString(resultFromGenerator)
         val expectedJson = JsonParser.parseReader(expectedResultFile.bufferedReader())
@@ -34,7 +34,7 @@ class ProjectGeneratorTest {
         metricsMap["foo.java"] = FileMetrics().addMetric("bar", 18)
 
         val project = ProjectGenerator().generate(metricsMap, pipedProject)
-        val resultFromGenerator = ProjectSerializer.returnProjectAsJSON(project)
+        val resultFromGenerator = ProjectSerializer.serializeToString(project)
 
         val resultJSON = JsonParser.parseString(resultFromGenerator)
         val expectedJson = JsonParser.parseReader(expectedResultFile.bufferedReader())

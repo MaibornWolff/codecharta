@@ -8,7 +8,6 @@ import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiTwelveStr
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -76,16 +75,9 @@ class TokeiImporter(
             importerStrategy.buildCCJson(languageSummaries, projectBuilder)
         }
         projectBuilder.addAttributeTypes(attributeTypes)
+        val project = projectBuilder.build()
 
-        val filePath = outputFile ?: "notSpecified"
-
-        if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(projectBuilder.build(), filePath)
-        } else {
-            ProjectSerializer.serializeProject(
-                projectBuilder.build(), OutputFileHandler.writer(outputFile ?: "", output)
-            )
-        }
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }

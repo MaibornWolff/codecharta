@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -89,12 +88,8 @@ class RawTextParser(
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         val project = ProjectGenerator().generate(results, pipedProject)
 
-        val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath !== "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project, filePath)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
-        }
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
+
         return null
     }
 
