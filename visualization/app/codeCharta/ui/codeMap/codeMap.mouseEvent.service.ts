@@ -72,7 +72,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
 		private codeMapLabelService: CodeMapLabelService,
-		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
+		private viewCubeMouseEvents: ViewCubeMouseEventsService,
 		private threeViewerService: ThreeViewerService,
 		private idToBuilding: IdToBuildingService
 	) {
@@ -129,7 +129,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 			"wheel",
 			debounce(() => this.threeRendererService.render(), 60)
 		)
-		this.viewCubeMouseEventsService.subscribe("viewCubeEventPropagation", this.onViewCubeEventPropagation)
+		this.viewCubeMouseEvents.subscribe("viewCubeEventPropagation", this.onViewCubeEventPropagation)
 	}
 
 	hoverNode(id: number) {
@@ -274,7 +274,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 
 	private EnableOrbitalsRotation(isRotation: boolean) {
 		this.threeViewerService.enableRotation(isRotation)
-		this.viewCubeMouseEventsService.enableRotation(isRotation)
+		this.viewCubeMouseEvents.enableRotation(isRotation)
 	}
 
 	onDocumentMouseEnter() {
@@ -291,7 +291,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
 		this.updateHovering()
-		this.viewCubeMouseEventsService.propagateMovement()
+		this.viewCubeMouseEvents.propagateMovement()
 	}
 
 	onDocumentDoubleClick() {
@@ -326,7 +326,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 	}
 
 	onDocumentMouseUp(event: MouseEvent) {
-		this.viewCubeMouseEventsService.resetIsDragging()
+		this.viewCubeMouseEvents.resetIsDragging()
 		if (event.button === ClickType.LeftClick) {
 			this.onLeftClick()
 		} else {

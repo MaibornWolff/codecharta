@@ -11,7 +11,6 @@ import {
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-
 // TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
