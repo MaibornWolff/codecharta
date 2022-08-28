@@ -1,4 +1,3 @@
-import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
 import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
@@ -10,19 +9,14 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { EventEmitter } from "tsee"
 
-export interface ViewCubeEventSubscriber {
-	onCubeHovered(cube: Mesh)
-	onCubeUnhovered()
-	onCubeClicked(cube: Mesh)
-}
 type ViewCubeEvents = {
 	viewCubeEventPropagation: (data: { event: MouseEvent; type: string }) => void
+	viewCubeHoveredEvent: (data: { cube: Mesh }) => void
+	viewCubeUnHoveredEvent: (data: undefined) => void
+	viewCubeClicked: (data: { cube: Mesh }) => void
 }
 
 export class ViewCubeMouseEventsService {
-	private static VIEW_CUBE_HOVER_EVENT_NAME = "view-cube-hover-event"
-	private static VIEW_CUBE_UNHOVER_EVENT_NAME = "view-cube-unhover-event"
-	private static VIEW_CUBE_CLICK_EVENT_NAME = "view-cube-click-event"
 	private eventEmitter = new EventEmitter<ViewCubeEvents>()
 
 	private cubeGroup: Group
@@ -32,7 +26,7 @@ export class ViewCubeMouseEventsService {
 	private controls: OrbitControls
 	private isDragging = false
 
-	constructor(private $rootScope: IRootScopeService, private threeOrbitControlsService: ThreeOrbitControlsService) {
+	constructor(private threeOrbitControlsService: ThreeOrbitControlsService) {
 		"ngInject"
 	}
 
@@ -146,7 +140,7 @@ export class ViewCubeMouseEventsService {
 		this.isDragging = false
 		const cube = this.getCubeIntersectedByMouse(event)
 		if (cube) {
-			this.triggerViewCubeClickEvent(cube)
+			this.eventEmitter.emit("viewCubeClicked", { cube })
 		} else {
 			this.eventEmitter.emit("viewCubeEventPropagation", { type: "mouseup", event })
 		}
@@ -155,36 +149,18 @@ export class ViewCubeMouseEventsService {
 	private triggerViewCubeHoverEvent(cube: Mesh) {
 		this.currentlyHovered = cube
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
-		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME, { cube })
+		this.eventEmitter.emit("viewCubeHoveredEvent", { cube })
 	}
 
 	private triggerViewCubeUnhoverEvent() {
 		this.currentlyHovered = null
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
-		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_UNHOVER_EVENT_NAME)
-	}
-
-	private triggerViewCubeClickEvent(cube: Mesh) {
-		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME, { cube })
+		this.eventEmitter.emit("viewCubeUnHoveredEvent", undefined)
 	}
 
 	subscribe<Key extends keyof ViewCubeEvents>(key: Key, callback: ViewCubeEvents[Key]) {
 		this.eventEmitter.on(key, data => {
 			callback(data)
-		})
-	}
-
-	static subscribeToViewCubeMouseEvents($rootScope: IRootScopeService, subscriber: ViewCubeEventSubscriber) {
-		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME, (_event_, parameters: { cube: Mesh }) => {
-			subscriber.onCubeHovered(parameters.cube)
-		})
-
-		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_UNHOVER_EVENT_NAME, () => {
-			subscriber.onCubeUnhovered()
-		})
-
-		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME, (_event_, parameters: { cube: Mesh }) => {
-			subscriber.onCubeClicked(parameters.cube)
 		})
 	}
 }

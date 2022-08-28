@@ -14,9 +14,9 @@ import {
 import { IRootScopeService } from "angular"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { ViewCubeEventSubscriber, ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
+import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 
-export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEventSubscriber {
+export class ViewCubeController implements CameraChangeSubscriber {
 	private lights: Group
 	private cubeGroup: Group
 	private camera: PerspectiveCamera
@@ -50,7 +50,9 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.viewCubeMouseEventsService.init(this.cubeGroup, this.camera, this.renderer)
 
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
-		ViewCubeMouseEventsService.subscribeToViewCubeMouseEvents(this.$rootScope, this)
+		this.viewCubeMouseEventsService.subscribe("viewCubeHoveredEvent", this.onCubeHovered)
+		this.viewCubeMouseEventsService.subscribe("viewCubeHoveredEvent", this.onCubeUnhovered)
+		this.viewCubeMouseEventsService.subscribe("viewCubeClicked", this.onCubeClicked)
 	}
 
 	private initAxesHelper() {
@@ -118,23 +120,23 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.camera.position.z = 4
 	}
 
-	onCubeHovered(cube: Mesh) {
+	onCubeHovered = (data: { cube: Mesh }) => {
 		this.hoverInfo = {
-			cube,
-			originalMaterial: cube.material
+			cube: data.cube,
+			originalMaterial: data.cube.material
 		}
 		this.hoverInfo.cube.material.emissive = new Color(0xff_ff_ff)
 		this.updateRenderFrame()
 	}
 
-	onCubeUnhovered() {
+	onCubeUnhovered = () => {
 		this.hoverInfo.cube.material.emissive = new Color(0x00_00_00) //? NOTE why is this needed
 		this.hoverInfo.cube = null
 		this.updateRenderFrame()
 	}
 
-	onCubeClicked(cube: Mesh) {
-		switch (cube) {
+	onCubeClicked = (data: { cube: Mesh }) => {
+		switch (data.cube) {
 			case this.cubeDefinition.front.top.middle:
 				this.threeOrbitControlsService.rotateCameraInVectorDirection(0, -1, -1)
 				break
