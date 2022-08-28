@@ -11,12 +11,11 @@ import {
 	Vector3,
 	WebGLRenderer
 } from "three"
-import { IRootScopeService } from "angular"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
-import { CameraChangeSubscriber, ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 
-export class ViewCubeController implements CameraChangeSubscriber {
+export class ViewCubeController {
 	private lights: Group
 	private cubeGroup: Group
 	private camera: PerspectiveCamera
@@ -36,7 +35,6 @@ export class ViewCubeController implements CameraChangeSubscriber {
 
 	constructor(
 		private $element,
-		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private viewCubeMouseEventsService: ViewCubeMouseEventsService
 	) {
@@ -49,7 +47,7 @@ export class ViewCubeController implements CameraChangeSubscriber {
 		this.initCamera()
 		this.viewCubeMouseEventsService.init(this.cubeGroup, this.camera, this.renderer)
 
-		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
+		this.threeOrbitControlsService.subscribe("onCameraChanged", this.onCameraChanged)
 		this.viewCubeMouseEventsService.subscribe("viewCubeHoveredEvent", this.onCubeHovered)
 		this.viewCubeMouseEventsService.subscribe("viewCubeHoveredEvent", this.onCubeUnhovered)
 		this.viewCubeMouseEventsService.subscribe("viewCubeClicked", this.onCubeClicked)
@@ -79,8 +77,8 @@ export class ViewCubeController implements CameraChangeSubscriber {
 		this.scene.add(cubeBoundingBox)
 	}
 
-	onCameraChanged(camera: PerspectiveCamera) {
-		const newCameraPosition = this.calculateCameraPosition(camera)
+	onCameraChanged = (data: { camera: PerspectiveCamera }) => {
+		const newCameraPosition = this.calculateCameraPosition(data.camera)
 		this.setCameraPosition(newCameraPosition)
 		this.updateRenderFrame()
 	}

@@ -1,9 +1,8 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { LayoutAlgorithm, Node } from "../../codeCharta.model"
-import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 
@@ -15,7 +14,7 @@ interface InternalLabel {
 	node: Node
 }
 
-export class CodeMapLabelService implements CameraChangeSubscriber {
+export class CodeMapLabelService {
 	private labels: InternalLabel[]
 	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
@@ -31,14 +30,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private nodeHeight = 0
 
 	constructor(
-		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
-		private threeSceneService: ThreeSceneService
+		private threeSceneService: ThreeSceneService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		"ngInject"
 		this.labels = new Array<InternalLabel>()
-		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
+		this.threeOrbitControlsService.subscribe("onCameraChanged", this.onCameraChanged)
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
@@ -194,7 +193,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.previousScaling.copy(scaling)
 	}
 
-	onCameraChanged() {
+	onCameraChanged = () => {
 		for (const label of this.labels) {
 			this.setLabelSize(label.sprite, label, label.sprite.material.map.image.width)
 		}
