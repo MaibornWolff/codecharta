@@ -109,7 +109,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 			antialias: true
 		})
 		this.renderer.setSize(this.WIDTH, this.HEIGHT)
-		this.renderer.setPixelRatio(window.devicePixelRatio) // geometry is low poly, no noticeble performance hit even with higher device pixel ratio
+		this.renderer.setPixelRatio(window.devicePixelRatio) // geometry is low poly, no noticeable performance hit even with higher device pixel ratio
 		$element[0].appendChild(this.renderer.domElement)
 	}
 
