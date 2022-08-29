@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Copy-to-Clipboard-Button to paste the top 10 files with highest metric values [#2942](https://github.com/MaibornWolff/codecharta/pull/2942) [#2996](https://github.com/MaibornWolff/codecharta/pull/2995)<br/>![image](https://user-images.githubusercontent.com/46388280/184089603-ecfa8e31-8241-42a2-9954-2de554347381.png)<br/>![image](https://user-images.githubusercontent.com/46388280/184089577-5cd2eec0-5293-4083-b629-0e3c5621047c.png)
+
+### Fixed 🐞
+
 -   Correct file types now get appended to the name of the output file when using the interactive ccsh [#2914](https://github.com/MaibornWolff/codecharta/pull/2914)
+-   Fix exit code handling and update integrationTest's golden_test.sh to cover all modules [#2988](https://github.com/MaibornWolff/codecharta/pull/2988)
+-   Fix missing color pickers within edge metric options [#2993](https://github.com/MaibornWolff/codecharta/pull/2993)
 
 ## [1.103.6] - 2022-08-17
 

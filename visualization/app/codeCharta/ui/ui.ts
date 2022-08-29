@@ -3,7 +3,6 @@ import { downgradeComponent } from "@angular/upgrade/static"
 
 import "./artificialIntelligence/artificialIntelligence.module"
 import "./screenshotButton/screenshotButton.module"
-import "./edgeSettingsPanel/edgeSettingsPanel.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./codeMap/codeMap.module"
 import "./dialog/dialog.module"
@@ -18,7 +17,6 @@ import { SliderComponent } from "./slider/slider.component"
 angular
 	.module("app.codeCharta.ui", [
 		"app.codeCharta.ui.artificialIntelligence",
-		"app.codeCharta.ui.edgeSettingsPanel",
 		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.dialog",

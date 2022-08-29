@@ -18,7 +18,7 @@ class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes)
             val node = generateCodeChartaFileNode(inputNode)
             insertByPath(inputNode.getPathWithoutFileName(), node)
             i = i.inc()
-            logger.info { "$i. Node  von ${metricGardenerNodes.metricGardenerNodes.size} MetricGardenerNodes wurde eingelesen." }
+            logger.info { "$i. node of ${metricGardenerNodes.metricGardenerNodes.size} MetricGardenerNodes processed" }
         }
         return super.build()
     }

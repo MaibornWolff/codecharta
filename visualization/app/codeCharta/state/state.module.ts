@@ -7,8 +7,6 @@ import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
-import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
-import { AmountOfEdgePreviewsService } from "./store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
@@ -38,8 +36,6 @@ angular
 	.service(camelCase(ShowOnlyBuildingsWithEdgesService.name), ShowOnlyBuildingsWithEdgesService)
 	.service(camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(camelCase(ScalingService.name), ScalingService)
-	.service(camelCase(EdgeHeightService.name), EdgeHeightService)
-	.service(camelCase(AmountOfEdgePreviewsService.name), AmountOfEdgePreviewsService)
 	.service(camelCase(MarkedPackagesService.name), MarkedPackagesService)
 	.service(camelCase(EdgesService.name), EdgesService)
 	.service(camelCase(AttributeTypesService.name), AttributeTypesService)

@@ -1,0 +1,31 @@
+{
+  "nodes": [
+    {
+      "name": "codecharta\\analysis\\export\\CSVExporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\exporter\\csv\\CSVExporter.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 13,
+        "functions": 7,
+        "classes": 1,
+        "lines_of_code": 111,
+        "comment_lines": 0,
+        "real_lines_of_code": 86
+      },
+      "types": []
+    },
+    {
+      "name": "codecharta\\analysis\\export\\CSVExporter\\src\\main\\kotlin\\de\\maibornwolff\\codecharta\\exporter\\csv\\ParserDialog.kt",
+      "type": "File",
+      "metrics": {
+        "mcc": 1,
+        "functions": 1,
+        "classes": 1,
+        "lines_of_code": 34,
+        "comment_lines": 0,
+        "real_lines_of_code": 28
+      },
+      "types": []
+    }
+  ],
+  "relationships": []
+}
