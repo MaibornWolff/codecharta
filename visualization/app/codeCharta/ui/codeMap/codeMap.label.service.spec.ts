@@ -321,7 +321,7 @@ describe("CodeMapLabelService", () => {
 
 			const expectedScaledLineGeometryStart = new Vector3(
 				originalLineGeometryStartVertices.getX(0) * SX,
-				originalLineGeometryStartVertices.getY(0) * SY,
+				originalLineGeometryStartVertices.getY(0),
 				originalLineGeometryStartVertices.getZ(0) * SZ
 			)
 
@@ -351,7 +351,7 @@ describe("CodeMapLabelService", () => {
 
 		function assertLabelPositions(scaledLabel, expectedSpritePositions: Vector3, expectedScaledLineGeometryStart: Vector3) {
 			expect(scaledLabel.sprite.position.x).toBe(expectedSpritePositions.x)
-			expect(scaledLabel.sprite.position.y).toBe(expectedSpritePositions.y)
+			expect(scaledLabel.sprite.position.y).toBeCloseTo(expectedSpritePositions.y, 3)
 			expect(scaledLabel.sprite.position.z).toBe(expectedSpritePositions.z)
 
 			const lineGeometry = scaledLabel.line.geometry as BufferGeometry
@@ -359,10 +359,9 @@ describe("CodeMapLabelService", () => {
 
 			expect(scaledLabelPos.getX(0)).toBe(expectedScaledLineGeometryStart.x)
 			expect(scaledLabelPos.getY(0)).toBe(expectedScaledLineGeometryStart.y)
-			expect(scaledLabelPos.getZ(0)).toBe(expectedScaledLineGeometryStart.z)
 
 			expect(scaledLabelPos.getX(1)).toBe(expectedSpritePositions.x)
-			expect(scaledLabelPos.getY(1)).toBe(expectedSpritePositions.y)
+			expect(scaledLabelPos.getY(1)).toBeCloseTo(expectedSpritePositions.y, 3)
 			expect(scaledLabelPos.getZ(1)).toBe(expectedSpritePositions.z)
 		}
 	})
