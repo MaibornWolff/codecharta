@@ -29,7 +29,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private previousScaling: Vector3 = new Vector3(1, 1, 1)
 	private lineCount = 1
 	private nodeHeight = 0
-	private HEIGHT_OFFSET = 1
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -48,6 +47,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
 		const { margin, heightMetric } = dynamicSettings
+		const multiplier = scaling.clone()
 
 		let labelText = ""
 
@@ -67,12 +67,10 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const label = this.makeText(labelText, 30, node)
 
 		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
-		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
+		newHighestNode = newHighestNode * multiplier.y > highestNodeInSet * multiplier.y ? newHighestNode : highestNodeInSet
 
 		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
 		// todo: tk rename to addLeafLabel
-
-		const multiplier = scaling.clone()
 
 		const x = node.x0 - treeMap.mapSize
 		const y = node.z0
@@ -80,7 +78,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		const labelX = (x + node.width / 2) * multiplier.x
 		const labelY = (y + this.nodeHeight) * multiplier.y
-		const labelYOrigin = y + node.height
+		const labelYOrigin = (y + node.height) * multiplier.y
 		const labelZ = (z + node.length / 2) * multiplier.z
 
 		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
@@ -186,7 +184,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const lineGeometryPosition = lineGeometry.attributes.position
 
 			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
-			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y * this.HEIGHT_OFFSET)
+			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
 			lineGeometryPosition.setZ(0, lineGeometryPosition.getZ(0) * multiplier.z)
 
 			lineGeometryPosition.setX(1, label.sprite.position.x)
