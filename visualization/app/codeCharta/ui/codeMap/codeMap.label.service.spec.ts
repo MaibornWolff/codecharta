@@ -337,6 +337,44 @@ describe("CodeMapLabelService", () => {
 			assertLabelPositions(scaledLabelB, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
 		})
 
+		it("scaling labels from a factor bigger to factor smaller then 1.0 should scale positions correctly", () => {
+			storeService.dispatch(setShowMetricLabelNameValue(false))
+			storeService.dispatch(setShowMetricLabelNodeName(true))
+
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
+			codeMapLabelService.scale()
+
+			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionWithoutDelta.y).toBe(202.25)
+
+			storeService.dispatch(setScaling(new Vector3(1, 0.5, 1)))
+			codeMapLabelService.scale()
+
+			expect(positionWithoutDelta.y).toBe(149)
+		})
+
+		it("scaling labels from a factor smaller to factor bigger then 1.0 should scale positions correctly", () => {
+			storeService.dispatch(setShowMetricLabelNameValue(false))
+			storeService.dispatch(setShowMetricLabelNodeName(true))
+
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+			storeService.dispatch(setScaling(new Vector3(1, 0.5, 1)))
+			codeMapLabelService.scale()
+
+			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionWithoutDelta.y).toBe(149)
+
+			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
+			codeMapLabelService.scale()
+
+			expect(positionWithoutDelta.y).toBe(202.25)
+		})
+
 		it("should apply scaling factor to a newly created label", () => {
 			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
 
