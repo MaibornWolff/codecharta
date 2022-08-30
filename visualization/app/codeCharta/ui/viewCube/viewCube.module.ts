@@ -1,13 +1,12 @@
-import angular from "angular"
-import "../codeMap/threeViewer/threeViewer.module"
-import { viewCubeComponent } from "./viewCube.component"
-import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-import camelCase from "lodash.camelcase"
-import { downgradeComponent } from "@angular/upgrade/static"
+import { ViewCubeComponent } from "./viewCube.component"
 import { CenterMapButtonComponent } from "./centerMapButton/centerMapButton.component"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
 
-angular
-	.module("app.codeCharta.ui.viewCube", ["app.codeCharta.ui.codeMap.threeViewer"])
-	.component(viewCubeComponent.selector, viewCubeComponent)
-	.service(camelCase(ViewCubeMouseEventsService.name), ViewCubeMouseEventsService)
-	.directive("ccCenterMapButton", downgradeComponent({ component: CenterMapButtonComponent }))
+@NgModule({
+	imports: [CommonModule],
+	declarations: [ViewCubeComponent, CenterMapButtonComponent],
+	exports: [ViewCubeComponent],
+	entryComponents: [ViewCubeComponent]
+})
+export class ViewCubeModule {}
