@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate view cube component and its service to Angular [#2998](https://github.com/MaibornWolff/codecharta/pull/2998)
--   Remove the following obsolete AngularJS services: isPresentationModeService
+-   Remove the following obsolete AngularJS services: IsPresentationModeService, ShowOnlyBuildingsWithEdgesService
 
 ## [1.104.0] - 2022-08-29
 

@@ -6,7 +6,6 @@ import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttribut
 import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
-import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
@@ -30,7 +29,6 @@ export class InjectorService {
 		private isLoadingFileService: IsLoadingFileService,
 		private filesService: FilesService,
 		private mapSizeService: MapSizeService,
-		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private scalingService: ScalingService,
 		private markedPackagesService: MarkedPackagesService,
