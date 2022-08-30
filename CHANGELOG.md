@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Correct file types now get appended to the name of the output file when using the interactive ccsh [#2914](https://github.com/MaibornWolff/codecharta/pull/2914)
 -   Fix exit code handling and update integrationTest's golden_test.sh to cover all modules [#2988](https://github.com/MaibornWolff/codecharta/pull/2988)
 -   Fix missing color pickers within edge metric options [#2993](https://github.com/MaibornWolff/codecharta/pull/2993)
+-   Fix labels being displayed at an incorrect height and lines being disconnected from labels [#2990](https://github.com/MaibornWolff/codecharta/pull/2991)
 
 ## [1.103.6] - 2022-08-17
 
