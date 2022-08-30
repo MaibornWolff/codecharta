@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarVersionAPIDatasource
-import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -87,12 +86,8 @@ class SonarImporterMain(
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
-        val filePath = outputFile ?: "notSpecified"
-        if (compress && filePath != "notSpecified") {
-            ProjectSerializer.serializeAsCompressedFile(project, filePath)
-        } else {
-            ProjectSerializer.serializeProject(project, OutputFileHandler.writer(outputFile ?: "", output))
-        }
+
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }

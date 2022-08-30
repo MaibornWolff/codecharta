@@ -2,9 +2,7 @@ package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import io.mockk.verify
@@ -31,9 +29,9 @@ class CcshTest {
         val outStream = ByteArrayOutputStream()
         val originalOut = System.out
         System.setErr(PrintStream(outStream))
+        val exitCode = Ccsh.executeCommandLine(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
 
-        Ccsh.main(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
-
+        Assertions.assertThat(exitCode).isNotZero
         Assertions.assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
         System.setOut(originalOut)
     }
@@ -60,7 +58,7 @@ class CcshTest {
         } returns "someparser"
         every {
             ParserService.executeSelectedParser(any(), any())
-        } just Runs
+        } returns 0
 
         Ccsh.main(emptyArray())
 
@@ -75,7 +73,7 @@ class CcshTest {
         } returns "someparser"
         every {
             ParserService.executeSelectedParser(any(), any())
-        } just Runs
+        } returns 0
 
         Ccsh.main(arrayOf("unknownparser"))
 

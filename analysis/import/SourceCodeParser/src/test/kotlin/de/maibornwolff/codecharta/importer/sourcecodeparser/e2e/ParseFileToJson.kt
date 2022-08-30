@@ -7,32 +7,32 @@ class ParseFileToJson {
 
     private val resource = "src/test/resources/ScriptShellSample.java"
 
-    private val outputStream = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json"))
+    private val output = retrieveStreamAsString {
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json", "-nc"))
     }
 
     @Test
     fun `json output has one root node`() {
-        assertThat(outputStream).containsOnlyOnce(""""name":"root"""")
+        assertThat(output).containsOnlyOnce(""""name":"root"""")
     }
 
     @Test
     fun `json output has java file`() {
-        assertThat(outputStream).contains(""""name":"ScriptShellSample.java"""")
+        assertThat(output).contains(""""name":"ScriptShellSample.java"""")
     }
 
     @Test
     fun `json output has correct lines of code`() {
-        assertThat(outputStream).containsOnlyOnce("""rloc":29""")
+        assertThat(output).containsOnlyOnce("""rloc":29""")
     }
 
     @Test
     fun `json output has correct real lines of code`() {
-        assertThat(outputStream).containsOnlyOnce("""mcc":6""")
+        assertThat(output).containsOnlyOnce("""mcc":6""")
     }
 
     @Test
     fun `json output has correct complexity`() {
-        assertThat(outputStream).containsOnlyOnce("""functions":4""")
+        assertThat(output).containsOnlyOnce("""functions":4""")
     }
 }
