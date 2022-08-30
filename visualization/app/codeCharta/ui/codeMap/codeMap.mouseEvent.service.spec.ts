@@ -54,7 +54,6 @@ describe("codeMapMouseEventService", () => {
 		withMockedWindow()
 		withMockedThreeUpdateCycleService()
 		withMockedThreeRendererService()
-		withMockedViewCubeMouseEventsService()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedEventMethods($rootScope)
@@ -79,7 +78,12 @@ describe("codeMapMouseEventService", () => {
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		storeService = getService<StoreService>("storeService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
-		viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>("viewCubeMouseEventsService")
+		viewCubeMouseEventsService = {
+			subscribe: jest.fn(),
+			propagateMovement: jest.fn(),
+			resetIsDragging: jest.fn(),
+			onDocumentDoubleClick: jest.fn()
+		} as unknown as ViewCubeMouseEventsService
 		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
 
@@ -130,10 +134,6 @@ describe("codeMapMouseEventService", () => {
 				getPixelRatio: jest.fn().mockReturnValue(2)
 			}
 		})()
-	}
-
-	function withMockedViewCubeMouseEventsService() {
-		ViewCubeMouseEventsService.subscribeToEventPropagation = jest.fn()
 	}
 
 	function withMockedThreeCameraService() {
@@ -210,14 +210,6 @@ describe("codeMapMouseEventService", () => {
 			expect(addEventListenerMock.mock.calls[6][0]).toEqual("wheel")
 			expect(addEventListenerMock).toHaveBeenCalledTimes(7)
 		})
-
-		it("should subscribe to event propagation", () => {
-			ViewCubeMouseEventsService.subscribeToEventPropagation = jest.fn()
-
-			codeMapMouseEventService.start()
-
-			expect(ViewCubeMouseEventsService.subscribeToEventPropagation).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
-		})
 	})
 
 	describe("onViewCubeEventPropagation", () => {
@@ -229,28 +221,28 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call onDocumentMouseMove", () => {
-			codeMapMouseEventService.onViewCubeEventPropagation("mousemove", null)
-
-			expect(codeMapMouseEventService.onDocumentMouseMove).toHaveBeenCalledWith(null)
+			const data = { type: "mousemove", event: new MouseEvent("mousemove") }
+			codeMapMouseEventService.onViewCubeEventPropagation(data)
+			expect(codeMapMouseEventService.onDocumentMouseMove).toHaveBeenCalledWith(data.event)
 		})
 
 		it("should call onDocumentMouseDown", () => {
-			codeMapMouseEventService.onViewCubeEventPropagation("mousedown", null)
-
-			expect(codeMapMouseEventService.onDocumentMouseDown).toHaveBeenCalledWith(null)
+			const data = { type: "mousedown", event: new MouseEvent("mousedown") }
+			codeMapMouseEventService.onViewCubeEventPropagation(data)
+			expect(codeMapMouseEventService.onDocumentMouseDown).toHaveBeenCalledWith(data.event)
 			expect(codeMapMouseEventService.onDocumentDoubleClick).not.toHaveBeenCalled()
 		})
 
 		it("should call onDocumentMouseUp", () => {
-			codeMapMouseEventService.onViewCubeEventPropagation("mouseup", null)
-
-			expect(codeMapMouseEventService.onDocumentMouseUp).toHaveBeenCalled()
+			const data = { type: "mouseup", event: new MouseEvent("mouseup") }
+			codeMapMouseEventService.onViewCubeEventPropagation(data)
+			expect(codeMapMouseEventService.onDocumentMouseUp).toHaveBeenCalledWith(data.event)
 		})
 
 		it("should call onDocumentDoubleClick", () => {
-			codeMapMouseEventService.onViewCubeEventPropagation("dblclick", null)
-
-			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalled()
+			const data = { type: "dblclick", event: new MouseEvent("dblclick") }
+			codeMapMouseEventService.onViewCubeEventPropagation(data)
+			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalledWith()
 		})
 	})
 
