@@ -42,7 +42,6 @@ import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSetti
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
-import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
 import { FileExtensionBarModule } from "./codeCharta/ui/fileExtensionBar/fileExtensionBar.module"
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
@@ -60,6 +59,7 @@ import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screens
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { CopyToClipboardButtonModule } from "./codeCharta/ui/copyToClipboardButton/copyToClipboardButton.module"
 import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
+import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
 
 @NgModule({
 	imports: [
@@ -91,7 +91,7 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 		CustomConfigsModule,
 		FilePanelModule,
 		HeightSettingsPanelModule,
-		CenterMapButtonModule,
+		ViewCubeModule,
 		GlobalConfigurationButtonModule,
 		FileExtensionBarModule,
 		AreaSettingsPanelModule,

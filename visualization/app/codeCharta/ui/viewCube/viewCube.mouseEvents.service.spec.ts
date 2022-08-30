@@ -1,6 +1,4 @@
-import { IRootScopeService } from "angular"
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
-import { getService } from "../../../../mocks/ng.mockhelper"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 // eslint-disable-next-line no-duplicate-imports
@@ -11,24 +9,11 @@ import { CursorType } from "../codeMap/codeMap.mouseEvent.service"
 describe("ViewCubeMouseEventsService", () => {
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let $rootScope: IRootScopeService
 	let webGLRenderer: WebGLRenderer
 
 	beforeEach(() => {
-		restartSystem()
-		rebuildService()
-		withMockedWebGLRenderer()
-	})
+		viewCubeMouseEventsService = new ViewCubeMouseEventsService(threeOrbitControlsService)
 
-	function restartSystem() {
-		$rootScope = getService<IRootScopeService>("$rootScope")
-	}
-
-	function rebuildService() {
-		viewCubeMouseEventsService = new ViewCubeMouseEventsService($rootScope, threeOrbitControlsService)
-	}
-
-	function withMockedWebGLRenderer() {
 		const eventMap = {}
 		webGLRenderer = new WebGLRenderer({
 			context: {
@@ -64,7 +49,7 @@ describe("ViewCubeMouseEventsService", () => {
 		} as unknown as HTMLCanvasElement
 
 		webGLRenderer.getPixelRatio = jest.fn().mockReturnValue(2)
-	}
+	})
 
 	describe("init", () => {
 		it("should call initRendererEventListeners and initOrbitalControl", () => {
@@ -160,29 +145,32 @@ describe("ViewCubeMouseEventsService", () => {
 	describe("checkMouseIntersection", () => {
 		it("should triggerViewCubeEventPropagation when cube is not intersected with mouse", () => {
 			viewCubeMouseEventsService["getCubeIntersectedByMouse"] = jest.fn().mockReturnValue(false)
-			viewCubeMouseEventsService["triggerViewCubeEventPropagation"] = jest.fn()
-
+			viewCubeMouseEventsService["eventEmitter"]["emit"] = jest.fn()
 			const mouseEvent = new MouseEvent("mouseup")
-
-			viewCubeMouseEventsService["checkMouseIntersection"](mouseEvent, "")
-
-			expect(viewCubeMouseEventsService["triggerViewCubeEventPropagation"]).toBeCalledWith("", mouseEvent)
+			viewCubeMouseEventsService["checkMouseIntersection"](mouseEvent, "mouseup")
+			expect(viewCubeMouseEventsService["eventEmitter"]["emit"]).toHaveBeenCalledWith("viewCubeEventPropagation", {
+				type: "mouseup",
+				event: mouseEvent
+			})
 		})
 
 		it("should not triggerViewCubeEventPropagation when cube is intersected with mouse", () => {
 			viewCubeMouseEventsService["getCubeIntersectedByMouse"] = jest.fn().mockReturnValue(true)
-			viewCubeMouseEventsService["triggerViewCubeEventPropagation"] = jest.fn()
+			viewCubeMouseEventsService["eventEmitter"]["emit"] = jest.fn()
 
 			const mouseEvent = new MouseEvent("mouseup")
 
-			viewCubeMouseEventsService["checkMouseIntersection"](mouseEvent, "")
+			viewCubeMouseEventsService["checkMouseIntersection"](mouseEvent, "mouseup")
 
-			expect(viewCubeMouseEventsService["triggerViewCubeEventPropagation"]).not.toBeCalled()
+			expect(viewCubeMouseEventsService["eventEmitter"]["emit"]).not.toHaveBeenCalledWith(
+				"viewCubeEventPropagation",
+				expect.anything()
+			)
 		})
 	})
 
 	describe("checkMouseIntersection", () => {
-		it("should transform into canvas coordiante", () => {
+		it("should transform into canvas coordinate", () => {
 			const mouseEvent = new MouseEvent("mousedown", { clientX: 1, clientY: 2 })
 			viewCubeMouseEventsService["renderer"] = webGLRenderer
 
@@ -209,19 +197,23 @@ describe("ViewCubeMouseEventsService", () => {
 		it("should call getCubeIntersectedByMouse", () => {
 			viewCubeMouseEventsService["getCubeIntersectedByMouse"] = jest.fn()
 
-			const mouseEvent = new MouseEvent("mousedown", { clientX: 1, clientY: 2 })
+			const mouseEvent = new MouseEvent("mousemove", { clientX: 1, clientY: 2 })
 			viewCubeMouseEventsService["onDocumentMouseMove"](mouseEvent)
 
 			expect(viewCubeMouseEventsService["getCubeIntersectedByMouse"]).toHaveBeenCalledWith(mouseEvent)
 		})
+
 		it("should call triggerViewCubeEventPropagation when no currentlyHovered and no cube intersection has been found", () => {
 			viewCubeMouseEventsService["getCubeIntersectedByMouse"] = jest.fn().mockReturnValue(null)
-			viewCubeMouseEventsService["triggerViewCubeEventPropagation"] = jest.fn()
+			viewCubeMouseEventsService["eventEmitter"]["emit"] = jest.fn()
 
-			const mouseEvent = new MouseEvent("mousedown", { clientX: 1, clientY: 2 })
+			const mouseEvent = new MouseEvent("mousemove", { clientX: 1, clientY: 2 })
 			viewCubeMouseEventsService["onDocumentMouseMove"](mouseEvent)
 
-			expect(viewCubeMouseEventsService["triggerViewCubeEventPropagation"]).toHaveBeenCalledWith("mousemove", mouseEvent)
+			expect(viewCubeMouseEventsService["eventEmitter"]["emit"]).toHaveBeenCalledWith("viewCubeEventPropagation", {
+				type: "mousemove",
+				event: mouseEvent
+			})
 		})
 
 		it("should call triggerViewCubeUnhoverEvent when currentlyHovered and no cube intersection has been found", () => {
@@ -271,23 +263,26 @@ describe("ViewCubeMouseEventsService", () => {
 
 		it("should call triggerViewCubeEventPropagation when no cube intersection has been found", () => {
 			viewCubeMouseEventsService["getCubeIntersectedByMouse"] = jest.fn().mockReturnValue(null)
-			viewCubeMouseEventsService["triggerViewCubeEventPropagation"] = jest.fn()
+			viewCubeMouseEventsService["eventEmitter"]["emit"] = jest.fn()
 
 			const mouseEvent = new MouseEvent("mouseup", { clientX: 1, clientY: 2 })
 			viewCubeMouseEventsService["onDocumentMouseUp"](mouseEvent)
 
-			expect(viewCubeMouseEventsService["triggerViewCubeEventPropagation"]).toHaveBeenCalledWith("mouseup", mouseEvent)
+			expect(viewCubeMouseEventsService["eventEmitter"]["emit"]).toHaveBeenCalledWith("viewCubeEventPropagation", {
+				type: "mouseup",
+				event: mouseEvent
+			})
 		})
 
 		it("should call triggerViewCubeClickEvent when no cube intersection has been found", () => {
 			const mockedCube = { uuid: "1" }
 			viewCubeMouseEventsService["getCubeIntersectedByMouse"] = jest.fn().mockReturnValue(mockedCube)
-			viewCubeMouseEventsService["triggerViewCubeClickEvent"] = jest.fn()
+			viewCubeMouseEventsService["eventEmitter"]["emit"] = jest.fn()
 
 			const mouseEvent = new MouseEvent("mouseup", { clientX: 1, clientY: 2 })
 			viewCubeMouseEventsService["onDocumentMouseUp"](mouseEvent)
 
-			expect(viewCubeMouseEventsService["triggerViewCubeClickEvent"]).toHaveBeenCalledWith(mockedCube)
+			expect(viewCubeMouseEventsService["eventEmitter"]["emit"]).toHaveBeenCalledWith("viewCubeClicked", { cube: mockedCube })
 		})
 	})
 
@@ -295,8 +290,6 @@ describe("ViewCubeMouseEventsService", () => {
 		it("should change cursor indicator", () => {
 			const cube = new Mesh()
 			viewCubeMouseEventsService["triggerViewCubeHoverEvent"](cube)
-			viewCubeMouseEventsService["$rootScope"].$broadcast = jest.fn()
-
 			expect(viewCubeMouseEventsService["currentlyHovered"]).toEqual(cube)
 			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
 		})
@@ -305,8 +298,6 @@ describe("ViewCubeMouseEventsService", () => {
 	describe("triggerViewCubeUnhoverEvent", () => {
 		it("should change cursor indicator", () => {
 			viewCubeMouseEventsService["triggerViewCubeUnhoverEvent"]()
-			viewCubeMouseEventsService["$rootScope"].$broadcast = jest.fn()
-
 			expect(viewCubeMouseEventsService["currentlyHovered"]).toEqual(null)
 			expect(document.body.style.cursor).toEqual(CursorType.Default)
 		})
