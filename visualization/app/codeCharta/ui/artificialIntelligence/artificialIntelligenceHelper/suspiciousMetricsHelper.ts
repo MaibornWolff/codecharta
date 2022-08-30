@@ -83,8 +83,7 @@ export function findGoodAndBadMetrics(
 	}
 
 	const languageSpecificMetricThresholds = getAssociatedMetricThresholds(mainProgrammingLanguage)
-	const availableMapMetrics = []
-	const assessmentMetricList = []
+	const [availableMapMetrics, assessmentMetricList] = [[], []]
 
 	for (const key in metricValuesByLanguages[mainProgrammingLanguage]) {
 		availableMapMetrics.push(key)
