@@ -42,7 +42,7 @@ export class ViewCubeComponent implements OnInit {
 	constructor(
 		@Inject(ElementRef) private elementReference: ElementRef,
 		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService,
-		@Inject(ViewCubeMouseEventsService) private viewCubeMouseEventsService: ViewCubeMouseEventsService
+		@Inject(ViewCubeMouseEventsService) private viewCubeMouseEvents: ViewCubeMouseEventsService
 	) {}
 
 	ngOnInit() {
@@ -52,12 +52,12 @@ export class ViewCubeComponent implements OnInit {
 		this.initCube()
 		this.initAxesHelper()
 		this.initCamera()
-		this.viewCubeMouseEventsService.init(this.cubeGroup, this.camera, this.renderer)
+		this.viewCubeMouseEvents.init(this.cubeGroup, this.camera, this.renderer)
 
 		this.threeOrbitControlsService.subscribe("onCameraChanged", this.onCameraChanged)
-		this.viewCubeMouseEventsService.subscribe("viewCubeHoveredEvent", this.onCubeHovered)
-		this.viewCubeMouseEventsService.subscribe("viewCubeUnHoveredEvent", this.onCubeUnhovered)
-		this.viewCubeMouseEventsService.subscribe("viewCubeClicked", this.onCubeClicked)
+		this.viewCubeMouseEvents.subscribe("viewCubeHoveredEvent", this.onCubeHovered)
+		this.viewCubeMouseEvents.subscribe("viewCubeUnHoveredEvent", this.onCubeUnhovered)
+		this.viewCubeMouseEvents.subscribe("viewCubeClicked", this.onCubeClicked)
 	}
 
 	private initAxesHelper() {

@@ -27,7 +27,7 @@ export class ThreeOrbitControlsService
 {
 	controls: OrbitControls
 	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
-	eventEmitter = new EventEmitter<CameraChangeEvents>()
+	private eventEmitter = new EventEmitter<CameraChangeEvents>()
 
 	constructor(
 		private $rootScope: IRootScopeService,

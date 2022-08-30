@@ -37,7 +37,7 @@ export class CodeMapLabelService {
 	) {
 		"ngInject"
 		this.labels = new Array<InternalLabel>()
-		this.threeOrbitControlsService.subscribe("onCameraChanged", this.onCameraChanged)
+		this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
@@ -193,7 +193,7 @@ export class CodeMapLabelService {
 		this.previousScaling.copy(scaling)
 	}
 
-	onCameraChanged = () => {
+	onCameraChanged() {
 		for (const label of this.labels) {
 			this.setLabelSize(label.sprite, label, label.sprite.material.map.image.width)
 		}
