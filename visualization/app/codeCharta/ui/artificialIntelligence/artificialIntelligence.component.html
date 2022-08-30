@@ -43,53 +43,44 @@
 				<span ng-show="!$ctrl.viewModel.analyzedProgrammingLanguage.length"> Suspicious Metrics (click below to view) </span>
 			</md-menu-item>
 
-			<ul class="suspicious-metrics">
-				<li class="suspicious-metric" ng-repeat="item in $ctrl.viewModel.suspiciousMetricSuggestionLinks">
-					<md-button
-						class="metric-button"
-						ng-click="$ctrl.applySuspiciousMetric(item, false)"
-						title="Apply Map Configuration to show files with suspicious metric {{
-							item.metric
-						}} and high risk or very high risk depending on selection"
-					>
-						Suspicious {{ item.metric.toUpperCase() }} Files
-					</md-button>
+			<md-menu-item ng-show="$ctrl.viewModel.suspiciousMetricSuggestionLinks.length">
+				<ul class="suspicious-metrics">
+					<li class="suspicious-metric" ng-repeat="item in $ctrl.viewModel.suspiciousMetricSuggestionLinks">
+						<md-button
+							class="metric-button"
+							ng-click="$ctrl.applySuspiciousMetric(item, false)"
+							title="Apply Map Configuration to show files with suspicious metric {{
+								item.metric
+							}} and high risk or very high risk depending on selection"
+						>
+							Suspicious {{ item.metric.toUpperCase() }} Files
+						</md-button>
 
-					<md-button
-						class="risk-button"
-						ng-click="$ctrl.applySuspiciousMetric(item, true)"
-						ng-show="item.isOutlier"
-						title="Show very high risk files"
-					>
-						<i class="fa fa-exclamation-triangle"></i>
-					</md-button>
-				</li>
-			</ul>
-			<br />
-
-			<!-- UntrackedMetrics -->
-			<md-menu-item class="title" ng-show="$ctrl.viewModel.untrackedMetrics.length">
-				<div>
-					<span ng-show="$ctrl.viewModel.analyzedProgrammingLanguage.length">
-						Untracked metrics in {{ $ctrl.viewModel.analyzedProgrammingLanguage }} code
-					</span>
-
-					<!-- Todo: Fix matTooltip -->
-					<em
-						class="fa fa-question-circle-o"
-						matTooltip="The given metrics are not covered by this feature, so no finding could be made."
-					>
-					</em>
-				</div>
+						<md-button
+							class="risk-button"
+							ng-click="$ctrl.applySuspiciousMetric(item, true)"
+							ng-show="item.isOutlier"
+							title="Show very high risk files"
+						>
+							<i class="fa fa-exclamation-triangle"></i>
+						</md-button>
+					</li>
+				</ul>
 			</md-menu-item>
 
+			<md-menu-item class="title" ng-show="$ctrl.viewModel.untrackedMetrics.length">
+				<span
+					ng-show="$ctrl.viewModel.analyzedProgrammingLanguage.length"
+					title="The given metrics are not covered by this feature, so no finding could be made."
+				>
+					Untracked metrics in {{ $ctrl.viewModel.analyzedProgrammingLanguage }} code
+				</span>
+			</md-menu-item>
 			<md-menu-item ng-show="$ctrl.viewModel.untrackedMetrics.length">
 				<ul>
 					<li ng-repeat="untrackedMetric in $ctrl.viewModel.untrackedMetrics">{{ untrackedMetric }}</li>
 				</ul>
 			</md-menu-item>
-
-			<!-- /UntrackedMetrics -->
 		</md-menu-content>
 	</md-menu>
 
