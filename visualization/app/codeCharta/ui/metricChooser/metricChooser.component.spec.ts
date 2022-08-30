@@ -34,9 +34,9 @@ describe("metricChooserComponent", () => {
 
 		await userEvent.click(await screen.findByText("aMetric (1)"))
 		const options = screen.queryAllByRole("option")
-		expect(options[0].textContent).toMatch("aMetric (1)")
-		expect(options[1].textContent).toMatch("bMetric (2)")
-		expect(options[2].textContent).toMatch("cMetric (3)")
+		await expect(options[0].textContent).toMatch("aMetric (1)")
+		await expect(options[1].textContent).toMatch("bMetric (2)")
+		await expect(options[2].textContent).toMatch("cMetric (3)")
 
 		await userEvent.click(options[1])
 		expect(screen.queryByText("aMetric (1)")).toBe(null)
@@ -59,9 +59,9 @@ describe("metricChooserComponent", () => {
 		expect(document.activeElement).toBe(searchBox)
 
 		await userEvent.type(getSearchBox(), "b")
-		const options = await screen.queryAllByRole("option")
+		const options = screen.queryAllByRole("option")
 		expect(options.length).toBe(1)
-		expect(options[0].textContent).toMatch("bMetric (2)")
+		await expect(options[0].textContent).toMatch("bMetric (2)")
 
 		await userEvent.click(options[0])
 		await waitFor(() => getSearchBox().value === "")
