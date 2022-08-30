@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix exit code handling and update integrationTest's golden_test.sh to cover all modules [#2988](https://github.com/MaibornWolff/codecharta/pull/2988)
 -   Fix missing color pickers within edge metric options [#2993](https://github.com/MaibornWolff/codecharta/pull/2993)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate view cube component and its service to Angular [#2998](https://github.com/MaibornWolff/codecharta/pull/2998)
+
 ## [1.103.6] - 2022-08-17
 
 ### Fixed 🐞
