@@ -1,7 +1,7 @@
 import { validateLocalStorageSize } from "../validateLocalStorageSize"
 import { mocked } from "ts-jest/utils"
 import { DownloadAndPurgeConfigsComponent } from "./downloadAndPurgeConfigs.component"
-import { render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { MaterialModule } from "../../../../../../material/material.module"
 import userEvent from "@testing-library/user-event"
@@ -73,7 +73,6 @@ describe("downloadAndPurgeConfigsComponent", () => {
 			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
 			await userEvent.click(screen.queryByText("CANCEL"))
-			await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
 			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
 		})
 
@@ -83,7 +82,6 @@ describe("downloadAndPurgeConfigsComponent", () => {
 			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
 			await userEvent.click(screen.queryByText("OK"))
-			await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
 			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
 		})
 	})
