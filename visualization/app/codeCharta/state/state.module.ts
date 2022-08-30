@@ -17,7 +17,6 @@ import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
 import "../codeCharta.module"
 import camelCase from "lodash.camelcase"
-import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
@@ -41,7 +40,6 @@ angular
 	.service(camelCase(AttributeTypesService.name), AttributeTypesService)
 	.service(camelCase(EdgeMetricService.name), EdgeMetricService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
-	.service(camelCase(IsPresentationModeService.name), IsPresentationModeService)
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
 	.service(camelCase(StoreService.name), StoreService)
