@@ -65,7 +65,8 @@ describe("suspiciousMetricsHelper", () => {
 		const expectedMetricAssessmentResults: MetricAssessmentResults = {
 			suspiciousMetrics: new Map<string, ColorRange>([["rloc", expectedColorRange]]),
 			unsuspiciousMetrics: ["functions (number of functions)"],
-			outliersThresholds: new Map<string, number>([["rloc", metricThresholdsByLanguage.java.rloc.percentile90]])
+			outliersThresholds: new Map<string, number>([["rloc", metricThresholdsByLanguage.java.rloc.percentile90]]),
+			untrackedMetrics: []
 		}
 
 		const actualAssessmentResults: MetricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, "java")
@@ -122,7 +123,8 @@ describe("suspiciousMetricsHelper", () => {
 		expect(actualAssessmentResults).toEqual({
 			suspiciousMetrics: new Map<string, ColorRange>(),
 			unsuspiciousMetrics: [],
-			outliersThresholds: new Map<string, number>()
+			outliersThresholds: new Map<string, number>(),
+			untrackedMetrics: []
 		})
 	})
 
@@ -135,7 +137,8 @@ describe("suspiciousMetricsHelper", () => {
 		expect(actualAssessmentResults).toEqual({
 			suspiciousMetrics: new Map<string, ColorRange>(),
 			unsuspiciousMetrics: ["rloc (real lines of code)", "cognitive_complexity"],
-			outliersThresholds: new Map<string, number>()
+			outliersThresholds: new Map<string, number>(),
+			untrackedMetrics: []
 		})
 	})
 
@@ -147,7 +150,8 @@ describe("suspiciousMetricsHelper", () => {
 		const metricAssessmentResults: MetricAssessmentResults = {
 			suspiciousMetrics: new Map([["mcc", colorRange]]),
 			unsuspiciousMetrics: [],
-			outliersThresholds: new Map([["mcc", 1000]])
+			outliersThresholds: new Map([["mcc", 1000]]),
+			untrackedMetrics: []
 		}
 
 		const actualMetricSuggestionParameter = calculateSuspiciousMetrics(metricAssessmentResults)
@@ -177,7 +181,8 @@ describe("suspiciousMetricsHelper", () => {
 			outliersThresholds: new Map([
 				["mcc", 1000],
 				["loc", 2000]
-			])
+			]),
+			untrackedMetrics: []
 		}
 
 		const actualMetricSuggestionParameter = calculateSuspiciousMetrics(metricAssessmentResults)
