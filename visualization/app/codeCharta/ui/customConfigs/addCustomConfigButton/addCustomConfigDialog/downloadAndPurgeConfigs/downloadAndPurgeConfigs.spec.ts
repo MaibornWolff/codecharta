@@ -73,6 +73,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
 			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
 			await userEvent.click(screen.queryByText("CANCEL"))
+			expect(screen.queryByText("CANCEL")).toBeNull()
 			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
 		})
 
@@ -82,6 +83,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
 			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
 			await userEvent.click(screen.queryByText("OK"))
+			expect(screen.queryByText("OK")).toBeNull()
 			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
 		})
 	})
