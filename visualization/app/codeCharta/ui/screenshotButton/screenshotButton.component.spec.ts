@@ -24,7 +24,7 @@ describe("screenshotButtonComponent", () => {
 		const { fixture } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
 		fixture.componentInstance.makeScreenshotToClipBoard = jest.fn()
 
-		userEvent.click(screen.getByTitle("Copy screenshot to clipboard (Ctrl+Alt+F), export it as a file by (Ctrl+Alt+S)"))
+		await userEvent.click(screen.getByTitle("Copy screenshot to clipboard (Ctrl+Alt+F), export it as a file by (Ctrl+Alt+S)"))
 		expect(fixture.componentInstance.makeScreenshotToClipBoard).toHaveBeenCalled()
 	})
 
@@ -33,7 +33,7 @@ describe("screenshotButtonComponent", () => {
 		const { fixture } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
 		fixture.componentInstance.makeScreenshotToFile = jest.fn()
 
-		userEvent.click(screen.getByTitle("Export screenshot as file (Ctrl+Alt+S), copy it to clipboard by (Ctrl+Alt+F)"))
+		await userEvent.click(screen.getByTitle("Export screenshot as file (Ctrl+Alt+S), copy it to clipboard by (Ctrl+Alt+F)"))
 		expect(fixture.componentInstance.makeScreenshotToFile).toHaveBeenCalled()
 	})
 })

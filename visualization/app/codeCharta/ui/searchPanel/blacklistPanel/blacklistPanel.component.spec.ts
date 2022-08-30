@@ -35,7 +35,7 @@ describe("blacklistPanel", () => {
 		expect(screen.getByText("some/flattened/building.ts")).not.toBe(null)
 		expect(screen.getByText("some/excluded/building.ts")).not.toBe(null)
 
-		userEvent.click(screen.getByText("some/excluded/building.ts"))
+		await userEvent.click(screen.getByText("some/excluded/building.ts"))
 		expect(Store.store.getState().fileSettings.blacklist).not.toContainEqual({
 			type: BlacklistType.exclude,
 			path: "some/excluded/building.ts"

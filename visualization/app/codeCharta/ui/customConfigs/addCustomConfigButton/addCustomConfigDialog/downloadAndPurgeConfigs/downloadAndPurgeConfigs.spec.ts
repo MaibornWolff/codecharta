@@ -53,7 +53,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
 		mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set())
 		await render(DownloadAndPurgeConfigsComponent)
 
-		userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+		await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 
 		expect(screen.queryByText("Download Error")).not.toBeNull()
 	})
@@ -70,9 +70,9 @@ describe("downloadAndPurgeConfigsComponent", () => {
 		it("should let user abort purging old custom views", async () => {
 			await render(DownloadAndPurgeConfigsComponent)
 
-			userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
-			userEvent.click(screen.queryByText("CANCEL"))
+			await userEvent.click(screen.queryByText("CANCEL"))
 			await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
 			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
 		})
@@ -80,9 +80,9 @@ describe("downloadAndPurgeConfigsComponent", () => {
 		it("should let user confirm purging old custom views", async () => {
 			await render(DownloadAndPurgeConfigsComponent)
 
-			userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
-			userEvent.click(screen.queryByText("OK"))
+			await userEvent.click(screen.queryByText("OK"))
 			await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
 			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
 		})

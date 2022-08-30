@@ -44,7 +44,7 @@ describe("colorSettingsPanelComponent", () => {
 			const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
 			const invertColors = screen.getByText("Invert Colors")
-			userEvent.click(invertColors)
+			await userEvent.click(invertColors)
 
 			expect(dispatchSpy).toHaveBeenLastCalledWith(invertColorRange())
 		})
@@ -54,7 +54,7 @@ describe("colorSettingsPanelComponent", () => {
 			const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
 			const showNegativeLabels = screen.queryAllByText("Show labels")[2]
-			userEvent.click(showNegativeLabels)
+			await userEvent.click(showNegativeLabels)
 
 			expect(dispatchSpy).toHaveBeenCalledWith(setColorLabels({ negative: true }))
 		})
@@ -62,10 +62,10 @@ describe("colorSettingsPanelComponent", () => {
 		it("should reset invert colors checkbox on resetting colors", async () => {
 			const { fixture } = await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
 
-			userEvent.click(screen.getByText("Invert Colors"))
+			await userEvent.click(screen.getByText("Invert Colors"))
 			expect(fixture.componentInstance.isColorRangeInverted).toBe(true)
 
-			userEvent.click(screen.getByText("Reset colors"))
+			await userEvent.click(screen.getByText("Reset colors"))
 			expect(fixture.componentInstance.isColorRangeInverted).toBe(false)
 		})
 	})
@@ -88,7 +88,7 @@ describe("colorSettingsPanelComponent", () => {
 			const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
 			const invertColors = screen.getByText("Invert Colors")
-			userEvent.click(invertColors)
+			await userEvent.click(invertColors)
 
 			expect(dispatchSpy).toHaveBeenLastCalledWith(invertDeltaColors())
 		})
@@ -107,7 +107,7 @@ describe("colorSettingsPanelComponent", () => {
 			)
 
 			const resetColors = screen.getByText("Reset colors")
-			userEvent.click(resetColors)
+			await userEvent.click(resetColors)
 
 			// The following will only work after migration of custom logic in app/codeCharta/state/store.service.ts
 			// const state = TestBed.inject(State)

@@ -15,7 +15,7 @@ describe("showScenariosButtonComponent", () => {
 		expect(mockedScenarioService.getScenarios).not.toHaveBeenCalled()
 		expect(screen.queryByText("Metric Scenarios")).toBe(null)
 
-		userEvent.click(screen.getByTitle("Open the scenario list"))
+		await userEvent.click(screen.getByTitle("Open the scenario list"))
 		expect(mockedScenarioService.getScenarios).toHaveBeenCalled()
 		expect(screen.getByText("Metric Scenarios")).toBeTruthy()
 	})

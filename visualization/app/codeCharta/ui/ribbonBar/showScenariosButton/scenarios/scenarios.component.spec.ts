@@ -29,7 +29,7 @@ describe("scenariosComponent", () => {
 		await render(ScenariosComponent, { excludeComponentDeclaration: true })
 		const dialog = TestBed.inject(MatDialog)
 
-		userEvent.click(screen.getByTitle("Create a custom scenario"))
+		await userEvent.click(screen.getByTitle("Create a custom scenario"))
 
 		expect(dialog.open).toHaveBeenCalledWith(AddCustomScenarioComponent, { panelClass: "cc-add-custom-scenario" })
 	})
@@ -58,10 +58,10 @@ describe("scenariosComponent", () => {
 		const scenarioService = TestBed.inject(ScenarioService)
 		const scenarioRows = container.querySelectorAll<HTMLElement>(".cc-row")
 
-		userEvent.click(getByText(scenarioRows[1], "Scenario"))
+		await userEvent.click(getByText(scenarioRows[1], "Scenario"))
 		expect(scenarioService.applyScenario).toHaveBeenCalledWith("Scenario")
 
-		userEvent.click(getByTitle(scenarioRows[1], "Remove custom scenario"))
+		await userEvent.click(getByTitle(scenarioRows[1], "Remove custom scenario"))
 		expect(scenarioService.removeScenario).toHaveBeenCalledWith("Scenario")
 	})
 })

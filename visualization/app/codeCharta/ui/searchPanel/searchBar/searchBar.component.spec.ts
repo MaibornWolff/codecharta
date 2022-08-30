@@ -53,7 +53,7 @@ describe("cc-search-bar", () => {
 		expect(dispatchSpy).toHaveBeenCalledTimes(1)
 		expect(searchPatternSelector(PlainStore.store.getState())).toBe("needle")
 
-		userEvent.click(clearButton)
+		await userEvent.click(clearButton)
 
 		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
 		expect(searchField.value).toBe("")
@@ -66,9 +66,9 @@ describe("cc-search-bar", () => {
 		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle")
 		await screen.findByTestId("search-bar-clear-button")
-		userEvent.click(screen.getByTitle("Add to Blacklist"))
+		await userEvent.click(screen.getByTitle("Add to Blacklist"))
 
-		userEvent.click(await screen.findByTestId("search-bar-flatten-button"))
+		await userEvent.click(await screen.findByTestId("search-bar-flatten-button"))
 
 		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
 		expect(searchField.value).toBe("")
@@ -82,9 +82,9 @@ describe("cc-search-bar", () => {
 		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle")
 		await screen.findByTestId("search-bar-clear-button")
-		userEvent.click(screen.getByTitle("Add to Blacklist"))
+		await userEvent.click(screen.getByTitle("Add to Blacklist"))
 
-		userEvent.click(await screen.findByTestId("search-bar-exclude-button"))
+		await userEvent.click(await screen.findByTestId("search-bar-exclude-button"))
 
 		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
 		expect(searchField.value).toBe("")

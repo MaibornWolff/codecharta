@@ -36,7 +36,7 @@ describe("addCustomConfigDialogComponent", () => {
 		await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
 
 		const input = screen.getByRole("textbox") as HTMLInputElement
-		userEvent.clear(input)
+		await userEvent.clear(input)
 		input.blur()
 
 		expect(await screen.findByText("Please enter a view name.")).not.toBeNull()
@@ -48,7 +48,7 @@ describe("addCustomConfigDialogComponent", () => {
 		jest.spyOn(CustomConfigHelper, "hasCustomConfigByName").mockReturnValue(true)
 
 		const input = screen.getByRole("textbox") as HTMLInputElement
-		userEvent.type(input, "file name already exists")
+		await userEvent.type(input, "file name already exists")
 		input.blur()
 
 		expect(await screen.findByText("A Custom View with this name already exists.")).not.toBeNull()
