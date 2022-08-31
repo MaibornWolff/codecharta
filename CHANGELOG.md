@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Correct file types now get appended to the name of the output file when using the interactive ccsh [#2914](https://github.com/MaibornWolff/codecharta/pull/2914)
 -   Fix exit code handling and update integrationTest's golden_test.sh to cover all modules [#2988](https://github.com/MaibornWolff/codecharta/pull/2988)
 -   Fix missing color pickers within edge metric options [#2993](https://github.com/MaibornWolff/codecharta/pull/2993)
--   Provides a list of metrics where no calculation could be performed in relation to a suspicion [#2996](https://github.com/MaibornWolff/codecharta/pull/2996)
+-   Provides a list of metrics where no calculation could be performed in relation to a suspicion [#2996](https://github.com/MaibornWolff/codecharta/pull/2996)<br/>![missing_values_suspicious_metrics](https://user-images.githubusercontent.com/31436472/187439165-77eda080-ceba-4bab-b077-4f6a2d6162b5.png)
 
 ### Chore 👨‍💻 👩‍💻
 
