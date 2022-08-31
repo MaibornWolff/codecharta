@@ -83,15 +83,9 @@ export function findGoodAndBadMetrics(
 	}
 
 	const languageSpecificMetricThresholds = getAssociatedMetricThresholds(mainProgrammingLanguage)
-	const [availableMapMetrics, assessmentMetricList] = [[], []]
-
-	for (const key in metricValuesByLanguages[mainProgrammingLanguage]) {
-		availableMapMetrics.push(key)
-	}
 
 	for (const metricName of Object.keys(languageSpecificMetricThresholds)) {
 		const valuesOfMetric = metricValuesByLanguages[mainProgrammingLanguage]?.[metricName]
-		assessmentMetricList.push(metricName)
 		if (valuesOfMetric === undefined) {
 			continue
 		}
@@ -113,8 +107,12 @@ export function findGoodAndBadMetrics(
 		}
 	}
 
-	const untrackedMetrics = availableMapMetrics.filter(metric => !assessmentMetricList.includes(metric))
-	Array.prototype.push.apply(metricAssessmentResults.untrackedMetrics, untrackedMetrics)
+	for (const key in metricValuesByLanguages[mainProgrammingLanguage]) {
+		const keys = Object.keys(languageSpecificMetricThresholds)
+		if (!keys.includes(key) && !metricAssessmentResults.untrackedMetrics.includes(key)) {
+			metricAssessmentResults.untrackedMetrics.push(key)
+		}
+	}
 
 	return metricAssessmentResults
 }
