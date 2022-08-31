@@ -4,7 +4,7 @@ categories:
 tags:
     - sonarimport
     - analysis
-title: "Detailed instruction of how to use SonarQube 9.4"
+title: Detailed instruction of how to use SonarQube 9.4
 ---
 
 ## Analyze CodeCharta (Visualization Part) using SonarQube from zip file on Windows
