@@ -115,7 +115,7 @@ describe("CodeMapArrowService", () => {
 			threeSceneService.selectBuilding(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
 			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
 
-			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 1)
+			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"])
 
 			expect(threeSceneService["highlighted"]).toMatchSnapshot()
 			expect(threeSceneService["selected"]).toMatchSnapshot()
@@ -128,7 +128,7 @@ describe("CodeMapArrowService", () => {
 
 			expect(resetEdgesOfBuildingMock).not.toHaveBeenCalled()
 
-			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 1)
+			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"])
 
 			expect(resetEdgesOfBuildingMock).toHaveBeenCalled()
 		})
@@ -153,7 +153,7 @@ describe("CodeMapArrowService", () => {
 		it("should call clearArrows and showEdgesOfBuildings through BuildingHovered", async () => {
 			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
 
-			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 1)
+			await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"])
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
 			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()
