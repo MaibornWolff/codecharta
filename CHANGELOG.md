@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.104.0] - 2022-08-31
+
 ### Added 🚀
 
 -   Copy-to-Clipboard-Button to paste the top 10 files with highest metric values [#2942](https://github.com/MaibornWolff/codecharta/pull/2942), [#2996](https://github.com/MaibornWolff/codecharta/pull/2995) <br/>
