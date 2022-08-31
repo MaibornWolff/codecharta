@@ -18,7 +18,8 @@ export class CodeChartaService {
 	private recentFiles: string[] = []
 	unsubscribeReferenceFileSubscription = onStoreChanged(referenceFileSelector, (_, newReferenceFile) => {
 		if (newReferenceFile) {
-			CodeChartaService.updateRootData(newReferenceFile.map.name)
+			// Not ideal!
+			CodeChartaService.updateRootData(newReferenceFile.map.name.split("/")[0])
 		}
 	})
 

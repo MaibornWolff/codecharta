@@ -1,11 +1,10 @@
-import { NodeType } from "../../../../codeCharta.model"
+// type Node = {
+// 	children?: Node[]
+// 	name: string
+// 	type: NodeType
+// }
 
-type Node = {
-	children?: Node[]
-	name: string
-	type: NodeType
-}
-
+/*
 export const getCollapsedRoot = (node: Node): string => {
 	if (!node.children) {
 		return `${node.name}/`
@@ -22,10 +21,11 @@ export const getCollapsedRoot = (node: Node): string => {
 
 	return `${node.name}/${getCollapsedRoot(onlyChild)}`
 }
+*/
 
-export const compareCollapsedRoots = (reference: Node, comp: Node): boolean => {
-	const referenceRoot = getCollapsedRoot(reference)
-	const compRoot = getCollapsedRoot(comp)
+export const haveSameRoots = (reference: string, comparison: string): boolean => {
+	const referenceRoot = reference.split("/")[0]
+	const comparisonRoot = comparison.split("/")[0]
 
-	return referenceRoot.includes(compRoot) || compRoot.includes(referenceRoot)
+	return referenceRoot === comparisonRoot
 }

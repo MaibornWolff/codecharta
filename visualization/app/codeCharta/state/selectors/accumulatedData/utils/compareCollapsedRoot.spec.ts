@@ -1,13 +1,34 @@
 import { NodeType } from "../../../../codeCharta.model"
-import { compareCollapsedRoots, getCollapsedRoot } from "./compareCollapsedRoot"
+import { haveSameRoots } from "./compareCollapsedRoot"
 
+describe("haveSameRoots", () => {
+	it("should return false if root names are different", () => {
+		const reference = { name: "rootA", type: NodeType.FOLDER }
+		const comp = { name: "rootB", type: NodeType.FOLDER }
+
+		expect(haveSameRoots(reference.name, comp.name)).toBeFalsy()
+	})
+
+	it("should return true if we compare root/app/index.ts and root/myApp.ts", () => {
+		const reference = { name: "root", type: NodeType.FOLDER, children: [{ name: "myApp.ts", type: NodeType.FILE }] }
+		const comp = {
+			name: "root",
+			type: NodeType.FOLDER,
+			children: [{ name: "app", type: NodeType.FOLDER, children: [{ name: "index.ts", type: NodeType.FILE }] }]
+		}
+
+		expect(haveSameRoots(reference.name, comp.name)).toBeTruthy()
+	})
+})
+
+/*
 describe("compareCollapsedRoots", () => {
 	it("should return false if root names are different", () => {
 		const reference = { name: "rootA", type: NodeType.FOLDER }
 		const comp = { name: "rootB", type: NodeType.FOLDER }
 
-		const areComparable = compareCollapsedRoots(reference, comp)
-		const areComparableSwitched = compareCollapsedRoots(comp, reference)
+		const areComparable = haveSameRoots(reference, comp)
+		const areComparableSwitched = haveSameRoots(comp, reference)
 
 		expect(areComparable).toBe(false)
 		expect(areComparableSwitched).toBe(false)
@@ -20,8 +41,8 @@ describe("compareCollapsedRoots", () => {
 			children: [{ name: "app", type: NodeType.FOLDER, children: [{ name: "index.ts", type: NodeType.FILE }] }]
 		}
 
-		const areComparable = compareCollapsedRoots(reference, comp)
-		const areComparableSwitched = compareCollapsedRoots(comp, reference)
+		const areComparable = haveSameRoots(reference, comp)
+		const areComparableSwitched = haveSameRoots(comp, reference)
 
 		expect(areComparable).toBe(true)
 		expect(areComparableSwitched).toBe(true)
@@ -30,8 +51,8 @@ describe("compareCollapsedRoots", () => {
 		const reference = { name: "root", type: NodeType.FOLDER, children: [{ name: "index.ts", type: NodeType.FILE }] }
 		const comp = { name: "rootFolder", type: NodeType.FOLDER, children: [{ name: "index.ts", type: NodeType.FILE }] }
 
-		const areComparable = compareCollapsedRoots(reference, comp)
-		const areComparableSwitched = compareCollapsedRoots(comp, reference)
+		const areComparable = haveSameRoots(reference, comp)
+		const areComparableSwitched = haveSameRoots(comp, reference)
 
 		expect(areComparable).toBe(false)
 		expect(areComparableSwitched).toBe(false)
@@ -90,3 +111,5 @@ describe("getCollapsedRoot", () => {
 		expect(collapsedRoot).toBe("root/")
 	})
 })
+
+*/

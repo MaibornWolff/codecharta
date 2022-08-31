@@ -13,7 +13,7 @@ import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.
 import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
 import { visibleFileStatesSelector } from "../visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
-import { compareCollapsedRoots } from "./utils/compareCollapsedRoot"
+import { haveSameRoots } from "./utils/compareCollapsedRoot"
 
 const accumulatedDataFallback = Object.freeze({
 	unifiedMapNode: undefined,
@@ -30,6 +30,7 @@ export const accumulatedDataSelector: (state: CcState) => AccumulatedData = crea
 		}
 
 		const data = getUndecoratedAccumulatedData(fileStates)
+
 		if (!data || !data.map) {
 			return accumulatedDataFallback
 		}
@@ -56,14 +57,7 @@ const getUndecoratedAccumulatedData = (fileStates: FileState[]) => {
 	if (isDeltaState(fileStates)) {
 		const [reference, comparison] = visibleFileStates
 
-		if (!comparison) {
-			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
-		}
-
-		//NOTE: Delete this if-part you always want to show the delta values (green and red buildings), even if the (collapsed) root folders are different.
-		//      After deleting the if-part, compareCollapsedRoot.ts and delete compareCollapsedRoot.spec.ts)
-		const nodesAreUncomparable = !compareCollapsedRoots(reference.file.map, comparison.file.map)
-		if (nodesAreUncomparable) {
+		if (!comparison || !haveSameRoots(reference.file.map.name, comparison.file.map.name)) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 		}
 
