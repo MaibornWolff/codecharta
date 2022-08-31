@@ -120,7 +120,7 @@ describe("CodeMapArrowService", () => {
 			expect(threeSceneService["highlighted"]).toMatchSnapshot()
 			expect(threeSceneService["selected"]).toMatchSnapshot()
 		})
-		it("should debounce the edge reset of buildings to improve perfomance", async () => {
+		it("should debounce the edge reset of buildings to improve performance", async () => {
 			codeMapArrowService["resetEdgesOfBuildings"] = () => {}
 			const resetEdgesOfBuildingMock = jest.fn().mockImplementation()
 			codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingMock
