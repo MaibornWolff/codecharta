@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.lordcodes.turtle.ShellLocation
+import com.lordcodes.turtle.shellRun
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -40,6 +42,9 @@ class MetricGardenerImporter(
     )
     private var inputFile = File("")
 
+    @CommandLine.Option(names = ["--with-mg-run"], description = ["run metric gardener before parsing"])
+    private var mgJsonAvailable = true
+
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
 
@@ -48,6 +53,17 @@ class MetricGardenerImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
+        if (!mgJsonAvailable) {
+            val tempMgOutput = File.createTempFile("MGOutput", ".json")
+            tempMgOutput.deleteOnExit()
+            shellRun(
+                "npm exec metric-gardener",
+                listOf("parse", inputFile.absolutePath, "--output-path", tempMgOutput.absolutePath),
+                ShellLocation.CURRENT_WORKING
+            )
+            inputFile = tempMgOutput
+        }
+
         if (!inputFile.exists()) {
             printErrorLog()
             return null
