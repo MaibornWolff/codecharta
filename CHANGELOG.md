@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Increase the size of the close button to simplify closing the attribute sidebar [#3014](https://github.com/MaibornWolff/codecharta/pull/3014)
+
 ### Fixed 🐞
 
 -   Fix broken images to new document pages about how using SonarQube [#3012](https://github.com/MaibornWolff/codecharta/pull/3012)
