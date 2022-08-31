@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.104.1] - 2022-08-31
+
 ### Fixed 🐞
 
 -   Fix broken links to new document pages about how using SonarQube [#3009](https://github.com/MaibornWolff/codecharta/pull/3009)
