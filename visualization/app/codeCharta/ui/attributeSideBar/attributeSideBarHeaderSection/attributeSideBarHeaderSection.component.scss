@@ -1,5 +1,6 @@
 cc-attribute-side-bar-header-section {
-	display: block;
+	display: flex;
+	flex-direction: column;
 
 	.close-icon,
 	.node-link {
@@ -15,9 +16,8 @@ cc-attribute-side-bar-header-section {
 	}
 
 	.close-icon {
-		position: absolute;
-		top: 5px;
-		right: 5px;
+		align-self: flex-end;
+		font-size: 20px;
 	}
 
 	.node-name {
@@ -37,6 +37,7 @@ cc-attribute-side-bar-header-section {
 	.node-origin,
 	.cc-node-path {
 		color: grey;
+		margin: 5px 0;
 
 		.file-path {
 			word-wrap: break-word;
@@ -65,7 +66,6 @@ cc-attribute-side-bar-header-section {
 	.node-name,
 	.node-origin,
 	.node-path {
-		margin: 10px;
 		word-break: break-all;
 		-webkit-user-select: text;
 		-moz-user-select: text;
