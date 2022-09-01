@@ -20,6 +20,7 @@ export class ArtificialIntelligenceController implements StoreSubscriber {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
+		untrackedMetrics: [],
 		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	}
 

@@ -19,7 +19,27 @@ describe("ArtificialIntelligenceSelector", () => {
 				{ from: 29, isOutlier: true, metric: "functions", to: 44 },
 				{ from: 48, metric: "mcc", to: 71 }
 			],
-			unsuspiciousMetrics: ["rloc (real lines of code)"]
+			unsuspiciousMetrics: ["rloc (real lines of code)"],
+			untrackedMetrics: []
+		})
+	})
+
+	it("should return untracked metrics when experimental features are enabled ", () => {
+		VALID_NODE_JAVA.children[0].children.map(object => {
+			object.attributes.unknownMetric = 2569
+		})
+		const actual = calculate(true, { unifiedMapNode: VALID_NODE_JAVA }, [])
+
+		expect(actual).toEqual({
+			analyzedProgrammingLanguage: "java",
+			riskProfile: { highRisk: 37, lowRisk: 46, moderateRisk: 17, veryHighRisk: 0 },
+			suspiciousMetricSuggestionLinks: [
+				{ from: 365, isOutlier: true, metric: "loc", to: 554 },
+				{ from: 29, isOutlier: true, metric: "functions", to: 44 },
+				{ from: 48, metric: "mcc", to: 71 }
+			],
+			unsuspiciousMetrics: ["rloc (real lines of code)"],
+			untrackedMetrics: ["unknownMetric"]
 		})
 	})
 
@@ -42,7 +62,8 @@ describe("ArtificialIntelligenceSelector", () => {
 				veryHighRisk: 0
 			},
 			suspiciousMetricSuggestionLinks: [],
-			unsuspiciousMetrics: []
+			unsuspiciousMetrics: [],
+			untrackedMetrics: []
 		})
 	})
 })

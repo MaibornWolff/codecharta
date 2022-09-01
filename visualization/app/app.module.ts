@@ -60,6 +60,7 @@ import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateAc
 import { CopyToClipboardButtonModule } from "./codeCharta/ui/copyToClipboardButton/copyToClipboardButton.module"
 import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
 import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
+import { PresentationModeButtonModule } from "./codeCharta/ui/toolBar/presentationModeButton/presentationModeButton.module"
 
 @NgModule({
 	imports: [
@@ -104,7 +105,8 @@ import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
 		ScreenshotButtonModule,
 		DownloadButtonModule,
 		UploadFilesButtonModule,
-		CopyToClipboardButtonModule
+		CopyToClipboardButtonModule,
+		PresentationModeButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,

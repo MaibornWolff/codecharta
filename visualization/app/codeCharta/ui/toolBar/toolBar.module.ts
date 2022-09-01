@@ -12,6 +12,7 @@ import { FilePanelComponent } from "../filePanel/filePanel.component"
 import { ScreenshotButtonComponent } from "../screenshotButton/screenshotButton.component"
 import { CopyToClipboardButtonComponent } from "../copyToClipboardButton/copyToClipboardButton.component"
 import { DownloadButtonComponent } from "./downloadButton/downloadButton.component"
+import { PresentationModeButtonComponent } from "./presentationModeButton/presentationModeButton.component"
 
 angular
 	.module("app.codeCharta.ui.toolBar", ["app.codeCharta.state", "app.codeCharta.ui.dialog"])
@@ -24,3 +25,4 @@ angular
 	.directive("ccFilePanel", downgradeComponent({ component: FilePanelComponent }))
 	.directive("ccCopyToClipboardButton", downgradeComponent({ component: CopyToClipboardButtonComponent }))
 	.directive("ccDownloadButton", downgradeComponent({ component: DownloadButtonComponent }))
+	.directive("ccPresentationModeButton", downgradeComponent({ component: PresentationModeButtonComponent }))
