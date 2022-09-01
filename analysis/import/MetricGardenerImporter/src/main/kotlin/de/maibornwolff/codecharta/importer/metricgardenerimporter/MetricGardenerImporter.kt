@@ -63,7 +63,7 @@ class MetricGardenerImporter(
             shellRun(
                 command = "npm",
                 arguments = listOf(
-                    "exec", "metric-gardener", "--", "parse",
+                    "exec", "-y", "metric-gardener", "--", "parse",
                     inputFile.absolutePath, "--output-path", tempMgOutput.absolutePath
                 ),
                 workingDirectory = ShellLocation.CURRENT_WORKING
