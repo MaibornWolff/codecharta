@@ -42,8 +42,8 @@ class MetricGardenerImporter(
     )
     private var inputFile = File("")
 
-    @CommandLine.Option(names = ["--with-mg-run"], description = ["run metric gardener before parsing"])
-    private var mgJsonAvailable = true
+    @CommandLine.Option(names = ["-j", "--is-json-file"], description = ["Input file is a MetricGardener JSON file"])
+    private var isJsonFile: Boolean = false
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
@@ -53,13 +53,16 @@ class MetricGardenerImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        if (!mgJsonAvailable) {
+        if (!isJsonFile) {
             val tempMgOutput = File.createTempFile("MGOutput", ".json")
             tempMgOutput.deleteOnExit()
             shellRun(
-                "npm exec metric-gardener",
-                listOf("parse", inputFile.absolutePath, "--output-path", tempMgOutput.absolutePath),
-                ShellLocation.CURRENT_WORKING
+                command = "npm",
+                arguments = listOf(
+                    "exec", "metric-gardener", "--", "parse",
+                    inputFile.absolutePath, "--output-path", tempMgOutput.absolutePath
+                ),
+                workingDirectory = ShellLocation.CURRENT_WORKING
             )
             inputFile = tempMgOutput
         }
