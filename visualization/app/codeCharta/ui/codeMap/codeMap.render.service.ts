@@ -14,6 +14,7 @@ import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	private nodesByColor = {
@@ -29,7 +30,8 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
 		private threeStatsService: ThreeStatsService,
-		private threeUpdateCycleService: ThreeUpdateCycleService
+		private threeUpdateCycleService: ThreeUpdateCycleService,
+		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
 		"ngInject"
 		IsLoadingFileService.subscribe(this.$rootScope, this)
@@ -67,9 +69,13 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	scaleMap() {
+		this.codeMapMouseEventService.unhoverNode()
+		this.threeSceneService.resetLineHighlight()
+		this.threeSceneService.resetLabel()
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
 		this.threeSceneService.scaleHeight()
+		this.threeSceneService.forceRerender()
 	}
 
 	private getNodes(map: CodeMapNode) {

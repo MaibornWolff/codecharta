@@ -179,13 +179,14 @@ export class CodeMapLabelService {
 			const multiplier = scaling.clone()
 
 			label.sprite.position.sub(labelHeightDifference).divide(this.previousScaling).multiply(multiplier).add(labelHeightDifference)
-
 			if (multiplier.y > 1) {
 				multiplier.y = 1
 			}
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
 			const lineGeometry = label.line.geometry as BufferGeometry
 			const lineGeometryPosition = lineGeometry.attributes.position
+
+			// Position save, then clear and redraw?
 
 			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
 			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
@@ -199,7 +200,6 @@ export class CodeMapLabelService {
 		}
 
 		this.previousScaling.copy(scaling)
-		this.threeUpdateCycleService.update()
 	}
 
 	onCameraChanged() {
