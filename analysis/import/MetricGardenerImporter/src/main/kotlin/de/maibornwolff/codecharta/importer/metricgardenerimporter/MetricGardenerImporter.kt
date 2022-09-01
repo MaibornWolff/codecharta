@@ -53,6 +53,10 @@ class MetricGardenerImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
+        if (!inputFile.exists()) {
+            printErrorLog()
+            return null
+        }
         if (!isJsonFile) {
             val tempMgOutput = File.createTempFile("MGOutput", ".json")
             tempMgOutput.deleteOnExit()
@@ -67,10 +71,6 @@ class MetricGardenerImporter(
             inputFile = tempMgOutput
         }
 
-        if (!inputFile.exists()) {
-            printErrorLog()
-            return null
-        }
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
