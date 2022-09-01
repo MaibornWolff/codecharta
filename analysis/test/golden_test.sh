@@ -116,12 +116,12 @@ check_jasome() {
 check_metricgardener() {
   echo " -- expect MetricGardenerImporter to produce valid cc.json file with added extensions"
   ACTUAL_METRICGARDENER_JSON="${INSTALL_DIR}/actual_metricgardenerparser"
-  "${CCSH}" metricgardenerimport "${DATA}/metricgardener.json" -o "${ACTUAL_METRICGARDENER_JSON}"
+  "${CCSH}" metricgardenerimport "${DATA}/metricgardener.json" -o "${ACTUAL_METRICGARDENER_JSON}" --is-json-file
   validate "${ACTUAL_METRICGARDENER_JSON}.cc.json.gz"
 
   echo " -- expect MetricGardenerImporter to produce valid cc.json file when no MG.json was available"
   ACTUAL_METRICGARDENER_JSON2="${INSTALL_DIR}/actual_metricgardenerparser2"
-  "${CCSH}" metricgardenerimport "${DATA}/metric-gardener-Example" -o "${ACTUAL_METRICGARDENER_JSON2}" --with-mg-run
+  "${CCSH}" metricgardenerimport "${DATA}/metric-gardener-Example" -o "${ACTUAL_METRICGARDENER_JSON2}"
   validate "${ACTUAL_METRICGARDENER_JSON2}.cc.json.gz"
 }
 
