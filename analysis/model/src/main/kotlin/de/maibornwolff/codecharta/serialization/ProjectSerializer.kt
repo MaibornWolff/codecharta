@@ -3,11 +3,8 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
-import java.io.BufferedWriter
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileWriter
 import java.io.IOException
+import java.io.OutputStream
 import java.io.Writer
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.GZIPOutputStream
@@ -20,22 +17,6 @@ object ProjectSerializer {
     private val GSON = GsonBuilder().create()
 
     /**
-     * This method serializes a Project-Object to json and writes it into the specified file.
-     *
-     * @param project the Project-Object to be serialized
-     * @param targetPath the path of the output-file
-     */
-    @Throws(IOException::class)
-    fun serializeProjectAndWriteToFile(project: Project, targetPath: String) {
-
-        try {
-            BufferedWriter(FileWriter(targetPath)).use { serializeProject(project, it) }
-        } catch (e: IOException) {
-            throw IOException("There was an Error while writing the file at $targetPath", e)
-        }
-    }
-
-    /**
      * This method serializes a Project-Object to json and writes using given writer
      *
      * @param project the Project-Object to be serialized
@@ -44,51 +25,54 @@ object ProjectSerializer {
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer) {
         val wrappedProject = getWrappedProject(project)
-
         GSON.toJson(wrappedProject, out)
-
         out.flush()
         out.close()
     }
 
     /**
-     * This method serializes a Project-Object to json and compresses it to gzip
+     * This method serializes a Project-Object to json and writes it to an OutputStream, either GZIP-compressed
+     * or as plain text.
      *
      * @param project the Project-Object to be serialized
-     * @param absolutePath the path of the compressed file
+     * @param out OutputStream to write serialized object
+     * @param compress whether the output should be GZIP compressed
      */
-
-    fun serializeAsCompressedFile(project: Project, absolutePath: String) {
-        val wrappedProject = getWrappedProject(project)
-        val jsonFile: String = GSON.toJson(wrappedProject, ProjectWrapper::class.java)
-        File("$absolutePath.gz").writeBytes(compress(jsonFile))
+    @Throws(IOException::class)
+    fun serializeProject(project: Project, out: OutputStream, compress: Boolean) {
+        val wrappedOut = if (compress) GZIPOutputStream(out) else out
+        val writer = wrappedOut.bufferedWriter(UTF_8)
+        serializeProject(project, writer)
     }
 
     /**
-     * This method compresses a string to gzip
+     * This method serializes a Project-Object to json and writes it to the specified file, or if no file is specified,
+     * to the an OutputStream. If a file is specified, and compress is true, the output will be GZIP compressed.
      *
-     * @param toCompress the string to be compressed
+     * @param project the Project-Object to be serialized
+     * @param outputFilePath file to write the serialized object to
+     * @param fallbackOutputStream OutputStream to write serialized object to if no filename was given
+     * @param compress whether the output should be GZIP compressed (only respected if written to file)
      */
-    private fun compress(toCompress: String): ByteArray {
-        val byteStream = ByteArrayOutputStream()
-        GZIPOutputStream(byteStream).bufferedWriter(UTF_8).use { it.write(toCompress) }
-        return byteStream.toByteArray()
+    @Throws(IOException::class)
+    fun serializeToFileOrStream(project: Project, outputFilePath: String?, fallbackOutputStream: OutputStream, compress: Boolean) {
+        val reallyCompress = compress && !outputFilePath.isNullOrEmpty()
+        val stream = OutputFileHandler.stream(outputFilePath, fallbackOutputStream, reallyCompress)
+        serializeProject(project, stream, reallyCompress)
+    }
+
+    /**
+     * This method serializes a Project-Object to JSON and returns the string value
+     *
+     * @param project the Project-Object to be serialized
+     */
+    fun serializeToString(project: Project): String {
+        val wrappedProject = getWrappedProject(project)
+        return GSON.toJson(wrappedProject)
     }
 
     private fun getWrappedProject(project: Project): ProjectWrapper {
         val projectJsonString = GSON.toJson(project, Project::class.java)
         return ProjectWrapper(project, projectJsonString.toString())
-    }
-
-    /**
-     * This method serializes a Project-Object to json and compresses it to gzip and deletes the writer-File
-     * @param project the project to be compressed
-     * @param filePath the path to the writer generated empty file
-     * @param out the writer
-     */
-    fun serializeCompressedFileAndDeleteJsonFile(project: Project, filePath: String, out: Writer) {
-        out.close()
-        serializeAsCompressedFile(project, filePath)
-        File(filePath).delete()
     }
 }

@@ -1,3 +1,4 @@
+import "@angular/compiler" // todo this is needed for JIT compiler for ngColor within a downgraded component. Latest after full migration we can likely remove it again
 import "./app" // load AngularJS app first
 import "zone.js" // needs to be loaded before "@angular/core"
 import { APP_INITIALIZER, Inject, NgModule } from "@angular/core"
@@ -18,11 +19,11 @@ import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfoc
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
-	threeSceneServiceProvider,
 	codeChartaServiceProvider,
-	threeOrbitControlsServiceProvider,
 	threeCameraServiceProvider,
-	threeRendererServiceProvider
+	threeOrbitControlsServiceProvider,
+	threeRendererServiceProvider,
+	threeSceneServiceProvider
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
@@ -33,16 +34,14 @@ import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFile
 import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
 import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
-import { EdgeMetricToggleComponent } from "./codeCharta/ui/edgeSettingsPanel/edgeMetricToggle/edgeMetricToggle.component"
 import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
 import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
-import { UploadFilesButtonComponent } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.component"
+import { UploadFilesButtonModule } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.module"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
 import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
 import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
 import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
-import { CenterMapButtonModule } from "./codeCharta/ui/viewCube/centerMapButton/centerMapButton.module"
 import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
 import { FileExtensionBarModule } from "./codeCharta/ui/fileExtensionBar/fileExtensionBar.module"
 import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
@@ -58,7 +57,10 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
 import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
+import { CopyToClipboardButtonModule } from "./codeCharta/ui/copyToClipboardButton/copyToClipboardButton.module"
 import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
+import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
+import { PresentationModeButtonModule } from "./codeCharta/ui/toolBar/presentationModeButton/presentationModeButton.module"
 
 @NgModule({
 	imports: [
@@ -90,7 +92,7 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 		CustomConfigsModule,
 		FilePanelModule,
 		HeightSettingsPanelModule,
-		CenterMapButtonModule,
+		ViewCubeModule,
 		GlobalConfigurationButtonModule,
 		FileExtensionBarModule,
 		AreaSettingsPanelModule,
@@ -101,7 +103,10 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 		ActionIconModule,
 		ColorSettingsPanelModule,
 		ScreenshotButtonModule,
-		DownloadButtonModule
+		DownloadButtonModule,
+		UploadFilesButtonModule,
+		CopyToClipboardButtonModule,
+		PresentationModeButtonModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -118,7 +123,7 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 			multi: true
 		}
 	],
-	declarations: [EdgeMetricToggleComponent, UploadFilesButtonComponent, ...dialogs],
+	declarations: [...dialogs],
 	entryComponents: [
 		AttributeSideBarComponent,
 		Export3DMapButtonComponent,
@@ -126,14 +131,13 @@ import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/dow
 		FocusButtonsComponent,
 		LoadingFileProgressSpinnerComponent,
 		LoadingMapProgressSpinnerComponent,
-		EdgeMetricToggleComponent,
 		SearchPanelComponent,
-		UploadFilesButtonComponent,
 		...dialogs
 	]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}
+
 	ngDoBootstrap() {
 		this.upgrade.bootstrap(document.body, ["app"], { strictDi: true })
 	}

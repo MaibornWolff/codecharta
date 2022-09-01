@@ -42,8 +42,7 @@ class ParserDialogTest {
         val cmdLine = CommandLine(MetricGardenerImporter())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<File>().name)
-            .isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
     }
 
@@ -67,8 +66,7 @@ class ParserDialogTest {
         val cmdLine = CommandLine(MetricGardenerImporter())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<File>().name)
-                .isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
         assertNull(parseResult.matchedOption("not-compressed"))
     }
 }

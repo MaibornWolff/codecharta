@@ -1,9 +1,5 @@
 ---
-categories:
-    - How-To-SonarQube
-tags:
-    - sonarimport
-    - analysis
+permalink: /docs/analyze-with-sonarqube/
 title: "Analyze a project with SonarQube"
 ---
 
@@ -71,4 +67,4 @@ To visualize your project metrics created by Sonar use CodeCharta's [sonar impor
 
 ## Beginner's Guide for using SonarQube
 
-If you are totally new to SonarQube, you are welcome to read more detailed instructions [here]({{site.baseurl}}{% link _post/how-to/2022-08-12-detailed-instruction-how-to-use-sonarqube.md %}).
+If you are totally new to SonarQube, you are welcome to read more detailed instructions [here]({{site.baseurl}}{% link _posts/how-to/2022-08-12-detailed-instruction-how-to-use-sonarqube.md %}).

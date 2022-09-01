@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.crococosmo
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
+import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -10,10 +11,10 @@ import java.util.concurrent.Callable
     description = ["generates cc.json from crococosmo xml file"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class CrococosmoImporter : Callable<Void> {
+class CrococosmoImporter(private val output: PrintStream = System.out) : Callable<Void> {
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
-    private var file: File? = null
+    private var inputFile: File? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -22,32 +23,20 @@ class CrococosmoImporter : Callable<Void> {
     private var help = false
 
     @CommandLine.Option(
-        names = ["-o", "--output-file"],
-        description = ["output File or prefix for File (or empty for stdout)"]
+        names = ["-o", "--output-file"], description = ["output File or prefix for File (or empty for stdout)"]
     )
     private var outputFile: String? = null
 
     override fun call(): Void? {
-        val graph = CrococosmoDeserializer().deserializeCrococosmoXML(file!!.inputStream())
+        val graph = CrococosmoDeserializer().deserializeCrococosmoXML(inputFile!!.inputStream())
         val projects = CrococosmoConverter().convertToProjectsMap(graph)
         projects.forEach {
-            val suffix = if (projects.isNotEmpty()) "_" + it.key else ""
-            ProjectSerializer.serializeProject(it.value, writer(suffix))
+            val filePath = outputFile?.plus("_" + it.key)
 
-            val filePath = file?.absolutePath ?: "notSpecified"
-
-            if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(it.value, filePath)
-            else ProjectSerializer.serializeProject(it.value, writer(suffix))
+            ProjectSerializer.serializeToFileOrStream(it.value, filePath, output, compress)
         }
-
         return null
     }
-
-    private fun writer(name: String = "") =
-        when {
-            outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
-            else -> File(outputFile + name).bufferedWriter()
-        }
 
     companion object {
 
