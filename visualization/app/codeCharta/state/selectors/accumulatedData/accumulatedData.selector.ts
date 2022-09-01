@@ -1,6 +1,6 @@
 import { CodeMapNode, FileMeta } from "../../../codeCharta.model"
 import { FileState } from "../../../model/files/files"
-import { fileStatesAvailable, isPartialState, isDeltaState } from "../../../model/files/files.helper"
+import { fileStatesAvailable, isPartialState, isDeltaState, haveEqualRootNames } from "../../../model/files/files.helper"
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
@@ -13,7 +13,6 @@ import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.
 import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
 import { visibleFileStatesSelector } from "../visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
-import { haveSameRoots } from "./utils/compareCollapsedRoot"
 
 const accumulatedDataFallback = Object.freeze({
 	unifiedMapNode: undefined,
@@ -57,10 +56,9 @@ const getUndecoratedAccumulatedData = (fileStates: FileState[]) => {
 	if (isDeltaState(fileStates)) {
 		const [reference, comparison] = visibleFileStates
 
-		if (!comparison || !haveSameRoots(reference.file.map.name, comparison.file.map.name)) {
+		if (!comparison || !haveEqualRootNames(reference.file, comparison.file)) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 		}
-
 		return getDeltaFile(visibleFileStates)
 	}
 }

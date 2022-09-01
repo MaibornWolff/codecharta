@@ -37,3 +37,10 @@ export function isPartialState(fileStates: FileState[]) {
 export function isEqual(file1: CCFile, file2: CCFile) {
 	return file1.fileMeta.fileChecksum === file2.fileMeta.fileChecksum
 }
+
+export function haveEqualRootNames(reference: CCFile, comparison: CCFile) {
+	const referenceRoot = reference.map.name.split("/")[0]
+	const comparisonRoot = comparison.map.name.split("/")[0]
+
+	return referenceRoot === comparisonRoot
+}

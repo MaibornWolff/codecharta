@@ -5,10 +5,12 @@ import {
 	getFileByFileName,
 	getVisibleFiles,
 	getVisibleFileStates,
+	haveEqualRootNames,
 	isDeltaState,
 	isPartialState
 } from "./files.helper"
 import { FileSelectionState, FileState } from "./files"
+import { CCFile, NodeType } from "../../codeCharta.model"
 
 describe("files", () => {
 	let files: FileState[]
@@ -186,6 +188,40 @@ describe("files", () => {
 			files[0].selectedAs = FileSelectionState.Partial
 
 			expect(fileStatesAvailable(files)).toBeTruthy()
+		})
+	})
+
+	describe("haveEqualRootNames", () => {
+		it("should return false if root names are different", () => {
+			const reference = { map: { name: "rootA", type: NodeType.FOLDER } } as CCFile
+			const comp = { map: { name: "rootB", type: NodeType.FOLDER } } as CCFile
+
+			expect(haveEqualRootNames(reference, comp)).toBeFalsy()
+		})
+
+		it("should return true if we compare root/app/index.ts and root/myApp.ts", () => {
+			const reference = {
+				map: {
+					name: "root",
+					type: NodeType.FOLDER,
+					children: [{ name: "myApp.ts", type: NodeType.FILE }]
+				}
+			} as CCFile
+			const comp = {
+				map: {
+					name: "root",
+					type: NodeType.FOLDER,
+					children: [
+						{
+							name: "app",
+							type: NodeType.FOLDER,
+							children: [{ name: "index.ts", type: NodeType.FILE }]
+						}
+					]
+				}
+			} as CCFile
+
+			expect(haveEqualRootNames(reference, comp)).toBeTruthy()
 		})
 	})
 })
