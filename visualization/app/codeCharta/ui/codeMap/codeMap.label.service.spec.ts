@@ -25,6 +25,8 @@ import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
+import { ThreeRendererService } from "./threeViewer/threeRendererService"
+import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 
 describe("CodeMapLabelService", () => {
 	let storeService: StoreService
@@ -32,6 +34,8 @@ describe("CodeMapLabelService", () => {
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
 	let threeOrbitControlsService: ThreeOrbitControlsService
+	let threeRenderService: ThreeRendererService
+	let threeUpdateCycleService: ThreeUpdateCycleService
 	let createElementOrigin
 	let sampleLeaf: Node
 	let otherSampleLeaf: Node
@@ -53,10 +57,19 @@ describe("CodeMapLabelService", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		threeRenderService = getService<ThreeRendererService>("threeRenderService")
+		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 	}
 
 	function rebuild() {
-		codeMapLabelService = new CodeMapLabelService(storeService, threeCameraService, threeSceneService, threeOrbitControlsService)
+		codeMapLabelService = new CodeMapLabelService(
+			storeService,
+			threeCameraService,
+			threeSceneService,
+			threeOrbitControlsService,
+			threeRenderService,
+			threeUpdateCycleService
+		)
 	}
 
 	function withMockedThreeCameraService() {
