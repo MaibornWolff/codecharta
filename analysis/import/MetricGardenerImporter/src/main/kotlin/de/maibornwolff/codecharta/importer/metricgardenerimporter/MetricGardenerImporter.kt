@@ -15,6 +15,7 @@ import java.io.IOException
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Paths
+import java.util.Locale
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -60,8 +61,10 @@ class MetricGardenerImporter(
         if (!isJsonFile) {
             val tempMgOutput = File.createTempFile("MGOutput", ".json")
             tempMgOutput.deleteOnExit()
+
+            val npm = if (isWindows()) "npm.cmd" else "npm"
             shellRun(
-                command = "npm",
+                command = npm,
                 arguments = listOf(
                     "exec", "-y", "metric-gardener", "--", "parse",
                     inputFile.absolutePath, "--output-path", tempMgOutput.absolutePath
@@ -92,6 +95,10 @@ class MetricGardenerImporter(
         fun main(args: Array<String>) {
             CommandLine.call(MetricGardenerImporter(), System.out, *args)
         }
+    }
+
+    private fun isWindows(): Boolean {
+        return System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog

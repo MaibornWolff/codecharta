@@ -8,6 +8,7 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -66,6 +67,7 @@ class CcshTest {
     }
 
     @Test
+    @Disabled
     fun `should execute interactive parser when passed parser is unknown`() {
         mockkObject(ParserService)
         every {
