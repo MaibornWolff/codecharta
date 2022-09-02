@@ -149,7 +149,7 @@ Object {
 }
 `;
 
-exports[`deltaGenerator getDeltaFile should result in expected deltaFiles when root is equal but ... 1`] = `
+exports[`deltaGenerator getDeltaFile should result in expected deltaFiles when root is equal but Folders are merged (e.g. File1: 'root/' and File2: 'root/Parent Leaf') 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [
