@@ -1,6 +1,6 @@
 ---
-permalink: /docs/metricgardener-import
-title: "MetricGardener Import"
+permalink: /docs/metricgardener-importer
+title: "MetricGardener Importer"
 ---
 
 This importer allows to use metrics calculated by [MetricGardener](https://github.com/MaibornWolff/metric-gardener), a
