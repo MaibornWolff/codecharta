@@ -3,7 +3,7 @@ set -e
 
 INSTALL_DIR="../build/tmp/goldentest"
 
-exit_with_err(){
+exit_with_err() {
   echo $1 >&2
   echo "You have to manually remove ${INSTALL_DIR}" >&2
   exit 1
@@ -19,13 +19,13 @@ CCSH="${INSTALL_DIR}/codecharta-analysis-${CC_VERSION}/bin/ccsh"
 DATA="data/codecharta"
 
 install_codecharta() {
-    echo
-    echo "Installing CodeCharta analysis to ${INSTALL_DIR}"
-    echo
-    mkdir -p "${INSTALL_DIR}"
-    cp "$1" "${INSTALL_DIR}"
-    tar xf "${INSTALL_DIR}/${CC_TAR_NAME}" -C "${INSTALL_DIR}"
-    rm "${INSTALL_DIR}/${CC_TAR_NAME}"
+  echo
+  echo "Installing CodeCharta analysis to ${INSTALL_DIR}"
+  echo
+  mkdir -p "${INSTALL_DIR}"
+  cp "$1" "${INSTALL_DIR}"
+  tar xf "${INSTALL_DIR}/${CC_TAR_NAME}" -C "${INSTALL_DIR}"
+  rm "${INSTALL_DIR}/${CC_TAR_NAME}"
 }
 
 deinstall_codecharta() {
@@ -46,9 +46,9 @@ check_gitlogparser() {
   ACTUAL_GITLOG_JSON="${INSTALL_DIR}/actual_gitlogparser.cc.json"
   returnCode="0"
   timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.txt" -n "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON}" -nc || returnCode="$?"
-  if [ "$returnCode" -eq 124 ] ; then
+  if [ "$returnCode" -eq 124 ]; then
     exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
-  elif [ "$returnCode" -ne 0 ] ; then
+  elif [ "$returnCode" -ne 0 ]; then
     exit_with_err "Parser exited with code $returnCode"
   fi
   validate "${ACTUAL_GITLOG_JSON}"
@@ -102,7 +102,7 @@ check_csvimporter() {
 check_sourcemonitor() {
   echo " -- expect SourceMonitorImporter to produce valid cc.json on system.out"
   ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
-  "${CCSH}" sourcemonitorimport ${DATA}/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
+  "${CCSH}" sourcemonitorimport ${DATA}/sourcemonitor.csv >"${ACTUAL_SOURCEMON_JSON}"
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
@@ -116,8 +116,13 @@ check_jasome() {
 check_metricgardener() {
   echo " -- expect MetricGardenerImporter to produce valid cc.json file with added extensions"
   ACTUAL_METRICGARDENER_JSON="${INSTALL_DIR}/actual_metricgardenerparser"
-  "${CCSH}" metricgardenerimport "${DATA}/metricgardener.json" -o "${ACTUAL_METRICGARDENER_JSON}"
+  "${CCSH}" metricgardenerimport "${DATA}/metricgardener.json" -o "${ACTUAL_METRICGARDENER_JSON}" --is-json-file
   validate "${ACTUAL_METRICGARDENER_JSON}.cc.json.gz"
+
+  echo " -- expect MetricGardenerImporter to produce valid cc.json file when no MG.json was available"
+  ACTUAL_METRICGARDENER_JSON2="${INSTALL_DIR}/actual_metricgardenerparser2"
+  "${CCSH}" metricgardenerimport "${DATA}/metric-gardener-Example" -o "${ACTUAL_METRICGARDENER_JSON2}"
+  validate "${ACTUAL_METRICGARDENER_JSON2}.cc.json.gz"
 }
 
 check_sonar() {
@@ -128,30 +133,30 @@ check_sonar() {
 }
 
 check_sourcecodeparser() {
-    echo " -- expect SourceCodeParser to produce valid cc.json file"
-    ACTUAL_SCP_JSON="${INSTALL_DIR}/actual_scpparser.cc.json"
-    "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" -o "${ACTUAL_SCP_JSON}" -nc
-    validate "${ACTUAL_SCP_JSON}"
+  echo " -- expect SourceCodeParser to produce valid cc.json file"
+  ACTUAL_SCP_JSON="${INSTALL_DIR}/actual_scpparser.cc.json"
+  "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" -o "${ACTUAL_SCP_JSON}" -nc
+  validate "${ACTUAL_SCP_JSON}"
 }
 
 check_svnlog() {
   echo " -- expect SVNLogParser to produce valid cc.json to system.out"
   ACTUAL_SVNLOG_JSON="${INSTALL_DIR}/actual_svnlogparser.json"
-  "${CCSH}" svnlogparser "${DATA}/SVNTestLog.txt" --silent > "${ACTUAL_SVNLOG_JSON}"
+  "${CCSH}" svnlogparser "${DATA}/SVNTestLog.txt" --silent >"${ACTUAL_SVNLOG_JSON}"
   validate "${ACTUAL_SVNLOG_JSON}"
 }
 
 check_tokei() {
-    echo " -- expect TokeiImporter to produce valid cc.json file"
-    ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_tokeiparser.cc.json"
-    "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ -o "${ACTUAL_TOKEI_JSON}" -nc
-    validate "${ACTUAL_TOKEI_JSON}"
+  echo " -- expect TokeiImporter to produce valid cc.json file"
+  ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_tokeiparser.cc.json"
+  "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ -o "${ACTUAL_TOKEI_JSON}" -nc
+  validate "${ACTUAL_TOKEI_JSON}"
 }
 
 check_understand() {
   echo " -- expect UnderstandImporter to produce valid cc.json to system.out"
   ACTUAL_UNDERSTAND_JSON="${INSTALL_DIR}/actual_understandparser.json"
-  "${CCSH}" understandimport "${DATA}/understand.csv" > "${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
+  "${CCSH}" understandimport "${DATA}/understand.csv" >"${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
   validate "${ACTUAL_UNDERSTAND_JSON}"
 }
 
@@ -163,25 +168,22 @@ check_rawtext() {
 }
 
 check_pipe() {
-   echo " -- expect pipe chain from tokei, sourcecodeparser, svnlogparser and modify to work"
-   sh "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ \
-        | sh "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" \
-        | sh "${CCSH}" svnlogparser "${DATA}/SVNTestLog.txt" \
-        | sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
-            -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
-    validate ${INSTALL_DIR}/piped_out.cc.json
-    if ! grep -q "Created Project with 9 leaves." ${INSTALL_DIR}/piped_out_log.json; then
-      exit_with_err "ERR: Pipes broken."
-    fi
+  echo " -- expect pipe chain from tokei, sourcecodeparser, svnlogparser and modify to work"
+  sh "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ |
+    sh "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" |
+    sh "${CCSH}" svnlogparser "${DATA}/SVNTestLog.txt" |
+    sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
+      -o ${INSTALL_DIR}/piped_out.json 2>${INSTALL_DIR}/piped_out_log.json
+  validate ${INSTALL_DIR}/piped_out.cc.json
+  if ! grep -q "Created Project with 9 leaves." ${INSTALL_DIR}/piped_out_log.json; then
+    exit_with_err "ERR: Pipes broken."
+  fi
 }
-
-
 
 run_tests() {
   echo
   echo "Running Tests..."
   echo
-
 
   check_gitlogparser
   check_csvexporter
@@ -206,7 +208,6 @@ run_tests() {
   echo "... Testing finished."
   echo
 }
-
 
 install_codecharta "../build/distributions/${CC_TAR_NAME}"
 run_tests
