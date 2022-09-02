@@ -5,6 +5,8 @@ title: "MetricGardener Importer"
 
 This importer allows to use metrics calculated by [MetricGardener](https://github.com/MaibornWolff/metric-gardener), a
 multi-language code parser based on [tree-sitter](https://github.com/tree-sitter/tree-sitter).
+For more information on MetricGardener, like the supported languages, and command line options, refer to its
+[README](https://github.com/MaibornWolff/metric-gardener#readme).
 
 > Please note: MetricGardener is currently only compatible with NodeJS up to version 16.x. If you use NodeJS 18.x, you
 > need to install version 16.x to use MetricGardener.
