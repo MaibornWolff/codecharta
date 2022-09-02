@@ -98,6 +98,15 @@ describe("deltaGenerator", () => {
 		expect(result.map).toMatchSnapshot()
 	})
 
+	it("getDeltaFile should result in expected deltaFiles when root is equal but Folders are merged (e.g. File1: 'root/' and File2: 'root/Parent Leaf')", () => {
+		NodeDecorator.decorateMapWithPathAttribute(DELTA_MAP_MERGED_ROOT_NAME)
+		NodeDecorator.decorateMapWithPathAttribute(DELTA_MAP_SINGLE_ROOT_NAME)
+
+		const result = DeltaGenerator.getDeltaFile(DELTA_MAP_MERGED_ROOT_NAME, DELTA_MAP_SINGLE_ROOT_NAME)
+
+		expect(result.map).toMatchSnapshot()
+	})
+
 	it("should detect added and removed files and add result to delta attributes", () => {
 		// Here, "changed" means "added" or "removed"
 		const actualAmountOfChangedFiles: Pick<FileCount, "added" | "removed"> = { added: 0, removed: 0 }
@@ -345,6 +354,65 @@ export const TEST_DELTA_MAP_F: CCFile = {
 				name: "File with mcc and rloc changes",
 				type: NodeType.FILE,
 				attributes: { mcc: 9001, rloc: 9002 } // its over 9000!!!
+			}
+		]
+	},
+	settings: DEFAULT_CC_FILE_MOCK.settings
+}
+
+const DELTA_MAP_SINGLE_ROOT_NAME: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileA",
+		fileChecksum: "md5-delta-fileA"
+	},
+	map: {
+		name: "root",
+		type: NodeType.FOLDER,
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "Parent Leaf",
+				type: NodeType.FOLDER,
+				attributes: {},
+				isExcluded: false,
+				isFlattened: false,
+				children: [
+					{
+						name: "small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 1, functions: 10, mcc: 100 },
+						isExcluded: false,
+						isFlattened: false
+					}
+				]
+			}
+		]
+	},
+	settings: DEFAULT_CC_FILE_MOCK.settings
+}
+
+const DELTA_MAP_MERGED_ROOT_NAME: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileB",
+		fileChecksum: "md5-delta-fileB"
+	},
+	map: {
+		name: "root/Parent Leaf",
+		type: NodeType.FOLDER,
+		attributes: {},
+		isExcluded: false,
+		isFlattened: false,
+		children: [
+			{
+				name: "small leaf",
+				type: NodeType.FILE,
+				attributes: { rloc: 100, functions: 10, mcc: 1 },
+				isExcluded: false,
+				isFlattened: false
 			}
 		]
 	},

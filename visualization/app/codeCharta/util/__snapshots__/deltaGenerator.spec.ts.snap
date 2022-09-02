@@ -149,6 +149,63 @@ Object {
 }
 `;
 
+exports[`deltaGenerator getDeltaFile should result in expected deltaFiles when root is equal but ... 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [
+    Object {
+      "attributes": Object {},
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "functions": 10,
+            "mcc": 100,
+            "rloc": 1,
+          },
+          "deltas": Object {
+            "functions": 0,
+            "mcc": 99,
+            "rloc": -99,
+          },
+          "fileCount": Object {
+            "added": 0,
+            "changed": 1,
+            "removed": 0,
+          },
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "small leaf",
+          "path": "/root/Parent Leaf/small leaf",
+          "type": "File",
+        },
+      ],
+      "deltas": Object {},
+      "fileCount": Object {
+        "added": 0,
+        "changed": 0,
+        "removed": 0,
+      },
+      "isExcluded": false,
+      "isFlattened": false,
+      "name": "root/Parent Leaf",
+      "path": "/root/Parent Leaf",
+      "type": "Folder",
+    },
+  ],
+  "deltas": Object {},
+  "fileCount": Object {
+    "added": 0,
+    "changed": 0,
+    "removed": 0,
+  },
+  "isExcluded": false,
+  "isFlattened": false,
+  "name": "root",
+  "path": "/root",
+  "type": "Folder",
+}
+`;
+
 exports[`deltaGenerator golden test 1`] = `
 Object {
   "attributes": Object {},
