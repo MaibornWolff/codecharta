@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Add an option to run metric-gardener before its parser if requested [#3015](https://github.com/MaibornWolff/codecharta/pull/3015)
+
 ### Changed
 
 -   Increase the size of the close button to simplify closing the attribute sidebar [#3014](https://github.com/MaibornWolff/codecharta/pull/3014)
