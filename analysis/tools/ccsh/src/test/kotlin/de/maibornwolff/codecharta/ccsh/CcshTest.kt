@@ -8,7 +8,6 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -47,7 +46,8 @@ class CcshTest {
         val exitCode = ccshCLI.execute("-h")
 
         Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(contentOutput.toString()).contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
+        Assertions.assertThat(contentOutput.toString())
+            .contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
     }
 
@@ -61,13 +61,13 @@ class CcshTest {
             ParserService.executeSelectedParser(any(), any())
         } returns 0
 
-        Ccsh.main(emptyArray())
+        val exitCode = Ccsh.executeCommandLine(emptyArray())
+        Assertions.assertThat(exitCode).isZero
 
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
 
     @Test
-    @Disabled
     fun `should execute interactive parser when passed parser is unknown`() {
         mockkObject(ParserService)
         every {
@@ -77,7 +77,8 @@ class CcshTest {
             ParserService.executeSelectedParser(any(), any())
         } returns 0
 
-        Ccsh.main(arrayOf("unknownparser"))
+        val exitCode = Ccsh.executeCommandLine(arrayOf("unknownparser"))
+        Assertions.assertThat(exitCode).isZero
 
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
