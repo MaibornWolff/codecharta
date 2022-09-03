@@ -16,8 +16,9 @@ class ParserDialog {
                 )
 
             val inputFile = KInquirer.promptInput(
-                message = "What Project do you want to parse?",
-                hint = "path/to/my/project"
+                message = if (isJsonFile) "Which MetricGardener json-File do you want to import?"
+                          else "What Project do you want to parse?",
+                hint = if (isJsonFile) "path/to/metricgardener/file.json" else "path/to/my/project"
             )
 
             val outputFileName: String = KInquirer.promptInput(
