@@ -41,9 +41,19 @@
 			Suspicious {{ item.metric | uppercase }} Files
 		</button>
 
-		<button class="risk-button" (click)="applySuspiciousMetric(item, true)" *ngIf="item.isOutlier" title="Show very high risk files">
+		<button *ngIf="item.isOutlier" class="risk-button" (click)="applySuspiciousMetric(item, true)" title="Show very high risk files">
 			<i class="fa fa-exclamation-triangle"></i>
 		</button>
 	</div>
+
+	<div *ngIf="data.untrackedMetrics.length">
+		<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
+			Untracked metrics in {{ data.analyzedProgrammingLanguage }} code
+		</div>
+		<ul>
+			<li *ngFor="let untrackedMetric of data.untrackedMetrics">{{ untrackedMetric }}</li>
+		</ul>
+	</div>
+
 	<div *ngIf="data.analyzedProgrammingLanguage === undefined">No programming language was found for analyzing suspicious metrics.</div>
 </mat-menu>

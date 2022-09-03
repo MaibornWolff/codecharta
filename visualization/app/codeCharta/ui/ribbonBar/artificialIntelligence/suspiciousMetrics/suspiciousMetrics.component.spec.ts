@@ -24,7 +24,8 @@ describe("SuspiciousMetricsComponent", () => {
 					data: {
 						analyzedProgrammingLanguage: "ts",
 						unsuspiciousMetrics: ["rloc", "mcc"],
-						suspiciousMetricSuggestionLinks: []
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
 					}
 				}
 			})
@@ -41,7 +42,8 @@ describe("SuspiciousMetricsComponent", () => {
 					data: {
 						analyzedProgrammingLanguage: undefined,
 						unsuspiciousMetrics: [],
-						suspiciousMetricSuggestionLinks: []
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
 					}
 				}
 			})
@@ -57,7 +59,8 @@ describe("SuspiciousMetricsComponent", () => {
 					data: {
 						analyzedProgrammingLanguage: undefined,
 						unsuspiciousMetrics: [],
-						suspiciousMetricSuggestionLinks: []
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
 					}
 				}
 			})
@@ -74,7 +77,8 @@ describe("SuspiciousMetricsComponent", () => {
 					data: {
 						analyzedProgrammingLanguage: "ts",
 						unsuspiciousMetrics: ["rloc"],
-						suspiciousMetricSuggestionLinks: [{ metric: "mcc", from: 10, to: 22 }]
+						suspiciousMetricSuggestionLinks: [{ metric: "mcc", from: 10, to: 22 }],
+						untrackedMetrics: []
 					}
 				}
 			})

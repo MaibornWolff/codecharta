@@ -2,7 +2,6 @@ import angular from "angular"
 import { downgradeComponent } from "@angular/upgrade/static"
 
 import "./screenshotButton/screenshotButton.module"
-import "./presentationModeButton/presentationModeButton.module"
 import "./codeMap/codeMap.module"
 import "./dialog/dialog.module"
 import "./resetSettingsButton/resetSettingsButton.module"
@@ -15,13 +14,11 @@ import { SliderComponent } from "./slider/slider.component"
 
 angular
 	.module("app.codeCharta.ui", [
-		"app.codeCharta.ui.presentationModeButton",
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.resetSettingsButton",
 		"app.codeCharta.ui.ribbonBar",
-		"app.codeCharta.ui.toolBar",
-		"app.codeCharta.ui.viewCube"
+		"app.codeCharta.ui.toolBar"
 	])
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
 	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))

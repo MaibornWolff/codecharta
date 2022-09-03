@@ -17,22 +17,21 @@ import {
 } from "three"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { withMockedEventMethods } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 
 describe("CodeMapLabelService", () => {
-	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
+	let threeOrbitControlsService: ThreeOrbitControlsService
 	let createElementOrigin
 	let sampleLeaf: Node
 	let otherSampleLeaf: Node
@@ -42,7 +41,6 @@ describe("CodeMapLabelService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuild()
-		withMockedEventMethods($rootScope)
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		setCanvasRenderSettings()
@@ -51,14 +49,14 @@ describe("CodeMapLabelService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 	}
 
 	function rebuild() {
-		codeMapLabelService = new CodeMapLabelService($rootScope, storeService, threeCameraService, threeSceneService)
+		codeMapLabelService = new CodeMapLabelService(storeService, threeCameraService, threeSceneService, threeOrbitControlsService)
 	}
 
 	function withMockedThreeCameraService() {

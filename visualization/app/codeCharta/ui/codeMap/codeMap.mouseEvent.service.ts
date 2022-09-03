@@ -1,7 +1,7 @@
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
+import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
@@ -46,7 +46,7 @@ export enum CursorType {
 	Moving = "move"
 }
 
-export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
+export class CodeMapMouseEventService implements FilesSelectionSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
@@ -72,7 +72,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
 		private codeMapLabelService: CodeMapLabelService,
-		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
+		private viewCubeMouseEvents: ViewCubeMouseEventsService,
 		private threeViewerService: ThreeViewerService,
 		private idToBuilding: IdToBuildingService
 	) {
@@ -129,7 +129,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 			"wheel",
 			debounce(() => this.threeRendererService.render(), 60)
 		)
-		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
+		this.viewCubeMouseEvents.subscribe("viewCubeEventPropagation", this.onViewCubeEventPropagation)
 	}
 
 	hoverNode(id: number) {
@@ -153,16 +153,16 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		this.threeUpdateCycleService.update()
 	}
 
-	onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
-		switch (eventType) {
+	onViewCubeEventPropagation = (data: { type: string; event: MouseEvent }) => {
+		switch (data.type) {
 			case "mousemove":
-				this.onDocumentMouseMove(event)
+				this.onDocumentMouseMove(data.event)
 				break
 			case "mouseup":
-				this.onDocumentMouseUp(event)
+				this.onDocumentMouseUp(data.event)
 				break
 			case "mousedown":
-				this.onDocumentMouseDown(event)
+				this.onDocumentMouseDown(data.event)
 				break
 			case "dblclick":
 				this.onDocumentDoubleClick()
@@ -274,7 +274,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 
 	private EnableOrbitalsRotation(isRotation: boolean) {
 		this.threeViewerService.enableRotation(isRotation)
-		this.viewCubeMouseEventsService.enableRotation(isRotation)
+		this.viewCubeMouseEvents.enableRotation(isRotation)
 	}
 
 	onDocumentMouseEnter() {
@@ -291,7 +291,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
 		this.updateHovering()
-		this.viewCubeMouseEventsService.propagateMovement()
+		this.viewCubeMouseEvents.propagateMovement()
 	}
 
 	onDocumentDoubleClick() {
@@ -326,7 +326,7 @@ export class CodeMapMouseEventService implements ViewCubeEventPropagationSubscri
 	}
 
 	onDocumentMouseUp(event: MouseEvent) {
-		this.viewCubeMouseEventsService.resetIsDragging()
+		this.viewCubeMouseEvents.resetIsDragging()
 		if (event.button === ClickType.LeftClick) {
 			this.onLeftClick()
 		} else {

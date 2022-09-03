@@ -16,7 +16,7 @@ import { MetricSuggestionParameters } from "../selectors/util/suspiciousMetricsH
 export class SuspiciousMetricComponent {
 	@Input() data: Pick<
 		ArtificialIntelligenceData,
-		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks"
+		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
 	>
 
 	constructor(@Inject(Store) private store: Store) {}

@@ -27,6 +27,7 @@ export type ArtificialIntelligenceData = {
 	analyzedProgrammingLanguage: string
 	suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
 	unsuspiciousMetrics: string[]
+	untrackedMetrics: string[]
 	riskProfile: RiskProfile
 }
 
@@ -43,6 +44,7 @@ export const calculate = (
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
+		untrackedMetrics: [],
 		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	}
 
@@ -75,6 +77,7 @@ export const calculate = (
 	if (mainProgrammingLanguage !== undefined) {
 		const metricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, mainProgrammingLanguage)
 		artificialIntelligenceViewModel.unsuspiciousMetrics = metricAssessmentResults.unsuspiciousMetrics
+		artificialIntelligenceViewModel.untrackedMetrics = metricAssessmentResults.untrackedMetrics
 		artificialIntelligenceViewModel.suspiciousMetricSuggestionLinks = calculateSuspiciousMetrics(metricAssessmentResults)
 	}
 

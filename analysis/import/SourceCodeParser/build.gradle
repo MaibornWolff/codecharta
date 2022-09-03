@@ -6,12 +6,6 @@ dependencies {
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 
     implementation group: 'org.sonarsource.java', name: 'sonar-java-plugin', version: sonar_java_version
-    // TODO: remove this after a new, non-broken org.eclipse.equinox.preferences is released (ver. 3.10.0 references a non-existant dependency)
-    implementation('org.eclipse.platform:org.eclipse.equinox.preferences') {
-        version {
-            strictly '3.9.100'
-        }
-    }
     implementation group: 'org.json', name: 'json', version: json_version
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: jaxb_api_version
