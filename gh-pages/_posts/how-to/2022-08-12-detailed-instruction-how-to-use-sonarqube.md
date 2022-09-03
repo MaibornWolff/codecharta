@@ -30,11 +30,11 @@ title: Detailed instruction of how to use SonarQube 9.4
 9. Generate a token and save it for later use \
    ![token sonarqube]({{site.baseurl}}/assets/images/docs/how-to/token_sonarqube.png)
 10. Choose 'Other' and then 'Windows' to run analysis \
-    ![analysis_setup sonarqube]({{site.baseurl}}/assets/images/docs/how-to/analysis_setup sonarqube.png)
+    ![analysis_setup sonarqube]({{site.baseurl}}/assets/images/docs/how-to/analysis_setup_sonarqube.png)
 11. Open the terminal, navigate to `CodeCharta/visualization/` project folder to analyze and execute scanner using the shown command
     > sonar-scanner.bat -D"sonar.projectKey=CodeCharta" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login="user token"
 12. After a successful execution the analyzed project is shown on localhost \
-    ![analyzed_project sonarqube]({{site.baseurl}}/assets/images/docs/how-to/analyzed_project sonarqube.png)
+    ![analyzed_project sonarqube]({{site.baseurl}}/assets/images/docs/how-to/analyzed_project_sonarqube.png)
 13. Install CodeCharta analysis
     > npm i -g codecharta-analysis
 14. Execute `ccsh sonarimport` in your terminal to generate a `cc.json` file to load it into [CodeCharta's Visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz)
