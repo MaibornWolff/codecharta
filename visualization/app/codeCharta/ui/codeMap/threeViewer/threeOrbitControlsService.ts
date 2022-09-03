@@ -1,5 +1,5 @@
 import { ThreeCameraService } from "./threeCameraService"
-import { IRootScopeService, IAngularEvent, ITimeoutService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { LayoutAlgorithmSubscriber, LayoutAlgorithmService } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
@@ -9,15 +9,15 @@ import {
 	UnfocusNodeSubscriber
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-
 // TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
+import { EventEmitter } from "tsee"
 
-export interface CameraChangeSubscriber {
-	onCameraChanged(camera: PerspectiveCamera)
+type CameraChangeEvents = {
+	onCameraChanged: (data: { camera: PerspectiveCamera }) => void
 }
 
 export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, LayoutAlgorithmSubscriber {
@@ -26,6 +26,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 	controls: OrbitControls
 	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
+	private eventEmitter = new EventEmitter<CameraChangeEvents>()
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -152,12 +153,12 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 	onInput(camera: PerspectiveCamera) {
 		this.setControlTarget(this.controls.target)
-		this.$rootScope.$broadcast(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, camera)
+		this.eventEmitter.emit("onCameraChanged", { camera })
 	}
 
-	static subscribe($rootScope: IRootScopeService, subscriber: CameraChangeSubscriber) {
-		$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (_event: IAngularEvent, camera: PerspectiveCamera) => {
-			subscriber.onCameraChanged(camera)
+	subscribe<Key extends keyof CameraChangeEvents>(key: Key, callback: CameraChangeEvents[Key]) {
+		this.eventEmitter.on(key, data => {
+			callback(data)
 		})
 	}
 }

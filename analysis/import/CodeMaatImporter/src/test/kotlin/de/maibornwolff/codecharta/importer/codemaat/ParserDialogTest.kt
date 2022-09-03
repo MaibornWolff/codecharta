@@ -40,7 +40,7 @@ class ParserDialogTest {
 
         val cmdLine = CommandLine(CodeMaatImporter())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<File>().name).isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<List<File>>()[0].name).isEqualTo(fileName)
     }

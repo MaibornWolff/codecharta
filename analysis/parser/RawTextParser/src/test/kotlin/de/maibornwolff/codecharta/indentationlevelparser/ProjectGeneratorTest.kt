@@ -4,27 +4,25 @@ import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.parser.rawtextparser.ProjectGenerator
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.OutputStreamWriter
-import java.io.PrintStream
 
 class ProjectGeneratorTest {
 
     @Test
     fun `file hierarchy and metrics are stored correctly`() {
-        val expectedResultFile = File("src/test/resources/cc_projects/project_1.cc.json").absoluteFile
+        val expectedResultFile = File("src/test/resources/cc_projects/project_1.cc.json")
         val metricsMap = mutableMapOf<String, FileMetrics>()
         metricsMap["bar/FooBar.java"] = FileMetrics().addMetric("foo", 0).addMetric("bar", 18)
         metricsMap["foo.java"] = FileMetrics().addMetric("barx", 42)
-        val result = ByteArrayOutputStream()
 
-        ProjectGenerator(OutputStreamWriter(PrintStream(result)), expectedResultFile.absolutePath, false).generate(metricsMap, null)
+        val project = ProjectGenerator().generate(metricsMap, null)
+        val resultFromGenerator = ProjectSerializer.serializeToString(project)
 
-        val resultJSON = JsonParser().parse(result.toString())
-        val expectedJson = JsonParser().parse(expectedResultFile.reader())
+        val resultJSON = JsonParser.parseString(resultFromGenerator)
+        val expectedJson = JsonParser.parseReader(expectedResultFile.bufferedReader())
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 
@@ -34,12 +32,12 @@ class ProjectGeneratorTest {
         val pipedProject = ProjectDeserializer.deserializeProject(File("src/test/resources/cc_projects/project_1.cc.json").inputStream())
         val metricsMap = mutableMapOf<String, FileMetrics>()
         metricsMap["foo.java"] = FileMetrics().addMetric("bar", 18)
-        val result = ByteArrayOutputStream()
 
-        ProjectGenerator(OutputStreamWriter(PrintStream(result)), expectedResultFile.absolutePath, false).generate(metricsMap, pipedProject)
+        val project = ProjectGenerator().generate(metricsMap, pipedProject)
+        val resultFromGenerator = ProjectSerializer.serializeToString(project)
 
-        val resultJSON = JsonParser().parse(result.toString())
-        val expectedJson = JsonParser().parse(expectedResultFile.reader())
+        val resultJSON = JsonParser.parseString(resultFromGenerator)
+        val expectedJson = JsonParser.parseReader(expectedResultFile.bufferedReader())
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 }

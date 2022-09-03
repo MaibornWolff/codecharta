@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
-import java.io.Writer
+import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -16,7 +16,9 @@ import java.util.concurrent.Callable
     description = ["merges multiple cc.json files"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class MergeFilter : Callable<Void?>, InteractiveParser {
+class MergeFilter(
+    private val output: PrintStream = System.out
+) : Callable<Void?>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -34,7 +36,7 @@ class MergeFilter : Callable<Void?>, InteractiveParser {
     private var leafStrategySet = false
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -72,15 +74,9 @@ class MergeFilter : Callable<Void?>, InteractiveParser {
 
         val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy).merge()
 
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
-
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(mergedProject, filePath) else ProjectSerializer.serializeProject(mergedProject, writer())
+        ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
 
         return null
-    }
-
-    private fun writer(): Writer {
-        return outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
     }
 
     private fun getFilesInFolder(folder: File): List<File> {
@@ -94,6 +90,11 @@ class MergeFilter : Callable<Void?>, InteractiveParser {
                 listOf(pipedProject, currentProject),
                 RecursiveNodeMergerStrategy(false)
             ).merge()
+        }
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine.call(MergeFilter(), System.out, *args)
         }
     }
 

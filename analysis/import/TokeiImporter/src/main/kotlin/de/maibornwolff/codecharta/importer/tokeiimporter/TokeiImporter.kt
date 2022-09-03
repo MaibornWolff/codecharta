@@ -17,14 +17,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import picocli.CommandLine
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
 import java.io.PrintStream
-import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -57,8 +53,8 @@ class TokeiImporter(
     @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = "/"
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File "])
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -79,13 +75,9 @@ class TokeiImporter(
             importerStrategy.buildCCJson(languageSummaries, projectBuilder)
         }
         projectBuilder.addAttributeTypes(attributeTypes)
+        val project = projectBuilder.build()
 
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
-
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
-            projectBuilder.build(),
-            filePath
-        ) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }
@@ -124,14 +116,6 @@ class TokeiImporter(
         }
 
         return root
-    }
-
-    private fun writer(): Writer {
-        return if (outputFile == null) {
-            OutputStreamWriter(output)
-        } else {
-            BufferedWriter(FileWriter(outputFile!!))
-        }
     }
 
     companion object {

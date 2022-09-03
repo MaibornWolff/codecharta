@@ -1,3 +1,4 @@
+import "./uploadFilesButton.component.scss"
 import { Component, Inject } from "@angular/core"
 import { UploadFilesService } from "./uploadFiles.service"
 

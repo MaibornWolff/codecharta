@@ -14,6 +14,7 @@ export interface MetricAssessmentResults {
 	suspiciousMetrics: Map<string, ColorRange>
 	unsuspiciousMetrics: string[]
 	outliersThresholds: Map<string, number>
+	untrackedMetrics: string[]
 }
 
 export interface MetricSuggestionParameters {
@@ -77,7 +78,8 @@ export function findGoodAndBadMetrics(
 	const metricAssessmentResults: MetricAssessmentResults = {
 		suspiciousMetrics: new Map<string, ColorRange>(),
 		unsuspiciousMetrics: [],
-		outliersThresholds: new Map<string, number>()
+		outliersThresholds: new Map<string, number>(),
+		untrackedMetrics: []
 	}
 
 	const languageSpecificMetricThresholds = getAssociatedMetricThresholds(mainProgrammingLanguage)
@@ -102,6 +104,13 @@ export function findGoodAndBadMetrics(
 			if (maxMetricValue > thresholdConfig.percentile90) {
 				metricAssessmentResults.outliersThresholds.set(metricName, thresholdConfig.percentile90)
 			}
+		}
+	}
+
+	for (const key in metricValuesByLanguages[mainProgrammingLanguage]) {
+		const keys = Object.keys(languageSpecificMetricThresholds)
+		if (!keys.includes(key) && !metricAssessmentResults.untrackedMetrics.includes(key)) {
+			metricAssessmentResults.untrackedMetrics.push(key)
 		}
 	}
 

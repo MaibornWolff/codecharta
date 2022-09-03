@@ -73,18 +73,4 @@ describe("EdgeMetricDataService", () => {
 			expect(AttributeTypesService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
 		})
 	})
-
-	describe("getAmountOfAffectedBuildings", () => {
-		it("should return 0 if metric is non-existent", () => {
-			const affectedNodes = edgeMetricDataService.getAmountOfAffectedBuildings("bar")
-
-			expect(affectedNodes).toEqual(0)
-		})
-
-		it("should return number of affected buildings", () => {
-			const affectedNodes = edgeMetricDataService.getAmountOfAffectedBuildings("pairingRate")
-
-			expect(affectedNodes).toEqual(3)
-		})
-	})
 })
