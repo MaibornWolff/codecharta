@@ -15,7 +15,6 @@ import java.io.IOException
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Paths
-import java.util.Locale
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -98,7 +97,7 @@ class MetricGardenerImporter(
     }
 
     private fun isWindows(): Boolean {
-        return System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
+        return System.getProperty("os.name").contains("win", ignoreCase = true)
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
