@@ -11,6 +11,6 @@ import { MapLayoutSelectionModule } from "./globalConfigurationDialog/mapLayoutS
 	imports: [MaterialModule, ResetSettingsButtonModule, MapLayoutSelectionModule, DisplayQualitySelectionModule, ActionIconModule],
 	declarations: [GlobalConfigurationButtonComponent, GlobalConfigurationDialogComponent],
 	exports: [GlobalConfigurationButtonComponent],
-	entryComponents: [GlobalConfigurationButtonComponent, GlobalConfigurationDialogComponent]
+	entryComponents: [GlobalConfigurationDialogComponent]
 })
 export class GlobalConfigurationButtonModule {}
