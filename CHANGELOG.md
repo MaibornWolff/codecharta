@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix switch button in delta mode [#3023](https://github.com/MaibornWolff/codecharta/pull/3023)
 -   Fix broken images to new document pages about how using SonarQube [#3012](https://github.com/MaibornWolff/codecharta/pull/3012)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate tool bar component to Angular [#3020](https://github.com/MaibornWolff/codecharta/pull/3020)
+
 ## [1.104.1] - 2022-08-31
 
 ### Fixed 🐞

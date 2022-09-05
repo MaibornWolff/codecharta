@@ -5,7 +5,6 @@ import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel.component"
 @NgModule({
 	imports: [CommonModule],
 	declarations: [HoveredNodePathPanelComponent],
-	exports: [HoveredNodePathPanelComponent],
-	entryComponents: [HoveredNodePathPanelComponent]
+	exports: [HoveredNodePathPanelComponent]
 })
 export class HoveredNodePathPanelModule {}

@@ -6,7 +6,6 @@ import { ScreenshotButtonComponent } from "./screenshotButton.component"
 @NgModule({
 	imports: [CommonModule, ActionIconModule],
 	declarations: [ScreenshotButtonComponent],
-	exports: [ScreenshotButtonComponent],
-	entryComponents: [ScreenshotButtonComponent]
+	exports: [ScreenshotButtonComponent]
 })
 export class ScreenshotButtonModule {}
