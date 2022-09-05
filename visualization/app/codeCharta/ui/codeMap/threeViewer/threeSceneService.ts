@@ -120,10 +120,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		return this.constantHighlight
 	}
 
-	forceRerender() {
-		this.threeRendererService.render()
-	}
-
 	highlightBuildings() {
 		const state = this.storeService.getState()
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)

@@ -201,7 +201,6 @@ export class CodeMapLabelService {
 		for (const label of this.labels) {
 			this.setLabelSize(label.sprite, label, label.sprite.material.map.image.width)
 		}
-		//this.threeUpdateCycleService.update()
 	}
 
 	private makeText(message: string, fontsize: number, node: Node): InternalLabel {

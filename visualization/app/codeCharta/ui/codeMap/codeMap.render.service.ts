@@ -22,6 +22,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		neutral: [],
 		negative: []
 	}
+	private unflattenedNodes
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -53,11 +54,11 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		const visibleSortedNodes = nodes
 			.filter(node => node.visible && node.length > 0 && node.width > 0)
 			.sort((a, b) => b.height - a.height)
-		const unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
+		this.unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
 		this.setNewMapMesh(nodes, visibleSortedNodes)
-		this.getNodesMatchingColorSelector(unflattenedNodes)
-		this.setLabels(unflattenedNodes)
+		this.getNodesMatchingColorSelector(this.unflattenedNodes)
+		this.setLabels(this.unflattenedNodes)
 		this.setArrows(visibleSortedNodes)
 		this.scaleMap()
 	}
@@ -70,11 +71,11 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 	scaleMap() {
 		this.codeMapMouseEventService.unhoverNode()
-		this.threeSceneService.resetLabel()
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
 		this.threeSceneService.scaleHeight()
-		this.threeSceneService.forceRerender()
+		this.codeMapLabelService.clearLabels()
+		this.setLabels(this.unflattenedNodes)
 	}
 
 	private getNodes(map: CodeMapNode) {

@@ -190,12 +190,6 @@ describe("codeMapRenderService", () => {
 			expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledWith()
 		})
 
-		it("should call threeSceneService.resetLabel", () => {
-			codeMapRenderService["scaleMap"]()
-
-			expect(threeSceneService.resetLabel).toHaveBeenCalled()
-		})
-
 		it("should call codeMapLabelService.scale", () => {
 			codeMapRenderService["scaleMap"]()
 
@@ -214,10 +208,10 @@ describe("codeMapRenderService", () => {
 			expect(threeSceneService.scaleHeight).toHaveBeenCalled()
 		})
 
-		it("should call threeSceneService.forceRerender", () => {
+		it("should call threeSceneService.clearLabels", () => {
 			codeMapRenderService["scaleMap"]()
 
-			expect(threeSceneService.forceRerender).toHaveBeenCalled()
+			expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
 		})
 	})
 
