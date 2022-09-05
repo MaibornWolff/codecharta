@@ -5,8 +5,6 @@ import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { StoreService } from "../../state/store.service"
 import { ColorConverter } from "../../util/color/colorConverter"
-//import { ThreeRendererService } from "./threeViewer/threeRendererService"
-//import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 
 interface InternalLabel {
 	sprite: Sprite
@@ -36,13 +34,10 @@ export class CodeMapLabelService {
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
-	) //private threeRendererService: ThreeRendererService,
-	//private threeUpdateCycleService: ThreeUpdateCycleService
-	{
+	) {
 		"ngInject"
 		this.labels = new Array<InternalLabel>()
 		this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
-		//this.threeUpdateCycleService.register(() => this.threeRendererService.render())
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
