@@ -70,6 +70,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 	scaleMap() {
 		this.codeMapMouseEventService.unhoverNode()
+		this.threeSceneService.resetLabel()
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
 		this.threeSceneService.scaleHeight()
