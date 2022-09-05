@@ -11,6 +11,7 @@ import { CodeChartaService } from "./codeCharta.service"
 import { downgradeComponent } from "@angular/upgrade/static"
 import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"
+import { ToolBarComponent } from "./ui/toolBar/toolBar.component"
 
 angular.module("app.codeCharta", ["app.codeCharta.state", "app.codeCharta.ui"])
 
@@ -20,3 +21,4 @@ angular
 	.service(camelCase(CodeChartaService.name), CodeChartaService)
 	.directive("ccLoadingFileProgressSpinner", downgradeComponent({ component: LoadingFileProgressSpinnerComponent }))
 	.directive("ccFileExtensionBar", downgradeComponent({ component: FileExtensionBarComponent }))
+	.directive("ccToolBar", downgradeComponent({ component: ToolBarComponent }))

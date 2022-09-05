@@ -1,28 +1,33 @@
-import "../../state/state.module"
-import "../dialog/dialog.module"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { UploadFilesButtonModule } from "./uploadFilesButton/uploadFilesButton.module"
+import { GlobalConfigurationButtonModule } from "./globalConfigurationButton/globalConfigurationButton.module"
+import { HoveredNodePathPanelModule } from "./hoveredNodePathPanel/hoveredNodePathPanel.module"
+import { ScreenshotButtonModule } from "../screenshotButton/screenshotButton.module"
+import { FilePanelModule } from "../filePanel/filePanel.module"
+import { CopyToClipboardButtonModule } from "../copyToClipboardButton/copyToClipboardButton.module"
+import { DownloadButtonModule } from "./downloadButton/downloadButton.module"
+import { PresentationModeButtonModule } from "./presentationModeButton/presentationModeButton.module"
+import { ToolBarComponent } from "./toolBar.component"
+import { Export3DMapButtonModule } from "../export3DMapButton/export3DMapButton.module"
+import { LoadingMapProgressSpinnerModule } from "./loadingMapProgressSpinner/loadingMapProgressSpinner.module"
 
-import angular from "angular"
-import { toolBarComponent } from "./toolBar.component"
-import { downgradeComponent } from "@angular/upgrade/static"
-import { LoadingMapProgressSpinnerComponent } from "./loadingMapProgressSpinner/loadingMapProgressSpinner.component"
-import { UploadFilesButtonComponent } from "./uploadFilesButton/uploadFilesButton.component"
-import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton/globalConfigurationButton.component"
-import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel/hoveredNodePathPanel.component"
-import { FilePanelComponent } from "../filePanel/filePanel.component"
-import { ScreenshotButtonComponent } from "../screenshotButton/screenshotButton.component"
-import { CopyToClipboardButtonComponent } from "../copyToClipboardButton/copyToClipboardButton.component"
-import { DownloadButtonComponent } from "./downloadButton/downloadButton.component"
-import { PresentationModeButtonComponent } from "./presentationModeButton/presentationModeButton.component"
-
-angular
-	.module("app.codeCharta.ui.toolBar", ["app.codeCharta.state", "app.codeCharta.ui.dialog"])
-	.component(toolBarComponent.selector, toolBarComponent)
-	.directive("ccLoadingMapProgressSpinner", downgradeComponent({ component: LoadingMapProgressSpinnerComponent }))
-	.directive("ccUploadFilesButton", downgradeComponent({ component: UploadFilesButtonComponent }))
-	.directive("ccGlobalConfigurationButton", downgradeComponent({ component: GlobalConfigurationButtonComponent }))
-	.directive("ccHoveredNodePathPanel", downgradeComponent({ component: HoveredNodePathPanelComponent }))
-	.directive("ccScreenshotButton", downgradeComponent({ component: ScreenshotButtonComponent }))
-	.directive("ccFilePanel", downgradeComponent({ component: FilePanelComponent }))
-	.directive("ccCopyToClipboardButton", downgradeComponent({ component: CopyToClipboardButtonComponent }))
-	.directive("ccDownloadButton", downgradeComponent({ component: DownloadButtonComponent }))
-	.directive("ccPresentationModeButton", downgradeComponent({ component: PresentationModeButtonComponent }))
+@NgModule({
+	imports: [
+		CommonModule,
+		UploadFilesButtonModule,
+		DownloadButtonModule,
+		ScreenshotButtonModule,
+		CopyToClipboardButtonModule,
+		Export3DMapButtonModule,
+		FilePanelModule,
+		HoveredNodePathPanelModule,
+		LoadingMapProgressSpinnerModule,
+		PresentationModeButtonModule,
+		GlobalConfigurationButtonModule
+	],
+	declarations: [ToolBarComponent],
+	exports: [ToolBarComponent],
+	entryComponents: [ToolBarComponent]
+})
+export class ToolBarModule {}
