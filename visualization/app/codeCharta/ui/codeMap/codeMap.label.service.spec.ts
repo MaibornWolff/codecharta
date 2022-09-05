@@ -47,6 +47,8 @@ describe("CodeMapLabelService", () => {
 		rebuild()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
+		withMockedThreeRendererService()
+		withMockedThreeUpdateCycleService()
 		setCanvasRenderSettings()
 	})
 
@@ -77,10 +79,33 @@ describe("CodeMapLabelService", () => {
 		threeCameraService.camera.position.distanceTo = jest.fn()
 	}
 
+	function withMockedThreeUpdateCycleService() {
+		threeUpdateCycleService = codeMapLabelService["threeUpdateCycleService"] = jest.fn().mockReturnValue({
+			register: jest.fn(),
+			update: jest.fn()
+		})()
+	}
+
 	function withMockedThreeSceneService() {
 		threeSceneService.mapGeometry = new Group().add(new Mesh(new BoxGeometry(10, 10, 10)))
 		threeSceneService.labels.add = jest.fn()
 		threeSceneService.labels.children = []
+	}
+
+	function withMockedThreeRendererService() {
+		threeRenderService = codeMapLabelService["threeRendererService"] = jest.fn().mockReturnValue({
+			renderer: {
+				domElement: {
+					addEventListener: jest.fn(),
+					getBoundingClientRect: jest.fn().mockReturnValue({
+						top: 0
+					}),
+					width: 1,
+					height: 1
+				},
+				getPixelRatio: jest.fn().mockReturnValue(2)
+			}
+		})()
 	}
 
 	function setCanvasRenderSettings() {
