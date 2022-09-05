@@ -99,6 +99,14 @@ describe("codeMapRenderService", () => {
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
 	}
 
+	function withMockedCodeMapLabelService() {
+		codeMapLabelService = codeMapRenderService["codeMapLabelService"] = jest.fn().mockReturnValue({
+			scale: jest.fn(),
+			clearLabels: jest.fn(),
+			addLeafLabel: jest.fn()
+		})()
+	}
+
 	function withMockedThreeSceneService() {
 		threeSceneService = codeMapRenderService["threeSceneService"] = jest.fn().mockReturnValue({
 			scaleHeight: jest.fn(),
@@ -113,16 +121,8 @@ describe("codeMapRenderService", () => {
 		})()
 	}
 
-	function withMockedCodeMapLabelService() {
-		codeMapLabelService = codeMapRenderService["codeMapLabelService"] = jest.fn().mockReturnValue({
-			scale: jest.fn(),
-			clearLabels: jest.fn(),
-			addLeafLabel: jest.fn()
-		})()
-	}
-
 	function withMockedCodeMapMouseEventService() {
-		codeMapLabelService = codeMapRenderService["codeMapMouseEventService"] = jest.fn().mockReturnValue({
+		codeMapMouseEventService = codeMapRenderService["codeMapMouseEventService"] = jest.fn().mockReturnValue({
 			unhoverNode: jest.fn()
 		})()
 	}
@@ -184,6 +184,18 @@ describe("codeMapRenderService", () => {
 	})
 
 	describe("scaleMap", () => {
+		it("should call codeMapMouseEventService.unhoverNode", () => {
+			codeMapRenderService["scaleMap"]()
+
+			expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledWith()
+		})
+
+		it("should call threeSceneService.resetLabel", () => {
+			codeMapRenderService["scaleMap"]()
+
+			expect(threeSceneService.resetLabel).toHaveBeenCalled()
+		})
+
 		it("should call codeMapLabelService.scale", () => {
 			codeMapRenderService["scaleMap"]()
 
@@ -200,6 +212,12 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService["scaleMap"]()
 
 			expect(threeSceneService.scaleHeight).toHaveBeenCalled()
+		})
+
+		it("should call threeSceneService.forceRerender", () => {
+			codeMapRenderService["scaleMap"]()
+
+			expect(threeSceneService.forceRerender).toHaveBeenCalled()
 		})
 	})
 
