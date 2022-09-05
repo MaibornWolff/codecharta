@@ -1,6 +1,16 @@
 # GitLogParser - Status: stable
 
-Generates visualisation data from git repository logs and repository file list. It supports the following metrics per file:
+Generates visualisation data from git repository logs and repository file list.
+
+This parser specializes in tracking file changes across different file-renaming on different feature-branches and then merged main.
+Furthermore, special care is taken to avoid showing un-existing files that might show up in standard histories due to renaming actions on feature branches.
+
+Things to note:
+
+-   File deletions that get reverted later on are ignored by this parser.
+-   This parser is experimental, some features might not work correctly. If you encounter a bug, please report it over at https://github.com/MaibornWolff/codecharta/issues.
+
+It supports the following metrics per file:
 
 | Metric                 | Description                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------------- |
