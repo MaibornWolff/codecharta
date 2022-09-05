@@ -60,6 +60,7 @@ describe("codeMapRenderService", () => {
 		withMockedCodeMapLabelService()
 		withMockedCodeMapArrowService()
 		withMockedStatsService()
+		withMockedCodeMapMouseEventService()
 	})
 
 	function restartSystem() {
@@ -105,6 +106,9 @@ describe("codeMapRenderService", () => {
 				scale: new Vector3(1, 2, 3)
 			}),
 			dispose: jest.fn(),
+			resetLineHighlight: jest.fn(),
+			resetLabel: jest.fn(),
+			forceRerender: jest.fn(),
 			setMapMesh: jest.fn()
 		})()
 	}
@@ -114,6 +118,12 @@ describe("codeMapRenderService", () => {
 			scale: jest.fn(),
 			clearLabels: jest.fn(),
 			addLeafLabel: jest.fn()
+		})()
+	}
+
+	function withMockedCodeMapMouseEventService() {
+		codeMapLabelService = codeMapRenderService["codeMapMouseEventService"] = jest.fn().mockReturnValue({
+			unhoverNode: jest.fn()
 		})()
 	}
 
