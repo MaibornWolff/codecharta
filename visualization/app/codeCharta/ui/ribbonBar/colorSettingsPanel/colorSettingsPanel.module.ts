@@ -9,7 +9,6 @@ import { MetricColorRangeSliderModule } from "./metricColorRangeSlider/metricCol
 @NgModule({
 	imports: [CommonModule, ColorPickerForMapColorModule, MetricColorRangeSliderModule, ResetSettingsButtonModule, MaterialModule],
 	declarations: [ColorSettingsPanelComponent],
-	exports: [ColorSettingsPanelComponent],
-	entryComponents: [ColorSettingsPanelComponent]
+	exports: [ColorSettingsPanelComponent]
 })
 export class ColorSettingsPanelModule {}

@@ -12,6 +12,7 @@ import { downgradeComponent } from "@angular/upgrade/static"
 import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"
 import { ToolBarComponent } from "./ui/toolBar/toolBar.component"
+import { RibbonBarComponent } from "./ui/ribbonBar/ribbonBar.component"
 
 angular.module("app.codeCharta", ["app.codeCharta.state", "app.codeCharta.ui"])
 
@@ -22,3 +23,4 @@ angular
 	.directive("ccLoadingFileProgressSpinner", downgradeComponent({ component: LoadingFileProgressSpinnerComponent }))
 	.directive("ccFileExtensionBar", downgradeComponent({ component: FileExtensionBarComponent }))
 	.directive("ccToolBar", downgradeComponent({ component: ToolBarComponent }))
+	.directive("ccRibbonBar", downgradeComponent({ component: RibbonBarComponent }))

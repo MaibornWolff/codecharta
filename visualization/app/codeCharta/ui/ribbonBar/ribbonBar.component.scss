@@ -37,7 +37,6 @@ ribbon-bar-component {
 		}
 	}
 
-	md-card,
 	mat-card {
 		pointer-events: all;
 		margin: 0;
@@ -45,6 +44,7 @@ ribbon-bar-component {
 		height: ($heightCollapsed + 8) + px;
 		border-radius: 0;
 		border-top: $border;
+		// todo delete?
 		float: left;
 		position: relative;
 		flex: 1 1 0;
@@ -64,7 +64,7 @@ ribbon-bar-component {
 			}
 		}
 
-		&#ai-card,
+		&.ai-card,
 		&.custom-configs-card {
 			.section {
 				.section-header {
@@ -136,7 +136,6 @@ ribbon-bar-component {
 		}
 	}
 
-	md-card,
 	mat-card,
 	.section .section-header,
 	.section .section-body,
@@ -144,22 +143,18 @@ ribbon-bar-component {
 		transition: height 0.1s ease;
 	}
 
-	md-input-container {
-		padding: 0;
-		margin: 0;
-	}
-
-	md-card.custom-configs-card,
-	md-card.ai-card {
+	mat-card.custom-configs-card,
+	mat-card.ai-card {
 		max-width: 120px;
 		min-width: 120px;
 	}
 
-	md-card.scenario-card {
+	mat-card.scenario-card {
 		max-width: 100px;
 		min-width: 100px;
 	}
 
+	// todo move into .cc-metric-settings-panel
 	cc-area-metric-chooser,
 	cc-height-metric-chooser,
 	cc-color-metric-chooser,
