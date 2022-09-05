@@ -272,7 +272,16 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
 			codeMapRenderService.render(null)
 
-			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
+		})
+
+		it("should generate labels for not-flattened nodes", () => {
+			nodes[0].flat = false
+
+			codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
+			codeMapRenderService.render(null)
+
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
 		})
 
 		it("should generate labels for color if option is toggled on", () => {

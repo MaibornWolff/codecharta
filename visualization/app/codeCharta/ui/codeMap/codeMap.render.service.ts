@@ -131,7 +131,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	private setLabels(sortedNodes: Node[]) {
 		this.codeMapLabelService.clearLabels()
 
-		if (sortedNodes.length === 0) {
+		if (sortedNodes && sortedNodes.length === 0) {
 			return
 		}
 
