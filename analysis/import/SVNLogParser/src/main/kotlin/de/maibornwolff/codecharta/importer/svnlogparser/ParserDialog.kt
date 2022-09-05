@@ -26,8 +26,10 @@ class ParserDialog {
                 default = defaultOutputFileName
             )
 
-            val isCompressed: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             val isSilent: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to suppress command line output?", default = false)
