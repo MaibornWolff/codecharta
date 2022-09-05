@@ -95,7 +95,7 @@ class StructureModifier(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            mainWithInOut(System.`in`, System.out, System.err, args)
+            CommandLine(StructureModifier()).execute(*args)
         }
 
         @JvmStatic

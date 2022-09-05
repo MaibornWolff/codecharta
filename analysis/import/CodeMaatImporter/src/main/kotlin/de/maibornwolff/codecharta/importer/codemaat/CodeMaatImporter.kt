@@ -74,7 +74,7 @@ class CodeMaatImporter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(CodeMaatImporter(), System.out, *args)
+            CommandLine(CodeMaatImporter()).execute(*args)
         }
     }
 

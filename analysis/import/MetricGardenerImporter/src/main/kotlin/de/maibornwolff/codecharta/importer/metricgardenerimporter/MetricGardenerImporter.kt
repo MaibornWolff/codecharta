@@ -92,7 +92,7 @@ class MetricGardenerImporter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(MetricGardenerImporter(), System.out, *args)
+            CommandLine(MetricGardenerImporter()).execute(*args)
         }
     }
 

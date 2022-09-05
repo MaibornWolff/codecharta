@@ -43,7 +43,7 @@ class EdgeFilter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(EdgeFilter(), System.out, *args)
+            CommandLine(EdgeFilter()).execute(*args)
         }
     }
 
