@@ -19,8 +19,7 @@ angular
 		"app.codeCharta.ui.codeMap",
 		"app.codeCharta.ui.dialog",
 		"app.codeCharta.ui.resetSettingsButton",
-		"app.codeCharta.ui.ribbonBar",
-		"app.codeCharta.ui.toolBar"
+		"app.codeCharta.ui.ribbonBar"
 	])
 	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
 	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))
