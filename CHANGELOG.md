@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate tool bar component to Angular [#3020](https://github.com/MaibornWolff/codecharta/pull/3020)
+-   Remove obsolete AngularJS IsPresentationModeService and ShowOnlyBuildingsWithEdgesService [#3005](https://github.com/MaibornWolff/codecharta/pull/3005)
 
 ## [1.104.1] - 2022-08-31
 
@@ -49,7 +50,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate view cube component and its service to Angular [#2998](https://github.com/MaibornWolff/codecharta/pull/2998)
--   Remove obsolete AngularJS IsPresentationModeService and ShowOnlyBuildingsWithEdgesService [#3005](https://github.com/MaibornWolff/codecharta/pull/3005)
 
 ## [1.104.0] - 2022-08-29
 
