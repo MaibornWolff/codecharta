@@ -46,7 +46,8 @@ class CcshTest {
         val exitCode = ccshCLI.execute("-h")
 
         Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(contentOutput.toString()).contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
+        Assertions.assertThat(contentOutput.toString())
+            .contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
     }
 
@@ -60,7 +61,8 @@ class CcshTest {
             ParserService.executeSelectedParser(any(), any())
         } returns 0
 
-        Ccsh.main(emptyArray())
+        val exitCode = Ccsh.executeCommandLine(emptyArray())
+        Assertions.assertThat(exitCode).isZero
 
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
@@ -75,7 +77,8 @@ class CcshTest {
             ParserService.executeSelectedParser(any(), any())
         } returns 0
 
-        Ccsh.main(arrayOf("unknownparser"))
+        val exitCode = Ccsh.executeCommandLine(arrayOf("unknownparser"))
+        Assertions.assertThat(exitCode).isZero
 
         verify { ParserService.executeSelectedParser(any(), any()) }
     }

@@ -9,6 +9,6 @@ import { DownloadDialogComponent } from "./downloadDialog/downloadDialog.compone
 	imports: [ActionIconModule, MaterialModule, FormsModule],
 	declarations: [DownloadButtonComponent, DownloadDialogComponent],
 	exports: [DownloadButtonComponent],
-	entryComponents: [DownloadButtonComponent, DownloadDialogComponent]
+	entryComponents: [DownloadDialogComponent]
 })
 export class DownloadButtonModule {}
