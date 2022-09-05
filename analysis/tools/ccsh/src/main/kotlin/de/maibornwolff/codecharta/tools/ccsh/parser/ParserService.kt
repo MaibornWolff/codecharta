@@ -7,6 +7,8 @@ import picocli.CommandLine
 
 class ParserService {
     companion object {
+        private const val EXIT_CODE_PARSER_NOT_SUPPORTED = 42
+
         fun selectParser(commandLine: CommandLine): String {
             val selectedParser: String = KInquirer.promptList(
                 message = "Which parser do you want to execute?",
@@ -28,7 +30,7 @@ class ParserService {
                 return subCommandLine.execute(*collectedArgs.toTypedArray())
             } else {
                 printNotSupported(selectedParser)
-                return 42
+                return EXIT_CODE_PARSER_NOT_SUPPORTED
             }
         }
 
@@ -49,8 +51,10 @@ class ParserService {
         }
 
         private fun printNotSupported(parserName: String) {
-            println("The interactive usage of $parserName is not supported yet.\n" +
-                    "Please specify the full command to run the parser.")
+            println(
+                "The interactive usage of $parserName is not supported yet.\n" +
+                        "Please specify the full command to run the parser."
+            )
         }
     }
 }
