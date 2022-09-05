@@ -65,6 +65,8 @@ docs:
             url: /docs/crococosmoimporter
           - title: "Understand Importer"
             url: /docs/understandimporter
+          - title: "MetricGardener Importer"
+            url: /docs/metricgardener-importer
 
     - title: Visualization
       children:

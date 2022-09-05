@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add an option to run metric-gardener before it's parser if requested [#3015](https://github.com/MaibornWolff/codecharta/pull/3015)
+-   Add an option to run MetricGardener before its parser if requested [#3015](https://github.com/MaibornWolff/codecharta/pull/3015)
+-   Add missing documentation for MetricGardener importer [#3016](https://github.com/MaibornWolff/codecharta/pull/3016)
 
 ### Changed
 
