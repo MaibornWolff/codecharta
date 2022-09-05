@@ -281,7 +281,7 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
 			codeMapRenderService.render(null)
 
-			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(4)
 		})
 
 		it("should generate labels for color if option is toggled on", () => {
