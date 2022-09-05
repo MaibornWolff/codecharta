@@ -33,6 +33,7 @@ import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { splitStateActions } from "../../state/store/state.splitter"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -48,6 +49,7 @@ describe("codeMapRenderService", () => {
 	let codeMapArrowService: CodeMapArrowService
 	let threeStatsService: ThreeStatsService
 	let threeUpdateCycleService: ThreeUpdateCycleService
+	let codeMapMouseEventService: CodeMapMouseEventService
 
 	let map: CodeMapNode
 
@@ -70,6 +72,7 @@ describe("codeMapRenderService", () => {
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 		threeStatsService = getService<ThreeStatsService>("threeStatsService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
+		codeMapMouseEventService = getService<CodeMapMouseEventService>("codeMapMouseEventService")
 
 		map = klona(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
@@ -89,7 +92,8 @@ describe("codeMapRenderService", () => {
 			codeMapLabelService,
 			codeMapArrowService,
 			threeStatsService,
-			threeUpdateCycleService
+			threeUpdateCycleService,
+			codeMapMouseEventService
 		)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
 	}
