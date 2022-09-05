@@ -25,8 +25,8 @@ import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
-import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+//import { ThreeRendererService } from "./threeViewer/threeRendererService"
+//import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 
 describe("CodeMapLabelService", () => {
 	let storeService: StoreService
@@ -34,8 +34,8 @@ describe("CodeMapLabelService", () => {
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let threeRenderService: ThreeRendererService
-	let threeUpdateCycleService: ThreeUpdateCycleService
+	//let threeRenderService: ThreeRendererService
+	//let threeUpdateCycleService: ThreeUpdateCycleService
 	let createElementOrigin
 	let sampleLeaf: Node
 	let otherSampleLeaf: Node
@@ -47,8 +47,8 @@ describe("CodeMapLabelService", () => {
 		rebuild()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
-		withMockedThreeRendererService()
-		withMockedThreeUpdateCycleService()
+		//withMockedThreeRendererService()
+		//withMockedThreeUpdateCycleService()
 		setCanvasRenderSettings()
 	})
 
@@ -59,8 +59,8 @@ describe("CodeMapLabelService", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
-		threeRenderService = getService<ThreeRendererService>("threeRenderService")
-		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
+		//threeRenderService = getService<ThreeRendererService>("threeRenderService")
+		//threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 	}
 
 	function rebuild() {
@@ -68,9 +68,9 @@ describe("CodeMapLabelService", () => {
 			storeService,
 			threeCameraService,
 			threeSceneService,
-			threeOrbitControlsService,
-			threeRenderService,
-			threeUpdateCycleService
+			threeOrbitControlsService
+			//threeRenderService,
+			//threeUpdateCycleService
 		)
 	}
 
@@ -78,18 +78,12 @@ describe("CodeMapLabelService", () => {
 		threeCameraService.camera = new PerspectiveCamera()
 		threeCameraService.camera.position.distanceTo = jest.fn()
 	}
-
+	/*
 	function withMockedThreeUpdateCycleService() {
 		threeUpdateCycleService = codeMapLabelService["threeUpdateCycleService"] = jest.fn().mockReturnValue({
 			register: jest.fn(),
 			update: jest.fn()
 		})()
-	}
-
-	function withMockedThreeSceneService() {
-		threeSceneService.mapGeometry = new Group().add(new Mesh(new BoxGeometry(10, 10, 10)))
-		threeSceneService.labels.add = jest.fn()
-		threeSceneService.labels.children = []
 	}
 
 	function withMockedThreeRendererService() {
@@ -106,6 +100,13 @@ describe("CodeMapLabelService", () => {
 				getPixelRatio: jest.fn().mockReturnValue(2)
 			}
 		})()
+	}
+	*/
+
+	function withMockedThreeSceneService() {
+		threeSceneService.mapGeometry = new Group().add(new Mesh(new BoxGeometry(10, 10, 10)))
+		threeSceneService.labels.add = jest.fn()
+		threeSceneService.labels.children = []
 	}
 
 	function setCanvasRenderSettings() {
