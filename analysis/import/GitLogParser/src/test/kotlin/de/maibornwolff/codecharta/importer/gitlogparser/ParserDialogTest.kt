@@ -73,8 +73,7 @@ class ParserDialogTest {
 
         val cmdLine = CommandLine(GitLogParser())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>())
-            .isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("file-name-list").getValue<File>().name).isEqualTo(fileNameList)
         org.junit.jupiter.api.Assertions.assertNull(parseResult.matchedOption("not-compressed"))
         Assertions.assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
