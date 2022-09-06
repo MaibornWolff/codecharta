@@ -10,9 +10,14 @@ class CSVImporterTest {
 
     @Test
     fun `should create json uncompressed file`() {
-        main(arrayOf("src/test/resources/sourcemonitor.csv", "-nc",
-                        "-o=src/test/resources/sourcemonitor.cc.json"))
-        val file = File("src/test/resources/sourcemonitor.cc.json")
+        main(
+            arrayOf(
+                "src/test/resources/csvimporter.csv", "-nc",
+                "path-column-name=File Name",
+                "-o=src/test/resources/csvimporter.cc.json"
+            )
+        )
+        val file = File("src/test/resources/csvimporter.cc.json")
         file.deleteOnExit()
 
         assertTrue(file.exists())
@@ -29,8 +34,12 @@ class CSVImporterTest {
 
     @Test
     fun `should contain Lines value of 44`() {
-        main(arrayOf("src/test/resources/sourcemonitor.csv", "-nc",
-                        "-o=src/test/resources/sourcemonitor.cc.json"))
+        main(
+            arrayOf(
+                "src/test/resources/sourcemonitor.csv", "-nc",
+                "-o=src/test/resources/sourcemonitor.cc.json"
+            )
+        )
         val file = File("src/test/resources/sourcemonitor.cc.json")
         file.deleteOnExit()
 
