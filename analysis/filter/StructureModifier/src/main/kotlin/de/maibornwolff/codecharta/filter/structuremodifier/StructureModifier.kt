@@ -100,7 +100,7 @@ class StructureModifier(
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(StructureModifier(input, output, error), *args)
+            CommandLine(StructureModifier(input, output, error)).execute(*args)
         }
     }
 

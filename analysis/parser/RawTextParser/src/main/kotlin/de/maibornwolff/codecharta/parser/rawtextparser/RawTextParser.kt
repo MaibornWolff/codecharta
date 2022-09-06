@@ -7,11 +7,11 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
-import picocli.CommandLine.call
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
+import java.io.PrintWriter
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
@@ -115,12 +115,12 @@ class RawTextParser(
 
         @JvmStatic
         fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
-            call(RawTextParser(System.`in`, outputStream), System.out, *args)
+            CommandLine(RawTextParser(System.`in`, outputStream)).execute(*args)
         }
 
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            call(RawTextParser(input, outputStream, error), outputStream, *args)
+            CommandLine(RawTextParser(input, outputStream, error)).setOut(PrintWriter(outputStream)).execute(*args)
         }
     }
 

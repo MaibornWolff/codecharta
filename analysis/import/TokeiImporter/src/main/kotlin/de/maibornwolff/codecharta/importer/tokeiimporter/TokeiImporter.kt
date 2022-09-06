@@ -21,6 +21,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
+import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -126,7 +127,7 @@ class TokeiImporter(
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(TokeiImporter(input, output, error), output, *args)
+            CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
         }
 
         @JvmStatic
