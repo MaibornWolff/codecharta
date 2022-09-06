@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Stop asking the user to compress a file when printing to stdOut [#3024](https://github.com/MaibornWolff/codecharta/pull/3024)
+
 ## [1.105.0] - 2022-09-06
 
 ### Added 🚀

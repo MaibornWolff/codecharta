@@ -52,7 +52,7 @@ class CSVImporter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(CSVImporter(), System.out, *args)
+            CommandLine(CSVImporter()).execute(*args)
         }
     }
 

@@ -48,7 +48,7 @@ class UnderstandImporter(private val output: PrintStream = System.out) : Callabl
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(UnderstandImporter(), System.out, *args)
+            CommandLine(UnderstandImporter()).execute(*args)
         }
     }
 }

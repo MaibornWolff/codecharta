@@ -17,8 +17,10 @@ class ParserDialog {
                 message = "What is the name of the output file?"
             )
 
-            val compress: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             val addMissing: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to add missing nodes to reference?", default = false)
@@ -38,7 +40,7 @@ class ParserDialog {
             return listOf(
                 inputFolderName,
                 "--output-file=$outputFileName",
-                "--not-compressed=$compress",
+                "--not-compressed=$isCompressed",
                 "--add-missing=$addMissing",
                 "--recursive=$recursive",
                 "--leaf=$leaf",

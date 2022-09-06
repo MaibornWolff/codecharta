@@ -31,24 +31,26 @@ class ParserDialog {
 
             val delimiter = KInquirer.promptInput(
                     message = "Which column delimiter is used in the CSV file?",
-                    hint = ",",
-                    default = ","
+                hint = ",",
+                default = ","
             )
 
             val pathSeparator = KInquirer.promptInput(
-                    message = "Which path separator is used in the path names?",
-                    hint = "/",
-                    default = "/"
+                message = "Which path separator is used in the path names?",
+                hint = "/",
+                default = "/"
             )
 
-            val isCompressed: Boolean =
-                    KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             return inputFileNames + listOfNotNull(
-                    "--output-file=$outputFileName",
-                    "--delimiter=$delimiter",
-                    "--path-separator=$pathSeparator",
-                    if (isCompressed) null else "--not-compressed",
+                "--output-file=$outputFileName",
+                "--delimiter=$delimiter",
+                "--path-separator=$pathSeparator",
+                if (isCompressed) null else "--not-compressed",
             )
         }
     }

@@ -22,8 +22,8 @@ class RawTextParserTest {
 
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.xyz"))
 
-        val resultJSON = JsonParser().parse(result)
-        val expectedJson = JsonParser().parse(expectedResultFile.reader())
+        val resultJSON = JsonParser.parseString(result)
+        val expectedJson = JsonParser.parseReader(expectedResultFile.reader())
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 
@@ -36,8 +36,8 @@ class RawTextParserTest {
             arrayOf("src/test/resources/sampleproject/", "--tab-width=2", "--max-indentation-level=2", "-e=tabs*.")
         )
 
-        val resultJSON = JsonParser().parse(result)
-        val expectedJson = JsonParser().parse(expectedResultFile.reader())
+        val resultJSON = JsonParser.parseString(result)
+        val expectedJson = JsonParser.parseReader(expectedResultFile.reader())
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 
@@ -47,8 +47,8 @@ class RawTextParserTest {
         val partialResult = "src/test/resources/cc_projects/project_3.cc.json"
         val fileToParse = "src/test/resources/sampleproject/tabs.xyz"
         val input = File(pipedProject).bufferedReader().readLines().joinToString(separator = "\n") { it }
-        val partialProject1 = ProjectDeserializer.deserializeProject(File(partialResult).inputStream())!!
-        val partialProject2 = ProjectDeserializer.deserializeProject(File(pipedProject).inputStream())!!
+        val partialProject1 = ProjectDeserializer.deserializeProject(File(partialResult).inputStream())
+        val partialProject2 = ProjectDeserializer.deserializeProject(File(pipedProject).inputStream())
         val expected = ByteArrayOutputStream()
         ProjectSerializer.serializeProject(
             MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
@@ -57,8 +57,8 @@ class RawTextParserTest {
 
         val result = executeForOutput(input, arrayOf(fileToParse))
 
-        val resultJSON = JsonParser().parse(result)
-        Assertions.assertThat(resultJSON).isEqualTo(JsonParser().parse(expected.toString()))
+        val resultJSON = JsonParser.parseString(result)
+        Assertions.assertThat(resultJSON).isEqualTo(JsonParser.parseString(expected.toString()))
     }
 
     fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
