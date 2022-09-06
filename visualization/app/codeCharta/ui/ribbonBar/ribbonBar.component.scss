@@ -1,4 +1,9 @@
-ribbon-bar-component {
+cc-ribbon-bar {
+	position: fixed;
+	z-index: 10;
+	white-space: nowrap;
+	pointer-events: none;
+	width: 100%;
 	$heightExpanded: 195;
 	$heightCollapsed: 38;
 	$border: 1px solid #cdcdcd;
@@ -22,64 +27,30 @@ ribbon-bar-component {
 	}
 
 	cc-search-panel {
-		.search-panel-card {
-			padding: 0;
+		.search-panel-card.expanded {
+			height: 100%;
 
-			&.expanded {
-				height: 100%;
-
-				.section-body {
-					min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
-					max-height: 500px;
-					overflow-y: auto;
-				}
+			.section-body {
+				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
+				max-height: 500px;
+				overflow-y: auto;
 			}
 		}
 	}
 
-	mat-card {
+	.mat-card {
 		pointer-events: all;
-		margin: 0;
 		padding: 0;
 		height: ($heightCollapsed + 8) + px;
 		border-radius: 0;
 		border-top: $border;
-		// todo delete?
-		float: left;
-		position: relative;
 		flex: 1 1 0;
-		min-width: 92px;
 		transition: 200ms width ease-in-out;
-
-		.color-section {
-			text-align: center;
-			height: 100%;
-			width: 100%;
-
-			.color-icon {
-				margin: 5%;
-			}
-			.color-dropdown-icon {
-				margin: 2%;
-			}
-		}
-
-		&.ai-card,
-		&.custom-configs-card {
-			.section {
-				.section-header {
-					overflow: visible;
-					text-align: center;
-				}
-				.section-title {
-					padding: 1px 5px;
-				}
-			}
-		}
 
 		.section {
 			display: inline-block;
 			height: 100%;
+			width: 100%;
 			border-right: $border;
 			vertical-align: top;
 			overflow: hidden;
@@ -134,6 +105,37 @@ ribbon-bar-component {
 				}
 			}
 		}
+
+		.delta-color-section {
+			line-height: 45px;
+			vertical-align: baseline;
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			.color-icon {
+				margin: 8px;
+			}
+			.color-dropdown-icon {
+				position: absolute;
+				top: 12px;
+				right: 8px;
+			}
+		}
+
+		&.ai-card,
+		&.custom-configs-card {
+			.section {
+				.section-header {
+					overflow: visible;
+					text-align: center;
+				}
+				.section-title {
+					padding: 1px 5px;
+				}
+			}
+		}
 	}
 
 	mat-card,
@@ -154,7 +156,6 @@ ribbon-bar-component {
 		min-width: 100px;
 	}
 
-	// todo move into .cc-metric-settings-panel
 	cc-area-metric-chooser,
 	cc-height-metric-chooser,
 	cc-color-metric-chooser,

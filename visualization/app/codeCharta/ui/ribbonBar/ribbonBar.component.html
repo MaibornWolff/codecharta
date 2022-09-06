@@ -54,7 +54,7 @@
 </mat-card>
 
 <mat-card
-	*ngIf="isDeltaState$ | async"
+	*ngIf="!(isDeltaState$ | async)"
 	id="color-metric-card"
 	class="color-metric-card metric-card"
 	[class.expanded]="panelSelection === 'COLOR_PANEL_OPEN'"
@@ -93,20 +93,10 @@
 	</div>
 </mat-card>
 
-<!-- delete layout-align="space-between center"? -->
 <mat-card *ngIf="isDeltaState$ | async" id="color-settings-card">
-	<div
-		class="color-section"
-		layout="row"
-		layout-align="space-between center"
-		(click)="updatePanelSelection('COLOR_PANEL_OPEN')"
-		title="Show color settings"
-	>
-		<!-- delete span -->
-		<span>
-			<i class="fa fa-paint-brush color-icon"></i>
-			Color Settings
-		</span>
+	<div class="delta-color-section" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color settings">
+		<i class="fa fa-paint-brush color-icon"></i>
+		Color Settings
 		<i class="fa fa-sort-down color-dropdown-icon"></i>
 	</div>
 	<cc-color-settings-panel
