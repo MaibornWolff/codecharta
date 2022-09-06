@@ -45,7 +45,7 @@
 	"scripts": {
 		"start": "nw .",
 		"build": "webpack --config ./conf/webpack.config.js --env DEV=false",
-		"dev": "NODE_OPTIONS=--openssl-legacy-provider webpack serve --config ./conf/webpack.config.js --env DEV=true",
+		"dev": "webpack serve --config ./conf/webpack.config.js --env DEV=true",
 		"test": "jest --config ./jest.config.json .*\\.spec\\.ts --env=jsdom",
 		"test:auto": "npm test -- --watch",
 		"test:autoNoCoverage": "npm run test:auto -- --coverage false",
