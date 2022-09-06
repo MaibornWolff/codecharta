@@ -43,8 +43,7 @@ class ParserDialogTest {
 
         val cmdLine = CommandLine(GitLogParser())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>())
-            .isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("file-name-list").getValue<File>().name).isEqualTo(fileNameList)
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         Assertions.assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
