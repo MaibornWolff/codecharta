@@ -69,5 +69,4 @@ class ParserDialogTest {
         assertNull(parseResult.matchedOption("not-compressed"))
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<List<File>>()[0].name).isEqualTo(fileName)
     }
-
 }
