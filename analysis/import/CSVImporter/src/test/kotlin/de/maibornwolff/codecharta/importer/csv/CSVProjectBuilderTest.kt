@@ -82,7 +82,7 @@ class CSVProjectBuilderTest {
         val node = project.rootNode.children.iterator().next()
 
         assertEquals(node.name, directoryName)
-        assertEquals(node.children.size,1)
+        assertEquals(node.children.size, 1)
     }
 
     @Test
@@ -98,5 +98,4 @@ class CSVProjectBuilderTest {
 
         assertEquals(39, project.size)
     }
-
 }

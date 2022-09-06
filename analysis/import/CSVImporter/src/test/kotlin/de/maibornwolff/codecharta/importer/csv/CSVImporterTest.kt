@@ -39,7 +39,6 @@ class CSVImporterTest {
         val expectedJsonString = File("src/test/resources/csvimporter_different_path_column_name.cc.json").readText()
         file.deleteOnExit()
 
-
         JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.STRICT)
     }
 
