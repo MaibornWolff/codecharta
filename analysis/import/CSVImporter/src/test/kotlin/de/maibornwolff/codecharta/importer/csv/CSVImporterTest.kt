@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.importer.csv.CSVImporter.Companion.main
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 import java.io.File
 
 class CSVImporterTest {
@@ -13,7 +15,6 @@ class CSVImporterTest {
         main(
             arrayOf(
                 "src/test/resources/csvimporter.csv", "-nc",
-                "path-column-name=File Name",
                 "-o=src/test/resources/csvimporter.cc.json"
             )
         )
@@ -22,6 +23,41 @@ class CSVImporterTest {
 
         assertTrue(file.exists())
     }
+
+    @Test
+    fun `should create a correct json when having a different path column name`() {
+        main(
+            arrayOf(
+                "src/test/resources/csvimporter_different_path_column_name.csv", "-nc",
+                "--path-separator=\\",
+                "--path-column-name=File Name",
+                "-o=src/test/resources/csvimporter.cc.json"
+            )
+        )
+        val file = File("src/test/resources/csvimporter.cc.json")
+        val testJsonString = File("src/test/resources/csvimporter.cc.json").readText()
+        val expectedJsonString = File("src/test/resources/csvimporter_different_path_column_name.cc.json").readText()
+        file.deleteOnExit()
+
+
+        JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.STRICT)
+    }
+
+
+
+/*    describe("ProjectSerializer") {
+        it("should serialize project") {
+            val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3).reader()
+            val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json").readText()
+            val testProject = ProjectDeserializer.deserializeProject(jsonReader)
+
+            ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false)
+
+            val testJsonString = File(filename).readText()
+
+            JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.NON_EXTENSIBLE)
+        }
+    }*/
 
     @Test
     fun `should create json gzip file`() {
