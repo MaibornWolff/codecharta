@@ -1,117 +1,102 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.hasItem
-import org.hamcrest.Matchers.hasSize
-import org.hamcrest.Matchers.`is`
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
+import kotlin.test.assertEquals
 
-class CSVProjectBuilderTest : Spek({
-    fun toInputStream(content: String): InputStream {
+class CSVProjectBuilderTest {
+
+    private fun toInputStream(content: String): InputStream {
         return ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
     }
 
-    describe("a CSVProjectBuilder") {
+    @Test
+    fun `ignore invalid csv content`() {
         val csvProjectBuilder = CSVProjectBuilder('\\', ',')
+        val invalidContent = "head,path\nnoValidContent\n"
+        val project = csvProjectBuilder
+            .parseCSVStream(toInputStream(invalidContent))
+            .build()
 
-        context("adding invalid csv") {
-
-            val invalidContent = "head,path\nnoValidContent\n"
-            val project = csvProjectBuilder
-                .parseCSVStream(toInputStream(invalidContent))
-                .build()
-
-            it("should be ignored") {
-                assertThat(project.rootNode.children, hasSize(0))
-            }
-        }
-
-        context("adding valid csv with usual line breaks") {
-            val name = "someName"
-            val project = csvProjectBuilder.parseCSVStream(
-                toInputStream("someContent,,path\nprojectName,blubb2,$name")
-            )
-                .build()
-
-            it("should have node with same name") {
-                assertThat(project.rootNode.children.map { it.name }, hasItem(name))
-            }
-        }
-
-        context("adding valid csv with windows line breaks") {
-            val name = "someName"
-            val project = csvProjectBuilder.parseCSVStream(
-                toInputStream("someContent,,path\r\nprojectName,blubb2,$name")
-            )
-                .build()
-
-            it("should have node with same name") {
-                assertThat(project.rootNode.children.map { it.name }, hasItem(name))
-            }
-        }
+        assertEquals(project.rootNode.children.size, 0)
     }
 
-    describe("a CSVProjectBuilder") {
+    @Test
+    fun `adding valid csv with unix line breaks`() {
         val csvProjectBuilder = CSVProjectBuilder('\\', ',')
+        val name = "someName"
+        val project = csvProjectBuilder.parseCSVStream(
+            toInputStream("someContent,,path\nprojectName,foo,$name")
+        )
+            .build()
+        val childName = project.rootNode.children.map { it.name }
 
-        context("adding line with metric values") {
-            val attribName = "attname"
-            val attribVal = "\"0,1\""
-            val attValFloat = 0.1
+        assertEquals(childName[0], name)
+    }
 
-            val project = csvProjectBuilder.parseCSVStream(
-                toInputStream(
-                    "head1,path,head3,head4,$attribName\nprojectName,\"9900,01\",\"blubb\",1.0,$attribVal\n"
-                )
+    @Test
+    fun `adding valid csv with windows line breaks`() {
+        val csvProjectBuilder = CSVProjectBuilder('\\', ',')
+        val name = "someName"
+        val project = csvProjectBuilder.parseCSVStream(
+            toInputStream("someContent,,path\r\nprojectName,foo,$name")
+        )
+            .build()
+        val childName = project.rootNode.children.map { it.name }
+
+        assertEquals(childName[0], name)
+    }
+
+    @Test
+    fun `adding line with metric values`() {
+        val csvProjectBuilder = CSVProjectBuilder('\\', ',')
+        val attributeName = "attributeName"
+        val attributeValue = "\"0,1\""
+        val attributeValueFloat = 0.1
+
+        val project = csvProjectBuilder.parseCSVStream(
+            toInputStream(
+                "head1,path,head3,head4,$attributeName\nprojectName,\"9900,01\",\"foo\",1.0,$attributeValue\n"
             )
-                .build()
+        )
+            .build()
 
-            it("should add attributes to node") {
-                val nodeAttributes = project.rootNode.children.iterator().next().attributes
-                assertThat(nodeAttributes.size, `is`(3))
-                assertThat<Any>(nodeAttributes[attribName], `is`<Any>(attValFloat))
-            }
-        }
+        val nodeAttributes = project.rootNode.children.iterator().next().attributes
+
+        assertEquals(nodeAttributes.size, 3)
+        assertEquals(nodeAttributes[attributeName], attributeValueFloat)
     }
 
-    describe("a CSVProjectBuilder") {
+    @Test
+    fun `adding file with subdirectory`() {
         val csvProjectBuilder = CSVProjectBuilder('\\', ',')
+        val directoryName = "someNodeName"
+        val project = csvProjectBuilder
+            .parseCSVStream(toInputStream("someContent\n$directoryName\\someFile"))
+            .build()
 
-        context("adding file with subdirectory") {
-            val directoryName = "someNodeName"
-            val project = csvProjectBuilder
-                .parseCSVStream(toInputStream("someContent\n$directoryName\\someFile"))
-                .build()
+        assertEquals(project.rootNode.children.size, 1)
 
-            it("should create node for subdirectory") {
-                assertThat(project.rootNode.children.size, `is`(1))
-                val node = project.rootNode.children.iterator().next()
-                assertThat(node.name, `is`(directoryName))
-                assertThat(node.children.size, `is`(1))
-            }
-        }
+        val node = project.rootNode.children.iterator().next()
+
+        assertEquals(node.name, directoryName)
+        assertEquals(node.children.size,1)
     }
 
-    describe("CSVProjectBuilder for Sourcemonitor") {
+    @Test
+    fun `reading csv lines from Sourcemonitor`() {
         val csvProjectBuilder = CSVProjectBuilder(
             '\\',
             ',',
-            metricNameTranslator = MetricNameTranslator(mapOf(Pair("File Name", "path")))
+            "File Name"
         )
+        val project = csvProjectBuilder
+            .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv"))
+            .build()
 
-        context("reading csv lines from Sourcemonitor") {
-            val project = csvProjectBuilder
-                .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv"))
-                .build()
-
-            it("has correct number of nodes") {
-                assertThat(project.size, `is`(39))
-            }
-        }
+        assertEquals(39, project.size)
     }
-})
+
+}
