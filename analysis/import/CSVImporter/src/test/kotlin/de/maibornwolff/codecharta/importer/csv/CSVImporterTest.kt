@@ -43,26 +43,10 @@ class CSVImporterTest {
         JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.STRICT)
     }
 
-
-
-/*    describe("ProjectSerializer") {
-        it("should serialize project") {
-            val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3).reader()
-            val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json").readText()
-            val testProject = ProjectDeserializer.deserializeProject(jsonReader)
-
-            ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false)
-
-            val testJsonString = File(filename).readText()
-
-            JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.NON_EXTENSIBLE)
-        }
-    }*/
-
     @Test
     fun `should create json gzip file`() {
-        main(arrayOf("src/test/resources/sourcemonitor.csv", "-o=src/test/resources/sourcemonitor.cc.json"))
-        val file = File("src/test/resources/sourcemonitor.cc.json.gz")
+        main(arrayOf("src/test/resources/csvimporter.csv", "-o=src/test/resources/csvimporter.cc.json"))
+        val file = File("src/test/resources/csvimporter.cc.json.gz")
         file.deleteOnExit()
 
         assertTrue(file.exists())
@@ -72,11 +56,11 @@ class CSVImporterTest {
     fun `should contain Lines value of 44`() {
         main(
             arrayOf(
-                "src/test/resources/sourcemonitor.csv", "-nc",
-                "-o=src/test/resources/sourcemonitor.cc.json"
+                "src/test/resources/csvimporter.csv", "-nc",
+                "-o=src/test/resources/csvimporter.cc.json"
             )
         )
-        val file = File("src/test/resources/sourcemonitor.cc.json")
+        val file = File("src/test/resources/csvimporter.cc.json")
         file.deleteOnExit()
 
         assertThat(file.readText()).contains(listOf("\"Lines\":44.0"))
