@@ -94,11 +94,6 @@ class StructureModifier(
 
     companion object {
         @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine(StructureModifier()).execute(*args)
-        }
-
-        @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine(StructureModifier(input, output, error)).execute(*args)
         }

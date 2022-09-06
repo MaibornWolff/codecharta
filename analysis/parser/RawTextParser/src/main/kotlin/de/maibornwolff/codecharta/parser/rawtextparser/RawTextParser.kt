@@ -109,16 +109,6 @@ class RawTextParser(
 
     companion object {
         @JvmStatic
-        fun main(args: Array<String>) {
-            mainWithOutputStream(System.out, args)
-        }
-
-        @JvmStatic
-        fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
-            CommandLine(RawTextParser(System.`in`, outputStream)).execute(*args)
-        }
-
-        @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
             CommandLine(RawTextParser(input, outputStream, error)).setOut(PrintWriter(outputStream)).execute(*args)
         }
