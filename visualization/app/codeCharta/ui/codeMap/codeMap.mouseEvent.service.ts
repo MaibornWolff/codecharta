@@ -263,7 +263,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 
 	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
 		const enforceLabel = true
-		this.codeMapLabelService.addLabel(codeMapBuilding.node, 0, enforceLabel)
+		this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, enforceLabel)
 
 		labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
