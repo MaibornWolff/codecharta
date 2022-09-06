@@ -2,14 +2,11 @@ cc-ribbon-bar {
 	position: fixed;
 	z-index: 10;
 	white-space: nowrap;
-	pointer-events: none;
+	display: flex;
 	width: 100%;
 	$heightExpanded: 195;
 	$heightCollapsed: 38;
 	$border: 1px solid #cdcdcd;
-
-	pointer-events: none;
-	display: flex;
 
 	.cc-ribbon-bar-menu-button {
 		height: 22px;
@@ -39,7 +36,6 @@ cc-ribbon-bar {
 	}
 
 	.mat-card {
-		pointer-events: all;
 		padding: 0;
 		height: ($heightCollapsed + 8) + px;
 		border-radius: 0;
@@ -185,6 +181,7 @@ cc-ribbon-bar {
 
 		&.hidden {
 			max-height: 0;
+			pointer-events: none;
 			opacity: 0;
 			transition: opacity 0ms 200ms, max-height 200ms ease-in-out;
 		}
