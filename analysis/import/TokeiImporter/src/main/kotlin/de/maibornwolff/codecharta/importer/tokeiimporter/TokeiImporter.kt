@@ -121,11 +121,6 @@ class TokeiImporter(
 
     companion object {
         @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine(TokeiImporter()).execute(*args)
-        }
-
-        @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
         }

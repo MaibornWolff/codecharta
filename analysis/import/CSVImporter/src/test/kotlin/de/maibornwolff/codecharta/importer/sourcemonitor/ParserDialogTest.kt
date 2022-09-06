@@ -45,6 +45,7 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(fileName)
     }
 
+    @Test
     fun `should output correct arguments not compressed`() {
         val fileName = "in.csv"
         val outputFileName = "out.cc.json"
