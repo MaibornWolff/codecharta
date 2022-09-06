@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Add option to CSVImporter to specify the path column name [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+
 ## [1.105.0] - 2022-09-06
 
 ### Added 🚀
