@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Add option to CSVImporter to specify the path column name [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+
 ### Changed
 
 -   Stop asking the user to compress a file when printing to stdOut [#3024](https://github.com/MaibornWolff/codecharta/pull/3024)

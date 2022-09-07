@@ -29,6 +29,11 @@ class ParserDialog {
                     hint = "output.cc.json"
             )
 
+            val pathColumnName: String = KInquirer.promptInput(
+                message = "What is the name of the path column name?",
+                default = "path"
+            )
+
             val delimiter = KInquirer.promptInput(
                     message = "Which column delimiter is used in the CSV file?",
                 hint = ",",
@@ -47,10 +52,11 @@ class ParserDialog {
             )
 
             return inputFileNames + listOfNotNull(
-                "--output-file=$outputFileName",
-                "--delimiter=$delimiter",
-                "--path-separator=$pathSeparator",
-                if (isCompressed) null else "--not-compressed",
+                    "--output-file=$outputFileName",
+                    "--path-column-name=$pathColumnName",
+                    "--delimiter=$delimiter",
+                    "--path-separator=$pathSeparator",
+                    if (isCompressed) null else "--not-compressed",
             )
         }
     }
