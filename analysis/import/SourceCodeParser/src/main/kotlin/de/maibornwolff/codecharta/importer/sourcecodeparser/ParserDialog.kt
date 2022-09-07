@@ -41,7 +41,7 @@ class ParserDialog {
             val exclude = mutableListOf<String>()
             while (true) {
                 val additionalExclude = KInquirer.promptInput(
-                        message = "Exclude file/folder according to regex pattern? Leave empty to skip.",
+                    message = "Exclude file/folder according to regex pattern? Leave empty to skip.",
                 )
                 if (additionalExclude.isNotBlank()) {
                     exclude.add("--exclude=" + additionalExclude)
@@ -50,18 +50,20 @@ class ParserDialog {
                 }
             }
 
-            val isCompressed: Boolean =
-                    KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             val isVerbose: Boolean =
-                    KInquirer.promptConfirm(message = "Display info messages from sonar plugins?", default = false)
+                KInquirer.promptConfirm(message = "Display info messages from sonar plugins?", default = false)
 
             return listOfNotNull(
-                    inputFileName,
-                    "--format=$outputFormat",
-                    "--output-file=$outputFileName",
-                    if (isCompressed) null else "--not-compressed",
-                    if (findIssues) null else "--no-issues",
+                inputFileName,
+                "--format=$outputFormat",
+                "--output-file=$outputFileName",
+                if (isCompressed) null else "--not-compressed",
+                if (findIssues) null else "--no-issues",
                     if (defaultExcludes) "--default-excludes" else null,
                     if (isVerbose) "--verbose" else null,
             ) + exclude

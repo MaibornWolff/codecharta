@@ -17,7 +17,7 @@ class ParserDialog {
 
             val inputFile = KInquirer.promptInput(
                 message = if (isJsonFile) "Which MetricGardener json-File do you want to import?"
-                          else "What Project do you want to parse?",
+                else "What Project do you want to parse?",
                 hint = if (isJsonFile) "path/to/metricgardener/file.json" else "path/to/my/project"
             )
 
@@ -26,8 +26,10 @@ class ParserDialog {
                 hint = "path/to/output/filename.cc.json"
             )
 
-            val isCompressed: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             return listOfNotNull(
                 inputFile,

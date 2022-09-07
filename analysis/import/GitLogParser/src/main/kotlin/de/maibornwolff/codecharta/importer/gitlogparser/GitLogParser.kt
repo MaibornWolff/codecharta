@@ -204,7 +204,7 @@ class GitLogParser(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(GitLogParser(), System.out, *args)
+            CommandLine(GitLogParser()).execute(*args)
         }
     }
 

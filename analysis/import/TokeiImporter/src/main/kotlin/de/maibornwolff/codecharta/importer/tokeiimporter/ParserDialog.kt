@@ -21,25 +21,27 @@ class ParserDialog {
 
             val rootName = KInquirer.promptInput(
                     message = "Which root folder was specified when executing tokei?",
-                    hint = ".",
-                    default = "."
+                hint = ".",
+                default = "."
             )
 
             val pathSeparator = KInquirer.promptInput(
-                    message = "Which path separator is used in the path names?",
-                    hint = "/",
-                    default = "/"
+                message = "Which path separator is used in the path names?",
+                hint = "/",
+                default = "/"
             )
 
-            val isCompressed: Boolean =
-                    KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             return listOfNotNull(
-                    inputFileName,
-                    "--output-file=$outputFileName",
-                    "--root-name=$rootName",
-                    "--path-separator=$pathSeparator",
-                    if (isCompressed) null else "--not-compressed",
+                inputFileName,
+                "--output-file=$outputFileName",
+                "--root-name=$rootName",
+                "--path-separator=$pathSeparator",
+                if (isCompressed) null else "--not-compressed",
             )
         }
     }
