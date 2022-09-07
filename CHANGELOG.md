@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Stop asking the user to compress a file when printing to stdOut [#3024](https://github.com/MaibornWolff/codecharta/pull/3024)
 
+### Fixed 🐞
+
+-   Fix anongit script using the wrong whitespace, causing gitlogparser to fail [#3030](https://github.com/MaibornWolff/codecharta/pull/3030)
+
 ## [1.105.0] - 2022-09-06
 
 ### Added 🚀
