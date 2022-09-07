@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $1=="-h" ]]; then
+if [[ $1 == "-h" ]]; then
   echo "Generates anonymous log for CodeCharta"
   echo "  inherits all options from git log --numstat --raw --topo-order --reverse -m"
   exit 0
@@ -8,11 +8,10 @@ fi
 
 # init hashmap of authors
 HASHMAP_FILE=hashmap.authors
-rm -f ${HASHMAP_FILE}
 COUNTER=1
 
 # main functionality
-gitlog=`git log --numstat --raw --topo-order --reverse -m "$@"`
+gitlog=$(git log --numstat --raw --topo-order --reverse -m "$@")
 
 while read -r line; do
   if [[ "$line" =~ ^Author.*\<.*\>$ ]]; then
@@ -22,9 +21,9 @@ while read -r line; do
       echo -e "$line\n$aliasLine" >> ${HASHMAP_FILE}
       ((COUNTER++))
     fi
-    echo ${aliasLine}
+    echo "${aliasLine}"
   else
-    echo ${line}
+    echo "${line}"
   fi
 done <<< "$gitlog"
 
