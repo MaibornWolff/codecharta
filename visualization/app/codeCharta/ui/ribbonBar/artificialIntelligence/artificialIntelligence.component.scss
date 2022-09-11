@@ -20,11 +20,12 @@ cc-artificial-intelligence {
 	max-width: unset;
 
 	.title {
-		margin: 8px 0;
+		margin-bottom: 8px;
 		font-weight: bold;
-		div {
-			margin-bottom: 8px;
-		}
+	}
+
+	.new-section {
+		margin-top: 16px;
 	}
 
 	ul {

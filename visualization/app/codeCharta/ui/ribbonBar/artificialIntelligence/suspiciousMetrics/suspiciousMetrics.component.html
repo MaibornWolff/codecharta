@@ -27,7 +27,7 @@
 		</ul>
 	</div>
 
-	<div *ngIf="data.suspiciousMetricSuggestionLinks.length" class="title">
+	<div *ngIf="data.suspiciousMetricSuggestionLinks.length" class="title new-section">
 		Suspicious Metrics in {{ data.analyzedProgrammingLanguage }} code
 	</div>
 	<div class="suspicious-metric" *ngFor="let item of data.suspiciousMetricSuggestionLinks">
@@ -47,7 +47,7 @@
 	</div>
 
 	<div *ngIf="data.untrackedMetrics.length">
-		<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
+		<div *ngIf="data.analyzedProgrammingLanguage.length" class="title new-section">
 			Untracked metrics in {{ data.analyzedProgrammingLanguage }} code
 		</div>
 		<ul>
