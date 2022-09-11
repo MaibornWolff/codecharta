@@ -21,6 +21,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
+import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -98,7 +99,7 @@ class TokeiImporter(
                 launch {
                     if (file!!.isFile) {
                         val bufferedReader = file!!.bufferedReader()
-                        root = JsonParser().parse(bufferedReader)
+                        root = JsonParser.parseReader(bufferedReader)
                     } else {
                         logger.error("${file!!.name} has not been found.")
                     }
@@ -107,7 +108,7 @@ class TokeiImporter(
                 launch {
                     val projectString: String = input.mapLines { it }.joinToString(separator = "") { it }
                     if (projectString.isNotEmpty()) {
-                        root = JsonParser().parse(projectString)
+                        root = JsonParser.parseString(projectString)
                     } else {
                         logger.error("Neither source file nor piped input found.")
                     }
@@ -120,13 +121,8 @@ class TokeiImporter(
 
     companion object {
         @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine.call(TokeiImporter(), System.out, *args)
-        }
-
-        @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(TokeiImporter(input, output, error), output, *args)
+            CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
         }
 
         @JvmStatic

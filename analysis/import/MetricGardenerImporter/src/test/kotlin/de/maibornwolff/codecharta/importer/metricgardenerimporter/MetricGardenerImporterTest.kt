@@ -4,11 +4,10 @@ import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardener
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import picocli.CommandLine
 import java.io.File
 
 class MetricGardenerImporterTest {
-
-    private val metricGardenerImporter = MetricGardenerImporter()
 
     @Test
     fun `should create json uncompressed file`() {
@@ -61,7 +60,7 @@ class MetricGardenerImporterTest {
         )
         val file = File("src/test/resources/import-result.cc.json.gz")
         file.deleteOnExit()
-        metricGardenerImporter.call()
+        CommandLine(MetricGardenerImporter()).execute()
         assertFalse(file.exists())
     }
 }

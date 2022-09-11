@@ -42,7 +42,7 @@ class CrococosmoImporter(private val output: PrintStream = System.out) : Callabl
 
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(CrococosmoImporter(), System.out, *args)
+            CommandLine(CrococosmoImporter()).execute(*args)
         }
     }
 }

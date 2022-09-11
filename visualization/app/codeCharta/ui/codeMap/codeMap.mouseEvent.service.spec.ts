@@ -799,40 +799,40 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("drawTemporaryLabelFor", () => {
-		it("should call addLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
+		it("should call addLeafLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
-			codeMapLabelService.addLabel = jest.fn()
+			codeMapLabelService.addLeafLabel = jest.fn()
 
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 			expect(nodeHeight).toBeGreaterThan(0)
 		})
 
-		it("should call addLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
+		it("should call addLeafLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
-			codeMapLabelService.addLabel = jest.fn()
+			codeMapLabelService.addLeafLabel = jest.fn()
 			storeService.dispatch(setShowMetricLabelNameValue(false))
 			storeService.dispatch(setShowMetricLabelNodeName(false))
 
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 		})
 
 		it("should not generate names in temporary Label when metric option is set to true and name is set to false", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
-			codeMapLabelService.addLabel = jest.fn()
+			codeMapLabelService.addLeafLabel = jest.fn()
 			storeService.dispatch(setShowMetricLabelNameValue(true))
 			storeService.dispatch(setShowMetricLabelNodeName(false))
 
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 		})
 	})
 })

@@ -79,7 +79,7 @@ class SourceMonitorImporter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(SourceMonitorImporter(), System.out, *args)
+            CommandLine(SourceMonitorImporter()).execute(*args)
         }
     }
 
