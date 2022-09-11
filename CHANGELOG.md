@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix anongit script using the wrong whitespace, causing gitlogparser to fail [#3030](https://github.com/MaibornWolff/codecharta/pull/3030)
+-   Reshow suspicious metrics badge when calculated data has changed [#2997](https://github.com/MaibornWolff/codecharta/pull/2997)
 
 ## [1.105.0] - 2022-09-06
 
