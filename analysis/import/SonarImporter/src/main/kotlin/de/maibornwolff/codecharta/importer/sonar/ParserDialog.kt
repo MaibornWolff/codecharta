@@ -33,11 +33,16 @@ class ParserDialog {
                 hint = "metric1,metric2,metric3 (leave empty for all metrics)"
             )
 
-            val isCompressed: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             val mergeModules: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to merge modules in multi-module projects?", default = false)
+                KInquirer.promptConfirm(
+                    message = "Do you want to merge modules in multi-module projects?",
+                    default = false
+                )
 
             return listOfNotNull(
                 hostUrl,

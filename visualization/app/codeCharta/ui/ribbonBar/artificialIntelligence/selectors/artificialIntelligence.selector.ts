@@ -5,17 +5,17 @@ import {
 	HEIGHT_METRIC,
 	RiskProfile,
 	getPercentagesOfRiskProfile
-} from "../riskProfileHelper"
+} from "./util/riskProfileHelper"
 import {
 	calculateSuspiciousMetrics,
 	findGoodAndBadMetrics,
 	setMetricValuesByLanguage,
 	MetricSuggestionParameters,
 	MetricValuesByLanguage
-} from "../suspiciousMetricsHelper"
+} from "./util/suspiciousMetricsHelper"
 import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../../codeCharta.model"
-import { getMostFrequentLanguage } from "../mainProgrammingLanguageHelper"
+import { getMostFrequentLanguage } from "./util/mainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
@@ -23,7 +23,7 @@ import { experimentalFeaturesEnabledSelector } from "../../../../state/store/app
 import { CcState } from "../../../../state/store/store"
 import { AccumulatedData, accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 
-export interface ArtificialIntelligenceControllerViewModel {
+export type ArtificialIntelligenceData = {
 	analyzedProgrammingLanguage: string
 	suspiciousMetricSuggestionLinks: MetricSuggestionParameters[]
 	unsuspiciousMetrics: string[]
@@ -35,12 +35,12 @@ export const calculate = (
 	experimentalFeaturesEnabled: boolean,
 	accumulatedData: Pick<AccumulatedData, "unifiedMapNode">,
 	blacklist: BlacklistItem[]
-): ArtificialIntelligenceControllerViewModel | undefined => {
+): ArtificialIntelligenceData | undefined => {
 	if (!experimentalFeaturesEnabled) {
 		return
 	}
 
-	const artificialIntelligenceViewModel: ArtificialIntelligenceControllerViewModel = {
+	const artificialIntelligenceViewModel: ArtificialIntelligenceData = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
@@ -96,7 +96,7 @@ function isFileValid(node: CodeMapNode, fileExtension: string) {
 	)
 }
 
-export const artificialIntelligenceSelector: (state: CcState) => ArtificialIntelligenceControllerViewModel = createSelector(
+export const artificialIntelligenceSelector: (state: CcState) => ArtificialIntelligenceData = createSelector(
 	[experimentalFeaturesEnabledSelector, accumulatedDataSelector, blacklistSelector],
 	calculate
 )

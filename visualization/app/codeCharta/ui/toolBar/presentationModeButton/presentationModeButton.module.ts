@@ -6,7 +6,6 @@ import { PresentationModeButtonComponent } from "./presentationModeButton.compon
 @NgModule({
 	imports: [CommonModule, MaterialModule],
 	declarations: [PresentationModeButtonComponent],
-	exports: [PresentationModeButtonComponent],
-	entryComponents: [PresentationModeButtonComponent]
+	exports: [PresentationModeButtonComponent]
 })
 export class PresentationModeButtonModule {}

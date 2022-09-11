@@ -6,7 +6,6 @@ import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttribut
 import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
-import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
@@ -15,7 +14,6 @@ import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attri
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
-import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
@@ -31,7 +29,6 @@ export class InjectorService {
 		private isLoadingFileService: IsLoadingFileService,
 		private filesService: FilesService,
 		private mapSizeService: MapSizeService,
-		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private scalingService: ScalingService,
 		private markedPackagesService: MarkedPackagesService,
@@ -40,7 +37,6 @@ export class InjectorService {
 		private edgeMetricService: EdgeMetricService,
 		private focusedNodePathService: FocusedNodePathService,
 		private blacklistService: BlacklistService,
-		private isPresentationModeService: IsPresentationModeService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService,

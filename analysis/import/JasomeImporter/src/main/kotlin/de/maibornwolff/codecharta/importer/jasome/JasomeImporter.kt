@@ -39,7 +39,7 @@ class JasomeImporter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(JasomeImporter(), System.out, *args)
+            CommandLine(JasomeImporter()).execute(*args)
         }
     }
 }

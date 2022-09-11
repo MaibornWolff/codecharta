@@ -1,6 +1,15 @@
 # GitLogParser - Status: stable
 
-Generates visualisation data from git repository logs and repository file list. It supports the following metrics per file:
+Generates visualisation data from git repository logs and repository file list.
+
+This parser specializes in tracking file changes across different file-versions on different feature-branches and then the merged main.
+Furthermore, special care is taken not to display non-existent files that might show up in normal-Git histories due to renaming actions on feature branches.
+
+Things to note:
+
+-   File deletions that get reverted later on are ignored by this parser.
+
+It supports the following metrics per file:
 
 | Metric                 | Description                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------------- |
@@ -34,6 +43,8 @@ You can also use the bash script anongit which generates an anonymous git log wi
 ### Creating the git files list of the repository for metric generation
 
 > `git ls-files > file-name-list.txt`
+
+Please make sure to execute this command in the root folder of your repository.
 
 ### Executing the GitLogParser
 

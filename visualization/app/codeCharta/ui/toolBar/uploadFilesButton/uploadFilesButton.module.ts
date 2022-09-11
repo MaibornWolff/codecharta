@@ -5,7 +5,6 @@ import { UploadFilesButtonComponent } from "./uploadFilesButton.component"
 @NgModule({
 	imports: [ActionIconModule],
 	declarations: [UploadFilesButtonComponent],
-	exports: [UploadFilesButtonComponent],
-	entryComponents: [UploadFilesButtonComponent]
+	exports: [UploadFilesButtonComponent]
 })
 export class UploadFilesButtonModule {}

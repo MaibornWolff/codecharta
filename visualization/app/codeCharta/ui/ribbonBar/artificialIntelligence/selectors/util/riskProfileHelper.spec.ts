@@ -1,5 +1,5 @@
 import { aggregateRiskProfile, getPercentagesOfRiskProfile, RiskProfile } from "./riskProfileHelper"
-import { CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../../../codeCharta.model"
 import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
 
 describe("riskProfileHelper", () => {

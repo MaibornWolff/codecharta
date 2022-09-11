@@ -41,11 +41,12 @@ export class CodeMapLabelService {
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
-	addLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
+	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
 		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
 
 		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
 		const { margin, heightMetric } = dynamicSettings
+		const multiplier = scaling.clone()
 
 		let labelText = ""
 
@@ -65,12 +66,10 @@ export class CodeMapLabelService {
 		const label = this.makeText(labelText, 30, node)
 
 		let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
-		newHighestNode = newHighestNode > highestNodeInSet ? newHighestNode : highestNodeInSet
+		newHighestNode = newHighestNode * multiplier.y > highestNodeInSet * multiplier.y ? newHighestNode : highestNodeInSet
 
 		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
 		// todo: tk rename to addLeafLabel
-
-		const multiplier = scaling.clone()
 
 		const x = node.x0 - treeMap.mapSize
 		const y = node.z0
@@ -78,7 +77,7 @@ export class CodeMapLabelService {
 
 		const labelX = (x + node.width / 2) * multiplier.x
 		const labelY = (y + this.nodeHeight) * multiplier.y
-		const labelYOrigin = y + node.height
+		const labelYOrigin = (y + node.height) * multiplier.y
 		const labelZ = (z + node.length / 2) * multiplier.z
 
 		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
@@ -169,15 +168,20 @@ export class CodeMapLabelService {
 		const { scaling } = this.storeService.getState().appSettings
 		const { margin } = this.storeService.getState().dynamicSettings
 
-		const multiplier = scaling.clone().divide(this.previousScaling)
+		const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 
 		for (const label of this.labels) {
-			const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
-			label.sprite.position.sub(labelHeightDifference).multiply(multiplier).add(labelHeightDifference)
+			const multiplier = scaling.clone()
 
+			label.sprite.position.sub(labelHeightDifference).divide(this.previousScaling).multiply(multiplier).add(labelHeightDifference)
+			if (multiplier.y > 1) {
+				multiplier.y = 1
+			}
 			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
 			const lineGeometry = label.line.geometry as BufferGeometry
 			const lineGeometryPosition = lineGeometry.attributes.position
+
+			// Position save, then clear and redraw?
 
 			lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
 			lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
@@ -224,7 +228,7 @@ export class CodeMapLabelService {
 		context.lineCap = "round"
 		context.lineWidth = 5
 
-		this.drawRectangleWithRoundedCorners(context, 0, 0, canvas.width, canvas.height, this.LABEL_CORNER_RADIUS)
+		CodeMapLabelService.drawRectangleWithRoundedCorners(context, 0, 0, canvas.width, canvas.height, this.LABEL_CORNER_RADIUS)
 
 		// after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
 		context.fillStyle = "rgba(0,0,0,1)"
@@ -254,7 +258,7 @@ export class CodeMapLabelService {
 		}
 	}
 
-	private drawRectangleWithRoundedCorners(context, x, y, width, height, radius) {
+	private static drawRectangleWithRoundedCorners(context, x, y, width, height, radius) {
 		if (width < 2 * radius) {
 			radius = width / 2
 		}

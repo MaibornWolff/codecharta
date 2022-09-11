@@ -94,7 +94,7 @@ class MergeFilter(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(MergeFilter(), System.out, *args)
+            CommandLine(MergeFilter()).execute(*args)
         }
     }
 

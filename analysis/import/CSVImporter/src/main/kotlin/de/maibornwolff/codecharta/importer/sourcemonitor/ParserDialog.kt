@@ -25,16 +25,18 @@ class ParserDialog {
             }
 
             val outputFileName: String = KInquirer.promptInput(
-                    message = "What is the name of the output file?",
-                    hint = "output.cc.json"
+                message = "What is the name of the output file?",
+                hint = "output.cc.json"
             )
 
-            val isCompressed: Boolean =
-                    KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             return inputFileNames + listOfNotNull(
-                    "--output-file=$outputFileName",
-                    if (isCompressed) null else "--not-compressed",
+                "--output-file=$outputFileName",
+                if (isCompressed) null else "--not-compressed",
             )
         }
     }

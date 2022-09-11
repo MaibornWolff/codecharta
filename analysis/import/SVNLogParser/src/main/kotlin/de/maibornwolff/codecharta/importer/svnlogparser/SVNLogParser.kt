@@ -153,7 +153,7 @@ class SVNLogParser(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(SVNLogParser(), System.out, *args)
+            CommandLine(SVNLogParser()).execute(*args)
         }
 
         private fun guessEncoding(pathToLog: File): String? {
