@@ -1,0 +1,53 @@
+<button [matMenuTriggerFor]="menu" title="Open High Risk Profile" class="cc-ribbon-bar-menu-button">
+	<i class="fa fa-bar-chart"></i>
+</button>
+
+<mat-menu #menu="matMenu" class="ai-drop-down high-risk-profile">
+	<ng-container *ngIf="data.analyzedProgrammingLanguage.length">
+		<div class="title">
+			<div>Risk Profile</div>
+			<div>Calculations are always based on mcc (cyclomatic complexity)</div>
+		</div>
+		<div class="suspicious-metrics-summary">
+			<ul>
+				<li>{{ data.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
+				<li>{{ data.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
+				<li>{{ data.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
+				<li>{{ data.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
+			</ul>
+		</div>
+		<div class="risk-profiles">
+			<div
+				[ccRiskProfileBar]="data.riskProfile.lowRisk"
+				title="Low Risk ({{ data.riskProfile.lowRisk }}% of code)"
+				class="risk-profile low-risk"
+			>
+				{{ data.riskProfile.lowRisk }}%
+			</div>
+			<div
+				[ccRiskProfileBar]="data.riskProfile.moderateRisk"
+				title="Moderate Risk ({{ data.riskProfile.moderateRisk }}% of code)"
+				class="risk-profile moderate-risk"
+			>
+				{{ data.riskProfile.moderateRisk }}%
+			</div>
+			<div
+				[ccRiskProfileBar]="data.riskProfile.highRisk"
+				title="High Risk ({{ data.riskProfile.highRisk }}% of code)"
+				class="risk-profile high-risk"
+			>
+				{{ data.riskProfile.highRisk }}%
+			</div>
+			<div
+				[ccRiskProfileBar]="data.riskProfile.veryHighRisk"
+				title="Very High Risk ({{ data.riskProfile.veryHighRisk }}% of code)"
+				class="risk-profile very-high-risk"
+			>
+				{{ data.riskProfile.veryHighRisk }}%
+			</div>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="data.analyzedProgrammingLanguage.length === 0">
+		Could not calculate Risk Profile. Metrics rloc and mcc not available.
+	</ng-container>
+</mat-menu>
