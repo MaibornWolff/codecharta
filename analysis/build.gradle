@@ -4,14 +4,15 @@ buildscript {
         boon_version = '0.34'
         commons_lang3_version = '3.12.0'
         gson_version = '2.9.1'
-        jackson_version = '2.13.4'
         gradle_module_metadata_maven_plugin = '0.3.0'
+        jackson_version = '2.13.3'
         jacoco_version = '0.8.7'
         jaxb_api_version = '2.3.1'
         jersey_version = '2.37'
         json_schema_version = '1.14.1'
         json_version = '20190722'
         juniversalchardet_version = '1.0.3'
+        kotlin_inquirer_version = '0.1.0'
         kotlin_logging_version = '2.1.23'
         kotlin_version = '1.7.10'
         kotlinx_coroutines_version = '1.6.4'
@@ -20,7 +21,6 @@ buildscript {
         sonar_java_version = '6.8.0.23379'
         sonarqube_version = '3.0'
         univocity_parsers_version = '2.9.1'
-        kotlin_inquirer_version = '0.1.0'
 
         // Test dependency versions
         assertj_version = '3.23.1'
@@ -29,6 +29,7 @@ buildscript {
         junit4_version = '4.13.2'
         junit5_version = '5.9.0'
         junit_platform_version = '1.9.0'
+        jsonassert_version = '1.5.1'
         ktlint_version = '10.3.0'
 
         mockito_core_version = '3.12.4'
@@ -36,7 +37,6 @@ buildscript {
         mockk_version = '1.12.7'
         spek2_version = '2.0.19'
         wiremock_version = '2.33.2'
-        jsonassert_version = '1.5.1'
     }
 
     repositories {
