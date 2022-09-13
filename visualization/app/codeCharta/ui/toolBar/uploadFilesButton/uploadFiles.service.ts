@@ -8,7 +8,7 @@ import { getCCFileAndDecorateFileChecksum } from "../../../util/fileHelper"
 import { createCCFileInput } from "../../../util/uploadFiles/createCCFileInput"
 import { readFiles } from "../../../util/uploadFiles/readFiles"
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class UploadFilesService {
 	isUploading = false
 

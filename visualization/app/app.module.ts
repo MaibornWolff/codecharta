@@ -51,7 +51,6 @@ import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateAc
 import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { UploadFilesService } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFiles.service"
 import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/effects/autoFitCodeMapOnFileSelectionChange/autoFitCodeMapOnFileSelectionChange.effect"
 
 @NgModule({
@@ -101,7 +100,6 @@ import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/ef
 		threeOrbitControlsServiceProvider,
 		threeRendererServiceProvider,
 		VersionService,
-		UploadFilesService,
 		{
 			provide: APP_INITIALIZER,
 			useFactory: (config: VersionService) => () => config.synchronizeLocalCodeChartaVersion(),
