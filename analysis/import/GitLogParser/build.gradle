@@ -9,6 +9,7 @@ dependencies {
     implementation group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: juniversalchardet_version
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
     implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version
+    implementation("com.lordcodes.turtle:turtle:0.7.0")
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version

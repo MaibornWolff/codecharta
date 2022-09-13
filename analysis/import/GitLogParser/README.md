@@ -30,7 +30,29 @@ Additionally, the following Edge Metrics are calculated:
 
 The names of authors are saved when the --add-author flag is set.
 
-## Usage
+## Usage (Creating required files on the fly)
+
+### Executing the GitLogParser
+
+See `ccsh -h` for help. Standard usage:
+
+> `ccsh gitlogparser repo-scan --repo-path <path>`
+
+With the sub command `repo-scan`, the git log and the file name list are created automatically either from the
+current working directory or from the directory at `repo-path`.
+
+The result is written as JSON to standard out or into an output file (if specified by `-o` option).
+
+If a project is piped into the GitLogParser, the results and the piped project are merged.
+The resulting project has the project name specified for the GitLogParser.
+
+### Example using Git
+
+-   `cd <my_git_project>`
+-   `./ccsh gitlogparser repo-scan -o output.cc.json`
+-   load `output.cc.json` in visualization
+
+## Usage (Manual creation of required files)
 
 ### Creating the repository log for metric generation
 
@@ -50,7 +72,9 @@ Please make sure to execute this command in the root folder of your repository.
 
 See `ccsh -h` for help. Standard usage:
 
-> `ccsh gitlogparser <log_file> -n <file-name-list>`
+> `ccsh gitlogparser log-scan --git-log <path> --repo-files <path>`
+
+With the sub command `log-scan`, an existing git log and file name list are used for parsing.
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
