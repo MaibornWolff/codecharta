@@ -27,8 +27,9 @@ import java.util.stream.Stream
 
 @CommandLine.Command(
     name = "gitlogparser",
-    description = ["git log parser - generates cc.json from git log file"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    description = ["git log parser - generates cc.json from git-log files"],
+    subcommands = [LogScanCommand::class, RepoScanCommand::class],
+    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 class GitLogParser(
     private val input: InputStream = System.`in`,
@@ -36,22 +37,30 @@ class GitLogParser(
     private val error: PrintStream = System.err
 ) : Callable<Void>, InteractiveParser {
 
+
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
-    private var file: File? = null
-
     @CommandLine.Option(
-        names = ["-n", "--file-name-list"],
+        names = ["--git-log"],
         arity = "1",
         paramLabel = "FILE",
+        required = true,
+        description = ["git-log file to parse"]
+    )
+    private var gitLogFile: File? = null
+
+    @CommandLine.Option(
+        names = ["--repo-files"],
+        arity = "1",
+        paramLabel = "FILE",
+        required = true,
         description = ["list of all file names in current git project"]
     )
-    private var nameFile: File? = null
+    private var gitLsFile: File? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
-    private var outputFile: String? = null
+    private var outputFilePath: String? = null
 
     @CommandLine.Option(
         names = ["-nc", "--not-compressed"],
@@ -100,8 +109,8 @@ class GitLogParser(
 
         print(" ")
         var project = createProjectFromLog(
-            file!!,
-            nameFile!!,
+            gitLogFile!!,
+            gitLsFile!!,
             logParserStrategy,
             metricsFactory,
             addAuthor,
@@ -113,7 +122,7 @@ class GitLogParser(
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
 
-        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
+        ProjectSerializer.serializeToFileOrStream(project, outputFilePath, output, compress)
 
         return null
     }
@@ -146,7 +155,7 @@ class GitLogParser(
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
-        val logSizeInByte = file!!.length()
+        val logSizeInByte = gitLogFile!!.length()
         return GitLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(
             lines,
             namesInProject
