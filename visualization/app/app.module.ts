@@ -52,6 +52,7 @@ import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { UploadFilesService } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFiles.service"
+import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/effects/autoFitCodeMapOnFileSelectionChange/autoFitCodeMapOnFileSelectionChange.effect"
 
 @NgModule({
 	imports: [
@@ -67,7 +68,8 @@ import { UploadFilesService } from "./codeCharta/ui/toolBar/uploadFilesButton/up
 			ResetDynamicMarginEffect,
 			ResetChosenMetricsEffect,
 			UpdateEdgePreviewsEffect,
-			RenderCodeMapEffect
+			RenderCodeMapEffect,
+			AutoFitCodeMapOnFileSelectionChangeEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
