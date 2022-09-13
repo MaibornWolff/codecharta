@@ -13,7 +13,7 @@ import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingM
 import { ScalingActions } from "../../store/appSettings/scaling/scaling.actions"
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
 
-const maxFPS = 1000 / 60
+export const maxFPS = 1000 / 60
 
 // don't inject AngularJS services, as AngularJS is not yet bootstrapped when Effects are bootstrapped
 @Injectable()
