@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Fixed 🐞
+
+-   Show loading spinners while loading a file [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+
+## Chore 👨‍💻 👩‍💻
+
+-   Throttle rendering and migrate codeMap.preRender.service to Angular [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+
 ## [1.106.0] - 2022-09-13
 
 ### Added 🚀
