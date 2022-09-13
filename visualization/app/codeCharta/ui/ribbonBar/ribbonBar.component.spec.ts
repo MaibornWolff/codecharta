@@ -1,121 +1,111 @@
-import "./ribbonBar.module"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../state/store.service"
-import { RibbonBarController } from "./ribbonBar.component"
-import { ExperimentalFeaturesEnabledService } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { addFile, setDelta, setFiles } from "../../state/store/files/files.actions"
-import { METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
-import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { TestBed } from "@angular/core/testing"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { mocked } from "ts-jest/utils"
+import { EdgeMetricData } from "../../codeCharta.model"
+import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../services/ajs-upgraded-providers"
+import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
+import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
+import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { Store } from "../../state/store/store"
+import { RibbonBarComponent } from "./ribbonBar.component"
+import { RibbonBarModule } from "./ribbonBar.module"
 
-describe("RibbonBarController", () => {
-	let ribbonBarController: RibbonBarController
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
+jest.mock("../../state/selectors/isDeltaState.selector", () => ({
+	isDeltaStateSelector: jest.fn()
+}))
+const mockedIsDeltaStateSelector = mocked(isDeltaStateSelector)
+jest.mock("../../state/selectors/accumulatedData/metricData/edgeMetricData.selector", () => ({
+	edgeMetricDataSelector: jest.fn(() => [])
+}))
+const mockEdedgeMetricDataSelector = mocked(edgeMetricDataSelector)
 
+describe("RibbonBarComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.ribbonBar")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-	}
-
-	function rebuildController() {
-		ribbonBarController = new RibbonBarController($rootScope)
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to ExperimentalFeaturesEnabledService", () => {
-			ExperimentalFeaturesEnabledService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(ExperimentalFeaturesEnabledService.subscribe).toHaveBeenCalledWith($rootScope, ribbonBarController)
-		})
-
-		it("should subscribe to EdgeMetricDataService", () => {
-			EdgeMetricDataService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(EdgeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, ribbonBarController)
+		mockedIsDeltaStateSelector.mockImplementation(() => false)
+		mockEdedgeMetricDataSelector.mockImplementation(() => [])
+		TestBed.configureTestingModule({
+			imports: [RibbonBarModule],
+			providers: [
+				{ provide: ThreeCameraServiceToken, useValue: {} },
+				{ provide: ThreeOrbitControlsServiceToken, useValue: {} }
+			]
 		})
 	})
 
-	describe("onExperimentalFeaturesEnabledChanged", () => {
-		it("should update the viewModel with the new state", () => {
-			ribbonBarController.onExperimentalFeaturesEnabledChanged(true)
+	describe("panel sections", () => {
+		it("should toggle panel section", async () => {
+			const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden")
 
-			expect(ribbonBarController["_viewModel"].experimentalFeaturesEnabled).toBe(true)
-		})
-	})
+			userEvent.click(screen.getByText("Area Metric Options"))
+			expect(container.querySelector("cc-area-settings-panel").classList).not.toContain("hidden")
 
-	describe("toggle", () => {
-		it("should update the state with new panel selection if they differ", () => {
-			ribbonBarController["_viewModel"].panelSelection = "NONE"
-
-			ribbonBarController.updatePanelSelection("EDGE_PANEL_OPEN")
-
-			expect(ribbonBarController["_viewModel"].panelSelection).toEqual("EDGE_PANEL_OPEN")
+			userEvent.click(screen.getByText("Area Metric Options"))
+			expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden")
 		})
 
-		it("should close when calling with same mode", () => {
-			ribbonBarController["_viewModel"].panelSelection = "COLOR_PANEL_OPEN"
+		it("should close on outside clicks", async () => {
+			const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
 
-			ribbonBarController.updatePanelSelection("COLOR_PANEL_OPEN")
+			userEvent.click(screen.getByText("Area Metric Options"))
+			expect(container.querySelector("cc-area-settings-panel").classList).not.toContain("hidden")
 
-			expect(ribbonBarController["_viewModel"].panelSelection).toEqual("NONE")
-		})
-	})
-
-	describe("closePanelSelectionOnOutsideClick", () => {
-		it("should close when clicking outside", () => {
-			ribbonBarController["_viewModel"].panelSelection = "COLOR_PANEL_OPEN"
-			ribbonBarController["closePanelSelectionOnOutsideClick"]({ composedPath: () => [] } as MouseEvent)
-			expect(ribbonBarController["_viewModel"].panelSelection).toBe("NONE")
+			userEvent.click(document.body)
+			expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden")
 		})
 
-		it("should not close when clicking inside", () => {
-			ribbonBarController["_viewModel"].panelSelection = "COLOR_PANEL_OPEN"
-			ribbonBarController["closePanelSelectionOnOutsideClick"]({
+		it("should detect clicks within panel selections and not close itself", async () => {
+			const { fixture } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			const mouseEvent = {
 				composedPath: () => [{ nodeName: "CC-COLOR-SETTINGS-PANEL" }]
-			} as unknown as MouseEvent)
-			expect(ribbonBarController["_viewModel"].panelSelection).toBe("COLOR_PANEL_OPEN")
-		})
-
-		it("should not close when clicking on toggler", () => {
-			ribbonBarController["_viewModel"].panelSelection = "COLOR_PANEL_OPEN"
-			ribbonBarController["closePanelSelectionOnOutsideClick"]({
-				composedPath: () => [{ title: "Show color metric settings" }]
-			} as unknown as MouseEvent)
-			expect(ribbonBarController["_viewModel"].panelSelection).toBe("COLOR_PANEL_OPEN")
+			} as unknown as MouseEvent
+			const isClickOutside = fixture.componentInstance["isOutside"](mouseEvent)
+			expect(isClickOutside).toBe(false)
 		})
 	})
 
-	describe("onFilesSelectionChanged", () => {
-		it("should detect delta mode selection", () => {
-			storeService.dispatch(setFiles([]))
-			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
-			storeService.dispatch(addFile(TEST_DELTA_MAP_B))
-			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
-			ribbonBarController.onFilesSelectionChanged(storeService.getState().files)
+	describe("experimental features", () => {
+		it("should hide experimental features when they are disabled", async () => {
+			Store.dispatch(setExperimentalFeaturesEnabled(false))
+			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			expect(screen.queryByText("Custom Views")).toBe(null)
+			expect(screen.queryByText("Suspicious Metrics")).toBe(null)
+		})
 
-			expect(ribbonBarController["_viewModel"].files).toEqual(storeService.getState().files)
-			expect(ribbonBarController["_viewModel"].isDeltaState).toEqual(true)
+		it("should show experimental features when they are enabled", async () => {
+			Store.dispatch(setExperimentalFeaturesEnabled(true))
+			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			expect(screen.getByText("Custom Views")).toBeTruthy()
+			expect(screen.getByText("Suspicious Metrics")).toBeTruthy()
 		})
 	})
 
-	describe("onEdgeMetricDataChanged", () => {
-		it("should detect if data has edge metrics", () => {
-			ribbonBarController.onEdgeMetricDataChanged([])
-			expect(ribbonBarController["_viewModel"].hasEdgeMetric).toBe(false)
+	describe("delta state", () => {
+		it("should not show cc-color-metric-chooser when in delta mode", async () => {
+			mockedIsDeltaStateSelector.mockImplementation(() => true)
+			const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			expect(container.querySelector("cc-color-metric-chooser")).toBe(null)
+		})
 
-			ribbonBarController.onEdgeMetricDataChanged(METRIC_DATA)
-			expect(ribbonBarController["_viewModel"].hasEdgeMetric).toBe(true)
+		it("should show cc-color-metric-chooser when not in delta mode", async () => {
+			mockedIsDeltaStateSelector.mockImplementation(() => false)
+			const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			expect(container.querySelector("cc-color-metric-chooser")).not.toBe(null)
+		})
+	})
+
+	describe("edge metric chooser", () => {
+		it("should show edge metrics when there are some available", async () => {
+			mockEdedgeMetricDataSelector.mockImplementation(() => [{} as EdgeMetricData])
+			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			expect(screen.getByText("Edge Metric Options")).toBeTruthy()
+		})
+
+		it("should hide edge metrics when there aren't any available", async () => {
+			mockEdedgeMetricDataSelector.mockImplementation(() => [])
+			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			expect(screen.queryByText("Edge Metric Options")).toBe(null)
 		})
 	})
 })

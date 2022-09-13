@@ -1,5 +1,4 @@
 import "./ribbonBar.component.scss"
-import { IRootScopeService } from "angular"
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { experimentalFeaturesEnabledSelector } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
@@ -19,7 +18,7 @@ export class RibbonBarComponent implements OnInit, OnDestroy {
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 	hasEdgeMetric$ = this.store.select(edgeMetricDataSelector).pipe(map(edgeMetricData => edgeMetricData.length > 0))
 
-	constructor(@Inject(Store) private store: Store, private $rootScope: IRootScopeService) {}
+	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
 		document.addEventListener("mousedown", this.closePanelSelectionOnOutsideClick)
