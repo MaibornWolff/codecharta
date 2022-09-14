@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## Fixed 🐞
 
 -   Show loading spinners while loading a file [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+-   Prevent clicking on not opened metric options in ribbon bar [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+-   Set cursor to pointer on color settings panel of delta mode [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
 
 ## Chore 👨‍💻 👩‍💻
 
