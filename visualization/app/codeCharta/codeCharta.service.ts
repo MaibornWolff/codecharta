@@ -9,18 +9,24 @@ import { getCCFile } from "./util/fileHelper"
 import { NameDataPair } from "./codeCharta.model"
 import { onStoreChanged } from "./state/angular-redux/onStoreChanged/onStoreChanged"
 import { referenceFileSelector } from "./state/selectors/referenceFile/referenceFile.selector"
+import { comparisonFileSelector } from "./state/selectors/comparisonFile/comparisonFile.selector"
 
 export class CodeChartaService {
 	static ROOT_NAME = "root"
 	static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
-	static ROOT_NAME_COMP = "root"
-	static ROOT_PATH_COMP = `/${CodeChartaService.ROOT_NAME}`
+	static ROOT_PATH_COMPARISON = `/${CodeChartaService.ROOT_NAME}`
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 	private recentFiles: string[] = []
 	unsubscribeReferenceFileSubscription = onStoreChanged(referenceFileSelector, (_, newReferenceFile) => {
 		if (newReferenceFile) {
 			CodeChartaService.updateRootData(newReferenceFile.map.name)
+		}
+	})
+
+	unsubscribeComparisonFileSubscription = onStoreChanged(comparisonFileSelector, (_, newComparisonFile) => {
+		if (newComparisonFile) {
+			CodeChartaService.updateRootDataComparison(newComparisonFile.map.name)
 		}
 	})
 
@@ -132,7 +138,6 @@ export class CodeChartaService {
 	}
 
 	static updateRootDataComparison(rootName: string) {
-		CodeChartaService.ROOT_NAME_COMP = rootName
-		CodeChartaService.ROOT_PATH_COMP = `/${CodeChartaService.ROOT_NAME_COMP}`
+		CodeChartaService.ROOT_PATH_COMPARISON = `/${rootName}`
 	}
 }

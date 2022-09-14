@@ -7,6 +7,7 @@ import { referenceFileSelector } from "../../../state/selectors/referenceFile/re
 import { setDeltaComparison, setDeltaReference, switchReferenceAndComparison } from "../../../state/store/files/files.actions"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
+import { comparisonFileSelector } from "../../../state/selectors/comparisonFile/comparisonFile.selector"
 
 @Component({
 	selector: "cc-file-panel-delta-selector",
@@ -15,7 +16,7 @@ import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
 export class FilePanelDeltaSelectorComponent {
 	files$ = this.store.select(filesSelector)
 	referenceFile$ = this.store.select(referenceFileSelector)
-	comparisonFile$ = this.files$.pipe(map(files => files.find(file => file.selectedAs === FileSelectionState.Comparison)?.file))
+	comparisonFile$ = this.store.select(comparisonFileSelector)
 	possibleComparisonFiles$ = this.files$.pipe(map(files => files.filter(file => file.selectedAs !== FileSelectionState.Reference)))
 	pictogramBackground$ = this.store.select(pictogramBackgroundSelector)
 

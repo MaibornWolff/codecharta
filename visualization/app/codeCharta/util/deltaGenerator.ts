@@ -9,7 +9,7 @@ export class DeltaGenerator {
 	static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {
 		let rootNode: CodeMapNode
 		for (const [path, node] of hashMapWithAllNodes) {
-			if (path === CodeChartaService.ROOT_PATH || path === CodeChartaService.ROOT_PATH_COMP) {
+			if (path === CodeChartaService.ROOT_PATH || path === CodeChartaService.ROOT_PATH_COMPARISON) {
 				rootNode = node
 			} else {
 				const parentNode = getParent(hashMapWithAllNodes, path)
