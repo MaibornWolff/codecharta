@@ -9,7 +9,6 @@ import { SuspiciousMetricComponent } from "./suspiciousMetrics/suspiciousMetrics
 @NgModule({
 	imports: [CommonModule, MaterialModule],
 	declarations: [ArtificialIntelligenceComponent, HighRiskProfileComponent, SuspiciousMetricComponent, RiskProfileBarDirective],
-	exports: [ArtificialIntelligenceComponent],
-	entryComponents: [ArtificialIntelligenceComponent]
+	exports: [ArtificialIntelligenceComponent]
 })
 export class ArtificialIntelligenceModule {}

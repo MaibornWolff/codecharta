@@ -9,7 +9,6 @@ import { ResetSettingsButtonModule } from "../../resetSettingsButton/resetSettin
 @NgModule({
 	imports: [CommonModule, MaterialModule, SliderModule, ResetSettingsButtonModule],
 	declarations: [AreaSettingsPanelComponent, InvertAreaOptionComponent],
-	exports: [AreaSettingsPanelComponent],
-	entryComponents: [AreaSettingsPanelComponent]
+	exports: [AreaSettingsPanelComponent]
 })
 export class AreaSettingsPanelModule {}

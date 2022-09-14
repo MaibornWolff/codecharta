@@ -1,60 +1,40 @@
 import "./ribbonBar.component.scss"
-import { IRootScopeService } from "angular"
-import { EdgeMetricData } from "../../codeCharta.model"
-import {
-	ExperimentalFeaturesEnabledService,
-	ExperimentalFeaturesEnabledSubscriber
-} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
-import { FileState } from "../../model/files/files"
-import { isDeltaState } from "../../model/files/files.helper"
-import { FilesService } from "../../state/store/files/files.service"
-import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
+import { Store } from "../../state/angular-redux/store"
+import { experimentalFeaturesEnabledSelector } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
+import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
+import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
+import { map } from "rxjs"
 
 type PanelSelection = "NONE" | "AREA_PANEL_OPEN" | "HEIGHT_PANEL_OPEN" | "COLOR_PANEL_OPEN" | "EDGE_PANEL_OPEN"
 
-export class RibbonBarController implements ExperimentalFeaturesEnabledSubscriber {
-	constructor(private $rootScope: IRootScopeService) {
-		"ngInject"
-		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
-		EdgeMetricDataService.subscribe(this.$rootScope, this)
+@Component({
+	selector: "cc-ribbon-bar",
+	template: require("./ribbonBar.component.html")
+})
+export class RibbonBarComponent implements OnInit, OnDestroy {
+	panelSelection: PanelSelection = "NONE"
+	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
+	isDeltaState$ = this.store.select(isDeltaStateSelector)
+	hasEdgeMetric$ = this.store.select(edgeMetricDataSelector).pipe(map(edgeMetricData => edgeMetricData.length > 0))
+
+	constructor(@Inject(Store) private store: Store) {}
+
+	ngOnInit(): void {
 		document.addEventListener("mousedown", this.closePanelSelectionOnOutsideClick)
 	}
 
-	private _viewModel: {
-		panelSelection: PanelSelection
-		experimentalFeaturesEnabled: boolean
-		isDeltaState: boolean
-		hasEdgeMetric: boolean
-		files: FileState[]
-	} = {
-		panelSelection: "NONE",
-		experimentalFeaturesEnabled: false,
-		isDeltaState: null,
-		hasEdgeMetric: false,
-		files: null
-	}
-
-	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
-		this._viewModel.hasEdgeMetric = edgeMetricData.length > 0
-	}
-
-	onFilesSelectionChanged(files: FileState[]) {
-		this._viewModel.files = files
-		this._viewModel.isDeltaState = isDeltaState(files)
-	}
-
-	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
-		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
+	ngOnDestroy(): void {
+		document.removeEventListener("mousedown", this.closePanelSelectionOnOutsideClick)
 	}
 
 	updatePanelSelection(panelSelection: PanelSelection) {
-		this._viewModel.panelSelection = this._viewModel.panelSelection === panelSelection ? "NONE" : panelSelection
+		this.panelSelection = this.panelSelection === panelSelection ? "NONE" : panelSelection
 	}
 
 	private closePanelSelectionOnOutsideClick = (event: MouseEvent) => {
-		if (this._viewModel.panelSelection !== "NONE" && this.isOutside(event)) {
-			this._viewModel.panelSelection = "NONE"
+		if (this.panelSelection !== "NONE" && this.isOutside(event)) {
+			this.panelSelection = "NONE"
 		}
 	}
 
@@ -81,10 +61,4 @@ export class RibbonBarController implements ExperimentalFeaturesEnabledSubscribe
 					element["id"] !== "codemap-context-menu"
 			)
 	}
-}
-
-export const ribbonBarComponent = {
-	selector: "ribbonBarComponent",
-	template: require("./ribbonBar.component.html"),
-	controller: RibbonBarController
 }

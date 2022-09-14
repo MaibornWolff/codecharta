@@ -30,14 +30,9 @@ import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuil
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
-import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
-import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
-import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
-import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
 import { FileExtensionBarModule } from "./codeCharta/ui/fileExtensionBar/fileExtensionBar.module"
-import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
@@ -46,7 +41,6 @@ import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgeP
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
 import { VersionService } from "./codeCharta/services/version/version.service"
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
-import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
@@ -79,18 +73,14 @@ import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/ef
 		NodeContextMenuCardModule,
 		ReactiveFormsModule,
 		LoadingFileProgressSpinnerModule,
-		SearchPanelModule,
-		CustomConfigsModule,
-		HeightSettingsPanelModule,
 		ViewCubeModule,
 		FileExtensionBarModule,
-		AreaSettingsPanelModule,
 		MetricChooserModule,
 		RibbonBarModule,
 		ChangelogDialogModule,
 		ActionIconModule,
-		ColorSettingsPanelModule,
-		ToolBarModule
+		ToolBarModule,
+		RibbonBarModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -113,7 +103,6 @@ import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/ef
 		LegendPanelComponent,
 		FocusButtonsComponent,
 		LoadingFileProgressSpinnerComponent,
-		SearchPanelComponent,
 		...dialogs
 	]
 })
