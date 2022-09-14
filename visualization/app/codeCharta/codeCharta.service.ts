@@ -13,13 +13,14 @@ import { referenceFileSelector } from "./state/selectors/referenceFile/reference
 export class CodeChartaService {
 	static ROOT_NAME = "root"
 	static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
+	static ROOT_NAME_COMP = "root"
+	static ROOT_PATH_COMP = `/${CodeChartaService.ROOT_NAME}`
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 	private recentFiles: string[] = []
 	unsubscribeReferenceFileSubscription = onStoreChanged(referenceFileSelector, (_, newReferenceFile) => {
 		if (newReferenceFile) {
-			// Not ideal!
-			CodeChartaService.updateRootData(newReferenceFile.map.name.split("/")[0])
+			CodeChartaService.updateRootData(newReferenceFile.map.name)
 		}
 	})
 
@@ -128,5 +129,10 @@ export class CodeChartaService {
 	static updateRootData(rootName: string) {
 		CodeChartaService.ROOT_NAME = rootName
 		CodeChartaService.ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
+	}
+
+	static updateRootDataComparison(rootName: string) {
+		CodeChartaService.ROOT_NAME_COMP = rootName
+		CodeChartaService.ROOT_PATH_COMP = `/${CodeChartaService.ROOT_NAME_COMP}`
 	}
 }

@@ -13,6 +13,7 @@ import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.
 import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
 import { visibleFileStatesSelector } from "../visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
+import { CodeChartaService } from "../../../codeCharta.service"
 
 const accumulatedDataFallback = Object.freeze({
 	unifiedMapNode: undefined,
@@ -59,6 +60,7 @@ const getUndecoratedAccumulatedData = (fileStates: FileState[]) => {
 		if (!comparison || !haveEqualRootNames(reference.file, comparison.file)) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 		}
+		CodeChartaService.updateRootDataComparison(comparison.file.map.name)
 		return getDeltaFile(visibleFileStates)
 	}
 }
