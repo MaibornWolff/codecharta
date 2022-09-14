@@ -237,7 +237,9 @@ describe("codeChartaService", () => {
 			const invalidFileContent = klona(validFileContent)
 			invalidFileContent.apiVersion = ""
 
-			await codeChartaService.loadFiles([{ fileName: "FirstFile", content: invalidFileContent, fileSize: 42 }])
+			await expect(async () =>
+				codeChartaService.loadFiles([{ fileName: "FirstFile", content: invalidFileContent, fileSize: 42 }])
+			).rejects.toThrow("No files could be uploaded")
 
 			await codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
 
@@ -269,7 +271,9 @@ describe("codeChartaService", () => {
 				}
 			]
 
-			await codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])
+			await expect(async () => codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])).rejects.toThrow(
+				"No files could be uploaded"
+			)
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationDialog).toHaveBeenCalledWith(expectedError)
@@ -284,7 +288,9 @@ describe("codeChartaService", () => {
 				}
 			]
 
-			await codeChartaService.loadFiles([{ fileName, fileSize: 42, content: "string" as unknown as ExportCCFile }])
+			expect(async () =>
+				codeChartaService.loadFiles([{ fileName, fileSize: 42, content: "string" as unknown as ExportCCFile }])
+			).rejects.toThrow("No files could be uploaded")
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationDialog).toHaveBeenCalledWith(expectedError)
@@ -301,7 +307,9 @@ describe("codeChartaService", () => {
 
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
-			await codeChartaService.loadFiles([{ fileName, fileSize: 42, content: invalidFileContent }])
+			await expect(async () =>
+				codeChartaService.loadFiles([{ fileName, fileSize: 42, content: invalidFileContent }])
+			).rejects.toThrow("No files could be uploaded")
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationDialog).toHaveBeenCalledWith(expectedError)
@@ -343,7 +351,9 @@ describe("codeChartaService", () => {
 				}
 			]
 
-			await codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
+			expect(async () => codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])).rejects.toThrow(
+				"No files could be uploaded"
+			)
 
 			expect(dialogService.showValidationDialog).toHaveBeenCalledWith(expectedError)
 		})

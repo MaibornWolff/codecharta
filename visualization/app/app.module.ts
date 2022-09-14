@@ -44,6 +44,8 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
+import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
+import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/effects/autoFitCodeMapOnFileSelectionChange/autoFitCodeMapOnFileSelectionChange.effect"
 
 @NgModule({
 	imports: [
@@ -58,7 +60,9 @@ import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 			ResetColorRangeEffect,
 			ResetDynamicMarginEffect,
 			ResetChosenMetricsEffect,
-			UpdateEdgePreviewsEffect
+			UpdateEdgePreviewsEffect,
+			RenderCodeMapEffect,
+			AutoFitCodeMapOnFileSelectionChangeEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,

@@ -1,7 +1,6 @@
 import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import { CodeMapNode, LayoutAlgorithm, Node } from "../../../codeCharta.model"
@@ -23,7 +22,7 @@ export interface BuildingDeselectedEventSubscriber {
 	onBuildingDeselected()
 }
 
-export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
+export class ThreeSceneService {
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
 
@@ -65,7 +64,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.folderLabelColorSelected = mapColors.selected
 			this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
 		})
-		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
 		this.scene = new Scene()
 		this.mapGeometry = new Group()
@@ -110,10 +108,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	private getRootNode(nodes: Node[]) {
 		return nodes.find(node => node.id === 0)
-	}
-
-	onRenderMapChanged() {
-		this.reselectBuilding()
 	}
 
 	getConstantHighlight() {
@@ -438,15 +432,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			return this.getHighlightedBuilding().node
 		}
 		return null
-	}
-
-	private reselectBuilding() {
-		if (this.selected) {
-			const buildingToSelect: CodeMapBuilding = this.getMapMesh().getBuildingByPath(this.selected.node.path)
-			if (buildingToSelect) {
-				this.selectBuilding(buildingToSelect)
-			}
-		}
 	}
 
 	dispose() {

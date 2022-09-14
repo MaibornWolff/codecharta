@@ -1,6 +1,6 @@
 import { isLoadingMap } from "./isLoadingMap.reducer"
 import { IsLoadingMapAction, setIsLoadingMap } from "./isLoadingMap.actions"
-import { setHoveredNodeId } from "../../appStatus/hoveredNodeId/hoveredNodeId.actions"
+import { setInvertArea } from "../invertArea/invertArea.actions"
 
 describe("isLoadingMap", () => {
 	describe("Default State", () => {
@@ -26,12 +26,12 @@ describe("isLoadingMap", () => {
 	})
 
 	describe("Other Actions to (not) set isLoadingMap to true", () => {
-		it("'should' set isLoadingMap to true on a random action", () => {
-			expect(isLoadingMap(false, { type: "any" } as unknown as IsLoadingMapAction)).toBe(true)
+		it("should not set isLoadingMap to true on a random action", () => {
+			expect(isLoadingMap(false, { type: "any" } as unknown as IsLoadingMapAction)).toBe(false)
 		})
 
-		it("'should' not set isLoadingMap to true on an explicit excluded action", () => {
-			expect(isLoadingMap(false, setHoveredNodeId(null) as unknown as IsLoadingMapAction)).toBe(false)
+		it("should set isLoadingMap to true on actions requiring rerender", () => {
+			expect(isLoadingMap(false, setInvertArea(true) as unknown as IsLoadingMapAction)).toBe(true)
 		})
 	})
 })
