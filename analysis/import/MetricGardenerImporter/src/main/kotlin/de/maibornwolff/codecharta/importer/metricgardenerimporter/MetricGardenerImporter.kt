@@ -60,8 +60,10 @@ class MetricGardenerImporter(
         if (!isJsonFile) {
             val tempMgOutput = File.createTempFile("MGOutput", ".json")
             tempMgOutput.deleteOnExit()
+
+            val npm = if (isWindows()) "npm.cmd" else "npm"
             shellRun(
-                command = "npm",
+                command = npm,
                 arguments = listOf(
                     "exec", "-y", "metric-gardener", "--", "parse",
                     inputFile.absolutePath, "--output-path", tempMgOutput.absolutePath
@@ -90,8 +92,12 @@ class MetricGardenerImporter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(MetricGardenerImporter(), System.out, *args)
+            CommandLine(MetricGardenerImporter()).execute(*args)
         }
+    }
+
+    private fun isWindows(): Boolean {
+        return System.getProperty("os.name").contains("win", ignoreCase = true)
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog

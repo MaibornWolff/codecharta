@@ -8,7 +8,6 @@ import { CopyToClipboardButtonComponent } from "./copyToClipboardButton.componen
 	imports: [CommonModule, ActionIconModule],
 	declarations: [CopyToClipboardButtonComponent],
 	exports: [CopyToClipboardButtonComponent],
-	entryComponents: [CopyToClipboardButtonComponent],
 	providers: [CopyToClipboardService]
 })
 export class CopyToClipboardButtonModule {}

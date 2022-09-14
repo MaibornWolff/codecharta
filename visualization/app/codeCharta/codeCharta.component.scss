@@ -44,14 +44,6 @@ code-charta-component {
 		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
 	}
 
-	.ribbon-bar-wrapper {
-		position: fixed;
-		z-index: 10;
-		white-space: nowrap;
-		pointer-events: none;
-		width: 100%;
-	}
-
 	cc-attribute-side-bar .side-bar-container,
 	cc-legend-panel .block-wrapper,
 	cc-legend-panel .panel-button,

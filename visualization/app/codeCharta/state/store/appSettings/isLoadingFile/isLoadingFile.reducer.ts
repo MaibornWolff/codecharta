@@ -1,10 +1,15 @@
-import { IsLoadingFileAction, IsLoadingFileActions, setIsLoadingFile } from "./isLoadingFile.actions"
+import { isActionOfType } from "../../../../util/reduxHelper"
+import { FilesSelectionActions } from "../../files/files.actions"
+import { defaultIsLoadingFile, IsLoadingFileAction, IsLoadingFileActions } from "./isLoadingFile.actions"
 
-export function isLoadingFile(state = setIsLoadingFile().payload, action: IsLoadingFileAction) {
-	switch (action.type) {
-		case IsLoadingFileActions.SET_IS_LOADING_FILE:
-			return action.payload
-		default:
-			return state
+export function isLoadingFile(state = defaultIsLoadingFile, action: IsLoadingFileAction) {
+	if (action.type === IsLoadingFileActions.SET_IS_LOADING_FILE) {
+		return action.payload
 	}
+
+	if (isActionOfType(action.type, FilesSelectionActions)) {
+		return true
+	}
+
+	return state
 }

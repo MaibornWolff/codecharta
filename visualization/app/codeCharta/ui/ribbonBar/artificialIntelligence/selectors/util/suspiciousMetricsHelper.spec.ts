@@ -5,9 +5,9 @@ import {
 	MetricValuesByLanguage,
 	setMetricValuesByLanguage
 } from "./suspiciousMetricsHelper"
-import { CodeMapNode, ColorRange, NodeType } from "../../../codeCharta.model"
+import { CodeMapNode, ColorRange, NodeType } from "../../../../../codeCharta.model"
 import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
-import { metricDescriptions } from "../../../util/metric/metricDescriptions"
+import { metricDescriptions } from "../../../../../util/metric/metricDescriptions"
 
 describe("suspiciousMetricsHelper", () => {
 	it("should set metrics by language when node has attributes", () => {

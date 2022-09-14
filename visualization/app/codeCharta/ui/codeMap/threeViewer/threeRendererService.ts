@@ -30,6 +30,8 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	static enableFXAA = false
 	static setPixelRatio = false
 
+	static instance: ThreeRendererService
+
 	composer: CustomComposer
 	renderer: WebGLRenderer
 	scene: Scene
@@ -37,6 +39,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {
 		"ngInject"
+		ThreeRendererService.instance = this
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 	}
 

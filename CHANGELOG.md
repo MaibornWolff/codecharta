@@ -7,9 +7,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Fixed 🐞
+
+-   Show loading spinners while loading a file [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+-   Prevent clicking on not opened metric options in ribbon bar [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+-   Set cursor to pointer on color settings panel of delta mode [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+
+## Chore 👨‍💻 👩‍💻
+
+-   Throttle rendering and migrate codeMap.preRender.service to Angular [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+
+## [1.106.0] - 2022-09-13
+
 ### Added 🚀
 
--   Add an option to run metric-gardener before its parser if requested [#3015](https://github.com/MaibornWolff/codecharta/pull/3015)
+-   Add option to CSVImporter to specify the path column name [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+
+### Changed
+
+-   Stop asking the user to compress a file when printing to stdOut [#3024](https://github.com/MaibornWolff/codecharta/pull/3024)
+
+### Fixed 🐞
+
+-   Fix anongit script using the wrong whitespace, causing gitlogparser to fail [#3030](https://github.com/MaibornWolff/codecharta/pull/3030)
+-   Reshow suspicious metrics badge when calculated data has changed [#2997](https://github.com/MaibornWolff/codecharta/pull/2997)
+
+## [1.105.0] - 2022-09-06
+
+### Added 🚀
+
+-   Add an option to run MetricGardener before its parser if requested [#3015](https://github.com/MaibornWolff/codecharta/pull/3015)
+-   Add missing documentation for MetricGardener importer [#3016](https://github.com/MaibornWolff/codecharta/pull/3016)
 
 ### Changed
 
@@ -17,7 +45,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix console error when clicking switch button in delta mode [#3023](https://github.com/MaibornWolff/codecharta/pull/3023)
 -   Fix broken images to new document pages about how using SonarQube [#3012](https://github.com/MaibornWolff/codecharta/pull/3012)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate tool bar component to Angular [#3020](https://github.com/MaibornWolff/codecharta/pull/3020)
+-   Remove obsolete AngularJS IsPresentationModeService and ShowOnlyBuildingsWithEdgesService [#3005](https://github.com/MaibornWolff/codecharta/pull/3005)
 
 ## [1.104.1] - 2022-08-31
 
@@ -38,6 +72,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Correct file types now get appended to the name of the output file when using the interactive ccsh [#2914](https://github.com/MaibornWolff/codecharta/pull/2914)
 -   Fix exit code handling and update integrationTest's golden_test.sh to cover all modules [#2988](https://github.com/MaibornWolff/codecharta/pull/2988)
 -   Fix missing color pickers within edge metric options [#2993](https://github.com/MaibornWolff/codecharta/pull/2993)
+-   Fix labels being displayed at an incorrect height and lines being disconnected from labels [#2991](https://github.com/MaibornWolff/codecharta/pull/2991)
 -   Provides a list of metrics where no calculation could be performed in relation to a suspicion [#2996](https://github.com/MaibornWolff/codecharta/pull/2996) </br>
     ![missing_values_suspicious_metrics](https://user-images.githubusercontent.com/31436472/187439165-77eda080-ceba-4bab-b077-4f6a2d6162b5.png)
 

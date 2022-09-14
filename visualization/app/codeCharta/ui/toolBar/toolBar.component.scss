@@ -1,20 +1,14 @@
 @use "../../../material/theme";
 
-tool-bar-component {
-	.tool-bar {
-		display: flex;
-		align-items: center;
-		background-color: #f0f0f0;
-		height: 35px;
-		border-bottom: 1px solid #cdcdcd;
-	}
+cc-tool-bar {
+	display: flex;
+	align-items: center;
+	background-color: #f0f0f0;
+	height: 35px;
+	border-bottom: 1px solid #cdcdcd;
 
 	cc-action-icon {
 		margin-left: 8px;
-	}
-
-	.md-focused {
-		background-color: rgb(0, 150, 136) !important;
 	}
 
 	.right-aligned {
@@ -28,16 +22,5 @@ tool-bar-component {
 
 	span {
 		font-size: 10pt;
-	}
-
-	loading-gif-map-component {
-		margin-right: 15px;
-		width: 15px;
-	}
-}
-
-file-panel-component {
-	&.hidden {
-		display: none;
 	}
 }

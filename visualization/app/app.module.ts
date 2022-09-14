@@ -9,8 +9,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "./material/material.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
 import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
-import { Export3DMapButtonComponent } from "./codeCharta/ui/export3DMapButton/export3DMapButton.component"
-import { Export3DMapButtonModule } from "./codeCharta/ui/export3DMapButton/export3DMapButton.module"
 import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.component"
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
@@ -31,20 +29,10 @@ import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMen
 import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
-import { LoadingMapProgressSpinnerModule } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.module"
-import { LoadingMapProgressSpinnerComponent } from "./codeCharta/ui/toolBar/loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
-import { SearchPanelComponent } from "./codeCharta/ui/searchPanel/searchPanel.component"
-import { SearchPanelModule } from "./codeCharta/ui/searchPanel/searchPanel.module"
-import { UploadFilesButtonModule } from "./codeCharta/ui/toolBar/uploadFilesButton/uploadFilesButton.module"
 import { SliderModule } from "./codeCharta/ui/slider/slider.module"
-import { HeightSettingsPanelModule } from "./codeCharta/ui/ribbonBar/heightSettingsPanel/heightSettingsPanel.module"
-import { FilePanelModule } from "./codeCharta/ui/filePanel/filePanel.module"
-import { CustomConfigsModule } from "./codeCharta/ui/customConfigs/customConfigs.module"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
-import { GlobalConfigurationButtonModule } from "./codeCharta/ui/toolBar/globalConfigurationButton/globalConfigurationButton.module"
 import { FileExtensionBarModule } from "./codeCharta/ui/fileExtensionBar/fileExtensionBar.module"
-import { AreaSettingsPanelModule } from "./codeCharta/ui/ribbonBar/areaSettingsPanel/areaSettingsPanel.module"
 import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 import { MetricChooserModule } from "./codeCharta/ui/metricChooser/metricChooser.module"
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
@@ -52,15 +40,12 @@ import { RibbonBarModule } from "./codeCharta/ui/ribbonBar/ribbonBar.module"
 import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
 import { VersionService } from "./codeCharta/services/version/version.service"
-import { HoveredNodePathPanelModule } from "./codeCharta/ui/toolBar/hoveredNodePathPanel/hoveredNodePathPanel.module"
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
-import { ColorSettingsPanelModule } from "./codeCharta/ui/ribbonBar/colorSettingsPanel/colorSettingsPanel.module"
-import { ScreenshotButtonModule } from "./codeCharta/ui/screenshotButton/screenshotButton.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
-import { CopyToClipboardButtonModule } from "./codeCharta/ui/copyToClipboardButton/copyToClipboardButton.module"
-import { DownloadButtonModule } from "./codeCharta/ui/toolBar/downloadButton/downloadButton.module"
 import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
-import { PresentationModeButtonModule } from "./codeCharta/ui/toolBar/presentationModeButton/presentationModeButton.module"
+import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
+import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
+import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/effects/autoFitCodeMapOnFileSelectionChange/autoFitCodeMapOnFileSelectionChange.effect"
 
 @NgModule({
 	imports: [
@@ -75,38 +60,27 @@ import { PresentationModeButtonModule } from "./codeCharta/ui/toolBar/presentati
 			ResetColorRangeEffect,
 			ResetDynamicMarginEffect,
 			ResetChosenMetricsEffect,
-			UpdateEdgePreviewsEffect
+			UpdateEdgePreviewsEffect,
+			RenderCodeMapEffect,
+			AutoFitCodeMapOnFileSelectionChangeEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
 		MaterialModule,
 		FormsModule,
-		Export3DMapButtonModule,
 		LegendPanelModule,
 		ColorPickerForMapColorModule,
 		NodeContextMenuCardModule,
 		ReactiveFormsModule,
 		LoadingFileProgressSpinnerModule,
-		LoadingMapProgressSpinnerModule,
-		SearchPanelModule,
-		CustomConfigsModule,
-		FilePanelModule,
-		HeightSettingsPanelModule,
 		ViewCubeModule,
-		GlobalConfigurationButtonModule,
 		FileExtensionBarModule,
-		AreaSettingsPanelModule,
 		MetricChooserModule,
 		RibbonBarModule,
 		ChangelogDialogModule,
-		HoveredNodePathPanelModule,
 		ActionIconModule,
-		ColorSettingsPanelModule,
-		ScreenshotButtonModule,
-		DownloadButtonModule,
-		UploadFilesButtonModule,
-		CopyToClipboardButtonModule,
-		PresentationModeButtonModule
+		ToolBarModule,
+		RibbonBarModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -126,12 +100,9 @@ import { PresentationModeButtonModule } from "./codeCharta/ui/toolBar/presentati
 	declarations: [...dialogs],
 	entryComponents: [
 		AttributeSideBarComponent,
-		Export3DMapButtonComponent,
 		LegendPanelComponent,
 		FocusButtonsComponent,
 		LoadingFileProgressSpinnerComponent,
-		LoadingMapProgressSpinnerComponent,
-		SearchPanelComponent,
 		...dialogs
 	]
 })

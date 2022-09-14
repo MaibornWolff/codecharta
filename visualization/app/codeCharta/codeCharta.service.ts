@@ -3,7 +3,6 @@ import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { setFiles, setStandardByNames } from "./state/store/files/files.actions"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { NameDataPair } from "./codeCharta.model"
@@ -23,15 +22,17 @@ export class CodeChartaService {
 			CodeChartaService.updateRootData(newReferenceFile.map.name)
 		}
 	})
-
 	unsubscribeComparisonFileSubscription = onStoreChanged(comparisonFileSelector, (_, newComparisonFile) => {
 		if (newComparisonFile) {
 			CodeChartaService.updateRootDataComparison(newComparisonFile.map.name)
 		}
 	})
 
+	static instance: CodeChartaService
+
 	constructor(private storeService: StoreService, private dialogService: DialogService) {
 		"ngInject"
+		CodeChartaService.instance = this
 	}
 
 	async loadFiles(nameDataPairs: NameDataPair[]) {
@@ -39,8 +40,6 @@ export class CodeChartaService {
 		const fileValidationResults: CCFileValidationResult[] = []
 
 		this.getValidationResults(nameDataPairs, fileValidationResults)
-
-		this.storeService.dispatch(setIsLoadingFile(false))
 
 		if (fileValidationResults.length > 0) {
 			await this.dialogService.showValidationDialog(fileValidationResults)
@@ -57,6 +56,8 @@ export class CodeChartaService {
 
 			this.fileStates = []
 			this.recentFiles = []
+		} else {
+			throw new Error("No files could be uploaded")
 		}
 	}
 
