@@ -1,8 +1,7 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.subcommands
 
-import com.lordcodes.turtle.ShellFailedException
-import com.lordcodes.turtle.shellRun
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
+import de.maibornwolff.codecharta.importer.gitlogparser.util.GitAdapter
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
@@ -55,9 +54,12 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
             repoPath = Paths.get(repoPathName!!).toAbsolutePath()
         }
 
+        println("Creating git.log file...")
         val gitLogFile = createGitLogFile(repoPath)
+        println("Creating git-ls file...")
         val gitLsFile = createGitLsFile(repoPath)
 
+        println("Parsing files...")
         GitLogParser().buildProject(gitLogFile, gitLsFile, outputFilePath, addAuthor, silent, compress)
         return null
     }
@@ -65,18 +67,8 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     private fun createGitLogFile(repoPath: Path): File {
         val tempGitLog = File.createTempFile("git", ".log")
         tempGitLog.deleteOnExit()
-        try {
-            shellRun(
-                command = "git",
-                arguments = listOf(
-                    "log", "--numstat", "--raw", "--topo-order", "--reverse", "-m", ">", tempGitLog.absolutePath
-                ),
-                workingDirectory = repoPath.toFile()
-            )
-        } catch (e: ShellFailedException) {
-            println("ERROR: Could not create git log file.")
-            throw e
-        }
+
+        tempGitLog.bufferedWriter().use { GitAdapter(repoPath.toFile()).getGitLog() }
 
         return tempGitLog
     }
@@ -84,18 +76,8 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     private fun createGitLsFile(repoPath: Path): File {
         val tempGitLs = File.createTempFile("file-name-list", ".txt")
         tempGitLs.deleteOnExit()
-        try {
-            shellRun(
-                command = "git",
-                arguments = listOf(
-                    "git ls-files", ">", tempGitLs.absolutePath
-                ),
-                workingDirectory = repoPath.toFile()
-            )
-        } catch (e: ShellFailedException) {
-            println("ERROR: Could not create git ls file.")
-            throw e
-        }
+
+        tempGitLs.bufferedWriter().use { GitAdapter(repoPath.toFile()).getGitFiles() }
         return tempGitLs
     }
 

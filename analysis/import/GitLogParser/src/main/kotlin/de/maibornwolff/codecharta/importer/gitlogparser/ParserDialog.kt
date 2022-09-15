@@ -13,20 +13,14 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             val isLogScan = KInquirer.promptConfirm(
                 message = "Do you already have a git.log and git ls file?",
-                default = true
+                default = false
             )
 
             val subcommand: String =
                 if (isLogScan) {
-                    listOfNotNull(
-                        "log-scan",
-                        LogScanParserDialog.collectParserArgs().toString()
-                    ).toString()
+                    "log-scan " + LogScanParserDialog.collectParserArgs().toString().replace("[", "").replace("]", "")
                 } else {
-                    listOfNotNull(
-                        "repo-scan",
-                        RepoScanParserDialog.collectParserArgs().toString()
-                    ).toString()
+                    "repo-scan" + RepoScanParserDialog.collectParserArgs().toString().replace("[", "").replace("]", "")
                 }
 
             val outputFileName: String = KInquirer.promptInput(

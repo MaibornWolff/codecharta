@@ -4,7 +4,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
-class GitAdapter(private val gitDirectory: String) {
+class GitAdapter(private val gitDirectory: File) {
 
     fun getGitLog(): Stream<String> {
         val process = ProcessBuilder("git", "log", "--numstat", "--raw", "--topo-order", "--reverse", "-m")
@@ -23,12 +23,12 @@ class GitAdapter(private val gitDirectory: String) {
 
     private fun executeProcess(process: ProcessBuilder): MutableList<String> {
         val output = mutableListOf<String>()
-        process.directory(File(gitDirectory))
+        process.directory(gitDirectory)
         val runningProcess = process.start()
         runningProcess.inputStream.reader(Charsets.UTF_8).use {
             output += it.readLines()
         }
-        runningProcess.waitFor(10, TimeUnit.SECONDS)
+        runningProcess.waitFor(60, TimeUnit.SECONDS)
         return output
     }
 }
