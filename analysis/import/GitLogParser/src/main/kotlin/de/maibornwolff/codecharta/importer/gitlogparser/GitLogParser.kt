@@ -37,50 +37,11 @@ class GitLogParser(
     private val error: PrintStream = System.err
 ) : Callable<Void>, InteractiveParser {
 
+    private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(
-        names = ["--git-log"],
-        arity = "1",
-        paramLabel = "FILE",
-        required = true,
-        description = ["git-log file to parse"]
-    )
-    private var gitLogFile: File? = null
-
-    @CommandLine.Option(
-        names = ["--repo-files"],
-        arity = "1",
-        paramLabel = "FILE",
-        required = true,
-        description = ["list of all file names in current git project"]
-    )
-    private var gitLsFile: File? = null
-
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
-    private var outputFilePath: String? = null
-
-    @CommandLine.Option(
-        names = ["-nc", "--not-compressed"],
-        description = ["save uncompressed output File"],
-        arity = "0"
-    )
-    private var compress = true
-
-    @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
-    private var silent = false
-
-    @CommandLine.Option(
-        names = ["--input-format"],
-        description = ["input format for parsing, optional only one type is currently supported"],
-        defaultValue = "GIT_LOG_NUMSTAT_RAW_REVERSED"
-    )
-    private var inputFormatNames: InputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
-
-    @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
-    private var addAuthor = false
 
     private val logParserStrategy: LogParserStrategy
         get() = getLogParserStrategyByInputFormat(inputFormatNames)
@@ -106,11 +67,21 @@ class GitLogParser(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-
         print(" ")
+        return null
+    }
+
+    internal fun buildProject(
+        gitLogFile: File,
+        gitLsFile: File,
+        outputFilePath: String?,
+        addAuthor: Boolean,
+        silent: Boolean,
+        compress: Boolean
+    ) {
         var project = createProjectFromLog(
-            gitLogFile!!,
-            gitLsFile!!,
+            gitLogFile,
+            gitLsFile,
             logParserStrategy,
             metricsFactory,
             addAuthor,
@@ -123,8 +94,6 @@ class GitLogParser(
         }
 
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, output, compress)
-
-        return null
     }
 
     private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy {
@@ -143,19 +112,19 @@ class GitLogParser(
     }
 
     private fun createProjectFromLog(
-        pathToLog: File,
-        pathToNameTree: File,
+        gitLogFile: File,
+        gitLsFile: File,
         parserStrategy: LogParserStrategy,
         metricsFactory: MetricsFactory,
         containsAuthors: Boolean,
         silent: Boolean = false
     ): Project {
-        val namesInProject = readFileNameListFile(pathToNameTree)
-        val encoding = guessEncoding(pathToLog) ?: "UTF-8"
+        val namesInProject = readFileNameListFile(gitLsFile)
+        val encoding = guessEncoding(gitLogFile) ?: "UTF-8"
         if (!silent) error.println("Assumed encoding $encoding")
-        val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
+        val lines: Stream<String> = Files.lines(gitLogFile.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
-        val logSizeInByte = gitLogFile!!.length()
+        val logSizeInByte = gitLogFile.length()
         return GitLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(
             lines,
             namesInProject
