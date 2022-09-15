@@ -1,5 +1,6 @@
-package de.maibornwolff.codecharta.importer.gitlogparser
+package de.maibornwolff.codecharta.importer.gitlogparser.subcommands
 
+import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine

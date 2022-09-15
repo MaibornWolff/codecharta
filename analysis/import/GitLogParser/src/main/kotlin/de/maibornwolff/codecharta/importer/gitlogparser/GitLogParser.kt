@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.importer.gitlogparser.converter.ProjectConvert
 import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstatRawParserStrategy
+import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.LogScanCommand
+import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.RepoScanCommand
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer

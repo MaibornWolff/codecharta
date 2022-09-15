@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.importer.gitlogparser
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
+import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.LogScanParserDialog
+import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.RepoScanParserDialog
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {

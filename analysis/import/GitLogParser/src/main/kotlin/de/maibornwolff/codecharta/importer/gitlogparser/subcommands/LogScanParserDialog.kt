@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.gitlogparser
+package de.maibornwolff.codecharta.importer.gitlogparser.subcommands
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
