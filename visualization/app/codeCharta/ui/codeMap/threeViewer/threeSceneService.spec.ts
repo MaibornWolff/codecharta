@@ -9,13 +9,11 @@ import {
 	VALID_FILE_NODE_WITH_ID,
 	VALID_NODES_WITH_ID
 } from "../../../util/dataMocks"
-import { CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { klona } from "klona"
 import { CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 import { Box3, BufferGeometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
@@ -38,8 +36,6 @@ describe("ThreeSceneService", () => {
 	let idToBuildingService: IdToBuildingService
 	let renderSpy: jest.Mock
 
-	let codeMapBuilding: CodeMapBuilding
-
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
@@ -52,8 +48,6 @@ describe("ThreeSceneService", () => {
 		storeService = getService<StoreService>("storeService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
-
-		codeMapBuilding = klona(CODE_MAP_BUILDING)
 	}
 
 	function rebuildService() {
@@ -66,27 +60,6 @@ describe("ThreeSceneService", () => {
 		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 		threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 		threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
-	})
-
-	describe("constructor", () => {
-		it("should subscribe renderMap", () => {
-			CodeMapPreRenderService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, threeSceneService)
-		})
-	})
-
-	describe("onRenderMapChanged", () => {
-		it("should call reselectBuilding", () => {
-			threeSceneService["selected"] = codeMapBuilding
-			threeSceneService["reselectBuilding"] = jest.fn()
-
-			threeSceneService.onRenderMapChanged()
-
-			expect(threeSceneService["reselectBuilding"]).toHaveBeenCalled()
-		})
 	})
 
 	describe("highlightBuildings", () => {

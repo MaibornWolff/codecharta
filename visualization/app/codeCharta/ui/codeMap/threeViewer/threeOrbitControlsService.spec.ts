@@ -5,10 +5,7 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
-import { StoreService } from "../../../state/store.service"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { setResetCameraIfNewFileIsLoaded } from "../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { FilesService } from "../../../state/store/files/files.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 
@@ -16,7 +13,6 @@ describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
-	let storeService: StoreService
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
 	let threeUpdateCycleService: ThreeUpdateCycleService
@@ -36,7 +32,6 @@ describe("ThreeOrbitControlsService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
-		storeService = getService<StoreService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
@@ -68,7 +63,6 @@ describe("ThreeOrbitControlsService", () => {
 		threeOrbitControlsService = new ThreeOrbitControlsService(
 			$rootScope,
 			$timeout,
-			storeService,
 			threeCameraService,
 			threeSceneService,
 			threeUpdateCycleService
@@ -90,36 +84,6 @@ describe("ThreeOrbitControlsService", () => {
 			rebuildService()
 
 			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
-		})
-
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
-		})
-	})
-
-	describe("onFilesSelectionChanged", () => {
-		it("should autoFit when the option to do so is enabled", () => {
-			threeOrbitControlsService.autoFitTo = jest.fn()
-
-			storeService.dispatch(setResetCameraIfNewFileIsLoaded(true))
-
-			threeOrbitControlsService.onFilesSelectionChanged()
-
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
-		})
-
-		it("should autoFit when the option to do so is enabled", () => {
-			threeOrbitControlsService.autoFitTo = jest.fn()
-
-			storeService.dispatch(setResetCameraIfNewFileIsLoaded(false))
-
-			threeOrbitControlsService.onFilesSelectionChanged()
-
-			expect(threeOrbitControlsService.autoFitTo).not.toHaveBeenCalled()
 		})
 	})
 
