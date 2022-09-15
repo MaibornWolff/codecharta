@@ -46,10 +46,8 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
 
-    // git log --numstat --raw --topo-order --reverse -m
-    // git ls-files > file-name-list.txt
-
     override fun call(): Void? {
+        // TODO: Do Clean Code magic
         val repoPath: Path
         if (repoPathName.isNullOrBlank()) {
             repoPath = Paths.get("").toAbsolutePath()
