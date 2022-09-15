@@ -1,5 +1,7 @@
 import { CCFile } from "../../codeCharta.model"
 import { FileSelectionState, FileState } from "./files"
+import { mergeFolderChain } from "../../util/nodeDecorator"
+import { CodeChartaService } from "../../codeCharta.service"
 
 export function getCCFiles(fileStates: FileState[]) {
 	return fileStates.map(x => x.file)
@@ -39,8 +41,16 @@ export function isEqual(file1: CCFile, file2: CCFile) {
 }
 
 export function haveEqualRootNames(reference: CCFile, comparison: CCFile) {
-	const referenceRoot = reference.map.name.split("/")[0]
-	const comparisonRoot = comparison.map.name.split("/")[0]
+	const splitPathReference = reference.map.path.split("/")
+	const splitPathComparison = comparison.map.path.split("/")
+	if (splitPathComparison.length > splitPathReference.length) {
+		mergeFolderChain(reference.map)
+		CodeChartaService.updateRootData(reference.map.name)
+	}
+	if (splitPathComparison.length < splitPathReference.length) {
+		mergeFolderChain(comparison.map)
+		CodeChartaService.updateRootData(comparison.map.name)
+	}
 
-	return referenceRoot === comparisonRoot
+	return reference.map.name === comparison.map.name
 }
