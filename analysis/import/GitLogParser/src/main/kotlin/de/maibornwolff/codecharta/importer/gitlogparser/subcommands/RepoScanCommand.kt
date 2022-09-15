@@ -11,7 +11,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
-
 @CommandLine.Command(
     name = "repo-scan",
     description = ["git log parser log-scan - generates cc.json from a generated git-log file"],
@@ -101,5 +100,4 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     }
 
     override fun getDialog(): ParserDialogInterface = LogScanParserDialog
-
 }

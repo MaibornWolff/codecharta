@@ -52,12 +52,6 @@ class ParserDialog {
                 "--silent=$isSilent",
                 "--add-author=$addAuthor"
             )
-
-
         }
-
-
     }
-
-
 }

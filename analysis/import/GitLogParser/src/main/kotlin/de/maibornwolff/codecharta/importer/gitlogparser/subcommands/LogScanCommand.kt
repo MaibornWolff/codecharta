@@ -7,7 +7,6 @@ import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
 
-
 @CommandLine.Command(
     name = "log-scan",
     description = ["git log parser log-scan - generates cc.json from a given git-log file"],
@@ -52,7 +51,6 @@ class LogScanCommand : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
-
 
     override fun call(): Void? {
         GitLogParser().buildProject(gitLogFile!!, gitLsFile!!, outputFilePath, addAuthor, silent, compress)

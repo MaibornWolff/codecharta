@@ -41,7 +41,6 @@ class GitLogParser(
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-
     private val logParserStrategy: LogParserStrategy
         get() = getLogParserStrategyByInputFormat(inputFormatNames)
 
