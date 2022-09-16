@@ -2,13 +2,12 @@ package de.maibornwolff.codecharta.importer.gitlogparser.util
 
 import java.io.File
 import java.util.concurrent.TimeUnit
-import java.util.stream.Stream
 
 class GitAdapter(private val gitDirectory: File) {
 
-    fun getGitLog(): Stream<String> {
+    fun getGitLog(): List<String> {
         val process = ProcessBuilder("git", "log", "--numstat", "--raw", "--topo-order", "--reverse", "-m")
-        return executeProcess(process).stream()
+        return executeProcess(process)
     }
 
     fun isGitInstalled(): Boolean {
