@@ -10,6 +10,7 @@ import { MapTreeViewModule } from "./mapTreeView/mapTreeView.module"
 
 @NgModule({
 	imports: [CommonModule, MaterialModule, SearchBarModule, MatchingFilesCounterModule, MapTreeViewModule],
-	declarations: [SearchPanelComponent, SearchPanelModeSelectorComponent, BlacklistPanelComponent]
+	declarations: [SearchPanelComponent, SearchPanelModeSelectorComponent, BlacklistPanelComponent],
+	exports: [SearchPanelComponent]
 })
 export class SearchPanelModule {}

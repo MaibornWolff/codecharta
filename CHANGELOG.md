@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Fixed 🐞
+
+-   Show loading spinners while loading a file [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+-   Prevent clicking on not opened metric options in ribbon bar [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+-   Set cursor to pointer on color settings panel of delta mode [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+
+## Chore 👨‍💻 👩‍💻
+
+-   Throttle rendering and migrate codeMap.preRender.service to Angular [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+
+## [1.106.0] - 2022-09-13
+
 ### Added 🚀
 
 -   Add option to CSVImporter to specify the path column name [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)

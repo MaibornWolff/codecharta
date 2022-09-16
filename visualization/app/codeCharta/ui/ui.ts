@@ -8,17 +8,10 @@ import "./resetSettingsButton/resetSettingsButton.module"
 import "./ribbonBar/ribbonBar.module"
 import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
-import { Export3DMapButtonComponent } from "./export3DMapButton/export3DMapButton.component"
 import { LegendPanelComponent } from "./legendPanel/legendPanel.component"
 import { SliderComponent } from "./slider/slider.component"
 
 angular
-	.module("app.codeCharta.ui", [
-		"app.codeCharta.ui.codeMap",
-		"app.codeCharta.ui.dialog",
-		"app.codeCharta.ui.resetSettingsButton",
-		"app.codeCharta.ui.ribbonBar"
-	])
-	.directive("ccExportThreedMapButton", downgradeComponent({ component: Export3DMapButtonComponent }))
+	.module("app.codeCharta.ui", ["app.codeCharta.ui.codeMap", "app.codeCharta.ui.dialog", "app.codeCharta.ui.resetSettingsButton"])
 	.directive("ccLegendPanel", downgradeComponent({ component: LegendPanelComponent }))
 	.directive("ccSlider", downgradeComponent({ component: SliderComponent }))
