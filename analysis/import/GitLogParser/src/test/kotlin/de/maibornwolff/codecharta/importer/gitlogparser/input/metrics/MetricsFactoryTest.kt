@@ -1,14 +1,13 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.input.metrics
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
-import java.util.Arrays
+import org.junit.jupiter.api.Test
 
 class MetricsFactoryTest {
     @Test
     fun createMetricsShouldReturnCorrectMetric() {
         val metricName = "abs_code_churn"
-        val factory = MetricsFactory(Arrays.asList(metricName))
+        val factory = MetricsFactory(listOf(metricName))
 
         val modificationMetrics = factory.createMetrics()
 
@@ -19,7 +18,7 @@ class MetricsFactoryTest {
     @Test
     fun nonExistingMetricsShouldBeIgnored() {
         val metricName = "some_non_existing_metric"
-        val factory = MetricsFactory(Arrays.asList(metricName))
+        val factory = MetricsFactory(listOf(metricName))
 
         assertThat(factory.createMetrics()).hasSize(0)
     }

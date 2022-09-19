@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.input.metrics
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 

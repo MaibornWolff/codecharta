@@ -5,8 +5,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.ParserStrategyContractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.util.Lists
-import org.junit.Test
-import java.util.Arrays.asList
+import org.junit.jupiter.api.Test
 import java.util.function.Function
 import java.util.stream.Stream
 
@@ -20,7 +19,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
     override val logParserStrategy: LogParserStrategy
         get() = parserStrategy
 
-    override val twoCommitsAsStraem: Stream<String>
+    override val twoCommitsAsStream: Stream<String>
         get() {
             val twoCommits = Lists.newArrayList("commit")
             twoCommits.addAll(FULL_COMMIT)
@@ -46,7 +45,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
 
     @Test
     fun aggregateNumstatAndRaw() {
-        val commitLines = asList(
+        val commitLines = listOf(
             "commit ca1fe2ba3be4",
             "Author: TheAuthor <mail@example.com>",
             "Date:   Tue May 9 19:57:57 2017 +0200",
@@ -69,7 +68,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
 
     @Test
     fun aggregateNumstatAndRawWithRename() {
-        val commitLines = asList(
+        val commitLines = listOf(
             "commit ca1fe2ba3be4",
             "Author: TheAuthor <mail@example.com>",
             "Date:   Tue May 9 19:57:57 2017 +0200",
@@ -92,7 +91,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
 
     companion object {
 
-        private val FULL_COMMIT = asList(
+        private val FULL_COMMIT = listOf(
             "commit ca1fe2ba3be4",
             "Author: TheAuthor <mail@example.com>",
             "Date:   Tue May 9 19:57:57 2017 +0200",

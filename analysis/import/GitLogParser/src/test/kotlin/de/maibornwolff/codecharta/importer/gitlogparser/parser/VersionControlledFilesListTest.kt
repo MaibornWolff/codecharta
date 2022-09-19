@@ -2,16 +2,16 @@ package de.maibornwolff.codecharta.importer.gitlogparser.parser
 
 import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFactory
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class VersionControlledFilesListTest {
 
     private val metricsFactory = MetricsFactory()
     private lateinit var vcfList: VersionControlledFilesList
 
-    @Before
+    @BeforeEach
     fun initialize() {
         vcfList = VersionControlledFilesList(metricsFactory)
     }

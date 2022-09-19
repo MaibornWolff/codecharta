@@ -46,7 +46,6 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     private var addAuthor = false
 
     override fun call(): Void? {
-        // TODO: Do Clean Code magic
         val repoPath: Path
         if (repoPathName.isNullOrBlank()) {
             repoPath = Paths.get("").toAbsolutePath()

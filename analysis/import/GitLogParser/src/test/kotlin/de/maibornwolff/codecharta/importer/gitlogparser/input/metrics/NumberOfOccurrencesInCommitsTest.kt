@@ -2,9 +2,9 @@ package de.maibornwolff.codecharta.importer.gitlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
-class NumberOfOccurencesInCommitsTest {
+class NumberOfOccurrencesInCommitsTest {
     @Test
     fun should_have_initial_value_zero() {
         // when

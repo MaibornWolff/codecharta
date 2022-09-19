@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 import de.maibornwolff.codecharta.model.Edge
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.util.Arrays
 import java.util.stream.Collectors
@@ -90,7 +90,7 @@ class HighlyCoupledFilesTest {
 
     private fun registerModifications(metric: Metric, vararg filenames: String) {
         val modificationList = Arrays.stream(filenames)
-            .map<Modification>({ Modification(it) })
+            .map { Modification(it) }
             .collect(Collectors.toList())
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())
@@ -99,6 +99,6 @@ class HighlyCoupledFilesTest {
         modificationList.stream()
             .filter { mod -> FILENAME == mod.currentFilename }
             .findFirst()
-            .ifPresent({ metric.registerModification(it) })
+            .ifPresent { metric.registerModification(it) }
     }
 }
