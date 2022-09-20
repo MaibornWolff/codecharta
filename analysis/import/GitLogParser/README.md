@@ -1,4 +1,4 @@
-# GitLogParser - Status: stable
+# GitLogParser
 
 Generates visualisation data from git repository logs and repository file list.
 
@@ -30,11 +30,11 @@ Additionally, the following Edge Metrics are calculated:
 
 The names of authors are saved when the --add-author flag is set.
 
-## Usage (Creating required files on the fly)
+## Usage
 
-### Executing the GitLogParser
+### Creating required files on the fly | repo-scan
 
-See `ccsh -h` for help. Standard usage:
+See `ccsh gitlogparser repo-scan -h` for help. Standard usage:
 
 > `ccsh gitlogparser repo-scan --repo-path <path>`
 
@@ -46,15 +46,15 @@ The result is written as JSON to standard out or into an output file (if specifi
 If a project is piped into the GitLogParser, the results and the piped project are merged.
 The resulting project has the project name specified for the GitLogParser.
 
-### Example using Git
+#### Example using Git
 
 -   `cd <my_git_project>`
 -   `./ccsh gitlogparser repo-scan -o output.cc.json`
 -   load `output.cc.json` in visualization
 
-## Usage (Manual creation of required files)
+### Manual creation of required files | log-scan
 
-### Creating the repository log for metric generation
+#### Creating the repository log for metric generation
 
 | SCM | Log format                   | Command for log creation                            | tracks renames | ignores deleted files | supports code churn |
 | --- | ---------------------------- | --------------------------------------------------- | -------------- | --------------------- | ------------------- |
@@ -62,15 +62,15 @@ The resulting project has the project name specified for the GitLogParser.
 
 You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG for usage with CodeCharta.
 
-### Creating the git files list of the repository for metric generation
+#### Creating the git files list of the repository for metric generation
 
 > `git ls-files > file-name-list.txt`
 
 Please make sure to execute this command in the root folder of your repository.
 
-### Executing the GitLogParser
+#### Executing the GitLogParser
 
-See `ccsh -h` for help. Standard usage:
+See `ccsh gitlogparser log-scan -h` for help. Standard usage:
 
 > `ccsh gitlogparser log-scan --git-log <path> --repo-files <path>`
 
@@ -81,10 +81,17 @@ The result is written as JSON to standard out or into an output file (if specifi
 If a project is piped into the GitLogParser, the results and the piped project are merged.
 The resulting project has the project name specified for the GitLogParser.
 
-### Example using Git
+## Examples
+
+### Automatic usage
+
+-   `./ccsh gitlogparser repo-scan --repo-path <path_to_my_git_project> -o output.cc.json`
+-   load `output.cc.json` in visualization
+
+### Manual usage
 
 -   `cd <my_git_project>`
 -   `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
 -   `git ls-files > file-name-list.txt`
--   `./ccsh gitlogparser git.log -o output.cc.json -n file-name-list.txt`
+-   `./ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json`
 -   load `output.cc.json` in visualization
