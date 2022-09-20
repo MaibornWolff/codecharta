@@ -10,11 +10,6 @@ class GitAdapter(private val gitDirectory: File) {
         return executeProcess(process)
     }
 
-    fun isGitInstalled(): Boolean {
-        val process = ProcessBuilder("git", "--version")
-        return executeProcess(process).any { it.startsWith("git version") }
-    }
-
     fun getGitFiles(): List<String> {
         val process = ProcessBuilder("git", "ls-files")
         return executeProcess(process)
