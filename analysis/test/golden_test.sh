@@ -198,7 +198,7 @@ run_tests() {
   echo "Running Tests..."
   echo
 
-#  check_gitlogparser_log_scan
+  check_gitlogparser_log_scan
   check_gitlogparser_repo_scan
   check_csvexporter
   check_edgefilter
