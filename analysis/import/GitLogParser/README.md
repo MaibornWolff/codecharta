@@ -16,7 +16,7 @@ It supports the following metrics per file:
 | `age_in_weeks`         | age of the file in weeks                                                              |
 | `number_of_commits`    | total number of commits                                                               |
 | `highly_coupled_files` | Number of highly coupled files (>=35% of times modified the same time) with this file |
-| `median_coupled_files` | Median of number of other files that where commited with this file                    |
+| `median_coupled_files` | Median of number of other files that where committed with this file                   |
 | `number_of_renames`    | total number of renames                                                               |
 | `weeks_with_commits`   | weeks with commits                                                                    |
 | `number_of_authors`    | number of authors with commits                                                        |

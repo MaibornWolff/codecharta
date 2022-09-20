@@ -5,16 +5,16 @@ tags:
     - sourcecodeparser
     - gitlogparser
     - merge
-title: Analyzing a java project and it's gitlog to generate a merged cc.json
+title: Analyzing a java project and its gitlog to generate a merged cc.json
 ---
 
 # Prerequisites
 
 -   CodeCharta-Visualization installed
 -   CodeCharta-Analysis installed
--   git or svn
+-   git
 -   Java installed and correctly configured
--   bash or similiar
+-   bash or similar
 
 # Instructions
 
@@ -23,16 +23,13 @@ Navigate to the folder that contains the ccsh
 ```bash
 # get project of your choice
 git clone https://github.com/junit-team/junit4
+cd junit4
 
 # analyze junit4 with the sourcecodeparser and generate a cc.json
-./ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
+./ccsh sourcecodeparser . -o junit4.source.cc.json -nc
 
-# generate git.log
-cd junit4
-git log --numstat --raw --topo-order > ../junit4.git.log
-
-# generate a cc.json from that git.log
-./ccsh gitlogparser junit4.git.log -p junit4 -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
+# generate cc.json from the gitlog automatically
+./ccsh gitlogparser repo-scan -o junit4.git.cc.json -nc
 
 # check structures of both cc.jsons to see if the folder structures are matching (src is on the same level)
 ./ccsh modify junit4.git.cc.json -p 1
