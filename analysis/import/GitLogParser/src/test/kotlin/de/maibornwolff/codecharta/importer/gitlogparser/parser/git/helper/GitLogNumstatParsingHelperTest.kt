@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.parser.git.helper
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class GitLogNumstatParsingHelperTest {
 

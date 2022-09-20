@@ -4,15 +4,15 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.VersionControlledFilesInGitProject
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.VersionControlledFilesList
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class VersionControlledFilesInGitProjectTest {
 
     private val metricsFactory = MetricsFactory()
     private lateinit var vcfList: VersionControlledFilesList
 
-    @Before
+    @BeforeEach
     fun initialize() {
         vcfList = VersionControlledFilesList(metricsFactory)
     }
@@ -30,7 +30,8 @@ class VersionControlledFilesInGitProjectTest {
             vcfList.getList(),
             projectNameList
         )
-        val namesAfterFiltering = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { file -> file.filename }
+        val namesAfterFiltering =
+            versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { file -> file.filename }
 
         assertThat(namesAfterFiltering).containsExactlyInAnyOrder("src/Main.kt")
     }

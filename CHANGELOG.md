@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Add subcommand to GitLogParser to run necessary git commands automatically [#3026](https://github.com/MaibornWolff/codecharta/pull/3041)
+
+### Changed
+
+-   Change default behaviour of GitLogParser to use new subcommands [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+
 ## [1.106.1] - 2022-09-20
 
 ## Fixed 🐞

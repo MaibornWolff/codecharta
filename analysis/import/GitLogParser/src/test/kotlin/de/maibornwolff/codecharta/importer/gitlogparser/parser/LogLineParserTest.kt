@@ -5,15 +5,14 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFac
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import java.util.Arrays
 
 class LogLineParserTest {
     private val metricsFactory = mockk<MetricsFactory>()
 
-    @Before
+    @BeforeEach
     fun setup() {
         every { metricsFactory.createMetrics() } returns emptyList()
     }
@@ -24,7 +23,7 @@ class LogLineParserTest {
         val parserStrategy = mockk<LogParserStrategy>()
         val author = "An Author"
         val commitDate = OffsetDateTime.now()
-        val filenames = Arrays.asList("src/Main.java", "src/Util.java")
+        val filenames = listOf("src/Main.java", "src/Util.java")
         val input = emptyList<String>()
 
         every { parserStrategy.parseAuthor(any()) } returns author

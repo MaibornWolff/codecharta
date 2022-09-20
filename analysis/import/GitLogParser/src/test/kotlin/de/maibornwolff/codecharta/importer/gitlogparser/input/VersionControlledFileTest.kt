@@ -6,14 +6,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import java.util.Arrays
 
 class VersionControlledFileTest {
 
     @Test
-    fun versionControlledFileHoldsInitallyOnlyTheFilename() {
+    fun versionControlledFileHoldsInitiallyOnlyTheFilename() {
         // given
         val metricsFactory = mockk<MetricsFactory>(relaxed = true)
         val filename = "filename"
@@ -35,7 +34,7 @@ class VersionControlledFileTest {
         every { metric.value() } returns 1
 
         val metricsFactory = mockk<MetricsFactory>()
-        every { metricsFactory.createMetrics() } returns Arrays.asList(metric)
+        every { metricsFactory.createMetrics() } returns listOf(metric)
 
         val versionControlledFile = VersionControlledFile(
             "filename",
@@ -60,7 +59,7 @@ class VersionControlledFileTest {
         val author = "An Author"
         val versionControlledFile = VersionControlledFile(
             filename,
-            Arrays.asList(modificationMetric)
+            listOf(modificationMetric)
         )
 
         // when
@@ -77,6 +76,6 @@ class VersionControlledFileTest {
     }
 
     private fun createCommit(author: String, modification: Modification): Commit {
-        return Commit(author, Arrays.asList(modification), OffsetDateTime.now())
+        return Commit(author, listOf(modification), OffsetDateTime.now())
     }
 }

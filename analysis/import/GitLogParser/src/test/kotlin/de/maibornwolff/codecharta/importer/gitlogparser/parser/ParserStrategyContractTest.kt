@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.gitlogparser.parser
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.stream.Stream
@@ -15,7 +15,7 @@ abstract class ParserStrategyContractTest {
 
     protected abstract val logParserStrategy: LogParserStrategy
 
-    protected abstract val twoCommitsAsStraem: Stream<String>
+    protected abstract val twoCommitsAsStream: Stream<String>
 
     @Test
     fun parsesCommit() {
@@ -54,8 +54,8 @@ abstract class ParserStrategyContractTest {
 
     @Test
     @Throws(Exception::class)
-    fun canProvidesAnAproppriateLogLineCollectorToSeparateCommits() {
-        val commits = twoCommitsAsStraem.collect(logParserStrategy.createLogLineCollector())
+    fun canProvidesAnAppropriateLogLineCollectorToSeparateCommits() {
+        val commits = twoCommitsAsStream.collect(logParserStrategy.createLogLineCollector())
         assertThat(commits).hasSize(2)
     }
 
