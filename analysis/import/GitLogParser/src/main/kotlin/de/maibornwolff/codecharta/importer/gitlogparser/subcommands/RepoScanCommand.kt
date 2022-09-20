@@ -13,7 +13,7 @@ import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = "repo-scan",
-    description = ["git log parser log-scan - generates cc.json from a generated git-log file"],
+    description = ["git log parser repo-scan - generates cc.json from an automatically generated git-log file"],
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 
