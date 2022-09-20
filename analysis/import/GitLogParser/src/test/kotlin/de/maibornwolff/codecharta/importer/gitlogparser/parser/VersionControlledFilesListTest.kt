@@ -1,8 +1,9 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.parser
 
 import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFactory
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -20,32 +21,32 @@ class VersionControlledFilesListTest {
     fun test_given_added_file_when_renamed_multiple_times_then_get_by_latest_key() {
         val oldestName = "src/Main.kt"
         val vcf = vcfList.addFileBy(oldestName)
-        assertThat(vcf, equalTo(vcfList.get(oldestName)))
+        assertEquals(vcfList.get(oldestName), vcf)
 
         val tmpFileName = "src/Main_tmp.kt"
         vcfList.rename(oldestName, tmpFileName)
-        assertThat(vcf, equalTo(vcfList.get(tmpFileName)))
-        assertThat(vcf.filename, equalTo(tmpFileName))
+        assertEquals(vcfList.get(tmpFileName), vcf)
+        assertEquals(tmpFileName, vcf.filename)
 
         val newFileName = "src/Main_new.kt"
         vcfList.rename(tmpFileName, newFileName)
-        assertThat(vcf, equalTo(vcfList.get(newFileName)))
-        assertThat(vcf.filename, equalTo(newFileName))
+        assertEquals(vcfList.get(newFileName), vcf)
+        assertEquals(newFileName, vcf.filename)
     }
 
     @Test
     fun test_given_added_file_when_renamed_multiple_times_then_get_by_oldest_key_every_time() {
         val oldestName = "src/Main.kt"
         val vcf = vcfList.addFileBy(oldestName)
-        assertThat(vcf, equalTo(vcfList.get(oldestName)))
+        assertEquals(vcfList.get(oldestName), vcf)
 
         val tmpFileName = "src/Main_tmp.kt"
         vcfList.rename(oldestName, tmpFileName)
-        assertThat(vcf, equalTo(vcfList.get(oldestName)))
+        assertEquals(vcfList.get(oldestName), vcf)
 
         val newFileName = "src/Main_new.kt"
         vcfList.rename(tmpFileName, newFileName)
-        assertThat(vcf, equalTo(vcfList.get(oldestName)))
+        assertEquals(vcfList.get(oldestName), vcf)
     }
 
     @Test
@@ -53,23 +54,23 @@ class VersionControlledFilesListTest {
         val originalFileKey = "src/File.kt"
         val originalFile = vcfList.addFileBy(originalFileKey)
 
-        assertThat(originalFile, equalTo(vcfList.get(originalFileKey)))
-        assertThat(originalFile.filename, equalTo(originalFileKey))
+        assertEquals(vcfList.get(originalFileKey), originalFile)
+        assertEquals(originalFile.filename, originalFileKey)
 
         val newFileName = "src/File_new.kt"
         vcfList.rename(originalFileKey, newFileName)
 
-        assertThat(originalFile.filename, equalTo(newFileName))
-        assertThat(originalFile.containsRename(newFileName), equalTo(true))
-        assertThat(originalFile, equalTo(vcfList.get(newFileName)))
+        assertEquals(originalFile.filename, newFileName)
+        assertTrue(originalFile.containsRename(newFileName))
+        assertEquals(vcfList.get(newFileName), originalFile)
 
         val alreadyExistedFileName = "src/File.kt"
         val conflictingFile = vcfList.addFileBy(alreadyExistedFileName)
 
-        assertThat(conflictingFile, equalTo(vcfList.get(alreadyExistedFileName)))
-        assertThat(conflictingFile.filename.contains("0_0"), equalTo(true))
+        assertEquals(vcfList.get(alreadyExistedFileName), conflictingFile)
+        assertTrue(conflictingFile.filename.contains("0_0"))
 
-        assertThat(vcfList.getList().size, equalTo(2))
+        assertEquals(2, vcfList.getList().size)
     }
 
     @Test
@@ -78,18 +79,18 @@ class VersionControlledFilesListTest {
         val originalFile = vcfList.addFileBy(originalFileKey)
         originalFile.markDeleted()
 
-        assertThat(originalFile, equalTo(vcfList.get(originalFileKey)))
-        assertThat(originalFile.filename, equalTo(originalFileKey))
-        assertThat(originalFile.isDeleted(), equalTo(true))
+        assertEquals(vcfList.get(originalFileKey), originalFile)
+        assertEquals(originalFileKey, originalFile.filename)
+        assertTrue(originalFile.isDeleted())
 
         val conflictingFileName = "src/File.kt"
         val nameConflictingFile = vcfList.addFileBy(conflictingFileName)
 
-        assertThat(nameConflictingFile.filename, equalTo(conflictingFileName))
-        assertThat(nameConflictingFile, equalTo(vcfList.get(conflictingFileName)))
-        assertThat(nameConflictingFile.isDeleted(), equalTo(false))
+        assertEquals(conflictingFileName, nameConflictingFile.filename)
+        assertEquals(vcfList.get(conflictingFileName), nameConflictingFile)
+        assertFalse(nameConflictingFile.isDeleted())
 
-        assertThat(vcfList.getList().size, equalTo(1))
+        assertEquals(vcfList.getList().size, 1)
     }
 
     @Test
@@ -98,20 +99,20 @@ class VersionControlledFilesListTest {
         val originalFile = vcfList.addFileBy(originalFileKey)
         originalFile.markDeleted()
 
-        assertThat(originalFile, equalTo(vcfList.get(originalFileKey)))
-        assertThat(originalFile.filename, equalTo(originalFileKey))
-        assertThat(originalFile.isDeleted(), equalTo(true))
+        assertEquals(vcfList.get(originalFileKey), originalFile)
+        assertEquals(originalFileKey, originalFile.filename)
+        assertTrue(originalFile.isDeleted())
 
         val otherFileName = "src/OtherFile.kt"
         val otherFile = vcfList.addFileBy(otherFileName)
 
         vcfList.rename(otherFileName, originalFileKey)
 
-        assertThat(otherFile, equalTo(vcfList.get(originalFileKey)))
-        assertThat(otherFile.isDeleted(), equalTo(false))
-        assertThat(otherFile.containsRename(otherFileName), equalTo(true))
-        assertThat(otherFile.containsRename(originalFileKey), equalTo(true))
+        assertEquals(vcfList.get(originalFileKey), otherFile)
+        assertFalse(otherFile.isDeleted())
+        assertTrue(otherFile.containsRename(otherFileName))
+        assertTrue(otherFile.containsRename(originalFileKey))
 
-        assertThat(vcfList.getList().size, equalTo(1))
+        assertEquals(1, vcfList.getList().size)
     }
 }
