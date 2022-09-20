@@ -18,10 +18,14 @@ class ParserDialog {
 
             val subcommand: String =
                 if (isLogScan) {
-                    "log-scan " + LogScanParserDialog.collectParserArgs().toString().replace("[", "").replace("]", "")
+                    "log-scan"
                 } else {
-                    "repo-scan" + RepoScanParserDialog.collectParserArgs().toString().replace("[", "").replace("]", "")
+                    "repo-scan"
                 }
+
+            val subcommandArguments =
+                if (isLogScan) LogScanParserDialog.collectParserArgs()
+                else RepoScanParserDialog.collectParserArgs()
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file? If empty, the result will be returned to stdOut",
@@ -45,7 +49,7 @@ class ParserDialog {
                 if (isCompressed) null else "--not-compressed",
                 "--silent=$isSilent",
                 "--add-author=$addAuthor"
-            )
+            ).plus(subcommandArguments)
         }
     }
 }

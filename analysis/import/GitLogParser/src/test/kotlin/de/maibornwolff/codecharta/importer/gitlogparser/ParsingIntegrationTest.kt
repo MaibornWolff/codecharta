@@ -4,9 +4,8 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogLineParser
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.VersionControlledFilesInGitProject
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstatRawParserStrategy
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.io.InputStream
@@ -62,11 +61,11 @@ class ParsingIntegrationTest {
         assertEquals(projectNameList.size, namesInVCF.size)
 
         for (item in namesInVCF) {
-            assertThat(projectNameList, hasItem(item))
+            assertTrue(projectNameList.contains(item))
         }
 
         for (item in projectNameList) {
-            assertThat(namesInVCF, hasItem(item))
+            assertTrue(namesInVCF.contains(item))
         }
     }
 }

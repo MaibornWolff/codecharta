@@ -27,7 +27,7 @@ class GitAdapter(private val gitDirectory: File) {
         runningProcess.inputStream.reader(Charsets.UTF_8).use {
             output += it.readLines()
         }
-        runningProcess.waitFor(60, TimeUnit.SECONDS)
+        runningProcess.waitFor(3, TimeUnit.MINUTES)
         return output
     }
 }

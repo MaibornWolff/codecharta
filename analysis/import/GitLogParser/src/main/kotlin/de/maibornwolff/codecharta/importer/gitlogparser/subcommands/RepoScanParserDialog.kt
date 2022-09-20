@@ -15,7 +15,7 @@ class RepoScanParserDialog {
             )
 
             return listOfNotNull(
-                if (repoPath.isBlank()) null else "--repo-path=$repoPath",
+                if (repoPath.isBlank()) null else "--repo-path=$repoPath"
             )
         }
     }

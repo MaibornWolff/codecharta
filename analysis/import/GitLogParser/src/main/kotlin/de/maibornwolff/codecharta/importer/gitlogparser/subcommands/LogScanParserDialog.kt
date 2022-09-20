@@ -8,6 +8,7 @@ class LogScanParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
+
             print("You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log")
             val gitLogFile = KInquirer.promptInput(
                 message = "What is the git.log file that has to be parsed?", hint = "path/to/git.log"
