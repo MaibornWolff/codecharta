@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.106.1] - 2022-09-20
+
 ## Fixed 🐞
 
 -   CC-JSON Files not loaded on Safari browser [#3042](https://github.com/MaibornWolff/codecharta/pull/3042)
