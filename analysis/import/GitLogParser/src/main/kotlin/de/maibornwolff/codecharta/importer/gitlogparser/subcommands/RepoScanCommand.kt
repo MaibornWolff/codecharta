@@ -48,12 +48,11 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     override fun call(): Void? {
         val repoPath: Path
         if (repoPathName.isNullOrBlank()) {
-            repoPath = Paths.get("").toAbsolutePath()
+            repoPath = Paths.get("").normalize().toAbsolutePath()
             println("--repo-path not set, assuming current working directory ($repoPath)")
         } else {
-            repoPath = Paths.get(repoPathName!!).toAbsolutePath()
+            repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
         }
-
         println("Creating git.log file...")
         val gitLogFile = createGitLogFile(repoPath)
         println("Creating git-ls file...")

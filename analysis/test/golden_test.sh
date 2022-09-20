@@ -41,17 +41,30 @@ validate() {
   fi
 }
 
-check_gitlogparser() {
-  echo " -- expect GitLogParser to produce valid cc.json file"
-  ACTUAL_GITLOG_JSON="${INSTALL_DIR}/actual_gitlogparser.cc.json"
+check_gitlogparser_log_scan() {
+  echo " -- expect GitLogParser log-scan subcommand to produce valid cc.json file"
+  ACTUAL_GITLOG_JSON_LOG_SCAN="${INSTALL_DIR}/actual_gitlogparser_log_scan.cc.json"
   returnCode="0"
-  timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.txt" -n "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON}" -nc || returnCode="$?"
+  timeout 60s "${CCSH}" gitlogparser "log-scan" --git-log "${DATA}/gitlogparser-cc.txt" --repo-files "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON_LOG_SCAN}" -nc || returnCode="$?"
   if [ "$returnCode" -eq 124 ]; then
     exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
   elif [ "$returnCode" -ne 0 ]; then
     exit_with_err "Parser exited with code $returnCode"
   fi
-  validate "${ACTUAL_GITLOG_JSON}"
+  validate "${ACTUAL_GITLOG_JSON_LOG_SCAN}"
+}
+
+check_gitlogparser_repo_scan() {
+  echo " -- expect GitLogParser repo-scan subcommand to produce valid cc.json file"
+  ACTUAL_GITLOG_JSON_REPO_SCAN="${INSTALL_DIR}/actual_gitlogparser_repo_scan.cc.json"
+  returnCode="0"
+  timeout 60s "${CCSH}" gitlogparser "repo-scan" --repo-path "$(dirname "$(dirname "$PWD")")" -o "${ACTUAL_GITLOG_JSON_REPO_SCAN}" -nc || returnCode="$?"
+  if [ "$returnCode" -eq 124 ]; then
+    exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
+  elif [ "$returnCode" -ne 0 ]; then
+    exit_with_err "Parser exited with code $returnCode"
+  fi
+  validate "${ACTUAL_GITLOG_JSON_REPO_SCAN}"
 }
 
 check_csvexporter() {
@@ -185,7 +198,8 @@ run_tests() {
   echo "Running Tests..."
   echo
 
-  check_gitlogparser
+#  check_gitlogparser_log_scan
+  check_gitlogparser_repo_scan
   check_csvexporter
   check_edgefilter
   check_mergefilter
