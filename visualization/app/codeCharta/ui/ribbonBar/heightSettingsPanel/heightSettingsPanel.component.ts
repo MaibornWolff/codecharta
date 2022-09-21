@@ -1,6 +1,6 @@
 import "./heightSettingsPanel.component.scss"
 
-import { Component, Inject, OnInit } from "@angular/core"
+import { Component, Inject } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { amountOfTopLabelsSelector } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.selector"
 import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabled.selector"
@@ -16,13 +16,12 @@ import { setScaling } from "../../../state/store/appSettings/scaling/scaling.act
 import { invertHeightSelector } from "../../../state/store/appSettings/invertHeight/invertHeight.selector"
 import { setInvertHeight } from "../../../state/store/appSettings/invertHeight/invertHeight.actions"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
-import { visibleFileStatesSelector } from "../../../state/selectors/visibleFileStates.selector"
 
 @Component({
 	selector: "cc-height-settings-panel",
 	template: require("./heightSettingsPanel.component.html")
 })
-export class HeightSettingsPanelComponent implements OnInit {
+export class HeightSettingsPanelComponent {
 	static DEBOUNCE_TIME = 400
 
 	amountOfTopLabels$ = this.store.select(amountOfTopLabelsSelector)
@@ -35,16 +34,6 @@ export class HeightSettingsPanelComponent implements OnInit {
 	topLabels
 
 	constructor(@Inject(Store) private store: Store) {}
-
-	ngOnInit(): void {
-		this.amountOfTopLabels$.subscribe(topLabels => {
-			this.topLabels = topLabels
-		})
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		this.store.select(visibleFileStatesSelector).subscribe(_v => {
-			this.store.dispatch(setAmountOfTopLabels(this.topLabels))
-		})
-	}
 
 	applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
 		this.store.dispatch(setAmountOfTopLabels(amountOfTopLabels))
