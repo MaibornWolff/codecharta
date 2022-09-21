@@ -4,7 +4,7 @@ import { searchedNodesSelector } from "../../../../state/selectors/searchedNodes
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
 import { CcState } from "../../../../state/store/store"
 import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
-import { numberOfFilesSelector } from "../../../../state/store/appSettings/amountOfTopLabels/numberOfFiles.selector"
+import { codeMapNodesSelector } from "../../../../state/store/appSettings/amountOfTopLabels/codeMapNodesSelector"
 
 const getBlacklistedFileCount = (blacklistType: BlacklistType, nodes: CodeMapNode[], blacklist: BlacklistItem[]) =>
 	nodes.reduce((count, node) => (isPathBlacklisted(node.path, blacklist, blacklistType) ? count + 1 : count), 0)
@@ -16,7 +16,7 @@ export type MatchingFilesCounter = {
 }
 
 export const matchingFilesCounterSelector: (state: CcState) => MatchingFilesCounter = createSelector(
-	[searchedNodesSelector, blacklistSelector, numberOfFilesSelector],
+	[searchedNodesSelector, blacklistSelector, codeMapNodesSelector],
 	(searchedNodes, blacklist, allNodes) => {
 		const searchedNodeLeaves = searchedNodes.filter(node => isLeaf(node))
 		return {
