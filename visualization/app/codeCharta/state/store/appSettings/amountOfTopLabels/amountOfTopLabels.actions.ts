@@ -18,4 +18,4 @@ export function setAmountOfTopLabels(amountOfTopLabels: number = defaultAmountOf
 	}
 }
 
-export const defaultAmountOfTopLabels = 1
+export const defaultAmountOfTopLabels = 10
