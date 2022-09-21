@@ -31,7 +31,6 @@ export class HeightSettingsPanelComponent {
 	scaling$ = this.store.select(scalingSelector)
 	invertHeight$ = this.store.select(invertHeightSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
-	topLabels
 
 	constructor(@Inject(Store) private store: Store) {}
 
