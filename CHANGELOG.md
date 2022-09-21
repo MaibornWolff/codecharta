@@ -15,16 +15,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Change default behaviour of GitLogParser to use new subcommands [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
 
+### Fixed 🐞
+
+-   Update ReadMe and GitHub pages for MetricGardener [#3045](https://github.com/MaibornWolff/codecharta/pull/3045)
+
 ## [1.106.1] - 2022-09-20
 
-## Fixed 🐞
+### Fixed 🐞
 
 -   CC-JSON Files not loaded on Safari browser [#3042](https://github.com/MaibornWolff/codecharta/pull/3042)
 -   Show loading spinners while loading a file [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
 -   Prevent clicking on not opened metric options in ribbon bar [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
 -   Set cursor to pointer on color settings panel of delta mode [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
 
-## Chore 👨‍💻 👩‍💻
+### Chore 👨‍💻 👩‍💻
 
 -   Throttle rendering and migrate codeMap.preRender.service to Angular [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
 
