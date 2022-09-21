@@ -6,7 +6,7 @@ describe("amountOfTopLabels", () => {
 		it("should initialize the default state", () => {
 			const result = amountOfTopLabels(undefined, {} as AmountOfTopLabelsAction)
 
-			expect(result).toEqual(10)
+			expect(result).toEqual(1)
 		})
 	})
 
@@ -20,7 +20,7 @@ describe("amountOfTopLabels", () => {
 		it("should set default amountOfTopLabels", () => {
 			const result = amountOfTopLabels(2, setAmountOfTopLabels())
 
-			expect(result).toEqual(10)
+			expect(result).toEqual(1)
 		})
 	})
 })
