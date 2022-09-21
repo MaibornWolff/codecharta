@@ -9,6 +9,8 @@ import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
 
 @Injectable()
 export class UpdateVisibleTopLabelsEffect {
+	constructor(@Inject(Store) private store: Store) {}
+
 	updateVisibleTopLabels$ = createEffect(() =>
 		this.store.select(visibleFileStatesSelector).pipe(
 			withLatestFrom(this.store.select(codeMapNodesSelector)),
@@ -17,6 +19,4 @@ export class UpdateVisibleTopLabelsEffect {
 			})
 		)
 	)
-
-	constructor(@Inject(Store) private store: Store) {}
 }

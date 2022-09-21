@@ -1,16 +1,15 @@
-import { Store as PlainStoreUsedByEffects, Store } from "../../store/store"
 import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
 import { ApplicationInitStatus } from "@angular/core"
 import { UpdateVisibleTopLabelsEffect } from "./updateVisibleTopLabels.effect"
 import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setFiles } from "../../store/files/files.actions"
-import { FILE_STATES, VALID_NODE_JAVA } from "../../../util/dataMocks"
 import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodesSelector"
 import { Subject } from "rxjs"
 
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { FileState } from "../../../model/files/files"
+import { Store } from "../../angular-redux/store"
+import { CodeMapNode } from "../../../codeCharta.model"
 
 describe("updateVisibleTopLabelsEffect", () => {
 	let mockedVisibleFileStatesSelector = new Subject()
@@ -32,7 +31,6 @@ describe("updateVisibleTopLabelsEffect", () => {
 
 	beforeEach(async () => {
 		mockedStore.dispatch = jest.fn()
-		PlainStoreUsedByEffects.store.dispatch = mockedStore.dispatch
 		mockedVisibleFileStatesSelector = new Subject()
 		mockedCodeMapNodesSelector = new Subject()
 		TestBed.configureTestingModule({
@@ -48,18 +46,25 @@ describe("updateVisibleTopLabelsEffect", () => {
 	})
 
 	it("should ignore a not relevant action", () => {
-		Store.dispatch({ type: "whatever" })
+		//not implemented yet
 		expect(mockedStore.dispatch).not.toHaveBeenCalled()
 	})
 
-	it("should set setAmountOfTopLabels to 1 on FileState change", () => {
+	it("should set setAmountOfTopLabels to 1 on FileState change when number of nodes are equal or less than 100", () => {
 		mockedVisibleFileStatesSelector.next([] as FileState[])
-		mockedCodeMapNodesSelector.next([VALID_NODE_JAVA])
+		mockedCodeMapNodesSelector.next(Array.from({ length: 10 }).fill({}) as CodeMapNode[])
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setAmountOfTopLabels(1))
 	})
 
-	it("should set setAmountOfTopLabels to 5 on FileState change", () => {
-		Store.dispatch(setFiles(FILE_STATES))
+	it("should set setAmountOfTopLabels to 2 on FileState change when number of nodes are greater than or equal to 200 and less than 300", () => {
+		mockedVisibleFileStatesSelector.next([] as FileState[])
+		mockedCodeMapNodesSelector.next(Array.from({ length: 200 }).fill({}) as CodeMapNode[])
+		expect(mockedStore.dispatch).toHaveBeenCalledWith(setAmountOfTopLabels(5))
+	})
+
+	it("should set setAmountOfTopLabels to 10 (max limit for displayed top labels) on FileState change when number of nodes are greater than 1000", () => {
+		mockedVisibleFileStatesSelector.next([] as FileState[])
+		mockedCodeMapNodesSelector.next(Array.from({ length: 1001 }).fill({}) as CodeMapNode[])
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setAmountOfTopLabels(5))
 	})
 })
