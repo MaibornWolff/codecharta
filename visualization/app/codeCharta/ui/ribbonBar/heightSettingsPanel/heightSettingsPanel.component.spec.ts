@@ -33,7 +33,7 @@ describe("heightSettingsPanelComponent", () => {
 	it("should enable amount of top labels slider when there are no colorLabels", async () => {
 		await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
 
-		const amountOfTopLabelsSlider = screen.getByTitle("Display the labels of the 1 highest buildings")
+		const amountOfTopLabelsSlider = screen.getByTitle("Display the labels of the 10 highest buildings")
 		const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
 		expect(matSlider.getAttribute("aria-disabled")).toBe("false")
 	})
