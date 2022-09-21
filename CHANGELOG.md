@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Change default behaviour of GitLogParser to use new subcommands [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+-   Set default value to 10 for displaying labels and increase maximum number of labels displayed to 100 [#3046](https://github.com/MaibornWolff/codecharta/pull/3046)
 
 ## [1.106.1] - 2022-09-20
 
