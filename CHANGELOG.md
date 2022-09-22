@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add subcommand to GitLogParser to run necessary git commands automatically [#3026](https://github.com/MaibornWolff/codecharta/pull/3041)
+-   Add subcommand to GitLogParser to run necessary git commands automatically [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
 
 ### Changed
 
--   Change default behaviour of GitLogParser to use new subcommands [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+-   Change default behaviour of GitLogParser to use new subcommands [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
 
 ### Fixed 🐞
 
