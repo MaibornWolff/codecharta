@@ -1,5 +1,3 @@
-"use strict"
-
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
@@ -28,7 +26,10 @@ export class ThreeViewerService {
 			threeCameraService: { camera },
 			threeRendererService,
 			threeStatsService,
-			threeOrbitControlsService
+			threeOrbitControlsService,
+			onWindowResize,
+			onFocusIn,
+			onFocusOut
 		} = this
 		camera.lookAt(scene.position)
 		scene.add(camera)
@@ -38,13 +39,12 @@ export class ThreeViewerService {
 
 		canvasElement.append(threeRendererService.renderer.domElement)
 
-		// TODO do we need to remove these listeners ?
-		window.addEventListener("resize", () => this.onWindowResize())
-		window.addEventListener("focusin", event => this.onFocusIn(event))
-		window.addEventListener("focusout", event => this.onFocusOut(event))
+		window.addEventListener("resize", onWindowResize)
+		window.addEventListener("focusin", onFocusIn)
+		window.addEventListener("focusout", onFocusOut)
 	}
 
-	onWindowResize() {
+	onWindowResize = () => {
 		this.threeSceneService.scene.updateMatrixWorld(false)
 		this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
 		this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight
@@ -56,13 +56,13 @@ export class ThreeViewerService {
 		this.threeOrbitControlsService.controls.enableRotate = value
 	}
 
-	onFocusIn(event) {
+	onFocusIn = event => {
 		if (event.target.nodeName === "INPUT") {
 			this.threeOrbitControlsService.controls.enableKeys = false
 		}
 	}
 
-	onFocusOut(event) {
+	onFocusOut = event => {
 		if (event.target.nodeName === "INPUT") {
 			this.threeOrbitControlsService.controls.enableKeys = true
 		}
@@ -101,6 +101,10 @@ export class ThreeViewerService {
 	}
 
 	destroy() {
+		window.removeEventListener("resize", this.onWindowResize)
+		window.removeEventListener("focusin", this.onFocusIn)
+		window.removeEventListener("focusout", this.onFocusOut)
+		this.dispose()
 		this.threeStatsService.destroy()
 		this.getRenderCanvas().remove()
 		this.dispose()
