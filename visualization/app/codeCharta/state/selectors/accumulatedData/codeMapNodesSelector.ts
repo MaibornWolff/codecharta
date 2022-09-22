@@ -3,8 +3,9 @@ import { createSelector } from "../../angular-redux/createSelector"
 import { getAllNodes } from "../../../util/codeMapHelper"
 import { CodeMapNode } from "../../../codeCharta.model"
 
-export const getCodeMapNodes = (accumulatedData: Pick<AccumulatedData, "unifiedMapNode">): CodeMapNode[] => {
-	return getAllNodes(accumulatedData.unifiedMapNode)
-}
-
-export const codeMapNodesSelector = createSelector([accumulatedDataSelector], getCodeMapNodes)
+export const codeMapNodesSelector = createSelector(
+	[accumulatedDataSelector],
+	(accumulatedData: Pick<AccumulatedData, "unifiedMapNode">): CodeMapNode[] => {
+		return getAllNodes(accumulatedData.unifiedMapNode)
+	}
+)
