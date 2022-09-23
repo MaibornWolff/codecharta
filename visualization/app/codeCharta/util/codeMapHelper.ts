@@ -26,7 +26,7 @@ export function transformPath(toTransform: string) {
 	return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
-export function getAllNodes(root: CodeMapNode) {
+export function getAllNodes(root: CodeMapNode): CodeMapNode[] {
 	const filtered = []
 	if (root !== undefined) {
 		for (const { data } of hierarchy(root)) {
