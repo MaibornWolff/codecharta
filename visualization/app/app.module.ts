@@ -47,6 +47,7 @@ import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/effects/autoFitCodeMapOnFileSelectionChange/autoFitCodeMapOnFileSelectionChange.effect"
 import { CodeChartaModule } from "./codeCharta/codeCharta.module"
+import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
 
 @NgModule({
 	imports: [
@@ -63,7 +64,8 @@ import { CodeChartaModule } from "./codeCharta/codeCharta.module"
 			ResetChosenMetricsEffect,
 			UpdateEdgePreviewsEffect,
 			RenderCodeMapEffect,
-			AutoFitCodeMapOnFileSelectionChangeEffect
+			AutoFitCodeMapOnFileSelectionChangeEffect,
+			UpdateVisibleTopLabelsEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,

@@ -23,7 +23,7 @@ describe("flattenButtonsComponent", () => {
 		expect(screen.queryByText("SHOW")).toBe(null)
 		expect(screen.queryByText("FLATTEN")).not.toBe(null)
 
-		userEvent.click(screen.queryByText("FLATTEN"))
+		await userEvent.click(screen.queryByText("FLATTEN"))
 		expect(Store.store.getState().fileSettings.blacklist).toContainEqual({
 			nodeType: NodeType.FILE,
 			path: "/root/foo.ts",
@@ -45,7 +45,7 @@ describe("flattenButtonsComponent", () => {
 		expect(screen.queryByText("FLATTEN")).toBe(null)
 		expect(screen.queryByText("SHOW")).not.toBe(null)
 
-		userEvent.click(screen.queryByText("SHOW"))
+		await userEvent.click(screen.queryByText("SHOW"))
 		expect(Store.store.getState().fileSettings.blacklist).not.toContainEqual({
 			nodeType: NodeType.FILE,
 			path: "/root/foo.ts",

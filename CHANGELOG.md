@@ -13,10 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Change default behaviour of GitLogParser to use new subcommands [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+-   Change default behaviour of GitLogParser to use new subcommands [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+-   Set default value for displaying labels 1 per 100 buildings with a maximum of 10 labels [#3046](https://github.com/MaibornWolff/codecharta/pull/3046)
 
 ### Fixed 🐞
 
+-   Uncheck the box when 'reset invert height' icon is clicked [#3048](https://github.com/MaibornWolff/codecharta/pull/3048)
 -   Update ReadMe and GitHub pages for MetricGardener [#3045](https://github.com/MaibornWolff/codecharta/pull/3045)
 
 ## [1.106.1] - 2022-09-20
