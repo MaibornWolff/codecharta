@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.lordcodes.turtle.ShellLocation
+import com.lordcodes.turtle.shellRun
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -40,6 +42,9 @@ class MetricGardenerImporter(
     )
     private var inputFile = File("")
 
+    @CommandLine.Option(names = ["-j", "--is-json-file"], description = ["Input file is a MetricGardener JSON file"])
+    private var isJsonFile: Boolean = false
+
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
 
@@ -52,6 +57,22 @@ class MetricGardenerImporter(
             printErrorLog()
             return null
         }
+        if (!isJsonFile) {
+            val tempMgOutput = File.createTempFile("MGOutput", ".json")
+            tempMgOutput.deleteOnExit()
+
+            val npm = if (isWindows()) "npm.cmd" else "npm"
+            shellRun(
+                command = npm,
+                arguments = listOf(
+                    "exec", "-y", "metric-gardener", "--", "parse",
+                    inputFile.absolutePath, "--output-path", tempMgOutput.absolutePath
+                ),
+                workingDirectory = ShellLocation.CURRENT_WORKING
+            )
+            inputFile = tempMgOutput
+        }
+
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
@@ -71,8 +92,12 @@ class MetricGardenerImporter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(MetricGardenerImporter(), System.out, *args)
+            CommandLine(MetricGardenerImporter()).execute(*args)
         }
+    }
+
+    private fun isWindows(): Boolean {
+        return System.getProperty("os.name").contains("win", ignoreCase = true)
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog

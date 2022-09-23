@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.gitlogparser.parser
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.util.function.Predicate
 import java.util.stream.Stream
 
@@ -11,7 +11,7 @@ class LogLineCollectorTest {
     @Test
     fun collectsBetweenSeparators() {
         val logLines = Stream.of("##", "commit 1", "##", "commit 2")
-        val collector = LogLineCollector.create(Predicate { logLine -> logLine == "##" })
+        val collector = LogLineCollector.create { logLine -> logLine == "##" }
         val commits = logLines.collect(collector)
         assertThat(commits).containsExactly(listOf("commit 1"), listOf("commit 2"))
     }
@@ -28,7 +28,7 @@ class LogLineCollectorTest {
     @Test
     fun skipsEmptyLines() {
         val logLinesWithEmptyOneInTheMiddle = Stream.of("--", "commit data", "", "commit comment", "--")
-        val collector = LogLineCollector.create(Predicate { string -> string == "--" })
+        val collector = LogLineCollector.create { string -> string == "--" }
         val commits = logLinesWithEmptyOneInTheMiddle.collect(collector)
         assertThat(commits).hasSize(1)
     }
@@ -36,14 +36,14 @@ class LogLineCollectorTest {
     @Test
     fun doesNotSupportParallelStreams() {
         val logLines = Stream.of("--", "commit 1").parallel()
-        val collector = LogLineCollector.create(Predicate { logLine -> logLine == "--" })
+        val collector = LogLineCollector.create { logLine -> logLine == "--" }
         assertThatThrownBy { logLines.collect(collector) }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test
-    fun BOMIsRemoved() {
+    fun bomIsRemoved() {
         val logLines = Stream.of("\uFEFF---", "whatever")
-        val collector = LogLineCollector.create(Predicate { logLine -> logLine.startsWith("---") })
+        val collector = LogLineCollector.create { logLine -> logLine.startsWith("---") }
         val commits = logLines.collect(collector)
         assertThat(commits).hasSize(1)
     }

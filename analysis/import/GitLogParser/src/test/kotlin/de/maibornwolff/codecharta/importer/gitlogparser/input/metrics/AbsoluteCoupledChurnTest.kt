@@ -3,10 +3,8 @@ package de.maibornwolff.codecharta.importer.gitlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import java.util.ArrayList
-import java.util.Arrays
 
 class AbsoluteCoupledChurnTest {
 
@@ -75,7 +73,7 @@ class AbsoluteCoupledChurnTest {
         modification: Modification,
         vararg otherModifications: Modification
     ) {
-        val modificationList = ArrayList(Arrays.asList(*otherModifications))
+        val modificationList = ArrayList(listOf(*otherModifications))
         modificationList.add(modification)
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())

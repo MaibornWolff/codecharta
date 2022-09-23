@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.103.6",
+	"version": "1.106.1",
 	"engines": {
 		"node": ">=16"
 	},
@@ -100,7 +100,7 @@
 		"material-icons": "^1.10.4",
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
-		"nw": "^0.67.0",
+		"nw": "^0.68.1",
 		"pako": "^2.0.4",
 		"percent-round": "^2.2.1",
 		"redux": "^4.0.5",
@@ -125,9 +125,9 @@
 		"@types/angular-mocks": "^1.7.0",
 		"@types/color-convert": "^2.0.0",
 		"@types/d3-hierarchy": "^3.0.2",
-		"@types/expect-puppeteer": "^4.4.5",
+		"@types/expect-puppeteer": "^5.0.0",
 		"@types/jest": "^26.0.22",
-		"@types/jest-environment-puppeteer": "^4.4.1",
+		"@types/jest-environment-puppeteer": "^5.0.0",
 		"@types/lodash": "^4.14.168",
 		"@types/node": "^16.0.0",
 		"@types/puppeteer": "^5.4.3",

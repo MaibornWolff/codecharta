@@ -13,6 +13,6 @@ import { CustomConfigItemGroupComponent } from "./customConfigList/customConfigI
 	imports: [MaterialModule, CommonModule, UploadCustomConfigButtonModule, AddCustomConfigButtonModule, DownloadCustomConfigButtonModule],
 	declarations: [CustomConfigsComponent, CustomConfigListComponent, CustomConfigItemGroupComponent],
 	exports: [CustomConfigsComponent],
-	entryComponents: [CustomConfigsComponent, CustomConfigListComponent]
+	entryComponents: [CustomConfigListComponent]
 })
 export class CustomConfigsModule {}

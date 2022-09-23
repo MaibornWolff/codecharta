@@ -14,6 +14,7 @@ import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	private nodesByColor = {
@@ -21,6 +22,8 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		neutral: [],
 		negative: []
 	}
+	private unflattenedNodes
+	static instance: CodeMapRenderService
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -29,10 +32,12 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
 		private threeStatsService: ThreeStatsService,
-		private threeUpdateCycleService: ThreeUpdateCycleService
+		private threeUpdateCycleService: ThreeUpdateCycleService,
+		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
 		"ngInject"
 		IsLoadingFileService.subscribe(this.$rootScope, this)
+		CodeMapRenderService.instance = this
 	}
 	onIsLoadingFileChanged(isLoadingFile: boolean) {
 		if (isLoadingFile) {
@@ -51,11 +56,11 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 		const visibleSortedNodes = nodes
 			.filter(node => node.visible && node.length > 0 && node.width > 0)
 			.sort((a, b) => b.height - a.height)
-		const unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
+		this.unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
 		this.setNewMapMesh(nodes, visibleSortedNodes)
-		this.getNodesMatchingColorSelector(unflattenedNodes)
-		this.setLabels(unflattenedNodes)
+		this.getNodesMatchingColorSelector(this.unflattenedNodes)
+		this.setLabels(this.unflattenedNodes)
 		this.setArrows(visibleSortedNodes)
 		this.scaleMap()
 	}
@@ -67,9 +72,12 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	scaleMap() {
+		this.codeMapMouseEventService.unhoverNode()
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
 		this.threeSceneService.scaleHeight()
+		this.codeMapLabelService.clearLabels()
+		this.setLabels(this.unflattenedNodes)
 	}
 
 	private getNodes(map: CodeMapNode) {
@@ -118,14 +126,14 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 
 	private setBuildingLabel(nodes: Node[], highestNodeInSet: number) {
 		for (const node of nodes) {
-			this.codeMapLabelService.addLabel(node, highestNodeInSet)
+			this.codeMapLabelService.addLeafLabel(node, highestNodeInSet)
 		}
 	}
 
 	private setLabels(sortedNodes: Node[]) {
 		this.codeMapLabelService.clearLabels()
 
-		if (sortedNodes.length === 0) {
+		if (sortedNodes === undefined || sortedNodes.length === 0) {
 			return
 		}
 

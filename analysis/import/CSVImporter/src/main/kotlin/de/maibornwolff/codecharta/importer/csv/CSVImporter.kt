@@ -37,10 +37,13 @@ class CSVImporter(
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["sourcemonitor csv files"])
     private var files: List<File> = mutableListOf()
 
+    @CommandLine.Option(names = ["--path-column-name"], description = ["name of path column"])
+    private var pathColumnName: String = "path"
+
     @Throws(IOException::class)
     override fun call(): Void? {
 
-        val csvProjectBuilder = CSVProjectBuilder(pathSeparator, csvDelimiter)
+        val csvProjectBuilder = CSVProjectBuilder(pathSeparator, csvDelimiter, pathColumnName)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
@@ -52,7 +55,7 @@ class CSVImporter(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(CSVImporter(), System.out, *args)
+            CommandLine(CSVImporter()).execute(*args)
         }
     }
 

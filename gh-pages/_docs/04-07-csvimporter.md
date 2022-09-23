@@ -8,23 +8,24 @@ The CSV importer generates visualisation data from CSV data with header, e.g. fr
 _Conventions for csv input:_
 
 -   There must be a header.
--   The column with header "path", or if not present the first column with non-empty header, will be interpreted as file location and used as hierarchical information the corresponding node.
+-   The specified path column name in the header, or if not present the first column with non-empty header, will be interpreted as file location and used as hierarchical information the corresponding node.
 -   Columns with empty or duplicate header will be ignored.
 
 ## Parameter
 
-| Parameters                         | description                                                       |
-| ---------------------------------- | ----------------------------------------------------------------- |
-| `FILE`                             | sourcemonitor csv files                                           |
-| `--path-seperator=<pathSeperator>` | path seperator (default= '/')                                     |
-| `-d, --delimeter=<csvDelimeter>`   | delimeter in csv file                                             |
-| `-h, --help`                       | displays help                                                     |
-| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)                                 |
-| `-nc, --not-compressed`            | uncompresses outputfile to json format, if format of File is gzip |
+| Parameters                          | description                                                       |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| `FILE`                              | sourcemonitor csv files                                           |
+| `--path-seperator=<pathSeperator>`  | path seperator (default= '/')                                     |
+| `-d, --delimeter=<csvDelimeter>`    | delimeter in csv file                                             |
+| `-h, --help`                        | displays help                                                     |
+| `-o, --outputFile=<outputFile>`     | output File (or empty for stdout)                                 |
+| `--pathColumnName=<pathColumnName>` | specify the path column name                                      |
+| `-nc, --not-compressed`             | uncompresses outputfile to json format, if format of File is gzip |
 
 ## Usage
 
 ```
-csvimport [-nc] [--path-separator=<pathSeparator>]
-          [-d=<csvDelimiter>] [-o=<outputFile>] FILE
+ccsh csvimport [-nc] [-d=<csvDelimiter>] [-o=<outputFile>] [--path-column-name=<pathColumnName>]
+               [--path-separator=<pathSeparator>] FILE
 ```
