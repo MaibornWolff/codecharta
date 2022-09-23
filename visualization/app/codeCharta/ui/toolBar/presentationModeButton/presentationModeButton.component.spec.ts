@@ -15,7 +15,7 @@ describe("presentationModeButtonComponent", () => {
 		const { container } = await render(PresentationModeButtonComponent, { excludeComponentDeclaration: true })
 		expect(screen.getByTitle("Enable presentation mode")).toBeTruthy()
 
-		userEvent.click(container.querySelector("mat-slide-toggle label"))
+		await userEvent.click(container.querySelector("mat-slide-toggle label"))
 		expect(screen.getByTitle("Disable presentation mode")).toBeTruthy()
 	})
 })

@@ -38,20 +38,20 @@ describe("RibbonBarComponent", () => {
 			const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
 			expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden")
 
-			userEvent.click(screen.getByText("Area Metric Options"))
+			await userEvent.click(screen.getByText("Area Metric Options"))
 			expect(container.querySelector("cc-area-settings-panel").classList).not.toContain("hidden")
 
-			userEvent.click(screen.getByText("Area Metric Options"))
+			await userEvent.click(screen.getByText("Area Metric Options"))
 			expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden")
 		})
 
 		it("should close on outside clicks", async () => {
 			const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
 
-			userEvent.click(screen.getByText("Area Metric Options"))
+			await userEvent.click(screen.getByText("Area Metric Options"))
 			expect(container.querySelector("cc-area-settings-panel").classList).not.toContain("hidden")
 
-			userEvent.click(document.body)
+			await userEvent.click(document.body)
 			expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden")
 		})
 
