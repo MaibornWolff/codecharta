@@ -17,7 +17,7 @@ describe("CenterMapButtonComponent", () => {
 	it("should call autoFitTo of threeOrbitControlsService on click", async () => {
 		await render(CenterMapButtonComponent)
 
-		userEvent.click(screen.getByTitle("Center map"))
+		await userEvent.click(screen.getByTitle("Center map"))
 
 		expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 	})

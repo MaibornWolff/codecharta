@@ -45,7 +45,7 @@ describe("fileExtensionBarComponent", () => {
 		expect(screen.getByText("ts 100.00%")).toBeTruthy()
 		expect(screen.queryByText("ts 1,120")).toBe(null)
 
-		userEvent.click(screen.getByText("ts 100.00%"))
+		await userEvent.click(screen.getByText("ts 100.00%"))
 		expect(screen.queryByText("ts 100%")).toBe(null)
 		expect(screen.getByText("ts 1,120")).toBeTruthy()
 	})
@@ -54,13 +54,13 @@ describe("fileExtensionBarComponent", () => {
 		const { container } = await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
 		expect(container.querySelector(".cc-distribution-details").classList).toContain("cc-hidden")
 
-		userEvent.click(container.querySelector(".cc-show-details-button"))
+		await userEvent.click(container.querySelector(".cc-show-details-button"))
 		expect(container.querySelector(".cc-distribution-details").classList).not.toContain("cc-hidden")
 	})
 
 	it("should highlight buildings on hover", async () => {
 		await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
-		userEvent.hover(screen.getByText("ts 100.00%"))
+		await userEvent.hover(screen.getByText("ts 100.00%"))
 
 		const threeSceneService = TestBed.inject<ThreeSceneService>(ThreeSceneServiceToken)
 		expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING_TS_NODE)

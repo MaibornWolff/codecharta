@@ -31,7 +31,7 @@ describe("SuspiciousMetricsComponent", () => {
 			})
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 
-			userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
+			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
 			rerender({
@@ -59,7 +59,7 @@ describe("SuspiciousMetricsComponent", () => {
 			})
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 
-			userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
+			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
 			rerender({
@@ -102,7 +102,7 @@ describe("SuspiciousMetricsComponent", () => {
 					}
 				}
 			})
-			userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
+			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(screen.getByText("No programming language was found for analyzing suspicious metrics.")).toBeTruthy()
 			expect(screen.queryByText("Unsuspicious Metrics")).toBe(null)
 			expect(screen.queryByText("Suspicious Metrics in undefined code")).toBe(null)
@@ -120,14 +120,14 @@ describe("SuspiciousMetricsComponent", () => {
 					}
 				}
 			})
-			userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
+			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(screen.queryByText("No programming language was found for analyzing suspicious metrics.")).toBe(null)
 			expect(screen.getByText("Unsuspicious Metrics in ts code")).not.toBe(null)
 			expect(screen.getByText("rloc")).not.toBe(null)
 			expect(screen.getByText("Suspicious Metrics in ts code")).not.toBe(null)
 			expect(screen.getByText("Suspicious MCC Files")).not.toBe(null)
 
-			userEvent.click(screen.getByText("Suspicious MCC Files"), undefined, { skipPointerEventsCheck: true })
+			await userEvent.click(screen.getByText("Suspicious MCC Files"), undefined)
 			const store = TestBed.inject(Store)
 			expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric("mcc"))
 			expect(store.dispatch).toHaveBeenCalledWith(setColorMetric("mcc"))

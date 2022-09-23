@@ -29,13 +29,13 @@ describe("flattenButtonsComponent", () => {
 		})
 
 		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
-		userEvent.click(screen.getByText("KEEP HIGHLIGHT"))
+		await userEvent.click(screen.getByText("KEEP HIGHLIGHT"))
 
 		rerender({ codeMapNode: undefined })
 		rerender({ codeMapNode: { id: 0 } })
 
 		expect(screen.queryByText("KEEP HIGHLIGHT")).toBe(null)
-		userEvent.click(screen.getByText("REMOVE HIGHLIGHT"))
+		await userEvent.click(screen.getByText("REMOVE HIGHLIGHT"))
 
 		rerender({ codeMapNode: undefined })
 		rerender({ codeMapNode: { id: 0 } })

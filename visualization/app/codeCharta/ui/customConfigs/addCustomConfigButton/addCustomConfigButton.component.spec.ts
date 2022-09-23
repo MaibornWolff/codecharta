@@ -28,7 +28,7 @@ describe("addCustomConfigButtonComponent", () => {
 
 		await screen.findByText("Add Custom View")
 
-		userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
+		await userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
 		fireEvent.click(screen.getByRole("button", { name: "ADD" }))
 
 		await waitForElementToBeRemoved(screen.getByText("Add Custom View"))

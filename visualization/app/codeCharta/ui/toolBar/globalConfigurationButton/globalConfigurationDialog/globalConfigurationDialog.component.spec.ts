@@ -16,7 +16,7 @@ describe("globalConfigurationDialogComponent", () => {
 		const setGlobalSettingsInLocalStorageSpy = jest.spyOn(GlobalSettingsHelper, "setGlobalSettingsInLocalStorage")
 		await render(GlobalConfigurationDialogComponent, { excludeComponentDeclaration: true })
 
-		userEvent.click(screen.getByText("White Background"))
+		await userEvent.click(screen.getByText("White Background"))
 
 		expect(setGlobalSettingsInLocalStorageSpy).toHaveBeenCalledWith({
 			isWhiteBackground: true

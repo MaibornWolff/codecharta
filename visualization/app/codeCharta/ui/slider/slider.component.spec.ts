@@ -27,7 +27,7 @@ describe("SliderComponent", () => {
 		})
 
 		const inputField = screen.getByRole("spinbutton") as HTMLInputElement
-		userEvent.type(inputField, "42", { initialSelectionStart: 0, initialSelectionEnd: 2 })
+		await userEvent.type(inputField, "42", { initialSelectionStart: 0, initialSelectionEnd: 2 })
 
 		expect(value).toBe(42)
 	})
