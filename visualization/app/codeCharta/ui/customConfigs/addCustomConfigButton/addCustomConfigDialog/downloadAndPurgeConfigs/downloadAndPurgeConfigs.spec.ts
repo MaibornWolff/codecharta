@@ -10,8 +10,8 @@ import { NgModule } from "@angular/core"
 import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
 import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeableConfigs"
 import { CustomConfig } from "../../../../../model/customConfig/customConfig.api.model"
-import { InteractivityChecker } from "@angular/cdk/a11y"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
+import { InteractivityChecker } from "@angular/cdk/a11y"
 
 jest.mock("../validateLocalStorageSize", () => ({ validateLocalStorageSize: jest.fn() }))
 const mockedValidateLocalStorageSize = mocked(validateLocalStorageSize)
@@ -22,7 +22,7 @@ const mockedDownloadAndCollectPurgeableOldConfigs = mocked(downloadAndCollectPur
 describe("downloadAndPurgeConfigsComponent", () => {
 	@NgModule({
 		imports: [MaterialModule],
-		providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true } }],
+		providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true, isTabbable: () => true } }],
 		declarations: [ErrorDialogComponent, ConfirmationDialogComponent],
 		entryComponents: [ErrorDialogComponent, ConfirmationDialogComponent]
 	})

@@ -1,7 +1,6 @@
 import { Component } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
-import { waitFor } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
 import { MetricChooserComponent } from "./metricChooser.component"
 import { MetricChooserModule } from "./metricChooser.module"
@@ -64,10 +63,13 @@ describe("metricChooserComponent", () => {
 		await expect(options[0].textContent).toMatch("bMetric (2)")
 
 		await userEvent.click(options[0])
-		await waitFor(() => getSearchBox().value === "")
+		expect(screen.queryByRole("listbox")).toBeNull()
+
+		await userEvent.click(await screen.findByText("bMetric (2)"))
+		expect(getSearchBox().value).toBe("")
 
 		function getSearchBox() {
-			const selectContainer = screen.getByRole("listbox")
+			const selectContainer = screen.queryByRole("listbox")
 			return selectContainer.querySelector("input")
 		}
 	})
