@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Uncheck the box when 'reset invert height' icon is clicked [#3048](https://github.com/MaibornWolff/codecharta/pull/3048)
 -   Update ReadMe and GitHub pages for MetricGardener [#3045](https://github.com/MaibornWolff/codecharta/pull/3045)
 
 ## [1.106.1] - 2022-09-20
