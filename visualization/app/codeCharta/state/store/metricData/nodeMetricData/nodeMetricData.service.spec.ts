@@ -6,7 +6,6 @@ import { NodeMetricDataService } from "./nodeMetricData.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../files/files.service"
-import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
 
 describe("NodeMetricDataService", () => {
 	let nodeMetricDataService: NodeMetricDataService
@@ -45,14 +44,6 @@ describe("NodeMetricDataService", () => {
 			rebuildService()
 
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, nodeMetricDataService)
-		})
-
-		it("should subscribe to AttributeTypesService", () => {
-			AttributeTypesService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(AttributeTypesService.subscribe).toHaveBeenCalledWith($rootScope, nodeMetricDataService)
 		})
 	})
 })

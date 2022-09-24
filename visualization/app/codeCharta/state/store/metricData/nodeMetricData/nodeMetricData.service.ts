@@ -3,14 +3,13 @@ import { IRootScopeService } from "angular"
 import { NodeMetricData } from "../../../../codeCharta.model"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
-import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
 import { nodeMetricDataSelector } from "../../../selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export interface NodeMetricDataSubscriber {
 	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[])
 }
 
-export class NodeMetricDataService implements FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
+export class NodeMetricDataService implements FilesSelectionSubscriber, BlacklistSubscriber {
 	static UNARY_METRIC = "unary"
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
 
@@ -20,7 +19,6 @@ export class NodeMetricDataService implements FilesSelectionSubscriber, Blacklis
 		"ngInject"
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
-		AttributeTypesService.subscribe(this.$rootScope, this)
 	}
 
 	onFilesSelectionChanged() {
@@ -29,11 +27,6 @@ export class NodeMetricDataService implements FilesSelectionSubscriber, Blacklis
 
 	onBlacklistChanged() {
 		this.updateNodeMetricData()
-	}
-
-	// This shouldn't be needed, as nodeMetricData is not dependent on AttributeTypesChanged, but switching to median in attribute side bar breaks without it
-	onAttributeTypesChanged() {
-		this.$rootScope.$broadcast(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, { nodeMetricData: this.nodeMetricData })
 	}
 
 	private updateNodeMetricData() {
