@@ -1,38 +1,24 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { EdgeMetricActions, setEdgeMetric } from "./edgeMetric.actions"
-import { EdgeMetricData } from "../../../../codeCharta.model"
+import { EdgeMetricActions } from "./edgeMetric.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "../../metricData/edgeMetricData/edgeMetricData.service"
 
 export interface EdgeMetricSubscriber {
 	onEdgeMetricChanged(edgeMetric: string)
 }
 
-export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataSubscriber {
+export class EdgeMetricService implements StoreSubscriber {
 	private static EDGE_METRIC_CHANGED_EVENT = "edge-metric-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		"ngInject"
 		StoreService.subscribe(this.$rootScope, this)
-		EdgeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
 	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, EdgeMetricActions)) {
 			this.notify(this.select())
 		}
-	}
-
-	onEdgeMetricDataChanged(edgeMetrics: EdgeMetricData[]) {
-		const { edgeMetric } = this.storeService.getState().dynamicSettings
-		if (!edgeMetrics.some(metric => metric.name === edgeMetric)) {
-			this.reset(edgeMetrics[0])
-		}
-	}
-
-	reset(edgeMetric: EdgeMetricData) {
-		this.storeService.dispatch(setEdgeMetric(edgeMetric?.name))
 	}
 
 	private select() {
