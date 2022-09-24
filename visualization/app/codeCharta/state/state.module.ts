@@ -14,14 +14,12 @@ import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
 import "../codeCharta.module"
 import camelCase from "lodash.camelcase"
-import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
-	.service(camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(FilesService.name), FilesService)
