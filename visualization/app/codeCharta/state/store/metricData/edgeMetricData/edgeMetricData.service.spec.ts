@@ -6,7 +6,6 @@ import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../../../util/dataMocks"
 import { FilesService } from "../../files/files.service"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
-import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
 import { FileState } from "../../../../model/files/files"
 import { clone } from "../../../../util/clone"
 import { visibleFileStatesSelector } from "../../../selectors/visibleFileStates.selector"
@@ -63,14 +62,6 @@ describe("EdgeMetricDataService", () => {
 			rebuildService()
 
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
-		})
-
-		it("should subscribe to AttributeTypesService", () => {
-			AttributeTypesService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(AttributeTypesService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
 		})
 	})
 })
