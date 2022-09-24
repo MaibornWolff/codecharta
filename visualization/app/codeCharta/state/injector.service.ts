@@ -14,7 +14,6 @@ import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attri
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
-import { MetricDataService } from "./store/metricData/metricData.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
@@ -22,7 +21,6 @@ import { CodeMapRenderService } from "../ui/codeMap/codeMap.render.service"
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
-		private metricDataService: MetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
