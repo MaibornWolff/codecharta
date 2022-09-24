@@ -5,9 +5,9 @@ import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFi
 import { isAttributeSideBarVisibleSelector } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { CodeMapMouseEventServiceToken, ThreeViewerServiceToken } from "../../services/ajs-upgraded-providers"
-import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { onStoreChanged } from "../../state/angular-redux/onStoreChanged/onStoreChanged"
 import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 @Component({
 	selector: "cc-code-map",
@@ -25,23 +25,14 @@ export class CodeMapComponent implements AfterViewInit {
 	) {}
 
 	ngAfterViewInit(): void {
-		this.initMap()
-		onStoreChanged(sharpnessModeSelector, oldValue => {
-			if (!oldValue) {
-				// skip initial change as this is already handled within ngAfterViewInit
-				return
-			}
-			this.threeViewerService.stopAnimate()
-			this.threeViewerService.destroy()
-			this.initMap()
-			this.threeViewerService.autoFitTo()
-			this.threeViewerService.animate()
-			this.threeViewerService.animateStats()
-		})
-	}
-
-	private initMap() {
 		this.threeViewerService.init(this.elementReference.nativeElement.querySelector("#codeMap"))
 		this.codeMapMouseEventService.start()
+
+		onStoreChanged(sharpnessModeSelector, oldValue => {
+			if (oldValue) {
+				this.threeViewerService.restart(this.elementReference.nativeElement.querySelector("#codeMap"))
+				this.codeMapMouseEventService.start()
+			}
+		})
 	}
 }

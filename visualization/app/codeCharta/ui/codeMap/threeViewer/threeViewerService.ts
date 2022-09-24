@@ -3,8 +3,8 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
-
 import { ThreeStatsService } from "./threeStatsService"
+
 export class ThreeViewerService {
 	private animationFrameId: number
 
@@ -19,29 +19,31 @@ export class ThreeViewerService {
 		"ngInject"
 	}
 
-	init(canvasElement: Element) {
+	init(target: Element) {
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
-		const {
-			threeSceneService: { scene },
-			threeCameraService: { camera },
-			threeRendererService,
-			threeStatsService,
-			threeOrbitControlsService,
-			onWindowResize,
-			onFocusIn,
-			onFocusOut
-		} = this
+
+		const camera = this.threeCameraService.camera
+		const scene = this.threeSceneService.scene
 		camera.lookAt(scene.position)
 		scene.add(camera)
-		threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
-		threeStatsService.init(canvasElement)
-		threeOrbitControlsService.init(threeRendererService.renderer.domElement)
+		this.threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
+		this.threeStatsService.init(target)
+		this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
 
-		canvasElement.append(threeRendererService.renderer.domElement)
+		target.append(this.threeRendererService.renderer.domElement)
 
-		window.addEventListener("resize", onWindowResize)
-		window.addEventListener("focusin", onFocusIn)
-		window.addEventListener("focusout", onFocusOut)
+		window.addEventListener("resize", this.onWindowResize)
+		window.addEventListener("focusin", this.onFocusIn)
+		window.addEventListener("focusout", this.onFocusOut)
+	}
+
+	restart(target: Element) {
+		this.stopAnimate()
+		this.destroy()
+		this.init(target)
+		this.autoFitTo()
+		this.animate()
+		this.animateStats()
 	}
 
 	onWindowResize = () => {
