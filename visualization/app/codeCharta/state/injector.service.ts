@@ -1,6 +1,5 @@
 //@ts-nocheck
 
-import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
@@ -19,7 +18,6 @@ import { CodeMapRenderService } from "../ui/codeMap/codeMap.render.service"
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
-		private edgeMetricDataService: EdgeMetricDataService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		private isLoadingFileService: IsLoadingFileService,
 		private filesService: FilesService,
