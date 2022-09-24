@@ -1,9 +1,9 @@
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import { ExportCCFile } from "../codeCharta.api.model"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
+import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 export type DownloadableSetting = "Nodes" | "AttributeTypes" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
 
@@ -76,7 +76,7 @@ export class FileDownloader {
 			if (data.type === NodeType.FOLDER) {
 				data.attributes = {}
 			} else {
-				delete data.attributes[NodeMetricDataService.UNARY_METRIC]
+				delete data.attributes[UNARY_METRIC]
 			}
 		}
 		return copy

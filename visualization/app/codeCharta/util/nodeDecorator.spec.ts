@@ -12,7 +12,7 @@ import {
 import { NodeDecorator } from "./nodeDecorator"
 import { HierarchyNode, hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
@@ -301,16 +301,16 @@ describe("nodeDecorator", () => {
 		})
 
 		it("all nodes should have a unary attribute and all leaves should have it set to 1", () => {
-			metricData.nodeMetricData.push({ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1, minValue: 1 })
+			metricData.nodeMetricData.push({ name: UNARY_METRIC, maxValue: 1, minValue: 1 })
 
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			const h = hierarchy(map)
 			h.each(({ data }) => {
-				expect(data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
+				expect(data.attributes[UNARY_METRIC]).toBeDefined()
 			})
 			for (const { data } of h.leaves()) {
-				expect(data.attributes[NodeMetricDataService.UNARY_METRIC]).toBe(1)
+				expect(data.attributes[UNARY_METRIC]).toBe(1)
 			}
 		})
 	})

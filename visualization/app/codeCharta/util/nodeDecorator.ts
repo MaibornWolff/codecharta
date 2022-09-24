@@ -2,7 +2,7 @@
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { isLeaf, isNodeExcludedOrFlattened } from "./codeMapHelper"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 const enum MedianSelectors {
 	MEDIAN = "MEDIAN",
@@ -45,7 +45,7 @@ export const NodeDecorator = {
 			}
 
 			if (isLeaf(data)) {
-				data.attributes[NodeMetricDataService.UNARY_METRIC] = 1
+				data.attributes[UNARY_METRIC] = 1
 			}
 
 			for (const metric of nodeMetricData) {
