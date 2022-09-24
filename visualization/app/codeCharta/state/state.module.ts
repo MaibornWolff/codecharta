@@ -9,7 +9,6 @@ import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
-import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
@@ -34,7 +33,6 @@ angular
 	.service(camelCase(MarkedPackagesService.name), MarkedPackagesService)
 	.service(camelCase(EdgesService.name), EdgesService)
 	.service(camelCase(AttributeTypesService.name), AttributeTypesService)
-	.service(camelCase(EdgeMetricService.name), EdgeMetricService)
 	.service(camelCase(FocusedNodePathService.name), FocusedNodePathService)
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
