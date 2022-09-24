@@ -36,7 +36,8 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
-	nodeMetricDataSelector: jest.fn()
+	nodeMetricDataSelector: jest.fn(),
+	UNARY_METRIC: "unary"
 }))
 
 describe("codeMapRenderService", () => {

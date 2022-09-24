@@ -10,7 +10,6 @@ export interface NodeMetricDataSubscriber {
 }
 
 export class NodeMetricDataService implements FilesSelectionSubscriber, BlacklistSubscriber {
-	static UNARY_METRIC = "unary"
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
 
 	private nodeMetricData: NodeMetricData[] = []
