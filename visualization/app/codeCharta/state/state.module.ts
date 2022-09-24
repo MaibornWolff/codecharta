@@ -1,5 +1,4 @@
 import angular from "angular"
-import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { FilesService } from "./store/files/files.service"
@@ -23,7 +22,6 @@ import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnes
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	.service(camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
-	.service(camelCase(NodeMetricDataService.name), NodeMetricDataService)
 	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(FilesService.name), FilesService)
