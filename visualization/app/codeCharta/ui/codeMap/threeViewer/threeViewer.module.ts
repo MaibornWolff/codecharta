@@ -3,7 +3,6 @@ import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
-import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 import { ThreeStatsService } from "./threeStatsService"
 import "../../../state/state.module"
 import camelCase from "lodash.camelcase"
@@ -15,7 +14,6 @@ import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding
 angular
 	.module("app.codeCharta.ui.codeMap.threeViewer", ["app.codeCharta.state"])
 	.service(camelCase(ThreeViewerService.name), ThreeViewerService)
-	.service(camelCase(ThreeUpdateCycleService.name), ThreeUpdateCycleService)
 	.service(camelCase(ThreeSceneService.name), ThreeSceneService)
 	.service(camelCase(ThreeRendererService.name), ThreeRendererService)
 	.service(camelCase(ThreeOrbitControlsService.name), ThreeOrbitControlsService)
