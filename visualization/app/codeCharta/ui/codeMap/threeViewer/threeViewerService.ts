@@ -35,6 +35,9 @@ export class ThreeViewerService {
 		window.addEventListener("resize", this.onWindowResize)
 		window.addEventListener("focusin", this.onFocusIn)
 		window.addEventListener("focusout", this.onFocusOut)
+
+		this.animate()
+		this.animateStats()
 	}
 
 	restart(target: Element) {
