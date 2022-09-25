@@ -14,7 +14,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import * as Three from "three"
 import oc from "three-orbit-controls"
 import { EventEmitter } from "tsee"
-import { ThreeRendererService } from "./threeRendererService"
+import { ThreeRendererService } from "./threeRenderer.service"
 
 type CameraChangeEvents = {
 	onCameraChanged: (data: { camera: PerspectiveCamera }) => void

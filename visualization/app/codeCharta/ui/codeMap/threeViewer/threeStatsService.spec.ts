@@ -2,7 +2,7 @@ import "./threeViewer.module"
 
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { CustomPanel, ThreeStatsService } from "./threeStatsService"
-import { ThreeRendererService } from "./threeRendererService"
+import { ThreeRendererService } from "./threeRenderer.service"
 import Stats from "three/examples/jsm/libs/stats.module"
 import { WebGLRenderer } from "three/src/renderers/WebGLRenderer"
 import { WebGLInfo } from "three/src/renderers/webgl/WebGLInfo"
@@ -62,6 +62,8 @@ describe("ThreeStatsService", () => {
 	const mockRenderer = () => {
 		threeRendererService.renderer = {} as WebGLRenderer
 		threeRendererService.renderer.info = { render: {}, memory: {} } as WebGLInfo
+		threeRendererService.getInfo = jest.fn().mockReturnValue({})
+		threeRendererService.getMemoryInfo = jest.fn().mockReturnValue({})
 	}
 
 	describe("init", () => {

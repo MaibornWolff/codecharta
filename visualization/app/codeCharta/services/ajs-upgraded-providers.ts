@@ -36,15 +36,6 @@ export const threeOrbitControlsServiceProvider = {
 	deps: ["$injector"]
 }
 
-export const ThreeRendererServiceToken = new InjectionToken("ThreeRendererService")
-export const threeRendererServiceProvider = {
-	provide: ThreeRendererServiceToken,
-	useFactory: function ThreeRendererServiceTokenFactory(injector: Injector) {
-		return injector.get("threeRendererService")
-	},
-	deps: ["$injector"]
-}
-
 export const ThreeViewerServiceToken = new InjectionToken("ThreeViewerService")
 export const threeViewerServiceTokenProvider = {
 	provide: ThreeViewerServiceToken,
