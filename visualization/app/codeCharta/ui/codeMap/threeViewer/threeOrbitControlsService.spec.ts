@@ -7,7 +7,7 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { ThreeRendererService } from "./threeRendererService"
+import { ThreeRendererService } from "./threeRenderer.service"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService

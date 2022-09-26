@@ -5,7 +5,7 @@ import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouse
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { ThreeRendererService } from "./threeViewer/threeRendererService"
+import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES, withMockedEventMethods } from "../../util/dataMocks"

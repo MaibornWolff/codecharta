@@ -12,7 +12,7 @@ import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToN
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 import { onStoreChanged } from "../../../state/angular-redux/onStoreChanged/onStoreChanged"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
-import { ThreeRendererService } from "./threeRendererService"
+import { ThreeRendererService } from "./threeRenderer.service"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)

@@ -1,5 +1,5 @@
 import Stats from "three/examples/jsm/libs/stats.module"
-import { ThreeRendererService } from "./threeRendererService"
+import { ThreeRendererService } from "./threeRenderer.service"
 import { isDevelopment } from "../../../util/envDetector"
 
 const ONE_SECOND = 1000

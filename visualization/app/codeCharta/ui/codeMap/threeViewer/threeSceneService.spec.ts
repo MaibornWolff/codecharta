@@ -22,7 +22,7 @@ import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { mocked } from "ts-jest/utils"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
-import { ThreeRendererService } from "./threeRendererService"
+import { ThreeRendererService } from "./threeRenderer.service"
 
 jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()

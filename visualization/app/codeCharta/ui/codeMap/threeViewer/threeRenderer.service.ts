@@ -1,17 +1,17 @@
+import { Inject, Injectable } from "@angular/core"
 import { Camera, RGBAFormat, Scene, Vector2, WebGLInfo, WebGLRenderer, WebGLRenderTarget } from "three"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../../state/store.service"
-import {
-	IsWhiteBackgroundService,
-	IsWhiteBackgroundSubscriber
-} from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
-import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass"
-import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderStrings"
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
 import { WEBGL } from "three/examples/jsm/WebGL"
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
+import { CustomComposer } from "../rendering/postprocessor/customComposer"
+import { Store } from "../../../state/angular-redux/store"
+import { State } from "../../../state/angular-redux/state"
+import { isWhiteBackgroundSelector } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
 import { SharpnessMode } from "../../../codeCharta.model"
-export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
+import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderStrings"
+
+@Injectable({ providedIn: "root" })
+export class ThreeRendererService {
 	static BACKGROUND_COLOR = {
 		white: 0xff_ff_ff,
 		normal: 0xee_ee_dd
@@ -37,17 +37,20 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	scene: Scene
 	camera: Camera
 
-	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {
-		"ngInject"
-		ThreeRendererService.instance = this
-		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
-	}
+	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State) {}
 
 	init(containerWidth: number, containerHeight: number, scene: Scene, camera: Camera) {
 		this.scene = scene
 		this.camera = camera
 		this.initGL(containerWidth, containerHeight)
-		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)
+		this.store.select(isWhiteBackgroundSelector).subscribe(this.setBackgroundColorToState)
+	}
+
+	private setBackgroundColorToState = (isWhiteBackground: boolean) => {
+		ThreeRendererService.CLEAR_COLOR = isWhiteBackground
+			? ThreeRendererService.BACKGROUND_COLOR.white
+			: ThreeRendererService.BACKGROUND_COLOR.normal
+		this.renderer?.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
 	}
 
 	private initGL = (containerWidth: number, containerHeight: number) => {
@@ -76,11 +79,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	}
 
 	private setGLOptions = () => {
-		const state = this.storeService.getState()
-		const {
-			appSettings: { sharpnessMode }
-		} = state
-		switch (sharpnessMode) {
+		switch (this.state.getValue().appSettings.sharpnessMode) {
 			case SharpnessMode.Standard:
 				ThreeRendererService.RENDER_OPTIONS.antialias = true
 				ThreeRendererService.enableFXAA = false
@@ -124,13 +123,6 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 
 	getMemoryInfo = (): WebGLInfo["memory"] => {
 		return ThreeRendererService.enableFXAA ? this.composer.getMemoryInfo() : this.renderer.info.memory
-	}
-
-	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
-		ThreeRendererService.CLEAR_COLOR = isWhiteBackground
-			? ThreeRendererService.BACKGROUND_COLOR.white
-			: ThreeRendererService.BACKGROUND_COLOR.normal
-		this.renderer?.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
 	}
 
 	render() {

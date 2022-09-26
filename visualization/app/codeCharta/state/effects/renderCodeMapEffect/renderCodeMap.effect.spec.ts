@@ -4,7 +4,7 @@ import { Action } from "redux"
 import { BehaviorSubject, Subject } from "rxjs"
 import { Vector3 } from "three"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
-import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
+import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { UploadFilesService } from "../../../ui/toolBar/uploadFilesButton/uploadFiles.service"
 import { wait } from "../../../util/testUtils/wait"
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
@@ -18,6 +18,7 @@ import { maxFPS, RenderCodeMapEffect } from "./renderCodeMap.effect"
 
 describe("renderCodeMapEffect", () => {
 	let mockedStore
+	let threeRendererRenderSpy: jest.Mock
 
 	beforeEach(async () => {
 		mockedStore = {
@@ -31,16 +32,17 @@ describe("renderCodeMapEffect", () => {
 			},
 			dispatch: jest.fn()
 		}
+		threeRendererRenderSpy = jest.fn()
 
 		CodeMapRenderService.instance = { render: jest.fn(), scaleMap: jest.fn() } as unknown as CodeMapRenderService
-		ThreeRendererService.instance = { render: jest.fn() } as unknown as ThreeRendererService
 		EffectsModule.actions$ = new Subject<Action>()
 
 		TestBed.configureTestingModule({
 			imports: [EffectsModule.forRoot([RenderCodeMapEffect])],
 			providers: [
 				{ provide: Store, useValue: mockedStore },
-				{ provide: UploadFilesService, useValue: { isUploading: false } }
+				{ provide: UploadFilesService, useValue: { isUploading: false } },
+				{ provide: ThreeRendererService, useValue: { render: threeRendererRenderSpy } }
 			]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise
@@ -54,11 +56,11 @@ describe("renderCodeMapEffect", () => {
 		EffectsModule.actions$.next(setInvertArea(true))
 		EffectsModule.actions$.next(setInvertArea(true))
 		expect(CodeMapRenderService.instance.render).toHaveBeenCalledTimes(0)
-		expect(ThreeRendererService.instance.render).toHaveBeenCalledTimes(0)
+		expect(threeRendererRenderSpy).toHaveBeenCalledTimes(0)
 
 		await wait(maxFPS)
 		expect(CodeMapRenderService.instance.render).toHaveBeenCalledTimes(1)
-		expect(ThreeRendererService.instance.render).toHaveBeenCalledTimes(1)
+		expect(threeRendererRenderSpy).toHaveBeenCalledTimes(1)
 		expect(CodeMapRenderService.instance.scaleMap).not.toHaveBeenCalled()
 	})
 

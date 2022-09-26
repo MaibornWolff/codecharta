@@ -20,7 +20,6 @@ import {
 	CodeMapMouseEventServiceTokenProvider,
 	threeCameraServiceProvider,
 	threeOrbitControlsServiceProvider,
-	threeRendererServiceProvider,
 	threeSceneServiceProvider,
 	threeViewerServiceTokenProvider
 } from "./codeCharta/services/ajs-upgraded-providers"
@@ -93,7 +92,6 @@ import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCha
 		IdToBuildingService,
 		threeCameraServiceProvider,
 		threeOrbitControlsServiceProvider,
-		threeRendererServiceProvider,
 		threeViewerServiceTokenProvider,
 		CodeMapMouseEventServiceTokenProvider,
 		VersionService,

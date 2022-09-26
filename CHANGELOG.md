@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Migrate codeMap.component to Angular with minor internal improvements [#3049](https://github.com/MaibornWolff/codecharta/pull/3049)
 -   Remove threeUpdateCycle.service [#3050](https://github.com/MaibornWolff/codecharta/pull/3050)
 -   Migrate metricData.service, edgeMetric.service, nodeMetricData.service and edgeMetricData.service to Angular [#3051](https://github.com/MaibornWolff/codecharta/pull/3051)
+-   Migrate threeRenderer.service to Angular [#3052](https://github.com/MaibornWolff/codecharta/pull/3052)
 
 ## [1.106.1] - 2022-09-20
 

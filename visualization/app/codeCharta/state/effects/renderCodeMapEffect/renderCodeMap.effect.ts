@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@angular/core"
 import { asyncScheduler, combineLatest, filter, tap, throttleTime } from "rxjs"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
-import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRendererService"
+import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { UploadFilesService } from "../../../ui/toolBar/uploadFilesButton/uploadFiles.service"
 import { isActionOfType } from "../../../util/reduxHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
@@ -21,7 +21,8 @@ export class RenderCodeMapEffect {
 	constructor(
 		@Inject(Store) private store: Store,
 		@Inject(ActionsToken) private actions$: Actions,
-		@Inject(UploadFilesService) private uploadFilesService: UploadFilesService
+		@Inject(UploadFilesService) private uploadFilesService: UploadFilesService,
+		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService
 	) {}
 
 	private actionsRequiringRender$ = this.actions$.pipe(
@@ -35,7 +36,7 @@ export class RenderCodeMapEffect {
 				throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
 				tap(([accumulatedData, action]) => {
 					CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
-					ThreeRendererService.instance.render()
+					this.threeRendererService.render()
 					if (isActionOfType(action.type, ScalingActions)) {
 						CodeMapRenderService.instance.scaleMap()
 					}
