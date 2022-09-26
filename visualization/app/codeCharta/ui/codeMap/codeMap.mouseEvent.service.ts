@@ -115,7 +115,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 	}
 
 	start() {
-		// TODO: Check if these event listeners should ever be removed again.
 		this.threeRendererService.renderer.domElement.addEventListener(
 			"mousemove",
 			debounce(event => this.onDocumentMouseMove(event), 60)

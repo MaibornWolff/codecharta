@@ -94,7 +94,7 @@ describe("ThreeViewerService", () => {
 	}
 
 	function withMockedThreeStatsService() {
-		threeStatsService = threeViewerService["threeStatsService"] = jest.fn().mockReturnValue({ init: jest.fn() })()
+		threeStatsService = threeViewerService["threeStatsService"] = jest.fn().mockReturnValue({ init: jest.fn(), destroy: jest.fn() })()
 	}
 
 	describe("init", () => {
@@ -263,6 +263,25 @@ describe("ThreeViewerService", () => {
 			threeViewerService.autoFitTo()
 
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
+		})
+	})
+
+	describe("restart", () => {
+		it("should restart the system", () => {
+			threeViewerService.stopAnimate = jest.fn()
+			threeViewerService.destroy = jest.fn()
+			threeViewerService.init = jest.fn()
+			threeViewerService.autoFitTo = jest.fn()
+			threeViewerService.animate = jest.fn()
+			threeViewerService.animateStats = jest.fn()
+
+			threeViewerService.restart(element)
+			expect(threeViewerService.stopAnimate).toHaveBeenCalled()
+			expect(threeViewerService.destroy).toHaveBeenCalled()
+			expect(threeViewerService.init).toHaveBeenCalled()
+			expect(threeViewerService.autoFitTo).toHaveBeenCalled()
+			expect(threeViewerService.animate).toHaveBeenCalled()
+			expect(threeViewerService.animateStats).toHaveBeenCalled()
 		})
 	})
 

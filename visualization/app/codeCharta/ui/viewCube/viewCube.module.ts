@@ -6,7 +6,6 @@ import { CommonModule } from "@angular/common"
 @NgModule({
 	imports: [CommonModule],
 	declarations: [ViewCubeComponent, CenterMapButtonComponent],
-	exports: [ViewCubeComponent],
-	entryComponents: [ViewCubeComponent]
+	exports: [ViewCubeComponent]
 })
 export class ViewCubeModule {}
