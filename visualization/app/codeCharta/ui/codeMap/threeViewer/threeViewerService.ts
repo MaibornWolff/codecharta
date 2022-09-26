@@ -2,7 +2,6 @@ import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
-import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 import { ThreeStatsService } from "./threeStatsService"
 
 export class ThreeViewerService {
@@ -13,7 +12,6 @@ export class ThreeViewerService {
 		private threeCameraService: ThreeCameraService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeRendererService: ThreeRendererService,
-		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private threeStatsService: ThreeStatsService
 	) {
 		"ngInject"
@@ -75,7 +73,7 @@ export class ThreeViewerService {
 
 	animate() {
 		this.threeOrbitControlsService.controls.update()
-		this.threeUpdateCycleService.update()
+		this.threeRendererService.render()
 	}
 
 	animateStats() {

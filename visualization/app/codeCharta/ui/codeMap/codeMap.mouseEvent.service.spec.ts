@@ -4,7 +4,6 @@ import { IRootScopeService, IWindowService } from "angular"
 import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouseEvent.service"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
@@ -39,7 +38,6 @@ describe("codeMapMouseEventService", () => {
 	let threeCameraService: ThreeCameraService
 	let threeRendererService: ThreeRendererService
 	let threeSceneService: ThreeSceneService
-	let threeUpdateCycleService: ThreeUpdateCycleService
 	let storeService: StoreService
 	let codeMapLabelService: CodeMapLabelService
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
@@ -52,7 +50,6 @@ describe("codeMapMouseEventService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedWindow()
-		withMockedThreeUpdateCycleService()
 		withMockedThreeRendererService()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
@@ -75,7 +72,6 @@ describe("codeMapMouseEventService", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeRendererService = getService<ThreeRendererService>("threeRendererService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		storeService = getService<StoreService>("storeService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		viewCubeMouseEventsService = {
@@ -98,7 +94,6 @@ describe("codeMapMouseEventService", () => {
 			threeCameraService,
 			threeRendererService,
 			threeSceneService,
-			threeUpdateCycleService,
 			storeService,
 			codeMapLabelService,
 			viewCubeMouseEventsService,
@@ -113,13 +108,6 @@ describe("codeMapMouseEventService", () => {
 		$window.open = jest.fn()
 	}
 
-	function withMockedThreeUpdateCycleService() {
-		threeUpdateCycleService = codeMapMouseEventService["threeUpdateCycleService"] = jest.fn().mockReturnValue({
-			register: jest.fn(),
-			update: jest.fn()
-		})()
-	}
-
 	function withMockedThreeRendererService() {
 		threeRendererService = codeMapMouseEventService["threeRendererService"] = jest.fn().mockReturnValue({
 			renderer: {
@@ -132,7 +120,8 @@ describe("codeMapMouseEventService", () => {
 					height: 1
 				},
 				getPixelRatio: jest.fn().mockReturnValue(2)
-			}
+			},
+			render: jest.fn()
 		})()
 	}
 
@@ -172,12 +161,6 @@ describe("codeMapMouseEventService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should call register on threeUpdateCycleService", () => {
-			rebuildService()
-
-			expect(threeUpdateCycleService.register).toHaveBeenCalled()
-		})
-
 		it("should subscribe to BlacklistService", () => {
 			BlacklistService.subscribe = jest.fn()
 

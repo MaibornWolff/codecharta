@@ -29,7 +29,6 @@ import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showM
 import { klona } from "klona"
 import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStatsService"
-import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { splitStateActions } from "../../state/store/state.splitter"
@@ -48,7 +47,6 @@ describe("codeMapRenderService", () => {
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
 	let threeStatsService: ThreeStatsService
-	let threeUpdateCycleService: ThreeUpdateCycleService
 	let codeMapMouseEventService: CodeMapMouseEventService
 
 	let map: CodeMapNode
@@ -72,7 +70,6 @@ describe("codeMapRenderService", () => {
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 		threeStatsService = getService<ThreeStatsService>("threeStatsService")
-		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		codeMapMouseEventService = getService<CodeMapMouseEventService>("codeMapMouseEventService")
 
 		map = klona(TEST_FILE_WITH_PATHS.map)
@@ -93,7 +90,6 @@ describe("codeMapRenderService", () => {
 			codeMapLabelService,
 			codeMapArrowService,
 			threeStatsService,
-			threeUpdateCycleService,
 			codeMapMouseEventService
 		)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()

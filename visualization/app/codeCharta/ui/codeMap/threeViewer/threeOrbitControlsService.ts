@@ -13,8 +13,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
-import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 import { EventEmitter } from "tsee"
+import { ThreeRendererService } from "./threeRendererService"
 
 type CameraChangeEvents = {
 	onCameraChanged: (data: { camera: PerspectiveCamera }) => void
@@ -33,7 +33,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		private $timeout: ITimeoutService,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
-		private threeUpdateCycleService: ThreeUpdateCycleService
+		private threeRendererService: ThreeRendererService
 	) {
 		"ngInject"
 		ThreeOrbitControlsService.instance = this
@@ -65,7 +65,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.lookAtDirectionFromTarget(x, y, z)
 		this.applyOldZoom(zoom)
 
-		this.update()
+		this.threeRendererService.render()
 		this.onInput(this.threeCameraService.camera)
 	}
 
@@ -82,13 +82,9 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 			this.controls.update()
 
 			this.focusCameraViewToCenter(boundingSphere)
-			this.threeUpdateCycleService.update()
+			this.threeRendererService.render()
 			this.onInput(this.threeCameraService.camera)
 		})
-	}
-
-	update() {
-		this.threeUpdateCycleService.update()
 	}
 
 	private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {
