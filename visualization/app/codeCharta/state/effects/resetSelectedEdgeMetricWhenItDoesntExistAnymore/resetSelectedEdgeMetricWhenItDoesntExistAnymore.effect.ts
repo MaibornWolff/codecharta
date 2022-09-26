@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { filter, withLatestFrom, map, distinct } from "rxjs"
+import { filter, withLatestFrom, map, distinctUntilChanged } from "rxjs"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Store } from "../../angular-redux/store"
 import { edgeMetricDataSelector } from "../../selectors/accumulatedData/metricData/edgeMetricData.selector"
@@ -15,7 +15,7 @@ export class ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect {
 			withLatestFrom(this.store.select(edgeMetricSelector)),
 			filter(([edgeMetrics, selectedEdgeMetric]) => !edgeMetrics.some(metric => metric.name === selectedEdgeMetric)),
 			map(([edgeMetrics]) => edgeMetrics[0]?.name),
-			distinct(),
+			distinctUntilChanged(),
 			map(newEdgeMetric => setEdgeMetric(newEdgeMetric))
 		)
 	)

@@ -63,4 +63,16 @@ describe("ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect", () => {
 		mockedEdgeMetricDataSelector$.next([])
 		expect(mockedStore.dispatch).toHaveBeenCalledTimes(1)
 	})
+
+	it("should reset when an edge metric becomes available again", () => {
+		mockedEdgeMetricSelector$.next("pairingRate")
+		mockedEdgeMetricDataSelector$.next([{ name: "avgCommits" }])
+		expect(mockedStore.dispatch).toHaveBeenLastCalledWith(setEdgeMetric("avgCommits"))
+
+		mockedEdgeMetricDataSelector$.next([])
+		mockedEdgeMetricSelector$.next(null)
+		mockedEdgeMetricDataSelector$.next([{ name: "avgCommits" }])
+		expect(mockedStore.dispatch).toHaveBeenCalledTimes(3)
+		expect(mockedStore.dispatch.mock.calls[0][0]).toEqual(setEdgeMetric("avgCommits"))
+	})
 })
