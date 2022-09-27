@@ -1,6 +1,6 @@
 # CodeCharta analysis
 
-[![Build Status](https://secure.travis-ci.org/)](https://travis-ci.org/)
+[![Quality Gate Status For Analysis](https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=maibornwolff-gmbh_codecharta_analysis)
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
@@ -15,7 +15,6 @@ Components that import data from an external source, e.g. SonarQube, and generat
 | Source                   | Project                                                   |
 | ------------------------ | --------------------------------------------------------- |
 | CodeMaat CSV             | [CodeMaatImporter](import/CodeMaatImporter/README.md)     |
-| Crococosmo               | [CrococosmoImporter](import/CrococosmoImporter/README.md) |
 | generic CSV              | [CSVImporter](import/CSVImporter/README.md)               |
 | Jasome                   | [JasomeImporter](import/JasomeImporter/README.md)         |
 | SCITools' Understand CSV | [UnderstandImporter](import/UnderstandImporter/README.md) |

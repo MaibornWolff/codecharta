@@ -97,14 +97,6 @@ check_codemaatimporter() {
   validate "${ACTUAL_CODEMAAT_JSON}"
 }
 
-check_crococosmo_importer() {
-  echo " -- expect CrococosmoImporter to produce valid cc.json files with added extensions"
-  ACTUAL_COSMO_JSON="${INSTALL_DIR}/actual_cosmoimport"
-  "${CCSH}" crococosmoimport "${DATA}/crococosmo.xml" -o "${ACTUAL_COSMO_JSON}" -nc
-  validate "${ACTUAL_COSMO_JSON}_1.cc.json"
-  validate "${ACTUAL_COSMO_JSON}_2.cc.json"
-}
-
 check_csvimporter() {
   echo " -- expect CSVimporter to produce valid cc.json file with corrected name"
   ACTUAL_CSVIMPORT_JSON="${INSTALL_DIR}/actual_csvimport"
@@ -204,7 +196,6 @@ run_tests() {
   check_edgefilter
   check_mergefilter
   check_codemaatimporter
-  check_crococosmo_importer
   check_csvimporter
   check_sourcemonitor
   check_jasome

@@ -20,7 +20,6 @@ dependencies {
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
 
     def codeMaatImporter = project(':import:CodeMaatImporter')
-    def crococosmoImporter = project(':import:CrococosmoImporter')
     def csvImporter = project(':import:CSVImporter')
     def jasomeImporter = project(':import:JasomeImporter')
     def structureModifier = project(':filter:StructureModifier')
@@ -40,7 +39,6 @@ dependencies {
 
     // first implementation is for dependency in main, testImplementation is so our test suite can find all other tests
     implementation codeMaatImporter; testImplementation codeMaatImporter.sourceSets.test.output
-    implementation crococosmoImporter; testImplementation crococosmoImporter.sourceSets.test.output
     implementation csvImporter; testImplementation csvImporter.sourceSets.test.output
     implementation jasomeImporter; testImplementation jasomeImporter.sourceSets.test.output
     implementation svnlogParser; testImplementation svnlogParser.sourceSets.test.output

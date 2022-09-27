@@ -5,7 +5,6 @@ import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
-import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
@@ -39,7 +38,6 @@ import kotlin.system.exitProcess
         GitLogParser::class,
         Installer::class,
         CSVExporter::class,
-        CrococosmoImporter::class,
         SourceCodeParserMain::class,
         UnderstandImporter::class,
         CodeMaatImporter::class,
