@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Removed 🗑
+
+-   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
+
 ## [1.107.0] - 2022-09-27
 
 ### Added 🚀
