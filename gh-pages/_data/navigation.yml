@@ -59,12 +59,6 @@ docs:
             url: /docs/sourcemonitorimporter
           - title: "Code Maat Importer"
             url: /docs/codemaatimporter
-          - title: "Jasome Importer"
-            url: /docs/jasomeimporter
-          - title: "Crococosmo Importer"
-            url: /docs/crococosmoimporter
-          - title: "Understand Importer"
-            url: /docs/understandimporter
           - title: "MetricGardener Importer"
             url: /docs/metricgardener-importer
 
