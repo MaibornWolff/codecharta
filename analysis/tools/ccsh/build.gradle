@@ -21,7 +21,6 @@ dependencies {
 
     def codeMaatImporter = project(':import:CodeMaatImporter')
     def csvImporter = project(':import:CSVImporter')
-    def jasomeImporter = project(':import:JasomeImporter')
     def structureModifier = project(':filter:StructureModifier')
     def svnlogParser = project(':import:SVNLogParser')
     def gitlogParser = project(':import:GitLogParser')
@@ -39,7 +38,6 @@ dependencies {
     // first implementation is for dependency in main, testImplementation is so our test suite can find all other tests
     implementation codeMaatImporter; testImplementation codeMaatImporter.sourceSets.test.output
     implementation csvImporter; testImplementation csvImporter.sourceSets.test.output
-    implementation jasomeImporter; testImplementation jasomeImporter.sourceSets.test.output
     implementation svnlogParser; testImplementation svnlogParser.sourceSets.test.output
     implementation gitlogParser; testImplementation gitlogParser.sourceSets.test.output
     implementation sonarImporter; testImplementation sonarImporter.sourceSets.test.output

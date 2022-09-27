@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
-import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
@@ -39,7 +38,6 @@ import kotlin.system.exitProcess
         CSVExporter::class,
         SourceCodeParserMain::class,
         CodeMaatImporter::class,
-        JasomeImporter::class,
         TokeiImporter::class,
         RawTextParser::class,
         MetricGardenerImporter::class

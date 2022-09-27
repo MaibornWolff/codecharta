@@ -111,13 +111,6 @@ check_sourcemonitor() {
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
-check_jasome() {
-  echo " -- expect JasomeImporter to produce valid cc.json file"
-  ACTUAL_JASOME_JSON="${INSTALL_DIR}/actual_jasomeimport.cc.json"
-  "${CCSH}" jasomeimport "${DATA}/jasome.xml" -o "${ACTUAL_JASOME_JSON}" -nc
-  validate "${ACTUAL_JASOME_JSON}"
-}
-
 check_metricgardener() {
   echo " -- expect MetricGardenerImporter to produce valid cc.json file with added extensions"
   ACTUAL_METRICGARDENER_JSON="${INSTALL_DIR}/actual_metricgardenerparser"
@@ -191,7 +184,6 @@ run_tests() {
   check_codemaatimporter
   check_csvimporter
   check_sourcemonitor
-  check_jasome
   check_metricgardener
   check_sonar
   check_sourcecodeparser

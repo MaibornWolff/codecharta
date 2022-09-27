@@ -16,7 +16,6 @@ Components that import data from an external source, e.g. SonarQube, and generat
 | ------------------ | ----------------------------------------------------- |
 | CodeMaat CSV       | [CodeMaatImporter](import/CodeMaatImporter/README.md) |
 | generic CSV        | [CSVImporter](import/CSVImporter/README.md)           |
-| Jasome             | [JasomeImporter](import/JasomeImporter/README.md)     |
 | SVN log            | [SVNLogParser](import/SVNLogParser/README.md)         |
 | Git log            | [GitLogParser](import/GitLogParser/README.md)         |
 | SonarQube          | [SonarImporter](import/SonarImporter/README.md)       |
