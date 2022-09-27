@@ -158,13 +158,6 @@ check_tokei() {
   validate "${ACTUAL_TOKEI_JSON}"
 }
 
-check_understand() {
-  echo " -- expect UnderstandImporter to produce valid cc.json to system.out"
-  ACTUAL_UNDERSTAND_JSON="${INSTALL_DIR}/actual_understandparser.json"
-  "${CCSH}" understandimport "${DATA}/understand.csv" >"${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
-  validate "${ACTUAL_UNDERSTAND_JSON}"
-}
-
 check_rawtext() {
   echo " -- expect RawTextParser to produce valid cc.json file"
   ACTUAL_RAWTEXT_JSON="${INSTALL_DIR}/actual_rawtextparser.cc.json"
@@ -204,7 +197,6 @@ run_tests() {
   check_sourcecodeparser
   check_svnlog
   check_tokei
-  check_understand
   check_rawtext
 
   check_pipe

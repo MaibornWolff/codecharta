@@ -61,8 +61,6 @@ docs:
             url: /docs/codemaatimporter
           - title: "Jasome Importer"
             url: /docs/jasomeimporter
-          - title: "Understand Importer"
-            url: /docs/understandimporter
           - title: "MetricGardener Importer"
             url: /docs/metricgardener-importer
 

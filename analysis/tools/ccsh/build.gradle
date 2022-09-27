@@ -28,7 +28,6 @@ dependencies {
     def sonarImporter = project(':import:SonarImporter')
     def sourceCodeParser = project(':import:SourceCodeParser')
     def tokeiImporter = project(':import:TokeiImporter')
-    def understandImporter = project(':import:UnderstandImporter')
     def mergeFilter = project(':filter:MergeFilter')
     def edgeFilter = project(':filter:EdgeFilter')
     def validationTool = project(':tools:ValidationTool')
@@ -46,7 +45,6 @@ dependencies {
     implementation sonarImporter; testImplementation sonarImporter.sourceSets.test.output
     implementation sourceCodeParser; testImplementation sourceCodeParser.sourceSets.test.output
     implementation tokeiImporter; testImplementation tokeiImporter.sourceSets.test.output
-    implementation understandImporter; testImplementation understandImporter.sourceSets.test.output
     implementation mergeFilter; testImplementation mergeFilter.sourceSets.test.output
     implementation edgeFilter; testImplementation edgeFilter.sourceSets.test.output
     implementation validationTool; testImplementation validationTool.sourceSets.test.output

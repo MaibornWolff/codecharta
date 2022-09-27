@@ -14,7 +14,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
-import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
@@ -39,7 +38,6 @@ import kotlin.system.exitProcess
         Installer::class,
         CSVExporter::class,
         SourceCodeParserMain::class,
-        UnderstandImporter::class,
         CodeMaatImporter::class,
         JasomeImporter::class,
         TokeiImporter::class,
