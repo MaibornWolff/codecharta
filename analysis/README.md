@@ -1,6 +1,6 @@
 # CodeCharta analysis
 
-[![Build Status](https://secure.travis-ci.org/)](https://travis-ci.org/)
+[![Quality Gate Status For Analysis](https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=maibornwolff-gmbh_codecharta_analysis)
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
@@ -12,20 +12,17 @@ CodeCharta analysis tools generally follow the pipes and filters architecture pr
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
-| Source                   | Project                                                   |
-| ------------------------ | --------------------------------------------------------- |
-| CodeMaat CSV             | [CodeMaatImporter](import/CodeMaatImporter/README.md)     |
-| Crococosmo               | [CrococosmoImporter](import/CrococosmoImporter/README.md) |
-| generic CSV              | [CSVImporter](import/CSVImporter/README.md)               |
-| Jasome                   | [JasomeImporter](import/JasomeImporter/README.md)         |
-| SCITools' Understand CSV | [UnderstandImporter](import/UnderstandImporter/README.md) |
-| SVN log                  | [SVNLogParser](import/SVNLogParser/README.md)             |
-| Git log                  | [GitLogParser](import/GitLogParser/README.md)             |
-| SonarQube                | [SonarImporter](import/SonarImporter/README.md)           |
-| Source Code              | [SourceCodeParser](import/SourceCodeParser/README.md)     |
-| SourceMonitor CSV        | [SourceMonitorImporter](import/CSVImporter/README.md)     |
-| Source Code / Text       | [RawTextParser](parser/RawTextParser/README.md)           |
-| Tokei                    | [TokeiImporter](import/TokeiImporter/README.md)           |
+| Source             | Project                                               |
+| ------------------ | ----------------------------------------------------- |
+| CodeMaat CSV       | [CodeMaatImporter](import/CodeMaatImporter/README.md) |
+| generic CSV        | [CSVImporter](import/CSVImporter/README.md)           |
+| SVN log            | [SVNLogParser](import/SVNLogParser/README.md)         |
+| Git log            | [GitLogParser](import/GitLogParser/README.md)         |
+| SonarQube          | [SonarImporter](import/SonarImporter/README.md)       |
+| Source Code        | [SourceCodeParser](import/SourceCodeParser/README.md) |
+| SourceMonitor CSV  | [SourceMonitorImporter](import/CSVImporter/README.md) |
+| Source Code / Text | [RawTextParser](parser/RawTextParser/README.md)       |
+| Tokei              | [TokeiImporter](import/TokeiImporter/README.md)       |
 
 ### Filter
 
