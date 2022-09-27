@@ -9,20 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed 🗑
 
--   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its
-    documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
+-   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
 
 ## [1.107.0] - 2022-09-27
 
 ### Added 🚀
 
--   Add subcommand to GitLogParser to run necessary git commands
-    automatically [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+-   Add subcommand to GitLogParser to run necessary git commands automatically [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
 
 ### Changed
 
--   Change default behaviour of GitLogParser to use new
-    subcommands [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+-   Change default behaviour of GitLogParser to use new subcommands [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
 -   Set default value for displaying labels 1 per 100 buildings with a maximum of 10 labels [#3046](https://github.com/MaibornWolff/codecharta/pull/3046)
 
 ### Fixed 🐞
