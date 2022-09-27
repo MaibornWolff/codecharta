@@ -1,6 +1,6 @@
 FROM sapmachine:11
 
-COPY ./build/distributions/*.tar /usr/local/
+COPY ./build/distributions/codecharta-analysis-*.tar /usr/local/
 
 RUN apt update
 
