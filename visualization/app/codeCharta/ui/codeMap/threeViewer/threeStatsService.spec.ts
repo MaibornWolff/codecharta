@@ -1,6 +1,3 @@
-import "./threeViewer.module"
-
-import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { CustomPanel, ThreeStatsService } from "./threeStatsService"
 import { ThreeRendererService } from "./threeRenderer.service"
 import Stats from "three/examples/jsm/libs/stats.module"
@@ -11,14 +8,11 @@ import * as environmentDetector from "../../../util/envDetector"
 describe("ThreeStatsService", () => {
 	let threeStatsService: ThreeStatsService
 	let threeRendererService: ThreeRendererService
-
 	let element: HTMLCanvasElement
 
 	beforeEach(() => {
 		setDevelopmentMode(true)
 		restartSystem()
-		rebuildService()
-		withMockedElement()
 	})
 
 	const setDevelopmentMode = (value: boolean) => {
@@ -26,20 +20,15 @@ describe("ThreeStatsService", () => {
 	}
 
 	const restartSystem = () => {
-		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
+		threeRendererService = { getInfo: jest.fn(), getMemoryInfo: jest.fn() } as unknown as ThreeRendererService
+		threeRendererService.renderer = {} as WebGLRenderer
+		threeRendererService.renderer.info = { render: {}, memory: {} } as WebGLInfo
+		threeRendererService.getInfo = jest.fn().mockReturnValue({})
+		threeRendererService.getMemoryInfo = jest.fn().mockReturnValue({})
 
-		threeRendererService = getService<ThreeRendererService>("threeRendererService")
-	}
-
-	const rebuildService = () => {
-		threeStatsService = new ThreeStatsService(threeRendererService)
-	}
-
-	const withMockedElement = () => {
 		element = { ...element, append: jest.fn() }
-	}
 
-	const withMockedStats = () => {
+		threeStatsService = new ThreeStatsService(threeRendererService)
 		threeStatsService.stats = {} as Stats
 		threeStatsService.stats.addPanel = jest.fn()
 		threeStatsService.stats.showPanel = jest.fn()
@@ -59,22 +48,10 @@ describe("ThreeStatsService", () => {
 		}
 	}
 
-	const mockRenderer = () => {
-		threeRendererService.renderer = {} as WebGLRenderer
-		threeRendererService.renderer.info = { render: {}, memory: {} } as WebGLInfo
-		threeRendererService.getInfo = jest.fn().mockReturnValue({})
-		threeRendererService.getMemoryInfo = jest.fn().mockReturnValue({})
-	}
-
 	describe("init", () => {
-		beforeEach(() => {
-			rebuildService()
-			mockRenderer()
-		})
-
 		it("should not do anything when not in development mode", () => {
 			setDevelopmentMode(false)
-			rebuildService()
+			restartSystem()
 			const generateStatPanels = jest.spyOn(threeStatsService, "generateStatPanels" as any)
 
 			threeStatsService.init(element)
@@ -90,7 +67,6 @@ describe("ThreeStatsService", () => {
 		})
 
 		it("should call generateStatPanels", () => {
-			withMockedStats()
 			const generateStatPanels = jest.spyOn(threeStatsService, "generateStatPanels" as any)
 
 			threeStatsService.init(element)
@@ -100,11 +76,6 @@ describe("ThreeStatsService", () => {
 	})
 
 	describe("generateStatPanels", () => {
-		beforeEach(() => {
-			rebuildService()
-			withMockedStats()
-		})
-
 		it("should call addPanel", () => {
 			threeStatsService["generateStatPanels"]()
 
@@ -122,19 +93,16 @@ describe("ThreeStatsService", () => {
 		const ONE_SECOND = 1000
 
 		beforeEach(() => {
-			rebuildService()
 			const getTimeFunctor = (jest.spyOn(threeStatsService, "getTimeFunctor" as any) as unknown as CallableFunction)()
 
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
-			mockRenderer()
-			withMockedStats()
 
 			threeStatsService.prevTime = getTimeFunctor.now() - ONE_SECOND
 		})
 
 		it("should not do anything when not in development mode", () => {
 			setDevelopmentMode(false)
-			rebuildService()
+			restartSystem()
 			const processPanel = jest.spyOn(threeStatsService, "processPanel" as any)
 
 			threeStatsService.updateStats()
@@ -170,14 +138,12 @@ describe("ThreeStatsService", () => {
 
 	describe("resetPanels", () => {
 		beforeEach(() => {
-			rebuildService()
-
 			mockPanels(["trianglesPanel", "glCallsPanel", "geometryMemoryPanel", "textureMemoryPanel"])
 		})
 
 		it("should not do anything when not in development mode", () => {
 			setDevelopmentMode(false)
-			rebuildService()
+			restartSystem()
 
 			threeStatsService.resetPanels()
 
@@ -198,10 +164,6 @@ describe("ThreeStatsService", () => {
 	})
 
 	describe("processPanel", () => {
-		beforeEach(() => {
-			rebuildService()
-		})
-
 		const mockCustomPanel = (): CustomPanel => {
 			return {
 				panel: {
@@ -222,18 +184,13 @@ describe("ThreeStatsService", () => {
 	})
 
 	describe("destroy", () => {
-		beforeEach(() => {
-			rebuildService()
-			withMockedStats()
-		})
-
 		it("should not do anything when not in development mode", () => {
 			setDevelopmentMode(false)
-			rebuildService()
+			restartSystem()
 
 			threeStatsService.destroy()
 
-			expect(threeStatsService.stats).toBe(undefined)
+			expect(threeStatsService.stats.domElement.remove).not.toHaveBeenCalled()
 		})
 
 		it("should remove dom Element", () => {

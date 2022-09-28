@@ -16,6 +16,9 @@ export function instantiateModule(id: string) {
 	angular.mock.module(($provide: ng.auto.IProvideService) => {
 		$provide.value("threeRendererService", { render: jest.fn() })
 	})
+	angular.mock.module(($provide: ng.auto.IProvideService) => {
+		$provide.value("threeStatsService", {})
+	})
 }
 
 export function getService<T>(id: string): T {
