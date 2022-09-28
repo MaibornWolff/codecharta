@@ -25,7 +25,7 @@ import { sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
 import { screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import { invertArea } from "./invertArea/invertArea.reducer"
 import { isEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.reducer"
-import { isHeightAndColorMetricCoupled } from "./isHeightAndColorMetricCoupled/isHeightAndColorMetricCoupled.reducer"
+import { isHeightAndColorMetricLinked } from "./isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.reducer"
 
 const appSettings = combineReducers({
 	colorLabels,
@@ -54,7 +54,7 @@ const appSettings = combineReducers({
 	layoutAlgorithm,
 	maxTreeMapFiles,
 	sharpnessMode,
-	isHeightAndColorMetricCoupled
+	isHeightAndColorMetricLinked
 })
 
 export default appSettings

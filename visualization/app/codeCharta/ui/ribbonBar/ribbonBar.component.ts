@@ -20,13 +20,13 @@ export class RibbonBarComponent implements OnInit, OnDestroy {
 	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 	hasEdgeMetric$ = this.store.select(edgeMetricDataSelector).pipe(map(edgeMetricData => edgeMetricData.length > 0))
-	isMetricCouplingHidden = false
+	isMetricLinkedButtonHidden = false
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
 		document.addEventListener("mousedown", this.closePanelSelectionOnOutsideClick)
 		this.store.select(nodeMetricDataSelector).subscribe(metrics => {
-			this.isMetricCouplingHidden = metrics.some(metric => metric.name === this.RLOC_METRIC || metric.name === this.LOC_METRIC)
+			this.isMetricLinkedButtonHidden = metrics.some(metric => metric.name === this.RLOC_METRIC || metric.name === this.LOC_METRIC)
 		})
 	}
 

@@ -1579,7 +1579,7 @@ export const STATE: State = {
 		isEdgeMetricVisible: true,
 		dynamicMargin: true,
 		isWhiteBackground: false,
-		isHeightAndColorMetricCoupled: false,
+		isHeightAndColorMetricLinked: false,
 		mapColors: {
 			positive: "#69AE40",
 			neutral: "#ddcc00",
@@ -1636,7 +1636,7 @@ export const DEFAULT_STATE: State = {
 		invertArea: false,
 		isEdgeMetricVisible: true,
 		isWhiteBackground: false,
-		isHeightAndColorMetricCoupled: false,
+		isHeightAndColorMetricLinked: false,
 		mapColors: {
 			base: "#666666",
 			flat: "#AAAAAA",

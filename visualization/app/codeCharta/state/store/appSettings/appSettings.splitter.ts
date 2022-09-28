@@ -120,9 +120,5 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 		actions.push(splitColorLabelsAction(payload.colorLabels as colorLabelOptions))
 	}
 
-	if (payload.isHeightAndColorMetricCoupled !== undefined) {
-		actions.push(splitShowOnlyBuildingsWithEdgesAction(payload.isHeightAndColorMetricCoupled))
-	}
-
 	return actions
 }
