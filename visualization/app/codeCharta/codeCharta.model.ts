@@ -157,6 +157,7 @@ export interface AppSettings {
 	experimentalFeaturesEnabled: boolean
 	screenshotToClipboardEnabled: boolean
 	colorLabels: colorLabelOptions
+	isHeightAndColorMetricCoupled: boolean
 }
 
 export interface TreeMapSettings {
