@@ -1,4 +1,4 @@
-import {Action} from "redux"
+import { Action } from "redux"
 
 export enum IsHeightAndColorMetricCoupledActions {
 	TOGGLE_IS_HEIGHT_AND_COLOR_METRIC_COUPLED = "TOGGLE_IS_HEIGHT_AND_COLOR_METRIC_COUPLED"
@@ -16,4 +16,4 @@ export function toggleHeightAndColorMetricCoupling(): ToggleHeightAndColorMetric
 	}
 }
 
-export const defaultIsHeightAndColorMetricCoupled = true
+export const defaultIsHeightAndColorMetricCoupled = false
