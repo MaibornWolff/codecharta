@@ -1,6 +1,6 @@
 import { Color, WebGLRenderer } from "three"
 import { getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 

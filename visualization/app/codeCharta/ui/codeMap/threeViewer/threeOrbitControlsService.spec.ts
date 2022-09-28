@@ -1,7 +1,7 @@
 import "./threeViewer.module"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
-import { ThreeCameraService } from "./threeCameraService"
+import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"

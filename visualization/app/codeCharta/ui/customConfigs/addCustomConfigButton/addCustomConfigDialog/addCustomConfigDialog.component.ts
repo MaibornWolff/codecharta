@@ -6,7 +6,7 @@ import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { filesSelector } from "../../../../state/store/files/files.selector"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
 import { State } from "../../../../state/angular-redux/state"
-import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCameraService"
+import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControlsService"
 

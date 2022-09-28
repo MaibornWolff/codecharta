@@ -1,4 +1,4 @@
-import { ThreeCameraService } from "./threeCameraService"
+import { ThreeCameraService } from "./threeCamera.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"

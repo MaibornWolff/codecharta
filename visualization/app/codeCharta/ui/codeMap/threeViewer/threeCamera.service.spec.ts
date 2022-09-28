@@ -1,5 +1,5 @@
 import "./threeViewer.module"
-import { ThreeCameraService } from "./threeCameraService"
+import { ThreeCameraService } from "./threeCamera.service"
 import { instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { PerspectiveCamera, Vector3 } from "three"
 

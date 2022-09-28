@@ -9,7 +9,7 @@ import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColo
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setState } from "../../../state/store/state.actions"
 import { ScenarioHelper } from "./scenarioHelper"
-import { ThreeCameraService } from "../../codeMap/threeViewer/threeCameraService"
+import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControlsService"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 

@@ -3,7 +3,7 @@ import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../customConfigs.component"
 import { Store } from "../../../state/angular-redux/store"
 import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
-import { ThreeCameraService } from "../../codeMap/threeViewer/threeCameraService"
+import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControlsService"
 
 @Component({
