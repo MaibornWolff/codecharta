@@ -8,10 +8,10 @@ import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMet
 import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
 
 @Injectable()
-export class CoupleHeightAndColorMetricEffect {
+export class LinkHeightAndColorMetricEffect {
 	constructor(@Inject(Store) private store: Store) {}
 
-	coupleHeightAndColorMetric$ = createEffect(() =>
+	linkHeightAndColorMetric$ = createEffect(() =>
 		combineLatest([this.store.select(heightMetricSelector), this.store.select(isHeightAndColorMetricLinkedSelector)]).pipe(
 			filter(([, isHeightAndColorMetricLinked]) => isHeightAndColorMetricLinked),
 			map(([heightMetric]) => setColorMetric(heightMetric))

@@ -5,7 +5,7 @@ import { isHeightAndColorMetricLinkedSelector } from "../../../state/store/appSe
 import { toggleHeightAndColorMetricLink } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.actions"
 
 @Component({
-	selector: "cc-couple-height-and-color-metric-button",
+	selector: "cc-link-height-and-color-metric-button",
 	template: require("./linkHeightAndColorMetricButton.component.html")
 })
 export class LinkHeightAndColorMetricButtonComponent {

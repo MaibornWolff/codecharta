@@ -8,4 +8,4 @@ import { LinkHeightAndColorMetricButtonComponent } from "./linkHeightAndColorMet
 	declarations: [LinkHeightAndColorMetricButtonComponent],
 	exports: [LinkHeightAndColorMetricButtonComponent]
 })
-export class CoupleHeightAndColorMetricButtonModule {}
+export class LinkHeightAndColorMetricButtonModule {}
