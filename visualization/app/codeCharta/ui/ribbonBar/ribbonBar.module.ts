@@ -14,6 +14,7 @@ import { HeightSettingsPanelModule } from "./heightSettingsPanel/heightSettingsP
 import { ColorSettingsPanelModule } from "./colorSettingsPanel/colorSettingsPanel.module"
 import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../material/material.module"
+import { CoupleHeightAndColorMetricButtonModule } from "./coupleHeightAndColorMetricButton/coupleHeightAndColorMetricButton.module"
 
 @NgModule({
 	imports: [
@@ -27,6 +28,7 @@ import { MaterialModule } from "../../../material/material.module"
 		AreaSettingsPanelModule,
 		HeightSettingsPanelModule,
 		HeightMetricChooserModule,
+		CoupleHeightAndColorMetricButtonModule,
 		ColorMetricChooserModule,
 		ColorSettingsPanelModule,
 		EdgeMetricChooserModule,
