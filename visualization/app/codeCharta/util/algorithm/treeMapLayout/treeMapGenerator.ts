@@ -2,8 +2,8 @@ import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../../../codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
-import { calculatePadding } from "./paddingCalculator"
-import { getChildrenAreaValues, getSmallestDifference } from "./treeMapHelper2"
+import { calculatePaddingBasedOnBuildingArea } from "./paddingCalculator"
+import { getChildrenAreaValues, getSmallestDifference } from "./modifiedTreeMapHelperFunctions"
 import { calculateTotalNodeArea } from "./nodeAreaCalculator"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
@@ -171,7 +171,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 
 	const smallestDelta = getSmallestDifference(childrenAreaValues)
 
-	padding = calculatePadding(childrenAreaValues, smallestDelta, MIN_BUILDING_AREA, padding)
+	padding = calculatePaddingBasedOnBuildingArea(childrenAreaValues, smallestDelta, MIN_BUILDING_AREA, padding)
 
 	const metricBuildingAreasIncludingPadding = getBuildingAreasWithProportionalPadding(
 		childrenAreaValues,

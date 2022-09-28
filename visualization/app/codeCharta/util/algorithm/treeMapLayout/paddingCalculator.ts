@@ -15,7 +15,7 @@ function calculateMedian(childrenAreaValues: number[], smallestDelta: number, mi
 		return a - b
 	})
 
-	const middle = Math.floor(buildingAreas.length / 2)
+	const middle = Math.floor(buildingAreas.length / 2) - 1
 
 	if (buildingAreas.length % 2 !== 0) {
 		return buildingAreas[middle + 1]
@@ -24,7 +24,12 @@ function calculateMedian(childrenAreaValues: number[], smallestDelta: number, mi
 	return (buildingAreas[middle] + buildingAreas[middle + 1]) / 2
 }
 
-export function calculatePadding(childrenAreaValues: number[], smallestDelta: number, minimumBuildingArea: number, padding: number) {
+export function calculatePaddingBasedOnBuildingArea(
+	childrenAreaValues: number[],
+	smallestDelta: number,
+	minimumBuildingArea: number,
+	padding: number
+) {
 	const medianBuildingArea = calculateMedian(childrenAreaValues, smallestDelta, minimumBuildingArea)
 	return Math.round((padding / Math.sqrt(medianBuildingArea)) * Math.sqrt(minimumBuildingArea))
 }
