@@ -11,6 +11,8 @@ services:
         image: codecharta/codecharta-visualization
         ports:
             - "9001:80"
+        volumes:
+            - shared-volume:/mnt/data
 
     analysis:
         image: codecharta/codecharta-analysis
