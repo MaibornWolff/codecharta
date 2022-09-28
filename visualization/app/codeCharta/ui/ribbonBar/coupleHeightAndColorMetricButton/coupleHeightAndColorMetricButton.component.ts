@@ -1,3 +1,4 @@
+import "./coupleHeightAndColorMetricButton.component.scss"
 import { Component, Inject } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { toggleHeightAndColorMetricCoupling } from "../../../state/store/appSettings/isHeightAndColorMetricCoupled/isHeightAndColorMetricCoupled.actions"
