@@ -48,6 +48,7 @@ import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/ef
 import { CodeChartaModule } from "./codeCharta/codeCharta.module"
 import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
+import { CoupleHeightAndColorMetricEffect } from "./codeCharta/state/effects/coupleHeightAndColorMetric/coupleHeightAndColorMetric.effect"
 
 @NgModule({
 	imports: [
@@ -66,7 +67,8 @@ import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCha
 			RenderCodeMapEffect,
 			AutoFitCodeMapOnFileSelectionChangeEffect,
 			UpdateVisibleTopLabelsEffect,
-			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect
+			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
+			CoupleHeightAndColorMetricEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
