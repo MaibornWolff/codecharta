@@ -1,16 +1,14 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.parser
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.gitlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFactory
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.util.stream.Stream
 
@@ -81,11 +79,10 @@ class CommitCollectorTest {
         val testFileName = "src/Main.java"
 
         val commits = load_case_add_delete_modify_mutated(testFileName)
-        val versionControlledFilesList =
-            Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList = Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(true))
-        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isDeleted())
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isMutated())
     }
 
     @Test
@@ -94,11 +91,10 @@ class CommitCollectorTest {
         val newFileName = "src/RenamedNewFileName.java"
 
         val commits = load_case_add_delete_rename_mutated(testFileName, newFileName)
-        val versionControlledFilesList =
-            Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList = Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(true))
-        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isDeleted())
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isMutated())
     }
 
     @Test
@@ -106,11 +102,10 @@ class CommitCollectorTest {
         val testFileName = "src/Add.java"
 
         val commits = load_case_add_add_mutated(testFileName)
-        val versionControlledFilesList =
-            Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList = Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(false))
-        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
+        assertFalse(versionControlledFilesList.get(testFileName)!!.isDeleted())
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isMutated())
     }
 
     @Test
@@ -118,22 +113,20 @@ class CommitCollectorTest {
         val testFileName = "src/AddCase.java"
 
         val commits = load_case_add_add_mutated(testFileName)
-        val versionControlledFilesList =
-            Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList = Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(false))
-        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
+        assertFalse(versionControlledFilesList.get(testFileName)!!.isDeleted())
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isMutated())
 
         val modifyModification = Modification(testFileName, Modification.Type.MODIFY)
         val mergeCommitModify =
             Commit("Modify by Merge $testFileName", listOf(modifyModification), OffsetDateTime.now(), true)
 
         val arrayOfCommits = commits + arrayOf(mergeCommitModify)
-        val versionControlledFilesList2 =
-            Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList2 = Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList2.get(testFileName)!!.isDeleted(), equalTo(false))
-        assertThat(versionControlledFilesList2.get(testFileName)!!.isMutated(), equalTo(false))
+        assertFalse(versionControlledFilesList2.get(testFileName)!!.isDeleted())
+        assertFalse(versionControlledFilesList2.get(testFileName)!!.isMutated())
     }
 
     @Test
@@ -141,21 +134,19 @@ class CommitCollectorTest {
         val testFileName = "src/Main.java"
 
         val commits = load_case_add_delete_modify_mutated(testFileName)
-        val versionControlledFilesList =
-            Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList = Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(true))
-        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isDeleted())
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isMutated())
 
         val addModification = Modification(testFileName, Modification.Type.ADD)
         val mergeCommitAdd = Commit("Add by Merge $testFileName", listOf(addModification), OffsetDateTime.now(), true)
 
         val arrayOfCommits = commits + arrayOf(mergeCommitAdd)
-        val versionControlledFilesList2 =
-            Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList2 = Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList2.get(testFileName)!!.isDeleted(), equalTo(false))
-        assertThat(versionControlledFilesList2.get(testFileName)!!.isMutated(), equalTo(false))
+        assertFalse(versionControlledFilesList2.get(testFileName)!!.isDeleted())
+        assertFalse(versionControlledFilesList2.get(testFileName)!!.isMutated())
     }
 
     @Test
@@ -169,11 +160,10 @@ class CommitCollectorTest {
             Commit("Delete by Merge $testFileName", listOf(deleteModification), OffsetDateTime.now(), true)
 
         val arrayOfCommits = commits + arrayOf(mergeCommitDelete)
-        val versionControlledFilesList =
-            Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList = Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(true))
-        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(false))
+        assertTrue(versionControlledFilesList.get(testFileName)!!.isDeleted())
+        assertFalse(versionControlledFilesList.get(testFileName)!!.isMutated())
     }
 
     @Test
@@ -181,15 +171,13 @@ class CommitCollectorTest {
         val testFileName = "src/NonExistingFileYet.java"
 
         val modifyModification = Modification(testFileName, Modification.Type.MODIFY)
-        val modifyCommit =
-            Commit("Modify $testFileName", listOf(modifyModification), OffsetDateTime.now(), false)
+        val modifyCommit = Commit("Modify $testFileName", listOf(modifyModification), OffsetDateTime.now(), false)
 
         val arrayOfCommits = arrayOf(modifyCommit)
-        val versionControlledFilesList =
-            Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
+        val versionControlledFilesList = Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList.get(testFileName), `is`(instanceOf(VersionControlledFile::class.java)))
-        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(false))
+        assertInstanceOf(VersionControlledFile::class.java, versionControlledFilesList.get(testFileName))
+        assertFalse(versionControlledFilesList.get(testFileName)!!.isDeleted())
     }
 
     @Test
@@ -215,30 +203,26 @@ class CommitCollectorTest {
         val lastCommit = Commit("Last Commit", lastModifications, OffsetDateTime.now())
 
         val versionControlledFilesList =
-            Stream.of(*arrayOf(firstCommit, secondCommit, lastCommit))
-                .collect(CommitCollector.create(metricsFactory))
+            Stream.of(*arrayOf(firstCommit, secondCommit, lastCommit)).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(versionControlledFilesList.get("File1.kt"), `is`(instanceOf(VersionControlledFile::class.java)))
-        assertThat(versionControlledFilesList.get("File1.kt")!!.isDeleted(), equalTo(false))
-        assertThat(versionControlledFilesList.get("File1.kt")!!.isMutated(), equalTo(false))
+        assertInstanceOf(VersionControlledFile::class.java, versionControlledFilesList.get("File2.kt"))
+        assertFalse(versionControlledFilesList.get("File1.kt")!!.isDeleted())
+        assertFalse(versionControlledFilesList.get("File1.kt")!!.isMutated())
 
-        assertThat(versionControlledFilesList.get("File2.kt"), `is`(instanceOf(VersionControlledFile::class.java)))
-        assertThat(versionControlledFilesList.get("File2.kt")!!.isDeleted(), equalTo(false))
-        assertThat(versionControlledFilesList.get("File2.kt")!!.isMutated(), equalTo(false))
+        assertInstanceOf(VersionControlledFile::class.java, versionControlledFilesList.get("File2.kt"))
+        assertFalse(versionControlledFilesList.get("File2.kt")!!.isDeleted())
+        assertFalse(versionControlledFilesList.get("File2.kt")!!.isMutated())
 
-        assertThat(versionControlledFilesList.get("File3.kt"), `is`(instanceOf(VersionControlledFile::class.java)))
-        assertThat(versionControlledFilesList.get("File3.kt")!!.isDeleted(), equalTo(true))
-        assertThat(versionControlledFilesList.get("File3.kt")!!.isMutated(), equalTo(false))
+        assertInstanceOf(VersionControlledFile::class.java, versionControlledFilesList.get("File3.kt"))
+        assertTrue(versionControlledFilesList.get("File3.kt")!!.isDeleted())
+        assertFalse(versionControlledFilesList.get("File3.kt")!!.isMutated())
 
-        assertThat(versionControlledFilesList.get("File4.kt"), `is`(instanceOf(VersionControlledFile::class.java)))
-        assertThat(versionControlledFilesList.get("File4.kt")!!.isDeleted(), equalTo(false))
-        assertThat(versionControlledFilesList.get("File4.kt")!!.isMutated(), equalTo(false))
+        assertInstanceOf(VersionControlledFile::class.java, versionControlledFilesList.get("File4.kt"))
+        assertFalse(versionControlledFilesList.get("File4.kt")!!.isDeleted())
+        assertFalse(versionControlledFilesList.get("File4.kt")!!.isMutated())
 
-        assertThat(
-            versionControlledFilesList.get("File5_newName.kt"),
-            `is`(instanceOf(VersionControlledFile::class.java))
-        )
-        assertThat(versionControlledFilesList.get("File5_newName.kt")!!.containsRename("File5.kt"), equalTo(true))
+        assertInstanceOf(VersionControlledFile::class.java, versionControlledFilesList.get("File5_newName.kt"))
+        assertTrue(versionControlledFilesList.get("File5_newName.kt")!!.containsRename("File5.kt"))
     }
 
     @Test
@@ -246,15 +230,17 @@ class CommitCollectorTest {
         val commit = Commit("TheAuthor", modificationsByFilename("", "src/Main.java"), OffsetDateTime.now())
         val vcfList = Stream.of(commit).collect(CommitCollector.create(metricsFactory))
 
-        assertThat(vcfList.getList().containsKey(""), equalTo(false))
-        assertThat(vcfList.getList().containsKey("src/Main.java"), equalTo(true))
+        assertFalse(vcfList.getList().containsKey(""))
+        assertTrue(vcfList.getList().containsKey("src/Main.java"))
     }
 
-    @Test(expected = UnsupportedOperationException::class)
+    @Test
     fun test_given_parallel_commit_stream_when_should_be_parsed_then_break_with_exception() {
-        val commit =
-            Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
-        val parallelCommitStream = Stream.of(commit, commit).parallel()
-        parallelCommitStream.collect(CommitCollector.create(metricsFactory))
+        Assertions.assertThrows(UnsupportedOperationException::class.java) {
+            val commit =
+                Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
+            val parallelCommitStream = Stream.of(commit, commit).parallel()
+            parallelCommitStream.collect(CommitCollector.create(metricsFactory))
+        }
     }
 }

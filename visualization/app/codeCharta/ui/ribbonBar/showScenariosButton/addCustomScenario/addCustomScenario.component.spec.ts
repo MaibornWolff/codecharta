@@ -32,8 +32,8 @@ describe("AddCustomScenarioComponent", () => {
 		const { container } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
 		const closeDialog = TestBed.inject(MatDialogRef).close
 
-		userEvent.type(container.querySelector("input"), "my-custom-scenario")
-		userEvent.click(container.querySelector("button"))
+		await userEvent.type(container.querySelector("input"), "my-custom-scenario")
+		await userEvent.click(container.querySelector("button"))
 
 		expect(ScenarioHelper.addScenario).toHaveBeenCalled()
 		expect((ScenarioHelper.addScenario as jest.Mock).mock.calls[0][0]).toBe("my-custom-scenario")
@@ -46,14 +46,14 @@ describe("AddCustomScenarioComponent", () => {
 		const { container } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
 
 		const scenarioNameInput = container.querySelector("input")
-		userEvent.click(scenarioNameInput)
+		await userEvent.click(scenarioNameInput)
 		scenarioNameInput.blur()
 		expect(await screen.findByText("Scenario name is required")).toBeTruthy()
 
-		userEvent.type(scenarioNameInput, "I-already-exist")
+		await userEvent.type(scenarioNameInput, "I-already-exist")
 		expect(await screen.findByText("A Scenario with this name already exists")).toBeTruthy()
 
-		userEvent.type(scenarioNameInput, "my-custom-scenario")
+		await userEvent.type(scenarioNameInput, "my-custom-scenario")
 		expect(screen.queryByText("A Scenario with this name already exists")).toBeFalsy()
 	})
 
@@ -63,11 +63,11 @@ describe("AddCustomScenarioComponent", () => {
 		}
 		await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
 
-		userEvent.click(screen.getByText("Camera-Position"))
-		userEvent.click(screen.getByText("Area-Metric (rloc)"))
-		userEvent.click(screen.getByText("Height-Metric (mcc)"))
-		userEvent.click(screen.getByText("Color-Metric (mcc)"))
-		userEvent.click(screen.getByText("Edge-Metric (pairingRate)"))
+		await userEvent.click(screen.getByText("Camera-Position"))
+		await userEvent.click(screen.getByText("Area-Metric (rloc)"))
+		await userEvent.click(screen.getByText("Height-Metric (mcc)"))
+		await userEvent.click(screen.getByText("Color-Metric (mcc)"))
+		await userEvent.click(screen.getByText("Edge-Metric (pairingRate)"))
 		expect(await screen.findByText("You cannot create an empty Scenario")).toBeTruthy()
 	})
 })

@@ -7,7 +7,7 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
+import { ThreeRendererService } from "./threeRenderer.service"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -15,7 +15,7 @@ describe("ThreeOrbitControlsService", () => {
 	let $timeout: ITimeoutService
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
-	let threeUpdateCycleService: ThreeUpdateCycleService
+	let threeRendererService: ThreeRendererService
 
 	let vector: Vector3
 
@@ -34,7 +34,7 @@ describe("ThreeOrbitControlsService", () => {
 		$timeout = getService<ITimeoutService>("$timeout")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
+		threeRendererService = getService<ThreeRendererService>("threeRendererService")
 
 		vector = new Vector3(5.711_079_128_159_569, 5.711_079_128_159_569, 0)
 	}
@@ -65,7 +65,7 @@ describe("ThreeOrbitControlsService", () => {
 			$timeout,
 			threeCameraService,
 			threeSceneService,
-			threeUpdateCycleService
+			threeRendererService
 		)
 	}
 

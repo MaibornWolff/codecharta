@@ -1,7 +1,7 @@
 import { validateLocalStorageSize } from "../validateLocalStorageSize"
 import { mocked } from "ts-jest/utils"
 import { DownloadAndPurgeConfigsComponent } from "./downloadAndPurgeConfigs.component"
-import { render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { MaterialModule } from "../../../../../../material/material.module"
 import userEvent from "@testing-library/user-event"
@@ -10,8 +10,8 @@ import { NgModule } from "@angular/core"
 import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
 import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeableConfigs"
 import { CustomConfig } from "../../../../../model/customConfig/customConfig.api.model"
-import { InteractivityChecker } from "@angular/cdk/a11y"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
+import { InteractivityChecker } from "@angular/cdk/a11y"
 
 jest.mock("../validateLocalStorageSize", () => ({ validateLocalStorageSize: jest.fn() }))
 const mockedValidateLocalStorageSize = mocked(validateLocalStorageSize)
@@ -22,7 +22,7 @@ const mockedDownloadAndCollectPurgeableOldConfigs = mocked(downloadAndCollectPur
 describe("downloadAndPurgeConfigsComponent", () => {
 	@NgModule({
 		imports: [MaterialModule],
-		providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true } }],
+		providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true, isTabbable: () => true } }],
 		declarations: [ErrorDialogComponent, ConfirmationDialogComponent],
 		entryComponents: [ErrorDialogComponent, ConfirmationDialogComponent]
 	})
@@ -53,7 +53,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
 		mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set())
 		await render(DownloadAndPurgeConfigsComponent)
 
-		userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+		await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 
 		expect(screen.queryByText("Download Error")).not.toBeNull()
 	})
@@ -70,20 +70,20 @@ describe("downloadAndPurgeConfigsComponent", () => {
 		it("should let user abort purging old custom views", async () => {
 			await render(DownloadAndPurgeConfigsComponent)
 
-			userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
-			userEvent.click(screen.queryByText("CANCEL"))
-			await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
+			await userEvent.click(screen.queryByText("CANCEL"))
+			expect(screen.queryByText("CANCEL")).toBeNull()
 			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
 		})
 
 		it("should let user confirm purging old custom views", async () => {
 			await render(DownloadAndPurgeConfigsComponent)
 
-			userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
-			userEvent.click(screen.queryByText("OK"))
-			await waitForElementToBeRemoved(screen.queryByText("Confirm to purge old Configs"))
+			await userEvent.click(screen.queryByText("OK"))
+			expect(screen.queryByText("OK")).toBeNull()
 			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
 		})
 	})

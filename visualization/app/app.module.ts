@@ -8,7 +8,6 @@ import { UpgradeModule } from "@angular/upgrade/static"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "./material/material.module"
 import { AttributeSideBarModule } from "./codeCharta/ui/attributeSideBar/attributeSideBar.module"
-import { AttributeSideBarComponent } from "./codeCharta/ui/attributeSideBar/attributeSideBar.component"
 import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.component"
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
@@ -18,10 +17,11 @@ import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/stat
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
 	codeChartaServiceProvider,
+	CodeMapMouseEventServiceTokenProvider,
 	threeCameraServiceProvider,
 	threeOrbitControlsServiceProvider,
-	threeRendererServiceProvider,
-	threeSceneServiceProvider
+	threeSceneServiceProvider,
+	threeViewerServiceTokenProvider
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
@@ -42,10 +42,12 @@ import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/c
 import { VersionService } from "./codeCharta/services/version/version.service"
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
-import { ViewCubeModule } from "./codeCharta/ui/viewCube/viewCube.module"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/effects/autoFitCodeMapOnFileSelectionChange/autoFitCodeMapOnFileSelectionChange.effect"
+import { CodeChartaModule } from "./codeCharta/codeCharta.module"
+import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
+import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 
 @NgModule({
 	imports: [
@@ -62,7 +64,9 @@ import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/ef
 			ResetChosenMetricsEffect,
 			UpdateEdgePreviewsEffect,
 			RenderCodeMapEffect,
-			AutoFitCodeMapOnFileSelectionChangeEffect
+			AutoFitCodeMapOnFileSelectionChangeEffect,
+			UpdateVisibleTopLabelsEffect,
+			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
@@ -73,14 +77,14 @@ import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/ef
 		NodeContextMenuCardModule,
 		ReactiveFormsModule,
 		LoadingFileProgressSpinnerModule,
-		ViewCubeModule,
 		FileExtensionBarModule,
 		MetricChooserModule,
 		RibbonBarModule,
 		ChangelogDialogModule,
 		ActionIconModule,
 		ToolBarModule,
-		RibbonBarModule
+		RibbonBarModule,
+		CodeChartaModule
 	],
 	providers: [
 		threeSceneServiceProvider,
@@ -88,7 +92,8 @@ import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/ef
 		IdToBuildingService,
 		threeCameraServiceProvider,
 		threeOrbitControlsServiceProvider,
-		threeRendererServiceProvider,
+		threeViewerServiceTokenProvider,
+		CodeMapMouseEventServiceTokenProvider,
 		VersionService,
 		{
 			provide: APP_INITIALIZER,
@@ -98,13 +103,7 @@ import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/ef
 		}
 	],
 	declarations: [...dialogs],
-	entryComponents: [
-		AttributeSideBarComponent,
-		LegendPanelComponent,
-		FocusButtonsComponent,
-		LoadingFileProgressSpinnerComponent,
-		...dialogs
-	]
+	entryComponents: [LegendPanelComponent, FocusButtonsComponent, LoadingFileProgressSpinnerComponent, ...dialogs]
 })
 export class AppModule {
 	constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {}

@@ -1,12 +1,9 @@
-"use strict"
-
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
-import { ThreeRendererService } from "./threeRendererService"
-import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
-
+import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeStatsService } from "./threeStatsService"
+
 export class ThreeViewerService {
 	private animationFrameId: number
 
@@ -15,36 +12,42 @@ export class ThreeViewerService {
 		private threeCameraService: ThreeCameraService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeRendererService: ThreeRendererService,
-		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private threeStatsService: ThreeStatsService
 	) {
 		"ngInject"
 	}
 
-	init(canvasElement: Element) {
+	init(target: Element) {
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
-		const {
-			threeSceneService: { scene },
-			threeCameraService: { camera },
-			threeRendererService,
-			threeStatsService,
-			threeOrbitControlsService
-		} = this
+
+		const camera = this.threeCameraService.camera
+		const scene = this.threeSceneService.scene
 		camera.lookAt(scene.position)
 		scene.add(camera)
-		threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
-		threeStatsService.init(canvasElement)
-		threeOrbitControlsService.init(threeRendererService.renderer.domElement)
+		this.threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
+		this.threeStatsService.init(target)
+		this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
 
-		canvasElement.append(threeRendererService.renderer.domElement)
+		target.append(this.threeRendererService.renderer.domElement)
 
-		// TODO do we need to remove these listeners ?
-		window.addEventListener("resize", () => this.onWindowResize())
-		window.addEventListener("focusin", event => this.onFocusIn(event))
-		window.addEventListener("focusout", event => this.onFocusOut(event))
+		window.addEventListener("resize", this.onWindowResize)
+		window.addEventListener("focusin", this.onFocusIn)
+		window.addEventListener("focusout", this.onFocusOut)
+
+		this.animate()
+		this.animateStats()
 	}
 
-	onWindowResize() {
+	restart(target: Element) {
+		this.stopAnimate()
+		this.destroy()
+		this.init(target)
+		this.autoFitTo()
+		this.animate()
+		this.animateStats()
+	}
+
+	onWindowResize = () => {
 		this.threeSceneService.scene.updateMatrixWorld(false)
 		this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
 		this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight
@@ -56,13 +59,13 @@ export class ThreeViewerService {
 		this.threeOrbitControlsService.controls.enableRotate = value
 	}
 
-	onFocusIn(event) {
+	onFocusIn = event => {
 		if (event.target.nodeName === "INPUT") {
 			this.threeOrbitControlsService.controls.enableKeys = false
 		}
 	}
 
-	onFocusOut(event) {
+	onFocusOut = event => {
 		if (event.target.nodeName === "INPUT") {
 			this.threeOrbitControlsService.controls.enableKeys = true
 		}
@@ -70,7 +73,7 @@ export class ThreeViewerService {
 
 	animate() {
 		this.threeOrbitControlsService.controls.update()
-		this.threeUpdateCycleService.update()
+		this.threeRendererService.render()
 	}
 
 	animateStats() {
@@ -101,6 +104,10 @@ export class ThreeViewerService {
 	}
 
 	destroy() {
+		window.removeEventListener("resize", this.onWindowResize)
+		window.removeEventListener("focusin", this.onFocusIn)
+		window.removeEventListener("focusout", this.onFocusOut)
+		this.dispose()
 		this.threeStatsService.destroy()
 		this.getRenderCanvas().remove()
 		this.dispose()

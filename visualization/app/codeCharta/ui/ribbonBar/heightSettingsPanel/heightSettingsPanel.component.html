@@ -37,7 +37,9 @@
 ></cc-slider>
 
 <div class="cc-height-settings-panel-row cc-height-settings-panel-reset-row">
-	<mat-checkbox *ngIf="!(isDeltaState$ | async)" [checked]="invertHeight" (change)="setInvertHeight($event)">Invert Height</mat-checkbox>
+	<mat-checkbox (change)="setInvertHeight($event)" *ngIf="!(isDeltaState$ | async)" [checked]="invertHeight$ | async">
+		Invert Height
+	</mat-checkbox>
 	<cc-reset-settings-button
 		[settingsKeys]="['appSettings.amountOfTopLabels', 'appSettings.scaling.y', 'appSettings.invertHeight']"
 		tooltip="Reset height metric settings to their defaults"

@@ -2,8 +2,7 @@ import "./threeViewer.module"
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
-import { ThreeRendererService } from "./threeRendererService"
-import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
+import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeViewerService } from "./threeViewerService"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
@@ -17,7 +16,6 @@ describe("ThreeViewerService", () => {
 	let threeCameraService: ThreeCameraService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let threeRendererService: ThreeRendererService
-	let threeUpdateCycleService: ThreeUpdateCycleService
 	let threeStatsService: ThreeStatsService
 
 	let element: Element
@@ -39,7 +37,6 @@ describe("ThreeViewerService", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		threeRendererService = getService<ThreeRendererService>("threeRendererService")
-		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		threeStatsService = getService<ThreeStatsService>("threeStatsService")
 	}
 
@@ -49,7 +46,6 @@ describe("ThreeViewerService", () => {
 			threeCameraService,
 			threeOrbitControlsService,
 			threeRendererService,
-			threeUpdateCycleService,
 			threeStatsService
 		)
 	}
@@ -68,7 +64,6 @@ describe("ThreeViewerService", () => {
 		threeRendererService.renderer.setPixelRatio = jest.fn()
 		threeOrbitControlsService.controls = { enableKeys: null } as OrbitControls
 		threeOrbitControlsService.controls.update = jest.fn()
-		threeUpdateCycleService.update = jest.fn()
 		threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
 		threeSceneService.scene.add = jest.fn()
 		threeSceneService.scene.updateMatrixWorld = jest.fn()
@@ -94,7 +89,7 @@ describe("ThreeViewerService", () => {
 	}
 
 	function withMockedThreeStatsService() {
-		threeStatsService = threeViewerService["threeStatsService"] = jest.fn().mockReturnValue({ init: jest.fn() })()
+		threeStatsService = threeViewerService["threeStatsService"] = jest.fn().mockReturnValue({ init: jest.fn(), destroy: jest.fn() })()
 	}
 
 	describe("init", () => {
@@ -227,7 +222,7 @@ describe("ThreeViewerService", () => {
 		it("should call update", () => {
 			threeViewerService.animate()
 
-			expect(threeUpdateCycleService.update).toHaveBeenCalled()
+			expect(threeRendererService.render).toHaveBeenCalled()
 		})
 	})
 
@@ -263,6 +258,25 @@ describe("ThreeViewerService", () => {
 			threeViewerService.autoFitTo()
 
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
+		})
+	})
+
+	describe("restart", () => {
+		it("should restart the system", () => {
+			threeViewerService.stopAnimate = jest.fn()
+			threeViewerService.destroy = jest.fn()
+			threeViewerService.init = jest.fn()
+			threeViewerService.autoFitTo = jest.fn()
+			threeViewerService.animate = jest.fn()
+			threeViewerService.animateStats = jest.fn()
+
+			threeViewerService.restart(element)
+			expect(threeViewerService.stopAnimate).toHaveBeenCalled()
+			expect(threeViewerService.destroy).toHaveBeenCalled()
+			expect(threeViewerService.init).toHaveBeenCalled()
+			expect(threeViewerService.autoFitTo).toHaveBeenCalled()
+			expect(threeViewerService.animate).toHaveBeenCalled()
+			expect(threeViewerService.animateStats).toHaveBeenCalled()
 		})
 	})
 

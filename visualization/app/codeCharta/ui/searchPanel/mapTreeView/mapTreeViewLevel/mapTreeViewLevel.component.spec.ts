@@ -64,7 +64,7 @@ describe("mapTreeViewLevel", () => {
 
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy()
 
-		userEvent.hover(firstLevelFolder)
+		await userEvent.hover(firstLevelFolder)
 
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeTruthy()
 	})
@@ -76,7 +76,7 @@ describe("mapTreeViewLevel", () => {
 		let optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
 		expect(optionsButton).toBe(null)
 
-		userEvent.hover(firstLevelFolder)
+		await userEvent.hover(firstLevelFolder)
 		optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
 		expect(optionsButton).not.toBe(null)
 		fireEvent.click(optionsButton.querySelector("[title='Open Node-Context-Menu']"))
@@ -92,7 +92,7 @@ describe("mapTreeViewLevel", () => {
 		const showsPercentage = firstLevelFolder.textContent.includes("%")
 		expect(showsPercentage).toBe(true)
 
-		userEvent.hover(firstLevelFolder)
+		await userEvent.hover(firstLevelFolder)
 
 		const showsPercentageAfterHover = firstLevelFolder.textContent.includes("%")
 		expect(showsPercentageAfterHover).toBe(false)

@@ -41,17 +41,30 @@ validate() {
   fi
 }
 
-check_gitlogparser() {
-  echo " -- expect GitLogParser to produce valid cc.json file"
-  ACTUAL_GITLOG_JSON="${INSTALL_DIR}/actual_gitlogparser.cc.json"
+check_gitlogparser_log_scan() {
+  echo " -- expect GitLogParser log-scan subcommand to produce valid cc.json file"
+  ACTUAL_GITLOG_JSON_LOG_SCAN="${INSTALL_DIR}/actual_gitlogparser_log_scan.cc.json"
   returnCode="0"
-  timeout 60s "${CCSH}" gitlogparser "${DATA}/gitlogparser-cc.txt" -n "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON}" -nc || returnCode="$?"
+  timeout 60s "${CCSH}" gitlogparser "log-scan" --git-log "${DATA}/gitlogparser-cc.txt" --repo-files "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON_LOG_SCAN}" -nc || returnCode="$?"
   if [ "$returnCode" -eq 124 ]; then
     exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
   elif [ "$returnCode" -ne 0 ]; then
     exit_with_err "Parser exited with code $returnCode"
   fi
-  validate "${ACTUAL_GITLOG_JSON}"
+  validate "${ACTUAL_GITLOG_JSON_LOG_SCAN}"
+}
+
+check_gitlogparser_repo_scan() {
+  echo " -- expect GitLogParser repo-scan subcommand to produce valid cc.json file"
+  ACTUAL_GITLOG_JSON_REPO_SCAN="${INSTALL_DIR}/actual_gitlogparser_repo_scan.cc.json"
+  returnCode="0"
+  timeout 60s "${CCSH}" gitlogparser "repo-scan" --repo-path "$(dirname "$(dirname "$PWD")")" -o "${ACTUAL_GITLOG_JSON_REPO_SCAN}" -nc || returnCode="$?"
+  if [ "$returnCode" -eq 124 ]; then
+    exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
+  elif [ "$returnCode" -ne 0 ]; then
+    exit_with_err "Parser exited with code $returnCode"
+  fi
+  validate "${ACTUAL_GITLOG_JSON_REPO_SCAN}"
 }
 
 check_csvexporter() {
@@ -84,14 +97,6 @@ check_codemaatimporter() {
   validate "${ACTUAL_CODEMAAT_JSON}"
 }
 
-check_crococosmo_importer() {
-  echo " -- expect CrococosmoImporter to produce valid cc.json files with added extensions"
-  ACTUAL_COSMO_JSON="${INSTALL_DIR}/actual_cosmoimport"
-  "${CCSH}" crococosmoimport "${DATA}/crococosmo.xml" -o "${ACTUAL_COSMO_JSON}" -nc
-  validate "${ACTUAL_COSMO_JSON}_1.cc.json"
-  validate "${ACTUAL_COSMO_JSON}_2.cc.json"
-}
-
 check_csvimporter() {
   echo " -- expect CSVimporter to produce valid cc.json file with corrected name"
   ACTUAL_CSVIMPORT_JSON="${INSTALL_DIR}/actual_csvimport"
@@ -104,13 +109,6 @@ check_sourcemonitor() {
   ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
   "${CCSH}" sourcemonitorimport ${DATA}/sourcemonitor.csv >"${ACTUAL_SOURCEMON_JSON}"
   validate "${ACTUAL_SOURCEMON_JSON}"
-}
-
-check_jasome() {
-  echo " -- expect JasomeImporter to produce valid cc.json file"
-  ACTUAL_JASOME_JSON="${INSTALL_DIR}/actual_jasomeimport.cc.json"
-  "${CCSH}" jasomeimport "${DATA}/jasome.xml" -o "${ACTUAL_JASOME_JSON}" -nc
-  validate "${ACTUAL_JASOME_JSON}"
 }
 
 check_metricgardener() {
@@ -153,13 +151,6 @@ check_tokei() {
   validate "${ACTUAL_TOKEI_JSON}"
 }
 
-check_understand() {
-  echo " -- expect UnderstandImporter to produce valid cc.json to system.out"
-  ACTUAL_UNDERSTAND_JSON="${INSTALL_DIR}/actual_understandparser.json"
-  "${CCSH}" understandimport "${DATA}/understand.csv" >"${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
-  validate "${ACTUAL_UNDERSTAND_JSON}"
-}
-
 check_rawtext() {
   echo " -- expect RawTextParser to produce valid cc.json file"
   ACTUAL_RAWTEXT_JSON="${INSTALL_DIR}/actual_rawtextparser.cc.json"
@@ -185,21 +176,19 @@ run_tests() {
   echo "Running Tests..."
   echo
 
-  check_gitlogparser
+  check_gitlogparser_log_scan
+  check_gitlogparser_repo_scan
   check_csvexporter
   check_edgefilter
   check_mergefilter
   check_codemaatimporter
-  check_crococosmo_importer
   check_csvimporter
   check_sourcemonitor
-  check_jasome
   check_metricgardener
   check_sonar
   check_sourcecodeparser
   check_svnlog
   check_tokei
-  check_understand
   check_rawtext
 
   check_pipe

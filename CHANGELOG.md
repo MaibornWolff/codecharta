@@ -7,16 +7,43 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Removed 🗑
+
+-   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
+
+## [1.107.0] - 2022-09-27
+
+### Added 🚀
+
+-   Add subcommand to GitLogParser to run necessary git commands automatically [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+
+### Changed
+
+-   Change default behaviour of GitLogParser to use new subcommands [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+-   Set default value for displaying labels 1 per 100 buildings with a maximum of 10 labels [#3046](https://github.com/MaibornWolff/codecharta/pull/3046)
+
+### Fixed 🐞
+
+-   Uncheck the box when 'reset invert height' icon is clicked [#3048](https://github.com/MaibornWolff/codecharta/pull/3048)
+-   Update ReadMe and GitHub pages for MetricGardener [#3045](https://github.com/MaibornWolff/codecharta/pull/3045)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate codeMap.component to Angular with minor internal improvements [#3049](https://github.com/MaibornWolff/codecharta/pull/3049)
+-   Remove threeUpdateCycle.service [#3050](https://github.com/MaibornWolff/codecharta/pull/3050)
+-   Migrate metricData.service, edgeMetric.service, nodeMetricData.service and edgeMetricData.service to Angular [#3051](https://github.com/MaibornWolff/codecharta/pull/3051)
+-   Migrate threeRenderer.service to Angular [#3052](https://github.com/MaibornWolff/codecharta/pull/3052)
+
 ## [1.106.1] - 2022-09-20
 
-## Fixed 🐞
+### Fixed 🐞
 
 -   CC-JSON Files not loaded on Safari browser [#3042](https://github.com/MaibornWolff/codecharta/pull/3042)
 -   Show loading spinners while loading a file [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
 -   Prevent clicking on not opened metric options in ribbon bar [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
 -   Set cursor to pointer on color settings panel of delta mode [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
 
-## Chore 👨‍💻 👩‍💻
+### Chore 👨‍💻 👩‍💻
 
 -   Throttle rendering and migrate codeMap.preRender.service to Angular [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
 

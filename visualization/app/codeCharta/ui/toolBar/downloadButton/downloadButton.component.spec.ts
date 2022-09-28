@@ -49,7 +49,7 @@ describe("downloadButtonComponent", () => {
 		const mockedDownload = jest.fn()
 		FileDownloader.downloadCurrentMap = mockedDownload
 		await render(DownloadButtonComponent, { excludeComponentDeclaration: true })
-		userEvent.click(screen.getByRole("button"))
+		await userEvent.click(screen.getByRole("button"))
 
 		await waitFor(() =>
 			expect((document.querySelector(".file-name-wrapper input") as HTMLInputElement).value).toBe("fileA_2018-12-14_09-39")
@@ -69,15 +69,15 @@ describe("downloadButtonComponent", () => {
 		expect(checkboxes[2].querySelector("input").checked).toBe(true)
 		expect(checkboxes[2].querySelector("input").disabled).toBe(false)
 
-		userEvent.click(checkboxes[2].querySelector("input"))
+		await userEvent.click(checkboxes[2].querySelector("input"))
 		expect(checkboxes[2].querySelector("input").checked).toBe(false)
 		expect(checkboxes[2].querySelector("input").disabled).toBe(false)
 
-		userEvent.click(checkboxes[2].querySelector("input"))
+		await userEvent.click(checkboxes[2].querySelector("input"))
 		expect(checkboxes[2].querySelector("input").checked).toBe(true)
 		expect(checkboxes[2].querySelector("input").disabled).toBe(false)
 
-		userEvent.click(screen.getByText("SAVE"))
+		await userEvent.click(screen.getByText("SAVE"))
 		expect(mockedDownload).toHaveBeenCalled()
 		expect(mockedDownload.mock.calls[0][0]).toBe(mockedAccumulatedData["unifiedMapNode"])
 		expect(mockedDownload.mock.calls[0][1]).toBe(mockedAccumulatedData["unifiedFileMeta"])

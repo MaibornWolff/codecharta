@@ -4,8 +4,7 @@ import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
-import { ThreeRendererService } from "./threeViewer/threeRendererService"
+import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
@@ -69,7 +68,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
 		private threeSceneService: ThreeSceneService,
-		private threeUpdateCycleService: ThreeUpdateCycleService,
 		private storeService: StoreService,
 		private codeMapLabelService: CodeMapLabelService,
 		private viewCubeMouseEvents: ViewCubeMouseEventsService,
@@ -77,7 +75,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 		private idToBuilding: IdToBuildingService
 	) {
 		"ngInject"
-		this.threeUpdateCycleService.register(() => this.threeRendererService.render())
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 
@@ -115,7 +112,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 	}
 
 	start() {
-		// TODO: Check if these event listeners should ever be removed again.
 		this.threeRendererService.renderer.domElement.addEventListener(
 			"mousemove",
 			debounce(event => this.onDocumentMouseMove(event), 60)
@@ -144,13 +140,13 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 				break
 			}
 		}
-		this.threeUpdateCycleService.update()
+		this.threeRendererService.render()
 	}
 
 	unhoverNode() {
 		this.unhoverBuilding()
 		this.highlightedInTreeView = null
-		this.threeUpdateCycleService.update()
+		this.threeRendererService.render()
 	}
 
 	onViewCubeEventPropagation = (data: { type: string; event: MouseEvent }) => {
@@ -174,7 +170,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.clearConstantHighlight()
 		this.clearTemporaryLabel()
-		this.threeUpdateCycleService.update()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
@@ -204,7 +199,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 			if (this.isGrabbingOrMoving()) {
 				this.threeSceneService.resetLabel()
 				this.clearTemporaryLabel()
-				this.threeUpdateCycleService.update()
+				this.threeRendererService.render()
 				return
 			}
 
@@ -258,7 +253,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 				}
 			}
 		}
-		this.threeUpdateCycleService.update()
+		this.threeRendererService.render()
 	}
 
 	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
@@ -359,19 +354,18 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 
 	private onRightClick() {
 		this.isMoving = false
-		const building = this.intersectedBuilding
 		// Check if mouse moved to prevent the node context menu to show up
 		// after moving the map, when the cursor ends on a building.
-		if (building && !this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
+		if (this.intersectedBuilding && !this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
 			this.storeService.dispatch(
 				setRightClickedNodeData({
-					nodeId: building.node.id,
+					nodeId: this.intersectedBuilding.node.id,
 					xPositionOfRightClickEvent: this.mouse.x,
 					yPositionOfRightClickEvent: this.mouse.y
 				})
 			)
 		}
-		this.threeUpdateCycleService.update()
+		this.threeRendererService.render()
 	}
 
 	private onLeftClick() {
@@ -383,7 +377,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 				this.threeSceneService.selectBuilding(this.intersectedBuilding)
 			}
 		}
-		this.threeUpdateCycleService.update()
+		this.threeRendererService.render()
 	}
 
 	private hasMouseMovedMoreThanThreePixels({ x, y }: Coordinates) {
