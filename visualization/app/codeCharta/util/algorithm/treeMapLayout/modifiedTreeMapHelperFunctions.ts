@@ -25,7 +25,11 @@ export function getSmallestDifference(childAreaValues: number[]) {
 	let diff = Number.MAX_VALUE
 
 	// childAreaValues is already sorted
-	const smallestValue = childAreaValues[0]
+	if (childAreaValues === undefined || childAreaValues === null) {
+		return diff
+	}
+
+	const smallestValue = childAreaValues[0] ? childAreaValues[0] : diff
 
 	for (let index = 0; index < childAreaValues.length - 1; index++) {
 		const intermediateDiff = Math.abs(childAreaValues[index + 1] - childAreaValues[index])
@@ -38,5 +42,5 @@ export function getSmallestDifference(childAreaValues: number[]) {
 }
 
 export function getChildrenAreaValues(hierarchyNode: HierarchyNode<CodeMapNode>, state: State) {
-	return getNonZeroMetrics(getLeafValues(hierarchyNode, state))
+	return getNonZeroMetrics(getLeafValues(hierarchyNode, state).sort())
 }

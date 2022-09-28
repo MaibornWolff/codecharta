@@ -181,7 +181,7 @@ describe("treeMapGenerator", () => {
 
 	describe("calculateAreaValue", () => {
 		it("should return 0 if node has children, not blacklisted and not only visible in comparison map", () => {
-			const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode, state, 400)
+			const actual = SquarifiedLayoutGenerator.getAreaValue(codeMapNode, state)
 
 			expect(actual).toBe(0)
 		})
