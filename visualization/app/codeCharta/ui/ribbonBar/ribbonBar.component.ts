@@ -5,6 +5,7 @@ import { experimentalFeaturesEnabledSelector } from "../../state/store/appSettin
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { map } from "rxjs"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 type PanelSelection = "NONE" | "AREA_PANEL_OPEN" | "HEIGHT_PANEL_OPEN" | "COLOR_PANEL_OPEN" | "EDGE_PANEL_OPEN"
 
@@ -14,14 +15,19 @@ type PanelSelection = "NONE" | "AREA_PANEL_OPEN" | "HEIGHT_PANEL_OPEN" | "COLOR_
 })
 export class RibbonBarComponent implements OnInit, OnDestroy {
 	panelSelection: PanelSelection = "NONE"
+	RLOC_METRIC = "rloc"
+	LOC_METRIC = "loc"
 	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 	hasEdgeMetric$ = this.store.select(edgeMetricDataSelector).pipe(map(edgeMetricData => edgeMetricData.length > 0))
-
+	isMetricCouplingHidden = false
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
 		document.addEventListener("mousedown", this.closePanelSelectionOnOutsideClick)
+		this.store.select(nodeMetricDataSelector).subscribe(metrics => {
+			this.isMetricCouplingHidden = metrics.some(metric => metric.name === this.RLOC_METRIC || metric.name === this.LOC_METRIC)
+		})
 	}
 
 	ngOnDestroy(): void {

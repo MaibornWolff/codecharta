@@ -53,7 +53,7 @@
 	></cc-height-settings-panel>
 </mat-card>
 
-<mat-card class="coupling-card" id="coupling-card">
+<mat-card *ngIf="isMetricCouplingHidden" class="coupling-card" id="coupling-card">
 	<div class="section">
 		<div class="section-header">
 			<cc-couple-height-and-color-metric-button></cc-couple-height-and-color-metric-button>
