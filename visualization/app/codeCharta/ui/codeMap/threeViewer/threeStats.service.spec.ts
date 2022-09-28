@@ -1,4 +1,4 @@
-import { CustomPanel, ThreeStatsService } from "./threeStatsService"
+import { CustomPanel, ThreeStatsService } from "./threeStats.service"
 import { ThreeRendererService } from "./threeRenderer.service"
 import Stats from "three/examples/jsm/libs/stats.module"
 import { WebGLRenderer } from "three/src/renderers/WebGLRenderer"

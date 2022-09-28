@@ -28,7 +28,7 @@ import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMe
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { klona } from "klona"
 import { IRootScopeService } from "angular"
-import { ThreeStatsService } from "./threeViewer/threeStatsService"
+import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { splitStateActions } from "../../state/store/state.splitter"

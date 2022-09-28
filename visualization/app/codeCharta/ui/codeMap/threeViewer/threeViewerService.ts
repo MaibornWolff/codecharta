@@ -2,7 +2,7 @@ import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { ThreeStatsService } from "./threeStatsService"
+import { ThreeStatsService } from "./threeStats.service"
 
 export class ThreeViewerService {
 	private animationFrameId: number
