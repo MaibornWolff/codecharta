@@ -1,4 +1,24 @@
 cc-couple-height-and-color-metric-button {
 	display: flex;
 	justify-content: center;
+
+	.link-metrics-button {
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: space-around;
+		align-content: space-between;
+		width: 80%;
+		height: 22px;
+		padding: 2px 0 0 0;
+		margin: 0;
+
+		.fa {
+			color: rgb(68, 68, 68);
+		}
+
+		&:hover {
+			background-color: #c8c8c8;
+		}
+	}
 }

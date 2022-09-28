@@ -1,4 +1,6 @@
-<button title="Couple Height And Color Metric" class="cc-ribbon-bar-menu-button" (click)="toggleHeightAndColorMetricCoupling()">
+<button title="Link Height And Color Metric" class="link-metrics-button" (click)="toggleHeightAndColorMetricCoupling()">
+	<i class="fa fa-long-arrow-left"></i>
 	<i *ngIf="isHeightAndColorMetricCoupled$ | async" class="fa fa-link"></i>
 	<i *ngIf="!(isHeightAndColorMetricCoupled$ | async)" class="fa fa-chain-broken"></i>
+	<i class="fa fa-long-arrow-right"></i>
 </button>
