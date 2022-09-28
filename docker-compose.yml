@@ -1,0 +1,21 @@
+version: "3"
+services:
+    sonar:
+        image: sonarqube:community
+        ports:
+            - "9000:9000"
+        volumes:
+            - shared-volume:/mnt/data
+
+    visualization:
+        image: codecharta/codecharta-visualization
+        ports:
+            - "9001:80"
+
+    analysis:
+        image: codecharta/codecharta-analysis
+        volumes:
+            - shared-volume:/mnt/data
+
+volumes:
+    shared-volume: {}
