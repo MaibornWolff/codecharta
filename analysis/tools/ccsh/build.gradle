@@ -20,16 +20,13 @@ dependencies {
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
 
     def codeMaatImporter = project(':import:CodeMaatImporter')
-    def crococosmoImporter = project(':import:CrococosmoImporter')
     def csvImporter = project(':import:CSVImporter')
-    def jasomeImporter = project(':import:JasomeImporter')
     def structureModifier = project(':filter:StructureModifier')
     def svnlogParser = project(':import:SVNLogParser')
     def gitlogParser = project(':import:GitLogParser')
     def sonarImporter = project(':import:SonarImporter')
     def sourceCodeParser = project(':import:SourceCodeParser')
     def tokeiImporter = project(':import:TokeiImporter')
-    def understandImporter = project(':import:UnderstandImporter')
     def mergeFilter = project(':filter:MergeFilter')
     def edgeFilter = project(':filter:EdgeFilter')
     def validationTool = project(':tools:ValidationTool')
@@ -40,15 +37,12 @@ dependencies {
 
     // first implementation is for dependency in main, testImplementation is so our test suite can find all other tests
     implementation codeMaatImporter; testImplementation codeMaatImporter.sourceSets.test.output
-    implementation crococosmoImporter; testImplementation crococosmoImporter.sourceSets.test.output
     implementation csvImporter; testImplementation csvImporter.sourceSets.test.output
-    implementation jasomeImporter; testImplementation jasomeImporter.sourceSets.test.output
     implementation svnlogParser; testImplementation svnlogParser.sourceSets.test.output
     implementation gitlogParser; testImplementation gitlogParser.sourceSets.test.output
     implementation sonarImporter; testImplementation sonarImporter.sourceSets.test.output
     implementation sourceCodeParser; testImplementation sourceCodeParser.sourceSets.test.output
     implementation tokeiImporter; testImplementation tokeiImporter.sourceSets.test.output
-    implementation understandImporter; testImplementation understandImporter.sourceSets.test.output
     implementation mergeFilter; testImplementation mergeFilter.sourceSets.test.output
     implementation edgeFilter; testImplementation edgeFilter.sourceSets.test.output
     implementation validationTool; testImplementation validationTool.sourceSets.test.output

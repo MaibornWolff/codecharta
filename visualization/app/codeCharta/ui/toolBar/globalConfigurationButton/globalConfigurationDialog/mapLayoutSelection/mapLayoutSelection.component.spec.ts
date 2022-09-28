@@ -43,7 +43,7 @@ describe("MapLayoutSelectionComponent", () => {
 		expect(screen.queryByText(maxTreeMapFilesValue)).not.toBe(null)
 
 		const inputField = screen.getByRole("spinbutton") as HTMLInputElement
-		userEvent.type(inputField, "42", { initialSelectionStart: 0, initialSelectionEnd: 3 })
+		await userEvent.type(inputField, "42", { initialSelectionStart: 0, initialSelectionEnd: 3 })
 		await waitForElementToBeRemoved(() => screen.queryByText(maxTreeMapFilesValue))
 		expect(screen.queryByText("42")).not.toBe(null)
 	})
