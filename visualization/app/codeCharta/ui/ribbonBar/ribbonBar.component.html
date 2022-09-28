@@ -58,7 +58,7 @@
 		<div class="section-header">
 			<cc-link-height-and-color-metric-button></cc-link-height-and-color-metric-button>
 		</div>
-		<span class="section-title no-hover">Link Metrics</span>
+		<span class="section-title no-hover">{{ (isHeightAndColorMetricLinked$ | async) ? "Unlink Metrics" : "Link Metrics" }}</span>
 	</div>
 </mat-card>
 
