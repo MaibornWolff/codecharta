@@ -4,7 +4,7 @@
 	[selectedMetricName]="colorMetric$ | async"
 	[searchPlaceholder]="'Color Metric (highest value)'"
 	[handleMetricChanged]="handleColorMetricChanged"
-	[disabled]="isHeightAndColorMetricLinked$ | async"
+	[isDisabled]="isHeightAndColorMetricLinked$ | async"
 >
 	<cc-metric-chooser-value-hovered hoveredInformation [metricFor]="'colorMetric'"></cc-metric-chooser-value-hovered>
 </cc-metric-chooser>

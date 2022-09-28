@@ -18,7 +18,7 @@ export class MetricChooserComponent implements OnInit {
 	@Input() searchPlaceholder: string
 	@Input() handleMetricChanged: (newSelectedMetricName: string) => void
 	@Input() type: MetricChooserType = "node"
-	@Input() disabled: boolean
+	@Input() isDisabled = false
 	@ViewChild("searchTermInput") searchTermInput: ElementRef<HTMLInputElement>
 	searchTerm = ""
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
