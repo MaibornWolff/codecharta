@@ -16,7 +16,7 @@ angular
 	.service(camelCase(ThreeViewerService.name), ThreeViewerService)
 	.service(camelCase(ThreeSceneService.name), ThreeSceneService)
 	.service(camelCase(ThreeOrbitControlsService.name), ThreeOrbitControlsService)
-	.service(camelCase(ThreeCameraService.name), ThreeCameraService)
+	.factory("threeCameraService", downgradeInjectable(ThreeCameraService))
 	.factory("threeStatsService", downgradeInjectable(ThreeStatsService))
 	.factory("idToBuilding", downgradeInjectable(IdToBuildingService))
 	.factory("threeRendererService", downgradeInjectable(ThreeRendererService))

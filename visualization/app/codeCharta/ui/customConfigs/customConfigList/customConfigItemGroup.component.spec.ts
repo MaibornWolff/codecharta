@@ -1,11 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { CustomConfigsModule } from "../customConfigs.module"
 import { MatDialog, MatDialogRef } from "@angular/material/dialog"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
+import { ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { CustomConfigItemGroupComponent } from "./customConfigItemGroup.component"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../util/dataMocks"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
+import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 
 describe("customConfigItemGroupComponent", () => {
 	let mockedDialog = { open: jest.fn() }
@@ -20,7 +21,7 @@ describe("customConfigItemGroupComponent", () => {
 			providers: [
 				{ provide: MatDialogRef, useValue: mockedDialogReference },
 				{ provide: MatDialog, useValue: mockedDialog },
-				{ provide: ThreeCameraServiceToken, useValue: {} },
+				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeOrbitControlsServiceToken, useValue: {} }
 			]
 		})

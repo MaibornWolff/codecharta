@@ -18,7 +18,6 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
 	codeChartaServiceProvider,
 	CodeMapMouseEventServiceTokenProvider,
-	threeCameraServiceProvider,
 	threeOrbitControlsServiceProvider,
 	threeSceneServiceProvider,
 	threeViewerServiceTokenProvider
@@ -90,7 +89,6 @@ import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCha
 		threeSceneServiceProvider,
 		codeChartaServiceProvider,
 		IdToBuildingService,
-		threeCameraServiceProvider,
 		threeOrbitControlsServiceProvider,
 		threeViewerServiceTokenProvider,
 		CodeMapMouseEventServiceTokenProvider,

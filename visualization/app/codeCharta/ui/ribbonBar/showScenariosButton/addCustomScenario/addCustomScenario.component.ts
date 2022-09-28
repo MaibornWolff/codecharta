@@ -1,7 +1,7 @@
 import "./addCustomScenario.component.scss"
 import { Component, Inject } from "@angular/core"
 import { FormControl } from "@angular/forms"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
+import { ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
 import { State } from "../../../../state/angular-redux/state"
 import { ScenarioHelper, ScenarioMetricProperty } from "../scenarioHelper"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
@@ -20,7 +20,7 @@ export class AddCustomScenarioComponent {
 
 	constructor(
 		@Inject(State) private state: State,
-		@Inject(ThreeCameraServiceToken) threeCameraService: ThreeCameraService,
+		@Inject(ThreeCameraService) threeCameraService: ThreeCameraService,
 		@Inject(ThreeOrbitControlsServiceToken) threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		this.scenarioContent = getInitialScenarioMetricProperties(this.state.getValue(), {

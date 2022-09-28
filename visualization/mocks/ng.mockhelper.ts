@@ -19,6 +19,9 @@ export function instantiateModule(id: string) {
 	angular.mock.module(($provide: ng.auto.IProvideService) => {
 		$provide.value("threeStatsService", {})
 	})
+	angular.mock.module(($provide: ng.auto.IProvideService) => {
+		$provide.value("threeCameraService", {})
+	})
 }
 
 export function getService<T>(id: string): T {

@@ -1,7 +1,7 @@
-"use strict"
-
+import { Injectable } from "@angular/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
+@Injectable({ providedIn: "root" })
 export class ThreeCameraService {
 	static VIEW_ANGLE = 45
 	static NEAR = 50

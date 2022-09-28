@@ -2,7 +2,7 @@ import { Component, Inject, Input } from "@angular/core"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../customConfigs.component"
 import { Store } from "../../../state/angular-redux/store"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
+import { ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControlsService"
 
@@ -16,7 +16,7 @@ export class CustomConfigItemGroupComponent {
 
 	constructor(
 		@Inject(Store) private store: Store,
-		@Inject(ThreeCameraServiceToken) private threeCameraService: ThreeCameraService,
+		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
 		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
