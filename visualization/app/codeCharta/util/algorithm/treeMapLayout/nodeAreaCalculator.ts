@@ -106,15 +106,18 @@ export function calculateTotalNodeArea(
 			switch (node.depth) {
 				case 1: {
 					amountOfDepthOne += 1
+					nodeAreaMap[nodePath] = 0
 					break
 				}
 				case 2: {
 					amountOfDepthTwo += 1
+					nodeAreaMap[nodePath] = 0
 					break
 				}
+				default:
+					nodeAreaMap[nodePath] = 0
+					break
 			}
-			// The folders area are set to 0; because of D3
-			nodeAreaMap[nodePath] = 0
 		}
 	}
 
@@ -132,8 +135,8 @@ export function calculateTotalNodeArea(
 	}
 
 	const defaultFolderLabelPadding = calculateFolderLabelPadding(
-		DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1,
-		DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2,
+		DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 * PADDING_APPROX_FOR_DEPTH_ZERO,
+		DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 * PADDING_APPROX_FOR_DEPTH_ONE,
 		amountOfDepthOne,
 		amountOfDepthTwo
 	)
@@ -144,9 +147,11 @@ export function calculateTotalNodeArea(
 		amountOfDepthOne,
 		amountOfDepthTwo
 	)
-	const rootWidth = Math.max(rootWidthWithDefaultPadding, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2))
 
-	return { rootWidth, metricSum }
+	const rootWidth = Math.max(rootWidthWithDefaultPadding, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2))
+	const rootHeight = Math.sqrt(totalNodeArea)
+
+	return { rootWidth, rootHeight, metricSum }
 }
 
 function addPaddingToArea(area: number, padding: number) {
