@@ -11,7 +11,7 @@ CodeCharta consists of two separate parts: [analysis]({{site.baseurl}}{% link _d
 
 > Please note that CodeCharta only runs on your client. No `.cc.json` that you analyze or visualize will ever leave your computer unless you distribute it yourself.
 
-You can [try the web visualization]({{site.web_visualization_link}}) immediately and explore CodeCharta Code in CodeCharta. No downloads necessary, though we do provide a [desktop client]({{site.baseurl}}{% link _docs/01-03-installation.md %}) for your convenience. The visualization interface is explained [here]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) and if you want to explore another code base than the default one, you can use one of the files from the [showcase]({{site.baseurl}}{% link _pages/showcase.md %}).
+You can [try the web visualization]({{site.web_visualization_link}}) immediately and explore CodeCharta Code in CodeCharta. No downloads necessary, though we do provide a [desktop client]({{site.baseurl}}{% link _docs/01-03-installation.md %}) for your convenience. The visualization interface is explained [here]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) and if you want to explore another code base from the default one, you can use one of the files from the [showcase]({{site.baseurl}}{% link _pages/showcase.md %}).
 
 However, if you want to **generate your own** `.cc.json`, you should read this guide first.
 
@@ -57,7 +57,7 @@ Please make sure you have [Tokei](https://github.com/XAMPPRocky/tokei#installati
 ```bash
 # Download code base of your choice
 git clone https://github.com/apache/httpd.git
-# Parse code with tokei
+# Parse code with Tokei
 cd httpd; tokei -o json . > ../httpd.tokei.json; cd ..
 # Parse sources
 ccsh tokeiimporter httpd.tokei.json -o httpd.tokei.cc.json
@@ -83,13 +83,11 @@ ccsh sonarimport [options] [file] [url] [project-id]
 
 # 5+2 min Combine Metrics Quickstart
 
-Please make sure you have [Git](https://git-scm.com/downloads) installed and that you have completed one of the previous quickstarts. Otherwise you won't have a `.cc.json` to combine with git metrics.
+Please make sure you have [Git](https://git-scm.com/downloads) installed and that you have completed one of the previous quickstarts. Otherwise, you won't have a `.cc.json` to combine with git metrics.
 
 ```bash
-# Generate <project>.git.log
-cd junit4; git log --numstat --raw --topo-order > ../junit4.git.log; cd ..
-# Parse git.log
-ccsh gitlogparser junit4.git.log -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
+# Generate and parse a <project>.git.log
+cd junit4; ccsh gitlogparser repo-scan -o junit4.git.cc.json -nc
 ```
 
 We can now merge the files.
@@ -100,9 +98,9 @@ ccsh merge junit4.source.cc.json junit4.git.cc.json -o junit4.cc.json
 
 With the merge done you can now open it in the visualization again.
 
-Depending on what importer you use there might be a structural problem though. `ccsh merge` actually creates a union of all files you give it and only merges the metrics for which the path matches. That's great if one file only contains metrics for `.java` files and the other file has metrics for all files but it can create problems.
+Depending on what importer you use there might be a structural problem though. `ccsh merge` actually creates a union of all files you give it and only merges the metrics for which the path matches. That's great if one file only contains metrics for `.java` files and the other file has metrics for all files, but it can create problems.
 
-For example the path for a file Foo.java should be the same in both files. If the structures don't match, the metrics you got from different sources won't be merged into the same entity but stay separate. In the visualization you'll see one one building _root/Foo.java_ that has all source metrics and one _root/src/main/java/Foo.java_ that has all the git metrics. That's not what you want.
+For example the path for a file Foo.java should be the same in both files. If the structures don't match, the metrics you got from different sources won't be merged into the same entity but stay separate. In the visualization you'll see one building _root/Foo.java_ that has all source metrics and one _root/src/main/java/Foo.java_ that has all the git metrics. That's not what you want.
 
 A simple comparison you can do is to check that the `<project>.source.cc.json` has a folder src directly under root (root/src) and the git.cc.json has the same folder also under root.
 
@@ -113,6 +111,35 @@ ccsh modify junit4.source.cc.json -p 1
 ccsh modify junit4.git.cc.json -p 1
 # Use (--move-from and --move-to) or --set-root to correct wrong structure
 ```
+
+# 10 min Docker Quickstart
+
+To get started quickly, you can also use CodeCharta in a Docker container. For this you need to have [Docker](https://docs.docker.com/get-docker/) and [Docker compose](https://docs.docker.com/compose/install/) installed.
+
+```bash
+# Assuming you have the docker-compose.yml on hand type
+docker compose pull; docker compose up --detach
+```
+
+Now that all containers are running, we can connect to the analysis container.
+
+```bash
+# You can see the name of all running containers with 'docker ps'
+docker exec -it codecharta-analysis-1 bash
+```
+
+You are now connected into the container, and are able to run ccsh by simply typing `ccsh`. You can try any of the other quickstart guides to create a .cc.json file.
+Once you have a .cc.json file, we can copy it to our hard drive.
+
+```bash
+# You can see the name of all running containers with 'docker ps'
+docker cp codecharta-analysis-1:path/to/ccjson/ docker-sample.cc.json
+```
+
+> You can also [check the docs of the docker cp command to learn more.](https://docs.docker.com/engine/reference/commandline/cp/)
+> To move files between containers (for example to and from sonar) you can use the shared volume, which you can access under /mnt/data.
+
+Now you're almost done! Simply navigate to localhost:9001 in your browser to open the visualization and upload your file.
 
 # CodeCharta in a Tweet Quickstart
 
