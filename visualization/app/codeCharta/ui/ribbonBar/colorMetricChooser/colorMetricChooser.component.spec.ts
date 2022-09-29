@@ -1,13 +1,11 @@
-import {TestBed} from "@angular/core/testing"
-import {render, screen} from "@testing-library/angular"
+import { TestBed } from "@angular/core/testing"
+import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import {setColorMetric} from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import {Store} from "../../../state/store/store"
-import {ColorMetricChooserComponent} from "./colorMetricChooser.component"
-import {ColorMetricChooserModule} from "./heightMetricChooser.module"
-import {
-	toggleHeightAndColorMetricLink
-} from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.actions"
+import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
+import { Store } from "../../../state/store/store"
+import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
+import { ColorMetricChooserModule } from "./heightMetricChooser.module"
+import { toggleHeightAndColorMetricLink } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.actions"
 
 jest.mock("../../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
 	nodeMetricDataSelector: () => [

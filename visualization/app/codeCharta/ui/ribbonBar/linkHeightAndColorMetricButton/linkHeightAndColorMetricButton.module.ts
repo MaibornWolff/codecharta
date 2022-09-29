@@ -1,6 +1,6 @@
-import {CommonModule} from "@angular/common"
-import {NgModule} from "@angular/core"
-import {LinkHeightAndColorMetricButtonComponent} from "./linkHeightAndColorMetricButton.component"
+import { CommonModule } from "@angular/common"
+import { NgModule } from "@angular/core"
+import { LinkHeightAndColorMetricButtonComponent } from "./linkHeightAndColorMetricButton.component"
 
 @NgModule({
 	imports: [CommonModule],

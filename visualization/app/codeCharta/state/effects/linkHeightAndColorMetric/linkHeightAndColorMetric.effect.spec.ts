@@ -1,15 +1,13 @@
-import {TestBed} from "@angular/core/testing"
-import {EffectsModule} from "../../angular-redux/effects/effects.module"
-import {ApplicationInitStatus} from "@angular/core"
-import {Subject} from "rxjs"
-import {Store} from "../../angular-redux/store"
-import {Store as PlainStoreUsedByEffects} from "../../store/store"
-import {heightMetricSelector} from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
-import {
-	isHeightAndColorMetricLinkedSelector
-} from "../../store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.selector"
-import {LinkHeightAndColorMetricEffect} from "./linkHeightAndColorMetric.effect"
-import {setColorMetric} from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
+import { TestBed } from "@angular/core/testing"
+import { EffectsModule } from "../../angular-redux/effects/effects.module"
+import { ApplicationInitStatus } from "@angular/core"
+import { Subject } from "rxjs"
+import { Store } from "../../angular-redux/store"
+import { Store as PlainStoreUsedByEffects } from "../../store/store"
+import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
+import { isHeightAndColorMetricLinkedSelector } from "../../store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.selector"
+import { LinkHeightAndColorMetricEffect } from "./linkHeightAndColorMetric.effect"
+import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 
 describe("linkHeightAndColorMetricEffect", () => {
 	let mockedHeightMetricSelector$ = new Subject()
