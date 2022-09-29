@@ -147,8 +147,12 @@ cc-ribbon-bar {
 		min-width: 120px;
 	}
 
-	mat-card.scenario-card,
 	mat-card.link-metrics-card {
+		max-width: 50px;
+		min-width: 50xpx;
+	}
+
+	mat-card.scenario-card {
 		max-width: 100px;
 		min-width: 100px;
 	}
