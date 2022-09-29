@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Chore 👨‍💻 👩‍💻
+
+-   Update Docker Publish Action in Release Pipeline
+
 ## [1.108.1] - 2022-09-29
+
+## Fixed 🐞
+
+-   Fix Pipeline [#3059](https://github.com/MaibornWolff/codecharta/pull/3059)
 
 ## [1.108.0] - 2022-09-28
 
