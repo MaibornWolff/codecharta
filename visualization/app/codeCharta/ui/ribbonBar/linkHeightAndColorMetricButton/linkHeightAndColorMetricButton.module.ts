@@ -1,10 +1,9 @@
-import { CommonModule } from "@angular/common"
-import { NgModule } from "@angular/core"
-import { MaterialModule } from "../../../../material/material.module"
-import { LinkHeightAndColorMetricButtonComponent } from "./linkHeightAndColorMetricButton.component"
+import {CommonModule} from "@angular/common"
+import {NgModule} from "@angular/core"
+import {LinkHeightAndColorMetricButtonComponent} from "./linkHeightAndColorMetricButton.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
+	imports: [CommonModule],
 	declarations: [LinkHeightAndColorMetricButtonComponent],
 	exports: [LinkHeightAndColorMetricButtonComponent]
 })
