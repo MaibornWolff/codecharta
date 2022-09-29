@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Add a new button that links the height metric to the color metric so that the colour metric is automatically set to the selected height metric [#3058](https://github.com/MaibornWolff/codecharta/pull/3058) </br>
- ![image](https://user-images.githubusercontent.com/72517530/192830420-d3440302-ae01-4df2-8546-1a372e571518.png)
+-   Add a new button that links the height metric to the color metric so that the colour metric is automatically set to the selected height metric [#3058](https://github.com/MaibornWolff/codecharta/pull/3058) </br>
+    ![image](https://user-images.githubusercontent.com/72517530/192830420-d3440302-ae01-4df2-8546-1a372e571518.png)
+
+## [1.108.1] - 2022-09-29
 
 ## [1.108.0] - 2022-09-28
 
