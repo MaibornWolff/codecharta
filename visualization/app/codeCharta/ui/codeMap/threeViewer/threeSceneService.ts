@@ -366,7 +366,6 @@ export class ThreeSceneService {
 	clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
-			// todo remove
 			this.store.dispatch(setSelectedBuildingId(null))
 			this.eventEmitter.emit("onBuildingDeselected")
 		}
