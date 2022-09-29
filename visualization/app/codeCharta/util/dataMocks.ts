@@ -1312,6 +1312,106 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_NESTED_FOLDER_ONE_LEAF: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "big leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/big leaf.jpg",
+					attributes: { rloc: 10, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_NESTED_FOLDER_TWO_LEAVES: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "big leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/big leaf.jpg",
+					attributes: { rloc: 100, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "small_leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/small_leaf.jpg",
+					attributes: { rloc: 10, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_NESTED_FOLDER_LEAVES_DIFFERENT_NEST_LEVELS: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "inside_leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/inside_leaf.jpg",
+					attributes: { rloc: 100, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		},
+		{
+			name: "outside_leaf.jpg",
+			type: NodeType.FILE,
+			path: "/root/big leaf.jpg",
+			attributes: { rloc: 10, functions: 10, mcc: 1 },
+			isExcluded: false,
+			isFlattened: false
+		}
+	]
+}
+
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		...DEFAULT_FILE_META,

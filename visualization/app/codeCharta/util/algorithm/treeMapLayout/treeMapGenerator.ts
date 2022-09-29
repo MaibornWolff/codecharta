@@ -158,7 +158,7 @@ export function calculateBuildingAreaWithProportionalPadding(
 	return (Math.sqrt(buildingArea) + padding) ** 2
 }
 
-function getBuildingAreasWithProportionalPadding(
+export function getBuildingAreasWithProportionalPadding(
 	childrenAreaValues: number[],
 	smallestDelta: number,
 	minimumBuildingSize: number,
