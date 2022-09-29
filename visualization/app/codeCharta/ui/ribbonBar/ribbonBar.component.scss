@@ -8,6 +8,14 @@ cc-ribbon-bar {
 	$heightCollapsed: 38;
 	$border: 1px solid #cdcdcd;
 
+	.ribbon-bar {
+		display: flex;
+		flex-wrap: nowrap;
+		flex-direction: row;
+		width: 100%;
+		box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+	}
+
 	.cc-ribbon-bar-menu-button {
 		height: 22px;
 		line-height: 22px;
@@ -50,6 +58,10 @@ cc-ribbon-bar {
 			border-right: $border;
 			vertical-align: top;
 			overflow: hidden;
+
+			&#height-metric-section {
+				border-right: none;
+			}
 
 			.section-header {
 				height: 31px;
@@ -102,6 +114,10 @@ cc-ribbon-bar {
 			}
 		}
 
+		.section-height-metric-card {
+			border-right: none;
+		}
+
 		.delta-color-section {
 			line-height: 45px;
 			vertical-align: baseline;
@@ -134,6 +150,10 @@ cc-ribbon-bar {
 		}
 	}
 
+	.mat-card:not([class*="mat-elevation-z"]) {
+		box-shadow: none;
+	}
+
 	mat-card,
 	.section .section-header,
 	.section .section-body,
@@ -148,8 +168,10 @@ cc-ribbon-bar {
 	}
 
 	mat-card.link-metrics-card {
+		display: flex;
+		justify-content: center;
 		max-width: 50px;
-		min-width: 50xpx;
+		min-width: 50px;
 	}
 
 	mat-card.scenario-card {

@@ -3,15 +3,10 @@ cc-link-height-and-color-metric-button {
 	justify-content: center;
 
 	.link-metrics-button {
-		display: flex;
-		flex-wrap: nowrap;
-		align-items: center;
-		justify-content: space-around;
-		align-content: space-between;
-		width: 100%;
-		height: 22px;
-		padding: 2px 0 0 0;
+		width: 50px;
+		padding: 0;
 		margin: 0;
+		background-color: transparent;
 
 		.fa {
 			color: rgb(68, 68, 68);
