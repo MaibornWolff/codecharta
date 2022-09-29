@@ -1,15 +1,12 @@
 import "./legendPanel.component.scss"
 import { Component, Inject } from "@angular/core"
-import { Observable } from "rxjs"
-
 import { Store } from "../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
-import { isAttributeSideBarVisibleSelector } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector"
-import { LegendMetric } from "./selectors/legendMetric"
 import { legendColorMetricSelector } from "./selectors/legendColorMetric.selector"
 import { legendHeightMetricSelector } from "./selectors/legendHeightMetric.selector"
 import { legendAreaMetricSelector } from "./selectors/legendAreaMetric.selector"
 import { legendEdgeMetricSelector } from "./selectors/legendEdgeMetric.selector"
+import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 
 @Component({
 	selector: "cc-legend-panel",
@@ -17,21 +14,16 @@ import { legendEdgeMetricSelector } from "./selectors/legendEdgeMetric.selector"
 })
 export class LegendPanelComponent {
 	isLegendVisible = false
-	isDeltaState$: Observable<boolean>
-	isAttributeSideBarVisible$: Observable<boolean>
-	heightMetric$: Observable<LegendMetric>
-	areaMetric$: Observable<LegendMetric>
-	colorMetric$: Observable<LegendMetric>
-	edgeMetric$: Observable<LegendMetric | undefined>
+	isDeltaState$ = this.store.select(isDeltaStateSelector)
+	heightMetric$ = this.store.select(legendHeightMetricSelector)
+	areaMetric$ = this.store.select(legendAreaMetricSelector)
+	colorMetric$ = this.store.select(legendColorMetricSelector)
+	edgeMetric$ = this.store.select(legendEdgeMetricSelector)
 
-	constructor(@Inject(Store) store: Store) {
-		this.isAttributeSideBarVisible$ = store.select(isAttributeSideBarVisibleSelector)
-		this.isDeltaState$ = store.select(isDeltaStateSelector)
-		this.heightMetric$ = store.select(legendHeightMetricSelector)
-		this.areaMetric$ = store.select(legendAreaMetricSelector)
-		this.colorMetric$ = store.select(legendColorMetricSelector)
-		this.edgeMetric$ = store.select(legendEdgeMetricSelector)
-	}
+	constructor(
+		@Inject(Store) public store: Store,
+		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService
+	) {}
 
 	toggleIsLegendVisible() {
 		this.isLegendVisible = !this.isLegendVisible
