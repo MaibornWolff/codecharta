@@ -27,4 +27,4 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh; 
     apt-get install nodejs make gcc build-essential -y; \
     npm install -g --unsafe-perm metric-gardener
 
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
