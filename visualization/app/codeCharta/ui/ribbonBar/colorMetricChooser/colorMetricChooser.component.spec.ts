@@ -25,7 +25,7 @@ describe("colorMetricChooserComponent", () => {
 		Store.dispatch(setColorMetric("aMetric"))
 		await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 
-		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBeFalsy()
+		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("false")
 
 		await userEvent.click(await screen.findByText("aMetric (1)"))
 		expect(screen.getByText("Color Metric (highest value)")).not.toBe(null)
@@ -38,11 +38,11 @@ describe("colorMetricChooserComponent", () => {
 		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
 	})
 
-	it("should disable metric chooser when height and color metric is linked", async () => {
+	it("should disable metric chooser when height and color metric are linked", async () => {
 		Store.dispatch(toggleHeightAndColorMetricLink())
 
 		await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 
-		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBeTruthy()
+		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("true")
 	})
 })
