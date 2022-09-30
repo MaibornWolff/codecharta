@@ -64,10 +64,18 @@ cc-ribbon-bar {
 			}
 
 			.section-header {
+				margin: 0 5px 0 5px;
 				height: 31px;
 				color: #444444;
 				overflow: hidden;
 				padding: 5px;
+
+				&#area-metric-header-section,
+				&#height-metric-header-section,
+				&#color-metric-header-section,
+				&#edge-metric-header-section {
+					border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+				}
 			}
 
 			.section-title {
