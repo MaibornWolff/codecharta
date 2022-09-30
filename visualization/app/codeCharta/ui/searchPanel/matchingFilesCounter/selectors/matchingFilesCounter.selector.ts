@@ -3,8 +3,8 @@ import { createSelector } from "../../../../state/angular-redux/store"
 import { searchedNodesSelector } from "../../../../state/selectors/searchedNodes/searchedNodes.selector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
 import { CcState } from "../../../../state/store/store"
-import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
-import { codeMapNodesSelector } from "../../../../state/selectors/accumulatedData/codeMapNodesSelector"
+import {isLeaf, isPathBlacklisted} from "../../../../util/codeMapHelper"
+import {codeMapNodesSelector} from "../../../../state/selectors/accumulatedData/codeMapNodes.selector"
 
 const getBlacklistedFileCount = (blacklistType: BlacklistType, nodes: CodeMapNode[], blacklist: BlacklistItem[]) =>
 	nodes.reduce((count, node) => (isPathBlacklisted(node.path, blacklist, blacklistType) ? count + 1 : count), 0)

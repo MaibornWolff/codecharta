@@ -1,9 +1,11 @@
-import { RecursivePartial, Settings } from "../../codeCharta.model"
-import { defaultState } from "../../state/store/state.actions"
-import { convertToVectors } from "../../util/settingsHelper"
-import { codeMapNodesSelector } from "../../state/selectors/accumulatedData/codeMapNodesSelector"
-import { CcState } from "../../state/store/store"
-import { getNumberOfTopLabels } from "../../state/effects/updateVisibleTopLabels/getNumberOfTopLabels"
+import {RecursivePartial, Settings} from "../../codeCharta.model"
+import {defaultState} from "../../state/store/state.actions"
+import {convertToVectors} from "../../util/settingsHelper"
+import {codeMapNodesSelector} from "../../state/selectors/accumulatedData/codeMapNodes.selector"
+import {CcState} from "../../state/store/store"
+import {getNumberOfTopLabels} from "../../state/effects/updateVisibleTopLabels/getNumberOfTopLabels"
+
+const APP_SETTINGS_AMOUNT_OF_TOP_LABELS = "appSettings.amountOfTopLabels"
 
 export const getPartialDefaultState = (settingKeys: string[], state: CcState) => {
 	const updatedSettings: RecursivePartial<Settings> = {}
@@ -34,7 +36,7 @@ export const getPartialDefaultState = (settingKeys: string[], state: CcState) =>
 		convertToVectors(updatedSettings)
 	}
 
-	if (settingKeys.includes("appSettings.amountOfTopLabels")) {
+	if (settingKeys.includes(APP_SETTINGS_AMOUNT_OF_TOP_LABELS)) {
 		updatedSettings.appSettings.amountOfTopLabels = getNumberOfTopLabels(codeMapNodesSelector(state))
 	}
 
