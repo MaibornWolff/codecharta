@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.108.1] - 2022-09-29
+
+## [1.108.0] - 2022-09-28
+
+### Added 🚀
+
+-   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
+
 ### Removed 🗑
 
 -   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
