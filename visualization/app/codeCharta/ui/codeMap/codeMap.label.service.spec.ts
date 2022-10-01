@@ -1,5 +1,6 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
+import { TestBed } from "@angular/core/testing"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { Node } from "../../codeCharta.model"
 import {
@@ -50,8 +51,8 @@ describe("CodeMapLabelService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		storeService = getService<StoreService>("storeService")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+		threeCameraService = TestBed.inject(ThreeCameraService)
+		threeSceneService = TestBed.inject(ThreeSceneService)
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 	}
 

@@ -69,9 +69,6 @@ describe("codeMapMouseEventService", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
-		TestBed.configureTestingModule({
-			providers: [ThreeCameraService, ThreeRendererService, ThreeSceneService]
-		})
 		threeCameraService = TestBed.inject(ThreeCameraService)
 		threeRendererService = TestBed.inject(ThreeRendererService)
 		threeSceneService = TestBed.inject(ThreeSceneService)

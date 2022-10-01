@@ -1,4 +1,5 @@
 import "./codeCharta.module"
+import { TestBed } from "@angular/core/testing"
 import { IHttpService, ILocationService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeChartaService } from "./codeCharta.service"
@@ -38,10 +39,9 @@ describe("codeChartaController", () => {
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
 		storeService = getService<StoreService>("storeService")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
+		threeCameraService = TestBed.inject(ThreeCameraService)
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
-		injectorService = getService<InjectorService>("injectorService")
 	}
 
 	function rebuildController() {

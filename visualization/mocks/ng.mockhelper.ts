@@ -23,7 +23,7 @@ export function instantiateModule(id: string) {
 		$provide.value("threeCameraService", {})
 	})
 	angular.mock.module(($provide: ng.auto.IProvideService) => {
-		$provide.value("threeSceneService", {})
+		$provide.value("threeSceneService", { subscribe: jest.fn() })
 	})
 }
 

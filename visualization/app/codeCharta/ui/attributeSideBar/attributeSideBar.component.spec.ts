@@ -6,17 +6,12 @@ import { TEST_NODE_FOLDER, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 import { AttributeSideBarComponent } from "./attributeSideBar.component"
 import { AttributeSideBarModule } from "./attributeSideBar.module"
-import { isAttributeSideBarVisibleSelector } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector"
+import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 
 jest.mock("../../state/selectors/selectedNode.selector", () => ({
 	selectedNodeSelector: jest.fn()
 }))
 const mockedSelectedNodeSelector = selectedNodeSelector as jest.Mock
-
-jest.mock("../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector", () => ({
-	isAttributeSideBarVisibleSelector: jest.fn(() => true)
-}))
-const mockedIsAttributeSideBarVisibleSelector = isAttributeSideBarVisibleSelector as jest.Mock
 
 jest.mock("../../state/selectors/primaryMetrics/primaryMetricNames.selector", () => ({
 	primaryMetricNamesSelector: jest.fn(() => ({
@@ -30,7 +25,8 @@ jest.mock("../../state/selectors/primaryMetrics/primaryMetricNames.selector", ()
 describe("AttributeSideBarComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [AttributeSideBarModule]
+			imports: [AttributeSideBarModule],
+			providers: [{ provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } }]
 		})
 	})
 
@@ -43,8 +39,10 @@ describe("AttributeSideBarComponent", () => {
 
 	it("should hide side bar if side bar is closed", async () => {
 		mockedSelectedNodeSelector.mockImplementation(() => klona(TEST_NODE_LEAF))
-		mockedIsAttributeSideBarVisibleSelector.mockImplementationOnce(() => false)
-		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
+		const { container } = await render(AttributeSideBarComponent, {
+			excludeComponentDeclaration: true,
+			componentProviders: [{ provide: IsAttributeSideBarVisibleService, useValue: { isOpen: false } }]
+		})
 
 		expect(container.querySelector(".side-bar-container.expanded")).toBe(null)
 	})
