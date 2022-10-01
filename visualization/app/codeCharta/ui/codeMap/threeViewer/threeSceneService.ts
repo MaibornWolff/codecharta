@@ -242,7 +242,7 @@ export class ThreeSceneService {
 	resetLabel() {
 		if (this.highlightedLabel !== null) {
 			this.highlightedLabel.position.sub(this.normedTransformVector)
-			this.highlightedLabel.material.opacity = defaultMapColors.labelColorAndAlpha
+			this.highlightedLabel.material.opacity = defaultMapColors.labelColorAndAlpha.alpha
 
 			if (this.highlightedLine) {
 				this.toggleLineAnimation(this.highlightedLabel)
