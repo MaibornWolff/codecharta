@@ -2,7 +2,6 @@ import { UrlExtractor } from "./util/urlExtractor"
 import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
-import { DialogService } from "./ui/dialog/dialog.service"
 import { NameDataPair } from "./codeCharta.model"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
@@ -15,6 +14,8 @@ import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { GlobalSettingsHelper } from "./util/globalSettingsHelper"
+import { MatDialog } from "@angular/material/dialog"
+import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.component"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -29,7 +30,7 @@ export class CodeChartaController {
 		private $location: ILocationService,
 		private $http: IHttpService,
 		private storeService: StoreService,
-		private dialogService: DialogService,
+		private dialog: MatDialog,
 		private codeChartaService: CodeChartaService,
 		// @ts-ignore
 		private injectorService: InjectorService // We have to inject it somewhere
@@ -60,7 +61,9 @@ export class CodeChartaController {
 			} else if (error.statusText && error.status) {
 				title += ` (${error.status}: ${error.statusText})`
 			}
-			this.dialogService.showErrorDialog(message, title)
+			this.dialog.open(ErrorDialogComponent, {
+				data: { title, message }
+			})
 		}
 		this.tryLoadingFiles([
 			{ fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile },
