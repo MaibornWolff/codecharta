@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
+
 ## [1.108.1] - 2022-09-29
 
 ## [1.108.0] - 2022-09-28
@@ -18,10 +22,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed 🗑
 
 -   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
-
-### Chore 👨‍💻 👩‍💻
-
--   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
 
 ## [1.107.0] - 2022-09-27
 
