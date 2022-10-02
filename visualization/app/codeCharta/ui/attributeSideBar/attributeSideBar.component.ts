@@ -16,7 +16,7 @@ export class AttributeSideBarComponent {
 	fileName$ = this.store.select(accumulatedDataSelector).pipe(map(accumulatedData => accumulatedData.unifiedFileMeta?.fileName ?? ""))
 
 	constructor(
-		@Inject(Store) public store: Store,
-		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService
+		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
+		@Inject(Store) private store: Store
 	) {}
 }

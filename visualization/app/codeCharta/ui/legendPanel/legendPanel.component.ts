@@ -21,8 +21,8 @@ export class LegendPanelComponent {
 	edgeMetric$ = this.store.select(legendEdgeMetricSelector)
 
 	constructor(
-		@Inject(Store) public store: Store,
-		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService
+		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
+		@Inject(Store) private store: Store
 	) {}
 
 	toggleIsLegendVisible() {
