@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
--   remove selectedBuildingId from store? dedupe isAttributeSideBarVisible.service, threeScene.service, threeCamera.service, threeStats.service
+-   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
 
 ## [1.107.0] - 2022-09-27
 
