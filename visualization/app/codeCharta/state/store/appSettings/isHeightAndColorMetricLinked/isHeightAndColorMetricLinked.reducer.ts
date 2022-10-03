@@ -5,10 +5,8 @@ import {
 } from "./isHeightAndColorMetricLinked.actions"
 
 export function isHeightAndColorMetricLinked(state = defaultIsHeightAndColorMetricLinked, action: IsHeightAndColorMetricLinkedAction) {
-	switch (action.type) {
-		case IsHeightAndColorMetricLinkedActions.TOGGLE_IS_HEIGHT_AND_COLOR_METRIC_LINKED:
-			return !state
-		default:
-			return state
+	if (action.type === IsHeightAndColorMetricLinkedActions.TOGGLE_IS_HEIGHT_AND_COLOR_METRIC_LINKED) {
+		return !state
 	}
+	return state
 }
