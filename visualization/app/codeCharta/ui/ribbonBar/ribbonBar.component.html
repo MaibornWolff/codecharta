@@ -1,115 +1,110 @@
-<div class="ribbon-bar">
-	<cc-search-panel></cc-search-panel>
+<cc-search-panel></cc-search-panel>
 
-	<mat-card class="scenario-card" id="scenario-card">
-		<div class="section">
-			<div class="section-header">
-				<cc-show-scenarios-button></cc-show-scenarios-button>
-			</div>
-			<span class="section-title no-hover">Metric Templates</span>
+<mat-card class="scenario-card" id="scenario-card">
+	<div class="section">
+		<div class="section-header">
+			<cc-show-scenarios-button></cc-show-scenarios-button>
 		</div>
-	</mat-card>
+		<span class="section-title no-hover">Metric Templates</span>
+	</div>
+</mat-card>
 
-	<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="custom-configs-card" class="custom-configs-card">
-		<div class="section">
-			<div class="section-header">
-				<cc-custom-configs></cc-custom-configs>
-			</div>
-			<span class="section-title no-hover">Custom Views</span>
+<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="custom-configs-card" class="custom-configs-card">
+	<div class="section">
+		<div class="section-header">
+			<cc-custom-configs></cc-custom-configs>
 		</div>
-	</mat-card>
-	<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="ai-card" class="ai-card">
-		<div class="section">
-			<div class="section-header">
-				<cc-artificial-intelligence></cc-artificial-intelligence>
-			</div>
-			<span class="section-title no-hover">Suspicious Metrics</span>
+		<span class="section-title no-hover">Custom Views</span>
+	</div>
+</mat-card>
+<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="ai-card" class="ai-card">
+	<div class="section">
+		<div class="section-header">
+			<cc-artificial-intelligence></cc-artificial-intelligence>
 		</div>
-	</mat-card>
+		<span class="section-title no-hover">Suspicious Metrics</span>
+	</div>
+</mat-card>
 
-	<mat-card id="area-metric-card" class="area-metric-card metric-card" [class.expanded]="panelSelection === 'AREA_PANEL_OPEN'">
-		<div class="section">
-			<div class="section-header" id="area-metric-header-section">
-				<cc-area-metric-chooser></cc-area-metric-chooser>
-			</div>
-			<span class="section-title" (click)="updatePanelSelection('AREA_PANEL_OPEN')" title="Show area metric settings">
-				Area Metric Options <i class="fa fa-angle-down"></i>
-			</span>
+<mat-card id="area-metric-card" class="area-metric-card metric-card" [class.expanded]="panelSelection === 'AREA_PANEL_OPEN'">
+	<div class="section">
+		<div class="section-header" id="area-metric-header-section">
+			<cc-area-metric-chooser></cc-area-metric-chooser>
 		</div>
-		<cc-area-settings-panel
+		<span class="section-title" (click)="updatePanelSelection('AREA_PANEL_OPEN')" title="Show area metric settings">
+			Area Metric Options <i class="fa fa-angle-down"></i>
+		</span>
+	</div>
+	<cc-area-settings-panel class="cc-metric-settings-panel" [class.hidden]="panelSelection !== 'AREA_PANEL_OPEN'"></cc-area-settings-panel>
+</mat-card>
+
+<mat-card id="height-metric-card" class="height-metric-card metric-card" [class.expanded]="panelSelection === 'HEIGHT_PANEL_OPEN'">
+	<div class="section" id="height-metric-section">
+		<div class="section-header" id="height-metric-header-section">
+			<cc-height-metric-chooser></cc-height-metric-chooser>
+		</div>
+		<span class="section-title" (click)="updatePanelSelection('HEIGHT_PANEL_OPEN')" title="Show height metric settings">
+			Height Metric Options <i class="fa fa-angle-down"></i>
+		</span>
+	</div>
+	<cc-height-settings-panel
+		class="cc-metric-settings-panel"
+		[class.hidden]="panelSelection !== 'HEIGHT_PANEL_OPEN'"
+	></cc-height-settings-panel>
+</mat-card>
+
+<mat-card class="link-metrics-card">
+	<cc-link-height-and-color-metric-button></cc-link-height-and-color-metric-button>
+</mat-card>
+
+<mat-card
+	*ngIf="!(isDeltaState$ | async)"
+	id="color-metric-card"
+	class="color-metric-card metric-card"
+	[class.expanded]="panelSelection === 'COLOR_PANEL_OPEN'"
+>
+	<div class="section">
+		<div class="section-header" id="color-metric-header-section">
+			<cc-color-metric-chooser></cc-color-metric-chooser>
+		</div>
+		<span class="section-title" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color metric settings">
+			Color Metric Options <i class="fa fa-angle-down"></i>
+		</span>
+	</div>
+	<cc-color-settings-panel
+		class="cc-metric-settings-panel"
+		[class.hidden]="panelSelection !== 'COLOR_PANEL_OPEN'"
+	></cc-color-settings-panel>
+</mat-card>
+
+<mat-card
+	*ngIf="hasEdgeMetric$ | async"
+	id="edge-metric-card"
+	class="edge-metric-card metric-card"
+	[class.expanded]="panelSelection === 'EDGE_PANEL_OPEN'"
+>
+	<div class="section">
+		<div class="section-header" id="edge-metric-header-section">
+			<cc-edge-metric-chooser></cc-edge-metric-chooser>
+		</div>
+		<span class="section-title" (click)="updatePanelSelection('EDGE_PANEL_OPEN')" title="Show edge metric settings">
+			Edge Metric Options <i class="fa fa-angle-down"></i>
+		</span>
+		<cc-edge-settings-panel
 			class="cc-metric-settings-panel"
-			[class.hidden]="panelSelection !== 'AREA_PANEL_OPEN'"
-		></cc-area-settings-panel>
-	</mat-card>
+			[class.hidden]="panelSelection !== 'EDGE_PANEL_OPEN'"
+		></cc-edge-settings-panel>
+	</div>
+</mat-card>
 
-	<mat-card id="height-metric-card" class="height-metric-card metric-card" [class.expanded]="panelSelection === 'HEIGHT_PANEL_OPEN'">
-		<div class="section" id="height-metric-section">
-			<div class="section-header" id="height-metric-header-section">
-				<cc-height-metric-chooser></cc-height-metric-chooser>
-			</div>
-			<span class="section-title" (click)="updatePanelSelection('HEIGHT_PANEL_OPEN')" title="Show height metric settings">
-				Height Metric Options <i class="fa fa-angle-down"></i>
-			</span>
-		</div>
-		<cc-height-settings-panel
-			class="cc-metric-settings-panel"
-			[class.hidden]="panelSelection !== 'HEIGHT_PANEL_OPEN'"
-		></cc-height-settings-panel>
-	</mat-card>
-
-	<mat-card class="link-metrics-card">
-		<cc-link-height-and-color-metric-button></cc-link-height-and-color-metric-button>
-	</mat-card>
-
-	<mat-card
-		*ngIf="!(isDeltaState$ | async)"
-		id="color-metric-card"
-		class="color-metric-card metric-card"
-		[class.expanded]="panelSelection === 'COLOR_PANEL_OPEN'"
-	>
-		<div class="section">
-			<div class="section-header" id="color-metric-header-section">
-				<cc-color-metric-chooser></cc-color-metric-chooser>
-			</div>
-			<span class="section-title" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color metric settings">
-				Color Metric Options <i class="fa fa-angle-down"></i>
-			</span>
-		</div>
-		<cc-color-settings-panel
-			class="cc-metric-settings-panel"
-			[class.hidden]="panelSelection !== 'COLOR_PANEL_OPEN'"
-		></cc-color-settings-panel>
-	</mat-card>
-
-	<mat-card
-		*ngIf="hasEdgeMetric$ | async"
-		id="edge-metric-card"
-		class="edge-metric-card metric-card"
-		[class.expanded]="panelSelection === 'EDGE_PANEL_OPEN'"
-	>
-		<div class="section">
-			<div class="section-header" id="edge-metric-header-section">
-				<cc-edge-metric-chooser></cc-edge-metric-chooser>
-			</div>
-			<span class="section-title" (click)="updatePanelSelection('EDGE_PANEL_OPEN')" title="Show edge metric settings">
-				Edge Metric Options <i class="fa fa-angle-down"></i>
-			</span>
-			<cc-edge-settings-panel
-				class="cc-metric-settings-panel"
-				[class.hidden]="panelSelection !== 'EDGE_PANEL_OPEN'"
-			></cc-edge-settings-panel>
-		</div>
-	</mat-card>
-
-	<mat-card *ngIf="isDeltaState$ | async" id="color-settings-card">
-		<div class="delta-color-section" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color settings">
-			<i class="fa fa-paint-brush color-icon"></i>
-			Color Settings
-			<i class="fa fa-sort-down color-dropdown-icon"></i>
-		</div>
-		<cc-color-settings-panel
-			class="cc-metric-settings-panel"
-			[class.hidden]="panelSelection !== 'COLOR_PANEL_OPEN'"
-		></cc-color-settings-panel>
-	</mat-card>
-</div>
+<mat-card *ngIf="isDeltaState$ | async" id="color-settings-card">
+	<div class="delta-color-section" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color settings">
+		<i class="fa fa-paint-brush color-icon"></i>
+		Color Settings
+		<i class="fa fa-sort-down color-dropdown-icon"></i>
+	</div>
+	<cc-color-settings-panel
+		class="cc-metric-settings-panel"
+		[class.hidden]="panelSelection !== 'COLOR_PANEL_OPEN'"
+	></cc-color-settings-panel>
+</mat-card>
