@@ -3,7 +3,7 @@ import { Store } from "../../angular-redux/store"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { map, withLatestFrom } from "rxjs"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
-import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodesSelector"
+import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
 import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
 

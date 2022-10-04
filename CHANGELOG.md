@@ -7,21 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default
+    value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
+
 ## Chore 👨‍💻 👩‍💻
 
--   Update Docker Publish Action in Release Pipeline
+-   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
 
 ## [1.108.1] - 2022-09-29
 
-## Fixed 🐞
+## Chore 👨‍💻 👩‍💻
 
--   Fix Pipeline [#3059](https://github.com/MaibornWolff/codecharta/pull/3059)
+-   Update formatting in Docker Release Pipeline [#3059](https://github.com/MaibornWolff/codecharta/pull/3059)
 
 ## [1.108.0] - 2022-09-28
 
 ### Added 🚀
 
--   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
+-   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a
+    SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
 
 ### Removed 🗑
 
