@@ -2,8 +2,8 @@ import "./codeMap.component.scss"
 import { Component, Inject, AfterViewInit, ElementRef, OnDestroy } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
-import { ThreeViewerService } from "./threeViewer/threeViewerService"
-import { CodeMapMouseEventServiceToken, ThreeViewerServiceToken } from "../../services/ajs-upgraded-providers"
+import { ThreeViewerService } from "./threeViewer/threeViewer.service"
+import { CodeMapMouseEventServiceToken } from "../../services/ajs-upgraded-providers"
 import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { skip, tap } from "rxjs"
@@ -29,7 +29,7 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
 	constructor(
 		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		@Inject(Store) private store: Store,
-		@Inject(ThreeViewerServiceToken) private threeViewerService: ThreeViewerService,
+		@Inject(ThreeViewerService) private threeViewerService: ThreeViewerService,
 		@Inject(CodeMapMouseEventServiceToken) private codeMapMouseEventService: CodeMapMouseEventService,
 		@Inject(ElementRef) private elementReference: ElementRef
 	) {}
