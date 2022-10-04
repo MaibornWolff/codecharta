@@ -1,6 +1,6 @@
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCamera.service"
-import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeStatsService } from "./threeStats.service"
 

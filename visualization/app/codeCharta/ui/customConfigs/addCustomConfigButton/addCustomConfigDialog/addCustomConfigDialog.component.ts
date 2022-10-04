@@ -7,8 +7,7 @@ import { filesSelector } from "../../../../state/store/files/files.selector"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
 import { State } from "../../../../state/angular-redux/state"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
-import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 
 @Component({
 	template: require("./addCustomConfigDialog.component.html")
@@ -20,7 +19,7 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	constructor(
 		@Inject(State) private state: State,
 		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService
+		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
 	ngOnInit(): void {

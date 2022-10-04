@@ -2,9 +2,8 @@ import { Component, Inject, Input } from "@angular/core"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../customConfigs.component"
 import { Store } from "../../../state/angular-redux/store"
-import { ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 
 @Component({
 	selector: "cc-custom-config-item-group",
@@ -17,7 +16,7 @@ export class CustomConfigItemGroupComponent {
 	constructor(
 		@Inject(Store) private store: Store,
 		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService
+		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
 	applyCustomConfig(configId: string) {

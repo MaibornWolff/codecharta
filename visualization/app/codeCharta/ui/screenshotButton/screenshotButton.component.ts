@@ -5,7 +5,6 @@ import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 
 import { Component, Inject } from "@angular/core"
-import { ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
 import { State } from "../../state/angular-redux/state"
 import { Store } from "../../state/angular-redux/store"
 import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
@@ -22,7 +21,7 @@ export class ScreenshotButtonComponent {
 
 	constructor(
 		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeSceneServiceToken) private threeSceneService: ThreeSceneService,
+		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
 		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService,
 		@Inject(Store) private store: Store,
 		@Inject(State) private state: State

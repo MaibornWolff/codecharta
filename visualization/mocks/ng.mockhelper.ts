@@ -25,6 +25,9 @@ export function instantiateModule(id: string) {
 	angular.mock.module(($provide: ng.auto.IProvideService) => {
 		$provide.value("threeSceneService", { subscribe: jest.fn() })
 	})
+	angular.mock.module(($provide: ng.auto.IProvideService) => {
+		$provide.value("threeOrbitControlsService", { subscribe: jest.fn() })
+	})
 }
 
 export function getService<T>(id: string): T {

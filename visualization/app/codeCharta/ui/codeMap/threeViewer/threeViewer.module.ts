@@ -1,7 +1,7 @@
 import { ThreeViewerService } from "./threeViewerService"
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCamera.service"
-import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeStatsService } from "./threeStats.service"
 import "../../../state/state.module"
 import camelCase from "lodash.camelcase"
@@ -14,10 +14,9 @@ import { ThreeRendererService } from "./threeRenderer.service"
 angular
 	.module("app.codeCharta.ui.codeMap.threeViewer", ["app.codeCharta.state"])
 	.service(camelCase(ThreeViewerService.name), ThreeViewerService)
-	.service(camelCase(ThreeSceneService.name), ThreeSceneService)
-	.service(camelCase(ThreeOrbitControlsService.name), ThreeOrbitControlsService)
 	.factory("threeCameraService", downgradeInjectable(ThreeCameraService))
 	.factory("threeSceneService", downgradeInjectable(ThreeSceneService))
 	.factory("threeStatsService", downgradeInjectable(ThreeStatsService))
 	.factory("idToBuilding", downgradeInjectable(IdToBuildingService))
 	.factory("threeRendererService", downgradeInjectable(ThreeRendererService))
+	.factory("threeOrbitControlsService", downgradeInjectable(ThreeOrbitControlsService))
