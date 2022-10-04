@@ -105,16 +105,5 @@ describe("ThreeOrbitControlsService", () => {
 			expect(threeOrbitControlsService.controls.update).toBeCalled()
 			expect(threeCameraService.camera.updateProjectionMatrix).toBeCalled()
 		})
-
-		it("should set the defaultCameraPerspective to the auto fitted vector", async () => {
-			threeOrbitControlsService.defaultCameraPosition.set(0, 0, 0)
-
-			threeOrbitControlsService.autoFitTo()
-			await wait(0)
-
-			expect(threeOrbitControlsService.defaultCameraPosition.x).toEqual(vector.x)
-			expect(threeOrbitControlsService.defaultCameraPosition.y).toEqual(vector.y)
-			expect(threeOrbitControlsService.defaultCameraPosition.z).toEqual(vector.z)
-		})
 	})
 })
