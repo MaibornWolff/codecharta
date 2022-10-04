@@ -117,8 +117,8 @@ ccsh modify junit4.git.cc.json -p 1
 To get started quickly, you can also use CodeCharta in a Docker container. For this you need to have [Docker](https://docs.docker.com/get-docker/) and [Docker compose](https://docs.docker.com/compose/install/) installed.
 
 ```bash
-# Assuming you have the docker-compose.yml on hand type
-docker compose pull; docker compose up --detach
+# Assuming you have the docker-compose.yml on hand
+docker compose pull && docker compose up --detach
 ```
 
 Now that all containers are running, we can connect to the analysis container.
@@ -137,7 +137,7 @@ docker cp codecharta-analysis-1:path/to/ccjson/ docker-sample.cc.json
 ```
 
 > You can also [check the docs of the docker cp command to learn more.](https://docs.docker.com/engine/reference/commandline/cp/)
-> To move files between containers (for example to and from sonar) you can use the shared volume, which you can access under /mnt/data.
+> To move files between containers (for example to and from sonar) you can use the shared volume, which you can access under /mnt/data in each container.
 
 Now you're almost done! Simply navigate to localhost:9001 in your browser to open the visualization and upload your file.
 
