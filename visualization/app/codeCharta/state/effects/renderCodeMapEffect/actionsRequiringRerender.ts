@@ -23,6 +23,7 @@ import { FocusedNodePathActions } from "../../store/dynamicSettings/focusedNodeP
 import { HeightMetricActions } from "../../store/dynamicSettings/heightMetric/heightMetric.actions"
 import { MarginActions } from "../../store/dynamicSettings/margin/margin.actions"
 import { SearchPatternActions } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
+import { MarkedPackagesActions } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 
 export const actionsRequiringRerender = [
 	ColorLabelsActions,
@@ -49,5 +50,6 @@ export const actionsRequiringRerender = [
 	HeightMetricActions,
 	AreaMetricActions,
 	ColorMetricActions,
-	ShowOnlyBuildingsWithEdgesActions
+	ShowOnlyBuildingsWithEdgesActions,
+	MarkedPackagesActions
 ]
