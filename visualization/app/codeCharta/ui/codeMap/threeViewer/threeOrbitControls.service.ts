@@ -27,7 +27,6 @@ export class ThreeOrbitControlsService {
 	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
 	controls: OrbitControls
-	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
 	private eventEmitter = new EventEmitter<CameraChangeEvents>()
 
 	constructor(
@@ -58,7 +57,6 @@ export class ThreeOrbitControlsService {
 
 			cameraReference.position.set(length, length, boundingSphere.center.z)
 
-			this.defaultCameraPosition = cameraReference.position.clone()
 			this.controls.update()
 
 			this.focusCameraViewToCenter(boundingSphere)
