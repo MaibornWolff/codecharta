@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
 -   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default
     value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
 
