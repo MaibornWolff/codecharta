@@ -14,7 +14,7 @@ import { setState } from "../state/store/state.actions"
 import { setColorRange } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setMargin } from "../state/store/dynamicSettings/margin/margin.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { BehaviorSubject } from "rxjs"
 import { Store } from "../state/angular-redux/store"
 

@@ -18,8 +18,6 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
 	codeChartaServiceProvider,
 	CodeMapMouseEventServiceTokenProvider,
-	threeOrbitControlsServiceProvider,
-	threeSceneServiceProvider,
 	threeViewerServiceTokenProvider
 } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
@@ -42,7 +40,7 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/effects/autoFitCodeMapOnFileSelectionChange/autoFitCodeMapOnFileSelectionChange.effect"
+import { AutoFitCodeMapEffect } from "./codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
 import { CodeChartaModule } from "./codeCharta/codeCharta.module"
 import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
@@ -63,7 +61,7 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 			ResetChosenMetricsEffect,
 			UpdateEdgePreviewsEffect,
 			RenderCodeMapEffect,
-			AutoFitCodeMapOnFileSelectionChangeEffect,
+			AutoFitCodeMapEffect,
 			UpdateVisibleTopLabelsEffect,
 			UpdateAttributeTypesEffect,
 			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect
@@ -87,9 +85,7 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 		CodeChartaModule
 	],
 	providers: [
-		threeSceneServiceProvider,
 		codeChartaServiceProvider,
-		threeOrbitControlsServiceProvider,
 		threeViewerServiceTokenProvider,
 		CodeMapMouseEventServiceTokenProvider,
 		VersionService,
