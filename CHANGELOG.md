@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
+-   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
 
 ## [1.108.1] - 2022-09-29
 
@@ -28,8 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a
-    SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
+-   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
 
 ### Removed 🗑
 
