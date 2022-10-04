@@ -11,13 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix CodeCharta Analysis container exiting when detached [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 
+-   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
+
 ## [1.108.1] - 2022-09-29
 
 ## [1.108.0] - 2022-09-28
 
 ### Added 🚀
 
--   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
+-   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a
+    SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
 
 ### Removed 🗑
 
