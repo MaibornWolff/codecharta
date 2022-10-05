@@ -9,11 +9,11 @@ docker-compose.yml
 
 ## The Container Landscape
 
-| Container-Name | Description                             | How to use                                                |
-| -------------- | --------------------------------------- | --------------------------------------------------------- |
-| sonar          | Hosts an instance of SonarQube          | localhost:9000 in the browser, follow the steps for Linux |
-| visualization  | Runs the visualisation part o CodeChara | localhost:9001, load files from your hard-drive           |
-| analysis       | Contains all tools the ccsh can import  | Connect via terminal `docker exec -it analysis bash`      |
+| Container-Name           | Description                             | How to use                                                |
+| ------------------------ | --------------------------------------- | --------------------------------------------------------- |
+| sonar                    | Hosts an instance of SonarQube          | localhost:9000 in the browser, follow the steps for Linux |
+| codecharta-visualization | Runs the visualisation part o CodeChara | localhost:9001, load files from your hard-drive           |
+| codecharta-analysis      | Contains all tools the ccsh can import  | Connect via terminal `docker exec -it analysis bash`      |
 
 > To see the actual names of the containers on your system, run `docker ps`
 
@@ -33,14 +33,14 @@ Simply follow the steps for a manual, local project under Linux. You can also [c
 {{site.baseurl}}{% link _docs/analyze-with-sonarqube.md %})
 The sonar-scanner is already pre-installed in our analysis container.
 
-### Visualization
+### codecharta-visualization
 
 See also [CodeCharta Visualization]({{site.baseurl}}{% link _docs/visualization.md %})
 
 Open `localhost:9001` in your browser and open any file you want from your hard drive.
 To open files you have created in the analysis container, copy them over using `docker cp`
 
-### Analysis
+### codecharta-analysis
 
 See also [CodeCharta Analysis]({{site.baseurl}}{% link _docs/analysis.md %})
 
@@ -58,7 +58,7 @@ Once you have your .cc.json file ready, you can copy it to your machine.
 This is how the command could look like if I want to copy a file from the container to my current working directory:
 
 ```bash
-docker cp analysis:/root/junit4.cc.json.gz junit4.cc.json.gz
+docker cp codecharta-analysis:/root/junit4.cc.json.gz junit4.cc.json.gz
 ```
 
 To check the name of the container, you can simply type `docker ps`.

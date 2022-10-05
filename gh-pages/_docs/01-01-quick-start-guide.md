@@ -125,14 +125,14 @@ Now that all containers are running, we can connect to the analysis container.
 
 ```bash
 # You can see the name of all running containers with 'docker ps'
-docker exec -it analysis bash
+docker exec -it codecharta-analysis bash
 ```
 
 You are now connected into the container, and are able to run ccsh by simply typing `ccsh`. You can try any of the other quickstart guides to create a .cc.json file.
 Once you have a .cc.json file, we can copy it to our hard drive.
 
 ```bash
-docker cp analysis:path/to/ccjson/ docker-sample.cc.json
+docker cp codecharta-analysis:path/to/ccjson/ docker-sample.cc.json
 ```
 
 > You can also [check the docs of the docker cp command to learn more.](https://docs.docker.com/engine/reference/commandline/cp/)
