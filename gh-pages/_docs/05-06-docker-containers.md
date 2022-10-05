@@ -9,11 +9,11 @@ docker-compose.yml
 
 ## The Container Landscape
 
-| Container-Name           | Description                             | How to use                                                |
-| ------------------------ | --------------------------------------- | --------------------------------------------------------- |
-| sonar                    | Hosts an instance of SonarQube          | localhost:9000 in the browser, follow the steps for Linux |
-| codecharta-visualization | Runs the visualisation part o CodeChara | localhost:9001, load files from your hard-drive           |
-| codecharta-analysis      | Contains all tools the ccsh can import  | Connect via terminal `docker exec -it analysis bash`      |
+| Container-Name           | Description                             | How to use                                                      |
+| ------------------------ | --------------------------------------- | --------------------------------------------------------------- |
+| sonar                    | Hosts an instance of SonarQube          | localhost:9000 in the browser, follow the steps for Linux       |
+| codecharta-visualization | Runs the visualisation part o CodeChara | localhost:9001, load files from your hard-drive                 |
+| codecharta-analysis      | Contains all tools the ccsh can import  | Connect via terminal `docker exec -it codecharta-analysis bash` |
 
 > To see the actual names of the containers on your system, run `docker ps`
 
