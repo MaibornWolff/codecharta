@@ -10,7 +10,7 @@ services:
 
     visualization:
         image: codecharta/codecharta-visualization
-        container_name: visualization
+        container_name: codecharta-visualization
         ports:
             - "9001:80"
         volumes:
@@ -18,7 +18,7 @@ services:
 
     analysis:
         image: codecharta/codecharta-analysis
-        container_name: analysis
+        container_name: codecharta-analysis
         volumes:
             - shared-volume:/mnt/data
 
