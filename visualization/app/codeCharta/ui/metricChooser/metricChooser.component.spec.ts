@@ -1,5 +1,6 @@
 import { Component } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
+import { expect } from "@jest/globals"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { MetricChooserComponent } from "./metricChooser.component"

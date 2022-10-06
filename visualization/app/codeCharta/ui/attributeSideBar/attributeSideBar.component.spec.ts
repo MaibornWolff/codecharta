@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { klona } from "klona"
-
+import { expect } from "@jest/globals"
 import { TEST_NODE_FOLDER, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 import { AttributeSideBarComponent } from "./attributeSideBar.component"
