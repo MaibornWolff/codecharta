@@ -18,15 +18,6 @@ export const codeChartaServiceProvider = {
 	deps: ["$injector"]
 }
 
-export const ThreeCameraServiceToken = new InjectionToken("ThreeCameraService")
-export const threeCameraServiceProvider = {
-	provide: ThreeCameraServiceToken,
-	useFactory: function ThreeCameraServiceFactory(injector: Injector) {
-		return injector.get("threeCameraService")
-	},
-	deps: ["$injector"]
-}
-
 export const ThreeOrbitControlsServiceToken = new InjectionToken("ThreeOrbitControlsService")
 export const threeOrbitControlsServiceProvider = {
 	provide: ThreeOrbitControlsServiceToken,

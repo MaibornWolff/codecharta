@@ -3,7 +3,6 @@ import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.mod
 import { defaultColorLabels } from "./colorLabels/colorLabels.actions"
 import { defaultShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { defaultShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { defaultIsAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
@@ -49,7 +48,6 @@ export const defaultAppSettings: AppSettings = {
 	colorLabels: defaultColorLabels,
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
-	isAttributeSideBarVisible: defaultIsAttributeSideBarVisible,
 	amountOfTopLabels: defaultAmountOfTopLabels,
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
 	edgeHeight: defaultEdgeHeight,

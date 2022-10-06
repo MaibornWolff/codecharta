@@ -1,5 +1,6 @@
 import "../../codeCharta.module"
 import "./codeMap.module"
+import { TestBed } from "@angular/core/testing"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
@@ -39,7 +40,7 @@ describe("CodeMapArrowService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+		threeSceneService = TestBed.inject(ThreeSceneService)
 		storeService = getService<StoreService>("storeService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 	}
@@ -143,7 +144,7 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService["buildPairingEdges"] = jest.fn()
 		})
 		it("should call clearArrows and showEdgesOfBuildings through BuildingSelected", () => {
-			codeMapArrowService.onBuildingSelected(CODE_MAP_BUILDING)
+			codeMapArrowService.onBuildingSelected({ building: CODE_MAP_BUILDING })
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
 			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()

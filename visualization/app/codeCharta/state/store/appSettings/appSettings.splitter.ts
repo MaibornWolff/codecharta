@@ -4,7 +4,6 @@ import { Vector3 } from "three"
 import { splitColorLabelsAction } from "./colorLabels/colorLabels.splitter"
 import { splitShowMetricLabelNodeNameAction } from "./showMetricLabelNodeName/showMetricLabelNodeName.splitter"
 import { splitShowMetricLabelNameValueAction } from "./showMetricLabelNameValue/showMetricLabelNameValue.splitter"
-import { splitIsAttributeSideBarVisibleAction } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.splitter"
 import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
 import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
@@ -34,10 +33,6 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.showMetricLabelNameValue !== undefined) {
 		actions.push(splitShowMetricLabelNameValueAction(payload.showMetricLabelNameValue))
-	}
-
-	if (payload.isAttributeSideBarVisible !== undefined) {
-		actions.push(splitIsAttributeSideBarVisibleAction(payload.isAttributeSideBarVisible))
 	}
 
 	if (payload.sortingOrderAscending !== undefined) {

@@ -1,8 +1,8 @@
 import { ThreeViewerService } from "./threeViewerService"
 import { ThreeSceneService } from "./threeSceneService"
-import { ThreeCameraService } from "./threeCameraService"
+import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
-import { ThreeStatsService } from "./threeStatsService"
+import { ThreeStatsService } from "./threeStats.service"
 import "../../../state/state.module"
 import camelCase from "lodash.camelcase"
 
@@ -16,7 +16,8 @@ angular
 	.service(camelCase(ThreeViewerService.name), ThreeViewerService)
 	.service(camelCase(ThreeSceneService.name), ThreeSceneService)
 	.service(camelCase(ThreeOrbitControlsService.name), ThreeOrbitControlsService)
-	.service(camelCase(ThreeCameraService.name), ThreeCameraService)
-	.service(camelCase(ThreeStatsService.name), ThreeStatsService)
+	.factory("threeCameraService", downgradeInjectable(ThreeCameraService))
+	.factory("threeSceneService", downgradeInjectable(ThreeSceneService))
+	.factory("threeStatsService", downgradeInjectable(ThreeStatsService))
 	.factory("idToBuilding", downgradeInjectable(IdToBuildingService))
 	.factory("threeRendererService", downgradeInjectable(ThreeRendererService))
