@@ -1,4 +1,4 @@
-import { BuildingDeselectedEventSubscriber, BuildingSelectedEventSubscriber, ThreeSceneService } from "./threeViewer/threeSceneService"
+import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
@@ -8,9 +8,7 @@ import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import debounce from "lodash.debounce"
 
-export class CodeMapArrowService
-	implements BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber
-{
+export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private VERTICES_PER_LINE = 5
 	private map: Map<string, Node>
 	private arrows: Object3D[]
@@ -22,8 +20,8 @@ export class CodeMapArrowService
 		this.arrows = new Array<Object3D>()
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
+		this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
+		this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)
 		this.debounceCalculation = debounce(hoveredBuildings => this.resetEdgesOfBuildings(hoveredBuildings), this.HIGHLIGHT_BUILDING_DELAY)
 	}
 
@@ -35,15 +33,15 @@ export class CodeMapArrowService
 		this.scale()
 	}
 
-	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		if (this.isEdgeApplicableForBuilding(selectedBuilding)) {
+	onBuildingSelected = (data: { building: CodeMapBuilding }) => {
+		if (this.isEdgeApplicableForBuilding(data.building)) {
 			this.clearArrows()
 			this.showEdgesOfBuildings()
 		}
 		this.scale()
 	}
 
-	onBuildingDeselected() {
+	onBuildingDeselected = () => {
 		this.clearArrows()
 		this.threeSceneService.clearHighlight()
 		this.addEdgePreview()

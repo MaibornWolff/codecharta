@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { CodeMapBuilding } from "../../ui/codeMap/rendering/codeMapBuilding"
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class IdToBuildingService {
 	private idToBuilding = new Map<number, CodeMapBuilding>()
 

@@ -6,8 +6,8 @@ import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { filesSelector } from "../../../../state/store/files/files.selector"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
 import { State } from "../../../../state/angular-redux/state"
-import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCameraService"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
+import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
+import { ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControlsService"
 
 @Component({
@@ -19,7 +19,7 @@ export class AddCustomConfigDialogComponent implements OnInit {
 
 	constructor(
 		@Inject(State) private state: State,
-		@Inject(ThreeCameraServiceToken) private threeCameraService: ThreeCameraService,
+		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
 		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 

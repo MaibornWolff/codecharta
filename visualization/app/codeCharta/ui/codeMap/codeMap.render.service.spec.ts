@@ -1,5 +1,6 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
+import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
@@ -28,7 +29,7 @@ import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMe
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { klona } from "klona"
 import { IRootScopeService } from "angular"
-import { ThreeStatsService } from "./threeViewer/threeStatsService"
+import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { splitStateActions } from "../../state/store/state.splitter"
@@ -67,11 +68,11 @@ describe("codeMapRenderService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
-		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
-		threeStatsService = getService<ThreeStatsService>("threeStatsService")
 		codeMapMouseEventService = getService<CodeMapMouseEventService>("codeMapMouseEventService")
+		threeStatsService = TestBed.inject(ThreeStatsService)
+		threeSceneService = TestBed.inject(ThreeSceneService)
+		codeMapMouseEventService["threeSceneService"] = threeSceneService
 
 		map = klona(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
@@ -130,7 +131,8 @@ describe("codeMapRenderService", () => {
 			clearArrows: jest.fn(),
 			addEdgeArrows: jest.fn(),
 			addEdgePreview: jest.fn(),
-			arrows: [new Object3D()]
+			arrows: [new Object3D()],
+			threeSceneService
 		})()
 	}
 

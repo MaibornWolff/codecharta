@@ -38,6 +38,8 @@ docs:
             url: /docs/custom-metrics/
           - title: "Analyze with SonarQube"
             url: /docs/analyze-with-sonarqube/
+          - title: "Docker Containers"
+            url: /docs/docker-containers/
 
     - title: Analysing-Tools
       children:

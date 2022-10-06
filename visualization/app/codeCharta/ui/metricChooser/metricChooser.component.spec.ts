@@ -1,5 +1,6 @@
 import { Component } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
+import { expect } from "@jest/globals"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { MetricChooserComponent } from "./metricChooser.component"
@@ -33,9 +34,9 @@ describe("metricChooserComponent", () => {
 
 		await userEvent.click(await screen.findByText("aMetric (1)"))
 		const options = screen.queryAllByRole("option")
-		await expect(options[0].textContent).toMatch("aMetric (1)")
-		await expect(options[1].textContent).toMatch("bMetric (2)")
-		await expect(options[2].textContent).toMatch("cMetric (3)")
+		expect(options[0].textContent).toMatch("aMetric (1)")
+		expect(options[1].textContent).toMatch("bMetric (2)")
+		expect(options[2].textContent).toMatch("cMetric (3)")
 
 		await userEvent.click(options[1])
 		expect(screen.queryByText("aMetric (1)")).toBe(null)
@@ -60,7 +61,7 @@ describe("metricChooserComponent", () => {
 		await userEvent.type(getSearchBox(), "b")
 		const options = screen.queryAllByRole("option")
 		expect(options.length).toBe(1)
-		await expect(options[0].textContent).toMatch("bMetric (2)")
+		expect(options[0].textContent).toMatch("bMetric (2)")
 
 		await userEvent.click(options[0])
 		expect(screen.queryByRole("listbox")).toBeNull()

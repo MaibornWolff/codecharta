@@ -1,5 +1,6 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
+import { TestBed } from "@angular/core/testing"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { Node } from "../../codeCharta.model"
 import {
@@ -15,7 +16,7 @@ import {
 	SpriteMaterial,
 	Vector3
 } from "three"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
+import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
@@ -50,8 +51,8 @@ describe("CodeMapLabelService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		storeService = getService<StoreService>("storeService")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+		threeCameraService = TestBed.inject(ThreeCameraService)
+		threeSceneService = TestBed.inject(ThreeSceneService)
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 	}
 

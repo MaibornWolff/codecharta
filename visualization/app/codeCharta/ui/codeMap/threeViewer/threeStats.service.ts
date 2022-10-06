@@ -1,12 +1,15 @@
 import Stats from "three/examples/jsm/libs/stats.module"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { isDevelopment } from "../../../util/envDetector"
+import { Inject, Injectable } from "@angular/core"
 
 const ONE_SECOND = 1000
 export interface CustomPanel {
 	panel: Stats.Panel
 	maxHeight: number
 }
+
+@Injectable({ providedIn: "root" })
 export class ThreeStatsService {
 	stats: Stats
 	trianglesPanel: CustomPanel
@@ -16,9 +19,7 @@ export class ThreeStatsService {
 	prevTime: number
 	isDevelopmentMode = isDevelopment()
 
-	constructor(private threeRendererService: ThreeRendererService) {
-		"ngInject"
-	}
+	constructor(@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService) {}
 
 	init = (canvasElement: Element) => {
 		if (this.isDevelopmentMode) {

@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix CodeCharta Analysis container exiting when detached [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
+-   Fix CodeCharta Analysis container not coming with the sonar-scanner pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
+-   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
+-   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
+-   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
+-   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
+
+## [1.108.1] - 2022-09-29
+
+## Chore 👨‍💻 👩‍💻
+
+-   Update formatting in Docker Release Pipeline [#3059](https://github.com/MaibornWolff/codecharta/pull/3059)
+
+## [1.108.0] - 2022-09-28
+
+### Added 🚀
+
+-   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
+
 ### Removed 🗑
 
 -   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)

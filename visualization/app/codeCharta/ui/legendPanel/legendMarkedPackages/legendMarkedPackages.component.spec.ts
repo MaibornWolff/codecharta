@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
+import { expect } from "@jest/globals"
 import { LegendMarkedPackagesComponent } from "./legendMarkedPackages.component"
 
 import { LegendMarkedPackagesModule } from "./legendMarkedPackages.module"

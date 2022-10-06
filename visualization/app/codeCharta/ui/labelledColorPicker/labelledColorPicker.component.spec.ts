@@ -1,6 +1,7 @@
 import { EventEmitter } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { render, fireEvent, screen, waitForElementToBeRemoved } from "@testing-library/angular"
+import { expect } from "@jest/globals"
+import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
 
 import { LabelledColorPickerComponent } from "./labelledColorPicker.component"
 import { LabelledColorPickerModule } from "./labelledColorPicker.module"
