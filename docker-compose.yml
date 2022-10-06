@@ -2,6 +2,7 @@ version: "3"
 services:
     sonar:
         image: sonarqube:community
+        container_name: sonar
         ports:
             - "9000:9000"
         volumes:
@@ -9,6 +10,7 @@ services:
 
     visualization:
         image: codecharta/codecharta-visualization
+        container_name: codecharta-visualization
         ports:
             - "9001:80"
         volumes:
@@ -16,6 +18,7 @@ services:
 
     analysis:
         image: codecharta/codecharta-analysis
+        container_name: codecharta-analysis
         volumes:
             - shared-volume:/mnt/data
 
