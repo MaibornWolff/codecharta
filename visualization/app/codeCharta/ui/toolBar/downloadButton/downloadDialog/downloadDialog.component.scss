@@ -35,6 +35,11 @@
 		mat-checkbox {
 			display: block;
 		}
+
+		.deprecation-warning-container {
+			padding: 10px 0 10px 0;
+			color: red;
+		}
 	}
 
 	.mat-dialog-actions {
