@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
+import { expect } from "@jest/globals"
 import userEvent from "@testing-library/user-event"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { Store } from "../../../state/store/store"
