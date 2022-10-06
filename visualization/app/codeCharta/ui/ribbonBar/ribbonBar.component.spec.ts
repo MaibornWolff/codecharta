@@ -18,17 +18,17 @@ const mockedIsDeltaStateSelector = mocked(isDeltaStateSelector)
 jest.mock("../../state/selectors/accumulatedData/metricData/edgeMetricData.selector", () => ({
 	edgeMetricDataSelector: jest.fn(() => [])
 }))
-const mockEdedgeMetricDataSelector = mocked(edgeMetricDataSelector)
+const mockEdgeMetricDataSelector = mocked(edgeMetricDataSelector)
 
 describe("RibbonBarComponent", () => {
 	beforeEach(() => {
 		mockedIsDeltaStateSelector.mockImplementation(() => false)
-		mockEdedgeMetricDataSelector.mockImplementation(() => [])
+		mockEdgeMetricDataSelector.mockImplementation(() => [])
 		TestBed.configureTestingModule({
 			imports: [RibbonBarModule],
 			providers: [
-				{ provide: ThreeCameraServiceToken, useValue: {} },
-				{ provide: ThreeOrbitControlsServiceToken, useValue: {} }
+				{provide: ThreeCameraServiceToken, useValue: {}},
+				{provide: ThreeOrbitControlsServiceToken, useValue: {}}
 			]
 		})
 	})
@@ -69,14 +69,12 @@ describe("RibbonBarComponent", () => {
 		it("should hide experimental features when they are disabled", async () => {
 			Store.dispatch(setExperimentalFeaturesEnabled(false))
 			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
-			expect(screen.queryByText("Custom Views")).toBe(null)
 			expect(screen.queryByText("Suspicious Metrics")).toBe(null)
 		})
 
 		it("should show experimental features when they are enabled", async () => {
 			Store.dispatch(setExperimentalFeaturesEnabled(true))
 			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
-			expect(screen.getByText("Custom Views")).toBeTruthy()
 			expect(screen.getByText("Suspicious Metrics")).toBeTruthy()
 		})
 	})
@@ -97,14 +95,14 @@ describe("RibbonBarComponent", () => {
 
 	describe("edge metric chooser", () => {
 		it("should show edge metrics when there are some available", async () => {
-			mockEdedgeMetricDataSelector.mockImplementation(() => [{} as EdgeMetricData])
-			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			mockEdgeMetricDataSelector.mockImplementation(() => [{} as EdgeMetricData])
+			await render(RibbonBarComponent, {excludeComponentDeclaration: true})
 			expect(screen.getByText("Edge Metric Options")).toBeTruthy()
 		})
 
 		it("should hide edge metrics when there aren't any available", async () => {
-			mockEdedgeMetricDataSelector.mockImplementation(() => [])
-			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+			mockEdgeMetricDataSelector.mockImplementation(() => [])
+			await render(RibbonBarComponent, {excludeComponentDeclaration: true})
 			expect(screen.queryByText("Edge Metric Options")).toBe(null)
 		})
 	})
