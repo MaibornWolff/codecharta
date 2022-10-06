@@ -10,11 +10,7 @@ function calculateFolderLabelPadding(
 	amountOfFoldersDepthOne: number,
 	amountOfFolderDepthTwo: number
 ) {
-	return (
-		padding_root +
-		(padding_root + padding_folder * amountOfFoldersDepthOne) +
-		(padding_root + padding_folder * amountOfFoldersDepthOne * amountOfFolderDepthTwo)
-	)
+	return padding_root + padding_folder * amountOfFoldersDepthOne + padding_folder * amountOfFolderDepthTwo
 }
 
 export function calculateTotalNodeArea(
@@ -23,6 +19,16 @@ export function calculateTotalNodeArea(
 	padding: number,
 	state: State
 ) {
+	if (buildingAreasIncludingPadding.length === 0) {
+		return {
+			rootWidth: 0,
+			rootHeight: 0,
+			metricSum: hierarchyNode.sum(() => {
+				return 0
+			})
+		}
+	}
+
 	let totalNodeArea = buildingAreasIncludingPadding.reduce((intermediate, current) => intermediate + current)
 
 	/**
@@ -103,7 +109,9 @@ export function calculateTotalNodeArea(
 			nodeAreaMap[nodePath] = Math.round(nodeAreaMap[nodePath] * proportionMax)
 		} else {
 			const node = nodeKeyMap.get(nodePath)
+
 			nodeAreaMap[nodePath] = 0
+
 			switch (node.depth) {
 				case 1: {
 					amountOfDepthOne += 1
@@ -136,7 +144,7 @@ export function calculateTotalNodeArea(
 		amountOfDepthOne,
 		amountOfDepthTwo
 	)
-	const rootWidthWithDefaultPadding = Math.sqrt(totalNodeArea + defaultFolderLabelPadding ** 2)
+	const rootWidthWithDefaultPadding = Math.sqrt(totalNodeArea) + defaultFolderLabelPadding
 	const shiftedFolderLabelPadding = calculateFolderLabelPadding(
 		rootWidthWithDefaultPadding * PADDING_APPROX_FOR_DEPTH_ZERO,
 		rootWidthWithDefaultPadding * PADDING_APPROX_FOR_DEPTH_ONE,

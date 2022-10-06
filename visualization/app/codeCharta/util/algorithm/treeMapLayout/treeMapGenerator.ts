@@ -12,8 +12,10 @@ const MIN_BUILDING_AREA = 100
 const PADDING_SCALING_FACTOR = 1
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
-const PADDING_APPROX_FOR_DEPTH_ZERO = 0.028
-const PADDING_APPROX_FOR_DEPTH_ONE = 0.019
+const PADDING_APPROX_FOR_DEPTH_ZERO_BIG = 0.015
+const PADDING_APPROX_FOR_DEPTH_ZERO = 0.027
+const PADDING_APPROX_FOR_DEPTH_ONE_BIG = 0.008
+const PADDING_APPROX_FOR_DEPTH_ONE = 0.022
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -208,20 +210,29 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 			// it seems that depth property is missing in that case
 			// so the default padding will be added, which is fine though.
 			if (rootNode) {
+				const rootSize = rootNode.x1 - rootNode.x0
+				let paddingDepthZero = PADDING_APPROX_FOR_DEPTH_ZERO
+				let paddingDepthOne = PADDING_APPROX_FOR_DEPTH_ONE
+
+				if (rootSize > 100_000) {
+					paddingDepthOne = PADDING_APPROX_FOR_DEPTH_ONE_BIG
+					paddingDepthZero = PADDING_APPROX_FOR_DEPTH_ZERO_BIG
+				}
+
 				// Start the labels at level 1 not 0 because the root folder should not be labeled
 				if (node.depth === 0) {
 					// Add a big padding for the first folder level (the font is bigger than in deeper levels)
-					// TODO Add constants for magic numbers
-					return Math.max((rootNode.x1 - rootNode.x0) * PADDING_APPROX_FOR_DEPTH_ZERO, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1)
+					return Math.max(rootSize * paddingDepthZero, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1)
 				}
 				if (node.depth > 0 && node.depth < 3) {
-					return Math.max((rootNode.x1 - rootNode.x0) * PADDING_APPROX_FOR_DEPTH_ONE, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
+					return Math.max(rootSize * paddingDepthOne, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
 				}
 			}
 
 			// add treemap algorithm default padding otherwise
 			return padding
 		})
+
 	const logSum = treeMap(metricSum)
 
 	return { treeMap: logSum, height, width }

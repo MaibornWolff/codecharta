@@ -94,9 +94,10 @@ function buildNodeFrom(
 	const height = Math.abs(
 		isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) * mapSizeResolutionScaling : FOLDER_HEIGHT
 	)
-	const width = x1 - x0
-	const length = y1 - y0
-	const z0 = depth * FOLDER_HEIGHT
+	const width = x1 - x0 || 0
+
+	const length = y1 - y0 || 0
+	const z0 = depth * FOLDER_HEIGHT || 0
 
 	return {
 		name: data.name,

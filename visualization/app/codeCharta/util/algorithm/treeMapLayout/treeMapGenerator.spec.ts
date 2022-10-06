@@ -104,12 +104,6 @@ describe("treeMapGenerator", () => {
 
 			expect(nodes).toMatchSnapshot()
 		})
-
-		it("should build the tree map with valid coordinates using the fixed folder structure", () => {
-			const nodes = SquarifiedLayoutGenerator.createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
-
-			expect(nodes).toMatchSnapshot()
-		})
 	})
 
 	describe("CodeMap value calculation", () => {
@@ -132,9 +126,9 @@ describe("treeMapGenerator", () => {
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
-			expect(nodes[2].name).toBe("Parent Leaf")
-			expect(nodes[2].width).toBeGreaterThan(0)
-			expect(nodes[2].length).toBeGreaterThan(0)
+			expect(nodes[1].name).toBe("big leaf")
+			expect(nodes[1].width).toBeGreaterThan(0)
+			expect(nodes[1].length).toBeGreaterThan(0)
 		})
 
 		it("attribute exists, no children", () => {
@@ -154,7 +148,7 @@ describe("treeMapGenerator", () => {
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
 
-		it("attribute do not exists, multiple children with non existant attributes", () => {
+		it("attribute do not exists, multiple children with non existent attributes", () => {
 			state.dynamicSettings.heightMetric = "b"
 			state.dynamicSettings.areaMetric = "b"
 			metricData = [

@@ -84,10 +84,19 @@ export class FloorLabelDrawer {
 
 	private writeLabelsOnCanvas(context: CanvasRenderingContext2D, floorNodesOfCurrentLevel: Node[], mapResolutionScaling: number) {
 		const { width: rootNodeWidth, length: rootNodeHeight } = this.rootNode
+		let FONT_SIZE_MODIFIER_DEPTH_ZERO = 0.035
+		let FONT_SIZE_MODIFIER_DEPTH_ONE = 0.025
 
 		for (const floorNode of floorNodesOfCurrentLevel) {
+			if (rootNodeWidth > 100_000) {
+				FONT_SIZE_MODIFIER_DEPTH_ONE = 0.01
+				FONT_SIZE_MODIFIER_DEPTH_ZERO = 0.008
+			}
+
 			let fontSize =
-				floorNode.depth === 0 ? Math.max(Math.floor(rootNodeWidth * 0.03), 120) : Math.max(Math.floor(rootNodeWidth * 0.023), 95)
+				floorNode.depth === 0
+					? Math.max(Math.floor(rootNodeWidth * FONT_SIZE_MODIFIER_DEPTH_ZERO), 120)
+					: Math.max(Math.floor(rootNodeWidth * FONT_SIZE_MODIFIER_DEPTH_ONE), 95)
 			fontSize = fontSize * mapResolutionScaling
 
 			context.font = `${fontSize}px Arial`
