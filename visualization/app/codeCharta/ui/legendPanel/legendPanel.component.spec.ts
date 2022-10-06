@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
-
+import { expect } from "@jest/globals"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { LegendPanelComponent } from "./legendPanel.component"
 import { LegendPanelModule } from "./legendPanel.module"
