@@ -31,8 +31,8 @@ describe("colorMetricChooserComponent", () => {
 		await userEvent.click(await screen.findByText("aMetric (1)"))
 		expect(screen.getByText("Color Metric (highest value)")).not.toBe(null)
 		const options = screen.queryAllByRole("option")
-		await expect(options[0].textContent).toMatch("aMetric (1)")
-		await expect(options[1].textContent).toMatch("bMetric (2)")
+		expect(options[0].textContent).toMatch("aMetric (1)")
+		expect(options[1].textContent).toMatch("bMetric (2)")
 
 		await userEvent.click(options[1])
 		expect(screen.queryByText("aMetric (1)")).toBe(null)
