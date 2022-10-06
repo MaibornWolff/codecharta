@@ -9,7 +9,8 @@
 	</div>
 </mat-card>
 
-<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="custom-configs-card" class="custom-configs-card">
+<mat-card id="custom-configs-card" class="custom-configs-card">
+	<span class="badge-custom-configs">New</span>
 	<div class="section">
 		<div class="section-header">
 			<cc-custom-configs></cc-custom-configs>
@@ -17,6 +18,7 @@
 		<span class="section-title no-hover">Custom Views</span>
 	</div>
 </mat-card>
+
 <mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="ai-card" class="ai-card">
 	<div class="section">
 		<div class="section-header">
