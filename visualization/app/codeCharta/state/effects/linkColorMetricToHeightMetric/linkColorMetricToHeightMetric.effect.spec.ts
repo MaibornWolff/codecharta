@@ -5,8 +5,8 @@ import { Subject } from "rxjs"
 import { Store } from "../../angular-redux/store"
 import { Store as PlainStoreUsedByEffects } from "../../store/store"
 import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
-import { isHeightAndColorMetricLinkedSelector } from "../../store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.selector"
-import { LinkHeightAndColorMetricEffect } from "./linkHeightAndColorMetric.effect"
+import { isColorMetricLinkedToHeightMetricSelector } from "../../store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
+import { LinkColorMetricToHeightMetricEffect } from "./linkColorMetricToHeightMetric.effect"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 
 describe("linkHeightAndColorMetricEffect", () => {
@@ -18,7 +18,7 @@ describe("linkHeightAndColorMetricEffect", () => {
 			switch (selector) {
 				case heightMetricSelector:
 					return mockedHeightMetricSelector$
-				case isHeightAndColorMetricLinkedSelector:
+				case isColorMetricLinkedToHeightMetricSelector:
 					return mockedIsHeightAndColorMetricLinkedSelector$
 				default:
 					throw new Error("selector is not mocked")
@@ -33,7 +33,7 @@ describe("linkHeightAndColorMetricEffect", () => {
 		mockedHeightMetricSelector$ = new Subject()
 		mockedIsHeightAndColorMetricLinkedSelector$ = new Subject()
 		TestBed.configureTestingModule({
-			imports: [EffectsModule.forRoot([LinkHeightAndColorMetricEffect])],
+			imports: [EffectsModule.forRoot([LinkColorMetricToHeightMetricEffect])],
 			providers: [{ provide: Store, useValue: mockedStore }]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise

@@ -2,7 +2,7 @@ import { Component, Inject } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
-import { isHeightAndColorMetricLinkedSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.selector"
+import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 
 @Component({
 	selector: "cc-color-metric-chooser",
@@ -10,7 +10,7 @@ import { isHeightAndColorMetricLinkedSelector } from "../../../state/store/appSe
 })
 export class ColorMetricChooserComponent {
 	colorMetric$ = this.store.select(colorMetricSelector)
-	isHeightAndColorMetricLinked$ = this.store.select(isHeightAndColorMetricLinkedSelector)
+	isHeightAndColorMetricLinked$ = this.store.select(isColorMetricLinkedToHeightMetricSelector)
 	disabledColor = "rgba(0, 0, 0, 0.38)"
 	nonDisabledColor = "rgba(68,68,68)"
 

@@ -5,7 +5,7 @@ import { experimentalFeaturesEnabledSelector } from "../../state/store/appSettin
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { map } from "rxjs"
-import { isHeightAndColorMetricLinkedSelector } from "../../state/store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.selector"
+import { isColorMetricLinkedToHeightMetricSelector } from "../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 
 type PanelSelection = "NONE" | "AREA_PANEL_OPEN" | "HEIGHT_PANEL_OPEN" | "COLOR_PANEL_OPEN" | "EDGE_PANEL_OPEN"
 
@@ -18,7 +18,7 @@ export class RibbonBarComponent implements OnInit, OnDestroy {
 	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 	hasEdgeMetric$ = this.store.select(edgeMetricDataSelector).pipe(map(edgeMetricData => edgeMetricData.length > 0))
-	isHeightAndColorMetricLinked$ = this.store.select(isHeightAndColorMetricLinkedSelector)
+	isHeightAndColorMetricLinked$ = this.store.select(isColorMetricLinkedToHeightMetricSelector)
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {

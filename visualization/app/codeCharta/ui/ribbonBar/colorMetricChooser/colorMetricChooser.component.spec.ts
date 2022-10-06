@@ -5,7 +5,7 @@ import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric
 import { Store } from "../../../state/store/store"
 import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
 import { ColorMetricChooserModule } from "./heightMetricChooser.module"
-import { toggleHeightAndColorMetricLink } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isHeightAndColorMetricLinked.actions"
+import { toggleLinkBetweenColorMetricAndHeightMetric } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetricActions"
 
 jest.mock("../../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
 	nodeMetricDataSelector: () => [
@@ -41,7 +41,7 @@ describe("colorMetricChooserComponent", () => {
 	})
 
 	it("should disable metric chooser when height and color metric are linked", async () => {
-		Store.dispatch(toggleHeightAndColorMetricLink())
+		Store.dispatch(toggleLinkBetweenColorMetricAndHeightMetric())
 		const disabledColor = "color: rgba(0, 0, 0, 0.38);"
 		const { container } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 

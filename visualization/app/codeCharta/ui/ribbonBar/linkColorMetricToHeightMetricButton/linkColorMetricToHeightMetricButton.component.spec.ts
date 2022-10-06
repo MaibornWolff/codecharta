@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { LinkHeightAndColorMetricButtonComponent } from "./linkHeightAndColorMetricButton.component"
+import { LinkColorMetricToHeightMetricButtonComponent } from "./linkColorMetricToHeightMetricButton.component"
 import { Store } from "../../../state/store/store"
 import { TestBed } from "@angular/core/testing"
 import { CommonModule } from "@angular/common"
@@ -14,7 +14,7 @@ describe("linkHeightAndColorMetricComponent", () => {
 	})
 
 	it("should toggle height and color metric link on click and show associated icon", async () => {
-		const { container } = await render(LinkHeightAndColorMetricButtonComponent)
+		const { container } = await render(LinkColorMetricToHeightMetricButtonComponent)
 
 		expect(container.querySelector(".fa.fa-chain-broken")).not.toBe(null)
 		expect(container.querySelector(".fa.fa-link")).toBe(null)
