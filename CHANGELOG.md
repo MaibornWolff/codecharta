@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
 -   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
+-   Switch all asynchronous to synchronous function calls when using jest 'toMatch' in unit
+    tests [#3075](https://github.com/MaibornWolff/codecharta/pull/3075)
 
 ## [1.108.1] - 2022-09-29
 
