@@ -61,14 +61,14 @@ describe("AttributeSideBarComponent", () => {
 		expect(isSideBarOpen).toBe(true)
 
 		const name = container.querySelector("a[class=node-link]").textContent
-		await expect(name).toMatch("root/big leaf.ts")
+		expect(name).toMatch("root/big leaf.ts")
 
 		const pathName = container.querySelector("cc-node-path").textContent
-		await expect(pathName).toMatch("/root/big leaf")
+		expect(pathName).toMatch("/root/big leaf")
 
 		const firstPrimaryMetricEntry = container.querySelector("cc-attribute-side-bar-primary-metric").textContent
 		const expectedPrimaryMetricTextContent = "20 a"
-		await expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
+		expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
 
 		const expectedSecondaryMetricTextContent = "15b"
 		const isSecondaryMetricInPrimaryMetricSection = container
@@ -76,7 +76,7 @@ describe("AttributeSideBarComponent", () => {
 			.textContent.includes(expectedSecondaryMetricTextContent)
 		expect(isSecondaryMetricInPrimaryMetricSection).toBe(false)
 		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics .metric-row").textContent
-		await expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
+		expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
 
 		expect(isAttributeTypeSelectorShown(container)).toBe(false)
 	})
@@ -87,11 +87,11 @@ describe("AttributeSideBarComponent", () => {
 
 		const firstPrimaryMetricEntry = container.querySelector("cc-attribute-side-bar-primary-metric").textContent
 		const expectedPrimaryMetricTextContent = /20\s+Δ1.0\s+a/
-		await expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
+		expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
 
 		const expectedSecondaryMetricTextContent = /15\s+Δ2.0\s+b/
 		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics .metric-row").textContent
-		await expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
+		expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
 	})
 
 	it("should display attribute type selectors for folders", async () => {
