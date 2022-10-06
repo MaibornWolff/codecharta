@@ -27,4 +27,12 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh; 
     apt-get install nodejs make gcc build-essential -y; \
     npm install -g --unsafe-perm metric-gardener
 
-ENTRYPOINT ["bash"]
+RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip; \
+    apt-get install unzip -y; \
+    cd /tmp ; unzip sonar-scanner.zip; cd sonar-scanner-*-linux; \
+    cp ./bin/sonar-scanner /usr/local/bin/; \
+    cp ./lib/sonar-scanner-cli-*.jar /usr/local/lib/; \
+    mkdir --parents /usr/local/conf ; cp ./conf/sonar-scanner.properties /usr/local/conf/; \
+    cp -r ./jre/ /usr/local/jre; cd /; rm /tmp/sonar-scanner.zip; rm -rf /tmp/sonar-scanner-*-linux;
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
