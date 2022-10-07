@@ -148,7 +148,6 @@ export interface AppSettings {
 	isLoadingMap: boolean
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
-	isAttributeSideBarVisible: boolean
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
 	layoutAlgorithm: LayoutAlgorithm

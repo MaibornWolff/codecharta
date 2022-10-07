@@ -1,13 +1,13 @@
 import "./threeViewer.module"
 import { ThreeSceneService } from "./threeSceneService"
-import { ThreeCameraService } from "./threeCameraService"
+import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeViewerService } from "./threeViewerService"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { ThreeStatsService } from "./threeStatsService"
+import { ThreeStatsService } from "./threeStats.service"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
 
 describe("ThreeViewerService", () => {

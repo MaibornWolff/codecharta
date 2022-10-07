@@ -11,7 +11,7 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IRootScopeService } from "angular"
-import { ThreeStatsService } from "./threeViewer/threeStatsService"
+import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 

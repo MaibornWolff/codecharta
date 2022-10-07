@@ -1,4 +1,4 @@
-<div class="side-bar-container cc-shadow" [class.expanded]="isSideBarVisible$ | async">
+<div class="side-bar-container cc-shadow" [class.expanded]="isAttributeSideBarVisibleService.isOpen">
 	<cc-attribute-side-bar-header-section
 		[node]="selectedNode$ | async"
 		[fileName]="fileName$ | async"

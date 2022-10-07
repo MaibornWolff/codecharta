@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { ColorRange, MapColors } from "../../../codeCharta.model"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
+import { ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
 import { State } from "../../../state/angular-redux/state"
 import { Store } from "../../../state/angular-redux/store"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
@@ -9,7 +9,7 @@ import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColo
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setState } from "../../../state/store/state.actions"
 import { ScenarioHelper } from "./scenarioHelper"
-import { ThreeCameraService } from "../../codeMap/threeViewer/threeCameraService"
+import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControlsService"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 
@@ -19,7 +19,7 @@ export class ScenarioService {
 		@Inject(State) private state: State,
 		@Inject(Store) private store: Store,
 		@Inject(MatDialog) private dialog: MatDialog,
-		@Inject(ThreeCameraServiceToken) private threeCameraService: ThreeCameraService,
+		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
 		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 

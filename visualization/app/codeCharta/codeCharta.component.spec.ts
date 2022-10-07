@@ -1,4 +1,5 @@
 import "./codeCharta.module"
+import { TestBed } from "@angular/core/testing"
 import { IHttpService, ILocationService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeChartaService } from "./codeCharta.service"
@@ -7,7 +8,7 @@ import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
-import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
+import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCamera.service"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
 import { CCFile, LayoutAlgorithm } from "./codeCharta.model"
@@ -38,10 +39,9 @@ describe("codeChartaController", () => {
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
 		storeService = getService<StoreService>("storeService")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
+		threeCameraService = TestBed.inject(ThreeCameraService)
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
-		injectorService = getService<InjectorService>("injectorService")
 	}
 
 	function rebuildController() {

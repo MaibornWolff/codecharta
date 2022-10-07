@@ -1,8 +1,9 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
+import { TestBed } from "@angular/core/testing"
 import { IRootScopeService, IWindowService } from "angular"
 import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouseEvent.service"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
+import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
@@ -24,6 +25,8 @@ import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMe
 import { mocked } from "ts-jest/utils"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
+import { Store } from "../../state/angular-redux/store"
+import { State } from "../../state/angular-redux/state"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -66,22 +69,36 @@ describe("codeMapMouseEventService", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
+		threeCameraService = TestBed.inject(ThreeCameraService)
+		threeRendererService = TestBed.inject(ThreeRendererService)
+		threeSceneService = TestBed.inject(ThreeSceneService)
+		threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+			clearHighlight: jest.fn(),
+			highlightSingleBuilding: jest.fn(),
+			clearSelection: jest.fn(),
+			selectBuilding: jest.fn(),
+			getMeshDescription: jest.fn().mockReturnValue({
+				buildings: [codeMapBuilding]
+			}),
+			checkMouseRayMeshIntersection: jest.fn()
+		})
+		threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+		threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+		threeSceneService.getConstantHighlight = jest.fn().mockReturnValue(new Map())
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$window = getService<IWindowService>("$window")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
-		threeRendererService = getService<ThreeRendererService>("threeRendererService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		storeService = getService<StoreService>("storeService")
-		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
+		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 		viewCubeMouseEventsService = {
 			subscribe: jest.fn(),
 			propagateMovement: jest.fn(),
 			resetIsDragging: jest.fn(),
 			onDocumentDoubleClick: jest.fn()
 		} as unknown as ViewCubeMouseEventsService
-		threeViewerService = getService<ThreeViewerService>("threeViewerService")
 		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
+		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
+		codeMapLabelService["threeSceneService"] = threeSceneService
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		document.body.style.cursor = CursorType.Default
@@ -328,7 +345,12 @@ describe("codeMapMouseEventService", () => {
 
 		function setAnimatedLabel(label: Object3D) {
 			// At first, animate a label
-			threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService, threeRendererService)
+			threeSceneService = new ThreeSceneService(
+				TestBed.inject(Store),
+				TestBed.inject(State),
+				idToBuildingService,
+				threeRendererService
+			)
 			threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 			threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 			threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT

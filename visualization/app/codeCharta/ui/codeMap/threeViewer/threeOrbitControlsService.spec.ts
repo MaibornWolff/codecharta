@@ -1,7 +1,8 @@
 import "./threeViewer.module"
+import { TestBed } from "@angular/core/testing"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
-import { ThreeCameraService } from "./threeCameraService"
+import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
@@ -33,7 +34,7 @@ describe("ThreeOrbitControlsService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+		threeSceneService = TestBed.inject(ThreeSceneService)
 		threeRendererService = getService<ThreeRendererService>("threeRendererService")
 
 		vector = new Vector3(5.711_079_128_159_569, 5.711_079_128_159_569, 0)

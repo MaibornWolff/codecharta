@@ -3,11 +3,12 @@ import { MatDialogRef } from "@angular/material/dialog"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
+import { ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
 import { setState } from "../../../../state/store/state.actions"
 import { splitStateActions } from "../../../../state/store/state.splitter"
 import { Store } from "../../../../state/store/store"
 import { SCENARIO_ATTRIBUTE_CONTENT, STATE } from "../../../../util/dataMocks"
+import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ScenarioHelper } from "../scenarioHelper"
 import { AddCustomScenarioComponent } from "./addCustomScenario.component"
 import { AddCustomScenarioModule } from "./addCustomScenario.module"
@@ -17,7 +18,7 @@ describe("AddCustomScenarioComponent", () => {
 		TestBed.configureTestingModule({
 			imports: [AddCustomScenarioModule],
 			providers: [
-				{ provide: ThreeCameraServiceToken, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
+				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
 				{ provide: ThreeOrbitControlsServiceToken, useValue: { controls: { target: new Vector3(177, 0, 299) } } },
 				{ provide: MatDialogRef, useValue: { close: jest.fn() } }
 			]
