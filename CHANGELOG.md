@@ -14,13 +14,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix CodeCharta Analysis container not coming with the sonar-scanner pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
 -   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
+-   Unfocus nodes when changing selected files, which prevents the app from crashing [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 
 ### Chore 👨‍💻 👩‍💻
 
 -   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
 -   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
 -   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
--   Migrate dialog.service to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Migrate dialog.service to Angular [#3070](https://github.com/MaibornWolff/codecharta/pull/3070)
+-   Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeOrbitControlsService and ThreeViewerService to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 -   Migrate updateAttributeTypes.service to Angular [#3082](https://github.com/MaibornWolff/codecharta/pull/3082)
 
 ## [1.108.1] - 2022-09-29
