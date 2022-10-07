@@ -14,7 +14,7 @@ function getLeafValues(hierarchyNode: HierarchyNode<CodeMapNode>, state: State) 
 }
 
 function getMetricValuesFromFirstNonZero(areaValues: number[]) {
-	areaValues.sort()
+	areaValues.sort((a, b) => a - b)
 
 	let index = 0
 	while (areaValues[index] === 0) {
