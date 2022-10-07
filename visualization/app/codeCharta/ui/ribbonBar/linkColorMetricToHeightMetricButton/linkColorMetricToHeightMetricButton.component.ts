@@ -13,7 +13,7 @@ export class LinkColorMetricToHeightMetricButtonComponent {
 
 	constructor(@Inject(Store) private store: Store) {}
 
-	toggleLinkBetweenColorMetricAndHeightMetric() {
+	toggleIsColorMetricLinkedToHeightMetric() {
 		this.store.dispatch(toggleIsColorMetricLinkedToHeightMetric())
 	}
 }

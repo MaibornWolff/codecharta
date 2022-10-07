@@ -1,10 +1,10 @@
-<i [style.color]="(isHeightAndColorMetricLinked$ | async) ? nonDisabledColor : disabledColor" class="fa fa-paint-brush"></i>
+<i [style.color]="(isColorMetricLinkedToHeightMetric$ | async) ? nonDisabledColor : disabledColor" class="fa fa-paint-brush"></i>
 
 <cc-metric-chooser
 	[selectedMetricName]="colorMetric$ | async"
 	[searchPlaceholder]="'Color Metric (highest value)'"
 	[handleMetricChanged]="handleColorMetricChanged"
-	[isDisabled]="isHeightAndColorMetricLinked$ | async"
+	[isDisabled]="isColorMetricLinkedToHeightMetric$ | async"
 >
 	<cc-metric-chooser-value-hovered hoveredInformation [metricFor]="'colorMetric'"></cc-metric-chooser-value-hovered>
 </cc-metric-chooser>
