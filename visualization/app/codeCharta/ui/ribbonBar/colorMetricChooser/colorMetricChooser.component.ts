@@ -11,8 +11,8 @@ import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/
 export class ColorMetricChooserComponent {
 	colorMetric$ = this.store.select(colorMetricSelector)
 	isHeightAndColorMetricLinked$ = this.store.select(isColorMetricLinkedToHeightMetricSelector)
-	disabledColor = "rgba(0, 0, 0, 0.38)"
-	nonDisabledColor = "rgba(68,68,68)"
+	nonDisabledColor = "rgba(0, 0, 0, 0.38)"
+	disabledColor = "rgba(68,68,68, 1)"
 
 	constructor(@Inject(Store) private store: Store) {}
 

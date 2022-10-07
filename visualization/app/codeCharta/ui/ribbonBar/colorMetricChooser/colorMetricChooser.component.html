@@ -1,4 +1,4 @@
-<i [style.color]="(isHeightAndColorMetricLinked$ | async) ? disabledColor : nonDisabledColor" class="fa fa-paint-brush"></i>
+<i [style.color]="(isHeightAndColorMetricLinked$ | async) ? nonDisabledColor : disabledColor" class="fa fa-paint-brush"></i>
 
 <cc-metric-chooser
 	[selectedMetricName]="colorMetric$ | async"

@@ -22,8 +22,9 @@ describe("colorMetricChooserComponent", () => {
 	})
 
 	it("should be a select for color metric", async () => {
+		const nonDisabledIconColor = "color: rgb(68, 68, 68);"
 		Store.dispatch(setColorMetric("aMetric"))
-		const nonDisabledColor = "color: rgba(68,68,68);"
+
 		const { container } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 
 		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("false")
@@ -37,15 +38,15 @@ describe("colorMetricChooserComponent", () => {
 		await userEvent.click(options[1])
 		expect(screen.queryByText("aMetric (1)")).toBe(null)
 		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
-		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(nonDisabledColor)
+		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(nonDisabledIconColor)
 	})
 
 	it("should disable metric chooser when height and color metric are linked", async () => {
 		Store.dispatch(toggleLinkBetweenColorMetricAndHeightMetric())
-		const disabledColor = "color: rgba(0, 0, 0, 0.38);"
+		const disabledIconColor = "color: rgba(0, 0, 0, 0.38);"
 		const { container } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 
 		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("true")
-		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(disabledColor)
+		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(disabledIconColor)
 	})
 })
