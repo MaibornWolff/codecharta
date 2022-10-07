@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix interactive GitLogParser using wrong dialogue with repo-scan subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
 -   Fix CodeCharta Analysis container exiting when detached [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Fix CodeCharta Analysis container not coming with the sonar-scanner pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
 -   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
 -   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
+-   Migrate dialog.service to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 
 ## [1.108.1] - 2022-09-29
 

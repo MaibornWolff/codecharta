@@ -7,8 +7,10 @@ title: "Git Log Parser"
 
 Generates visualisation data from git repository logs and repository file list.
 
-This parser specializes in tracking file changes across different file-versions on different feature-branches and then the merged main.
-Furthermore, special care is taken not to display non-existent files that might show up in normal-Git histories due to renaming actions on feature branches.
+This parser specializes in tracking file changes across different file-versions on different feature-branches and then
+the merged main.
+Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to
+renaming actions on feature branches.
 
 Things to note:
 
@@ -35,7 +37,7 @@ Additionally, the following Edge Metrics are calculated:
 
 The names of authors are saved when the --add-author flag is set.
 
-## Usage
+## Scan a local git repository on your machine
 
 ### Creating required files on the fly | repo-scan
 
@@ -43,37 +45,22 @@ See `ccsh gitlogparser repo-scan -h` for help. Standard usage:
 
 > `ccsh gitlogparser repo-scan --repo-path <path>`
 
-With the sub command `repo-scan`, the git log and the file name list are created automatically either from the
-current working directory or from the directory at `repo-path`.
+With the sub command `repo-scan` you can parse a local git repository on your disk. During scanning a git log of the
+repository in the current working directory (or from the directory specified by repo-path) is created in your
+temp-Folder and parsed automatically. Furthermore, the parser creates another temporary file-name-list of files that are
+tracked by git automatically which is needed for the parsing process.
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
 If a project is piped into the GitLogParser, the results and the piped project are merged.
 The resulting project has the project name specified for the GitLogParser.
 
-#### Example using Git
+#### Executing the repo-scan subcommand
 
--   `cd <my_git_project>`
--   `./ccsh gitlogparser repo-scan -o output.cc.json`
--   load `output.cc.json` in visualization
+-   `ccsh gitlogparser repo-scan --repo-path <path_to_my_git_project> -o output.cc.json.gz`
+-   load `output.cc.json.gz` in visualization
 
 ### Manual creation of required files | log-scan
-
-#### Creating the repository log for metric generation
-
-| SCM | Log format                   | Command for log creation                            | tracks renames | ignores deleted files | supports code churn |
-| --- | ---------------------------- | --------------------------------------------------- | -------------- | --------------------- | ------------------- |
-| git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | yes                 |
-
-You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG for usage with CodeCharta.
-
-#### Creating the git files list of the repository for metric generation
-
-> `git ls-files > file-name-list.txt`
-
-Please make sure to execute this command in the root folder of your repository.
-
-#### Executing the GitLogParser
 
 See `ccsh gitlogparser log-scan -h` for help. Standard usage:
 
@@ -86,17 +73,26 @@ The result is written as JSON to standard out or into an output file (if specifi
 If a project is piped into the GitLogParser, the results and the piped project are merged.
 The resulting project has the project name specified for the GitLogParser.
 
-## Examples
+#### Creating the repository log for metric generation
 
-### Automatic usage
+| SCM | Log format                   | Command for log creation                            | tracks renames | ignores deleted files | supports code churn |
+| --- | ---------------------------- | --------------------------------------------------- | -------------- | --------------------- | ------------------- |
+| git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | yes                 |
 
--   `./ccsh gitlogparser repo-scan --repo-path <path_to_my_git_project> -o output.cc.json`
--   load `output.cc.json` in visualization
+You can also use the bash
+script [anongit](https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/GitLogParser/src/main/dist/anongit)
+which generates a git log with anonymized authors for usage with CodeCharta.
 
-### Manual usage
+#### Creating the git files list of the repository for metric generation
+
+> `git ls-files > file-name-list.txt`
+
+Please make sure to execute this command in the root folder of your repository.
+
+#### Executing the log-scan subcommand
 
 -   `cd <my_git_project>`
 -   `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
 -   `git ls-files > file-name-list.txt`
--   `./ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json`
--   load `output.cc.json` in visualization
+-   `ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz`
+-   load `output.cc.json.gz` in visualization
