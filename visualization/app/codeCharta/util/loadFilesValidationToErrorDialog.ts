@@ -1,30 +1,25 @@
 import { CCFileValidationResult } from "./fileValidator"
 
 export function loadFilesValidationToErrorDialog(fileValidationResults: CCFileValidationResult[]) {
-	const htmlMessages = []
-
-	const filesWithErrors = fileValidationResults.filter(validationResult => validationResult.errors.length > 0)
-	if (filesWithErrors.length > 0) {
-		htmlMessages.push("<h2>Errors</h2>")
-		for (const fileWithErrors of filesWithErrors) {
-			const fileErrorMessage = buildFileErrorMessage(fileWithErrors)
-			htmlMessages.push(fileErrorMessage)
-		}
-	}
-
-	const filesWithWarnings = fileValidationResults.filter(validationResult => validationResult.warnings.length > 0)
-	if (filesWithWarnings.length > 0) {
-		htmlMessages.push("<h2>Warnings</h2>")
-		for (const fileWithWarnings of filesWithWarnings) {
-			const fileWarningMessage = buildFileWarningMessage(fileWithWarnings)
-			htmlMessages.push(fileWarningMessage)
-		}
-	}
-
+	const htmlMessages = [...buildErrorMessages(fileValidationResults), ...buildWarningsMessages(fileValidationResults)]
 	return {
 		title: "Something is wrong with the uploaded file(s)",
 		message: htmlMessages.join("")
 	}
+}
+
+function buildErrorMessages(fileValidationResults: CCFileValidationResult[]) {
+	const filesWithErrors = fileValidationResults.filter(validationResult => validationResult.errors.length > 0)
+	return filesWithErrors.length > 0
+		? ["<h2>Errors</h2>", ...filesWithErrors.map(fileWithErrors => buildFileErrorMessage(fileWithErrors))]
+		: []
+}
+
+function buildWarningsMessages(fileValidationResults: CCFileValidationResult[]) {
+	const filesWithWarnings = fileValidationResults.filter(validationResult => validationResult.warnings.length > 0)
+	return filesWithWarnings.length > 0
+		? ["<h2>Warnings</h2>", ...filesWithWarnings.map(fileWithWarnings => buildFileWarningMessage(fileWithWarnings))]
+		: []
 }
 
 function buildFileErrorMessage(fileValidationResult: CCFileValidationResult) {
