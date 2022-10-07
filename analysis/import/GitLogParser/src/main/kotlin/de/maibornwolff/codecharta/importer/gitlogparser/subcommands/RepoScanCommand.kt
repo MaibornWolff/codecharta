@@ -81,5 +81,5 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
         return tempGitLs
     }
 
-    override fun getDialog(): ParserDialogInterface = LogScanParserDialog
+    override fun getDialog(): ParserDialogInterface = RepoScanParserDialog
 }

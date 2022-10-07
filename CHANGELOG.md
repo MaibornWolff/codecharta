@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix interactive GitLogParser using wrong dialogue with repo-scan subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
 -   Fix CodeCharta Analysis container exiting when detached [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Fix CodeCharta Analysis container not coming with the sonar-scanner pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
