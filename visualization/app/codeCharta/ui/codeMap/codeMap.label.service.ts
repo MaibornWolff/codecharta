@@ -1,7 +1,7 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
+import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { StoreService } from "../../state/store.service"
 import { ColorConverter } from "../../util/color/colorConverter"

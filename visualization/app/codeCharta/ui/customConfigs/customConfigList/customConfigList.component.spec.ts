@@ -4,13 +4,14 @@ import { CustomConfigsModule } from "../customConfigs.module"
 import { MatDialog } from "@angular/material/dialog"
 import { CustomConfigListComponent } from "./customConfigList.component"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken, ThreeSceneServiceToken } from "../../../services/ajs-upgraded-providers"
+import { ThreeOrbitControlsServiceToken, ThreeSceneServiceToken } from "../../../services/ajs-upgraded-providers"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
 import { of } from "rxjs"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../util/dataMocks"
 import { DownloadableConfigs } from "../downloadCustomConfigsButton/getDownloadableCustomConfigs"
 import { CustomConfigItemGroup } from "../customConfigs.component"
 import { CustomConfigGroups } from "./getCustomConfigItemGroups"
+import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 
 const mockedCustomConfigHelperService = {
 	customConfigItemGroups$: of({
@@ -32,7 +33,7 @@ describe("customConfigListComponent", () => {
 				{ provide: MatDialog, useValue: mockedDialog },
 				{ provide: CustomConfigHelperService, useValue: mockedCustomConfigHelperService },
 				{ provide: ThreeSceneServiceToken, useValue: {} },
-				{ provide: ThreeCameraServiceToken, useValue: {} },
+				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeOrbitControlsServiceToken, useValue: {} }
 			]
 		})

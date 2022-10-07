@@ -1,8 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { mocked } from "ts-jest/utils"
-import { CodeChartaServiceToken, ThreeCameraServiceToken, ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
+import { CodeChartaServiceToken, ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { ToolBarComponent } from "./toolBar.component"
 import { ToolBarModule } from "./toolBar.module"
@@ -18,7 +19,7 @@ describe("ToolBarComponent", () => {
 			imports: [ToolBarModule],
 			providers: [
 				{ provide: CodeChartaServiceToken, useValue: {} },
-				{ provide: ThreeCameraServiceToken, useValue: {} },
+				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeSceneServiceToken, useValue: {} },
 				{ provide: ThreeRendererService, useValue: {} }
 			]

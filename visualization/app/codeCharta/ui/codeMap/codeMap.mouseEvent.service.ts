@@ -1,4 +1,4 @@
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
+import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"

@@ -1,5 +1,6 @@
 import { ElementRef } from "@angular/core"
 import { Subject } from "rxjs"
+import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { Store } from "../../state/angular-redux/store"
 import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 import { CodeMapComponent } from "./codeMap.component"
@@ -31,6 +32,7 @@ describe("CodeMapComponent", () => {
 
 	it("should init threeViewerService and start codeMapMouseService after view init", () => {
 		const codeMapComponent = new CodeMapComponent(
+			{ isOpen: true } as IsAttributeSideBarVisibleService,
 			mockedStore,
 			mockedThreeViewService,
 			mockedCodeMapMouseEventService,
@@ -42,7 +44,13 @@ describe("CodeMapComponent", () => {
 	})
 
 	it("should restart on sharpnessModeChanges but not on first one as it will get started then", () => {
-		new CodeMapComponent(mockedStore, mockedThreeViewService, mockedCodeMapMouseEventService, mockedElementReference)
+		new CodeMapComponent(
+			{ isOpen: true } as IsAttributeSideBarVisibleService,
+			mockedStore,
+			mockedThreeViewService,
+			mockedCodeMapMouseEventService,
+			mockedElementReference
+		)
 		mockedSharpnessModeSelector$.next("High")
 		expect(mockedThreeViewService.restart).not.toHaveBeenCalled()
 		expect(mockedCodeMapMouseEventService.start).not.toHaveBeenCalled()

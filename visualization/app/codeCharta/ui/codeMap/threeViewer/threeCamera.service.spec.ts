@@ -1,25 +1,13 @@
-import "./threeViewer.module"
-import { ThreeCameraService } from "./threeCameraService"
-import { instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { PerspectiveCamera, Vector3 } from "three"
+import { ThreeCameraService } from "./threeCamera.service"
 
 describe("ThreeCameraService", () => {
 	let threeCameraService: ThreeCameraService
 
 	beforeEach(() => {
-		restartSystem()
-		rebuildService()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
-	}
-
-	function rebuildService() {
 		threeCameraService = new ThreeCameraService()
 		threeCameraService.camera = new PerspectiveCamera()
-	}
-
+	})
 	describe("init", () => {
 		it("should set camera with a new aspect", () => {
 			threeCameraService.init(400, 200)

@@ -1,8 +1,6 @@
 import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../../state/store.service"
 import { CodeMapNode, LayoutAlgorithm, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
@@ -10,31 +8,30 @@ import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
-import { onStoreChanged } from "../../../state/angular-redux/onStoreChanged/onStoreChanged"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { ThreeRendererService } from "./threeRenderer.service"
+import { EventEmitter } from "tsee"
+import { Inject, Injectable } from "@angular/core"
+import { Store } from "../../../state/angular-redux/store"
+import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
+import { State } from "../../../state/angular-redux/state"
 
-export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
+type BuildingSelectedEvents = {
+	onBuildingSelected: (data: { building: CodeMapBuilding }) => void
+	onBuildingDeselected: () => void
 }
 
-export interface BuildingDeselectedEventSubscriber {
-	onBuildingDeselected()
-}
-
+@Injectable({ providedIn: "root" })
 export class ThreeSceneService {
-	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
-	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
-
 	scene: Scene
 	labels: Group
 	floorLabelPlanes: Group
 	edgeArrows: Group
 	mapGeometry: Group
+
 	private readonly lights: Group
 	private mapMesh: CodeMapMesh
-	/** TODO: Fix temporary workaround as soon as mapMesh can be derived from store */
-	static mapMeshInstance: CodeMapMesh
+	private eventEmitter = new EventEmitter<BuildingSelectedEvents>()
 
 	private floorLabelDrawer
 
@@ -44,23 +41,21 @@ export class ThreeSceneService {
 
 	private folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
 	private folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
-	private folderLabelColorSelected = this.storeService.getState().appSettings.mapColors.selected
-	private numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+	private folderLabelColorSelected: string
+	private numberSelectionColor: number
 	private rayPoint = new Vector3(0, 0, 0)
 	private normedTransformVector = new Vector3(0, 0, 0)
 	private highlightedLabel = null
 	private highlightedLineIndex = -1
 	private highlightedLine = null
-	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
 
 	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private idToBuilding: IdToBuildingService,
-		private threeRendererService: ThreeRendererService
+		@Inject(Store) private store: Store,
+		@Inject(State) private state: State,
+		@Inject(IdToBuildingService) private idToBuilding: IdToBuildingService,
+		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService
 	) {
-		"ngInject"
-		onStoreChanged(mapColorsSelector, (_, mapColors) => {
+		this.store.select(mapColorsSelector).subscribe(mapColors => {
 			this.folderLabelColorSelected = mapColors.selected
 			this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
 		})
@@ -84,7 +79,7 @@ export class ThreeSceneService {
 	private initFloorLabels(nodes: Node[]) {
 		this.floorLabelPlanes.clear()
 
-		const { layoutAlgorithm } = this.storeService.getState().appSettings
+		const { layoutAlgorithm } = this.state.getValue().appSettings
 		if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap) {
 			return
 		}
@@ -94,8 +89,8 @@ export class ThreeSceneService {
 			return
 		}
 
-		const { mapSize } = this.storeService.getState().treeMap
-		const scaling = this.storeService.getState().appSettings.scaling
+		const { mapSize } = this.state.getValue().treeMap
+		const scaling = this.state.getValue().appSettings.scaling
 
 		this.floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
 		const floorLabels = this.floorLabelDrawer.draw()
@@ -115,7 +110,7 @@ export class ThreeSceneService {
 	}
 
 	highlightBuildings() {
-		const state = this.storeService.getState()
+		const state = this.state.getValue()
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 		if (this.mapGeometry.children[0]) {
 			this.highlightMaterial(this.mapGeometry.children[0]["material"])
@@ -139,8 +134,8 @@ export class ThreeSceneService {
 	}
 
 	scaleHeight() {
-		const { mapSize } = this.storeService.getState().treeMap
-		const scale = this.storeService.getState().appSettings.scaling
+		const { mapSize } = this.state.getValue().treeMap
+		const scale = this.state.getValue().appSettings.scaling
 		this.floorLabelDrawer?.translatePlaneCanvases(scale)
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
 		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
@@ -196,14 +191,14 @@ export class ThreeSceneService {
 	selectBuilding(building: CodeMapBuilding) {
 		// TODO: This check shouldn't be necessary. When investing into model we should investigate why and remove the need.
 		if (building.id !== this.selected?.id) {
-			this.storeService.dispatch(setSelectedBuildingId(building.node.id))
+			this.store.dispatch(setSelectedBuildingId(building.node.id))
 		}
 
 		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
 		this.selected = building
 		this.highlightBuildings()
 
-		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
+		this.eventEmitter.emit("onBuildingSelected", { building: this.selected })
 		if (this.mapGeometry.children[0]) {
 			this.selectMaterial(this.mapGeometry.children[0]["material"])
 		}
@@ -247,7 +242,7 @@ export class ThreeSceneService {
 	resetLabel() {
 		if (this.highlightedLabel !== null) {
 			this.highlightedLabel.position.sub(this.normedTransformVector)
-			this.highlightedLabel.material.opacity = this.mapLabelColors.alpha
+			this.highlightedLabel.material.opacity = defaultMapColors.labelColorAndAlpha.alpha
 
 			if (this.highlightedLine) {
 				this.toggleLineAnimation(this.highlightedLabel)
@@ -341,7 +336,7 @@ export class ThreeSceneService {
 	}
 
 	addNodeAndChildrenToConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
-		const idToNode = idToNodeSelector(this.storeService.getState())
+		const idToNode = idToNodeSelector(this.state.getValue())
 		const codeMapBuilding = idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
 			const building = this.idToBuilding.get(data.id)
@@ -352,7 +347,7 @@ export class ThreeSceneService {
 	}
 
 	removeNodeAndChildrenFromConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
-		const idToNode = idToNodeSelector(this.storeService.getState())
+		const idToNode = idToNodeSelector(this.state.getValue())
 		const codeMapBuilding = idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
 			const building = this.idToBuilding.get(data.id)
@@ -371,8 +366,8 @@ export class ThreeSceneService {
 	clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
-			this.storeService.dispatch(setSelectedBuildingId(null))
-			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
+			this.store.dispatch(setSelectedBuildingId(null))
+			this.eventEmitter.emit("onBuildingDeselected")
 		}
 		if (this.highlighted.length > 0) {
 			this.highlightBuildings()
@@ -397,9 +392,8 @@ export class ThreeSceneService {
 	}
 
 	setMapMesh(nodes: Node[], mesh: CodeMapMesh) {
-		const { mapSize } = this.storeService.getState().treeMap
+		const { mapSize } = this.state.getValue().treeMap
 		this.mapMesh = mesh
-		ThreeSceneService.mapMeshInstance = this.mapMesh
 
 		this.initFloorLabels(nodes)
 
@@ -438,15 +432,9 @@ export class ThreeSceneService {
 		this.mapMesh?.dispose()
 	}
 
-	static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, () => {
-			subscriber.onBuildingDeselected()
-		})
-	}
-
-	static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (_event, selectedBuilding: CodeMapBuilding) => {
-			subscriber.onBuildingSelected(selectedBuilding)
+	subscribe<Key extends keyof BuildingSelectedEvents>(key: Key, callback: BuildingSelectedEvents[Key]) {
+		this.eventEmitter.on(key, (data?) => {
+			callback(data)
 		})
 	}
 }

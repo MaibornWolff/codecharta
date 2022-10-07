@@ -11,7 +11,7 @@ docker-compose.yml
 
 | Container-Name           | Description                             | How to use                                                      |
 | ------------------------ | --------------------------------------- | --------------------------------------------------------------- |
-| codecharta-sonar         | Hosts an instance of SonarQube          | localhost:9000 in the browser, follow the steps for Linux       |
+| sonar                    | Hosts an instance of SonarQube          | localhost:9000 in the browser, follow the steps for Linux       |
 | codecharta-visualization | Runs the visualisation part o CodeChara | localhost:9001, load files from your hard-drive                 |
 | codecharta-analysis      | Contains all tools the ccsh can import  | Connect via terminal `docker exec -it codecharta-analysis bash` |
 
@@ -20,7 +20,7 @@ docker-compose.yml
 All containers share a volume for the quick transfer of files. You can find it under /mnt/data in each container.
 Please note that you will need to copy finished cc.json files to **your** hard-drive to open them in Visualization.
 
-### codecharta-sonar
+### Sonar
 
 See also [SonarQube Docs](https://docs.sonarqube.org/latest/setup/get-started-2-minutes/)
 
@@ -58,7 +58,7 @@ Once you have your .cc.json file ready, you can copy it to your machine.
 This is how the command could look like if I want to copy a file from the container to my current working directory:
 
 ```bash
-docker cp codecharta-analysis-1:/root/junit4.cc.json.gz junit4.cc.json.gz
+docker cp codecharta-analysis:/root/junit4.cc.json.gz junit4.cc.json.gz
 ```
 
 To check the name of the container, you can simply type `docker ps`.

@@ -18,7 +18,6 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import {
 	codeChartaServiceProvider,
 	CodeMapMouseEventServiceTokenProvider,
-	threeCameraServiceProvider,
 	threeOrbitControlsServiceProvider,
 	threeSceneServiceProvider,
 	threeViewerServiceTokenProvider
@@ -26,7 +25,6 @@ import {
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
-import { IdToBuildingService } from "./codeCharta/services/idToBuilding/idToBuilding.service"
 import { LoadingFileProgressSpinnerModule } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
 import { LoadingFileProgressSpinnerComponent } from "./codeCharta/ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
@@ -91,8 +89,6 @@ import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/
 	providers: [
 		threeSceneServiceProvider,
 		codeChartaServiceProvider,
-		IdToBuildingService,
-		threeCameraServiceProvider,
 		threeOrbitControlsServiceProvider,
 		threeViewerServiceTokenProvider,
 		CodeMapMouseEventServiceTokenProvider,

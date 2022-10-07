@@ -1,4 +1,4 @@
-<div class="block-wrapper" [class.visible]="isLegendVisible" [class.isAttributeSideBarVisible]="isAttributeSideBarVisible$ | async">
+<div class="block-wrapper" [class.visible]="isLegendVisible" [class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen">
 	<div *ngIf="!(isDeltaState$ | async)">
 		<cc-legend-block [metricFor]="'Size'" [legendMetric]="areaMetric$ | async"></cc-legend-block>
 		<cc-legend-block [metricFor]="'Height'" [legendMetric]="heightMetric$ | async"></cc-legend-block>

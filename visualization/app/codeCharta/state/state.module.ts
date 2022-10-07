@@ -1,5 +1,4 @@
 import angular from "angular"
-import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
@@ -19,7 +18,6 @@ import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnes
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
-	.service(camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(FilesService.name), FilesService)
 	.service(camelCase(MapSizeService.name), MapSizeService)

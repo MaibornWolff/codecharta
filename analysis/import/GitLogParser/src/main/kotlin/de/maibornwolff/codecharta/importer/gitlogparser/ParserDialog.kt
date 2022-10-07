@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.importer.gitlogparser
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
-import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.LogScanParserDialog
-import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.RepoScanParserDialog
+import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.LogScanCommand
+import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.RepoScanCommand
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
@@ -24,8 +24,8 @@ class ParserDialog {
                 }
 
             val subcommandArguments =
-                if (isLogScan) LogScanParserDialog.collectParserArgs()
-                else RepoScanParserDialog.collectParserArgs()
+                if (isLogScan) LogScanCommand().getDialog().collectParserArgs()
+                else RepoScanCommand().getDialog().collectParserArgs()
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file? If empty, the result will be returned to stdOut",

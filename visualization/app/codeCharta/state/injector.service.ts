@@ -1,6 +1,5 @@
 //@ts-nocheck
 
-import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
@@ -17,7 +16,6 @@ import { CodeMapRenderService } from "../ui/codeMap/codeMap.render.service"
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
-		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		private isLoadingFileService: IsLoadingFileService,
 		private filesService: FilesService,
 		private mapSizeService: MapSizeService,

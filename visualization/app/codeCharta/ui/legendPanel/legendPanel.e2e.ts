@@ -1,4 +1,5 @@
-import { goto, clickButtonOnPageElement } from "../../../puppeteer.helper"
+import { clickButtonOnPageElement, goto } from "../../../puppeteer.helper"
+import { expect } from "@jest/globals"
 import { LegendPanelObject } from "./legendPanel.po"
 import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"

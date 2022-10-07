@@ -57,7 +57,6 @@ function initializeAppSettings(target: CustomConfig) {
 		hideFlatBuildings: false,
 		invertHeight: false,
 		invertArea: false,
-		isAttributeSideBarVisible: false,
 		isLoadingFile: false,
 		isLoadingMap: false,
 		isPresentationMode: false,

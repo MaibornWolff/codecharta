@@ -1,11 +1,11 @@
 import { Color, WebGLRenderer } from "three"
 import { getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 
 import { Component, Inject } from "@angular/core"
-import { ThreeCameraServiceToken, ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
+import { ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
 import { State } from "../../state/angular-redux/state"
 import { Store } from "../../state/angular-redux/store"
 import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
@@ -21,7 +21,7 @@ export class ScreenshotButtonComponent {
 	isScreenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
 
 	constructor(
-		@Inject(ThreeCameraServiceToken) private threeCameraService: ThreeCameraService,
+		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
 		@Inject(ThreeSceneServiceToken) private threeSceneService: ThreeSceneService,
 		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService,
 		@Inject(Store) private store: Store,
