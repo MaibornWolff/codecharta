@@ -12,7 +12,7 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
-import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap/unfocusNodesOnLoadingMap.effect"
+import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { codeChartaServiceProvider, CodeMapMouseEventServiceTokenProvider } from "./codeCharta/services/ajs-upgraded-providers"
@@ -48,7 +48,7 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 		UpgradeModule,
 		EffectsModule.forRoot([
 			SplitStateActionsEffect,
-			UnfocusNodesOnLoadingMapEffect,
+			UnfocusNodesEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
 			BlacklistSearchPatternEffect,
