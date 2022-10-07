@@ -3,5 +3,5 @@ import { appSettingsSelector } from "../appSettings.selector"
 
 export const isColorMetricLinkedToHeightMetricSelector = createSelector(
 	[appSettingsSelector],
-	appSettings => appSettings.isHeightAndColorMetricLinked
+	appSettings => appSettings.isColorMetricLinkedToHeightMetric
 )
