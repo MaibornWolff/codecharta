@@ -74,8 +74,9 @@ The resulting project has the project name specified for the GitLogParser.
 | --- | ---------------------------- | --------------------------------------------------- | -------------- | --------------------- | ------------------- |
 | git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | yes                 |
 
-You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG for usage with
-CodeCharta.
+You can also use the bash
+script [anongit](https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/GitLogParser/src/main/dist/anongit)
+which generates a git log with anonymized authors for usage with CodeCharta.
 
 #### Creating the git files list of the repository for metric generation
 
