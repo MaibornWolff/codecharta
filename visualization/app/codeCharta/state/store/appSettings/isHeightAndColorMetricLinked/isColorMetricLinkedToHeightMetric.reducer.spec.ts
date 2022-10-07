@@ -1,7 +1,7 @@
 import {
 	IsColorMetricLinkedToHeightMetricAction,
-	toggleLinkBetweenColorMetricAndHeightMetric
-} from "./isColorMetricLinkedToHeightMetricActions"
+	toggleIsColorMetricLinkedToHeightMetric
+} from "./isColorMetricLinkedToHeightMetric.actions"
 import { isColorMetricLinkedToHeightMetric } from "./isColorMetricLinkedToHeightMetric.reducer"
 
 describe("isHeightAndColorMetricLinked", () => {
@@ -15,8 +15,8 @@ describe("isHeightAndColorMetricLinked", () => {
 
 	describe("Action: TOGGLE_IS_HEIGHT_AND_COLOR_METRIC_LINKED", () => {
 		it("should toggle state", () => {
-			const result = isColorMetricLinkedToHeightMetric(false, toggleLinkBetweenColorMetricAndHeightMetric())
-			const toggleResult = isColorMetricLinkedToHeightMetric(result, toggleLinkBetweenColorMetricAndHeightMetric())
+			const result = isColorMetricLinkedToHeightMetric(false, toggleIsColorMetricLinkedToHeightMetric())
+			const toggleResult = isColorMetricLinkedToHeightMetric(result, toggleIsColorMetricLinkedToHeightMetric())
 
 			expect(result).toBe(!toggleResult)
 		})

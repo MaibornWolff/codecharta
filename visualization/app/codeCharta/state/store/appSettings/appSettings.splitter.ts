@@ -23,6 +23,7 @@ import { splitExperimentalFeaturesEnabledAction } from "./enableExperimentalFeat
 import { splitLayoutAlgorithmAction } from "./layoutAlgorithm/layoutAlgorithm.splitter"
 import { splitMaxTreeMapFilesAction } from "./maxTreeMapFiles/maxTreeMapFiles.splitter"
 import { splitSharpnessAction } from "./sharpnessMode/sharpnessMode.splitter"
+import { splitIsColorMetricLinkedToHeightMetricAction } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []
@@ -113,6 +114,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.colorLabels !== undefined) {
 		actions.push(splitColorLabelsAction(payload.colorLabels as colorLabelOptions))
+	}
+
+	if (payload.isColorMetricLinkedToHeightMetric !== undefined) {
+		actions.push(splitIsColorMetricLinkedToHeightMetricAction(payload.isColorMetricLinkedToHeightMetric))
 	}
 
 	return actions

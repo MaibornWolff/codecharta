@@ -12,6 +12,9 @@ import { splitAppSettingsActions } from "./appSettings/appSettings.splitter"
 import { splitTreeMapSettingsActions } from "./treeMap/treeMap.splitter"
 import { splitFilesAction } from "./files/files.splitter"
 
+/*
+ Note: This function is used to select or rather collect all actions that should be dispatched when loading a custom config
+ */
 export function splitStateActions(action: CCAction) {
 	if (DynamicSettingsActions[action.type] !== undefined) {
 		return splitDynamicSettingsActions(action.payload)

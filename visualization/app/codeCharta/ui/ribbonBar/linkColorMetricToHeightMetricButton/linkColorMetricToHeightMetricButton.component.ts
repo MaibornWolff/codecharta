@@ -2,7 +2,7 @@ import "./linkColorMetricToHeightMetricButton.component.scss"
 import { Component, Inject } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
-import { toggleLinkBetweenColorMetricAndHeightMetric } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetricActions"
+import { toggleIsColorMetricLinkedToHeightMetric } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 
 @Component({
 	selector: "cc-link-color-metric-to-height-metric-button",
@@ -14,6 +14,6 @@ export class LinkColorMetricToHeightMetricButtonComponent {
 	constructor(@Inject(Store) private store: Store) {}
 
 	toggleLinkBetweenColorMetricAndHeightMetric() {
-		this.store.dispatch(toggleLinkBetweenColorMetricAndHeightMetric())
+		this.store.dispatch(toggleIsColorMetricLinkedToHeightMetric())
 	}
 }

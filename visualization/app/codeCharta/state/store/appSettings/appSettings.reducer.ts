@@ -52,7 +52,7 @@ const appSettings = combineReducers({
 	layoutAlgorithm,
 	maxTreeMapFiles,
 	sharpnessMode,
-	isHeightAndColorMetricLinked: isColorMetricLinkedToHeightMetric
+	isColorMetricLinkedToHeightMetric
 })
 
 export default appSettings
