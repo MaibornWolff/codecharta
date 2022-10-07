@@ -38,7 +38,7 @@ describe("modifiedTreeMapHelperFunctions", () => {
 			const hierarchyMap = hierarchy(map)
 			const childrenAreaValues = getChildrenAreaValues(hierarchyMap, state)
 
-			expect(childrenAreaValues).toStrictEqual([100, 70, 30])
+			expect(childrenAreaValues).toStrictEqual([30, 70, 100])
 		})
 
 		it("should return children values, omitting the ones that are 0", () => {
@@ -46,7 +46,7 @@ describe("modifiedTreeMapHelperFunctions", () => {
 			const hierarchyMap = hierarchy(map)
 			const childrenAreaValues = getChildrenAreaValues(hierarchyMap, state)
 
-			expect(childrenAreaValues).toStrictEqual([100, 70, 30])
+			expect(childrenAreaValues).toStrictEqual([30, 70, 100])
 		})
 	})
 })
