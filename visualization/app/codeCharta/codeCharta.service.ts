@@ -2,12 +2,14 @@ import { CCFileValidationResult, checkErrors, checkWarnings } from "./util/fileV
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { setFiles, setStandardByNames } from "./state/store/files/files.actions"
-import { DialogService } from "./ui/dialog/dialog.service"
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { NameDataPair } from "./codeCharta.model"
 import { onStoreChanged } from "./state/angular-redux/onStoreChanged/onStoreChanged"
 import { referenceFileSelector } from "./state/selectors/referenceFile/referenceFile.selector"
+import { MatDialog } from "@angular/material/dialog"
+import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.component"
+import { loadFilesValidationToErrorDialog } from "./util/loadFilesValidationToErrorDialog"
 
 export class CodeChartaService {
 	static ROOT_NAME = "root"
@@ -23,19 +25,21 @@ export class CodeChartaService {
 
 	static instance: CodeChartaService
 
-	constructor(private storeService: StoreService, private dialogService: DialogService) {
+	constructor(private storeService: StoreService, private dialog: MatDialog) {
 		"ngInject"
 		CodeChartaService.instance = this
 	}
 
-	async loadFiles(nameDataPairs: NameDataPair[]) {
+	loadFiles(nameDataPairs: NameDataPair[]) {
 		this.fileStates = this.storeService.getState().files
 		const fileValidationResults: CCFileValidationResult[] = []
 
 		this.getValidationResults(nameDataPairs, fileValidationResults)
 
 		if (fileValidationResults.length > 0) {
-			await this.dialogService.showValidationDialog(fileValidationResults)
+			this.dialog.open(ErrorDialogComponent, {
+				data: loadFilesValidationToErrorDialog(fileValidationResults)
+			})
 		}
 
 		if (this.recentFiles.length > 0) {
