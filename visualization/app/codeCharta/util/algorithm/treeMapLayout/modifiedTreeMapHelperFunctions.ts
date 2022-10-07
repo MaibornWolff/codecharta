@@ -13,7 +13,9 @@ function getLeafValues(hierarchyNode: HierarchyNode<CodeMapNode>, state: State) 
 	return leafAreaValues
 }
 
-function getNonZeroMetrics(areaValues: number[]) {
+function getMetricValuesFromFirstNonZero(areaValues: number[]) {
+	areaValues.sort()
+
 	let index = 0
 	while (areaValues[index] === 0) {
 		index++
@@ -42,5 +44,5 @@ export function getSmallestDifference(childAreaValues: number[]) {
 }
 
 export function getChildrenAreaValues(hierarchyNode: HierarchyNode<CodeMapNode>, state: State) {
-	return getNonZeroMetrics(getLeafValues(hierarchyNode, state).sort())
+	return getMetricValuesFromFirstNonZero(getLeafValues(hierarchyNode, state))
 }
