@@ -1,8 +1,8 @@
 import { goto } from "../../../../puppeteer.helper"
 import { UploadFileButtonPageObject } from "./uploadFilesButton.po"
 import { FilePanelPageObject } from "../../filePanel/filePanel.po"
-import { DialogErrorPageObject } from "../../dialog/dialog.error.po"
 import { ERROR_MESSAGES } from "../../../util/fileValidator"
+import { DialogErrorPageObject } from "../../dialogs/errorDialog/errorDialog.component.po"
 
 describe("UploadFileButton", () => {
 	let uploadFileButton: UploadFileButtonPageObject

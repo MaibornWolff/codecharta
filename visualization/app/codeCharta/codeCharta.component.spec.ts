@@ -1,7 +1,6 @@
 import "./codeCharta.module"
 import { TestBed } from "@angular/core/testing"
 import { IHttpService, ILocationService } from "angular"
-import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
@@ -22,6 +21,8 @@ import { setLayoutAlgorithm } from "./state/store/appSettings/layoutAlgorithm/la
 import { setMaxTreeMapFiles } from "./state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
 import { setFiles } from "./state/store/files/files.actions"
+import { MatDialog } from "@angular/material/dialog"
+import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.component"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -29,7 +30,7 @@ describe("codeChartaController", () => {
 	let $location: ILocationService
 	let $http: IHttpService
 	let storeService: StoreService
-	let dialogService: DialogService
+	let dialog: MatDialog
 	let codeChartaService: CodeChartaService
 	let injectorService: InjectorService
 
@@ -40,30 +41,18 @@ describe("codeChartaController", () => {
 		$http = getService<IHttpService>("$http")
 		storeService = getService<StoreService>("storeService")
 		threeCameraService = TestBed.inject(ThreeCameraService)
-		dialogService = getService<DialogService>("dialogService")
-		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		dialog = { open: jest.fn() } as unknown as MatDialog
+		codeChartaService = { loadFiles: jest.fn() } as unknown as CodeChartaService
 	}
 
 	function rebuildController() {
-		codeChartaController = new CodeChartaController($location, $http, storeService, dialogService, codeChartaService, injectorService)
+		codeChartaController = new CodeChartaController($location, $http, storeService, dialog, codeChartaService, injectorService)
 	}
 
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
 			getFileDataFromQueryParam: jest.fn().mockReturnValue(Promise.resolve([])),
 			getParameterByName: jest.fn().mockReturnValue(true)
-		})()
-	}
-
-	function withMockedCodeChartaService() {
-		codeChartaService = codeChartaController["codeChartaService"] = jest.fn().mockReturnValue({
-			loadFiles: jest.fn().mockReturnValue(Promise.resolve())
-		})()
-	}
-
-	function withMockedDialogService() {
-		dialogService = codeChartaController["dialogService"] = jest.fn().mockReturnValue({
-			showErrorDialog: jest.fn()
 		})()
 	}
 
@@ -77,8 +66,6 @@ describe("codeChartaController", () => {
 		rebuildController()
 		initThreeCameraService()
 		withMockedUrlUtils()
-		withMockedCodeChartaService()
-		withMockedDialogService()
 		localStorage.clear()
 	}
 
@@ -172,11 +159,13 @@ describe("codeChartaController", () => {
 		})
 
 		it("should call showErrorDialog when no file is found", () => {
-			const expected = "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
-
 			codeChartaController.tryLoadingSampleFiles(new Error("Actual error message"))
-
-			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected, "Error (Actual error message)")
+			expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, {
+				data: {
+					title: "Error (Actual error message)",
+					message: "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
+				}
+			})
 		})
 
 		it("should call loadFiles with sample files", () => {
