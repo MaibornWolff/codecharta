@@ -6,7 +6,6 @@ import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
-import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
@@ -22,7 +21,6 @@ export class InjectorService {
 		private scalingService: ScalingService,
 		private markedPackagesService: MarkedPackagesService,
 		private edgesService: EdgesService,
-		private attributeTypesService: AttributeTypesService,
 		private focusedNodePathService: FocusedNodePathService,
 		private blacklistService: BlacklistService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
