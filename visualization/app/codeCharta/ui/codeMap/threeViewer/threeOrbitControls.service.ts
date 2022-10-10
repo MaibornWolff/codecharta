@@ -15,13 +15,6 @@ type CameraChangeEvents = {
 	onCameraChanged: (data: { camera: PerspectiveCamera }) => void
 }
 
-// Todo migrate from focusedNodePath.service
-// onFilesSelectionChanged() {
-// 	if (this.storeService.getState().dynamicSettings.focusedNodePath) {
-// 		this.storeService.dispatch(unfocusNode())
-// 	}
-// }
-
 @Injectable({ providedIn: "root" })
 export class ThreeOrbitControlsService {
 	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
