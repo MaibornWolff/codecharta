@@ -1,10 +1,9 @@
-import "./threeViewer.module"
+import { TestBed } from "@angular/core/testing"
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCamera.service"
-import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { ThreeViewerService } from "./threeViewerService"
-import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
+import { ThreeViewerService } from "./threeViewer.service"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeStatsService } from "./threeStats.service"
@@ -31,13 +30,11 @@ describe("ThreeViewerService", () => {
 	})
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
-
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
-		threeRendererService = getService<ThreeRendererService>("threeRendererService")
-		threeStatsService = getService<ThreeStatsService>("threeStatsService")
+		threeSceneService = TestBed.inject(ThreeSceneService)
+		threeCameraService = TestBed.inject(ThreeCameraService)
+		threeOrbitControlsService = TestBed.inject(ThreeOrbitControlsService)
+		threeRendererService = TestBed.inject(ThreeRendererService)
+		threeStatsService = TestBed.inject(ThreeStatsService)
 	}
 
 	function rebuildService() {

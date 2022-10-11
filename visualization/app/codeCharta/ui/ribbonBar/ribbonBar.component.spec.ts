@@ -3,12 +3,12 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { mocked } from "ts-jest/utils"
 import { EdgeMetricData } from "../../codeCharta.model"
-import { ThreeOrbitControlsServiceToken } from "../../services/ajs-upgraded-providers"
 import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { Store } from "../../state/store/store"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { RibbonBarComponent } from "./ribbonBar.component"
 import { RibbonBarModule } from "./ribbonBar.module"
 
@@ -29,7 +29,7 @@ describe("RibbonBarComponent", () => {
 			imports: [RibbonBarModule],
 			providers: [
 				{ provide: ThreeCameraService, useValue: {} },
-				{ provide: ThreeOrbitControlsServiceToken, useValue: {} }
+				{ provide: ThreeOrbitControlsService, useValue: {} }
 			]
 		})
 	})

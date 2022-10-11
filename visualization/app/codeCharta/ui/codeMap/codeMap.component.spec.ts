@@ -5,7 +5,7 @@ import { Store } from "../../state/angular-redux/store"
 import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { ThreeViewerService } from "./threeViewer/threeViewerService"
+import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 
 describe("CodeMapComponent", () => {
 	let mockedThreeViewService: ThreeViewerService

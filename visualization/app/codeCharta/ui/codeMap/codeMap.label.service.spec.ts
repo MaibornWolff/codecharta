@@ -25,7 +25,7 @@ import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopL
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControls.service"
 
 describe("CodeMapLabelService", () => {
 	let storeService: StoreService

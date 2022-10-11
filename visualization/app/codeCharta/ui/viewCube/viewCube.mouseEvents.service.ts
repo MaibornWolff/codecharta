@@ -6,10 +6,9 @@ import { isLeaf } from "../../util/codeMapHelper"
 import * as Three from "three"
 import oc from "three-orbit-controls"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { EventEmitter } from "tsee"
 import { Inject, Injectable } from "@angular/core"
-import { ThreeOrbitControlsServiceToken } from "../../services/ajs-upgraded-providers"
 
 type ViewCubeEvents = {
 	viewCubeEventPropagation: (data: { event: MouseEvent; type: string }) => void
@@ -29,7 +28,7 @@ export class ViewCubeMouseEventsService {
 	private controls: OrbitControls
 	private isDragging = false
 
-	constructor(@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService) {}
+	constructor(@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService) {}
 
 	init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		this.cubeGroup = cubeGroup

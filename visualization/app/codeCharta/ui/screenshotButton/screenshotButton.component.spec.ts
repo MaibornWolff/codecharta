@@ -4,10 +4,10 @@ import { TestBed } from "@angular/core/testing"
 import { Store } from "../../state/store/store"
 import { render, screen } from "@testing-library/angular"
 import { ScreenshotButtonModule } from "./screenshotButton.module"
-import { ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
 import userEvent from "@testing-library/user-event"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("screenshotButtonComponent", () => {
 	beforeEach(() => {
@@ -15,7 +15,7 @@ describe("screenshotButtonComponent", () => {
 			imports: [ScreenshotButtonModule],
 			providers: [
 				{ provide: ThreeCameraService, useValue: {} },
-				{ provide: ThreeSceneServiceToken, useValue: {} },
+				{ provide: ThreeSceneService, useValue: {} },
 				{ provide: ThreeRendererService, useValue: {} }
 			]
 		})

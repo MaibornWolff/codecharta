@@ -1,19 +1,14 @@
-import "./threeViewer.module"
 import { TestBed } from "@angular/core/testing"
-import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
-import { IRootScopeService, ITimeoutService } from "angular"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
-import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeRendererService } from "./threeRenderer.service"
+import { wait } from "../../../util/testUtils/wait"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
 	let threeRendererService: ThreeRendererService
@@ -29,13 +24,9 @@ describe("ThreeOrbitControlsService", () => {
 	})
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
-
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
+		threeCameraService = TestBed.inject(ThreeCameraService)
 		threeSceneService = TestBed.inject(ThreeSceneService)
-		threeRendererService = getService<ThreeRendererService>("threeRendererService")
+		threeRendererService = TestBed.inject(ThreeRendererService)
 
 		vector = new Vector3(5.711_079_128_159_569, 5.711_079_128_159_569, 0)
 	}
@@ -43,7 +34,6 @@ describe("ThreeOrbitControlsService", () => {
 	function withMockedThreeCameraService() {
 		const camera = new PerspectiveCamera(100, 0, 0, 0)
 		camera.position.set(vector.x, vector.y, vector.z)
-
 		threeCameraService.camera = camera
 	}
 
@@ -61,32 +51,8 @@ describe("ThreeOrbitControlsService", () => {
 	}
 
 	function rebuildService() {
-		threeOrbitControlsService = new ThreeOrbitControlsService(
-			$rootScope,
-			$timeout,
-			threeCameraService,
-			threeSceneService,
-			threeRendererService
-		)
+		threeOrbitControlsService = new ThreeOrbitControlsService(threeCameraService, threeSceneService, threeRendererService)
 	}
-
-	describe("constructor", () => {
-		it("should subscribe to FocusedNodePathService focus", () => {
-			FocusedNodePathService.subscribeToFocusNode = jest.fn()
-
-			rebuildService()
-
-			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
-		})
-
-		it("should subscribe to FocusedNodePathService unfocus", () => {
-			FocusedNodePathService.subscribeToUnfocusNode = jest.fn()
-
-			rebuildService()
-
-			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
-		})
-	})
 
 	it("rotateCameraInVectorDirection ", () => {
 		threeOrbitControlsService.controls = {
@@ -102,15 +68,6 @@ describe("ThreeOrbitControlsService", () => {
 		expect(threeCameraService.camera.position).toMatchSnapshot()
 	})
 
-	describe("onFocusedNode", () => {
-		it("autoFitTo have to be", () => {
-			threeOrbitControlsService.onFocusNode()
-			$timeout.flush()
-
-			expect(threeOrbitControlsService.controls.update).toBeCalled()
-		})
-	})
-
 	describe("setControlTarget", () => {
 		it("should set the controlTarget to the store cameraTarget", () => {
 			const result: Vector3 = new Vector3(1, 1, 1)
@@ -120,54 +77,33 @@ describe("ThreeOrbitControlsService", () => {
 		})
 	})
 
-	describe("onUnfocusNode", () => {
-		it("should call resetCamera", () => {
-			threeOrbitControlsService.autoFitTo = jest.fn()
-
-			threeOrbitControlsService.onUnfocusNode()
-
-			expect(threeOrbitControlsService.autoFitTo).toBeCalled()
-		})
-	})
-
 	describe("autoFitTo", () => {
-		it("should auto fit map to its origin value ", () => {
+		it("should auto fit map to its origin value ", async () => {
 			threeCameraService.camera.position.set(0, 0, 0)
 
 			threeOrbitControlsService.autoFitTo()
-			$timeout.flush()
+			await wait(0)
 
 			expect(threeCameraService.camera.position).toEqual(vector)
 		})
 
-		it("should call an control update", () => {
+		it("should call an control update", async () => {
 			threeCameraService.camera.lookAt = jest.fn()
 
 			threeOrbitControlsService.autoFitTo()
-			$timeout.flush()
+			await wait(0)
 
 			expect(threeCameraService.camera.lookAt).toBeCalledWith(threeOrbitControlsService.controls.target)
 		})
 
-		it("should auto fit map to its original value ", () => {
+		it("should auto fit map to its original value ", async () => {
 			threeCameraService.camera.updateProjectionMatrix = jest.fn()
 
 			threeOrbitControlsService.autoFitTo()
-			$timeout.flush()
+			await wait(0)
 
 			expect(threeOrbitControlsService.controls.update).toBeCalled()
 			expect(threeCameraService.camera.updateProjectionMatrix).toBeCalled()
-		})
-
-		it("should set the defaultCameraPerspective to the auto fitted vector", () => {
-			threeOrbitControlsService.defaultCameraPosition.set(0, 0, 0)
-
-			threeOrbitControlsService.autoFitTo()
-			$timeout.flush()
-
-			expect(threeOrbitControlsService.defaultCameraPosition.x).toEqual(vector.x)
-			expect(threeOrbitControlsService.defaultCameraPosition.y).toEqual(vector.y)
-			expect(threeOrbitControlsService.defaultCameraPosition.z).toEqual(vector.z)
 		})
 	})
 })

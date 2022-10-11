@@ -19,7 +19,7 @@ import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
-import { ThreeViewerService } from "./threeViewer/threeViewerService"
+import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { mocked } from "ts-jest/utils"
@@ -89,7 +89,7 @@ describe("codeMapMouseEventService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$window = getService<IWindowService>("$window")
 		storeService = getService<StoreService>("storeService")
-		threeViewerService = getService<ThreeViewerService>("threeViewerService")
+		threeViewerService = TestBed.inject(ThreeViewerService)
 		viewCubeMouseEventsService = {
 			subscribe: jest.fn(),
 			propagateMovement: jest.fn(),

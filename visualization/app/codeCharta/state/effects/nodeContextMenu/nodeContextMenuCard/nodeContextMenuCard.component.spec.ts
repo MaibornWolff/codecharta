@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { mocked } from "ts-jest/utils"
-import { ThreeSceneServiceToken } from "../../../../services/ajs-upgraded-providers"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { VALID_FILE_NODE_WITH_ID, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
 import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard.component"
@@ -19,7 +19,7 @@ describe("NodeContextMenuCardComponent", () => {
 			imports: [NodeContextMenuCardModule],
 			providers: [
 				{
-					provide: ThreeSceneServiceToken,
+					provide: ThreeSceneService,
 					useValue: {
 						addNodeAndChildrenToConstantHighlight: jest.fn(),
 						removeNodeAndChildrenFromConstantHighlight: jest.fn(),

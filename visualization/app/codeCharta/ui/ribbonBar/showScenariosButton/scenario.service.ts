@@ -1,7 +1,6 @@
 import { Inject, Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { ColorRange, MapColors } from "../../../codeCharta.model"
-import { ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
 import { State } from "../../../state/angular-redux/state"
 import { Store } from "../../../state/angular-redux/store"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
@@ -10,7 +9,7 @@ import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/c
 import { setState } from "../../../state/store/state.actions"
 import { ScenarioHelper } from "./scenarioHelper"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 
 @Injectable()
@@ -20,7 +19,7 @@ export class ScenarioService {
 		@Inject(Store) private store: Store,
 		@Inject(MatDialog) private dialog: MatDialog,
 		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService
+		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
 	getScenarios() {

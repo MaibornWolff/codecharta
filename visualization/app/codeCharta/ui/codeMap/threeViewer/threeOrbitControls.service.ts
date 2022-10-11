@@ -1,13 +1,8 @@
 import { ThreeCameraService } from "./threeCamera.service"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { Inject, Injectable } from "@angular/core"
 import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"
-import { LayoutAlgorithmSubscriber, LayoutAlgorithmService } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
-import {
-	FocusedNodePathService,
-	FocusNodeSubscriber,
-	UnfocusNodeSubscriber
-} from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
+
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 // TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
@@ -20,41 +15,18 @@ type CameraChangeEvents = {
 	onCameraChanged: (data: { camera: PerspectiveCamera }) => void
 }
 
-export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, LayoutAlgorithmSubscriber {
+@Injectable({ providedIn: "root" })
+export class ThreeOrbitControlsService {
 	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
-	static instance: ThreeOrbitControlsService
 
 	controls: OrbitControls
-	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
 	private eventEmitter = new EventEmitter<CameraChangeEvents>()
 
 	constructor(
-		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
-		private threeCameraService: ThreeCameraService,
-		private threeSceneService: ThreeSceneService,
-		private threeRendererService: ThreeRendererService
-	) {
-		"ngInject"
-		ThreeOrbitControlsService.instance = this
-		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
-		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
-		LayoutAlgorithmService.subscribe(this.$rootScope, this)
-	}
-
-	onFocusNode() {
-		this.autoFitTo()
-	}
-
-	onUnfocusNode() {
-		this.autoFitTo()
-	}
-
-	onLayoutAlgorithmChanged() {
-		this.autoFitTo()
-	}
-
-	// TODO add autofit for SharpnessMode ?
+		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
+		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
+		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService
+	) {}
 
 	setControlTarget(cameraTarget: Vector3) {
 		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
@@ -70,7 +42,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	autoFitTo() {
-		this.$timeout(() => {
+		setTimeout(() => {
 			const boundingSphere = this.getBoundingSphere()
 
 			const length = this.cameraPerspectiveLengthCalculation(boundingSphere)
@@ -78,7 +50,6 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 			cameraReference.position.set(length, length, boundingSphere.center.z)
 
-			this.defaultCameraPosition = cameraReference.position.clone()
 			this.controls.update()
 
 			this.focusCameraViewToCenter(boundingSphere)
