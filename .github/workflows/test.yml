@@ -133,7 +133,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v3.5.0
+        uses: actions/setup-java@v3.5.1
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -149,7 +149,7 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v1.6
+        uses: SonarSource/sonarcloud-github-action@v1.7
         with:
           projectBaseDir: ./analysis
         env:
@@ -176,7 +176,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-        uses: SonarSource/sonarcloud-github-action@v1.6
+        uses: SonarSource/sonarcloud-github-action@v1.7
         with:
           projectBaseDir: ./visualization
           args: >
