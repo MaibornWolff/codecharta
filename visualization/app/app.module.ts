@@ -60,7 +60,7 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 			RenderCodeMapEffect,
 			AutoFitCodeMapEffect,
 			UpdateVisibleTopLabelsEffect,
-			LinkColorMetricToHeightMetricEffect
+			LinkColorMetricToHeightMetricEffect,
 			UpdateAttributeTypesEffect,
 			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect
 		]),
