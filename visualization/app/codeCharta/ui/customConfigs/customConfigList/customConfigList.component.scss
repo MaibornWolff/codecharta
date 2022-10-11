@@ -16,6 +16,10 @@
 		align-items: center;
 	}
 
+	.description {
+		margin: 5px 0 5px 0;
+	}
+
 	.action-buttons button {
 		margin: 0 3px;
 		min-width: 12%;
@@ -38,7 +42,8 @@
 	}
 
 	.no-custom-configs-box {
-		padding: 16px;
+		text-align: center;
+		padding: 50px 0 50px 0;
 	}
 
 	cc-custom-config-item-group {
@@ -106,7 +111,7 @@
 	.mat-accordion.custom-config-container {
 		.mat-expansion-panel:first-of-type,
 		.mat-expansion-panel:last-of-type {
-			border-radius: 0px;
+			border-radius: 0;
 		}
 	}
 
