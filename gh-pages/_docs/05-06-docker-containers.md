@@ -30,19 +30,19 @@ Open `localhost:9000` in your browser and log in with
 -   password: admin
 
 Simply follow the steps for a manual, local project under Linux. You can also [check our tutorial for SonarQube](
-{{site.baseurl}}{% link _docs/analyze-with-sonarqube.md %})
+{{site.baseurl}}{% link _docs/05-05-analyze-with-sonarqube.md %})
 The sonar-scanner is already pre-installed in our analysis container.
 
 ### codecharta-visualization
 
-See also [CodeCharta Visualization]({{site.baseurl}}{% link _docs/visualization.md %})
+See also [CodeCharta Visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %})
 
-Open `localhost:9001` in your browser and open any file you want from your hard drive.
-To open files you have created in the analysis container, copy them over using `docker cp`
+Open `localhost:9001` in your browser and open any file you want from your hard drive. To open files you have created in
+the analysis container, copy them over using `docker cp`
 
 ### codecharta-analysis
 
-See also [CodeCharta Analysis]({{site.baseurl}}{% link _docs/analysis.md %})
+See also [CodeCharta Analysis]({{site.baseurl}}{% link _docs/05-01-analysis.md %})
 
 Almost all tools the ccsh can import data from are included in the container, so you can get started immediately.
 Installed are:

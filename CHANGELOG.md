@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix broken links on new GitHub Page 'Docker Containers' [#3089](https://github.com/MaibornWolff/codecharta/pull/3089)
+
 ## [1.109.0] - 2022-10-12
 
 ### Added 🚀
