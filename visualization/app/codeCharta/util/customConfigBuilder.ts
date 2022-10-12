@@ -71,6 +71,7 @@ function initializeAppSettings(target: CustomConfig) {
 		layoutAlgorithm: undefined,
 		maxTreeMapFiles: 0,
 		sharpnessMode: undefined,
+		isColorMetricLinkedToHeightMetric: false,
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
 			base: "",

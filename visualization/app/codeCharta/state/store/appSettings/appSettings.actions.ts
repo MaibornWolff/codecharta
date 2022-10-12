@@ -25,6 +25,7 @@ import { defaultSharpnessMode } from "./sharpnessMode/sharpnessMode.actions"
 import { defaultScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
 import { defaultInvertArea } from "./invertArea/invertArea.actions"
 import { defaultIsEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { defaultIsColorMetricLinkedToHeightMetric } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -69,5 +70,6 @@ export const defaultAppSettings: AppSettings = {
 	screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
 	layoutAlgorithm: defaultLayoutAlgorithm,
 	maxTreeMapFiles: defaultMaxTreeMapFiles,
-	sharpnessMode: defaultSharpnessMode
+	sharpnessMode: defaultSharpnessMode,
+	isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric
 }

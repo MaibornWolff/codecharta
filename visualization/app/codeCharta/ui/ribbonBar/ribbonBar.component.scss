@@ -3,10 +3,13 @@ cc-ribbon-bar {
 	z-index: 10;
 	white-space: nowrap;
 	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
 	width: 100%;
 	$heightExpanded: 195;
 	$heightCollapsed: 38;
 	$border: 1px solid #cdcdcd;
+	box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
 
 	.cc-ribbon-bar-menu-button {
 		height: 22px;
@@ -51,11 +54,23 @@ cc-ribbon-bar {
 			vertical-align: top;
 			overflow: hidden;
 
+			&#height-metric-section {
+				border-right: none;
+			}
+
 			.section-header {
+				margin: 0 5px 0 5px;
 				height: 31px;
 				color: #444444;
 				overflow: hidden;
 				padding: 5px;
+
+				&#area-metric-header-section,
+				&#height-metric-header-section,
+				&#color-metric-header-section,
+				&#edge-metric-header-section {
+					border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+				}
 			}
 
 			.section-title {
@@ -102,6 +117,10 @@ cc-ribbon-bar {
 			}
 		}
 
+		.section-height-metric-card {
+			border-right: none;
+		}
+
 		.delta-color-section {
 			line-height: 45px;
 			vertical-align: baseline;
@@ -134,6 +153,10 @@ cc-ribbon-bar {
 		}
 	}
 
+	.mat-card:not([class*="mat-elevation-z"]) {
+		box-shadow: none;
+	}
+
 	mat-card,
 	.section .section-header,
 	.section .section-body,
@@ -145,6 +168,12 @@ cc-ribbon-bar {
 	mat-card.ai-card {
 		max-width: 120px;
 		min-width: 120px;
+	}
+
+	mat-card.link-color-metric-to-height-metric-card {
+		display: flex;
+		justify-content: center;
+		flex-grow: 0;
 	}
 
 	mat-card.scenario-card {
