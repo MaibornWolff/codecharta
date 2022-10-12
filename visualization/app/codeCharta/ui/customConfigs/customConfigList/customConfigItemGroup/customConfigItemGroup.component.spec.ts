@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing"
-import { CustomConfigsModule } from "../customConfigs.module"
+import { CustomConfigsModule } from "../../customConfigs.module"
 import { MatDialog, MatDialogRef } from "@angular/material/dialog"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { CustomConfigItemGroupComponent } from "./customConfigItemGroup.component"
-import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../util/dataMocks"
-import { CustomConfigHelper } from "../../../util/customConfigHelper"
-import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
+import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../util/dataMocks"
+import { CustomConfigHelper } from "../../../../util/customConfigHelper"
+import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
+import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 
 describe("customConfigItemGroupComponent", () => {
 	let mockedDialog = { open: jest.fn() }

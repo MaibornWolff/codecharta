@@ -7,7 +7,7 @@ import { UploadCustomConfigButtonModule } from "./uploadCustomConfigButton/uploa
 import { AddCustomConfigButtonModule } from "./addCustomConfigButton/addCustomConfigButton.module"
 import { DownloadCustomConfigButtonModule } from "./downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
-import { CustomConfigItemGroupComponent } from "./customConfigList/customConfigItemGroup.component"
+import { CustomConfigItemGroupComponent } from "./customConfigList/customConfigItemGroup/customConfigItemGroup.component"
 
 @NgModule({
 	imports: [MaterialModule, CommonModule, UploadCustomConfigButtonModule, AddCustomConfigButtonModule, DownloadCustomConfigButtonModule],
