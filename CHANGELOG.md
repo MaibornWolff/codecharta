@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Add description and documentation to Custom View modal [#3085](https://github.com/MaibornWolff/codecharta/pull/3085)
+
 ### Fixed 🐞
 
 -   Fix interactive GitLogParser using wrong dialogue with repo-scan subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
