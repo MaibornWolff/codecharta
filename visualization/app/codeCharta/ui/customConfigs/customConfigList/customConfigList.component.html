@@ -9,12 +9,16 @@
 			<cc-add-custom-config-button class="custom-configs-button-in-custom-views"></cc-add-custom-config-button>
 		</div>
 	</div>
+	<div class="description">
+		Custom Views allow you to save and upload your individual configurations for certain maps. Find out more about Custom Views in the
+		<a href="https://maibornwolff.github.io/codecharta/docs/custom-view/" target="_blank" rel="noopener noreferrer">documentation</a>.
+	</div>
 	<mat-divider></mat-divider>
 	<div
 		class="no-custom-configs-box"
 		*ngIf="dropDownCustomConfigItemGroups.applicableItems.size === 0 && dropDownCustomConfigItemGroups.nonApplicableItems.size === 0"
 	>
-		<span>It is time to add your first Custom View!</span>
+		It is time to add your first Custom View!
 	</div>
 	<mat-accordion class="custom-config-container" [multi]="true">
 		<cc-custom-config-item-group
