@@ -40,6 +40,7 @@ import { AutoFitCodeMapEffect } from "./codeCharta/state/effects/autoFitCodeMapC
 import { CodeChartaModule } from "./codeCharta/codeCharta.module"
 import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
+import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
 import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAttributeTypes/updateAttributeTypes.effect"
 
 @NgModule({
@@ -59,6 +60,7 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 			RenderCodeMapEffect,
 			AutoFitCodeMapEffect,
 			UpdateVisibleTopLabelsEffect,
+			LinkColorMetricToHeightMetricEffect,
 			UpdateAttributeTypesEffect,
 			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect
 		]),
