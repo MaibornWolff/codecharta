@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add description and documentation to Custom View modal [#3085](https://github.com/MaibornWolff/codecharta/pull/3085)
 -   Add a new button that links the height metric to the color metric so that the colour metric is automatically set to
     the selected height metric [#3058](https://github.com/MaibornWolff/codecharta/pull/3058)
     , [#3086](https://github.com/MaibornWolff/codecharta/pull/3086) <br/>
