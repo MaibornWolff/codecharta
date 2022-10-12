@@ -53,7 +53,7 @@
 	></cc-height-settings-panel>
 </mat-card>
 
-<mat-card class="link-color-metric-to-height-metric-card">
+<mat-card *ngIf="!(isDeltaState$ | async)" class="link-color-metric-to-height-metric-card">
 	<cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
 </mat-card>
 
