@@ -72,6 +72,8 @@ docs:
             url: /docs/user-controls/
           - title: "Timeline"
             url: /docs/timeline/
+          - title: "Custom View"
+            url: /docs/custom-view/
 
     - title: Reference
       children:
