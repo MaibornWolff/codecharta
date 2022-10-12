@@ -29,18 +29,23 @@ export function getCustomConfigItemGroups(
 			})
 		}
 
-		const customConfigItemApplicable =
-			fileMapCheckSumsByMapSelectionMode.get(customConfig.mapSelectionMode)?.join(";") === customConfig.mapChecksum
+		const isCustomConfigItemApplicable = customConfig.mapChecksum
+			.split(";")
+			.some(
+				checksum =>
+					fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.MULTIPLE)?.includes(checksum) ||
+					fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.DELTA)?.includes(checksum)
+			)
 
 		customConfigItemGroups.get(groupKey).customConfigItems.push({
 			id: customConfig.id,
 			name: customConfig.name,
 			mapNames: customConfig.assignedMaps.join(" "),
 			mapSelectionMode: customConfig.mapSelectionMode,
-			isApplicable: customConfigItemApplicable
+			isApplicable: isCustomConfigItemApplicable
 		})
 
-		if (customConfigItemApplicable) {
+		if (isCustomConfigItemApplicable) {
 			customConfigItemGroups.get(groupKey).hasApplicableItems = true
 		}
 
