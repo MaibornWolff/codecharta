@@ -12,7 +12,7 @@ export class SplitStateActionsEffect {
 	splitStateActions$ = createEffect(
 		() =>
 			this.actions$.pipe(
-				map(action => splitStateActions(action)),
+				map(() => splitStateActions()),
 				filter(Boolean),
 				tap(splittedActions => {
 					for (const splittedAction of splittedActions) {
