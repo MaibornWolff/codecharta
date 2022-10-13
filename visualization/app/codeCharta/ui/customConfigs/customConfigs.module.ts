@@ -8,10 +8,12 @@ import { AddCustomConfigButtonModule } from "./addCustomConfigButton/addCustomCo
 import { DownloadCustomConfigButtonModule } from "./downloadCustomConfigsButton/downloadCustomConfigButton.module"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
 import { CustomConfigItemGroupComponent } from "./customConfigList/customConfigItemGroup/customConfigItemGroup.component"
+import { IsCustomConfigApplicableService } from "./customConfigList/customConfigItemGroup/isCustomConfigApplicable.service"
 
 @NgModule({
 	imports: [MaterialModule, CommonModule, UploadCustomConfigButtonModule, AddCustomConfigButtonModule, DownloadCustomConfigButtonModule],
 	declarations: [CustomConfigsComponent, CustomConfigListComponent, CustomConfigItemGroupComponent],
+	providers: [IsCustomConfigApplicableService],
 	exports: [CustomConfigsComponent],
 	entryComponents: [CustomConfigListComponent]
 })

@@ -7,7 +7,7 @@ import { CustomConfigMapSelectionMode } from "../../model/customConfig/customCon
 export interface CustomConfigItem {
 	id: string
 	name: string
-	mapNames: string
+	assignedMaps: Map<string, string>
 	mapSelectionMode: CustomConfigMapSelectionMode
 	isApplicable: boolean
 }
