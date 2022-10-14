@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.Project
@@ -16,7 +17,8 @@ class CSVProjectBuilder(
     private val pathSeparator: Char,
     private val csvDelimiter: Char,
     metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-    attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges")
+    attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges"),
+    attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
 ) {
 
     private val logger = KotlinLogging.logger {}
@@ -25,6 +27,7 @@ class CSVProjectBuilder(
     private val projectBuilder = ProjectBuilder()
         .withMetricTranslator(metricNameTranslator)
         .addAttributeTypes(attributeTypes)
+        .addAttributeDescriptions(attributeDescriptors)
 
     fun parseCSVStream(inStream: InputStream): ProjectBuilder {
         val parser = createParser(inStream)

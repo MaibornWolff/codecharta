@@ -6,8 +6,9 @@ open class ProjectBuilder(
     private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
     private var edges: MutableList<Edge> = mutableListOf(),
     private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
+    private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
     private var blacklist: MutableList<BlacklistItem> = mutableListOf()
-                         ) {
+    ) {
 
     val DUMMY_PROJECT_NAME = ""
 
@@ -53,14 +54,14 @@ open class ProjectBuilder(
         edges.forEach { it.translateMetrics(metricNameTranslator) }
 
         filterEmptyFolders()
-
         val project = Project(
             DUMMY_PROJECT_NAME,
             nodes.map { it.toNode() }.toList(),
             edges = edges.toList(),
             attributeTypes = attributeTypes.toMap(),
+            attributeDescriptors = attributeDescriptors.toMap(),
             blacklist = blacklist.toList()
-                             )
+        )
 
         System.err.println()
         System.err.println("Created Project with ${project.size} leaves.")
@@ -80,6 +81,18 @@ open class ProjectBuilder(
         }
         return this
     }
+
+    fun addAttributeDescriptions(descriptions: Map<String, AttributeDescriptor>): ProjectBuilder {
+        attributeDescriptors.putAll(descriptions)
+        return this
+    }
+
+    fun getAttributeSet(): Set<String> {
+        return setOf()
+    }
+
+    // TODO: getAttributeList get list of all named attributes (metrics) in a node set
+    // TODO: removeUnusedAttributeDescriptors given a list of used attributes, removes all that are not used anymore from the description list
 
     override fun toString(): String {
         return "Project{nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, blacklist=$blacklist}"

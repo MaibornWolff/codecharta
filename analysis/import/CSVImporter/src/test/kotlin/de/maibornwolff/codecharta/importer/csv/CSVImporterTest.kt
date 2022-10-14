@@ -35,8 +35,10 @@ class CSVImporterTest {
             )
         )
         val file = File("src/test/resources/csvimporter.cc.json")
-        val testJsonString = File("src/test/resources/csvimporter.cc.json").readText()
-        val expectedJsonString = File("src/test/resources/csvimporter_different_path_column_name.cc.json").readText()
+        val expectedJsonFile = File("src/test/resources/csvimporter_different_path_column_name.cc.json")
+        val testJsonString = file.readText()
+        System.err.println(testJsonString)
+        val expectedJsonString = expectedJsonFile.readText()
         file.deleteOnExit()
 
         JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.STRICT)

@@ -4,6 +4,7 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
@@ -19,6 +20,7 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
         val listOfEdgesType = object : TypeToken<List<Edge>>() {}.type
         val listOfBlacklistType = object : TypeToken<List<BlacklistItem>>() {}.type
         val mapOfAttributeTypes = object : TypeToken<Map<String, Map<String, AttributeType>>>() {}.type
+        val mapOfAttributeDescriptors = object : TypeToken<Map<String, AttributeDescriptor>>() {}.type
 
         val projectName = jsonNode.get("projectName")?.asString ?: ""
         val nodes = context.deserialize<List<Node>>(jsonNode.get("nodes"), listOfNodesType) ?: listOf()
@@ -29,9 +31,13 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
                 jsonNode.get("attributeTypes"),
                 mapOfAttributeTypes
             ) ?: mapOf()
+        val attributeDescriptors = context.deserialize<Map<String, AttributeDescriptor>>(
+            jsonNode.get("attributeDescriptors"),
+            mapOfAttributeDescriptors
+        ) ?: mapOf()
         val blacklist =
             context.deserialize<List<BlacklistItem>>(jsonNode.get("blacklist"), listOfBlacklistType) ?: listOf()
 
-        return Project(projectName, nodes, apiVersion, edges, attributeTypes, blacklist)
+        return Project(projectName, nodes, apiVersion, edges, attributeTypes, attributeDescriptors, blacklist)
     }
 }

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
@@ -23,6 +24,7 @@ class NodeRemover(private val project: Project) {
             removeNodes(pathSegments),
             removeEdges(paths),
             copyAttributeTypes(),
+            copyAttributeDescriptors(),
             removeBlacklistItems(paths)
         ).build()
     }
@@ -53,6 +55,10 @@ class NodeRemover(private val project: Project) {
             mergedAttributeTypes[it.key] = it.value
         }
         return mergedAttributeTypes.toMutableMap()
+    }
+
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
+        return project.attributeDescriptors.toMutableMap()
     }
 
     private fun removeBlacklistItems(paths: Array<String>): MutableList<BlacklistItem> {

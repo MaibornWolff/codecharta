@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
@@ -18,6 +19,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 mergeProjectNodes(),
                 mergeEdges(),
                 mergeAttributeTypes(),
+                mergeAttributeDescriptors(),
                 mergeBlacklist()
             ).build()
             else -> throw MergeException("API versions not supported.")
@@ -77,6 +79,12 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
             }
         }
         return mergedAttributeTypes
+    }
+
+    private fun mergeAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
+        val mergedAttributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
+        projects.forEach { mergedAttributeDescriptors.plus(it.attributeDescriptors) }
+        return mergedAttributeDescriptors
     }
 
     private fun mergeBlacklist(): MutableList<BlacklistItem> {
