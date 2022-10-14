@@ -36,16 +36,35 @@ function isSetStateAction(action: Action): action is SetStateAction {
 // ToDo: Clarify what to do with these keys, what should happen when key does not exist? Broken app?
 const removedKeysFromStore = new Set(["recentFiles", "isAttributeSideBarVisible"])
 
-function applyPartialState<T>(applyTo: T, toBeApplied: unknown): T {
+const objectWithDynamicKeysInStore = new Set([
+	"fileSettings.attributeTypes",
+	"fileSettings.blacklist",
+	"fileSettings.edges",
+	"fileSettings.markedPackages",
+	"dynamicSettings.focusedNodePath",
+	"files" // ToDo; this should be a Map with an unique id
+])
+
+function applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = []): T {
 	for (const [key, value] of Object.entries(toBeApplied)) {
+		if (value === null || value === undefined) {
+			continue
+		}
+
+		const newComposedPath = [...composedPath, key]
+		const composedJoinedPath = newComposedPath.join(".")
+
 		if (!isKeyOf(applyTo, key)) {
 			if (removedKeysFromStore.has(key)) {
 				continue
 			}
-			throw new Error(`cannot restore key "${key}" as it doesn't exist in store`)
+			throw new Error(`cannot restore key "${composedJoinedPath}" as it doesn't exist in store`)
 		}
 
-		applyTo[key] = typeof value !== "object" ? value : applyPartialState(applyTo[key], value)
+		applyTo[key] =
+			typeof value !== "object" || objectWithDynamicKeysInStore.has(composedJoinedPath)
+				? value
+				: applyPartialState(applyTo[key], value, newComposedPath)
 	}
 
 	return applyTo

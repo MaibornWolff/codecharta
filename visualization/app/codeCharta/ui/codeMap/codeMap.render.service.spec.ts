@@ -32,7 +32,6 @@ import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
-import { splitStateActions } from "../../state/store/state.splitter"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
@@ -77,9 +76,7 @@ describe("codeMapRenderService", () => {
 		map = klona(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
-		for (const splittedAction of splitStateActions(setState(STATE))) {
-			storeService.dispatch(splittedAction)
-		}
+		storeService.dispatch(setState(STATE))
 		storeService.dispatch(unfocusNode())
 		mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
 	}
