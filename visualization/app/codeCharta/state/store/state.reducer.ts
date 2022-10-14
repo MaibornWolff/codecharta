@@ -20,6 +20,7 @@ const appReducer = combineReducers({
 
 const rootReducer = (state: State, action: Action) => {
 	if (isSetStateAction(action)) {
+		// we don't clone the state because of class instances in there
 		return applyPartialState(state, action.payload)
 	}
 
@@ -32,7 +33,7 @@ function isSetStateAction(action: Action): action is SetStateAction {
 	return action.type === StateActions.SET_STATE
 }
 
-// That is one reason why the splitter architecture was a bad idea -.-
+// ToDo: Clarify what to do with these keys, what should happen when key does not exist? Broken app?
 const removedKeysFromStore = new Set(["recentFiles", "isAttributeSideBarVisible"])
 
 function applyPartialState<T>(applyTo: T, toBeApplied: unknown): T {

@@ -24,6 +24,7 @@ import { HeightMetricActions } from "../../store/dynamicSettings/heightMetric/he
 import { MarginActions } from "../../store/dynamicSettings/margin/margin.actions"
 import { SearchPatternActions } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { MarkedPackagesActions } from "../../store/fileSettings/markedPackages/markedPackages.actions"
+import { StateActions } from "../../store/state.actions"
 
 export const actionsRequiringRerender = [
 	ColorLabelsActions,
@@ -51,5 +52,6 @@ export const actionsRequiringRerender = [
 	AreaMetricActions,
 	ColorMetricActions,
 	ShowOnlyBuildingsWithEdgesActions,
-	MarkedPackagesActions
+	MarkedPackagesActions,
+	StateActions
 ]
