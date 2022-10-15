@@ -25,14 +25,6 @@ interface Coordinates {
 	y: number
 }
 
-export interface BuildingHoveredSubscriber {
-	onBuildingHovered(hoveredBuilding: CodeMapBuilding)
-}
-
-export interface BuildingUnhoveredSubscriber {
-	onBuildingUnhovered()
-}
-
 export enum ClickType {
 	LeftClick = 0,
 	RightClick = 2
@@ -46,8 +38,6 @@ export enum CursorType {
 }
 
 export class CodeMapMouseEventService implements FilesSelectionSubscriber, BlacklistSubscriber {
-	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
-	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
 
 	private highlightedInTreeView: CodeMapBuilding
@@ -97,18 +87,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 
 	static changeCursorIndicator(cursorIcon: CursorType) {
 		document.body.style.cursor = cursorIcon
-	}
-
-	static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
-		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (_event, data) => {
-			subscriber.onBuildingHovered(data.hoveredBuilding)
-		})
-	}
-
-	static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
-		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, () => {
-			subscriber.onBuildingUnhovered()
-		})
 	}
 
 	start() {
@@ -407,7 +385,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 			}
 		}
 		this.threeSceneService.highlightBuildings()
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding })
 		if (this.hoveredNodeId !== hoveredBuilding.node.id) {
 			this.hoveredNodeId = hoveredBuilding.node.id
 			this.storeService.dispatch(setHoveredNodeId(hoveredBuilding.node.id))
@@ -438,7 +415,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 			this.threeSceneService.clearHighlight()
 		}
 
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 		this.hoveredNodeId = null
 		this.storeService.dispatch(setHoveredNodeId(null))
 	}
