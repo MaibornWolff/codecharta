@@ -20,7 +20,7 @@ angular
 	.factory("viewCubeMouseEvents", downgradeInjectable(ViewCubeMouseEventsService))
 	.service(camelCase(CodeMapRenderService.name), CodeMapRenderService)
 	.service(camelCase(CodeMapMouseEventService.name), CodeMapMouseEventService)
-	.service(camelCase(CodeMapLabelService.name), CodeMapLabelService)
+	.factory("codeMapLabelService", downgradeInjectable(CodeMapLabelService))
 	.factory("codeMapArrowService", downgradeInjectable(CodeMapArrowService))
 
 @NgModule({
