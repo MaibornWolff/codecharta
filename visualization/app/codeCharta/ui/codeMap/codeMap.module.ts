@@ -21,7 +21,7 @@ angular
 	.service(camelCase(CodeMapRenderService.name), CodeMapRenderService)
 	.service(camelCase(CodeMapMouseEventService.name), CodeMapMouseEventService)
 	.service(camelCase(CodeMapLabelService.name), CodeMapLabelService)
-	.service(camelCase(CodeMapArrowService.name), CodeMapArrowService)
+	.factory("codeMapArrowService", downgradeInjectable(CodeMapArrowService))
 
 @NgModule({
 	imports: [CommonModule, ViewCubeModule, AttributeSideBarModule],
