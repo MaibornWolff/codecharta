@@ -1,5 +1,4 @@
 import angular from "angular"
-import camelCase from "lodash.camelcase"
 import { downgradeInjectable } from "@angular/upgrade/static"
 
 import "./threeViewer/threeViewer.module"
@@ -18,10 +17,10 @@ import { CodeMapComponent } from "./codeMap.component"
 angular
 	.module("app.codeCharta.ui.codeMap", ["app.codeCharta.state", "app.codeCharta", "app.codeCharta.ui.codeMap.threeViewer"])
 	.factory("viewCubeMouseEvents", downgradeInjectable(ViewCubeMouseEventsService))
-	.service(camelCase(CodeMapRenderService.name), CodeMapRenderService)
-	.service(camelCase(CodeMapMouseEventService.name), CodeMapMouseEventService)
 	.factory("codeMapLabelService", downgradeInjectable(CodeMapLabelService))
 	.factory("codeMapArrowService", downgradeInjectable(CodeMapArrowService))
+	.factory("codeMapRenderService", downgradeInjectable(CodeMapRenderService))
+	.factory("codeMapMouseEventService", downgradeInjectable(CodeMapMouseEventService))
 
 @NgModule({
 	imports: [CommonModule, ViewCubeModule, AttributeSideBarModule],

@@ -15,7 +15,7 @@ import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.
 import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { codeChartaServiceProvider, CodeMapMouseEventServiceTokenProvider } from "./codeCharta/services/ajs-upgraded-providers"
+import { codeChartaServiceProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
@@ -84,7 +84,6 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 	],
 	providers: [
 		codeChartaServiceProvider,
-		CodeMapMouseEventServiceTokenProvider,
 		VersionService,
 		{
 			provide: APP_INITIALIZER,

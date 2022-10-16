@@ -9,7 +9,6 @@ import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
-import { CodeMapRenderService } from "../ui/codeMap/codeMap.render.service"
 export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
@@ -22,7 +21,6 @@ export class InjectorService {
 		private blacklistService: BlacklistService,
 		private sharpnessModeService: SharpnessModeService,
 		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService,
-		private codeMapRenderService: CodeMapRenderService
 	) {
 		"ngInject"
 	}
