@@ -1,9 +1,7 @@
-import "./codeCharta.module"
+import { TestBed } from "@angular/core/testing"
 import { CodeChartaService } from "./codeCharta.service"
-import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
 import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
-import { StoreService } from "./state/store.service"
 import { removeFile, setDeltaReference, setFiles, setStandard } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isPartialState } from "./model/files/files.helper"
@@ -12,10 +10,11 @@ import packageJson from "../../package.json"
 import { clone } from "./util/clone"
 import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { klona } from "klona"
-import { Store } from "./state/store/store"
 import { MatDialog } from "@angular/material/dialog"
 import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.component"
 import { loadFilesValidationToErrorDialog } from "./util/loadFilesValidationToErrorDialog"
+import { Store } from "./state/angular-redux/store"
+import { State } from "./state/angular-redux/state"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("./state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -24,7 +23,8 @@ jest.mock("./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
-	let storeService: StoreService
+	let store: Store
+	let state: State
 	let dialog: MatDialog
 	let validFileContent: ExportCCFile
 	let metricData: NodeMetricData[]
@@ -36,26 +36,25 @@ describe("codeChartaService", () => {
 
 		validFileContent = clone(TEST_FILE_CONTENT)
 
-		metricData = clone([
+		metricData = [
 			{ name: "mcc", maxValue: 1, minValue: 1 },
 			{ name: "rloc", maxValue: 2, minValue: 1 }
-		])
-		storeService.dispatch(setFiles([]))
+		]
+		store.dispatch(setFiles([]))
 	})
 
 	afterEach(() => {
-		codeChartaService.unsubscribeReferenceFileSubscription()
+		codeChartaService.referenceFileSubscription.unsubscribe()
 	})
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta")
-		storeService = getService<StoreService>("storeService")
-		Store["_store"] = storeService["store"]
+		store = TestBed.inject(Store)
+		state = TestBed.inject(State)
 		dialog = { open: jest.fn() } as unknown as MatDialog
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(storeService, dialog)
+		codeChartaService = new CodeChartaService(store, state, dialog)
 	}
 
 	describe("loadFiles", () => {
@@ -136,8 +135,8 @@ describe("codeChartaService", () => {
 				}
 			])
 
-			expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
-			expect(isPartialState(storeService.getState().files)).toBeTruthy()
+			expect(getCCFiles(state.getValue().files)[0]).toEqual(expected)
+			expect(isPartialState(state.getValue().files)).toBeTruthy()
 		})
 
 		it("should load a valid file and update root data", () => {
@@ -149,8 +148,8 @@ describe("codeChartaService", () => {
 				}
 			])
 
-			expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
-			expect(isPartialState(storeService.getState().files)).toBeTruthy()
+			expect(getCCFiles(state.getValue().files)[0]).toEqual(expected)
+			expect(isPartialState(state.getValue().files)).toBeTruthy()
 			expect(dialog.open).not.toHaveBeenCalled()
 
 			expect(CodeChartaService.ROOT_NAME).toEqual(expected.map.name)
@@ -167,7 +166,7 @@ describe("codeChartaService", () => {
 				{ fileName: "SecondFile", content: valid2ndFileContent, fileSize: 42 }
 			])
 
-			const CCFilesUnderTest = getCCFiles(storeService.getState().files)
+			const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
 			expect(CCFilesUnderTest.length).toEqual(2)
 			expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
@@ -188,7 +187,7 @@ describe("codeChartaService", () => {
 				{ fileName: "FirstFile", content: valid3rdFileContent, fileSize: 42 }
 			])
 
-			const CCFilesUnderTest = getCCFiles(storeService.getState().files)
+			const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
 			expect(CCFilesUnderTest.length).toEqual(3)
 			expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
@@ -214,7 +213,7 @@ describe("codeChartaService", () => {
 				{ fileName: "FirstFile", content: valid2ndFileContent, fileSize: 42 }
 			])
 
-			const CCFilesUnderTest = getCCFiles(storeService.getState().files)
+			const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
 			expect(CCFilesUnderTest.length).toEqual(3)
 			expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
@@ -234,7 +233,7 @@ describe("codeChartaService", () => {
 			)
 			codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
 
-			const CCFilesUnderTest = getCCFiles(storeService.getState().files)
+			const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
 			expect(CCFilesUnderTest.length).toEqual(1)
 			expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
@@ -248,8 +247,8 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
 			codeChartaService.loadFiles([{ fileName: "SecondFile", content: valid2ndFileContent, fileSize: 42 }])
 
-			expect(storeService.getState().files[0].selectedAs).toEqual("None")
-			expect(storeService.getState().files[1].selectedAs).toEqual("Partial")
+			expect(state.getValue().files[0].selectedAs).toEqual("None")
+			expect(state.getValue().files[1].selectedAs).toEqual("Partial")
 		})
 
 		it("should show error on invalid file", () => {
@@ -263,7 +262,7 @@ describe("codeChartaService", () => {
 
 			expect(() => codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])).toThrow("No files could be uploaded")
 
-			expect(storeService.getState().files).toHaveLength(0)
+			expect(state.getValue().files).toHaveLength(0)
 			expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })
 		})
 
@@ -280,7 +279,7 @@ describe("codeChartaService", () => {
 				"No files could be uploaded"
 			)
 
-			expect(storeService.getState().files).toHaveLength(0)
+			expect(state.getValue().files).toHaveLength(0)
 			expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })
 		})
 
@@ -299,7 +298,7 @@ describe("codeChartaService", () => {
 				"No files could be uploaded"
 			)
 
-			expect(storeService.getState().files).toHaveLength(0)
+			expect(state.getValue().files).toHaveLength(0)
 			expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })
 		})
 
@@ -315,7 +314,7 @@ describe("codeChartaService", () => {
 			])
 
 			const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
-			expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
+			expect(getCCFiles(state.getValue().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
 		})
 
 		it("should not show a validation error if filenames are duplicated when their path is different", () => {
@@ -325,7 +324,7 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
 			expect(dialog.open).toHaveBeenCalledTimes(0)
-			expect(storeService.getState().files).toHaveLength(1)
+			expect(state.getValue().files).toHaveLength(1)
 		})
 
 		it("should show a validation error if two files in a folder have the same name", () => {
@@ -355,7 +354,7 @@ describe("codeChartaService", () => {
 			codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
 			expect(dialog.open).toHaveBeenCalledTimes(0)
-			expect(storeService.getState().files).toHaveLength(1)
+			expect(state.getValue().files).toHaveLength(1)
 		})
 
 		it("should remove a file", () => {
@@ -364,9 +363,9 @@ describe("codeChartaService", () => {
 				{ fileName: "SecondFile", content: validFileContent, fileSize: 42 }
 			])
 
-			storeService.dispatch(removeFile("FirstFile"))
-			expect(storeService.getState().files).toHaveLength(1)
-			expect(storeService.getState().files[0].file.fileMeta.fileName).toEqual("SecondFile")
+			store.dispatch(removeFile("FirstFile"))
+			expect(state.getValue().files).toHaveLength(1)
+			expect(state.getValue().files[0].file.fileMeta.fileName).toEqual("SecondFile")
 		})
 	})
 
@@ -374,13 +373,13 @@ describe("codeChartaService", () => {
 		codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
 		const updateRootDataSpy = jest.spyOn(CodeChartaService, "updateRootData")
 
-		const newReferenceFile = storeService.getState().files[0].file
-		storeService.dispatch(setDeltaReference(newReferenceFile))
+		const newReferenceFile = state.getValue().files[0].file
+		store.dispatch(setDeltaReference(newReferenceFile))
 		expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
-		expect(updateRootDataSpy).toHaveBeenCalledWith(storeService.getState().files[0].file.map.name)
+		expect(updateRootDataSpy).toHaveBeenCalledWith(state.getValue().files[0].file.map.name)
 
 		// set reference file to a partial selected file. Therefore reference file becomes undefined
-		storeService.dispatch(setStandard([storeService.getState().files[0].file]))
+		store.dispatch(setStandard([state.getValue().files[0].file]))
 		expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
 	})
 })
