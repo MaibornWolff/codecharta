@@ -18,7 +18,8 @@ import { maxFPS, RenderCodeMapEffect } from "./renderCodeMap.effect"
 
 describe("renderCodeMapEffect", () => {
 	let mockedStore
-	let threeRendererRenderSpy: jest.Mock
+	let threeRendererService: ThreeRendererService
+	let codeMapRenderService: CodeMapRenderService
 
 	beforeEach(async () => {
 		mockedStore = {
@@ -32,9 +33,9 @@ describe("renderCodeMapEffect", () => {
 			},
 			dispatch: jest.fn()
 		}
-		threeRendererRenderSpy = jest.fn()
+		threeRendererService = { render: jest.fn() } as unknown as ThreeRendererService
+		codeMapRenderService = { render: jest.fn(), scaleMap: jest.fn() } as unknown as CodeMapRenderService
 
-		CodeMapRenderService.instance = { render: jest.fn(), scaleMap: jest.fn() } as unknown as CodeMapRenderService
 		EffectsModule.actions$ = new Subject<Action>()
 
 		TestBed.configureTestingModule({
@@ -42,7 +43,8 @@ describe("renderCodeMapEffect", () => {
 			providers: [
 				{ provide: Store, useValue: mockedStore },
 				{ provide: UploadFilesService, useValue: { isUploading: false } },
-				{ provide: ThreeRendererService, useValue: { render: threeRendererRenderSpy } }
+				{ provide: ThreeRendererService, useValue: threeRendererService },
+				{ provide: CodeMapRenderService, useValue: codeMapRenderService }
 			]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise
@@ -55,19 +57,19 @@ describe("renderCodeMapEffect", () => {
 	it("should render once throttled after actions requiring rerender, but not scale map", async () => {
 		EffectsModule.actions$.next(setInvertArea(true))
 		EffectsModule.actions$.next(setInvertArea(true))
-		expect(CodeMapRenderService.instance.render).toHaveBeenCalledTimes(0)
-		expect(threeRendererRenderSpy).toHaveBeenCalledTimes(0)
+		expect(codeMapRenderService.render).toHaveBeenCalledTimes(0)
+		expect(threeRendererService.render).toHaveBeenCalledTimes(0)
 
 		await wait(maxFPS)
-		expect(CodeMapRenderService.instance.render).toHaveBeenCalledTimes(1)
-		expect(threeRendererRenderSpy).toHaveBeenCalledTimes(1)
-		expect(CodeMapRenderService.instance.scaleMap).not.toHaveBeenCalled()
+		expect(codeMapRenderService.render).toHaveBeenCalledTimes(1)
+		expect(threeRendererService.render).toHaveBeenCalledTimes(1)
+		expect(codeMapRenderService.scaleMap).not.toHaveBeenCalled()
 	})
 
 	it("should scale map when scaling changes", async () => {
 		EffectsModule.actions$.next(setScaling(new Vector3(1, 1, 1)))
 		await wait(maxFPS)
-		expect(CodeMapRenderService.instance.scaleMap).toHaveBeenCalledTimes(1)
+		expect(codeMapRenderService.scaleMap).toHaveBeenCalledTimes(1)
 	})
 
 	it("should remove loading indicators after render", async () => {

@@ -8,12 +8,3 @@ export const codeChartaServiceProvider = {
 	},
 	deps: ["$injector"]
 }
-
-export const CodeMapMouseEventServiceToken = new InjectionToken("CodeMapMouseEventService")
-export const CodeMapMouseEventServiceTokenProvider = {
-	provide: CodeMapMouseEventServiceToken,
-	useFactory: function CodeMapMouseEventServiceTokenFactory(injector: Injector) {
-		return injector.get("codeMapMouseEventService")
-	},
-	deps: ["$injector"]
-}

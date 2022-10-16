@@ -34,6 +34,9 @@ export function instantiateModule(id: string) {
 	angular.mock.module(($provide: ng.auto.IProvideService) => {
 		$provide.value("codeMapLabelService", { addLeafLabel: jest.fn(), clearTemporaryLabel: jest.fn() })
 	})
+	angular.mock.module(($provide: ng.auto.IProvideService) => {
+		$provide.value("codeMapMouseEventService", {})
+	})
 }
 
 export function getService<T>(id: string): T {
