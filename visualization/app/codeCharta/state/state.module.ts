@@ -1,5 +1,4 @@
 import angular from "angular"
-import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
@@ -12,7 +11,6 @@ import camelCase from "lodash.camelcase"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
-	.service(camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(camelCase(FilesService.name), FilesService)
 	.service(camelCase(MapSizeService.name), MapSizeService)
 	.service(camelCase(MarkedPackagesService.name), MarkedPackagesService)
