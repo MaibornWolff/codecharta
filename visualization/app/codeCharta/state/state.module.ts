@@ -10,7 +10,6 @@ import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
 import "../codeCharta.module"
 import camelCase from "lodash.camelcase"
-import { SharpnessModeService } from "./store/appSettings/sharpnessMode/sharpnessMode.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
@@ -23,4 +22,3 @@ angular
 	.service(camelCase(BlacklistService.name), BlacklistService)
 	.service(camelCase(InjectorService.name), InjectorService)
 	.service(camelCase(StoreService.name), StoreService)
-	.service(camelCase(SharpnessModeService.name), SharpnessModeService)
