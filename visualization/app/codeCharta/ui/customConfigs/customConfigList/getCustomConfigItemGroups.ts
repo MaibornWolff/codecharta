@@ -18,39 +18,30 @@ export function getCustomConfigItemGroups(
 	const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
 
 	for (const customConfig of CustomConfigHelper.loadCustomConfigs().values()) {
-		const mapNameByChecksum = new Map<string, string>()
 		const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
 		const mapCheckSums = customConfig.mapChecksum.split(";")
-		const assignedMaps = customConfig.assignedMaps
-
-		if (!customConfigItemGroups.has(groupKey)) {
-			customConfigItemGroups.set(groupKey, {
-				mapNames: customConfig.assignedMaps.join(" "),
-				mapSelectionMode: customConfig.mapSelectionMode,
-				hasApplicableItems: false,
-				customConfigItems: []
-			})
-		}
-
 		const isCustomConfigItemApplicable = mapCheckSums.some(
 			checksum =>
 				fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.MULTIPLE)?.includes(checksum) ||
 				fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.DELTA)?.includes(checksum)
 		)
 
-		mapCheckSums.map((checksum, index) => mapNameByChecksum.set(checksum, assignedMaps[index]))
+		if (!customConfigItemGroups.has(groupKey)) {
+			customConfigItemGroups.set(groupKey, {
+				mapNames: customConfig.assignedMaps.join(" "),
+				mapSelectionMode: customConfig.mapSelectionMode,
+				hasApplicableItems: isCustomConfigItemApplicable,
+				customConfigItems: []
+			})
+		}
 
 		customConfigItemGroups.get(groupKey).customConfigItems.push({
 			id: customConfig.id,
 			name: customConfig.name,
-			assignedMaps: mapNameByChecksum,
+			assignedMaps: new Map(mapCheckSums.map((checksum, index) => [checksum, customConfig.assignedMaps[index]])),
 			mapSelectionMode: customConfig.mapSelectionMode,
 			isApplicable: isCustomConfigItemApplicable
 		})
-
-		if (isCustomConfigItemApplicable) {
-			customConfigItemGroups.get(groupKey).hasApplicableItems = true
-		}
 
 		if (customConfigItemGroups.get(groupKey).hasApplicableItems) {
 			customConfigGroups.applicableItems.set(groupKey, customConfigItemGroups.get(groupKey))
