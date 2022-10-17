@@ -4,7 +4,6 @@ import { CustomConfigItemGroup } from "../../customConfigs.component"
 import { Store } from "../../../../state/angular-redux/store"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
-import { IsCustomConfigApplicableService } from "./isCustomConfigApplicable.service"
 
 @Component({
 	selector: "cc-custom-config-item-group",
@@ -16,7 +15,6 @@ export class CustomConfigItemGroupComponent {
 
 	constructor(
 		@Inject(Store) private store: Store,
-		@Inject(IsCustomConfigApplicableService) public isCustomConfigApplicableService: IsCustomConfigApplicableService,
 		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
 		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}

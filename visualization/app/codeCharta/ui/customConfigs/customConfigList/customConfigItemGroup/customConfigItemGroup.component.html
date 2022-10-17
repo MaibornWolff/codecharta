@@ -13,19 +13,16 @@
 		</mat-panel-title>
 	</mat-expansion-panel-header>
 	<mat-list *ngFor="let customConfig of customConfigItemGroup.value.customConfigItems">
-		<mat-list-item title="{{ isCustomConfigApplicableService.customConfigInfoMessage.msg }}">
+		<mat-list-item title="{{ customConfig | customConfig2ApplicableMessage }}">
 			<button
 				mat-dialog-close
-				[style.color]="
-					isCustomConfigApplicableService.customConfigInfoMessage.isFullyApplicable ? 'rgb(0,0,0)' : 'rgba(16,16,16,0.3)'
-				"
 				[disabled]="!customConfig.isApplicable"
 				(click)="applyCustomConfig(customConfig.id)"
-				(mouseover)="isCustomConfigApplicableService.buildMessage(customConfig)"
+				[style.color]="customConfig | customConfig2ApplicableColor"
 			>
 				{{ customConfig.name }}
 			</button>
-			<button class="remove-button" title="Remove Custom Config" (click)="removeCustomConfig(customConfig.id)">
+			<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
 				<i class="fa fa-minus-square"></i>
 			</button>
 		</mat-list-item>
