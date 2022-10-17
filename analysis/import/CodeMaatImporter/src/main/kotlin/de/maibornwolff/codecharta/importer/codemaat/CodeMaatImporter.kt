@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -41,7 +40,7 @@ class CodeMaatImporter(
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes, attributeDescriptors)
+                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes, getAttributeDescriptors())
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
@@ -71,8 +70,6 @@ class CodeMaatImporter(
 
             return AttributeTypes(attributeTypes.toMutableMap(), type)
         }
-
-    private val attributeDescriptors: Map<String, AttributeDescriptor> = getAttributeDescriptors()
 
     companion object {
         @JvmStatic
