@@ -7,11 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.109.1] - 2022-10-12
+
+### Fixed 🐞
+
+-   Fix broken links on new GitHub Page 'Docker Containers' [#3089](https://github.com/MaibornWolff/codecharta/pull/3089)
+
+## [1.109.0] - 2022-10-12
+
 ### Added 🚀
 
+-   Add description and documentation to Custom View modal [#3085](https://github.com/MaibornWolff/codecharta/pull/3085)
 -   Add a new button that links the height metric to the color metric so that the colour metric is automatically set to
-    the selected height metric [#3058](https://github.com/MaibornWolff/codecharta/pull/3058) </br>
-    ![image](https://user-images.githubusercontent.com/72517530/193291144-fdc73a15-2087-47e2-845b-05c666aec71d.png) </br>
+    the selected height metric [#3058](https://github.com/MaibornWolff/codecharta/pull/3058) <br/>
+    ![image](https://user-images.githubusercontent.com/72517530/193291144-fdc73a15-2087-47e2-845b-05c666aec71d.png) <br/>
     ![image](https://user-images.githubusercontent.com/72517530/194300920-60ce9fcd-0dd5-46ef-a90b-01d9a29205e6.png)
 
 ### Fixed 🐞
