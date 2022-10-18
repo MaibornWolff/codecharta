@@ -134,7 +134,7 @@ export function calculateTotalNodeArea(
 	for (const node of hierarchyNode) {
 		if (!isLeaf(node.data) && node.value !== undefined) {
 			const folderAreaValue = node.value
-			totalNodeArea += (folderAreaValue + padding) ** 2 - folderAreaValue ** 2 - padding ** 2
+			totalNodeArea += (folderAreaValue + padding) ** 2 - folderAreaValue ** 2
 		}
 	}
 
@@ -152,8 +152,8 @@ export function calculateTotalNodeArea(
 		amountOfDepthTwo
 	)
 
-	const rootWidth = Math.round(Math.max(rootWidthWithDefaultPadding, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2)))
-	const rootHeight = Math.round(Math.sqrt(totalNodeArea))
+	const rootHeight = Math.round(Math.max(rootWidthWithDefaultPadding, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2)))
+	const rootWidth = Math.round(Math.sqrt(totalNodeArea))
 
 	return { rootWidth, rootHeight, metricSum }
 }

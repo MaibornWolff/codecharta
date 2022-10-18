@@ -23,7 +23,7 @@ function getMetricValuesFromFirstNonZero(areaValues: number[]) {
 	return areaValues.slice(index)
 }
 
-export function getSmallestDifference(childAreaValues: number[]) {
+export function getSmallestValueOrSmallestDifference(childAreaValues: number[]) {
 	let diff = Number.MAX_VALUE
 
 	// childAreaValues is already sorted

@@ -3,7 +3,7 @@ import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../../../codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
 import { calculatePaddingBasedOnBuildingArea } from "./paddingCalculator"
-import { getChildrenAreaValues, getSmallestDifference } from "./modifiedTreeMapHelperFunctions"
+import { getChildrenAreaValues, getSmallestValueOrSmallestDifference } from "./modifiedTreeMapHelperFunctions"
 import { calculateTotalNodeArea } from "./nodeAreaCalculator"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
@@ -149,14 +149,14 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 export function calculateBuildingAreaWithProportionalPadding(
 	area: number,
 	smallestDelta: number,
-	minimumBuildingSize: number,
+	minimumBuildingArea: number,
 	padding: number
 ) {
 	if (area === 0) {
 		return 0
 	}
 
-	const buildingArea = (area / smallestDelta) * minimumBuildingSize
+	const buildingArea = (area / smallestDelta) * minimumBuildingArea
 	return (Math.sqrt(buildingArea) + padding) ** 2
 }
 
@@ -180,7 +180,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	// from hierarchy Node to areas
 	const childrenAreaValues = getChildrenAreaValues(hierarchyNode, state)
 
-	const smallestDelta = getSmallestDifference(childrenAreaValues)
+	const smallestDelta = getSmallestValueOrSmallestDifference(childrenAreaValues)
 
 	padding = calculatePaddingBasedOnBuildingArea(childrenAreaValues, smallestDelta, MIN_BUILDING_AREA, padding)
 
@@ -198,7 +198,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	let rootNode
 
 	const treeMap = treemap<CodeMapNode>()
-		.size([width, height]) // padding does not need to be divided by 2, already calculated by d3-hierarchy
+		.size([height, width]) // padding does not need to be divided by 2, already calculated by d3-hierarchy
 		.paddingOuter(padding) // padding of the element; applied to leaves
 		.paddingInner(padding) // margin of the element; applied to folders
 		.paddingRight(node => {

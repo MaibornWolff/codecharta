@@ -7,7 +7,7 @@ import {
 } from "../../dataMocks"
 import { hierarchy } from "d3-hierarchy"
 import { calculateTotalNodeArea } from "./nodeAreaCalculator"
-import { getChildrenAreaValues, getSmallestDifference } from "./modifiedTreeMapHelperFunctions"
+import { getChildrenAreaValues, getSmallestValueOrSmallestDifference } from "./modifiedTreeMapHelperFunctions"
 import { calculatePaddingBasedOnBuildingArea } from "./paddingCalculator"
 import { getBuildingAreasWithProportionalPadding } from "./treeMapGenerator"
 
@@ -25,7 +25,7 @@ describe("nodeAreaCalculator", () => {
 
 			expect(childrenAreaValues).toStrictEqual([10])
 
-			const smallestDelta = getSmallestDifference(childrenAreaValues)
+			const smallestDelta = getSmallestValueOrSmallestDifference(childrenAreaValues)
 
 			expect(smallestDelta).toStrictEqual(10)
 
@@ -44,8 +44,8 @@ describe("nodeAreaCalculator", () => {
 
 			const { rootWidth, rootHeight } = calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyMap, padding, state)
 
-			expect(rootHeight).toEqual(20)
-			expect(rootWidth).toEqual(27)
+			expect(rootHeight).toEqual(24)
+			expect(rootWidth).toEqual(31)
 		})
 
 		it("should calculate total node area for nested folders with different-sized leaves, but no sub-folder label and padding'", () => {
@@ -56,7 +56,7 @@ describe("nodeAreaCalculator", () => {
 
 			expect(childrenAreaValues).toStrictEqual([10, 100])
 
-			const smallestDelta = getSmallestDifference(childrenAreaValues)
+			const smallestDelta = getSmallestValueOrSmallestDifference(childrenAreaValues)
 
 			expect(smallestDelta).toStrictEqual(10)
 
@@ -73,8 +73,8 @@ describe("nodeAreaCalculator", () => {
 
 			const { rootWidth, rootHeight } = calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyMap, padding, state)
 
-			expect(rootHeight).toEqual(38)
-			expect(rootWidth).toEqual(45)
+			expect(rootHeight).toEqual(39)
+			expect(rootWidth).toEqual(46)
 		})
 
 		it("should calculate total node area for differently nested folders", () => {
@@ -83,7 +83,7 @@ describe("nodeAreaCalculator", () => {
 
 			const childrenAreaValues = getChildrenAreaValues(hierarchyMap, state)
 
-			const smallestDelta = getSmallestDifference(childrenAreaValues)
+			const smallestDelta = getSmallestValueOrSmallestDifference(childrenAreaValues)
 
 			padding = calculatePaddingBasedOnBuildingArea(childrenAreaValues, smallestDelta, MIN_BUILDING_AREA, padding)
 
