@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   New calculation algorithm for treeMap that accounts for paddings and floor labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+
 ### Fixed 🐞
 
 -   Fix interactive GitLogParser using wrong dialogue with repo-scan subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
@@ -21,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
 -   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
 -   Migrate dialog.service to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Add documentation for new treeMap algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
 
 ## [1.108.1] - 2022-09-29
 

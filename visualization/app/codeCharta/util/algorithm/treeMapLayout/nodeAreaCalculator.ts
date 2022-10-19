@@ -19,6 +19,10 @@ export function calculateTotalNodeArea(
 	padding: number,
 	state: State
 ) {
+	/**
+	 * Step 1:
+	 */
+
 	if (buildingAreasIncludingPadding.length === 0) {
 		return {
 			rootWidth: 0,
@@ -43,6 +47,9 @@ export function calculateTotalNodeArea(
 	const PADDING_APPROX_FOR_DEPTH_ONE = 0.028
 
 	//  create 2 maps, one storing nodes, one calculated area values
+	/**
+	 * Step 2:
+	 */
 	const nodeKeyMap = new Map()
 	const nodeAreaMap = new Map()
 	hierarchyNode.each(node => {
@@ -52,6 +59,9 @@ export function calculateTotalNodeArea(
 	})
 
 	// calculate area values for leafs and folders considering direct children
+	/**
+	 * Step 3:
+	 */
 	for (const [nodeKey, nodeValue] of nodeKeyMap) {
 		nodeAreaMap[nodeKey] = getAreaValue(nodeValue.data, state)
 
@@ -64,8 +74,14 @@ export function calculateTotalNodeArea(
 		}
 	}
 
+	/**
+	 * Step 4:
+	 */
 	const paths = [...nodeKeyMap.keys()].reverse()
 
+	/**
+	 * Step 5:
+	 */
 	// add children folder areas to direct children folder area
 	for (const nodePath of paths) {
 		if (nodeKeyMap.get(nodePath)?.data.type === "Folder") {
@@ -86,6 +102,9 @@ export function calculateTotalNodeArea(
 	// due to traversing order we can now increase value by padding
 
 	//Calculate the scaling factor
+	/**
+	 * Step 6:
+	 */
 	let proportionMax = 0
 	for (const nodePath of paths) {
 		if (nodeKeyMap.get(nodePath)?.data.type === "File") {
@@ -104,6 +123,9 @@ export function calculateTotalNodeArea(
 	let amountOfDepthTwo = 0
 
 	// Apply scaling factor to files only
+	/**
+	 * Step 7:
+	 */
 	for (const nodePath of paths) {
 		if (nodeKeyMap.get(nodePath)?.data.type === "File") {
 			nodeAreaMap[nodePath] = Math.round(nodeAreaMap[nodePath] * proportionMax)
@@ -125,12 +147,18 @@ export function calculateTotalNodeArea(
 		}
 	}
 
+	/**
+	 * Step 8: we could try to add paddings here
+	 */
 	const metricSum = hierarchyNode.sum(node => {
 		if (nodeAreaMap[node.path] > 0) {
 			return nodeAreaMap[node.path]
 		}
 	})
 
+	/**
+	 * Step 9:
+	 */
 	for (const node of hierarchyNode) {
 		if (!isLeaf(node.data) && node.value !== undefined) {
 			const folderAreaValue = node.value
@@ -138,13 +166,21 @@ export function calculateTotalNodeArea(
 		}
 	}
 
+	/**
+	 * Step 10:
+	 */
 	const defaultFolderLabelPadding = calculateFolderLabelPadding(
 		DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 * PADDING_APPROX_FOR_DEPTH_ZERO,
 		DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 * PADDING_APPROX_FOR_DEPTH_ONE,
 		amountOfDepthOne,
 		amountOfDepthTwo
 	)
+
 	const rootWidthWithDefaultPadding = Math.sqrt(totalNodeArea) + defaultFolderLabelPadding
+
+	/**
+	 * Step 11:
+	 */
 	const shiftedFolderLabelPadding = calculateFolderLabelPadding(
 		rootWidthWithDefaultPadding * PADDING_APPROX_FOR_DEPTH_ZERO,
 		rootWidthWithDefaultPadding * PADDING_APPROX_FOR_DEPTH_ONE,
@@ -152,6 +188,9 @@ export function calculateTotalNodeArea(
 		amountOfDepthTwo
 	)
 
+	/**
+	 * Step 12:
+	 */
 	const rootHeight = Math.round(Math.max(rootWidthWithDefaultPadding, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2)))
 	const rootWidth = Math.round(Math.sqrt(totalNodeArea))
 
