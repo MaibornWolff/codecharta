@@ -1,12 +1,9 @@
-import "./codeMap.module"
-import "../../codeCharta.module"
 import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { Node, CodeMapNode, colorLabelOptions } from "../../codeCharta.model"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import {
 	COLOR_TEST_NODES,
 	DEFAULT_STATE,
@@ -21,18 +18,18 @@ import {
 } from "../../util/dataMocks"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
-import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { klona } from "klona"
-import { IRootScopeService } from "angular"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { Store } from "../../state/angular-redux/store"
+import { State } from "../../state/angular-redux/state"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -41,8 +38,8 @@ jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selec
 }))
 
 describe("codeMapRenderService", () => {
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
+	let store: Store
+	let state: State
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
@@ -63,28 +60,27 @@ describe("codeMapRenderService", () => {
 	})
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.codeMap")
-
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
-		codeMapMouseEventService = getService<CodeMapMouseEventService>("codeMapMouseEventService")
+		store = TestBed.inject(Store)
+		state = TestBed.inject(State)
+		codeMapLabelService = TestBed.inject(CodeMapLabelService)
+		codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
 		threeStatsService = TestBed.inject(ThreeStatsService)
 		threeSceneService = TestBed.inject(ThreeSceneService)
+		codeMapArrowService = TestBed.inject(CodeMapArrowService)
 		codeMapMouseEventService["threeSceneService"] = threeSceneService
 
 		map = klona(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
-		storeService.dispatch(setState(STATE))
-		storeService.dispatch(unfocusNode())
+		store.dispatch(setState(STATE))
+		store.dispatch(unfocusNode())
 		mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
 	}
 
 	function rebuildService() {
 		codeMapRenderService = new CodeMapRenderService(
-			$rootScope,
-			storeService,
+			store,
+			state,
 			threeSceneService,
 			codeMapLabelService,
 			codeMapArrowService,
@@ -254,8 +250,8 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should not generate labels when showMetricLabelNodeName and showMetricLabelNameValue are both false", () => {
-			storeService.dispatch(setShowMetricLabelNodeName(false))
-			storeService.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(false))
+			store.dispatch(setShowMetricLabelNameValue(false))
 
 			codeMapRenderService["setLabels"](nodes)
 
@@ -287,7 +283,7 @@ describe("codeMapRenderService", () => {
 				neutral: false
 			}
 
-			storeService.dispatch(setColorLabels(colorLabelsNegative))
+			store.dispatch(setColorLabels(colorLabelsNegative))
 			codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
 			codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
@@ -301,7 +297,7 @@ describe("codeMapRenderService", () => {
 				neutral: true
 			}
 
-			storeService.dispatch(setColorLabels(colorLabelsPosNeut))
+			store.dispatch(setColorLabels(colorLabelsPosNeut))
 			codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
 			codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
@@ -325,7 +321,7 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should call codeMapArrowService.addEdgeArrows", () => {
-			storeService.dispatch(setEdges(VALID_EDGES))
+			store.dispatch(setEdges(VALID_EDGES))
 
 			codeMapRenderService["setArrows"](sortedNodes)
 

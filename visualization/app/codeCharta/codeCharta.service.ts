@@ -1,37 +1,40 @@
+import { Injectable, Inject } from "@angular/core"
 import { CCFileValidationResult, checkErrors, checkWarnings } from "./util/fileValidator"
 import { NodeDecorator } from "./util/nodeDecorator"
-import { StoreService } from "./state/store.service"
 import { setFiles, setStandardByNames } from "./state/store/files/files.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 import { NameDataPair } from "./codeCharta.model"
-import { onStoreChanged } from "./state/angular-redux/onStoreChanged/onStoreChanged"
 import { referenceFileSelector } from "./state/selectors/referenceFile/referenceFile.selector"
 import { MatDialog } from "@angular/material/dialog"
 import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.component"
 import { loadFilesValidationToErrorDialog } from "./util/loadFilesValidationToErrorDialog"
+import { Store } from "./state/angular-redux/store"
+import { State } from "./state/angular-redux/state"
+import { tap } from "rxjs"
 
+@Injectable({ providedIn: "root" })
 export class CodeChartaService {
 	static ROOT_NAME = "root"
 	static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 	private recentFiles: string[] = []
-	unsubscribeReferenceFileSubscription = onStoreChanged(referenceFileSelector, (_, newReferenceFile) => {
-		if (newReferenceFile) {
-			CodeChartaService.updateRootData(newReferenceFile.map.name)
-		}
-	})
+	referenceFileSubscription = this.store
+		.select(referenceFileSelector)
+		.pipe(
+			tap(newReferenceFile => {
+				if (newReferenceFile) {
+					CodeChartaService.updateRootData(newReferenceFile.map.name)
+				}
+			})
+		)
+		.subscribe()
 
-	static instance: CodeChartaService
-
-	constructor(private storeService: StoreService, private dialog: MatDialog) {
-		"ngInject"
-		CodeChartaService.instance = this
-	}
+	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State, @Inject(MatDialog) private dialog: MatDialog) {}
 
 	loadFiles(nameDataPairs: NameDataPair[]) {
-		this.fileStates = this.storeService.getState().files
+		this.fileStates = this.state.getValue().files
 		const fileValidationResults: CCFileValidationResult[] = []
 
 		this.getValidationResults(nameDataPairs, fileValidationResults)
@@ -43,11 +46,11 @@ export class CodeChartaService {
 		}
 
 		if (this.recentFiles.length > 0) {
-			this.storeService.dispatch(setFiles(this.fileStates))
+			this.store.dispatch(setFiles(this.fileStates))
 
 			const recentFile = this.recentFiles[0]
-			const rootName = this.storeService.getState().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-			this.storeService.dispatch(setStandardByNames(this.recentFiles))
+			const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
+			this.store.dispatch(setStandardByNames(this.recentFiles))
 
 			CodeChartaService.updateRootData(rootName)
 

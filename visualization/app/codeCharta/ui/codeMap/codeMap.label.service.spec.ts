@@ -18,17 +18,19 @@ import {
 } from "three"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControls.service"
+import { State } from "../../state/angular-redux/state"
+import { Store } from "../../state/angular-redux/store"
+import { Store as PlainStore } from "../../state/store/store"
 
 describe("CodeMapLabelService", () => {
-	let storeService: StoreService
+	let state: State
+	let store: Store
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
@@ -48,16 +50,17 @@ describe("CodeMapLabelService", () => {
 	})
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.codeMap")
+		PlainStore["initialize"]()
+		store = TestBed.inject(Store)
 
-		storeService = getService<StoreService>("storeService")
+		state = TestBed.inject(State)
 		threeCameraService = TestBed.inject(ThreeCameraService)
 		threeSceneService = TestBed.inject(ThreeSceneService)
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		threeOrbitControlsService = TestBed.inject(ThreeOrbitControlsService)
 	}
 
 	function rebuild() {
-		codeMapLabelService = new CodeMapLabelService(storeService, threeCameraService, threeSceneService, threeOrbitControlsService)
+		codeMapLabelService = new CodeMapLabelService(state, threeCameraService, threeSceneService, threeOrbitControlsService)
 	}
 
 	function withMockedThreeCameraService() {
@@ -152,14 +155,14 @@ describe("CodeMapLabelService", () => {
 
 	describe("addLeafLabel", () => {
 		beforeEach(() => {
-			storeService.dispatch(setAmountOfTopLabels(1))
-			storeService.dispatch(setHeightMetric("mcc"))
+			store.dispatch(setAmountOfTopLabels(1))
+			store.dispatch(setHeightMetric("mcc"))
 			codeMapLabelService["nodeHeight"] = 0
 		})
 
 		it("should add label if node has a height attribute mentioned in renderSettings", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(true))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(true))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -169,8 +172,8 @@ describe("CodeMapLabelService", () => {
 		it("should add label even if node has a height of value 0", () => {
 			sampleLeaf.attributes = { mcc: 0 }
 
-			storeService.dispatch(setShowMetricLabelNameValue(true))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(true))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -178,8 +181,8 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should calculate correct height without delta with node name only", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -188,8 +191,8 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should calculate correct height without delta with metric values only", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -198,12 +201,12 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should use node height value if nodeHeight is greater than the nodes height ", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 			codeMapLabelService["nodeHeight"] = 100
 
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -214,8 +217,8 @@ describe("CodeMapLabelService", () => {
 		it("should use the nodes actual height if its greater then nodeHeight", () => {
 			codeMapLabelService["nodeHeight"] = 10
 
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -224,8 +227,8 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should calculate correct height without delta for two line label: node name and metric value", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(true))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(true))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -234,8 +237,8 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should use the nodes actual height if its greater then nodeHeight and update nodeHeight correctly", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeafDelta, 0)
 
@@ -245,8 +248,8 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should use highestNodeInSet if its greater then nodes actual height and nodeHeight and should update nodeHeight correctly", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeafDelta, 20)
 
@@ -258,16 +261,16 @@ describe("CodeMapLabelService", () => {
 		it("should use the updated and stored value for nodeHeight when adding a new, smaller node", () => {
 			codeMapLabelService["nodeHeight"] = 10
 
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeafDelta, 0)
 
 			const positionSampleDeltaLeaf: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionSampleDeltaLeaf.y).toBe(179.75)
 
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 			const positionSampleLeafWithAppliedDeltaNodeHeight: Vector3 = codeMapLabelService["labels"][0].sprite.position
@@ -275,8 +278,8 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should set the text correctly, creating a two line label", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(true))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(true))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -285,8 +288,8 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should set the text correctly, creating a one line label", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -299,8 +302,8 @@ describe("CodeMapLabelService", () => {
 			const SY = 2
 			const SZ = 3
 
-			storeService.dispatch(setShowMetricLabelNameValue(true))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(true))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
@@ -314,7 +317,7 @@ describe("CodeMapLabelService", () => {
 			const scaledLabelA = codeMapLabelService["labels"][0]
 			const scaledLabelB = codeMapLabelService["labels"][1]
 
-			storeService.dispatch(setScaling(new Vector3(SX, SY, SZ)))
+			store.dispatch(setScaling(new Vector3(SX, SY, SZ)))
 
 			const expectedScaledSpritePositions = new Vector3(originalSpritePositionsA.x * SX, 232.25, originalSpritePositionsA.z * SZ)
 
@@ -337,48 +340,48 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("scaling labels from a factor bigger to factor smaller then 1.0 should scale positions correctly", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
-			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
+			store.dispatch(setScaling(new Vector3(1, 2, 1)))
 			codeMapLabelService.scale()
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(202.25)
 
-			storeService.dispatch(setScaling(new Vector3(1, 0.5, 1)))
+			store.dispatch(setScaling(new Vector3(1, 0.5, 1)))
 			codeMapLabelService.scale()
 
 			expect(positionWithoutDelta.y).toBe(149)
 		})
 
 		it("scaling labels from a factor smaller to factor bigger then 1.0 should scale positions correctly", () => {
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
-			storeService.dispatch(setScaling(new Vector3(1, 0.5, 1)))
+			store.dispatch(setScaling(new Vector3(1, 0.5, 1)))
 			codeMapLabelService.scale()
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(149)
 
-			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
+			store.dispatch(setScaling(new Vector3(1, 2, 1)))
 			codeMapLabelService.scale()
 
 			expect(positionWithoutDelta.y).toBe(202.25)
 		})
 
 		it("should apply scaling factor to a newly created label", () => {
-			storeService.dispatch(setScaling(new Vector3(1, 2, 1)))
+			store.dispatch(setScaling(new Vector3(1, 2, 1)))
 
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
@@ -412,12 +415,12 @@ describe("CodeMapLabelService", () => {
 			return generated
 		}
 		it("should clear label for the correct node only", () => {
-			storeService.dispatch(setAmountOfTopLabels(2))
-			storeService.dispatch(setHeightMetric("mcc"))
+			store.dispatch(setAmountOfTopLabels(2))
+			store.dispatch(setHeightMetric("mcc"))
 			codeMapLabelService.dispose = jest.fn()
 
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 			codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
@@ -436,11 +439,11 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should not clear if no label exists for a given node", () => {
-			storeService.dispatch(setAmountOfTopLabels(2))
-			storeService.dispatch(setHeightMetric("mcc"))
+			store.dispatch(setAmountOfTopLabels(2))
+			store.dispatch(setHeightMetric("mcc"))
 
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(true))
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(true))
 
 			codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 			threeSceneService.labels.children.length = 2

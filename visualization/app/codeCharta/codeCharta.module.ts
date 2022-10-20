@@ -1,7 +1,6 @@
 "use strict"
 
 import angular from "angular"
-import camelCase from "lodash.camelcase"
 
 import "./ui/ui"
 import "./state/state.module"
@@ -30,7 +29,7 @@ angular
 	.directive("ccRibbonBar", downgradeComponent({ component: RibbonBarComponent }))
 	.directive("ccCodeMap", downgradeComponent({ component: CodeMapComponent }))
 	.factory("dialog", downgradeInjectable(MatDialog))
-	.service(camelCase(CodeChartaService.name), CodeChartaService)
+	.factory("codeChartaService", downgradeInjectable(CodeChartaService))
 
 @NgModule({
 	imports: [CommonModule, CodeMapModule],

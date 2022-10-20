@@ -15,14 +15,14 @@ import { actionsRequiringRerender } from "./actionsRequiringRerender"
 
 export const maxFPS = 1000 / 60
 
-// don't inject AngularJS services, as AngularJS is not yet bootstrapped when Effects are bootstrapped
 @Injectable()
 export class RenderCodeMapEffect {
 	constructor(
 		@Inject(Store) private store: Store,
 		@Inject(ActionsToken) private actions$: Actions,
 		@Inject(UploadFilesService) private uploadFilesService: UploadFilesService,
-		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService
+		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService,
+		@Inject(CodeMapRenderService) private codeMapRenderService: CodeMapRenderService
 	) {}
 
 	private actionsRequiringRender$ = this.actions$.pipe(
@@ -35,10 +35,10 @@ export class RenderCodeMapEffect {
 				filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
 				throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
 				tap(([accumulatedData, action]) => {
-					CodeMapRenderService.instance.render(accumulatedData.unifiedMapNode)
+					this.codeMapRenderService.render(accumulatedData.unifiedMapNode)
 					this.threeRendererService.render()
 					if (isActionOfType(action.type, ScalingActions)) {
-						CodeMapRenderService.instance.scaleMap()
+						this.codeMapRenderService.scaleMap()
 					}
 				})
 			),
