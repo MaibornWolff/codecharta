@@ -9,11 +9,6 @@ export class CustomConfig2ApplicableColor implements PipeTransform {
 
 	transform(customConfig: CustomConfigItem): string {
 		const { mode, missingMaps } = getMissingCustomConfigModeAndMaps(customConfig, this.state)
-
-		if (missingMaps.length > 0 || mode.length > 0) {
-			return "rgb(204, 204, 204)"
-		}
-
-		return "rgba(0, 0, 0, 0.87)"
+		return missingMaps.length > 0 || mode.length > 0 ? "rgb(204, 204, 204)" : "rgba(0, 0, 0, 0.87)"
 	}
 }
