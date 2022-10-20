@@ -19,19 +19,19 @@ describe("rootReducer", () => {
 		expect(newState.appSettings.experimentalFeaturesEnabled).toBe(defaultState.appSettings.experimentalFeaturesEnabled)
 	})
 
-	it("should throw error when a key does not exist", () => {
+	it("should not update state property when a key does not exist", () => {
 		const partialState = {
 			dynamicSettings: {
-				test: "doesn't exist"
+				notValidKey: "doesn't exist"
 			}
 		} as RecursivePartial<State>
 
-		expect(() => rootReducer(clone(defaultState), setState(partialState))).toThrowError(
-			'cannot restore key "dynamicSettings.test" as it doesn\'t exist in store'
-		)
+		const newState = rootReducer(clone(defaultState), setState(partialState))
+
+		expect(newState.dynamicSettings["notValidKey"]).toBeUndefined()
 	})
 
-	it("", () => {
+	it("should update partial state with objects that have dynamic keys ", () => {
 		const partialState: RecursivePartial<State> = {
 			fileSettings: {
 				attributeTypes: {
