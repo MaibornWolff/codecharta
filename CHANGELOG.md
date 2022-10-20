@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Custom Views are now applicable even if maps or mode are different. Missing maps or map selection mode is displayed in the tooltip [#3090](https://github.com/MaibornWolff/codecharta/pull/3090)
+
 ## [1.109.1] - 2022-10-12
 
 ### Fixed 🐞
