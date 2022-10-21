@@ -36,7 +36,7 @@ describe("FloorLabelHelper", () => {
 	})
 
 	describe("isLabelNode", () => {
-		function createNode(isLeaf: boolean, mapNodeDepth?: number, length?: number): Node {
+		function createNode(isLeaf: boolean, mapNodeDepth?: number, width?: number): Node {
 			return {
 				attributes: undefined,
 				color: "",
@@ -48,7 +48,7 @@ describe("FloorLabelHelper", () => {
 				id: 0,
 				incomingEdgePoint: undefined,
 				isLeaf,
-				length,
+				length: 0,
 				link: "",
 				mapNodeDepth,
 				markingColor: undefined,
@@ -56,7 +56,7 @@ describe("FloorLabelHelper", () => {
 				outgoingEdgePoint: undefined,
 				path: "",
 				visible: false,
-				width: 0,
+				width,
 				x0: 0,
 				y0: 0,
 				z0: 0

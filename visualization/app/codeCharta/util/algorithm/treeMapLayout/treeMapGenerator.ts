@@ -171,6 +171,12 @@ export function getBuildingAreasWithProportionalPadding(
 	})
 }
 
+const HUGE_MAP = 70_000
+
+const FOLDER_LABEL_TOO_SMALL_PARENT = 0.09
+
+const FOLDER_LABEL_TOO_SMALL_ROUTE = 0.009
+
 function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
 	map.children = map.children.filter(child => child.attributes[state.dynamicSettings.areaMetric] !== 0)
 
@@ -212,7 +218,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 				let paddingDepthZero = PADDING_APPROX_FOR_DEPTH_ZERO
 				let paddingDepthOne = PADDING_APPROX_FOR_DEPTH_ONE
 
-				if (rootSize > 70_000) {
+				if (rootSize > HUGE_MAP) {
 					paddingDepthOne = PADDING_APPROX_FOR_DEPTH_ONE_BIG
 					paddingDepthZero = PADDING_APPROX_FOR_DEPTH_ZERO_BIG
 				}
@@ -221,7 +227,12 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 					// Add a big padding for the first folder level (the font is bigger than in deeper levels)
 					return Math.max(rootSize * paddingDepthZero, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1)
 				}
-				if (node.depth > 0 && node.depth < 3 && node.value / node.parent.value > 0.09 && node.value / rootNode.value > 0.009) {
+				if (
+					node.depth > 0 &&
+					node.depth < 3 &&
+					node.value / node.parent.value > FOLDER_LABEL_TOO_SMALL_PARENT &&
+					node.value / rootNode.value > FOLDER_LABEL_TOO_SMALL_ROUTE
+				) {
 					return Math.max(rootSize * paddingDepthOne, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
 				}
 			}

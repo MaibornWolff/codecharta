@@ -2,6 +2,10 @@
 
 import { Node } from "../../../../codeCharta.model"
 
+const FOLDER_LABEL_TOO_SMALL_PARENT = 0.09
+
+const FOLDER_LABEL_TOO_SMALL_ROOT = 0.009
+
 export class FloorLabelHelper {
 	static getMapResolutionScaling(mapWidth: number) {
 		const { width: displayWidth } = <HTMLCanvasElement>document.getElementById("codeMapScene")
@@ -20,8 +24,8 @@ export class FloorLabelHelper {
 		return (
 			!node.isLeaf &&
 			node.mapNodeDepth < 3 &&
-			(parentNode === undefined || node.length / parentNode.length > 0.09) &&
-			(rootNode === undefined || node.length / rootNode.length > 0.009)
+			(parentNode === undefined || node.width / parentNode.width > FOLDER_LABEL_TOO_SMALL_PARENT) &&
+			(rootNode === undefined || node.width / rootNode.width > FOLDER_LABEL_TOO_SMALL_ROOT)
 		)
 	}
 }
