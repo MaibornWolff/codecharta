@@ -1,19 +1,18 @@
 import "./addCustomDialog.component.scss"
 import { Component, Inject, OnInit } from "@angular/core"
 import { FormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
-import { CustomConfigFileStateConnector } from "../../customConfigFileStateConnector"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
-import { filesSelector } from "../../../../state/store/files/files.selector"
-import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
+import { buildCustomConfigFromState, getMapNamesByChecksum, getMapSelectionMode } from "../../../../util/customConfigBuilder"
 import { State } from "../../../../state/angular-redux/state"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { visibleFileStatesSelector } from "../../../../state/selectors/visibleFileStates.selector"
+import { FileState } from "../../../../model/files/files"
 
 @Component({
 	template: require("./addCustomConfigDialog.component.html")
 })
 export class AddCustomConfigDialogComponent implements OnInit {
-	customConfigFileStateConnector: CustomConfigFileStateConnector
 	customConfigName: FormControl
 
 	constructor(
@@ -23,13 +22,9 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const files = filesSelector(this.state.getValue())
-		this.customConfigFileStateConnector = new CustomConfigFileStateConnector(files)
-		this.customConfigName = new FormControl("", [
-			Validators.required,
-			createCustomConfigNameValidator(this.customConfigFileStateConnector)
-		])
-		this.customConfigName.setValue(CustomConfigHelper.getConfigNameSuggestionByFileState(this.customConfigFileStateConnector))
+		const files = visibleFileStatesSelector(this.state.getValue())
+		this.customConfigName = new FormControl("", [Validators.required, createCustomConfigNameValidator(files)])
+		this.customConfigName.setValue(CustomConfigHelper.getConfigNameSuggestionByFileState(files))
 	}
 
 	getErrorMessage() {
@@ -48,15 +43,11 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	}
 }
 
-function createCustomConfigNameValidator(customConfigFileStateConnector: CustomConfigFileStateConnector): ValidatorFn {
+function createCustomConfigNameValidator(fileStates: FileState[]): ValidatorFn {
 	return (control: AbstractControl): { Error: string } => {
-		const value = control.value
+		const desiredConfigName = control.value
 		if (
-			!CustomConfigHelper.hasCustomConfigByName(
-				customConfigFileStateConnector.getMapSelectionMode(),
-				customConfigFileStateConnector.getSelectedMaps(),
-				value
-			)
+			!CustomConfigHelper.hasCustomConfigByName(getMapSelectionMode(fileStates), getMapNamesByChecksum(fileStates), desiredConfigName)
 		) {
 			return null
 		}

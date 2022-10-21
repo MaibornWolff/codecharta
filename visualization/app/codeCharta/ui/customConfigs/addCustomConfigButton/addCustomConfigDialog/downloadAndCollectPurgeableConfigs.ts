@@ -1,10 +1,9 @@
 import { CustomConfig, ExportCustomConfig } from "../../../../model/customConfig/customConfig.api.model"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
-import { CustomConfigFileStateConnector } from "../../customConfigFileStateConnector"
 
 const customConfigAgeLimitInMonths = 6
 
-export function downloadAndCollectPurgeableConfigs(customConfigFileStateConnector: CustomConfigFileStateConnector) {
+export function downloadAndCollectPurgeableConfigs() {
 	const purgeableConfigs = new Set<CustomConfig>()
 	const customConfigs = CustomConfigHelper.getCustomConfigs()
 
@@ -26,7 +25,7 @@ export function downloadAndCollectPurgeableConfigs(customConfigFileStateConnecto
 	}
 
 	if (downloadableConfigs.size > 0) {
-		CustomConfigHelper.downloadCustomConfigs(downloadableConfigs, customConfigFileStateConnector)
+		CustomConfigHelper.downloadCustomConfigs(downloadableConfigs)
 	}
 
 	return purgeableConfigs

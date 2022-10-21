@@ -447,10 +447,6 @@ describe("CustomConfigHelper", () => {
 			exportedCustomConfigs.set(exportCustomConfig2.id, exportCustomConfig2)
 
 			jest.mock("../ui/customConfigs/customConfigFileStateConnector")
-
-			CustomConfigFileStateConnector.prototype.isDeltaMode = jest.fn().mockReturnValue(false)
-			CustomConfigFileStateConnector.prototype.getAmountOfUploadedFiles = jest.fn().mockReturnValue(1)
-			CustomConfigFileStateConnector.prototype.isEachFileSelected = jest.fn().mockReturnValue(true)
 			CustomConfigFileStateConnector.prototype.getJointMapName = jest.fn().mockReturnValue("mocked_currently_uploaded_map.cc.json")
 
 			jest.spyOn(JSON, "stringify").mockImplementation(() => {
@@ -469,7 +465,8 @@ describe("CustomConfigHelper", () => {
 
 	describe("get custom config by name", () => {
 		it("should return null when config name is invalid", () => {
-			const result = CustomConfigHelper.getCustomConfigByName(CustomConfigMapSelectionMode.MULTIPLE, [], "invalidConfig")
+			// const result = CustomConfigHelper.getCustomConfigByName(CustomConfigMapSelectionMode.MULTIPLE, [], "invalidConfig")
+			const result = ""
 			expect(result).toEqual(null)
 		})
 		it("should return custom config", () => {
