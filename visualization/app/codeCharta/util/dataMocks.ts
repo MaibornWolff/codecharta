@@ -1608,9 +1608,6 @@ export const STATE: State = {
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
 	},
-	treeMap: {
-		mapSize: 250
-	},
 	files: [],
 	appStatus: {
 		hoveredNodeId: null,
@@ -1682,7 +1679,6 @@ export const DEFAULT_STATE: State = {
 		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
-	treeMap: { mapSize: 250 },
 	files: [],
 	appStatus: {
 		hoveredNodeId: null,

@@ -6,6 +6,7 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { State } from "../../state/angular-redux/state"
 import { Inject, Injectable } from "@angular/core"
+import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
 
 interface InternalLabel {
 	sprite: Sprite
@@ -43,7 +44,7 @@ export class CodeMapLabelService {
 
 	// Labels need to be scaled according to map or it will clip + looks bad
 	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
-		const { appSettings, dynamicSettings, treeMap } = this.state.getValue()
+		const { appSettings, dynamicSettings } = this.state.getValue()
 
 		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
 		const { margin, heightMetric } = dynamicSettings
@@ -72,9 +73,9 @@ export class CodeMapLabelService {
 		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
 		// todo: tk rename to addLeafLabel
 
-		const x = node.x0 - treeMap.mapSize
+		const x = node.x0 - treeMapSize
 		const y = node.z0
-		const z = node.y0 - treeMap.mapSize
+		const z = node.y0 - treeMapSize
 
 		const labelX = (x + node.width / 2) * multiplier.x
 		const labelY = (y + this.nodeHeight) * multiplier.y

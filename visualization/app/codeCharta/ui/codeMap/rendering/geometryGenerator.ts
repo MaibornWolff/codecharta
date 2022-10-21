@@ -3,6 +3,7 @@ import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { addBoxToVertexData, IntermediateVertexData, BoxMeasures } from "./geometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { Mesh, BufferGeometry, Material, BufferAttribute } from "three"
+import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 
 export interface BuildResult {
 	mesh: Mesh
@@ -16,7 +17,7 @@ export class GeometryGenerator {
 	private materials: Material[]
 
 	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
-		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
+		const desc = new CodeMapGeometricDescription(treeMapSize)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 		this.materials = [material]

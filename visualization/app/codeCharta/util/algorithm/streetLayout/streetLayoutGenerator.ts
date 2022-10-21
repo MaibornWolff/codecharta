@@ -9,6 +9,7 @@ import { StreetOrientation } from "./street"
 import { getMapResolutionScaleFactor, isPathBlacklisted, isLeaf } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
+import { treeMapSize } from "../treeMapLayout/treeMapHelper"
 
 const MARGIN_SCALING_FACTOR = 0.02
 const HEIGHT_SCALING_FACTOR = 0.1
@@ -18,7 +19,7 @@ export class StreetLayoutGenerator {
 		const maxHeight =
 			(metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling) /
 			HEIGHT_SCALING_FACTOR
-		const heightScale = (state.treeMap.mapSize * 2) / maxHeight
+		const heightScale = (treeMapSize * 2) / maxHeight
 
 		const metricName = state.dynamicSettings.areaMetric
 		const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
