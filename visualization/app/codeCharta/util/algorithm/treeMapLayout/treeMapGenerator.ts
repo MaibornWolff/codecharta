@@ -205,8 +205,6 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 			if (!rootNode && node.parent === null) {
 				rootNode = node
 			}
-
-			// TODO This will not work for FixedFolders
 			// it seems that depth property is missing in that case
 			// so the default padding will be added, which is fine though.
 			if (rootNode) {
@@ -214,17 +212,16 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 				let paddingDepthZero = PADDING_APPROX_FOR_DEPTH_ZERO
 				let paddingDepthOne = PADDING_APPROX_FOR_DEPTH_ONE
 
-				if (rootSize > 100_000) {
+				if (rootSize > 70_000) {
 					paddingDepthOne = PADDING_APPROX_FOR_DEPTH_ONE_BIG
 					paddingDepthZero = PADDING_APPROX_FOR_DEPTH_ZERO_BIG
 				}
-
 				// Start the labels at level 1 not 0 because the root folder should not be labeled
 				if (node.depth === 0) {
 					// Add a big padding for the first folder level (the font is bigger than in deeper levels)
 					return Math.max(rootSize * paddingDepthZero, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1)
 				}
-				if (node.depth > 0 && node.depth < 3) {
+				if (node.depth > 0 && node.depth < 3 && node.value / node.parent.value > 0.09 && node.value / rootNode.value > 0.009) {
 					return Math.max(rootSize * paddingDepthOne, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
 				}
 			}

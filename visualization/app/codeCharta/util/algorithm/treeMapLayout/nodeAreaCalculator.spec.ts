@@ -44,8 +44,8 @@ describe("nodeAreaCalculator", () => {
 
 			const { rootWidth, rootHeight } = calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyMap, padding, state)
 
-			expect(rootHeight).toEqual(31)
-			expect(rootWidth).toEqual(24)
+			expect(rootHeight).toEqual(38)
+			expect(rootWidth).toEqual(38)
 		})
 
 		it("should calculate total node area for nested folders with different-sized leaves, but no sub-folder label and padding'", () => {
@@ -73,8 +73,8 @@ describe("nodeAreaCalculator", () => {
 
 			const { rootWidth, rootHeight } = calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyMap, padding, state)
 
-			expect(rootHeight).toEqual(46)
-			expect(rootWidth).toEqual(39)
+			expect(rootHeight).toEqual(64)
+			expect(rootWidth).toEqual(64)
 		})
 
 		it("should calculate total node area for differently nested folders", () => {
@@ -97,7 +97,7 @@ describe("nodeAreaCalculator", () => {
 			const { rootWidth, rootHeight } = calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyMap, padding, state)
 
 			expect(rootHeight).toEqual(81)
-			expect(rootWidth).toEqual(75)
+			expect(rootWidth).toEqual(81)
 		})
 	})
 })

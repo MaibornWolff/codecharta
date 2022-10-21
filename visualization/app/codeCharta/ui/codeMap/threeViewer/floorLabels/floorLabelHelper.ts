@@ -16,7 +16,12 @@ export class FloorLabelHelper {
 		return Math.min(displayWidth * 4, fullHdPlusWidth * 4)
 	}
 
-	static isLabelNode(node: Node) {
-		return !node.isLeaf && node.mapNodeDepth < 3
+	static isLabelNode(node: Node, parentNode: Node, rootNode: Node) {
+		return (
+			!node.isLeaf &&
+			node.mapNodeDepth < 3 &&
+			(parentNode === undefined || node.length / parentNode.length > 0.09) &&
+			(rootNode === undefined || node.length / rootNode.length > 0.009)
+		)
 	}
 }

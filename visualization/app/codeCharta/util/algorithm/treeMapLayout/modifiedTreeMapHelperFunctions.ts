@@ -40,7 +40,7 @@ export function getSmallestValueOrSmallestDifference(childAreaValues: number[]) 
 		}
 	}
 	// Return min diff
-	return Math.min(diff, smallestValue)
+	return Math.max(1, Math.min(diff, smallestValue))
 }
 
 export function getChildrenAreaValues(hierarchyNode: HierarchyNode<CodeMapNode>, state: State) {

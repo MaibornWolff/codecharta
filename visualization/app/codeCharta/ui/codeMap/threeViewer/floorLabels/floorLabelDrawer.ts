@@ -3,6 +3,7 @@
 import { Node } from "../../../../codeCharta.model"
 import { CanvasTexture, BackSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
 import { FloorLabelHelper } from "./floorLabelHelper"
+import { getParent } from "../../../../util/nodePathHelper"
 
 export class FloorLabelDrawer {
 	private floorLabelPlanes: Mesh[] = []
@@ -14,8 +15,12 @@ export class FloorLabelDrawer {
 	private floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
 
 	private floorLabelsPerLevel = new Map()
+	private parentNodes = new Map()
 
 	constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3) {
+		for (const node of nodes) {
+			this.parentNodes.set(node.path, node)
+		}
 		this.collectLabelsPerLevel(nodes)
 		this.rootNode = rootNode
 		this.mapSize = mapSize
@@ -24,7 +29,8 @@ export class FloorLabelDrawer {
 
 	private collectLabelsPerLevel(nodes: Node[]) {
 		for (const node of nodes) {
-			if (FloorLabelHelper.isLabelNode(node)) {
+			const parentNode = getParent(this.parentNodes, node.path)
+			if (FloorLabelHelper.isLabelNode(node, parentNode, this.parentNodes.get("/root"))) {
 				if (!this.floorLabelsPerLevel.has(node.mapNodeDepth)) {
 					this.floorLabelsPerLevel.set(node.mapNodeDepth, [])
 				}
@@ -88,7 +94,7 @@ export class FloorLabelDrawer {
 		let FONT_SIZE_MODIFIER_DEPTH_ONE = 0.025
 
 		for (const floorNode of floorNodesOfCurrentLevel) {
-			if (rootNodeWidth > 100_000) {
+			if (rootNodeWidth > 70_000) {
 				FONT_SIZE_MODIFIER_DEPTH_ONE = 0.01
 				FONT_SIZE_MODIFIER_DEPTH_ZERO = 0.008
 			}
