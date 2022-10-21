@@ -1,4 +1,3 @@
-"use strict"
 import { State, stateObjectReplacer } from "../codeCharta.model"
 import { CustomConfig } from "../model/customConfig/customConfig.api.model"
 import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
@@ -20,8 +19,7 @@ export function buildCustomConfigFromState(configName: string, state: State, cam
 		stateSettings: {
 			appSettings: undefined,
 			dynamicSettings: undefined,
-			fileSettings: undefined,
-			treeMap: undefined
+			fileSettings: undefined
 		},
 		camera
 	}
@@ -32,7 +30,6 @@ export function buildCustomConfigFromState(configName: string, state: State, cam
 	initializeAppSettings(customConfig)
 	initializeDynamicSettings(customConfig)
 	initializeFileSettings(customConfig)
-	initializeTreeMapSettings(customConfig)
 
 	// Override the default state settings with the stored CustomConfig values
 	deepMapOneToOther(state, customConfig.stateSettings)
@@ -114,12 +111,6 @@ function initializeFileSettings(target: CustomConfig) {
 		blacklist: undefined,
 		edges: [],
 		markedPackages: []
-	}
-}
-
-function initializeTreeMapSettings(target: CustomConfig) {
-	target.stateSettings.treeMap = {
-		mapSize: 0
 	}
 }
 
