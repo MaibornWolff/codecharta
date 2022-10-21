@@ -16,34 +16,34 @@ export function getCustomConfigItemGroups(
 	}
 
 	const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
+
 	for (const customConfig of CustomConfigHelper.loadCustomConfigs().values()) {
 		const mapNames = [...customConfig.mapNameByChecksum.values()]
+		const mapCheckSums = [...customConfig.mapNameByChecksum.keys()]
 		const groupKey = `${mapNames.join("_")}_${customConfig.mapSelectionMode}`
+
+		const isCustomConfigItemApplicable = mapCheckSums.some(
+			checksum =>
+				fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.MULTIPLE)?.includes(checksum) ||
+				fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.DELTA)?.includes(checksum)
+		)
 
 		if (!customConfigItemGroups.has(groupKey)) {
 			customConfigItemGroups.set(groupKey, {
 				mapNames: mapNames.join(" "),
 				mapSelectionMode: customConfig.mapSelectionMode,
-				hasApplicableItems: false,
+				hasApplicableItems: isCustomConfigItemApplicable,
 				customConfigItems: []
 			})
 		}
 
-		const customConfigItemApplicable = fileMapCheckSumsByMapSelectionMode
-			.get(customConfig.mapSelectionMode)
-			?.some(checksum => [...customConfig.mapNameByChecksum.keys()].includes(checksum))
-
 		customConfigItemGroups.get(groupKey).customConfigItems.push({
 			id: customConfig.id,
 			name: customConfig.name,
-			mapNames: mapNames.join(" "),
+			assignedMaps: customConfig.mapNameByChecksum,
 			mapSelectionMode: customConfig.mapSelectionMode,
-			isApplicable: customConfigItemApplicable
+			isApplicable: isCustomConfigItemApplicable
 		})
-
-		if (customConfigItemApplicable) {
-			customConfigItemGroups.get(groupKey).hasApplicableItems = true
-		}
 
 		if (customConfigItemGroups.get(groupKey).hasApplicableItems) {
 			customConfigGroups.applicableItems.set(groupKey, customConfigItemGroups.get(groupKey))

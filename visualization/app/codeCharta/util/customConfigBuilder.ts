@@ -1,4 +1,3 @@
-"use strict"
 import { State, stateObjectReplacer } from "../codeCharta.model"
 import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 import md5 from "md5"
