@@ -48,12 +48,12 @@ function applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = [
 			continue
 		}
 
-		const newComposedPath = [...composedPath, key]
-		const composedJoinedPath = newComposedPath.join(".")
-
-		if (!isKeyOf(applyTo, key)) {
+                if (!isKeyOf(applyTo, key)) {
 			continue
 		}
+
+		const newComposedPath = [...composedPath, key]
+		const composedJoinedPath = newComposedPath.join(".")
 
 		applyTo[key] =
 			typeof value !== "object" || objectWithDynamicKeysInStore.has(composedJoinedPath)
