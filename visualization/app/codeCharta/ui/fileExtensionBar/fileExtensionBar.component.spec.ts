@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
 import { CODE_MAP_BUILDING_TS_NODE } from "../../util/dataMocks"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { FileExtensionBarComponent } from "./fileExtensionBar.component"
@@ -25,7 +24,7 @@ describe("fileExtensionBarComponent", () => {
 			imports: [FileExtensionBarModule],
 			providers: [
 				{
-					provide: ThreeSceneServiceToken,
+					provide: ThreeSceneService,
 					useValue: {
 						getMapMesh: jest.fn().mockReturnValue({
 							getMeshDescription: jest.fn().mockReturnValue({
@@ -62,7 +61,7 @@ describe("fileExtensionBarComponent", () => {
 		await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
 		await userEvent.hover(screen.getByText("ts 100.00%"))
 
-		const threeSceneService = TestBed.inject<ThreeSceneService>(ThreeSceneServiceToken)
+		const threeSceneService = TestBed.inject<ThreeSceneService>(ThreeSceneService)
 		expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING_TS_NODE)
 		expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 	})

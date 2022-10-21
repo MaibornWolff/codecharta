@@ -1,36 +1,30 @@
+import { Inject, Injectable } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
-import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
-import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3-hierarchy"
 import { Intersection, Object3D, Raycaster } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
-import { ThreeViewerService } from "./threeViewer/threeViewerService"
+import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setHoveredNodeId } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { debounce } from "lodash"
+import { tap, distinctUntilChanged } from "rxjs"
+import { Store } from "../../state/angular-redux/store"
+import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
+import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
+import { State } from "../../state/angular-redux/state"
 
 interface Coordinates {
 	x: number
 	y: number
-}
-
-export interface BuildingHoveredSubscriber {
-	onBuildingHovered(hoveredBuilding: CodeMapBuilding)
-}
-
-export interface BuildingUnhoveredSubscriber {
-	onBuildingUnhovered()
 }
 
 export enum ClickType {
@@ -45,12 +39,10 @@ export enum CursorType {
 	Moving = "move"
 }
 
-export class CodeMapMouseEventService implements FilesSelectionSubscriber, BlacklistSubscriber {
-	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
-	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
+@Injectable({ providedIn: "root" })
+export class CodeMapMouseEventService {
 	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
 
-	private highlightedInTreeView: CodeMapBuilding
 	private intersectedBuilding: CodeMapBuilding
 
 	private mouse: Coordinates = { x: 0, y: 0 }
@@ -60,55 +52,43 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 	private isMoving = false
 	private raycaster = new Raycaster()
 	private temporaryLabelForBuilding = null
-	private hoveredNodeId: number | null = null
 
 	constructor(
-		private $rootScope: IRootScopeService,
-		private $window: IWindowService,
-		private threeCameraService: ThreeCameraService,
-		private threeRendererService: ThreeRendererService,
-		private threeSceneService: ThreeSceneService,
-		private storeService: StoreService,
-		private codeMapLabelService: CodeMapLabelService,
-		private viewCubeMouseEvents: ViewCubeMouseEventsService,
-		private threeViewerService: ThreeViewerService,
-		private idToBuilding: IdToBuildingService
+		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
+		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService,
+		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
+		@Inject(Store) private store: Store,
+		@Inject(State) private state: State,
+		@Inject(CodeMapLabelService) private codeMapLabelService: CodeMapLabelService,
+		@Inject(ViewCubeMouseEventsService) private viewCubeMouseEvents: ViewCubeMouseEventsService,
+		@Inject(ThreeViewerService) private threeViewerService: ThreeViewerService,
+		@Inject(IdToBuildingService) private idToBuilding: IdToBuildingService
 	) {
-		"ngInject"
-		FilesService.subscribe(this.$rootScope, this)
-		BlacklistService.subscribe(this.$rootScope, this)
-
-		this.storeService["store"].subscribe(() => {
-			const state = this.storeService["store"].getState()
-			const hoveredNodeId = hoveredNodeIdSelector(state)
-			if (this.hoveredNodeId === hoveredNodeId) {
-				return
-			}
-
-			this.hoveredNodeId = hoveredNodeId
-
-			if (this.hoveredNodeId) {
-				this.hoverNode(this.hoveredNodeId)
-			} else {
-				this.unhoverNode()
-			}
-		})
+		this.store
+			.select(visibleFileStatesSelector)
+			.pipe(tap(() => this.onFilesSelectionChanged()))
+			.subscribe()
+		this.store
+			.select(blacklistSelector)
+			.pipe(tap(blacklist => this.onBlacklistChanged(blacklist)))
+			.subscribe()
+		this.store
+			.select(hoveredNodeIdSelector)
+			.pipe(
+				distinctUntilChanged(),
+				tap(hoveredNodeId => {
+					if (hoveredNodeId !== null) {
+						this.hoverNode(hoveredNodeId)
+					} else {
+						this.unhoverNode()
+					}
+				})
+			)
+			.subscribe()
 	}
 
 	static changeCursorIndicator(cursorIcon: CursorType) {
 		document.body.style.cursor = cursorIcon
-	}
-
-	static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
-		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (_event, data) => {
-			subscriber.onBuildingHovered(data.hoveredBuilding)
-		})
-	}
-
-	static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
-		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, () => {
-			subscriber.onBuildingUnhovered()
-		})
 	}
 
 	start() {
@@ -136,7 +116,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 		for (const building of buildings) {
 			if (building.node.id === id) {
 				this.hoverBuilding(building)
-				this.highlightedInTreeView = building
 				break
 			}
 		}
@@ -145,7 +124,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 
 	unhoverNode() {
 		this.unhoverBuilding()
-		this.highlightedInTreeView = null
 		this.threeRendererService.render()
 	}
 
@@ -232,7 +210,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 						: mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
 
 				const from = this.threeSceneService.getHighlightedBuilding()
-				const to = this.intersectedBuilding ?? this.highlightedInTreeView
+				const to = this.intersectedBuilding
 
 				if (from !== to) {
 					if (this.temporaryLabelForBuilding !== null) {
@@ -296,12 +274,12 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 		// rotating the map, when the cursor ends on a building.
 		const fileSourceLink = highlightedBuilding?.node.link
 		if (fileSourceLink && !this.hasMouseMoved(this.mouseOnLastClick)) {
-			this.$window.open(fileSourceLink, "_blank")
+			window.open(fileSourceLink, "_blank")
 		}
 		if (selectedBuilding?.node.isLeaf) {
 			const sourceLink = selectedBuilding.node.link
 			if (sourceLink) {
-				this.$window.open(sourceLink, "_blank")
+				window.open(sourceLink, "_blank")
 				return
 			}
 		}
@@ -357,7 +335,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 		// Check if mouse moved to prevent the node context menu to show up
 		// after moving the map, when the cursor ends on a building.
 		if (this.intersectedBuilding && !this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
-			this.storeService.dispatch(
+			this.store.dispatch(
 				setRightClickedNodeData({
 					nodeId: this.intersectedBuilding.node.id,
 					xPositionOfRightClickEvent: this.mouse.x,
@@ -398,7 +376,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
 
-		const idToNode = idToNodeSelector(this.storeService.getState())
+		const idToNode = idToNodeSelector(this.state.getValue())
 		const codeMapNode = idToNode.get(hoveredBuilding.node.id)
 		for (const { data } of hierarchy(codeMapNode)) {
 			const building = this.idToBuilding.get(data.id)
@@ -407,11 +385,7 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 			}
 		}
 		this.threeSceneService.highlightBuildings()
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding })
-		if (this.hoveredNodeId !== hoveredBuilding.node.id) {
-			this.hoveredNodeId = hoveredBuilding.node.id
-			this.storeService.dispatch(setHoveredNodeId(hoveredBuilding.node.id))
-		}
+		this.store.dispatch(setHoveredNodeId(hoveredBuilding.node.id))
 	}
 
 	private transformHTMLToSceneCoordinates(): Coordinates {
@@ -438,8 +412,6 @@ export class CodeMapMouseEventService implements FilesSelectionSubscriber, Black
 			this.threeSceneService.clearHighlight()
 		}
 
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
-		this.hoveredNodeId = null
-		this.storeService.dispatch(setHoveredNodeId(null))
+		this.store.dispatch(setHoveredNodeId(null))
 	}
 }

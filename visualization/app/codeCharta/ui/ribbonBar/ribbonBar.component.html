@@ -28,7 +28,7 @@
 
 <mat-card id="area-metric-card" class="area-metric-card metric-card" [class.expanded]="panelSelection === 'AREA_PANEL_OPEN'">
 	<div class="section">
-		<div class="section-header">
+		<div class="section-header" id="area-metric-header-section">
 			<cc-area-metric-chooser></cc-area-metric-chooser>
 		</div>
 		<span class="section-title" (click)="updatePanelSelection('AREA_PANEL_OPEN')" title="Show area metric settings">
@@ -39,8 +39,8 @@
 </mat-card>
 
 <mat-card id="height-metric-card" class="height-metric-card metric-card" [class.expanded]="panelSelection === 'HEIGHT_PANEL_OPEN'">
-	<div class="section">
-		<div class="section-header">
+	<div class="section" id="height-metric-section">
+		<div class="section-header" id="height-metric-header-section">
 			<cc-height-metric-chooser></cc-height-metric-chooser>
 		</div>
 		<span class="section-title" (click)="updatePanelSelection('HEIGHT_PANEL_OPEN')" title="Show height metric settings">
@@ -53,6 +53,10 @@
 	></cc-height-settings-panel>
 </mat-card>
 
+<mat-card *ngIf="!(isDeltaState$ | async)" class="link-color-metric-to-height-metric-card">
+	<cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
+</mat-card>
+
 <mat-card
 	*ngIf="!(isDeltaState$ | async)"
 	id="color-metric-card"
@@ -60,7 +64,7 @@
 	[class.expanded]="panelSelection === 'COLOR_PANEL_OPEN'"
 >
 	<div class="section">
-		<div class="section-header">
+		<div class="section-header" id="color-metric-header-section">
 			<cc-color-metric-chooser></cc-color-metric-chooser>
 		</div>
 		<span class="section-title" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color metric settings">
@@ -80,7 +84,7 @@
 	[class.expanded]="panelSelection === 'EDGE_PANEL_OPEN'"
 >
 	<div class="section">
-		<div class="section-header">
+		<div class="section-header" id="edge-metric-header-section">
 			<cc-edge-metric-chooser></cc-edge-metric-chooser>
 		</div>
 		<span class="section-title" (click)="updatePanelSelection('EDGE_PANEL_OPEN')" title="Show edge metric settings">

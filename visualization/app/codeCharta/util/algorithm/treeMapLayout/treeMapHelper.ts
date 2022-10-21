@@ -10,6 +10,8 @@ import {
 	selectedColorMetricDataSelector
 } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 
+export const treeMapSize = 250
+
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
 const HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
@@ -73,8 +75,8 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
 		markingColor: getMarkingColor(map, state.fileSettings.markedPackages),
 		flat: false,
 		color: getBuildingColor(map, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
-		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize),
-		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize)
+		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(0, 0, 0), treeMapSize),
+		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(0, 0, 0), treeMapSize)
 	} as Node
 }
 
@@ -121,8 +123,8 @@ function buildNodeFrom(
 		markingColor: getMarkingColor(data, state.fileSettings.markedPackages),
 		flat: flattened,
 		color: getBuildingColor(data, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
-		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), state.treeMap.mapSize),
-		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), state.treeMap.mapSize)
+		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), treeMapSize),
+		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), treeMapSize)
 	}
 }
 

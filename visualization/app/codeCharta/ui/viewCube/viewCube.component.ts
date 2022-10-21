@@ -12,10 +12,9 @@ import {
 	WebGLRenderer
 } from "three"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { Component, ElementRef, Inject, OnInit } from "@angular/core"
-import { ThreeOrbitControlsServiceToken } from "../../services/ajs-upgraded-providers"
 
 @Component({
 	selector: "cc-view-cube",
@@ -41,7 +40,7 @@ export class ViewCubeComponent implements OnInit {
 
 	constructor(
 		@Inject(ElementRef) private elementReference: ElementRef,
-		@Inject(ThreeOrbitControlsServiceToken) private threeOrbitControlsService: ThreeOrbitControlsService,
+		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService,
 		@Inject(ViewCubeMouseEventsService) private viewCubeMouseEvents: ViewCubeMouseEventsService
 	) {}
 

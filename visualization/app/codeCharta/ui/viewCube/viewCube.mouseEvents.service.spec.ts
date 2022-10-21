@@ -1,5 +1,5 @@
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"

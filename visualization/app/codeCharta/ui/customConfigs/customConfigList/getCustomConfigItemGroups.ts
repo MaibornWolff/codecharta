@@ -19,30 +19,29 @@ export function getCustomConfigItemGroups(
 
 	for (const customConfig of CustomConfigHelper.loadCustomConfigs().values()) {
 		const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
+		const mapCheckSums = customConfig.mapChecksum.split(";")
+		const isCustomConfigItemApplicable = mapCheckSums.some(
+			checksum =>
+				fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.MULTIPLE)?.includes(checksum) ||
+				fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.DELTA)?.includes(checksum)
+		)
 
 		if (!customConfigItemGroups.has(groupKey)) {
 			customConfigItemGroups.set(groupKey, {
 				mapNames: customConfig.assignedMaps.join(" "),
 				mapSelectionMode: customConfig.mapSelectionMode,
-				hasApplicableItems: false,
+				hasApplicableItems: isCustomConfigItemApplicable,
 				customConfigItems: []
 			})
 		}
 
-		const customConfigItemApplicable =
-			fileMapCheckSumsByMapSelectionMode.get(customConfig.mapSelectionMode)?.join(";") === customConfig.mapChecksum
-
 		customConfigItemGroups.get(groupKey).customConfigItems.push({
 			id: customConfig.id,
 			name: customConfig.name,
-			mapNames: customConfig.assignedMaps.join(" "),
+			assignedMaps: new Map(mapCheckSums.map((checksum, index) => [checksum, customConfig.assignedMaps[index]])),
 			mapSelectionMode: customConfig.mapSelectionMode,
-			isApplicable: customConfigItemApplicable
+			isApplicable: isCustomConfigItemApplicable
 		})
-
-		if (customConfigItemApplicable) {
-			customConfigItemGroups.get(groupKey).hasApplicableItems = true
-		}
 
 		if (customConfigItemGroups.get(groupKey).hasApplicableItems) {
 			customConfigGroups.applicableItems.set(groupKey, customConfigItemGroups.get(groupKey))

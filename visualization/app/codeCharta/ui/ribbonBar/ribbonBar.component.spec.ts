@@ -3,12 +3,12 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { mocked } from "ts-jest/utils"
 import { EdgeMetricData } from "../../codeCharta.model"
-import { ThreeOrbitControlsServiceToken } from "../../services/ajs-upgraded-providers"
 import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { Store } from "../../state/store/store"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { RibbonBarComponent } from "./ribbonBar.component"
 import { RibbonBarModule } from "./ribbonBar.module"
 
@@ -19,17 +19,17 @@ const mockedIsDeltaStateSelector = mocked(isDeltaStateSelector)
 jest.mock("../../state/selectors/accumulatedData/metricData/edgeMetricData.selector", () => ({
 	edgeMetricDataSelector: jest.fn(() => [])
 }))
-const mockEdedgeMetricDataSelector = mocked(edgeMetricDataSelector)
+const mockEdgeMetricDataSelector = mocked(edgeMetricDataSelector)
 
 describe("RibbonBarComponent", () => {
 	beforeEach(() => {
 		mockedIsDeltaStateSelector.mockImplementation(() => false)
-		mockEdedgeMetricDataSelector.mockImplementation(() => [])
+		mockEdgeMetricDataSelector.mockImplementation(() => [])
 		TestBed.configureTestingModule({
 			imports: [RibbonBarModule],
 			providers: [
 				{ provide: ThreeCameraService, useValue: {} },
-				{ provide: ThreeOrbitControlsServiceToken, useValue: {} }
+				{ provide: ThreeOrbitControlsService, useValue: {} }
 			]
 		})
 	})
@@ -83,28 +83,30 @@ describe("RibbonBarComponent", () => {
 	})
 
 	describe("delta state", () => {
-		it("should not show cc-color-metric-chooser when in delta mode", async () => {
+		it("should not show cc-color-metric-chooser and cc-link-color-metric-to-height-metric-button when in delta mode", async () => {
 			mockedIsDeltaStateSelector.mockImplementation(() => true)
 			const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
 			expect(container.querySelector("cc-color-metric-chooser")).toBe(null)
+			expect(container.querySelector("cc-link-color-metric-to-height-metric-button")).toBe(null)
 		})
 
-		it("should show cc-color-metric-chooser when not in delta mode", async () => {
+		it("should show cc-color-metric-chooser and cc-link-color-metric-to-height-metric-button when not in delta mode", async () => {
 			mockedIsDeltaStateSelector.mockImplementation(() => false)
 			const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
 			expect(container.querySelector("cc-color-metric-chooser")).not.toBe(null)
+			expect(container.querySelector("cc-link-color-metric-to-height-metric-button")).not.toBe(null)
 		})
 	})
 
 	describe("edge metric chooser", () => {
 		it("should show edge metrics when there are some available", async () => {
-			mockEdedgeMetricDataSelector.mockImplementation(() => [{} as EdgeMetricData])
+			mockEdgeMetricDataSelector.mockImplementation(() => [{} as EdgeMetricData])
 			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
 			expect(screen.getByText("Edge Metric Options")).toBeTruthy()
 		})
 
 		it("should hide edge metrics when there aren't any available", async () => {
-			mockEdedgeMetricDataSelector.mockImplementation(() => [])
+			mockEdgeMetricDataSelector.mockImplementation(() => [])
 			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
 			expect(screen.queryByText("Edge Metric Options")).toBe(null)
 		})

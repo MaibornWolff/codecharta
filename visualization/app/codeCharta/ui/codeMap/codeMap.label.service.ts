@@ -1,10 +1,12 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { LayoutAlgorithm, Node } from "../../codeCharta.model"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
+import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControls.service"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { StoreService } from "../../state/store.service"
 import { ColorConverter } from "../../util/color/colorConverter"
+import { State } from "../../state/angular-redux/state"
+import { Inject, Injectable } from "@angular/core"
+import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
 
 interface InternalLabel {
 	sprite: Sprite
@@ -14,15 +16,16 @@ interface InternalLabel {
 	node: Node
 }
 
+@Injectable({ providedIn: "root" })
 export class CodeMapLabelService {
 	private labels: InternalLabel[]
-	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
+	private mapLabelColors = this.state.getValue().appSettings.mapColors.labelColorAndAlpha
 	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
 	private LABEL_CORNER_RADIUS = 40 //empirically gathered
 	private LABEL_SCALE_FACTOR = 0.7 //empirically gathered
-	private LABEL_HEIGHT_COEFFICIENT = 15 / 4 //empirically gathered, needed to prevent label collision with building with higher margin, TODO scale with margin factor once its avalible
+	private LABEL_HEIGHT_COEFFICIENT = 15 / 4 //empirically gathered, needed to prevent label collision with building with higher margin, TODO scale with margin factor once its available
 	private LABEL_HEIGHT_POSITION = 60
 
 	private previousScaling: Vector3 = new Vector3(1, 1, 1)
@@ -30,19 +33,18 @@ export class CodeMapLabelService {
 	private nodeHeight = 0
 
 	constructor(
-		private storeService: StoreService,
-		private threeCameraService: ThreeCameraService,
-		private threeSceneService: ThreeSceneService,
-		private threeOrbitControlsService: ThreeOrbitControlsService
+		@Inject(State) private state: State,
+		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
+		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
+		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
-		"ngInject"
 		this.labels = new Array<InternalLabel>()
 		this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
 	}
 
 	// Labels need to be scaled according to map or it will clip + looks bad
 	addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
-		const { appSettings, dynamicSettings, treeMap } = this.storeService.getState()
+		const { appSettings, dynamicSettings } = this.state.getValue()
 
 		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
 		const { margin, heightMetric } = dynamicSettings
@@ -71,9 +73,9 @@ export class CodeMapLabelService {
 		this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
 		// todo: tk rename to addLeafLabel
 
-		const x = node.x0 - treeMap.mapSize
+		const x = node.x0 - treeMapSize
 		const y = node.z0
-		const z = node.y0 - treeMap.mapSize
+		const z = node.y0 - treeMapSize
 
 		const labelX = (x + node.width / 2) * multiplier.x
 		const labelY = (y + this.nodeHeight) * multiplier.y
@@ -165,8 +167,8 @@ export class CodeMapLabelService {
 	}
 
 	scale() {
-		const { scaling } = this.storeService.getState().appSettings
-		const { margin } = this.storeService.getState().dynamicSettings
+		const { scaling } = this.state.getValue().appSettings
+		const { margin } = this.state.getValue().dynamicSettings
 
 		const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 

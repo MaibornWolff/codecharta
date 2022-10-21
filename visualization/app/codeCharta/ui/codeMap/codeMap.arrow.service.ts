@@ -1,25 +1,44 @@
+import { Injectable, Inject } from "@angular/core"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
-import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
-import { IRootScopeService } from "angular"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { StoreService } from "../../state/store.service"
 import debounce from "lodash.debounce"
+import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
+import { tap } from "rxjs"
+import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
+import { Store } from "../../state/angular-redux/store"
+import { State } from "../../state/angular-redux/state"
 
-export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+@Injectable({ providedIn: "root" })
+export class CodeMapArrowService {
 	private VERTICES_PER_LINE = 5
 	private map: Map<string, Node>
 	private arrows: Object3D[]
 	private debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void
 	private HIGHLIGHT_BUILDING_DELAY = 15
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
-		"ngInject"
+	constructor(
+		@Inject(Store) private store: Store,
+		@Inject(State) private state: State,
+		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
+		@Inject(IdToBuildingService) private idToBuildingService: IdToBuildingService
+	) {
 		this.arrows = new Array<Object3D>()
-		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
+		this.store
+			.select(hoveredNodeIdSelector)
+			.pipe(
+				tap(hoveredNodeId => {
+					if (hoveredNodeId !== null) {
+						const hoveredBuilding = this.idToBuildingService.get(hoveredNodeId)
+						this.onBuildingHovered(hoveredBuilding)
+					} else {
+						this.onBuildingUnhovered()
+					}
+				})
+			)
+			.subscribe()
 		this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
 		this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)
 		this.debounceCalculation = debounce(hoveredBuildings => this.resetEdgesOfBuildings(hoveredBuildings), this.HIGHLIGHT_BUILDING_DELAY)
@@ -52,7 +71,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 	}
 
 	onBuildingUnhovered() {
-		const { isEdgeMetricVisible } = this.storeService.getState().appSettings
+		const { isEdgeMetricVisible } = this.state.getValue().appSettings
 
 		if (isEdgeMetricVisible) {
 			this.clearArrows()
@@ -68,7 +87,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 	}
 
 	addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
-		const { appSettings, dynamicSettings } = this.storeService.getState()
+		const { appSettings, dynamicSettings } = this.state.getValue()
 		const curveScale = 100 * appSettings.edgeHeight
 
 		if (arrowTargetNode.attributes?.[dynamicSettings.heightMetric] && arrowOriginNode.attributes?.[dynamicSettings.heightMetric]) {
@@ -86,7 +105,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 
 		this.map = this.getNodesAsMap(nodes)
 
-		const { edges } = this.storeService.getState().fileSettings
+		const { edges } = this.state.getValue().fileSettings
 
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
@@ -95,7 +114,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 				//TODO It seems originNode or targetNode might be undefined here,
 				// I think it results from the method being called multiple times when it might not be available yet
 				// I changed that back to avoid console errors and re-enable the edge-metric, however we should investigate why this is happening
-				const curveScale = 100 * this.storeService.getState().appSettings.edgeHeight
+				const curveScale = 100 * this.state.getValue().appSettings.edgeHeight
 				const curve = this.createCurve(originNode, targetNode, curveScale)
 				this.previewMode(curve, edge.visible)
 			}
@@ -103,7 +122,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 	}
 
 	scale() {
-		const { scaling } = this.storeService.getState().appSettings
+		const { scaling } = this.state.getValue().appSettings
 		for (const arrow of this.arrows) {
 			arrow.scale.x = scaling.x
 			arrow.scale.y = scaling.y
@@ -112,7 +131,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 	}
 
 	private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
-		return this.storeService.getState().appSettings.isEdgeMetricVisible && !codeMapBuilding.node.flat
+		return this.state.getValue().appSettings.isEdgeMetricVisible && !codeMapBuilding.node.flat
 	}
 
 	private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {
@@ -135,7 +154,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 	}
 
 	private buildPairingEdges(node: Map<string, Node>) {
-		const { edges } = this.storeService.getState().fileSettings
+		const { edges } = this.state.getValue().fileSettings
 
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
@@ -207,7 +226,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 
 	private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints = 50) {
 		const points = bezier.getPoints(bezierPoints)
-		const { incomingEdge, outgoingEdge } = this.storeService.getState().appSettings.mapColors
+		const { incomingEdge, outgoingEdge } = this.state.getValue().appSettings.mapColors
 		const arrowColor = incoming ? incomingEdge : outgoingEdge
 		const pointsPreviews = incoming
 			? points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)

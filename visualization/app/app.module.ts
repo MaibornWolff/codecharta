@@ -12,16 +12,9 @@ import { LegendPanelComponent } from "./codeCharta/ui/legendPanel/legendPanel.co
 import { LegendPanelModule } from "./codeCharta/ui/legendPanel/legendPanel.module"
 import { ColorPickerForMapColorModule } from "./codeCharta/ui/colorPickerForMapColor/colorPickerForMapColor.module"
 import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
-import { UnfocusNodesOnLoadingMapEffect } from "./codeCharta/state/effects/unfocusNodesOnLoadingMap/unfocusNodesOnLoadingMap.effect"
+import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import {
-	codeChartaServiceProvider,
-	CodeMapMouseEventServiceTokenProvider,
-	threeOrbitControlsServiceProvider,
-	threeSceneServiceProvider,
-	threeViewerServiceTokenProvider
-} from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
@@ -42,10 +35,12 @@ import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
 import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { AutoFitCodeMapOnFileSelectionChangeEffect } from "./codeCharta/state/effects/autoFitCodeMapOnFileSelectionChange/autoFitCodeMapOnFileSelectionChange.effect"
+import { AutoFitCodeMapEffect } from "./codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
 import { CodeChartaModule } from "./codeCharta/codeCharta.module"
 import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
+import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
+import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAttributeTypes/updateAttributeTypes.effect"
 
 @NgModule({
 	imports: [
@@ -53,7 +48,7 @@ import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCha
 		UpgradeModule,
 		EffectsModule.forRoot([
 			SplitStateActionsEffect,
-			UnfocusNodesOnLoadingMapEffect,
+			UnfocusNodesEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
 			BlacklistSearchPatternEffect,
@@ -62,8 +57,10 @@ import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCha
 			ResetChosenMetricsEffect,
 			UpdateEdgePreviewsEffect,
 			RenderCodeMapEffect,
-			AutoFitCodeMapOnFileSelectionChangeEffect,
+			AutoFitCodeMapEffect,
 			UpdateVisibleTopLabelsEffect,
+			LinkColorMetricToHeightMetricEffect,
+			UpdateAttributeTypesEffect,
 			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect
 		]),
 		SliderModule,
@@ -85,11 +82,6 @@ import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCha
 		CodeChartaModule
 	],
 	providers: [
-		threeSceneServiceProvider,
-		codeChartaServiceProvider,
-		threeOrbitControlsServiceProvider,
-		threeViewerServiceTokenProvider,
-		CodeMapMouseEventServiceTokenProvider,
 		VersionService,
 		{
 			provide: APP_INITIALIZER,

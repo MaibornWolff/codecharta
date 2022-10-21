@@ -1,0 +1,19 @@
+cc-link-color-metric-to-height-metric-button {
+	display: flex;
+	justify-content: center;
+
+	.link-metrics-button {
+		width: 50px;
+		padding: 0;
+		margin: 0;
+		background-color: transparent;
+
+		.fa {
+			color: rgb(68, 68, 68);
+		}
+
+		&:hover {
+			background-color: #c8c8c8;
+		}
+	}
+}

@@ -103,7 +103,6 @@ export interface Settings {
 	fileSettings: FileSettings
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
-	treeMapSettings: TreeMapSettings
 }
 
 export interface FileSettings {
@@ -156,10 +155,7 @@ export interface AppSettings {
 	experimentalFeaturesEnabled: boolean
 	screenshotToClipboardEnabled: boolean
 	colorLabels: colorLabelOptions
-}
-
-export interface TreeMapSettings {
-	mapSize: number
+	isColorMetricLinkedToHeightMetric: boolean
 }
 
 export interface MapColors {
@@ -344,7 +340,6 @@ export interface State {
 	fileSettings: FileSettings
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
-	treeMap: TreeMapSettings
 	files: FileState[]
 	appStatus: AppStatus
 }
@@ -381,12 +376,11 @@ export interface CCAction extends Action {
 	//
 	// As a starting point:
 	//
-	// RecursivePartial<MetricData & DynamicSettings & FileSettings & AppSettings & TreeMapSettings & FileState> & {
+	// RecursivePartial<MetricData & DynamicSettings & FileSettings & AppSettings  & FileState> & {
 	// 	metricData: MetricData
 	// 	dynamicSettings: DynamicSettings
 	// 	fileSettings: FileSettings
 	// 	appSettings: AppSettings
-	// 	treeMap: TreeMapSettings
 	// 	files: FileState[]
 	// }
 	payload?: any

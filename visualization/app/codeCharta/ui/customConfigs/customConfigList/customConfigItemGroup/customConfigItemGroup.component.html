@@ -1,0 +1,30 @@
+<mat-expansion-panel
+	[expanded]="isExpanded"
+	(opened)="isExpanded = true"
+	(closed)="isExpanded = false"
+	*ngFor="let customConfigItemGroup of customConfigItemGroups | keyvalue"
+>
+	<mat-expansion-panel-header>
+		<mat-panel-title>
+			Custom View(s) in
+			<span class="highlight-mode"> {{ customConfigItemGroup.value.mapSelectionMode | lowercase }} </span>
+			mode for
+			{{ customConfigItemGroup.value.mapNames }}
+		</mat-panel-title>
+	</mat-expansion-panel-header>
+	<mat-list *ngFor="let customConfig of customConfigItemGroup.value.customConfigItems">
+		<mat-list-item title="{{ customConfig | customConfig2ApplicableMessage }}">
+			<button
+				mat-dialog-close
+				[disabled]="!customConfig.isApplicable"
+				(click)="applyCustomConfig(customConfig.id)"
+				[style.color]="customConfig | customConfig2ApplicableColor"
+			>
+				{{ customConfig.name }}
+			</button>
+			<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
+				<i class="fa fa-minus-square"></i>
+			</button>
+		</mat-list-item>
+	</mat-list>
+</mat-expansion-panel>

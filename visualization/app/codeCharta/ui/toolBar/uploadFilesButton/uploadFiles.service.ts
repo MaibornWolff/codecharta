@@ -12,7 +12,7 @@ import { readFiles } from "../../../util/uploadFiles/readFiles"
 export class UploadFilesService {
 	isUploading = false
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(@Inject(Store) private store: Store, @Inject(CodeChartaService) private codeChartaService: CodeChartaService) {}
 
 	uploadFiles() {
 		const ccFileInput = createCCFileInput()
@@ -30,7 +30,7 @@ export class UploadFilesService {
 				}
 
 				if (ccFiles.length > 0) {
-					await CodeChartaService.instance.loadFiles(ccFiles)
+					await this.codeChartaService.loadFiles(ccFiles)
 				}
 			} catch {
 				this.store.dispatch(setIsLoadingFile(false))

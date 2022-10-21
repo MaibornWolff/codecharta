@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   New calculation algorithm for treeMap that accounts for paddings and floor labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
 
+### Changed
+
+-   Custom Views are now applicable even if maps or mode are different. Missing maps or map selection mode is displayed in the tooltip [#3090](https://github.com/MaibornWolff/codecharta/pull/3090)
+
+### Fixed 🐞
+
+-   Fix broken link to Custom View documentation [#3101](https://github.com/MaibornWolff/codecharta/pull/3101)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate codeMap.render.service, codeMap.label.service, codeMap.mouseEvent.service, codeMap.arrow.service, codeCharta.service, sharpnessMode.service, isLoadingFile.service, scaling.service and experimentalFeaturesEnabled.service to Angular [#3094](https://github.com/MaibornWolff/codecharta/pull/3094)
+-   Extract tree map size into a const as this is never changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
+
+## [1.109.1] - 2022-10-12
+
+### Fixed 🐞
+
+-   Fix broken links on new GitHub Page 'Docker Containers' [#3089](https://github.com/MaibornWolff/codecharta/pull/3089)
+
+## [1.109.0] - 2022-10-12
+
+### Added 🚀
+
+-   Add description and documentation to Custom View modal [#3085](https://github.com/MaibornWolff/codecharta/pull/3085)
+-   Add a new button that links the height metric to the color metric so that the colour metric is automatically set to
+    the selected height metric [#3058](https://github.com/MaibornWolff/codecharta/pull/3058) <br/>
+    ![image](https://user-images.githubusercontent.com/72517530/193291144-fdc73a15-2087-47e2-845b-05c666aec71d.png) <br/>
+    ![image](https://user-images.githubusercontent.com/72517530/194300920-60ce9fcd-0dd5-46ef-a90b-01d9a29205e6.png)
+
 ### Fixed 🐞
 
 -   Fix interactive GitLogParser using wrong dialogue with repo-scan subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
@@ -18,6 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix CodeCharta Analysis container not coming with the sonar-scanner pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
 -   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
+-   Unfocus nodes when changing selected files, which prevents the app from crashing [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -26,6 +56,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
 -   Migrate dialog.service to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 -   Add documentation for new treeMap algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+-   Migrate dialog.service to Angular [#3070](https://github.com/MaibornWolff/codecharta/pull/3070)
+-   Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeOrbitControlsService and ThreeViewerService to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Migrate updateAttributeTypes.service to Angular [#3082](https://github.com/MaibornWolff/codecharta/pull/3082)
 
 ## [1.108.1] - 2022-09-29
 
@@ -37,7 +70,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
+-   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a
+    SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
 
 ### Removed 🗑
 
