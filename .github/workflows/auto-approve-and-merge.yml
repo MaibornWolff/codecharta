@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto merge
-        uses: pascalgn/automerge-action@2e9644b0b86a2c052525921f181f905dc8102da5
+        uses: pascalgn/automerge-action@eb68b061739cb9d81564f8e812d0b3c45f0fb09a
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_LABELS: dependencies
