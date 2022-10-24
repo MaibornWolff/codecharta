@@ -131,7 +131,7 @@ export class CodeMapArrowService {
 	}
 
 	private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
-		return this.state.getValue().appSettings.isEdgeMetricVisible && !codeMapBuilding.node.flat
+		return this.state.getValue().appSettings.isEdgeMetricVisible && codeMapBuilding && !codeMapBuilding.node.flat
 	}
 
 	private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {
