@@ -127,7 +127,7 @@ export function calculateTotalNodeArea(
 			if (nodeAreaMap[parentPath] > 0) {
 				const parentArea = addPaddingToArea(nodeAreaMap[parentPath], padding)
 				const proportion = parentArea / nodeAreaMap[parentPath]
-				nodeAreaMap[nodePath] = Math.round(nodeAreaMap[nodePath] * proportion)
+				nodeAreaMap[nodePath] = Math.ceil(nodeAreaMap[nodePath] * proportion)
 			}
 		} else {
 			const node = nodeKeyMap.get(nodePath)
@@ -157,8 +157,6 @@ export function calculateTotalNodeArea(
 		}
 	}
 
-	//const hierarchyNodeCopy = hierarchyNode.copy()
-
 	/**
 	 * Step 8: if
 	 */
@@ -172,7 +170,7 @@ export function calculateTotalNodeArea(
 	for (const node of hierarchyNode) {
 		if (!isLeaf(node.data) && node.value !== undefined) {
 			const folderAreaValue = node.value
-			totalNodeArea += (folderAreaValue + padding) ** 2 - folderAreaValue ** 2
+			totalNodeArea += (folderAreaValue + padding * 2) ** 2 - folderAreaValue ** 2
 		}
 	}
 
@@ -209,8 +207,8 @@ export function calculateTotalNodeArea(
 		rootSide = Math.max(rootWidthWithDefaultPadding * factor, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2) * factor)
 	}
 
-	const rootHeight = Math.round(rootSide)
-	const rootWidth = Math.round(rootSide)
+	const rootHeight = Math.ceil(rootSide)
+	const rootWidth = Math.ceil(rootSide)
 
 	const metricSum = hierarchyNode.sum(node => {
 		return nodeAreaMap[node.path] * factor
@@ -220,5 +218,5 @@ export function calculateTotalNodeArea(
 }
 
 function addPaddingToArea(area: number, padding: number) {
-	return Math.round((Math.sqrt(area) + padding * 2) ** 2)
+	return Math.ceil((Math.sqrt(area) + padding) ** 2)
 }

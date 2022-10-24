@@ -31,5 +31,5 @@ export function calculatePaddingBasedOnBuildingArea(
 	padding: number
 ) {
 	const medianBuildingArea = calculateMedian(childrenAreaValues, smallestDelta, minimumBuildingArea)
-	return Math.round((padding / Math.sqrt(medianBuildingArea)) * Math.sqrt(minimumBuildingArea))
+	return Math.ceil((padding / Math.sqrt(medianBuildingArea)) * Math.sqrt(minimumBuildingArea))
 }
