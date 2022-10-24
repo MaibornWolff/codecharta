@@ -1,5 +1,5 @@
 import { Vector3 } from "three"
-import { AppSettings, DynamicSettings, FileSettings, TreeMapSettings } from "../../codeCharta.model"
+import { AppSettings, DynamicSettings, FileSettings } from "../../codeCharta.model"
 
 export enum CustomConfigMapSelectionMode {
 	SINGLE = "SINGLE",
@@ -20,7 +20,6 @@ export interface CustomConfig {
 		appSettings: AppSettings
 		dynamicSettings: DynamicSettings
 		fileSettings: FileSettings
-		treeMap: TreeMapSettings
 	}
 	camera: {
 		camera: Vector3

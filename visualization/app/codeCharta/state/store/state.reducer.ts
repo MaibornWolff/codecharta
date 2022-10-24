@@ -3,7 +3,6 @@ import { Action, combineReducers } from "redux"
 import appSettings from "./appSettings/appSettings.reducer"
 import fileSettings from "./fileSettings/fileSettings.reducer"
 import dynamicSettings from "./dynamicSettings/dynamicSettings.reducer"
-import treeMap from "./treeMap/treeMap.reducer"
 import files from "./files/files.reducer"
 import appStatus from "./appStatus/appStatus.reducer"
 import { SetStateAction, StateActions } from "./state.actions"
@@ -13,7 +12,6 @@ const appReducer = combineReducers({
 	fileSettings,
 	appSettings,
 	dynamicSettings,
-	treeMap,
 	files,
 	appStatus
 })
@@ -48,7 +46,7 @@ function applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = [
 			continue
 		}
 
-                if (!isKeyOf(applyTo, key)) {
+		if (!isKeyOf(applyTo, key)) {
 			continue
 		}
 
