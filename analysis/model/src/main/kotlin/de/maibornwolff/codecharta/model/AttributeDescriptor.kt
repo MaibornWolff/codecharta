@@ -16,13 +16,10 @@ class AttributeDescriptor(
 
         other as AttributeDescriptor
 
-        if (description == other.description &&
+        return description == other.description &&
             hintLowValue == other.hintLowValue &&
             hintHighValue == other.hintHighValue &&
-            link == other.link) {
-            return true
-        }
-        return false
+            link == other.link
     }
 
     override fun hashCode(): Int {
