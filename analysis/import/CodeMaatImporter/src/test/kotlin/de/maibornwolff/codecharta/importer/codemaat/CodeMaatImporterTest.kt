@@ -39,47 +39,19 @@ class CodeMaatImporterTest {
     }
 
     @Test
-    fun `should contain avgCommits value of 5`() {
+    fun `should contain expected content`() {
         main(
             arrayOf(
                 "src/test/resources/coupling-codemaat.csv",
                 "-nc",
-                "-o=src/test/resources/coupling-codemaat.cc.json"
+                "-o=src/test/resources/coupling-codemaat-content.cc.json"
                    )
             )
-        val file = File("src/test/resources/coupling-codemaat.cc.json")
+        val file = File("src/test/resources/coupling-codemaat-content.cc.json")
         file.deleteOnExit()
 
         assertThat(file.readText()).contains("\"avgCommits\":5")
-    }
-
-    @Test
-    fun `should contain attributeDescriptors with content`() {
-        main(
-            arrayOf(
-                "src/test/resources/coupling-codemaat.csv",
-                "-nc",
-                "-o=src/test/resources/coupling-codeaat.cc.json"
-            )
-        )
-        val file = File("src/test/resources/coupling-codemaat.cc.json")
-        file.deleteOnExit()
-
         assertThat(file.readText()).contains(listOf("attributeDescriptors", "\"description\":\"Average"))
-    }
-
-    @Test
-    fun `should contain identical attributeDescriptors after deserialization`() {
-        main(
-            arrayOf(
-                "src/test/resources/coupling-codemaat.csv",
-                "-nc",
-                "-o=src/test/resources/coupling-codemaat.cc.json"
-            )
-        )
-        val file = File("src/test/resources/coupling-codemaat.cc.json")
-        file.deleteOnExit()
-
         assertTrue(ProjectDeserializer.deserializeProject(file.reader()).attributeDescriptors == getAttributeDescriptors())
     }
 }

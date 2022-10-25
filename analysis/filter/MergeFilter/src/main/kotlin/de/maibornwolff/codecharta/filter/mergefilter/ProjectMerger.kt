@@ -70,7 +70,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 if (mergedAttributeTypes.containsKey(key)) {
                     attributeTypes.value.forEach { attribute ->
                         if (!mergedAttributeTypes[key]!!.containsKey(attribute.key)) {
-                            mergedAttributeTypes[key]!!.put(attribute.key, attribute.value)
+                            mergedAttributeTypes[key]!![attribute.key] = attribute.value
                         }
                     }
                 } else {
@@ -83,13 +83,13 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private fun mergeAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
         val mergedAttributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
-        projects.forEach { mergedAttributeDescriptors.plus(it.attributeDescriptors) }
+        projects.forEach { mergedAttributeDescriptors.putAll(it.attributeDescriptors) }
         return mergedAttributeDescriptors
     }
 
     private fun mergeBlacklist(): MutableList<BlacklistItem> {
         val mergedBlacklist = mutableListOf<BlacklistItem>()
-        projects.forEach { it.blacklist.forEach { mergedBlacklist.add(it) } }
+        projects.forEach { project -> project.blacklist.forEach { mergedBlacklist.add(it) } }
         return mergedBlacklist.distinctBy { it.toString() }.toMutableList()
     }
 }
