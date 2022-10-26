@@ -32,7 +32,6 @@ import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgeP
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
 import { VersionService } from "./codeCharta/services/version/version.service"
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
-import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapEffect } from "./codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
@@ -47,7 +46,6 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 		BrowserModule,
 		UpgradeModule,
 		EffectsModule.forRoot([
-			SplitStateActionsEffect,
 			UnfocusNodesEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,

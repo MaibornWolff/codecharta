@@ -5,6 +5,7 @@ import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
 import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { Scaling } from "./state/store/appSettings/scaling/scaling.actions"
 
 export interface NameDataPair {
 	fileName: string
@@ -133,7 +134,7 @@ export interface AppSettings {
 	amountOfTopLabels: number
 	amountOfEdgePreviews: number
 	edgeHeight: number
-	scaling: Vector3
+	scaling: Scaling
 	hideFlatBuildings: boolean
 	invertHeight: boolean
 	invertArea: boolean
