@@ -11,8 +11,6 @@ import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfig
 import { FileNameHelper } from "./fileNameHelper"
 import { FileDownloader } from "./fileDownloader"
 import { setState } from "../state/store/state.actions"
-import { setColorRange } from "../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { setMargin } from "../state/store/dynamicSettings/margin/margin.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { BehaviorSubject } from "rxjs"
@@ -227,18 +225,7 @@ export class CustomConfigHelper {
 		const customConfig = this.getCustomConfigSettings(configId)
 		CustomConfigHelper.transformLegacyCameraSettingsOfCustomConfig(customConfig)
 
-		// TODO: Setting state from loaded CustomConfig not working at the moment
-		//  due to issues of the event architecture.
-
-		// TODO: Check if state properties differ
-		// Create new partial State (updates) for changed values only
 		store.dispatch(setState(customConfig.stateSettings))
-
-		// Should we fire another event "ResettingStateFinishedEvent"
-		// We could add a listener then to reset the camera
-
-		store.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange))
-		store.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
 
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
