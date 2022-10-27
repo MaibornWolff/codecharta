@@ -90,8 +90,9 @@ export class ThreeSceneService {
 			return
 		}
 		const scaling = this.state.getValue().appSettings.scaling
+		const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 
-		this.floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, treeMapSize, scaling)
+		this.floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, treeMapSize, scalingVector)
 		const floorLabels = this.floorLabelDrawer.draw()
 
 		if (floorLabels.length > 0) {

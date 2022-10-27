@@ -7,6 +7,7 @@ import files from "./files/files.reducer"
 import appStatus from "./appStatus/appStatus.reducer"
 import { SetStateAction, StateActions } from "./state.actions"
 import { State } from "../../codeCharta.model"
+import { clone } from "../../util/clone"
 
 const appReducer = combineReducers({
 	fileSettings,
@@ -18,8 +19,8 @@ const appReducer = combineReducers({
 
 const rootReducer = (state: State, action: Action) => {
 	if (isSetStateAction(action)) {
-		// we don't clone the state because of class instances in there
-		return applyPartialState(state, action.payload)
+		const newState = clone(state)
+		return applyPartialState(newState, action.payload)
 	}
 
 	return appReducer(state, action)
@@ -46,12 +47,12 @@ function applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = [
 			continue
 		}
 
-		const newComposedPath = [...composedPath, key]
-		const composedJoinedPath = newComposedPath.join(".")
-
 		if (!isKeyOf(applyTo, key)) {
 			continue
 		}
+
+		const newComposedPath = [...composedPath, key]
+		const composedJoinedPath = newComposedPath.join(".")
 
 		applyTo[key] =
 			typeof value !== "object" || objectWithDynamicKeysInStore.has(composedJoinedPath)

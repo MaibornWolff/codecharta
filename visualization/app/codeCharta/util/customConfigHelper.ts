@@ -219,6 +219,7 @@ export class CustomConfigHelper {
 		CustomConfigHelper.deleteUnusedKeyPropsOfCustomConfig(customConfig)
 
 		store.dispatch(setState(customConfig.stateSettings))
+
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
 		if (customConfig.camera) {

@@ -1,6 +1,12 @@
 import { Vector3 } from "three"
 import { CCAction } from "../../../../codeCharta.model"
 
+export type Scaling = {
+	x: number
+	y: number
+	z: number
+}
+
 export enum ScalingActions {
 	SET_SCALING = "SET_SCALING"
 }
@@ -12,11 +18,11 @@ export interface SetScalingAction extends CCAction {
 
 export type ScalingAction = SetScalingAction
 
-export function setScaling(scaling: Partial<Vector3> = defaultScaling): SetScalingAction {
+export function setScaling(scaling: Partial<Scaling> = defaultScaling): SetScalingAction {
 	return {
 		type: ScalingActions.SET_SCALING,
 		payload: scaling
 	}
 }
 
-export const defaultScaling = new Vector3(1, 1, 1)
+export const defaultScaling = { x: 1, y: 1, z: 1 }
