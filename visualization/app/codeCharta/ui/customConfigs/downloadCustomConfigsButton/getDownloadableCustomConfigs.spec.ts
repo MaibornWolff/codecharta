@@ -2,6 +2,7 @@ import { getDownloadableCustomConfigs } from "./getDownloadableCustomConfigs"
 import { CustomConfig, CustomConfigMapSelectionMode } from "../../../model/customConfig/customConfig.api.model"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { VisibleFilesBySelectionMode } from "../visibleFilesBySelectionMode.selector"
+import { expect } from "@jest/globals"
 
 describe("getDownloadableCustomConfigs", () => {
 	it("should get an empty map when no applicable custom configs are available", () => {
@@ -26,7 +27,7 @@ describe("getDownloadableCustomConfigs", () => {
 	it("should get a map with downloadable custom configs when (partially) applicable custom configs are available", () => {
 		const customConfigStub1 = {
 			id: "md5-fileA",
-			name: "stubbedConfig2",
+			name: "stubbedConfig1",
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			assignedMaps: new Map([["md5-fileA", "fileA"]]),
 			stateSettings: {}
@@ -58,5 +59,12 @@ describe("getDownloadableCustomConfigs", () => {
 		const actualDownloadableCustomConfigs = getDownloadableCustomConfigs(visibleFilesBySelectionMode)
 
 		expect(actualDownloadableCustomConfigs.size).toBe(2)
+		expect(actualDownloadableCustomConfigs.get("md5-fileA").assignedMaps).toEqual(new Map([["md5-fileA", "fileA"]]))
+		expect(actualDownloadableCustomConfigs.get("md5-fileA-fileB").assignedMaps).toEqual(
+			new Map([
+				["md5-fileA", "fileA"],
+				["md5-fileB", "fileB"]
+			])
+		)
 	})
 })
