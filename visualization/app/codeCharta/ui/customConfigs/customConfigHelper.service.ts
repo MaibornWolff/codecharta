@@ -1,5 +1,4 @@
 import { combineLatest, map } from "rxjs"
-import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { getDownloadableCustomConfigs } from "./downloadCustomConfigsButton/getDownloadableCustomConfigs"
 import { Inject, Injectable } from "@angular/core"
@@ -10,9 +9,9 @@ import { visibleFilesBySelectionModeSelector } from "./visibleFilesBySelectionMo
 @Injectable()
 export class CustomConfigHelperService {
 	readonly downloadableCustomConfigs$ = combineLatest([
-		this.store.select(visibleFileStatesSelector),
+		this.store.select(visibleFilesBySelectionModeSelector),
 		CustomConfigHelper.customConfigChange$
-	]).pipe(map(([visibleFileStates]) => getDownloadableCustomConfigs(visibleFileStates)))
+	]).pipe(map(([visibleFilesBySelectionMode]) => getDownloadableCustomConfigs(visibleFilesBySelectionMode)))
 
 	readonly customConfigItemGroups$ = combineLatest([
 		this.store.select(visibleFilesBySelectionModeSelector),

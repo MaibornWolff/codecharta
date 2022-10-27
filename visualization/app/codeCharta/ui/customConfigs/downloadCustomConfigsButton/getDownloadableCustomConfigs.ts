@@ -1,33 +1,26 @@
-import { FileState } from "../../../model/files/files"
-import { CustomConfig, ExportCustomConfig } from "../../../model/customConfig/customConfig.api.model"
+import { ExportCustomConfig, MapNameByChecksum } from "../../../model/customConfig/customConfig.api.model"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
+import { VisibleFilesBySelectionMode } from "../visibleFilesBySelectionMode.selector"
 
 export type DownloadableConfigs = Map<string, ExportCustomConfig>
 
-export const getDownloadableCustomConfigs = (fileStates: FileState[]): DownloadableConfigs => {
+export const getDownloadableCustomConfigs = ({ assignedMaps }: VisibleFilesBySelectionMode): DownloadableConfigs => {
 	const downloadableConfigs: DownloadableConfigs = new Map()
-
-	if (fileStates === undefined) {
-		return downloadableConfigs
-	}
-
 	const customConfigs = CustomConfigHelper.getCustomConfigs()
-	const mapChecksumsOfFiles = []
-
-	for (const fileState of fileStates) {
-		mapChecksumsOfFiles.push(fileState.file.fileMeta.fileChecksum)
-	}
 
 	for (const [checksum, customConfig] of customConfigs.entries()) {
 		// Only Configs which are applicable for at least one of the uploaded maps should be downloaded.
-		if (isConfigApplicableForUploadedMaps(customConfig, mapChecksumsOfFiles)) {
+		if (isConfigApplicableForUploadedMaps(customConfig.assignedMaps, assignedMaps)) {
 			downloadableConfigs.set(checksum, CustomConfigHelper.createExportCustomConfigFromConfig(customConfig))
 		}
 	}
 	return downloadableConfigs
 }
 
-function isConfigApplicableForUploadedMaps(customConfig: CustomConfig, mapChecksumsOfFiles: string[]): boolean {
-	const mapChecksumsOfConfig = [...customConfig.assignedMaps.keys()]
-	return mapChecksumsOfConfig.some(mapChecksumConfig => mapChecksumsOfFiles.includes(mapChecksumConfig))
+function isConfigApplicableForUploadedMaps(
+	assignedMapsOfConfig: MapNameByChecksum,
+	assignedMapsOfVisibleFiles: MapNameByChecksum
+): boolean {
+	const mapChecksumsOfConfig = [...assignedMapsOfConfig.keys()]
+	return mapChecksumsOfConfig.some(mapChecksumConfig => assignedMapsOfVisibleFiles.has(mapChecksumConfig))
 }
