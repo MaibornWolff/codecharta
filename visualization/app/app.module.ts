@@ -40,6 +40,7 @@ import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateV
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
 import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAttributeTypes/updateAttributeTypes.effect"
+import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 
 @NgModule({
 	imports: [
@@ -59,7 +60,8 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 			UpdateVisibleTopLabelsEffect,
 			LinkColorMetricToHeightMetricEffect,
 			UpdateAttributeTypesEffect,
-			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect
+			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
+			UpdateFileSettingsEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
