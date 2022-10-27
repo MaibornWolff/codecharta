@@ -3,7 +3,6 @@ import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import { NameDataPair } from "./codeCharta.model"
-import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -31,9 +30,7 @@ export class CodeChartaController {
 		private $http: IHttpService,
 		private storeService: StoreService,
 		private dialog: MatDialog,
-		private codeChartaService: CodeChartaService,
-		// @ts-ignore
-		private injectorService: InjectorService // We have to inject it somewhere
+		private codeChartaService: CodeChartaService
 	) {
 		"ngInject"
 		this._viewModel.version = packageJson.version
