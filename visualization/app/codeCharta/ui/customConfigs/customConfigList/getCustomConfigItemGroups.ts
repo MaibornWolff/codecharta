@@ -1,32 +1,24 @@
 import { CustomConfigItemGroup } from "../customConfigs.component"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
-import { CustomConfigMapSelectionMode } from "../../../model/customConfig/customConfig.api.model"
+import { VisibleFilesBySelectionMode } from "./visibleFilesBySelectionMode.selector"
 
 export interface CustomConfigGroups {
 	applicableItems: Map<string, CustomConfigItemGroup>
 	nonApplicableItems: Map<string, CustomConfigItemGroup>
 }
 
-export function getCustomConfigItemGroups(
-	fileMapCheckSumsByMapSelectionMode: Map<CustomConfigMapSelectionMode, string[]>
-): CustomConfigGroups {
+export function getCustomConfigItemGroups({ assignedMaps }: VisibleFilesBySelectionMode): CustomConfigGroups {
 	const customConfigGroups: CustomConfigGroups = {
-		applicableItems: new Map<string, CustomConfigItemGroup>(),
-		nonApplicableItems: new Map<string, CustomConfigItemGroup>()
+		applicableItems: new Map(),
+		nonApplicableItems: new Map()
 	}
-
-	const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
+	const customConfigItemGroups = new Map<string, CustomConfigItemGroup>()
 
 	for (const customConfig of CustomConfigHelper.loadCustomConfigs().values()) {
-		const mapNames = [...customConfig.mapNameByChecksum.values()]
-		const mapCheckSums = [...customConfig.mapNameByChecksum.keys()]
+		const mapNames = [...customConfig.assignedMaps.values()]
 		const groupKey = `${mapNames.join("_")}_${customConfig.mapSelectionMode}`
 
-		const isCustomConfigItemApplicable = mapCheckSums.some(
-			checksum =>
-				fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.MULTIPLE)?.includes(checksum) ||
-				fileMapCheckSumsByMapSelectionMode.get(CustomConfigMapSelectionMode.DELTA)?.includes(checksum)
-		)
+		const isCustomConfigItemApplicable = [...customConfig.assignedMaps.keys()].some(configChecksum => assignedMaps.has(configChecksum))
 
 		if (!customConfigItemGroups.has(groupKey)) {
 			customConfigItemGroups.set(groupKey, {
@@ -40,7 +32,7 @@ export function getCustomConfigItemGroups(
 		customConfigItemGroups.get(groupKey).customConfigItems.push({
 			id: customConfig.id,
 			name: customConfig.name,
-			assignedMaps: customConfig.mapNameByChecksum,
+			assignedMaps: customConfig.assignedMaps,
 			mapSelectionMode: customConfig.mapSelectionMode,
 			isApplicable: isCustomConfigItemApplicable
 		})

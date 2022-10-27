@@ -1,33 +1,19 @@
 import { State, stateObjectReplacer } from "../codeCharta.model"
-import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+import { CustomConfig } from "../model/customConfig/customConfig.api.model"
 import md5 from "md5"
-import { visibleFileStatesSelector } from "../state/selectors/visibleFileStates.selector"
-import { FileSelectionState, FileState } from "../model/files/files"
+import { visibleFilesBySelectionModeSelector } from "../ui/customConfigs/customConfigList/visibleFilesBySelectionMode.selector"
 
 const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
-export function getMapSelectionMode(fileStates: FileState[]) {
-	let selectionMode: CustomConfigMapSelectionMode
-	for (const { selectedAs } of fileStates) {
-		selectionMode =
-			selectedAs === FileSelectionState.Partial ? CustomConfigMapSelectionMode.MULTIPLE : CustomConfigMapSelectionMode.DELTA
-	}
-	return selectionMode
-}
-
-export function getMapNamesByChecksum(fileStates: FileState[]) {
-	return new Map(fileStates.map(fileState => [fileState.file.fileMeta.fileChecksum, fileState.file.fileMeta.fileName]))
-}
-
 export function buildCustomConfigFromState(configName: string, state: State, camera: CustomConfig["camera"]): CustomConfig {
-	const selectedFiles = visibleFileStatesSelector(state)
+	const { mapSelectionMode, assignedMaps } = visibleFilesBySelectionModeSelector(state)
 
 	const customConfig: CustomConfig = {
 		id: "",
 		name: configName,
 		creationTime: Date.now(),
-		mapSelectionMode: getMapSelectionMode(selectedFiles),
-		mapNameByChecksum: getMapNamesByChecksum(selectedFiles),
+		mapSelectionMode,
+		assignedMaps,
 		customConfigVersion: CUSTOM_CONFIG_API_VERSION,
 		stateSettings: {
 			appSettings: undefined,

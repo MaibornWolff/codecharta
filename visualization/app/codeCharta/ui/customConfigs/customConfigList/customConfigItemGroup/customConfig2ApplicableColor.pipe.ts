@@ -8,7 +8,7 @@ export class CustomConfig2ApplicableColor implements PipeTransform {
 	constructor(@Inject(State) private state: State) {}
 
 	transform(customConfig: CustomConfigItem): string {
-		const { mode, maps } = getMissingCustomConfigModeAndMaps(customConfig, this.state)
-		return maps.length > 0 || mode.length > 0 ? "rgb(204, 204, 204)" : "rgba(0, 0, 0, 0.87)"
+		const { mapSelectionMode, mapNames } = getMissingCustomConfigModeAndMaps(customConfig, this.state)
+		return mapNames.length > 0 || mapSelectionMode.length > 0 ? "rgb(204, 204, 204)" : "rgba(0, 0, 0, 0.87)"
 	}
 }

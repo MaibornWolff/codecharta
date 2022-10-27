@@ -6,12 +6,14 @@ export enum CustomConfigMapSelectionMode {
 	DELTA = "DELTA"
 }
 
+export type MapNameByChecksum = Map<string, string>
+
 export interface CustomConfig {
 	id: string
 	name: string
 	creationTime: number
 	mapSelectionMode: CustomConfigMapSelectionMode
-	mapNameByChecksum: Map<string, string>
+	assignedMaps: MapNameByChecksum
 	customConfigVersion: string
 
 	stateSettings: {

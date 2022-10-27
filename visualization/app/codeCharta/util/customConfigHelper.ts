@@ -5,7 +5,8 @@ import {
 	CustomConfig,
 	CustomConfigMapSelectionMode,
 	CustomConfigsDownloadFile,
-	ExportCustomConfig
+	ExportCustomConfig,
+	MapNameByChecksum
 } from "../model/customConfig/customConfig.api.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { FileDownloader } from "./fileDownloader"
@@ -14,8 +15,7 @@ import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.servic
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { BehaviorSubject } from "rxjs"
 import { Store } from "../state/angular-redux/store"
-import { FileState } from "../model/files/files"
-import { getMapSelectionMode } from "./customConfigBuilder"
+import { VisibleFilesBySelectionMode } from "../ui/customConfigs/customConfigList/visibleFilesBySelectionMode.selector"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -45,9 +45,9 @@ export class CustomConfigHelper {
 
 	private static mapOldConfigStructureToNew(configs: Map<string, CustomConfig>) {
 		for (const config of configs.values()) {
-			if (config["assignedMaps"]) {
+			if (config["mapChecksum"]) {
 				const checksums = config["mapChecksum"].split(";")
-				config.mapNameByChecksum = new Map(checksums.map((checksum, index) => [checksum, config["assignedMaps"][index]]))
+				config.assignedMaps = new Map(checksums.map((checksum, index) => [checksum, config["assignedMaps"][index]]))
 			}
 		}
 	}
@@ -79,14 +79,14 @@ export class CustomConfigHelper {
 
 	static hasCustomConfigByName(
 		mapSelectionMode: CustomConfigMapSelectionMode,
-		mapNamesByChecksum: Map<string, string>,
+		assignedMaps: MapNameByChecksum,
 		configName: string
 	): boolean {
 		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
 			if (
 				customConfig.name === configName &&
 				customConfig.mapSelectionMode === mapSelectionMode &&
-				this.areEqual(mapNamesByChecksum, customConfig.mapNameByChecksum)
+				this.areEqual(assignedMaps, customConfig.assignedMaps)
 			) {
 				return true
 			}
@@ -95,32 +95,12 @@ export class CustomConfigHelper {
 		return false
 	}
 
-	static areEqual(map1, map2) {
-		// early outs
-		if (!(map1 instanceof Map) || !(map2 instanceof Map) || map1.size !== map2.size) {
+	private static areEqual(map1: MapNameByChecksum, map2: MapNameByChecksum) {
+		if (map1.size !== map2.size) {
 			return false
 		}
-		// we know we have to maps with the same amount of keys and values. Now compare them
-		return [...map1.entries()].every(([key, value]) => map2.has(key) && map2.get(key) === value)
+		return [...map1.entries()].every(([checksum, mapName]) => map2.has(checksum) && map2.get(checksum) === mapName)
 	}
-
-	/*static getCustomConfigByName(
-		mapSelectionMode: CustomConfigMapSelectionMode,
-		selectedMaps: string[],
-		configName: string
-	): CustomConfig | null {
-		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
-			if (
-				customConfig.name === configName &&
-				customConfig.mapSelectionMode === mapSelectionMode &&
-				customConfig.assignedMaps.join("") === selectedMaps.join("")
-			) {
-				return customConfig
-			}
-		}
-
-		return null
-	}*/
 
 	static getCustomConfigs(): Map<string, CustomConfig> {
 		return CustomConfigHelper.customConfigs
@@ -141,11 +121,7 @@ export class CustomConfigHelper {
 
 			// Prevent different Configs with the same name
 			if (
-				CustomConfigHelper.hasCustomConfigByName(
-					exportedConfig.mapSelectionMode,
-					exportedConfig.mapNameByChecksum,
-					exportedConfig.name
-				)
+				CustomConfigHelper.hasCustomConfigByName(exportedConfig.mapSelectionMode, exportedConfig.assignedMaps, exportedConfig.name)
 			) {
 				exportedConfig.name += ` (${FileNameHelper.getFormattedTimestamp(new Date(exportedConfig.creationTime))})`
 			}
@@ -154,7 +130,7 @@ export class CustomConfigHelper {
 				id: exportedConfig.id,
 				name: exportedConfig.name,
 				creationTime: exportedConfig.creationTime,
-				mapNameByChecksum: exportedConfig.mapNameByChecksum,
+				assignedMaps: exportedConfig.assignedMaps,
 				customConfigVersion: exportedConfig.customConfigVersion,
 				mapSelectionMode: exportedConfig.mapSelectionMode,
 				stateSettings: exportedConfig.stateSettings,
@@ -185,7 +161,7 @@ export class CustomConfigHelper {
 		let count = 0
 
 		for (const config of CustomConfigHelper.customConfigs.values()) {
-			if ([...config.mapNameByChecksum.values()].join(" ") === mapNames && config.mapSelectionMode === mapSelectionMode) {
+			if ([...config.assignedMaps.values()].join(" ") === mapNames && config.mapSelectionMode === mapSelectionMode) {
 				count++
 			}
 		}
@@ -193,15 +169,15 @@ export class CustomConfigHelper {
 		return count
 	}
 
-	static getConfigNameSuggestionByFileState(fileStates: FileState[]): string {
-		const suggestedConfigName = fileStates.map(fileState => fileState.file.fileMeta.fileName).join(" ")
+	static getConfigNameSuggestionByFileState(visibleFiles: VisibleFilesBySelectionMode): string {
+		const suggestedConfigName = [...visibleFiles.assignedMaps.values()].join(" ")
 
 		if (!suggestedConfigName) {
 			return ""
 		}
 
 		const customConfigNumberSuffix =
-			CustomConfigHelper.getCustomConfigsAmountByMapAndMode(suggestedConfigName, getMapSelectionMode(fileStates)) + 1
+			CustomConfigHelper.getCustomConfigsAmountByMapAndMode(suggestedConfigName, visibleFiles.mapSelectionMode) + 1
 
 		return `${suggestedConfigName} #${customConfigNumberSuffix}`
 	}
@@ -240,7 +216,7 @@ export class CustomConfigHelper {
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
 		CustomConfigHelper.transformLegacyCameraSettingsOfCustomConfig(customConfig)
-		CustomConfigHelper.deleteUnusedKeyProperties(customConfig)
+		CustomConfigHelper.deleteUnusedKeyPropsOfCustomConfig(customConfig)
 
 		store.dispatch(setState(customConfig.stateSettings))
 		// TODO: remove this dirty timeout and set camera settings properly
@@ -267,7 +243,7 @@ export class CustomConfigHelper {
 	}
 
 	// TODO [2023-04-01] remove support
-	private static deleteUnusedKeyProperties(customConfig: any) {
+	private static deleteUnusedKeyPropsOfCustomConfig(customConfig: any) {
 		if (customConfig.stateSettings.treeMap || customConfig.stateSettings.fileSettings.attributeTypes) {
 			delete customConfig.stateSettings.treeMap
 			delete customConfig.stateSettings.fileSettings.attributeTypes

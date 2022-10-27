@@ -28,6 +28,6 @@ export const getDownloadableCustomConfigs = (fileStates: FileState[]): Downloada
 }
 
 function isConfigApplicableForUploadedMaps(customConfig: CustomConfig, mapChecksumsOfFiles: string[]): boolean {
-	const mapChecksumsOfConfig = [...customConfig.mapNameByChecksum.keys()]
+	const mapChecksumsOfConfig = [...customConfig.assignedMaps.keys()]
 	return mapChecksumsOfConfig.some(mapChecksumConfig => mapChecksumsOfFiles.includes(mapChecksumConfig))
 }

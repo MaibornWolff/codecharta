@@ -5,7 +5,7 @@ import { getDownloadableCustomConfigs } from "./downloadCustomConfigsButton/getD
 import { Inject, Injectable } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { getCustomConfigItemGroups } from "./customConfigList/getCustomConfigItemGroups"
-import { fileMapCheckSumsSelector } from "./customConfigList/fileMapCheckSums.selector"
+import { visibleFilesBySelectionModeSelector } from "./customConfigList/visibleFilesBySelectionMode.selector"
 
 @Injectable()
 export class CustomConfigHelperService {
@@ -15,9 +15,9 @@ export class CustomConfigHelperService {
 	]).pipe(map(([visibleFileStates]) => getDownloadableCustomConfigs(visibleFileStates)))
 
 	readonly customConfigItemGroups$ = combineLatest([
-		this.store.select(fileMapCheckSumsSelector),
+		this.store.select(visibleFilesBySelectionModeSelector),
 		CustomConfigHelper.customConfigChange$
-	]).pipe(map(([fileMapCheckSumsByMapSelectionMode]) => getCustomConfigItemGroups(fileMapCheckSumsByMapSelectionMode)))
+	]).pipe(map(([visibleFilesBySelectionMode]) => getCustomConfigItemGroups(visibleFilesBySelectionMode)))
 
 	constructor(@Inject(Store) private store: Store) {}
 }

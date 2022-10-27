@@ -8,18 +8,18 @@ export class CustomConfig2ApplicableMessage implements PipeTransform {
 	constructor(@Inject(State) private state: State) {}
 
 	transform(customConfig: CustomConfigItem): string {
-		const { mode, maps } = getMissingCustomConfigModeAndMaps(customConfig, this.state)
+		const { mapSelectionMode, mapNames } = getMissingCustomConfigModeAndMaps(customConfig, this.state)
 
-		if (maps.length > 0 && mode.length > 0) {
-			return `This view is partially applicable. To complete your view, please switch to the ${mode} mode and select the following map(s): ${maps.join(
+		if (mapNames.length > 0 && mapSelectionMode.length > 0) {
+			return `This view is partially applicable. To complete your view, please switch to the ${mapSelectionMode} mode and select the following map(s): ${mapNames.join(
 				", "
 			)}.`
 		}
-		if (maps.length > 0) {
-			return `To fulfill your view, please select the following map(s): ${maps.join(", ")}.`
+		if (mapNames.length > 0) {
+			return `To fulfill your view, please select the following map(s): ${mapNames.join(", ")}.`
 		}
-		if (mode.length > 0) {
-			return `This view is partially applicable. To complete your view, please switch to the ${mode} mode.`
+		if (mapSelectionMode.length > 0) {
+			return `This view is partially applicable. To complete your view, please switch to the ${mapSelectionMode} mode.`
 		}
 		return `Apply Custom View`
 	}
