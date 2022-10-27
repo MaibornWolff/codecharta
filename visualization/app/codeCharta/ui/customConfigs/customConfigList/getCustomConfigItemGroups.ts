@@ -1,6 +1,6 @@
 import { CustomConfigItemGroup } from "../customConfigs.component"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
-import { VisibleFilesBySelectionMode } from "./visibleFilesBySelectionMode.selector"
+import { VisibleFilesBySelectionMode } from "../visibleFilesBySelectionMode.selector"
 
 export interface CustomConfigGroups {
 	applicableItems: Map<string, CustomConfigItemGroup>
@@ -17,7 +17,6 @@ export function getCustomConfigItemGroups({ assignedMaps }: VisibleFilesBySelect
 	for (const customConfig of CustomConfigHelper.loadCustomConfigs().values()) {
 		const mapNames = [...customConfig.assignedMaps.values()]
 		const groupKey = `${mapNames.join("_")}_${customConfig.mapSelectionMode}`
-
 		const isCustomConfigItemApplicable = [...customConfig.assignedMaps.keys()].some(configChecksum => assignedMaps.has(configChecksum))
 
 		if (!customConfigItemGroups.has(groupKey)) {

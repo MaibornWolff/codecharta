@@ -15,7 +15,7 @@ import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.servic
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { BehaviorSubject } from "rxjs"
 import { Store } from "../state/angular-redux/store"
-import { VisibleFilesBySelectionMode } from "../ui/customConfigs/customConfigList/visibleFilesBySelectionMode.selector"
+import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -161,7 +161,8 @@ export class CustomConfigHelper {
 		let count = 0
 
 		for (const config of CustomConfigHelper.customConfigs.values()) {
-			if ([...config.assignedMaps.values()].join(" ") === mapNames && config.mapSelectionMode === mapSelectionMode) {
+			const configMapNames = [...config.assignedMaps.values()]
+			if (configMapNames.join(" ") === mapNames && config.mapSelectionMode === mapSelectionMode) {
 				count++
 			}
 		}
@@ -169,15 +170,9 @@ export class CustomConfigHelper {
 		return count
 	}
 
-	static getConfigNameSuggestionByFileState(visibleFiles: VisibleFilesBySelectionMode): string {
-		const suggestedConfigName = [...visibleFiles.assignedMaps.values()].join(" ")
-
-		if (!suggestedConfigName) {
-			return ""
-		}
-
-		const customConfigNumberSuffix =
-			CustomConfigHelper.getCustomConfigsAmountByMapAndMode(suggestedConfigName, visibleFiles.mapSelectionMode) + 1
+	static getConfigNameSuggestionByFileState({ mapSelectionMode, assignedMaps }: VisibleFilesBySelectionMode): string {
+		const suggestedConfigName = [...assignedMaps.values()].join(" ")
+		const customConfigNumberSuffix = CustomConfigHelper.getCustomConfigsAmountByMapAndMode(suggestedConfigName, mapSelectionMode) + 1
 
 		return `${suggestedConfigName} #${customConfigNumberSuffix}`
 	}

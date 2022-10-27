@@ -1,7 +1,7 @@
 import { State, stateObjectReplacer } from "../codeCharta.model"
 import { CustomConfig } from "../model/customConfig/customConfig.api.model"
 import md5 from "md5"
-import { visibleFilesBySelectionModeSelector } from "../ui/customConfigs/customConfigList/visibleFilesBySelectionMode.selector"
+import { visibleFilesBySelectionModeSelector } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
 
 const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 

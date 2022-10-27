@@ -1,6 +1,6 @@
 import { CustomConfigItem } from "../../customConfigs.component"
 import { State } from "../../../../state/angular-redux/state"
-import { visibleFilesBySelectionModeSelector } from "../visibleFilesBySelectionMode.selector"
+import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
 type MissingCustomConfigsProperties = {
 	mapSelectionMode: string

@@ -14,9 +14,8 @@ describe("getDownloadableCustomConfigs", () => {
 		const customConfigStub = {
 			id: "invalid-md5-checksum",
 			name: "stubbedConfig2",
-			mapChecksum: "invalid-md5-checksum",
-			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-			assignedMaps: ["test.cc.json"],
+			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+			assignedMaps: new Map([["invalid-md5-checksum", "test.cc.json"]]),
 			stateSettings: {}
 		} as CustomConfig
 		CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map([["invalid-md5-checksum", customConfigStub]]))
@@ -29,9 +28,8 @@ describe("getDownloadableCustomConfigs", () => {
 		const customConfigStub = {
 			id: "md5-fileB",
 			name: "stubbedConfig2",
-			mapChecksum: "md5-fileB",
-			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
-			assignedMaps: ["test.cc.json"],
+			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+			assignedMaps: new Map([["md5-fileB", "test.cc.json"]]),
 			stateSettings: {}
 		} as CustomConfig
 		CustomConfigHelper.getCustomConfigs = jest.fn().mockReturnValue(new Map([["md5-fileB", customConfigStub]]))

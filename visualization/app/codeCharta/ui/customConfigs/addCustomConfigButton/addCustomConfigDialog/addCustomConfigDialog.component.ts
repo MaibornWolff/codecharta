@@ -6,10 +6,7 @@ import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder
 import { State } from "../../../../state/angular-redux/state"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
-import {
-	VisibleFilesBySelectionMode,
-	visibleFilesBySelectionModeSelector
-} from "../../customConfigList/visibleFilesBySelectionMode.selector"
+import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
 @Component({
 	template: require("./addCustomConfigDialog.component.html")

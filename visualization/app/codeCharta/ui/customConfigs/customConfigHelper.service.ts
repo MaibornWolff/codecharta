@@ -5,7 +5,7 @@ import { getDownloadableCustomConfigs } from "./downloadCustomConfigsButton/getD
 import { Inject, Injectable } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { getCustomConfigItemGroups } from "./customConfigList/getCustomConfigItemGroups"
-import { visibleFilesBySelectionModeSelector } from "./customConfigList/visibleFilesBySelectionMode.selector"
+import { visibleFilesBySelectionModeSelector } from "./visibleFilesBySelectionMode.selector"
 
 @Injectable()
 export class CustomConfigHelperService {

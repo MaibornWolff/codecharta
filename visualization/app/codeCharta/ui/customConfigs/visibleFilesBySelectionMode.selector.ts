@@ -1,7 +1,7 @@
-import { createSelector } from "../../../state/angular-redux/createSelector"
-import { visibleFileStatesSelector } from "../../../state/selectors/visibleFileStates.selector"
-import { CustomConfig, CustomConfigMapSelectionMode, MapNameByChecksum } from "../../../model/customConfig/customConfig.api.model"
-import { FileSelectionState, FileState } from "../../../model/files/files"
+import { createSelector } from "../../state/angular-redux/createSelector"
+import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
+import { CustomConfig, CustomConfigMapSelectionMode, MapNameByChecksum } from "../../model/customConfig/customConfig.api.model"
+import { FileSelectionState, FileState } from "../../model/files/files"
 
 export type VisibleFilesBySelectionMode = Pick<CustomConfig, "mapSelectionMode" | "assignedMaps">
 

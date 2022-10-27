@@ -9,14 +9,14 @@ import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.ser
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import userEvent from "@testing-library/user-event"
 import { expect } from "@jest/globals"
-import { fileMapCheckSumsSelector } from "../fileMapCheckSums.selector"
 import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
+import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
-jest.mock("../fileMapCheckSums.selector", () => ({
-	fileMapCheckSumsSelector: jest.fn()
+jest.mock("../../visibleFilesBySelectionMode.selector", () => ({
+	visibleFilesBySelectionModeSelector: jest.fn()
 }))
 
-const mockedFileMapCheckSumsSelector = fileMapCheckSumsSelector as jest.Mock
+const mockedVisibleFilesBySelectionModeSelector = visibleFilesBySelectionModeSelector as jest.Mock
 
 describe("customConfigItemGroupComponent", () => {
 	let mockedDialog = { open: jest.fn() }
@@ -38,9 +38,15 @@ describe("customConfigItemGroupComponent", () => {
 	})
 
 	it("should apply a custom Config and close custom config dialog", async () => {
-		mockedFileMapCheckSumsSelector.mockImplementation(
-			() => new Map<CustomConfigMapSelectionMode, string[]>([[CustomConfigMapSelectionMode.MULTIPLE, ["md5_fileB", "md5_fileC"]]])
-		)
+		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
+			return {
+				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+				assignedMaps: new Map([
+					["md5_fileB", "fileB"],
+					["md5_fileC", "fileC"]
+				])
+			}
+		})
 		CustomConfigHelper.applyCustomConfig = jest.fn()
 		const customConfigItemGroups = new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]])
 		await render(CustomConfigItemGroupComponent, {
@@ -72,9 +78,12 @@ describe("customConfigItemGroupComponent", () => {
 	})
 
 	it("Should show tooltip with missing maps and correct selection mode if selected custom config is not fully applicable", async () => {
-		mockedFileMapCheckSumsSelector.mockImplementation(
-			() => new Map<CustomConfigMapSelectionMode, string[]>([[CustomConfigMapSelectionMode.DELTA, ["md5_fileB"]]])
-		)
+		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
+			return {
+				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+				assignedMaps: new Map([["md5_fileB", "fileB"]])
+			}
+		})
 		const customConfigItemGroups = new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]])
 		await render(CustomConfigItemGroupComponent, {
 			excludeComponentDeclaration: true,

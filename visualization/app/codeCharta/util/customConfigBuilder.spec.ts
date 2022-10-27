@@ -2,6 +2,18 @@ import { Vector3 } from "three"
 import { buildCustomConfigFromState } from "./customConfigBuilder"
 import { DEFAULT_STATE } from "./dataMocks"
 import { AppSettings, State } from "../codeCharta.model"
+import { expect } from "@jest/globals"
+import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+
+jest.mock("../ui/customConfigs/visibleFilesBySelectionMode.selector", () => ({
+	visibleFilesBySelectionModeSelector: () => ({
+		mapSelectionMode: "MULTIPLE",
+		assignedMaps: new Map([
+			["checksum1", "map1"],
+			["checksum2", "map2"]
+		])
+	})
+}))
 
 describe("CustomConfigBuilder", () => {
 	describe("buildCustomConfigFromState", () => {
@@ -14,6 +26,14 @@ describe("CustomConfigBuilder", () => {
 			})
 
 			expect(customConfig.name).toBe("testCustomConfig")
+			expect(customConfig.mapSelectionMode).toBe(CustomConfigMapSelectionMode.MULTIPLE)
+			expect(customConfig.assignedMaps).toEqual(
+				new Map([
+					["checksum1", "map1"],
+					["checksum2", "map2"]
+				])
+			)
+			expect(customConfig.customConfigVersion).toBe("1.0.0")
 
 			expect(customConfig.stateSettings).not.toBeUndefined()
 			expect(customConfig.stateSettings.dynamicSettings).not.toBeUndefined()
