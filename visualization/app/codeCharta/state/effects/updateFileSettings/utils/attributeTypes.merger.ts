@@ -1,4 +1,4 @@
-import { AttributeTypes } from "../../../codeCharta.model"
+import { AttributeTypes } from "../../../../codeCharta.model"
 
 export function getMergedAttributeTypes(allAttributeTypes: AttributeTypes[]): AttributeTypes {
 	const attributeTypesNodes = {}
