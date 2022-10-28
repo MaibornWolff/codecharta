@@ -2,8 +2,8 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 
 class CSVProjectBuilderTest {
 

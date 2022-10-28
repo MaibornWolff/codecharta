@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.codemaat
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter.Companion.main
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -52,6 +53,6 @@ class CodeMaatImporterTest {
 
         assertThat(file.readText()).contains("\"avgCommits\":5")
         assertThat(file.readText()).contains(listOf("attributeDescriptors", "\"description\":\"Average"))
-        assertTrue(ProjectDeserializer.deserializeProject(file.reader()).attributeDescriptors == getAttributeDescriptors())
+        assertEquals(ProjectDeserializer.deserializeProject(file.reader()).attributeDescriptors, getAttributeDescriptors())
     }
 }
