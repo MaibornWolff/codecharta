@@ -1,18 +1,6 @@
 import angular from "angular"
-import { FilesService } from "./store/files/files.service"
-import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
-import { EdgesService } from "./store/fileSettings/edges/edges.service"
-import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
-import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
 import "../codeCharta.module"
 import camelCase from "lodash.camelcase"
 
-angular
-	.module("app.codeCharta.state", ["app.codeCharta"])
-	.service(camelCase(FilesService.name), FilesService)
-	.service(camelCase(MarkedPackagesService.name), MarkedPackagesService)
-	.service(camelCase(EdgesService.name), EdgesService)
-	.service(camelCase(BlacklistService.name), BlacklistService)
-	.service(camelCase(InjectorService.name), InjectorService)
-	.service(camelCase(StoreService.name), StoreService)
+angular.module("app.codeCharta.state", ["app.codeCharta"]).service(camelCase(StoreService.name), StoreService)
