@@ -1,5 +1,5 @@
 ---
-permalink: /docs/custom-views/
+permalink: /docs/custom-view/
 title: "Custom View"
 ---
 

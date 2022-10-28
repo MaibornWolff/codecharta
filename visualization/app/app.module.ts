@@ -15,7 +15,6 @@ import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.
 import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { codeChartaServiceProvider, CodeMapMouseEventServiceTokenProvider } from "./codeCharta/services/ajs-upgraded-providers"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { FocusButtonsComponent } from "./codeCharta/state/effects/nodeContextMenu/focusButtons/focusButtons.component"
@@ -33,7 +32,6 @@ import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgeP
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
 import { VersionService } from "./codeCharta/services/version/version.service"
 import { ActionIconModule } from "./codeCharta/ui/actionIcon/actionIcon.module"
-import { SplitStateActionsEffect } from "./codeCharta/state/effects/splitStateActionsEffect/splitStateActions.effect"
 import { ToolBarModule } from "./codeCharta/ui/toolBar/toolBar.module"
 import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapEffect } from "./codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
@@ -41,14 +39,13 @@ import { CodeChartaModule } from "./codeCharta/codeCharta.module"
 import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
-import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAttributeTypes/updateAttributeTypes.effect"
+import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		UpgradeModule,
 		EffectsModule.forRoot([
-			SplitStateActionsEffect,
 			UnfocusNodesEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
 			OpenNodeContextMenuEffect,
@@ -61,8 +58,8 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 			AutoFitCodeMapEffect,
 			UpdateVisibleTopLabelsEffect,
 			LinkColorMetricToHeightMetricEffect,
-			UpdateAttributeTypesEffect,
-			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect
+			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
+			UpdateFileSettingsEffect
 		]),
 		SliderModule,
 		AttributeSideBarModule,
@@ -83,8 +80,6 @@ import { UpdateAttributeTypesEffect } from "./codeCharta/state/effects/updateAtt
 		CodeChartaModule
 	],
 	providers: [
-		codeChartaServiceProvider,
-		CodeMapMouseEventServiceTokenProvider,
 		VersionService,
 		{
 			provide: APP_INITIALIZER,

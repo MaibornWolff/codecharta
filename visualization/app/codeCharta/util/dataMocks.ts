@@ -1608,9 +1608,6 @@ export const STATE: State = {
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
 	},
-	treeMap: {
-		mapSize: 250
-	},
 	files: [],
 	appStatus: {
 		hoveredNodeId: null,
@@ -1682,7 +1679,6 @@ export const DEFAULT_STATE: State = {
 		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
-	treeMap: { mapSize: 250 },
 	files: [],
 	appStatus: {
 		hoveredNodeId: null,
@@ -1890,47 +1886,53 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 
 export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
 	[
-		"fileAfileBSINGLE",
+		"File_A_MULTIPLE",
 		{
-			mapNames: "fileA fileB",
-			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+			mapNames: "fileA",
+			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: false,
 			customConfigItems: [
 				{
-					id: "SINGLEfileASampleMap View #1",
+					id: "File_A_MULTIPLE_Sample_Map View #1",
 					name: "SampleMap View #1",
-					mapNames: "fileA",
-					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					assignedMaps: new Map([["md5_fileA", "fileA"]]),
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 					isApplicable: false
 				},
 				{
-					id: "SINGLEfileBSampleMap View #2",
+					id: "File_A_MULTIPLE_Sample_Map View #2",
 					name: "SampleMap View #2",
-					mapNames: "fileB",
-					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					assignedMaps: new Map([["md5_fileA", "fileA"]]),
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 					isApplicable: false
 				}
 			]
 		}
 	],
 	[
-		"fileAfileBMultiple",
+		"File_B_File_C_MULTIPLE",
 		{
-			mapNames: "fileC fileD",
+			mapNames: "fileB fileC",
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: true,
 			customConfigItems: [
 				{
-					id: "MULTIPLEfileCSampleMap View #1",
+					id: "File_B_File_C_MULTIPLE_Sample_Map View #1",
 					name: "SampleMap View #1",
-					mapNames: "fileB",
+					assignedMaps: new Map([
+						["md5_fileB", "fileB"],
+						["md5_fileC", "fileC"]
+					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 					isApplicable: true
 				},
 				{
-					id: "MULTIPLEfileDSampleMap View #2",
+					id: "File_B_File_C_MULTIPLE_Sample_Map View #2",
 					name: "SampleMap View #2",
-					mapNames: "fileD",
+					assignedMaps: new Map([
+						["md5_fileB", "fileB"],
+						["md5_fileC", "fileC"]
+					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 					isApplicable: true
 				}
@@ -1938,16 +1940,16 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 		}
 	],
 	[
-		"fileAfileBDELTA",
+		"File_D_DELTA",
 		{
-			mapNames: "fileE",
+			mapNames: "fileD",
 			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 			hasApplicableItems: false,
 			customConfigItems: [
 				{
-					id: "MULTIPLEfileESampleMap View #1",
+					id: "File_D_DELTA_Sample_Map View #1",
 					name: "SampleMap Delta View #1",
-					mapNames: "fileD",
+					assignedMaps: new Map([["md5_fileD", "fileD"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 					isApplicable: false
 				}

@@ -1,5 +1,5 @@
 import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
-import { TreeMapHelper } from "./treeMapHelper"
+import { TreeMapHelper, treeMapSize } from "./treeMapHelper"
 import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../../../codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
 
@@ -13,7 +13,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
 	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric).maxValue * mapSizeResolutionScaling
-	const heightScale = (state.treeMap.mapSize * 2) / maxHeight
+	const heightScale = (treeMapSize * 2) / maxHeight
 
 	if (hasFixedFolders(map)) {
 		const hierarchyNode = hierarchy(map)
@@ -23,7 +23,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 
 		// Multiply mapSize of (default) 250px by 2 = 500px and add the total margin
 		const totalMapSize =
-			state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * (state.dynamicSettings.margin / PADDING_SCALING_FACTOR)
+			treeMapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * (state.dynamicSettings.margin / PADDING_SCALING_FACTOR)
 
 		// than divide through the root folder width and length to get a scale factor for calculation for all following nodes.
 		const scaleLength = totalMapSize / nodes[0].width
@@ -164,8 +164,8 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 		mapWidth = map.fixedPosition.width
 		mapHeight = map.fixedPosition.height
 	} else {
-		mapWidth = state.treeMap.mapSize * 2
-		mapHeight = state.treeMap.mapSize * 2
+		mapWidth = treeMapSize * 2
+		mapHeight = treeMapSize * 2
 	}
 
 	let addedLabelSpace = 0

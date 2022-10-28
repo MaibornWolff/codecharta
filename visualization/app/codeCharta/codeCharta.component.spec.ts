@@ -4,7 +4,6 @@ import { IHttpService, ILocationService } from "angular"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCamera.service"
@@ -32,7 +31,6 @@ describe("codeChartaController", () => {
 	let storeService: StoreService
 	let dialog: MatDialog
 	let codeChartaService: CodeChartaService
-	let injectorService: InjectorService
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
@@ -46,7 +44,7 @@ describe("codeChartaController", () => {
 	}
 
 	function rebuildController() {
-		codeChartaController = new CodeChartaController($location, $http, storeService, dialog, codeChartaService, injectorService)
+		codeChartaController = new CodeChartaController($location, $http, storeService, dialog, codeChartaService)
 	}
 
 	function withMockedUrlUtils() {

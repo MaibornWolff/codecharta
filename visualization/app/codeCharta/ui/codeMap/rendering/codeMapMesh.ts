@@ -4,7 +4,8 @@ import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, State } from "../../../codeCharta.model"
 import { BufferAttribute, Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
-import { TreeMapHelper } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
+import { TreeMapHelper, treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
+import { Scaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 
 export interface MousePos {
 	x: number
@@ -71,7 +72,7 @@ export class CodeMapMesh {
 		return this.getMeshDescription().intersect(ray)
 	}
 
-	setScale(scale: Vector3) {
+	setScale(scale: Scaling) {
 		this.mapGeomDesc.setScales(scale)
 	}
 
@@ -109,9 +110,8 @@ export class CodeMapMesh {
 	}
 
 	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
-		const { mapSize } = state.treeMap
 		if (state.appSettings.isPresentationMode) {
-			const distance = highlighted[0].getCenterPoint(mapSize).distanceTo(building.getCenterPoint(mapSize))
+			const distance = highlighted[0].getCenterPoint(treeMapSize).distanceTo(building.getCenterPoint(treeMapSize))
 			this.decreaseLightnessByDistance(building, distance)
 		} else {
 			building.decreaseLightness(CodeMapMesh.LIGHTNESS_DECREASE)

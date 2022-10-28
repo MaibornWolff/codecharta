@@ -15,6 +15,7 @@ import { Inject, Injectable } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { State } from "../../../state/angular-redux/state"
+import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 
 type BuildingSelectedEvents = {
 	onBuildingSelected: (data: { building: CodeMapBuilding }) => void
@@ -88,11 +89,10 @@ export class ThreeSceneService {
 		if (!rootNode) {
 			return
 		}
-
-		const { mapSize } = this.state.getValue().treeMap
 		const scaling = this.state.getValue().appSettings.scaling
+		const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 
-		this.floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, mapSize, scaling)
+		this.floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, treeMapSize, scalingVector)
 		const floorLabels = this.floorLabelDrawer.draw()
 
 		if (floorLabels.length > 0) {
@@ -134,11 +134,10 @@ export class ThreeSceneService {
 	}
 
 	scaleHeight() {
-		const { mapSize } = this.state.getValue().treeMap
 		const scale = this.state.getValue().appSettings.scaling
 		this.floorLabelDrawer?.translatePlaneCanvases(scale)
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
-		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
+		this.mapGeometry.position.set(-treeMapSize * scale.x, 0, -treeMapSize * scale.z)
 		this.mapMesh.setScale(scale)
 	}
 
@@ -392,7 +391,6 @@ export class ThreeSceneService {
 	}
 
 	setMapMesh(nodes: Node[], mesh: CodeMapMesh) {
-		const { mapSize } = this.state.getValue().treeMap
 		this.mapMesh = mesh
 
 		this.initFloorLabels(nodes)
@@ -400,9 +398,9 @@ export class ThreeSceneService {
 		// Reset children
 		this.mapGeometry.children.length = 0
 
-		this.mapGeometry.position.x = -mapSize
+		this.mapGeometry.position.x = -treeMapSize
 		this.mapGeometry.position.y = 0
-		this.mapGeometry.position.z = -mapSize
+		this.mapGeometry.position.z = -treeMapSize
 
 		this.mapGeometry.add(this.mapMesh.getThreeMesh())
 
