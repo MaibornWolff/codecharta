@@ -14,7 +14,7 @@ export function getCustomConfigItemGroups({ assignedMaps }: VisibleFilesBySelect
 	}
 	const customConfigItemGroups = new Map<string, CustomConfigItemGroup>()
 
-	for (const customConfig of CustomConfigHelper.loadCustomConfigs().values()) {
+	for (const customConfig of CustomConfigHelper.loadCustomConfigsFromLocalStorage().values()) {
 		const mapNames = [...customConfig.assignedMaps.values()]
 		const groupKey = `${mapNames.join("_")}_${customConfig.mapSelectionMode}`
 		const isCustomConfigItemApplicable = [...customConfig.assignedMaps.keys()].some(configChecksum => assignedMaps.has(configChecksum))

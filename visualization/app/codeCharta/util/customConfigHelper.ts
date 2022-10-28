@@ -6,7 +6,7 @@ import {
 	CustomConfigMapSelectionMode,
 	CustomConfigsDownloadFile,
 	ExportCustomConfig,
-	MapNameByChecksum
+	MapNamesByChecksum
 } from "../model/customConfig/customConfig.api.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { FileDownloader } from "./fileDownloader"
@@ -23,7 +23,7 @@ const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.1"
 export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
-	private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigs()
+	private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigsFromLocalStorage()
 	static customConfigChange$: BehaviorSubject<null> = new BehaviorSubject(null)
 
 	static setCustomConfigsToLocalStorage() {
@@ -36,7 +36,7 @@ export class CustomConfigHelper {
 		CustomConfigHelper.customConfigChange$.next(null)
 	}
 
-	static loadCustomConfigs() {
+	static loadCustomConfigsFromLocalStorage() {
 		const ccLocalStorage = this.getCcLocalStorage()
 		const configs = new Map(ccLocalStorage?.customConfigs)
 		this.mapOldConfigStructureToNew(configs)
@@ -79,7 +79,7 @@ export class CustomConfigHelper {
 
 	static hasCustomConfigByName(
 		mapSelectionMode: CustomConfigMapSelectionMode,
-		assignedMaps: MapNameByChecksum,
+		assignedMaps: MapNamesByChecksum,
 		configName: string
 	): boolean {
 		for (const customConfig of CustomConfigHelper.customConfigs.values()) {
@@ -95,7 +95,7 @@ export class CustomConfigHelper {
 		return false
 	}
 
-	private static areEqual(map1: MapNameByChecksum, map2: MapNameByChecksum) {
+	private static areEqual(map1: MapNamesByChecksum, map2: MapNamesByChecksum) {
 		if (map1.size !== map2.size) {
 			return false
 		}

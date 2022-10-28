@@ -1,4 +1,4 @@
-import { ExportCustomConfig, MapNameByChecksum } from "../../../model/customConfig/customConfig.api.model"
+import { ExportCustomConfig, MapNamesByChecksum } from "../../../model/customConfig/customConfig.api.model"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { VisibleFilesBySelectionMode } from "../visibleFilesBySelectionMode.selector"
 
@@ -18,8 +18,8 @@ export const getDownloadableCustomConfigs = ({ assignedMaps }: VisibleFilesBySel
 }
 
 function isConfigApplicableForUploadedMaps(
-	assignedMapsOfConfig: MapNameByChecksum,
-	assignedMapsOfVisibleFiles: MapNameByChecksum
+	assignedMapsOfConfig: MapNamesByChecksum,
+	assignedMapsOfVisibleFiles: MapNamesByChecksum
 ): boolean {
 	const mapChecksumsOfConfig = [...assignedMapsOfConfig.keys()]
 	return mapChecksumsOfConfig.some(mapChecksumConfig => assignedMapsOfVisibleFiles.has(mapChecksumConfig))

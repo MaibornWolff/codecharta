@@ -22,7 +22,9 @@ describe("getCustomConfigItemGroups", () => {
 	} as CustomConfig
 
 	it("should set applicable-flags to true when current assigned map names, checksums and selection mode are matching a custom config", () => {
-		CustomConfigHelper.loadCustomConfigs = jest.fn().mockReturnValue(new Map([["customConfigKey_1", customConfigStub1]]))
+		CustomConfigHelper.loadCustomConfigsFromLocalStorage = jest
+			.fn()
+			.mockReturnValue(new Map([["customConfigKey_1", customConfigStub1]]))
 		const visibleFilesBySelectionMode: VisibleFilesBySelectionMode = {
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			assignedMaps: new Map([
@@ -39,7 +41,9 @@ describe("getCustomConfigItemGroups", () => {
 	})
 
 	it("should set applicable-flags to false when current assigned map names, checksums and selection mode are not matching a custom config", () => {
-		CustomConfigHelper.loadCustomConfigs = jest.fn().mockReturnValue(new Map([["customConfigKey_2", customConfigStub2]]))
+		CustomConfigHelper.loadCustomConfigsFromLocalStorage = jest
+			.fn()
+			.mockReturnValue(new Map([["customConfigKey_2", customConfigStub2]]))
 		const visibleFilesBySelectionMode: VisibleFilesBySelectionMode = {
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			assignedMaps: new Map([
@@ -56,7 +60,9 @@ describe("getCustomConfigItemGroups", () => {
 	})
 
 	it("should set applicable-flags to true, if at least one checksum of selected map is present in a custom config", () => {
-		CustomConfigHelper.loadCustomConfigs = jest.fn().mockReturnValue(new Map([["customConfigKey_1", customConfigStub1]]))
+		CustomConfigHelper.loadCustomConfigsFromLocalStorage = jest
+			.fn()
+			.mockReturnValue(new Map([["customConfigKey_1", customConfigStub1]]))
 		const visibleFilesBySelectionMode: VisibleFilesBySelectionMode = {
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			assignedMaps: new Map([["checksumMap1", "map1"]])
@@ -70,7 +76,9 @@ describe("getCustomConfigItemGroups", () => {
 	})
 
 	it("should set applicable-flags to true, if selected CustomConfigMapSelectionMode does not match actual FileSelectionState but selected maps are present in a custom config", () => {
-		CustomConfigHelper.loadCustomConfigs = jest.fn().mockReturnValue(new Map([["customConfigKey_1", customConfigStub1]]))
+		CustomConfigHelper.loadCustomConfigsFromLocalStorage = jest
+			.fn()
+			.mockReturnValue(new Map([["customConfigKey_1", customConfigStub1]]))
 		const visibleFilesBySelectionMode: VisibleFilesBySelectionMode = {
 			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 			assignedMaps: new Map([
