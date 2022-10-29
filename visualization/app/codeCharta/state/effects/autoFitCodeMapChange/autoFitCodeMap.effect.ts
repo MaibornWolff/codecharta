@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { concatMap, filter, skip, take, tap, combineLatest } from "rxjs"
+import { switchMap, filter, skip, take, tap, combineLatest } from "rxjs"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { State } from "../../angular-redux/state"
@@ -28,7 +28,7 @@ export class AutoFitCodeMapEffect {
 			]).pipe(
 				skip(1), // initial map load is already fitted
 				filter(() => resetCameraIfNewFileIsLoadedSelector(this.state.getValue())),
-				concatMap(() => this.renderCodeMapEffect.renderCodeMap$.pipe(take(1))),
+				switchMap(() => this.renderCodeMapEffect.renderCodeMap$.pipe(take(1))),
 				tap(() => {
 					this.threeOrbitControlsService.autoFitTo()
 				})
