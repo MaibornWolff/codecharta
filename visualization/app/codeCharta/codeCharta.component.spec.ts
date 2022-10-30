@@ -1,11 +1,10 @@
 import "./codeCharta.module"
 import { TestBed } from "@angular/core/testing"
 import { IHttpService, ILocationService } from "angular"
-import { CodeChartaService } from "./codeCharta.service"
+import { LoadFileService } from "./loadFileService.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { StoreService } from "./state/store.service"
-import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCamera.service"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
@@ -30,7 +29,7 @@ describe("codeChartaController", () => {
 	let $http: IHttpService
 	let storeService: StoreService
 	let dialog: MatDialog
-	let codeChartaService: CodeChartaService
+	let loadFileService: LoadFileService
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
@@ -40,11 +39,11 @@ describe("codeChartaController", () => {
 		storeService = getService<StoreService>("storeService")
 		threeCameraService = TestBed.inject(ThreeCameraService)
 		dialog = { open: jest.fn() } as unknown as MatDialog
-		codeChartaService = { loadFiles: jest.fn() } as unknown as CodeChartaService
+		loadFileService = { loadFiles: jest.fn() } as unknown as LoadFileService
 	}
 
 	function rebuildController() {
-		codeChartaController = new CodeChartaController($location, $http, storeService, dialog, codeChartaService)
+		codeChartaController = new CodeChartaController($location, $http, storeService, dialog, loadFileService)
 	}
 
 	function withMockedUrlUtils() {
@@ -105,16 +104,7 @@ describe("codeChartaController", () => {
 
 			await codeChartaController.loadFileOrSample()
 
-			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{}])
-		})
-
-		it("should call storeService.dispatch if loadFiles-Promise resolves", async () => {
-			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
-			storeService.dispatch = jest.fn()
-
-			await codeChartaController.loadFileOrSample()
-
-			expect(storeService.dispatch).toHaveBeenCalledWith(setAppSettings())
+			expect(loadFileService.loadFiles).toHaveBeenCalledWith([{}])
 		})
 
 		it("should set the default global settings if localStorage does not exist", async () => {
@@ -174,7 +164,7 @@ describe("codeChartaController", () => {
 
 			codeChartaController["tryLoadingSampleFiles"](new Error("Ignored"))
 
-			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
+			expect(loadFileService.loadFiles).toHaveBeenCalledWith(expected)
 		})
 		it("should set the default global settings for the sample files if localStorage does not exist", () => {
 			codeChartaController["tryLoadingSampleFiles"](new Error("Ignored"))

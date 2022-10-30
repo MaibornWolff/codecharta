@@ -4,7 +4,6 @@ import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import { NameDataPair } from "./codeCharta.model"
 import { StoreService } from "./state/store.service"
-import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import packageJson from "../../package.json"
 import { setDelta, setStandard } from "./state/store/files/files.actions"
@@ -69,7 +68,6 @@ export class CodeChartaController {
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
-		this.storeService.dispatch(setAppSettings())
 		GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.storeService)
 		this.codeChartaService.loadFiles(values)
 	}
