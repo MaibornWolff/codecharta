@@ -1,5 +1,5 @@
 import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
-import { LoadFileService } from "../loadFile.service"
+import { LoadFileService } from "../services/LoadFile/loadFile.service"
 import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
 import packageJson from "../../../package.json"

@@ -2,7 +2,7 @@ import { CCFile, CodeMapNode, FileMeta, KeyValuePair, NodeType } from "../codeCh
 import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
-import { LoadFileService } from "../loadFile.service"
+import { LoadFileService } from "../services/LoadFile/loadFile.service"
 import { getParent } from "./nodePathHelper"
 
 export class DeltaGenerator {

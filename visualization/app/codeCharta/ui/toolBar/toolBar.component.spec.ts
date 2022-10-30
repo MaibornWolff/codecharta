@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { mocked } from "ts-jest/utils"
-import { LoadFileService } from "../../loadFile.service"
+import { LoadFileService } from "../../services/LoadFile/loadFile.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"

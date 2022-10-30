@@ -1,5 +1,5 @@
 import { defaultFocusedNodePath, FocusedNodePathAction, FocusedNodePathActions } from "./focusedNodePath.actions"
-import { LoadFileService } from "../../../../loadFile.service"
+import { LoadFileService } from "../../../../services/LoadFile/loadFile.service"
 
 export function focusedNodePath(state = defaultFocusedNodePath, action: FocusedNodePathAction) {
 	switch (action.type) {

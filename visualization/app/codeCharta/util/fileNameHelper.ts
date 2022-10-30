@@ -1,4 +1,4 @@
-import { LoadFileService } from "../loadFile.service"
+import { LoadFileService } from "../services/LoadFile/loadFile.service"
 
 const dateRegex = /_\d{4}(?:-\d{1,2}){2}_\d{1,2}-\d{1,2}\./
 

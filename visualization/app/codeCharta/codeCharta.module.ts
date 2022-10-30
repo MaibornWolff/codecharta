@@ -6,7 +6,7 @@ import "./ui/ui"
 import "./state/state.module"
 
 import { codeChartaComponent } from "./codeCharta.component"
-import { LoadFileService } from "./loadFile.service"
+import { LoadFileService } from "./services/LoadFile/loadFile.service"
 import { downgradeComponent, downgradeInjectable } from "@angular/upgrade/static"
 import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"

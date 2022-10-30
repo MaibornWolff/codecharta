@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
-import { LoadFileService } from "../../../loadFile.service"
+import { LoadFileService } from "../../../services/LoadFile/loadFile.service"
 import { UploadFilesButtonComponent } from "./uploadFilesButton.component"
 import { UploadFilesButtonModule } from "./uploadFilesButton.module"
 

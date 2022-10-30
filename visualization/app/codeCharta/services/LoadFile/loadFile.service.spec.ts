@@ -1,23 +1,23 @@
 import { TestBed } from "@angular/core/testing"
 import { LoadFileService } from "./loadFile.service"
-import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
-import { removeFile, setDeltaReference, setFiles, setStandard } from "./state/store/files/files.actions"
-import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
-import { getCCFiles, isPartialState } from "./model/files/files.helper"
-import { CCFileValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
-import packageJson from "../../package.json"
-import { clone } from "./util/clone"
-import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { TEST_FILE_CONTENT } from "../../util/dataMocks"
+import { BlacklistType, CCFile, NodeMetricData, NodeType } from "../../codeCharta.model"
+import { removeFile, setDeltaReference, setFiles, setStandard } from "../../state/store/files/files.actions"
+import { ExportBlacklistType, ExportCCFile } from "../../codeCharta.api.model"
+import { getCCFiles, isPartialState } from "../../model/files/files.helper"
+import { CCFileValidationResult, ERROR_MESSAGES } from "../../util/fileValidator"
+import packageJson from "../../../../package.json"
+import { clone } from "../../util/clone"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { klona } from "klona"
 import { MatDialog } from "@angular/material/dialog"
-import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.component"
-import { loadFilesValidationToErrorDialog } from "./util/loadFilesValidationToErrorDialog"
-import { Store } from "./state/angular-redux/store"
-import { State } from "./state/angular-redux/state"
+import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
+import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
+import { Store } from "../../state/angular-redux/store"
+import { State } from "../../state/angular-redux/state"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
-jest.mock("./state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
+jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
 	nodeMetricDataSelector: jest.fn()
 }))
 
