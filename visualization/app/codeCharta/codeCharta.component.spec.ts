@@ -4,7 +4,7 @@ import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { StoreService } from "./state/store.service"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCamera.service"
-import { LoadInitialFileService } from "./services/loadFile/loadInitialFile/loadInitialFile.service"
+import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 
 describe("codeChartaController", () => {
 	let threeCameraService: ThreeCameraService

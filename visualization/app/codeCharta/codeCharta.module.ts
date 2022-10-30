@@ -17,7 +17,7 @@ import { CommonModule } from "@angular/common"
 import { CodeMapComponent } from "./ui/codeMap/codeMap.component"
 import { CodeMapModule } from "./ui/codeMap/codeMap.module"
 import { MatDialog } from "@angular/material/dialog"
-import { LoadInitialFileService } from "./services/loadFile/loadInitialFile/loadInitialFile.service"
+import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 
 angular.module("app.codeCharta", ["app.codeCharta.state", "app.codeCharta.ui"])
 

@@ -2,7 +2,7 @@ import "./codeCharta.component.scss"
 import { StoreService } from "./state/store.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import packageJson from "../../package.json"
-import { LoadInitialFileService } from "./services/loadFile/loadInitialFile/loadInitialFile.service"
+import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 
 export class CodeChartaController {
 	private _viewModel: {

@@ -1,21 +1,19 @@
 import { Injectable, Inject } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { HttpClient } from "@angular/common/http"
-import { NameDataPair } from "../../../codeCharta.model"
-import { getCCFiles } from "../../../model/files/files.helper"
-import { State } from "../../../state/angular-redux/state"
-import { Store } from "../../../state/angular-redux/store"
-import { setDelta, setStandard } from "../../../state/store/files/files.actions"
-import { ErrorDialogComponent } from "../../../ui/dialogs/errorDialog/errorDialog.component"
-import { GlobalSettingsHelper } from "../../../util/globalSettingsHelper"
-import { LoadFileService } from "../loadFile.service"
+import { NameDataPair } from "../../codeCharta.model"
+import { getCCFiles } from "../../model/files/files.helper"
+import { State } from "../../state/angular-redux/state"
+import { Store } from "../../state/angular-redux/store"
+import { setDelta, setStandard } from "../../state/store/files/files.actions"
+import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
+import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
+import { LoadFileService } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
-import sample1 from "./../../../assets/sample1.cc.json"
-import sample2 from "./../../../assets/sample2.cc.json"
-import { ExportCCFile } from "../../../codeCharta.api.model"
+import sample1 from "../../assets/sample1.cc.json"
+import sample2 from "../../assets/sample2.cc.json"
+import { ExportCCFile } from "../../codeCharta.api.model"
 
-// todo: move one level up
-// todo all tests
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
 	private urlUtils = new UrlExtractor(this.httpClient)
