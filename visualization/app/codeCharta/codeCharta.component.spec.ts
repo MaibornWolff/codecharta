@@ -87,17 +87,17 @@ describe("codeChartaController", () => {
 	describe("loadFileOrSample", () => {
 		beforeEach(() => {
 			initialize()
-			codeChartaController.tryLoadingSampleFiles = jest.fn()
+			codeChartaController["tryLoadingSampleFiles"] = jest.fn()
 		})
 
 		it("should call tryLoadingSampleFiles when data is an empty array", async () => {
 			// hot fix for issue #2294
 			rebuildController()
-			codeChartaController.tryLoadingSampleFiles = jest.fn()
+			codeChartaController["tryLoadingSampleFiles"] = jest.fn()
 
 			await codeChartaController.loadFileOrSample()
 
-			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalledWith(new Error("Filename is missing"))
+			expect(codeChartaController["tryLoadingSampleFiles"]).toHaveBeenCalledWith(new Error("Filename is missing"))
 		})
 
 		it("should call loadFiles when data is not an empty array", async () => {
@@ -151,13 +151,13 @@ describe("codeChartaController", () => {
 			localStorage.clear()
 		})
 		it("should call getParameterByName with 'file'", () => {
-			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
+			codeChartaController["tryLoadingSampleFiles"](new Error("Ignored"))
 
 			expect(codeChartaController["urlUtils"].getParameterByName).toHaveBeenCalledWith("file")
 		})
 
 		it("should call showErrorDialog when no file is found", () => {
-			codeChartaController.tryLoadingSampleFiles(new Error("Actual error message"))
+			codeChartaController["tryLoadingSampleFiles"](new Error("Actual error message"))
 			expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, {
 				data: {
 					title: "Error (Actual error message)",
@@ -172,12 +172,12 @@ describe("codeChartaController", () => {
 				{ fileName: "sample2.cc.json", content: sample2, fileSize: 2048 }
 			]
 
-			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
+			codeChartaController["tryLoadingSampleFiles"](new Error("Ignored"))
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
 		})
 		it("should set the default global settings for the sample files if localStorage does not exist", () => {
-			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
+			codeChartaController["tryLoadingSampleFiles"](new Error("Ignored"))
 
 			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
 			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
@@ -190,7 +190,7 @@ describe("codeChartaController", () => {
 		it("should set the global settings from localStorage for sample files", () => {
 			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
 
-			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
+			codeChartaController["tryLoadingSampleFiles"](new Error("Ignored"))
 
 			expect(storeService.getState().appSettings.hideFlatBuildings).toBeTruthy()
 			expect(storeService.getState().appSettings.isWhiteBackground).toBeTruthy()
