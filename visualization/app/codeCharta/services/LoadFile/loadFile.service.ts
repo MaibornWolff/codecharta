@@ -12,14 +12,14 @@ import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidation
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
 import { tap } from "rxjs"
+import { clone } from "../../util/clone"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService {
 	static ROOT_NAME = "root"
 	static ROOT_PATH = `/${LoadFileService.ROOT_NAME}`
 	static readonly CC_FILE_EXTENSION = ".cc.json"
-	private fileStates: FileState[] = []
-	private recentFiles: string[] = []
+
 	referenceFileSubscription = this.store
 		.select(referenceFileSelector)
 		.pipe(
@@ -34,10 +34,11 @@ export class LoadFileService {
 	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State, @Inject(MatDialog) private dialog: MatDialog) {}
 
 	loadFiles(nameDataPairs: NameDataPair[]) {
-		this.fileStates = this.state.getValue().files
+		const fileStates: FileState[] = clone(this.state.getValue().files)
+		const recentFiles: string[] = []
 		const fileValidationResults: CCFileValidationResult[] = []
 
-		this.getValidationResults(nameDataPairs, fileValidationResults)
+		this.getValidationResults(fileStates, recentFiles, nameDataPairs, fileValidationResults)
 
 		if (fileValidationResults.length > 0) {
 			this.dialog.open(ErrorDialogComponent, {
@@ -45,23 +46,25 @@ export class LoadFileService {
 			})
 		}
 
-		if (this.recentFiles.length > 0) {
-			this.store.dispatch(setFiles(this.fileStates))
+		if (recentFiles.length > 0) {
+			this.store.dispatch(setFiles(fileStates))
 
-			const recentFile = this.recentFiles[0]
+			const recentFile = recentFiles[0]
 			const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-			this.store.dispatch(setStandardByNames(this.recentFiles))
+			this.store.dispatch(setStandardByNames(recentFiles))
 
 			LoadFileService.updateRootData(rootName)
-
-			this.fileStates = []
-			this.recentFiles = []
 		} else {
 			throw new Error("No files could be uploaded")
 		}
 	}
 
-	private getValidationResults(nameDataPairs: NameDataPair[], fileValidationResults: CCFileValidationResult[]) {
+	private getValidationResults(
+		fileStates: FileState[],
+		recentFiles: string[],
+		nameDataPairs: NameDataPair[],
+		fileValidationResults: CCFileValidationResult[]
+	) {
 		for (const nameDataPair of nameDataPairs) {
 			const fileValidationResult: CCFileValidationResult = {
 				fileName: nameDataPair?.fileName,
@@ -72,7 +75,7 @@ export class LoadFileService {
 
 			if (fileValidationResult.errors.length === 0) {
 				fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
-				this.addFile(nameDataPair)
+				this.addFile(fileStates, recentFiles, nameDataPair)
 			}
 
 			if (fileValidationResult.errors.length > 0 || fileValidationResult.warnings.length > 0) {
@@ -81,16 +84,16 @@ export class LoadFileService {
 		}
 	}
 
-	private addFile(file: NameDataPair) {
+	private addFile(fileStates: FileState[], recentFiles: string[], file: NameDataPair) {
 		const ccFile = getCCFile(file)
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 		const currentFileChecksum = ccFile.fileMeta.fileChecksum
 		let currentFileName = ccFile.fileMeta.fileName
 		const storedFileNames = new Map(
-			this.fileStates.map(fileState => [fileState.file.fileMeta.fileName, fileState.file.fileMeta.fileChecksum])
+			fileStates.map(fileState => [fileState.file.fileMeta.fileName, fileState.file.fileMeta.fileChecksum])
 		)
 		const storedFileChecksums = new Map(
-			this.fileStates.map((fileState, index) => [fileState.file.fileMeta.fileChecksum, index] as [string, number])
+			fileStates.map((fileState, index) => [fileState.file.fileMeta.fileChecksum, index] as [string, number])
 		)
 		const isDuplicate = storedFileChecksums.has(currentFileChecksum)
 
@@ -99,14 +102,14 @@ export class LoadFileService {
 			ccFile.fileMeta.fileName = currentFileName
 		}
 		if (isDuplicate) {
-			this.fileStates[storedFileChecksums.get(currentFileChecksum)].file.fileMeta.fileName = currentFileName
-			this.recentFiles[0] = currentFileName
-			this.recentFiles.push(currentFileName)
+			fileStates[storedFileChecksums.get(currentFileChecksum)].file.fileMeta.fileName = currentFileName
+			recentFiles[0] = currentFileName
+			recentFiles.push(currentFileName)
 			return
 		}
 
-		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
-		this.recentFiles.push(currentFileName)
+		fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
+		recentFiles.push(currentFileName)
 	}
 
 	private getFileName(currentFileName: string, storedFileNames: Map<string, string>, currentFileChecksum: string) {
