@@ -1,7 +1,7 @@
 import { UrlExtractor } from "./util/urlExtractor"
 import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
-import { CodeChartaService } from "./codeCharta.service"
+import { LoadFileService } from "./loadFile.service"
 import { NameDataPair } from "./codeCharta.model"
 import { StoreService } from "./state/store.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -29,7 +29,7 @@ export class CodeChartaController {
 		private $http: IHttpService,
 		private storeService: StoreService,
 		private dialog: MatDialog,
-		private codeChartaService: CodeChartaService
+		private loadFileService: LoadFileService
 	) {
 		"ngInject"
 		this._viewModel.version = packageJson.version
@@ -69,7 +69,7 @@ export class CodeChartaController {
 
 	private tryLoadingFiles(values: NameDataPair[]) {
 		GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.storeService)
-		this.codeChartaService.loadFiles(values)
+		this.loadFileService.loadFiles(values)
 	}
 
 	// TODO: Please make sure that this function works fine on Github pages with

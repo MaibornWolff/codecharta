@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { CodeChartaService } from "./codeCharta.service"
+import { LoadFileService } from "./loadFile.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
 import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
 import { removeFile, setDeltaReference, setFiles, setStandard } from "./state/store/files/files.actions"
@@ -21,8 +21,8 @@ jest.mock("./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 	nodeMetricDataSelector: jest.fn()
 }))
 
-describe("codeChartaService", () => {
-	let codeChartaService: CodeChartaService
+describe("loadFileService", () => {
+	let codeChartaService: LoadFileService
 	let store: Store
 	let state: State
 	let dialog: MatDialog
@@ -54,7 +54,7 @@ describe("codeChartaService", () => {
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(store, state, dialog)
+		codeChartaService = new LoadFileService(store, state, dialog)
 	}
 
 	describe("loadFiles", () => {
@@ -152,8 +152,8 @@ describe("codeChartaService", () => {
 			expect(isPartialState(state.getValue().files)).toBeTruthy()
 			expect(dialog.open).not.toHaveBeenCalled()
 
-			expect(CodeChartaService.ROOT_NAME).toEqual(expected.map.name)
-			expect(CodeChartaService.ROOT_PATH).toEqual(`/${expected.map.name}`)
+			expect(LoadFileService.ROOT_NAME).toEqual(expected.map.name)
+			expect(LoadFileService.ROOT_PATH).toEqual(`/${expected.map.name}`)
 		})
 
 		it("should replace files with equal file name and checksum when loading new files", () => {
@@ -371,7 +371,7 @@ describe("codeChartaService", () => {
 
 	it("should update its ROOT_PATH when reference file is being set to a file", () => {
 		codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
-		const updateRootDataSpy = jest.spyOn(CodeChartaService, "updateRootData")
+		const updateRootDataSpy = jest.spyOn(LoadFileService, "updateRootData")
 
 		const newReferenceFile = state.getValue().files[0].file
 		store.dispatch(setDeltaReference(newReferenceFile))

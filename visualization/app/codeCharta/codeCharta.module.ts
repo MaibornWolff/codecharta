@@ -6,7 +6,7 @@ import "./ui/ui"
 import "./state/state.module"
 
 import { codeChartaComponent } from "./codeCharta.component"
-import { CodeChartaService } from "./codeCharta.service"
+import { LoadFileService } from "./loadFile.service"
 import { downgradeComponent, downgradeInjectable } from "@angular/upgrade/static"
 import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"
@@ -29,7 +29,7 @@ angular
 	.directive("ccRibbonBar", downgradeComponent({ component: RibbonBarComponent }))
 	.directive("ccCodeMap", downgradeComponent({ component: CodeMapComponent }))
 	.factory("dialog", downgradeInjectable(MatDialog))
-	.factory("codeChartaService", downgradeInjectable(CodeChartaService))
+	.factory("loadFileService", downgradeInjectable(LoadFileService))
 
 @NgModule({
 	imports: [CommonModule, CodeMapModule],

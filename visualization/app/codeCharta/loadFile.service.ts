@@ -14,9 +14,9 @@ import { State } from "./state/angular-redux/state"
 import { tap } from "rxjs"
 
 @Injectable({ providedIn: "root" })
-export class CodeChartaService {
+export class LoadFileService {
 	static ROOT_NAME = "root"
-	static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
+	static ROOT_PATH = `/${LoadFileService.ROOT_NAME}`
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 	private recentFiles: string[] = []
@@ -25,7 +25,7 @@ export class CodeChartaService {
 		.pipe(
 			tap(newReferenceFile => {
 				if (newReferenceFile) {
-					CodeChartaService.updateRootData(newReferenceFile.map.name)
+					LoadFileService.updateRootData(newReferenceFile.map.name)
 				}
 			})
 		)
@@ -52,7 +52,7 @@ export class CodeChartaService {
 			const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
 			this.store.dispatch(setStandardByNames(this.recentFiles))
 
-			CodeChartaService.updateRootData(rootName)
+			LoadFileService.updateRootData(rootName)
 
 			this.fileStates = []
 			this.recentFiles = []
@@ -134,7 +134,7 @@ export class CodeChartaService {
 	}
 
 	static updateRootData(rootName: string) {
-		CodeChartaService.ROOT_NAME = rootName
-		CodeChartaService.ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
+		LoadFileService.ROOT_NAME = rootName
+		LoadFileService.ROOT_PATH = `/${LoadFileService.ROOT_NAME}`
 	}
 }
