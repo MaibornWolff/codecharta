@@ -1,7 +1,7 @@
 import { UrlExtractor } from "./util/urlExtractor"
 import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
-import { LoadFileService } from "./services/LoadFile/loadFile.service"
+import { LoadFileService } from "./services/loadFile/loadFile.service"
 import { NameDataPair } from "./codeCharta.model"
 import { StoreService } from "./state/store.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"

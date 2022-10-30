@@ -1,7 +1,7 @@
 import "./codeCharta.module"
 import { TestBed } from "@angular/core/testing"
 import { IHttpService, ILocationService } from "angular"
-import { LoadFileService } from "./services/LoadFile/loadFile.service"
+import { LoadFileService } from "./services/loadFile/loadFile.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { StoreService } from "./state/store.service"

@@ -1,4 +1,4 @@
-import { LoadFileService } from "../services/LoadFile/loadFile.service"
+import { LoadFileService } from "../services/loadFile/loadFile.service"
 
 export function getUpdatedBlacklistItemPath(fileName: string, path: string) {
 	if (isAbsoluteRootPath(path)) {

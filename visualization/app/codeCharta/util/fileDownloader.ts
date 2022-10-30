@@ -1,5 +1,5 @@
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
-import { LoadFileService } from "../services/LoadFile/loadFile.service"
+import { LoadFileService } from "../services/loadFile/loadFile.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"

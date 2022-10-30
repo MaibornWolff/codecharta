@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { LoadFileService } from "../../../services/LoadFile/loadFile.service"
+import { LoadFileService } from "../../../services/loadFile/loadFile.service"
 import { Store } from "../../../state/angular-redux/store"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
