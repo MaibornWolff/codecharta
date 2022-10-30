@@ -57,7 +57,8 @@ export class UrlExtractor {
 			const responseData: string | ExportCCFile | ExportWrappedCCFile = ungzip(data, { to: "string" })
 			const content = getCCFileAndDecorateFileChecksum(responseData)
 			const parsedFileName = this.getFileName(fileName, content.projectName)
-			return { fileName: parsedFileName, fileSize: response.body.toString().length, content }
+			// see #3111 and PR #3110 for reason of hard coded file size
+			return { fileName: parsedFileName, fileSize: 13, content }
 		}
 		throw new Error(`Could not load file "${fileName}"`)
 	}
@@ -69,7 +70,8 @@ export class UrlExtractor {
 			const responseData = response.body as string | ExportCCFile | ExportWrappedCCFile
 			const content: ExportCCFile = getCCFileAndDecorateFileChecksum(responseData)
 			fileName = this.getFileName(fileName, content.projectName)
-			return { fileName, fileSize: responseData.toString().length, content }
+			// see #3111 and PR #3110 for reason of hard coded file size
+			return { fileName, fileSize: 15, content }
 		}
 		throw new Error(`Could not load file "${fileName}"`)
 	}

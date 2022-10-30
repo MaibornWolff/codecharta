@@ -3,7 +3,6 @@ import { UrlExtractor } from "./urlExtractor"
 import { gzip } from "pako"
 import { HttpClient } from "@angular/common/http"
 
-// todo invest into changes of fileSize from test - is fileSize actual used?
 describe("urlExtractor", () => {
 	let urlExtractor: UrlExtractor
 	let mockedHttpClient: HttpClient
@@ -114,7 +113,7 @@ describe("urlExtractor", () => {
 					nodes: []
 				},
 				fileName: "file.json.gz",
-				fileSize: 254
+				fileSize: 13
 			}
 			const readContent = await urlExtractor.getFileDataFromFile("file.json.gz")
 			expect(readContent).toEqual(expected)
@@ -139,7 +138,7 @@ describe("urlExtractor", () => {
 			const expected = {
 				content: { apiVersion: 1.2, fileChecksum: "d0278536ce00e4fc7dbab39072ae43f6", nodes: [] },
 				fileName: "test.json",
-				fileSize: 29
+				fileSize: 15
 			}
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
