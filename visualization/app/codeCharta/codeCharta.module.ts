@@ -17,6 +17,7 @@ import { CommonModule } from "@angular/common"
 import { CodeMapComponent } from "./ui/codeMap/codeMap.component"
 import { CodeMapModule } from "./ui/codeMap/codeMap.module"
 import { MatDialog } from "@angular/material/dialog"
+import { LoadInitialFileService } from "./services/loadFile/loadInitialFile/loadInitialFile.service"
 
 angular.module("app.codeCharta", ["app.codeCharta.state", "app.codeCharta.ui"])
 
@@ -30,6 +31,7 @@ angular
 	.directive("ccCodeMap", downgradeComponent({ component: CodeMapComponent }))
 	.factory("dialog", downgradeInjectable(MatDialog))
 	.factory("loadFileService", downgradeInjectable(LoadFileService))
+	.factory("loadInitialFileService", downgradeInjectable(LoadInitialFileService))
 
 @NgModule({
 	imports: [CommonModule, CodeMapModule],
