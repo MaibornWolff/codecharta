@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix broken link to Custom View documentation [#3101](https://github.com/MaibornWolff/codecharta/pull/3101)
+-   Don't re-center map after every state change like changing area metric [#3109](https://github.com/MaibornWolff/codecharta/pull/3109)
 
 ### Chore 👨‍💻 👩‍💻
 

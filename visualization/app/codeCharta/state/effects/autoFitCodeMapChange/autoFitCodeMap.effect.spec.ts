@@ -84,6 +84,17 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
 		expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
 	})
 
+	it("should switch and not concat inner observable, so auto fit map gets called only once", () => {
+		mockedResetCameraIfNewFileIsLoadedSelector.mockImplementation(() => true)
+		mockedVisibleFileStates$.next("")
+		mockedFocusedNodePath$.next("")
+		mockedRenderCodeMap$.next("")
+		expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
+
+		mockedRenderCodeMap$.next("")
+		expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
+	})
+
 	it("should do nothing when 'reset camera if new file is loaded' is deactivated", () => {
 		mockedResetCameraIfNewFileIsLoadedSelector.mockImplementation(() => false)
 		mockedVisibleFileStates$.next("")
