@@ -1,53 +1,26 @@
-import "./codeCharta.module"
 import { TestBed } from "@angular/core/testing"
-import { CodeChartaController } from "./codeCharta.component"
-import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { StoreService } from "./state/store.service"
-import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCamera.service"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
+import { CodeChartaModule } from "./codeCharta.module"
+import { CodeChartaComponent } from "./codeCharta.component"
+import { Store } from "./state/angular-redux/store"
+import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
-describe("codeChartaController", () => {
-	let threeCameraService: ThreeCameraService
-
-	let storeService: StoreService
-	let loadInitialFileService: LoadInitialFileService
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta")
-
-		storeService = getService<StoreService>("storeService")
-		threeCameraService = TestBed.inject(ThreeCameraService)
-		loadInitialFileService = { loadFileOrSample: jest.fn() } as unknown as LoadInitialFileService
-	}
-
-	function rebuildController() {
-		new CodeChartaController(storeService, loadInitialFileService)
-	}
-
-	function initThreeCameraService() {
-		// Has to be called, to initialize the camera
-		threeCameraService.init(1536, 754)
-	}
-
-	function initialize() {
-		restartSystem()
-		initThreeCameraService()
-		localStorage.clear()
-	}
-
-	describe("constructor", () => {
-		beforeEach(() => {
-			initialize()
+describe("codeChartaComponent", () => {
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [CodeChartaModule],
+			providers: [{ provide: LoadInitialFileService, useValue: { loadFileOrSample: jest.fn() } }]
 		})
+	})
 
-		it("should show loading file gif", () => {
-			rebuildController()
-			expect(storeService.getState().appSettings.isLoadingFile).toBeTruthy()
-		})
+	it("should set is loading and call loadFileOrSample on initialization", async () => {
+		const mockedStore = { dispatch: jest.fn() } as unknown as Store
+		const mockedLoadInitialFileService = { loadFileOrSample: jest.fn() } as unknown as LoadInitialFileService
 
-		it("should load file or sample", () => {
-			rebuildController()
-			expect(loadInitialFileService.loadFileOrSample).toHaveBeenCalled()
-		})
+		const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
+		await codeChartaComponent.ngOnInit()
+
+		expect(mockedStore.dispatch).toHaveBeenCalledWith(setIsLoadingFile(true))
+		expect(mockedLoadInitialFileService.loadFileOrSample).toHaveBeenCalled()
 	})
 })

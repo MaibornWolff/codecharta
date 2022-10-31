@@ -1,4 +1,3 @@
-import "./threeViewer.module"
 import {
 	CODE_MAP_BUILDING,
 	CODE_MAP_BUILDING_TS_NODE,

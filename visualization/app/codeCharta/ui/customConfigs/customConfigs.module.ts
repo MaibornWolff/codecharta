@@ -1,4 +1,3 @@
-import "../../state/state.module"
 import { CustomConfigsComponent } from "./customConfigs.component"
 import { NgModule } from "@angular/core"
 import { MaterialModule } from "../../../material/material.module"

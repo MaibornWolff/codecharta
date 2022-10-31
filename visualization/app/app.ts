@@ -1,3 +1,4 @@
+// todo delete all those imports
 import angular from "angular"
 import "angular-animate"
 import "angular-aria"

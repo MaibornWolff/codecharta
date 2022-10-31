@@ -1,26 +1,24 @@
 import "./codeCharta.component.scss"
-import { StoreService } from "./state/store.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import packageJson from "../../package.json"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
+import { Component, Inject, OnInit } from "@angular/core"
+import { Store } from "./state/angular-redux/store"
 
-export class CodeChartaController {
-	private _viewModel: {
-		version: string
-	} = {
-		version: "version unavailable"
+@Component({
+	selector: "cc-code-charta",
+	template: require("./codeCharta.component.html")
+})
+export class CodeChartaComponent implements OnInit {
+	version = packageJson.version
+
+	constructor(
+		@Inject(Store) private store: Store,
+		@Inject(LoadInitialFileService) private loadInitialFileService: LoadInitialFileService
+	) {}
+
+	async ngOnInit(): Promise<void> {
+		this.store.dispatch(setIsLoadingFile(true))
+		await this.loadInitialFileService.loadFileOrSample()
 	}
-
-	constructor(private storeService: StoreService, private loadInitialFileService: LoadInitialFileService) {
-		"ngInject"
-		this._viewModel.version = packageJson.version
-		this.storeService.dispatch(setIsLoadingFile(true))
-		this.loadInitialFileService.loadFileOrSample()
-	}
-}
-
-export const codeChartaComponent = {
-	selector: "codeChartaComponent",
-	template: require("./codeCharta.component.html"),
-	controller: CodeChartaController
 }
