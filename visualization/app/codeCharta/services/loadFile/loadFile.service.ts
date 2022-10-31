@@ -45,17 +45,17 @@ export class LoadFileService {
 			})
 		}
 
-		if (recentFiles.length > 0) {
-			this.store.dispatch(setFiles(fileStates))
-
-			const recentFile = recentFiles[0]
-			const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-			this.store.dispatch(setStandardByNames(recentFiles))
-
-			LoadFileService.updateRootData(rootName)
-		} else {
+		if (recentFiles.length === 0) {
 			throw new Error("No files could be uploaded")
 		}
+
+		this.store.dispatch(setFiles(fileStates))
+
+		const recentFile = recentFiles[0]
+		const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
+		this.store.dispatch(setStandardByNames(recentFiles))
+
+		LoadFileService.updateRootData(rootName)
 	}
 
 	static updateRootData(rootName: string) {
