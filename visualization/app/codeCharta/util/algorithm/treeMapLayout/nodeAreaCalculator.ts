@@ -31,13 +31,7 @@ export function calculateTotalNodeArea(
 	 */
 
 	if (buildingAreasIncludingPadding.length === 0) {
-		return {
-			rootWidth: 0,
-			rootHeight: 0,
-			metricSum: hierarchyNode.sum(() => {
-				return 0
-			})
-		}
+		throw new Error("No buildings with an area bigger 0 exist for this metric")
 	}
 
 	let totalNodeArea = buildingAreasIncludingPadding.reduce((intermediate, current) => intermediate + current)
@@ -98,15 +92,6 @@ export function calculateTotalNodeArea(
 			nodeAreaMap[parentPath] = nodeAreaMap[parentPath] + nodeAreaMap[nodePath]
 		}
 	}
-
-	// == Up to here it reproduces the old functionality ==
-
-	// iterate paths array
-	// if file:
-	// get Parent and calculate its new size using padding
-	// calculate proportion and scale file value
-	//if folder:
-	// due to traversing order we can now increase value by padding
 
 	//Calculate the scaling factor
 	/**
