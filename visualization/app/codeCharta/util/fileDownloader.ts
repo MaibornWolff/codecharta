@@ -1,5 +1,5 @@
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
-import { CodeChartaService } from "../codeCharta.service"
+import { LoadFileService } from "../services/loadFile/loadFile.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
@@ -16,7 +16,7 @@ export class FileDownloader {
 		fileName: string
 	) {
 		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettings)
-		const newFileNameWithExtension = fileName + CodeChartaService.CC_FILE_EXTENSION
+		const newFileNameWithExtension = fileName + LoadFileService.CC_FILE_EXTENSION
 		this.downloadData(JSON.stringify(exportCCFile), newFileNameWithExtension)
 	}
 

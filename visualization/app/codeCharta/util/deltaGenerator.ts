@@ -2,14 +2,14 @@ import { CCFile, CodeMapNode, FileMeta, KeyValuePair, NodeType } from "../codeCh
 import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
-import { CodeChartaService } from "../codeCharta.service"
+import { LoadFileService } from "../services/loadFile/loadFile.service"
 import { getParent } from "./nodePathHelper"
 
 export class DeltaGenerator {
 	static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {
 		let rootNode: CodeMapNode
 		for (const [path, node] of hashMapWithAllNodes) {
-			if (path === CodeChartaService.ROOT_PATH) {
+			if (path === LoadFileService.ROOT_PATH) {
 				rootNode = node
 			} else {
 				const parentNode = getParent(hashMapWithAllNodes, path)

@@ -1,5 +1,5 @@
 import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
-import { CodeChartaService } from "../codeCharta.service"
+import { LoadFileService } from "../services/loadFile/loadFile.service"
 import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
 import packageJson from "../../../package.json"
@@ -36,11 +36,11 @@ export class AggregationGenerator {
 				exportedFileSize: this.fileSizesSum
 			},
 			map: {
-				name: CodeChartaService.ROOT_NAME,
+				name: LoadFileService.ROOT_NAME,
 				type: NodeType.FOLDER,
 				children: [],
 				attributes: {},
-				path: CodeChartaService.ROOT_PATH
+				path: LoadFileService.ROOT_PATH
 			},
 			settings: {
 				fileSettings: {
