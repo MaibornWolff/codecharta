@@ -1,7 +1,7 @@
 import "./app.scss"
 import "material-icons/iconfont/material-icons.css"
 import "zone.js" // needs to be loaded before "@angular/core"
-import { APP_INITIALIZER, NgModule } from "@angular/core"
+import { APP_INITIALIZER, NgModule, enableProdMode } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { HttpClientModule } from "@angular/common/http"
@@ -71,12 +71,8 @@ import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContex
 })
 export class AppModule {}
 
-// Todo: see todos in #2318
-// import { enableProdMode } from '@angular/core';
-// if (environment.production) {
-//   enableProdMode();
-// }
+if (process.env.DEV !== "true") {
+	enableProdMode()
+}
 
-platformBrowserDynamic()
-	.bootstrapModule(AppModule)
-	.catch(error => console.error(error))
+platformBrowserDynamic().bootstrapModule(AppModule)
