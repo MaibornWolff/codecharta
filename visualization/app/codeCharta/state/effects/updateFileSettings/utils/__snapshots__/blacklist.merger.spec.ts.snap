@@ -1,6 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-
 exports[`BlacklistMerger getMergedBlacklist should merge blacklist for different paths 1`] = `
 Array [
   Object {

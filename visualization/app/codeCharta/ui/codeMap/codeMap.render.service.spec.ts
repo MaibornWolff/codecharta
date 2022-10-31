@@ -27,7 +27,6 @@ import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
-import { splitStateActions } from "../../state/store/state.splitter"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
@@ -73,9 +72,7 @@ describe("codeMapRenderService", () => {
 		map = klona(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
-		for (const splittedAction of splitStateActions(setState(STATE))) {
-			store.dispatch(splittedAction)
-		}
+		store.dispatch(setState(STATE))
 		store.dispatch(unfocusNode())
 		mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
 	}

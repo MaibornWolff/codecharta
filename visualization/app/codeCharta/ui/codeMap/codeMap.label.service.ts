@@ -48,7 +48,7 @@ export class CodeMapLabelService {
 
 		const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
 		const { margin, heightMetric } = dynamicSettings
-		const multiplier = scaling.clone()
+		const multiplier = new Vector3(scaling.x, scaling.y, scaling.z)
 
 		let labelText = ""
 
@@ -168,12 +168,13 @@ export class CodeMapLabelService {
 
 	scale() {
 		const { scaling } = this.state.getValue().appSettings
+		const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 		const { margin } = this.state.getValue().dynamicSettings
 
 		const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 
 		for (const label of this.labels) {
-			const multiplier = scaling.clone()
+			const multiplier = scalingVector.clone()
 
 			label.sprite.position.sub(labelHeightDifference).divide(this.previousScaling).multiply(multiplier).add(labelHeightDifference)
 			if (multiplier.y > 1) {
@@ -196,7 +197,7 @@ export class CodeMapLabelService {
 			lineGeometryPosition.needsUpdate = true
 		}
 
-		this.previousScaling.copy(scaling)
+		this.previousScaling.copy(scalingVector)
 	}
 
 	onCameraChanged() {

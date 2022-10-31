@@ -5,6 +5,7 @@ import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, State } from "../../../codeCharta.model"
 import { BufferAttribute, Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 import { TreeMapHelper, treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
+import { Scaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 
 export interface MousePos {
 	x: number
@@ -71,7 +72,7 @@ export class CodeMapMesh {
 		return this.getMeshDescription().intersect(ray)
 	}
 
-	setScale(scale: Vector3) {
+	setScale(scale: Scaling) {
 		this.mapGeomDesc.setScales(scale)
 	}
 
