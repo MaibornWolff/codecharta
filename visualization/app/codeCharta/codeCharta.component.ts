@@ -11,11 +11,16 @@ import { Store } from "./state/angular-redux/store"
 })
 export class CodeChartaComponent implements OnInit {
 	version = packageJson.version
+	isInitialized = false
 
 	constructor(
 		@Inject(Store) private store: Store,
 		@Inject(LoadInitialFileService) private loadInitialFileService: LoadInitialFileService
-	) {}
+	) {
+		window.addEventListener("load", () => {
+			this.isInitialized = true
+		})
+	}
 
 	async ngOnInit(): Promise<void> {
 		this.store.dispatch(setIsLoadingFile(true))
