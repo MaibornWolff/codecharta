@@ -28,17 +28,18 @@ Open issues that remain are folder labels being scaled to the map size which wou
 
 ## calculateTotalNodeArea: intermediate steps
 
-| Steps | intermediate results                                                                                                                              |
-| :---: | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `1:`  | **totalNodeArea**: sum building areas                                                                                                             |
-| `2:`  | **nodeKeyMap(path, node)**; **nodeAreaMap(path, 0)**: from hierarchy node                                                                         |
-| `3:`  | **nodeAreaMap**: set file values and folder values as sum of direct children                                                                      |
-| `4:`  | **paths** : reverse nodeKeyMap() for depth first algorithm                                                                                        |
-| `5:`  | **nodeAreaMap**: increase non-direct folder areas in nodeAreaMap                                                                                  |
-| `6:`  | **proportionMax**: calculate scaling factor of AreaWithPadding by Area                                                                            |
-| `7:`  | **nodeAreaMap**: scale by proportionMax for files, set folders to 0 <br> amount for folders at a depth **amountOfDepthOne**, **amountOfDepthTwo** |
-| `8:`  | **metricSum**: hierarchyNode sum up each file                                                                                                     |
-| `9:`  | **totalNodeArea**: add paddings areas to sum of folder areas                                                                                      |
-| `10:` | **rootWidthWithDefaultPadding**: calculate default folder label areas<br/> add to totalNodeArea side                                              |
-| `11:` | **shiftedFolderLabelPadding**: calculate a scaled folder label based on node area                                                                 |
-| `12:` | **rootHeight**: max between the two different folder label areas <br/>**rootWidth**: root of totalNodeArea                                        |
+| Steps | intermediate results                                                                                                                                                                                              |
+| :---: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `1:`  | **totalNodeArea**: sum building areas or throw an error if none exist                                                                                                                                             |
+| `2:`  | generate two maps from hierarchyNode<br>**nodeKeyMap(path, node)**: maps paths to node data, helps find parent/child of node<br> **nodeAreaMap(path, 0)**: maps paths to a node area value, all set to 0 at start |
+| `3:`  | **nodeAreaMap**: set file values and folder values as sum of direct children only                                                                                                                                 |
+| `4:`  | **paths** : reverse nodeKeyMap(), d3-hierarchy operates depth first                                                                                                                                               |
+| `5:`  | **nodeAreaMap**: add children folder areas to parent folders, root now contains total area including innerPaddings                                                                                                |
+| `6:`  | calculate and apply scaling factor for each file-area per folder <br> count the amount of fodlers with floor label per hierarchy level                                                                            |
+| `7:`  | hierarchyNode sum up each file in place for further calculations                                                                                                                                                  |
+| `8:`  | **totalNodeArea**: add paddings areas to sum of folder areas (outerPadding)                                                                                                                                       |
+| `9:`  | **rootWidthWithDefaultPadding**: calculate size for folder labels with default setting                                                                                                                            |
+| `10:` | **shiftedFolderLabelPadding**: calculate size for scaled folder label based on node area                                                                                                                          |
+| `11:` | **rootSide**: select maximum of two folder-label variants for root side length<br> root-folder is always a square                                                                                                 |
+| `12:` | **factor**: check if map root is to big and set a factor to scale down if required                                                                                                                                |
+| `13:` | **metricSum**: sum up all files again (overwrite), applying scaling factor to each file/folder if required                                                                                                        |
