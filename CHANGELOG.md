@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Extract tree map size into a const as this is never changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
 -   Migrate markedPackages.service, edges.service, blacklist.service, files.service and injector.service [3106](https://github.com/MaibornWolff/codecharta/pull/3106)
 -   Refactor out `LoadInitialFileService` and fix with it loose Promise in tests [#3110](https://github.com/MaibornWolff/codecharta/pull/3110)
+-   Migrate codeCharta.component, storeService.service and remove AngularJS dual boot from bootstrapping [#3114](https://github.com/MaibornWolff/codecharta/pull/3114)
 
 ## [1.109.1] - 2022-10-12
 
