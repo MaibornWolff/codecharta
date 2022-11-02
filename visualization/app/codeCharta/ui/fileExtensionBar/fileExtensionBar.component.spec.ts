@@ -6,16 +6,15 @@ import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 import { FileExtensionBarModule } from "./fileExtensionBar.module"
 
-jest.mock("../../state/angular-redux/onStoreChanged/onStoreChanged", () => ({
-	onStoreChanged: (_, callback) =>
-		callback(null, [
-			{
-				fileExtension: "ts",
-				absoluteMetricValue: 1120,
-				relativeMetricValue: 100,
-				color: "hsl(111, 40%, 50%)"
-			}
-		])
+jest.mock("./selectors/metricDistribution.selector", () => ({
+	metricDistributionSelector: () => [
+		{
+			fileExtension: "ts",
+			absoluteMetricValue: 1120,
+			relativeMetricValue: 100,
+			color: "hsl(111, 40%, 50%)"
+		}
+	]
 }))
 
 describe("fileExtensionBarComponent", () => {

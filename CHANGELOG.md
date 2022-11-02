@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Migrate codeMap.render.service, codeMap.label.service, codeMap.mouseEvent.service, codeMap.arrow.service, codeCharta.service, sharpnessMode.service, isLoadingFile.service, scaling.service and experimentalFeaturesEnabled.service to Angular [#3094](https://github.com/MaibornWolff/codecharta/pull/3094)
 -   Extract tree map size into a const as this is never changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
 -   Migrate markedPackages.service, edges.service, blacklist.service, files.service and injector.service [3106](https://github.com/MaibornWolff/codecharta/pull/3106)
+-   Refactor out `LoadInitialFileService` and fix with it loose Promise in tests [#3110](https://github.com/MaibornWolff/codecharta/pull/3110)
+-   Migrate codeCharta.component, storeService.service and remove AngularJS dual boot from bootstrapping [#3114](https://github.com/MaibornWolff/codecharta/pull/3114)
+-   Remove obsolete AngularJS dependencies [#3115](https://github.com/MaibornWolff/codecharta/pull/3115)
 
 ## [1.109.1] - 2022-10-12
 

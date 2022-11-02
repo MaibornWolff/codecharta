@@ -1,4 +1,4 @@
-<div>
+<div [style.visibility]="isInitialized ? 'visible' : 'hidden'">
 	<cc-tool-bar></cc-tool-bar>
 
 	<cc-file-extension-bar></cc-file-extension-bar>
@@ -16,7 +16,7 @@
 				<img src="assets/logo.png" alt="MaibornWolff" rel="noopener noreferrer"
 			/></a>
 			<h2>
-				<span>CodeCharta {{ $ctrl._viewModel.version }}</span>
+				<span>CodeCharta {{ version }}</span>
 			</h2>
 		</div>
 	</div>

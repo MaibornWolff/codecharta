@@ -1,7 +1,6 @@
 import { GlobalSettings, LayoutAlgorithm, LocalStorageGlobalSettings, SharpnessMode } from "../codeCharta.model"
 import { GLOBAL_SETTINGS } from "./dataMocks"
 import packageJson from "../../../package.json"
-
 import { GlobalSettingsHelper } from "./globalSettingsHelper"
 
 describe("globalSettingsHelper", () => {
@@ -24,6 +23,16 @@ describe("globalSettingsHelper", () => {
 			expect(localStorageGlobalSettings.globalSettings.maxTreeMapFiles).toEqual(50)
 			expect(localStorageGlobalSettings.globalSettings.sharpnessMode).toEqual(SharpnessMode.Standard)
 		})
+
+		it("should not dispatch a global setting from localStorage if the setting is currently the same", () => {
+			const mockedStore = { dispatch: jest.fn() }
+			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
+
+			GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(mockedStore, GLOBAL_SETTINGS)
+
+			expect(mockedStore.dispatch).not.toHaveBeenCalled()
+		})
+
 		it("have the recent version of CodeCharta Visualization", () => {
 			GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
 			const localStorageGlobalSettings: LocalStorageGlobalSettings = JSON.parse(
