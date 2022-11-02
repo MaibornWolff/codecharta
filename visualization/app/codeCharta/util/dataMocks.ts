@@ -1859,6 +1859,7 @@ export const TEST_NODE_ROOT: Node = {
 	link: "NO_LINK",
 	markingColor: "0x000000",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#69AE40",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
@@ -2113,6 +2114,7 @@ export const TEST_NODE_LEAF: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#ddcc00",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
@@ -2137,6 +2139,7 @@ export const TEST_NODE_FOLDER: Node = {
 	path: "/root",
 	flat: false,
 	link: "NO_LINK",
+	fitForFolderLabel: false,
 	color: "#ddcc00",
 	markingColor: "0xFFFFFF",
 	incomingEdgePoint: new Vector3(),
@@ -2166,6 +2169,7 @@ export const INCOMING_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#820E0E",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
@@ -2194,6 +2198,7 @@ export const OUTGOING_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#AABBCC",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
@@ -2220,6 +2225,7 @@ export const DIFFERENT_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#AABBCC",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)

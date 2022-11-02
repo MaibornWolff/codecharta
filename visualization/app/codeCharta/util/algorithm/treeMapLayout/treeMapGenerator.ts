@@ -8,6 +8,9 @@ import { calculateTotalNodeArea } from "./nodeAreaCalculator"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
+export const FOLDER_LABEL_TOO_SMALL_PARENT = 0.09
+export const FOLDER_LABEL_TOO_SMALL_ROUTE = 0.009
+
 const MIN_BUILDING_AREA = 100
 const PADDING_SCALING_FACTOR = 1
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
@@ -16,6 +19,7 @@ const PADDING_APPROX_FOR_DEPTH_ZERO_BIG = 0.015
 const PADDING_APPROX_FOR_DEPTH_ZERO = 0.027
 const PADDING_APPROX_FOR_DEPTH_ONE_BIG = 0.008
 const PADDING_APPROX_FOR_DEPTH_ONE = 0.022
+const HUGE_MAP = 70_000
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -146,36 +150,19 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 	root.length *= scaleLength
 }
 
-export function calculateBuildingAreaWithProportionalPadding(
-	area: number,
-	smallestDelta: number,
-	minimumBuildingArea: number,
-	padding: number
-) {
+export function calculateBuildingAreaWithProportionalPadding(area: number, smallestDelta: number, minimumBuildingArea: number) {
 	if (area === 0) {
 		return 0
 	}
 
-	const buildingArea = (area / smallestDelta) * minimumBuildingArea
-	return (Math.sqrt(buildingArea) + padding) ** 2
+	return (area / smallestDelta) * minimumBuildingArea
 }
 
-export function getBuildingAreasWithProportionalPadding(
-	childrenAreaValues: number[],
-	smallestDelta: number,
-	minimumBuildingSize: number,
-	padding: number
-) {
+export function getBuildingAreasWithProportionalPadding(childrenAreaValues: number[], smallestDelta: number, minimumBuildingSize: number) {
 	return childrenAreaValues.map(element => {
-		return calculateBuildingAreaWithProportionalPadding(element, smallestDelta, minimumBuildingSize, padding)
+		return calculateBuildingAreaWithProportionalPadding(element, smallestDelta, minimumBuildingSize)
 	})
 }
-
-const HUGE_MAP = 70_000
-
-const FOLDER_LABEL_TOO_SMALL_PARENT = 0.09
-
-const FOLDER_LABEL_TOO_SMALL_ROUTE = 0.009
 
 function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap {
 	map.children = map.children.filter(child => child.attributes[state.dynamicSettings.areaMetric] !== 0)
@@ -193,8 +180,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	const metricBuildingAreasIncludingPadding = getBuildingAreasWithProportionalPadding(
 		childrenAreaValues,
 		smallestDelta,
-		MIN_BUILDING_AREA,
-		padding
+		MIN_BUILDING_AREA
 	)
 
 	const { rootWidth, rootHeight, metricSum } = calculateTotalNodeArea(metricBuildingAreasIncludingPadding, hierarchyNode, padding, state)

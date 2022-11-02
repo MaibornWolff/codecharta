@@ -3,7 +3,6 @@
 import { Node } from "../../../../codeCharta.model"
 import { CanvasTexture, BackSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
 import { FloorLabelHelper } from "./floorLabelHelper"
-import { getParent } from "../../../../util/nodePathHelper"
 
 export class FloorLabelDrawer {
 	private floorLabelPlanes: Mesh[] = []
@@ -21,6 +20,7 @@ export class FloorLabelDrawer {
 		for (const node of nodes) {
 			this.parentNodes.set(node.path, node)
 		}
+
 		this.collectLabelsPerLevel(nodes)
 		this.rootNode = rootNode
 		this.mapSize = mapSize
@@ -29,8 +29,7 @@ export class FloorLabelDrawer {
 
 	private collectLabelsPerLevel(nodes: Node[]) {
 		for (const node of nodes) {
-			const parentNode = getParent(this.parentNodes, node.path)
-			if (FloorLabelHelper.isLabelNode(node, parentNode, this.parentNodes.get("/root"))) {
+			if (FloorLabelHelper.isLabelNode(node)) {
 				if (!this.floorLabelsPerLevel.has(node.mapNodeDepth)) {
 					this.floorLabelsPerLevel.set(node.mapNodeDepth, [])
 				}

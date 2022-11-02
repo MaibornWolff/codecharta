@@ -36,7 +36,7 @@ describe("FloorLabelHelper", () => {
 	})
 
 	describe("isLabelNode", () => {
-		function createNode(isLeaf: boolean, mapNodeDepth?: number, width?: number): Node {
+		function createNode(isLeaf: boolean, mapNodeDepth?: number, width?: number, fitForFolderLabel?: boolean): Node {
 			return {
 				attributes: undefined,
 				color: "",
@@ -50,6 +50,7 @@ describe("FloorLabelHelper", () => {
 				isLeaf,
 				length: 0,
 				link: "",
+				fitForFolderLabel,
 				mapNodeDepth,
 				markingColor: undefined,
 				name: "",
@@ -64,34 +65,34 @@ describe("FloorLabelHelper", () => {
 		}
 
 		it("should return true for floor label nodes", () => {
-			const nodeLevel0 = createNode(false, 0, 100)
-			expect(FloorLabelHelper.isLabelNode(nodeLevel0, undefined, nodeLevel0)).toBe(true)
+			const nodeLevel0 = createNode(false, 0, 100, true)
+			expect(FloorLabelHelper.isLabelNode(nodeLevel0)).toBe(true)
 
-			const nodeLevel1 = createNode(false, 1, 10)
-			expect(FloorLabelHelper.isLabelNode(nodeLevel1, nodeLevel0, nodeLevel0)).toBe(true)
+			const nodeLevel1 = createNode(false, 1, 10, true)
+			expect(FloorLabelHelper.isLabelNode(nodeLevel1)).toBe(true)
 
-			const nodeLevel2 = createNode(false, 2, 1)
-			expect(FloorLabelHelper.isLabelNode(nodeLevel2, nodeLevel1, nodeLevel0)).toBe(true)
+			const nodeLevel2 = createNode(false, 2, 1, true)
+			expect(FloorLabelHelper.isLabelNode(nodeLevel2)).toBe(true)
 		})
 
 		it("should return false for other nodes", () => {
 			const node1 = createNode(true, 0, 100)
-			expect(FloorLabelHelper.isLabelNode(node1, undefined, node1)).toBe(false)
+			expect(FloorLabelHelper.isLabelNode(node1)).toBe(false)
 
-			const node2 = createNode(false, 1, 10)
-			expect(FloorLabelHelper.isLabelNode(node2, node1, node1)).toBe(true)
+			const node2 = createNode(false, 1, 10, true)
+			expect(FloorLabelHelper.isLabelNode(node2)).toBe(true)
 
 			const nodeTooSmall = createNode(false, 1, 8)
-			expect(FloorLabelHelper.isLabelNode(nodeTooSmall, node1, node1)).toBe(false)
+			expect(FloorLabelHelper.isLabelNode(nodeTooSmall)).toBe(false)
 
 			const nodeTooSmallRoot = createNode(false, 1, 0.8)
-			expect(FloorLabelHelper.isLabelNode(nodeTooSmallRoot, nodeTooSmall, node1)).toBe(false)
+			expect(FloorLabelHelper.isLabelNode(nodeTooSmallRoot)).toBe(false)
 
 			const node3 = createNode(true)
-			expect(FloorLabelHelper.isLabelNode(node3, node2, node1)).toBe(false)
+			expect(FloorLabelHelper.isLabelNode(node3)).toBe(false)
 
 			const node4 = createNode(false, 4, 10)
-			expect(FloorLabelHelper.isLabelNode(node4, node2, node1)).toBe(false)
+			expect(FloorLabelHelper.isLabelNode(node4)).toBe(false)
 		})
 	})
 })

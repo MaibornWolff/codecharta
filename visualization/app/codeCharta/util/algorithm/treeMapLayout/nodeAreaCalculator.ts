@@ -1,5 +1,5 @@
 import { HierarchyNode } from "d3-hierarchy"
-import { getAreaValue } from "./treeMapGenerator"
+import { FOLDER_LABEL_TOO_SMALL_PARENT, getAreaValue } from "./treeMapGenerator"
 import { CodeMapNode, State } from "../../../codeCharta.model"
 import { getParent } from "../../nodePathHelper"
 import { isLeaf } from "../../codeMapHelper"
@@ -14,7 +14,9 @@ function calculateFolderLabelPadding(
 }
 
 const HUGE_MAP = 15_000
+
 const BIG_MAP = 10_000
+
 const HUGE_MAP_FACTOR = 0.35
 const BIG_MAP_FACTOR = 0.5
 
@@ -106,18 +108,18 @@ export function calculateTotalNodeArea(
 			switch (node.depth) {
 				case 1: {
 					const parentArea = addPaddingToArea(nodeAreaMap[parentPath], padding)
-					const folderLabelCheck = parentArea / addPaddingToArea(nodeAreaMap[nodePath], padding)
+					const folderLabelCheck = addPaddingToArea(nodeAreaMap[nodePath], padding) / parentArea
 
-					if (folderLabelCheck > 0.09) {
+					if (folderLabelCheck > FOLDER_LABEL_TOO_SMALL_PARENT) {
 						amountOfDepthOne += 1
 					}
 					break
 				}
 				case 2: {
 					const parentArea = addPaddingToArea(nodeAreaMap[parentPath], padding)
-					const folderLabelCheck = parentArea / addPaddingToArea(nodeAreaMap[nodePath], padding)
+					const folderLabelCheck = addPaddingToArea(nodeAreaMap[nodePath], padding) / parentArea
 
-					if (folderLabelCheck > 0.09) {
+					if (folderLabelCheck > FOLDER_LABEL_TOO_SMALL_PARENT) {
 						amountOfDepthTwo += 1
 					}
 					break
