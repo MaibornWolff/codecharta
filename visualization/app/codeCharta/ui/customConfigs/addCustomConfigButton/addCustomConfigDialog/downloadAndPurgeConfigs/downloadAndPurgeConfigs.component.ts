@@ -1,10 +1,9 @@
-import { Component, Inject, Input, OnInit } from "@angular/core"
+import { Component, Inject, OnInit } from "@angular/core"
 import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { MatDialog } from "@angular/material/dialog"
 import { validateLocalStorageSize } from "../validateLocalStorageSize"
-import { CustomConfigFileStateConnector } from "../../../customConfigFileStateConnector"
 import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeableConfigs"
 
 @Component({
@@ -12,7 +11,6 @@ import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeab
 	selector: "cc-download-and-purge-configs"
 })
 export class DownloadAndPurgeConfigsComponent implements OnInit {
-	@Input() customConfigFileStateConnector: CustomConfigFileStateConnector
 	isLocalStorageSizeValid = true
 
 	constructor(@Inject(MatDialog) private dialog: MatDialog) {}
@@ -22,7 +20,7 @@ export class DownloadAndPurgeConfigsComponent implements OnInit {
 	}
 
 	showPurgeConfirmDialog() {
-		const purgeableConfigs = downloadAndCollectPurgeableConfigs(this.customConfigFileStateConnector)
+		const purgeableConfigs = downloadAndCollectPurgeableConfigs()
 		if (purgeableConfigs.size === 0) {
 			this.dialog.open(ErrorDialogComponent, {
 				data: {

@@ -2,24 +2,24 @@ import { Vector3 } from "three"
 import { AppSettings, DynamicSettings, FileSettings } from "../../codeCharta.model"
 
 export enum CustomConfigMapSelectionMode {
-	SINGLE = "SINGLE",
 	MULTIPLE = "MULTIPLE",
 	DELTA = "DELTA"
 }
+
+export type MapNamesByChecksum = Map<string, string>
 
 export interface CustomConfig {
 	id: string
 	name: string
 	creationTime: number
 	mapSelectionMode: CustomConfigMapSelectionMode
-	assignedMaps: string[]
-	mapChecksum: string
+	assignedMaps: MapNamesByChecksum
 	customConfigVersion: string
 
 	stateSettings: {
 		appSettings: AppSettings
 		dynamicSettings: DynamicSettings
-		fileSettings: FileSettings
+		fileSettings: Omit<FileSettings, "attributeTypes">
 	}
 	camera: {
 		camera: Vector3

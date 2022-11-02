@@ -15,8 +15,8 @@ describe("customConfig2ApplicableMessage", () => {
 
 	it("should return 'Apply Custom View' message when there is no map selection mode difference and maps are not missing", () => {
 		jest.spyOn(getMissingCustomConfigModeAndMaps, "getMissingCustomConfigModeAndMaps").mockImplementation(() => ({
-			mode: "",
-			missingMaps: []
+			mapSelectionMode: "",
+			mapNames: []
 		}))
 
 		expect(new CustomConfig2ApplicableMessage({ getValue: PlainStore.store.getState }).transform(customConfigItem)).toBe(
@@ -26,8 +26,8 @@ describe("customConfig2ApplicableMessage", () => {
 
 	it("should show the map selection mode required to be totally clickable when the mode differs from the custom config", () => {
 		jest.spyOn(getMissingCustomConfigModeAndMaps, "getMissingCustomConfigModeAndMaps").mockImplementation(() => ({
-			mode: "DELTA",
-			missingMaps: []
+			mapSelectionMode: "DELTA",
+			mapNames: []
 		}))
 
 		expect(new CustomConfig2ApplicableMessage({ getValue: PlainStore.store.getState }).transform(customConfigItem)).toBe(
@@ -37,8 +37,8 @@ describe("customConfig2ApplicableMessage", () => {
 
 	it("should show missing maps to be fully clickable if the currently selected maps differ from the custom config", () => {
 		jest.spyOn(getMissingCustomConfigModeAndMaps, "getMissingCustomConfigModeAndMaps").mockImplementation(() => ({
-			mode: "",
-			missingMaps: ["file1"]
+			mapSelectionMode: "",
+			mapNames: ["file1"]
 		}))
 
 		expect(new CustomConfig2ApplicableMessage({ getValue: PlainStore.store.getState }).transform(customConfigItem)).toBe(
@@ -48,8 +48,8 @@ describe("customConfig2ApplicableMessage", () => {
 
 	it("should show the map selection mode and missing maps required for the custom config to be totally clickable if both attributes differ from the config", () => {
 		jest.spyOn(getMissingCustomConfigModeAndMaps, "getMissingCustomConfigModeAndMaps").mockImplementation(() => ({
-			mode: "MULTIPLE",
-			missingMaps: ["file1"]
+			mapSelectionMode: "MULTIPLE",
+			mapNames: ["file1"]
 		}))
 
 		expect(new CustomConfig2ApplicableMessage({ getValue: PlainStore.store.getState }).transform(customConfigItem)).toBe(
