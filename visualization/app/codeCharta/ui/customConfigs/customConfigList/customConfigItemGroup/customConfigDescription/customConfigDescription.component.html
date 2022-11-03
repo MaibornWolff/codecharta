@@ -6,7 +6,7 @@
 	<div class="color-schema-container">
 		<p><b>Color Schema: </b></p>
 		<div class="color-swatch-container" *ngFor="let mapColor of customConfigItem | customConfigColorSchemaBySelectionMode">
-			<span class="color-swatch" [style.background-color]="mapColor"></span>
+			<span class="color-swatch" [style.background-color]="customConfigItem.isApplicable ? mapColor : 'rgb(204, 204, 204)'"></span>
 		</div>
 	</div>
 </div>
