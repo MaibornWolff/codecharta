@@ -87,12 +87,28 @@ open class ProjectBuilder(
         return this
     }
 
-    fun getAttributeSet(): Set<String> {
-        return setOf()
-    }
+    fun removeUnusedAttributeDescriptors(): ProjectBuilder {
+        val attributeSet = this.attributeDescriptors.keys.toMutableSet()
+        val attributeDescriptors = this.attributeDescriptors.toMutableMap()
+        val nodesToWalk: MutableList<Node> = mutableListOf(this.rootNode.toNode())
 
-    // TODO: getAttributeList get list of all named attributes (metrics) in a node set
-    // TODO: removeUnusedAttributeDescriptors given a list of used attributes, removes all that are not used anymore from the description list
+        var i = 0
+        while (i < nodesToWalk.size) {
+            val currentNode = nodesToWalk[i]
+            nodesToWalk.addAll(currentNode.children)
+            if (currentNode.type != NodeType.Folder) {
+                attributeSet.removeAll(currentNode.attributes.keys)
+                if (attributeSet.isEmpty()) {
+                    this.attributeDescriptors = attributeDescriptors
+                }
+            }
+            i++
+        }
+
+        attributeSet.forEach { attributeDescriptors.remove(it) }
+        this.attributeDescriptors = attributeDescriptors
+        return this
+    }
 
     override fun toString(): String {
         return "Project{nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, blacklist=$blacklist}"
