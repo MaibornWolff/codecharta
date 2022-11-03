@@ -23,7 +23,7 @@ class SubProjectExtractor(private val project: Project) {
             copyAttributeTypes(),
             copyAttributeDescriptors(),
             copyBlacklist()
-        ).build()
+        ).removeUnusedAttributeDescriptors().build()
     }
 
     private fun extractNodes(extractionPattern: List<String>, node: MutableNode): MutableList<MutableNode> {
