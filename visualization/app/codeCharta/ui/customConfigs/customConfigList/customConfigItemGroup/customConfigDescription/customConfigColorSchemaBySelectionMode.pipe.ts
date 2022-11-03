@@ -3,7 +3,7 @@ import { CustomConfigItem } from "../../../customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../../../../../model/customConfig/customConfig.api.model"
 
 @Pipe({ name: "customConfigColorSchemaBySelectionMode" })
-export class CustomConfigColorSchemaBySelectionModePipe implements PipeTransform {
+export class CustomConfigColorSchemaBySelectionMode implements PipeTransform {
 	transform(customConfig: CustomConfigItem): string[] {
 		const { mapColors, mapSelectionMode } = customConfig
 		return mapSelectionMode === CustomConfigMapSelectionMode.MULTIPLE

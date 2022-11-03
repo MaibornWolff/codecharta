@@ -70,7 +70,7 @@ describe("customConfigListComponent", () => {
 		const { container } = await render(CustomConfigListComponent, { excludeComponentDeclaration: true })
 
 		expect(container.querySelector("mat-expansion-panel-header").textContent).toBe(
-			" Custom View(s) in  multiple  mode for fileB fileC "
+			" Custom View(s) in  Standard  mode for fileB fileC "
 		)
 		expect(container.querySelectorAll("mat-expansion-panel-header").length).toBe(1)
 

@@ -57,7 +57,7 @@ describe("customConfigItemGroupComponent", () => {
 		await userEvent.click(screen.getByText("SampleMap View #1"))
 
 		expect(screen.getAllByTitle("Apply Custom View").length).toBe(2)
-		expect(screen.getByText("SampleMap View #1").getAttribute("style")).toBe("color: rgba(0, 0, 0, 0.87);")
+		expect(screen.getByText("SampleMap View #1").closest("button").getAttribute("style")).toBe("color: rgba(0, 0, 0, 0.87);")
 		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(1)
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(1)
 	})
@@ -95,7 +95,7 @@ describe("customConfigItemGroupComponent", () => {
 				"This view is partially applicable. To complete your view, please switch to the MULTIPLE mode and select the following map(s): fileC."
 			).length
 		).toBe(2)
-		expect(screen.getByText("SampleMap View #1").getAttribute("style")).toBe("color: rgb(204, 204, 204);")
+		expect(screen.getByText("SampleMap View #1").closest("button").getAttribute("style")).toBe("color: rgb(204, 204, 204);")
 		expect(screen.getByText("SampleMap View #1").closest("button").hasAttribute("disabled")).toBe(false)
 	})
 })

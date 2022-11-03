@@ -10,7 +10,7 @@ import { CustomConfigItemGroupComponent } from "./customConfigList/customConfigI
 import { CustomConfig2ApplicableMessage } from "./customConfigList/customConfigItemGroup/customConfig2ApplicableMessage.pipe"
 import { CustomConfig2ApplicableColor } from "./customConfigList/customConfigItemGroup/customConfig2ApplicableColor.pipe"
 import { CustomConfigDescriptionComponent } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigDescription.component"
-import { CustomConfigColorSchemaBySelectionModePipe } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigColorSchemaBySelectionMode.pipe"
+import { CustomConfigColorSchemaBySelectionMode } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigColorSchemaBySelectionMode.pipe"
 
 @NgModule({
 	imports: [MaterialModule, CommonModule, UploadCustomConfigButtonModule, AddCustomConfigButtonModule, DownloadCustomConfigButtonModule],
@@ -21,7 +21,7 @@ import { CustomConfigColorSchemaBySelectionModePipe } from "./customConfigList/c
 		CustomConfigDescriptionComponent,
 		CustomConfig2ApplicableMessage,
 		CustomConfig2ApplicableColor,
-		CustomConfigColorSchemaBySelectionModePipe
+		CustomConfigColorSchemaBySelectionMode
 	],
 	exports: [CustomConfigsComponent],
 	entryComponents: [CustomConfigListComponent]

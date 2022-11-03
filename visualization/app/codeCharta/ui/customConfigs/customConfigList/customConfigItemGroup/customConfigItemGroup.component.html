@@ -22,9 +22,13 @@
 			>
 				<cc-custom-config-description [customConfigItem]="customConfig"></cc-custom-config-description>
 			</button>
-			<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
-				<i class="fa fa-trash"></i>
-			</button>
+			<div>
+				<!--				<button class="remove-button" title="Remove Custom View">
+					<i class="fa fa-check"></i></button>-->
+				<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
+					<i class="fa fa-trash"></i>
+				</button>
+			</div>
 		</mat-list-item>
 	</mat-list>
 </mat-expansion-panel>
