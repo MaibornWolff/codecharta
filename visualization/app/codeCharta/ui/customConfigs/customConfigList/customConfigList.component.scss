@@ -101,12 +101,13 @@
 
 			.color-schema-container {
 				display: flex;
+				align-items: center;
 				gap: 2px;
 			}
 		}
 
-		.cc-color-swatch-container {
-			.cc-color-swatch {
+		.color-swatch-container {
+			.color-swatch {
 				display: inline-block;
 				width: 16px;
 				height: 16px;

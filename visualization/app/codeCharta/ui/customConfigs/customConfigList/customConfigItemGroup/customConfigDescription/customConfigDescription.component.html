@@ -1,14 +1,12 @@
 <div class="config-description-container">
-	<span class="description-text"><strong>Name: </strong>{{ customConfigItem.name }}</span>
-	<span class="description-text"
-		><strong>Selection Mode: </strong> {{ customConfigItem.mapSelectionMode === "MULTIPLE" ? "Standard" : "Delta" }}</span
-	>
-	<span class="description-text"><i class="fa fa-arrows-alt"></i> {{ customConfigItem.metrics.areaMetric }}</span>
-	<span class="description-text"><i class="fa fa-arrows-v"></i> {{ customConfigItem.metrics.heightMetric }}</span>
+	<p><b>Name: </b>{{ customConfigItem.name }}</p>
+	<p><b>Selection Mode:</b> {{ customConfigItem.mapSelectionMode === "MULTIPLE" ? "Standard" : "Delta" }}</p>
+	<p><i class="fa fa-arrows-alt"></i> {{ customConfigItem.metrics.areaMetric }}</p>
+	<p><i class="fa fa-arrows-v"></i> {{ customConfigItem.metrics.heightMetric }}</p>
 	<div class="color-schema-container">
-		<span><strong>Color Schema: </strong></span>
-		<div class="cc-color-swatch-container" *ngFor="let mapColor of customConfigItem | customConfigColorSchemaBySelectionMode">
-			<span class="cc-color-swatch" [style.background-color]="mapColor"></span>
+		<p><b>Color Schema: </b></p>
+		<div class="color-swatch-container" *ngFor="let mapColor of customConfigItem | customConfigColorSchemaBySelectionMode">
+			<span class="color-swatch" [style.background-color]="mapColor"></span>
 		</div>
 	</div>
 </div>
