@@ -3,8 +3,8 @@
 	<span class="description-text"
 		><strong>Selection Mode: </strong> {{ customConfigItem.mapSelectionMode === "MULTIPLE" ? "Standard" : "Delta" }}</span
 	>
-	<span class="description-text"><i class="fa fa-arrows-alt"></i> {{ customConfigItem.areaMetric }}</span>
-	<span class="description-text"><i class="fa fa-arrows-v"></i> {{ customConfigItem.heightMetric }}</span>
+	<span class="description-text"><i class="fa fa-arrows-alt"></i> {{ customConfigItem.metrics.areaMetric }}</span>
+	<span class="description-text"><i class="fa fa-arrows-v"></i> {{ customConfigItem.metrics.heightMetric }}</span>
 	<div class="color-schema-container">
 		<span><strong>Color Schema: </strong></span>
 		<div class="cc-color-swatch-container" *ngFor="let mapColor of customConfigItem | customConfigColorSchemaBySelectionMode">

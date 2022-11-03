@@ -1896,6 +1896,14 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 					name: "SampleMap View #1",
 					assignedMaps: new Map([["md5_fileA", "fileA"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
 					isApplicable: false
 				},
 				{
@@ -1903,6 +1911,14 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 					name: "SampleMap View #2",
 					assignedMaps: new Map([["md5_fileA", "fileA"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
 					isApplicable: false
 				}
 			]
@@ -1923,6 +1939,14 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						["md5_fileC", "fileC"]
 					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
 					isApplicable: true
 				},
 				{
@@ -1933,6 +1957,14 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						["md5_fileC", "fileC"]
 					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
 					isApplicable: true
 				}
 			]
@@ -1950,6 +1982,14 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 					name: "SampleMap Delta View #1",
 					assignedMaps: new Map([["md5_fileD", "fileD"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
 					isApplicable: false
 				}
 			]
