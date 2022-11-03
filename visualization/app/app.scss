@@ -18,6 +18,7 @@ html,
 body {
 	overflow-y: hidden;
 	overflow-x: hidden;
+	font-family: Roboto, "Helvetica Neue", sans-serif;
 
 	@include prefix(
 		(
