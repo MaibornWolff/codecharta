@@ -51,10 +51,6 @@
 			margin: 0;
 		}
 
-		.mat-expansion-panel-header {
-			padding: 0 16px;
-		}
-
 		.highlight-mode {
 			font-weight: bold;
 			white-space: break-spaces;
@@ -80,6 +76,8 @@
 		}
 
 		.mat-list-item-content {
+			display: flex;
+			justify-content: space-between;
 			border-bottom: 1px solid #000000;
 			padding: 0;
 
@@ -88,15 +86,31 @@
 			}
 
 			button {
-				height: 100%;
-				width: 100%;
 				background-color: transparent;
-				text-align: left;
+				cursor: pointer;
 
 				&.remove-button {
+					font-size: 16px;
 					color: red;
-					width: 13%;
 				}
+			}
+		}
+
+		.config-description-container {
+			gap: 20px;
+			display: flex;
+
+			.color-schema-container {
+				display: flex;
+				gap: 2px;
+			}
+		}
+
+		.cc-color-swatch-container {
+			.cc-color-swatch {
+				display: inline-block;
+				width: 16px;
+				height: 16px;
 			}
 		}
 	}

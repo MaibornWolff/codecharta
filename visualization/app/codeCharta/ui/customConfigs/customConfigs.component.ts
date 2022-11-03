@@ -3,12 +3,18 @@ import { Component, Inject } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
+import { MapColors } from "../../codeCharta.model"
+
+type CustomConfigColors = Pick<MapColors, "positive" | "neutral" | "negative" | "positiveDelta" | "negativeDelta">
 
 export interface CustomConfigItem {
 	id: string
 	name: string
 	assignedMaps: Map<string, string>
 	mapSelectionMode: CustomConfigMapSelectionMode
+	areaMetric: string
+	heightMetric: string
+	mapColors: CustomConfigColors
 	isApplicable: boolean
 }
 
