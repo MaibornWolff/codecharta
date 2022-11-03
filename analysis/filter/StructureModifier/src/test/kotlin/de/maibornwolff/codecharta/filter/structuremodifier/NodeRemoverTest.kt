@@ -3,12 +3,15 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.io.InputStreamReader
 
 class NodeRemoverTest {
     private lateinit var sampleProject: Project
+    private val DESCRIPTOR_TEST_PATH = "attributeDescriptors.json"
 
     @BeforeEach
     fun serializeProject() {
@@ -90,5 +93,23 @@ class NodeRemoverTest {
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
         Assertions.assertThat(result.blacklist.map { it.path }).doesNotContainSubsequence("/root/foo")
+    }
+
+    @Test
+    fun `should copy attributeDescriptors`() {
+        val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(DESCRIPTOR_TEST_PATH)!!)
+        val attributeProject = ProjectDeserializer.deserializeProject(input)
+        val resultProject = NodeRemover(attributeProject).remove(arrayOf("/root/bigLeaf.ts"))
+        assertEquals(attributeProject.attributeDescriptors.size, resultProject.attributeDescriptors.size)
+    }
+
+    @Test
+    fun `should remove unused attributeDescriptors if nodes are removed`() {
+        val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(DESCRIPTOR_TEST_PATH)!!)
+        val attributeProject = ProjectDeserializer.deserializeProject(input)
+        val resultProject = NodeRemover(attributeProject).remove(arrayOf("/root/AnotherParentLeaf"))
+        assertEquals(resultProject.attributeDescriptors.size, 3)
+        assertEquals(resultProject.attributeDescriptors["rloc"]!!.description, "1")
+        assertEquals(resultProject.attributeDescriptors["yrloc"], null)
     }
 }
