@@ -49,7 +49,7 @@ describe("customConfigListComponent", () => {
 
 	it("should show 'download', 'upload', 'add' and 'non-applicable' custom config button", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
@@ -63,7 +63,7 @@ describe("customConfigListComponent", () => {
 
 	it("should show custom config item groups for applicable and non-applicable custom configs", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
@@ -81,7 +81,7 @@ describe("customConfigListComponent", () => {
 
 	it("should not show 'non-applicable Custom Views' button when no custom configs are available", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map()
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
@@ -93,7 +93,7 @@ describe("customConfigListComponent", () => {
 
 	it("should list all custom configs belonging to a custom config item group by clicking", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
@@ -110,7 +110,7 @@ describe("customConfigListComponent", () => {
 
 	it("should disable button for all custom configs belonging to a non-applicable custom config item group", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)

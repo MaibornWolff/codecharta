@@ -46,6 +46,6 @@ describe("getMissingCustomConfigModeAndMaps", () => {
 
 		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, { getValue: PlainStore.store.getState })
 
-		expect(missingModeAndMaps).toEqual({ mapSelectionMode: "MULTIPLE", mapNames: ["file1"] })
+		expect(missingModeAndMaps).toEqual({ mapSelectionMode: "STANDARD", mapNames: ["file1"] })
 	})
 })

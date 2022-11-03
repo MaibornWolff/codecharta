@@ -2,7 +2,7 @@ import { Vector3 } from "three"
 import { AppSettings, DynamicSettings, FileSettings } from "../../codeCharta.model"
 
 export enum CustomConfigMapSelectionMode {
-	MULTIPLE = "MULTIPLE",
+	MULTIPLE = "STANDARD",
 	DELTA = "DELTA"
 }
 

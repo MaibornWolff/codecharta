@@ -48,12 +48,12 @@ describe("customConfig2ApplicableMessage", () => {
 
 	it("should show the map selection mode and missing maps required for the custom config to be totally clickable if both attributes differ from the config", () => {
 		jest.spyOn(getMissingCustomConfigModeAndMaps, "getMissingCustomConfigModeAndMaps").mockImplementation(() => ({
-			mapSelectionMode: "MULTIPLE",
+			mapSelectionMode: "STANDARD",
 			mapNames: ["file1"]
 		}))
 
 		expect(new CustomConfig2ApplicableMessage({ getValue: PlainStore.store.getState }).transform(customConfigItem)).toBe(
-			"This view is partially applicable. To complete your view, please switch to the MULTIPLE mode and select the following map(s): file1."
+			"This view is partially applicable. To complete your view, please switch to the STANDARD mode and select the following map(s): file1."
 		)
 	})
 })

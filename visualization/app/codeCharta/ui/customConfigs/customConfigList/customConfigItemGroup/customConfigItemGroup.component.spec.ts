@@ -92,7 +92,7 @@ describe("customConfigItemGroupComponent", () => {
 
 		expect(
 			screen.getAllByTitle(
-				"This view is partially applicable. To complete your view, please switch to the MULTIPLE mode and select the following map(s): fileC."
+				"This view is partially applicable. To complete your view, please switch to the STANDARD mode and select the following map(s): fileC."
 			).length
 		).toBe(2)
 		expect(screen.getByText("SampleMap View #1").closest("button").getAttribute("style")).toBe("color: rgb(204, 204, 204);")

@@ -1885,14 +1885,14 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 
 export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
 	[
-		"File_A_MULTIPLE",
+		"File_A_STANDARD",
 		{
 			mapNames: "fileA",
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: false,
 			customConfigItems: [
 				{
-					id: "File_A_MULTIPLE_Sample_Map View #1",
+					id: "File_A_STANDARD_Sample_Map View #1",
 					name: "SampleMap View #1",
 					assignedMaps: new Map([["md5_fileA", "fileA"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
@@ -1907,7 +1907,7 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 					isApplicable: false
 				},
 				{
-					id: "File_A_MULTIPLE_Sample_Map View #2",
+					id: "File_A_STANDARD_Sample_Map View #2",
 					name: "SampleMap View #2",
 					assignedMaps: new Map([["md5_fileA", "fileA"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
@@ -1925,14 +1925,14 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 		}
 	],
 	[
-		"File_B_File_C_MULTIPLE",
+		"File_B_File_C_STANDARD",
 		{
 			mapNames: "fileB fileC",
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: true,
 			customConfigItems: [
 				{
-					id: "File_B_File_C_MULTIPLE_Sample_Map View #1",
+					id: "File_B_File_C_STANDARD_Sample_Map View #1",
 					name: "SampleMap View #1",
 					assignedMaps: new Map([
 						["md5_fileB", "fileB"],
@@ -1950,7 +1950,7 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 					isApplicable: true
 				},
 				{
-					id: "File_B_File_C_MULTIPLE_Sample_Map View #2",
+					id: "File_B_File_C_STANDARD_Sample_Map View #2",
 					name: "SampleMap View #2",
 					assignedMaps: new Map([
 						["md5_fileB", "fileB"],

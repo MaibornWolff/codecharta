@@ -7,7 +7,7 @@
 	<mat-expansion-panel-header>
 		<mat-panel-title>
 			Custom View(s) in
-			<span class="highlight-mode"> {{ customConfigItemGroup.value.mapSelectionMode === "MULTIPLE" ? "Standard" : "Delta" }} </span>
+			<span class="highlight-mode"> {{ customConfigItemGroup.value.mapSelectionMode | titlecase }} </span>
 			mode for
 			{{ customConfigItemGroup.value.mapNames }}
 		</mat-panel-title>
@@ -23,8 +23,6 @@
 				<cc-custom-config-description [customConfigItem]="customConfig"></cc-custom-config-description>
 			</button>
 			<div>
-				<!--				<button class="remove-button" title="Remove Custom View">
-					<i class="fa fa-check"></i></button>-->
 				<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
 					<i class="fa fa-trash"></i>
 				</button>

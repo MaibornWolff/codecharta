@@ -66,7 +66,7 @@ describe("getCustomConfigItemGroups", () => {
 
 		const actualCustomConfigItemGroups = getCustomConfigItemGroups(visibleFilesBySelectionMode)
 
-		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_MULTIPLE")
+		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
 		expect(applicableGroup.customConfigItems[0].metrics).toEqual({ heightMetric: "mcc", areaMetric: "rloc" })
@@ -93,7 +93,7 @@ describe("getCustomConfigItemGroups", () => {
 
 		const actualCustomConfigItemGroups = getCustomConfigItemGroups(visibleFilesBySelectionMode)
 
-		const nonApplicableGroup = actualCustomConfigItemGroups.nonApplicableItems.get("map3_MULTIPLE")
+		const nonApplicableGroup = actualCustomConfigItemGroups.nonApplicableItems.get("map3_STANDARD")
 		expect(nonApplicableGroup.customConfigItems[0].name).toBe("config2")
 		expect(nonApplicableGroup.customConfigItems[0].isApplicable).toBe(false)
 	})
@@ -109,7 +109,7 @@ describe("getCustomConfigItemGroups", () => {
 
 		const actualCustomConfigItemGroups = getCustomConfigItemGroups(visibleFilesBySelectionMode)
 
-		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_MULTIPLE")
+		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
 	})
@@ -128,7 +128,7 @@ describe("getCustomConfigItemGroups", () => {
 
 		const actualCustomConfigItemGroups = getCustomConfigItemGroups(visibleFilesBySelectionMode)
 
-		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_MULTIPLE")
+		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
 	})

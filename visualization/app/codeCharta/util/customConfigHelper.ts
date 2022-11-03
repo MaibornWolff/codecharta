@@ -43,11 +43,16 @@ export class CustomConfigHelper {
 		return configs
 	}
 
+	// TODO [2023-04-01] remove support
 	private static mapOldConfigStructureToNew(configs: Map<string, CustomConfig>) {
 		for (const config of configs.values()) {
 			if (config["mapChecksum"]) {
 				const checksums = config["mapChecksum"].split(";")
 				config.assignedMaps = new Map(checksums.map((checksum, index) => [checksum, config["assignedMaps"][index]]))
+			}
+			// @ts-ignore
+			if (config.mapSelectionMode === "MULTIPLE") {
+				config.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
 			}
 		}
 	}
