@@ -20,23 +20,10 @@
 				(click)="applyCustomConfig(customConfig.id)"
 				[style.color]="customConfig | customConfig2ApplicableColor"
 			>
-				<div class="config-description-container">
-					<span class="description-text"><strong>Name: </strong>{{ customConfig.name }}</span>
-					<span class="description-text"
-						><strong>Selection Mode: </strong> {{ customConfig.mapSelectionMode === "MULTIPLE" ? "Standard" : "Delta" }}</span
-					>
-					<span class="description-text"><i class="fa fa-arrows-alt"></i> {{ customConfig.areaMetric }}</span>
-					<span class="description-text"><i class="fa fa-arrows-v"></i> {{ customConfig.heightMetric }}</span>
-					<div class="color-schema-container">
-						<span><strong>Color Schema: </strong></span>
-						<div class="cc-color-swatch-container" *ngFor="let mapColor of customConfig.mapColors | keyvalue">
-							<span class="cc-color-swatch" [style.background-color]="mapColor.value"></span>
-						</div>
-					</div>
-				</div>
+				<cc-custom-config-description [customConfigItem]="customConfig"></cc-custom-config-description>
 			</button>
 			<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
-				<i class="fa fa-minus-square"></i>
+				<i class="fa fa-trash"></i>
 			</button>
 		</mat-list-item>
 	</mat-list>

@@ -1,0 +1,14 @@
+<div class="config-description-container">
+	<span class="description-text"><strong>Name: </strong>{{ customConfigItem.name }}</span>
+	<span class="description-text"
+		><strong>Selection Mode: </strong> {{ customConfigItem.mapSelectionMode === "MULTIPLE" ? "Standard" : "Delta" }}</span
+	>
+	<span class="description-text"><i class="fa fa-arrows-alt"></i> {{ customConfigItem.areaMetric }}</span>
+	<span class="description-text"><i class="fa fa-arrows-v"></i> {{ customConfigItem.heightMetric }}</span>
+	<div class="color-schema-container">
+		<span><strong>Color Schema: </strong></span>
+		<div class="cc-color-swatch-container" *ngFor="let mapColor of customConfigItem | customConfigColorSchemaBySelectionMode">
+			<span class="cc-color-swatch" [style.background-color]="mapColor"></span>
+		</div>
+	</div>
+</div>
