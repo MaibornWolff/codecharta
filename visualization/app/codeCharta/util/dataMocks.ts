@@ -1412,6 +1412,42 @@ export const VALID_NODE_NESTED_FOLDER_LEAVES_DIFFERENT_NEST_LEVELS: CodeMapNode 
 	]
 }
 
+export const VALID_NODE_NESTED_FOLDER_LEAVES_HUGE: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "inside_leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/inside_leaf.jpg",
+					attributes: { rloc: 1_000_000_000, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		},
+		{
+			name: "outside_leaf.jpg",
+			type: NodeType.FILE,
+			path: "/root/big leaf.jpg",
+			attributes: { rloc: 100_000_000, functions: 10, mcc: 1 },
+			isExcluded: false,
+			isFlattened: false
+		}
+	]
+}
+
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		...DEFAULT_FILE_META,

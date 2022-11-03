@@ -13,12 +13,7 @@ function calculateFolderLabelPadding(
 	return padding_root + padding_folder * amountOfFoldersDepthOne + padding_folder * amountOfFolderDepthTwo
 }
 
-const HUGE_MAP = 15_000
-
-const BIG_MAP = 10_000
-
-const HUGE_MAP_FACTOR = 0.35
-const BIG_MAP_FACTOR = 0.5
+const BIG_MAP = 40_000
 
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 95
@@ -177,7 +172,7 @@ export function calculateTotalNodeArea(
 	 * Step 12:
 	 */
 	if (rootSide > BIG_MAP) {
-		factor = rootSide > HUGE_MAP ? HUGE_MAP_FACTOR : BIG_MAP_FACTOR
+		factor = BIG_MAP / rootSide
 		rootSide = Math.max(rootWidthWithDefaultPadding * factor, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2) * factor)
 	}
 
