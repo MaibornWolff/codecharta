@@ -117,13 +117,13 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 	}
 
 	/**
-	 * Step 11:
+	 * Step 9:
 	 */
 	let rootSide = Math.max(Math.sqrt(totalNodeArea))
 	let factor = 1
 
 	/**
-	 * Step 12:
+	 * Step 10:
 	 */
 	if (rootSide > BIG_MAP) {
 		factor = BIG_MAP / rootSide
@@ -131,7 +131,7 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 	}
 
 	/**
-	 * Step 13:
+	 * Step 11:
 	 */
 	const rootHeight = Math.ceil(rootSide)
 	const rootWidth = Math.ceil(rootSide)
@@ -140,7 +140,7 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 		return nodeAreaMap[node.path] * factor
 	})
 
-	//TODO: Implementing invert area
+	//TODO: Implement invert area here
 
 	return { rootWidth, rootHeight, metricSum }
 }
