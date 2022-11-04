@@ -1,4 +1,4 @@
-import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
+import { getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { CodeMapNode, ColorMode, Node, State } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
@@ -88,15 +88,12 @@ function buildNodeFrom(
 	state: State,
 	isDeltaState: boolean
 ): Node {
-	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 	const { x0, x1, y0, y1, data, value, parent } = squaredNode
 	const isNodeLeaf = isLeaf(squaredNode)
 	const flattened = isNodeFlat(data, state)
 	const heightValue = getHeightValue(state, squaredNode, maxHeight, flattened)
 	const depth = data.path.split("/").length - 2
-	const height = Math.abs(
-		isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) * mapSizeResolutionScaling : FOLDER_HEIGHT
-	)
+	const height = Math.abs(isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) : FOLDER_HEIGHT)
 	const width = x1 - x0 || 0
 
 	const length = y1 - y0 || 0
@@ -123,7 +120,7 @@ function buildNodeFrom(
 		attributes: data.attributes,
 		edgeAttributes: data.edgeAttributes,
 		deltas: data.deltas,
-		heightDelta: (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling,
+		heightDelta: (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale,
 		visible: isVisible(data, isNodeLeaf, state, flattened),
 		path: data.path,
 		link: data.link,
@@ -145,14 +142,11 @@ function getRootNode(hierarchyNode: HierarchyRectangularNode<CodeMapNode>) {
 }
 
 export function getHeightValue(state: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {
-	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-
 	if (flattened) {
 		return MIN_BUILDING_HEIGHT
 	}
 
-	let heightValue = squaredNode.data.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
-	heightValue *= mapSizeResolutionScaling
+	const heightValue = squaredNode.data.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 
 	if (state.appSettings.invertHeight) {
 		return maxHeight - heightValue
