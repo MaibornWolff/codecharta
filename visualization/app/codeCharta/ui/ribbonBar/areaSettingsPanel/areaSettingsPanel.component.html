@@ -3,8 +3,8 @@
 	label="Margin"
 	[value]="margin$ | async"
 	[onChange]="applyDebouncedMargin"
-	[min]="1"
-	[max]="100"
+	[min]="0"
+	[max]="200"
 ></cc-slider>
 
 <div class="bottom-row">
@@ -12,9 +12,9 @@
 		class="default-margin"
 		[checked]="dynamicMargin$ | async"
 		(change)="setDynamicMargin($event)"
-		title="Set margin to default (50px)."
+		title="Set margin to default (100%)."
 	>
-		Default margin (50px)
+		Default margin (100%)
 	</mat-checkbox>
 
 	<cc-reset-settings-button

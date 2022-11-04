@@ -34,7 +34,9 @@ export function calculateTotalNodeArea(
 		throw new Error("No buildings with an area bigger 0 exist for this metric")
 	}
 
-	let totalNodeArea = buildingAreasIncludingPadding.reduce((intermediate, current) => intermediate + current)
+	let totalNodeArea = buildingAreasIncludingPadding.reduce(
+		(intermediate, current) => intermediate + current + addPaddingToArea(current, padding)
+	)
 
 	/**
 	 * Step 2: Map(node_path: (node, 0))
