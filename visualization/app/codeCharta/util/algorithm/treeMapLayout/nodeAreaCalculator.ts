@@ -95,27 +95,17 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 	/**
 	 * Step 8:
 	 */
-	let factor = 1
-
 	for (const node of hierarchyNode) {
 		if (!isLeaf(node.data) && node.value !== undefined) {
 			const folderAreaValue = node.value
 
 			if (node.depth === 0) {
-				if (DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0 > Math.sqrt(folderAreaValue)) {
-					factor = DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0 / Math.sqrt(folderAreaValue)
-				}
-
 				totalNodeArea += Math.max(
 					DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0,
 					Math.sqrt(folderAreaValue) * PADDING_APPROX_FOR_DEPTH_ZERO
 				)
 			}
 			if (node.depth >= 1 && node.depth <= 2 && folderAreaValue / node.parent.value > FOLDER_LABEL_TOO_SMALL_PARENT) {
-				if (DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 > Math.sqrt(folderAreaValue)) {
-					factor = Math.max(factor, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 / Math.sqrt(folderAreaValue))
-				}
-
 				totalNodeArea += Math.max(
 					DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1,
 					Math.sqrt(folderAreaValue) * PADDING_APPROX_FOR_DEPTH_ONE
@@ -130,15 +120,15 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 	 * Step 9:
 	 */
 	let rootSide = Math.max(Math.sqrt(totalNodeArea))
+	let factor = 1
 
 	/**
 	 * Step 10:
 	 */
 	if (rootSide > BIG_MAP) {
 		factor = BIG_MAP / rootSide
+		rootSide = rootSide * factor
 	}
-
-	rootSide = rootSide * factor
 
 	/**
 	 * Step 11:

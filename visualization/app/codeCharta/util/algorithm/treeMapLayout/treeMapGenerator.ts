@@ -9,10 +9,10 @@ import { calculateTotalNodeArea } from "./nodeAreaCalculator"
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
 export const FOLDER_LABEL_TOO_SMALL_PARENT = 0.2
-export const FOLDER_LABEL_TOO_SMALL_ROUTE = 0.05
+export const FOLDER_LABEL_TOO_SMALL_ROUTE = 0.02
 export const INITIAL_PADDING = 50
-export const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0 = 90
-export const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 65
+export const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0 = 100
+export const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 85
 export const PADDING_APPROX_FOR_DEPTH_ZERO = 0.035
 export const PADDING_APPROX_FOR_DEPTH_ONE = 0.028
 
