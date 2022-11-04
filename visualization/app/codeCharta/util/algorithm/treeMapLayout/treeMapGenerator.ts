@@ -12,7 +12,7 @@ export const FOLDER_LABEL_TOO_SMALL_PARENT = 0.09
 export const FOLDER_LABEL_TOO_SMALL_ROUTE = 0.009
 
 const MIN_BUILDING_AREA = 100
-const PADDING_SCALING_FACTOR = 1
+const PADDING_SCALING_FACTOR = 0.4
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 const PADDING_APPROX_FOR_DEPTH_ZERO_BIG = 0.015
@@ -20,6 +20,7 @@ const PADDING_APPROX_FOR_DEPTH_ZERO = 0.027
 const PADDING_APPROX_FOR_DEPTH_ONE_BIG = 0.008
 const PADDING_APPROX_FOR_DEPTH_ONE = 0.022
 const HUGE_MAP = 70_000
+export const INITIAL_PADDING = 50
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -27,12 +28,12 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric).maxValue * mapSizeResolutionScaling
 	const heightScale = (treeMapSize * 2) / maxHeight
 	if (hasFixedFolders(map)) {
+		const scaledPadding = (INITIAL_PADDING * state.dynamicSettings.margin) / 100
 		const hierarchyNode = hierarchy(map)
 		// Base root folder has width: 100px and length: 100px
 		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(hierarchyNode.data, heightScale, state, isDeltaState)] // nosonar
 		// Multiply mapSize of (default) 250px by 2 = 500px and add the total margin
-		const totalMapSize =
-			treeMapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * (state.dynamicSettings.margin / PADDING_SCALING_FACTOR)
+		const totalMapSize = treeMapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * (scaledPadding / PADDING_SCALING_FACTOR)
 		// than divide through the root folder width and length to get a scale factor for calculation for all following nodes.
 		const scaleLength = totalMapSize / nodes[0].width
 		const scaleWidth = totalMapSize / nodes[0].length
@@ -168,7 +169,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 	map.children = map.children.filter(child => child.attributes[state.dynamicSettings.areaMetric] !== 0)
 
 	const hierarchyNode = hierarchy(map)
-	let padding = state.dynamicSettings.margin
+	let padding = INITIAL_PADDING * (state.dynamicSettings.margin / 100)
 
 	// from hierarchy Node to areas
 	const childrenAreaValues = getChildrenAreaValues(hierarchyNode, state)
