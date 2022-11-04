@@ -35,6 +35,6 @@ import { LinkColorMetricToHeightMetricButtonModule } from "./linkColorMetricToHe
 		EdgeSettingsPanelModule
 	],
 	declarations: [RibbonBarComponent],
-	entryComponents: [RibbonBarComponent]
+	exports: [RibbonBarComponent]
 })
 export class RibbonBarModule {}

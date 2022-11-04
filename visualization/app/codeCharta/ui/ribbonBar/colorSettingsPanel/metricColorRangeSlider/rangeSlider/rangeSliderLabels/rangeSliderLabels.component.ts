@@ -1,14 +1,24 @@
 import "./rangeSliderLabels.component.scss"
-import { AfterViewChecked, Component, ElementRef, Input, OnChanges, ViewChild } from "@angular/core"
+import {
+	AfterViewChecked,
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	Component,
+	ElementRef,
+	Input,
+	ViewChild,
+	Inject
+} from "@angular/core"
 import { SliderRangePosition } from "../utils/SliderRangePosition"
 
 const minDistanceBetweenLabels = 4
 
 @Component({
 	selector: "cc-range-slider-labels",
-	template: require("./rangeSliderLabels.component.html")
+	template: require("./rangeSliderLabels.component.html"),
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
+export class RangeSliderLabelsComponent implements AfterViewChecked {
 	@Input() minValue: number
 	@Input() maxValue: number
 	@Input() leftValueLabel: number
@@ -31,21 +41,10 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 	rightLabel: number
 	combinedCurrentLeftRightLabelLeftPosition: number
 
-	private hasUnhandledChanges = false
-
-	ngOnChanges(): void {
-		this.hasUnhandledChanges = true
-	}
+	constructor(@Inject(ChangeDetectorRef) private changeDetector: ChangeDetectorRef) {}
 
 	ngAfterViewChecked(): void {
-		if (this.hasUnhandledChanges) {
-			// There is somewhere a bug, that it get rendered with 0 width shortly. Maybe a bug with AngularJS dual booting?
-			if (this.minLabel.nativeElement.getBoundingClientRect().width === 0) {
-				return
-			}
-			this.updateLabelDisplays()
-			this.hasUnhandledChanges = false
-		}
+		this.updateLabelDisplays()
 	}
 
 	private updateLabelDisplays() {
@@ -66,5 +65,7 @@ export class RangeSliderLabelsComponent implements OnChanges, AfterViewChecked {
 		const middleBetweenLeftRight = (currentLeftLabelRightPosition + this.currentRightLabelLeftPosition) / 2
 		const combinedCurrentLeftRightLabelWidth = this.combinedCurrentLeftRightLabel.nativeElement.getBoundingClientRect().width
 		this.combinedCurrentLeftRightLabelLeftPosition = middleBetweenLeftRight - combinedCurrentLeftRightLabelWidth / 2
+
+		this.changeDetector.detectChanges()
 	}
 }

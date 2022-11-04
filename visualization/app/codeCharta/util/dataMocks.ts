@@ -24,7 +24,6 @@ import {
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { Box3, Vector3 } from "three"
-import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
@@ -2333,13 +2332,6 @@ export const CONSTANT_HIGHLIGHT: Map<number, CodeMapBuilding> = new Map([
 	[CODE_MAP_BUILDING.id, CODE_MAP_BUILDING],
 	[CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
 ])
-
-export function withMockedEventMethods($rootScope: IRootScopeService) {
-	$rootScope.$broadcast = jest.fn()
-	$rootScope.$on = jest.fn()
-	$rootScope.$digest = jest.fn()
-	$rootScope.$apply = jest.fn()
-}
 
 export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
 	const pathsSet = new Set(paths)

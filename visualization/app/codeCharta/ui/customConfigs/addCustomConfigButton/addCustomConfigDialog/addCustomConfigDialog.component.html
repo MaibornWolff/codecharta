@@ -14,7 +14,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-	<cc-download-and-purge-configs [customConfigFileStateConnector]="customConfigFileStateConnector"></cc-download-and-purge-configs>
+	<cc-download-and-purge-configs></cc-download-and-purge-configs>
 	<button mat-button class="add-custom-config-button" (click)="addCustomConfig()" mat-dialog-close [disabled]="customConfigName.invalid">
 		ADD
 	</button>

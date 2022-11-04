@@ -15,8 +15,8 @@ describe("customConfig2ApplicableColorPipe", () => {
 
 	it("should transform black color", () => {
 		jest.spyOn(getMissingCustomConfigModeAndMaps, "getMissingCustomConfigModeAndMaps").mockImplementation(() => ({
-			mode: "",
-			missingMaps: []
+			mapSelectionMode: "",
+			mapNames: []
 		}))
 
 		expect(new CustomConfig2ApplicableColor({ getValue: jest.fn() }).transform(customConfigItem)).toBe("rgba(0, 0, 0, 0.87)")
@@ -24,8 +24,8 @@ describe("customConfig2ApplicableColorPipe", () => {
 
 	it("should transform grey color", () => {
 		jest.spyOn(getMissingCustomConfigModeAndMaps, "getMissingCustomConfigModeAndMaps").mockImplementation(() => ({
-			mode: "DELTA",
-			missingMaps: ["file2"]
+			mapSelectionMode: "DELTA",
+			mapNames: ["file2"]
 		}))
 
 		expect(new CustomConfig2ApplicableColor({ getValue: jest.fn() }).transform(customConfigItem)).toBe("rgb(204, 204, 204)")

@@ -2,10 +2,16 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { mocked } from "ts-jest/utils"
+import { State } from "../../../state/angular-redux/state"
 import { Store } from "../../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { invertColorRange, invertDeltaColors, setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
+import {
+	defaultMapColors,
+	invertColorRange,
+	invertDeltaColors,
+	setMapColors
+} from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { ColorSettingsPanelComponent } from "./colorSettingsPanel.component"
 import { ColorSettingsPanelModule } from "./colorSettingsPanel.module"
 
@@ -96,8 +102,6 @@ describe("colorSettingsPanelComponent", () => {
 		it("should reset delta colors", async () => {
 			await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
 			const store = TestBed.inject(Store)
-			const dispatchSpy = jest.spyOn(store, "dispatch")
-
 			store.dispatch(
 				setMapColors({
 					positiveDelta: "#000000",
@@ -109,25 +113,11 @@ describe("colorSettingsPanelComponent", () => {
 			const resetColors = screen.getByText("Reset colors")
 			await userEvent.click(resetColors)
 
-			// The following will only work after migration of custom logic in app/codeCharta/state/store.service.ts
-			// const state = TestBed.inject(State)
-			// const mapColors = state.getValue().appSettings.mapColors
-			// expect(mapColors.positiveDelta).toBe(defaultMapColors.positiveDelta)
-			// expect(mapColors.negativeDelta).toBe(defaultMapColors.negativeDelta)
-			// expect(mapColors.selected).toBe(defaultMapColors.selected)
-			// Therefore testing that the "SET_STATE" action was fired correctly for now
-			expect(dispatchSpy).toHaveBeenCalledWith({
-				type: "SET_STATE",
-				payload: {
-					appSettings: {
-						mapColors: {
-							positiveDelta: "#64d051",
-							negativeDelta: "#ff0E0E",
-							selected: "#EB8319"
-						}
-					}
-				}
-			})
+			const state = TestBed.inject(State)
+			const mapColors = state.getValue().appSettings.mapColors
+			expect(mapColors.positiveDelta).toBe(defaultMapColors.positiveDelta)
+			expect(mapColors.negativeDelta).toBe(defaultMapColors.negativeDelta)
+			expect(mapColors.selected).toBe(defaultMapColors.selected)
 		})
 	})
 })

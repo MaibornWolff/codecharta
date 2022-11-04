@@ -18,10 +18,15 @@ cc-global-configuration-button button {
 
 	.cc-global-configuration-align-right {
 		float: right;
+
+		.close-button {
+			padding-bottom: 5px;
+		}
 	}
 
 	.cc-global-configuration-dialog-content {
 		margin: 8px;
+		padding: 0 15px;
 	}
 
 	[mat-dialog-close] {
