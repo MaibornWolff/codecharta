@@ -11,10 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   New calculation algorithm for treeMap that accounts for paddings and floor labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Documentation for new treeMap calcuation algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+
+## [1.110.0] - 2022-11-04
+
 ### Changed
 
 -   Custom Views are now applicable even if maps or mode are different. Missing maps or map selection mode is displayed in the tooltip [#3090](https://github.com/MaibornWolff/codecharta/pull/3090)
--   Adjust Custom View API and maintain old Custom Views until April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
+-   Be aware, that all Custom Views generated with version 1.109.1 or older will be unusable by April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
 
 ### Fixed 🐞
 
@@ -23,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+-   Adjust Custom View API and maintain old Custom Views until April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
 -   Migrate codeMap.render.service, codeMap.label.service, codeMap.mouseEvent.service, codeMap.arrow.service, codeCharta.service, sharpnessMode.service, isLoadingFile.service, scaling.service and experimentalFeaturesEnabled.service to Angular [#3094](https://github.com/MaibornWolff/codecharta/pull/3094)
 -   Extract tree map size into a const as this is never changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
 -   Migrate markedPackages.service, edges.service, blacklist.service, files.service and injector.service [3106](https://github.com/MaibornWolff/codecharta/pull/3106)
