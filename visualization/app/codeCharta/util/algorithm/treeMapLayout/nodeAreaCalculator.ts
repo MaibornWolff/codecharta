@@ -20,23 +20,16 @@ const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 95
 const PADDING_APPROX_FOR_DEPTH_ZERO = 0.035
 const PADDING_APPROX_FOR_DEPTH_ONE = 0.028
 
-export function calculateTotalNodeArea(
-	buildingAreasIncludingPadding: number[],
-	hierarchyNode: HierarchyNode<CodeMapNode>,
-	padding: number,
-	state: State
-) {
+export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: HierarchyNode<CodeMapNode>, padding: number, state: State) {
 	/**
 	 * Step 1:
 	 */
 
-	if (buildingAreasIncludingPadding.length === 0) {
+	if (buildingAreas.length === 0) {
 		throw new Error("No buildings with an area bigger 0 exist for this metric")
 	}
 
-	let totalNodeArea = buildingAreasIncludingPadding.reduce(
-		(intermediate, current) => intermediate + current + addPaddingToArea(current, padding)
-	)
+	let totalNodeArea = buildingAreas.reduce((intermediate, current) => intermediate + current + addPaddingToArea(current, padding))
 
 	/**
 	 * Step 2: Map(node_path: (node, 0))
@@ -138,7 +131,7 @@ export function calculateTotalNodeArea(
 	for (const node of hierarchyNode) {
 		if (!isLeaf(node.data) && node.value !== undefined) {
 			const folderAreaValue = node.value
-			totalNodeArea += (folderAreaValue + padding * 2) ** 2 - folderAreaValue ** 2
+			totalNodeArea += (folderAreaValue + folderAreaValue * 0.001 + padding * 2) ** 2 - folderAreaValue ** 2
 		}
 	}
 
@@ -187,6 +180,8 @@ export function calculateTotalNodeArea(
 	const metricSum = hierarchyNode.sum(node => {
 		return nodeAreaMap[node.path] * factor
 	})
+
+	//TODO: Implementing area
 
 	return { rootWidth, rootHeight, metricSum }
 }

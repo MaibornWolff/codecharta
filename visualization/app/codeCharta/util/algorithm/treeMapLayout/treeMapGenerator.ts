@@ -8,8 +8,8 @@ import { calculateTotalNodeArea } from "./nodeAreaCalculator"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
-export const FOLDER_LABEL_TOO_SMALL_PARENT = 0.09
-export const FOLDER_LABEL_TOO_SMALL_ROUTE = 0.009
+export const FOLDER_LABEL_TOO_SMALL_PARENT = 0.2
+export const FOLDER_LABEL_TOO_SMALL_ROUTE = 0.02
 
 const MIN_BUILDING_AREA = 100
 const PADDING_SCALING_FACTOR = 0.4
