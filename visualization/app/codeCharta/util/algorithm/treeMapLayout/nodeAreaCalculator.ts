@@ -1,24 +1,17 @@
 import { HierarchyNode } from "d3-hierarchy"
-import { FOLDER_LABEL_TOO_SMALL_PARENT, getAreaValue } from "./treeMapGenerator"
+import {
+	DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0,
+	DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1,
+	FOLDER_LABEL_TOO_SMALL_PARENT,
+	getAreaValue,
+	PADDING_APPROX_FOR_DEPTH_ONE,
+	PADDING_APPROX_FOR_DEPTH_ZERO
+} from "./treeMapGenerator"
 import { CodeMapNode, State } from "../../../codeCharta.model"
 import { getParent } from "../../nodePathHelper"
 import { isLeaf } from "../../codeMapHelper"
 
-function calculateFolderLabelPadding(
-	padding_root: number,
-	padding_folder: number,
-	amountOfFoldersDepthOne: number,
-	amountOfFolderDepthTwo: number
-) {
-	return padding_root + padding_folder * amountOfFoldersDepthOne + padding_folder * amountOfFolderDepthTwo
-}
-
 const BIG_MAP = 40_000
-
-const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0 = 120
-const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 95
-const PADDING_APPROX_FOR_DEPTH_ZERO = 0.035
-const PADDING_APPROX_FOR_DEPTH_ONE = 0.028
 
 export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: HierarchyNode<CodeMapNode>, padding: number, state: State) {
 	/**
@@ -78,9 +71,6 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 	 * Step 6:
 	 */
 
-	let amountOfDepthOne = 0
-	let amountOfDepthTwo = 0
-
 	for (const nodePath of paths) {
 		const parent = getParent(nodeKeyMap, nodePath)
 		const parentPath = parent?.data.path
@@ -91,30 +81,7 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 				nodeAreaMap[nodePath] = Math.ceil(nodeAreaMap[nodePath] * proportion)
 			}
 		} else {
-			const node = nodeKeyMap.get(nodePath)
-
 			nodeAreaMap[nodePath] = 0
-
-			switch (node.depth) {
-				case 1: {
-					const parentArea = addPaddingToArea(nodeAreaMap[parentPath], padding)
-					const folderLabelCheck = addPaddingToArea(nodeAreaMap[nodePath], padding) / parentArea
-
-					if (folderLabelCheck > FOLDER_LABEL_TOO_SMALL_PARENT) {
-						amountOfDepthOne += 1
-					}
-					break
-				}
-				case 2: {
-					const parentArea = addPaddingToArea(nodeAreaMap[parentPath], padding)
-					const folderLabelCheck = addPaddingToArea(nodeAreaMap[nodePath], padding) / parentArea
-
-					if (folderLabelCheck > FOLDER_LABEL_TOO_SMALL_PARENT) {
-						amountOfDepthTwo += 1
-					}
-					break
-				}
-			}
 		}
 	}
 
@@ -131,36 +98,28 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 	for (const node of hierarchyNode) {
 		if (!isLeaf(node.data) && node.value !== undefined) {
 			const folderAreaValue = node.value
+
+			if (node.depth === 0) {
+				totalNodeArea += Math.max(
+					DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0,
+					Math.sqrt(folderAreaValue) * PADDING_APPROX_FOR_DEPTH_ZERO
+				)
+			}
+			if (node.depth >= 1 && node.depth <= 2 && folderAreaValue / node.parent.value > FOLDER_LABEL_TOO_SMALL_PARENT) {
+				totalNodeArea += Math.max(
+					DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1,
+					Math.sqrt(folderAreaValue) * PADDING_APPROX_FOR_DEPTH_ONE
+				)
+			}
+
 			totalNodeArea += (folderAreaValue + folderAreaValue * 0.001 + padding * 2) ** 2 - folderAreaValue ** 2
 		}
 	}
 
 	/**
-	 * Step 9:
-	 */
-	const defaultFolderLabelPadding = calculateFolderLabelPadding(
-		DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_0 * PADDING_APPROX_FOR_DEPTH_ZERO,
-		DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 * PADDING_APPROX_FOR_DEPTH_ONE,
-		amountOfDepthOne,
-		amountOfDepthTwo
-	)
-
-	const rootWidthWithDefaultPadding = Math.sqrt(totalNodeArea) + defaultFolderLabelPadding
-
-	/**
-	 * Step 10:
-	 */
-	const shiftedFolderLabelPadding = calculateFolderLabelPadding(
-		rootWidthWithDefaultPadding * PADDING_APPROX_FOR_DEPTH_ZERO,
-		rootWidthWithDefaultPadding * PADDING_APPROX_FOR_DEPTH_ONE,
-		amountOfDepthOne,
-		amountOfDepthTwo
-	)
-
-	/**
 	 * Step 11:
 	 */
-	let rootSide = Math.max(rootWidthWithDefaultPadding, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2))
+	let rootSide = Math.max(Math.sqrt(totalNodeArea))
 	let factor = 1
 
 	/**
@@ -168,7 +127,7 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 	 */
 	if (rootSide > BIG_MAP) {
 		factor = BIG_MAP / rootSide
-		rootSide = Math.max(rootWidthWithDefaultPadding * factor, Math.sqrt(totalNodeArea + shiftedFolderLabelPadding ** 2) * factor)
+		rootSide = rootSide * factor
 	}
 
 	/**
@@ -181,7 +140,7 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 		return nodeAreaMap[node.path] * factor
 	})
 
-	//TODO: Implementing area
+	//TODO: Implementing invert area
 
 	return { rootWidth, rootHeight, metricSum }
 }
