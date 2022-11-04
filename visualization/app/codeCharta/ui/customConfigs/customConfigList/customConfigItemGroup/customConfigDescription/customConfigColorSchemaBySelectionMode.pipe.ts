@@ -7,7 +7,7 @@ export class CustomConfigColorSchemaBySelectionMode implements PipeTransform {
 	transform(customConfig: CustomConfigItem): string[] {
 		const { mapColors, mapSelectionMode } = customConfig
 		return mapSelectionMode === CustomConfigMapSelectionMode.MULTIPLE
-			? [mapColors.positive, mapColors.neutral, mapColors.negative]
-			: [mapColors.positiveDelta, mapColors.negativeDelta]
+			? [mapColors.positive, mapColors.neutral, mapColors.negative, mapColors.selected]
+			: [mapColors.positiveDelta, mapColors.negativeDelta, mapColors.selected]
 	}
 }

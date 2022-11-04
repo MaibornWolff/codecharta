@@ -1900,10 +1900,11 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						positive: "#69AE40",
 						neutral: "#ddcc00",
 						negative: "#820E0E",
+						selected: "#EB8319",
 						positiveDelta: "#64d051",
 						negativeDelta: "#ff0E0E"
 					},
-					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: false
 				},
 				{
@@ -1915,10 +1916,11 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						positive: "#69AE40",
 						neutral: "#ddcc00",
 						negative: "#820E0E",
+						selected: "#EB8319",
 						positiveDelta: "#64d051",
 						negativeDelta: "#ff0E0E"
 					},
-					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: false
 				}
 			]
@@ -1943,10 +1945,11 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						positive: "#69AE40",
 						neutral: "#ddcc00",
 						negative: "#820E0E",
+						selected: "#EB8319",
 						positiveDelta: "#64d051",
 						negativeDelta: "#ff0E0E"
 					},
-					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: true
 				},
 				{
@@ -1961,10 +1964,11 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						positive: "#69AE40",
 						neutral: "#ddcc00",
 						negative: "#820E0E",
+						selected: "#EB8319",
 						positiveDelta: "#64d051",
 						negativeDelta: "#ff0E0E"
 					},
-					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: true
 				}
 			]
@@ -1986,10 +1990,11 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						positive: "#69AE40",
 						neutral: "#ddcc00",
 						negative: "#820E0E",
+						selected: "#EB8319",
 						positiveDelta: "#64d051",
 						negativeDelta: "#ff0E0E"
 					},
-					metrics: { areaMetric: "rloc", heightMetric: "mcc" },
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", edgeMetric: null },
 					isApplicable: false
 				}
 			]

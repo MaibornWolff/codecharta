@@ -16,8 +16,8 @@
 		align-items: center;
 	}
 
-	.description {
-		margin: 5px 0;
+	.custom-config-documentation-hint {
+		margin: 10px 0 20px 0;
 	}
 
 	.action-buttons button {
@@ -32,7 +32,7 @@
 		&:disabled,
 		&[disabled] {
 			background-color: #e6e6e6;
-			color: #949494;
+			color: theme.$cc-disabled-color;
 		}
 
 		i.fa {
@@ -79,38 +79,71 @@
 			display: flex;
 			justify-content: space-between;
 			border-bottom: 1px solid #000000;
-			padding: 0;
+			padding: 0 5px;
 
 			&:hover {
-				background-color: rgba(158, 158, 158, 0.2);
+				background-color: rgba(0, 0, 0, 0.04);
 			}
 
 			button {
 				background-color: transparent;
-				cursor: pointer;
 
 				&.remove-button {
 					font-size: 16px;
+					padding: 8px 10px;
+					margin: 0;
+
+					&:hover {
+						background-color: rgba(0, 0, 0, 0.05);
+						color: theme.$cc-primary-color;
+						border-radius: 50%;
+					}
 				}
 			}
 		}
+	}
 
-		.config-description-container {
-			gap: 20px;
-			display: flex;
+	cc-custom-config-description {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		flex-direction: row;
+		flex: 1;
+		gap: 5px;
 
-			.color-schema-container {
-				display: flex;
-				align-items: center;
-				gap: 2px;
+		&.disable-apply-custom-config {
+			pointer-events: none;
+		}
+
+		p {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			font-size: 15px;
+			margin: 5px 0;
+
+			&.config-name {
+				flex: 0 0 19em;
+			}
+
+			&.config-mode,
+			&.config-metric {
+				flex: 0 0 9em;
 			}
 		}
 
-		.color-swatch-container {
-			.color-swatch {
-				display: inline-block;
-				width: 16px;
-				height: 16px;
+		.color-schema-container {
+			display: flex;
+			align-items: center;
+			gap: 2px;
+
+			.color-swatch-container {
+				.color-swatch {
+					display: inline-block;
+					width: 16px;
+					height: 16px;
+				}
 			}
 		}
 	}
@@ -122,21 +155,17 @@
 		margin: 2px 0;
 	}
 
-	.mat-accordion.custom-config-container {
-		.mat-expansion-panel:first-of-type,
-		.mat-expansion-panel:last-of-type {
-			border-radius: 0;
-		}
-	}
-
 	.toggle-non-applicable-configs-button {
 		width: 100%;
 		height: 30px;
 		margin: 5px 0;
 	}
 
-	mat-list-base .mat-list-item .mat-list-item-content,
-	.mat-list-base .mat-list-option .mat-list-item-content {
+	.mat-list-base {
 		padding: 0;
+	}
+
+	.mat-list-item {
+		height: max-content;
 	}
 }

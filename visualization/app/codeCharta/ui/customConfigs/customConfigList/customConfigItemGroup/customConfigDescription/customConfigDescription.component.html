@@ -1,12 +1,13 @@
-<div class="config-description-container">
-	<p><b>Name: </b>{{ customConfigItem.name }}</p>
-	<p><b>Selection Mode:</b> {{ customConfigItem.mapSelectionMode | titlecase }}</p>
-	<p><i class="fa fa-arrows-alt"></i> {{ customConfigItem.metrics.areaMetric }}</p>
-	<p><i class="fa fa-arrows-v"></i> {{ customConfigItem.metrics.heightMetric }}</p>
-	<div class="color-schema-container">
-		<p><b>Color Schema: </b></p>
-		<div class="color-swatch-container" *ngFor="let mapColor of customConfigItem | customConfigColorSchemaBySelectionMode">
-			<span class="color-swatch" [style.background-color]="customConfigItem.isApplicable ? mapColor : 'rgb(204, 204, 204)'"></span>
-		</div>
+<p title="{{ customConfigItem.name }}" class="config-name"><b>Name:</b> {{ customConfigItem.name }}</p>
+<p class="config-mode"><b>Mode:</b> {{ customConfigItem.mapSelectionMode | titlecase }}</p>
+<p class="config-metric"><i class="fa fa-arrows-alt"></i> {{ customConfigItem.metrics.areaMetric }}</p>
+<p class="config-metric"><i class="fa fa-arrows-v"></i> {{ customConfigItem.metrics.heightMetric }}</p>
+<p class="config-metric" *ngIf="customConfigItem.metrics.edgeMetric">
+	<i class="fa fa-exchange"></i> {{ customConfigItem.metrics.edgeMetric }}
+</p>
+<div class="color-schema-container">
+	<p><b>Schema: </b></p>
+	<div class="color-swatch-container" *ngFor="let mapColor of customConfigItem | customConfigColorSchemaBySelectionMode">
+		<span class="color-swatch" [style.background-color]="customConfigItem.isApplicable ? mapColor : 'rgb(204, 204, 204)'"></span>
 	</div>
 </div>

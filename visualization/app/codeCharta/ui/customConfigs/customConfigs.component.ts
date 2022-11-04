@@ -5,14 +5,14 @@ import { CustomConfigListComponent } from "./customConfigList/customConfigList.c
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { MapColors, PrimaryMetrics } from "../../codeCharta.model"
 
-type CustomConfigColors = Pick<MapColors, "positive" | "neutral" | "negative" | "positiveDelta" | "negativeDelta">
+type CustomConfigColors = Pick<MapColors, "positive" | "neutral" | "negative" | "selected" | "positiveDelta" | "negativeDelta">
 
 export interface CustomConfigItem {
 	id: string
 	name: string
 	assignedMaps: Map<string, string>
 	mapSelectionMode: CustomConfigMapSelectionMode
-	metrics: Pick<PrimaryMetrics, "areaMetric" | "heightMetric">
+	metrics: Pick<PrimaryMetrics, "areaMetric" | "heightMetric" | "edgeMetric">
 	mapColors: CustomConfigColors
 	isApplicable: boolean
 }

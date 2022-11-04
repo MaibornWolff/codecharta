@@ -19,13 +19,15 @@ describe("getCustomConfigItemGroups", () => {
 					positive: "green",
 					neutral: "yellow",
 					negative: "red",
+					selected: "orange",
 					negativeDelta: "red",
 					positiveDelta: "green"
 				}
 			},
 			dynamicSettings: {
 				areaMetric: "rloc",
-				heightMetric: "mcc"
+				heightMetric: "mcc",
+				edgeMetric: "avgCommits"
 			}
 		}
 	} as CustomConfig
@@ -41,13 +43,15 @@ describe("getCustomConfigItemGroups", () => {
 					positive: "violett",
 					neutral: "yellow",
 					negative: "red",
+					selected: "orange",
 					negativeDelta: "red",
 					positiveDelta: "green"
 				}
 			},
 			dynamicSettings: {
 				areaMetric: "rloc",
-				heightMetric: "functions"
+				heightMetric: "functions",
+				edgeMetric: "avgCommits"
 			}
 		}
 	} as CustomConfig
@@ -69,11 +73,12 @@ describe("getCustomConfigItemGroups", () => {
 		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
-		expect(applicableGroup.customConfigItems[0].metrics).toEqual({ heightMetric: "mcc", areaMetric: "rloc" })
+		expect(applicableGroup.customConfigItems[0].metrics).toEqual({ heightMetric: "mcc", areaMetric: "rloc", edgeMetric: "avgCommits" })
 		expect(applicableGroup.customConfigItems[0].mapColors).toEqual({
 			positive: "green",
 			neutral: "yellow",
 			negative: "red",
+			selected: "orange",
 			negativeDelta: "red",
 			positiveDelta: "green"
 		})

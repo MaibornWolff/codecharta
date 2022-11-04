@@ -10,11 +10,12 @@ describe("customConfigColorSchemaBySelectionMode", () => {
 				positive: "green",
 				neutral: "yellow",
 				negative: "red",
+				selected: "orange",
 				positiveDelta: "darkGreen",
 				negativeDelta: "darkRed"
 			}
 		} as CustomConfigItem
-		expect(new CustomConfigColorSchemaBySelectionMode().transform(customConfigItem)).toEqual(["green", "yellow", "red"])
+		expect(new CustomConfigColorSchemaBySelectionMode().transform(customConfigItem)).toEqual(["green", "yellow", "red", "orange"])
 	})
 
 	it("should return 'positiveDelta' and 'negativeDelta' color values when config was made in DELTA mode", () => {
@@ -24,11 +25,12 @@ describe("customConfigColorSchemaBySelectionMode", () => {
 				positive: "green",
 				neutral: "yellow",
 				negative: "red",
+				selected: "orange",
 				positiveDelta: "darkGreen",
 				negativeDelta: "darkRed"
 			}
 		} as CustomConfigItem
 
-		expect(new CustomConfigColorSchemaBySelectionMode().transform(customConfigItem)).toEqual(["darkGreen", "darkRed"])
+		expect(new CustomConfigColorSchemaBySelectionMode().transform(customConfigItem)).toEqual(["darkGreen", "darkRed", "orange"])
 	})
 })
