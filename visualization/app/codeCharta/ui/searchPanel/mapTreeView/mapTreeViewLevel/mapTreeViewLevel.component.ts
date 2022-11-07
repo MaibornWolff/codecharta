@@ -22,6 +22,8 @@ export class MapTreeViewLevelComponent implements OnInit {
 
 	isOpen = false
 
+	areMetricGreaterZero = false
+
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
@@ -41,15 +43,19 @@ export class MapTreeViewLevelComponent implements OnInit {
 		$event.preventDefault()
 		$event.stopPropagation()
 
-		this.store.dispatch(
-			setRightClickedNodeData({
-				nodeId: this.node.id,
-				xPositionOfRightClickEvent: $event.clientX,
-				yPositionOfRightClickEvent: $event.clientY
-			})
-		)
+		this.areaMetric$.subscribe(areaMetricName => (this.areMetricGreaterZero = this.node.attributes[areaMetricName] !== 0))
 
-		document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
+		if (this.areMetricGreaterZero) {
+			this.store.dispatch(
+				setRightClickedNodeData({
+					nodeId: this.node.id,
+					xPositionOfRightClickEvent: $event.clientX,
+					yPositionOfRightClickEvent: $event.clientY
+				})
+			)
+
+			document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
+		}
 	}
 
 	toggleOpen() {

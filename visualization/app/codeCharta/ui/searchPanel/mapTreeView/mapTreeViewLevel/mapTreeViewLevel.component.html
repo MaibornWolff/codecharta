@@ -15,9 +15,8 @@
 		</cc-map-tree-view-item-name>
 
 		<cc-map-tree-view-item-option-buttons
-			*ngIf="(hoveredNodeId$ | async) === node.id"
+			*ngIf="(hoveredNodeId$ | async) === node.id && node.attributes[areaMetric$ | async] > 0"
 			[isFlattened]="node.isFlattened"
-			[areaMetricGreaterZero]="node.attributes[areaMetric$ | async] > 0"
 			[openNodeContextMenu]="openNodeContextMenu"
 		></cc-map-tree-view-item-option-buttons>
 	</div>

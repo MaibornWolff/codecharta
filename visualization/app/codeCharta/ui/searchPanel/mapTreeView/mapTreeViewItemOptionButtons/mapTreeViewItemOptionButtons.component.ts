@@ -6,6 +6,5 @@ import { Component, Input } from "@angular/core"
 })
 export class MapTreeViewItemOptionButtonsComponent {
 	@Input() isFlattened: boolean
-	@Input() areaMetricGreaterZero: boolean
 	@Input() openNodeContextMenu: (event: MouseEvent) => unknown
 }
