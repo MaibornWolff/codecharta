@@ -14,6 +14,7 @@ import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.servic
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import userEvent from "@testing-library/user-event"
+import { expect } from "@jest/globals"
 
 const mockedCustomConfigHelperService = {
 	customConfigItemGroups$: of({
@@ -123,6 +124,8 @@ describe("customConfigListComponent", () => {
 		await userEvent.click(customConfigItemGroupElement)
 
 		expect(screen.getByText("SampleMap Delta View #1")).not.toBeNull()
-		expect(screen.getByText("SampleMap Delta View #1").closest("button").hasAttribute("disabled")).toBe(true)
+		expect(screen.getByText("SampleMap Delta View #1").closest("cc-custom-config-description").getAttribute("style")).toBe(
+			"color: rgb(204, 204, 204);"
+		)
 	})
 })
