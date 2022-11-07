@@ -59,7 +59,7 @@ describe("customConfigItemGroupComponent", () => {
 
 		expect(screen.getAllByTitle("Apply Custom View").length).toBe(2)
 		expect(getComputedStyle(customConfigDescriptionButton).color).toBe("rgba(0, 0, 0, 0.87)")
-		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("pointer")
+		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("auto")
 		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(1)
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(1)
 	})
@@ -107,7 +107,7 @@ describe("customConfigItemGroupComponent", () => {
 			).length
 		).toBe(2)
 		expect(getComputedStyle(customConfigDescriptionButton).color).toBe("rgb(204, 204, 204)")
-		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("pointer")
+		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("auto")
 	})
 
 	it("should not be clickable for non-applicable custom configs", async () => {
