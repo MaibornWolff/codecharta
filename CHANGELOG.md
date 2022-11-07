@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix crashing on focusing or hovering un-rendered buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
+
 ## [1.110.0] - 2022-11-04
 
 ### Changed
