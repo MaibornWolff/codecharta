@@ -135,4 +135,18 @@ describe("mapTreeViewLevel", () => {
 
 		expect(smallLeaf.querySelector(".noAreaMetric")).toBeTruthy()
 	})
+
+	it("should change text color and stop displaying option buttons on hover when area metric is changed to not exist", async () => {
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
+		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+		await userEvent.hover(firstLevelFolder)
+
+		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeTruthy()
+
+		Store.dispatch(setAreaMetric("mcc"))
+		await userEvent.hover(firstLevelFolder)
+
+		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy()
+		expect(firstLevelFolder.querySelector(".noAreaMetric")).toBeTruthy()
+	})
 })
