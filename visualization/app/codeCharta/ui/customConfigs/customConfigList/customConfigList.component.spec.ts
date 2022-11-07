@@ -124,8 +124,8 @@ describe("customConfigListComponent", () => {
 		await userEvent.click(customConfigItemGroupElement)
 
 		expect(screen.getByText("SampleMap Delta View #1")).not.toBeNull()
-		expect(screen.getByText("SampleMap Delta View #1").closest("cc-custom-config-description").getAttribute("style")).toBe(
-			"color: rgb(204, 204, 204);"
+		expect(getComputedStyle(screen.getByText("SampleMap Delta View #1").closest("cc-custom-config-description")).pointerEvents).toBe(
+			"none"
 		)
 	})
 })

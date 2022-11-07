@@ -103,51 +103,6 @@
 		}
 	}
 
-	cc-custom-config-description {
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		flex-direction: row;
-		flex: 1;
-		gap: 5px;
-
-		&.disable-apply-custom-config {
-			pointer-events: none;
-		}
-
-		p {
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
-			font-size: 15px;
-			margin: 5px 0;
-
-			&.config-name {
-				flex: 0 0 19em;
-			}
-
-			&.config-mode,
-			&.config-metric {
-				flex: 0 0 9em;
-			}
-		}
-
-		.color-schema-container {
-			display: flex;
-			align-items: center;
-			gap: 2px;
-
-			.color-swatch-container {
-				.color-swatch {
-					display: inline-block;
-					width: 16px;
-					height: 16px;
-				}
-			}
-		}
-	}
-
 	.mat-accordion > .mat-expansion-panel-spacing:last-child,
 	.mat-accordion > *:last-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing,
 	.mat-accordion > .mat-expansion-panel-spacing:first-child,

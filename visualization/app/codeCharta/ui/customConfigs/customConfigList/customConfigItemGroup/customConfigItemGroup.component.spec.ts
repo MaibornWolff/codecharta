@@ -54,19 +54,28 @@ describe("customConfigItemGroupComponent", () => {
 			componentProperties: { customConfigItemGroups }
 		})
 
-		await userEvent.click(screen.getByText("SampleMap View #1").closest("cc-custom-config-description"))
+		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-custom-config-description")
+		await userEvent.click(customConfigDescriptionButton)
 
 		expect(screen.getAllByTitle("Apply Custom View").length).toBe(2)
-		expect(screen.getByText("SampleMap View #1").closest("cc-custom-config-description").getAttribute("style")).toBe(
-			"color: rgba(0, 0, 0, 0.87);"
-		)
+		expect(getComputedStyle(customConfigDescriptionButton).color).toBe("rgba(0, 0, 0, 0.87)")
+		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("pointer")
 		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(1)
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(1)
 	})
 
 	it("should remove a custom Config and not close custom config dialog", async () => {
+		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
+			return {
+				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+				assignedMaps: new Map([
+					["md5_fileB", "fileB"],
+					["md5_fileC", "fileC"]
+				])
+			}
+		})
 		CustomConfigHelper.deleteCustomConfig = jest.fn()
-		const customConfigItemGroups = new Map([["File_B_File_CSTANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
+		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
 		await render(CustomConfigItemGroupComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
@@ -75,11 +84,11 @@ describe("customConfigItemGroupComponent", () => {
 		await userEvent.click(screen.getAllByTitle("Remove Custom View")[0])
 
 		expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledTimes(1)
-		expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith("File_B_File_C_MULTIPLE_Sample_Map View #1")
+		expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith("File_B_File_C_STANDARD_Sample_Map View #1")
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(0)
 	})
 
-	it("Should show tooltip with missing maps and correct selection mode if selected custom config is not fully applicable", async () => {
+	it("should show tooltip with missing maps and correct selection mode if selected custom config is not fully applicable", async () => {
 		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
 			return {
 				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
@@ -91,19 +100,18 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-
+		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-custom-config-description")
 		expect(
 			screen.getAllByTitle(
 				"This view is partially applicable. To complete your view, please switch to the STANDARD mode and select the following map(s): fileC."
 			).length
 		).toBe(2)
-		expect(screen.getByText("SampleMap View #1").closest("cc-custom-config-description").getAttribute("style")).toBe(
-			"color: rgb(204, 204, 204);"
-		)
-		expect(screen.getByText("SampleMap View #1").closest("cc-custom-config-description").hasAttribute("disabled")).toBe(false)
+		expect(getComputedStyle(customConfigDescriptionButton).color).toBe("rgb(204, 204, 204)")
+		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("pointer")
 	})
 
-	it("", async () => {
+	it("should not be clickable for non-applicable custom configs", async () => {
+		CustomConfigHelper.applyCustomConfig = jest.fn()
 		CustomConfigHelper.applyCustomConfig = jest.fn()
 		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
 			return {
@@ -119,20 +127,11 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
+		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-custom-config-description")
 
-		// I read that actually it should throw an error when it's not clickable, because of "pointer-events: none", but it throws no error :(
-		// see https://testing-library.com/docs/ecosystem-user-event/
-		await userEvent.click(screen.getByText("SampleMap View #1").closest("cc-custom-config-description"))
-
-		// should not call, but it is called :(
+		await expect(async () => userEvent.click(customConfigDescriptionButton)).rejects.toThrow(/pointer-events: none/)
 		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(0)
-		expect(mockedDialogReference.close).toHaveBeenCalledTimes(0)
-
-		// also doesn't work
-		expect(
-			window.getComputedStyle(
-				screen.getByText("SampleMap View #1").closest("cc-custom-config-description.disable-apply-custom-config")
-			).pointerEvents
-		).toBe("none")
+		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("none")
+		expect(getComputedStyle(customConfigDescriptionButton).color).toBe("rgb(204, 204, 204)")
 	})
 })

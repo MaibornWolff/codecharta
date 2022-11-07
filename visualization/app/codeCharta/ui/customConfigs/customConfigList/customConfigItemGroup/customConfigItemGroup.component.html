@@ -17,7 +17,7 @@
 			<cc-custom-config-description
 				mat-dialog-close
 				(click)="applyCustomConfig(customConfig.id)"
-				[ngClass]="{ 'disable-apply-custom-config': !customConfig.isApplicable }"
+				[style.pointer-events]="customConfig.isApplicable ? 'pointer' : 'none'"
 				[style.color]="customConfig | customConfig2ApplicableColor"
 				[customConfigItem]="customConfig"
 			>

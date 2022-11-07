@@ -1,3 +1,4 @@
+import "./customConfigDescription.component.scss"
 import { Component, Input } from "@angular/core"
 import { CustomConfigItem } from "../../../customConfigs.component"
 
