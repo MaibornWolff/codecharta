@@ -71,7 +71,7 @@ describe("mapTreeViewLevel", () => {
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeTruthy()
 	})
 
-	it("should not display option buttons on hover when area metric is zero", async () => {
+	it("should not display option buttons on hover when area metric is unavailable", async () => {
 		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 		fireEvent.click(firstLevelFolder)
