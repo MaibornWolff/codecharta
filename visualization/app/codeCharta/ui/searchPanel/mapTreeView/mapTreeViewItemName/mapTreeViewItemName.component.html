@@ -1,4 +1,9 @@
-<span class="node-name" [class.flattened]="node.isFlattened" [class.angular-green]="(searchedNodePaths$ | async).has(node.path)">
+<span
+	class="node-name"
+	[class.flattened]="node.isFlattened"
+	[class.noAreaMetric]="!node.attributes[areaMetric$ | async] > 0"
+	[class.angular-green]="(searchedNodePaths$ | async).has(node.path)"
+>
 	{{ node.name }}
 </span>
 

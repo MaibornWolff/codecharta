@@ -8,6 +8,7 @@
 		(mouseleave)="onMouseLeave()"
 		(click)="toggleOpen()"
 		(contextmenu)="openNodeContextMenu($event)"
+		[title]="node.attributes[areaMetric$ | async] > 0 ? '' : 'No Node Area for Chosen Metric'"
 	>
 		<cc-map-tree-view-item-icon [node]="node" [isOpen]="isOpen"></cc-map-tree-view-item-icon>
 		<cc-map-tree-view-item-name [node]="node" [isHovered]="(hoveredNodeId$ | async) === node.id" [unaryValue]="node.attributes.unary">
@@ -16,6 +17,7 @@
 		<cc-map-tree-view-item-option-buttons
 			*ngIf="(hoveredNodeId$ | async) === node.id"
 			[isFlattened]="node.isFlattened"
+			[areaMetricGreaterZero]="node.attributes[areaMetric$ | async] > 0"
 			[openNodeContextMenu]="openNodeContextMenu"
 		></cc-map-tree-view-item-option-buttons>
 	</div>
