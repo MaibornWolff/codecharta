@@ -13,14 +13,14 @@ export class MapTreeViewItemIconColorPipe implements PipeTransform {
 	transform(value: CodeMapNode): string | undefined {
 		const { areaMetric } = MapTreeViewItemIconColorPipe.store.getState().dynamicSettings
 
-		if (value.attributes[areaMetric]) {
-			if (isLeaf(value)) {
-				return undefined
-			}
-
-			const markingColor = getMarkingColor(value, MapTreeViewItemIconColorPipe.store.getState().fileSettings.markedPackages)
-			return markingColor ? markingColor : MapTreeViewItemIconColorPipe.defaultColor
+		if (!value.attributes[areaMetric]) {
+			return MapTreeViewItemIconColorPipe.areMetricZeroColor
 		}
-		return MapTreeViewItemIconColorPipe.areMetricZeroColor
+		if (isLeaf(value)) {
+			return undefined
+		}
+
+		const markingColor = getMarkingColor(value, MapTreeViewItemIconColorPipe.store.getState().fileSettings.markedPackages)
+		return markingColor ? markingColor : MapTreeViewItemIconColorPipe.defaultColor
 	}
 }
