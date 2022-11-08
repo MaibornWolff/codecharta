@@ -43,7 +43,10 @@ export class MapTreeViewLevelComponent implements OnInit {
 		$event.preventDefault()
 		$event.stopPropagation()
 
-		this.areaMetric$.subscribe(areaMetricName => (this.areMetricGreaterZero = this.node.attributes[areaMetricName] !== 0))
+		this.areaMetric$.subscribe(
+			areaMetricName =>
+				(this.areMetricGreaterZero = this.node.attributes[areaMetricName] && this.node.attributes[areaMetricName] !== 0)
+		)
 
 		if (this.areMetricGreaterZero) {
 			this.store.dispatch(
