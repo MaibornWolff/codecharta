@@ -11,9 +11,9 @@ export class MapTreeViewItemIconColorPipe implements PipeTransform {
 	static store = Store.store
 
 	transform(value: CodeMapNode): string | undefined {
-		const areaMetric = MapTreeViewItemIconColorPipe.store.getState().dynamicSettings.areaMetric
+		const { areaMetric } = MapTreeViewItemIconColorPipe.store.getState().dynamicSettings
 
-		if (value.attributes[areaMetric] !== undefined && value.attributes[areaMetric] !== 0) {
+		if (value.attributes[areaMetric]) {
 			if (isLeaf(value)) {
 				return undefined
 			}
