@@ -54,7 +54,7 @@ describe("customConfigItemGroupComponent", () => {
 			componentProperties: { customConfigItemGroups }
 		})
 
-		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-custom-config-description")
+		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-apply-custom-config-button")
 		await userEvent.click(customConfigDescriptionButton)
 
 		expect(screen.getAllByTitle("Apply Custom View").length).toBe(2)
@@ -100,7 +100,7 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-custom-config-description")
+		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-apply-custom-config-button")
 		expect(
 			screen.getAllByTitle(
 				"This view is partially applicable. To complete your view, please switch to the STANDARD mode and select the following map(s): fileC."
@@ -127,7 +127,7 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-custom-config-description")
+		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-apply-custom-config-button")
 
 		await expect(async () => userEvent.click(customConfigDescriptionButton)).rejects.toThrow(/pointer-events: none/)
 		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(0)
