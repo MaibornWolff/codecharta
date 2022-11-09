@@ -18,7 +18,6 @@
 			"babelConfig": true
 		}
 	},
-	"testURL": "http://localhost:3000",
 	"preset": "./jestE2E-preset.js",
 	"testTimeout": 60000,
 	"setupFiles": ["<rootDir>/../mocks/localStorageMock.js"]
