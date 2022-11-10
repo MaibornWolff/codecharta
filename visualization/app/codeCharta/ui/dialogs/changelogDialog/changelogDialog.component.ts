@@ -13,7 +13,6 @@ export class ChangelogDialogComponent {
 		let changelogLines = markdownFile.split("\n")
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this.data.currentVersion)
 		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this.data.previousVersion)
-
 		//Add 1 to keep the version line so that it detects the end of the last set of changes
 		changelogLines = changelogLines.slice(currentVersionFirstLine, lastOpenedVersionFirstLine + 1)
 		const titles = ["Added 🚀", "Fixed 🐞", "Changed", "Removed 🗑", "Chore 👨‍💻 👩‍💻"]
@@ -47,7 +46,7 @@ export class ChangelogDialogComponent {
 	}
 
 	private findVersionLine(lines: string[], version: string): number {
-		const versionPattern = new RegExp(version.replace(".", "\\."))
+		const versionPattern = new RegExp(`\\[${version}]`)
 		return lines.findIndex(element => versionPattern.test(element))
 	}
 
