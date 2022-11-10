@@ -92,9 +92,8 @@ open class ProjectBuilder(
         return this
     }
 
-    private fun removeUnusedAttributeDescriptors(): ProjectBuilder {
+    private fun removeUnusedAttributeDescriptors() {
         val attributeSet = this.attributeDescriptors.keys.toMutableSet()
-        val attributeDescriptors = this.attributeDescriptors.toMutableMap()
         val nodesToWalk: MutableList<Node> = mutableListOf(this.rootNode.toNode())
 
         var i = 0
@@ -104,15 +103,20 @@ open class ProjectBuilder(
             if (currentNode.type != NodeType.Folder) {
                 attributeSet.removeAll(currentNode.attributes.keys)
                 if (attributeSet.isEmpty()) {
-                    this.attributeDescriptors = attributeDescriptors
+                    return
                 }
             }
             i++
         }
+        edges.forEach { edge ->
+            attributeSet.removeAll(edge.attributes.keys)
+            if (attributeSet.isEmpty()) { return }
+        }
 
+        val attributeDescriptors = this.attributeDescriptors.toMutableMap()
         attributeSet.forEach { attributeDescriptors.remove(it) }
         this.attributeDescriptors = attributeDescriptors
-        return this
+        return
     }
 
     override fun toString(): String {
