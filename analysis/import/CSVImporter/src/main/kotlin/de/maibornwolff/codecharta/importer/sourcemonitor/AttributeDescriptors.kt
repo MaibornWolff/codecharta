@@ -8,7 +8,7 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     descriptors["loc"] = AttributeDescriptor(description = "Lines of code", link = ghLink)
     descriptors["statements"] = AttributeDescriptor(description = "Number of statements", link = ghLink)
     descriptors["classes"] = AttributeDescriptor(description = "Number of classes", link = ghLink)
-    descriptors["functions_per_classs"] = AttributeDescriptor(description = "Number of functions per class", link = ghLink)
+    descriptors["functions_per_class"] = AttributeDescriptor(description = "Number of functions per class", link = ghLink)
     descriptors["average_statements_per_function"] = AttributeDescriptor(description = "Average statements per method", link = ghLink)
     descriptors["max_function_mcc"] = AttributeDescriptor(description = "Maximum complexity", link = ghLink)
     descriptors["max_block_depth"] = AttributeDescriptor(description = "Maximum block depth", link = ghLink)

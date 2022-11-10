@@ -42,7 +42,7 @@ class SourceMonitorImporter(
         val csvProjectBuilder =
             CSVProjectBuilder(pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement, getAttributeDescriptors())
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
-        val project = csvProjectBuilder.build()
+        val project = csvProjectBuilder.build(true)
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 

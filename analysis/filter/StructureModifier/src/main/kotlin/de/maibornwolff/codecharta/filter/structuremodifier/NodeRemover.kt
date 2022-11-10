@@ -26,7 +26,7 @@ class NodeRemover(private val project: Project) {
             copyAttributeTypes(),
             copyAttributeDescriptors(),
             removeBlacklistItems(paths)
-        ).removeUnusedAttributeDescriptors().build()
+        ).build(true)
     }
 
     private fun filterNodes(path: List<String>, node: MutableNode): MutableNode {

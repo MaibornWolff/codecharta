@@ -36,8 +36,8 @@ class CSVProjectBuilder(
         return projectBuilder
     }
 
-    fun build(): Project {
-        return projectBuilder.build()
+    fun build(cleanAttributeDescriptors: Boolean = false): Project {
+        return projectBuilder.build(cleanAttributeDescriptors)
     }
 
     private fun parseContent(parser: CsvParser, header: CSVHeader) {

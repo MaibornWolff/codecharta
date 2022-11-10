@@ -47,6 +47,10 @@ open class ProjectBuilder(
     }
 
     open fun build(): Project {
+        return build(false)
+    }
+
+    open fun build(cleanAttributeDescriptors: Boolean = false): Project {
         nodes.flatMap { it.nodes.values }
             .mapNotNull { it.filterChildren(filterRule, false) }
             .map { it.translateMetrics(metricNameTranslator, false) }
@@ -54,6 +58,7 @@ open class ProjectBuilder(
         edges.forEach { it.translateMetrics(metricNameTranslator) }
 
         filterEmptyFolders()
+        if (cleanAttributeDescriptors) { removeUnusedAttributeDescriptors() }
         val project = Project(
             DUMMY_PROJECT_NAME,
             nodes.map { it.toNode() }.toList(),
@@ -87,7 +92,7 @@ open class ProjectBuilder(
         return this
     }
 
-    fun removeUnusedAttributeDescriptors(): ProjectBuilder {
+    private fun removeUnusedAttributeDescriptors(): ProjectBuilder {
         val attributeSet = this.attributeDescriptors.keys.toMutableSet()
         val attributeDescriptors = this.attributeDescriptors.toMutableMap()
         val nodesToWalk: MutableList<Node> = mutableListOf(this.rootNode.toNode())
