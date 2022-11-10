@@ -4,7 +4,6 @@
 	"coverageDirectory": "<rootDir>/dist/coverage",
 	"collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
 	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
-	"snapshotSerializers": ["jest-serializer-html"],
 	"transform": {
 		"\\.(m?js)$": "babel-jest",
 		"\\.(ts|tsx)$": "ts-jest",
