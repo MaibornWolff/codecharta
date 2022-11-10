@@ -121,7 +121,7 @@
 		"@types/three": "^0.126.0",
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
 		"@typescript-eslint/parser": "^5.0.0",
-		"babel-loader": "^8.2.2",
+		"babel-loader": "^9.1.0",
 		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
 		"bestzip": "^2.2.0",
 		"clean-webpack-plugin": "^4.0.0",
