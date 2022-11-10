@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Update supported latest browsers [#3125](https://github.com/MaibornWolff/codecharta/pull/3125)
+-   Split e2e and unit test configs [#3128](https://github.com/MaibornWolff/codecharta/pull/3128)
 
 ## [1.110.0] - 2022-11-04
 
