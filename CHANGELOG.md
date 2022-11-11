@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.111.0] - 2022-11-11
+
 ### Added 🚀
 
 -   Highlight files and folders with no area metric or an area metric value of zero in the search panel [#3126](https://github.com/MaibornWolff/codecharta/pull/3126)
