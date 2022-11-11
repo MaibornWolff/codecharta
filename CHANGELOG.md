@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add description to every Custom View [#3119](https://github.com/MaibornWolff/codecharta/pull/3119) </br>
+    ![image](https://user-images.githubusercontent.com/72517530/201381274-a9a913d5-8f9d-4da6-9f26-6476e194ce3b.png)
 -   Highlight files and folders with no area metric or an area metric value of zero in the search panel [#3126](https://github.com/MaibornWolff/codecharta/pull/3126)
+
+### Changed
+
+-   Be aware, that all Custom Views generated with version 1.110.0 or older will be unusable by April 2023 [#3119](https://github.com/MaibornWolff/codecharta/pull/3119)
 
 ### Fixed 🐞
 
