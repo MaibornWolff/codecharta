@@ -1,9 +1,9 @@
 {
 	"collectCoverage": true,
+	"rootDir": "./../",
 	"coverageDirectory": "<rootDir>/dist/coverage",
-	"collectCoverageFrom": ["<rootDir>/app/**/*.{ts,tsx}", "!**/node_modules/**"],
-	"coveragePathIgnorePatterns": ["(/__tests__/.*|\\.(spec|e2e|po))\\.(ts|tsx)$", "<rootDir>/app/puppeteer.helper.ts"],
-	"snapshotSerializers": ["jest-serializer-html"],
+	"collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
+	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
 	"transform": {
 		"\\.(m?js)$": "babel-jest",
 		"\\.(ts|tsx)$": "ts-jest",
@@ -12,14 +12,13 @@
 	},
 	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020))"],
 	"moduleNameMapper": {
-		"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
-		"\\.(css|less|scss)$": "<rootDir>/mocks/styleMock.js",
+		"\\.png$": "<rootDir>/mocks/fileMock.js",
+		"\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
 		"\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js",
 		"ngx-color/chrome": "<rootDir>/node_modules/ngx-color/fesm2020/ngx-color-chrome.mjs",
 		"ngx-color": "<rootDir>/node_modules/ngx-color/fesm2020/ngx-color.mjs"
 	},
 	"roots": ["<rootDir>/app"],
-	"testMatch": ["**/?(*.)+(spec|e2e).[jt]s?(x)", "**/__tests__/**/*.[jt]s?(x)"],
 	"moduleFileExtensions": ["js", "json", "ts", "tsx", "mjs"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"globals": {
@@ -28,9 +27,6 @@
 			"babelConfig": true
 		}
 	},
-	"testURL": "http://localhost:3000",
-	"preset": "./jest-preset.js",
-	"testTimeout": 60000,
 	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
-	"setupFilesAfterEnv": ["<rootDir>/setupJest.ts"]
+	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts"]
 }

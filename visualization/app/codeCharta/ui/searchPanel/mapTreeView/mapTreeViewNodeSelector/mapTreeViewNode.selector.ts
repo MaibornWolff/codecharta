@@ -1,6 +1,6 @@
 import { klona } from "klona"
+import { createSelector } from "../../../../state/angular-redux/createSelector"
 
-import { createSelector } from "../../../../state/angular-redux/store"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { sortingOrderAscendingSelector } from "../../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
 import { sortingOrderSelector } from "../../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"

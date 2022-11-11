@@ -1,5 +1,5 @@
 import { CodeMapNode, PrimaryMetrics } from "../../../codeCharta.model"
-import { createSelector } from "../../../state/angular-redux/store"
+import { createSelector } from "../../../state/angular-redux/createSelector"
 import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { CcState } from "../../../state/store/store"
