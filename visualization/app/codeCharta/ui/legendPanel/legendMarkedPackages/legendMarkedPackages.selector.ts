@@ -1,4 +1,4 @@
-import { createSelector } from "../../../state/angular-redux/store"
+import { createSelector } from "../../../state/angular-redux/createSelector"
 import { markedPackagesSelector } from "../../../state/store/fileSettings/markedPackages/markedPackages.selector"
 import { CcState } from "../../../state/store/store"
 

@@ -1,8 +1,8 @@
-import { createSelector } from "../../angular-redux/store"
 import { selectedNodeSelector } from "../selectedNode.selector"
 import { CcState } from "../../store/store"
 import { Metric } from "../../../ui/attributeSideBar/util/metric"
 import { primaryMetricNamesSelector } from "./primaryMetricNames.selector"
+import { createSelector } from "../../angular-redux/createSelector"
 
 export type PrimaryMetrics = {
 	area: Metric

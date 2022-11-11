@@ -4,7 +4,6 @@ import { fileStatesAvailable, isPartialState, isDeltaState } from "../../../mode
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
-import { createSelector } from "../../angular-redux/store"
 import { CcState } from "../../store/store"
 import { metricNamesSelector } from "./metricData/metricNames.selector"
 import { getDeltaFile } from "./utils/getDeltaFile"
@@ -13,6 +12,7 @@ import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.
 import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
 import { visibleFileStatesSelector } from "../visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
+import { createSelector } from "../../angular-redux/createSelector"
 
 const accumulatedDataFallback = Object.freeze({
 	unifiedMapNode: undefined,
