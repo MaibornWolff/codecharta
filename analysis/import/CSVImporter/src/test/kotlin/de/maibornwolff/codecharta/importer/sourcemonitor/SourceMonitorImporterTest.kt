@@ -43,10 +43,10 @@ class SourceMonitorImporterTest {
             )
         )
         val file = File("src/test/resources/sourcemonitor.cc.json")
+        val inputStream = file.inputStream()
+        val project = ProjectDeserializer.deserializeProject(inputStream)
+        inputStream.close()
         file.deleteOnExit()
-        val project = ProjectDeserializer.deserializeProject(
-           file.inputStream()
-        )
         assertEquals(project.attributeDescriptors, getAttributeDescriptors())
     }
 }
