@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.111.0] - 2022-11-11
+
 ### Added 🚀
 
 -   Add description to every Custom View [#3119](https://github.com/MaibornWolff/codecharta/pull/3119) </br>
