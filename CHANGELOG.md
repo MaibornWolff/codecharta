@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Highlight files and folders with no area metric or an area metric value of zero in the search panel [#3126](https://github.com/MaibornWolff/codecharta/pull/3126)
+
 ### Fixed 🐞
 
 -   Fix crashing on focusing or hovering un-rendered buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
