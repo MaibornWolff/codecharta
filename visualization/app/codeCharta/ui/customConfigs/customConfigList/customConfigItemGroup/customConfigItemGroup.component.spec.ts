@@ -53,13 +53,12 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
+		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button") as HTMLButtonElement
 
-		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-apply-custom-config-button")
-		await userEvent.click(customConfigDescriptionButton)
+		await userEvent.click(applyCustomConfigButton)
 
 		expect(screen.getAllByTitle("Apply Custom View").length).toBe(2)
-		expect(getComputedStyle(customConfigDescriptionButton).color).toBe("rgba(0, 0, 0, 0.87)")
-		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("auto")
+		expect(applyCustomConfigButton.disabled).toBe(false)
 		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(1)
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(1)
 	})
@@ -100,14 +99,15 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-apply-custom-config-button")
+
+		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button")
+
 		expect(
 			screen.getAllByTitle(
 				"This view is partially applicable. To complete your view, please switch to the STANDARD mode and select the following map(s): fileC."
 			).length
 		).toBe(2)
-		expect(getComputedStyle(customConfigDescriptionButton).color).toBe("rgb(204, 204, 204)")
-		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("auto")
+		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
 	})
 
 	it("should not be clickable for non-applicable custom configs", async () => {
@@ -127,11 +127,9 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const customConfigDescriptionButton = screen.getByText("SampleMap View #1").closest("cc-apply-custom-config-button")
+		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button") as HTMLButtonElement
 
-		await expect(async () => userEvent.click(customConfigDescriptionButton)).rejects.toThrow(/pointer-events: none/)
-		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(0)
-		expect(getComputedStyle(customConfigDescriptionButton).pointerEvents).toBe("none")
-		expect(getComputedStyle(customConfigDescriptionButton).color).toBe("rgb(204, 204, 204)")
+		expect(applyCustomConfigButton.disabled).toBe(true)
+		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
 	})
 })

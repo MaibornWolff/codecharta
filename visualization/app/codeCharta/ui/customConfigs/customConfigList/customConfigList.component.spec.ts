@@ -124,8 +124,6 @@ describe("customConfigListComponent", () => {
 		await userEvent.click(customConfigItemGroupElement)
 
 		expect(screen.getByText("SampleMap Delta View #1")).not.toBeNull()
-		expect(getComputedStyle(screen.getByText("SampleMap Delta View #1").closest("cc-apply-custom-config-button")).pointerEvents).toBe(
-			"none"
-		)
+		expect((screen.getByText("SampleMap Delta View #1").closest("button") as HTMLButtonElement).disabled).toBe(true)
 	})
 })
