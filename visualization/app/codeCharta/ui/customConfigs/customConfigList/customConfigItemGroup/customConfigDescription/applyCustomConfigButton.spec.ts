@@ -42,6 +42,7 @@ describe("applyCustomConfigButtonComponent", () => {
 		expect(screen.getByText("SampleMap View #1")).not.toBeNull()
 		expect(screen.getByText("rloc")).not.toBeNull()
 		expect(screen.getByText("mcc")).not.toBeNull()
+		expect(screen.getByText("functions")).not.toBeNull()
 		expect(screen.getByText("avgCommits")).not.toBeNull()
 
 		const applyCustomConfigButton = screen.getByRole("button") as HTMLButtonElement
@@ -65,6 +66,7 @@ describe("applyCustomConfigButtonComponent", () => {
 		expect(screen.getByText("SampleMap View #1")).not.toBeNull()
 		expect(screen.getByText("rloc")).not.toBeNull()
 		expect(screen.getByText("mcc")).not.toBeNull()
+		expect(screen.getByText("functions")).not.toBeNull()
 		expect(screen.getByText("avgCommits")).not.toBeNull()
 
 		await userEvent.click(applyCustomConfigButton)

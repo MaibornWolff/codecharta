@@ -29,14 +29,14 @@ export function getCustomConfigItemGroups({ assignedMaps }: VisibleFilesBySelect
 		}
 
 		const { positive, neutral, negative, selected, positiveDelta, negativeDelta } = customConfig.stateSettings.appSettings.mapColors
-		const { areaMetric, heightMetric, edgeMetric } = customConfig.stateSettings.dynamicSettings
+		const { areaMetric, heightMetric, colorMetric, edgeMetric } = customConfig.stateSettings.dynamicSettings
 
 		customConfigItemGroups.get(groupKey).customConfigItems.push({
 			id: customConfig.id,
 			name: customConfig.name,
 			assignedMaps: customConfig.assignedMaps,
 			mapSelectionMode: customConfig.mapSelectionMode,
-			metrics: { areaMetric, heightMetric, edgeMetric },
+			metrics: { areaMetric, heightMetric, colorMetric, edgeMetric },
 			mapColors: { positive, neutral, negative, selected, positiveDelta, negativeDelta },
 			isApplicable: isCustomConfigItemApplicable
 		})

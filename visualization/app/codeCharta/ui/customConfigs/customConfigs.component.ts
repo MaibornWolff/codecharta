@@ -12,7 +12,7 @@ export interface CustomConfigItem {
 	name: string
 	assignedMaps: Map<string, string>
 	mapSelectionMode: CustomConfigMapSelectionMode
-	metrics: Pick<PrimaryMetrics, "areaMetric" | "heightMetric" | "edgeMetric">
+	metrics: Pick<PrimaryMetrics, "areaMetric" | "heightMetric" | "colorMetric" | "edgeMetric">
 	mapColors: CustomConfigColors
 	isApplicable: boolean
 }

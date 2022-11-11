@@ -27,6 +27,7 @@ describe("getCustomConfigItemGroups", () => {
 			dynamicSettings: {
 				areaMetric: "rloc",
 				heightMetric: "mcc",
+				colorMetric: "mcc",
 				edgeMetric: "avgCommits"
 			}
 		}
@@ -51,6 +52,7 @@ describe("getCustomConfigItemGroups", () => {
 			dynamicSettings: {
 				areaMetric: "rloc",
 				heightMetric: "functions",
+				colorMetric: "mcc",
 				edgeMetric: "avgCommits"
 			}
 		}
@@ -73,7 +75,12 @@ describe("getCustomConfigItemGroups", () => {
 		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
-		expect(applicableGroup.customConfigItems[0].metrics).toEqual({ heightMetric: "mcc", areaMetric: "rloc", edgeMetric: "avgCommits" })
+		expect(applicableGroup.customConfigItems[0].metrics).toEqual({
+			heightMetric: "mcc",
+			areaMetric: "rloc",
+			colorMetric: "mcc",
+			edgeMetric: "avgCommits"
+		})
 		expect(applicableGroup.customConfigItems[0].mapColors).toEqual({
 			positive: "green",
 			neutral: "yellow",
