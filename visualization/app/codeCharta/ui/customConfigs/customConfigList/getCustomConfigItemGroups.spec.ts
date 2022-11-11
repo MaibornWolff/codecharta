@@ -2,6 +2,7 @@ import { CustomConfig, CustomConfigMapSelectionMode } from "../../../model/custo
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { getCustomConfigItemGroups } from "./getCustomConfigItemGroups"
 import { VisibleFilesBySelectionMode } from "../visibleFilesBySelectionMode.selector"
+import { expect } from "@jest/globals"
 
 describe("getCustomConfigItemGroups", () => {
 	const customConfigStub1 = {
@@ -11,14 +12,50 @@ describe("getCustomConfigItemGroups", () => {
 		assignedMaps: new Map([
 			["checksumMap1", "map1"],
 			["checksumMap2", "map2"]
-		])
+		]),
+		stateSettings: {
+			appSettings: {
+				mapColors: {
+					positive: "green",
+					neutral: "yellow",
+					negative: "red",
+					selected: "orange",
+					negativeDelta: "red",
+					positiveDelta: "green"
+				}
+			},
+			dynamicSettings: {
+				areaMetric: "rloc",
+				heightMetric: "mcc",
+				colorMetric: "mcc",
+				edgeMetric: "avgCommits"
+			}
+		}
 	} as CustomConfig
 
 	const customConfigStub2 = {
 		id: "2-invalid-md5-checksum",
 		name: "config2",
 		mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-		assignedMaps: new Map([["checksumMap3", "map3"]])
+		assignedMaps: new Map([["checksumMap3", "map3"]]),
+		stateSettings: {
+			appSettings: {
+				mapColors: {
+					positive: "violett",
+					neutral: "yellow",
+					negative: "red",
+					selected: "orange",
+					negativeDelta: "red",
+					positiveDelta: "green"
+				}
+			},
+			dynamicSettings: {
+				areaMetric: "rloc",
+				heightMetric: "functions",
+				colorMetric: "mcc",
+				edgeMetric: "avgCommits"
+			}
+		}
 	} as CustomConfig
 
 	it("should set applicable-flags to true when current assigned map names, checksums and selection mode are matching a custom config", () => {
@@ -35,9 +72,23 @@ describe("getCustomConfigItemGroups", () => {
 
 		const actualCustomConfigItemGroups = getCustomConfigItemGroups(visibleFilesBySelectionMode)
 
-		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_MULTIPLE")
+		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
+		expect(applicableGroup.customConfigItems[0].metrics).toEqual({
+			heightMetric: "mcc",
+			areaMetric: "rloc",
+			colorMetric: "mcc",
+			edgeMetric: "avgCommits"
+		})
+		expect(applicableGroup.customConfigItems[0].mapColors).toEqual({
+			positive: "green",
+			neutral: "yellow",
+			negative: "red",
+			selected: "orange",
+			negativeDelta: "red",
+			positiveDelta: "green"
+		})
 	})
 
 	it("should set applicable-flags to false when current assigned map names, checksums and selection mode are not matching a custom config", () => {
@@ -54,7 +105,7 @@ describe("getCustomConfigItemGroups", () => {
 
 		const actualCustomConfigItemGroups = getCustomConfigItemGroups(visibleFilesBySelectionMode)
 
-		const nonApplicableGroup = actualCustomConfigItemGroups.nonApplicableItems.get("map3_MULTIPLE")
+		const nonApplicableGroup = actualCustomConfigItemGroups.nonApplicableItems.get("map3_STANDARD")
 		expect(nonApplicableGroup.customConfigItems[0].name).toBe("config2")
 		expect(nonApplicableGroup.customConfigItems[0].isApplicable).toBe(false)
 	})
@@ -70,7 +121,7 @@ describe("getCustomConfigItemGroups", () => {
 
 		const actualCustomConfigItemGroups = getCustomConfigItemGroups(visibleFilesBySelectionMode)
 
-		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_MULTIPLE")
+		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
 	})
@@ -89,7 +140,7 @@ describe("getCustomConfigItemGroups", () => {
 
 		const actualCustomConfigItemGroups = getCustomConfigItemGroups(visibleFilesBySelectionMode)
 
-		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_MULTIPLE")
+		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
 	})
