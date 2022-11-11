@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix crashing on focusing or hovering un-rendered buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
+-   Fix showing changelog entries in the dialog when a new version is available [#3123](https://github.com/MaibornWolff/codecharta/pull/3129)
 
 ### Chore 👨‍💻 👩‍💻
 
