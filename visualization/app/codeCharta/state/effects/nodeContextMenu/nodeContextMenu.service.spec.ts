@@ -1,3 +1,4 @@
+import { OverlayRef } from "@angular/cdk/overlay"
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { fireEvent } from "@testing-library/angular"
@@ -16,7 +17,7 @@ describe("nodeContextMenuService", () => {
 		jest.spyOn(document, "getElementById").mockImplementation(() => mockedWheelTargetElement)
 
 		TestBed.configureTestingModule({
-			imports: [MaterialModule, EffectsModule.forRoot([OpenNodeContextMenuEffect]), NodeContextMenuCardModule],
+			imports: [MaterialModule, EffectsModule.forRoot([OpenNodeContextMenuEffect]), NodeContextMenuCardModule, OverlayRef],
 			providers: [NodeContextMenuService]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise
@@ -72,7 +73,7 @@ describe("nodeContextMenuService", () => {
 		document.addEventListener("contextmenu", event => {
 			wasDefaultContextMenuPrevented = event.defaultPrevented
 		})
-		fireEvent.contextMenu(nodeContextMenu["Reference"].Element)
+		fireEvent.contextMenu(nodeContextMenu["overlayReference"].overlayElement)
 		expect(wasDefaultContextMenuPrevented).toBe(true)
 	})
 
