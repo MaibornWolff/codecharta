@@ -12,6 +12,11 @@ export class NodeContextMenuService {
 	constructor(@Inject(Overlay) private overlay: Overlay, @Inject(Store) private store: Store) {}
 
 	open(x: number, y: number) {
+		if (this.overlayReference) {
+			this.overlayReference.dispose()
+			this.overlayReference = null
+		}
+
 		const positionStrategy = this.overlay
 			.position()
 			.flexibleConnectedTo({ x, y })
