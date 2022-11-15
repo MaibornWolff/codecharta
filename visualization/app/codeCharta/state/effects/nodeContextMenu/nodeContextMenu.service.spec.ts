@@ -1,4 +1,3 @@
-import { OverlayRef } from "@angular/cdk/overlay"
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { fireEvent } from "@testing-library/angular"
@@ -17,7 +16,7 @@ describe("nodeContextMenuService", () => {
 		jest.spyOn(document, "getElementById").mockImplementation(() => mockedWheelTargetElement)
 
 		TestBed.configureTestingModule({
-			imports: [MaterialModule, EffectsModule.forRoot([OpenNodeContextMenuEffect]), NodeContextMenuCardModule, OverlayRef],
+			imports: [MaterialModule, EffectsModule.forRoot([OpenNodeContextMenuEffect]), NodeContextMenuCardModule],
 			providers: [NodeContextMenuService]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise
@@ -81,9 +80,9 @@ describe("nodeContextMenuService", () => {
 		const nodeContextMenu = TestBed.inject(NodeContextMenuService)
 		nodeContextMenu.open(10, 10)
 
-		const disposeSpy = jest.spyOn(nodeContextMenu["overlayReference"], "dispose")
+		const resetSpy = jest.spyOn(nodeContextMenu as any, "resetOverlay")
 
-		expect(disposeSpy).not.toHaveBeenCalled()
+		expect(resetSpy).not.toHaveBeenCalled()
 	})
 
 	it("should not open multiple times when open is clicked twice, disposing previous reference", () => {
@@ -91,8 +90,8 @@ describe("nodeContextMenuService", () => {
 		nodeContextMenu.open(10, 10)
 		nodeContextMenu.open(10, 11)
 
-		const disposeSpy = jest.spyOn(nodeContextMenu["overlayReference"], "dispose")
+		const resetSpy = jest.spyOn(nodeContextMenu as any, "resetOverlay")
 
-		expect(disposeSpy).toHaveBeenCalled()
+		expect(resetSpy).toHaveBeenCalled()
 	})
 })
