@@ -72,7 +72,7 @@ export class NodeContextMenuService {
 		this.close()
 	}
 
-	private resetOverlay() {
+	resetOverlay() {
 		this.overlayReference.dispose()
 		this.overlayReference = null
 	}

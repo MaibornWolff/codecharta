@@ -80,7 +80,7 @@ describe("nodeContextMenuService", () => {
 		const nodeContextMenu = TestBed.inject(NodeContextMenuService)
 		nodeContextMenu.open(10, 10)
 
-		const resetSpy = jest.spyOn(nodeContextMenu as any, "resetOverlay")
+		const resetSpy = jest.spyOn(nodeContextMenu, "resetOverlay")
 
 		expect(resetSpy).not.toHaveBeenCalled()
 	})
@@ -88,9 +88,12 @@ describe("nodeContextMenuService", () => {
 	it("should not open multiple times when open is clicked twice, disposing previous reference", () => {
 		const nodeContextMenu = TestBed.inject(NodeContextMenuService)
 		nodeContextMenu.open(10, 10)
+
+		expect(nodeContextMenu["overlayReference"]).not.toBe(null)
+
 		nodeContextMenu.open(10, 11)
 
-		const resetSpy = jest.spyOn(nodeContextMenu as any, "resetOverlay")
+		const resetSpy = jest.spyOn(nodeContextMenu, "resetOverlay")
 
 		expect(resetSpy).toHaveBeenCalled()
 	})
