@@ -78,9 +78,9 @@ describe("nodeContextMenuService", () => {
 
 	it("should not dispose with only one opened panel", () => {
 		const nodeContextMenu = TestBed.inject(NodeContextMenuService)
-		nodeContextMenu.open(10, 10)
-
 		const resetSpy = jest.spyOn(nodeContextMenu, "resetOverlay")
+
+		nodeContextMenu.open(10, 10)
 
 		expect(resetSpy).not.toHaveBeenCalled()
 	})
