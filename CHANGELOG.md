@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix Node Context-Menu in Map Tree View opening multiple times [#3135](https://github.com/MaibornWolff/codecharta/pull/3135)
+
 ## [1.111.0] - 2022-11-11
 
 ### Added 🚀
