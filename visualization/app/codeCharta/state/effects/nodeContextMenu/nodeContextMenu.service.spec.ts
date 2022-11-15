@@ -91,9 +91,9 @@ describe("nodeContextMenuService", () => {
 
 		expect(nodeContextMenu["overlayReference"]).not.toBe(null)
 
-		nodeContextMenu.open(10, 11)
-
 		const resetSpy = jest.spyOn(nodeContextMenu, "resetOverlay")
+
+		nodeContextMenu.open(10, 11)
 
 		expect(resetSpy).toHaveBeenCalled()
 	})
