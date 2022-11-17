@@ -18,7 +18,7 @@ const readFile = async (file: File): Promise<string> =>
 		if (isCompressed) {
 			reader.readAsArrayBuffer(file)
 		} else {
-			reader.readAsText(file, "UTF-8")
+			reader.readAsText(file, "utf8")
 		}
 
 		let content: string

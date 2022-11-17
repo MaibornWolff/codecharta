@@ -7,7 +7,7 @@ import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig
 
 jest.mock("../ui/customConfigs/visibleFilesBySelectionMode.selector", () => ({
 	visibleFilesBySelectionModeSelector: () => ({
-		mapSelectionMode: "MULTIPLE",
+		mapSelectionMode: "STANDARD",
 		assignedMaps: new Map([
 			["checksum1", "map1"],
 			["checksum2", "map2"]

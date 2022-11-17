@@ -164,44 +164,44 @@ export class ScenarioHelper {
 
 		for (const property of scenarioMetricProperties.filter(p => p.isSelected)) {
 			switch (property.metricType) {
-				case "Camera-Position": {
+				case "Camera-Position":
 					newScenario.camera = {
 						camera: property.savedValues["camera"],
 						cameraTarget: property.savedValues["cameraTarget"]
 					}
 					break
-				}
-				case "Area-Metric": {
+
+				case "Area-Metric":
 					newScenario.area = {
 						areaMetric: property.metricName,
 						margin: property.savedValues as number
 					}
 					break
-				}
-				case "Height-Metric": {
+
+				case "Height-Metric":
 					newScenario.height = {
 						heightMetric: property.metricName,
 						heightSlider: property.savedValues["heightSlider"],
 						labelSlider: property.savedValues["labelSlider"]
 					}
 					break
-				}
-				case "Color-Metric": {
+
+				case "Color-Metric":
 					newScenario.color = {
 						colorMetric: property.metricName,
 						colorRange: property.savedValues["colorRange"],
 						mapColors: property.savedValues["mapColors"]
 					}
 					break
-				}
-				case "Edge-Metric": {
+
+				case "Edge-Metric":
 					newScenario.edge = {
 						edgeMetric: property.metricName,
 						edgePreview: property.savedValues["edgePreview"],
 						edgeHeight: property.savedValues["edgeHeight"]
 					}
 					break
-				}
+
 				default:
 					throw new Error(`Unknown metric type "${property.metricType}" detected`)
 			}

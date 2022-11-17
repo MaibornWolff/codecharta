@@ -2022,54 +2022,90 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 
 export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
 	[
-		"File_A_MULTIPLE",
+		"File_A_STANDARD",
 		{
 			mapNames: "fileA",
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: false,
 			customConfigItems: [
 				{
-					id: "File_A_MULTIPLE_Sample_Map View #1",
+					id: "File_A_STANDARD_Sample_Map View #1",
 					name: "SampleMap View #1",
 					assignedMaps: new Map([["md5_fileA", "fileA"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: false
 				},
 				{
-					id: "File_A_MULTIPLE_Sample_Map View #2",
+					id: "File_A_STANDARD_Sample_Map View #2",
 					name: "SampleMap View #2",
 					assignedMaps: new Map([["md5_fileA", "fileA"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: false
 				}
 			]
 		}
 	],
 	[
-		"File_B_File_C_MULTIPLE",
+		"File_B_File_C_STANDARD",
 		{
 			mapNames: "fileB fileC",
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: true,
 			customConfigItems: [
 				{
-					id: "File_B_File_C_MULTIPLE_Sample_Map View #1",
+					id: "File_B_File_C_STANDARD_Sample_Map View #1",
 					name: "SampleMap View #1",
 					assignedMaps: new Map([
 						["md5_fileB", "fileB"],
 						["md5_fileC", "fileC"]
 					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "functions", edgeMetric: "avgCommits" },
 					isApplicable: true
 				},
 				{
-					id: "File_B_File_C_MULTIPLE_Sample_Map View #2",
+					id: "File_B_File_C_STANDARD_Sample_Map View #2",
 					name: "SampleMap View #2",
 					assignedMaps: new Map([
 						["md5_fileB", "fileB"],
 						["md5_fileC", "fileC"]
 					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: true
 				}
 			]
@@ -2087,6 +2123,15 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 					name: "SampleMap Delta View #1",
 					assignedMaps: new Map([["md5_fileD", "fileD"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: null },
 					isApplicable: false
 				}
 			]

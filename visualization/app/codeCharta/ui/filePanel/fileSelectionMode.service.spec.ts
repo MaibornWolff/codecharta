@@ -1,4 +1,6 @@
+import { TestBed } from "@angular/core/testing"
 import { FileSelectionState } from "../../model/files/files"
+import { State } from "../../state/angular-redux/state"
 import { Store } from "../../state/angular-redux/store"
 import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
 import { addFile, removeFile, setDelta, setStandard } from "../../state/store/files/files.actions"
@@ -15,7 +17,9 @@ describe("FileSelectionModeService", () => {
 		PlainStore.dispatch(addFile(TEST_FILE_DATA_JAVA))
 		PlainStore.dispatch(setStandard([TEST_FILE_DATA]))
 
-		fileSelectionModeService = new FileSelectionModeService(new Store(), { getValue: PlainStore.store.getState })
+		const store = TestBed.inject(Store)
+		const state = TestBed.inject(State)
+		fileSelectionModeService = new FileSelectionModeService(store, state)
 	})
 
 	it("should set first selected file as reference, when there was no reference file before", () => {

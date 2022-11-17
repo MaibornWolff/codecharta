@@ -3,12 +3,12 @@ import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
 
 export function focusedNodePath(state = defaultFocusedNodePath, action: FocusedNodePathAction) {
 	switch (action.type) {
-		case FocusedNodePathActions.FOCUS_NODE: {
+		case FocusedNodePathActions.FOCUS_NODE:
 			if (action.payload === LoadFileService.ROOT_PATH) {
 				return state
 			}
 			return [action.payload, ...state]
-		}
+
 		case FocusedNodePathActions.UNFOCUS_NODE:
 			return state.slice(1)
 		case FocusedNodePathActions.UNFOCUS_ALL_NODES:

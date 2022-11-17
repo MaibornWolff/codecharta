@@ -14,6 +14,7 @@ import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.servic
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import userEvent from "@testing-library/user-event"
+import { expect } from "@jest/globals"
 
 const mockedCustomConfigHelperService = {
 	customConfigItemGroups$: of({
@@ -49,7 +50,7 @@ describe("customConfigListComponent", () => {
 
 	it("should show 'download', 'upload', 'add' and 'non-applicable' custom config button", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
@@ -63,14 +64,14 @@ describe("customConfigListComponent", () => {
 
 	it("should show custom config item groups for applicable and non-applicable custom configs", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
 		const { container } = await render(CustomConfigListComponent, { excludeComponentDeclaration: true })
 
 		expect(container.querySelector("mat-expansion-panel-header").textContent).toBe(
-			" Custom View(s) in  multiple  mode for fileB fileC "
+			" Custom View(s) in  Standard  mode for fileB fileC "
 		)
 		expect(container.querySelectorAll("mat-expansion-panel-header").length).toBe(1)
 
@@ -81,7 +82,7 @@ describe("customConfigListComponent", () => {
 
 	it("should not show 'non-applicable Custom Views' button when no custom configs are available", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map()
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
@@ -93,7 +94,7 @@ describe("customConfigListComponent", () => {
 
 	it("should list all custom configs belonging to a custom config item group by clicking", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
@@ -110,7 +111,7 @@ describe("customConfigListComponent", () => {
 
 	it("should disable button for all custom configs belonging to a non-applicable custom config item group", async () => {
 		const customConfigItemGroup = {
-			applicableItems: new Map([["File_B_File_C_MULTIPLE", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_MULTIPLE")]]),
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
 			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
 		}
 		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
@@ -123,6 +124,6 @@ describe("customConfigListComponent", () => {
 		await userEvent.click(customConfigItemGroupElement)
 
 		expect(screen.getByText("SampleMap Delta View #1")).not.toBeNull()
-		expect(screen.getByText("SampleMap Delta View #1").closest("button").hasAttribute("disabled")).toBe(true)
+		expect((screen.getByText("SampleMap Delta View #1").closest("button") as HTMLButtonElement).disabled).toBe(true)
 	})
 })
