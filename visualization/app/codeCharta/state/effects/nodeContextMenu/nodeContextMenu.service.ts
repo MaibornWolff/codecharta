@@ -12,6 +12,10 @@ export class NodeContextMenuService {
 	constructor(@Inject(Overlay) private overlay: Overlay, @Inject(Store) private store: Store) {}
 
 	open(x: number, y: number) {
+		if (this.overlayReference) {
+			this.resetOverlay()
+		}
+
 		const positionStrategy = this.overlay
 			.position()
 			.flexibleConnectedTo({ x, y })
@@ -48,8 +52,7 @@ export class NodeContextMenuService {
 		this.store.dispatch(setRightClickedNodeData(null))
 
 		if (this.overlayReference) {
-			this.overlayReference.dispose()
-			this.overlayReference = null
+			this.resetOverlay()
 		}
 	}
 
@@ -67,6 +70,11 @@ export class NodeContextMenuService {
 		}
 		// Close on right click down, to close before the map gets potential moved by right clicked
 		this.close()
+	}
+
+	resetOverlay() {
+		this.overlayReference.dispose()
+		this.overlayReference = null
 	}
 
 	private isEventFromColorPicker(mouseEvent: MouseEvent) {
