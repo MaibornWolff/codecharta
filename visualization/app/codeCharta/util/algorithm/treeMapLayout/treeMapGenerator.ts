@@ -99,7 +99,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 			squarifiedNode.x1 += offsetX0
 			squarifiedNode.y0 += offsetY0
 			squarifiedNode.y1 += offsetY0
-			const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState)
+			const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState, true)
 			nodes.push(node)
 			if (hasFixedFolders(fixedFolder.data)) {
 				// Imagine the parent Folder has absolute px-width of 341px

@@ -31,7 +31,7 @@ export function getSmallestValueOrSmallestDifference(childAreaValues: number[]) 
 		return diff
 	}
 
-	const smallestValue = childAreaValues[0] ? childAreaValues[0] : diff
+	const smallestValue = childAreaValues[0] ?? diff
 
 	for (let index = 0; index < childAreaValues.length - 1; index++) {
 		const intermediateDiff = Math.abs(childAreaValues[index + 1] - childAreaValues[index])

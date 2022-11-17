@@ -19,7 +19,13 @@ export function calculateTotalNodeArea(buildingAreas: number[], hierarchyNode: H
 	 */
 
 	if (buildingAreas.length === 0) {
-		throw new Error("No buildings with an area bigger 0 exist for this metric")
+		return {
+			rootWidth: 0,
+			rootHeight: 0,
+			metricSum: hierarchyNode.sum(() => {
+				return 0
+			})
+		}
 	}
 
 	let totalNodeArea = buildingAreas.reduce((intermediate, current) => intermediate + current + addPaddingToArea(current, padding))

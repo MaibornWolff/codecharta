@@ -134,17 +134,16 @@ describe("treeMapGenerator", () => {
 			map.children = []
 			map.attributes = { a: 100 }
 
-			expect(() => SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)).toThrow(
-				"No buildings with an area bigger 0 exist for this metric"
-			)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+
+			expect(nodes[0].attributes["a"]).toBe(100)
 		})
 
 		it("attribute do not exists, no children", () => {
 			map.children = []
 
-			expect(() => SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)).toThrow(
-				"No buildings with an area bigger 0 exist for this metric"
-			)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
 
 		it("attribute do not exists, multiple children with non existent attributes", () => {
@@ -155,20 +154,19 @@ describe("treeMapGenerator", () => {
 				{ name: "b", maxValue: 99, minValue: 1 }
 			]
 
-			expect(() => SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)).toThrow(
-				"No buildings with an area bigger 0 exist for this metric"
-			)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
 
-		it(" should throw an error if metric does not exist", () => {
+		it(" area should be zero if metric does not exist", () => {
 			state.dynamicSettings.areaMetric = "unknown"
 			state.dynamicSettings.heightMetric = "unknown"
 			state.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "unknown", maxValue: 100, minValue: 1 }]
 
-			expect(() => SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)).toThrow(
-				"No buildings with an area bigger 0 exist for this metric"
-			)
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+
+			expect(nodes[2].width * nodes[2].length).toEqual(0)
 		})
 	})
 

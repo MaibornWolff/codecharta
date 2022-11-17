@@ -86,7 +86,8 @@ function buildNodeFrom(
 	heightScale: number,
 	maxHeight: number,
 	state: State,
-	isDeltaState: boolean
+	isDeltaState: boolean,
+	isFixedFolder?: boolean
 ): Node {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 	const { x0, x1, y0, y1, data, value, parent } = squaredNode
@@ -104,9 +105,10 @@ function buildNodeFrom(
 
 	const fitForFolderLabel =
 		data.type === "Folder" &&
-		parent !== null &&
-		value / parent.value > FOLDER_LABEL_TOO_SMALL_PARENT &&
-		value / getRootNode(squaredNode).value > FOLDER_LABEL_TOO_SMALL_ROUTE
+		((parent !== null &&
+			value / parent.value > FOLDER_LABEL_TOO_SMALL_PARENT &&
+			value / getRootNode(squaredNode).value > FOLDER_LABEL_TOO_SMALL_ROUTE) ||
+			isFixedFolder)
 
 	return {
 		name: data.name,
