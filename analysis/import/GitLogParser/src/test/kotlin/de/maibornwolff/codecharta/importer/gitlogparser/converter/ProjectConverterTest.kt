@@ -8,15 +8,15 @@ import de.maibornwolff.codecharta.importer.gitlogparser.parser.VersionControlled
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class ProjectConverterTest {
 
     private val metricsFactory = mockk<MetricsFactory>()
 
-    @Before
+    @BeforeEach
     fun setup() {
         every { metricsFactory.createMetrics() } returns listOf()
     }
@@ -56,7 +56,7 @@ class ProjectConverterTest {
         val project = projectConverter.convert(vcfList, metricsFactory, listOf("File 1"))
 
         // then
-        assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isTrue()
+        assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isTrue
     }
 
     @Test
@@ -76,7 +76,7 @@ class ProjectConverterTest {
         val project = projectConverter.convert(vcfList, metricsFactory, listOf("File 1"))
 
         // then
-        assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isFalse()
+        assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isFalse
     }
 
     @Test

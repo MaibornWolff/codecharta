@@ -1,23 +1,12 @@
-import angular from "angular"
-import camelCase from "lodash.camelcase"
-import { downgradeComponent } from "@angular/upgrade/static"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { ViewCubeModule } from "../viewCube/viewCube.module"
+import { AttributeSideBarModule } from "../attributeSideBar/attributeSideBar.module"
+import { CodeMapComponent } from "./codeMap.component"
 
-import "./threeViewer/threeViewer.module"
-import "../../state/state.module"
-import { codeMapComponent } from "./codeMap.component"
-import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { CodeMapRenderService } from "./codeMap.render.service"
-import { CodeMapLabelService } from "./codeMap.label.service"
-import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapPreRenderService } from "./codeMap.preRender.service"
-import { AttributeSideBarComponent } from "../attributeSideBar/attributeSideBar.component"
-
-angular
-	.module("app.codeCharta.ui.codeMap", ["app.codeCharta.state", "app.codeCharta", "app.codeCharta.ui.codeMap.threeViewer"])
-	.component(codeMapComponent.selector, codeMapComponent)
-	.directive("ccAttributeSideBar", downgradeComponent({ component: AttributeSideBarComponent }))
-	.service(camelCase(CodeMapRenderService.name), CodeMapRenderService)
-	.service(camelCase(CodeMapPreRenderService.name), CodeMapPreRenderService)
-	.service(camelCase(CodeMapMouseEventService.name), CodeMapMouseEventService)
-	.service(camelCase(CodeMapLabelService.name), CodeMapLabelService)
-	.service(camelCase(CodeMapArrowService.name), CodeMapArrowService)
+@NgModule({
+	imports: [CommonModule, ViewCubeModule, AttributeSideBarModule],
+	declarations: [CodeMapComponent],
+	exports: [CodeMapComponent]
+})
+export class CodeMapModule {}

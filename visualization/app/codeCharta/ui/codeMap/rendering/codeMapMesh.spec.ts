@@ -1,22 +1,10 @@
 import { Node } from "../../../codeCharta.model"
 import { CodeMapMesh } from "./codeMapMesh"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { StoreService } from "../../../state/store.service"
 import { STATE, TEST_NODE_ROOT } from "../../../util/dataMocks"
 
 describe("codeMapMesh", () => {
-	let storeService: StoreService
 	const testNodes: Node[] = [TEST_NODE_ROOT] // no need for 2 files
-
-	beforeEach(() => {
-		mockStoreService()
-	})
-
-	const mockStoreService = () => {
-		storeService = jest.fn().mockReturnValue({
-			getState: jest.fn().mockReturnValue(STATE)
-		})()
-	}
 
 	describe("setNewDeltaColor", () => {
 		let codeMapBuilding: CodeMapBuilding
@@ -31,7 +19,7 @@ describe("codeMapMesh", () => {
 		}
 
 		const rebuildMesh = () => {
-			const codedMapMesh = new CodeMapMesh([TEST_NODE_ROOT], storeService.getState(), true)
+			const codedMapMesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, true)
 			codeMapBuilding = codedMapMesh.getBuildingByPath(TEST_NODE_ROOT.path)
 		}
 

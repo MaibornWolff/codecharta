@@ -29,7 +29,7 @@ describe("DownloadCustomConfigButtonComponent", () => {
 
 		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(false)
 
-		userEvent.click(screen.getByRole("button") as HTMLButtonElement)
+		await userEvent.click(screen.getByRole("button") as HTMLButtonElement)
 
 		expect(FileDownloader.downloadData).toHaveBeenCalledTimes(1)
 	})

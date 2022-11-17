@@ -1,0 +1,48 @@
+cc-apply-custom-config-button {
+	display: flex;
+	flex: 1;
+
+	button {
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+		display: flex;
+		flex: 1;
+		gap: 10px;
+
+		&:disabled {
+			cursor: default;
+		}
+
+		p {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			font-size: 15px;
+			margin: 5px 0;
+			text-align: left;
+
+			&.config-name {
+				flex: 0 0 22em;
+			}
+
+			&.config-metric {
+				flex: 0 0 8em;
+			}
+		}
+
+		.color-schema-container {
+			display: flex;
+			align-items: center;
+			gap: 2px;
+
+			.color-swatch-container {
+				.color-swatch {
+					display: inline-block;
+					width: 16px;
+					height: 16px;
+				}
+			}
+		}
+	}
+}

@@ -1,22 +1,24 @@
-"use strict"
+import { CodeChartaComponent } from "./codeCharta.component"
+import { NgModule } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { CodeMapModule } from "./ui/codeMap/codeMap.module"
+import { LegendPanelModule } from "./ui/legendPanel/legendPanel.module"
+import { RibbonBarModule } from "./ui/ribbonBar/ribbonBar.module"
+import { ToolBarModule } from "./ui/toolBar/toolBar.module"
+import { FileExtensionBarModule } from "./ui/fileExtensionBar/fileExtensionBar.module"
+import { LoadingFileProgressSpinnerModule } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
 
-import angular from "angular"
-import camelCase from "lodash.camelcase"
-
-import "./ui/ui"
-import "./state/state.module"
-
-import { codeChartaComponent } from "./codeCharta.component"
-import { CodeChartaService } from "./codeCharta.service"
-import { downgradeComponent } from "@angular/upgrade/static"
-import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
-import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"
-
-angular.module("app.codeCharta", ["app.codeCharta.state", "app.codeCharta.ui"])
-
-angular
-	.module("app.codeCharta")
-	.component(codeChartaComponent.selector, codeChartaComponent)
-	.service(camelCase(CodeChartaService.name), CodeChartaService)
-	.directive("ccLoadingFileProgressSpinner", downgradeComponent({ component: LoadingFileProgressSpinnerComponent }))
-	.directive("ccFileExtensionBar", downgradeComponent({ component: FileExtensionBarComponent }))
+@NgModule({
+	imports: [
+		CommonModule,
+		CodeMapModule,
+		LegendPanelModule,
+		RibbonBarModule,
+		ToolBarModule,
+		FileExtensionBarModule,
+		LoadingFileProgressSpinnerModule
+	],
+	declarations: [CodeChartaComponent],
+	exports: [CodeChartaComponent]
+})
+export class CodeChartaModule {}

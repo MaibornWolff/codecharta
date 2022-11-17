@@ -1,10 +1,15 @@
-ribbon-bar-component {
+cc-ribbon-bar {
+	position: fixed;
+	z-index: 10;
+	white-space: nowrap;
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
+	width: 100%;
 	$heightExpanded: 195;
 	$heightCollapsed: 38;
 	$border: 1px solid #cdcdcd;
-
-	pointer-events: none;
-	display: flex;
+	box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
 
 	.cc-ribbon-bar-menu-button {
 		height: 22px;
@@ -22,73 +27,50 @@ ribbon-bar-component {
 	}
 
 	cc-search-panel {
-		.search-panel-card {
-			padding: 0;
+		.search-panel-card.expanded {
+			height: 100%;
 
-			&.expanded {
-				height: 100%;
-
-				.section-body {
-					min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
-					max-height: 500px;
-					overflow-y: auto;
-				}
+			.section-body {
+				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
+				max-height: 500px;
+				overflow-y: auto;
 			}
 		}
 	}
 
-	md-card,
-	mat-card {
-		pointer-events: all;
-		margin: 0;
+	.mat-card {
 		padding: 0;
 		height: ($heightCollapsed + 8) + px;
 		border-radius: 0;
 		border-top: $border;
-		float: left;
-		position: relative;
 		flex: 1 1 0;
-		min-width: 92px;
 		transition: 200ms width ease-in-out;
-
-		.color-section {
-			text-align: center;
-			height: 100%;
-			width: 100%;
-
-			.color-icon {
-				margin: 5%;
-			}
-			.color-dropdown-icon {
-				margin: 2%;
-			}
-		}
-
-		&#ai-card,
-		&.custom-configs-card {
-			.section {
-				.section-header {
-					overflow: visible;
-					text-align: center;
-				}
-				.section-title {
-					padding: 1px 5px;
-				}
-			}
-		}
 
 		.section {
 			display: inline-block;
 			height: 100%;
+			width: 100%;
 			border-right: $border;
 			vertical-align: top;
 			overflow: hidden;
 
+			&#height-metric-section {
+				border-right: none;
+			}
+
 			.section-header {
+				margin: 0 5px 0 5px;
 				height: 31px;
 				color: #444444;
 				overflow: hidden;
 				padding: 5px;
+
+				&#area-metric-header-section,
+				&#height-metric-header-section,
+				&#color-metric-header-section,
+				&#edge-metric-header-section {
+					border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+				}
 			}
 
 			.section-title {
@@ -134,9 +116,47 @@ ribbon-bar-component {
 				}
 			}
 		}
+
+		.section-height-metric-card {
+			border-right: none;
+		}
+
+		.delta-color-section {
+			line-height: 45px;
+			vertical-align: baseline;
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			.color-icon {
+				margin: 8px;
+			}
+			.color-dropdown-icon {
+				position: absolute;
+				top: 12px;
+				right: 8px;
+			}
+		}
+
+		&.ai-card,
+		&.custom-configs-card {
+			.section {
+				.section-header {
+					overflow: visible;
+					text-align: center;
+				}
+				.section-title {
+					padding: 1px 5px;
+				}
+			}
+		}
 	}
 
-	md-card,
+	.mat-card:not([class*="mat-elevation-z"]) {
+		box-shadow: none;
+	}
+
 	mat-card,
 	.section .section-header,
 	.section .section-body,
@@ -144,18 +164,19 @@ ribbon-bar-component {
 		transition: height 0.1s ease;
 	}
 
-	md-input-container {
-		padding: 0;
-		margin: 0;
-	}
-
-	md-card.custom-configs-card,
-	md-card.ai-card {
+	mat-card.custom-configs-card,
+	mat-card.ai-card {
 		max-width: 120px;
 		min-width: 120px;
 	}
 
-	md-card.scenario-card {
+	mat-card.link-color-metric-to-height-metric-card {
+		display: flex;
+		justify-content: center;
+		flex-grow: 0;
+	}
+
+	mat-card.scenario-card {
 		max-width: 100px;
 		min-width: 100px;
 	}
@@ -189,6 +210,7 @@ ribbon-bar-component {
 
 		&.hidden {
 			max-height: 0;
+			pointer-events: none;
 			opacity: 0;
 			transition: opacity 0ms 200ms, max-height 200ms ease-in-out;
 		}

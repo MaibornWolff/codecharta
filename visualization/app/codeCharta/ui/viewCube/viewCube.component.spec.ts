@@ -1,72 +1,33 @@
 import "./viewCube.module"
-import { IRootScopeService } from "angular"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { ViewCubeController } from "./viewCube.component"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { Color, Mesh, Vector3, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { ViewCubeComponent } from "./viewCube.component"
 
-describe("ViewCubeController", () => {
-	let viewCubeController: ViewCubeController
-	let $rootScope: IRootScopeService
+describe("ViewCubeComponent", () => {
+	let viewCubeComponent: ViewCubeComponent
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
-	let $element: Element
 
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-		mockElement()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.viewCube")
-
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("storeService")
-		viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>("storeService")
-		viewCubeMouseEventsService.init = jest.fn()
+		threeOrbitControlsService = {} as ThreeOrbitControlsService
+		viewCubeMouseEventsService = { init: jest.fn() } as unknown as ViewCubeMouseEventsService
 		threeOrbitControlsService.controls = {
 			target: new Vector3(1, 2, 3)
 		} as OrbitControls
-	}
-
-	function rebuildController() {
-		ViewCubeController.prototype["initRenderer"] = jest.fn()
-		ViewCubeController.prototype["onAnimationFrame"] = jest.fn()
-
-		viewCubeController = new ViewCubeController($element, $rootScope, threeOrbitControlsService, viewCubeMouseEventsService)
-	}
-
-	function mockElement() {
-		$element = [] as unknown as Element
-	}
-
-	describe("constructor", () => {
-		it("should subscribe to ThreeOrbitControlsService", () => {
-			ThreeOrbitControlsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(ThreeOrbitControlsService.subscribe).toHaveBeenCalledWith($rootScope, viewCubeController)
-		})
-
-		it("should subscribe to ViewCubeMouseEventsService", () => {
-			ViewCubeMouseEventsService.subscribeToViewCubeMouseEvents = jest.fn()
-
-			rebuildController()
-
-			expect(ViewCubeMouseEventsService.subscribeToViewCubeMouseEvents).toHaveBeenCalledWith($rootScope, viewCubeController)
-		})
+		ViewCubeComponent.prototype["initRenderer"] = jest.fn()
+		ViewCubeComponent.prototype["onAnimationFrame"] = jest.fn()
+		const elementReference = { nativeElement: {} as HTMLElement }
+		viewCubeComponent = new ViewCubeComponent(elementReference, threeOrbitControlsService, viewCubeMouseEventsService)
 	})
 
 	describe("onCameraChanged", () => {
 		it("should call setCameraPosition", () => {
-			viewCubeController["setCameraPosition"] = jest.fn()
-			viewCubeController["renderer"] = {
+			viewCubeComponent["setCameraPosition"] = jest.fn()
+			viewCubeComponent["renderer"] = {
 				render: jest.fn()
 			} as unknown as WebGLRenderer
 			const perspectiveCamera = new PerspectiveCamera(
@@ -76,9 +37,9 @@ describe("ViewCubeController", () => {
 				ThreeCameraService.FAR
 			)
 
-			viewCubeController.onCameraChanged(perspectiveCamera)
+			viewCubeComponent.onCameraChanged({ camera: perspectiveCamera })
 
-			expect(viewCubeController["setCameraPosition"]).toHaveBeenCalledWith({
+			expect(viewCubeComponent["setCameraPosition"]).toHaveBeenCalledWith({
 				x: -0.801_783_725_737_273_2,
 				y: -1.603_567_451_474_546_4,
 				z: -2.405_351_177_211_819_5
@@ -88,28 +49,28 @@ describe("ViewCubeController", () => {
 
 	describe("onCubeHovered", () => {
 		it("should set hover info cube emmisive color to white", () => {
-			viewCubeController["renderer"] = {
+			viewCubeComponent["renderer"] = {
 				render: jest.fn()
 			} as unknown as WebGLRenderer
-			viewCubeController.onCubeHovered(new Mesh())
+			viewCubeComponent.onCubeHovered({ cube: new Mesh() })
 
-			expect(viewCubeController["hoverInfo"].cube.material.emissive).toStrictEqual(new Color(0xff_ff_ff))
+			expect(viewCubeComponent["hoverInfo"].cube.material.emissive).toStrictEqual(new Color(0xff_ff_ff))
 		})
 	})
 
 	describe("onCubeUnHovered", () => {
 		it("should set cube to null", () => {
-			viewCubeController["hoverInfo"].cube = {
+			viewCubeComponent["hoverInfo"].cube = {
 				material: {
 					emissive: new Color(0xff_ff_ff)
 				}
 			}
-			viewCubeController["renderer"] = {
+			viewCubeComponent["renderer"] = {
 				render: jest.fn()
 			} as unknown as WebGLRenderer
-			viewCubeController.onCubeUnhovered()
+			viewCubeComponent.onCubeUnhovered()
 
-			expect(viewCubeController["hoverInfo"].cube).toBe(null)
+			expect(viewCubeComponent["hoverInfo"].cube).toBe(null)
 		})
 	})
 
@@ -317,12 +278,12 @@ describe("ViewCubeController", () => {
 
 		beforeEach(() => {
 			threeOrbitControlsService.rotateCameraInVectorDirection = jest.fn()
-			viewCubeController["cubeDefinition"] = cubeDefinition
+			viewCubeComponent["cubeDefinition"] = cubeDefinition
 		})
 
 		for (const test of loopTests) {
 			it(`should rotateCameraInVectorDirection with ${test.expectedString} when mesh is ${test.whenObject}`, () => {
-				viewCubeController.onCubeClicked(test.eventValue)
+				viewCubeComponent.onCubeClicked({ cube: test.eventValue })
 
 				const expected = test.expected
 				expect(threeOrbitControlsService.rotateCameraInVectorDirection).toHaveBeenCalledWith(expected.x, expected.y, expected.z)

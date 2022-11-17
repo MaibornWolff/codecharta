@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
+import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { CenterMapButtonComponent } from "./centerMapButton.component"
 
 describe("CenterMapButtonComponent", () => {
@@ -10,14 +10,14 @@ describe("CenterMapButtonComponent", () => {
 	beforeEach(() => {
 		threeOrbitControlsService.autoFitTo = jest.fn()
 		TestBed.configureTestingModule({
-			providers: [{ provide: ThreeOrbitControlsServiceToken, useValue: threeOrbitControlsService }]
+			providers: [{ provide: ThreeOrbitControlsService, useValue: threeOrbitControlsService }]
 		})
 	})
 
 	it("should call autoFitTo of threeOrbitControlsService on click", async () => {
 		await render(CenterMapButtonComponent)
 
-		userEvent.click(screen.getByTitle("Center map"))
+		await userEvent.click(screen.getByTitle("Center map"))
 
 		expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 	})

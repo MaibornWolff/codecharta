@@ -6,7 +6,8 @@ import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import userEvent from "@testing-library/user-event"
 import { MatDialog } from "@angular/material/dialog"
 import { Vector3 } from "three"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
+import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
+import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 
 describe("addCustomConfigDialogComponent", () => {
 	jest.spyOn(CustomConfigHelper, "getConfigNameSuggestionByFileState").mockReturnValue("new custom view name")
@@ -17,8 +18,8 @@ describe("addCustomConfigDialogComponent", () => {
 			imports: [AddCustomConfigButtonModule],
 			providers: [
 				{ provide: MatDialog, useValue: mockedDialog },
-				{ provide: ThreeCameraServiceToken, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-				{ provide: ThreeOrbitControlsServiceToken, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
+				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
+				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
 			]
 		})
 	})
@@ -36,7 +37,7 @@ describe("addCustomConfigDialogComponent", () => {
 		await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
 
 		const input = screen.getByRole("textbox") as HTMLInputElement
-		userEvent.clear(input)
+		await userEvent.clear(input)
 		input.blur()
 
 		expect(await screen.findByText("Please enter a view name.")).not.toBeNull()
@@ -48,7 +49,7 @@ describe("addCustomConfigDialogComponent", () => {
 		jest.spyOn(CustomConfigHelper, "hasCustomConfigByName").mockReturnValue(true)
 
 		const input = screen.getByRole("textbox") as HTMLInputElement
-		userEvent.type(input, "file name already exists")
+		await userEvent.type(input, "file name already exists")
 		input.blur()
 
 		expect(await screen.findByText("A Custom View with this name already exists.")).not.toBeNull()

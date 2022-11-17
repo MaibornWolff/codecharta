@@ -3,11 +3,11 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
-import picocli.CommandLine.call
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -15,6 +15,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStreamWriter
 import java.io.PrintStream
+import java.io.PrintWriter
 import java.io.Writer
 import java.nio.file.Paths
 import java.util.concurrent.Callable
@@ -43,10 +44,17 @@ class SourceCodeParserMain(
     @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["--default-excludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
+    @CommandLine.Option(
+        names = ["--default-excludes"],
+        description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "]
+    )
     private var defaultExcludes = false
 
-    @CommandLine.Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
+    @CommandLine.Option(
+        names = ["-f", "--format"],
+        description = ["the format to output"],
+        converter = [(OutputTypeConverter::class)]
+    )
     private var outputFormat = OutputFormat.JSON
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -87,20 +95,21 @@ class SourceCodeParserMain(
     }
 
     private fun getMetricWriter(): MetricWriter {
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
         return when (outputFormat) {
-            OutputFormat.JSON -> JSONMetricWriter(getOutputWriter(), filePath, compress)
-            OutputFormat.TABLE -> CSVMetricWriter(getOutputWriter())
+            OutputFormat.JSON -> JSONMetricWriter(getJsonOutputStream(), compress && outputFile != null)
+            OutputFormat.TABLE -> CSVMetricWriter(getCsvOutputWriter())
         }
     }
 
-    private fun getOutputWriter(): Writer {
+    private fun getCsvOutputWriter(): Writer {
         return if (outputFile == null) {
             OutputStreamWriter(outputStream)
         } else {
             BufferedWriter(FileWriter(outputFile!!))
         }
     }
+
+    private fun getJsonOutputStream() = OutputFileHandler.stream(outputFile?.absolutePath, outputStream, compress)
 
     companion object {
         @JvmStatic
@@ -110,11 +119,14 @@ class SourceCodeParserMain(
 
         @JvmStatic
         fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
-            call(SourceCodeParserMain(outputStream), System.out, *args)
+            CommandLine(SourceCodeParserMain(outputStream)).execute(*args)
         }
+
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            call(SourceCodeParserMain(outputStream, input, error), outputStream, *args)
+            CommandLine(SourceCodeParserMain(outputStream, input, error))
+                .setOut(PrintWriter(outputStream))
+                .execute(*args)
         }
     }
 

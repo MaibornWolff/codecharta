@@ -20,7 +20,6 @@ import { FilePanelComponent } from "./filePanel.component"
 		FilePanelComponent
 	],
 	providers: [FileSelectionModeService],
-	exports: [FilePanelComponent],
-	entryComponents: [FilePanelComponent]
+	exports: [FilePanelComponent]
 })
 export class FilePanelModule {}

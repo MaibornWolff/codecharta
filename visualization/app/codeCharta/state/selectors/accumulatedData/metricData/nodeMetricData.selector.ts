@@ -3,11 +3,12 @@ import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, BlacklistType, NodeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
-import { createSelector } from "../../../angular-redux/store"
+import { createSelector } from "../../../angular-redux/createSelector"
 import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
-import { NodeMetricDataService } from "../../../store/metricData/nodeMetricData/nodeMetricData.service"
 import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
 import { sortByMetricName } from "./sortByMetricName"
+
+export const UNARY_METRIC = "unary"
 
 export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklist: BlacklistItem[]) => {
 	if (visibleFileStates.length === 0) {
@@ -39,8 +40,8 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 	const metricData: NodeMetricData[] = []
 
 	// TODO: Remove the unary metric.
-	metricMaxValues.set(NodeMetricDataService.UNARY_METRIC, 1)
-	metricMinValues.set(NodeMetricDataService.UNARY_METRIC, 1)
+	metricMaxValues.set(UNARY_METRIC, 1)
+	metricMinValues.set(UNARY_METRIC, 1)
 
 	for (const [key, value] of metricMaxValues) {
 		metricData.push({

@@ -4,7 +4,7 @@ export class UploadFileButtonPageObject {
 	async openFiles(paths: string[], clickOnFileChooser = true) {
 		const [fileChooser] = await Promise.all([
 			page.waitForFileChooser({ timeout: 60_000 }),
-			clickOnFileChooser && clickButtonOnPageElement("button[title='Load cc.json files']")
+			clickOnFileChooser && clickButtonOnPageElement("[title='Load cc.json files']")
 		])
 
 		await fileChooser.accept(paths)
@@ -14,7 +14,7 @@ export class UploadFileButtonPageObject {
 	}
 
 	async cancelOpeningFile() {
-		const [fileChooser] = await Promise.all([page.waitForFileChooser(), clickButtonOnPageElement("button[title='Load cc.json files']")])
+		const [fileChooser] = await Promise.all([page.waitForFileChooser(), clickButtonOnPageElement("[title='Load cc.json files']")])
 
 		fileChooser.cancel()
 	}

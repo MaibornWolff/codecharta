@@ -7,6 +7,7 @@ import { Store } from "../../../../state/store/store"
 import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
+import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 
 jest.mock("../../../../state/selectors/searchedNodes/searchedNodePaths.selector", () => ({
 	searchedNodePathsSelector: jest.fn(
@@ -27,6 +28,7 @@ describe("mapTreeViewLevel", () => {
 		})
 
 		Store["initialize"]()
+		Store.dispatch(setAreaMetric("unary"))
 	})
 
 	it("should show root and first level folder and files initially", async () => {
@@ -64,9 +66,21 @@ describe("mapTreeViewLevel", () => {
 
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy()
 
-		userEvent.hover(firstLevelFolder)
+		await userEvent.hover(firstLevelFolder)
 
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeTruthy()
+	})
+
+	it("should not display option buttons on hover when area metric is unavailable", async () => {
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
+		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+		fireEvent.click(firstLevelFolder)
+
+		const smallLeaf = container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")
+
+		await userEvent.hover(smallLeaf)
+
+		expect(smallLeaf.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy()
 	})
 
 	it("should show option button on hover and be marked after context menu was opened", async () => {
@@ -76,7 +90,7 @@ describe("mapTreeViewLevel", () => {
 		let optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
 		expect(optionsButton).toBe(null)
 
-		userEvent.hover(firstLevelFolder)
+		await userEvent.hover(firstLevelFolder)
 		optionsButton = firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")
 		expect(optionsButton).not.toBe(null)
 		fireEvent.click(optionsButton.querySelector("[title='Open Node-Context-Menu']"))
@@ -92,7 +106,7 @@ describe("mapTreeViewLevel", () => {
 		const showsPercentage = firstLevelFolder.textContent.includes("%")
 		expect(showsPercentage).toBe(true)
 
-		userEvent.hover(firstLevelFolder)
+		await userEvent.hover(firstLevelFolder)
 
 		const showsPercentageAfterHover = firstLevelFolder.textContent.includes("%")
 		expect(showsPercentageAfterHover).toBe(false)
@@ -110,5 +124,29 @@ describe("mapTreeViewLevel", () => {
 		const bigLeaf = container.querySelector("#\\/root\\/bigLeaf")
 		const isAngularGreen = bigLeaf.querySelector(".angular-green")
 		expect(isAngularGreen).toBeTruthy()
+	})
+
+	it("should change text color to gray if node has no area metric", async () => {
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
+		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+		fireEvent.click(firstLevelFolder)
+
+		const smallLeaf = container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")
+
+		expect(smallLeaf.querySelector(".noAreaMetric")).toBeTruthy()
+	})
+
+	it("should change text color and stop displaying option buttons on hover when area metric is changed to not exist", async () => {
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
+		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+		await userEvent.hover(firstLevelFolder)
+
+		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeTruthy()
+
+		Store.dispatch(setAreaMetric("mcc"))
+		await userEvent.hover(firstLevelFolder)
+
+		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy()
+		expect(firstLevelFolder.querySelector(".noAreaMetric")).toBeTruthy()
 	})
 })

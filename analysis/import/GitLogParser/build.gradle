@@ -1,4 +1,5 @@
 dependencies {
+
     implementation project(':model')
     implementation project(':filter:MergeFilter')
     implementation project(':tools:InteractiveParser')
@@ -10,12 +11,11 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
     implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version
 
-    testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 
-    testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5_version
 }
 
 test {

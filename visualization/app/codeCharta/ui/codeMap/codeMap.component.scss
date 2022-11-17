@@ -1,5 +1,9 @@
-code-map-component {
-	view-cube-component {
+cc-code-map {
+	.hidden {
+		display: none;
+	}
+
+	cc-view-cube {
 		position: absolute;
 		z-index: 11;
 		right: 0px;

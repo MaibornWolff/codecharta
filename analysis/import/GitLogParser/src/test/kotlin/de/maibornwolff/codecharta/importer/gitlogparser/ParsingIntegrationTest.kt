@@ -4,17 +4,16 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogLineParser
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.VersionControlledFilesInGitProject
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstatRawParserStrategy
-import org.hamcrest.CoreMatchers.hasItem
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.io.File
 import java.io.InputStream
-import java.util.Arrays
 
 class ParsingIntegrationTest {
 
     private val metricsFactory = MetricsFactory(
-        Arrays.asList(
+        listOf(
             "number_of_authors",
             "number_of_commits",
             "weeks_with_commits",
@@ -39,32 +38,34 @@ class ParsingIntegrationTest {
         val resourceName = "names-in-git-repo.txt"
         val classLoader = javaClass.classLoader
         val file = File(classLoader.getResource(resourceName)!!.file)
-        val project_name_list = readFileNameListFile(file)
+        val projectNameList = readFileNameListFile(file)
 
         // parsed git-log
         val parserStrategy = GitLogNumstatRawParserStrategy()
         val codeChartaLog = this.javaClass.classLoader.getResourceAsStream("codeCharta.log")
         val parser = LogLineParser(parserStrategy, metricsFactory)
         val codeList = mutableListOf<String>()
-        codeChartaLog.bufferedReader().forEachLine { codeList.add(it) }
+        codeChartaLog?.bufferedReader()?.forEachLine { codeList.add(it) }
         val vcFList = parser.parse(codeList.stream())
 
-        val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList.getList(), project_name_list)
+        val versionControlledFilesInGitProject =
+            VersionControlledFilesInGitProject(vcFList.getList(), projectNameList)
 
-        val namesInVCF = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { versionControlledFile -> versionControlledFile.filename }
+        val namesInVCF = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject()
+            .map { versionControlledFile -> versionControlledFile.filename }
 
-        val newList = project_name_list.filter { element ->
+        projectNameList.filter { element ->
             !namesInVCF.contains(element)
         }
 
-        Assert.assertEquals(project_name_list.size, namesInVCF.size)
+        assertEquals(projectNameList.size, namesInVCF.size)
 
         for (item in namesInVCF) {
-            Assert.assertThat(project_name_list, hasItem(item))
+            assertTrue(projectNameList.contains(item))
         }
 
-        for (item in project_name_list) {
-            Assert.assertThat(namesInVCF, hasItem(item))
+        for (item in projectNameList) {
+            assertTrue(namesInVCF.contains(item))
         }
     }
 }

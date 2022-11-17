@@ -1,4 +1,4 @@
-<div id="codeMap" ng-hide="$ctrl._viewModel.isLoadingFile">
-	<view-cube-component ng-class="{ sideBarVisible: $ctrl._viewModel.isSideBarVisible }"></view-cube-component>
+<div id="codeMap" [class.hidden]="isLoadingFile$ | async">
+	<cc-view-cube [class.sideBarVisible]="isAttributeSideBarVisibleService.isOpen"></cc-view-cube>
 	<cc-attribute-side-bar></cc-attribute-side-bar>
 </div>

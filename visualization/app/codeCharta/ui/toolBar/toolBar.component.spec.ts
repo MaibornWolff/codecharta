@@ -1,40 +1,43 @@
-import "./toolBar.module"
-import { ToolBarController } from "./toolBar.component"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
+import { TestBed } from "@angular/core/testing"
+import { render } from "@testing-library/angular"
+import { mocked } from "ts-jest/utils"
+import { LoadFileService } from "../../services/loadFile/loadFile.service"
+import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
+import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { ToolBarComponent } from "./toolBar.component"
+import { ToolBarModule } from "./toolBar.module"
 
-describe("ToolBarController", () => {
-	let $rootScope: IRootScopeService
-	let toolBarController: ToolBarController
+jest.mock("../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector", () => ({
+	hoveredNodeIdSelector: jest.fn()
+}))
+const mockedHoveredNodeIdSelector = mocked(hoveredNodeIdSelector)
 
+describe("ToolBarComponent", () => {
 	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
-
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.toolBar")
-
-		$rootScope = getService<IRootScopeService>("$rootScope")
-	}
-
-	function rebuildController() {
-		toolBarController = new ToolBarController($rootScope)
-	}
-
-	describe("onBuildingHovered", () => {
-		it("should set isNodeHovered to true if node is hovered", () => {
-			toolBarController.onBuildingHovered()
-
-			expect(toolBarController["_viewModel"].isNodeHovered).toBe(true)
+		TestBed.configureTestingModule({
+			imports: [ToolBarModule],
+			providers: [
+				{ provide: LoadFileService, useValue: {} },
+				{ provide: ThreeCameraService, useValue: {} },
+				{ provide: ThreeSceneService, useValue: {} },
+				{ provide: ThreeRendererService, useValue: {} }
+			]
 		})
 	})
 
-	describe("onBuildingUnhovered", () => {
-		it("should set isNodeHovered to false if no node is hovered", () => {
-			toolBarController.onBuildingUnhovered()
+	it("should show file panel and not hovered node path panel, when there is no node hovered", async () => {
+		mockedHoveredNodeIdSelector.mockImplementation(() => null)
+		const { container } = await render(ToolBarComponent, { excludeComponentDeclaration: true })
+		expect(container.querySelector("cc-file-panel")).not.toBe(null)
+		expect(container.querySelector("cc-hovered-node-path-panel")).toBe(null)
+	})
 
-			expect(toolBarController["_viewModel"].isNodeHovered).toBe(false)
-		})
+	it("should show hovered node path panel and not file panel, when there is a node hovered", async () => {
+		mockedHoveredNodeIdSelector.mockImplementation(() => 0)
+		const { container } = await render(ToolBarComponent, { excludeComponentDeclaration: true })
+		expect(container.querySelector("cc-hovered-node-path-panel")).not.toBe(null)
+		expect(container.querySelector("cc-file-panel")).toBe(null)
 	})
 })

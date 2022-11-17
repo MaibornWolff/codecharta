@@ -1,5 +1,3 @@
-import "./threeViewer.module"
-import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import {
 	CODE_MAP_BUILDING,
 	CODE_MAP_BUILDING_TS_NODE,
@@ -9,13 +7,9 @@ import {
 	VALID_FILE_NODE_WITH_ID,
 	VALID_NODES_WITH_ID
 } from "../../../util/dataMocks"
-import { CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
-import { IRootScopeService } from "angular"
-import { StoreService } from "../../../state/store.service"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { klona } from "klona"
 import { CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 import { Box3, BufferGeometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
@@ -23,8 +17,10 @@ import { setLayoutAlgorithm } from "../../../state/store/appSettings/layoutAlgor
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { mocked } from "ts-jest/utils"
+import { TestBed } from "@angular/core/testing"
+import { State } from "../../../state/angular-redux/state"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
-import { ThreeRendererService } from "./threeRendererService"
+import { Store } from "../../../state/angular-redux/store"
 
 jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -33,75 +29,39 @@ const mockedIdToNodeSelector = mocked(idToNodeSelector)
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
-	let $rootScope: IRootScopeService
-	let storeService: StoreService
+	let state: State
 	let idToBuildingService: IdToBuildingService
-	let renderSpy: jest.Mock
-
-	let codeMapBuilding: CodeMapBuilding
+	let store: Store
 
 	beforeEach(() => {
-		restartSystem()
-		rebuildService()
-	})
+		TestBed.configureTestingModule({
+			providers: [ThreeSceneService]
+		})
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
+		state = TestBed.inject(State)
+		idToBuildingService = TestBed.inject(IdToBuildingService)
+		store = TestBed.inject(Store)
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
-
-		codeMapBuilding = klona(CODE_MAP_BUILDING)
-	}
-
-	function rebuildService() {
-		renderSpy = jest.fn()
-		const mockedThreeRendererService = { render: renderSpy } as unknown as ThreeRendererService
-		threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService, mockedThreeRendererService)
-	}
-
-	beforeEach(() => {
-		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
+		threeSceneService = TestBed.inject(ThreeSceneService)
+		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, state.getValue(), false)
 		threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 		threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
-	})
-
-	describe("constructor", () => {
-		it("should subscribe renderMap", () => {
-			CodeMapPreRenderService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, threeSceneService)
-		})
-	})
-
-	describe("onRenderMapChanged", () => {
-		it("should call reselectBuilding", () => {
-			threeSceneService["selected"] = codeMapBuilding
-			threeSceneService["reselectBuilding"] = jest.fn()
-
-			threeSceneService.onRenderMapChanged()
-
-			expect(threeSceneService["reselectBuilding"]).toHaveBeenCalled()
-		})
 	})
 
 	describe("highlightBuildings", () => {
 		it("should call highlightBuilding", () => {
 			threeSceneService["mapMesh"].highlightBuilding = jest.fn()
+			threeSceneService["threeRendererService"].render = jest.fn()
 
 			threeSceneService.highlightBuildings()
 
 			expect(threeSceneService["mapMesh"].highlightBuilding).toHaveBeenCalledWith(
 				threeSceneService["highlighted"],
 				null,
-				storeService.getState(),
+				state.getValue(),
 				threeSceneService["constantHighlight"]
 			)
-			expect(renderSpy).toHaveBeenCalled()
+			expect(threeSceneService["threeRendererService"].render).toHaveBeenCalled()
 		})
 	})
 
@@ -427,7 +387,7 @@ describe("ThreeSceneService", () => {
 			}
 
 			const scaling = new Vector3(1, 2, 3)
-			storeService.dispatch(setScaling(scaling))
+			store.dispatch(setScaling(scaling))
 
 			threeSceneService.scaleHeight()
 
@@ -444,7 +404,7 @@ describe("ThreeSceneService", () => {
 			}
 
 			const scaling = new Vector3(1, 2, 3)
-			storeService.dispatch(setScaling(scaling))
+			store.dispatch(setScaling(scaling))
 			threeSceneService["mapMesh"].setScale = jest.fn()
 
 			threeSceneService.scaleHeight()
@@ -467,19 +427,19 @@ describe("ThreeSceneService", () => {
 			const originalGetRootNode = threeSceneService["getRootNode"]
 			threeSceneService["getRootNode"] = getRootNodeMock
 
-			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.StreetMap))
-			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, storeService.getState(), false))
+			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.StreetMap))
+			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
-			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.TreeMapStreet))
-			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, storeService.getState(), false))
+			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.TreeMapStreet))
+			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
 			expect(getRootNodeMock).not.toHaveBeenCalled()
 			expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
 
 			threeSceneService["getRootNode"] = originalGetRootNode
 
-			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
-			threeSceneService.setMapMesh(TEST_NODES, new CodeMapMesh(TEST_NODES, storeService.getState(), false))
+			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
+			threeSceneService.setMapMesh(TEST_NODES, new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
 			expect(floorLabelDrawerSpy).toHaveBeenCalled()
 		})
@@ -488,8 +448,8 @@ describe("ThreeSceneService", () => {
 			threeSceneService["notifyMapMeshChanged"] = jest.fn()
 			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
 
-			storeService.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
-			threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, storeService.getState(), false))
+			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
+			threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
 			expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
 		})

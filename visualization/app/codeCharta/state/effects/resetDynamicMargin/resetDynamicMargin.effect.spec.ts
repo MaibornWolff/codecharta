@@ -39,4 +39,10 @@ describe("resetDynamicMarginEffect", () => {
 		mockedDynamicMarginSelector.next(true)
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(setMargin(defaultMargin))
 	})
+
+	it("should do nothing, when dynamicMargin stays true", () => {
+		mockedDynamicMarginSelector.next(true)
+		mockedDynamicMarginSelector.next(true)
+		expect(mockedStore.dispatch).toHaveBeenCalledTimes(1)
+	})
 })

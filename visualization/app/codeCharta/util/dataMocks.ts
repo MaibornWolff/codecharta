@@ -24,16 +24,15 @@ import {
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { Box3, Vector3 } from "three"
-import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 import { ScenarioItem, ScenarioMetricProperty } from "../ui/ribbonBar/showScenariosButton/scenarioHelper"
+import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
 const DEFAULT_FILE_META = {
 	projectName: "Sample Project",
@@ -182,13 +181,13 @@ export const VALID_NODE_JAVA: CodeMapNode = {
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 	...DEFAULT_ROOT,
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	attributes: { [UNARY_METRIC]: 200 },
 
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
@@ -196,7 +195,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
+			attributes: { [UNARY_METRIC]: 60 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -204,7 +203,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
+			attributes: { [UNARY_METRIC]: 40 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -212,14 +211,14 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
+			attributes: { [UNARY_METRIC]: 160 },
 			isExcluded: false,
 			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -230,20 +229,20 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 	...DEFAULT_ROOT,
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	attributes: { [UNARY_METRIC]: 200 },
 
 	children: [
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
+			attributes: { [UNARY_METRIC]: 160 },
 			isExcluded: false,
 			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -252,7 +251,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
+			attributes: { [UNARY_METRIC]: 40 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -260,7 +259,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
+			attributes: { [UNARY_METRIC]: 60 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -268,7 +267,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
@@ -278,20 +277,20 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 	...DEFAULT_ROOT,
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	attributes: { [UNARY_METRIC]: 200 },
 
 	children: [
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
+			attributes: { [UNARY_METRIC]: 160 },
 			isExcluded: false,
 			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -300,7 +299,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
+			attributes: { [UNARY_METRIC]: 60 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -308,7 +307,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
+			attributes: { [UNARY_METRIC]: 40 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -316,7 +315,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
@@ -326,13 +325,13 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 	...DEFAULT_ROOT,
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	attributes: { [UNARY_METRIC]: 200 },
 
 	children: [
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
+			attributes: { [UNARY_METRIC]: 60 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -340,7 +339,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
+			attributes: { [UNARY_METRIC]: 40 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -348,14 +347,14 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
+			attributes: { [UNARY_METRIC]: 160 },
 			isExcluded: false,
 			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -364,7 +363,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
@@ -374,13 +373,13 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 
 export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 	...DEFAULT_ROOT,
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	attributes: { [UNARY_METRIC]: 200 },
 
 	children: [
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
+			attributes: { [UNARY_METRIC]: 60 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -388,28 +387,28 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
+			attributes: { [UNARY_METRIC]: 160 },
 			isExcluded: false,
 			isFlattened: false,
 			children: [
 				{
 					name: "File2a",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
 				{
 					name: "File2á",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
 				{
 					name: "File2b",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -418,7 +417,7 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 		{
 			name: "Folder10",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
+			attributes: { [UNARY_METRIC]: 40 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -426,7 +425,7 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
@@ -436,13 +435,13 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 
 export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
 	...DEFAULT_ROOT,
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	attributes: { [UNARY_METRIC]: 200 },
 
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
@@ -450,7 +449,7 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
+			attributes: { [UNARY_METRIC]: 60 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -458,7 +457,7 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
 		{
 			name: "Folder10",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
+			attributes: { [UNARY_METRIC]: 40 },
 			isExcluded: false,
 			isFlattened: false,
 			children: []
@@ -466,28 +465,28 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
+			attributes: { [UNARY_METRIC]: 160 },
 			isExcluded: false,
 			isFlattened: false,
 			children: [
 				{
 					name: "File2a",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
 				{
 					name: "File2b",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
 				{
 					name: "File2á",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				}
@@ -556,7 +555,7 @@ export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
 	id: 1,
 	type: NodeType.FILE,
 	path: "/root/big leaf",
-	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+	attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 	link: "https://www.google.de",
 	isExcluded: false,
 	isFlattened: false
@@ -581,13 +580,13 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	isExcluded: false,
 	isFlattened: false,
 	path: "/root",
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 2 },
+	attributes: { [UNARY_METRIC]: 2 },
 	children: [
 		{
 			name: "first leaf",
 			type: NodeType.FILE,
 			path: "/root/first leaf",
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 1, functions: 10, mcc: 1 },
+			attributes: { [UNARY_METRIC]: 1, functions: 10, mcc: 1 },
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -595,7 +594,7 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 			name: "second leaf",
 			type: NodeType.FILE,
 			path: "/root/second leaf",
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 1, functions: 5, mcc: 1 },
+			attributes: { [UNARY_METRIC]: 1, functions: 5, mcc: 1 },
 			isExcluded: false,
 			isFlattened: false
 		}
@@ -608,13 +607,13 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 	isExcluded: false,
 	isFlattened: false,
 	path: "/root",
-	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 5 },
+	attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 5 },
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
 			path: "/root/big leaf",
-			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 			link: "https://www.google.de",
 			isExcluded: false,
 			isFlattened: false
@@ -622,7 +621,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 		{
 			name: "Parent Leaf",
 			type: NodeType.FOLDER,
-			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
 			path: "/root/Parent Leaf",
 			isExcluded: false,
 			isFlattened: false,
@@ -631,7 +630,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 					name: "small leaf",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf",
-					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
 					isExcluded: false,
 					isFlattened: false
 				},
@@ -639,7 +638,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 					name: "other small leaf",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/other small leaf",
-					attributes: { rloc: 70, functions: 1000, mcc: 10, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					attributes: { rloc: 70, functions: 1000, mcc: 10, [UNARY_METRIC]: 1 },
 					edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
 					isExcluded: false,
 					isFlattened: false
@@ -1524,7 +1523,7 @@ export const FILE_STATES_JAVA: FileState[] = [
 export const METRIC_DATA: NodeMetricData[] = [
 	{ name: "mcc", maxValue: 1, minValue: 1 },
 	{ name: "rloc", maxValue: 2, minValue: 1 },
-	{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1, minValue: 1 }
+	{ name: UNARY_METRIC, maxValue: 1, minValue: 1 }
 ]
 
 export const EDGE_METRIC_DATA: EdgeMetricData[] = [
@@ -1579,6 +1578,7 @@ export const STATE: State = {
 		isEdgeMetricVisible: true,
 		dynamicMargin: true,
 		isWhiteBackground: false,
+		isColorMetricLinkedToHeightMetric: false,
 		mapColors: {
 			positive: "#69AE40",
 			neutral: "#ddcc00",
@@ -1599,7 +1599,6 @@ export const STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
-		isAttributeSideBarVisible: true,
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
@@ -1607,9 +1606,6 @@ export const STATE: State = {
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
-	},
-	treeMap: {
-		mapSize: 250
 	},
 	files: [],
 	appStatus: {
@@ -1635,6 +1631,7 @@ export const DEFAULT_STATE: State = {
 		invertArea: false,
 		isEdgeMetricVisible: true,
 		isWhiteBackground: false,
+		isColorMetricLinkedToHeightMetric: false,
 		mapColors: {
 			base: "#666666",
 			flat: "#AAAAAA",
@@ -1656,7 +1653,6 @@ export const DEFAULT_STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: true,
-		isAttributeSideBarVisible: false,
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
@@ -1682,7 +1678,6 @@ export const DEFAULT_STATE: State = {
 		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
-	treeMap: { mapSize: 250 },
 	files: [],
 	appStatus: {
 		hoveredNodeId: null,
@@ -1890,65 +1885,116 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 
 export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
 	[
-		"fileAfileBSINGLE",
+		"File_A_STANDARD",
 		{
-			mapNames: "fileA fileB",
-			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+			mapNames: "fileA",
+			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: false,
 			customConfigItems: [
 				{
-					id: "SINGLEfileASampleMap View #1",
+					id: "File_A_STANDARD_Sample_Map View #1",
 					name: "SampleMap View #1",
-					mapNames: "fileA",
-					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					assignedMaps: new Map([["md5_fileA", "fileA"]]),
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: false
 				},
 				{
-					id: "SINGLEfileBSampleMap View #2",
+					id: "File_A_STANDARD_Sample_Map View #2",
 					name: "SampleMap View #2",
-					mapNames: "fileB",
-					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					assignedMaps: new Map([["md5_fileA", "fileA"]]),
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: false
 				}
 			]
 		}
 	],
 	[
-		"fileAfileBMultiple",
+		"File_B_File_C_STANDARD",
 		{
-			mapNames: "fileC fileD",
+			mapNames: "fileB fileC",
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: true,
 			customConfigItems: [
 				{
-					id: "MULTIPLEfileCSampleMap View #1",
+					id: "File_B_File_C_STANDARD_Sample_Map View #1",
 					name: "SampleMap View #1",
-					mapNames: "fileB",
+					assignedMaps: new Map([
+						["md5_fileB", "fileB"],
+						["md5_fileC", "fileC"]
+					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "functions", edgeMetric: "avgCommits" },
 					isApplicable: true
 				},
 				{
-					id: "MULTIPLEfileDSampleMap View #2",
+					id: "File_B_File_C_STANDARD_Sample_Map View #2",
 					name: "SampleMap View #2",
-					mapNames: "fileD",
+					assignedMaps: new Map([
+						["md5_fileB", "fileB"],
+						["md5_fileC", "fileC"]
+					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: true
 				}
 			]
 		}
 	],
 	[
-		"fileAfileBDELTA",
+		"File_D_DELTA",
 		{
-			mapNames: "fileE",
+			mapNames: "fileD",
 			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 			hasApplicableItems: false,
 			customConfigItems: [
 				{
-					id: "MULTIPLEfileESampleMap View #1",
+					id: "File_D_DELTA_Sample_Map View #1",
 					name: "SampleMap Delta View #1",
-					mapNames: "fileD",
+					assignedMaps: new Map([["md5_fileD", "fileD"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: null },
 					isApplicable: false
 				}
 			]
@@ -2189,13 +2235,6 @@ export const CONSTANT_HIGHLIGHT: Map<number, CodeMapBuilding> = new Map([
 	[CODE_MAP_BUILDING.id, CODE_MAP_BUILDING],
 	[CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
 ])
-
-export function withMockedEventMethods($rootScope: IRootScopeService) {
-	$rootScope.$broadcast = jest.fn()
-	$rootScope.$on = jest.fn()
-	$rootScope.$digest = jest.fn()
-	$rootScope.$apply = jest.fn()
-}
 
 export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
 	const pathsSet = new Set(paths)

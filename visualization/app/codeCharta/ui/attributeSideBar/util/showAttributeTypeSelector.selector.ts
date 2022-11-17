@@ -1,4 +1,4 @@
-import { createSelector } from "../../../state/angular-redux/store"
+import { createSelector } from "../../../state/angular-redux/createSelector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { isLeaf, MaybeLeaf } from "../../../util/codeMapHelper"
 

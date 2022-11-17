@@ -1,30 +1,29 @@
-import "./codeMap.module"
-import "../../codeCharta.module"
-import { IRootScopeService, IWindowService } from "angular"
+import { TestBed } from "@angular/core/testing"
 import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouseEvent.service"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
+import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { ThreeRendererService } from "./threeViewer/threeRendererService"
+import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES, withMockedEventMethods } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
 import { BlacklistType, CodeMapNode, Node } from "../../codeCharta.model"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { FilesService } from "../../state/store/files/files.service"
-import { StoreService } from "../../state/store.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
-import { ThreeViewerService } from "./threeViewer/threeViewerService"
+import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { mocked } from "ts-jest/utils"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
+import { Store } from "../../state/angular-redux/store"
+import { State } from "../../state/angular-redux/state"
+import {
+	RightClickedNodeDataActions,
+	setRightClickedNodeData
+} from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -33,18 +32,16 @@ const mockedIdToNodeSelector = mocked(idToNodeSelector)
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
-
-	let $rootScope: IRootScopeService
-	let $window: IWindowService
 	let threeCameraService: ThreeCameraService
 	let threeRendererService: ThreeRendererService
 	let threeSceneService: ThreeSceneService
-	let threeUpdateCycleService: ThreeUpdateCycleService
-	let storeService: StoreService
+	let store: Store
+	let state: State
 	let codeMapLabelService: CodeMapLabelService
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
 	let threeViewerService: ThreeViewerService
 	let idToBuildingService: IdToBuildingService
+	let constantHighlight: Map<number, CodeMapBuilding>
 
 	let codeMapBuilding: CodeMapBuilding
 
@@ -52,12 +49,9 @@ describe("codeMapMouseEventService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedWindow()
-		withMockedThreeUpdateCycleService()
 		withMockedThreeRendererService()
-		withMockedViewCubeMouseEventsService()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
-		withMockedEventMethods($rootScope)
 		NodeDecorator.decorateMap(
 			TEST_FILE_WITH_PATHS.map,
 			{
@@ -66,22 +60,39 @@ describe("codeMapMouseEventService", () => {
 			},
 			[]
 		)
+		constantHighlight = new Map(CONSTANT_HIGHLIGHT)
 	})
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.codeMap")
+		threeCameraService = TestBed.inject(ThreeCameraService)
+		threeRendererService = TestBed.inject(ThreeRendererService)
+		threeSceneService = TestBed.inject(ThreeSceneService)
+		threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+			clearHighlight: jest.fn(),
+			highlightSingleBuilding: jest.fn(),
+			clearSelection: jest.fn(),
+			selectBuilding: jest.fn(),
+			getMeshDescription: jest.fn().mockReturnValue({
+				buildings: [codeMapBuilding]
+			}),
+			checkMouseRayMeshIntersection: jest.fn()
+		})
+		threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+		threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+		threeSceneService.getConstantHighlight = jest.fn().mockReturnValue(new Map())
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		$window = getService<IWindowService>("$window")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
-		threeRendererService = getService<ThreeRendererService>("threeRendererService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
-		storeService = getService<StoreService>("storeService")
-		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
-		viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>("viewCubeMouseEventsService")
-		threeViewerService = getService<ThreeViewerService>("threeViewerService")
-		idToBuildingService = getService<IdToBuildingService>("idToBuilding")
+		store = TestBed.inject(Store)
+		state = TestBed.inject(State)
+		threeViewerService = TestBed.inject(ThreeViewerService)
+		viewCubeMouseEventsService = {
+			subscribe: jest.fn(),
+			propagateMovement: jest.fn(),
+			resetIsDragging: jest.fn(),
+			onDocumentDoubleClick: jest.fn()
+		} as unknown as ViewCubeMouseEventsService
+		idToBuildingService = TestBed.inject(IdToBuildingService)
+		codeMapLabelService = TestBed.inject(CodeMapLabelService)
+		codeMapLabelService["threeSceneService"] = threeSceneService
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		document.body.style.cursor = CursorType.Default
@@ -89,13 +100,11 @@ describe("codeMapMouseEventService", () => {
 
 	function rebuildService() {
 		codeMapMouseEventService = new CodeMapMouseEventService(
-			$rootScope,
-			$window,
 			threeCameraService,
 			threeRendererService,
 			threeSceneService,
-			threeUpdateCycleService,
-			storeService,
+			store,
+			state,
 			codeMapLabelService,
 			viewCubeMouseEventsService,
 			threeViewerService,
@@ -106,14 +115,7 @@ describe("codeMapMouseEventService", () => {
 	}
 
 	function withMockedWindow() {
-		$window.open = jest.fn()
-	}
-
-	function withMockedThreeUpdateCycleService() {
-		threeUpdateCycleService = codeMapMouseEventService["threeUpdateCycleService"] = jest.fn().mockReturnValue({
-			register: jest.fn(),
-			update: jest.fn()
-		})()
+		window.open = jest.fn()
 	}
 
 	function withMockedThreeRendererService() {
@@ -128,12 +130,9 @@ describe("codeMapMouseEventService", () => {
 					height: 1
 				},
 				getPixelRatio: jest.fn().mockReturnValue(2)
-			}
+			},
+			render: jest.fn()
 		})()
-	}
-
-	function withMockedViewCubeMouseEventsService() {
-		ViewCubeMouseEventsService.subscribeToEventPropagation = jest.fn()
 	}
 
 	function withMockedThreeCameraService() {
@@ -171,30 +170,6 @@ describe("codeMapMouseEventService", () => {
 		})()
 	}
 
-	describe("constructor", () => {
-		it("should call register on threeUpdateCycleService", () => {
-			rebuildService()
-
-			expect(threeUpdateCycleService.register).toHaveBeenCalled()
-		})
-
-		it("should subscribe to BlacklistService", () => {
-			BlacklistService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
-		})
-
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
-		})
-	})
-
 	describe("start", () => {
 		it("should register all event listeners", () => {
 			codeMapMouseEventService.start()
@@ -210,14 +185,6 @@ describe("codeMapMouseEventService", () => {
 			expect(addEventListenerMock.mock.calls[6][0]).toEqual("wheel")
 			expect(addEventListenerMock).toHaveBeenCalledTimes(7)
 		})
-
-		it("should subscribe to event propagation", () => {
-			ViewCubeMouseEventsService.subscribeToEventPropagation = jest.fn()
-
-			codeMapMouseEventService.start()
-
-			expect(ViewCubeMouseEventsService.subscribeToEventPropagation).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
-		})
 	})
 
 	describe("onViewCubeEventPropagation", () => {
@@ -229,28 +196,28 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call onDocumentMouseMove", () => {
-			codeMapMouseEventService.onViewCubeEventPropagation("mousemove", null)
-
-			expect(codeMapMouseEventService.onDocumentMouseMove).toHaveBeenCalledWith(null)
+			const data = { type: "mousemove", event: new MouseEvent("mousemove") }
+			codeMapMouseEventService.onViewCubeEventPropagation(data)
+			expect(codeMapMouseEventService.onDocumentMouseMove).toHaveBeenCalledWith(data.event)
 		})
 
 		it("should call onDocumentMouseDown", () => {
-			codeMapMouseEventService.onViewCubeEventPropagation("mousedown", null)
-
-			expect(codeMapMouseEventService.onDocumentMouseDown).toHaveBeenCalledWith(null)
+			const data = { type: "mousedown", event: new MouseEvent("mousedown") }
+			codeMapMouseEventService.onViewCubeEventPropagation(data)
+			expect(codeMapMouseEventService.onDocumentMouseDown).toHaveBeenCalledWith(data.event)
 			expect(codeMapMouseEventService.onDocumentDoubleClick).not.toHaveBeenCalled()
 		})
 
 		it("should call onDocumentMouseUp", () => {
-			codeMapMouseEventService.onViewCubeEventPropagation("mouseup", null)
-
-			expect(codeMapMouseEventService.onDocumentMouseUp).toHaveBeenCalled()
+			const data = { type: "mouseup", event: new MouseEvent("mouseup") }
+			codeMapMouseEventService.onViewCubeEventPropagation(data)
+			expect(codeMapMouseEventService.onDocumentMouseUp).toHaveBeenCalledWith(data.event)
 		})
 
 		it("should call onDocumentDoubleClick", () => {
-			codeMapMouseEventService.onViewCubeEventPropagation("dblclick", null)
-
-			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalled()
+			const data = { type: "dblclick", event: new MouseEvent("dblclick") }
+			codeMapMouseEventService.onViewCubeEventPropagation(data)
+			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalledWith()
 		})
 	})
 
@@ -353,10 +320,15 @@ describe("codeMapMouseEventService", () => {
 
 		function setAnimatedLabel(label: Object3D) {
 			// At first, animate a label
-			threeSceneService = new ThreeSceneService($rootScope, storeService, idToBuildingService, threeRendererService)
-			threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
+			threeSceneService = new ThreeSceneService(
+				TestBed.inject(Store),
+				TestBed.inject(State),
+				idToBuildingService,
+				threeRendererService
+			)
+			threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, state.getValue(), false)
 			threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
-			threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
+			threeSceneService["constantHighlight"] = constantHighlight
 
 			const resultPosition = new Vector3(0.5, 0.5, 0)
 
@@ -419,6 +391,7 @@ describe("codeMapMouseEventService", () => {
 		it("should un-highlight the building, when no intersection was found and a building is hovered", () => {
 			codeMapMouseEventService["modifiedLabel"] = null
 			codeMapMouseEventService["highlightedInTreeView"] = null
+			codeMapMouseEventService["threeSceneService"].getHighlightedBuilding = () => ({ node: { id: 1 } } as CodeMapBuilding)
 
 			codeMapMouseEventService.updateHovering()
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
@@ -587,20 +560,34 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		describe("on right click", () => {
+			let dispatchSpy: jest.SpyInstance
+
 			beforeEach(() => {
 				event = { button: ClickType.RightClick, clientX: 0, clientY: 1 }
+				dispatchSpy = jest.spyOn(store, "dispatch")
 			})
 
-			it("should $broadcast a building-right-clicked event", () => {
+			afterEach(() => {
+				dispatchSpy.mockRestore()
+			})
+
+			it("should broadcast a building-right-clicked event", () => {
 				codeMapMouseEventService.onDocumentMouseMove(event)
+				codeMapMouseEventService["intersectedBuilding"] = { node: { id: 1 } } as CodeMapBuilding
 				codeMapMouseEventService.onDocumentMouseDown(event)
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
-				expect($rootScope.$broadcast).toHaveBeenCalled()
+				expect(dispatchSpy).toHaveBeenCalledWith(
+					setRightClickedNodeData({
+						nodeId: 1,
+						xPositionOfRightClickEvent: 0,
+						yPositionOfRightClickEvent: 1
+					})
+				)
 			})
 
-			it("should not $broadcast a building-right-clicked event when no intersection was found", () => {
+			it("should not broadcast a building-right-clicked event when no intersection was found", () => {
 				threeSceneService.getHighlightedBuilding = jest.fn()
 
 				codeMapMouseEventService.onDocumentMouseMove(event)
@@ -608,17 +595,25 @@ describe("codeMapMouseEventService", () => {
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
-				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
+				expect(dispatchSpy).not.toHaveBeenCalledWith(
+					expect.objectContaining({
+						type: RightClickedNodeDataActions.SET_RIGHT_CLICKED_NODE_DATA
+					})
+				)
 			})
 
-			it("should not $broadcast a building-right-clicked event when the mouse has moved more than 3 Pixels since last click", () => {
+			it("should not broadcast a building-right-clicked event when the mouse has moved more than 3 Pixels since last click", () => {
 				codeMapMouseEventService.onDocumentMouseMove(event)
 				codeMapMouseEventService.onDocumentMouseDown(event)
 				codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 20 } as MouseEvent)
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
-				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
+				expect(dispatchSpy).not.toHaveBeenCalledWith(
+					expect.objectContaining({
+						type: RightClickedNodeDataActions.SET_RIGHT_CLICKED_NODE_DATA
+					})
+				)
 			})
 		})
 	})
@@ -656,7 +651,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
-			expect($window.open).not.toHaveBeenCalled()
+			expect(window.open).not.toHaveBeenCalled()
 		})
 
 		it("should not call window.open if hovered.node.link and selected.node.link is null", () => {
@@ -670,7 +665,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
-			expect($window.open).not.toHaveBeenCalled()
+			expect(window.open).not.toHaveBeenCalled()
 		})
 
 		it("should call open with link if hovered.node.link is defined", () => {
@@ -678,7 +673,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
-			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+			expect(window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
 		})
 
 		it("should call open with link if selected.node.link is defined", () => {
@@ -686,7 +681,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
-			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+			expect(window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
 		})
 
 		it("should call open with link if selected.node.link is defined", () => {
@@ -694,7 +689,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
-			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
+			expect(window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
 		})
 	})
 
@@ -747,16 +742,14 @@ describe("codeMapMouseEventService", () => {
 		it("should clear the highlight when to is null and constantHighlight is empty", () => {
 			codeMapMouseEventService["unhoverBuilding"]()
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-unhovered")
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
 
 		it("should only clear the hovered highlight when to is null but constantHighlight is not empty", () => {
-			threeSceneService.getConstantHighlight = jest.fn().mockReturnValue(CONSTANT_HIGHLIGHT)
+			codeMapMouseEventService["threeSceneService"].getConstantHighlight = jest.fn().mockReturnValue(constantHighlight)
 			codeMapMouseEventService["unhoverBuilding"]()
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-unhovered")
-			expect(threeSceneService.clearHoverHighlight).toHaveBeenCalled()
+			expect(codeMapMouseEventService["threeSceneService"].clearHoverHighlight).toHaveBeenCalled()
 		})
 	})
 
@@ -807,40 +800,40 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("drawTemporaryLabelFor", () => {
-		it("should call addLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
+		it("should call addLeafLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
-			codeMapLabelService.addLabel = jest.fn()
+			codeMapLabelService.addLeafLabel = jest.fn()
 
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 			const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 			expect(nodeHeight).toBeGreaterThan(0)
 		})
 
-		it("should call addLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
+		it("should call addLeafLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
-			codeMapLabelService.addLabel = jest.fn()
-			storeService.dispatch(setShowMetricLabelNameValue(false))
-			storeService.dispatch(setShowMetricLabelNodeName(false))
+			codeMapLabelService.addLeafLabel = jest.fn()
+			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName(false))
 
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 		})
 
 		it("should not generate names in temporary Label when metric option is set to true and name is set to false", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
-			codeMapLabelService.addLabel = jest.fn()
-			storeService.dispatch(setShowMetricLabelNameValue(true))
-			storeService.dispatch(setShowMetricLabelNodeName(false))
+			codeMapLabelService.addLeafLabel = jest.fn()
+			store.dispatch(setShowMetricLabelNameValue(true))
+			store.dispatch(setShowMetricLabelNodeName(false))
 
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 
 			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
 		})
 	})
 })

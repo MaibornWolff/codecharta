@@ -1,27 +1,24 @@
-"use strict"
 import { State, stateObjectReplacer } from "../codeCharta.model"
 import { CustomConfig } from "../model/customConfig/customConfig.api.model"
-import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 import md5 from "md5"
+import { visibleFilesBySelectionModeSelector } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
 
 const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
 export function buildCustomConfigFromState(configName: string, state: State, camera: CustomConfig["camera"]): CustomConfig {
-	const customConfigFileStateConnector = new CustomConfigFileStateConnector(state.files)
+	const { mapSelectionMode, assignedMaps } = visibleFilesBySelectionModeSelector(state)
 
 	const customConfig: CustomConfig = {
 		id: "",
 		name: configName,
 		creationTime: Date.now(),
-		mapSelectionMode: customConfigFileStateConnector.getMapSelectionMode(),
-		assignedMaps: customConfigFileStateConnector.getSelectedMaps(),
-		mapChecksum: customConfigFileStateConnector.getChecksumOfAssignedMaps(),
+		mapSelectionMode,
+		assignedMaps,
 		customConfigVersion: CUSTOM_CONFIG_API_VERSION,
 		stateSettings: {
 			appSettings: undefined,
 			dynamicSettings: undefined,
-			fileSettings: undefined,
-			treeMap: undefined
+			fileSettings: undefined
 		},
 		camera
 	}
@@ -32,7 +29,6 @@ export function buildCustomConfigFromState(configName: string, state: State, cam
 	initializeAppSettings(customConfig)
 	initializeDynamicSettings(customConfig)
 	initializeFileSettings(customConfig)
-	initializeTreeMapSettings(customConfig)
 
 	// Override the default state settings with the stored CustomConfig values
 	deepMapOneToOther(state, customConfig.stateSettings)
@@ -57,7 +53,6 @@ function initializeAppSettings(target: CustomConfig) {
 		hideFlatBuildings: false,
 		invertHeight: false,
 		invertArea: false,
-		isAttributeSideBarVisible: false,
 		isLoadingFile: false,
 		isLoadingMap: false,
 		isPresentationMode: false,
@@ -72,6 +67,7 @@ function initializeAppSettings(target: CustomConfig) {
 		layoutAlgorithm: undefined,
 		maxTreeMapFiles: 0,
 		sharpnessMode: undefined,
+		isColorMetricLinkedToHeightMetric: false,
 		mapColors: {
 			labelColorAndAlpha: { alpha: 0, rgb: "" },
 			base: "",
@@ -110,16 +106,9 @@ function initializeDynamicSettings(target: CustomConfig) {
 
 function initializeFileSettings(target: CustomConfig) {
 	target.stateSettings.fileSettings = {
-		attributeTypes: undefined,
 		blacklist: undefined,
 		edges: [],
 		markedPackages: []
-	}
-}
-
-function initializeTreeMapSettings(target: CustomConfig) {
-	target.stateSettings.treeMap = {
-		mapSize: 0
 	}
 }
 

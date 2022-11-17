@@ -1,0 +1,126 @@
+name: Build
+
+on:
+  push:
+    tags: '*.*.*'
+
+jobs:
+  build_project:
+    name: Build Project
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install wine
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wine-stable
+
+      - name: Install zip
+        run: sudo apt-get install -y zip
+
+      - name: Build analysis
+        working-directory: ./analysis
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+          docker build -t codecharta/codecharta-analysis .
+
+      - name: Build visualization
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        working-directory: ./visualization
+        run: |
+          npm ci
+          npm run test
+          npm run build
+          npm run package
+          docker build -t codecharta/codecharta-visualization .
+
+      - name: Add Changelog Entries to Release
+        uses: rasmus-saks/release-a-changelog-action@v1.0.1
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Run building script build gh pages
+        run: sh ./script/build_gh_pages.sh
+
+      - name: Upload Release Files to tagged release
+        uses: alexellis/upload-assets@0.4.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          asset_paths: '["visualization/dist/packages/*.zip", "analysis/build/distributions/*.tar"]'
+
+      - name: Publish visualization npm package
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - run: npm ci
+        working-directory: ./visualization
+
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./visualization/package.json
+          working-directory: ./visualization
+
+      - name: Publish analysis npm package
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - run: npm ci
+        working-directory: ./visualization
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./analysis/node-wrapper/package.json
+          working-directory: ./visualization
+
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Publish Docker Visualization Image
+        uses: elgohr/Publish-Docker-Github-Action@v4
+        with:
+          default_branch: main
+          name: codecharta/codecharta-visualization
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: "latest,${{ env.RELEASE_VERSION }}"
+          workdir: ./visualization
+
+      - name: Publish Docker Analysis Image
+        uses: elgohr/Publish-Docker-Github-Action@v4
+        with:
+          default_branch: main
+          name: codecharta/codecharta-analysis
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: "latest,${{ env.RELEASE_VERSION }}"
+          workdir: ./analysis
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          branch: gh-pages
+          folder: gh-pages
+          clean: true

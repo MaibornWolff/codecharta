@@ -7,11 +7,218 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.111.0] - 2022-11-11
+
+### Added 🚀
+
+-   Add description to every Custom View [#3119](https://github.com/MaibornWolff/codecharta/pull/3119) </br>
+    ![image](https://user-images.githubusercontent.com/72517530/201381274-a9a913d5-8f9d-4da6-9f26-6476e194ce3b.png)
+-   Highlight files and folders with no area metric or an area metric value of zero in the search panel [#3126](https://github.com/MaibornWolff/codecharta/pull/3126)
+
+### Changed
+
+-   Be aware, that all Custom Views generated with version 1.110.0 or older will be unusable by April 2023 [#3119](https://github.com/MaibornWolff/codecharta/pull/3119)
+
+### Fixed 🐞
+
+-   Fix crashing on focusing or hovering un-rendered buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
+-   Fix showing changelog entries in the dialog when a new version is available [#3123](https://github.com/MaibornWolff/codecharta/pull/3129)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Update supported latest browsers [#3125](https://github.com/MaibornWolff/codecharta/pull/3125)
+-   Split e2e and unit test configs [#3128](https://github.com/MaibornWolff/codecharta/pull/3128)
+
+## [1.110.0] - 2022-11-04
+
+### Changed
+
+-   Custom Views are now applicable even if maps or mode are different. Missing maps or map selection mode is displayed in the tooltip [#3090](https://github.com/MaibornWolff/codecharta/pull/3090)
+-   Be aware, that all Custom Views generated with version 1.109.1 or older will be unusable by April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
+
+### Fixed 🐞
+
+-   Fix broken link to Custom View documentation [#3101](https://github.com/MaibornWolff/codecharta/pull/3101)
+-   Don't re-center map after every state change like changing area metric [#3109](https://github.com/MaibornWolff/codecharta/pull/3109)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Adjust Custom View API and maintain old Custom Views until April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
+-   Migrate codeMap.render.service, codeMap.label.service, codeMap.mouseEvent.service, codeMap.arrow.service, codeCharta.service, sharpnessMode.service, isLoadingFile.service, scaling.service and experimentalFeaturesEnabled.service to Angular [#3094](https://github.com/MaibornWolff/codecharta/pull/3094)
+-   Extract tree map size into a const as this is never changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
+-   Migrate markedPackages.service, edges.service, blacklist.service, files.service and injector.service [3106](https://github.com/MaibornWolff/codecharta/pull/3106)
+-   Refactor out `LoadInitialFileService` and fix with it loose Promise in tests [#3110](https://github.com/MaibornWolff/codecharta/pull/3110)
+-   Migrate codeCharta.component, storeService.service and remove AngularJS dual boot from bootstrapping [#3114](https://github.com/MaibornWolff/codecharta/pull/3114)
+-   Remove obsolete AngularJS dependencies [#3115](https://github.com/MaibornWolff/codecharta/pull/3115)
+
+## [1.109.1] - 2022-10-12
+
+### Fixed 🐞
+
+-   Fix broken links on new GitHub Page 'Docker Containers' [#3089](https://github.com/MaibornWolff/codecharta/pull/3089)
+
+## [1.109.0] - 2022-10-12
+
+### Added 🚀
+
+-   Add description and documentation to Custom View modal [#3085](https://github.com/MaibornWolff/codecharta/pull/3085)
+-   Add a new button that links the height metric to the color metric so that the colour metric is automatically set to
+    the selected height metric [#3058](https://github.com/MaibornWolff/codecharta/pull/3058) <br/>
+    ![image](https://user-images.githubusercontent.com/72517530/193291144-fdc73a15-2087-47e2-845b-05c666aec71d.png) <br/>
+    ![image](https://user-images.githubusercontent.com/72517530/194300920-60ce9fcd-0dd5-46ef-a90b-01d9a29205e6.png)
+
+### Fixed 🐞
+
+-   Fix interactive GitLogParser using wrong dialogue with repo-scan subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
+-   Fix CodeCharta Analysis container exiting when detached [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
+-   Fix CodeCharta Analysis container not coming with the sonar-scanner pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
+-   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
+-   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
+-   Unfocus nodes when changing selected files, which prevents the app from crashing [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
+-   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
+-   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
+-   Migrate dialog.service to Angular [#3070](https://github.com/MaibornWolff/codecharta/pull/3070)
+-   Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeOrbitControlsService and ThreeViewerService to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Migrate updateAttributeTypes.service to Angular [#3082](https://github.com/MaibornWolff/codecharta/pull/3082)
+
+## [1.108.1] - 2022-09-29
+
+## Chore 👨‍💻 👩‍💻
+
+-   Update formatting in Docker Release Pipeline [#3059](https://github.com/MaibornWolff/codecharta/pull/3059)
+
+## [1.108.0] - 2022-09-28
+
+### Added 🚀
+
+-   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a
+    SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
+
+### Removed 🗑
+
+-   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
+
+## [1.107.0] - 2022-09-27
+
+### Added 🚀
+
+-   Add subcommand to GitLogParser to run necessary git commands automatically [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+
+### Changed
+
+-   Change default behaviour of GitLogParser to use new subcommands [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+-   Set default value for displaying labels 1 per 100 buildings with a maximum of 10 labels [#3046](https://github.com/MaibornWolff/codecharta/pull/3046)
+
+### Fixed 🐞
+
+-   Uncheck the box when 'reset invert height' icon is clicked [#3048](https://github.com/MaibornWolff/codecharta/pull/3048)
+-   Update ReadMe and GitHub pages for MetricGardener [#3045](https://github.com/MaibornWolff/codecharta/pull/3045)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate codeMap.component to Angular with minor internal improvements [#3049](https://github.com/MaibornWolff/codecharta/pull/3049)
+-   Remove threeUpdateCycle.service [#3050](https://github.com/MaibornWolff/codecharta/pull/3050)
+-   Migrate metricData.service, edgeMetric.service, nodeMetricData.service and edgeMetricData.service to Angular [#3051](https://github.com/MaibornWolff/codecharta/pull/3051)
+-   Migrate threeRenderer.service to Angular [#3052](https://github.com/MaibornWolff/codecharta/pull/3052)
+
+## [1.106.1] - 2022-09-20
+
+### Fixed 🐞
+
+-   CC-JSON Files not loaded on Safari browser [#3042](https://github.com/MaibornWolff/codecharta/pull/3042)
+-   Show loading spinners while loading a file [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+-   Prevent clicking on not opened metric options in ribbon bar [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+-   Set cursor to pointer on color settings panel of delta mode [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Throttle rendering and migrate codeMap.preRender.service to Angular [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+
+## [1.106.0] - 2022-09-13
+
+### Added 🚀
+
+-   Add option to CSVImporter to specify the path column name [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+
+### Changed
+
+-   Stop asking the user to compress a file when printing to stdOut [#3024](https://github.com/MaibornWolff/codecharta/pull/3024)
+
+### Fixed 🐞
+
+-   Fix anongit script using the wrong whitespace, causing gitlogparser to fail [#3030](https://github.com/MaibornWolff/codecharta/pull/3030)
+-   Reshow suspicious metrics badge when calculated data has changed [#2997](https://github.com/MaibornWolff/codecharta/pull/2997)
+
+## [1.105.0] - 2022-09-06
+
+### Added 🚀
+
+-   Add an option to run MetricGardener before its parser if requested [#3015](https://github.com/MaibornWolff/codecharta/pull/3015)
+-   Add missing documentation for MetricGardener importer [#3016](https://github.com/MaibornWolff/codecharta/pull/3016)
+
+### Changed
+
+-   Increase the size of the close button to simplify closing the attribute sidebar [#3014](https://github.com/MaibornWolff/codecharta/pull/3014)
+
+### Fixed 🐞
+
+-   Fix console error when clicking switch button in delta mode [#3023](https://github.com/MaibornWolff/codecharta/pull/3023)
+-   Fix broken images to new document pages about how using SonarQube [#3012](https://github.com/MaibornWolff/codecharta/pull/3012)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate tool bar component to Angular [#3020](https://github.com/MaibornWolff/codecharta/pull/3020)
+-   Remove obsolete AngularJS IsPresentationModeService and ShowOnlyBuildingsWithEdgesService [#3005](https://github.com/MaibornWolff/codecharta/pull/3005)
+
+## [1.104.1] - 2022-08-31
+
+### Fixed 🐞
+
+-   Fix broken links to new document pages about how using SonarQube [#3009](https://github.com/MaibornWolff/codecharta/pull/3009)
+
+## [1.104.0] - 2022-08-31
+
+### Added 🚀
+
+-   Copy-to-Clipboard-Button to paste the top 10 files with highest metric values [#2942](https://github.com/MaibornWolff/codecharta/pull/2942), [#2996](https://github.com/MaibornWolff/codecharta/pull/2995) <br/>
+    ![image](https://user-images.githubusercontent.com/46388280/184089603-ecfa8e31-8241-42a2-9954-2de554347381.png) </br>
+    ![image](https://user-images.githubusercontent.com/46388280/184089577-5cd2eec0-5293-4083-b629-0e3c5621047c.png)
+
+### Fixed 🐞
+
+-   Correct file types now get appended to the name of the output file when using the interactive ccsh [#2914](https://github.com/MaibornWolff/codecharta/pull/2914)
+-   Fix exit code handling and update integrationTest's golden_test.sh to cover all modules [#2988](https://github.com/MaibornWolff/codecharta/pull/2988)
+-   Fix missing color pickers within edge metric options [#2993](https://github.com/MaibornWolff/codecharta/pull/2993)
+-   Fix labels being displayed at an incorrect height and lines being disconnected from labels [#2991](https://github.com/MaibornWolff/codecharta/pull/2991)
+-   Provides a list of metrics where no calculation could be performed in relation to a suspicion [#2996](https://github.com/MaibornWolff/codecharta/pull/2996) </br>
+    ![missing_values_suspicious_metrics](https://user-images.githubusercontent.com/31436472/187439165-77eda080-ceba-4bab-b077-4f6a2d6162b5.png)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate view cube component and its service to Angular [#2998](https://github.com/MaibornWolff/codecharta/pull/2998)
+
+## [1.104.0] - 2022-08-29
+
+### Chore 👨‍💻 👩‍💻
+
+-   Migrate presentation mode button to Angular [#2938](https://github.com/MaibornWolff/codecharta/pull/2938)
+
+## [1.103.6] - 2022-08-17
+
+### Fixed 🐞
+
+-   Fix bug in CompressionStreamHandler's input stream validation, that caused endless blocking reads from System.In [#2987](https://github.com/MaibornWolff/codecharta/pull/2987)
+
 ## [1.103.5] - 2022-08-12
 
 ### Changed
 
 -   Update visualization readme file [#2932](https://github.com/MaibornWolff/codecharta/pull/2932)
+-   Update the documentation for the usage of SonarQube [#2965](https://github.com/MaibornWolff/codecharta/pull/2965)
 
 ### Fixed 🐞
 

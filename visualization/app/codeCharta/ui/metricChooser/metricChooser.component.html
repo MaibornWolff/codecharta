@@ -3,6 +3,7 @@
 	[value]="selectedMetricName"
 	(selectionChange)="handleMetricChanged($event.value)"
 	(openedChange)="handleOpenedChanged($event)"
+	[disabled]="isDisabled"
 >
 	<mat-form-field class="cc-metric-chooser-search-field">
 		<i matPrefix class="fa fa-search search-icon"></i>

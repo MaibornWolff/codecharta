@@ -13,8 +13,6 @@ docs:
       children:
           - title: "Quick-Start Guide"
             url: /docs/quick-start-guide/
-          - title: "Step-by-Step Example"
-            url: /docs/step-by-step/
           - title: "Installation"
             url: /docs/installation/
           - title: "Versioning"
@@ -28,7 +26,6 @@ docs:
       children:
           - title: "How-Tos"
             url: categories/#how-to
-
     - title: Analysis
       children:
           - title: "Analysis"
@@ -39,6 +36,10 @@ docs:
             url: /docs/ccsh/
           - title: "Custom Metrics"
             url: /docs/custom-metrics/
+          - title: "Analyze with SonarQube"
+            url: /docs/analyze-with-sonarqube/
+          - title: "Docker Containers"
+            url: /docs/docker-containers/
 
     - title: Analysing-Tools
       children:
@@ -60,12 +61,8 @@ docs:
             url: /docs/sourcemonitorimporter
           - title: "Code Maat Importer"
             url: /docs/codemaatimporter
-          - title: "Jasome Importer"
-            url: /docs/jasomeimporter
-          - title: "Crococosmo Importer"
-            url: /docs/crococosmoimporter
-          - title: "Understand Importer"
-            url: /docs/understandimporter
+          - title: "MetricGardener Importer"
+            url: /docs/metricgardener-importer
 
     - title: Visualization
       children:
@@ -75,6 +72,8 @@ docs:
             url: /docs/user-controls/
           - title: "Timeline"
             url: /docs/timeline/
+          - title: "Custom View"
+            url: /docs/custom-view/
 
     - title: Reference
       children:

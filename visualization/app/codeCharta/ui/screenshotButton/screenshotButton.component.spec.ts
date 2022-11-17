@@ -4,17 +4,19 @@ import { TestBed } from "@angular/core/testing"
 import { Store } from "../../state/store/store"
 import { render, screen } from "@testing-library/angular"
 import { ScreenshotButtonModule } from "./screenshotButton.module"
-import { ThreeCameraServiceToken, ThreeRendererServiceToken, ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
 import userEvent from "@testing-library/user-event"
+import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("screenshotButtonComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [ScreenshotButtonModule],
 			providers: [
-				{ provide: ThreeCameraServiceToken, useValue: {} },
-				{ provide: ThreeSceneServiceToken, useValue: {} },
-				{ provide: ThreeRendererServiceToken, useValue: {} }
+				{ provide: ThreeCameraService, useValue: {} },
+				{ provide: ThreeSceneService, useValue: {} },
+				{ provide: ThreeRendererService, useValue: {} }
 			]
 		})
 	})
@@ -24,7 +26,7 @@ describe("screenshotButtonComponent", () => {
 		const { fixture } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
 		fixture.componentInstance.makeScreenshotToClipBoard = jest.fn()
 
-		userEvent.click(screen.getByTitle("Copy screenshot to clipboard (Ctrl+Alt+F), export it as a file by (Ctrl+Alt+S)"))
+		await userEvent.click(screen.getByTitle("Copy screenshot to clipboard (Ctrl+Alt+F), export it as a file by (Ctrl+Alt+S)"))
 		expect(fixture.componentInstance.makeScreenshotToClipBoard).toHaveBeenCalled()
 	})
 
@@ -33,7 +35,7 @@ describe("screenshotButtonComponent", () => {
 		const { fixture } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
 		fixture.componentInstance.makeScreenshotToFile = jest.fn()
 
-		userEvent.click(screen.getByTitle("Export screenshot as file (Ctrl+Alt+S), copy it to clipboard by (Ctrl+Alt+F)"))
+		await userEvent.click(screen.getByTitle("Export screenshot as file (Ctrl+Alt+S), copy it to clipboard by (Ctrl+Alt+F)"))
 		expect(fixture.componentInstance.makeScreenshotToFile).toHaveBeenCalled()
 	})
 })

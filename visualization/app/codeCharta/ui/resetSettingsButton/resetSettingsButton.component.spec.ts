@@ -22,7 +22,7 @@ describe("resetSettingsButtonComponent", () => {
 			}
 		})
 
-		userEvent.click(screen.getByRole("button"))
+		await userEvent.click(screen.getByRole("button"))
 
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(
 			setState({ appSettings: { mapColors: { selected: "#EB8319" }, scaling: new Vector3(1, 1, 1) } })
@@ -38,7 +38,7 @@ describe("resetSettingsButtonComponent", () => {
 			}
 		})
 
-		userEvent.click(screen.getByRole("button"))
+		await userEvent.click(screen.getByRole("button"))
 
 		expect(callback).toHaveBeenCalledTimes(1)
 	})

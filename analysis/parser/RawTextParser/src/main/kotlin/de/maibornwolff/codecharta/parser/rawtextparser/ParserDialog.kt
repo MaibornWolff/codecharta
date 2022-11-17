@@ -19,8 +19,10 @@ class ParserDialog {
                 message = "What is the name of the output file?",
             )
 
-            val isCompressed: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to compress the output file?", default = true)
+            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
+                message = "Do you want to compress the output file?",
+                default = true
+            )
 
             val verbose: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to suppress command line output?", default = false)
@@ -30,7 +32,8 @@ class ParserDialog {
                 hint = "metric1, metric2, metric3 (leave empty for all metrics)"
             )
 
-            val tabWidth: BigDecimal = KInquirer.promptInputNumber(message = "What is the tab width used (estimated if not provided)?")
+            val tabWidth: BigDecimal =
+                KInquirer.promptInputNumber(message = "What is the tab width used (estimated if not provided)?")
 
             val maxIndentationLevel: BigDecimal = KInquirer.promptInputNumber(message = "What is the maximum Indentation Level?", default = "10", hint = "10")
 

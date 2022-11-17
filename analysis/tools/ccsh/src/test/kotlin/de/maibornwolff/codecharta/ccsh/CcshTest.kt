@@ -2,9 +2,7 @@ package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import io.mockk.verify
@@ -31,9 +29,9 @@ class CcshTest {
         val outStream = ByteArrayOutputStream()
         val originalOut = System.out
         System.setErr(PrintStream(outStream))
+        val exitCode = Ccsh.executeCommandLine(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
 
-        Ccsh.main(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
-
+        Assertions.assertThat(exitCode).isNotZero
         Assertions.assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
         System.setOut(originalOut)
     }
@@ -48,7 +46,8 @@ class CcshTest {
         val exitCode = ccshCLI.execute("-h")
 
         Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(contentOutput.toString()).contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
+        Assertions.assertThat(contentOutput.toString())
+            .contains("Usage: ccsh [-hv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
     }
 
@@ -60,9 +59,10 @@ class CcshTest {
         } returns "someparser"
         every {
             ParserService.executeSelectedParser(any(), any())
-        } just Runs
+        } returns 0
 
-        Ccsh.main(emptyArray())
+        val exitCode = Ccsh.executeCommandLine(emptyArray())
+        Assertions.assertThat(exitCode).isZero
 
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
@@ -75,9 +75,10 @@ class CcshTest {
         } returns "someparser"
         every {
             ParserService.executeSelectedParser(any(), any())
-        } just Runs
+        } returns 0
 
-        Ccsh.main(arrayOf("unknownparser"))
+        val exitCode = Ccsh.executeCommandLine(arrayOf("unknownparser"))
+        Assertions.assertThat(exitCode).isZero
 
         verify { ParserService.executeSelectedParser(any(), any()) }
     }

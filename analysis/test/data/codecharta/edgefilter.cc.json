@@ -1,0 +1,139 @@
+{
+  "projectName": "Sample Project with Edges",
+  "apiVersion": "1.0",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "children": [
+        {
+          "name": "leaf 1",
+          "type": "File",
+          "attributes": {
+            "rloc": 400,
+            "functions": 10,
+            "mcc": 100
+          },
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "leaf 2",
+          "type": "File",
+          "attributes": {
+            "rloc": 100,
+            "functions": 10,
+            "mcc": 1
+          },
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent 1",
+          "type": "Folder",
+          "attributes": {},
+          "children": [
+            {
+              "name": "leaf 3",
+              "type": "File",
+              "attributes": {
+                "rloc": 30,
+                "functions": 100,
+                "mcc": 100
+              }
+            },
+            {
+              "name": "Parent 2",
+              "type": "Folder",
+              "attributes": {
+                "rloc": 70,
+                "functions": 1000,
+                "mcc": 10
+              },
+              "children": [
+                {
+                  "name": "leaf 4",
+                  "type": "File",
+                  "attributes": {
+                    "rloc": 30,
+                    "functions": 100,
+                    "mcc": 100
+                  }
+                },
+                {
+                  "name": "leaf 5",
+                  "type": "File",
+                  "attributes": {
+                    "rloc": 70,
+                    "functions": 1000,
+                    "mcc": 10
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "fromNodeName": "/root/leaf 1",
+      "toNodeName": "/root/Parent 1/leaf 3",
+      "attributes": {
+        "pairingRate": 90,
+        "avgCommits": 30
+      }
+    },
+    {
+      "fromNodeName": "/root/leaf 1",
+      "toNodeName": "/root/leaf 2",
+      "attributes": {
+        "pairingRate": 30,
+        "avgCommits": 10
+      }
+    },
+    {
+      "fromNodeName": "/root/Parent 1/Parent 2/leaf 4",
+      "toNodeName": "/root/leaf 2",
+      "attributes": {
+        "pairingRate": 60,
+        "avgCommits": 20
+      }
+    },
+    {
+      "fromNodeName": "/root/Parent 1/Parent 2/leaf 5",
+      "toNodeName": "/root/Parent 1/Parent 2/leaf 4",
+      "attributes": {
+        "pairingRate": 80,
+        "avgCommits": 30
+      }
+    },
+    {
+      "fromNodeName": "/root/Parent 1/Parent 2/leaf 4",
+      "toNodeName": "/root/Parent 1/leaf 3",
+      "attributes": {
+        "pairingRate": 60,
+        "avgCommits": 40
+      }
+    },
+    {
+      "fromNodeName": "/root/Parent 1/leaf 3",
+      "toNodeName": "/root/leaf 1",
+      "attributes": {
+        "pairingRate": 70,
+        "avgCommits": 30
+      }
+    }
+  ],
+  "attributeTypes": {
+    "nodes": {
+      "rloc": "absolute",
+      "functions": "absolute",
+      "mcc": "absolute"
+    },
+    "edges": {
+      "pairingRate": "relative",
+      "avgCommits": "absolute"
+    }
+  }
+}

@@ -1,122 +1,110 @@
 <cc-search-panel></cc-search-panel>
 
-<md-card class="scenario-card" ng-attr-id="scenario-card">
+<mat-card class="scenario-card" id="scenario-card">
 	<div class="section">
 		<div class="section-header">
 			<cc-show-scenarios-button></cc-show-scenarios-button>
 		</div>
 		<span class="section-title no-hover">Metric Templates</span>
 	</div>
-</md-card>
+</mat-card>
 
-<md-card class="custom-configs-card" ng-show="$ctrl._viewModel.experimentalFeaturesEnabled" ng-attr-id="custom-configs-card">
+<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="custom-configs-card" class="custom-configs-card">
 	<div class="section">
 		<div class="section-header">
 			<cc-custom-configs></cc-custom-configs>
 		</div>
 		<span class="section-title no-hover">Custom Views</span>
 	</div>
-</md-card>
-<md-card class="ai-card" ng-show="$ctrl._viewModel.experimentalFeaturesEnabled" ng-attr-id="ai-card">
+</mat-card>
+<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="ai-card" class="ai-card">
 	<div class="section">
 		<div class="section-header">
-			<artificial-intelligence-component></artificial-intelligence-component>
+			<cc-artificial-intelligence></cc-artificial-intelligence>
 		</div>
 		<span class="section-title no-hover">Suspicious Metrics</span>
 	</div>
-</md-card>
+</mat-card>
 
-<md-card
-	ng-attr-id="area-metric-card"
-	class="area-metric-card metric-card"
-	ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'AREA_PANEL_OPEN' }"
->
+<mat-card id="area-metric-card" class="area-metric-card metric-card" [class.expanded]="panelSelection === 'AREA_PANEL_OPEN'">
 	<div class="section">
-		<div class="section-header">
+		<div class="section-header" id="area-metric-header-section">
 			<cc-area-metric-chooser></cc-area-metric-chooser>
 		</div>
-		<span class="section-title" ng-click="$ctrl.updatePanelSelection('AREA_PANEL_OPEN')" title="Show area metric settings"
-			>Area Metric Options <i class="fa fa-angle-down"></i
-		></span>
+		<span class="section-title" (click)="updatePanelSelection('AREA_PANEL_OPEN')" title="Show area metric settings">
+			Area Metric Options <i class="fa fa-angle-down"></i>
+		</span>
 	</div>
-	<cc-area-settings-panel
-		class="cc-metric-settings-panel"
-		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'AREA_PANEL_OPEN' }"
-	></cc-area-settings-panel>
-</md-card>
+	<cc-area-settings-panel class="cc-metric-settings-panel" [class.hidden]="panelSelection !== 'AREA_PANEL_OPEN'"></cc-area-settings-panel>
+</mat-card>
 
-<md-card
-	ng-attr-id="height-metric-card"
-	class="height-metric-card metric-card"
-	ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'HEIGHT_PANEL_OPEN' }"
->
-	<div class="section">
-		<div class="section-header">
+<mat-card id="height-metric-card" class="height-metric-card metric-card" [class.expanded]="panelSelection === 'HEIGHT_PANEL_OPEN'">
+	<div class="section" id="height-metric-section">
+		<div class="section-header" id="height-metric-header-section">
 			<cc-height-metric-chooser></cc-height-metric-chooser>
 		</div>
-		<span class="section-title" ng-click="$ctrl.updatePanelSelection('HEIGHT_PANEL_OPEN')" title="Show height metric settings"
-			>Height Metric Options <i class="fa fa-angle-down"></i
-		></span>
+		<span class="section-title" (click)="updatePanelSelection('HEIGHT_PANEL_OPEN')" title="Show height metric settings">
+			Height Metric Options <i class="fa fa-angle-down"></i>
+		</span>
 	</div>
 	<cc-height-settings-panel
 		class="cc-metric-settings-panel"
-		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'HEIGHT_PANEL_OPEN' }"
+		[class.hidden]="panelSelection !== 'HEIGHT_PANEL_OPEN'"
 	></cc-height-settings-panel>
-</md-card>
+</mat-card>
 
-<md-card
-	ng-attr-id="color-metric-card"
+<mat-card *ngIf="!(isDeltaState$ | async)" class="link-color-metric-to-height-metric-card">
+	<cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
+</mat-card>
+
+<mat-card
+	*ngIf="!(isDeltaState$ | async)"
+	id="color-metric-card"
 	class="color-metric-card metric-card"
-	ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'COLOR_PANEL_OPEN' }"
-	ng-show="!$ctrl._viewModel.isDeltaState"
+	[class.expanded]="panelSelection === 'COLOR_PANEL_OPEN'"
 >
 	<div class="section">
-		<div class="section-header">
+		<div class="section-header" id="color-metric-header-section">
 			<cc-color-metric-chooser></cc-color-metric-chooser>
 		</div>
-		<span class="section-title" ng-click="$ctrl.updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color metric settings"
-			>Color Metric Options <i class="fa fa-angle-down"></i
-		></span>
+		<span class="section-title" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color metric settings">
+			Color Metric Options <i class="fa fa-angle-down"></i>
+		</span>
 	</div>
 	<cc-color-settings-panel
 		class="cc-metric-settings-panel"
-		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'COLOR_PANEL_OPEN' }"
+		[class.hidden]="panelSelection !== 'COLOR_PANEL_OPEN'"
 	></cc-color-settings-panel>
-</md-card>
+</mat-card>
 
-<md-card
-	ng-attr-id="edge-metric-card"
+<mat-card
+	*ngIf="hasEdgeMetric$ | async"
+	id="edge-metric-card"
 	class="edge-metric-card metric-card"
-	ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'EDGE_PANEL_OPEN' }"
-	ng-show="$ctrl._viewModel.hasEdgeMetric"
+	[class.expanded]="panelSelection === 'EDGE_PANEL_OPEN'"
 >
 	<div class="section">
-		<div class="section-header">
+		<div class="section-header" id="edge-metric-header-section">
 			<cc-edge-metric-chooser></cc-edge-metric-chooser>
 		</div>
-		<span class="section-title" ng-click="$ctrl.updatePanelSelection('EDGE_PANEL_OPEN')" title="Show edge metric settings">
+		<span class="section-title" (click)="updatePanelSelection('EDGE_PANEL_OPEN')" title="Show edge metric settings">
 			Edge Metric Options <i class="fa fa-angle-down"></i>
 		</span>
-		<cc-edge-settings-panel ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'EDGE_PANEL_OPEN' }"></cc-edge-settings-panel>
+		<cc-edge-settings-panel
+			class="cc-metric-settings-panel"
+			[class.hidden]="panelSelection !== 'EDGE_PANEL_OPEN'"
+		></cc-edge-settings-panel>
 	</div>
-</md-card>
+</mat-card>
 
-<md-card ng-attr-id="color-settings-card" class="color-settings-card" ng-show="$ctrl._viewModel.isDeltaState">
-	<div
-		class="color-section"
-		layout="row"
-		layout-align="space-between center"
-		ng-click="$ctrl.updatePanelSelection('COLOR_PANEL_OPEN')"
-		title="Show color settings"
-	>
-		<span>
-			<i class="fa fa-paint-brush color-icon"></i>
-			Color Settings
-		</span>
+<mat-card *ngIf="isDeltaState$ | async" id="color-settings-card">
+	<div class="delta-color-section" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color settings">
+		<i class="fa fa-paint-brush color-icon"></i>
+		Color Settings
 		<i class="fa fa-sort-down color-dropdown-icon"></i>
 	</div>
 	<cc-color-settings-panel
 		class="cc-metric-settings-panel"
-		ng-class="{ hidden: $ctrl._viewModel.panelSelection !== 'COLOR_PANEL_OPEN' }"
+		[class.hidden]="panelSelection !== 'COLOR_PANEL_OPEN'"
 	></cc-color-settings-panel>
-</md-card>
+</mat-card>

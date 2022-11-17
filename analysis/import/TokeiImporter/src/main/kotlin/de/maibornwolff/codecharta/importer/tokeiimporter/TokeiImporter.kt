@@ -17,14 +17,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import picocli.CommandLine
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStreamWriter
 import java.io.PrintStream
-import java.io.Writer
+import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -57,8 +54,8 @@ class TokeiImporter(
     @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = "/"
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File "])
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
@@ -79,13 +76,9 @@ class TokeiImporter(
             importerStrategy.buildCCJson(languageSummaries, projectBuilder)
         }
         projectBuilder.addAttributeTypes(attributeTypes)
+        val project = projectBuilder.build()
 
-        val filePath = outputFile?.absolutePath ?: "notSpecified"
-
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
-            projectBuilder.build(),
-            filePath
-        ) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }
@@ -106,7 +99,7 @@ class TokeiImporter(
                 launch {
                     if (file!!.isFile) {
                         val bufferedReader = file!!.bufferedReader()
-                        root = JsonParser().parse(bufferedReader)
+                        root = JsonParser.parseReader(bufferedReader)
                     } else {
                         logger.error("${file!!.name} has not been found.")
                     }
@@ -115,7 +108,7 @@ class TokeiImporter(
                 launch {
                     val projectString: String = input.mapLines { it }.joinToString(separator = "") { it }
                     if (projectString.isNotEmpty()) {
-                        root = JsonParser().parse(projectString)
+                        root = JsonParser.parseString(projectString)
                     } else {
                         logger.error("Neither source file nor piped input found.")
                     }
@@ -126,23 +119,10 @@ class TokeiImporter(
         return root
     }
 
-    private fun writer(): Writer {
-        return if (outputFile == null) {
-            OutputStreamWriter(output)
-        } else {
-            BufferedWriter(FileWriter(outputFile!!))
-        }
-    }
-
     companion object {
         @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine.call(TokeiImporter(), System.out, *args)
-        }
-
-        @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(TokeiImporter(input, output, error), output, *args)
+            CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
         }
 
         @JvmStatic

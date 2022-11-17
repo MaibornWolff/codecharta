@@ -7,6 +7,8 @@ import picocli.CommandLine
 
 class ParserService {
     companion object {
+        private const val EXIT_CODE_PARSER_NOT_SUPPORTED = 42
+
         fun selectParser(commandLine: CommandLine): String {
             val selectedParser: String = KInquirer.promptList(
                 message = "Which parser do you want to execute?",
@@ -16,7 +18,7 @@ class ParserService {
             return extractParserName(selectedParser)
         }
 
-        fun executeSelectedParser(commandLine: CommandLine, selectedParser: String) {
+        fun executeSelectedParser(commandLine: CommandLine, selectedParser: String): Int {
             val subCommand = commandLine.subcommands.getValue(selectedParser)
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser
@@ -25,9 +27,10 @@ class ParserService {
                 val subCommandLine = CommandLine(interactive)
                 println("You can run the same command again by using the following command line arguments:")
                 println("ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" "))
-                subCommandLine.execute(*collectedArgs.toTypedArray())
+                return subCommandLine.execute(*collectedArgs.toTypedArray())
             } else {
                 printNotSupported(selectedParser)
+                return EXIT_CODE_PARSER_NOT_SUPPORTED
             }
         }
 
@@ -48,8 +51,10 @@ class ParserService {
         }
 
         private fun printNotSupported(parserName: String) {
-            println("The interactive usage of $parserName is not supported yet.\n" +
-                    "Please specify the full command to run the parser.")
+            println(
+                "The interactive usage of $parserName is not supported yet.\n" +
+                        "Please specify the full command to run the parser."
+            )
         }
     }
 }

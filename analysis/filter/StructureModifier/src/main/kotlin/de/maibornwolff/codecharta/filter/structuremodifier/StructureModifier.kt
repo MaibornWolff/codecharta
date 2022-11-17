@@ -32,11 +32,15 @@ class StructureModifier(
     @CommandLine.Option(names = ["-s", "--set-root"], description = ["path within project to be extracted"])
     private var setRoot: String? = null
 
-    @CommandLine.Option(arity = "1", names = ["-p", "--print-levels"], description = ["show first x layers of project hierarchy"])
+    @CommandLine.Option(
+        arity = "1",
+        names = ["-p", "--print-levels"],
+        description = ["show first x layers of project hierarchy"]
+    )
     private var printLevels: Int = 0
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-f", "--move-from"], description = ["move nodes in project folder..."])
     private var moveFrom: String? = null
@@ -59,13 +63,13 @@ class StructureModifier(
                 ProjectStructurePrinter(project, output).printProjectStructure(printLevels)
                 return null
             }
+
             setRoot != null -> project = SubProjectExtractor(project).extract(setRoot!!)
             remove.isNotEmpty() -> project = NodeRemover(project).remove(remove)
             moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
         }
 
-        val writer = outputFile?.bufferedWriter() ?: output.bufferedWriter()
-        ProjectSerializer.serializeProject(project, writer)
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, false)
 
         return null
     }
@@ -90,13 +94,8 @@ class StructureModifier(
 
     companion object {
         @JvmStatic
-        fun main(args: Array<String>) {
-            mainWithInOut(System.`in`, System.out, System.err, args)
-        }
-
-        @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(StructureModifier(input, output, error), *args)
+            CommandLine(StructureModifier(input, output, error)).execute(*args)
         }
     }
 

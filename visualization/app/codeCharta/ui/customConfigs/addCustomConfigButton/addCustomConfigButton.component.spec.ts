@@ -5,16 +5,17 @@ import { AddCustomConfigButtonComponent } from "./addCustomConfigButton.componen
 import userEvent from "@testing-library/user-event"
 import { waitForElementToBeRemoved } from "@testing-library/dom"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../services/ajs-upgraded-providers"
 import { Vector3 } from "three"
+import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
+import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 
 describe("addCustomConfigButtonComponent", () => {
 	beforeEach(async () => {
 		TestBed.configureTestingModule({
 			imports: [AddCustomConfigButtonModule],
 			providers: [
-				{ provide: ThreeCameraServiceToken, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-				{ provide: ThreeOrbitControlsServiceToken, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
+				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
+				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
 			]
 		})
 	})
@@ -28,7 +29,7 @@ describe("addCustomConfigButtonComponent", () => {
 
 		await screen.findByText("Add Custom View")
 
-		userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
+		await userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
 		fireEvent.click(screen.getByRole("button", { name: "ADD" }))
 
 		await waitForElementToBeRemoved(screen.getByText("Add Custom View"))

@@ -6,6 +6,7 @@ import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeI
 import { setRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { rightClickedNodeDataSelector } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import { hoveredNodeIdSelector } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
+import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 
 @Component({
 	selector: "cc-map-tree-view-level",
@@ -17,16 +18,17 @@ export class MapTreeViewLevelComponent implements OnInit {
 
 	hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
 	rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
+	areaMetric$ = this.store.select(areaMetricSelector)
 
 	isOpen = false
+
+	areMetricGreaterZero = false
 
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
 		// open root folder initially
-		if (this.depth === 0) {
-			this.isOpen = true
-		}
+		this.isOpen = this.depth === 0
 	}
 
 	onMouseEnter() {
@@ -41,15 +43,24 @@ export class MapTreeViewLevelComponent implements OnInit {
 		$event.preventDefault()
 		$event.stopPropagation()
 
-		this.store.dispatch(
-			setRightClickedNodeData({
-				nodeId: this.node.id,
-				xPositionOfRightClickEvent: $event.clientX,
-				yPositionOfRightClickEvent: $event.clientY
-			})
-		)
+		this.areaMetric$
+			.subscribe(
+				areaMetricName =>
+					(this.areMetricGreaterZero = this.node.attributes[areaMetricName] && this.node.attributes[areaMetricName] !== 0)
+			)
+			.unsubscribe()
 
-		document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
+		if (this.areMetricGreaterZero) {
+			this.store.dispatch(
+				setRightClickedNodeData({
+					nodeId: this.node.id,
+					xPositionOfRightClickEvent: $event.clientX,
+					yPositionOfRightClickEvent: $event.clientY
+				})
+			)
+
+			document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
+		}
 	}
 
 	toggleOpen() {

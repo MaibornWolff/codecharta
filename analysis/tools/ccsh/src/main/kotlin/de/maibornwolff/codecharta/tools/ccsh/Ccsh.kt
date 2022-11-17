@@ -5,23 +5,21 @@ import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
-import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
-import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
-import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.util.concurrent.Callable
+import kotlin.system.exitProcess
 
 @CommandLine.Command(
     name = "ccsh",
@@ -38,11 +36,8 @@ import java.util.concurrent.Callable
         GitLogParser::class,
         Installer::class,
         CSVExporter::class,
-        CrococosmoImporter::class,
         SourceCodeParserMain::class,
-        UnderstandImporter::class,
         CodeMaatImporter::class,
-        JasomeImporter::class,
         TokeiImporter::class,
         RawTextParser::class,
         MetricGardenerImporter::class
@@ -74,19 +69,23 @@ class Ccsh : Callable<Void?> {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            exitProcess(executeCommandLine(args))
+        }
+
+        fun executeCommandLine(args: Array<String>): Int {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
             if (args.isEmpty() || isParserUnknown(args, commandLine)) {
-                executeInteractiveParser(commandLine)
+                return executeInteractiveParser(commandLine)
             } else {
-                commandLine.execute(*sanitizeArgs(args))
+                return commandLine.execute(*sanitizeArgs(args))
             }
         }
 
-        private fun executeInteractiveParser(commandLine: CommandLine) {
+        private fun executeInteractiveParser(commandLine: CommandLine): Int {
             val selectedParser = ParserService.selectParser(commandLine)
             logger.info { "Executing $selectedParser" }
-            ParserService.executeSelectedParser(commandLine, selectedParser)
+            return ParserService.executeSelectedParser(commandLine, selectedParser)
         }
 
         private fun isParserUnknown(args: Array<String>, commandLine: CommandLine): Boolean {

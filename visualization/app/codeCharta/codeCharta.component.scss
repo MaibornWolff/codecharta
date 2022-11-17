@@ -1,7 +1,7 @@
 @use "../material/theme";
 @import "../mixins.scss";
 
-code-charta-component {
+cc-code-charta {
 	#mw-logo {
 		.logo {
 			width: 160px;
@@ -44,18 +44,10 @@ code-charta-component {
 		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
 	}
 
-	.ribbon-bar-wrapper {
-		position: fixed;
-		z-index: 10;
-		white-space: nowrap;
-		pointer-events: none;
-		width: 100%;
-	}
-
 	cc-attribute-side-bar .side-bar-container,
 	cc-legend-panel .block-wrapper,
 	cc-legend-panel .panel-button,
-	view-cube-component,
+	cc-view-cube,
 	unfocus-button-component {
 		transition: right 0.3s ease;
 	}

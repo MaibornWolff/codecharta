@@ -1,4 +1,3 @@
-import "../codeMap/threeViewer/threeViewer.module"
 import { Store } from "../../state/store/store"
 import { TestBed } from "@angular/core/testing"
 import { MatDialog } from "@angular/material/dialog"

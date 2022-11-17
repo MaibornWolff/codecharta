@@ -11,12 +11,16 @@ import {
 	Vector3,
 	WebGLRenderer
 } from "three"
-import { IRootScopeService } from "angular"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
-import { CameraChangeSubscriber, ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { ViewCubeEventSubscriber, ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
+import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
+import { Component, ElementRef, Inject, OnInit } from "@angular/core"
 
-export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEventSubscriber {
+@Component({
+	selector: "cc-view-cube",
+	template: require("./viewCube.component.html")
+})
+export class ViewCubeComponent implements OnInit {
 	private lights: Group
 	private cubeGroup: Group
 	private camera: PerspectiveCamera
@@ -35,22 +39,24 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	constructor(
-		private $element,
-		private $rootScope: IRootScopeService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
-		private viewCubeMouseEventsService: ViewCubeMouseEventsService
-	) {
-		"ngInject"
+		@Inject(ElementRef) private elementReference: ElementRef,
+		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService,
+		@Inject(ViewCubeMouseEventsService) private viewCubeMouseEvents: ViewCubeMouseEventsService
+	) {}
+
+	ngOnInit() {
 		this.initScene()
 		this.initLights()
-		this.initRenderer(this.$element)
+		this.initRenderer(this.elementReference.nativeElement)
 		this.initCube()
 		this.initAxesHelper()
 		this.initCamera()
-		this.viewCubeMouseEventsService.init(this.cubeGroup, this.camera, this.renderer)
+		this.viewCubeMouseEvents.init(this.cubeGroup, this.camera, this.renderer)
 
-		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
-		ViewCubeMouseEventsService.subscribeToViewCubeMouseEvents(this.$rootScope, this)
+		this.threeOrbitControlsService.subscribe("onCameraChanged", this.onCameraChanged)
+		this.viewCubeMouseEvents.subscribe("viewCubeHoveredEvent", this.onCubeHovered)
+		this.viewCubeMouseEvents.subscribe("viewCubeUnHoveredEvent", this.onCubeUnhovered)
+		this.viewCubeMouseEvents.subscribe("viewCubeClicked", this.onCubeClicked)
 	}
 
 	private initAxesHelper() {
@@ -77,10 +83,10 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.scene.add(cubeBoundingBox)
 	}
 
-	onCameraChanged(camera: PerspectiveCamera) {
-		const newCameraPosition = this.calculateCameraPosition(camera)
+	onCameraChanged = (data: { camera: PerspectiveCamera }) => {
+		const newCameraPosition = this.calculateCameraPosition(data.camera)
 		this.setCameraPosition(newCameraPosition)
-		this.updateRenderFrame()
+		this.renderer.render(this.scene, this.camera)
 	}
 
 	private setCameraPosition(cameraPosition: Vector3) {
@@ -95,22 +101,18 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		return codeMapCameraPosition.sub(codeMapTargetVector).normalize().multiplyScalar(3)
 	}
 
-	private updateRenderFrame() {
-		this.renderer.render(this.scene, this.camera)
-	}
-
 	private initScene() {
 		this.scene = new Scene()
 	}
 
-	private initRenderer($element: unknown) {
+	private initRenderer(element: HTMLElement) {
 		this.renderer = new WebGLRenderer({
 			alpha: true,
 			antialias: true
 		})
 		this.renderer.setSize(this.WIDTH, this.HEIGHT)
-		this.renderer.setPixelRatio(window.devicePixelRatio) // geometry is low poly, no noticeble performance hit even with higher device pixel ratio
-		$element[0].appendChild(this.renderer.domElement)
+		this.renderer.setPixelRatio(window.devicePixelRatio) // geometry is low poly, no noticeable performance hit even with higher device pixel ratio
+		element.appendChild(this.renderer.domElement)
 	}
 
 	private initCamera() {
@@ -118,23 +120,23 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.camera.position.z = 4
 	}
 
-	onCubeHovered(cube: Mesh) {
+	onCubeHovered = (data: { cube: Mesh }) => {
 		this.hoverInfo = {
-			cube,
-			originalMaterial: cube.material
+			cube: data.cube,
+			originalMaterial: data.cube.material
 		}
 		this.hoverInfo.cube.material.emissive = new Color(0xff_ff_ff)
-		this.updateRenderFrame()
+		this.renderer.render(this.scene, this.camera)
 	}
 
-	onCubeUnhovered() {
+	onCubeUnhovered = () => {
 		this.hoverInfo.cube.material.emissive = new Color(0x00_00_00) //? NOTE why is this needed
 		this.hoverInfo.cube = null
-		this.updateRenderFrame()
+		this.renderer.render(this.scene, this.camera)
 	}
 
-	onCubeClicked(cube: Mesh) {
-		switch (cube) {
+	onCubeClicked = (data: { cube: Mesh }) => {
+		switch (data.cube) {
 			case this.cubeDefinition.front.top.middle:
 				this.threeOrbitControlsService.rotateCameraInVectorDirection(0, -1, -1)
 				break
@@ -239,10 +241,4 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 
 		this.scene.add(this.lights)
 	}
-}
-
-export const viewCubeComponent = {
-	selector: "viewCubeComponent",
-	template: require("./viewCube.component.html"),
-	controller: ViewCubeController
 }
