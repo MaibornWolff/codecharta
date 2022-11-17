@@ -53,20 +53,19 @@ export class RangeSliderComponent implements OnChanges {
 	setCurrentlySliding(currentlySliding: CurrentlySliding) {
 		this.currentlySliding = currentlySliding
 		switch (this.currentlySliding) {
-			case "leftThumb": {
+			case "leftThumb":
 				document.addEventListener("mousemove", this.handleLeftThumbMoved)
 				this.rightThumb.nativeElement.style.zIndex = "0"
 				this.leftThumb.nativeElement.style.zIndex = "1"
 				this.resetCurrentlySlidingOnNextMouseUp(this.handleLeftThumbMoved)
 				break
-			}
-			case "rightThumb": {
+
+			case "rightThumb":
 				document.addEventListener("mousemove", this.handleRightThumbMoved)
 				this.leftThumb.nativeElement.style.zIndex = "0"
 				this.rightThumb.nativeElement.style.zIndex = "1"
 				this.resetCurrentlySlidingOnNextMouseUp(this.handleRightThumbMoved)
 				break
-			}
 		}
 	}
 
