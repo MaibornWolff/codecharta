@@ -66,7 +66,7 @@ module.exports = {
 		"prefer-template": "error",
 
 		"unicorn/prevent-abbreviations": ["error", { checkFilenames: false }],
-
+		"unicorn/switch-case-braces": ["error", "avoid"],
 		"no-unused-vars": "off",
 		"unused-imports/no-unused-imports": "error",
 		"unused-imports/no-unused-vars": [
