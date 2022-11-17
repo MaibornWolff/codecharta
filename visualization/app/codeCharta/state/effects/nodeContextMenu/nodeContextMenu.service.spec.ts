@@ -75,4 +75,26 @@ describe("nodeContextMenuService", () => {
 		fireEvent.contextMenu(nodeContextMenu["overlayReference"].overlayElement)
 		expect(wasDefaultContextMenuPrevented).toBe(true)
 	})
+
+	it("should not dispose with only one opened panel", () => {
+		const nodeContextMenu = TestBed.inject(NodeContextMenuService)
+		const resetSpy = jest.spyOn(nodeContextMenu, "resetOverlay")
+
+		nodeContextMenu.open(10, 10)
+
+		expect(resetSpy).not.toHaveBeenCalled()
+	})
+
+	it("should not open multiple times when open is clicked twice, disposing previous reference", () => {
+		const nodeContextMenu = TestBed.inject(NodeContextMenuService)
+		nodeContextMenu.open(10, 10)
+
+		expect(nodeContextMenu["overlayReference"]).not.toBe(null)
+
+		const resetSpy = jest.spyOn(nodeContextMenu, "resetOverlay")
+
+		nodeContextMenu.open(10, 11)
+
+		expect(resetSpy).toHaveBeenCalled()
+	})
 })

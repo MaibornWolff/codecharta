@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add attribute descriptors (metric descriptions) to some filters and importers [#3091](https://github.com/MaibornWolff/codecharta/pull/3091)
 
-## [1.111.0] - 2022-11-11
+## [1.111.0] - 2022-11-17
 
 ### Added 🚀
 
@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix Node Context-Menu in Map Tree View opening multiple times [#3135](https://github.com/MaibornWolff/codecharta/pull/3135)
 -   Fix crashing on focusing or hovering un-rendered buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
 -   Fix showing changelog entries in the dialog when a new version is available [#3123](https://github.com/MaibornWolff/codecharta/pull/3129)
 
