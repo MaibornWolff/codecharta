@@ -44,6 +44,8 @@ jobs:
           docker build -t codecharta/codecharta-analysis .
 
       - name: Build visualization
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
         working-directory: ./visualization
         run: |
           npm ci

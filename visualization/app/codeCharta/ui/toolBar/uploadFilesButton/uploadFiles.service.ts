@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core"
-import { CodeChartaService } from "../../../codeCharta.service"
+import { LoadFileService } from "../../../services/loadFile/loadFile.service"
 import { Store } from "../../../state/angular-redux/store"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
@@ -12,7 +12,7 @@ import { readFiles } from "../../../util/uploadFiles/readFiles"
 export class UploadFilesService {
 	isUploading = false
 
-	constructor(@Inject(Store) private store: Store, @Inject(CodeChartaService) private codeChartaService: CodeChartaService) {}
+	constructor(@Inject(Store) private store: Store, @Inject(LoadFileService) private loadFileService: LoadFileService) {}
 
 	uploadFiles() {
 		const ccFileInput = createCCFileInput()
@@ -30,7 +30,7 @@ export class UploadFilesService {
 				}
 
 				if (ccFiles.length > 0) {
-					await this.codeChartaService.loadFiles(ccFiles)
+					await this.loadFileService.loadFiles(ccFiles)
 				}
 			} catch {
 				this.store.dispatch(setIsLoadingFile(false))

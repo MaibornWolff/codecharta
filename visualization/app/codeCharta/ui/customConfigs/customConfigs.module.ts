@@ -1,4 +1,3 @@
-import "../../state/state.module"
 import { CustomConfigsComponent } from "./customConfigs.component"
 import { NgModule } from "@angular/core"
 import { MaterialModule } from "../../../material/material.module"
@@ -10,6 +9,8 @@ import { CustomConfigListComponent } from "./customConfigList/customConfigList.c
 import { CustomConfigItemGroupComponent } from "./customConfigList/customConfigItemGroup/customConfigItemGroup.component"
 import { CustomConfig2ApplicableMessage } from "./customConfigList/customConfigItemGroup/customConfig2ApplicableMessage.pipe"
 import { CustomConfig2ApplicableColor } from "./customConfigList/customConfigItemGroup/customConfig2ApplicableColor.pipe"
+import { ApplyCustomConfigButtonComponent } from "./customConfigList/customConfigItemGroup/customConfigDescription/applyCustomConfigButton.component"
+import { CustomConfigColorSchemaBySelectionMode } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigColorSchemaBySelectionMode.pipe"
 
 @NgModule({
 	imports: [MaterialModule, CommonModule, UploadCustomConfigButtonModule, AddCustomConfigButtonModule, DownloadCustomConfigButtonModule],
@@ -17,8 +18,10 @@ import { CustomConfig2ApplicableColor } from "./customConfigList/customConfigIte
 		CustomConfigsComponent,
 		CustomConfigListComponent,
 		CustomConfigItemGroupComponent,
+		ApplyCustomConfigButtonComponent,
 		CustomConfig2ApplicableMessage,
-		CustomConfig2ApplicableColor
+		CustomConfig2ApplicableColor,
+		CustomConfigColorSchemaBySelectionMode
 	],
 	exports: [CustomConfigsComponent],
 	entryComponents: [CustomConfigListComponent]

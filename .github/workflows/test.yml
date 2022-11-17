@@ -74,8 +74,10 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
+      env:
+        NODE_OPTIONS: "--max_old_space_size=4096"
       run: |
-        npm run test --ci
+        npm run test
         npm run lint
       working-directory: ${{env.working-directory}}
 

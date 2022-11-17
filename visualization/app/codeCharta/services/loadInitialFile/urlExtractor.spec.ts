@@ -1,61 +1,47 @@
-import { getService } from "../../../mocks/ng.mockhelper"
-import { ILocationService, IHttpService } from "angular"
+import { of } from "rxjs"
 import { UrlExtractor } from "./urlExtractor"
 import { gzip } from "pako"
+import { HttpClient } from "@angular/common/http"
 
 describe("urlExtractor", () => {
 	let urlExtractor: UrlExtractor
-	let $location: ILocationService
-	let $http: IHttpService
+	let mockedHttpClient: HttpClient
 
 	beforeEach(() => {
-		restartSystem()
-		withMockedMethods()
-		rebuildController()
+		// window.location is not mockable by default provided jsdom
+		delete window.location
+		window.location = {} as unknown as Location
+
+		mockedHttpClient = {
+			get: () => of({ body: { checksum: "fake-md5", data: { apiVersion: 1.3, nodes: [] } }, status: 200 })
+		} as unknown as HttpClient
+
+		urlExtractor = new UrlExtractor(mockedHttpClient)
 	})
-
-	function restartSystem() {
-		$location = getService<ILocationService>("$location")
-		$http = getService<IHttpService>("$http")
-	}
-
-	function rebuildController() {
-		urlExtractor = new UrlExtractor($location, $http)
-	}
-
-	function withMockedMethods() {
-		$location.absUrl = jest.fn(() => {
-			return "http://testurl?file=valid.json"
-		})
-
-		$http.get = jest.fn().mockImplementation(async () => {
-			return { data: '{"checksum": "fake-md5", "data": {"apiVersion": 1.3, "nodes": []}}', status: 200 }
-		})
-	}
 
 	describe("getParameterByName", () => {
 		it("should return fileName for given parameter name 'file'", () => {
+			window.location.href = "http://testurl?file=valid.json"
 			const result = urlExtractor.getParameterByName("file")
 			expect(result).toBe("valid.json")
 		})
 
 		it("should return null when parameter for renderMode is not given", () => {
+			window.location.href = "http://testurl?file=valid.json"
 			const result = urlExtractor.getParameterByName("mode")
 			expect(result).toBe(null)
 		})
 
 		it("should return renderMode for given parameter name 'mode'", () => {
-			$location.absUrl = jest.fn(() => {
-				return "http://testurl?file=valid.json&mode=Delta"
-			})
+			window.location.href = "http://testurl?file=valid.json&mode=Delta"
+			window.location.search = "file=valid.json&mode=Delta"
 			const result = urlExtractor.getParameterByName("mode")
 			expect(result).toBe("Delta")
 		})
 
 		it("should return an empty string when no value is set for 'mode' parameter", () => {
-			$location.absUrl = jest.fn(() => {
-				return "http://testurl?file=valid.json&mode="
-			})
+			window.location.href = "http://testurl?file=valid.json&mode="
+			window.location.search = "file=valid.json&mode="
 			const result = urlExtractor.getParameterByName("mode")
 			expect(result).toBe("")
 		})
@@ -63,45 +49,20 @@ describe("urlExtractor", () => {
 
 	describe("getFileDataFromQueryParam", () => {
 		it("should throw when file is undefined", async () => {
-			$location.search = jest.fn().mockReturnValue({ file: undefined })
-			await expect(urlExtractor.getFileDataFromQueryParam()).rejects.toThrow(new Error(`Filename is missing`))
-		})
-
-		it("should create an array when file is defined but not as an array", async () => {
-			$location.search = jest.fn().mockReturnValue({
-				file: { data: "some data" }
-			})
-
-			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(async (fileName: string) => fileName)
-
-			const result = await urlExtractor.getFileDataFromQueryParam()
-			const expected = [{ data: "some data" }]
-
-			expect(result).toEqual(expected)
-			expect(urlExtractor.getFileDataFromFile).toHaveBeenCalledTimes(1)
-			expect(urlExtractor.getFileDataFromFile).toHaveBeenCalledWith({ data: "some data" })
-		})
-
-		it("should return an array of resolved file data", async () => {
-			$location.search = jest.fn().mockReturnValue({ file: ["some data", "some more"] })
-
-			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(async (fileName: string) => fileName)
-
-			const expected = ["some data", "some more"]
-
-			return expect(urlExtractor.getFileDataFromQueryParam()).resolves.toEqual(expected)
+			window.location.href = "http://testurl"
+			window.location.search = ""
+			await expect(urlExtractor.getFileDataFromQueryParam()).rejects.toThrow(new Error("Filename is missing"))
 		})
 
 		it("should return the first filename rejected", async () => {
-			$location.search = jest.fn().mockReturnValue({ file: ["some data", "some more"] })
+			window.location.search = "file=some_file&file=some_other_file"
+			window.location.href = `http://testurl${window.location.search}`
 
 			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
 				throw fileName
 			})
 
-			const expected = "some data"
-
-			return expect(urlExtractor.getFileDataFromQueryParam()).rejects.toMatch(expected)
+			return expect(urlExtractor.getFileDataFromQueryParam()).rejects.toMatch("some_file")
 		})
 	})
 
@@ -118,14 +79,14 @@ describe("urlExtractor", () => {
 			const expected = {
 				content: { apiVersion: 1.3, fileChecksum: "fake-md5", nodes: [] },
 				fileName: "test.json",
-				fileSize: 66
+				fileSize: 15
 			}
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
 		it("should resolve data object of version 1.3 and return an object with content and fileName", async () => {
-			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: { checksum: "", data: { apiVersion: 1.3, nodes: [] } }, status: 200 }
+			mockedHttpClient.get = jest.fn().mockImplementation(() => {
+				return of({ body: { checksum: "", data: { apiVersion: 1.3, nodes: [] } }, status: 200 })
 			})
 			const expected = {
 				content: { apiVersion: 1.3, fileChecksum: "e59723b38e81becf997a191ca8e4a169", nodes: [] },
@@ -142,8 +103,8 @@ describe("urlExtractor", () => {
 			}
 			const compressedSample = gzip(JSON.stringify(mockFile))
 
-			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: new Blob([compressedSample]), status: 200 }
+			mockedHttpClient.get = jest.fn().mockImplementation(() => {
+				return of({ body: compressedSample, status: 200 })
 			})
 			const expected = {
 				content: {
@@ -159,11 +120,11 @@ describe("urlExtractor", () => {
 		})
 
 		it("should return NameDataPair object with project name as file name when a project name is given", async () => {
-			$http.get = jest.fn().mockImplementation(async () => {
-				return {
-					data: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } },
+			mockedHttpClient.get = jest.fn().mockImplementation(() => {
+				return of({
+					body: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } },
 					status: 200
-				}
+				})
 			})
 			const actualNameDataPair = await urlExtractor.getFileDataFromFile("test.json")
 
@@ -171,20 +132,20 @@ describe("urlExtractor", () => {
 		})
 
 		it("should resolve data string of version 1.2 and return an object with content and fileName", async () => {
-			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: '{"apiVersion":1.2,"nodes":[]}', status: 200 }
+			mockedHttpClient.get = jest.fn().mockImplementation(() => {
+				return of({ body: '{"apiVersion":1.2,"nodes":[]}', status: 200 })
 			})
 			const expected = {
 				content: { apiVersion: 1.2, fileChecksum: "d0278536ce00e4fc7dbab39072ae43f6", nodes: [] },
 				fileName: "test.json",
-				fileSize: 29
+				fileSize: 15
 			}
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
 		it("should resolve data object of version 1.2 and return an object with content and fileName", async () => {
-			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: { apiVersion: 1.2, nodes: [] }, status: 200 }
+			mockedHttpClient.get = jest.fn().mockImplementation(() => {
+				return of({ body: { apiVersion: 1.2, nodes: [] }, status: 200 })
 			})
 			const expected = {
 				content: { apiVersion: 1.2, fileChecksum: "d0278536ce00e4fc7dbab39072ae43f6", nodes: [] },
@@ -195,8 +156,8 @@ describe("urlExtractor", () => {
 		})
 
 		it("should reject if statuscode is not 2xx", async () => {
-			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: "some data", status: 301 }
+			mockedHttpClient.get = jest.fn().mockImplementation(() => {
+				return of({ body: "some data", status: 301 })
 			})
 
 			return expect(urlExtractor.getFileDataFromFile("test.json")).rejects.toEqual(new Error(`Could not load file "test.json"`))

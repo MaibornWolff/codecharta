@@ -1,28 +1,28 @@
 import { TestBed } from "@angular/core/testing"
-import { CodeChartaService } from "./codeCharta.service"
-import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
-import { removeFile, setDeltaReference, setFiles, setStandard } from "./state/store/files/files.actions"
-import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
-import { getCCFiles, isPartialState } from "./model/files/files.helper"
-import { CCFileValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
-import packageJson from "../../package.json"
-import { clone } from "./util/clone"
-import { nodeMetricDataSelector } from "./state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { LoadFileService } from "./loadFile.service"
+import { TEST_FILE_CONTENT } from "../../util/dataMocks"
+import { BlacklistType, CCFile, NodeMetricData, NodeType } from "../../codeCharta.model"
+import { removeFile, setDeltaReference, setFiles, setStandard } from "../../state/store/files/files.actions"
+import { ExportBlacklistType, ExportCCFile } from "../../codeCharta.api.model"
+import { getCCFiles, isPartialState } from "../../model/files/files.helper"
+import { CCFileValidationResult, ERROR_MESSAGES } from "../../util/fileValidator"
+import packageJson from "../../../../package.json"
+import { clone } from "../../util/clone"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { klona } from "klona"
 import { MatDialog } from "@angular/material/dialog"
-import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.component"
-import { loadFilesValidationToErrorDialog } from "./util/loadFilesValidationToErrorDialog"
-import { Store } from "./state/angular-redux/store"
-import { State } from "./state/angular-redux/state"
+import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
+import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
+import { Store } from "../../state/angular-redux/store"
+import { State } from "../../state/angular-redux/state"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
-jest.mock("./state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
+jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
 	nodeMetricDataSelector: jest.fn()
 }))
 
-describe("codeChartaService", () => {
-	let codeChartaService: CodeChartaService
+describe("loadFileService", () => {
+	let codeChartaService: LoadFileService
 	let store: Store
 	let state: State
 	let dialog: MatDialog
@@ -54,7 +54,7 @@ describe("codeChartaService", () => {
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(store, state, dialog)
+		codeChartaService = new LoadFileService(store, state, dialog)
 	}
 
 	describe("loadFiles", () => {
@@ -152,8 +152,8 @@ describe("codeChartaService", () => {
 			expect(isPartialState(state.getValue().files)).toBeTruthy()
 			expect(dialog.open).not.toHaveBeenCalled()
 
-			expect(CodeChartaService.ROOT_NAME).toEqual(expected.map.name)
-			expect(CodeChartaService.ROOT_PATH).toEqual(`/${expected.map.name}`)
+			expect(LoadFileService.ROOT_NAME).toEqual(expected.map.name)
+			expect(LoadFileService.ROOT_PATH).toEqual(`/${expected.map.name}`)
 		})
 
 		it("should replace files with equal file name and checksum when loading new files", () => {
@@ -371,7 +371,7 @@ describe("codeChartaService", () => {
 
 	it("should update its ROOT_PATH when reference file is being set to a file", () => {
 		codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
-		const updateRootDataSpy = jest.spyOn(CodeChartaService, "updateRootData")
+		const updateRootDataSpy = jest.spyOn(LoadFileService, "updateRootData")
 
 		const newReferenceFile = state.getValue().files[0].file
 		store.dispatch(setDeltaReference(newReferenceFile))

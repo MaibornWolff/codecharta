@@ -3,13 +3,13 @@ import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/cus
 import { CustomConfigItem } from "../../customConfigs.component"
 import { Store as PlainStore } from "../../../../state/store/store"
 import { mocked } from "ts-jest/utils"
-import { fileMapCheckSumsSelector } from "../fileMapCheckSums.selector"
 import { expect } from "@jest/globals"
+import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
-jest.mock("../fileMapCheckSums.selector", () => ({
-	fileMapCheckSumsSelector: jest.fn()
+jest.mock("../../visibleFilesBySelectionMode.selector", () => ({
+	visibleFilesBySelectionModeSelector: jest.fn()
 }))
-const mockedFileMapCheckSumsSelector = mocked(fileMapCheckSumsSelector)
+const mockedVisibleFilesBySelectionModeSelector = mocked(visibleFilesBySelectionModeSelector)
 
 describe("getMissingCustomConfigModeAndMaps", () => {
 	const customConfigItem = {
@@ -21,20 +21,31 @@ describe("getMissingCustomConfigModeAndMaps", () => {
 	} as CustomConfigItem
 
 	it("should return empty values when selected maps and map selection mode are the same as the custom config", () => {
-		mockedFileMapCheckSumsSelector.mockImplementationOnce(
-			() => new Map([[CustomConfigMapSelectionMode.MULTIPLE, ["checksum1", "checksum2"]]])
-		)
+		mockedVisibleFilesBySelectionModeSelector.mockImplementationOnce(() => {
+			return {
+				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+				assignedMaps: new Map([
+					["checksum1", "file1"],
+					["checksum2", "file2"]
+				])
+			}
+		})
 
 		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, { getValue: PlainStore.store.getState })
 
-		expect(missingModeAndMaps).toEqual({ mode: "", missingMaps: [] })
+		expect(missingModeAndMaps).toEqual({ mapSelectionMode: "", mapNames: [] })
 	})
 
 	it("should return missing maps and mode when the values currently selected differ from the custom config", () => {
-		mockedFileMapCheckSumsSelector.mockImplementationOnce(() => new Map([[CustomConfigMapSelectionMode.DELTA, ["checksum2"]]]))
+		mockedVisibleFilesBySelectionModeSelector.mockImplementationOnce(() => {
+			return {
+				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+				assignedMaps: new Map([["checksum2", "file2"]])
+			}
+		})
 
 		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, { getValue: PlainStore.store.getState })
 
-		expect(missingModeAndMaps).toEqual({ mode: "MULTIPLE", missingMaps: ["file1"] })
+		expect(missingModeAndMaps).toEqual({ mapSelectionMode: "STANDARD", mapNames: ["file1"] })
 	})
 })

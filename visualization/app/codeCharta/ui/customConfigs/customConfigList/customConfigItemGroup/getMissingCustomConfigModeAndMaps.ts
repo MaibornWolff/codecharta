@@ -1,27 +1,24 @@
 import { CustomConfigItem } from "../../customConfigs.component"
 import { State } from "../../../../state/angular-redux/state"
-import { fileMapCheckSumsSelector } from "../fileMapCheckSums.selector"
+import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
 type MissingCustomConfigsProperties = {
-	mode: string
-	missingMaps: string[]
+	mapSelectionMode: string
+	mapNames: string[]
 }
 
 export function getMissingCustomConfigModeAndMaps(configItem: CustomConfigItem, state: State): MissingCustomConfigsProperties {
-	const missingMaps = []
-	const mapCheckSumBySelectionMode = fileMapCheckSumsSelector(state.getValue())
-	const [currentMapChecksums] = mapCheckSumBySelectionMode.values()
+	const { mapSelectionMode, assignedMaps } = visibleFilesBySelectionModeSelector(state.getValue())
+	const mapNames = []
 
-	for (const [checksum] of configItem.assignedMaps) {
-		if (!currentMapChecksums?.includes(checksum)) {
-			missingMaps.push(configItem.assignedMaps.get(checksum))
+	for (const checksum of configItem.assignedMaps.keys()) {
+		if (!assignedMaps.has(checksum)) {
+			mapNames.push(configItem.assignedMaps.get(checksum))
 		}
 	}
 
-	const mode = configItem.mapSelectionMode !== mapCheckSumBySelectionMode.keys().next().value ? configItem.mapSelectionMode : ""
-
 	return {
-		mode,
-		missingMaps
+		mapSelectionMode: configItem.mapSelectionMode !== mapSelectionMode ? configItem.mapSelectionMode : "",
+		mapNames
 	}
 }

@@ -127,13 +127,24 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService.addEdgePreview = jest.fn()
 			threeSceneService.clearHighlight = jest.fn()
 			codeMapArrowService["buildPairingEdges"] = jest.fn()
+			codeMapArrowService.scale = jest.fn()
 		})
+
 		it("should call clearArrows and showEdgesOfBuildings through BuildingSelected", () => {
 			codeMapArrowService.onBuildingSelected({ building: CODE_MAP_BUILDING })
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
 			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()
 			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalledTimes(0)
+		})
+
+		it("should not call sub-methods through BuildingSelected if building is undefined", () => {
+			codeMapArrowService.onBuildingSelected({ building: undefined })
+
+			expect(codeMapArrowService.clearArrows).not.toHaveBeenCalled()
+			expect(codeMapArrowService["showEdgesOfBuildings"]).not.toHaveBeenCalled()
+			expect(codeMapArrowService.addEdgePreview).not.toHaveBeenCalled()
+			expect(codeMapArrowService.scale).toHaveBeenCalled()
 		})
 
 		it("should call clearArrows and showEdgesOfBuildings through BuildingHovered", async () => {

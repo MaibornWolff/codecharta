@@ -7,19 +7,49 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.111.0] - 2022-11-11
+
+### Added 🚀
+
+-   Add description to every Custom View [#3119](https://github.com/MaibornWolff/codecharta/pull/3119) </br>
+    ![image](https://user-images.githubusercontent.com/72517530/201381274-a9a913d5-8f9d-4da6-9f26-6476e194ce3b.png)
+-   Highlight files and folders with no area metric or an area metric value of zero in the search panel [#3126](https://github.com/MaibornWolff/codecharta/pull/3126)
+
+### Changed
+
+-   Be aware, that all Custom Views generated with version 1.110.0 or older will be unusable by April 2023 [#3119](https://github.com/MaibornWolff/codecharta/pull/3119)
+
+### Fixed 🐞
+
+-   Fix crashing on focusing or hovering un-rendered buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
+-   Fix showing changelog entries in the dialog when a new version is available [#3123](https://github.com/MaibornWolff/codecharta/pull/3129)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Update supported latest browsers [#3125](https://github.com/MaibornWolff/codecharta/pull/3125)
+-   Split e2e and unit test configs [#3128](https://github.com/MaibornWolff/codecharta/pull/3128)
+
+## [1.110.0] - 2022-11-04
+
 ### Changed
 
 -   Custom Views are now applicable even if maps or mode are different. Missing maps or map selection mode is displayed in the tooltip [#3090](https://github.com/MaibornWolff/codecharta/pull/3090)
+-   Be aware, that all Custom Views generated with version 1.109.1 or older will be unusable by April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
 
 ### Fixed 🐞
 
 -   Fix broken link to Custom View documentation [#3101](https://github.com/MaibornWolff/codecharta/pull/3101)
+-   Don't re-center map after every state change like changing area metric [#3109](https://github.com/MaibornWolff/codecharta/pull/3109)
 
 ### Chore 👨‍💻 👩‍💻
 
+-   Adjust Custom View API and maintain old Custom Views until April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
 -   Migrate codeMap.render.service, codeMap.label.service, codeMap.mouseEvent.service, codeMap.arrow.service, codeCharta.service, sharpnessMode.service, isLoadingFile.service, scaling.service and experimentalFeaturesEnabled.service to Angular [#3094](https://github.com/MaibornWolff/codecharta/pull/3094)
 -   Extract tree map size into a const as this is never changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
 -   Migrate markedPackages.service, edges.service, blacklist.service, files.service and injector.service [3106](https://github.com/MaibornWolff/codecharta/pull/3106)
+-   Refactor out `LoadInitialFileService` and fix with it loose Promise in tests [#3110](https://github.com/MaibornWolff/codecharta/pull/3110)
+-   Migrate codeCharta.component, storeService.service and remove AngularJS dual boot from bootstrapping [#3114](https://github.com/MaibornWolff/codecharta/pull/3114)
+-   Remove obsolete AngularJS dependencies [#3115](https://github.com/MaibornWolff/codecharta/pull/3115)
 
 ## [1.109.1] - 2022-10-12
 

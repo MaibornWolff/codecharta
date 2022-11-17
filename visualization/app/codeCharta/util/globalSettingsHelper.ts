@@ -1,6 +1,4 @@
-"use strict"
-import { GlobalSettings, LocalStorageGlobalSettings } from "../codeCharta.model"
-import { StoreService } from "../state/store.service"
+import { AppSettings, GlobalSettings, LocalStorageGlobalSettings } from "../codeCharta.model"
 import { setExperimentalFeaturesEnabled } from "../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { setHideFlatBuildings } from "../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { setIsWhiteBackground } from "../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
@@ -10,6 +8,7 @@ import { setMaxTreeMapFiles } from "../state/store/appSettings/maxTreeMapFiles/m
 import { setResetCameraIfNewFileIsLoaded } from "../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import packageJson from "../../../package.json"
 import { setScreenshotToClipboardEnabled } from "../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import { Store } from "../state/angular-redux/store"
 
 export class GlobalSettingsHelper {
 	static readonly GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT = "globalSettings"
@@ -22,36 +21,35 @@ export class GlobalSettingsHelper {
 		localStorage.setItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement))
 	}
 
-	static setGlobalSettingsOfLocalStorageIfExists(storeService: StoreService) {
+	static setGlobalSettingsOfLocalStorageIfExists(store: Pick<Store, "dispatch">, appSettings: Partial<AppSettings>) {
 		if (GlobalSettingsHelper.getGlobalSettings()) {
 			const globalSettings: GlobalSettings = JSON.parse(
 				localStorage.getItem(this.GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT)
 			).globalSettings
-			const { appSettings } = storeService.getState()
 
 			if (appSettings.hideFlatBuildings !== globalSettings.hideFlatBuildings) {
-				storeService.dispatch(setHideFlatBuildings(globalSettings.hideFlatBuildings))
+				store.dispatch(setHideFlatBuildings(globalSettings.hideFlatBuildings))
 			}
 			if (appSettings.isWhiteBackground !== globalSettings.isWhiteBackground) {
-				storeService.dispatch(setIsWhiteBackground(globalSettings.isWhiteBackground))
+				store.dispatch(setIsWhiteBackground(globalSettings.isWhiteBackground))
 			}
 			if (appSettings.resetCameraIfNewFileIsLoaded !== globalSettings.resetCameraIfNewFileIsLoaded) {
-				storeService.dispatch(setResetCameraIfNewFileIsLoaded(globalSettings.resetCameraIfNewFileIsLoaded))
+				store.dispatch(setResetCameraIfNewFileIsLoaded(globalSettings.resetCameraIfNewFileIsLoaded))
 			}
 			if (appSettings.experimentalFeaturesEnabled !== globalSettings.experimentalFeaturesEnabled) {
-				storeService.dispatch(setExperimentalFeaturesEnabled(globalSettings.experimentalFeaturesEnabled))
+				store.dispatch(setExperimentalFeaturesEnabled(globalSettings.experimentalFeaturesEnabled))
 			}
 			if (appSettings.screenshotToClipboardEnabled !== globalSettings.screenshotToClipboardEnabled) {
-				storeService.dispatch(setScreenshotToClipboardEnabled(globalSettings.screenshotToClipboardEnabled))
+				store.dispatch(setScreenshotToClipboardEnabled(globalSettings.screenshotToClipboardEnabled))
 			}
 			if (appSettings.layoutAlgorithm !== globalSettings.layoutAlgorithm) {
-				storeService.dispatch(setLayoutAlgorithm(globalSettings.layoutAlgorithm))
+				store.dispatch(setLayoutAlgorithm(globalSettings.layoutAlgorithm))
 			}
 			if (appSettings.maxTreeMapFiles !== globalSettings.maxTreeMapFiles) {
-				storeService.dispatch(setMaxTreeMapFiles(globalSettings.maxTreeMapFiles))
+				store.dispatch(setMaxTreeMapFiles(globalSettings.maxTreeMapFiles))
 			}
 			if (appSettings.sharpnessMode !== globalSettings.sharpnessMode) {
-				storeService.dispatch(setSharpnessMode(globalSettings.sharpnessMode))
+				store.dispatch(setSharpnessMode(globalSettings.sharpnessMode))
 			}
 		}
 	}

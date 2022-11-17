@@ -16,8 +16,8 @@
 		align-items: center;
 	}
 
-	.description {
-		margin: 5px 0;
+	.custom-config-documentation-hint {
+		margin: 10px 0 20px 0;
 	}
 
 	.action-buttons button {
@@ -32,7 +32,7 @@
 		&:disabled,
 		&[disabled] {
 			background-color: #e6e6e6;
-			color: #949494;
+			color: theme.$cc-disabled-color;
 		}
 
 		i.fa {
@@ -49,10 +49,6 @@
 	cc-custom-config-item-group {
 		.mat-expansion-panel-spacing {
 			margin: 0;
-		}
-
-		.mat-expansion-panel-header {
-			padding: 0 16px;
 		}
 
 		.highlight-mode {
@@ -80,22 +76,28 @@
 		}
 
 		.mat-list-item-content {
+			display: flex;
+			justify-content: space-between;
 			border-bottom: 1px solid #000000;
-			padding: 0;
+			padding: 0 5px;
 
 			&:hover {
-				background-color: rgba(158, 158, 158, 0.2);
+				background-color: rgba(0, 0, 0, 0.04);
 			}
 
 			button {
-				height: 100%;
-				width: 100%;
 				background-color: transparent;
-				text-align: left;
 
 				&.remove-button {
-					color: red;
-					width: 13%;
+					font-size: 16px;
+					padding: 8px 10px;
+					margin: 0;
+
+					&:hover {
+						background-color: rgba(0, 0, 0, 0.05);
+						color: theme.$cc-primary-color;
+						border-radius: 50%;
+					}
 				}
 			}
 		}
@@ -108,21 +110,17 @@
 		margin: 2px 0;
 	}
 
-	.mat-accordion.custom-config-container {
-		.mat-expansion-panel:first-of-type,
-		.mat-expansion-panel:last-of-type {
-			border-radius: 0;
-		}
-	}
-
 	.toggle-non-applicable-configs-button {
 		width: 100%;
 		height: 30px;
 		margin: 5px 0;
 	}
 
-	mat-list-base .mat-list-item .mat-list-item-content,
-	.mat-list-base .mat-list-option .mat-list-item-content {
+	.mat-list-base {
 		padding: 0;
+	}
+
+	.mat-list-item {
+		height: max-content;
 	}
 }
