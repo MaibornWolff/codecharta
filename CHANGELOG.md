@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix ribbon-bar shadow moving down when search is expanded #3138
+
 ## [1.111.0] - 2022-11-17
 
 ### Added 🚀
