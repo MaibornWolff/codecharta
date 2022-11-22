@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
@@ -18,6 +19,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 mergeProjectNodes(),
                 mergeEdges(),
                 mergeAttributeTypes(),
+                mergeAttributeDescriptors(),
                 mergeBlacklist()
             ).build()
             else -> throw MergeException("API versions not supported.")
@@ -68,7 +70,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 if (mergedAttributeTypes.containsKey(key)) {
                     attributeTypes.value.forEach { attribute ->
                         if (!mergedAttributeTypes[key]!!.containsKey(attribute.key)) {
-                            mergedAttributeTypes[key]!!.put(attribute.key, attribute.value)
+                            mergedAttributeTypes[key]!![attribute.key] = attribute.value
                         }
                     }
                 } else {
@@ -79,9 +81,15 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return mergedAttributeTypes
     }
 
+    private fun mergeAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
+        val mergedAttributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
+        projects.forEach { mergedAttributeDescriptors.putAll(it.attributeDescriptors) }
+        return mergedAttributeDescriptors
+    }
+
     private fun mergeBlacklist(): MutableList<BlacklistItem> {
         val mergedBlacklist = mutableListOf<BlacklistItem>()
-        projects.forEach { it.blacklist.forEach { mergedBlacklist.add(it) } }
+        projects.forEach { project -> project.blacklist.forEach { mergedBlacklist.add(it) } }
         return mergedBlacklist.distinctBy { it.toString() }.toMutableList()
     }
 }

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter.json
 
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.getAttributeDescriptors
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNode
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.model.MutableNode
@@ -28,5 +29,11 @@ internal class MetricGardenerProjectBuilderTest {
         val node = MutableNode("TestService.kt", NodeType.File, mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40), "", setOf())
         assertEquals(fileNode.name, node.name)
         assertEquals(fileNode.attributes, node.attributes)
+    }
+
+    @Test
+    fun `should generate project with descriptors`() {
+        val project = metricGardenerprojectBuilder.build()
+        assertEquals(project.attributeDescriptors, getAttributeDescriptors())
     }
 }

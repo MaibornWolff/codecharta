@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
@@ -20,8 +21,9 @@ class SubProjectExtractor(private val project: Project) {
             addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
             extractEdges(path),
             copyAttributeTypes(),
+            copyAttributeDescriptors(),
             copyBlacklist()
-        ).build()
+        ).build(true)
     }
 
     private fun extractNodes(extractionPattern: List<String>, node: MutableNode): MutableList<MutableNode> {
@@ -67,6 +69,10 @@ class SubProjectExtractor(private val project: Project) {
             mergedAttributeTypes[it.key] = it.value
         }
         return mergedAttributeTypes.toMutableMap()
+    }
+
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
+        return project.attributeDescriptors.toMutableMap()
     }
 
     private fun copyBlacklist(): MutableList<BlacklistItem> {

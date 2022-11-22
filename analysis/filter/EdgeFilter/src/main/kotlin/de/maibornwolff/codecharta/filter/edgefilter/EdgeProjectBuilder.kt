@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Node
@@ -16,15 +18,29 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private val projectBuilder = ProjectBuilder(
         listOf(MutableNode("root", NodeType.Folder)),
         mutableListOf(),
-        getAttributeTypes()
+        getAttributeTypes(),
+        getAttributeDescriptors(),
+        getBlacklist()
     )
 
     private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val newAttributetypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
+        val newAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
         project.attributeTypes.forEach {
-            newAttributetypes[it.key] = it.value
+            newAttributeTypes[it.key] = it.value
         }
-        return newAttributetypes
+        return newAttributeTypes
+    }
+
+    private fun getAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
+        val newAttributeDescriptor = mutableMapOf<String, AttributeDescriptor>()
+        newAttributeDescriptor.putAll(project.attributeDescriptors)
+        return newAttributeDescriptor
+    }
+
+    private fun getBlacklist(): MutableList<BlacklistItem> {
+        val newList = mutableListOf<BlacklistItem>()
+        newList.addAll(project.blacklist)
+        return newList
     }
 
     fun merge(): Project {
@@ -113,7 +129,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun getAttributeKeys(filteredEdges: List<Edge>): MutableList<String> {
         val attributeKeys: MutableList<String> = mutableListOf()
         filteredEdges.forEach {
-            it.attributes.forEach { key, _ -> if (!attributeKeys.contains(key)) attributeKeys.add(key) }
+            it.attributes.forEach { (key, _) -> if (!attributeKeys.contains(key)) attributeKeys.add(key) }
         }
         return attributeKeys
     }

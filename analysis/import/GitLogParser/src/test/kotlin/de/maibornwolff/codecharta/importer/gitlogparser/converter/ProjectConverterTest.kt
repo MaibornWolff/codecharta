@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.converter
 
+import de.maibornwolff.codecharta.importer.gitlogparser.getAttributeDescriptors
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.gitlogparser.input.VersionControlledFile
@@ -86,5 +87,18 @@ class ProjectConverterTest {
         val project = projectConverter.convert(vcfList, MetricsFactory(), listOf())
 
         assertThat(project.attributeTypes).containsKeys("edges", "nodes")
+    }
+
+    @Test
+    fun `should create attributeDescriptors`() {
+        val projectConverterNoAuthors = ProjectConverter(false)
+        val vcfList = VersionControlledFilesList(metricsFactory)
+        val project = projectConverterNoAuthors.convert(vcfList, MetricsFactory(), listOf())
+
+        val projectConverterWithAuthors = ProjectConverter(true)
+        val project2 = projectConverterWithAuthors.convert(vcfList, MetricsFactory(), listOf())
+
+        assertThat(project.attributeDescriptors).isEqualTo(project2.attributeDescriptors)
+        assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
     }
 }

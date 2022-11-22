@@ -23,7 +23,7 @@ The Codemaatimporter, generates visualisation data from CodeMaat Temporal Coupli
 
     ````
 
-2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat)
+2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat) in 'coupling' mode
 
     ```bash
     maat -c git -l project.log -a coupling > edges.csv

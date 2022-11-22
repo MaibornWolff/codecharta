@@ -17,19 +17,16 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
 
     init {
         mergeConditionSatisfied =
-            if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
+            if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.equals(n2.name, ignoreCase = true) }
             else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
     }
 
     override fun mergeNodeLists(nodeLists: List<List<MutableNode>>): List<MutableNode> {
         return if (nodeLists.isEmpty()) listOf()
         else nodeLists.reduce { mergedNodeList, nextNodeList ->
-            nextNodeList.fold(
-                mergedNodeList,
-                { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
-                    mergeNodeIfExistentInList(accumulatedNodes, nextNode)
-                }
-            )
+            nextNodeList.fold(mergedNodeList) { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
+                mergeNodeIfExistentInList(accumulatedNodes, nextNode)
+            }
         }
     }
 
