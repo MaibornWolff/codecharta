@@ -23,6 +23,13 @@ class SonarMeasuresAPIImporter @JvmOverloads constructor(
         val componentMap = measuresDS!!.getComponentMap(projectKey, metricsList)
 
         val projectBuilder = SonarComponentProjectBuilder(sonarCodeURLLinker, translator, usePath)
+        val attributeDescriptors = getAttributeDescriptors()
+        projectBuilder.addAttributeDescriptions(
+            attributeDescriptors
+                .filter { it.key in metricsList }
+                .map { translator.translate(it.key) to it.value }
+                .toMap()
+        )
         return projectBuilder.addComponentMapsAsNodes(componentMap).build()
     }
 

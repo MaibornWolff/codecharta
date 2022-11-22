@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.sonar.model.Component
 import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.importer.sonar.model.Measure
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
@@ -47,6 +48,11 @@ class SonarComponentProjectBuilder(
             createLink(component)
         )
         projectBuilder.insertByPath(createParentPath(component), node)
+        return this
+    }
+
+    fun addAttributeDescriptions(descriptors: Map<String, AttributeDescriptor>): SonarComponentProjectBuilder {
+        projectBuilder.addAttributeDescriptions(descriptors)
         return this
     }
 
