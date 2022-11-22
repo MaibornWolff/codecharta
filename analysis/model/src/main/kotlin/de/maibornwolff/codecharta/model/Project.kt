@@ -6,6 +6,7 @@ class Project(
     val apiVersion: String = API_VERSION,
     val edges: List<Edge> = listOf(),
     val attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
+    val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
     var blacklist: List<BlacklistItem> = listOf()
 ) {
 
@@ -28,7 +29,7 @@ class Project(
     }
 
     override fun toString(): String {
-        return "Project{projectName=$projectName, apiVersion=$apiVersion, nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, blacklist=$blacklist}"
+        return "Project{projectName=$projectName, apiVersion=$apiVersion, nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, attributeDescriptors=$attributeDescriptors, blacklist=$blacklist}"
     }
 
     companion object {

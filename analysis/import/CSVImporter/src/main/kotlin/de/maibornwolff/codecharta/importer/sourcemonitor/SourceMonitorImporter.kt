@@ -40,9 +40,9 @@ class SourceMonitorImporter(
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-            CSVProjectBuilder(pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
+            CSVProjectBuilder(pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement, getAttributeDescriptors())
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
-        val project = csvProjectBuilder.build()
+        val project = csvProjectBuilder.build(true)
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
@@ -59,7 +59,7 @@ class SourceMonitorImporter(
             replacementMap["Lines"] = "loc"
             replacementMap["Statements"] = "statements"
             replacementMap["Classes and Interfaces"] = "classes"
-            replacementMap["Methods per Class"] = "functions_per_classs"
+            replacementMap["Methods per Class"] = "functions_per_class"
             replacementMap["Average Statements per Method"] = "average_statements_per_function"
             replacementMap["Line Number of Most Complex Method*"] = ""
             replacementMap["Name of Most Complex Method*"] = ""

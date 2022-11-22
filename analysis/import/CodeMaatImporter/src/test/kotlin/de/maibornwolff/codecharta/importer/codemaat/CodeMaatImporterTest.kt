@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter.Companion.main
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -38,17 +40,19 @@ class CodeMaatImporterTest {
     }
 
     @Test
-    fun `should contain avgCommits value of 5`() {
+    fun `should contain expected content`() {
         main(
             arrayOf(
                 "src/test/resources/coupling-codemaat.csv",
                 "-nc",
-                "-o=src/test/resources/coupling-codemaat.cc.json"
+                "-o=src/test/resources/coupling-codemaat-content.cc.json"
                    )
             )
-        val file = File("src/test/resources/coupling-codemaat.cc.json")
+        val file = File("src/test/resources/coupling-codemaat-content.cc.json")
         file.deleteOnExit()
 
-        assertThat(file.readText()).contains(listOf("\"avgCommits\":5"))
+        assertThat(file.readText()).contains("\"avgCommits\":5")
+        assertThat(file.readText()).contains(listOf("attributeDescriptors", "\"description\":\"Average"))
+        assertEquals(ProjectDeserializer.deserializeProject(file.reader()).attributeDescriptors, getAttributeDescriptors())
     }
 }

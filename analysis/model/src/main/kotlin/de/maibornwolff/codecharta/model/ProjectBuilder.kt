@@ -6,8 +6,9 @@ open class ProjectBuilder(
     private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
     private var edges: MutableList<Edge> = mutableListOf(),
     private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
+    private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
     private var blacklist: MutableList<BlacklistItem> = mutableListOf()
-                         ) {
+    ) {
 
     val DUMMY_PROJECT_NAME = ""
 
@@ -46,6 +47,10 @@ open class ProjectBuilder(
     }
 
     open fun build(): Project {
+        return build(false)
+    }
+
+    open fun build(cleanAttributeDescriptors: Boolean = false): Project {
         nodes.flatMap { it.nodes.values }
             .mapNotNull { it.filterChildren(filterRule, false) }
             .map { it.translateMetrics(metricNameTranslator, false) }
@@ -53,14 +58,15 @@ open class ProjectBuilder(
         edges.forEach { it.translateMetrics(metricNameTranslator) }
 
         filterEmptyFolders()
-
+        if (cleanAttributeDescriptors) { removeUnusedAttributeDescriptors() }
         val project = Project(
             DUMMY_PROJECT_NAME,
             nodes.map { it.toNode() }.toList(),
             edges = edges.toList(),
             attributeTypes = attributeTypes.toMap(),
+            attributeDescriptors = attributeDescriptors.toMap(),
             blacklist = blacklist.toList()
-                             )
+        )
 
         System.err.println()
         System.err.println("Created Project with ${project.size} leaves.")
@@ -79,6 +85,38 @@ open class ProjectBuilder(
             attributeTypes[attributeTypesToAdd.type]!!.plus(attributeTypesToAdd.attributeTypes)
         }
         return this
+    }
+
+    fun addAttributeDescriptions(descriptions: Map<String, AttributeDescriptor>): ProjectBuilder {
+        attributeDescriptors.putAll(descriptions)
+        return this
+    }
+
+    private fun removeUnusedAttributeDescriptors() {
+        val attributeSet = this.attributeDescriptors.keys.toMutableSet()
+        val nodesToWalk: MutableList<Node> = mutableListOf(this.rootNode.toNode())
+
+        var i = 0
+        while (i < nodesToWalk.size) {
+            val currentNode = nodesToWalk[i]
+            nodesToWalk.addAll(currentNode.children)
+            if (currentNode.type != NodeType.Folder) {
+                attributeSet.removeAll(currentNode.attributes.keys)
+                if (attributeSet.isEmpty()) {
+                    return
+                }
+            }
+            i++
+        }
+        edges.forEach { edge ->
+            attributeSet.removeAll(edge.attributes.keys)
+            if (attributeSet.isEmpty()) { return }
+        }
+
+        val attributeDescriptors = this.attributeDescriptors.toMutableMap()
+        attributeSet.forEach { attributeDescriptors.remove(it) }
+        this.attributeDescriptors = attributeDescriptors
+        return
     }
 
     override fun toString(): String {

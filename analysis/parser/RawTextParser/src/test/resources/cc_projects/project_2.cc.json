@@ -1,5 +1,5 @@
 {
-	"checksum": "2cd5cb930f1c13693eb4139325a2c383",
+	"checksum": "d7cd700b3ca7f1eab8f8061aab6e5c54",
 	"data": {
 		"projectName": "",
 		"apiVersion": "1.3",
@@ -41,6 +41,7 @@
 		],
 		"edges": [],
 		"attributeTypes": {},
+    "attributeDescriptors":{},
 		"blacklist": []
 	}
 }

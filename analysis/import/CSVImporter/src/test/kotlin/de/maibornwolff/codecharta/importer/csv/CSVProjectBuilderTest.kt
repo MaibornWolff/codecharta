@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.csv
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -93,9 +94,31 @@ class CSVProjectBuilderTest {
             "File Name"
         )
         val project = csvProjectBuilder
-            .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv"))
+            .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv")!!)
             .build()
 
         assertEquals(39, project.size)
+    }
+
+    @Test
+    fun `when importing a valid csv file then appropriate attribute descriptors have been added`() {
+        val attributeDescriptors = mapOf("Test" to AttributeDescriptor("123"))
+        val csvProjectBuilder = CSVProjectBuilder(
+            '\\',
+            ',',
+            "File Name",
+            attributeDescriptors = attributeDescriptors
+        )
+        val attributeName = "Test"
+        val attributeValue = "\"0,1\""
+
+        val project = csvProjectBuilder.parseCSVStream(
+            toInputStream(
+                "head1,path,head3,head4,$attributeName\nprojectName,\"9900,01\",\"foo\",1.0,$attributeValue\n"
+            )
+        ).build()
+
+        assertEquals(project.attributeDescriptors.size, 1)
+        assertEquals(project.attributeDescriptors["Test"]!!.description, "123")
     }
 }

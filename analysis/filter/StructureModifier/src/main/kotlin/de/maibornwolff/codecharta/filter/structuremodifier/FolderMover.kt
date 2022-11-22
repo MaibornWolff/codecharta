@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
@@ -24,6 +25,7 @@ class FolderMover(private val project: Project) {
             moveNodes(moveFrom, moveTo),
             extractEdges(moveFrom, moveTo),
             copyAttributeTypes(),
+            copyAttributeDescriptors(),
             copyBlacklist(moveFrom, moveTo)
         ).build()
     }
@@ -101,6 +103,10 @@ class FolderMover(private val project: Project) {
             mergedAttributeTypes[it.key] = it.value
         }
         return mergedAttributeTypes.toMutableMap()
+    }
+
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
+        return project.attributeDescriptors.toMutableMap()
     }
 
     private fun copyBlacklist(from: String, to: String): MutableList<BlacklistItem> {

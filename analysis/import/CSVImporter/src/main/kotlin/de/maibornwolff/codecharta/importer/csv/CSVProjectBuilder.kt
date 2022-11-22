@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.csv
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
@@ -9,13 +10,13 @@ import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
-import java.util.Arrays
 
 class CSVProjectBuilder(
     private val pathSeparator: Char,
     private val csvDelimiter: Char,
     private val pathColumnName: String = "path",
-    metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
+    metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+    attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
 ) {
 
     private val logger = KotlinLogging.logger {}
@@ -23,6 +24,7 @@ class CSVProjectBuilder(
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder()
         .withMetricTranslator(metricNameTranslator)
+        .addAttributeDescriptions(attributeDescriptors)
 
     fun parseCSVStream(
         inStream: InputStream
@@ -34,8 +36,8 @@ class CSVProjectBuilder(
         return projectBuilder
     }
 
-    fun build(): Project {
-        return projectBuilder.build()
+    fun build(cleanAttributeDescriptors: Boolean = false): Project {
+        return projectBuilder.build(cleanAttributeDescriptors)
     }
 
     private fun parseContent(parser: CsvParser, header: CSVHeader) {
@@ -63,7 +65,7 @@ class CSVProjectBuilder(
             val row = CSVRow(rawRow, header, pathSeparator)
             projectBuilder.insertByPath(row.pathInTree(), row.asNode())
         } catch (e: IllegalArgumentException) {
-            logger.warn { "Ignoring row ${Arrays.toString(rawRow)} due to: ${e.message}" }
+            logger.warn { "Ignoring row ${rawRow.contentToString()} due to: ${e.message}" }
         }
     }
 }

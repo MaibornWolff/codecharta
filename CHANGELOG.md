@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
-- Documentation for new treeMap calculation algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+-   Documentation for new treeMap calculation algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+-   Add attribute descriptors (metric descriptions) to some filters and importers [#3091](https://github.com/MaibornWolff/codecharta/pull/3091)
 
 ## [1.111.0] - 2022-11-17
 
