@@ -99,7 +99,7 @@ class StructureModifierTest {
 
     @Test
     fun `sets root and removes unused descriptors`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/attributeDescriptors.json", "-s=/root/AnotherParentLeaf"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf"))
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
         assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
         assertThat(resultProject.attributeDescriptors["rloc"]).isNull()
@@ -107,7 +107,7 @@ class StructureModifierTest {
 
     @Test
     fun `remove nodes and removes unused descriptors`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/attributeDescriptors.json", "-r=/root/AnotherParentLeaf"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf"))
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
         assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
         assertThat(resultProject.attributeDescriptors["yrloc"]).isNull()
