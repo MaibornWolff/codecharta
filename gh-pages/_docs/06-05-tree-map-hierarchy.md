@@ -65,7 +65,7 @@ The algorithm proceeds as follows:
 ## Methods and Function
 
 |                   Method                    | Function                                                               |
-|:-------------------------------------------:|------------------------------------------------------------------------|
+| :-----------------------------------------: | ---------------------------------------------------------------------- |
 |          `getChildrenAreaValues()`          | returns all non-zero area values for a given metric and hierarchy node |
 |  `getSmallestValueOrSmallestDifference()`   | returns minimum between smallest difference and smallest value         |
 |   `calculatePaddingBasedOnBuildingArea()`   | calculate the median building area and scale padding down              |
@@ -75,7 +75,7 @@ The algorithm proceeds as follows:
 ## calculateTotalNodeArea: intermediate steps
 
 | Steps | intermediate results                                                                                                                                                                                              |
-|:-----:|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :---: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `1:`  | **totalNodeArea**: sum building areas or throw an error if none exist                                                                                                                                             |
 | `2:`  | generate two maps from hierarchyNode<br>**nodeKeyMap(path, node)**: maps paths to node data, helps find parent/child of node<br> **nodeAreaMap(path, 0)**: maps paths to a node area value, all set to 0 at start |
 | `3:`  | **nodeAreaMap**: set file values and folder values as sum of direct children only                                                                                                                                 |
