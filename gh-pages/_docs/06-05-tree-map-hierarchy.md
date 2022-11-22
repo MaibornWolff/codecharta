@@ -87,5 +87,3 @@ The algorithm proceeds as follows:
 | `9:`  | **rootSide**: set root side length<br> root-folder is always a square                                                                                                                                             |
 | `10:` | **factor**: check if map root is too big and set a factor to scale down if required                                                                                                                               |
 | `11:` | **metricSum**: sum up all files again (overwrite), applying scaling factor to each file/folder if required                                                                                                        |
-
-
