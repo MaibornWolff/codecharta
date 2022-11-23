@@ -13,10 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix ribbon-bar shadow moving down when search is
-    expanded [#3138](https://github.com/MaibornWolff/codecharta/pull/3138)
--   Fix loading errors of maps containing no
-    programming-language-info [#3144](https://github.com/MaibornWolff/codecharta/pull/3144)
+-   Fix ribbon-bar shadow moving down when search is expanded [#3138](https://github.com/MaibornWolff/codecharta/pull/3138)
+-   Fix loading errors of maps containing no programming-language-info [#3144](https://github.com/MaibornWolff/codecharta/pull/3144)
 
 ### Chore 👨‍💻 👩‍💻
 
