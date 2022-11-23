@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   New calculation algorithm for treeMap that accounts for paddings and floor labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
 
+### Fixed 🐞
+
+-   Fix ribbon-bar shadow moving down when search is expanded [#3138](https://github.com/MaibornWolff/codecharta/pull/3138)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Documentation for new treeMap calculation algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
