@@ -8,7 +8,7 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
 
     `git log --pretty=format:'[%h] %an %ad %s' --since=<YYYY/MM/DD> --date=short --numstat > project.log`
 
-2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat)
+2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat) in 'coupling' mode
 
     `maat git -l project.log -a coupling > edges.csv`
 

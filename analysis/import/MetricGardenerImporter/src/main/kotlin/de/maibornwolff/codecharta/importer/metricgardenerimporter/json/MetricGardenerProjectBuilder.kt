@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter.json
 
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.getAttributeDescriptors
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNode
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.model.MutableNode
@@ -20,6 +21,7 @@ class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes)
             i = i.inc()
             logger.info { "$i. node of ${metricGardenerNodes.metricGardenerNodes.size} MetricGardenerNodes processed" }
         }
+        addAttributeDescriptions(getAttributeDescriptors())
         return super.build()
     }
 

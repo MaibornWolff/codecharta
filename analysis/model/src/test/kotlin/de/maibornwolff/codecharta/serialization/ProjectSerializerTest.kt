@@ -23,14 +23,15 @@ class ProjectSerializerTest : Spek({
 
     describe("ProjectSerializer") {
         it("should serialize project") {
-            val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3).reader()
-            val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json").readText()
+            val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3)!!.reader()
+            val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText()
             val testProject = ProjectDeserializer.deserializeProject(jsonReader)
 
             ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false)
 
             val testJsonString = File(filename).readText()
-
+            System.err.println(testJsonString)
+            System.err.println(expectedJsonString)
             JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.NON_EXTENSIBLE)
         }
     }

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -94,5 +95,21 @@ class StructureModifierTest {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-p=2"))
 
         assertThat(cliResult).contains(listOf("folder3", "- - "))
+    }
+
+    @Test
+    fun `sets root and removes unused descriptors`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf"))
+        val resultProject = ProjectDeserializer.deserializeProject(cliResult)
+        assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
+        assertThat(resultProject.attributeDescriptors["rloc"]).isNull()
+    }
+
+    @Test
+    fun `remove nodes and removes unused descriptors`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf"))
+        val resultProject = ProjectDeserializer.deserializeProject(cliResult)
+        assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
+        assertThat(resultProject.attributeDescriptors["yrloc"]).isNull()
     }
 }

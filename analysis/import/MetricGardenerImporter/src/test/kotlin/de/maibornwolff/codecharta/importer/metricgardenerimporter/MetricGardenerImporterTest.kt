@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter.Companion.main
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -19,8 +21,11 @@ class MetricGardenerImporterTest {
         )
         val file = File("src/test/resources/import-result.cc.json")
         file.deleteOnExit()
-
+        val inputStream = file.inputStream()
+        val project = ProjectDeserializer.deserializeProject(inputStream)
+        inputStream.close()
         assertTrue(file.exists())
+        assertEquals(project.attributeDescriptors, getAttributeDescriptors())
     }
 
     @Test
@@ -42,10 +47,10 @@ class MetricGardenerImporterTest {
         main(
             arrayOf(
                 "src/test/resources/MetricGardenerRawFile.kt", "-nc",
-                "-o=src/test/resources/import-result"
+                "-o=src/test/resources/import-result-mg"
             )
         )
-        val file = File("src/test/resources/import-result.cc.json")
+        val file = File("src/test/resources/import-result-mg.cc.json")
         file.deleteOnExit()
 
         assertTrue(file.exists())
@@ -55,10 +60,10 @@ class MetricGardenerImporterTest {
     fun `should create no file when the input file was not specified`() {
         main(
             arrayOf(
-                "-o=src/test/resources/import-result.json"
+                "-o=src/test/resources/import-result-empty.json"
             )
         )
-        val file = File("src/test/resources/import-result.cc.json.gz")
+        val file = File("src/test/resources/import-result-empty.cc.json.gz")
         file.deleteOnExit()
         CommandLine(MetricGardenerImporter()).execute()
         assertFalse(file.exists())

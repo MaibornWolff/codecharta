@@ -17,7 +17,7 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrat
 
     init {
         mergeConditionSatisfied =
-            if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
+            if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.equals(n2.name, ignoreCase = true) }
             else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
     }
 
@@ -25,13 +25,10 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrat
         if (nodeLists.isEmpty()) return listOf()
 
         return nodeLists.reduce { mergedNodeList, nextNodeList ->
-            nextNodeList.fold(
-                mergedNodeList,
-                { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
-                    nodesProcessed++
-                    mergeOrAppendNode(accumulatedNodes, nextNode)
-                }
-            )
+            nextNodeList.fold(mergedNodeList) { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
+                nodesProcessed++
+                mergeOrAppendNode(accumulatedNodes, nextNode)
+            }
         }
     }
 
