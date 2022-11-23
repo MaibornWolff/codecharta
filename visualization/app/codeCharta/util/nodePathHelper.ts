@@ -19,6 +19,9 @@ function isAbsoluteRootPath(path: string) {
 
 export function getParent<T>(hashMap: Map<string, T>, path: string): T {
 	do {
+		if (path === undefined || path === null) {
+			return null
+		}
 		// TODO: Check what happens with Windows paths.
 		path = path.slice(0, path.lastIndexOf("/"))
 

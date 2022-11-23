@@ -21,12 +21,10 @@ class JSONMetricWriterTest {
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(result, false).generate(metrics, setOf())
+        val resultJSON = JsonParser.parseString(result.toString())
+        val expectedJSON = JsonParser.parseReader(expectedResultFile.reader())
 
-        val resultJSON = JSONObject(result.toString()).toString()
-
-        val expectedJson = JsonParser.parseReader(expectedResultFile.reader()).toString()
-
-        Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
+        Assertions.assertThat(resultJSON).isEqualTo(expectedJSON)
     }
 
     @Test
@@ -40,12 +38,10 @@ class JSONMetricWriterTest {
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(result, false).generate(metrics, setOf())
+        val resultJSON = JsonParser.parseString(result.toString())
+        val expectedJSON = JsonParser.parseReader(expectedResultFile.reader())
 
-        val resultJSON = JSONObject(result.toString()).toString()
-
-        val expectedJson = JsonParser.parseReader(expectedResultFile.reader()).toString()
-
-        Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
+        Assertions.assertThat(resultJSON).isEqualTo(expectedJSON)
     }
 
     @Test

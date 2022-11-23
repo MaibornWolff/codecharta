@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcemonitor
 
 import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter.Companion.main
-import org.junit.jupiter.api.Assertions
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -19,7 +21,7 @@ class SourceMonitorImporterTest {
         val file = File("src/test/resources/sourcemonitor.cc.json")
         file.deleteOnExit()
 
-        Assertions.assertTrue(file.exists())
+        assertTrue(file.exists())
     }
 
     @Test
@@ -28,6 +30,23 @@ class SourceMonitorImporterTest {
         val file = File("src/test/resources/sourcemonitor.cc.json.gz")
         file.deleteOnExit()
 
-        Assertions.assertTrue(file.exists())
+        assertTrue(file.exists())
+    }
+
+    @Test
+    fun `should contain all existing descriptors`() {
+        main(
+            arrayOf(
+                "src/test/resources/sourcemonitor.csv",
+                "-nc",
+                "-o=src/test/resources/sourcemonitor.cc.json"
+            )
+        )
+        val file = File("src/test/resources/sourcemonitor.cc.json")
+        val inputStream = file.inputStream()
+        val project = ProjectDeserializer.deserializeProject(inputStream)
+        inputStream.close()
+        file.deleteOnExit()
+        assertEquals(project.attributeDescriptors, getAttributeDescriptors())
     }
 }

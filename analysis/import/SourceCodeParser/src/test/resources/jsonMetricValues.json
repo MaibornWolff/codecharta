@@ -1,7 +1,8 @@
 {
 	"data": {
+    "projectName": "",
 		"nodes": [
-			{
+      {
 				"children": [
 					{
 						"children": [],
@@ -32,9 +33,9 @@
 		],
 		"apiVersion": "1.3",
 		"attributeTypes": {},
+    "attributeDescriptors":{},
 		"edges": [],
-		"blacklist": [],
-		"projectName": ""
+		"blacklist": []
 	},
-	"checksum": "8e6f5b0c3987e414a185dcfcfa439bd9"
+	"checksum": "ff8d58a17dd40457ee78fe2484e19750"
 }

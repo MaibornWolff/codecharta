@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   New calculation algorithm for treeMap that accounts for paddings and floor labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Documentation for new treeMap calculation algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+-   Add attribute descriptors (metric descriptions) to some filters and importers [#3091](https://github.com/MaibornWolff/codecharta/pull/3091)
+
 ## [1.111.0] - 2022-11-17
 
 ### Added 🚀
@@ -82,6 +91,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
 -   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
 -   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
+-   Migrate dialog.service to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Add documentation for new treeMap algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
 -   Migrate dialog.service to Angular [#3070](https://github.com/MaibornWolff/codecharta/pull/3070)
 -   Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeOrbitControlsService and ThreeViewerService to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 -   Migrate updateAttributeTypes.service to Angular [#3082](https://github.com/MaibornWolff/codecharta/pull/3082)

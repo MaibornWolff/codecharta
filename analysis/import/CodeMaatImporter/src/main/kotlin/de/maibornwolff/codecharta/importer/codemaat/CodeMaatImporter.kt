@@ -40,7 +40,7 @@ class CodeMaatImporter(
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
+                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes, getAttributeDescriptors())
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
