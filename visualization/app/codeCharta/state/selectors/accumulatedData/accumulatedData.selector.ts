@@ -1,6 +1,6 @@
 import { CodeMapNode, FileMeta } from "../../../codeCharta.model"
 import { FileState } from "../../../model/files/files"
-import { fileStatesAvailable, isPartialState, isDeltaState } from "../../../model/files/files.helper"
+import { fileStatesAvailable, isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
@@ -29,7 +29,7 @@ export const accumulatedDataSelector: (state: CcState) => AccumulatedData = crea
 		}
 
 		const data = getUndecoratedAccumulatedData(fileStates)
-		if (!data || !data.map) {
+		if (!data?.map) {
 			return accumulatedDataFallback
 		}
 
