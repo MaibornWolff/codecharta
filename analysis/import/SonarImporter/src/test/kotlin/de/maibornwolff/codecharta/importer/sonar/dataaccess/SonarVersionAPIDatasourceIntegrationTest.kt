@@ -4,21 +4,20 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import com.github.tomakehurst.wiremock.junit.WireMockRule
+import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.net.MalformedURLException
 import java.net.URL
 import javax.ws.rs.core.MediaType
 
+private const val PORT = 8089
+
+@WireMockTest(httpPort = PORT)
 class SonarVersionAPIDatasourceIntegrationTest {
 
-    @Rule
-    @JvmField
-    var wireMockRule = WireMockRule(PORT)
     private val versionAPIDatasource = SonarVersionAPIDatasource("somename", createBaseUrl())
 
     @Test
@@ -89,7 +88,6 @@ class SonarVersionAPIDatasourceIntegrationTest {
     }
 
     companion object {
-        private const val PORT = 8089
         private const val URL_PATH = "/api/server/version"
 
         private fun createBaseUrl(): URL {

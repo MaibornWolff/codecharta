@@ -1,8 +1,7 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class AuthentificationHandlerTest {
 
@@ -12,7 +11,7 @@ class AuthentificationHandlerTest {
         val password = "password"
         val expectedEncodedString = "dXNlcjpwYXNzd29yZA=="
         val encodedString = AuthentificationHandler.createAuthTxtBase64Encoded(USERNAME, password)
-        assertThat(encodedString, `is`(expectedEncodedString))
+        assertEquals(encodedString, expectedEncodedString)
     }
 
     @Test
@@ -20,7 +19,7 @@ class AuthentificationHandlerTest {
     fun createAuthWithoutPassword() {
         val expectedEncodedString = "dXNlcjo="
         val encodedString = AuthentificationHandler.createAuthTxtBase64Encoded(USERNAME)
-        assertThat(encodedString, `is`(expectedEncodedString))
+        assertEquals(encodedString, expectedEncodedString)
     }
 
     companion object {

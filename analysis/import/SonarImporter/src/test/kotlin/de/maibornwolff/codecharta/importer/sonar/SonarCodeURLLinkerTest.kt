@@ -2,9 +2,8 @@ package de.maibornwolff.codecharta.importer.sonar
 
 import de.maibornwolff.codecharta.importer.sonar.model.Component
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import java.net.URL
 
 class SonarCodeURLLinkerTest {
@@ -26,9 +25,9 @@ class SonarCodeURLLinkerTest {
         val urlString = SonarCodeURLLinker(baseUrl).createUrlString(component)
 
         // then
-        assertThat(
+        assertEquals(
             urlString,
-            `is`("https://sonarcloud.io/code?id=com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as")
+            "https://sonarcloud.io/code?id=com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as"
         )
     }
 }

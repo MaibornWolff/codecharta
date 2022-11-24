@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import com.github.tomakehurst.wiremock.junit.WireMockRule
+import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource.Companion.PAGE_SIZE
@@ -14,30 +14,27 @@ import de.maibornwolff.codecharta.importer.sonar.model.ErrorEntity
 import de.maibornwolff.codecharta.importer.sonar.model.ErrorResponse
 import de.maibornwolff.codecharta.importer.sonar.model.Measures
 import de.maibornwolff.codecharta.importer.sonar.model.Version
-import org.hamcrest.Matchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Rule
-import org.junit.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URI
 import java.net.URL
 
-class SonarMeasuresAPIDatasourceIntegrationTest {
+private const val PORT = 8089
 
-    @Rule
-    @JvmField
-    var wireMockRule = WireMockRule(PORT)
+@WireMockTest(httpPort = PORT)
+class SonarMeasuresAPIDatasourceIntegrationTest {
 
     @Throws(IOException::class)
     private fun createResponseString(): String {
-        return this.javaClass.classLoader.getResource("sonarqube_measures.json").readText()
+        return this.javaClass.classLoader.getResource("sonarqube_measures.json")!!.readText()
     }
 
     @Throws(IOException::class)
     private fun createPagedResponseString(page: Number): String {
-        return this.javaClass.classLoader.getResource("sonarqube_measures_paged_$page.json").readText()
+        return this.javaClass.classLoader.getResource("sonarqube_measures_paged_$page.json")!!.readText()
     }
 
     @Throws(IOException::class)
@@ -92,7 +89,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         val componentMap = measuresApiDatasource.getComponentMap(PROJECT_KEY, listOf("coverage"))
 
         // then
-        assertThat(componentMap.componentList.size, `is`(5))
+        assertEquals(componentMap.componentList.size, 5)
     }
 
     @Test
@@ -137,9 +134,9 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         val measures3 = measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 3)
 
         // then
-        assertThat(measures1, `is`(createExpectedPagedMeasures(1)))
-        assertThat(measures2, `is`(createExpectedPagedMeasures(2)))
-        assertThat(measures3, `is`(createExpectedPagedMeasures(3)))
+        assertEquals(measures1, createExpectedPagedMeasures(1))
+        assertEquals(measures2, createExpectedPagedMeasures(2))
+        assertEquals(measures3, createExpectedPagedMeasures(3))
     }
 
     @Test
@@ -161,7 +158,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         val measures = measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
 
         // then
-        assertThat(measures, `is`(createExpectedMeasures()))
+        assertEquals(measures, createExpectedMeasures())
     }
 
     @Test
@@ -183,11 +180,11 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         val measures = measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
 
         // then
-        assertThat(measures, `is`(createExpectedMeasures()))
+        assertEquals(measures, createExpectedMeasures())
     }
 
-    @Test(expected = SonarImporterException::class)
-    @Throws(Exception::class)
+    @Test
+    @Throws(SonarImporterException::class)
     fun getMeasures_throws_exception_if_bad_request() {
         // given
         val error = ErrorEntity("some Error")
@@ -203,7 +200,11 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val measuresApiDatasource = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
-        measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
+
+        // then throws
+        assertThrows(SonarImporterException::class.java) {
+            measuresApiDatasource.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
+        }
     }
 
     @Test
@@ -214,14 +215,14 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
         val measureAPIRequestURI = measuresApiDatasource.createMeasureAPIRequestURI("", listOf("coverage"), 0)
 
-        assertThat(measureAPIRequestURI, `is`(expectedMeasuresAPIRequestURI))
+        assertEquals(measureAPIRequestURI, expectedMeasuresAPIRequestURI)
     }
 
     @Test
     fun createMeasureAPIRequestURI_without_metrics_throws_exception() {
         val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
 
-        assertThrows<IllegalArgumentException> {
+        assertThrows(IllegalArgumentException::class.java) {
             measuresApiDatasource.createMeasureAPIRequestURI("", listOf(), 0)
         }
     }
@@ -230,7 +231,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     fun createMeasureAPIRequestURI_illegal_character_in_metrics_should_throw_exception() {
         val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
 
-        assertThrows<SonarImporterException> {
+        assertThrows(SonarImporterException::class.java) {
             measuresApiDatasource.createMeasureAPIRequestURI("", listOf(" "), 0)
         }
     }
@@ -251,7 +252,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
         val components = measuresApiDatasource.getComponentMap(PROJECT_KEY, listOf("coverage"))
 
-        assertThat(components.componentList.count(), `is`(34))
+        assertEquals(components.componentList.count(), 34)
     }
 
     @Test
@@ -269,11 +270,10 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl(), Version(6, 5))
         val components = measuresApiDatasource.getComponentMap(PROJECT_KEY, listOf("coverage"))
 
-        assertThat(components.componentList.count(), `is`(34))
+        assertEquals(components.componentList.count(), 34)
     }
 
     companion object {
-        private const val PORT = 8089
         private const val USERNAME = "somename"
         private const val PROJECT_KEY = "someProject"
         private val GSON = GsonBuilder().create()

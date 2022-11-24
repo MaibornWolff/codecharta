@@ -4,27 +4,23 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import com.github.tomakehurst.wiremock.junit.WireMockRule
+import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource.Companion.PAGE_SIZE
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.junit.Assert
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.Arrays
 
+private const val PORT = 8089
+
+@WireMockTest(httpPort = PORT)
 class SonarMetricsAPIDatasourceIntegrationTest {
-    @JvmField
-    @Rule
-    var wireMockRule = WireMockRule(PORT)
-
     @Throws(IOException::class)
     private fun createMetricResponseAsJsonString(): String {
-        return this.javaClass.classLoader.getResource("metrics.json").readText()
+        return this.javaClass.classLoader.getResource("metrics.json")!!.readText()
     }
 
     @Test
@@ -39,7 +35,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     private fun assertNoOfPages(total: Int, expectation: Int) {
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
         val pages = ds.calculateNumberOfPages(total)
-        assertThat(pages, `is`(expectation))
+        assertEquals(pages, expectation)
     }
 
     @Test
@@ -61,7 +57,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
         val metricsList = ds.getAvailableMetrics(1).metrics!!.map { it.key }
 
         // then
-        assertThat(metricsList, `is`(Arrays.asList(*METRIC_ARRAY)))
+        assertEquals(metricsList, listOf(*METRIC_ARRAY))
     }
 
     @Test
@@ -92,7 +88,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
         val metricsList = ds.availableMetricKeys
 
         // then
-        assertThat(metricsList, `is`(Arrays.asList(*METRIC_ARRAY)))
+        assertEquals(metricsList, listOf(*METRIC_ARRAY))
     }
 
     @Test
@@ -114,11 +110,11 @@ class SonarMetricsAPIDatasourceIntegrationTest {
         val metricsList = ds.getAvailableMetrics(1).metrics!!.map { it.key }
 
         // then
-        assertThat(metricsList, `is`(Arrays.asList(*METRIC_ARRAY)))
+        assertEquals(metricsList, listOf(*METRIC_ARRAY))
     }
 
-    @Test(expected = SonarImporterException::class)
-    @Throws(Exception::class)
+    @Test
+    @Throws(SonarImporterException::class)
     fun getAvailableMetrics_should_throw_exception_if_unauthorized() {
         // given
         stubFor(
@@ -131,13 +127,14 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
-        ds.getAvailableMetrics(1)
-
         // then throw
+        assertThrows(SonarImporterException::class.java) {
+            ds.getAvailableMetrics(1)
+        }
     }
 
-    @Test(expected = SonarImporterException::class)
-    @Throws(Exception::class)
+    @Test
+    @Throws(SonarImporterException::class)
     fun getAvailableMetrics_should_throw_exception_if_return_code_not_oK() {
         // given
         stubFor(
@@ -150,9 +147,11 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
-        ds.getAvailableMetrics(1)
 
         // then throw
+        assertThrows(SonarImporterException::class.java) {
+            ds.getAvailableMetrics(1)
+        }
     }
 
     @Test
@@ -174,7 +173,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
         val numberOfPages = ds.numberOfPages
 
         // then
-        Assert.assertThat(numberOfPages, `is`(1))
+        assertEquals(numberOfPages, 1)
     }
 
     companion object {
@@ -188,7 +187,6 @@ class SonarMetricsAPIDatasourceIntegrationTest {
                 "public_undocumented_api"
             )
 
-        private const val PORT = 8089
         private const val USERNAME = "somename"
 
         private fun METRIC_LIST_URL_PATH(page: Int): String {

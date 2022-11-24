@@ -34,8 +34,8 @@ class SonarMeasuresAPIImporter @JvmOverloads constructor(
     }
 
     fun getMetricList(metrics: List<String>): List<String> {
-        return if (metrics.isEmpty()) {
+        return metrics.ifEmpty {
             metricsDS!!.availableMetricKeys
-        } else metrics
+        }
     }
 }

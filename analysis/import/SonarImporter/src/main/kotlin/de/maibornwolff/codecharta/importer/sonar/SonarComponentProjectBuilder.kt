@@ -58,9 +58,8 @@ class SonarComponentProjectBuilder(
 
     private fun createAttributes(measures: List<Measure>): Map<String, Any> {
         return measures
-            .filter({ this.isMeasureConvertible(it) })
-            .map { this.convertMetricName(it) to this.convertMetricValue(it) }
-            .toMap()
+            .filter { this.isMeasureConvertible(it) }
+            .associate { this.convertMetricName(it) to this.convertMetricValue(it) }
     }
 
     private fun convertMetricName(measure: Measure): String {
