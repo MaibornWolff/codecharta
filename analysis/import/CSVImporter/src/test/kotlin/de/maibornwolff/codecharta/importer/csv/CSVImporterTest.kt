@@ -31,13 +31,12 @@ class CSVImporterTest {
                 "src/test/resources/csvimporter_different_path_column_name.csv", "-nc",
                 "--path-separator=\\",
                 "--path-column-name=File Name",
-                "-o=src/test/resources/csvimporter.cc.json"
+                "-o=src/test/resources/csvimporter-path.cc.json"
             )
         )
-        val file = File("src/test/resources/csvimporter.cc.json")
+        val file = File("src/test/resources/csvimporter-path.cc.json")
         val expectedJsonFile = File("src/test/resources/csvimporter_different_path_column_name.cc.json")
         val testJsonString = file.readText()
-        System.err.println(testJsonString)
         val expectedJsonString = expectedJsonFile.readText()
         file.deleteOnExit()
 
@@ -58,10 +57,10 @@ class CSVImporterTest {
         main(
             arrayOf(
                 "src/test/resources/csvimporter.csv", "-nc",
-                "-o=src/test/resources/csvimporter.cc.json"
+                "-o=src/test/resources/csvimporter-content.cc.json"
             )
         )
-        val file = File("src/test/resources/csvimporter.cc.json")
+        val file = File("src/test/resources/csvimporter-content.cc.json")
         file.deleteOnExit()
 
         assertThat(file.readText()).contains(listOf("\"Lines\":44.0"))

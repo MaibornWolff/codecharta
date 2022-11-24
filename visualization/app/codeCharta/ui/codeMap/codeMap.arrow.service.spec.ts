@@ -182,6 +182,14 @@ describe("CodeMapArrowService", () => {
 			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
 			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalled()
 		})
+
+		it("should not call clearArrows and showEdgesOfBuildings when a building does not exist", () => {
+			codeMapArrowService.onBuildingSelected({ building: undefined })
+
+			expect(codeMapArrowService.clearArrows).not.toHaveBeenCalled()
+			expect(codeMapArrowService["showEdgesOfBuildings"]).not.toHaveBeenCalled()
+			expect(codeMapArrowService.addEdgePreview).not.toHaveBeenCalled()
+		})
 	})
 
 	describe("clearArrows", () => {

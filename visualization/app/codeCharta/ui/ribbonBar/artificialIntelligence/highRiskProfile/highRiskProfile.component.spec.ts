@@ -59,4 +59,21 @@ describe("HighRiskProfileComponent", () => {
 
 		expect(screen.getByText("Could not calculate Risk Profile. Metrics rloc and mcc not available.")).toBeTruthy()
 	})
+
+	it("should explain that there couldn't be analyzed a risk profile even when analyzedProgrammingLanguage is undefined", async () => {
+		await render(HighRiskProfileComponent, {
+			excludeComponentDeclaration: true,
+			imports: [ArtificialIntelligenceModule],
+			componentProperties: {
+				data: {
+					analyzedProgrammingLanguage: undefined,
+					riskProfile: undefined
+				}
+			}
+		})
+
+		await userEvent.click(screen.getByTitle("Open High Risk Profile"))
+
+		expect(screen.getByText("Could not calculate Risk Profile. Metrics rloc and mcc not available.")).toBeTruthy()
+	})
 })

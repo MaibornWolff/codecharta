@@ -21,6 +21,6 @@ export class MapTreeViewItemIconColorPipe implements PipeTransform {
 		}
 
 		const markingColor = getMarkingColor(value, MapTreeViewItemIconColorPipe.store.getState().fileSettings.markedPackages)
-		return markingColor ? markingColor : MapTreeViewItemIconColorPipe.defaultColor
+		return markingColor || MapTreeViewItemIconColorPipe.defaultColor
 	}
 }

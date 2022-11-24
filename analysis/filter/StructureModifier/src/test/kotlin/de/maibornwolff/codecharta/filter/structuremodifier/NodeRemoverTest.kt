@@ -11,7 +11,7 @@ import java.io.InputStreamReader
 
 class NodeRemoverTest {
     private lateinit var sampleProject: Project
-    private val DESCRIPTOR_TEST_PATH = "attributeDescriptors.json"
+    private val DESCRIPTOR_TEST_PATH = "test_attributeDescriptors.json"
 
     @BeforeEach
     fun serializeProject() {
@@ -96,7 +96,7 @@ class NodeRemoverTest {
     }
 
     @Test
-    fun `should copy attributeDescriptors`() {
+    fun `given a remove action attributeDescriptors should get copied if attributes don't change`() {
         val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(DESCRIPTOR_TEST_PATH)!!)
         val attributeProject = ProjectDeserializer.deserializeProject(input)
         val resultProject = NodeRemover(attributeProject).remove(arrayOf("/root/bigLeaf.ts"))

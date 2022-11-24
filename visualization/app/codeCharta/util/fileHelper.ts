@@ -71,7 +71,7 @@ export function getCCFileAndDecorateFileChecksum(jsonInput: string | ExportWrapp
 
 		if ("data" in fileContent && "checksum" in fileContent) {
 			mappedFile = fileContent.data
-			mappedFile.fileChecksum = fileContent.checksum ? fileContent.checksum : md5(JSON.stringify(fileContent.data))
+			mappedFile.fileChecksum = fileContent.checksum || md5(JSON.stringify(fileContent.data))
 
 			return mappedFile
 		}

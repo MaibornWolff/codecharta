@@ -84,8 +84,8 @@ class SubProjectExtractorTest {
     }
 
     @Test
-    fun `Subproject still contains all necessary attributeDescriptors`() {
-        val path = "attributeDescriptors.json"
+    fun `Subproject should contain a subset of attributeDescriptors when extracted`() {
+        val path = "test_attributeDescriptors.json"
         val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(path)!!)
         val attributeProject = ProjectDeserializer.deserializeProject(input)
         val resultProject = SubProjectExtractor(attributeProject).extract("/root/AnotherParentLeaf")

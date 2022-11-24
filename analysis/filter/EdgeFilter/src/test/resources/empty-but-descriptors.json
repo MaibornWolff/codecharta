@@ -76,6 +76,12 @@
       "hintLowValue": "b",
       "hintHighValue": "c",
       "link": "d"
+    },
+    "Test2": {
+      "description": "a1",
+      "hintLowValue": "b2",
+      "hintHighValue": "c3",
+      "link": "d4"
     }
   }
 }

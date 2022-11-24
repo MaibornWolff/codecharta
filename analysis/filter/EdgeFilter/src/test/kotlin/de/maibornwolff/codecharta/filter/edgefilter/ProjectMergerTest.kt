@@ -68,12 +68,15 @@ class ProjectMergerTest {
     }
 
     @Test
-    fun `should contain attributeDescriptors after merge`() {
+    fun `given a set of attributeDescriptors it should be copied into the new project`() {
         val originalProject = ProjectDeserializer.deserializeProject(
             InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_3)!!)
         )
         val project = EdgeProjectBuilder(originalProject, '/').merge()
-        val expectedDescriptors = mapOf<String, AttributeDescriptor>("Test" to AttributeDescriptor("a", "b", "c", "d"))
+        val expectedDescriptors = mapOf<String, AttributeDescriptor>(
+            "Test" to AttributeDescriptor("a", "b", "c", "d"),
+            "Test2" to AttributeDescriptor("a1", "b2", "c3", "d4")
+        )
         assertEquals(project.attributeDescriptors, expectedDescriptors)
     }
 }

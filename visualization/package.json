@@ -128,7 +128,7 @@
 		"css-loader": "^6.0.0",
 		"eslint": "^8.0.0",
 		"eslint-config-prettier": "^8.2.0",
-		"eslint-plugin-unicorn": "^40.0.0",
+		"eslint-plugin-unicorn": "^44.0.0",
 		"eslint-plugin-unused-imports": "^2.0.0",
 		"file-loader": "^6.2.0",
 		"html-loader": "^3.0.0",
