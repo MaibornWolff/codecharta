@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.112.0] - 2022-11-25
+
 ### Added 🚀
 
 -   New calculation algorithm for treeMap that accounts for paddings and floor labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
