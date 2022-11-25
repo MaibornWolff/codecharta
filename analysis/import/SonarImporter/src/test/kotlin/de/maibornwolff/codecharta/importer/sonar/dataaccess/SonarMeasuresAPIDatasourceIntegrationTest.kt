@@ -51,7 +51,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(Exception::class)
-    fun getComponentMap_from_server_if_no_authentication_needed_and_result_is_paged() {
+    fun `getComponentMap from server if no authentication needed and result is paged`() {
         // given
         stubFor(
             get(urlEqualTo(URL_PATH))
@@ -94,7 +94,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(Exception::class)
-    fun getMeasures_page_from_server_if_no_authentication_needed_and_result_is_paged() {
+    fun `getMeasures page from server if no authentication needed and result is paged`() {
         // given
         stubFor(
             get(urlEqualTo(URL_PATH))
@@ -141,7 +141,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(Exception::class)
-    fun getMeasures_from_server_if_no_authentication_needed() {
+    fun `getMeasures from server if no authentication needed`() {
         // given
         stubFor(
             get(urlEqualTo(URL_PATH))
@@ -163,7 +163,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(Exception::class)
-    fun getMeasures_from_server_if_authenticated() {
+    fun `getMeasures from server if authenticated`() {
         // given
         stubFor(
             get(urlEqualTo(URL_PATH)).withBasicAuth(USERNAME, "")
@@ -185,7 +185,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(SonarImporterException::class)
-    fun getMeasures_throws_exception_if_bad_request() {
+    fun `getMeasures throws exception if bad request`() {
         // given
         val error = ErrorEntity("some Error")
         val errorResponse = ErrorResponse(arrayOf(error))
@@ -219,7 +219,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     }
 
     @Test
-    fun createMeasureAPIRequestURI_without_metrics_throws_exception() {
+    fun `createMeasureAPIRequestURI without metrics throws exception`() {
         val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
 
         assertThrows(IllegalArgumentException::class.java) {
@@ -228,7 +228,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     }
 
     @Test
-    fun createMeasureAPIRequestURI_illegal_character_in_metrics_should_throw_exception() {
+    fun `createMeasureAPIRequestURI illegal character in metrics should throw exception`() {
         val measuresApiDatasource = SonarMeasuresAPIDatasource("", createBaseUrl())
 
         assertThrows(SonarImporterException::class.java) {

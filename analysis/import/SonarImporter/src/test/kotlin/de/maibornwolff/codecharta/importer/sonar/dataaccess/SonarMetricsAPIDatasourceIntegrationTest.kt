@@ -93,7 +93,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(Exception::class)
-    fun getAvailableMetrics_if_authenticated() {
+    fun `getAvailableMetrics if authenticated`() {
         // given
         stubFor(
             get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
@@ -115,7 +115,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(SonarImporterException::class)
-    fun getAvailableMetrics_should_throw_exception_if_unauthorized() {
+    fun `getAvailableMetrics should throw exception if unauthorized`() {
         // given
         stubFor(
             get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
@@ -135,7 +135,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(SonarImporterException::class)
-    fun getAvailableMetrics_should_throw_exception_if_return_code_not_oK() {
+    fun `getAvailableMetrics should throw exception if return code not oK`() {
         // given
         stubFor(
             get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
@@ -156,7 +156,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
     @Test
     @Throws(Exception::class)
-    fun getNumberOfPages_from_server() {
+    fun `getNumberOfPages from server`() {
         // given
         stubFor(
             get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")

@@ -9,7 +9,7 @@ import java.net.URL
 class SonarCodeURLLinkerTest {
     @Test
     @Throws(Exception::class)
-    fun should_createUrlString() {
+    fun `should createUrlString`() {
         // given
         val baseUrl = URL("https://sonarcloud.io")
         val component =
