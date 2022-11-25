@@ -83,6 +83,7 @@ const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType
 const DEFAULT_SETTINGS = {
 	fileSettings: {
 		attributeTypes: { nodes: {}, edges: {} },
+		attributeDescriptors: { test: {} },
 		blacklist: [],
 		edges: VALID_EDGES,
 		markedPackages: []
@@ -940,6 +941,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 	settings: {
 		fileSettings: {
 			attributeTypes: { nodes: {}, edges: {} },
+			attributeDescriptors: { test: {} },
 			blacklist: [],
 			edges: [],
 			markedPackages: []
@@ -1042,6 +1044,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 	settings: {
 		fileSettings: {
 			attributeTypes: { nodes: {}, edges: {} },
+			attributeDescriptors: { test: {} },
 			blacklist: [],
 			edges: [],
 			markedPackages: []
@@ -1678,6 +1681,9 @@ export const STATE: State = {
 			},
 			edges: {}
 		},
+		attributeDescriptors: {
+			test: {}
+		},
 		blacklist: [],
 		edges: VALID_EDGES,
 		markedPackages: []
@@ -1813,7 +1819,13 @@ export const DEFAULT_STATE: State = {
 		searchPattern: "",
 		sortingOption: SortingOption.NAME
 	},
-	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: {
+		attributeTypes: { nodes: {}, edges: {} },
+		attributeDescriptors: { test: {} },
+		blacklist: [],
+		edges: [],
+		markedPackages: []
+	},
 	files: [],
 	appStatus: {
 		hoveredNodeId: null,

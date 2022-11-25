@@ -7,6 +7,7 @@ import { legendHeightMetricSelector } from "./selectors/legendHeightMetric.selec
 import { legendAreaMetricSelector } from "./selectors/legendAreaMetric.selector"
 import { legendEdgeMetricSelector } from "./selectors/legendEdgeMetric.selector"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
+import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributesDescriptors.selector"
 
 @Component({
 	selector: "cc-legend-panel",
@@ -19,6 +20,7 @@ export class LegendPanelComponent {
 	areaMetric$ = this.store.select(legendAreaMetricSelector)
 	colorMetric$ = this.store.select(legendColorMetricSelector)
 	edgeMetric$ = this.store.select(legendEdgeMetricSelector)
+	attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
 
 	constructor(
 		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,

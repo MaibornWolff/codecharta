@@ -1,5 +1,5 @@
 import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTypes } from "../codeCharta.api.model"
-import { AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
+import { AttributeDescriptors, AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
 import md5 from "md5"
 
@@ -18,6 +18,7 @@ export function getCCFile(file: NameDataPair): CCFile {
 			fileSettings: {
 				edges: fileContent.edges || [],
 				attributeTypes: getAttributeTypes(fileContent.attributeTypes),
+				attributeDescriptors: getAttributeDescriptors(fileContent.attributeDescriptors),
 				blacklist: potentiallyUpdateBlacklistTypes(fileContent.blacklist || []),
 				markedPackages: fileContent.markedPackages || []
 			}
@@ -37,6 +38,18 @@ function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): 
 	return {
 		nodes: attributeTypes.nodes ?? {},
 		edges: attributeTypes.edges ?? {}
+	}
+}
+
+function getAttributeDescriptors(attributeDescriptors: AttributeDescriptors): AttributeDescriptors {
+	if (!attributeDescriptors) {
+		return {
+			test: { testKey2: "testValue2" }
+		}
+	}
+
+	return {
+		test: attributeDescriptors.test ?? { testKeyFileHelper52: "testValueFileHelper52" }
 	}
 }
 

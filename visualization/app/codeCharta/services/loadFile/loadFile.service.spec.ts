@@ -117,6 +117,7 @@ describe("loadFileService", () => {
 			settings: {
 				fileSettings: {
 					attributeTypes: { nodes: {}, edges: {} },
+					attributeDescriptors: { test: {} },
 					blacklist: [],
 					edges: [],
 					markedPackages: []
