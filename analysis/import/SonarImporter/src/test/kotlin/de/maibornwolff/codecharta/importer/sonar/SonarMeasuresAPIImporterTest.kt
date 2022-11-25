@@ -100,7 +100,7 @@ class SonarMeasuresAPIImporterTest {
 
         // then translation from bugs -> sonar_bugs ; ncloc -> rloc
         assertEquals(project.attributeDescriptors.size, 2)
-        assertNotEquals(project.attributeDescriptors["sonar_bugs"], null)
+        assertEquals(project.attributeDescriptors["sonar_bugs"], getAttributeDescriptors()["bugs"])
         assertEquals(project.attributeDescriptors["rloc"], getAttributeDescriptors()["ncloc"])
     }
 }
