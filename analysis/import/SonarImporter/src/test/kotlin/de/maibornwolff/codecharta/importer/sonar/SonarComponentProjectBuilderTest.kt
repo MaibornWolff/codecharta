@@ -6,16 +6,13 @@ import de.maibornwolff.codecharta.importer.sonar.model.Measure
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import org.hamcrest.Matchers.hasEntry
-import org.hamcrest.Matchers.hasSize
-import org.hamcrest.Matchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class SonarComponentProjectBuilderTest {
 
     @Test
-    fun should_insert_a_node_from_file_component_without_key_and_use_name_as_backup_value() {
+    fun `should insert a node from file component without key and use name as backup value`() {
         // given
         val measure = Measure("metric", "50.0")
         val name = "name"
@@ -26,13 +23,13 @@ class SonarComponentProjectBuilderTest {
         val project = projectBuilder.addComponentAsNode(component).build()
 
         // then
-        assertThat(project.rootNode.children, hasSize(1))
+        assertEquals(project.rootNode.children.size, 1)
         val actualNode = project.rootNode.children.toMutableList()[0]
-        assertThat(actualNode.name, `is`(name))
+        assertEquals(actualNode.name, name)
     }
 
     @Test
-    fun should_insert_a_node_from_file_component_without_key_and_name_and_use_id_as_backup_value() {
+    fun `should insert a node from file component without key and name and use id as backup value`() {
         // given
         val measure = Measure("metric", "50.0")
         val id = "id"
@@ -43,13 +40,13 @@ class SonarComponentProjectBuilderTest {
         val project = projectBuilder.addComponentAsNode(component).build()
 
         // then
-        assertThat(project.rootNode.children, hasSize(1))
+        assertEquals(project.rootNode.children.size, 1)
         val actualNode = project.rootNode.children.toMutableList()[0]
-        assertThat(actualNode.name, `is`(id))
+        assertEquals(actualNode.name, id)
     }
 
     @Test
-    fun should_insert_a_node_from_file_component() {
+    fun `should insert a node from file component`() {
         // given
         val metric = "metric"
         val value = "50.0"
@@ -65,17 +62,17 @@ class SonarComponentProjectBuilderTest {
         val project = projectBuilder.addComponentAsNode(component).build()
 
         // then
-        assertThat(project.rootNode.children, hasSize(1))
+        assertEquals(project.rootNode.children.size, 1)
         val actualNode = project.rootNode.children.toMutableList()[0]
-        assertThat(actualNode.name, `is`(key))
-        assertThat(actualNode.type, `is`(NodeType.File))
-        assertThat(actualNode.attributes, hasEntry<String, Any>(metric, java.lang.Double.valueOf(value)))
-        assertThat(actualNode.children, hasSize(0))
-        assertThat(actualNode.link, `is`(""))
+        assertEquals(actualNode.name, key)
+        assertEquals(actualNode.type, NodeType.File)
+        assertEquals(actualNode.attributes[metric], java.lang.Double.valueOf(value))
+        assertEquals(actualNode.children.size, 0)
+        assertEquals(actualNode.link, "")
     }
 
     @Test
-    fun should_ignore_string_measures() {
+    fun `should ignore string measures`() {
         // given
         val measure = Measure("metric", "bla")
         val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf(measure).toMutableList())
@@ -85,13 +82,13 @@ class SonarComponentProjectBuilderTest {
         val project = projectBuilder.addComponentAsNode(component).build()
 
         // then
-        assertThat(project.rootNode.children, hasSize(1))
+        assertEquals(project.rootNode.children.size, 1)
         val actualNode = project.rootNode.children.toMutableList()[0]
-        assertThat<Set<String>>(actualNode.attributes.keys, hasSize(0))
+        assertEquals(actualNode.attributes.keys.size, 0)
     }
 
     @Test
-    fun should_insert_a_file_node_from_uts_component() {
+    fun `should insert a file node from its component`() {
         // given
         val component = Component("id", "key", "name", "path", Qualifier.UTS)
         val projectBuilder = SonarComponentProjectBuilder()
@@ -100,13 +97,13 @@ class SonarComponentProjectBuilderTest {
         val project = projectBuilder.addComponentAsNode(component).build()
 
         // then
-        assertThat(project.rootNode.children, hasSize(1))
+        assertEquals(project.rootNode.children.size, 1)
         val actualNode = project.rootNode.children.toMutableList()[0]
-        assertThat(actualNode.type, `is`(NodeType.File))
+        assertEquals(actualNode.type, NodeType.File)
     }
 
     @Test
-    fun should_insert_a_folder_node_from_dir_component() {
+    fun `should insert a folder node from dir component`() {
         // given
         val component = Component("id", "key", "name", "path", Qualifier.DIR)
         val projectBuilder = SonarComponentProjectBuilder()
@@ -115,11 +112,11 @@ class SonarComponentProjectBuilderTest {
         val project = projectBuilder.addComponentAsNode(component)
 
         // then
-        assertThat(project.size, `is`(1))
+        assertEquals(project.size, 1)
     }
 
     @Test
-    fun should_insert_component_from_component_map() {
+    fun `should insert component from component map`() {
         // given
         val component = Component("id", "key", "name", "path", Qualifier.FIL)
         val components = ComponentMap()
@@ -130,11 +127,11 @@ class SonarComponentProjectBuilderTest {
         val project = projectBuilder.addComponentAsNode(component)
 
         // then
-        assertThat(project.size, `is`(1))
+        assertEquals(project.size, 1)
     }
 
     @Test
-    fun should_insert_component_by_path_if_configured() {
+    fun `should insert component by path if configured`() {
         // given
         val path = "someFileName"
         val component = Component("id", "key", "name", path, Qualifier.FIL)
@@ -145,9 +142,24 @@ class SonarComponentProjectBuilderTest {
         val project = projectBuilder.addComponentAsNode(component).build()
 
         // then
-        assertThat(project.rootNode.children, hasSize(1))
+        assertEquals(project.rootNode.children.size, 1)
         val actualNode = project.rootNode.children.toMutableList()[0]
-        assertThat(actualNode.name, `is`(path))
-        assertThat(actualNode.type, `is`(NodeType.File))
+        assertEquals(actualNode.name, path)
+        assertEquals(actualNode.type, NodeType.File)
+    }
+
+    @Test
+    fun `should contain attribute descriptors in project after building`() {
+        val path = "someFileName"
+        val component = Component("id", "key", "name", path, Qualifier.FIL)
+        val projectBuilder =
+            SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
+        projectBuilder
+            .addComponentAsNode(component)
+            .addAttributeDescriptions(getAttributeDescriptors())
+
+        val project = projectBuilder.build()
+
+        assertEquals(project.attributeDescriptors, getAttributeDescriptors())
     }
 }
