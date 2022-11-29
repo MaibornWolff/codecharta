@@ -1,0 +1,24 @@
+{
+	"collectCoverage": true,
+	"rootDir": "./../",
+	"coverageDirectory": "<rootDir>/dist/coverage",
+	"collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
+	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
+	"transform": {
+		"\\.(m?js)$": "babel-jest",
+		"\\.(ts|tsx)$": "ts-jest"
+	},
+	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020))"],
+	"roots": ["<rootDir>/app"],
+	"testMatch": ["**/*.e2e.ts"],
+	"moduleFileExtensions": ["js", "json", "ts", "tsx", "mjs"],
+	"moduleDirectories": ["node_modules", "<rootDir>/app"],
+	"globals": {
+		"ts-jest": {
+			"tsconfig": "tsconfig.json",
+			"babelConfig": true
+		}
+	},
+	"preset": "./conf/jestE2E-preset.js",
+	"testTimeout": 60000
+}

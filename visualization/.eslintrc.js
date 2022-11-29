@@ -66,7 +66,7 @@ module.exports = {
 		"prefer-template": "error",
 
 		"unicorn/prevent-abbreviations": ["error", { checkFilenames: false }],
-
+		"unicorn/switch-case-braces": ["error", "avoid"],
 		"no-unused-vars": "off",
 		"unused-imports/no-unused-imports": "error",
 		"unused-imports/no-unused-vars": [
@@ -84,16 +84,17 @@ module.exports = {
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/no-use-before-define": "off",
-		"unicorn/consistent-function-scoping": "off",
-		"unicorn/filename-case": "off",
-		"unicorn/no-null": "off",
-		"unicorn/no-object-as-default-parameter": "off",
-		"unicorn/no-array-reduce": "off",
-		"unicorn/prefer-add-event-listener": "off",
-		"unicorn/prefer-query-selector": "off",
-		"unicorn/prefer-dom-node-append": "off",
-		"unicorn/prefer-module": "off",
-		"unicorn/prefer-node-protocol": "off",
-		"unicorn/no-useless-undefined": "off"
-	}
+    "unicorn/consistent-function-scoping": "off",
+    "unicorn/filename-case": "off",
+    "unicorn/no-null": "off",
+    "unicorn/no-object-as-default-parameter": "off",
+    "unicorn/no-array-reduce": "off",
+    "unicorn/prefer-add-event-listener": "off",
+    "unicorn/prefer-query-selector": "off",
+    "unicorn/prefer-dom-node-append": "off",
+    "unicorn/prefer-module": "off",
+    "unicorn/prefer-node-protocol": "off",
+    "unicorn/no-useless-undefined": "off",
+    "unicorn/no-negated-condition": "off"
+  }
 }

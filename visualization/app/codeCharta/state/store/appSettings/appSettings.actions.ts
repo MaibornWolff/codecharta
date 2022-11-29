@@ -3,7 +3,6 @@ import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.mod
 import { defaultColorLabels } from "./colorLabels/colorLabels.actions"
 import { defaultShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { defaultShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { defaultIsAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
@@ -26,6 +25,7 @@ import { defaultSharpnessMode } from "./sharpnessMode/sharpnessMode.actions"
 import { defaultScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
 import { defaultInvertArea } from "./invertArea/invertArea.actions"
 import { defaultIsEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { defaultIsColorMetricLinkedToHeightMetric } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -49,7 +49,6 @@ export const defaultAppSettings: AppSettings = {
 	colorLabels: defaultColorLabels,
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
-	isAttributeSideBarVisible: defaultIsAttributeSideBarVisible,
 	amountOfTopLabels: defaultAmountOfTopLabels,
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
 	edgeHeight: defaultEdgeHeight,
@@ -71,5 +70,6 @@ export const defaultAppSettings: AppSettings = {
 	screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
 	layoutAlgorithm: defaultLayoutAlgorithm,
 	maxTreeMapFiles: defaultMaxTreeMapFiles,
-	sharpnessMode: defaultSharpnessMode
+	sharpnessMode: defaultSharpnessMode,
+	isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric
 }

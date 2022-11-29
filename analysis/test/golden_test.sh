@@ -58,7 +58,7 @@ check_gitlogparser_repo_scan() {
   echo " -- expect GitLogParser repo-scan subcommand to produce valid cc.json file"
   ACTUAL_GITLOG_JSON_REPO_SCAN="${INSTALL_DIR}/actual_gitlogparser_repo_scan.cc.json"
   returnCode="0"
-  timeout 60s "${CCSH}" gitlogparser "repo-scan" --repo-path "$(dirname "$(dirname "$PWD")")" -o "${ACTUAL_GITLOG_JSON_REPO_SCAN}" -nc || returnCode="$?"
+  timeout 120s "${CCSH}" gitlogparser "repo-scan" --repo-path "$(dirname "$(dirname "$PWD")")" -o "${ACTUAL_GITLOG_JSON_REPO_SCAN}" -nc || returnCode="$?"
   if [ "$returnCode" -eq 124 ]; then
     exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
   elif [ "$returnCode" -ne 0 ]; then

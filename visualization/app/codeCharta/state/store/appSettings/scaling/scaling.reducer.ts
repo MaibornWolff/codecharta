@@ -1,12 +1,10 @@
-import { defaultScaling, ScalingAction, ScalingActions } from "./scaling.actions"
-import { Vector3 } from "three"
+import { defaultScaling, Scaling, ScalingAction, ScalingActions } from "./scaling.actions"
 
-export function scaling(state: Vector3 = defaultScaling, action: ScalingAction): Vector3 {
+export function scaling(state: Scaling = defaultScaling, action: ScalingAction): Scaling {
 	switch (action.type) {
-		case ScalingActions.SET_SCALING: {
-			const newVector = { ...state, ...action.payload }
-			return new Vector3(newVector.x, newVector.y, newVector.z)
-		}
+		case ScalingActions.SET_SCALING:
+			return { ...state, ...action.payload }
+
 		default:
 			return state
 	}

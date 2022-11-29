@@ -1,5 +1,6 @@
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Vector3, Ray, Box3 } from "three"
+import { Scaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 
 export class CodeMapGeometricDescription {
 	private _buildings: CodeMapBuilding[] // todo tk: depending on how many buildings, refactor this to { [node.path]: node } might give `this.getBuildingByPath` a performance boost
@@ -20,8 +21,8 @@ export class CodeMapGeometricDescription {
 		return this._buildings
 	}
 
-	setScales(scales: Vector3) {
-		this.scales = scales
+	setScales(scales: Scaling) {
+		this.scales = new Vector3(scales.x, scales.y, scales.z)
 	}
 
 	getBuildingByPath(path: string) {

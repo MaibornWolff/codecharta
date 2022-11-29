@@ -5,6 +5,7 @@ import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
 import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { Scaling } from "./state/store/appSettings/scaling/scaling.actions"
 
 export interface NameDataPair {
 	fileName: string
@@ -103,7 +104,6 @@ export interface Settings {
 	fileSettings: FileSettings
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
-	treeMapSettings: TreeMapSettings
 }
 
 export interface FileSettings {
@@ -134,7 +134,7 @@ export interface AppSettings {
 	amountOfTopLabels: number
 	amountOfEdgePreviews: number
 	edgeHeight: number
-	scaling: Vector3
+	scaling: Scaling
 	hideFlatBuildings: boolean
 	invertHeight: boolean
 	invertArea: boolean
@@ -148,7 +148,6 @@ export interface AppSettings {
 	isLoadingMap: boolean
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
-	isAttributeSideBarVisible: boolean
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
 	layoutAlgorithm: LayoutAlgorithm
@@ -157,10 +156,7 @@ export interface AppSettings {
 	experimentalFeaturesEnabled: boolean
 	screenshotToClipboardEnabled: boolean
 	colorLabels: colorLabelOptions
-}
-
-export interface TreeMapSettings {
-	mapSize: number
+	isColorMetricLinkedToHeightMetric: boolean
 }
 
 export interface MapColors {
@@ -337,6 +333,7 @@ export interface Node {
 	markingColor: string | void
 	flat: boolean
 	color: string
+	fitForFolderLabel: boolean | undefined
 	incomingEdgePoint: Vector3
 	outgoingEdgePoint: Vector3
 }
@@ -345,7 +342,6 @@ export interface State {
 	fileSettings: FileSettings
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
-	treeMap: TreeMapSettings
 	files: FileState[]
 	appStatus: AppStatus
 }
@@ -382,12 +378,11 @@ export interface CCAction extends Action {
 	//
 	// As a starting point:
 	//
-	// RecursivePartial<MetricData & DynamicSettings & FileSettings & AppSettings & TreeMapSettings & FileState> & {
+	// RecursivePartial<MetricData & DynamicSettings & FileSettings & AppSettings  & FileState> & {
 	// 	metricData: MetricData
 	// 	dynamicSettings: DynamicSettings
 	// 	fileSettings: FileSettings
 	// 	appSettings: AppSettings
-	// 	treeMap: TreeMapSettings
 	// 	files: FileState[]
 	// }
 	payload?: any

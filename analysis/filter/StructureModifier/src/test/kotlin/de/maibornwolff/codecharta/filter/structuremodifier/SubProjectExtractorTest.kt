@@ -3,9 +3,11 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.io.InputStreamReader
 
 class SubProjectExtractorTest {
 
@@ -79,5 +81,16 @@ class SubProjectExtractorTest {
 
         val edges = result.edges
         Assertions.assertThat(edges).isEmpty()
+    }
+
+    @Test
+    fun `Subproject should contain a subset of attributeDescriptors when extracted`() {
+        val path = "test_attributeDescriptors.json"
+        val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(path)!!)
+        val attributeProject = ProjectDeserializer.deserializeProject(input)
+        val resultProject = SubProjectExtractor(attributeProject).extract("/root/AnotherParentLeaf")
+        assertEquals(resultProject.attributeDescriptors.size, 3)
+        assertEquals(resultProject.attributeDescriptors["yrloc"]!!.description, "a")
+        assertEquals(resultProject.attributeDescriptors["rloc"], null)
     }
 }

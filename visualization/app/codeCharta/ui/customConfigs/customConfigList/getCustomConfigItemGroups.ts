@@ -1,48 +1,45 @@
 import { CustomConfigItemGroup } from "../customConfigs.component"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
-import { CustomConfigMapSelectionMode } from "../../../model/customConfig/customConfig.api.model"
+import { VisibleFilesBySelectionMode } from "../visibleFilesBySelectionMode.selector"
 
 export interface CustomConfigGroups {
 	applicableItems: Map<string, CustomConfigItemGroup>
 	nonApplicableItems: Map<string, CustomConfigItemGroup>
 }
 
-export function getCustomConfigItemGroups(
-	fileMapCheckSumsByMapSelectionMode: Map<CustomConfigMapSelectionMode, string[]>
-): CustomConfigGroups {
+export function getCustomConfigItemGroups({ assignedMaps }: VisibleFilesBySelectionMode): CustomConfigGroups {
 	const customConfigGroups: CustomConfigGroups = {
-		applicableItems: new Map<string, CustomConfigItemGroup>(),
-		nonApplicableItems: new Map<string, CustomConfigItemGroup>()
+		applicableItems: new Map(),
+		nonApplicableItems: new Map()
 	}
+	const customConfigItemGroups = new Map<string, CustomConfigItemGroup>()
 
-	const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
-
-	for (const customConfig of CustomConfigHelper.loadCustomConfigs().values()) {
-		const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
+	for (const customConfig of CustomConfigHelper.loadCustomConfigsFromLocalStorage().values()) {
+		const mapNames = [...customConfig.assignedMaps.values()]
+		const groupKey = `${mapNames.join("_")}_${customConfig.mapSelectionMode}`
+		const isCustomConfigItemApplicable = [...customConfig.assignedMaps.keys()].some(configChecksum => assignedMaps.has(configChecksum))
 
 		if (!customConfigItemGroups.has(groupKey)) {
 			customConfigItemGroups.set(groupKey, {
-				mapNames: customConfig.assignedMaps.join(" "),
+				mapNames: mapNames.join(" "),
 				mapSelectionMode: customConfig.mapSelectionMode,
-				hasApplicableItems: false,
+				hasApplicableItems: isCustomConfigItemApplicable,
 				customConfigItems: []
 			})
 		}
 
-		const customConfigItemApplicable =
-			fileMapCheckSumsByMapSelectionMode.get(customConfig.mapSelectionMode)?.join(";") === customConfig.mapChecksum
+		const { positive, neutral, negative, selected, positiveDelta, negativeDelta } = customConfig.stateSettings.appSettings.mapColors
+		const { areaMetric, heightMetric, colorMetric, edgeMetric } = customConfig.stateSettings.dynamicSettings
 
 		customConfigItemGroups.get(groupKey).customConfigItems.push({
 			id: customConfig.id,
 			name: customConfig.name,
-			mapNames: customConfig.assignedMaps.join(" "),
+			assignedMaps: customConfig.assignedMaps,
 			mapSelectionMode: customConfig.mapSelectionMode,
-			isApplicable: customConfigItemApplicable
+			metrics: { areaMetric, heightMetric, colorMetric, edgeMetric },
+			mapColors: { positive, neutral, negative, selected, positiveDelta, negativeDelta },
+			isApplicable: isCustomConfigItemApplicable
 		})
-
-		if (customConfigItemApplicable) {
-			customConfigItemGroups.get(groupKey).hasApplicableItems = true
-		}
 
 		if (customConfigItemGroups.get(groupKey).hasApplicableItems) {
 			customConfigGroups.applicableItems.set(groupKey, customConfigItemGroups.get(groupKey))

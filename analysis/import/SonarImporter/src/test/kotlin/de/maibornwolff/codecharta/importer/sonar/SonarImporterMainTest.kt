@@ -4,28 +4,24 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.verify
-import com.github.tomakehurst.wiremock.junit.WireMockRule
+import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import picocli.CommandLine
 import javax.ws.rs.core.MediaType
 import kotlin.jvm.Throws
 
+private const val PORT = 8089
+
+@WireMockTest(httpPort = PORT)
 class SonarImporterMainTest {
     companion object {
-        private const val PORT = 8089
-
         private const val METRIC_LIST_URL_PATH =
             "/api/metrics/search?f=hidden,decimalScale&p=1&ps=${SonarMetricsAPIDatasource.PAGE_SIZE}"
     }
 
-    @JvmField
-    @Rule
-    var wireMockRule = WireMockRule(PORT)
-
-    @Before
+    @BeforeEach
     fun mockVersionRequest() {
         WireMock.stubFor(
             WireMock.get(urlEqualTo("/api/server/version"))

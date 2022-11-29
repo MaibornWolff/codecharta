@@ -1,7 +1,6 @@
 import { colorLabels } from "./colorLabels/colorLabels.reducer"
 import { showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
 import { showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
-import { isAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.reducer"
 import { sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
 import { isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
@@ -25,12 +24,12 @@ import { sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
 import { screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import { invertArea } from "./invertArea/invertArea.reducer"
 import { isEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.reducer"
+import { isColorMetricLinkedToHeightMetric } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
 
 const appSettings = combineReducers({
 	colorLabels,
 	showMetricLabelNodeName,
 	showMetricLabelNameValue,
-	isAttributeSideBarVisible,
 	sortingOrderAscending,
 	isLoadingFile,
 	isLoadingMap,
@@ -52,7 +51,8 @@ const appSettings = combineReducers({
 	screenshotToClipboardEnabled,
 	layoutAlgorithm,
 	maxTreeMapFiles,
-	sharpnessMode
+	sharpnessMode,
+	isColorMetricLinkedToHeightMetric
 })
 
 export default appSettings

@@ -1,43 +1,42 @@
-"use strict"
-
+import { Inject, Injectable } from "@angular/core"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
-import { StoreService } from "../../state/store.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
-import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
-import { IRootScopeService } from "angular"
-import { ThreeStatsService } from "./threeViewer/threeStatsService"
+import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { Store } from "../../state/angular-redux/store"
+import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
+import { tap } from "rxjs"
+import { State } from "../../state/angular-redux/state"
 
-export class CodeMapRenderService implements IsLoadingFileSubscriber {
+@Injectable({ providedIn: "root" })
+export class CodeMapRenderService {
 	private nodesByColor = {
 		positive: [],
 		neutral: [],
 		negative: []
 	}
 	private unflattenedNodes
-	static instance: CodeMapRenderService
 
 	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private threeSceneService: ThreeSceneService,
-		private codeMapLabelService: CodeMapLabelService,
-		private codeMapArrowService: CodeMapArrowService,
-		private threeStatsService: ThreeStatsService,
-		private codeMapMouseEventService: CodeMapMouseEventService
+		@Inject(Store) private store: Store,
+		@Inject(State) private state: State,
+		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
+		@Inject(CodeMapLabelService) private codeMapLabelService: CodeMapLabelService,
+		@Inject(CodeMapArrowService) private codeMapArrowService: CodeMapArrowService,
+		@Inject(ThreeStatsService) private threeStatsService: ThreeStatsService,
+		@Inject(CodeMapMouseEventService) private codeMapMouseEventService: CodeMapMouseEventService
 	) {
-		"ngInject"
-		IsLoadingFileService.subscribe(this.$rootScope, this)
-		CodeMapRenderService.instance = this
+		this.store.select(isLoadingFileSelector).pipe(tap(this.onIsLoadingFileChanged)).subscribe()
 	}
-	onIsLoadingFileChanged(isLoadingFile: boolean) {
+
+	onIsLoadingFileChanged = (isLoadingFile: boolean) => {
 		if (isLoadingFile) {
 			this.threeSceneService?.dispose()
 		} else {
@@ -60,7 +59,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
-		const state = this.storeService.getState()
+		const state = this.state.getValue()
 		const mapMesh = new CodeMapMesh(visibleSortedNodes, state, isDeltaState(state.files))
 		this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
 	}
@@ -75,7 +74,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	private getNodes(map: CodeMapNode) {
-		const state = this.storeService.getState()
+		const state = this.state.getValue()
 		const nodeMetricData = nodeMetricDataSelector(state)
 		const {
 			appSettings: { layoutAlgorithm },
@@ -94,7 +93,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 	}
 
 	private getNodesMatchingColorSelector(sortedNodes: Node[]) {
-		const dynamicSettings = this.storeService.getState().dynamicSettings
+		const dynamicSettings = this.state.getValue().dynamicSettings
 
 		this.nodesByColor = {
 			positive: [],
@@ -136,7 +135,7 @@ export class CodeMapRenderService implements IsLoadingFileSubscriber {
 			showMetricLabelNameValue,
 			colorLabels: colorLabelOptions,
 			amountOfTopLabels
-		} = this.storeService.getState().appSettings
+		} = this.state.getValue().appSettings
 
 		if (showMetricLabelNodeName || showMetricLabelNameValue) {
 			const highestNodeInSet = sortedNodes[0].height

@@ -2,12 +2,11 @@ import "./codeMap.component.scss"
 import { Component, Inject, AfterViewInit, ElementRef, OnDestroy } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
-import { isAttributeSideBarVisibleSelector } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.selector"
-import { ThreeViewerService } from "./threeViewer/threeViewerService"
-import { CodeMapMouseEventServiceToken, ThreeViewerServiceToken } from "../../services/ajs-upgraded-providers"
+import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { skip, tap } from "rxjs"
+import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 
 @Component({
 	selector: "cc-code-map",
@@ -15,7 +14,6 @@ import { skip, tap } from "rxjs"
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
 	isLoadingFile$ = this.store.select(isLoadingFileSelector)
-	isAttributeSidebarVisible$ = this.store.select(isAttributeSideBarVisibleSelector)
 	restartOnSharpnessModeChangesSubscription = this.store
 		.select(sharpnessModeSelector)
 		.pipe(
@@ -28,9 +26,10 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
 		.subscribe()
 
 	constructor(
+		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		@Inject(Store) private store: Store,
-		@Inject(ThreeViewerServiceToken) private threeViewerService: ThreeViewerService,
-		@Inject(CodeMapMouseEventServiceToken) private codeMapMouseEventService: CodeMapMouseEventService,
+		@Inject(ThreeViewerService) private threeViewerService: ThreeViewerService,
+		@Inject(CodeMapMouseEventService) private codeMapMouseEventService: CodeMapMouseEventService,
 		@Inject(ElementRef) private elementReference: ElementRef
 	) {}
 

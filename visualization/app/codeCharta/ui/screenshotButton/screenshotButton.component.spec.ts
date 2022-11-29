@@ -4,17 +4,18 @@ import { TestBed } from "@angular/core/testing"
 import { Store } from "../../state/store/store"
 import { render, screen } from "@testing-library/angular"
 import { ScreenshotButtonModule } from "./screenshotButton.module"
-import { ThreeCameraServiceToken, ThreeSceneServiceToken } from "../../services/ajs-upgraded-providers"
 import userEvent from "@testing-library/user-event"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("screenshotButtonComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [ScreenshotButtonModule],
 			providers: [
-				{ provide: ThreeCameraServiceToken, useValue: {} },
-				{ provide: ThreeSceneServiceToken, useValue: {} },
+				{ provide: ThreeCameraService, useValue: {} },
+				{ provide: ThreeSceneService, useValue: {} },
 				{ provide: ThreeRendererService, useValue: {} }
 			]
 		})

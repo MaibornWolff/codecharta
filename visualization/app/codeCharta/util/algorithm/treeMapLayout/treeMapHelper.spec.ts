@@ -49,7 +49,6 @@ describe("TreeMapHelper", () => {
 			} as HierarchyRectangularNode<CodeMapNode>
 
 			state = STATE
-			state.treeMap.mapSize = 1
 			state.dynamicSettings.margin = 15
 			state.dynamicSettings.heightMetric = "theHeight"
 			state.appSettings.invertHeight = false
@@ -157,7 +156,6 @@ describe("TreeMapHelper", () => {
 				} as HierarchyRectangularNode<CodeMapNode>
 
 				state = STATE
-				state.treeMap.mapSize = 1
 				state.dynamicSettings.margin = 15
 			})
 

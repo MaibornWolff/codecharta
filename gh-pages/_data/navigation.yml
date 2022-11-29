@@ -72,6 +72,10 @@ docs:
             url: /docs/user-controls/
           - title: "Timeline"
             url: /docs/timeline/
+          - title: "Tree Map Hierarchy Algorithm"
+            url: /docs/tree-map-hierarchy/
+          - title: "Custom View"
+            url: /docs/custom-view/
 
     - title: Reference
       children:

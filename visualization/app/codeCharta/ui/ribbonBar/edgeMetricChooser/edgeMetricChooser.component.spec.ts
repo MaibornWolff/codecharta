@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
+import { expect } from "@jest/globals"
 import userEvent from "@testing-library/user-event"
 import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"

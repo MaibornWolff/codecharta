@@ -7,17 +7,106 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Add attribute descriptors to SonarImporter [#3149](https://github.com/MaibornWolff/codecharta/pull/3149)
+
+## [1.112.0] - 2022-11-25
+
+### Added 🚀
+
+-   New calculation algorithm for treeMap that accounts for paddings and floor labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+
 ### Fixed 🐞
 
+-   Fix ribbon-bar shadow moving down when search is expanded [#3138](https://github.com/MaibornWolff/codecharta/pull/3138)
+-   Fix loading errors of maps containing no programming-language-info [#3144](https://github.com/MaibornWolff/codecharta/pull/3144)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Documentation for new treeMap calculation algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+-   Add attribute descriptors (metric descriptions) to some filters and importers [#3091](https://github.com/MaibornWolff/codecharta/pull/3091)
+
+## [1.111.0] - 2022-11-17
+
+### Added 🚀
+
+-   Add description to every Custom View [#3119](https://github.com/MaibornWolff/codecharta/pull/3119) </br>
+    ![image](https://user-images.githubusercontent.com/72517530/201381274-a9a913d5-8f9d-4da6-9f26-6476e194ce3b.png)
+-   Highlight files and folders with no area metric or an area metric value of zero in the search panel [#3126](https://github.com/MaibornWolff/codecharta/pull/3126)
+
+### Changed
+
+-   Be aware, that all Custom Views generated with version 1.110.0 or older will be unusable by April 2023 [#3119](https://github.com/MaibornWolff/codecharta/pull/3119)
+
+### Fixed 🐞
+
+-   Fix Node Context-Menu in Map Tree View opening multiple times [#3135](https://github.com/MaibornWolff/codecharta/pull/3135)
+-   Fix crashing on focusing or hovering un-rendered buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
+-   Fix showing changelog entries in the dialog when a new version is available [#3123](https://github.com/MaibornWolff/codecharta/pull/3129)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Update supported latest browsers [#3125](https://github.com/MaibornWolff/codecharta/pull/3125)
+-   Split e2e and unit test configs [#3128](https://github.com/MaibornWolff/codecharta/pull/3128)
+
+## [1.110.0] - 2022-11-04
+
+### Changed
+
+-   Custom Views are now applicable even if maps or mode are different. Missing maps or map selection mode is displayed in the tooltip [#3090](https://github.com/MaibornWolff/codecharta/pull/3090)
+-   Be aware, that all Custom Views generated with version 1.109.1 or older will be unusable by April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
+
+### Fixed 🐞
+
+-   Fix broken link to Custom View documentation [#3101](https://github.com/MaibornWolff/codecharta/pull/3101)
+-   Don't re-center map after every state change like changing area metric [#3109](https://github.com/MaibornWolff/codecharta/pull/3109)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Adjust Custom View API and maintain old Custom Views until April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
+-   Migrate codeMap.render.service, codeMap.label.service, codeMap.mouseEvent.service, codeMap.arrow.service, codeCharta.service, sharpnessMode.service, isLoadingFile.service, scaling.service and experimentalFeaturesEnabled.service to Angular [#3094](https://github.com/MaibornWolff/codecharta/pull/3094)
+-   Extract tree map size into a const as this is never changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
+-   Migrate markedPackages.service, edges.service, blacklist.service, files.service and injector.service [3106](https://github.com/MaibornWolff/codecharta/pull/3106)
+-   Refactor out `LoadInitialFileService` and fix with it loose Promise in tests [#3110](https://github.com/MaibornWolff/codecharta/pull/3110)
+-   Migrate codeCharta.component, storeService.service and remove AngularJS dual boot from bootstrapping [#3114](https://github.com/MaibornWolff/codecharta/pull/3114)
+-   Remove obsolete AngularJS dependencies [#3115](https://github.com/MaibornWolff/codecharta/pull/3115)
+
+## [1.109.1] - 2022-10-12
+
+### Fixed 🐞
+
+-   Fix broken links on new GitHub Page 'Docker Containers' [#3089](https://github.com/MaibornWolff/codecharta/pull/3089)
+
+## [1.109.0] - 2022-10-12
+
+### Added 🚀
+
+-   Add description and documentation to Custom View modal [#3085](https://github.com/MaibornWolff/codecharta/pull/3085)
+-   Add a new button that links the height metric to the color metric so that the colour metric is automatically set to
+    the selected height metric [#3058](https://github.com/MaibornWolff/codecharta/pull/3058) <br/>
+    ![image](https://user-images.githubusercontent.com/72517530/193291144-fdc73a15-2087-47e2-845b-05c666aec71d.png) <br/>
+    ![image](https://user-images.githubusercontent.com/72517530/194300920-60ce9fcd-0dd5-46ef-a90b-01d9a29205e6.png)
+
+### Fixed 🐞
+
+-   Fix interactive GitLogParser using wrong dialogue with repo-scan subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
 -   Fix CodeCharta Analysis container exiting when detached [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Fix CodeCharta Analysis container not coming with the sonar-scanner pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
 -   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
+-   Unfocus nodes when changing selected files, which prevents the app from crashing [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 
 ### Chore 👨‍💻 👩‍💻
 
 -   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
 -   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
+-   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
+-   Migrate dialog.service to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Add documentation for new treeMap algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+-   Migrate dialog.service to Angular [#3070](https://github.com/MaibornWolff/codecharta/pull/3070)
+-   Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeOrbitControlsService and ThreeViewerService to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Migrate updateAttributeTypes.service to Angular [#3082](https://github.com/MaibornWolff/codecharta/pull/3082)
 
 ## [1.108.1] - 2022-09-29
 
@@ -29,7 +118,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
+-   Add new Analysis docker container, together with a docker-compose file that contains analysis, visualization and a
+    SonarQube instance [#3057](https://github.com/MaibornWolff/codecharta/pull/3057)
 
 ### Removed 🗑
 

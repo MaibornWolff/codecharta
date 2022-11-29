@@ -3,10 +3,9 @@ import { Export3DMapButtonComponent } from "./export3DMapButton.component"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { Export3DMapButtonModule } from "./export3DMapButton.module"
 import { FileDownloader } from "../../util/fileDownloader"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapMesh } from "../codeMap/rendering/codeMapMesh"
 import { stubDate } from "../../../../mocks/dateMock.helper"
 import { FILE_STATES } from "../../util/dataMocks"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
 const newDate = "2018-12-14_09-39"
@@ -30,7 +29,8 @@ jest.mock("three/examples/jsm/exporters/STLExporter", () => ({
 describe("Export3DMapButtonComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [Export3DMapButtonModule]
+			imports: [Export3DMapButtonModule],
+			providers: [{ provide: ThreeSceneService, useValue: { getMapMesh: () => ({ getThreeMesh: jest.fn() }) } }]
 		})
 	})
 
@@ -54,7 +54,6 @@ describe("Export3DMapButtonComponent", () => {
 		const downloadButton = screen.getByRole("button")
 
 		const downloadData = jest.spyOn(FileDownloader, "downloadData").mockImplementation(() => null)
-		ThreeSceneService.mapMeshInstance = { getThreeMesh: jest.fn() } as unknown as CodeMapMesh
 
 		fireEvent.click(downloadButton)
 

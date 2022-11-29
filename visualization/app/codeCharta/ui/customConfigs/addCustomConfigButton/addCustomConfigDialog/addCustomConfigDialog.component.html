@@ -5,15 +5,16 @@
 <mat-dialog-content>
 	<div class="dialog-content">
 		<mat-form-field>
-			<label>View Name</label>
+			<label>Save individual configurations for your map.</label>
 			<input matInput class="custom-config-input" [formControl]="customConfigName" required />
+			<mat-hint align="start">View Name</mat-hint>
 			<mat-error *ngIf="customConfigName.invalid">{{ getErrorMessage() }}</mat-error>
 		</mat-form-field>
 	</div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-	<cc-download-and-purge-configs [customConfigFileStateConnector]="customConfigFileStateConnector"></cc-download-and-purge-configs>
+	<cc-download-and-purge-configs></cc-download-and-purge-configs>
 	<button mat-button class="add-custom-config-button" (click)="addCustomConfig()" mat-dialog-close [disabled]="customConfigName.invalid">
 		ADD
 	</button>

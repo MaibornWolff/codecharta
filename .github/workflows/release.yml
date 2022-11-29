@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v3.5.0
+        uses: actions/setup-java@v3.6.0
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -44,6 +44,8 @@ jobs:
           docker build -t codecharta/codecharta-analysis .
 
       - name: Build visualization
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
         working-directory: ./visualization
         run: |
           npm ci
@@ -61,7 +63,7 @@ jobs:
         run: sh ./script/build_gh_pages.sh
 
       - name: Upload Release Files to tagged release
-        uses: alexellis/upload-assets@0.3.0
+        uses: alexellis/upload-assets@0.4.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -116,7 +118,7 @@ jobs:
           workdir: ./analysis
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.4.0
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages

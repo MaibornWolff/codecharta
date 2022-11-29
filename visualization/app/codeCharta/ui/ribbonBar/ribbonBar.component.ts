@@ -17,7 +17,6 @@ export class RibbonBarComponent implements OnInit, OnDestroy {
 	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 	hasEdgeMetric$ = this.store.select(edgeMetricDataSelector).pipe(map(edgeMetricData => edgeMetricData.length > 0))
-
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {

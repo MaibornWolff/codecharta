@@ -1,4 +1,4 @@
-import { createSelector } from "../../angular-redux/store"
+import { createSelector } from "../../angular-redux/createSelector"
 import { accumulatedDataSelector } from "./accumulatedData.selector"
 
 export const rootUnarySelector = createSelector(

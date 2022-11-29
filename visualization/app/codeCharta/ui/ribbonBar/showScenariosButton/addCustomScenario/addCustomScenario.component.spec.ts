@@ -3,11 +3,11 @@ import { MatDialogRef } from "@angular/material/dialog"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
-import { ThreeCameraServiceToken, ThreeOrbitControlsServiceToken } from "../../../../services/ajs-upgraded-providers"
 import { setState } from "../../../../state/store/state.actions"
-import { splitStateActions } from "../../../../state/store/state.splitter"
 import { Store } from "../../../../state/store/store"
 import { SCENARIO_ATTRIBUTE_CONTENT, STATE } from "../../../../util/dataMocks"
+import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
+import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { ScenarioHelper } from "../scenarioHelper"
 import { AddCustomScenarioComponent } from "./addCustomScenario.component"
 import { AddCustomScenarioModule } from "./addCustomScenario.module"
@@ -17,8 +17,8 @@ describe("AddCustomScenarioComponent", () => {
 		TestBed.configureTestingModule({
 			imports: [AddCustomScenarioModule],
 			providers: [
-				{ provide: ThreeCameraServiceToken, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-				{ provide: ThreeOrbitControlsServiceToken, useValue: { controls: { target: new Vector3(177, 0, 299) } } },
+				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
+				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(177, 0, 299) } } },
 				{ provide: MatDialogRef, useValue: { close: jest.fn() } }
 			]
 		})
@@ -26,9 +26,7 @@ describe("AddCustomScenarioComponent", () => {
 
 	it("should enable the user to add a custom scenario, with all properties set initially", async () => {
 		ScenarioHelper.addScenario = jest.fn()
-		for (const splittedActions of splitStateActions(setState(STATE))) {
-			Store.dispatch(splittedActions)
-		}
+		Store.dispatch(setState(STATE))
 		const { container } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
 		const closeDialog = TestBed.inject(MatDialogRef).close
 
@@ -58,9 +56,7 @@ describe("AddCustomScenarioComponent", () => {
 	})
 
 	it("should show an error message, when no properties are selected", async () => {
-		for (const splittedActions of splitStateActions(setState(STATE))) {
-			Store.dispatch(splittedActions)
-		}
+		Store.dispatch(setState(STATE))
 		await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
 
 		await userEvent.click(screen.getByText("Camera-Position"))

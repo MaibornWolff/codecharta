@@ -24,7 +24,6 @@ import {
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { Box3, Vector3 } from "three"
-import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
@@ -1312,6 +1311,142 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_NESTED_FOLDER_ONE_LEAF: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "big leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/big leaf.jpg",
+					attributes: { rloc: 10, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_NESTED_FOLDER_TWO_LEAVES: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "big leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/big leaf.jpg",
+					attributes: { rloc: 100, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "small_leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/small_leaf.jpg",
+					attributes: { rloc: 10, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_NESTED_FOLDER_LEAVES_DIFFERENT_NEST_LEVELS: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "inside_leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/inside_leaf.jpg",
+					attributes: { rloc: 100, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		},
+		{
+			name: "outside_leaf.jpg",
+			type: NodeType.FILE,
+			path: "/root/big leaf.jpg",
+			attributes: { rloc: 10, functions: 10, mcc: 1 },
+			isExcluded: false,
+			isFlattened: false
+		}
+	]
+}
+
+export const VALID_NODE_NESTED_FOLDER_LEAVES_HUGE: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "inside_leaf.jpg",
+					type: NodeType.FILE,
+					path: "/root/Parent Leaf/inside_leaf.jpg",
+					attributes: { rloc: 1_000_000_000, functions: 10, mcc: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		},
+		{
+			name: "outside_leaf.jpg",
+			type: NodeType.FILE,
+			path: "/root/big leaf.jpg",
+			attributes: { rloc: 100_000_000, functions: 10, mcc: 1 },
+			isExcluded: false,
+			isFlattened: false
+		}
+	]
+}
+
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		...DEFAULT_FILE_META,
@@ -1579,6 +1714,7 @@ export const STATE: State = {
 		isEdgeMetricVisible: true,
 		dynamicMargin: true,
 		isWhiteBackground: false,
+		isColorMetricLinkedToHeightMetric: false,
 		mapColors: {
 			positive: "#69AE40",
 			neutral: "#ddcc00",
@@ -1599,7 +1735,6 @@ export const STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
-		isAttributeSideBarVisible: true,
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
@@ -1607,9 +1742,6 @@ export const STATE: State = {
 		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		sharpnessMode: SharpnessMode.Standard,
 		maxTreeMapFiles: 200
-	},
-	treeMap: {
-		mapSize: 250
 	},
 	files: [],
 	appStatus: {
@@ -1635,6 +1767,7 @@ export const DEFAULT_STATE: State = {
 		invertArea: false,
 		isEdgeMetricVisible: true,
 		isWhiteBackground: false,
+		isColorMetricLinkedToHeightMetric: false,
 		mapColors: {
 			base: "#666666",
 			flat: "#AAAAAA",
@@ -1656,7 +1789,6 @@ export const DEFAULT_STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: true,
-		isAttributeSideBarVisible: false,
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
@@ -1682,7 +1814,6 @@ export const DEFAULT_STATE: State = {
 		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
-	treeMap: { mapSize: 250 },
 	files: [],
 	appStatus: {
 		hoveredNodeId: null,
@@ -1763,6 +1894,7 @@ export const TEST_NODE_ROOT: Node = {
 	link: "NO_LINK",
 	markingColor: "0x000000",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#69AE40",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
@@ -1890,65 +2022,116 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 
 export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
 	[
-		"fileAfileBSINGLE",
+		"File_A_STANDARD",
 		{
-			mapNames: "fileA fileB",
-			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+			mapNames: "fileA",
+			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: false,
 			customConfigItems: [
 				{
-					id: "SINGLEfileASampleMap View #1",
+					id: "File_A_STANDARD_Sample_Map View #1",
 					name: "SampleMap View #1",
-					mapNames: "fileA",
-					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					assignedMaps: new Map([["md5_fileA", "fileA"]]),
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: false
 				},
 				{
-					id: "SINGLEfileBSampleMap View #2",
+					id: "File_A_STANDARD_Sample_Map View #2",
 					name: "SampleMap View #2",
-					mapNames: "fileB",
-					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					assignedMaps: new Map([["md5_fileA", "fileA"]]),
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: false
 				}
 			]
 		}
 	],
 	[
-		"fileAfileBMultiple",
+		"File_B_File_C_STANDARD",
 		{
-			mapNames: "fileC fileD",
+			mapNames: "fileB fileC",
 			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: true,
 			customConfigItems: [
 				{
-					id: "MULTIPLEfileCSampleMap View #1",
+					id: "File_B_File_C_STANDARD_Sample_Map View #1",
 					name: "SampleMap View #1",
-					mapNames: "fileB",
+					assignedMaps: new Map([
+						["md5_fileB", "fileB"],
+						["md5_fileC", "fileC"]
+					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "functions", edgeMetric: "avgCommits" },
 					isApplicable: true
 				},
 				{
-					id: "MULTIPLEfileDSampleMap View #2",
+					id: "File_B_File_C_STANDARD_Sample_Map View #2",
 					name: "SampleMap View #2",
-					mapNames: "fileD",
+					assignedMaps: new Map([
+						["md5_fileB", "fileB"],
+						["md5_fileC", "fileC"]
+					]),
 					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
 					isApplicable: true
 				}
 			]
 		}
 	],
 	[
-		"fileAfileBDELTA",
+		"File_D_DELTA",
 		{
-			mapNames: "fileE",
+			mapNames: "fileD",
 			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 			hasApplicableItems: false,
 			customConfigItems: [
 				{
-					id: "MULTIPLEfileESampleMap View #1",
+					id: "File_D_DELTA_Sample_Map View #1",
 					name: "SampleMap Delta View #1",
-					mapNames: "fileD",
+					assignedMaps: new Map([["md5_fileD", "fileD"]]),
 					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+					mapColors: {
+						positive: "#69AE40",
+						neutral: "#ddcc00",
+						negative: "#820E0E",
+						selected: "#EB8319",
+						positiveDelta: "#64d051",
+						negativeDelta: "#ff0E0E"
+					},
+					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: null },
 					isApplicable: false
 				}
 			]
@@ -2011,6 +2194,7 @@ export const TEST_NODE_LEAF: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#ddcc00",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
@@ -2035,6 +2219,7 @@ export const TEST_NODE_FOLDER: Node = {
 	path: "/root",
 	flat: false,
 	link: "NO_LINK",
+	fitForFolderLabel: false,
 	color: "#ddcc00",
 	markingColor: "0xFFFFFF",
 	incomingEdgePoint: new Vector3(),
@@ -2064,6 +2249,7 @@ export const INCOMING_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#820E0E",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
@@ -2092,6 +2278,7 @@ export const OUTGOING_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#AABBCC",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
@@ -2118,6 +2305,7 @@ export const DIFFERENT_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	fitForFolderLabel: false,
 	color: "#AABBCC",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
@@ -2189,13 +2377,6 @@ export const CONSTANT_HIGHLIGHT: Map<number, CodeMapBuilding> = new Map([
 	[CODE_MAP_BUILDING.id, CODE_MAP_BUILDING],
 	[CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
 ])
-
-export function withMockedEventMethods($rootScope: IRootScopeService) {
-	$rootScope.$broadcast = jest.fn()
-	$rootScope.$on = jest.fn()
-	$rootScope.$digest = jest.fn()
-	$rootScope.$apply = jest.fn()
-}
 
 export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
 	const pathsSet = new Set(paths)

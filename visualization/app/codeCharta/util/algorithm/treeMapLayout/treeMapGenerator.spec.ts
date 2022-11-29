@@ -84,7 +84,7 @@ describe("treeMapGenerator", () => {
 		})
 
 		it("only root node", () => {
-			map.children = []
+			map = klona(FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE.map)
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
@@ -104,12 +104,6 @@ describe("treeMapGenerator", () => {
 
 			expect(nodes).toMatchSnapshot()
 		})
-
-		it("should build the tree map with valid coordinates using the fixed folder structure", () => {
-			const nodes = SquarifiedLayoutGenerator.createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
-
-			expect(nodes).toMatchSnapshot()
-		})
 	})
 
 	describe("CodeMap value calculation", () => {
@@ -124,7 +118,6 @@ describe("treeMapGenerator", () => {
 
 			state.dynamicSettings.areaMetric = "myArea"
 			state.dynamicSettings.heightMetric = "myHeight"
-			state.treeMap.mapSize = 1000
 			metricData = [
 				{ name: "myArea", maxValue: 42, minValue: 1 },
 				{ name: "myHeight", maxValue: 99, minValue: 1 }
@@ -132,12 +125,12 @@ describe("treeMapGenerator", () => {
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
-			expect(nodes[2].name).toBe("Parent Leaf")
-			expect(nodes[2].width).toBeGreaterThan(0)
-			expect(nodes[2].length).toBeGreaterThan(0)
+			expect(nodes[1].name).toBe("big leaf")
+			expect(nodes[1].width).toBeGreaterThan(0)
+			expect(nodes[1].length).toBeGreaterThan(0)
 		})
 
-		it("attribute exists, no children", () => {
+		it("attribute exists, but is not chosen, no children", () => {
 			map.children = []
 			map.attributes = { a: 100 }
 
@@ -150,11 +143,10 @@ describe("treeMapGenerator", () => {
 			map.children = []
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
-
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
 
-		it("attribute do not exists, multiple children with non existant attributes", () => {
+		it("attribute do not exists, multiple children with non existent attributes", () => {
 			state.dynamicSettings.heightMetric = "b"
 			state.dynamicSettings.areaMetric = "b"
 			metricData = [
@@ -163,11 +155,10 @@ describe("treeMapGenerator", () => {
 			]
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
-
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
 
-		it("area should be zero if metric does not exist", () => {
+		it(" area should be zero if metric does not exist", () => {
 			state.dynamicSettings.areaMetric = "unknown"
 			state.dynamicSettings.heightMetric = "unknown"
 			state.fileSettings.edges = VALID_EDGES
@@ -181,7 +172,7 @@ describe("treeMapGenerator", () => {
 
 	describe("calculateAreaValue", () => {
 		it("should return 0 if node has children, not blacklisted and not only visible in comparison map", () => {
-			const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode, state, 400)
+			const actual = SquarifiedLayoutGenerator.getAreaValue(codeMapNode, state)
 
 			expect(actual).toBe(0)
 		})

@@ -3,10 +3,24 @@ cc-ribbon-bar {
 	z-index: 10;
 	white-space: nowrap;
 	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
 	width: 100%;
 	$heightExpanded: 195;
 	$heightCollapsed: 38;
 	$border: 1px solid #cdcdcd;
+
+	#height-and-color-metric-container {
+		display: flex;
+		flex-wrap: nowrap;
+		flex-direction: row;
+		border: none;
+		flex: 2.5 2.5 0;
+
+		.mat-card {
+			box-shadow: none;
+		}
+	}
 
 	.badge-custom-configs {
 		position: absolute;
@@ -62,11 +76,23 @@ cc-ribbon-bar {
 			vertical-align: top;
 			overflow: hidden;
 
+			&#height-metric-section {
+				border-right: none;
+			}
+
 			.section-header {
+				margin: 0 5px 0 5px;
 				height: 31px;
 				color: #444444;
 				overflow: hidden;
 				padding: 5px;
+
+				&#area-metric-header-section,
+				&#height-metric-header-section,
+				&#color-metric-header-section,
+				&#edge-metric-header-section {
+					border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+				}
 			}
 
 			.section-title {
@@ -111,6 +137,10 @@ cc-ribbon-bar {
 					pointer-events: all;
 				}
 			}
+		}
+
+		.section-height-metric-card {
+			border-right: none;
 		}
 
 		.delta-color-section {
@@ -158,6 +188,12 @@ cc-ribbon-bar {
 		min-width: 120px;
 	}
 
+	mat-card.link-color-metric-to-height-metric-card {
+		display: flex;
+		justify-content: center;
+		flex-grow: 0;
+	}
+
 	mat-card.scenario-card {
 		max-width: 100px;
 		min-width: 100px;
@@ -184,7 +220,7 @@ cc-ribbon-bar {
 		width: 240px;
 		background: white;
 		border: 1px solid #b5b5b5;
-		box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+		box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
 		overflow: hidden;
 		opacity: 1;
 		font-size: 0.9em;
