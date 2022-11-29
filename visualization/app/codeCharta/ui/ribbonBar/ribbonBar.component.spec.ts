@@ -70,7 +70,6 @@ describe("RibbonBarComponent", () => {
 		it("should hide experimental features when they are disabled", async () => {
 			Store.dispatch(setExperimentalFeaturesEnabled(false))
 			await render(RibbonBarComponent, { excludeComponentDeclaration: true })
-			expect(screen.queryByText("Custom Views")).toBe(null)
 			expect(screen.queryByText("Suspicious Metrics")).toBe(null)
 		})
 
