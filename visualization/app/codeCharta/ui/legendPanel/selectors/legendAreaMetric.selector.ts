@@ -1,10 +1,8 @@
 import { createSelector } from "../../../state/angular-redux/createSelector"
-import { metricDescriptions } from "../../../util/metric/metricDescriptions"
 import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributesDescriptors.selector"
 import { CcState } from "../../../state/store/store"
-import { LegendMetric } from "./legendMetric"
-import { AttributeDescriptors } from "../../../codeCharta.model"
+import { getDescription, LegendMetric } from "./legendMetric"
 
 export const legendAreaMetricSelector: (state: CcState) => LegendMetric = createSelector(
 	[areaMetricSelector, attributeDescriptorsSelector],
@@ -13,15 +11,3 @@ export const legendAreaMetricSelector: (state: CcState) => LegendMetric = create
 		description: getDescription(areaMetric, attributeDescriptors)
 	})
 )
-
-function getDescription(metric: string, attributeDescriptors: AttributeDescriptors) {
-	// eslint-disable-next-line no-console
-	console.log(attributeDescriptors)
-	// eslint-disable-next-line no-console
-	console.log(attributeDescriptors["testDefaultKeyAttrDescrAction36"])
-	if (attributeDescriptors["testDefaultKeyAttrDescrAction36"] !== undefined) {
-		return attributeDescriptors["testDefaultKeyAttrDescrAction36"]
-	}
-	//Fallback Description
-	return metricDescriptions.get(metric)
-}
