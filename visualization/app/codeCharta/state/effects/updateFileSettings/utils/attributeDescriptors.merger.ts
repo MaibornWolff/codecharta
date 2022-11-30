@@ -1,12 +1,15 @@
 import { AttributeDescriptors } from "../../../../codeCharta.model"
 
 export function getMergedAttributeDescriptors(allAttributeDescriptors: AttributeDescriptors[]): AttributeDescriptors {
-	const attributeDescriptorsTest = {}
+	const uniqueAttributeDescriptors = {}
 
-	//TODO; implement
-	if (!allAttributeDescriptors) {
-		return attributeDescriptorsTest
+	for (const attributeDescriptors of allAttributeDescriptors) {
+		for (const attributeDescriptorKey of Object.keys(attributeDescriptors)) {
+			if (!uniqueAttributeDescriptors[attributeDescriptorKey]) {
+				uniqueAttributeDescriptors[attributeDescriptorKey] = attributeDescriptors[attributeDescriptorKey]
+			}
+		}
 	}
 
-	return attributeDescriptorsTest
+	return uniqueAttributeDescriptors
 }
