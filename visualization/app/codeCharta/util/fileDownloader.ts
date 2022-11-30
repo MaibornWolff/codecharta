@@ -1,4 +1,14 @@
-import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
+import {
+	CodeMapNode,
+	BlacklistType,
+	BlacklistItem,
+	FileSettings,
+	FileMeta,
+	AttributeTypes,
+	Edge,
+	NodeType,
+	AttributeDescriptors
+} from "../codeCharta.model"
 import { LoadFileService } from "../services/loadFile/loadFile.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { hierarchy } from "d3-hierarchy"
@@ -32,6 +42,7 @@ export class FileDownloader {
 			fileChecksum: fileMeta.fileChecksum,
 			nodes: [this.undecorateMap(map)],
 			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
+			attributeDescriptors: this.getAttributeDescriptorsForJSON(fileSettings.attributeDescriptors),
 			edges: downloadSettings.includes("Edges") ? this.undecorateEdges(fileSettings.edges) : [],
 			markedPackages: downloadSettings.includes("MarkedPackages") ? fileSettings.markedPackages : [],
 			blacklist: this.getBlacklistToDownload(downloadSettings, fileSettings.blacklist)
@@ -60,6 +71,14 @@ export class FileDownloader {
 			return {}
 		}
 		return attributeTypes
+	}
+
+	private static getAttributeDescriptorsForJSON(attributeDescriptors: AttributeDescriptors) {
+		//TODO: test
+		if (Object.keys(attributeDescriptors).length === 0) {
+			return {}
+		}
+		return attributeDescriptors
 	}
 
 	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType) {
