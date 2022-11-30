@@ -123,8 +123,8 @@ class ProjectMergerTest {
         val projectList = listOf(originalProject1, originalProject2)
         val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
         val expectedResult = mapOf<String, AttributeDescriptor>(
-            "single" to AttributeDescriptor("a", "b", "c", "d"),
-            "merge" to AttributeDescriptor("1", "2", "3", "4"),
+            "single" to AttributeDescriptor(description = "a", hintLowValue = "b", hintHighValue = "c", link = "d"),
+            "merge" to AttributeDescriptor(description = "1", hintLowValue = "2", hintHighValue = "3", link = "4"),
             "somethingElse" to AttributeDescriptor()
         )
         assertEquals(project.attributeDescriptors, expectedResult)
