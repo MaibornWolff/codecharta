@@ -7,7 +7,7 @@ export type LegendMetric = {
 }
 
 export function getShortDescription(metric: string, attributeDescriptors: AttributeDescriptors) {
-	if (attributeDescriptors[metric]?.title !== undefined && attributeDescriptors[metric].title !== "") {
+	if (attributeDescriptors?.[metric]?.title !== undefined && attributeDescriptors[metric].title !== "") {
 		return attributeDescriptors[metric].title
 	}
 

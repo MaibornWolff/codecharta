@@ -1605,6 +1605,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 		}
 	],
 	attributeTypes: {},
+	attributeDescriptors: {},
 	edges: [
 		{
 			fromNodeName: "/root/big leaf",
