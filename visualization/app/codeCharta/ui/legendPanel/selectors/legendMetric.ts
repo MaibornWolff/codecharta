@@ -7,15 +7,8 @@ export type LegendMetric = {
 }
 
 export function getDescription(metric: string, attributeDescriptors: AttributeDescriptors) {
-	// eslint-disable-next-line no-console
-	console.log(metric)
-	// eslint-disable-next-line no-console
-	console.log(attributeDescriptors)
-	// eslint-disable-next-line no-console
-	console.log(attributeDescriptors["testDefaultKeyAttrDescrAction36"])
-
-	if (attributeDescriptors["testDefaultKeyAttrDescrAction36"] !== undefined) {
-		return attributeDescriptors["testDefaultKeyAttrDescrAction36"]
+	if (attributeDescriptors["testKeyFileHelper52"] !== undefined) {
+		return attributeDescriptors["testKeyFileHelper52"].description
 	}
 
 	//Fallback Description can still return null

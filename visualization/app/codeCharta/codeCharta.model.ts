@@ -188,7 +188,14 @@ export interface AttributeTypes {
 }
 
 export interface AttributeDescriptors {
-	[key: string]: string
+	[key: string]: AttributeDescriptor
+}
+
+export interface AttributeDescriptor {
+	description: string
+	hintLowValue: string
+	hintHighValue: string
+	link: string
 }
 
 export enum AttributeTypeValue {

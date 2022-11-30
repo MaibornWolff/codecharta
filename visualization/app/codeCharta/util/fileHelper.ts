@@ -43,10 +43,7 @@ function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): 
 
 function getAttributeDescriptors(attributeDescriptors: AttributeDescriptors): AttributeDescriptors {
 	if (!attributeDescriptors) {
-		return {
-			//TODO: delete
-			testKeyFileHelper52: "testValueFileHelper52"
-		}
+		return {}
 	}
 
 	return attributeDescriptors

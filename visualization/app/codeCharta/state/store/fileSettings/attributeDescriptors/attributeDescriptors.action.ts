@@ -21,6 +21,10 @@ export function setAttributeDescriptors(
 }
 
 export const defaultAttributeDescriptors: AttributeDescriptors = {
-	//TODO: delete
-	testDefaultKeyAttrDescrAction36: "testDefaultValueAttrDescriptorsAction36"
+	DefaultAttributeDescriptor: {
+		description: "The default Attribute Descriptor that is generated at the beginning.",
+		hintLowValue: "",
+		hintHighValue: "",
+		link: "./app/codeCharta/state/store/fileSettings/attributeDescriptors/attributeDescriptors.action.ts"
+	}
 }
