@@ -22,6 +22,7 @@ export function setAttributeDescriptors(
 
 export const defaultAttributeDescriptors: AttributeDescriptors = {
 	DefaultAttributeDescriptor: {
+		title: "Default Attribute Descriptor",
 		description: "The default Attribute Descriptor that is generated at the beginning.",
 		hintLowValue: "",
 		hintHighValue: "",

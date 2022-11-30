@@ -192,6 +192,7 @@ export interface AttributeDescriptors {
 }
 
 export interface AttributeDescriptor {
+	title: string
 	description: string
 	hintLowValue: string
 	hintHighValue: string

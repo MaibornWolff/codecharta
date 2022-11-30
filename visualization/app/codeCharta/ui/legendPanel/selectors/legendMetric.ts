@@ -6,9 +6,9 @@ export type LegendMetric = {
 	description: string
 }
 
-export function getDescription(metric: string, attributeDescriptors: AttributeDescriptors) {
-	if (attributeDescriptors[metric] !== undefined && attributeDescriptors[metric].description !== "") {
-		return attributeDescriptors[metric].description
+export function getShortDescription(metric: string, attributeDescriptors: AttributeDescriptors) {
+	if (attributeDescriptors[metric]?.title !== undefined && attributeDescriptors[metric].title !== "") {
+		return attributeDescriptors[metric].title
 	}
 
 	//Fallback Description can still return null
