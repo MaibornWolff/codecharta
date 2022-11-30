@@ -3,10 +3,10 @@ import { createSelector } from "../../../state/angular-redux/createSelector"
 import { edgeMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { CcState } from "../../../state/store/store"
-import { metricDescriptions } from "../../../util/metric/metricDescriptions"
-import { LegendMetric } from "./legendMetric"
+import { getDescription, LegendMetric } from "./legendMetric"
+import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributesDescriptors.selector"
 
-export const _getLegendEdgeMetric = (edgeMetric: string, edgeMetricDatas: EdgeMetricData[]) => {
+export const _getLegendEdgeMetric = (edgeMetric: string, edgeMetricDatas: EdgeMetricData[], attributeDescriptors) => {
 	const edgeMetricData = edgeMetricDatas.find(someEdgeMetricData => {
 		return someEdgeMetricData.name === edgeMetric
 	})
@@ -17,11 +17,11 @@ export const _getLegendEdgeMetric = (edgeMetric: string, edgeMetricDatas: EdgeMe
 
 	return {
 		metricName: edgeMetric,
-		description: metricDescriptions.get(edgeMetric)
+		description: getDescription(edgeMetric, attributeDescriptors)
 	}
 }
 
 export const legendEdgeMetricSelector: (state: CcState) => LegendMetric | undefined = createSelector(
-	[edgeMetricSelector, edgeMetricDataSelector],
+	[edgeMetricSelector, edgeMetricDataSelector, attributeDescriptorsSelector],
 	_getLegendEdgeMetric
 )
