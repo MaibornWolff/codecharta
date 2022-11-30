@@ -83,7 +83,7 @@ const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType
 const DEFAULT_SETTINGS = {
 	fileSettings: {
 		attributeTypes: { nodes: {}, edges: {} },
-		attributeDescriptors: { test: {} },
+		attributeDescriptors: {},
 		blacklist: [],
 		edges: VALID_EDGES,
 		markedPackages: []
@@ -941,7 +941,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 	settings: {
 		fileSettings: {
 			attributeTypes: { nodes: {}, edges: {} },
-			attributeDescriptors: { test: {} },
+			attributeDescriptors: {},
 			blacklist: [],
 			edges: [],
 			markedPackages: []
@@ -1044,7 +1044,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 	settings: {
 		fileSettings: {
 			attributeTypes: { nodes: {}, edges: {} },
-			attributeDescriptors: { test: {} },
+			attributeDescriptors: {},
 			blacklist: [],
 			edges: [],
 			markedPackages: []
@@ -1681,9 +1681,7 @@ export const STATE: State = {
 			},
 			edges: {}
 		},
-		attributeDescriptors: {
-			test: {}
-		},
+		attributeDescriptors: {},
 		blacklist: [],
 		edges: VALID_EDGES,
 		markedPackages: []
@@ -1821,7 +1819,7 @@ export const DEFAULT_STATE: State = {
 	},
 	fileSettings: {
 		attributeTypes: { nodes: {}, edges: {} },
-		attributeDescriptors: { test: {} },
+		attributeDescriptors: {},
 		blacklist: [],
 		edges: [],
 		markedPackages: []

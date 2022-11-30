@@ -44,13 +44,12 @@ function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): 
 function getAttributeDescriptors(attributeDescriptors: AttributeDescriptors): AttributeDescriptors {
 	if (!attributeDescriptors) {
 		return {
-			test: { testKeyFileHelper52: "testValueFileHelper52" }
+			//TODO: delete
+			testKeyFileHelper52: "testValueFileHelper52"
 		}
 	}
 
-	return {
-		test: attributeDescriptors.test ?? { testKeyFileHelper52: "testValueFileHelper52" }
-	}
+	return attributeDescriptors
 }
 
 function potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {

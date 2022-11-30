@@ -18,9 +18,9 @@ function getDescription(metric: string, attributeDescriptors: AttributeDescripto
 	// eslint-disable-next-line no-console
 	console.log(attributeDescriptors)
 	// eslint-disable-next-line no-console
-	console.log(attributeDescriptors.test["testDefaultKeyAttrDescrAction36"])
-	if (attributeDescriptors.test["testDefaultKeyAttrDescrAction36"] !== undefined) {
-		return attributeDescriptors.test["testDefaultKeyAttrDescrAction36"]
+	console.log(attributeDescriptors["testDefaultKeyAttrDescrAction36"])
+	if (attributeDescriptors["testDefaultKeyAttrDescrAction36"] !== undefined) {
+		return attributeDescriptors["testDefaultKeyAttrDescrAction36"]
 	}
 	//Fallback Description
 	return metricDescriptions.get(metric)

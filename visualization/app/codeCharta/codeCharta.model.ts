@@ -188,7 +188,7 @@ export interface AttributeTypes {
 }
 
 export interface AttributeDescriptors {
-	test?: { [key: string]: string }
+	[key: string]: string
 }
 
 export enum AttributeTypeValue {

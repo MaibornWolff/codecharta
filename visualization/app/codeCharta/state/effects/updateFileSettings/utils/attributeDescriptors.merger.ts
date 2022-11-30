@@ -3,14 +3,10 @@ import { AttributeDescriptors } from "../../../../codeCharta.model"
 export function getMergedAttributeDescriptors(allAttributeDescriptors: AttributeDescriptors[]): AttributeDescriptors {
 	const attributeDescriptorsTest = {}
 
-	//TODO:implement
+	//TODO; implement
 	if (!allAttributeDescriptors) {
-		return {
-			test: attributeDescriptorsTest
-		}
+		return attributeDescriptorsTest
 	}
 
-	return {
-		test: attributeDescriptorsTest
-	}
+	return attributeDescriptorsTest
 }

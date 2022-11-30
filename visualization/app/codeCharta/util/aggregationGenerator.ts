@@ -47,7 +47,7 @@ export class AggregationGenerator {
 					edges: [],
 					blacklist: [],
 					attributeTypes: { nodes: {}, edges: {} },
-					attributeDescriptors: { test: {} },
+					attributeDescriptors: {},
 					markedPackages: []
 				}
 			}

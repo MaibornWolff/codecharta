@@ -1,8 +1,7 @@
 import { AttributeDescriptors, CCAction } from "../../../../codeCharta.model"
 
 export enum AttributeDescriptorsActions {
-	SET_ATTRIBUTE_DESCRIPTORS = "SET_ATTRIBUTE_DESCRIPTORS",
-	UPDATE_ATTRIBUTE_DESCRIPTOR = "UPDATE_ATTRIBUTE_DESCRIPTOR"
+	SET_ATTRIBUTE_DESCRIPTORS = "SET_ATTRIBUTE_DESCRIPTORS"
 }
 
 export interface SetAttributeDescriptorsAction extends CCAction {
@@ -10,12 +9,7 @@ export interface SetAttributeDescriptorsAction extends CCAction {
 	payload: AttributeDescriptors
 }
 
-export interface UpdateAttributeDescriptorAction extends CCAction {
-	type: AttributeDescriptorsActions.UPDATE_ATTRIBUTE_DESCRIPTOR
-	payload: { category: string; name: string; type: string }
-}
-
-export type AttributeDescriptorsAction = SetAttributeDescriptorsAction | UpdateAttributeDescriptorAction
+export type AttributeDescriptorsAction = SetAttributeDescriptorsAction
 
 export function setAttributeDescriptors(
 	attributeDescriptors: AttributeDescriptors = defaultAttributeDescriptors
@@ -27,5 +21,6 @@ export function setAttributeDescriptors(
 }
 
 export const defaultAttributeDescriptors: AttributeDescriptors = {
-	test: { testDefaultKeyAttrDescrAction36: "testDefaultValueAttrDescriptorsAction36" }
+	//TODO: delete
+	testDefaultKeyAttrDescrAction36: "testDefaultValueAttrDescriptorsAction36"
 }
