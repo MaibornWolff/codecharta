@@ -26,11 +26,6 @@ export function setAttributeDescriptors(
 	}
 }
 
-export function updateAttributeDescriptor(category: string, name: string, type: string): UpdateAttributeDescriptorAction {
-	return {
-		type: AttributeDescriptorsActions.UPDATE_ATTRIBUTE_DESCRIPTOR,
-		payload: { category, name, type }
-	}
+export const defaultAttributeDescriptors: AttributeDescriptors = {
+	test: { testDefaultKeyAttrDescrAction36: "testDefaultValueAttrDescriptorsAction36" }
 }
-
-export const defaultAttributeDescriptors: AttributeDescriptors = { test: { testKeyAttrDescrAction36: "testValueAttrDescriptorsAction36" } }

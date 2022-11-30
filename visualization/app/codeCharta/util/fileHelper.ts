@@ -44,7 +44,7 @@ function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): 
 function getAttributeDescriptors(attributeDescriptors: AttributeDescriptors): AttributeDescriptors {
 	if (!attributeDescriptors) {
 		return {
-			test: { testKey2: "testValue2" }
+			test: { testKeyFileHelper52: "testValueFileHelper52" }
 		}
 	}
 

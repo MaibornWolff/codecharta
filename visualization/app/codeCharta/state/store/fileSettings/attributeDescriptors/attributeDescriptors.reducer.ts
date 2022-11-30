@@ -18,6 +18,8 @@ export function attributeDescriptors(state = setAttributeDescriptors().payload, 
 }
 
 function updateAttributeDescriptor(state: AttributeDescriptors, action: UpdateAttributeDescriptorAction): AttributeDescriptors {
+	// eslint-disable-next-line no-console
+	console.log("updateAttributeDescriptor 21")
 	return {
 		...state,
 		[action.payload.category]: { ...state[action.payload.category], [action.payload.name]: action.payload.type }
