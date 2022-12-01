@@ -17,6 +17,6 @@ export class FloorLabelHelper {
 	}
 
 	static isLabelNode(node: Node) {
-		return !node.isLeaf && node.mapNodeDepth < 3 && node.fitForFolderLabel === true
+		return !node.isLeaf && node.mapNodeDepth < 3
 	}
 }
