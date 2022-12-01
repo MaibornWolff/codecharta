@@ -82,7 +82,7 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     descriptors["test_errors"] = AttributeDescriptor(title = "Number of Test Errors", description = "Number of unit tests that have failed", link = metricLink)
     descriptors["test_failures"] = AttributeDescriptor(title = "Number of Test Failures", description = "Number of unit tests that have failed with an unexpected exception", link = metricLink)
     descriptors["test_success_density"] = AttributeDescriptor(title = "Test Success Density", description = "Ratio between successful tests and all tests", link = metricLink)
-    descriptors["tests"] = AttributeDescriptor(title = "Number of Test", description = "Number of unit tests", link = metricLink)
+    descriptors["tests"] = AttributeDescriptor(title = "Number of Tests", description = "Number of unit tests", link = metricLink)
     descriptors["uncovered_conditions"] = AttributeDescriptor(title = "Uncovered Conditions", description = "Total number of uncovered conditions", link = metricLink)
     descriptors["uncovered_lines"] = AttributeDescriptor(title = "Uncovered Lines", description = "Total number of uncovered lines", link = metricLink)
     descriptors["violations"] = AttributeDescriptor(title = "Number of Violations", description = "Total count of issues in all states", link = metricLink)
