@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Reverted PR [#3177](https://github.com/MaibornWolff/codecharta/pull/3177) that introduced a rendering bug, where buildings sizes were not proportional to their area value [#3159](https://github.com/MaibornWolff/codecharta/pull/3159)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Add attribute descriptors to SonarImporter [#3149](https://github.com/MaibornWolff/codecharta/pull/3149)
