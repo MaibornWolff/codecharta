@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Reverted PR [#3177](https://github.com/MaibornWolff/codecharta/pull/3177) that introduced a rendering bug, where buildings sizes were not proportional to their area value [#3159](https://github.com/MaibornWolff/codecharta/pull/3159)
+-   Reverted PR [#3077](https://github.com/MaibornWolff/codecharta/pull/3077) that introduced a rendering bug, where buildings sizes were not proportional to their area value [#3159](https://github.com/MaibornWolff/codecharta/pull/3159)
 
 ### Chore 👨‍💻 👩‍💻
 
