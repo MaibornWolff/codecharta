@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import mu.KotlinLogging
 
 class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) : ProjectBuilder() {
@@ -21,13 +22,26 @@ class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes)
             i = i.inc()
             logger.info { "$i. node of ${metricGardenerNodes.metricGardenerNodes.size} MetricGardenerNodes processed" }
         }
-        addAttributeDescriptions(getAttributeDescriptors())
+        withMetricTranslator(metricGardenReplacement)
+        addAttributeDescriptions(
+            getAttributeDescriptors().mapKeys { metricGardenReplacement.translate(it.key) }
+        )
         return super.build()
     }
 
     fun generateCodeChartaFileNode(metricGardenerNode: MetricGardenerNode): MutableNode {
         return MutableNode(extractFileNameFromPath(metricGardenerNode.name), NodeType.File, metricGardenerNode.metrics, "", setOf())
     }
+
+    private val metricGardenReplacement: MetricNameTranslator
+        get() {
+            val prefix = ""
+            val replacementMap = mutableMapOf<String, String>()
+            replacementMap["lines_of_code"] = "loc"
+            replacementMap["real_lines_of_code"] = "rloc"
+
+            return MetricNameTranslator(replacementMap.toMap(), prefix)
+        }
 
     private fun extractFileNameFromPath(path: String?): String {
         if (!path.isNullOrBlank()) {

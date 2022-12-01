@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 -   Add attribute descriptors to SonarImporter [#3149](https://github.com/MaibornWolff/codecharta/pull/3149)
+-   Add title field to attribute descriptors [#3158](https://github.com/MaibornWolff/codecharta/pull/3158)
 
 ## [1.112.0] - 2022-11-25
 
