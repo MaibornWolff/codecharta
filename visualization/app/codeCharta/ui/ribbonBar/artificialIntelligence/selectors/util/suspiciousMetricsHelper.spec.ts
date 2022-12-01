@@ -5,18 +5,18 @@ import {
 	MetricValuesByLanguage,
 	setMetricValuesByLanguage
 } from "./suspiciousMetricsHelper"
-import { CodeMapNode, ColorRange, NodeType } from "../../../../../codeCharta.model"
-import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
-import { metricDescriptions } from "../../../../../util/metric/metricDescriptions"
+import {CodeMapNode, ColorRange, NodeType} from "../../../../../codeCharta.model"
+import {metricThresholdsByLanguage} from "./artificialIntelligence.metricThresholds"
+import {metricTitles} from "../../../../../util/metric/metricTitles"
 
 describe("suspiciousMetricsHelper", () => {
 	it("should set metrics by language when node has attributes", () => {
 		const actualMetricValuesByLanguage: MetricValuesByLanguage = {}
 		const nodes: CodeMapNode[] = [
-			{ name: "javaFile1", type: NodeType.FILE, attributes: { rloc: 1, mcc: 5 } },
-			{ name: "javaFile2", type: NodeType.FILE, attributes: { rloc: 10, mcc: 15 } },
-			{ name: "tsFile1", type: NodeType.FILE, attributes: { rloc: 20, mcc: 25 } },
-			{ name: "tsFile2", type: NodeType.FILE, attributes: { rloc: 30, mcc: 35 } }
+			{name: "javaFile1", type: NodeType.FILE, attributes: {rloc: 1, mcc: 5}},
+			{name: "javaFile2", type: NodeType.FILE, attributes: {rloc: 10, mcc: 15}},
+			{name: "tsFile1", type: NodeType.FILE, attributes: {rloc: 20, mcc: 25}},
+			{name: "tsFile2", type: NodeType.FILE, attributes: {rloc: 30, mcc: 35}}
 		]
 		const programmingLanguages: string[] = ["java", "java", "ts", "ts"]
 
@@ -85,8 +85,8 @@ describe("suspiciousMetricsHelper", () => {
 		const actualAssessmentResults: MetricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, "java")
 
 		expect(actualAssessmentResults.unsuspiciousMetrics).toEqual([
-			`mcc (${metricDescriptions.get("mcc")})`,
-			`rloc (${metricDescriptions.get("rloc")})`
+			`mcc (${metricTitles.get("mcc")})`,
+			`rloc (${metricTitles.get("rloc")})`
 		])
 	})
 

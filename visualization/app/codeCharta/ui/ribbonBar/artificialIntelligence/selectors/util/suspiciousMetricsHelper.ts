@@ -1,6 +1,6 @@
-import { CodeMapNode, ColorRange } from "../../../../../codeCharta.model"
-import { metricDescriptions } from "../../../../../util/metric/metricDescriptions"
-import { getAssociatedMetricThresholds } from "./getMetricThresholds"
+import {CodeMapNode, ColorRange} from "../../../../../codeCharta.model"
+import {metricTitles} from "../../../../../util/metric/metricTitles"
+import {getAssociatedMetricThresholds} from "./getMetricThresholds"
 
 interface MetricValues {
 	[metric: string]: number[]
@@ -64,7 +64,7 @@ function compareSuspiciousMetricSuggestionLinks(a: MetricSuggestionParameters, b
 }
 
 function getNameAndDescriptionOfMetric(metricName: string): string {
-	const metricDescription = metricDescriptions.get(metricName)
+	const metricDescription = metricTitles.get(metricName)
 	if (metricDescription) {
 		return `${metricName} (${metricDescription})`
 	}

@@ -2,7 +2,7 @@
 This file contains descriptions of the metrics
 */
 
-export const metricDescriptions: Map<string, string> = new Map([
+export const metricTitles: Map<string, string> = new Map([
 	["loc", "lines of code"],
 	["rloc", "real lines of code"],
 	["comment_lines", "number of code lines with comments"],

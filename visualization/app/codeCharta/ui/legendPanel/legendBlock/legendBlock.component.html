@@ -1,7 +1,13 @@
-<div *ngIf="legendMetric.description" class="legend-block">
-	{{ metricFor }} metric (<span class="bold">{{ legendMetric.metricName }}</span
-	>: {{ legendMetric.description }})
-</div>
-<div *ngIf="!legendMetric.description" class="legend-block">
-	{{ metricFor }} metric: <span class="bold">{{ legendMetric.metricName }}</span>
-</div>
+<ng-container *ngIf="legendMetric.title && legendMetric.description; then showTitle; else onlyShowName" class="legend-block"></ng-container>
+
+<ng-template #showTitle>
+	<div title="{{ legendMetric.metricName + ': ' + legendMetric.description }}">
+		{{ metricFor }} metric (<span class="bold">{{ legendMetric.metricName }}</span
+		>: {{ legendMetric.title }})
+	</div>
+</ng-template>
+<ng-template #onlyShowName>
+	<div>
+		{{ metricFor }} metric: <span class="bold">{{ legendMetric.metricName }}</span>
+	</div>
+</ng-template>
