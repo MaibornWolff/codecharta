@@ -9,7 +9,6 @@ import {
 	MetricMinMax,
 	selectedColorMetricDataSelector
 } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
-import { FOLDER_LABEL_TOO_SMALL_PARENT, FOLDER_LABEL_TOO_SMALL_ROUTE } from "./treeMapGenerator"
 
 export const treeMapSize = 250
 
@@ -27,7 +26,7 @@ function countNodes(node: { children?: CodeMapNode[] }) {
 	return count
 }
 
-// TODO this function exists twice in the code - please refactor it.
+// TODO this function exists twice in the code - please refactore it.
 function calculateSize(node: CodeMapNode, metricName: string) {
 	let totalSize = node.attributes[metricName] || 0
 
@@ -86,11 +85,10 @@ function buildNodeFrom(
 	heightScale: number,
 	maxHeight: number,
 	state: State,
-	isDeltaState: boolean,
-	isFixedFolder?: boolean
+	isDeltaState: boolean
 ): Node {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-	const { x0, x1, y0, y1, data, value, parent } = squaredNode
+	const { x0, x1, y0, y1, data } = squaredNode
 	const isNodeLeaf = isLeaf(squaredNode)
 	const flattened = isNodeFlat(data, state)
 	const heightValue = getHeightValue(state, squaredNode, maxHeight, flattened)
@@ -98,17 +96,9 @@ function buildNodeFrom(
 	const height = Math.abs(
 		isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) * mapSizeResolutionScaling : FOLDER_HEIGHT
 	)
-	const width = x1 - x0 || 0
-
-	const length = y1 - y0 || 0
-	const z0 = depth * FOLDER_HEIGHT || 0
-
-	const fitForFolderLabel =
-		data.type === "Folder" &&
-		((parent !== null &&
-			value / parent.value > FOLDER_LABEL_TOO_SMALL_PARENT &&
-			value / getRootNode(squaredNode).value > FOLDER_LABEL_TOO_SMALL_ROUTE) ||
-			isFixedFolder)
+	const width = x1 - x0
+	const length = y1 - y0
+	const z0 = depth * FOLDER_HEIGHT
 
 	return {
 		name: data.name,
@@ -131,19 +121,10 @@ function buildNodeFrom(
 		link: data.link,
 		markingColor: getMarkingColor(data, state.fileSettings.markedPackages),
 		flat: flattened,
-		fitForFolderLabel,
 		color: getBuildingColor(data, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), treeMapSize),
 		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), treeMapSize)
 	}
-}
-
-function getRootNode(hierarchyNode: HierarchyRectangularNode<CodeMapNode>) {
-	let rootCandidate = hierarchyNode
-	while (rootCandidate.parent !== null) {
-		rootCandidate = rootCandidate.parent
-	}
-	return rootCandidate
 }
 
 export function getHeightValue(state: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {

@@ -1311,142 +1311,6 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_NESTED_FOLDER_ONE_LEAF: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	path: "/root",
-	isExcluded: false,
-	isFlattened: false,
-	children: [
-		{
-			name: "Parent Leaf",
-			type: NodeType.FOLDER,
-			attributes: {},
-			isExcluded: false,
-			isFlattened: false,
-			children: [
-				{
-					name: "big leaf.jpg",
-					type: NodeType.FILE,
-					path: "/root/Parent Leaf/big leaf.jpg",
-					attributes: { rloc: 10, functions: 10, mcc: 1 },
-					isExcluded: false,
-					isFlattened: false
-				}
-			]
-		}
-	]
-}
-
-export const VALID_NODE_NESTED_FOLDER_TWO_LEAVES: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	path: "/root",
-	isExcluded: false,
-	isFlattened: false,
-	children: [
-		{
-			name: "Parent Leaf",
-			type: NodeType.FOLDER,
-			attributes: {},
-			isExcluded: false,
-			isFlattened: false,
-			children: [
-				{
-					name: "big leaf.jpg",
-					type: NodeType.FILE,
-					path: "/root/Parent Leaf/big leaf.jpg",
-					attributes: { rloc: 100, functions: 10, mcc: 1 },
-					isExcluded: false,
-					isFlattened: false
-				},
-				{
-					name: "small_leaf.jpg",
-					type: NodeType.FILE,
-					path: "/root/Parent Leaf/small_leaf.jpg",
-					attributes: { rloc: 10, functions: 10, mcc: 1 },
-					isExcluded: false,
-					isFlattened: false
-				}
-			]
-		}
-	]
-}
-
-export const VALID_NODE_NESTED_FOLDER_LEAVES_DIFFERENT_NEST_LEVELS: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	path: "/root",
-	isExcluded: false,
-	isFlattened: false,
-	children: [
-		{
-			name: "Parent Leaf",
-			type: NodeType.FOLDER,
-			attributes: {},
-			isExcluded: false,
-			isFlattened: false,
-			children: [
-				{
-					name: "inside_leaf.jpg",
-					type: NodeType.FILE,
-					path: "/root/Parent Leaf/inside_leaf.jpg",
-					attributes: { rloc: 100, functions: 10, mcc: 1 },
-					isExcluded: false,
-					isFlattened: false
-				}
-			]
-		},
-		{
-			name: "outside_leaf.jpg",
-			type: NodeType.FILE,
-			path: "/root/big leaf.jpg",
-			attributes: { rloc: 10, functions: 10, mcc: 1 },
-			isExcluded: false,
-			isFlattened: false
-		}
-	]
-}
-
-export const VALID_NODE_NESTED_FOLDER_LEAVES_HUGE: CodeMapNode = {
-	name: "root",
-	attributes: {},
-	type: NodeType.FOLDER,
-	path: "/root",
-	isExcluded: false,
-	isFlattened: false,
-	children: [
-		{
-			name: "Parent Leaf",
-			type: NodeType.FOLDER,
-			attributes: {},
-			isExcluded: false,
-			isFlattened: false,
-			children: [
-				{
-					name: "inside_leaf.jpg",
-					type: NodeType.FILE,
-					path: "/root/Parent Leaf/inside_leaf.jpg",
-					attributes: { rloc: 1_000_000_000, functions: 10, mcc: 1 },
-					isExcluded: false,
-					isFlattened: false
-				}
-			]
-		},
-		{
-			name: "outside_leaf.jpg",
-			type: NodeType.FILE,
-			path: "/root/big leaf.jpg",
-			attributes: { rloc: 100_000_000, functions: 10, mcc: 1 },
-			isExcluded: false,
-			isFlattened: false
-		}
-	]
-}
-
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		...DEFAULT_FILE_META,
@@ -1894,7 +1758,6 @@ export const TEST_NODE_ROOT: Node = {
 	link: "NO_LINK",
 	markingColor: "0x000000",
 	flat: false,
-	fitForFolderLabel: false,
 	color: "#69AE40",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
@@ -2194,7 +2057,6 @@ export const TEST_NODE_LEAF: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
-	fitForFolderLabel: false,
 	color: "#ddcc00",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
@@ -2219,7 +2081,6 @@ export const TEST_NODE_FOLDER: Node = {
 	path: "/root",
 	flat: false,
 	link: "NO_LINK",
-	fitForFolderLabel: false,
 	color: "#ddcc00",
 	markingColor: "0xFFFFFF",
 	incomingEdgePoint: new Vector3(),
@@ -2249,7 +2110,6 @@ export const INCOMING_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
-	fitForFolderLabel: false,
 	color: "#820E0E",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
@@ -2278,7 +2138,6 @@ export const OUTGOING_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
-	fitForFolderLabel: false,
 	color: "#AABBCC",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
@@ -2305,7 +2164,6 @@ export const DIFFERENT_NODE: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
-	fitForFolderLabel: false,
 	color: "#AABBCC",
 	incomingEdgePoint: new Vector3(1, 2, 3),
 	outgoingEdgePoint: new Vector3(1, 2, 3)
