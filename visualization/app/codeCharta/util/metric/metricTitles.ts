@@ -10,7 +10,7 @@ export const metricTitles: Map<string, string> = new Map([
 	["avgCommits", "Average Number of Commits from this file"],
 	["functions", "Number of Functions"],
 	["pairingRate", "Pairing Rate of selected building"],
-	["unary", "-"],
+	["unary", "unary"],
 	["line_coverage", "Number of Code Lines covered by tests"],
 	["sonar_code_smells", "Number of Smells Sonar has identified"],
 	["avg_code_churn", "Average Number of Lines added or removed from this file"],
