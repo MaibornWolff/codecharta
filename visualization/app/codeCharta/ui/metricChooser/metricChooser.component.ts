@@ -1,11 +1,11 @@
 import "./metricChooser.component.scss"
-import {Component, ElementRef, Inject, Input, OnInit, ViewChild} from "@angular/core"
-import {Store} from "../../state/angular-redux/store"
-import {nodeMetricDataSelector} from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
-import {Observable} from "rxjs"
-import {EdgeMetricData, NodeMetricData} from "../../codeCharta.model"
-import {edgeMetricDataSelector} from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
-import {metricTitles} from "../../util/metric/metricTitles"
+import { Component, ElementRef, Inject, Input, OnInit, ViewChild } from "@angular/core"
+import { Store } from "../../state/angular-redux/store"
+import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { Observable } from "rxjs"
+import { EdgeMetricData, NodeMetricData } from "../../codeCharta.model"
+import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
+import { metricTitles } from "../../util/metric/metricTitles"
 
 type MetricChooserType = "node" | "edge"
 
