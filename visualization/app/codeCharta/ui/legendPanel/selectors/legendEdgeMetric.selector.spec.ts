@@ -12,7 +12,8 @@ describe("_getLegendEdgeMetric", () => {
 	it("should get existing legendEdgeMetric", () => {
 		expect(_getLegendEdgeMetric("rloc", [{ name: "rloc", maxValue: 10, minValue: 0 }], undefined)).toEqual({
 			metricName: "rloc",
-			description: "real lines of code"
+			title: "Real Lines of Code",
+			description: undefined
 		})
 	})
 })

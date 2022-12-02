@@ -53,9 +53,9 @@ describe("LegendPanelController", () => {
 		expect(areDeltaEntriesShown).toBe(false)
 
 		const metricDescriptions = container.querySelectorAll("cc-legend-block")
-		expect(metricDescriptions[0].textContent).toMatch("Area metric (loc: lines of code)")
-		expect(metricDescriptions[1].textContent).toMatch("Height metric (mcc: cyclomatic complexity)")
-		expect(metricDescriptions[2].textContent).toMatch("Color metric (rloc: real lines of code)")
+		expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
+		expect(metricDescriptions[1].textContent).toMatch("Height metric: Cyclomatic Complexity (mcc)")
+		expect(metricDescriptions[2].textContent).toMatch("Color metric: Real Lines of Code (rloc)")
 	})
 
 	it("should display legend for delta mode", async () => {

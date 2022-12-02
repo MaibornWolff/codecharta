@@ -5,18 +5,18 @@ import {
 	MetricValuesByLanguage,
 	setMetricValuesByLanguage
 } from "./suspiciousMetricsHelper"
-import {CodeMapNode, ColorRange, NodeType} from "../../../../../codeCharta.model"
-import {metricThresholdsByLanguage} from "./artificialIntelligence.metricThresholds"
-import {metricTitles} from "../../../../../util/metric/metricTitles"
+import { CodeMapNode, ColorRange, NodeType } from "../../../../../codeCharta.model"
+import { metricThresholdsByLanguage } from "./artificialIntelligence.metricThresholds"
+import { metricTitles } from "../../../../../util/metric/metricTitles"
 
 describe("suspiciousMetricsHelper", () => {
 	it("should set metrics by language when node has attributes", () => {
 		const actualMetricValuesByLanguage: MetricValuesByLanguage = {}
 		const nodes: CodeMapNode[] = [
-			{name: "javaFile1", type: NodeType.FILE, attributes: {rloc: 1, mcc: 5}},
-			{name: "javaFile2", type: NodeType.FILE, attributes: {rloc: 10, mcc: 15}},
-			{name: "tsFile1", type: NodeType.FILE, attributes: {rloc: 20, mcc: 25}},
-			{name: "tsFile2", type: NodeType.FILE, attributes: {rloc: 30, mcc: 35}}
+			{ name: "javaFile1", type: NodeType.FILE, attributes: { rloc: 1, mcc: 5 } },
+			{ name: "javaFile2", type: NodeType.FILE, attributes: { rloc: 10, mcc: 15 } },
+			{ name: "tsFile1", type: NodeType.FILE, attributes: { rloc: 20, mcc: 25 } },
+			{ name: "tsFile2", type: NodeType.FILE, attributes: { rloc: 30, mcc: 35 } }
 		]
 		const programmingLanguages: string[] = ["java", "java", "ts", "ts"]
 
@@ -64,7 +64,7 @@ describe("suspiciousMetricsHelper", () => {
 		}
 		const expectedMetricAssessmentResults: MetricAssessmentResults = {
 			suspiciousMetrics: new Map<string, ColorRange>([["rloc", expectedColorRange]]),
-			unsuspiciousMetrics: ["functions (number of functions)"],
+			unsuspiciousMetrics: ["functions (Number of Functions)"],
 			outliersThresholds: new Map<string, number>([["rloc", metricThresholdsByLanguage.java.rloc.percentile90]]),
 			untrackedMetrics: []
 		}
@@ -136,7 +136,7 @@ describe("suspiciousMetricsHelper", () => {
 
 		expect(actualAssessmentResults).toEqual({
 			suspiciousMetrics: new Map<string, ColorRange>(),
-			unsuspiciousMetrics: ["rloc (real lines of code)", "cognitive_complexity"],
+			unsuspiciousMetrics: ["rloc (Real Lines of Code)", "cognitive_complexity"],
 			outliersThresholds: new Map<string, number>(),
 			untrackedMetrics: []
 		})
