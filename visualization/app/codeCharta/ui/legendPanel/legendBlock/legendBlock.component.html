@@ -5,14 +5,12 @@
 
 <ng-template #showTitleAndDescription>
 	<div title="{{ legendMetric.metricName + ': ' + legendMetric.description }}">
-		{{ metricFor }} metric (<span class="bold">{{ legendMetric.metricName }}</span
-		>: {{ legendMetric.title }})
+		{{ metricFor }} metric: <span class="bold">{{ legendMetric.title }}</span> ({{ legendMetric.metricName }})
 	</div>
 </ng-template>
 <ng-template #showTitle>
 	<div title="{{ legendMetric.metricName }}">
-		{{ metricFor }} metric (<span class="bold">{{ legendMetric.metricName }}</span
-		>: {{ legendMetric.title }})
+		{{ metricFor }} metric: <span class="bold">{{ legendMetric.title }}</span> ({{ legendMetric.metricName }})
 	</div>
 </ng-template>
 <ng-template #onlyShowName>
