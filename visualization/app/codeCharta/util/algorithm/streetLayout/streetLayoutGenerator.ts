@@ -10,7 +10,6 @@ import { getMapResolutionScaleFactor, isPathBlacklisted, isLeaf } from "../../co
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
 import { treeMapSize } from "../treeMapLayout/treeMapHelper"
-import { INITIAL_PADDING } from "../treeMapLayout/treeMapGenerator"
 
 const MARGIN_SCALING_FACTOR = 0.02
 const HEIGHT_SCALING_FACTOR = 0.1
@@ -28,7 +27,7 @@ export class StreetLayoutGenerator {
 		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
 		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
-		const margin = ((INITIAL_PADDING * state.dynamicSettings.margin) / 100) * MARGIN_SCALING_FACTOR
+		const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
 		const layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
 
 		return layoutNodes.map(streetLayoutNode => {

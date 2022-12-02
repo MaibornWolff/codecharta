@@ -11,7 +11,6 @@ describe("FloorLabelDrawer", () => {
 	function createFakeNode(name: string, width: number, length: number, isLeaf: boolean, mapNodeDepth?: number): Node {
 		return {
 			attributes: undefined,
-			fitForFolderLabel: true,
 			color: "",
 			depth: 0,
 			edgeAttributes: {},

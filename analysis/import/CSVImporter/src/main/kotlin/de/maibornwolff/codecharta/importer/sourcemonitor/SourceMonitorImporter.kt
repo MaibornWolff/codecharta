@@ -57,7 +57,7 @@ class SourceMonitorImporter(
             replacementMap["Checkpoint Name"] = ""
             replacementMap["Created On"] = ""
             replacementMap["Lines"] = "loc"
-            replacementMap["Statements"] = "statements"
+            replacementMap["Statements"] = "rloc"
             replacementMap["Classes and Interfaces"] = "classes"
             replacementMap["Methods per Class"] = "functions_per_class"
             replacementMap["Average Statements per Method"] = "average_statements_per_function"

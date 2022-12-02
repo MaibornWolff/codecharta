@@ -346,7 +346,6 @@ export interface Node {
 	markingColor: string | void
 	flat: boolean
 	color: string
-	fitForFolderLabel: boolean | undefined
 	incomingEdgePoint: Vector3
 	outgoingEdgePoint: Vector3
 }
