@@ -15,9 +15,9 @@ class JSONMetricWriterTest {
     fun `file hierarchy and names are correct`() {
         val expectedResultFile = File("src/test/resources/jsonMetricHierarchy.json").absoluteFile
         val metrics = ProjectMetrics()
-        metrics.addFile("foo/bar.java")
-        metrics.addFile("foo/foo2/bar2.cpp")
-        metrics.addFile("foo3/bar.java")
+        addFileInProject(metrics, "foo/bar.java")
+        addFileInProject(metrics, "foo/foo2/bar2.cpp")
+        addFileInProject(metrics, "foo3/bar.java")
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(result, false).generate(metrics, setOf())
@@ -58,5 +58,9 @@ class JSONMetricWriterTest {
         Assertions.assertThat(leaf["type"]).isEqualTo("File")
         Assertions.assertThat(leaf["name"]).isEqualTo("foo.java")
         Assertions.assertThat(leaf.getJSONObject("attributes").length()).isEqualTo(2)
+    }
+
+    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
+        currentProject.projectMetrics[file] = FileMetricMap()
     }
 }

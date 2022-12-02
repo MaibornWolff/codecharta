@@ -23,8 +23,8 @@ class CSVMetricWriterTest {
     @Test
     fun `paths for files are correct`() {
         val metrics = ProjectMetrics()
-        metrics.addFile("myFile.java")
-        metrics.addFile("foo/bar/myFile.java")
+        addFileInProject(metrics, "myFile.java")
+        addFileInProject(metrics, "foo/bar/myFile.java")
         val result = ByteArrayOutputStream()
 
         CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
@@ -73,5 +73,9 @@ class CSVMetricWriterTest {
         CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, allMetrics)
 
         assertThat(result.toString()).isEqualTo("file,foo,bar\nbla,,\n")
+    }
+
+    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
+        currentProject.projectMetrics[file] = FileMetricMap()
     }
 }
