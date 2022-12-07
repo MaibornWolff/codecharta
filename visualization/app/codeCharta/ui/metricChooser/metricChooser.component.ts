@@ -24,14 +24,11 @@ export class MetricChooserComponent implements OnInit {
 	@Input() isDisabled = false
 	@ViewChild("searchTermInput") searchTermInput: ElementRef<HTMLInputElement>
 	searchTerm = ""
-	nodeMetricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
 	metricDataWithDescription$: Observable<MetricChooserMetric[]>
 
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
-		this.nodeMetricData$ = this.store.select(this.type === "node" ? nodeMetricDataSelector : edgeMetricDataSelector)
-
 		this.metricDataWithDescription$ = this.store.select(
 			createSelector(
 				[attributeDescriptorsSelector, nodeMetricDataSelector, edgeMetricDataSelector],
