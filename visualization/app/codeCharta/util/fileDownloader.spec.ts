@@ -1,6 +1,6 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { DownloadableSetting, FileDownloader } from "./fileDownloader"
-import { AttributeTypeValue, BlacklistType, CodeMapNode, FileMeta, FileSettings } from "../codeCharta.model"
+import { BlacklistType, CodeMapNode, FileMeta, FileSettings } from "../codeCharta.model"
 import {
 	TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
 	TEST_ATTRIBUTE_TYPES,
@@ -78,10 +78,23 @@ describe("fileDownloader", () => {
 			downloadSettings = ["AttributeTypes"]
 
 			const expected = klona(TEST_FILE_DATA_DOWNLOADED)
-			expected.attributeTypes = {
-				nodes: { test: AttributeTypeValue.absolute },
-				edges: { test: AttributeTypeValue.absolute }
-			}
+			expected.attributeTypes = TEST_ATTRIBUTE_TYPES
+			expected.edges = []
+			expected.blacklist = []
+
+			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettings, fileName)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(JSON.stringify(expected), fileNameWithExtension)
+		})
+
+		it("should call downloadData with undecorated ExportCCFile including attribute Types", () => {
+			downloadSettings = ["AttributeDescriptors"]
+
+			const expected = klona(TEST_FILE_DATA_DOWNLOADED)
+			expected.attributeDescriptors = TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
+			expected.edges = []
+			expected.blacklist = []
 
 			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettings, fileName)
 

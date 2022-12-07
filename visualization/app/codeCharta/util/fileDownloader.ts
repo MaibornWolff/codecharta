@@ -15,7 +15,7 @@ import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
-export type DownloadableSetting = "Nodes" | "AttributeTypes" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
+export type DownloadableSetting = "Nodes" | "AttributeTypes" | "AttributeDescriptors" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
 
 export class FileDownloader {
 	static downloadCurrentMap(
@@ -41,8 +41,10 @@ export class FileDownloader {
 			apiVersion: fileMeta.apiVersion,
 			fileChecksum: fileMeta.fileChecksum,
 			nodes: [this.undecorateMap(map)],
-			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
-			attributeDescriptors: this.getAttributeDescriptorsForJSON(fileSettings.attributeDescriptors),
+			attributeTypes: downloadSettings.includes("AttributeTypes") ? this.getAttributeTypesForJSON(fileSettings.attributeTypes) : {},
+			attributeDescriptors: downloadSettings.includes("AttributeDescriptors")
+				? this.getAttributeDescriptorsForJSON(fileSettings.attributeDescriptors)
+				: {},
 			edges: downloadSettings.includes("Edges") ? this.undecorateEdges(fileSettings.edges) : [],
 			markedPackages: downloadSettings.includes("MarkedPackages") ? fileSettings.markedPackages : [],
 			blacklist: this.getBlacklistToDownload(downloadSettings, fileSettings.blacklist)

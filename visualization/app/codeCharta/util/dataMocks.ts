@@ -1494,26 +1494,8 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			]
 		}
 	],
-	attributeTypes: {
-		nodes: { test: AttributeTypeValue.absolute },
-		edges: { test: AttributeTypeValue.absolute }
-	},
-	attributeDescriptors: {
-		mcc: {
-			title: "Maximum Cyclic Complexity",
-			description: "Maximum cyclic complexity",
-			hintLowValue: "",
-			hintHighValue: "",
-			link: "https://www.npmjs.com/package/metric-gardener"
-		},
-		rloc: {
-			title: "",
-			description: "",
-			hintLowValue: "",
-			hintHighValue: "",
-			link: "https://www.npmjs.com/package/metric-gardener"
-		}
-	},
+	attributeTypes: {},
+	attributeDescriptors: {},
 	edges: [
 		{
 			fromNodeName: "/root/big leaf",
