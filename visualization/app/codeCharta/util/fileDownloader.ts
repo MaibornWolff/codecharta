@@ -1,13 +1,13 @@
 import {
-	CodeMapNode,
-	BlacklistType,
-	BlacklistItem,
-	FileSettings,
-	FileMeta,
+	AttributeDescriptors,
 	AttributeTypes,
+	BlacklistItem,
+	BlacklistType,
+	CodeMapNode,
 	Edge,
-	NodeType,
-	AttributeDescriptors
+	FileMeta,
+	FileSettings,
+	NodeType
 } from "../codeCharta.model"
 import { LoadFileService } from "../services/loadFile/loadFile.service"
 import { ExportCCFile } from "../codeCharta.api.model"
@@ -74,7 +74,6 @@ export class FileDownloader {
 	}
 
 	private static getAttributeDescriptorsForJSON(attributeDescriptors: AttributeDescriptors) {
-		//TODO: test
 		if (Object.keys(attributeDescriptors).length === 0) {
 			return {}
 		}

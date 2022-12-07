@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import { filter, map } from "rxjs"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
 import { isActionOfType } from "../../../util/reduxHelper"
@@ -16,8 +16,6 @@ import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merg
 
 @Injectable()
 export class UpdateFileSettingsEffect {
-	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(State) private state: State) {}
-
 	updateFileSettings$ = createEffect(() =>
 		this.actions$.pipe(
 			filter(action => isActionOfType(action.type, FilesSelectionActions)),
@@ -41,4 +39,6 @@ export class UpdateFileSettingsEffect {
 			})
 		)
 	)
+
+	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(State) private state: State) {}
 }

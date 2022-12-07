@@ -89,7 +89,33 @@ const DEFAULT_SETTINGS = {
 		markedPackages: []
 	}
 }
-export const DEFAULT_CC_FILE_MOCK: CCFile = { fileMeta: DEFAULT_FILE_META, map: DEFAULT_FILE_MAP, settings: DEFAULT_SETTINGS }
+export const DEFAULT_CC_FILE_MOCK: CCFile = {
+	fileMeta: DEFAULT_FILE_META,
+	map: DEFAULT_FILE_MAP,
+	settings: DEFAULT_SETTINGS
+}
+
+export const ATTRIBUTE_TYPES = {
+	nodes: { test: "test" },
+	edges: { test: "test" }
+}
+
+export const ATTRIBUTE_DESCRIPTORS_HALF_FILLED = {
+	mcc: {
+		title: "Maximum Cyclic Complexity",
+		description: "Maximum cyclic complexity",
+		hintLowValue: "",
+		hintHighValue: "",
+		link: "https://www.npmjs.com/package/metric-gardener"
+	},
+	rloc: {
+		title: "",
+		description: "",
+		hintLowValue: "",
+		hintHighValue: "",
+		link: "https://www.npmjs.com/package/metric-gardener"
+	}
+}
 
 export const VALID_NODE: CodeMapNode = {
 	...DEFAULT_ROOT,
@@ -1468,7 +1494,10 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			]
 		}
 	],
-	attributeTypes: {},
+	attributeTypes: {
+		nodes: {},
+		edges: {}
+	},
 	attributeDescriptors: {},
 	edges: [
 		{
