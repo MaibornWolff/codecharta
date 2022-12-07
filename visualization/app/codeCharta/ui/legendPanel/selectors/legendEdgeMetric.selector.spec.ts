@@ -1,5 +1,5 @@
 import { _getLegendEdgeMetric } from "./legendEdgeMetric.selector"
-import { ATTRIBUTE_DESCRIPTORS_HALF_FILLED } from "../../../util/dataMocks"
+import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED } from "../../../util/dataMocks"
 
 describe("_getLegendEdgeMetric", () => {
 	it("should return nothing if there are no edgeMetricData", () => {
@@ -41,7 +41,7 @@ describe("_getLegendEdgeMetric", () => {
 						minValue: 0
 					}
 				],
-				ATTRIBUTE_DESCRIPTORS_HALF_FILLED
+				TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 			)
 		).toEqual({
 			metricName: "mcc",
@@ -59,7 +59,7 @@ describe("_getLegendEdgeMetric", () => {
 						minValue: 0
 					}
 				],
-				ATTRIBUTE_DESCRIPTORS_HALF_FILLED
+				TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 			)
 		).toEqual({
 			metricName: "rloc",

@@ -95,12 +95,12 @@ export const DEFAULT_CC_FILE_MOCK: CCFile = {
 	settings: DEFAULT_SETTINGS
 }
 
-export const ATTRIBUTE_TYPES = {
-	nodes: { test: "test" },
-	edges: { test: "test" }
+export const TEST_ATTRIBUTE_TYPES = {
+	nodes: { test: AttributeTypeValue.absolute },
+	edges: { test: AttributeTypeValue.absolute }
 }
 
-export const ATTRIBUTE_DESCRIPTORS_HALF_FILLED = {
+export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED = {
 	mcc: {
 		title: "Maximum Cyclic Complexity",
 		description: "Maximum cyclic complexity",
@@ -1495,10 +1495,25 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 		}
 	],
 	attributeTypes: {
-		nodes: {},
-		edges: {}
+		nodes: { test: AttributeTypeValue.absolute },
+		edges: { test: AttributeTypeValue.absolute }
 	},
-	attributeDescriptors: {},
+	attributeDescriptors: {
+		mcc: {
+			title: "Maximum Cyclic Complexity",
+			description: "Maximum cyclic complexity",
+			hintLowValue: "",
+			hintHighValue: "",
+			link: "https://www.npmjs.com/package/metric-gardener"
+		},
+		rloc: {
+			title: "",
+			description: "",
+			hintLowValue: "",
+			hintHighValue: "",
+			link: "https://www.npmjs.com/package/metric-gardener"
+		}
+	},
 	edges: [
 		{
 			fromNodeName: "/root/big leaf",

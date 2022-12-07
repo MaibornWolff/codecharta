@@ -1,7 +1,7 @@
 import { ExportBlacklistType, ExportCCFile } from "../codeCharta.api.model"
 import { AttributeTypeValue, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
 import { getCCFile, getCCFileAndDecorateFileChecksum, getSelectedFilesSize } from "./fileHelper"
-import { ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "./dataMocks"
+import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "./dataMocks"
 import { clone } from "./clone"
 import { FileSelectionState, FileState } from "../model/files/files"
 import packageJson from "../../../package.json"
@@ -77,12 +77,12 @@ describe("FileHelper", () => {
 		})
 
 		it("should return attributeTypes if nodes exist", () => {
-			fileContent.attributeDescriptors = ATTRIBUTE_DESCRIPTORS_HALF_FILLED
+			fileContent.attributeDescriptors = TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 
 			const nameDataPair: NameDataPair = { content: fileContent, fileName: "fileName", fileSize: 30 }
 			const result = getCCFile(nameDataPair)
 
-			expect(result.settings.fileSettings.attributeDescriptors).toEqual(ATTRIBUTE_DESCRIPTORS_HALF_FILLED)
+			expect(result.settings.fileSettings.attributeDescriptors).toEqual(TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED)
 		})
 	})
 
