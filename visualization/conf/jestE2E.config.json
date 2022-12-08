@@ -20,5 +20,5 @@
 		}
 	},
 	"preset": "./conf/jestE2E-preset.js",
-	"testTimeout": 60000
+	"testTimeout": 80000
 }
