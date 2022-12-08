@@ -10,8 +10,8 @@ import { EdgeMetricChooserModule } from "./edgeMetricChooser.module"
 
 jest.mock("../../../state/selectors/accumulatedData/metricData/edgeMetricData.selector", () => ({
 	edgeMetricDataSelector: () => [
-		{ name: "aMetric", maxValue: 1 },
-		{ name: "bMetric", maxValue: 2 }
+		{ key: "aMetric", maxValue: 1 },
+		{ key: "bMetric", maxValue: 2 }
 	]
 }))
 
@@ -37,7 +37,7 @@ describe("edgeMetricChooserComponent", () => {
 		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
 	})
 
-	it("should reflect edge metric's visibility in its class name", async () => {
+	it("should reflect edge metric's visibility in its class key", async () => {
 		const { container, detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
 
 		let metricChoser = container.querySelector("cc-metric-chooser")

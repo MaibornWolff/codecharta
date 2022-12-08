@@ -5,7 +5,7 @@ import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../angular-redux/createSelector"
 import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
 import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
-import { sortByMetricName } from "./sortByMetricName"
+import { sortByMetricKey } from "./sortByMetricKey"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
@@ -46,7 +46,7 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
 		}
 	}
 	const newEdgeMetricData = getMetricDataFromMap()
-	sortByMetricName(newEdgeMetricData)
+	sortByMetricKey(newEdgeMetricData)
 	return { sortedEdgeMetricList: newEdgeMetricData, nodeEdgeMetricsMap }
 }
 
@@ -100,7 +100,7 @@ function getMetricDataFromMap() {
 				minimumMetricValue = combinedValue
 			}
 		}
-		metricData.push({ name: edgeMetric, maxValue: maximumMetricValue, minValue: minimumMetricValue })
+		metricData.push({ key: edgeMetric, maxValue: maximumMetricValue, minValue: minimumMetricValue })
 	}
 
 	return metricData

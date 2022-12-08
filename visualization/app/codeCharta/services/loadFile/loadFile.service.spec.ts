@@ -37,8 +37,8 @@ describe("loadFileService", () => {
 		validFileContent = clone(TEST_FILE_CONTENT)
 
 		metricData = [
-			{ name: "mcc", maxValue: 1, minValue: 1 },
-			{ name: "rloc", maxValue: 2, minValue: 1 }
+			{ key: "mcc", maxValue: 1, minValue: 1 },
+			{ key: "rloc", maxValue: 2, minValue: 1 }
 		]
 		store.dispatch(setFiles([]))
 	})

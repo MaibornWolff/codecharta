@@ -1,8 +1,8 @@
 import { NodeMetricData } from "../../../../codeCharta.model"
 
-type NodeMetricDataName = Pick<NodeMetricData, "name">
+type NodeMetricDataKey = Pick<NodeMetricData, "key">
 
-const isMetricAvailable = (nodeMetricData: NodeMetricDataName[], metricName: string) => nodeMetricData.some(x => x.name === metricName)
+const isMetricAvailable = (nodeMetricData: NodeMetricDataKey[], metricName: string) => nodeMetricData.some(x => x.key === metricName)
 
-export const areMetricsAvailable = (nodeMetricData: NodeMetricDataName[], metricNames: string[]) =>
-	metricNames.every(metric => isMetricAvailable(nodeMetricData, metric))
+export const areMetricsAvailable = (nodeMetricData: NodeMetricDataKey[], metricKeys: string[]) =>
+	metricKeys.every(metric => isMetricAvailable(nodeMetricData, metric))

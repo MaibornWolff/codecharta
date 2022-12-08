@@ -11,7 +11,7 @@ export type MetricMinMax = {
 export const selectedColorMetricDataSelector: (state: CcState) => MetricMinMax = createSelector(
 	[nodeMetricDataSelector, colorMetricSelector],
 	(nodeMetricData, colorMetric) => {
-		const data = nodeMetricData.find(x => x.name === colorMetric)
+		const data = nodeMetricData.find(x => x.key === colorMetric)
 		return {
 			minValue: data?.minValue ?? 0,
 			maxValue: data?.maxValue ?? 0

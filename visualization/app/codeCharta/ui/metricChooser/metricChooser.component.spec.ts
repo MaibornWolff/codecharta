@@ -8,9 +8,9 @@ import { MetricChooserModule } from "./metricChooser.module"
 
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
 	nodeMetricDataSelector: () => [
-		{ name: "aMetric", maxValue: 1 },
-		{ name: "bMetric", maxValue: 2 },
-		{ name: "cMetric", maxValue: 3 }
+		{ key: "aMetric", maxValue: 1 },
+		{ key: "bMetric", maxValue: 2 },
+		{ key: "cMetric", maxValue: 3 }
 	]
 }))
 
@@ -22,13 +22,13 @@ describe("metricChooserComponent", () => {
 	})
 
 	it("should be a select for metrics", async () => {
-		let selectedMetricName = "aMetric"
+		let selectedMetricKey = "aMetric"
 		await render(MetricChooserComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
 				searchPlaceholder: "search metric (max value)",
-				selectedMetricName,
-				handleMetricChanged: (value: string) => (selectedMetricName = value)
+				selectedMetricKey,
+				handleMetricChanged: (value: string) => (selectedMetricKey = value)
 			}
 		})
 
@@ -48,7 +48,7 @@ describe("metricChooserComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: {
 				searchPlaceholder: "search metric (max value)",
-				selectedMetricName: "aMetric",
+				selectedMetricKey: "aMetric",
 				handleMetricChanged: jest.fn()
 			}
 		})
@@ -77,9 +77,9 @@ describe("metricChooserComponent", () => {
 
 	it("should project hoveredInformation as last child", async () => {
 		@Component({
-			template: `<cc-metric-chooser
+			template: ` <cc-metric-chooser
 				[searchPlaceholder]="''"
-				[selectedMetricName]="'aMetric'"
+				[selectedMetricKey]="'aMetric'"
 				[handleMetricChanged]="handleMetricChanged"
 			>
 				<div hoveredInformation>projected hovered information</div>

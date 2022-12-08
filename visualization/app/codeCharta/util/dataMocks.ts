@@ -1525,14 +1525,14 @@ export const FILE_STATES_JAVA: FileState[] = [
 ]
 
 export const METRIC_DATA: NodeMetricData[] = [
-	{ name: "mcc", maxValue: 1, minValue: 1 },
-	{ name: "rloc", maxValue: 2, minValue: 1 },
-	{ name: UNARY_METRIC, maxValue: 1, minValue: 1 }
+	{ key: "mcc", maxValue: 1, minValue: 1 },
+	{ key: "rloc", maxValue: 2, minValue: 1 },
+	{ key: UNARY_METRIC, maxValue: 1, minValue: 1 }
 ]
 
 export const EDGE_METRIC_DATA: EdgeMetricData[] = [
-	{ name: "pairing_rate", maxValue: 10, minValue: 0 },
-	{ name: "average_commits", maxValue: 20, minValue: 0 }
+	{ key: "pairing_rate", maxValue: 10, minValue: 0 },
+	{ key: "average_commits", maxValue: 20, minValue: 0 }
 ]
 
 export const STATE: State = {

@@ -1,16 +1,16 @@
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
 import {
+	AttributeTypes,
+	AttributeTypeValue,
 	CCFile,
 	CodeMapNode,
-	NodeType,
-	AttributeTypeValue,
-	AttributeTypes,
-	NodeMetricData,
 	EdgeMetricData,
-	MetricData
+	MetricData,
+	NodeMetricData,
+	NodeType
 } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
-import { HierarchyNode, hierarchy } from "d3-hierarchy"
+import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { clone } from "./clone"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
@@ -28,13 +28,13 @@ describe("nodeDecorator", () => {
 		map = file.map
 		deltaMap = clone(VALID_NODE_WITH_PATH_AND_DELTAS)
 		nodeMetricData = [
-			{ name: "rloc", maxValue: 999_999, minValue: 1 },
-			{ name: "functions", maxValue: 999_999, minValue: 1 },
-			{ name: "mcc", maxValue: 999_999, minValue: 1 }
+			{ key: "rloc", maxValue: 999_999, minValue: 1 },
+			{ key: "functions", maxValue: 999_999, minValue: 1 },
+			{ key: "mcc", maxValue: 999_999, minValue: 1 }
 		]
 		edgeMetricData = [
-			{ name: "pairingRate", maxValue: 999, minValue: 1 },
-			{ name: "avgCommits", maxValue: 999, minValue: 1 }
+			{ key: "pairingRate", maxValue: 999, minValue: 1 },
+			{ key: "avgCommits", maxValue: 999, minValue: 1 }
 		]
 		metricData = { nodeMetricData, edgeMetricData }
 		attributeTypes = {
@@ -56,7 +56,7 @@ describe("nodeDecorator", () => {
 
 	describe("decorateMap", () => {
 		it("nodes should have all metrics", () => {
-			nodeMetricData.push({ name: "some", maxValue: 999_999, minValue: 1 })
+			nodeMetricData.push({ key: "some", maxValue: 999_999, minValue: 1 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			hierarchy(map).each(node => {
@@ -70,7 +70,7 @@ describe("nodeDecorator", () => {
 
 		it("nodes should have all metrics even if some attributesLists are undefined", () => {
 			map.children[0].attributes = undefined
-			nodeMetricData.push({ name: "some", maxValue: 999_999, minValue: 1 })
+			nodeMetricData.push({ key: "some", maxValue: 999_999, minValue: 1 })
 
 			NodeDecorator.decorateMap(map, metricData, [])
 
@@ -301,7 +301,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("all nodes should have a unary attribute and all leaves should have it set to 1", () => {
-			metricData.nodeMetricData.push({ name: UNARY_METRIC, maxValue: 1, minValue: 1 })
+			metricData.nodeMetricData.push({ key: UNARY_METRIC, maxValue: 1, minValue: 1 })
 
 			NodeDecorator.decorateMap(map, metricData, [])
 
@@ -333,7 +333,7 @@ describe("nodeDecorator", () => {
 		it("all nodes should have an attribute list with all possible metrics", () => {
 			map.children[0].attributes = undefined
 			map.children[1].attributes = { some: 1 }
-			nodeMetricData.push({ name: "some", maxValue: 999_999, minValue: 1 })
+			nodeMetricData.push({ key: "some", maxValue: 999_999, minValue: 1 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, attributeTypes)
@@ -440,7 +440,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should aggregate missing metrics correctly", () => {
-			nodeMetricData.push({ name: "some", maxValue: 999_999, minValue: 1 })
+			nodeMetricData.push({ key: "some", maxValue: 999_999, minValue: 1 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, attributeTypes)

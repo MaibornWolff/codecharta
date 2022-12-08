@@ -8,7 +8,7 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 
 export const _getLegendEdgeMetric = (edgeMetric: string, edgeMetricDatas: EdgeMetricData[], attributeDescriptors) => {
 	const edgeMetricData = edgeMetricDatas.find(someEdgeMetricData => {
-		return someEdgeMetricData.name === edgeMetric
+		return someEdgeMetricData.key === edgeMetric
 	})
 	const hasEdgeMetricEdge = edgeMetricData && edgeMetricData.maxValue > 0
 	if (!hasEdgeMetricEdge) {

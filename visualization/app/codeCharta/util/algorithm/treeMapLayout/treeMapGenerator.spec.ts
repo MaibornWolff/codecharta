@@ -1,13 +1,13 @@
-import { NodeMetricData, State, CodeMapNode, Node, NameDataPair } from "../../../codeCharta.model"
+import { CodeMapNode, NameDataPair, Node, NodeMetricData, State } from "../../../codeCharta.model"
 
 import {
-	METRIC_DATA,
-	TEST_FILE_WITH_PATHS,
-	VALID_NODE_WITH_PATH,
-	VALID_EDGES,
-	STATE,
+	FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE,
 	FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE,
-	FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE
+	METRIC_DATA,
+	STATE,
+	TEST_FILE_WITH_PATHS,
+	VALID_EDGES,
+	VALID_NODE_WITH_PATH
 } from "../../dataMocks"
 import { klona } from "klona"
 import { NodeDecorator } from "../../nodeDecorator"
@@ -125,8 +125,8 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.areaMetric = "myArea"
 			state.dynamicSettings.heightMetric = "myHeight"
 			metricData = [
-				{ name: "myArea", maxValue: 42, minValue: 1 },
-				{ name: "myHeight", maxValue: 99, minValue: 1 }
+				{ key: "myArea", maxValue: 42, minValue: 1 },
+				{ key: "myHeight", maxValue: 99, minValue: 1 }
 			]
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
@@ -157,8 +157,8 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.heightMetric = "b"
 			state.dynamicSettings.areaMetric = "b"
 			metricData = [
-				{ name: "a", maxValue: 42, minValue: 1 },
-				{ name: "b", maxValue: 99, minValue: 1 }
+				{ key: "a", maxValue: 42, minValue: 1 },
+				{ key: "b", maxValue: 99, minValue: 1 }
 			]
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
@@ -170,7 +170,7 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.areaMetric = "unknown"
 			state.dynamicSettings.heightMetric = "unknown"
 			state.fileSettings.edges = VALID_EDGES
-			metricData = [{ name: "unknown", maxValue: 100, minValue: 1 }]
+			metricData = [{ key: "unknown", maxValue: 100, minValue: 1 }]
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 

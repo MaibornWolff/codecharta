@@ -63,8 +63,8 @@ describe("scenarioHelper", () => {
 			const expected: ScenarioItem[] = SCENARIO_ITEM_WITH_EVERYTHING_SAVED
 
 			const result = ScenarioHelper.getScenarioItems({
-				nodeMetricData: [{ name: "mcc", maxValue: 56, minValue: 1 }],
-				edgeMetricData: [{ name: "pairingRate", maxValue: 47, minValue: 1 }]
+				nodeMetricData: [{ key: "mcc", maxValue: 56, minValue: 1 }],
+				edgeMetricData: [{ key: "pairingRate", maxValue: 47, minValue: 1 }]
 			})
 
 			expect(result).toEqual(expected)
@@ -108,8 +108,8 @@ describe("scenarioHelper", () => {
 			]
 
 			const result = ScenarioHelper.getScenarioItems({
-				nodeMetricData: [{ name: "mcc", maxValue: 56, minValue: 1 }],
-				edgeMetricData: [{ name: "None", maxValue: 0, minValue: 1 }]
+				nodeMetricData: [{ key: "mcc", maxValue: 56, minValue: 1 }],
+				edgeMetricData: [{ key: "None", maxValue: 0, minValue: 1 }]
 			})
 
 			expect(result).toEqual(expected)
@@ -122,10 +122,10 @@ describe("scenarioHelper", () => {
 
 			const result = ScenarioHelper.getScenarioItems({
 				nodeMetricData: [
-					{ name: "mcc", maxValue: 56, minValue: 1 },
-					{ name: "rloc", maxValue: 43, minValue: 1 }
+					{ key: "mcc", maxValue: 56, minValue: 1 },
+					{ key: "rloc", maxValue: 43, minValue: 1 }
 				],
-				edgeMetricData: [{ name: "unavailableMetric", maxValue: 0, minValue: 1 }]
+				edgeMetricData: [{ key: "unavailableMetric", maxValue: 0, minValue: 1 }]
 			})
 
 			expect(result).toEqual(expected)

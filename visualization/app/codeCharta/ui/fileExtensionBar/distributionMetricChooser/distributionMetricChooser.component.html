@@ -1,7 +1,7 @@
 <i class="fa fa-pie-chart"></i>
 
 <cc-metric-chooser
-	[selectedMetricName]="distributionMetric$ | async"
+	[selectedMetricKey]="distributionMetric$ | async"
 	[searchPlaceholder]="'Distribution Metric (highest value)'"
 	[handleMetricChanged]="handleDistributionMetricChanged"
 ></cc-metric-chooser>

@@ -17,19 +17,19 @@ type MetricChooserType = "node" | "edge"
 	template: require("./metricChooser.component.html")
 })
 export class MetricChooserComponent implements OnInit {
-	@Input() selectedMetricName: string
+	@Input() selectedMetricKey: string
 	@Input() searchPlaceholder: string
 	@Input() handleMetricChanged: (newSelectedMetricName: string) => void
 	@Input() type: MetricChooserType = "node"
 	@Input() isDisabled = false
 	@ViewChild("searchTermInput") searchTermInput: ElementRef<HTMLInputElement>
 	searchTerm = ""
-	metricDataWithDescription$: Observable<MetricChooserMetric[]>
+	metricData$: Observable<MetricChooserMetric[]>
 
 	constructor(@Inject(Store) private store: Store) {}
 
 	ngOnInit(): void {
-		this.metricDataWithDescription$ = this.store.select(
+		this.metricData$ = this.store.select(
 			createSelector(
 				[attributeDescriptorsSelector, nodeMetricDataSelector, edgeMetricDataSelector],
 				(attributeDescriptors, nodeMetricData, edgeMetricData) =>
@@ -71,11 +71,11 @@ function getMetricChooserMetric(
 	metricData: NodeMetricData | EdgeMetricData,
 	attributeDescriptors: AttributeDescriptors
 ): MetricChooserMetric {
-	const attributeDescriptor = getAttributeDescriptor(metricData.name, attributeDescriptors)
+	const attributeDescriptor = getAttributeDescriptor(metricData.key, attributeDescriptors)
 	if (attributeDescriptor === undefined) {
 		return {
-			name: metricData.name,
-			title: metricTitles.get(metricData.name),
+			key: metricData.key,
+			title: metricTitles.get(metricData.key),
 			description: undefined,
 			minValue: metricData.minValue,
 			maxValue: metricData.maxValue,
@@ -85,8 +85,8 @@ function getMetricChooserMetric(
 	}
 
 	return {
-		name: metricData.name,
-		title: getMetricName(metricData.name, attributeDescriptor),
+		key: metricData.key,
+		title: getMetricName(metricData.key, attributeDescriptor),
 		description: attributeDescriptor.description,
 		minValue: metricData.minValue,
 		maxValue: metricData.maxValue,

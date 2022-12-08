@@ -5,7 +5,7 @@ import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { CcState } from "../../store/store"
-import { metricNamesSelector } from "./metricData/metricNames.selector"
+import { metricKeysSelector } from "./metricData/metricKeysSelector"
 import { getDeltaFile } from "./utils/getDeltaFile"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
 import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.selector"
@@ -22,7 +22,7 @@ const accumulatedDataFallback = Object.freeze({
 export type AccumulatedData = { unifiedMapNode: CodeMapNode; unifiedFileMeta: FileMeta }
 
 export const accumulatedDataSelector: (state: CcState) => AccumulatedData = createSelector(
-	[metricDataSelector, visibleFileStatesSelector, attributeTypesSelector, blacklistSelector, metricNamesSelector],
+	[metricDataSelector, visibleFileStatesSelector, attributeTypesSelector, blacklistSelector, metricKeysSelector],
 	(metricData, fileStates, attributeTypes, blacklist, metricNames) => {
 		if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData) {
 			return accumulatedDataFallback

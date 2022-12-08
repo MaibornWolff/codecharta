@@ -1,11 +1,11 @@
 "use strict"
 import {
-	LocalStorageScenarios,
+	AppSettings,
 	DynamicSettings,
+	LocalStorageScenarios,
+	MetricData,
 	RecursivePartial,
 	Scenario,
-	MetricData,
-	AppSettings,
 	Settings
 } from "../../../codeCharta.model"
 import { convertToVectors } from "../../../util/settingsHelper"
@@ -77,7 +77,7 @@ export class ScenarioHelper {
 		const { area, color, height, edge } = scenario
 
 		if (area || color || height) {
-			const nodeMetricSet = new Set(metricData.nodeMetricData.map(data => data.name))
+			const nodeMetricSet = new Set(metricData.nodeMetricData.map(data => data.key))
 
 			if (
 				(area && !nodeMetricSet.has(area.areaMetric)) ||
@@ -88,7 +88,7 @@ export class ScenarioHelper {
 			}
 		}
 
-		return !(edge && !metricData.edgeMetricData.some(x => x.name === edge.edgeMetric))
+		return !(edge && !metricData.edgeMetricData.some(x => x.key === edge.edgeMetric))
 	}
 
 	private static getPreLoadScenarios() {

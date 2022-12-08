@@ -1,6 +1,6 @@
 import { CcState } from "../../../store/store"
 import { edgeMetricDataSelector } from "./edgeMetricData.selector"
-import { metricNamesSelector } from "./metricNames.selector"
+import { metricKeysSelector } from "./metricKeysSelector"
 
 const mockedEdgeMetricDataSelector = edgeMetricDataSelector as unknown as jest.Mock
 jest.mock("./edgeMetricData.selector", () => ({
@@ -8,9 +8,9 @@ jest.mock("./edgeMetricData.selector", () => ({
 }))
 
 describe("metricNamesSelector", () => {
-	it("should get the names of the metrics", () => {
-		mockedEdgeMetricDataSelector.mockImplementationOnce(() => [{ name: "metricOfTruth" }, { name: "otherMetric" }])
+	it("should get the keys of the metrics", () => {
+		mockedEdgeMetricDataSelector.mockImplementationOnce(() => [{ key: "metricOfTruth" }, { key: "otherMetric" }])
 
-		expect(metricNamesSelector({} as unknown as CcState)).toEqual(["metricOfTruth", "otherMetric"])
+		expect(metricKeysSelector({} as unknown as CcState)).toEqual(["metricOfTruth", "otherMetric"])
 	})
 })

@@ -247,13 +247,13 @@ export interface MarkedPackage {
 }
 
 export interface EdgeMetricData {
-	name: string
+	key: string
 	maxValue: number
 	minValue: number
 }
 
 export interface NodeMetricData {
-	name: string
+	key: string
 	maxValue: number
 	minValue: number
 }

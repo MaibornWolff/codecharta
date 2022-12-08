@@ -45,13 +45,13 @@ describe("ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect", () => {
 
 	it("should reset selected edge metric to first available, when current isn't available anymore", () => {
 		mockedEdgeMetricSelector$.next("avgCommits")
-		mockedEdgeMetricDataSelector$.next([{ name: "pairingRate" }])
+		mockedEdgeMetricDataSelector$.next([{ key: "pairingRate" }])
 		expect(mockedStore.dispatch).toHaveBeenLastCalledWith(setEdgeMetric("pairingRate"))
 	})
 
 	it("should do nothing, when current selected edge metric is still available", () => {
 		mockedEdgeMetricSelector$.next("avgCommits")
-		mockedEdgeMetricDataSelector$.next([{ name: "avgCommits" }])
+		mockedEdgeMetricDataSelector$.next([{ key: "avgCommits" }])
 		expect(mockedStore.dispatch).not.toHaveBeenCalled()
 	})
 
@@ -66,12 +66,12 @@ describe("ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect", () => {
 
 	it("should reset when an edge metric becomes available again", () => {
 		mockedEdgeMetricSelector$.next("pairingRate")
-		mockedEdgeMetricDataSelector$.next([{ name: "avgCommits" }])
+		mockedEdgeMetricDataSelector$.next([{ key: "avgCommits" }])
 		expect(mockedStore.dispatch).toHaveBeenLastCalledWith(setEdgeMetric("avgCommits"))
 
 		mockedEdgeMetricDataSelector$.next([])
 		mockedEdgeMetricSelector$.next(null)
-		mockedEdgeMetricDataSelector$.next([{ name: "avgCommits" }])
+		mockedEdgeMetricDataSelector$.next([{ key: "avgCommits" }])
 		expect(mockedStore.dispatch).toHaveBeenCalledTimes(3)
 		expect(mockedStore.dispatch.mock.calls[0][0]).toEqual(setEdgeMetric("avgCommits"))
 	})

@@ -9,8 +9,8 @@ import { AreaMetricChooserModule } from "./areaMetricChooser.module"
 
 jest.mock("../../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
 	nodeMetricDataSelector: () => [
-		{ name: "aMetric", maxValue: 1 },
-		{ name: "bMetric", maxValue: 2 }
+		{ key: "aMetric", maxValue: 1 },
+		{ key: "bMetric", maxValue: 2 }
 	]
 }))
 

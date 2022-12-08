@@ -14,24 +14,24 @@ describe("edgeMetricDataSelector", () => {
 	it("should create correct edge Metrics", () => {
 		const { sortedEdgeMetricList } = calculateEdgeMetricData(fileStates, [])
 
-		expect(sortedEdgeMetricList.map(x => x.name)).toContain("pairingRate")
-		expect(sortedEdgeMetricList.map(x => x.name)).toContain("otherMetric")
+		expect(sortedEdgeMetricList.map(x => x.key)).toContain("pairingRate")
+		expect(sortedEdgeMetricList.map(x => x.key)).toContain("otherMetric")
 	})
 
 	it("should calculate correct maximum value for edge Metrics", () => {
 		const { sortedEdgeMetricList } = calculateEdgeMetricData(fileStates, [])
 
-		expect(sortedEdgeMetricList.find(x => x.name === "pairingRate").maxValue).toEqual(2)
-		expect(sortedEdgeMetricList.find(x => x.name === "otherMetric").maxValue).toEqual(1)
+		expect(sortedEdgeMetricList.find(x => x.key === "pairingRate").maxValue).toEqual(2)
+		expect(sortedEdgeMetricList.find(x => x.key === "otherMetric").maxValue).toEqual(1)
 	})
 
 	it("should sort the metrics after calculating them", () => {
 		const { sortedEdgeMetricList } = calculateEdgeMetricData(fileStates, [])
 
 		expect(sortedEdgeMetricList).toHaveLength(3)
-		expect(sortedEdgeMetricList[0].name).toBe("avgCommits")
-		expect(sortedEdgeMetricList[1].name).toBe("otherMetric")
-		expect(sortedEdgeMetricList[2].name).toBe("pairingRate")
+		expect(sortedEdgeMetricList[0].key).toBe("avgCommits")
+		expect(sortedEdgeMetricList[1].key).toBe("otherMetric")
+		expect(sortedEdgeMetricList[2].key).toBe("pairingRate")
 	})
 
 	it("should sync with deprecated public exposed metrics Map", () => {

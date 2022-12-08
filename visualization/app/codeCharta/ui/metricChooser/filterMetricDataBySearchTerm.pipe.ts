@@ -7,8 +7,7 @@ export class FilterMetricDataBySearchTermPipe implements PipeTransform {
 		const lowercaseSearchTerm = searchTerm.toLocaleLowerCase()
 		return metricData.filter(
 			data =>
-				data.name.toLocaleLowerCase().includes(lowercaseSearchTerm) ||
-				data?.title?.toLocaleLowerCase().includes(lowercaseSearchTerm)
+				data.key.toLocaleLowerCase().includes(lowercaseSearchTerm) || data?.title?.toLocaleLowerCase().includes(lowercaseSearchTerm)
 		)
 	}
 }

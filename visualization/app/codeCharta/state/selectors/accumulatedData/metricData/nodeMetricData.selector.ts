@@ -6,7 +6,7 @@ import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../angular-redux/createSelector"
 import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
 import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
-import { sortByMetricName } from "./sortByMetricName"
+import { sortByMetricKey } from "./sortByMetricKey"
 
 export const UNARY_METRIC = "unary"
 
@@ -43,15 +43,15 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 	metricMaxValues.set(UNARY_METRIC, 1)
 	metricMinValues.set(UNARY_METRIC, 1)
 
-	for (const [key, value] of metricMaxValues) {
+	for (const [metricKey, value] of metricMaxValues) {
 		metricData.push({
-			name: key,
+			key: metricKey,
 			maxValue: value,
-			minValue: metricMinValues.get(key)
+			minValue: metricMinValues.get(metricKey)
 		})
 	}
 
-	sortByMetricName(metricData)
+	sortByMetricKey(metricData)
 	return metricData
 }
 

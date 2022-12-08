@@ -1,6 +1,6 @@
 <mat-select
 	[panelClass]="'cc-metric-chooser'"
-	[value]="selectedMetricName"
+	[value]="selectedMetricKey"
 	(selectionChange)="handleMetricChanged($event.value)"
 	(openedChange)="handleOpenedChanged($event)"
 	[disabled]="isDisabled"
@@ -10,27 +10,27 @@
 		<input #searchTermInput matInput type="text" [placeholder]="searchPlaceholder" [(ngModel)]="searchTerm" />
 	</mat-form-field>
 	<div class="cc-metric-chooser-option-container">
-		<ng-container *ngFor="let metric of metricDataWithDescription$ | async | filterMetricDataBySearchTerm: searchTerm">
-			<ng-container *ngIf="metric.title; then titleExists; else onlyShowName"></ng-container>
+		<ng-container *ngFor="let metric of metricData$ | async | filterMetricDataBySearchTerm: searchTerm">
+			<ng-container *ngIf="metric.title; then titleExists; else onlyShowKey"></ng-container>
 			<ng-template #titleExists>
 				<ng-container *ngIf="metric.description; then showTitleAndDescription; else showTitle"></ng-container>
 			</ng-template>
 
 			<ng-template #showTitleAndDescription>
-				<mat-option [value]="metric.name" matTooltip="{{ metric.name + ': ' + metric.description }}">
+				<mat-option [value]="metric.key" matTooltip="{{ metric.key + ': ' + metric.description }}">
 					{{ metric.title }}
 					<span class="metric-max-value">({{ metric.maxValue }})</span>
 				</mat-option>
 			</ng-template>
 			<ng-template #showTitle>
-				<mat-option [value]="metric.name" matTooltip="{{ metric.name }}">
+				<mat-option [value]="metric.key" matTooltip="{{ metric.key }}">
 					{{ metric.title }}
 					<span class="metric-max-value">({{ metric.maxValue }})</span>
 				</mat-option>
 			</ng-template>
-			<ng-template #onlyShowName>
-				<mat-option [value]="metric.name">
-					{{ metric.name }}
+			<ng-template #onlyShowKey>
+				<mat-option [value]="metric.key">
+					{{ metric.key }}
 					<span class="metric-max-value">({{ metric.maxValue }})</span>
 				</mat-option>
 			</ng-template>

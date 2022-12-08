@@ -1,4 +1,4 @@
-import { CodeMapNode, Node, State, NodeMetricData, BlacklistType, LayoutAlgorithm } from "../../../codeCharta.model"
+import { BlacklistType, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData, State } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
@@ -6,7 +6,7 @@ import House from "./house"
 import TreeMap from "./treeMap"
 import { Vector2 } from "three"
 import { StreetOrientation } from "./street"
-import { getMapResolutionScaleFactor, isPathBlacklisted, isLeaf } from "../../codeMapHelper"
+import { getMapResolutionScaleFactor, isLeaf, isPathBlacklisted } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
 import { treeMapSize } from "../treeMapLayout/treeMapHelper"
@@ -17,8 +17,7 @@ export class StreetLayoutGenerator {
 	static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 		const maxHeight =
-			(metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling) /
-			HEIGHT_SCALING_FACTOR
+			(metricData.find(x => x.key === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling) / HEIGHT_SCALING_FACTOR
 		const heightScale = (treeMapSize * 2) / maxHeight
 
 		const metricName = state.dynamicSettings.areaMetric

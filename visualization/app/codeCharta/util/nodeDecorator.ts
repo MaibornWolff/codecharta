@@ -49,12 +49,12 @@ export const NodeDecorator = {
 			}
 
 			for (const metric of nodeMetricData) {
-				if (data.attributes[metric.name] === undefined) {
-					data.attributes[metric.name] = 0
+				if (data.attributes[metric.key] === undefined) {
+					data.attributes[metric.key] = 0
 				}
 
-				if (data.deltas !== undefined && data.deltas[metric.name] === undefined) {
-					data.deltas[metric.name] = 0
+				if (data.deltas !== undefined && data.deltas[metric.key] === undefined) {
+					data.deltas[metric.key] = 0
 				}
 			}
 
@@ -63,8 +63,8 @@ export const NodeDecorator = {
 			}
 
 			for (const metric of edgeMetricData) {
-				if (data.edgeAttributes[metric.name] === undefined) {
-					data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
+				if (data.edgeAttributes[metric.key] === undefined) {
+					data.edgeAttributes[metric.key] = { incoming: 0, outgoing: 0 }
 				}
 			}
 

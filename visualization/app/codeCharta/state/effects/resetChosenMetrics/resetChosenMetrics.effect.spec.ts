@@ -49,8 +49,8 @@ describe("resetChosenMetricsEffect", () => {
 
 	it("should apply matching metrics, when area, height and color metrics of matching category are available", () => {
 		mockedNodeMetricDataSelector.next([
-			{ name: "rloc", maxValue: 9001 },
-			{ name: "mcc", maxValue: 9001 }
+			{ key: "rloc", maxValue: 9001 },
+			{ key: "mcc", maxValue: 9001 }
 		])
 
 		expect(mockedStore.dispatch).toHaveBeenCalledTimes(4)
@@ -62,8 +62,8 @@ describe("resetChosenMetricsEffect", () => {
 
 	it("should apply available metrics when no matching scenario was found", () => {
 		mockedNodeMetricDataSelector.next([
-			{ name: "rloc", maxValue: 9001 },
-			{ name: "loc", maxValue: 9001 }
+			{ key: "rloc", maxValue: 9001 },
+			{ key: "loc", maxValue: 9001 }
 		])
 
 		expect(mockedStore.dispatch).toHaveBeenCalledTimes(4)
@@ -76,8 +76,8 @@ describe("resetChosenMetricsEffect", () => {
 	it("should do nothing, when chosen metrics are still available", () => {
 		mockedAreChosenMetricsAvailableSelector.next(true)
 		mockedNodeMetricDataSelector.next([
-			{ name: "rloc", maxValue: 9001 },
-			{ name: "loc", maxValue: 9001 }
+			{ key: "rloc", maxValue: 9001 },
+			{ key: "loc", maxValue: 9001 }
 		])
 
 		expect(mockedStore.dispatch).not.toHaveBeenCalled()
