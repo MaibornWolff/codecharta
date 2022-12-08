@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.filter
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ErrorResponseFilterTest {
     @Test

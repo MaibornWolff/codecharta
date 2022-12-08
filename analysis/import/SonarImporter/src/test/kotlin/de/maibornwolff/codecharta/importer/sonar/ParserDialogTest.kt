@@ -6,9 +6,9 @@ import com.github.kinquirer.components.promptInput
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -44,15 +44,16 @@ class ParserDialogTest {
 
         val commandLine = CommandLine(SonarImporterMain())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
-        assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
-        assertThat(parseResult.matchedOption("user").getValue<String>()).isEqualTo(user)
-        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        assertThat(
-            parseResult.matchedOption("metrics").getValue<ArrayList<String>>()
-                  ).isEqualTo(listOf("metric1,metric2"))
-        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
-        assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
+        assertEquals(parseResult.matchedPositional(0).getValue<String>(), hostUrl)
+        assertEquals(parseResult.matchedPositional(1).getValue<String>(), projectKey)
+        assertEquals(parseResult.matchedOption("user").getValue<String>(), user)
+        assertEquals(parseResult.matchedOption("output-file").getValue<String>(), outputFileName)
+        assertEquals(
+            parseResult.matchedOption("metrics").getValue<ArrayList<String>>(),
+            listOf("metric1,metric2")
+        )
+        assertEquals(parseResult.matchedOption("not-compressed").getValue<Boolean>(), compress)
+        assertEquals(parseResult.matchedOption("merge-modules").getValue<Boolean>(), mergeModules)
     }
 
     @Test
@@ -78,13 +79,13 @@ class ParserDialogTest {
 
         val commandLine = CommandLine(SonarImporterMain())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
-        assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
-        assertThat(parseResult.matchedOption("user").getValue<String>()).isEqualTo(user)
-        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertNull(parseResult.matchedOption("metrics"))
-        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
-        assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
+        assertEquals(parseResult.matchedPositional(0).getValue<String>(), hostUrl)
+        assertEquals(parseResult.matchedPositional(1).getValue<String>(), projectKey)
+        assertEquals(parseResult.matchedOption("user").getValue<String>(), user)
+        assertEquals(parseResult.matchedOption("output-file").getValue<String>(), outputFileName)
+        assertNull(parseResult.matchedOption("metrics"))
+        assertEquals(parseResult.matchedOption("not-compressed").getValue<Boolean>(), compress)
+        assertEquals(parseResult.matchedOption("merge-modules").getValue<Boolean>(), mergeModules)
     }
 
     @Test
@@ -110,14 +111,14 @@ class ParserDialogTest {
 
         val commandLine = CommandLine(SonarImporterMain())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
-        assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
-        Assertions.assertNull(parseResult.matchedOption("user"))
-        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        assertThat(
-            parseResult.matchedOption("metrics").getValue<ArrayList<String>>()
-                  ).isEqualTo(listOf("metric1,metric2"))
-        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
-        assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
+        assertEquals(parseResult.matchedPositional(0).getValue<String>(), hostUrl)
+        assertEquals(parseResult.matchedPositional(1).getValue<String>(), projectKey)
+        assertNull(parseResult.matchedOption("user"))
+        assertEquals(parseResult.matchedOption("output-file").getValue<String>(), outputFileName)
+        assertEquals(
+            parseResult.matchedOption("metrics").getValue<ArrayList<String>>(),
+            listOf("metric1,metric2"))
+        assertEquals(parseResult.matchedOption("not-compressed").getValue<Boolean>(), compress)
+        assertEquals(parseResult.matchedOption("merge-modules").getValue<Boolean>(), mergeModules)
     }
 }
