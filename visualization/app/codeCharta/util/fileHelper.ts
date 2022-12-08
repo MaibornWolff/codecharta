@@ -42,11 +42,7 @@ function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): 
 }
 
 function getAttributeDescriptors(attributeDescriptors: AttributeDescriptors): AttributeDescriptors {
-	if (!attributeDescriptors) {
-		return {}
-	}
-
-	return attributeDescriptors
+	return attributeDescriptors || {}
 }
 
 function potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {

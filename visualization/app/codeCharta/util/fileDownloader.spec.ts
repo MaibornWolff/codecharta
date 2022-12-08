@@ -88,7 +88,7 @@ describe("fileDownloader", () => {
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(JSON.stringify(expected), fileNameWithExtension)
 		})
 
-		it("should call downloadData with undecorated ExportCCFile including attribute Types", () => {
+		it("should call downloadData with undecorated ExportCCFile including attribute Descriptors", () => {
 			downloadSettings = ["AttributeDescriptors"]
 
 			const expected = klona(TEST_FILE_DATA_DOWNLOADED)

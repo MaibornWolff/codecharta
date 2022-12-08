@@ -22,10 +22,10 @@ export function setAttributeDescriptors(
 
 export const defaultAttributeDescriptors: AttributeDescriptors = {
 	DefaultAttributeDescriptor: {
-		title: "Default Attribute Descriptor",
-		description: "The default Attribute Descriptor that is generated at the beginning.",
+		title: "",
+		description: "",
 		hintLowValue: "",
 		hintHighValue: "",
-		link: "./app/codeCharta/state/store/fileSettings/attributeDescriptors/attributeDescriptors.action.ts"
+		link: ""
 	}
 }

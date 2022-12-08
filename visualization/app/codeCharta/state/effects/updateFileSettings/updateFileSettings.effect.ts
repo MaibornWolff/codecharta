@@ -16,6 +16,8 @@ import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merg
 
 @Injectable()
 export class UpdateFileSettingsEffect {
+	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(State) private state: State) {}
+
 	updateFileSettings$ = createEffect(() =>
 		this.actions$.pipe(
 			filter(action => isActionOfType(action.type, FilesSelectionActions)),
@@ -39,6 +41,4 @@ export class UpdateFileSettingsEffect {
 			})
 		)
 	)
-
-	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(State) private state: State) {}
 }
