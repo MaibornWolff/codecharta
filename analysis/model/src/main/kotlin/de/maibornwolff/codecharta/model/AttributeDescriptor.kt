@@ -1,13 +1,14 @@
 package de.maibornwolff.codecharta.model
 
 class AttributeDescriptor(
+    val title: String = "",
     val description: String = "",
     val hintLowValue: String = "",
     val hintHighValue: String = "",
     val link: String = "") {
 
     override fun toString(): String {
-        return "descriptions:$description, hintLowValue:$hintLowValue, hintHighValue:$hintHighValue, link:$link"
+        return "title:$title, description:$description, hintLowValue:$hintLowValue, hintHighValue:$hintHighValue, link:$link"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -16,14 +17,16 @@ class AttributeDescriptor(
 
         other as AttributeDescriptor
 
-        return description == other.description &&
+        return title == other.title &&
+            description == other.description &&
             hintLowValue == other.hintLowValue &&
             hintHighValue == other.hintHighValue &&
             link == other.link
     }
 
     override fun hashCode(): Int {
-        var result = description.hashCode()
+        var result = title.hashCode()
+        result = 31 * result + description.hashCode()
         result = 31 * result + hintLowValue.hashCode()
         result = 31 * result + hintHighValue.hashCode()
         result = 31 * result + link.hashCode()
