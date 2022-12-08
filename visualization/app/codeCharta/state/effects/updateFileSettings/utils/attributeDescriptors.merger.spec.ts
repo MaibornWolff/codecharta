@@ -12,7 +12,7 @@ describe("AttributeDescriptorsMerger", () => {
 
 			attributes2 = {
 				rloc: {
-					title: "rloc3",
+					title: "rloc2",
 					description: "",
 					hintLowValue: "",
 					hintHighValue: "",
@@ -22,8 +22,8 @@ describe("AttributeDescriptorsMerger", () => {
 
 			attributes3 = {
 				rloc: {
-					title: "rloc4",
-					description: "DescriptionRloc4",
+					title: "rloc3",
+					description: "DescriptionRloc3",
 					hintLowValue: "",
 					hintHighValue: "",
 					link: "https://www.npmjs.com/package/metric-gardener"
@@ -41,7 +41,7 @@ describe("AttributeDescriptorsMerger", () => {
 		it("should merge attributeDescriptors if one file does not contain any attributeDescriptors", () => {
 			const attributeDescriptors = getMergedAttributeDescriptors([attributes1, attributes2])
 
-			expect(attributeDescriptors).toEqual(attributes3)
+			expect(attributeDescriptors).toEqual(attributes2)
 		})
 
 		it("should merge attributeDescriptors. If they share the same key, simply take the first attributeDescriptor", () => {
@@ -49,7 +49,7 @@ describe("AttributeDescriptorsMerger", () => {
 
 			const expected = {
 				rloc: {
-					title: "rloc3",
+					title: "rloc2",
 					description: "",
 					hintLowValue: "",
 					hintHighValue: "",
