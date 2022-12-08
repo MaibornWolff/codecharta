@@ -1,5 +1,5 @@
 /*
-This file contains descriptions of the metrics
+This file contains the fallback titles of the metrics
 */
 
 export const metricTitles: Map<string, string> = new Map([

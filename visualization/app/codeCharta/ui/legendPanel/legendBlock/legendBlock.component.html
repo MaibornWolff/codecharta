@@ -4,17 +4,17 @@
 </ng-template>
 
 <ng-template #showTitleAndDescription>
-	<div title="{{ legendMetric.metricName + ': ' + legendMetric.description }}">
-		{{ metricFor }} metric: <span class="bold">{{ legendMetric.title }}</span> ({{ legendMetric.metricName }})
+	<div title="{{ legendMetric.key + ': ' + legendMetric.description }}">
+		{{ metricFor }} metric: <span class="bold">{{ legendMetric.title }}</span> ({{ legendMetric.key }})
 	</div>
 </ng-template>
 <ng-template #showTitle>
-	<div title="{{ legendMetric.metricName }}">
-		{{ metricFor }} metric: <span class="bold">{{ legendMetric.title }}</span> ({{ legendMetric.metricName }})
+	<div title="{{ legendMetric.key }}">
+		{{ metricFor }} metric: <span class="bold">{{ legendMetric.title }}</span> ({{ legendMetric.key }})
 	</div>
 </ng-template>
 <ng-template #onlyShowName>
-	<div title="{{ legendMetric.metricName }}">
-		{{ metricFor }} metric: <span class="bold">{{ legendMetric.metricName }}</span>
+	<div title="{{ legendMetric.key }}">
+		{{ metricFor }} metric: <span class="bold">{{ legendMetric.key }}</span>
 	</div>
 </ng-template>

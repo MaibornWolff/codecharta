@@ -2,16 +2,16 @@ import { AttributeDescriptors } from "../../../codeCharta.model"
 import { metricTitles } from "../../../util/metric/metricTitles"
 
 export type LegendMetric = {
-	metricName: string
+	key: string
 	title: string
 	description: string
 }
 
-export function getLegendMetric(metric: string, attributeDescriptors: AttributeDescriptors): LegendMetric {
+export function getLegendMetric(metricKey: string, attributeDescriptors: AttributeDescriptors): LegendMetric {
 	return {
-		metricName: metric,
-		title: getMetricTitle(metric, attributeDescriptors),
-		description: attributeDescriptors?.[metric]?.description
+		key: metricKey,
+		title: getMetricTitle(metricKey, attributeDescriptors),
+		description: attributeDescriptors?.[metricKey]?.description
 	}
 }
 
