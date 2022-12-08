@@ -24,7 +24,7 @@ describe("_getLegendEdgeMetric", () => {
 
 	it("should get existing legendEdgeMetric", () => {
 		expect(_getLegendEdgeMetric("rloc", [{ name: "rloc", maxValue: 10, minValue: 0 }], undefined)).toEqual({
-			metricName: "rloc",
+			key: "rloc",
 			title: "Real Lines of Code",
 			description: undefined
 		})
@@ -44,7 +44,7 @@ describe("_getLegendEdgeMetric", () => {
 				TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 			)
 		).toEqual({
-			metricName: "mcc",
+			key: "mcc",
 			title: "Maximum Cyclic Complexity",
 			description: "Maximum cyclic complexity"
 		})
@@ -62,7 +62,7 @@ describe("_getLegendEdgeMetric", () => {
 				TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 			)
 		).toEqual({
-			metricName: "rloc",
+			key: "rloc",
 			title: "Real Lines of Code",
 			description: ""
 		})
