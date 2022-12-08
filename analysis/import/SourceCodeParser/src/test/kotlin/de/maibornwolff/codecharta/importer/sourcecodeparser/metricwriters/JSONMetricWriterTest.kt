@@ -45,6 +45,23 @@ class JSONMetricWriterTest {
     }
 
     @Test
+    fun `should only include required attributes descriptors`() {
+        val expectedResultFile = File("src/test/resources/jsonMetricValuesWithOneDescriptor.json").absoluteFile
+        val fileMetrics1 = FileMetricMap().add("statements", 2).add("something_else", 3)
+        val fileMetrics2 = FileMetricMap().add("statements", 1).add("something_else", 4)
+        val metrics = ProjectMetrics()
+        metrics.addFileMetricMap("foo.java", fileMetrics1)
+        metrics.addFileMetricMap("bar.kt", fileMetrics2)
+        val result = ByteArrayOutputStream()
+
+        JSONMetricWriter(result, false).generate(metrics, setOf())
+        val resultJSON = JsonParser.parseString(result.toString())
+        val expectedJSON = JsonParser.parseReader(expectedResultFile.reader())
+
+        Assertions.assertThat(resultJSON).isEqualTo(expectedJSON)
+    }
+
+    @Test
     fun `top level files are embedded correctly`() {
         val fileMetrics = FileMetricMap().add("mcc", 2).add("rloc", 3)
         val metrics = ProjectMetrics()
