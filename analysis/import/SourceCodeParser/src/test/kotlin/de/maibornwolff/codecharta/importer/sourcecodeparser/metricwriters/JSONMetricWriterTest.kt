@@ -15,9 +15,9 @@ class JSONMetricWriterTest {
     fun `file hierarchy and names are correct`() {
         val expectedResultFile = File("src/test/resources/jsonMetricHierarchy.json").absoluteFile
         val metrics = ProjectMetrics()
-        metrics.addFile("foo/bar.java")
-        metrics.addFile("foo/foo2/bar2.cpp")
-        metrics.addFile("foo3/bar.java")
+        addFileInProject(metrics, "foo/bar.java")
+        addFileInProject(metrics, "foo/foo2/bar2.cpp")
+        addFileInProject(metrics, "foo3/bar.java")
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(result, false).generate(metrics, setOf())
@@ -28,10 +28,27 @@ class JSONMetricWriterTest {
     }
 
     @Test
-    fun `node metrics are correct`() {
+    fun `node metrics are correct and attributes descriptors are included`() {
         val expectedResultFile = File("src/test/resources/jsonMetricValues.json").absoluteFile
         val fileMetrics1 = FileMetricMap().add("mcc", 2).add("rloc", 3)
         val fileMetrics2 = FileMetricMap().add("mcc", 1).add("rloc", 4)
+        val metrics = ProjectMetrics()
+        metrics.addFileMetricMap("foo.java", fileMetrics1)
+        metrics.addFileMetricMap("bar.kt", fileMetrics2)
+        val result = ByteArrayOutputStream()
+
+        JSONMetricWriter(result, false).generate(metrics, setOf())
+        val resultJSON = JsonParser.parseString(result.toString())
+        val expectedJSON = JsonParser.parseReader(expectedResultFile.reader())
+
+        Assertions.assertThat(resultJSON).isEqualTo(expectedJSON)
+    }
+
+    @Test
+    fun `should only include required attributes descriptors`() {
+        val expectedResultFile = File("src/test/resources/jsonMetricValuesWithOneDescriptor.json").absoluteFile
+        val fileMetrics1 = FileMetricMap().add("statements", 2).add("something_else", 3)
+        val fileMetrics2 = FileMetricMap().add("statements", 1).add("something_else", 4)
         val metrics = ProjectMetrics()
         metrics.addFileMetricMap("foo.java", fileMetrics1)
         metrics.addFileMetricMap("bar.kt", fileMetrics2)
@@ -58,5 +75,9 @@ class JSONMetricWriterTest {
         Assertions.assertThat(leaf["type"]).isEqualTo("File")
         Assertions.assertThat(leaf["name"]).isEqualTo("foo.java")
         Assertions.assertThat(leaf.getJSONObject("attributes").length()).isEqualTo(2)
+    }
+
+    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
+        currentProject.projectMetrics[file] = FileMetricMap()
     }
 }
