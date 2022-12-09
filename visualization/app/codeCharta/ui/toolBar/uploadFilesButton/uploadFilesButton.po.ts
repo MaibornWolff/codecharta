@@ -3,7 +3,7 @@ import { clickButtonOnPageElement } from "../../../../puppeteer.helper"
 export class UploadFileButtonPageObject {
 	async openFiles(paths: string[], clickOnFileChooser = true) {
 		const [fileChooser] = await Promise.all([
-			page.waitForFileChooser({ timeout: 800_000 }),
+			page.waitForFileChooser({ timeout: 60_000 }),
 			clickOnFileChooser && clickButtonOnPageElement("[title='Load cc.json files']")
 		])
 
