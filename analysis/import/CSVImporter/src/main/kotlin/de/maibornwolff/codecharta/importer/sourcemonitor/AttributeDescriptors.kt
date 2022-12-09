@@ -10,7 +10,7 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     descriptors["classes"] = AttributeDescriptor(title = "Number of Classes", description = "Number of classes", link = ghLink)
     descriptors["functions_per_class"] = AttributeDescriptor(title = "Functions per Class", description = "Number of functions per class", link = ghLink)
     descriptors["average_statements_per_function"] = AttributeDescriptor(title = "Average Statements per Function", description = "Average number of statements per method", link = ghLink)
-    descriptors["max_function_mcc"] = AttributeDescriptor(title = "Maximum Cyclic Complexity", description = "Maximum cyclic complexity of a function", link = ghLink)
+    descriptors["max_function_mcc"] = AttributeDescriptor(title = "Function Complexity", description = "Maximum cyclic complexity based on paths through a function by McCabe", link = ghLink)
     descriptors["max_block_depth"] = AttributeDescriptor(title = "Maximum Block Depth", description = "Maximum nested block depth found", link = ghLink)
     descriptors["average_block_depth"] = AttributeDescriptor(title = "Average Block Depth", description = "Average nested block depth found", link = ghLink)
     descriptors["average_function_mcc"] = AttributeDescriptor(title = "Average Cyclic Complexity", description = "Average cyclic complexity of functions", link = ghLink)

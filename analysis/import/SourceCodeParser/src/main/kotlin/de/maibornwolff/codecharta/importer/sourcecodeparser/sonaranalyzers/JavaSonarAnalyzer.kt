@@ -43,6 +43,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
+import java.util.Locale
+import kotlin.collections.HashMap
 
 class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) : SonarAnalyzer(verbose, searchIssues) {
 
@@ -188,7 +190,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
         sensorContext.allIssues().forEach {
             val ruleKey = it.ruleKey().rule()
-            val type = issueRepository.rule(ruleKey)?.type().toString().toLowerCase()
+            val type = issueRepository.rule(ruleKey)?.type().toString().lowercase(Locale.getDefault())
             if (verbose) System.err.println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
             if (issues.containsKey(type)) {
                 issues[type] = issues[type]!! + 1
