@@ -34,6 +34,7 @@ internal class MetricGardenerProjectBuilderTest {
     @Test
     fun `should generate project with descriptors`() {
         val project = metricGardenerprojectBuilder.build()
-        assertEquals(project.attributeDescriptors, getAttributeDescriptors())
+        assertEquals(project.attributeDescriptors["classes"], getAttributeDescriptors()["classes"])
+        assertEquals(project.attributeDescriptors["loc"], getAttributeDescriptors()["lines_of_code"])
     }
 }

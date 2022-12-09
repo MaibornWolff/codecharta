@@ -12,7 +12,7 @@ import java.io.File
 class MetricGardenerImporterTest {
 
     @Test
-    fun `should create json uncompressed file`() {
+    fun `should create json uncompressed file with attribute Descriptors`() {
         main(
             arrayOf(
                 "--is-json-file", "src/test/resources/metricgardener-analysis.json", "-nc",
@@ -24,8 +24,11 @@ class MetricGardenerImporterTest {
         val inputStream = file.inputStream()
         val project = ProjectDeserializer.deserializeProject(inputStream)
         inputStream.close()
+
+        // then
         assertTrue(file.exists())
-        assertEquals(project.attributeDescriptors, getAttributeDescriptors())
+        assertEquals(project.attributeDescriptors["rloc"], getAttributeDescriptors()["real_lines_of_code"])
+        assertEquals(project.attributeDescriptors["loc"], getAttributeDescriptors()["lines_of_code"])
     }
 
     @Test

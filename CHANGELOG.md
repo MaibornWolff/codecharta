@@ -13,9 +13,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     ![image](https://user-images.githubusercontent.com/72517530/204557970-0ba31f3b-5209-4707-a2d0-55cc45509f8a.png)
 -   Please note that the functionality of downloading cc.json maps will no longer be supported from April 2023. Instead, use the Custom View feature to create map configurations. [#3079](https://github.com/MaibornWolff/codecharta/pull/3076)
 
+## [1.112.1] - 2022-12-01
+
+### Fixed 🐞
+
+-   Reverted PR [#3077](https://github.com/MaibornWolff/codecharta/pull/3077) that introduced a rendering bug, where buildings sizes were not proportional to their area value [#3159](https://github.com/MaibornWolff/codecharta/pull/3159)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Add attribute descriptors to SonarImporter [#3149](https://github.com/MaibornWolff/codecharta/pull/3149)
+-   Add title field to attribute descriptors [#3158](https://github.com/MaibornWolff/codecharta/pull/3158)
 
 ## [1.112.0] - 2022-11-25
 

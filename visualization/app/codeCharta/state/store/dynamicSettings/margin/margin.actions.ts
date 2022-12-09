@@ -18,4 +18,4 @@ export function setMargin(margin: number = defaultMargin): SetMarginAction {
 	}
 }
 
-export const defaultMargin = 100
+export const defaultMargin = 50

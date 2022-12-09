@@ -7,7 +7,6 @@ import { ColorConverter } from "../../util/color/colorConverter"
 import { State } from "../../state/angular-redux/state"
 import { Inject, Injectable } from "@angular/core"
 import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
-import { INITIAL_PADDING } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 
 interface InternalLabel {
 	sprite: Sprite
@@ -83,7 +82,7 @@ export class CodeMapLabelService {
 		const labelYOrigin = (y + node.height) * multiplier.y
 		const labelZ = (z + node.length / 2) * multiplier.z
 
-		const labelHeightScaled = ((this.LABEL_HEIGHT_COEFFICIENT * margin) / 100) * INITIAL_PADDING * this.LABEL_SCALE_FACTOR
+		const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
 		let labelOffset = labelHeightScaled + label.heightValue / 2
 
 		switch (layoutAlgorithm) {
@@ -172,11 +171,7 @@ export class CodeMapLabelService {
 		const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 		const { margin } = this.state.getValue().dynamicSettings
 
-		const labelHeightDifference = new Vector3(
-			0,
-			((this.LABEL_HEIGHT_COEFFICIENT * margin) / 100) * INITIAL_PADDING * this.LABEL_SCALE_FACTOR,
-			0
-		)
+		const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
 
 		for (const label of this.labels) {
 			const multiplier = scalingVector.clone()

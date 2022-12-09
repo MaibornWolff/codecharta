@@ -102,7 +102,7 @@ class CSVProjectBuilderTest {
 
     @Test
     fun `when importing a valid csv file then appropriate attribute descriptors have been added`() {
-        val attributeDescriptors = mapOf("Test" to AttributeDescriptor("123"))
+        val attributeDescriptors = mapOf("Test" to AttributeDescriptor(description = "123"))
         val csvProjectBuilder = CSVProjectBuilder(
             '\\',
             ',',
