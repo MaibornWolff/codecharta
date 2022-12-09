@@ -141,7 +141,7 @@
 		"lint-staged": "^11.0.0",
 		"node-polyfill-webpack-plugin": "^1.1.4",
 		"nw-builder": "^3.7.4",
-		"puppeteer": "^16.0.0",
+		"puppeteer": "^17.0.0",
 		"sass": "^1.50.1",
 		"sass-loader": "^12.6.0",
 		"style-loader": "^2.0.0",
