@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Metric descriptions are shown via tooltip in the legend [#3162](https://github.com/MaibornWolff/codecharta/pull/3162)
+-   Metric descriptions are shown via tooltip in the legend [#3162](https://github.com/MaibornWolff/codecharta/pull/3162) <br/>
     ![image](https://user-images.githubusercontent.com/27358421/205251507-100b1e1a-d86e-44f3-89cf-f32bf295aabd.png)
 
 ### Chore 👨‍💻 👩‍💻
