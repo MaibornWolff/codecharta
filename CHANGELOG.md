@@ -9,12 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Metric descriptions are shown via tooltip in the legend [#3162](https://github.com/MaibornWolff/codecharta/pull/3162) <br/>
+-   Change tooltips in the legend to show the metric description [#3162](https://github.com/MaibornWolff/codecharta/pull/3162) <br/>
     ![image](https://user-images.githubusercontent.com/27358421/205251507-100b1e1a-d86e-44f3-89cf-f32bf295aabd.png)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Metric titles in the legend are read from cc.json now [#3162](https://github.com/MaibornWolff/codecharta/pull/3162)
+-   Improve metric titles by loading them from cc.json [#3162](https://github.com/MaibornWolff/codecharta/pull/3162)
 -   Add attribute descriptors to SoureCodeParser [#3166](https://github.com/MaibornWolff/codecharta/pull/3166)
 
 ## [1.112.1] - 2022-12-01
