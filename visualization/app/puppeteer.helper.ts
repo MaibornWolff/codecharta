@@ -13,7 +13,7 @@ export async function goto(url = CC_URL) {
 	await page.waitForSelector("#loading-gif-file", { visible: false })
 }
 
-export const clickButtonOnPageElement = async (selectorString: string, expectToClickOptions?) => {
+export async function clickButtonOnPageElement(selectorString: string, expectToClickOptions?) {
 	await page.waitForSelector(selectorString)
 	await expect(page).toClick(selectorString, expectToClickOptions)
 }
