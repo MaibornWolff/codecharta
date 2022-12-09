@@ -20,12 +20,4 @@ export function setAttributeDescriptors(
 	}
 }
 
-export const defaultAttributeDescriptors: AttributeDescriptors = {
-	DefaultAttributeDescriptor: {
-		title: "",
-		description: "",
-		hintLowValue: "",
-		hintHighValue: "",
-		link: ""
-	}
-}
+export const defaultAttributeDescriptors: AttributeDescriptors = {}
