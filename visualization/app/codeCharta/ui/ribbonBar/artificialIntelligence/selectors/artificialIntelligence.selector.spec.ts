@@ -19,7 +19,7 @@ describe("ArtificialIntelligenceSelector", () => {
 				{ from: 29, isOutlier: true, metric: "functions", to: 44 },
 				{ from: 48, metric: "mcc", to: 71 }
 			],
-			unsuspiciousMetrics: ["rloc (real lines of code)"],
+			unsuspiciousMetrics: ["rloc (Real Lines of Code)"],
 			untrackedMetrics: []
 		})
 	})
@@ -38,7 +38,7 @@ describe("ArtificialIntelligenceSelector", () => {
 				{ from: 29, isOutlier: true, metric: "functions", to: 44 },
 				{ from: 48, metric: "mcc", to: 71 }
 			],
-			unsuspiciousMetrics: ["rloc (real lines of code)"],
+			unsuspiciousMetrics: ["rloc (Real Lines of Code)"],
 			untrackedMetrics: ["unknownMetric"]
 		})
 	})

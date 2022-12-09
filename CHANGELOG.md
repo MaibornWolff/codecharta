@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+-   Metric titles in the legend are read from cc.json now [#3162](https://github.com/MaibornWolff/codecharta/pull/3162)
 -   Add attribute descriptors to SoureCodeParser [#3166](https://github.com/MaibornWolff/codecharta/pull/3166)
 
 ## [1.112.1] - 2022-12-01

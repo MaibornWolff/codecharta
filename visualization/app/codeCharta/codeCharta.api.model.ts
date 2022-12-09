@@ -1,5 +1,14 @@
 import { Vector3 } from "three"
-import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage, RecursivePartial, Settings } from "./codeCharta.model"
+import {
+	AttributeDescriptors,
+	AttributeTypes,
+	AttributeTypeValue,
+	CodeMapNode,
+	Edge,
+	MarkedPackage,
+	RecursivePartial,
+	Settings
+} from "./codeCharta.model"
 
 export interface ExportCCFile {
 	projectName: string
@@ -7,6 +16,7 @@ export interface ExportCCFile {
 	fileChecksum: string
 	nodes: CodeMapNode[]
 	attributeTypes?: AttributeTypes | OldAttributeTypes
+	attributeDescriptors?: AttributeDescriptors
 	edges?: Edge[]
 	markedPackages?: MarkedPackage[]
 	blacklist?: ExportBlacklistItem[]

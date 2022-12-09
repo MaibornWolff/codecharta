@@ -5,7 +5,7 @@ import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/me
 import { Observable } from "rxjs"
 import { EdgeMetricData, NodeMetricData } from "../../codeCharta.model"
 import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
-import { metricDescriptions } from "../../util/metric/metricDescriptions"
+import { metricTitles } from "../../util/metric/metricTitles"
 
 type MetricChooserType = "node" | "edge"
 
@@ -28,7 +28,7 @@ export class MetricChooserComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.metricData$ = this.store.select(this.type === "node" ? nodeMetricDataSelector : edgeMetricDataSelector)
-		this.metricDataDescription$ = metricDescriptions
+		this.metricDataDescription$ = metricTitles
 	}
 
 	handleOpenedChanged(opened: boolean) {

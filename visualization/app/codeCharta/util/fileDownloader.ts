@@ -1,11 +1,21 @@
-import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
+import {
+	AttributeDescriptors,
+	AttributeTypes,
+	BlacklistItem,
+	BlacklistType,
+	CodeMapNode,
+	Edge,
+	FileMeta,
+	FileSettings,
+	NodeType
+} from "../codeCharta.model"
 import { LoadFileService } from "../services/loadFile/loadFile.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
-export type DownloadableSetting = "Nodes" | "AttributeTypes" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
+export type DownloadableSetting = "Nodes" | "AttributeTypes" | "AttributeDescriptors" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
 
 export class FileDownloader {
 	static downloadCurrentMap(
@@ -31,7 +41,10 @@ export class FileDownloader {
 			apiVersion: fileMeta.apiVersion,
 			fileChecksum: fileMeta.fileChecksum,
 			nodes: [this.undecorateMap(map)],
-			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
+			attributeTypes: downloadSettings.includes("AttributeTypes") ? this.getAttributeTypesForJSON(fileSettings.attributeTypes) : {},
+			attributeDescriptors: downloadSettings.includes("AttributeDescriptors")
+				? this.getAttributeDescriptorsForJSON(fileSettings.attributeDescriptors)
+				: {},
 			edges: downloadSettings.includes("Edges") ? this.undecorateEdges(fileSettings.edges) : [],
 			markedPackages: downloadSettings.includes("MarkedPackages") ? fileSettings.markedPackages : [],
 			blacklist: this.getBlacklistToDownload(downloadSettings, fileSettings.blacklist)
@@ -60,6 +73,13 @@ export class FileDownloader {
 			return {}
 		}
 		return attributeTypes
+	}
+
+	private static getAttributeDescriptorsForJSON(attributeDescriptors: AttributeDescriptors) {
+		if (Object.keys(attributeDescriptors).length === 0) {
+			return {}
+		}
+		return attributeDescriptors
 	}
 
 	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType) {
