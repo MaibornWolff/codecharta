@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.SonarAnalyzer
 import org.assertj.core.api.Assertions.assertThat
@@ -28,17 +29,20 @@ class ProjectParserTest {
     }
 
     private fun createmMockResponseJava(): ProjectMetrics {
-        val result = ProjectMetrics().addFile("foo.java").addFile("bar/foo.java")
-        result.addMetricToFile("foo.java", "functions", 4)
-        result.addMetricToFile("bar/foo.java", "functions", 7)
-        result.addMetricToFile("foo.java", "ncloc", 31)
-        result.addMetricToFile("bar/foo.java", "ncloc", 44)
+        val result = ProjectMetrics()
+        addFileInProject(result, "foo.java")
+        addFileInProject(result, "bar/foo.java")
+        addMetricToFileInProject(result, "foo.java", "functions", 4)
+        addMetricToFileInProject(result, "bar/foo.java", "functions", 7)
+        addMetricToFileInProject(result, "foo.java", "ncloc", 31)
+        addMetricToFileInProject(result, "bar/foo.java", "ncloc", 44)
         return result
     }
 
     private fun createmMockResponsePython(): ProjectMetrics {
-        val result = ProjectMetrics().addFile("foo.py")
-        result.addMetricToFile("foo.py", "something_else", 42)
+        val result = ProjectMetrics()
+        addFileInProject(result, "foo.py")
+        addMetricToFileInProject(result, "foo.py", "something_else", 42)
         return result
     }
 
@@ -111,5 +115,13 @@ class ProjectParserTest {
         projectParser.scanProject(File(testProjectPath).absoluteFile)
 
         assertThat(projectParser.metricKinds.toString()).contains("functions", "ncloc", "something_else")
+    }
+
+    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
+        currentProject.projectMetrics[file] = FileMetricMap()
+    }
+
+    private fun addMetricToFileInProject(currentProject: ProjectMetrics, file: String, metric: String, value: Int) {
+        currentProject.projectMetrics[file]?.add(metric, value)
     }
 }

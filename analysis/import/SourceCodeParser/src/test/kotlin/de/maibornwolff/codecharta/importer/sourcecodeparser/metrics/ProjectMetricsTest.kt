@@ -14,17 +14,17 @@ class ProjectMetricsTest {
 
     @Test
     fun `addFile adds a file with empty Metric Map`() {
-        projectMetrics.addFile("foo")
+        addFileInProject(projectMetrics, "foo")
 
         Assertions.assertThat(projectMetrics.projectMetrics["foo"]).isEqualToComparingFieldByField(FileMetricMap())
     }
 
     @Test
     fun `AddMetricToFile adds correct metric to given file`() {
-        projectMetrics.addFile("foo")
+        addFileInProject(projectMetrics, "foo")
         val expected = FileMetricMap().add("mcc", 99)
 
-        projectMetrics.addMetricToFile("foo", "mcc", 99)
+        addMetricToFileInProject(projectMetrics, "foo", "mcc", 99)
 
         Assertions.assertThat(projectMetrics.projectMetrics["foo"]).isEqualToComparingFieldByField(expected)
     }
@@ -63,5 +63,13 @@ class ProjectMetricsTest {
         val result = projectMetrics.getRandomFileName()
 
         Assertions.assertThat(listOf("foo", "bar")).contains(result)
+    }
+
+    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
+        currentProject.projectMetrics[file] = FileMetricMap()
+    }
+
+    private fun addMetricToFileInProject(currentProject: ProjectMetrics, file: String, metric: String, value: Int) {
+        currentProject.projectMetrics[file]?.add(metric, value)
     }
 }
