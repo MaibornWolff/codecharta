@@ -64,6 +64,7 @@ Object {
   },
   "settings": Object {
     "fileSettings": Object {
+      "attributeDescriptors": Object {},
       "attributeTypes": Object {
         "edges": Object {},
         "nodes": Object {},

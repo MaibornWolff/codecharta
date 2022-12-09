@@ -152,6 +152,7 @@ export class DeltaGenerator {
 					edges: [],
 					blacklist: [],
 					attributeTypes: { nodes: {}, edges: {} },
+					attributeDescriptors: {},
 					markedPackages: []
 				}
 			}

@@ -108,6 +108,7 @@ function initializeFileSettings(target: CustomConfig) {
 	target.stateSettings.fileSettings = {
 		blacklist: undefined,
 		edges: [],
+		attributeDescriptors: {},
 		markedPackages: []
 	}
 }

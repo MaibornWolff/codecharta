@@ -34,6 +34,7 @@ function isSetStateAction(action: Action): action is SetStateAction {
 
 const objectWithDynamicKeysInStore = new Set([
 	"fileSettings.attributeTypes",
+	"fileSettings.attributeDescriptors",
 	"fileSettings.blacklist",
 	"fileSettings.edges",
 	"fileSettings.markedPackages",
