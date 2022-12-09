@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Metric descriptions are shown via tooltip in the legend [#3162](https://github.com/MaibornWolff/codecharta/pull/3162)
+    ![alt text](https://user-images.githubusercontent.com/27358421/205251507-100b1e1a-d86e-44f3-89cf-f32bf295aabd.png)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Metric titles in the legend are read from cc.json now [#3162](https://github.com/MaibornWolff/codecharta/pull/3162)
