@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="">
-    <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release_gh_pages.yml/badge.svg"
+    <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release.yml/badge.svg"
          alt="Build Status">
   </a>
   <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
@@ -100,8 +100,8 @@ Want to have even **more information**? Please check our [news](https://maibornw
 -   [Docs](https://maibornwolff.github.io/codecharta/)
 -   [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
 -   [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
--   [Sonarqube Visualization](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
--   [Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
+-   [Sonarqube Visualization](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_visualization)
+-   [Sonarqube Analysis](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_analysis)
 
 ## About CodeCharta
 
