@@ -43,7 +43,8 @@ describe("UpdateFileSettingsEffect", () => {
 					edges: [],
 					markedPackages: [],
 					blacklist: [],
-					attributeTypes: {}
+					attributeTypes: {},
+					attributeDescriptors: {}
 				}
 			})
 		)

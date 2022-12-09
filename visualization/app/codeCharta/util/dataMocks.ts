@@ -83,12 +83,39 @@ const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType
 const DEFAULT_SETTINGS = {
 	fileSettings: {
 		attributeTypes: { nodes: {}, edges: {} },
+		attributeDescriptors: {},
 		blacklist: [],
 		edges: VALID_EDGES,
 		markedPackages: []
 	}
 }
-export const DEFAULT_CC_FILE_MOCK: CCFile = { fileMeta: DEFAULT_FILE_META, map: DEFAULT_FILE_MAP, settings: DEFAULT_SETTINGS }
+export const DEFAULT_CC_FILE_MOCK: CCFile = {
+	fileMeta: DEFAULT_FILE_META,
+	map: DEFAULT_FILE_MAP,
+	settings: DEFAULT_SETTINGS
+}
+
+export const TEST_ATTRIBUTE_TYPES = {
+	nodes: { test: AttributeTypeValue.absolute },
+	edges: { test: AttributeTypeValue.absolute }
+}
+
+export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED = {
+	mcc: {
+		title: "Maximum Cyclic Complexity",
+		description: "Maximum cyclic complexity",
+		hintLowValue: "",
+		hintHighValue: "",
+		link: "https://www.npmjs.com/package/metric-gardener"
+	},
+	rloc: {
+		title: "",
+		description: "",
+		hintLowValue: "",
+		hintHighValue: "",
+		link: "https://www.npmjs.com/package/metric-gardener"
+	}
+}
 
 export const VALID_NODE: CodeMapNode = {
 	...DEFAULT_ROOT,
@@ -940,6 +967,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
 	settings: {
 		fileSettings: {
 			attributeTypes: { nodes: {}, edges: {} },
+			attributeDescriptors: {},
 			blacklist: [],
 			edges: [],
 			markedPackages: []
@@ -1042,6 +1070,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 	settings: {
 		fileSettings: {
 			attributeTypes: { nodes: {}, edges: {} },
+			attributeDescriptors: {},
 			blacklist: [],
 			edges: [],
 			markedPackages: []
@@ -1466,6 +1495,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 		}
 	],
 	attributeTypes: {},
+	attributeDescriptors: {},
 	edges: [
 		{
 			fromNodeName: "/root/big leaf",
@@ -1542,6 +1572,7 @@ export const STATE: State = {
 			},
 			edges: {}
 		},
+		attributeDescriptors: {},
 		blacklist: [],
 		edges: VALID_EDGES,
 		markedPackages: []
@@ -1677,7 +1708,13 @@ export const DEFAULT_STATE: State = {
 		searchPattern: "",
 		sortingOption: SortingOption.NAME
 	},
-	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: {
+		attributeTypes: { nodes: {}, edges: {} },
+		attributeDescriptors: {},
+		blacklist: [],
+		edges: [],
+		markedPackages: []
+	},
 	files: [],
 	appStatus: {
 		hoveredNodeId: null,

@@ -108,6 +108,7 @@ export interface Settings {
 
 export interface FileSettings {
 	attributeTypes: AttributeTypes
+	attributeDescriptors: AttributeDescriptors
 	blacklist: Array<BlacklistItem>
 	edges: Edge[]
 	markedPackages: MarkedPackage[]
@@ -184,6 +185,18 @@ export interface ColorRange {
 export interface AttributeTypes {
 	nodes?: { [key: string]: AttributeTypeValue }
 	edges?: { [key: string]: AttributeTypeValue }
+}
+
+export interface AttributeDescriptors {
+	[key: string]: AttributeDescriptor
+}
+
+export interface AttributeDescriptor {
+	title: string
+	description: string
+	hintLowValue: string
+	hintHighValue: string
+	link: string
 }
 
 export enum AttributeTypeValue {

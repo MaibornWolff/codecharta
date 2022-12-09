@@ -1,7 +1,14 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { DownloadableSetting, FileDownloader } from "./fileDownloader"
-import { FileMeta, CodeMapNode, FileSettings, BlacklistType } from "../codeCharta.model"
-import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED, VALID_NODE_DECORATED, VALID_EDGES_DECORATED } from "./dataMocks"
+import { BlacklistType, CodeMapNode, FileMeta, FileSettings } from "../codeCharta.model"
+import {
+	TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
+	TEST_ATTRIBUTE_TYPES,
+	TEST_FILE_DATA,
+	TEST_FILE_DATA_DOWNLOADED,
+	VALID_EDGES_DECORATED,
+	VALID_NODE_DECORATED
+} from "./dataMocks"
 import { klona } from "klona"
 
 describe("fileDownloader", () => {
@@ -18,6 +25,8 @@ describe("fileDownloader", () => {
 		fileMeta = TEST_FILE_DATA.fileMeta
 		filesettings = TEST_FILE_DATA.settings.fileSettings
 		filesettings.edges = VALID_EDGES_DECORATED
+		filesettings.attributeTypes = TEST_ATTRIBUTE_TYPES
+		filesettings.attributeDescriptors = TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 		filesettings.blacklist = [
 			{ path: "/root/bigLeaf.ts", type: BlacklistType.flatten },
 			{ path: "/root/sample1OnlyLeaf.scss", type: BlacklistType.exclude }
@@ -58,6 +67,34 @@ describe("fileDownloader", () => {
 
 			const expected = klona(TEST_FILE_DATA_DOWNLOADED)
 			expected.edges = []
+
+			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettings, fileName)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(JSON.stringify(expected), fileNameWithExtension)
+		})
+
+		it("should call downloadData with undecorated ExportCCFile including attribute Types", () => {
+			downloadSettings = ["AttributeTypes"]
+
+			const expected = klona(TEST_FILE_DATA_DOWNLOADED)
+			expected.attributeTypes = TEST_ATTRIBUTE_TYPES
+			expected.edges = []
+			expected.blacklist = []
+
+			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettings, fileName)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(JSON.stringify(expected), fileNameWithExtension)
+		})
+
+		it("should call downloadData with undecorated ExportCCFile including attribute Descriptors", () => {
+			downloadSettings = ["AttributeDescriptors"]
+
+			const expected = klona(TEST_FILE_DATA_DOWNLOADED)
+			expected.attributeDescriptors = TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
+			expected.edges = []
+			expected.blacklist = []
 
 			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettings, fileName)
 
