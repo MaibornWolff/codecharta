@@ -52,7 +52,7 @@
 		"test:updateSnaps": "npm test -- --updateSnapshot",
 		"e2e": "jest --config conf/jestE2E.config.json .*\\.e2e\\.ts --coverage false",
 		"e2e:auto": "npm run e2e -- --watch",
-		"e2e:ci": "npm run e2e",
+		"e2e:ci": "npm run e2e -- --runInBand",
 		"package": "node script/build-nwjs.js",
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "npm run lint -- --fix",
