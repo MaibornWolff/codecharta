@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="">
-    <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release_gh_pages.yml/badge.svg"
+    <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release.yml/badge.svg"
          alt="Build Status">
   </a>
   <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
@@ -38,6 +38,7 @@
     -   CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
     -   It uses code metrics from `.cc.json` files.
     -   The imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
+    -   You can change the way the file is displayed and save and later load it as a [Custom View](https://maibornwolff.github.io/codecharta/docs/custom-view/).
 
 -   [CodeCharta Analysis](https://maibornwolff.github.io/codecharta/docs/analysis/):
     -   CC Analysis is used to calculate or to import metrics from third party tools for a code base.
@@ -49,7 +50,6 @@
 
 -   **In CodeCharta Visualization:**
 
-    -   **Custom Views:** Download and upload custom configuration files, share them between other devices, browsers and people.
     -   **Suspicious Metrics:** Highlight files with suspicious metrics and a _risk profile analysis_ of the code based on the cyclomatic complexity.
 
 > **NOTE:** You can enable them from the settings panel.
@@ -100,8 +100,8 @@ Want to have even **more information**? Please check our [news](https://maibornw
 -   [Docs](https://maibornwolff.github.io/codecharta/)
 -   [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
 -   [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
--   [Sonarqube Visualization](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
--   [Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
+-   [Sonarqube Visualization](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_visualization)
+-   [Sonarqube Analysis](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_analysis)
 
 ## About CodeCharta
 

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   The Custom Views Feature is now also available outside the Experimental Feature Mode [#3079](https://github.com/MaibornWolff/codecharta/pull/3076) </br>
+    ![image](https://user-images.githubusercontent.com/72517530/204557970-0ba31f3b-5209-4707-a2d0-55cc45509f8a.png)
+-   Please note that the functionality of downloading cc.json maps will no longer be supported from April 2023. Instead, use the Custom View feature to create and share configurations for different views of your map. [#3079](https://github.com/MaibornWolff/codecharta/pull/3076)
 -   Change tooltips in the legend to show the metric description [#3162](https://github.com/MaibornWolff/codecharta/pull/3162) <br/>
     ![image](https://user-images.githubusercontent.com/27358421/205251507-100b1e1a-d86e-44f3-89cf-f32bf295aabd.png)
 
