@@ -45,7 +45,7 @@ describe("downloadButtonComponent", () => {
 		})
 	})
 
-	it("should download a map with custom settings", async () => {
+	it("should show deprecation warning and download a map with custom settings", async () => {
 		const mockedDownload = jest.fn()
 		FileDownloader.downloadCurrentMap = mockedDownload
 		await render(DownloadButtonComponent, { excludeComponentDeclaration: true })
@@ -54,6 +54,8 @@ describe("downloadButtonComponent", () => {
 		await waitFor(() =>
 			expect((document.querySelector(".file-name-wrapper input") as HTMLInputElement).value).toBe("fileA_2018-12-14_09-39")
 		)
+
+		expect(document.querySelector(".deprecation-warning-container").textContent).toContain("Deprecation warning!")
 
 		const checkboxes = document.querySelectorAll("mat-checkbox")
 
