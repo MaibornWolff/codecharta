@@ -6,7 +6,7 @@ buildscript {
         gson_version = '2.10'
         gradle_module_metadata_maven_plugin = '0.3.0'
         jackson_version = '2.14.1'
-        jacoco_version = '0.8.7'
+        jacoco_version = '0.8.8'
         jaxb_api_version = '2.3.1'
         jersey_version = '2.37'
         json_schema_version = '1.14.1'
@@ -34,7 +34,7 @@ buildscript {
 
         mockito_core_version = '3.12.4'
         mockito_kotlin_version = '2.2.0'
-        mockk_version = '1.13.2'
+        mockk_version = '1.13.3'
         spek2_version = '2.0.19'
         wiremock_version = '2.33.2'
     }
