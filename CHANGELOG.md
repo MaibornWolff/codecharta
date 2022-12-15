@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.113.0] - 2022-12-15
+
 ### Changed
 
 -   The Custom Views Feature is now also available outside the Experimental Feature Mode [#3079](https://github.com/MaibornWolff/codecharta/pull/3076) </br>
