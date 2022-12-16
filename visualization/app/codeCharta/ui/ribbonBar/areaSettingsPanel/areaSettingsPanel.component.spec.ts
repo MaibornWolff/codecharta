@@ -24,4 +24,9 @@ describe("AreaSettingsPanelComponent", () => {
 		detectChanges()
 		expect(screen.queryByRole("checkbox", { checked: false, name: "Default margin (50px)" })).not.toBe(null)
 	})
+
+	it("should display enableFloorLabels-checkbox", async () => {
+		await render(AreaSettingsPanelComponent, { excludeComponentDeclaration: true })
+		expect(screen.queryByText("Enable Floor Labels")).not.toBe(null)
+	})
 })

@@ -80,8 +80,8 @@ export class ThreeSceneService {
 	private initFloorLabels(nodes: Node[]) {
 		this.floorLabelPlanes.clear()
 
-		const { layoutAlgorithm } = this.state.getValue().appSettings
-		if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap) {
+		const { layoutAlgorithm, enableFloorLabels } = this.state.getValue().appSettings
+		if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap || !enableFloorLabels) {
 			return
 		}
 
@@ -93,7 +93,7 @@ export class ThreeSceneService {
 		const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 
 		this.floorLabelDrawer = new FloorLabelDrawer(this.mapMesh.getNodes(), rootNode, treeMapSize, scalingVector)
-		const floorLabels = this.floorLabelDrawer.draw()
+		const floorLabels = this.floorLabelDrawer.draw(this.state.getValue())
 
 		if (floorLabels.length > 0) {
 			this.floorLabelPlanes.add(...floorLabels)

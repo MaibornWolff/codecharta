@@ -25,6 +25,7 @@ import { MarginActions } from "../../store/dynamicSettings/margin/margin.actions
 import { SearchPatternActions } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { MarkedPackagesActions } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 import { StateActions } from "../../store/state.actions"
+import { EnableFloorLabelsActions } from "../../store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 
 export const actionsRequiringRerender = [
 	ColorLabelsActions,
@@ -53,5 +54,6 @@ export const actionsRequiringRerender = [
 	ColorMetricActions,
 	ShowOnlyBuildingsWithEdgesActions,
 	MarkedPackagesActions,
-	StateActions
+	StateActions,
+	EnableFloorLabelsActions
 ]
