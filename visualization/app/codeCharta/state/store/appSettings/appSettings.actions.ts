@@ -26,6 +26,7 @@ import { defaultScreenshotToClipboardEnabled } from "./enableClipboard/screensho
 import { defaultInvertArea } from "./invertArea/invertArea.actions"
 import { defaultIsEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { defaultIsColorMetricLinkedToHeightMetric } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
+import { defaultEnableFloorLabel } from "./enableFloorLabels/enableFloorLabels.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -71,5 +72,6 @@ export const defaultAppSettings: AppSettings = {
 	layoutAlgorithm: defaultLayoutAlgorithm,
 	maxTreeMapFiles: defaultMaxTreeMapFiles,
 	sharpnessMode: defaultSharpnessMode,
-	isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric
+	isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
+	enableFloorLabels: defaultEnableFloorLabel
 }
