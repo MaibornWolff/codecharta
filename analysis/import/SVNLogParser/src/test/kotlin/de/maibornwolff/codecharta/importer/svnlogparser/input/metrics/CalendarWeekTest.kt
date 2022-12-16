@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -10,7 +10,7 @@ class CalendarWeekTest {
     private val zoneOffset = ZoneOffset.UTC
 
     @Test
-    fun canCreateCalendarWeekFromADateTime() {
+    fun `can create calendar week from aDate time`() {
         // given
         val commitDateTime = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset)
 
@@ -22,7 +22,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun calendarWeekProperlyCalculated_when_dayAtStartOfYear_and_weekInLastYear_and_53WeeksInLastYear() {
+    fun `calendarWeekProperlyCalculated when dayAtStartOfYear and weekInLastYear and 53WeeksInLastYear`() {
         // given
         val commitDateTime = OffsetDateTime.of(2016, 1, 3, 12, 0, 0, 0, zoneOffset)
 
@@ -34,7 +34,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun calendarWeekProperlyCalculated_when_dayAtStartOfYear_and_weekInLastYear_and_52WeeksInLastYear() {
+    fun `calendarWeekProperlyCalculated when dayAtStartOfYear and weekInLastYear and 52WeeksInLastYear`() {
         // given
         val commitDateTime = OffsetDateTime.of(2017, 1, 3, 12, 0, 0, 0, zoneOffset)
 
@@ -46,7 +46,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun calendarWeekProperlyCalculated_when_dayAtEndOfYear_and_weekInNextYear() {
+    fun `calendarWeekProperlyCalculated when dayAtEndOfYear and weekInNextYear`() {
         // given
         val commitDateTime = OffsetDateTime.of(2018, 12, 31, 12, 0, 0, 0, zoneOffset)
 
@@ -58,7 +58,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun weeksBetweenCommitsProperlyCalculated_when_52WeeksInYears() {
+    fun `weeksBetweenCommitsProperlyCalculated when 52WeeksInYears`() {
         // given
         val commitDateTime2 = OffsetDateTime.of(2018, 1, 11, 12, 0, 0, 0, zoneOffset)
         val commitDateTime3 = OffsetDateTime.of(2017, 12, 13, 12, 0, 0, 0, zoneOffset)

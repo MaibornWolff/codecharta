@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 import de.maibornwolff.codecharta.model.Edge
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.util.Arrays
 import java.util.stream.Collectors
@@ -16,7 +16,7 @@ class HighlyCoupledFilesTest {
     private val COUPLED_FILE2 = "coupledfilename2"
 
     @Test
-    fun should_have_initial_value_zero() {
+    fun `should have initial value zero`() {
         // when
         val metric = HighlyCoupledFiles()
 
@@ -26,7 +26,7 @@ class HighlyCoupledFilesTest {
     }
 
     @Test
-    fun should_not_increase_on_commits_of_same_file() {
+    fun `should not increase on commits of same file`() {
         // given
         val metric = HighlyCoupledFiles()
 
@@ -39,7 +39,7 @@ class HighlyCoupledFilesTest {
     }
 
     @Test
-    fun should_not_increase_on_one_commit_of_several_files() {
+    fun `should not increase on one commit of several files`() {
         // given
         val metric = HighlyCoupledFiles()
 
@@ -52,7 +52,7 @@ class HighlyCoupledFilesTest {
     }
 
     @Test
-    fun should_increase_on_at_five_commits_of_same_files() {
+    fun `should increase on at five commits of same files`() {
         // given
         val metric = HighlyCoupledFiles()
         val expectedEdge = Edge("filename", "coupledfilename1", mapOf("temporal_coupling" to 1.0))
@@ -90,7 +90,7 @@ class HighlyCoupledFilesTest {
 
     private fun registerModifications(metric: Metric, vararg filenames: String) {
         val modificationList = Arrays.stream(filenames)
-            .map<Modification>({ Modification(it) })
+            .map<Modification> { Modification(it) }
             .collect(Collectors.toList())
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())
@@ -99,6 +99,6 @@ class HighlyCoupledFilesTest {
         modificationList.stream()
             .filter { mod -> FILENAME == mod.filename }
             .findFirst()
-            .ifPresent({ metric.registerModification(it) })
+            .ifPresent { metric.registerModification(it) }
     }
 }

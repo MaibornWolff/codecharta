@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.VersionControlledF
 import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.stream.Stream
@@ -28,10 +28,10 @@ abstract class ParserStrategyContractTest {
 
     protected abstract val logParserStrategy: LogParserStrategy
 
-    protected abstract val twoCommitsAsStraem: Stream<String>
+    protected abstract val twoCommitsAsStream: Stream<String>
 
     @Test
-    fun parsesCommit() {
+    fun `parses commit`() {
         val parser = LogLineParser(logParserStrategy, metricsFactory)
         val commit = parser.parseCommit(fullCommit)
         assertThat(commit)
@@ -45,7 +45,7 @@ abstract class ParserStrategyContractTest {
     }
 
     @Test
-    fun parsesFilesInCommitLines() {
+    fun `parses files in commit lines`() {
         val modifications = logParserStrategy.parseModifications(fullCommit)
         assertThat(modifications).hasSize(3)
         assertThat(modifications)
@@ -54,26 +54,26 @@ abstract class ParserStrategyContractTest {
     }
 
     @Test
-    fun parseAuthorFromCommitLines() {
+    fun `parse author from commit lines`() {
         val author = logParserStrategy.parseAuthor(fullCommit)
         assertThat(author).isEqualTo("TheAuthor")
     }
 
     @Test
-    fun parseDateFromCommitLines() {
+    fun `parse date from commit lines`() {
         val commitDate = logParserStrategy.parseDate(fullCommit)
         assertThat(commitDate).isEqualToIgnoringNanos(OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
     }
 
     @Test
     @Throws(Exception::class)
-    fun canProvidesAnAproppriateLogLineCollectorToSeparateCommits() {
-        val commits = twoCommitsAsStraem.collect(logParserStrategy.createLogLineCollector())
+    fun `can provide an appropriate log line collector to separate commits`() {
+        val commits = twoCommitsAsStream.collect(logParserStrategy.createLogLineCollector())
         assertThat(commits).hasSize(2)
     }
 
     @Test
-    fun accumulatesCommitFiles() {
+    fun `accumulates commit files`() {
         val parser = LogLineParser(logParserStrategy, metricsFactory)
 
         val logLines = Stream.concat(fullCommit.stream(), fullCommit.stream())

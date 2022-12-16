@@ -7,9 +7,8 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFac
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.tuple
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import java.util.Arrays.asList
 import java.util.HashSet
 import java.util.function.Function
 import java.util.stream.Stream
@@ -23,7 +22,7 @@ class CommitCollectorTest {
     }
 
     @Test
-    fun collectsCommits() {
+    fun `collects commits`() {
         val commitDate = OffsetDateTime.now()
         val firstCommit = Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), commitDate)
         val secondCommit = Commit("AnotherAuthor", modificationsByFilename("src/Util.java"), commitDate)
@@ -36,23 +35,23 @@ class CommitCollectorTest {
             )
             .containsExactly(
                 tuple("src/Main.java", 1L, setOf("TheAuthor")),
-                tuple("src/Util.java", 2L, HashSet(asList("TheAuthor", "AnotherAuthor")))
+                tuple("src/Util.java", 2L, HashSet(listOf("TheAuthor", "AnotherAuthor")))
             )
     }
 
     @Test
-    fun doesNotCollectEmptyFilenames() {
+    fun `does not collect empty filenames`() {
         val commit = Commit("TheAuthor", modificationsByFilename(""), OffsetDateTime.now())
         val commits = Stream.of(commit).collect(CommitCollector.create(metricsFactory))
         assertThat(commits).isEmpty()
     }
 
     @Test
-    fun collectsHalfEmptyFilelists() {
+    fun `collects half empty filelists`() {
         val commit = Commit("TheAuthor", modificationsByFilename("", "src/Main.java"), OffsetDateTime.now())
         val commits = Stream.of(commit).collect(CommitCollector.create(metricsFactory))
         assertThat(commits)
-            .extracting<String, RuntimeException>({ it.filename })
+            .extracting<String, RuntimeException> { it.filename }
             .containsExactly("src/Main.java")
     }
 
