@@ -7,6 +7,8 @@ import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.ac
 import { dynamicMarginSelector } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.selector"
 import { setDynamicMargin } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { MatCheckboxChange } from "@angular/material/checkbox"
+import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
+import { enableFloorLabelsSelector } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.selector"
 
 @Component({
 	selector: "cc-area-settings-panel",
@@ -17,6 +19,7 @@ export class AreaSettingsPanelComponent {
 
 	margin$ = this.store.select(marginSelector)
 	dynamicMargin$ = this.store.select(dynamicMarginSelector)
+	enableFloorLabels$ = this.store.select(enableFloorLabelsSelector)
 
 	applyDebouncedMargin = debounce((margin: number) => {
 		this.store.dispatch(setMargin(margin))
@@ -27,5 +30,9 @@ export class AreaSettingsPanelComponent {
 
 	setDynamicMargin($event: MatCheckboxChange) {
 		this.store.dispatch(setDynamicMargin($event.checked))
+	}
+
+	setEnableFloorLabel(event: MatCheckboxChange) {
+		this.store.dispatch(setEnableFloorLabels(event.checked))
 	}
 }

@@ -8,6 +8,8 @@ export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>
 const PADDING_SCALING_FACTOR = 0.4
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
+const DEFAULT_ROOT_FLOOR_LABEL_SCALING = 0.035
+const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
 
 export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -156,7 +158,10 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionScaling: number, maxWidth: number): SquarifiedTreeMap {
 	const hierarchyNode = hierarchy(map)
 	const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-	const padding = state.dynamicSettings.margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
+	const { enableFloorLabels } = state.appSettings
+	const { margin } = state.dynamicSettings
+	const padding = margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
+
 	let mapWidth
 	let mapHeight
 
@@ -172,7 +177,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 	hierarchyNode.eachAfter(node => {
 		// Precalculate the needed paddings for the floor folder labels to be able to expand the default map size
 		// TODO fix estimation, estimation of added label space is inaccurate
-		if (!isLeaf(node)) {
+		if (!isLeaf(node) && enableFloorLabels) {
 			if (node.depth === 0) {
 				addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
 			}
@@ -187,8 +192,8 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 	// because the treemap algorithm is/must be executed with an initial width and height afterwards.
 	// TODO If it is wrong some buildings might be cut off.
 	// Use mapSizeResolutionScaling to scale down the pixels need for rendering of the map (width and height size)
-	const width = (mapWidth + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace) * mapSizeResolutionScaling
-	const height = (mapHeight + nodesPerSide * state.dynamicSettings.margin + addedLabelSpace) * mapSizeResolutionScaling
+	const width = (mapWidth + nodesPerSide * margin + addedLabelSpace) * mapSizeResolutionScaling
+	const height = (mapHeight + nodesPerSide * margin + addedLabelSpace) * mapSizeResolutionScaling
 
 	let rootNode
 	const treeMap = treemap<CodeMapNode>()
@@ -203,15 +208,17 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionS
 			// TODO This will not work for FixedFolders
 			// it seems that depth property is missing in that case
 			// so the default padding will be added, which is fine though.
-			if (rootNode) {
+			if (rootNode && enableFloorLabels) {
 				// Start the labels at level 1 not 0 because the root folder should not be labeled
 				if (node.depth === 0) {
 					// Add a big padding for the first folder level (the font is bigger than in deeper levels)
-					// TODO Add constants for magic numbers
-					return Math.max((rootNode.x1 - rootNode.x0) * 0.035, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1)
+					return Math.max(
+						(rootNode.x1 - rootNode.x0) * DEFAULT_ROOT_FLOOR_LABEL_SCALING,
+						DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
+					)
 				}
 				if (node.depth > 0 && node.depth < 3) {
-					return Math.max((rootNode.x1 - rootNode.x0) * 0.028, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
+					return Math.max((rootNode.x1 - rootNode.x0) * DEFAULT_SUB_FLOOR_LABEL_SCALING, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
 				}
 			}
 

@@ -1,5 +1,4 @@
 import { NodeMetricData, State, CodeMapNode, Node, NameDataPair } from "../../../codeCharta.model"
-
 import {
 	METRIC_DATA,
 	TEST_FILE_WITH_PATHS,
@@ -110,6 +109,18 @@ describe("treeMapGenerator", () => {
 
 			expect(nodes).toMatchSnapshot()
 		})
+
+		it("should disable floor labels if option is toggled and change size", () => {
+			const nodesWithFloorLabels: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			state.appSettings.enableFloorLabels = false
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+
+			for (const [index, nodesWithFloorLabel] of nodesWithFloorLabels.entries()) {
+				expect(nodesWithFloorLabel.name).toEqual(nodes[index].name)
+				expect(nodesWithFloorLabel.width).not.toEqual(nodes[index].width)
+			}
+			expect(nodes).toMatchSnapshot()
+		})
 	})
 
 	describe("CodeMap value calculation", () => {
@@ -145,7 +156,7 @@ describe("treeMapGenerator", () => {
 			expect(nodes[0].attributes["a"]).toBe(100)
 		})
 
-		it("attribute do not exists, no children", () => {
+		it("attribute does not exists, no children", () => {
 			map.children = []
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
@@ -153,7 +164,7 @@ describe("treeMapGenerator", () => {
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
 
-		it("attribute do not exists, multiple children with non existant attributes", () => {
+		it("attribute do not exists, multiple children with non existent attributes", () => {
 			state.dynamicSettings.heightMetric = "b"
 			state.dynamicSettings.areaMetric = "b"
 			metricData = [

@@ -158,6 +158,7 @@ export interface AppSettings {
 	screenshotToClipboardEnabled: boolean
 	colorLabels: colorLabelOptions
 	isColorMetricLinkedToHeightMetric: boolean
+	enableFloorLabels: boolean
 }
 
 export interface MapColors {

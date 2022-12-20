@@ -21,6 +21,7 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "../../../state/angular-redux/state"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 import { Store } from "../../../state/angular-redux/store"
+import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 
 jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -449,6 +450,16 @@ describe("ThreeSceneService", () => {
 			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
 
 			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
+			threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, state.getValue(), false))
+
+			expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
+		})
+
+		it("should not add floor labels if floor labels are disabled", () => {
+			threeSceneService["notifyMapMeshChanged"] = jest.fn()
+			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
+
+			store.dispatch(setEnableFloorLabels(false))
 			threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
 			expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
