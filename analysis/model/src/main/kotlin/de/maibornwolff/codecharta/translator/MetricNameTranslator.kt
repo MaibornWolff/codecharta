@@ -1,5 +1,8 @@
 package de.maibornwolff.codecharta.translator
 
+import java.util.Locale
+import kotlin.collections.ArrayList
+
 /**
  * This class provides methods to translate metric names. This enables normalization of metric names.
  */
@@ -15,7 +18,7 @@ open class MetricNameTranslator(
     open fun translate(oldMetricName: String): String {
         return when {
             translationMap.containsKey(oldMetricName) -> translationMap[oldMetricName]!!
-            else -> prefix + oldMetricName.toLowerCase().replace(' ', '_')
+            else -> prefix + oldMetricName.lowercase(Locale.getDefault()).replace(' ', '_')
         }
     }
 
