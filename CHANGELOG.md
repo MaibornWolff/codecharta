@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Add attribute descriptors (metric descriptions) to tokeiimporter and svnlogparser [#3176](https://github.com/MaibornWolff/codecharta/pull/3176)
+
 ## [1.113.0] - 2022-12-15
 
 ### Changed
