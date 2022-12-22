@@ -17,7 +17,7 @@ class JSONMetricWriter(private val outputStream: OutputStream, private val toCom
     override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
         projectMetrics.projectMetrics.forEach { addAsNode(it) }
 
-        var project = projectBuilder.addAttributeDescriptions(getAttributeDescriptors()).build(true)
+        var project = projectBuilder.addAttributeDescriptions(getAttributeDescriptors()).build(cleanAttributeDescriptors = true)
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }

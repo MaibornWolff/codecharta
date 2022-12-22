@@ -57,7 +57,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createEdgeAttributeTypes(metrics))
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
-        return projectBuilder.build(true)
+        return projectBuilder.build(cleanAttributeDescriptors = true)
     }
 
     companion object {
