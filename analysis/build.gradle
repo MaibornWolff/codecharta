@@ -26,7 +26,6 @@ buildscript {
         assertj_version = '3.23.1'
         hamcrest_version = '1.4-atlassian-1'
         hamkrest_version = '1.8.0.1'
-        junit4_version = '4.13.2'
         junit5_version = '5.9.1'
         junit_platform_version = '1.9.1'
         jsonassert_version = '1.5.1'

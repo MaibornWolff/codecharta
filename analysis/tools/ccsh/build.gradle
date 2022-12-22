@@ -56,7 +56,7 @@ dependencies {
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation "com.github.kotlin-inquirer:kotlin-inquirer:$kotlin_inquirer_version"
 
-    testImplementation group: 'junit', name: 'junit', version: junit4_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
 
