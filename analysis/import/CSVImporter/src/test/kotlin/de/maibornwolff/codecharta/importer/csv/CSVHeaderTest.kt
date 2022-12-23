@@ -1,75 +1,75 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.CoreMatchers.hasItems
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.MatcherAssert.assertThat
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
-class CSVHeaderTest : Spek({
-    describe("an empty header") {
-        it("should throw exception") {
-            assertFailsWith(IllegalArgumentException::class) {
-                CSVHeader(arrayOf())
-            }
+class CSVHeaderTest {
+
+    @Test
+    fun `an empty header should throw exception`() {
+        assertFailsWith(IllegalArgumentException::class) {
+            CSVHeader(arrayOf())
         }
     }
 
-    describe("a valid header") {
+    @Test
+    fun `a valid header should have non-empty columns`() {
         val headerLine = arrayOf("first", "second", "", null)
         val header = CSVHeader(headerLine)
+        header.columnNumbers.containsAll(listOf(0, 1))
+        assertThat(header.columnNumbers).containsAll(listOf(0, 1))
+        assertThat(header.getColumnName(0)).isEqualTo(headerLine[0])
+        assertThat(header.getColumnName(1)).isEqualTo(headerLine[1])
+    }
 
-        it("should have non-empty columns") {
-            assertThat(header.columnNumbers, hasItems(0, 1))
-            assertThat(header.getColumnName(0), `is`(headerLine[0]))
-            assertThat(header.getColumnName(1), `is`(headerLine[1]))
-        }
+    @Test
+    fun `a valid header should ignore empty columns`() {
+        val headerLine = arrayOf("first", "second", "", null)
+        val header = CSVHeader(headerLine)
+        assertThat(header.columnNumbers).doesNotContain(2)
+    }
 
-        it("should ignore empty columns") {
-            assertThat(header.columnNumbers, not(hasItem(2)))
-        }
+    @Test
+    fun `a valid header should ignore null columns`() {
+        val headerLine = arrayOf("first", "second", "", null)
+        val header = CSVHeader(headerLine)
+        assertThat(header.columnNumbers).doesNotContain(3)
+    }
 
-        it("should ignore null columns") {
-            assertThat(header.columnNumbers, not(hasItem(3)))
-        }
-
-        it("getColumnName should throw exception if column name not present") {
-            assertFailsWith(IllegalArgumentException::class) {
-                header.getColumnName(4)
-            }
-        }
-
-        it("getPathColumn should return first column if no path column present and first column non empty") {
-            assertThat(header.pathColumn, `is`(0))
+    @Test
+    fun `a valid header getColumnName should throw exception if column name not present`() {
+        val headerLine = arrayOf("first", "second", "", null)
+        val header = CSVHeader(headerLine)
+        assertFailsWith(IllegalArgumentException::class) {
+            header.getColumnName(4)
         }
     }
 
-    describe("a duplicate header") {
+    @Test
+    fun `getPathColumn should return first column if no path column present and first column non empty`() {
+        val headerLine = arrayOf("first", "second", "", null)
+        val header = CSVHeader(headerLine)
+        assertThat(header.pathColumn).isEqualTo(0)
+    }
+
+    @Test
+    fun `a duplicate header should be ignored`() {
         val headerLine = arrayOf<String?>("first", "first")
         val header = CSVHeader(headerLine)
-
-        it("should be ignored") {
-            assertThat(header.columnNumbers, hasItems(0))
-            assertThat(header.getColumnName(0), `is`(headerLine[0]))
-        }
+        assertThat(header.columnNumbers).contains(0)
+        assertThat(header.getColumnName(0)).isEqualTo(headerLine[0])
     }
 
-    describe("a header with column with name path") {
+    @Test
+    fun `a header with column with name path should have this column as path column`() {
         val header = CSVHeader(arrayOf("first", "path", "third"))
-
-        it("should have this column as path column") {
-            assertThat(header.pathColumn, `is`(1))
-        }
+        assertThat(header.pathColumn).isEqualTo(1)
     }
 
-    describe("a header without path column and empty first column") {
+    @Test
+    fun `a header without path column and empty first column should have first non-empty column as path column`() {
         val header = CSVHeader(arrayOf("", null, "second", "third"))
-
-        it("should have first non-empty column as path column") {
-            assertThat(header.pathColumn, `is`(2))
-        }
+        assertThat(header.pathColumn).isEqualTo(2)
     }
-})
+}
