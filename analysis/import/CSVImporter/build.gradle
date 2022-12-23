@@ -1,9 +1,3 @@
-repositories {
-    maven {
-        url 'https://dl.bintray.com/spekframework/spek-dev'
-    }
-}
-
 dependencies {
     implementation project(':model')
     implementation project(':tools:InteractiveParser')
