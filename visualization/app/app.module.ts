@@ -28,6 +28,7 @@ import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/
 import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 import { CodeChartaComponent } from "./codeCharta/codeCharta.component"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
+import { isDevelopment } from "./codeCharta/util/envDetector"
 
 @NgModule({
 	imports: [
@@ -71,7 +72,7 @@ import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContex
 })
 export class AppModule {}
 
-if (process.env.DEV !== "true") {
+if (!isDevelopment()) {
 	enableProdMode()
 }
 
