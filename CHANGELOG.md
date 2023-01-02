@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
 -   Add an option to hide floor lables under the Area Metric Options. This recalculates the map. [#3175](https://github.com/MaibornWolff/codecharta/pull/3175)
+
+### Fixed 🐞
+
+-   Reposition legend panel button again, when attribute sidebar is open [#3183](https://github.com/MaibornWolff/codecharta/pull/3183)
 
 ## [1.113.0] - 2022-12-15
 
