@@ -1,3 +1,3 @@
 export function isDevelopment(): boolean {
-	return process.env.DEV === undefined ? false : JSON.parse(process.env.DEV)
+	return process.env.DEV === undefined ? false : process.env.DEV === "true"
 }
