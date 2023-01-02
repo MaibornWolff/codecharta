@@ -44,7 +44,7 @@ export class BlacklistSearchPatternEffect {
 	flattenSearchPattern$ = createEffect(
 		() =>
 			this.searchPattern2BlacklistItems$.pipe(
-				filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === BlacklistType.flatten),
+				filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "flatten"),
 				tap(searchPattern2BlacklistItems => {
 					this.store.dispatch(addBlacklistItems(searchPattern2BlacklistItems.blacklistItems))
 					this.store.dispatch(setSearchPattern())
@@ -55,7 +55,7 @@ export class BlacklistSearchPatternEffect {
 
 	excludeSearchPattern$ = createEffect(() =>
 		this.searchPattern2BlacklistItems$.pipe(
-			filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === BlacklistType.exclude),
+			filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "exclude"),
 			tap(() => {
 				this.addBlacklistItemsIfNotResultsInEmptyMapEffect.doBlacklistItemsResultInEmptyMap$
 					.pipe(

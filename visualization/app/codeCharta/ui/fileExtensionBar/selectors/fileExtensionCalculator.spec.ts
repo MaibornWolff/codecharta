@@ -1,5 +1,5 @@
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
-import { BlacklistType, CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC, setIsBlacklisted } from "../../../util/dataMocks"
 import { clone } from "../../../util/clone"
 
@@ -30,7 +30,7 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with hidden node", () => {
-			setIsBlacklisted([map.children[0].path], map, BlacklistType.flatten)
+			setIsBlacklisted([map.children[0].path], map, "flatten")
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: "hsl(58, 40%, 50%)" },
@@ -50,7 +50,7 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded node", () => {
-			setIsBlacklisted([map.children[0].path], map, BlacklistType.exclude)
+			setIsBlacklisted([map.children[0].path], map, "exclude")
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 58.483_754_512_635_38, color: "hsl(58, 40%, 50%)" },
@@ -70,7 +70,7 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded path", () => {
-			setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, BlacklistType.exclude)
+			setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, "exclude")
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 60.465_116_279_069_77, color: "hsl(321, 40%, 50%)" },

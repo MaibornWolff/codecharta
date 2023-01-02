@@ -1,5 +1,5 @@
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
-import { BlacklistItem, BlacklistType, CCFile, CodeMapNode } from "../../../codeCharta.model"
+import { BlacklistItem, CCFile, CodeMapNode } from "../../../codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import { isLeaf, isPathBlacklisted } from "../../../util/codeMapHelper"
 
@@ -27,4 +27,4 @@ const resultsInEmptyFile = (file: CCFile, blacklist: BlacklistItem[]) => {
 }
 
 const isNodeIncluded = (node: HierarchyNode<CodeMapNode>, blacklist: Array<BlacklistItem>) =>
-	isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)
+	isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, "exclude")

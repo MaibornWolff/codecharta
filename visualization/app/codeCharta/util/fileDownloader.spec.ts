@@ -1,6 +1,6 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { DownloadableSetting, FileDownloader } from "./fileDownloader"
-import { BlacklistType, CodeMapNode, FileMeta, FileSettings } from "../codeCharta.model"
+import { CodeMapNode, FileMeta, FileSettings } from "../codeCharta.model"
 import {
 	TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
 	TEST_ATTRIBUTE_TYPES,
@@ -28,8 +28,8 @@ describe("fileDownloader", () => {
 		filesettings.attributeTypes = TEST_ATTRIBUTE_TYPES
 		filesettings.attributeDescriptors = TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 		filesettings.blacklist = [
-			{ path: "/root/bigLeaf.ts", type: BlacklistType.flatten },
-			{ path: "/root/sample1OnlyLeaf.scss", type: BlacklistType.exclude }
+			{ path: "/root/bigLeaf.ts", type: "flatten" },
+			{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
 		]
 		fileName = "foo_2019-04-22_18-01"
 		fileNameWithExtension = "foo_2019-04-22_18-01.cc.json"

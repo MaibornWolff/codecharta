@@ -4,7 +4,6 @@ import { MatDialog } from "@angular/material/dialog"
 import { Action } from "redux"
 import { Subject } from "rxjs"
 import { mocked } from "ts-jest/utils"
-import { BlacklistType } from "../../../codeCharta.model"
 import { EffectsModule } from "../../../state/angular-redux/effects/effects.module"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { resultsInEmptyMap } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
@@ -42,19 +41,19 @@ describe("BlacklistSearchPatternEffect", () => {
 		mockedResultsInEmptyMap.mockImplementation(() => false)
 		Store.dispatch(setSearchPattern("needle"))
 
-		EffectsModule.actions$.next(blacklistSearchPattern(BlacklistType.exclude))
+		EffectsModule.actions$.next(blacklistSearchPattern("exclude"))
 
 		expect(Store.store.getState().dynamicSettings.searchPattern).toBe("")
-		expect(Store.store.getState().fileSettings.blacklist).toEqual([{ type: BlacklistType.exclude, path: "*needle*" }])
+		expect(Store.store.getState().fileSettings.blacklist).toEqual([{ type: "exclude", path: "*needle*" }])
 	})
 
 	it("should not reset search pattern, when excluding from search bar failed and afterwards excluding within CodeCharta map", () => {
 		mockedResultsInEmptyMap.mockImplementation(() => true)
 		Store.dispatch(setSearchPattern("root"))
-		EffectsModule.actions$.next(blacklistSearchPattern(BlacklistType.exclude))
+		EffectsModule.actions$.next(blacklistSearchPattern("exclude"))
 
 		mockedResultsInEmptyMap.mockImplementation(() => false)
-		EffectsModule.actions$.next(addBlacklistItemsIfNotResultsInEmptyMap([{ type: BlacklistType.exclude, path: "*needle*" }]))
+		EffectsModule.actions$.next(addBlacklistItemsIfNotResultsInEmptyMap([{ type: "exclude", path: "*needle*" }]))
 
 		expect(Store.store.getState().dynamicSettings.searchPattern).toBe("root")
 	})

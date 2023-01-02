@@ -1,5 +1,5 @@
 import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTypes } from "../codeCharta.api.model"
-import { AttributeDescriptors, AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
+import { AttributeDescriptors, AttributeTypes, BlacklistItem, CCFile, NameDataPair } from "../codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
 import md5 from "md5"
 
@@ -48,7 +48,7 @@ function getAttributeDescriptors(attributeDescriptors: AttributeDescriptors): At
 function potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
 	for (const entry of blacklist) {
 		if (entry.type === ExportBlacklistType.hide) {
-			entry.type = BlacklistType.flatten
+			entry.type = "flatten"
 		}
 	}
 	return blacklist

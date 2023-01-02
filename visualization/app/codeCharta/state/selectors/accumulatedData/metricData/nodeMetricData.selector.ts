@@ -1,6 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
 
-import { BlacklistItem, BlacklistType, NodeMetricData } from "../../../../codeCharta.model"
+import { BlacklistItem, NodeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../angular-redux/createSelector"
@@ -20,7 +20,7 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 
 	for (const { file } of visibleFileStates) {
 		for (const node of hierarchy(file.map)) {
-			if (isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)) {
+			if (isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, "exclude")) {
 				for (const metric of Object.keys(node.data.attributes)) {
 					const maxValue = metricMaxValues.get(metric)
 					const minValue = metricMinValues.get(metric)

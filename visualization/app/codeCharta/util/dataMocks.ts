@@ -2239,15 +2239,15 @@ export const CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE: CodeMapBuilding = new Co
 export const BLACKLIST: BlacklistItem[] = [
 	{
 		path: "/my/path",
-		type: BlacklistType.flatten
+		type: "flatten"
 	},
 	{
 		path: "/my/different/path",
-		type: BlacklistType.exclude
+		type: "exclude"
 	},
 	{
 		path: "/my/first/path",
-		type: BlacklistType.exclude
+		type: "exclude"
 	}
 ]
 
@@ -2285,7 +2285,7 @@ export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: Blackl
 }
 
 function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {
-	if (type === BlacklistType.exclude) {
+	if (type === "exclude") {
 		node.isExcluded = flag
 	} else {
 		node.isFlattened = flag
