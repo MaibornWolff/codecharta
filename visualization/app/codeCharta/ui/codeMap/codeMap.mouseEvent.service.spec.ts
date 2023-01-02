@@ -6,7 +6,7 @@ import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
-import { BlacklistType, CodeMapNode, Node } from "../../codeCharta.model"
+import { BlacklistItem, CodeMapNode, Node } from "../../codeCharta.model"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
@@ -231,7 +231,7 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onBlacklistChanged", () => {
 		it("should deselect the building when the selected building is excluded", () => {
-			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.exclude }]
+			const blacklist: BlacklistItem[] = [{ path: CODE_MAP_BUILDING.node.path, type: "exclude" }]
 
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 
@@ -239,7 +239,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should deselect the building when the selected building is hidden", () => {
-			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.flatten }]
+			const blacklist: BlacklistItem[] = [{ path: CODE_MAP_BUILDING.node.path, type: "flatten" }]
 
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 

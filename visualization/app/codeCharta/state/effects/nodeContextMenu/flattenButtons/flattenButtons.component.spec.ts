@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { FlattenButtonsComponent } from "./flattenButtons.component"
 import { FlattenButtonsModule } from "./flattenButtons.module"
-import { BlacklistType, NodeType } from "../../../../codeCharta.model"
+import { NodeType } from "../../../../codeCharta.model"
 import userEvent from "@testing-library/user-event"
 import { Store } from "../../../store/store"
 
@@ -27,7 +27,7 @@ describe("flattenButtonsComponent", () => {
 		expect(Store.store.getState().fileSettings.blacklist).toContainEqual({
 			nodeType: NodeType.FILE,
 			path: "/root/foo.ts",
-			type: BlacklistType.flatten
+			type: "flatten"
 		})
 	})
 
@@ -35,7 +35,7 @@ describe("flattenButtonsComponent", () => {
 		Store.store.getState().fileSettings.blacklist.push({
 			nodeType: NodeType.FILE,
 			path: "/root/foo.ts",
-			type: BlacklistType.flatten
+			type: "flatten"
 		})
 		await render(FlattenButtonsComponent, {
 			excludeComponentDeclaration: true,
@@ -49,7 +49,7 @@ describe("flattenButtonsComponent", () => {
 		expect(Store.store.getState().fileSettings.blacklist).not.toContainEqual({
 			nodeType: NodeType.FILE,
 			path: "/root/foo.ts",
-			type: BlacklistType.flatten
+			type: "flatten"
 		})
 	})
 })

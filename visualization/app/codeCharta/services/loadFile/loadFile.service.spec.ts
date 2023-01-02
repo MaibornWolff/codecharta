@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { LoadFileService } from "./loadFile.service"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
-import { BlacklistType, CCFile, NodeMetricData, NodeType } from "../../codeCharta.model"
+import { CCFile, NodeMetricData, NodeType } from "../../codeCharta.model"
 import { removeFile, setDeltaReference, setFiles, setStandard } from "../../state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../codeCharta.api.model"
 import { getCCFiles, isPartialState } from "../../model/files/files.helper"
@@ -314,7 +314,7 @@ describe("loadFileService", () => {
 				}
 			])
 
-			const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
+			const blacklist = [{ path: "foo", type: "flatten" }]
 			expect(getCCFiles(state.getValue().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
 		})
 

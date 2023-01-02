@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { AttributeTypeValue, BlacklistType, RecursivePartial, State } from "../../codeCharta.model"
+import { AttributeTypeValue, RecursivePartial, State } from "../../codeCharta.model"
 import rootReducer from "./state.reducer"
 import { defaultState, setState } from "./state.actions"
 import { expect } from "@jest/globals"
@@ -46,7 +46,7 @@ describe("rootReducer", () => {
 				blacklist: [
 					{
 						path: "excludedNode",
-						type: BlacklistType.exclude
+						type: "exclude"
 					}
 				]
 			}
@@ -58,7 +58,7 @@ describe("rootReducer", () => {
 		expect(newState.fileSettings.blacklist).toEqual([
 			{
 				path: "excludedNode",
-				type: BlacklistType.exclude
+				type: "exclude"
 			}
 		])
 	})

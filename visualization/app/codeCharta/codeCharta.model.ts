@@ -237,10 +237,7 @@ export interface BlacklistItem {
 	nodeType?: NodeType
 }
 
-export enum BlacklistType {
-	flatten = "flatten",
-	exclude = "exclude"
-}
+export type BlacklistType = "flatten" | "exclude"
 
 export interface MarkedPackage {
 	path: string

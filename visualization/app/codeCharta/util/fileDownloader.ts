@@ -56,14 +56,14 @@ export class FileDownloader {
 
 		if (downloadSettings.includes("Flattens")) {
 			mergedBlacklist.push(
-				...this.getFilteredBlacklist(blacklist, BlacklistType.flatten).map(x => {
+				...this.getFilteredBlacklist(blacklist, "flatten").map(x => {
 					return { path: x.path, type: "hide" }
 				})
 			)
 		}
 
 		if (downloadSettings.includes("Excludes")) {
-			mergedBlacklist.push(...this.getFilteredBlacklist(blacklist, BlacklistType.exclude))
+			mergedBlacklist.push(...this.getFilteredBlacklist(blacklist, "exclude"))
 		}
 		return mergedBlacklist
 	}

@@ -1,4 +1,3 @@
-import { BlacklistType } from "../../../../codeCharta.model"
 import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { searchPatternSelector } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
@@ -11,6 +10,6 @@ export const isFlattenPatternDisabledSelector = createSelector(
 		if (isSearchPatternEmpty) {
 			return true
 		}
-		return isPatternBlacklisted(blacklist, BlacklistType.flatten, searchPattern)
+		return isPatternBlacklisted(blacklist, "flatten", searchPattern)
 	}
 )

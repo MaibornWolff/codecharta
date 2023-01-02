@@ -1,5 +1,5 @@
 import { hierarchy } from "d3-hierarchy"
-import { BlacklistItem, BlacklistType, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
+import { BlacklistItem, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../angular-redux/createSelector"
@@ -52,10 +52,7 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]) {
 	if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
-		return (
-			!isPathBlacklisted(edge.fromNodeName, blacklist, BlacklistType.exclude) &&
-			!isPathBlacklisted(edge.toNodeName, blacklist, BlacklistType.exclude)
-		)
+		return !isPathBlacklisted(edge.fromNodeName, blacklist, "exclude") && !isPathBlacklisted(edge.toNodeName, blacklist, "exclude")
 	}
 	return false
 }
