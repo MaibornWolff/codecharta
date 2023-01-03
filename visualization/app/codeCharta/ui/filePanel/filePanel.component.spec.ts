@@ -1,5 +1,4 @@
 import { FilePanelComponent } from "./filePanel.component"
-import { mocked } from "ts-jest/utils"
 import { TestBed } from "@angular/core/testing"
 import { FilePanelModule } from "./filePanel.module"
 import { render } from "@testing-library/angular"
@@ -8,7 +7,7 @@ import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selecto
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
 	isDeltaStateSelector: jest.fn()
 }))
-const mockedIsDeltaStateSelector = mocked(isDeltaStateSelector)
+const mockedIsDeltaStateSelector = jest.mocked(isDeltaStateSelector)
 
 describe("filePanelComponent", () => {
 	beforeEach(() => {

@@ -1,6 +1,6 @@
 "use strict"
 import { hierarchy } from "d3-hierarchy"
-import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { isLeaf, isNodeExcludedOrFlattened } from "./codeMapHelper"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 
@@ -21,7 +21,7 @@ export const NodeDecorator = {
 		for (const item of blacklist) {
 			for (const { data } of hierarchy(map)) {
 				if (blacklist.length > 0) {
-					if (item.type === BlacklistType.flatten) {
+					if (item.type === "flatten") {
 						data.isFlattened = data.isFlattened ? true : isNodeExcludedOrFlattened(data, item.path)
 					} else {
 						data.isExcluded = data.isExcluded ? true : isNodeExcludedOrFlattened(data, item.path) && isLeaf(data)

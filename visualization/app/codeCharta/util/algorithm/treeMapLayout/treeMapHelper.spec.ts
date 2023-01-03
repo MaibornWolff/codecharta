@@ -1,5 +1,5 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { BlacklistType, CodeMapNode, ColorMode, EdgeVisibility, NodeType, State } from "../../../codeCharta.model"
+import { CodeMapNode, ColorMode, EdgeVisibility, NodeType, State } from "../../../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 
@@ -204,7 +204,7 @@ describe("TreeMapHelper", () => {
 			})
 
 			it("should be flat if node is flattened in blacklist", () => {
-				state.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
+				state.fileSettings.blacklist = [{ path: "*Anode", type: "flatten" }]
 				squaredNode.data.isFlattened = true
 
 				expect(buildNode().flat).toBeTruthy()
@@ -245,7 +245,7 @@ describe("TreeMapHelper", () => {
 				})
 
 				it("creates flat colored building", () => {
-					state.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
+					state.fileSettings.blacklist = [{ path: "*Anode", type: "flatten" }]
 					squaredNode.data.isFlattened = true
 
 					expect(buildNode().color).toBe(state.appSettings.mapColors.flat)

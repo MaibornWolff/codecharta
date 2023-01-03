@@ -67,7 +67,7 @@ export function returnIgnore(gitignorePath: string) {
 }
 
 export function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>) {
-	return isPathBlacklisted(path, blacklist, BlacklistType.exclude) || isPathBlacklisted(path, blacklist, BlacklistType.flatten)
+	return isPathBlacklisted(path, blacklist, "exclude") || isPathBlacklisted(path, blacklist, "flatten")
 }
 
 export function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType) {

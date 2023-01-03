@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { mocked } from "ts-jest/utils"
 import { EdgeMetricData } from "../../codeCharta.model"
 import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
@@ -15,11 +14,11 @@ import { RibbonBarModule } from "./ribbonBar.module"
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
 	isDeltaStateSelector: jest.fn()
 }))
-const mockedIsDeltaStateSelector = mocked(isDeltaStateSelector)
+const mockedIsDeltaStateSelector = jest.mocked(isDeltaStateSelector)
 jest.mock("../../state/selectors/accumulatedData/metricData/edgeMetricData.selector", () => ({
 	edgeMetricDataSelector: jest.fn(() => [])
 }))
-const mockEdgeMetricDataSelector = mocked(edgeMetricDataSelector)
+const mockEdgeMetricDataSelector = jest.mocked(edgeMetricDataSelector)
 
 describe("RibbonBarComponent", () => {
 	beforeEach(() => {

@@ -6,7 +6,7 @@ import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
-import { BlacklistType, CodeMapNode, Node } from "../../codeCharta.model"
+import { BlacklistItem, CodeMapNode, Node } from "../../codeCharta.model"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
@@ -15,7 +15,6 @@ import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { mocked } from "ts-jest/utils"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { Store } from "../../state/angular-redux/store"
@@ -28,7 +27,7 @@ import {
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
 }))
-const mockedIdToNodeSelector = mocked(idToNodeSelector)
+const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -231,7 +230,7 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onBlacklistChanged", () => {
 		it("should deselect the building when the selected building is excluded", () => {
-			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.exclude }]
+			const blacklist: BlacklistItem[] = [{ path: CODE_MAP_BUILDING.node.path, type: "exclude" }]
 
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 
@@ -239,7 +238,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should deselect the building when the selected building is hidden", () => {
-			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.flatten }]
+			const blacklist: BlacklistItem[] = [{ path: CODE_MAP_BUILDING.node.path, type: "flatten" }]
 
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 

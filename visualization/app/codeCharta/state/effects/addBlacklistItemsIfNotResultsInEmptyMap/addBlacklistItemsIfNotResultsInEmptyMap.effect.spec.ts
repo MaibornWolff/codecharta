@@ -3,7 +3,6 @@ import { TestBed } from "@angular/core/testing"
 import { MatDialog } from "@angular/material/dialog"
 import { Action } from "redux"
 import { Subject } from "rxjs"
-import { BlacklistType } from "../../../codeCharta.model"
 import { FILE_STATES_JAVA } from "../../../util/dataMocks"
 
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
@@ -40,21 +39,17 @@ describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
 	})
 
 	it("should not blacklist items if it would lead to an empty map but show error dialog", () => {
-		EffectsModule.actions$.next(addBlacklistItemsIfNotResultsInEmptyMap([{ type: BlacklistType.exclude, path: "foo/bar" }]))
-		expect(storeDispatchSpy).not.toHaveBeenCalledWith(addBlacklistItems([{ type: BlacklistType.exclude, path: "foo/bar" }]))
+		EffectsModule.actions$.next(addBlacklistItemsIfNotResultsInEmptyMap([{ type: "exclude", path: "foo/bar" }]))
+		expect(storeDispatchSpy).not.toHaveBeenCalledWith(addBlacklistItems([{ type: "exclude", path: "foo/bar" }]))
 		expect(mockedDialog.open).toHaveBeenCalledTimes(1)
 	})
 
 	it("should blacklist items if it doesn't lead to an empty map", () => {
 		Store.dispatch(setFiles(FILE_STATES_JAVA))
 
-		EffectsModule.actions$.next(
-			addBlacklistItemsIfNotResultsInEmptyMap([{ type: BlacklistType.exclude, path: "/root/src/main/file1.java" }])
-		)
+		EffectsModule.actions$.next(addBlacklistItemsIfNotResultsInEmptyMap([{ type: "exclude", path: "/root/src/main/file1.java" }]))
 
-		expect(storeDispatchSpy).toHaveBeenCalledWith(
-			addBlacklistItems([{ type: BlacklistType.exclude, path: "/root/src/main/file1.java" }])
-		)
+		expect(storeDispatchSpy).toHaveBeenCalledWith(addBlacklistItems([{ type: "exclude", path: "/root/src/main/file1.java" }]))
 		expect(mockedDialog.open).not.toHaveBeenCalled()
 	})
 })

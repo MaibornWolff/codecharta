@@ -16,7 +16,6 @@ import { Box3, BufferGeometry, Group, Material, Matrix4, Object3D, Raycaster, Ve
 import { setLayoutAlgorithm } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
-import { mocked } from "ts-jest/utils"
 import { TestBed } from "@angular/core/testing"
 import { State } from "../../../state/angular-redux/state"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
@@ -26,7 +25,7 @@ import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFlo
 jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
 }))
-const mockedIdToNodeSelector = mocked(idToNodeSelector)
+const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService

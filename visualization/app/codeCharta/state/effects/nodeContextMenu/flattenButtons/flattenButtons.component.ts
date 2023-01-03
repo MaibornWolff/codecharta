@@ -1,5 +1,5 @@
 import { Component, Inject, Input } from "@angular/core"
-import { BlacklistType, CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../../codeCharta.model"
 import { Store } from "../../../angular-redux/store"
 import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettings/blacklist/blacklist.actions"
 
@@ -16,7 +16,7 @@ export class FlattenButtonsComponent {
 		this.store.dispatch(
 			addBlacklistItem({
 				path: this.codeMapNode.path,
-				type: BlacklistType.flatten,
+				type: "flatten",
 				nodeType: this.codeMapNode.type
 			})
 		)
@@ -26,7 +26,7 @@ export class FlattenButtonsComponent {
 		this.store.dispatch(
 			removeBlacklistItem({
 				path: this.codeMapNode.path,
-				type: BlacklistType.flatten,
+				type: "flatten",
 				nodeType: this.codeMapNode.type
 			})
 		)

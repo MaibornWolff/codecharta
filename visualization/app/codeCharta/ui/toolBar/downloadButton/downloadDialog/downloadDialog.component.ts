@@ -5,7 +5,6 @@ import { FileDownloader } from "../../../../util/fileDownloader"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { FileNameHelper } from "../../../../util/fileNameHelper"
 import { isDeltaState } from "../../../../model/files/files.helper"
-import { BlacklistType } from "../../../../codeCharta.model"
 import {
 	DownloadableProperty,
 	getAmountOfAttributeTypes,
@@ -43,8 +42,8 @@ export class DownloadDialogComponent {
 			}),
 			this.getProperty(2, getDownloadableProperty("Edges", edges.length)),
 			this.getProperty(3, getDownloadableProperty("MarkedPackages", markedPackages.length)),
-			this.getProperty(4, getDownloadableProperty("Excludes", getFilteredBlacklistLength(blacklist, BlacklistType.exclude))),
-			this.getProperty(5, getDownloadableProperty("Flattens", getFilteredBlacklistLength(blacklist, BlacklistType.flatten)))
+			this.getProperty(4, getDownloadableProperty("Excludes", getFilteredBlacklistLength(blacklist, "exclude"))),
+			this.getProperty(5, getDownloadableProperty("Flattens", getFilteredBlacklistLength(blacklist, "flatten")))
 		]
 	}
 
