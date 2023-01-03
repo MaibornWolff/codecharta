@@ -2,14 +2,13 @@ import { getMissingCustomConfigModeAndMaps } from "./getMissingCustomConfigModeA
 import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
 import { CustomConfigItem } from "../../customConfigs.component"
 import { Store as PlainStore } from "../../../../state/store/store"
-import { mocked } from "ts-jest/utils"
 import { expect } from "@jest/globals"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
 jest.mock("../../visibleFilesBySelectionMode.selector", () => ({
 	visibleFilesBySelectionModeSelector: jest.fn()
 }))
-const mockedVisibleFilesBySelectionModeSelector = mocked(visibleFilesBySelectionModeSelector)
+const mockedVisibleFilesBySelectionModeSelector = jest.mocked(visibleFilesBySelectionModeSelector)
 
 describe("getMissingCustomConfigModeAndMaps", () => {
 	const customConfigItem = {

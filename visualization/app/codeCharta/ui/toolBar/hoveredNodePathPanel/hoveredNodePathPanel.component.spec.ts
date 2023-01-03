@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
-import { mocked } from "ts-jest/utils"
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel.component"
 import { HoveredNodePathPanelModule } from "./hoveredNodePathPanel.module"
 import { hoveredNodePathPanelDataSelector } from "./hoveredNodePathPanelData.selector"
@@ -8,7 +7,7 @@ import { hoveredNodePathPanelDataSelector } from "./hoveredNodePathPanelData.sel
 jest.mock("./hoveredNodePathPanelData.selector", () => ({
 	hoveredNodePathPanelDataSelector: jest.fn()
 }))
-const mockedHoveredNodePathPanelDataSelector = mocked(hoveredNodePathPanelDataSelector)
+const mockedHoveredNodePathPanelDataSelector = jest.mocked(hoveredNodePathPanelDataSelector)
 
 describe("HoveredNodePathPanelComponent", () => {
 	beforeEach(() => {

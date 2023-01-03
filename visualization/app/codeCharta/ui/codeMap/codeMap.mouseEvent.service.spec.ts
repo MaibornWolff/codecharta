@@ -15,7 +15,6 @@ import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { mocked } from "ts-jest/utils"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { Store } from "../../state/angular-redux/store"
@@ -28,7 +27,7 @@ import {
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
 }))
-const mockedIdToNodeSelector = mocked(idToNodeSelector)
+const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
