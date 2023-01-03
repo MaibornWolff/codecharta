@@ -12,13 +12,12 @@ import { Subject } from "rxjs"
 import { Action } from "redux"
 import { MatDialog } from "@angular/material/dialog"
 import { resultsInEmptyMap } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
-import { mocked } from "ts-jest/utils"
 
 jest.mock("../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
 	resultsInEmptyMap: jest.fn()
 }))
 
-const mockedResultsInEmptyMap = mocked(resultsInEmptyMap)
+const mockedResultsInEmptyMap = jest.mocked(resultsInEmptyMap)
 
 describe("cc-search-bar", () => {
 	const mockedDialog = { open: jest.fn() }

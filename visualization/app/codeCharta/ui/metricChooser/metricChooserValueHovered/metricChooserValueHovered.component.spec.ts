@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
-import { mocked } from "ts-jest/utils"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { MetricChooserValueHoveredComponent } from "./metricChooserValueHovered.component"
@@ -15,7 +14,7 @@ jest.mock("../../../state/selectors/primaryMetrics/primaryMetricNames.selector",
 jest.mock("../../../state/selectors/hoveredNode.selector", () => ({
 	hoveredNodeSelector: jest.fn()
 }))
-const mockedHoveredNodeSelector = mocked(hoveredNodeSelector)
+const mockedHoveredNodeSelector = jest.mocked(hoveredNodeSelector)
 
 describe("metricChooserValueHoveredComponent", () => {
 	beforeEach(() => {

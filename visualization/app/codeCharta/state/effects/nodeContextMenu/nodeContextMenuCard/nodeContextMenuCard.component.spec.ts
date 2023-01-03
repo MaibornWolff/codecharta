@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
-import { mocked } from "ts-jest/utils"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { VALID_FILE_NODE_WITH_ID, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
@@ -11,7 +10,7 @@ import { NodeContextMenuCardModule } from "./nodeContextMenuCard.module"
 jest.mock("../rightClickedCodeMapNode.selector", () => ({
 	rightClickedCodeMapNodeSelector: jest.fn()
 }))
-const mockedRightClickedCodeMapNodeSelector = mocked(rightClickedCodeMapNodeSelector)
+const mockedRightClickedCodeMapNodeSelector = jest.mocked(rightClickedCodeMapNodeSelector)
 
 describe("NodeContextMenuCardComponent", () => {
 	beforeEach(() => {

@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { mocked } from "ts-jest/utils"
 import { State } from "../../../state/angular-redux/state"
 import { Store } from "../../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
@@ -22,7 +21,7 @@ jest.mock("../../../state/store/dynamicSettings/colorRange/colorRange.selector",
 	colorRangeSelector: () => ({ from: 33, to: 66 })
 }))
 
-const mockedIsDeltaStateSelector = mocked(isDeltaStateSelector)
+const mockedIsDeltaStateSelector = jest.mocked(isDeltaStateSelector)
 
 describe("colorSettingsPanelComponent", () => {
 	mockedIsDeltaStateSelector.mockImplementation(() => false)

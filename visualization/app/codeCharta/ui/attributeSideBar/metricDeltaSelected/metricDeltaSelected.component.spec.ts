@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/angular"
-import { mocked } from "ts-jest/utils"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { Store } from "../../../state/store/store"
 
@@ -9,7 +8,7 @@ import { MetricDeltaSelectedComponent } from "./metricDeltaSelected.component"
 jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
 }))
-const mockedIdToNodeSelector = mocked(idToNodeSelector)
+const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)
 jest.mock("../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector", () => ({
 	selectedBuildingIdSelector: () => 0
 }))

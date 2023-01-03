@@ -3,7 +3,6 @@ import { TestBed } from "@angular/core/testing"
 import { MatDialog } from "@angular/material/dialog"
 import { Action } from "redux"
 import { Subject } from "rxjs"
-import { mocked } from "ts-jest/utils"
 import { EffectsModule } from "../../../state/angular-redux/effects/effects.module"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { resultsInEmptyMap } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
@@ -16,7 +15,7 @@ jest.mock("../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/result
 	resultsInEmptyMap: jest.fn()
 }))
 
-const mockedResultsInEmptyMap = mocked(resultsInEmptyMap)
+const mockedResultsInEmptyMap = jest.mocked(resultsInEmptyMap)
 
 describe("BlacklistSearchPatternEffect", () => {
 	const mockedDialog = { open: jest.fn() }
