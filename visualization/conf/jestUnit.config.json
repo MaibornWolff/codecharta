@@ -19,14 +19,15 @@
 		"ngx-color": "<rootDir>/node_modules/ngx-color/fesm2020/ngx-color.mjs"
 	},
 	"roots": ["<rootDir>/app"],
-	"moduleFileExtensions": ["js", "json", "ts", "tsx", "mjs"],
+	"moduleFileExtensions": ["js", "json", "ts", "mjs"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"globals": {
 		"ts-jest": {
-			"tsconfig": "tsconfig.json",
+			"tsconfig": "<rootDir>/tsconfig.spec.json",
 			"babelConfig": true
 		}
 	},
 	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
-	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts"]
+	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts"],
+	"testEnvironment": "jsdom"
 }
