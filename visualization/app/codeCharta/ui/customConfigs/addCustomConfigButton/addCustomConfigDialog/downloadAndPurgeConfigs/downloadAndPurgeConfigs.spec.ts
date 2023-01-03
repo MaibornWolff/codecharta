@@ -29,6 +29,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
 	class TestModule {}
 
 	beforeEach(() => {
+		document.body.innerHTML = ""
 		TestBed.configureTestingModule({
 			imports: [TestModule]
 		})
