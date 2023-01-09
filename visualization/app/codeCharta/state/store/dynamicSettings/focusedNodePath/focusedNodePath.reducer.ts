@@ -1,10 +1,10 @@
 import { defaultFocusedNodePath, FocusedNodePathAction, FocusedNodePathActions } from "./focusedNodePath.actions"
-import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
+import { fileRoot } from "../../../../services/loadFile/fileRoot"
 
 export function focusedNodePath(state = defaultFocusedNodePath, action: FocusedNodePathAction) {
 	switch (action.type) {
 		case FocusedNodePathActions.FOCUS_NODE:
-			if (action.payload === LoadFileService.ROOT_PATH) {
+			if (action.payload === fileRoot.rootPath) {
 				return state
 			}
 			return [action.payload, ...state]

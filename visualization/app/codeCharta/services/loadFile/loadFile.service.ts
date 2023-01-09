@@ -12,11 +12,10 @@ import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidation
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
 import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParser"
+import { fileRoot } from "./fileRoot"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService {
-	static ROOT_NAME = "root"
-	static ROOT_PATH = `/${LoadFileService.ROOT_NAME}`
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 
 	referenceFileSubscription = this.store
@@ -24,7 +23,7 @@ export class LoadFileService {
 		.pipe(
 			tap(newReferenceFile => {
 				if (newReferenceFile) {
-					LoadFileService.updateRootData(newReferenceFile.map.name)
+					fileRoot.updateRoot(newReferenceFile.map.name)
 				}
 			})
 		)
@@ -55,11 +54,6 @@ export class LoadFileService {
 		const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
 		this.store.dispatch(setStandardByNames(recentFiles))
 
-		LoadFileService.updateRootData(rootName)
-	}
-
-	static updateRootData(rootName: string) {
-		LoadFileService.ROOT_NAME = rootName
-		LoadFileService.ROOT_PATH = `/${LoadFileService.ROOT_NAME}`
+		fileRoot.updateRoot(rootName)
 	}
 }
