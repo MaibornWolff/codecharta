@@ -15,6 +15,7 @@ import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.c
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
+import { fileRoot } from "./fileRoot"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -153,8 +154,8 @@ describe("loadFileService", () => {
 			expect(isPartialState(state.getValue().files)).toBeTruthy()
 			expect(dialog.open).not.toHaveBeenCalled()
 
-			expect(LoadFileService.ROOT_NAME).toEqual(expected.map.name)
-			expect(LoadFileService.ROOT_PATH).toEqual(`/${expected.map.name}`)
+			expect(fileRoot.rootName).toBe(expected.map.name)
+			expect(fileRoot.rootPath).toBe(`/${expected.map.name}`)
 		})
 
 		it("should replace files with equal file name and checksum when loading new files", () => {
@@ -372,7 +373,7 @@ describe("loadFileService", () => {
 
 	it("should update its ROOT_PATH when reference file is being set to a file", () => {
 		codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
-		const updateRootDataSpy = jest.spyOn(LoadFileService, "updateRootData")
+		const updateRootDataSpy = jest.spyOn(fileRoot, "updateRoot")
 
 		const newReferenceFile = state.getValue().files[0].file
 		store.dispatch(setDeltaReference(newReferenceFile))
