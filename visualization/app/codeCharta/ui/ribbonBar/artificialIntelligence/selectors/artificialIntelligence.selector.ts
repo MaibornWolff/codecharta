@@ -14,7 +14,7 @@ import {
 	MetricValuesByLanguage
 } from "./util/suspiciousMetricsHelper"
 import { hierarchy } from "d3-hierarchy"
-import { BlacklistItem, BlacklistType, CodeMapNode, NodeType } from "../../../../codeCharta.model"
+import { BlacklistItem, CodeMapNode, NodeType } from "../../../../codeCharta.model"
 import { getMostFrequentLanguage } from "./util/mainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../../state/angular-redux/createSelector"
@@ -55,7 +55,7 @@ export const calculate = (
 
 	for (const { data } of hierarchy(accumulatedData.unifiedMapNode)) {
 		const fileExtension = getFileExtension(data.name)
-		if (data.type === NodeType.FILE && fileExtension !== undefined && !isPathBlacklisted(data.path, blacklist, BlacklistType.exclude)) {
+		if (data.type === NodeType.FILE && fileExtension !== undefined && !isPathBlacklisted(data.path, blacklist, "exclude")) {
 			const filesPerLanguage = numberOfFilesByLanguage.get(fileExtension) ?? 0
 			numberOfFilesByLanguage.set(fileExtension, filesPerLanguage + 1)
 			setMetricValuesByLanguage(data, metricValuesByLanguage, fileExtension)

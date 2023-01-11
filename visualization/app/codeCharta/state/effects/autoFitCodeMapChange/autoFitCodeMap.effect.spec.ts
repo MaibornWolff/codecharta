@@ -1,7 +1,6 @@
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { Subject } from "rxjs"
-import { mocked } from "ts-jest/utils"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
 import { Store } from "../../angular-redux/store"
@@ -15,7 +14,7 @@ import { AutoFitCodeMapEffect } from "./autoFitCodeMap.effect"
 jest.mock("../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector", () => ({
 	resetCameraIfNewFileIsLoadedSelector: jest.fn()
 }))
-const mockedResetCameraIfNewFileIsLoadedSelector = mocked(resetCameraIfNewFileIsLoadedSelector)
+const mockedResetCameraIfNewFileIsLoadedSelector = jest.mocked(resetCameraIfNewFileIsLoadedSelector)
 
 describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
 	let mockedRenderCodeMap$: Subject<unknown>

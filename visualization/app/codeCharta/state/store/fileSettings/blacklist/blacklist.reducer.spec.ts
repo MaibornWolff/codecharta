@@ -1,9 +1,9 @@
 import { addBlacklistItem, BlacklistAction, setBlacklist, removeBlacklistItem, addBlacklistItems } from "./blacklist.actions"
 import { blacklist } from "./blacklist.reducer"
-import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
+import { BlacklistItem } from "../../../../codeCharta.model"
 
 describe("blacklist", () => {
-	const item: BlacklistItem = { type: BlacklistType.flatten, path: "foo/bar" }
+	const item: BlacklistItem = { type: "flatten", path: "foo/bar" }
 
 	describe("Default State", () => {
 		it("should initialize the default state", () => {
@@ -23,17 +23,13 @@ describe("blacklist", () => {
 
 	describe("Action: ADD_BLACKLIST_ITEMS", () => {
 		it("should add all unique blacklist items to the blacklist", () => {
-			const existingItem: BlacklistItem = { type: BlacklistType.flatten, path: "foo/bar" }
+			const existingItem: BlacklistItem = { type: "flatten", path: "foo/bar" }
 			const result = blacklist(
 				[existingItem],
-				addBlacklistItems([
-					existingItem,
-					{ type: BlacklistType.flatten, path: "foo/bar2" },
-					{ type: BlacklistType.flatten, path: "foo/bar2" }
-				])
+				addBlacklistItems([existingItem, { type: "flatten", path: "foo/bar2" }, { type: "flatten", path: "foo/bar2" }])
 			)
 
-			expect(result).toEqual([existingItem, { type: BlacklistType.flatten, path: "foo/bar2" }])
+			expect(result).toEqual([existingItem, { type: "flatten", path: "foo/bar2" }])
 		})
 	})
 

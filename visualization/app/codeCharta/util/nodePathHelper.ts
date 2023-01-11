@@ -1,4 +1,4 @@
-import { LoadFileService } from "../services/loadFile/loadFile.service"
+import { fileRoot } from "../services/loadFile/fileRoot"
 
 export function getUpdatedBlacklistItemPath(fileName: string, path: string) {
 	if (isAbsoluteRootPath(path)) {
@@ -8,13 +8,13 @@ export function getUpdatedBlacklistItemPath(fileName: string, path: string) {
 }
 
 export function getUpdatedPath(fileName: string, path: string) {
-	const length = LoadFileService.ROOT_PATH.length + 1
+	const length = fileRoot.rootPath.length + 1
 	const end = path.length <= length ? "" : `/${path.slice(length)}`
-	return `${LoadFileService.ROOT_PATH}/${fileName}${end}`
+	return `${fileRoot.rootPath}/${fileName}${end}`
 }
 
 function isAbsoluteRootPath(path: string) {
-	return path.startsWith(`${LoadFileService.ROOT_PATH}/`)
+	return path.startsWith(`${fileRoot.rootPath}/`)
 }
 
 export function getParent<T>(hashMap: Map<string, T>, path: string): T {
@@ -26,5 +26,5 @@ export function getParent<T>(hashMap: Map<string, T>, path: string): T {
 		if (node) {
 			return node
 		}
-	} while (path !== LoadFileService.ROOT_PATH && path.length > 0)
+	} while (path !== fileRoot.rootPath && path.length > 0)
 }

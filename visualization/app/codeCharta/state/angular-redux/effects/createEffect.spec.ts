@@ -1,4 +1,3 @@
-import { mocked } from "ts-jest/utils"
 import { Subject } from "rxjs"
 import { Store } from "../../store/store"
 import { createEffect } from "./createEffect"
@@ -6,7 +5,7 @@ import { createEffect } from "./createEffect"
 jest.mock("../../store/store", () => ({
 	Store: {}
 }))
-const MockedStore = mocked(Store)
+const MockedStore = jest.mocked(Store)
 
 describe("createEffect", () => {
 	let source

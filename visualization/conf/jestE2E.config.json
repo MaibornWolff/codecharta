@@ -11,11 +11,11 @@
 	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020))"],
 	"roots": ["<rootDir>/app"],
 	"testMatch": ["**/*.e2e.ts"],
-	"moduleFileExtensions": ["js", "json", "ts", "tsx", "mjs"],
+	"moduleFileExtensions": ["js", "json", "ts", "mjs"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"globals": {
 		"ts-jest": {
-			"tsconfig": "tsconfig.json",
+			"tsconfig": "tsconfig.spec.json",
 			"babelConfig": true
 		}
 	},

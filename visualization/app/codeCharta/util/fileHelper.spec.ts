@@ -1,5 +1,5 @@
 import { ExportBlacklistType, ExportCCFile } from "../codeCharta.api.model"
-import { AttributeTypeValue, BlacklistType, CCFile, NameDataPair } from "../codeCharta.model"
+import { AttributeTypeValue, CCFile, NameDataPair } from "../codeCharta.model"
 import { getCCFile, getCCFileAndDecorateFileChecksum, getSelectedFilesSize } from "./fileHelper"
 import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "./dataMocks"
 import { clone } from "./clone"
@@ -28,7 +28,7 @@ describe("FileHelper", () => {
 			const nameDataPair: NameDataPair = { content: fileContent, fileName: "fileName", fileSize: 30 }
 			const result = getCCFile(nameDataPair)
 
-			expect(result.settings.fileSettings.blacklist).toEqual([{ path: "foo", type: BlacklistType.flatten }])
+			expect(result.settings.fileSettings.blacklist).toEqual([{ path: "foo", type: "flatten" }])
 		})
 
 		it("should ignore old attribute types", () => {
