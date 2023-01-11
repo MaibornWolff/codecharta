@@ -1,6 +1,6 @@
 import { getMergedBlacklist } from "./blacklist.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
-import { BlacklistItem, BlacklistType, CCFile } from "../../../../codeCharta.model"
+import { BlacklistItem, CCFile } from "../../../../codeCharta.model"
 import { clone } from "../../../../util/clone"
 
 describe("BlacklistMerger", () => {
@@ -16,11 +16,11 @@ describe("BlacklistMerger", () => {
 	})
 
 	describe("getMergedBlacklist", () => {
-		const blacklistItem1: BlacklistItem = { path: "/root/nodeA", type: BlacklistType.exclude }
-		const blacklistItem2: BlacklistItem = { path: "/another/nodeB", type: BlacklistType.flatten }
-		const blacklistItem3: BlacklistItem = { path: "/another/nodeC", type: BlacklistType.exclude }
-		const blacklistItem4: BlacklistItem = { path: "*prefix/nodeD", type: BlacklistType.flatten }
-		const blacklistItem1Duplicate: BlacklistItem = { path: "/root/nodeA", type: BlacklistType.exclude }
+		const blacklistItem1: BlacklistItem = { path: "/root/nodeA", type: "exclude" }
+		const blacklistItem2: BlacklistItem = { path: "/another/nodeB", type: "flatten" }
+		const blacklistItem3: BlacklistItem = { path: "/another/nodeC", type: "exclude" }
+		const blacklistItem4: BlacklistItem = { path: "*prefix/nodeD", type: "flatten" }
+		const blacklistItem1Duplicate: BlacklistItem = { path: "/root/nodeA", type: "exclude" }
 
 		it("should merge blacklist for different paths", () => {
 			file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2]

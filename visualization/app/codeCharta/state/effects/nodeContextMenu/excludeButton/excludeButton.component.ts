@@ -1,5 +1,5 @@
 import { Component, Inject, Input } from "@angular/core"
-import { BlacklistType, CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../../codeCharta.model"
 import { Store } from "../../../angular-redux/store"
 import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../store/fileSettings/blacklist/blacklist.actions"
 
@@ -17,7 +17,7 @@ export class ExcludeButtonComponent {
 			addBlacklistItemsIfNotResultsInEmptyMap([
 				{
 					path: this.codeMapNode.path,
-					type: BlacklistType.exclude,
+					type: "exclude",
 					nodeType: this.codeMapNode.type
 				}
 			])

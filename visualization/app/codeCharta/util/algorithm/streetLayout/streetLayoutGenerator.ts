@@ -1,4 +1,4 @@
-import { CodeMapNode, Node, State, NodeMetricData, BlacklistType, LayoutAlgorithm } from "../../../codeCharta.model"
+import { CodeMapNode, Node, State, NodeMetricData, LayoutAlgorithm } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
@@ -46,7 +46,7 @@ export class StreetLayoutGenerator {
 		const children: BoundingBox[] = []
 		const areaMetric = state.dynamicSettings.areaMetric
 		for (let child of node.children) {
-			if (isPathBlacklisted(child.path, state.fileSettings.blacklist, BlacklistType.exclude)) {
+			if (isPathBlacklisted(child.path, state.fileSettings.blacklist, "exclude")) {
 				continue
 			}
 			if (isLeaf(child)) {

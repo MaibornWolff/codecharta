@@ -2,7 +2,6 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { MaterialModule } from "../../../../material/material.module"
-import { BlacklistType } from "../../../codeCharta.model"
 import { setBlacklist } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
 import { Store } from "../../../state/store/store"
 import { BlacklistPanelComponent } from "./blacklistPanel.component"
@@ -25,8 +24,8 @@ describe("blacklistPanel", () => {
 	it("should display all flattened and excluded items in the correct section and remove an item on click", async () => {
 		Store.dispatch(
 			setBlacklist([
-				{ type: BlacklistType.flatten, path: "some/flattened/building.ts" },
-				{ type: BlacklistType.exclude, path: "some/excluded/building.ts" }
+				{ type: "flatten", path: "some/flattened/building.ts" },
+				{ type: "exclude", path: "some/excluded/building.ts" }
 			])
 		)
 		await render(BlacklistPanelComponent)
@@ -37,7 +36,7 @@ describe("blacklistPanel", () => {
 
 		await userEvent.click(screen.getByText("some/excluded/building.ts"))
 		expect(Store.store.getState().fileSettings.blacklist).not.toContainEqual({
-			type: BlacklistType.exclude,
+			type: "exclude",
 			path: "some/excluded/building.ts"
 		})
 	})

@@ -1,6 +1,6 @@
 import { calculate } from "./artificialIntelligence.selector"
 import { VALID_NODE_JAVA } from "../../../../util/dataMocks"
-import { BlacklistItem, BlacklistType, NodeType } from "../../../../codeCharta.model"
+import { BlacklistItem, NodeType } from "../../../../codeCharta.model"
 
 describe("ArtificialIntelligenceSelector", () => {
 	it("should return undefined when experimental features are disabled ", () => {
@@ -44,7 +44,7 @@ describe("ArtificialIntelligenceSelector", () => {
 	})
 
 	it("should ignore excluded nodes when experimental features are enabled", () => {
-		const blacklist: BlacklistItem[] = [{ path: "file1.java", type: BlacklistType.exclude }]
+		const blacklist: BlacklistItem[] = [{ path: "file1.java", type: "exclude" }]
 		const blacklistedNode = {
 			name: "file1.java",
 			path: "file1.java",

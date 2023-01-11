@@ -6,20 +6,18 @@ import { SearchBarModule } from "./searchBar.module"
 import userEvent from "@testing-library/user-event"
 import { Store as PlainStore } from "../../../state/store/store"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
-import { BlacklistType } from "../../../codeCharta.model"
 import { EffectsModule } from "../../../state/angular-redux/effects/effects.module"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { Subject } from "rxjs"
 import { Action } from "redux"
 import { MatDialog } from "@angular/material/dialog"
 import { resultsInEmptyMap } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
-import { mocked } from "ts-jest/utils"
 
 jest.mock("../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
 	resultsInEmptyMap: jest.fn()
 }))
 
-const mockedResultsInEmptyMap = mocked(resultsInEmptyMap)
+const mockedResultsInEmptyMap = jest.mocked(resultsInEmptyMap)
 
 describe("cc-search-bar", () => {
 	const mockedDialog = { open: jest.fn() }
@@ -72,7 +70,7 @@ describe("cc-search-bar", () => {
 
 		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
 		expect(searchField.value).toBe("")
-		expect(PlainStore.store.getState().fileSettings.blacklist[0]).toEqual({ type: BlacklistType.flatten, path: "*needle*" })
+		expect(PlainStore.store.getState().fileSettings.blacklist[0]).toEqual({ type: "flatten", path: "*needle*" })
 	})
 
 	it("should exclude pattern", async () => {
@@ -88,6 +86,6 @@ describe("cc-search-bar", () => {
 
 		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
 		expect(searchField.value).toBe("")
-		expect(PlainStore.store.getState().fileSettings.blacklist[0]).toEqual({ type: BlacklistType.exclude, path: "*needle*" })
+		expect(PlainStore.store.getState().fileSettings.blacklist[0]).toEqual({ type: "exclude", path: "*needle*" })
 	})
 })

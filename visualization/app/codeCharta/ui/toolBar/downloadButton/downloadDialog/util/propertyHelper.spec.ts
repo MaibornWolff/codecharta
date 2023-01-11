@@ -1,4 +1,4 @@
-import { AttributeTypeValue, BlacklistType } from "../../../../../codeCharta.model"
+import { AttributeTypeValue } from "../../../../../codeCharta.model"
 import { BLACKLIST } from "../../../../../util/dataMocks"
 import { getAmountOfAttributeTypes, getDownloadableProperty, getFilteredBlacklistLength } from "./propertyHelper"
 
@@ -51,11 +51,11 @@ describe("propertyHelper", () => {
 
 	describe("getFilteredBlacklistLength", () => {
 		it("should get length of flattened buildings", () => {
-			expect(getFilteredBlacklistLength(BLACKLIST, BlacklistType.flatten)).toBe(1)
+			expect(getFilteredBlacklistLength(BLACKLIST, "flatten")).toBe(1)
 		})
 
 		it("should get length of excluded buildings", () => {
-			expect(getFilteredBlacklistLength(BLACKLIST, BlacklistType.exclude)).toBe(2)
+			expect(getFilteredBlacklistLength(BLACKLIST, "exclude")).toBe(2)
 		})
 	})
 })

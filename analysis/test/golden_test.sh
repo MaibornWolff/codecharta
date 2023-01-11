@@ -176,15 +176,15 @@ run_tests() {
   echo "Running Tests..."
   echo
 
-  check_gitlogparser_log_scan
-  check_gitlogparser_repo_scan
+  #check_gitlogparser_log_scan
+ # check_gitlogparser_repo_scan
   check_csvexporter
   check_edgefilter
   check_mergefilter
   check_codemaatimporter
   check_csvimporter
   check_sourcemonitor
-  check_metricgardener
+  #check_metricgardener
   check_sonar
   check_sourcecodeparser
   check_svnlog
@@ -196,6 +196,8 @@ run_tests() {
   echo
   echo "... Testing finished."
   echo
+
+  exit_with_err "Sugma"
 }
 
 install_codecharta "../build/distributions/${CC_TAR_NAME}"

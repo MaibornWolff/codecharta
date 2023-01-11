@@ -21,13 +21,13 @@ export const matchingFilesCounterSelector: (state: CcState) => MatchingFilesCoun
 		const searchedNodeLeaves = searchedNodes.filter(node => isLeaf(node))
 		return {
 			fileCount: `${searchedNodeLeaves.length}/${allNodes.length}`,
-			flattenCount: `${getBlacklistedFileCount(BlacklistType.flatten, searchedNodeLeaves, blacklist)}/${getBlacklistedFileCount(
-				BlacklistType.flatten,
+			flattenCount: `${getBlacklistedFileCount("flatten", searchedNodeLeaves, blacklist)}/${getBlacklistedFileCount(
+				"flatten",
 				allNodes,
 				blacklist
 			)}`,
-			excludeCount: `${getBlacklistedFileCount(BlacklistType.exclude, searchedNodeLeaves, blacklist)}/${getBlacklistedFileCount(
-				BlacklistType.exclude,
+			excludeCount: `${getBlacklistedFileCount("exclude", searchedNodeLeaves, blacklist)}/${getBlacklistedFileCount(
+				"exclude",
 				allNodes,
 				blacklist
 			)}`

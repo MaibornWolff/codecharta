@@ -15,6 +15,7 @@ import { FileDownloader } from "./fileDownloader"
 describe("CustomConfigHelper", () => {
 	beforeEach(() => {
 		CustomConfigHelper["customConfigs"].clear()
+		jest.resetAllMocks()
 	})
 
 	describe("addCustomConfig", () => {
@@ -27,12 +28,8 @@ describe("CustomConfigHelper", () => {
 				stateSettings: {}
 			} as CustomConfig
 
-			spyOn(JSON, "stringify")
-			JSON["stringify"] = jest.fn(() => {
-				return "customConfigStub_asJson"
-			})
-
-			spyOn(Storage.prototype, "setItem")
+			jest.spyOn(JSON, "stringify").mockImplementation(() => "customConfigStub_asJson")
+			jest.spyOn(Storage.prototype, "setItem")
 
 			CustomConfigHelper.addCustomConfig(customConfigStub)
 
@@ -68,18 +65,14 @@ describe("CustomConfigHelper", () => {
 				customConfigs: [[customConfigStub.id, customConfigStub]]
 			}
 
-			spyOn(JSON, "parse")
-			JSON["parse"] = jest.fn().mockImplementation(() => {
-				return localStorageCustomConfigs
-			})
-
-			spyOn(Storage.prototype, "getItem")
+			jest.spyOn(JSON, "parse").mockImplementation(() => localStorageCustomConfigs)
+			jest.spyOn(Storage.prototype, "getItem")
 
 			const loadedCustomConfigs = CustomConfigHelper["loadCustomConfigsFromLocalStorage"]()
 			expect(loadedCustomConfigs.size).toBe(1)
 
 			expect(localStorage.getItem).toHaveBeenCalledWith(CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT)
-			expect(JSON.parse).toHaveBeenCalledWith(undefined, stateObjectReviver)
+			expect(JSON.parse).toHaveBeenCalledWith("customConfigStub_asJson", stateObjectReviver)
 		})
 
 		it("should load Custom Configs from local storage with version 1.0.1 and should not make any changes to them", () => {
@@ -108,13 +101,11 @@ describe("CustomConfigHelper", () => {
 			}
 
 			CustomConfigHelper["customConfigs"].clear()
-			JSON["parse"] = jest.fn().mockImplementation(() => {
-				return localStorageCustomConfigs
-			})
+			jest.spyOn(JSON, "parse").mockImplementation(() => localStorageCustomConfigs)
 
-			const spyOnGetItem = spyOn(Storage.prototype, "getItem")
-			const spyOnRemoveItem = spyOn(Storage.prototype, "removeItem")
-			const spyOnSetItem = spyOn(Storage.prototype, "setItem")
+			const spyOnGetItem = jest.spyOn(Storage.prototype, "getItem")
+			const spyOnRemoveItem = jest.spyOn(Storage.prototype, "removeItem")
+			const spyOnSetItem = jest.spyOn(Storage.prototype, "setItem")
 
 			const loadedCustomConfigs = CustomConfigHelper["loadCustomConfigsFromLocalStorage"]()
 
@@ -401,8 +392,7 @@ describe("CustomConfigHelper", () => {
 				customConfigs: exportedCustomConfigs
 			}
 
-			spyOn(JSON, "parse")
-			JSON["parse"] = jest.fn().mockReturnValue(mockedDownloadFile)
+			jest.spyOn(JSON, "parse").mockImplementation(() => mockedDownloadFile)
 
 			// Mock first config to be already existent
 			CustomConfigHelper["customConfigs"].clear()

@@ -4,6 +4,7 @@ import { expect } from "@jest/globals"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { LegendPanelComponent } from "./legendPanel.component"
 import { LegendPanelModule } from "./legendPanel.module"
+import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 
 jest.mock("../../state/store/dynamicSettings/heightMetric/heightMetric.selector", () => ({
 	heightMetricSelector: () => "mcc"
@@ -68,6 +69,15 @@ describe("LegendPanelController", () => {
 
 		const metricDescriptions = container.querySelectorAll("cc-legend-block")
 		expect(metricDescriptions.length).toBe(0)
+	})
+
+	it("should add class 'isAttributeSideBarVisible' to opening button, when attribute sidebar is open", async () => {
+		const { container } = await render(LegendPanelComponent, {
+			excludeComponentDeclaration: true,
+			componentProviders: [{ provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } }]
+		})
+		const openingButton = container.querySelector(".panel-button")
+		expect(openingButton.classList).toContain("isAttributeSideBarVisible")
 	})
 })
 

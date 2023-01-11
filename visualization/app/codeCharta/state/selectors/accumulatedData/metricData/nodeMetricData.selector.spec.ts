@@ -1,6 +1,5 @@
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../../util/dataMocks"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
-import { BlacklistType } from "../../../../codeCharta.model"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
 import { clone } from "../../../../util/clone"
 import { calculateNodeMetricData, UNARY_METRIC } from "./nodeMetricData.selector"
@@ -38,7 +37,7 @@ describe("nodeMetricDataSelector", () => {
 			{ maxValue: 1, minValue: 1, name: UNARY_METRIC }
 		]
 
-		const result = calculateNodeMetricData([fileState], [{ path: "root/big leaf", type: BlacklistType.exclude }])
+		const result = calculateNodeMetricData([fileState], [{ path: "root/big leaf", type: "exclude" }])
 
 		expect(result).toEqual(expected)
 	})
