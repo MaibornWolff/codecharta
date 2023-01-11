@@ -3,10 +3,9 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.util.ArrayList
-import java.util.Arrays
 
 class AbsoluteCoupledChurnTest {
 
@@ -15,7 +14,7 @@ class AbsoluteCoupledChurnTest {
     private val COUPLED_FILE2 = "coupledfilename2"
 
     @Test
-    fun should_have_initial_value_zero() {
+    fun `should have initial value zero`() {
         // when
         val metric = AbsoluteCoupledChurn()
 
@@ -24,7 +23,7 @@ class AbsoluteCoupledChurnTest {
     }
 
     @Test
-    fun should_not_increase_on_commits_of_same_file() {
+    fun `should not increase on commits of same file`() {
         // given
         val metric = AbsoluteCoupledChurn()
 
@@ -36,7 +35,7 @@ class AbsoluteCoupledChurnTest {
     }
 
     @Test
-    fun should_increase_on_commit_of_several_files() {
+    fun `should increase on commit of several files`() {
         // given
         val metric = AbsoluteCoupledChurn()
 
@@ -50,7 +49,7 @@ class AbsoluteCoupledChurnTest {
     }
 
     @Test
-    fun should_increase_by_multiple_modification() {
+    fun `should increase by multiple modification`() {
         // given
         val metric = AbsoluteCoupledChurn()
 
@@ -75,7 +74,7 @@ class AbsoluteCoupledChurnTest {
         modification: Modification,
         vararg otherModifications: Modification
     ) {
-        val modificationList = ArrayList(Arrays.asList(*otherModifications))
+        val modificationList = ArrayList(listOf(*otherModifications))
         modificationList.add(modification)
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())

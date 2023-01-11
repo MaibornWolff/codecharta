@@ -76,6 +76,7 @@ class TokeiImporter(
             importerStrategy.buildCCJson(languageSummaries, projectBuilder)
         }
         projectBuilder.addAttributeTypes(attributeTypes)
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
         val project = projectBuilder.build()
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)

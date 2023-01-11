@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.svnlogparser.converter
 import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.model.AttributeType
 import org.assertj.core.api.Assertions
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class AttributeTypesFactoryTest {
 

@@ -6,15 +6,14 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import java.util.Arrays
 
 class VersionControlledFileTest {
 
     @Test
-    fun versionControlledFileHoldsInitallyOnlyTheFilename() {
+    fun `version controlled file holds initially only the filename`() {
         // given
         val metricsFactory = mockk<MetricsFactory>(relaxed = true)
         val filename = "filename"
@@ -26,11 +25,11 @@ class VersionControlledFileTest {
         assertThat(versionControlledFile.filename).isEqualTo(filename)
         assertThat(versionControlledFile.actualFilename).isEqualTo(filename)
         assertThat(versionControlledFile.authors).isEmpty()
-        assertThat(versionControlledFile.markedDeleted()).isFalse()
+        assertThat(versionControlledFile.markedDeleted()).isFalse
     }
 
     @Test
-    fun canRegisterMetricsByMetricsFactory() {
+    fun `can register metrics by metrics factory`() {
         // given
         val metricName = "metric"
         val metric = mockk<Metric>()
@@ -38,7 +37,7 @@ class VersionControlledFileTest {
         every { metric.value() } returns 1
 
         val metricsFactory = mockk<MetricsFactory>()
-        every { metricsFactory.createMetrics() } returns Arrays.asList(metric)
+        every { metricsFactory.createMetrics() } returns listOf(metric)
 
         val versionControlledFile = VersionControlledFile(
             "filename",
@@ -55,7 +54,7 @@ class VersionControlledFileTest {
     }
 
     @Test
-    fun throwsExceptionIfFileIsNotInCommit() {
+    fun `throws exception if file is not in commit`() {
         val versionControlledFile = VersionControlledFile(
             "filename",
             listOf()
@@ -70,7 +69,7 @@ class VersionControlledFileTest {
     }
 
     @Test
-    fun canRegisterASimpleCommit() {
+    fun `can register a simple commit`() {
         // given
         val modificationMetric = mockk<Metric>(relaxed = true)
 
@@ -78,7 +77,7 @@ class VersionControlledFileTest {
         val author = "An Author"
         val versionControlledFile = VersionControlledFile(
             filename,
-            Arrays.asList(modificationMetric)
+            listOf(modificationMetric)
         )
 
         // when
@@ -90,14 +89,14 @@ class VersionControlledFileTest {
         assertThat(versionControlledFile.filename).isEqualTo(filename)
         assertThat(versionControlledFile.actualFilename).isEqualTo(filename)
         assertThat(versionControlledFile.authors).containsExactly(author)
-        assertThat(versionControlledFile.markedDeleted()).isFalse()
+        assertThat(versionControlledFile.markedDeleted()).isFalse
 
         verify(exactly = 1) { modificationMetric.registerModification(any()) }
         verify(exactly = 1) { modificationMetric.registerModification(modification) }
     }
 
     @Test
-    fun getAuthorsReturnsAllAuthors() {
+    fun `get authors returns all authors`() {
         // given
         val filename = "filename"
         val author1 = "An Author"
@@ -118,13 +117,13 @@ class VersionControlledFileTest {
     }
 
     @Test
-    fun deletionMarksFileAsDeleted() {
+    fun `deletion marks file as deleted`() {
         // given
         val filename = "filename"
         val versionControlledFile = VersionControlledFile(filename)
 
         // when
-        val modifications = Arrays.asList(
+        val modifications = listOf(
             Modification(filename),
             Modification(filename, Modification.Type.DELETE),
             Modification(filename)
@@ -135,7 +134,7 @@ class VersionControlledFileTest {
         // then
         assertThat(versionControlledFile.filename).isEqualTo(filename)
         assertThat(versionControlledFile.actualFilename).isEqualTo(filename)
-        assertThat(versionControlledFile.markedDeleted()).isTrue()
+        assertThat(versionControlledFile.markedDeleted()).isTrue
     }
 
     @Test
@@ -145,11 +144,11 @@ class VersionControlledFileTest {
 
         val oldFilename = "old filename"
         val filename = "filename"
-        val versionControlledFile = VersionControlledFile(filename, Arrays.asList(modificationMetric))
+        val versionControlledFile = VersionControlledFile(filename, listOf(modificationMetric))
 
         // when
         // anti-chronological ordering
-        val modifications = Arrays.asList(
+        val modifications = listOf(
             Modification(filename),
             Modification(filename, oldFilename, Modification.Type.RENAME),
             Modification(oldFilename)
@@ -160,12 +159,12 @@ class VersionControlledFileTest {
         // then
         assertThat(versionControlledFile.filename).isEqualTo(oldFilename)
         assertThat(versionControlledFile.actualFilename).isEqualTo(filename)
-        assertThat(versionControlledFile.markedDeleted()).isFalse()
+        assertThat(versionControlledFile.markedDeleted()).isFalse
 
         verify(exactly = 3) { modificationMetric.registerModification(any()) }
     }
 
     private fun createCommit(author: String, modification: Modification): Commit {
-        return Commit(author, Arrays.asList(modification), OffsetDateTime.now())
+        return Commit(author, listOf(modification), OffsetDateTime.now())
     }
 }

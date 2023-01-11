@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add an option to hide floor lables under the Area Metric Options. This recalculates the map. [#3175](https://github.com/MaibornWolff/codecharta/pull/3175)
+-   Add an option to hide floor labels under the Area Metric Options. This recalculates the map. [#3175](https://github.com/MaibornWolff/codecharta/pull/3175)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Add attribute descriptors (metric descriptions) to TokeiImporter and SVNlogParser [#3176](https://github.com/MaibornWolff/codecharta/pull/3176)
 
 ### Fixed 🐞
 

@@ -21,7 +21,6 @@ class MetricCollector(
 
     private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
-    val MAX_FILE_NAME_PRINT_LENGTH = 30
     private var filesParsed = 0L
     private var totalFiles = 0L
     private val progressTracker: ProgressTracker = ProgressTracker()
@@ -89,11 +88,6 @@ class MetricCollector(
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
-        val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) {
-            ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH)
-        } else {
-            fileName.padEnd(MAX_FILE_NAME_PRINT_LENGTH + 2)
-        }
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
     }
 }

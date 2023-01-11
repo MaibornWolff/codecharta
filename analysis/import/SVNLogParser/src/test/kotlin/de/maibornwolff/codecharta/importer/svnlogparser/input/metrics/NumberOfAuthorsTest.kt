@@ -2,12 +2,12 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Commit
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class NumberOfAuthorsTest {
     @Test
-    fun should_have_initial_value_zero() {
+    fun `should have initial value zero`() {
         // when
         val metric = NumberOfAuthors()
 
@@ -16,7 +16,7 @@ class NumberOfAuthorsTest {
     }
 
     @Test
-    fun should_increase_by_first_author() {
+    fun `should increase by first author`() {
         // given
         val metric = NumberOfAuthors()
 
@@ -28,7 +28,7 @@ class NumberOfAuthorsTest {
     }
 
     @Test
-    fun should_increase_only_once_for_an_author() {
+    fun `should increase only once for an author`() {
         // given
         val metric = NumberOfAuthors()
 

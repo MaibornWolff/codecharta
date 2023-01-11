@@ -7,16 +7,15 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFac
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import java.util.Arrays
 
 class ProjectConverterTest {
 
     private val metricsFactory = mockk<MetricsFactory>()
 
-    @Before
+    @BeforeEach
     fun setup() {
         every { metricsFactory.createMetrics() } returns listOf()
     }
@@ -27,7 +26,7 @@ class ProjectConverterTest {
 
     @Test
     @Throws(Exception::class)
-    fun canCreateAnEmptyProject() {
+    fun `can create an empty project`() {
         // given
         val projectConverter = ProjectConverter(true)
 
@@ -39,35 +38,35 @@ class ProjectConverterTest {
     }
 
     @Test
-    fun canConvertProjectWithAuthors() {
+    fun `can convert project with authors`() {
         // given
         val projectConverter = ProjectConverter(true)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
 
         // when
-        val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
+        val project = projectConverter.convert(listOf(file1), metricsFactory)
 
         // then
         assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isTrue()
     }
 
     @Test
-    fun canConvertProjectWithoutAuthors() {
+    fun `can convert project without authors`() {
         // given
         val projectConverter = ProjectConverter(false)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
 
         // when
-        val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
+        val project = projectConverter.convert(listOf(file1), metricsFactory)
 
         // then
         assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isFalse()
     }
 
     @Test
-    fun edgesAreRegisteredInProject() {
+    fun `edges are registered in project`() {
         // given
         val projectConverter = ProjectConverter(true)
         val metricsFactory = MetricsFactory().createMetrics()

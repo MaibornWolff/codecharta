@@ -13,13 +13,15 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets.UTF_8
+import kotlin.io.path.absolute
+import kotlin.io.path.createTempDirectory
 import kotlin.test.assertTrue
 
 class ProjectSerializerTest : Spek({
 
     val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
-    val tempDir = createTempDir()
-    val filename = tempDir.absolutePath + "test.cc.json"
+    val tempDir = createTempDirectory()
+    val filename = tempDir.absolute().toString() + "test.cc.json"
 
     describe("ProjectSerializer") {
         it("should serialize project") {

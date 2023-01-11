@@ -2,11 +2,11 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
-class NumberOfOccurencesInCommitsTest {
+class NumberOfOccurrencesInCommitsTest {
     @Test
-    fun should_have_initial_value_zero() {
+    fun `number of occurrences in commits test`() {
         // when
         val metric = NumberOfOccurencesInCommits()
 
@@ -15,7 +15,7 @@ class NumberOfOccurencesInCommitsTest {
     }
 
     @Test
-    fun should_increase_by_modification() {
+    fun `should increase by modification`() {
         // given
         val metric = NumberOfOccurencesInCommits()
 

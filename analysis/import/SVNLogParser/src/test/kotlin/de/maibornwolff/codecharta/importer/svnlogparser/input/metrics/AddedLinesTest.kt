@@ -2,14 +2,14 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class AddedLinesTest {
 
     private val FILENAME = "filename"
 
     @Test
-    fun should_have_initial_value_zero() {
+    fun `should have initial value zero`() {
         // when
         val metric = AddedLines()
 
@@ -18,7 +18,7 @@ class AddedLinesTest {
     }
 
     @Test
-    fun should_increase_by_single_modification_if_more_additions() {
+    fun `should increase by single modification if more additions`() {
         // given
         val metric = AddedLines()
 
@@ -30,7 +30,7 @@ class AddedLinesTest {
     }
 
     @Test
-    fun should_not_increase_by_single_modification_if_more_deletes() {
+    fun `should not increase by single modification if more deletes`() {
         // given
         val metric = AddedLines()
 
@@ -42,7 +42,7 @@ class AddedLinesTest {
     }
 
     @Test
-    fun should_increase_by_multiple_modification_if_more_additions() {
+    fun `should increase by multiple modification if more additions`() {
         // given
         val metric = AddedLines()
 
