@@ -35,7 +35,7 @@ class ProjectMetricsTest {
 
         projectMetrics.addFileMetricMap("foo", fileMetricMap)
 
-        Assertions.assertThat(projectMetrics.projectMetrics["foo"]!!.fileMetrics).isEqualTo(fileMetricMap.fileMetrics)
+        Assertions.assertThat(projectMetrics.projectMetrics["foo"]!!).isEqualTo(fileMetricMap)
     }
 
     @Test
@@ -43,7 +43,7 @@ class ProjectMetricsTest {
         val fileMetricMap = FileMetricMap().add("mcc", 99)
         projectMetrics.addFileMetricMap("foo", fileMetricMap)
 
-        Assertions.assertThat(projectMetrics.getFileMetricMap("foo")!!.fileMetrics).isEqualTo(fileMetricMap.fileMetrics)
+        Assertions.assertThat(projectMetrics.getFileMetricMap("foo")!!).isEqualTo(fileMetricMap)
     }
 
     @Test
