@@ -5,8 +5,8 @@ import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGa
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
-import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 internal class MetricGardenerProjectBuilderTest {
 

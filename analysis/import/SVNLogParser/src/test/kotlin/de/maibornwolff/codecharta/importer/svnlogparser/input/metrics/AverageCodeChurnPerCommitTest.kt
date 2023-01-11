@@ -2,14 +2,14 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class AverageCodeChurnPerCommitTest {
 
     private val FILENAME = "filename"
 
     @Test
-    fun should_have_initial_value_zero() {
+    fun `should have initial value zero`() {
         // when
         val metric = AverageCodeChurnPerCommit()
 
@@ -18,7 +18,7 @@ class AverageCodeChurnPerCommitTest {
     }
 
     @Test
-    fun should_increase_by_single_modification() {
+    fun `should increase by single modification`() {
         // given
         val metric = AverageCodeChurnPerCommit()
 

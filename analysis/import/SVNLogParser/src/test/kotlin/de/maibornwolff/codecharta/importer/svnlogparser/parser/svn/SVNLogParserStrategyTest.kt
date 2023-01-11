@@ -6,8 +6,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogLineParser
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.ParserStrategyContractTest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
-import java.util.Arrays
+import org.junit.jupiter.api.Test
 import java.util.stream.Stream
 
 class SVNLogParserStrategyTest : ParserStrategyContractTest() {
@@ -17,7 +16,7 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
     override val fullCommit: List<String>
         get() = FULL_COMMIT
 
-    override val twoCommitsAsStraem: Stream<String>
+    override val twoCommitsAsStream: Stream<String>
         get() {
             val twoCommits = mutableListOf("------------------------------------------------------------------------")
             twoCommits.addAll(FULL_COMMIT)
@@ -31,47 +30,47 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
         get() = parserStrategy
 
     @Test
-    fun parsesFilenameFromFileMetadata() {
+    fun `parses filename from file metadata`() {
         val modification = parserStrategy.parseModification("   M /src/srcFolderTest.txt")
         assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
         assertThat(modification.type).isEqualTo(Modification.Type.MODIFY)
     }
 
     @Test
-    fun parsesFilenameFromAddedFile() {
+    fun `parses filename from added file`() {
         val modification = parserStrategy.parseModification("   A /src/srcFolderTest.txt")
         assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
         assertThat(modification.type).isEqualTo(Modification.Type.ADD)
     }
 
     @Test
-    fun parsesFilenameFromDeletedFile() {
+    fun `parses filename from deleted file`() {
         val modification = parserStrategy.parseModification("   D  /src/srcFolderTest.txt")
         assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
         assertThat(modification.type).isEqualTo(Modification.Type.DELETE)
     }
 
     @Test
-    fun parsesFilenameFromReplacedFile() {
+    fun `parses filename from replaced file`() {
         val modification = parserStrategy.parseModification("   R  /src/srcFolderTest.txt")
         assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
         assertThat(modification.type).isEqualTo(Modification.Type.UNKNOWN)
     }
 
     @Test
-    fun doesNotParseFilenameWithoutADot() {
+    fun `does not parse filename without aDot`() {
         val modification = parserStrategy.parseModification("   A /innerFolder")
         assertThat(modification.filename).isEmpty()
     }
 
     @Test
-    fun removesStandardSVNFoldersInFilename() {
+    fun `removes standard svnFolders in filename`() {
         val modification = parserStrategy.parseModification("   M /trunk/src/srcFolderTest.txt")
         assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
     }
 
     @Test
-    fun acceptsSVNLogWithoutEndingDashes() {
+    fun `accepts svnLog without ending dashes`() {
         val logLinesWithoutEndingDashes =
             Stream.of("------------------------------------------------------------------------", "commit data")
         val commits = logLinesWithoutEndingDashes.collect(parserStrategy.createLogLineCollector())
@@ -79,14 +78,14 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
     }
 
     @Test
-    fun ignoresTooShortLines() {
-        val lines = Arrays.asList(" A", "B")
+    fun `ignores too short lines`() {
+        val lines = listOf(" A", "B")
         val modifications = parserStrategy.parseModifications(lines)
         assertThat(modifications).isEmpty()
     }
 
     @Test
-    fun parsesSpecialCommit() {
+    fun `parses special commit`() {
         val parser = LogLineParser(logParserStrategy, MetricsFactory())
         val commitString = mutableListOf(
             "------------------------------------------------------------------------",

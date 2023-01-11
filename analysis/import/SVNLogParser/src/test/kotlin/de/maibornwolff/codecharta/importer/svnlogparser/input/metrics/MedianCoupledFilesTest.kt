@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.util.Arrays
 import java.util.stream.Collectors
@@ -15,7 +15,7 @@ class MedianCoupledFilesTest {
     private val COUPLED_FILE2 = "coupledfilename2"
 
     @Test
-    fun should_have_initial_value_zero() {
+    fun `should have initial value zero`() {
         // when
         val metric = MedianCoupledFiles()
 
@@ -24,7 +24,7 @@ class MedianCoupledFilesTest {
     }
 
     @Test
-    fun should_not_increase_on_commits_of_same_file() {
+    fun `should not increase on commits of same file`() {
         // given
         val metric = MedianCoupledFiles()
 
@@ -36,7 +36,7 @@ class MedianCoupledFilesTest {
     }
 
     @Test
-    fun should_increase_on_commit_of_several_files() {
+    fun `should increase on commit of several files`() {
         // given
         val metric = MedianCoupledFiles()
 
@@ -48,7 +48,7 @@ class MedianCoupledFilesTest {
     }
 
     @Test
-    fun should_increase_by_two_modification() {
+    fun `should increase by two modification`() {
         // given
         val metric = MedianCoupledFiles()
 
@@ -76,7 +76,7 @@ class MedianCoupledFilesTest {
 
     private fun registerModifications(metric: Metric, vararg filenames: String) {
         val modificationList = Arrays.stream(filenames)
-            .map<Modification>({ Modification(it) })
+            .map<Modification> { Modification(it) }
             .collect(Collectors.toList())
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())
@@ -85,6 +85,6 @@ class MedianCoupledFilesTest {
         modificationList.stream()
             .filter { mod -> FILENAME == mod.filename }
             .findFirst()
-            .ifPresent({ metric.registerModification(it) })
+            .ifPresent { metric.registerModification(it) }
     }
 }

@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter.model
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.junit.Assert.assertNotEquals
-import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Test
 
 internal class MetricGardenerNodesTest {
 

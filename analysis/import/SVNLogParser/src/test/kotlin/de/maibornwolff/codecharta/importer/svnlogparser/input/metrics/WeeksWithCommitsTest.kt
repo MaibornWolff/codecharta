@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Commit
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -10,7 +10,7 @@ class WeeksWithCommitsTest {
     private val zoneOffset = ZoneOffset.UTC
 
     @Test
-    fun initial_value_zero() {
+    fun `initial value zero`() {
         // when
         val metric = WeeksWithCommits()
 
@@ -19,7 +19,7 @@ class WeeksWithCommitsTest {
     }
 
     @Test
-    fun single_modification() {
+    fun `single modification`() {
         // given
         val metric = WeeksWithCommits()
 
@@ -32,7 +32,7 @@ class WeeksWithCommitsTest {
     }
 
     @Test
-    fun additional_modification_in_same_calendar_week() {
+    fun `additional modification in same calendar week`() {
         // given
         val metric = WeeksWithCommits()
 
@@ -47,7 +47,7 @@ class WeeksWithCommitsTest {
     }
 
     @Test
-    fun additional_modification_in_successive_calendar_week() {
+    fun `additional modification in successive calendar week`() {
         // given
         val metric = WeeksWithCommits()
 

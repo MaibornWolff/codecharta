@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ProjectMetricsTest {
-    lateinit var projectMetrics: ProjectMetrics
+    private lateinit var projectMetrics: ProjectMetrics
 
     @BeforeEach
     fun initProjectMetrics() {
@@ -16,7 +16,7 @@ class ProjectMetricsTest {
     fun `addFile adds a file with empty Metric Map`() {
         addFileInProject(projectMetrics, "foo")
 
-        Assertions.assertThat(projectMetrics.projectMetrics["foo"]).isEqualToComparingFieldByField(FileMetricMap())
+        Assertions.assertThat(projectMetrics.projectMetrics["foo"]!!.fileMetrics).isEqualTo(FileMetricMap().fileMetrics)
     }
 
     @Test
@@ -26,7 +26,7 @@ class ProjectMetricsTest {
 
         addMetricToFileInProject(projectMetrics, "foo", "mcc", 99)
 
-        Assertions.assertThat(projectMetrics.projectMetrics["foo"]).isEqualToComparingFieldByField(expected)
+        Assertions.assertThat(projectMetrics.projectMetrics["foo"]!!.fileMetrics).isEqualTo(expected.fileMetrics)
     }
 
     @Test
@@ -35,7 +35,7 @@ class ProjectMetricsTest {
 
         projectMetrics.addFileMetricMap("foo", fileMetricMap)
 
-        Assertions.assertThat(projectMetrics.projectMetrics["foo"]).isEqualTo(fileMetricMap)
+        Assertions.assertThat(projectMetrics.projectMetrics["foo"]!!).isEqualTo(fileMetricMap)
     }
 
     @Test
@@ -43,7 +43,7 @@ class ProjectMetricsTest {
         val fileMetricMap = FileMetricMap().add("mcc", 99)
         projectMetrics.addFileMetricMap("foo", fileMetricMap)
 
-        Assertions.assertThat(projectMetrics.getFileMetricMap("foo")).isEqualTo(fileMetricMap)
+        Assertions.assertThat(projectMetrics.getFileMetricMap("foo")!!).isEqualTo(fileMetricMap)
     }
 
     @Test

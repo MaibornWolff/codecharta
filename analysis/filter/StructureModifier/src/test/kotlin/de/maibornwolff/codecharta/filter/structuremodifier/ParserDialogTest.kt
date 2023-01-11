@@ -61,7 +61,6 @@ class ParserDialogTest {
         val outputFileName = "sampleOutputFile"
         val printLevels = BigDecimal(0)
         val setRoot = ""
-        val moveTo = ""
         val moveFrom = ""
         val remove = ""
 

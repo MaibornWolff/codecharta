@@ -114,6 +114,14 @@ class TokeiImporterTest {
         Assertions.assertThat(project.attributeTypes).containsKey("nodes")
         Assertions.assertThat(project.attributeTypes["nodes"]).isEqualTo(expected)
     }
+
+    @Test
+    fun `should contain all attribute descriptors`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
+
+        val project = ProjectDeserializer.deserializeProject(cliResult)
+        Assertions.assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
+    }
 }
 
 fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
