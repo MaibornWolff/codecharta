@@ -20,6 +20,16 @@ export class ApplyCustomConfigButtonComponent {
 	) {}
 
 	applyCustomConfig() {
-		CustomConfigHelper.applyCustomConfig(this.customConfigItem.id, this.store, this.threeCameraService, this.threeOrbitControlsService)
+		try {
+			CustomConfigHelper.applyCustomConfig(
+				this.customConfigItem.id,
+				this.store,
+				this.threeCameraService,
+				this.threeOrbitControlsService
+			)
+		} catch (error) {
+			console.error(`${error.name}: ${error.message}`)
+			alert(`Unable to load Custom-View-file: ${error.message}`)
+		}
 	}
 }
