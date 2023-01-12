@@ -142,6 +142,8 @@ export class CustomConfigHelper {
 				camera: exportedConfig.camera
 			}
 
+			CustomConfigHelper.checkForLegacyCameraSettingsOfCustomConfig(importedCustomConfig)
+
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)
 		}
 	}
@@ -215,7 +217,7 @@ export class CustomConfigHelper {
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
-		CustomConfigHelper.transformLegacyCameraSettingsOfCustomConfig(customConfig)
+		CustomConfigHelper.checkForLegacyCameraSettingsOfCustomConfig(customConfig)
 		CustomConfigHelper.deleteUnusedKeyPropsOfCustomConfig(customConfig)
 
 		store.dispatch(setState(customConfig.stateSettings))
@@ -230,16 +232,13 @@ export class CustomConfigHelper {
 		}
 	}
 
-	// TODO [2023-01-01] remove support
-	private static transformLegacyCameraSettingsOfCustomConfig(customConfig: any) {
+	private static checkForLegacyCameraSettingsOfCustomConfig(customConfig: any) {
+		if (customConfig.appSettings === undefined) {
+			return
+		}
 		const appSettings = customConfig.stateSettings.appSettings
 		if (appSettings.camera || appSettings.cameraTarget) {
-			customConfig.camera = {
-				camera: appSettings.camera,
-				cameraTarget: appSettings.cameraTarget
-			}
-			delete customConfig.stateSettings.appSettings.camera
-			delete customConfig.stateSettings.appSettings.cameraTarget
+			throw new Error("CustomConfig contained unsupported legacy camera data.")
 		}
 	}
 

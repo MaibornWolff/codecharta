@@ -15,8 +15,9 @@ export class UploadCustomConfigButtonComponent {
 			for (const customConfigContent of customConfigsContent) {
 				try {
 					CustomConfigHelper.importCustomConfigs(customConfigContent)
-				} catch {
-					// Explicitly ignored
+				} catch (error) {
+					console.error(`${error.name}: ${error.message}`)
+					alert(`Unable to load Custom-View-file: ${error.message}`)
 				}
 			}
 		})
