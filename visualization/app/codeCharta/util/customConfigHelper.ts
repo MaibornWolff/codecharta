@@ -215,7 +215,6 @@ export class CustomConfigHelper {
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
-		CustomConfigHelper.transformLegacyCameraSettingsOfCustomConfig(customConfig)
 		CustomConfigHelper.deleteUnusedKeyPropsOfCustomConfig(customConfig)
 
 		store.dispatch(setState(customConfig.stateSettings))
@@ -227,19 +226,6 @@ export class CustomConfigHelper {
 				threeOrbitControlsService.setControlTarget(customConfig.camera.cameraTarget)
 				threeCameraService.setPosition(customConfig.camera.camera)
 			}, 100)
-		}
-	}
-
-	// TODO [2023-01-01] remove support
-	private static transformLegacyCameraSettingsOfCustomConfig(customConfig: any) {
-		const appSettings = customConfig.stateSettings.appSettings
-		if (appSettings.camera || appSettings.cameraTarget) {
-			customConfig.camera = {
-				camera: appSettings.camera,
-				cameraTarget: appSettings.cameraTarget
-			}
-			delete customConfig.stateSettings.appSettings.camera
-			delete customConfig.stateSettings.appSettings.cameraTarget
 		}
 	}
 
