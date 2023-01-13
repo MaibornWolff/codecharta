@@ -58,7 +58,7 @@ class ProjectDeserializerTest {
         val node = project.rootNode
 
         assertThat(node.link).isNull()
-        assertThat(node.attributes).isNull()
+        assertThat(node.attributes).isNotNull
         assertThat(node.children).isNotNull
     }
 
