@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.114.0] - 2023-01-13
+
 ### Added 🚀
 
 -   Add an option to hide floor labels under the Area Metric Options. This recalculates the map. [#3175](https://github.com/MaibornWolff/codecharta/pull/3175)
