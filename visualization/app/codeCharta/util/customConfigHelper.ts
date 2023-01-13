@@ -18,8 +18,8 @@ import { Store } from "../state/angular-redux/store"
 import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
-const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
-const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.1"
+const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "2.0.0"
+const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "2.0.0"
 export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
