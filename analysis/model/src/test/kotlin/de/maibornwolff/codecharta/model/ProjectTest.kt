@@ -16,6 +16,6 @@ class ProjectTest {
 
     @Test
     fun `should not be compatible with different major version`() {
-        assertThat(Project.isAPIVersionCompatible("2.0")).isTrue
+        assertThat(Project.isAPIVersionCompatible("2.0")).isFalse
     }
 }
