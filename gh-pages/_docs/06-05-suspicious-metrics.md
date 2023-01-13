@@ -12,5 +12,3 @@ To activate this function it is necessary to open the global configuration menu 
 after that the Suspicious button will appear in the main menu. Pressing this button will open the suspicious metrics panel.
 Here are listed the suspicious metrics, you can change the map view with the suspicious metrics buttons, you can also see
 highlighted on the map the files with a high risk factor (if any).
-
-> Icons by [fontawesome](https://fontawesome.com/icons?d=gallery&q=arrows)
