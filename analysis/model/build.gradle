@@ -15,6 +15,7 @@ dependencies {
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: jsonassert_version
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {

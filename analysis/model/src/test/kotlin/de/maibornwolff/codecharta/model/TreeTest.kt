@@ -7,10 +7,11 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
-class TreeTest{
+@DisplayName("Tree Test")
+class TreeTest {
 
     @Nested
-    @DisplayName("a tree of depth 0")
+    @DisplayName("Tree Test > a tree of depth 0")
     inner class ZeroDepthTree {
         val tree = createTree()
 
@@ -19,7 +20,7 @@ class TreeTest{
             val nodes = tree.nodes
             assertThat(nodes.size).isEqualTo(1)
             assertThat(nodes.keys).contains(Path.TRIVIAL)
-            assertThat(nodes.values).contains(tree.asTreeNode())
+            assertThat(tree.asTreeNode()).isIn(nodes.values)
         }
 
         @Test
@@ -27,7 +28,7 @@ class TreeTest{
             val leaves = tree.leaves
             assertThat(leaves.size).isEqualTo(1)
             assertThat(leaves.keys).contains(Path.TRIVIAL)
-            assertThat(leaves.values).contains(tree.asTreeNode())
+            assertThat(tree.asTreeNode()).isIn(leaves.values)
         }
 
         @Test
@@ -51,11 +52,11 @@ class TreeTest{
 
         assertThat(leaves).hasSize(1)
         assertThat(leaves.keys).contains(Path.TRIVIAL)
-        assertThat(leaves.values).contains(tree.asTreeNode())
+        assertThat(tree.asTreeNode()).isIn(leaves.values)
     }
 
     @Nested
-    @DisplayName("a tree of depth 1")
+    @DisplayName("Tree Test > a tree of depth 1")
     inner class OneDepthTree {
         val innerTree = createTree()
         val pathToInnerTree = Path("bla")
@@ -67,8 +68,8 @@ class TreeTest{
             assertThat(nodes).hasSize(2)
             assertThat(nodes.keys).contains(Path.TRIVIAL)
             assertThat(nodes.keys).contains(pathToInnerTree)
-            assertThat(nodes.values).contains(tree.asTreeNode())
-            assertThat(nodes.values).contains(innerTree.asTreeNode())
+            assertThat(tree.asTreeNode()).isIn(nodes.values)
+            assertThat(innerTree.asTreeNode()).isIn(nodes.values)
         }
 
         @Test
@@ -77,11 +78,11 @@ class TreeTest{
 
             assertThat(leaves).hasSize(1)
             assertThat(leaves.keys).contains(pathToInnerTree)
-            assertThat(leaves.values).contains(innerTree.asTreeNode())
+            assertThat(innerTree.asTreeNode()).isIn(leaves.values)
         }
 
         @Test
-        fun `getNodeBy should return same tree on trivial path`(){
+        fun `getNodeBy should return same tree on trivial path`() {
             assertThat(tree.getNodeBy(Path.TRIVIAL)).isEqualTo(tree)
         }
 
