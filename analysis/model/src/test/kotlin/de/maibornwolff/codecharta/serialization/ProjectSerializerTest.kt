@@ -31,8 +31,6 @@ class ProjectSerializerTest {
         ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false)
 
         val testJsonString = File(filename).readText()
-        System.err.println(testJsonString)
-        System.err.println(expectedJsonString)
         JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.NON_EXTENSIBLE)
     }
 
