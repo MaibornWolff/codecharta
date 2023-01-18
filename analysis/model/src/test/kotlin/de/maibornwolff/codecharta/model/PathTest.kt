@@ -1,134 +1,126 @@
 package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.model.PathMatcher.matchesPath
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.not
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-class PathTest : Spek({
+class PathTest {
 
-    describe("trivial path") {
-
+    @Nested
+    @DisplayName("PathTest > trivial path")
+    inner class TrivialPath {
         val trivialPath = Path.TRIVIAL
 
-        it("should be equal to trivial path") {
-            assertThat(trivialPath, matchesPath(trivialPath))
-        }
-
-        it("concat with trivial path should be trivial path") {
-            assertThat(trivialPath.concat(trivialPath), matchesPath(trivialPath))
-        }
-
-        it("should be trivial") {
-            assertTrue(trivialPath.isTrivial)
-        }
-
-        it("should be single") {
-            assertTrue(trivialPath.isSingle)
-        }
-
-        it("head is empty String") {
-            assertThat(trivialPath.head, `is`(""))
-        }
-
-        it("tail should be trivial") {
-            assertTrue(trivialPath.tail.isTrivial)
+        @Test
+        fun `should behave as expected`() {
+            assertThat(trivialPath).isEqualTo(trivialPath)
+            assertThat(trivialPath.concat(trivialPath)).isEqualTo(trivialPath)
+            assertThat(trivialPath.isTrivial).isTrue
+            assertThat(trivialPath.isSingle).isTrue
+            assertThat(trivialPath.head).isEqualTo("")
+            assertThat(trivialPath.tail.isTrivial).isTrue
         }
     }
 
-    describe("non-trivial path of length one") {
-
+    @Nested
+    @DisplayName("PathTest > non-trivial path of length one")
+    inner class NonTrivialPathLengthOne {
         val edgeName = "bla"
         val nonTrivialPath = Path(edgeName)
 
-        it("should not be equal to trivial path") {
-            assertThat(Path.TRIVIAL, not(matchesPath(nonTrivialPath)))
-            assertThat(nonTrivialPath, not(matchesPath(Path.TRIVIAL)))
+        @Test
+        fun `should not be equal to trivial path`() {
+            assertThat(Path.TRIVIAL).isNotEqualTo(nonTrivialPath)
+            assertThat(nonTrivialPath).isNotEqualTo(Path.TRIVIAL)
         }
 
-        it("should not be trivial") {
-            assertFalse(nonTrivialPath.isTrivial)
+        @Test
+        fun `should not be trivial but be single`() {
+            assertThat(nonTrivialPath.isTrivial).isFalse
+            assertThat(nonTrivialPath.isSingle).isTrue
         }
 
-        it("should be single") {
-            assertTrue(nonTrivialPath.isSingle)
+        @Test
+        fun `should be equal to itself`() {
+            assertThat(nonTrivialPath).isEqualTo(nonTrivialPath)
+            assertThat(nonTrivialPath).isEqualTo(Path(edgeName))
         }
 
-        it("should be equal to itself") {
-            assertThat(nonTrivialPath, matchesPath(nonTrivialPath))
-            assertThat(nonTrivialPath, matchesPath(Path(edgeName)))
-        }
-
-        it("should not be equal to another non-trivial path") {
+        @Test
+        fun `should not be equal to another non-trivial path`() {
             val anotherNonTrivialPath = Path("blubb")
-            assertThat(nonTrivialPath, not(matchesPath(anotherNonTrivialPath)))
-            assertThat(anotherNonTrivialPath, not(matchesPath(nonTrivialPath)))
+            assertThat(nonTrivialPath).isNotEqualTo(anotherNonTrivialPath)
         }
 
-        it("concat with trivial path should return same path") {
-            assertThat(nonTrivialPath.concat(Path.TRIVIAL), matchesPath(nonTrivialPath))
-            assertThat(Path.TRIVIAL.concat(nonTrivialPath), matchesPath(nonTrivialPath))
+        @Test
+        fun `concat with trivial path should return same path`() {
+            assertThat(nonTrivialPath.concat(Path.TRIVIAL)).isEqualTo(nonTrivialPath)
+            assertThat(Path.TRIVIAL.concat(nonTrivialPath)).isEqualTo(nonTrivialPath)
         }
 
-        it("head should be name of single edge") {
-            assertThat(nonTrivialPath.head, `is`(edgeName))
+        @Test
+        fun `head should be name of single edge`() {
+            assertThat(nonTrivialPath.head).isEqualTo(edgeName)
         }
 
-        it("tail should be trivial") {
-            assertTrue(nonTrivialPath.tail.isTrivial)
+        @Test
+        fun `tail should be trivial`() {
+            assertThat(nonTrivialPath.tail.isTrivial).isTrue
         }
     }
 
-    describe("non-trivial path of length two") {
+    @Nested
+    @DisplayName("Path Test > non-trivial path of length two")
+    inner class NonTrivialPathLengthTwo {
         val firstEdgeName = "first"
         val secondEdgeName = "second"
         val nonTrivialPath = Path(firstEdgeName, secondEdgeName)
         val firstPath = Path(nonTrivialPath.edgesList[0])
         val secondPath = Path(nonTrivialPath.edgesList[1])
 
-        it("should not be equal to trivial path") {
-            assertThat(Path.TRIVIAL, not(matchesPath(nonTrivialPath)))
-            assertThat(nonTrivialPath, not(matchesPath(Path.TRIVIAL)))
+        @Test
+        fun `should not be equal to trivial path`() {
+            assertThat(Path.TRIVIAL).isNotEqualTo(nonTrivialPath)
         }
 
-        it("should not be trivial") {
-            assertFalse(nonTrivialPath.isTrivial)
+        @Test
+        fun `should not be trivial or single`() {
+            assertThat(nonTrivialPath.isTrivial).isFalse
+            assertThat(nonTrivialPath.isSingle).isFalse
         }
 
-        it("should not be single") {
-            assertFalse(nonTrivialPath.isSingle)
+        @Test
+        fun `should equal itself`() {
+            assertThat(nonTrivialPath).isEqualTo(nonTrivialPath)
         }
 
-        it("should equal itself") {
-            assertThat(nonTrivialPath, matchesPath(nonTrivialPath))
+        @Test
+        fun `should equal concatenation of its parts`() {
+            val concatenatedPath = firstPath.concat(secondPath)
+
+            assertThat(nonTrivialPath).isEqualTo(concatenatedPath)
         }
 
-        it("should equal concatination of its parts") {
-            val concatinatedPath = firstPath.concat(secondPath)
-
-            assertThat(nonTrivialPath, matchesPath(concatinatedPath))
+        @Test
+        fun `should not be equal to its parts`() {
+            assertThat(nonTrivialPath).isNotEqualTo(firstPath)
+            assertThat(nonTrivialPath).isNotEqualTo(secondPath)
         }
 
-        it("should not be equal to its parts") {
-            assertThat(nonTrivialPath, not(matchesPath(firstPath)))
-            assertThat(nonTrivialPath, not(matchesPath(secondPath)))
+        @Test
+        fun `head should be first edge name`() {
+            assertThat(nonTrivialPath.head).isEqualTo(firstEdgeName)
         }
 
-        it("head should be first edge name") {
-            assertThat(nonTrivialPath.head, `is`(firstEdgeName))
-        }
-
-        it("tail should be second edge") {
-            assertThat(nonTrivialPath.tail, matchesPath(secondPath))
+        @Test
+        fun `tail should be second edge`() {
+            assertThat(nonTrivialPath.tail).isEqualTo(secondPath)
         }
     }
 
-    describe("fittingEdgesFromTailWith") {
-
+    @Test
+    fun `fitting edges from tail with should calculate correctly`() {
         val paths = listOf(
             Path(),
             Path("1"),
@@ -141,40 +133,16 @@ class PathTest : Spek({
             Path("0", "1", "2", "a")
         )
 
-        describe("for trivial path") {
-            it("should calculate fitting edges") {
-                assertThat(
-                    paths.map { paths[0].fittingEdgesFromTailWith(it) },
-                    `is`(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0))
-                )
-            }
-        }
+        assertThat(paths.map { paths[0].fittingEdgesFromTailWith(it) })
+            .isEqualTo(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0))
 
-        describe("for leaf") {
-            it("should calculate fitting edges") {
-                assertThat(
-                    paths.map { paths[4].fittingEdgesFromTailWith(it) },
-                    `is`(listOf(0, 0, 0, 0, 1, 1, 1, 1, 1))
-                )
-            }
-        }
+        assertThat(paths.map { paths[4].fittingEdgesFromTailWith(it) })
+            .isEqualTo(listOf(0, 0, 0, 0, 1, 1, 1, 1, 1))
 
-        describe("for path of length 2") {
-            it("should calculate fitting edges") {
-                assertThat(
-                    paths.map { paths[5].fittingEdgesFromTailWith(it) },
-                    `is`(listOf(0, 0, 0, 0, 1, 2, 2, 1, 1))
-                )
-            }
-        }
+        assertThat(paths.map { paths[5].fittingEdgesFromTailWith(it) })
+            .isEqualTo(listOf(0, 0, 0, 0, 1, 2, 2, 1, 1))
 
-        describe("for path of length 3") {
-            it("should calculate fitting edges") {
-                assertThat(
-                    paths.map { paths[7].fittingEdgesFromTailWith(it) },
-                    `is`(listOf(0, 0, 0, 0, 1, 1, 1, 3, 3))
-                )
-            }
-        }
+        assertThat(paths.map { paths[7].fittingEdgesFromTailWith(it) })
+            .isEqualTo(listOf(0, 0, 0, 0, 1, 1, 1, 3, 3))
     }
-})
+}
