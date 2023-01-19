@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core"
-import { LegendMetric } from "../selectors/legendMetric"
+import { MetricDecorations } from "../../attributeSideBar/util/metricDecorations"
 
 @Component({
 	selector: "cc-legend-block",
@@ -7,5 +7,5 @@ import { LegendMetric } from "../selectors/legendMetric"
 })
 export class LegendBlockComponent {
 	@Input() metricFor: string
-	@Input() legendMetric: LegendMetric
+	@Input() legendMetric: MetricDecorations
 }
