@@ -82,7 +82,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 
 ## Changelog Guidelines
 
-### Why should you we write a changelog?
+### Why do we write a changelog?
 
 -   A changelog is vital for the developers to keep track of their work. But most importantly now that it appears on every version update to every user, we should make sure that it is also user-friendly. And for that, we need guidelines to help us.
 

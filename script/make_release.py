@@ -5,83 +5,78 @@ import pathlib
 import subprocess
 import datetime
 
-
 root = pathlib.Path().absolute()
 
 
-def isRootFolder():
-  return root[-10:] == "codecharta"
+def is_root_folder():
+    return root[-10:] == "codecharta"
 
 
-def confirm(message, printMessage):
-  confirm = [{
-    "type": "confirm",
-    "name": "confirmed",
-    "message": message,
-    "default": True
-  }]
-  confirmation = PyInquirer.prompt(confirm)["confirmed"]
+def confirm(message, print_message):
+    confirm = [{
+        "type": "confirm",
+        "name": "confirmed",
+        "message": message,
+        "default": True
+    }]
+    confirmation = PyInquirer.prompt(confirm)["confirmed"]
 
-  if confirmation:
-    print(printMessage)
-  else:
-    print("Aborting.")
-    quit()
-
-
-def getLatestChangelogEntries(path):
-  with open(path, "r", encoding="utf-8") as fp:
-    line_number = 0
-    new_changelog_section = ""
-
-    for line in fp:
-      if line_number > 10:
-
-        # break on headline for already released log entries
-        if line.startswith("## ["):
-          break
-
-        new_changelog_section += line
-
-      line_number += 1
-
-  return new_changelog_section
+    if confirmation:
+        print(print_message)
+    else:
+        print("Aborting.")
+        quit()
 
 
-def getReleasePost(version, path):
-  release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n\ntitle: {version}\n---\n\n"
-  release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
-  release_post_content = getLatestChangelogEntries(path)
-  return release_post_header + release_post_headline + release_post_content
+def get_latest_changelog_entries(path):
+    with open(path, "r", encoding="utf-8") as fp:
+        line_number = 0
+        new_changelog_section = ""
+
+        for line in fp:
+            if line_number > 10:
+
+                # break on headline for already released log entries
+                if line.startswith("## ["):
+                    break
+
+                new_changelog_section += line
+
+            line_number += 1
+
+    return new_changelog_section
+
+
+def get_release_post(version, path):
+    release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n\ntitle: {version}\n---\n\n"
+    release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
+    release_post_content = get_latest_changelog_entries(path)
+    return release_post_header + release_post_headline + release_post_content
 
 
 # Check if we're on project root folder
-if not isRootFolder:
-  print("Please execute this script from the project root folder. Aborting.")
-  quit()
+if not is_root_folder:
+    print("Please execute this script from the project root folder. Aborting.")
+    quit()
 else:
-  repo = git.Repo(root)
+    repo = git.Repo(root)
 
-
-# Check if there are any uncommited changes
+# Check if there are any uncommitted changes
 if repo.is_dirty():
-  print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
-  quit()
-
+    print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
+    quit()
 
 # Check if we are on main branch
 if repo.active_branch.name != "main":
-  print("You can only release on main branch. Aborting.")
-  quit()
-
+    print("You can only release on main branch. Aborting.")
+    quit()
 
 # Get latest tag
 latest_tag = str(
-  sorted(repo.tags, key=lambda t: t.commit.committed_datetime)[-1])
+    sorted(repo.tags, key=lambda t: t.commit.committed_datetime)[-1])
 print(f"Last version tag in git is {latest_tag}")
 
-
-# Precalc new versions
+# Precalculate new versions
 versions = latest_tag.split(".")
 
 major = int(versions[0])
@@ -92,47 +87,43 @@ new_major_version = f"{major + 1}.0.0"
 new_minor_version = f"{major}.{minor + 1}.0"
 new_patch_version = f"{major}.{minor}.{patch + 1}"
 
-
 # Get release type and version
 questions = [{
-  "type": "list",
-  "name": "version",
-  "message": f"Do you want to release a major version [{new_major_version}], minor version [{new_minor_version}] or a patch [{new_patch_version}]?",
-  "choices": ["Major", "Minor", "Patch"],
+    "type": "list",
+    "name": "version",
+    "message": f"Do you want to release a major version [{new_major_version}], minor version [{new_minor_version}] or a patch [{new_patch_version}]?",
+    "choices": ["Major", "Minor", "Patch"],
 }]
 
 release_type = PyInquirer.prompt(questions)["version"]
 
-if release_type == None:
-  quit()
+if release_type is None:
+    quit()
 elif release_type == "Major":
-  new_version = new_major_version
+    new_version = new_major_version
 elif release_type == "Minor":
-  new_version = new_minor_version
+    new_version = new_minor_version
 elif release_type == "Patch":
-  new_version = new_patch_version
-
+    new_version = new_patch_version
 
 # Confirm release
 message = f"Do you REALLY want to release {new_version}? WARNING: File changes need to be undone manually or through git when done unintentionally!"
 printMessage = f"Selected {release_type} release. Updating project..."
 confirm(message, printMessage)
 
-
 # bump version in gradle.properties
 gradle_properties = f"{root}/analysis/gradle.properties"
 
 with in_place.InPlace(gradle_properties, encoding="utf-8") as fp:
-  for line in fp:
-    if "currentVersion=" in line:
-      fp.write(
-        f"currentVersion={new_version}\n")
-    else:
-      fp.write(line)
+    for line in fp:
+        if "currentVersion=" in line:
+            fp.write(
+                f"currentVersion={new_version}\n")
+        else:
+            fp.write(line)
 
 print(f"v{new_version}")
 print("incremented version in ./analysis/gradle.properties")
-
 
 # bump version in package.jsons
 analysis_package = f"{root}/analysis/node-wrapper"
@@ -148,7 +139,6 @@ visualization_package_lock_json = f"{visualization_package}/package-lock.json"
 subprocess.run(f"npm --prefix {visualization_package} --no-git-tag-version version {new_version}", shell=True)
 print("incremented version in ./visualization/package.json + locks")
 
-
 # update changelog
 changelog_path = f"{root}/CHANGELOG.md"
 date = datetime.datetime.now()
@@ -156,28 +146,26 @@ month = date.strftime("%m")
 day = date.strftime("%d")
 date_formatted = f"{date.year}-{month}-{day}"
 
+with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
+    for line in fp:
+        if "## [unreleased]" in line:
+            fp.write(
+                f"## [{new_version}] - {date_formatted}\n")
+        else:
+            fp.write(line)
 
 with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
-  for line in fp:
-    if "## [unreleased]" in line:
-      fp.write(
-        f"## [{new_version}] - {date_formatted}\n")
-    else:
-      fp.write(line)
+    line_number = 0
 
-with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
-  line_number = 0
-
-  for line in fp:
-    if line_number == 6:
-      fp.write(
-        "\n## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n")
-    else:
-      fp.write(line)
-    line_number = line_number + 1
+    for line in fp:
+        if line_number == 6:
+            fp.write(
+                "\n## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n")
+        else:
+            fp.write(line)
+        line_number = line_number + 1
 
 print("updated ./CHANGELOG.md")
-
 
 # add gh-pages release post
 new_version_formatted = new_version.replace(".", "_")
@@ -185,7 +173,7 @@ release_post = f"{date_formatted}-v{new_version_formatted}.md"
 release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
 
 with open(release_post_path, "w", encoding="utf-8") as fp:
-  fp.write(getReleasePost(new_version, changelog_path))
+    fp.write(get_release_post(new_version, changelog_path))
 
 # confirm and make a commit and tag it correctly
 message = "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
@@ -193,17 +181,17 @@ printMessage = "Committing and tagging..."
 confirm(message, printMessage)
 
 repo.index.add([release_post_path, changelog_path, gradle_properties,
-                analysis_package_json, analysis_package_lock_json, visualization_package_json, visualization_package_lock_json])
+                analysis_package_json, analysis_package_lock_json, visualization_package_json,
+                visualization_package_lock_json])
 subprocess.run('git commit -a -m "Releasing ' + new_version + '"', shell=True)
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
 
-
 # push
-message = "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push ?"
+message = "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push?"
 printMessage = "Pushing..."
 confirm(message, printMessage)
 
 subprocess.run("git push --follow-tags", shell=True)
 
-print("Please manually add the latest release notes, as soon as the build is successfully deployed")
+print("All done. Check the GitHub page in about half an hour to see if everything worked")

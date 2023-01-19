@@ -1,13 +1,6 @@
-repositories {
-    maven {
-        url 'https://dl.bintray.com/spekframework/spek-dev'
-    }
-}
-
 dependencies {
     implementation project(':model')
     implementation project(':tools:InteractiveParser')
-
 
     implementation group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
@@ -20,16 +13,9 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.1'
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
-    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
-        exclude group: 'org.jetbrains.kotlin'
-    }
 
-    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek2_version") {
-        exclude group: 'org.jetbrains.kotlin'
-    }
     testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 }
 

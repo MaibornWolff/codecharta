@@ -1,50 +1,52 @@
 package de.maibornwolff.codecharta.translator
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
-class MetricNameTranslatorTest : Spek({
-    describe("trivial replacer") {
+class MetricNameTranslatorTest {
+    @Test
+    fun `trivial replacer should not replace anything`() {
         val replacer = MetricNameTranslator.TRIVIAL
-        it("should not replace anything") {
-            val original = "testestest"
-            assertThat(replacer.translate(original), `is`(original))
-        }
+        val original = "testestest"
+        assertThat(replacer.translate(original)).isEqualTo(original)
     }
 
-    describe("replacer without specified prefix") {
+    @Test
+    fun `replacer without specified prefix should replace specified string`() {
         val original = "oldValue"
         val replacement = "newString"
         val replacer = MetricNameTranslator(mapOf(Pair(original, replacement)))
-
-        it("should replace specified string") {
-            assertThat(replacer.translate(original), `is`(replacement))
-        }
-
-        it("should not replace other string") {
-            val otherString = "testestest"
-            assertThat(replacer.translate(otherString), `is`(otherString))
-        }
+        assertThat(replacer.translate(original)).isEqualTo(replacement)
     }
 
-    describe("replacer with prefix") {
+    @Test
+    fun `replacer without specified prefix should not replace other string`() {
+        val original = "oldValue"
+        val replacement = "newString"
+        val replacer = MetricNameTranslator(mapOf(Pair(original, replacement)))
+        val otherString = "testestest"
+        assertThat(replacer.translate(otherString)).isEqualTo(otherString)
+    }
+
+    @Test
+    fun `replacer with prefix should replace specified string`() {
         val original = "oldValue"
         val replacement = "newString"
         val replacer = MetricNameTranslator(mapOf(Pair(original, replacement)), "pre_")
-
-        it("should replace specified string") {
-            assertThat(replacer.translate(original), `is`(replacement))
-        }
-
-        it("should prefix other string with underscores") {
-            assertThat(replacer.translate("some String"), `is`("pre_some_string"))
-        }
+        assertThat(replacer.translate(original)).isEqualTo(replacement)
     }
 
-    describe("A replacer") {
+    @Test
+    fun `replacer with prefix should prefix other string with underscores`() {
+        val original = "oldValue"
+        val replacement = "newString"
+        val replacer = MetricNameTranslator(mapOf(Pair(original, replacement)), "pre_")
+        assertThat(replacer.translate("some String")).isEqualTo("pre_some_string")
+    }
+
+    @Test
+    fun `replacer should replaceMany`() {
         val replacer = MetricNameTranslator(
             mapOf(
                 Pair("this", "oooo"),
@@ -53,28 +55,23 @@ class MetricNameTranslatorTest : Spek({
             )
         )
 
-        it("should replaceMany") {
-            val original: Array<String?> = arrayOf("this", "that", "other", null)
-            val expected: Array<String?> = arrayOf("oooo", "iiii", "other", null)
+        val original: Array<String?> = arrayOf("this", "that", "other", null)
+        val expected: Array<String?> = arrayOf("oooo", "iiii", "other", null)
 
-            assertThat(replacer.translate(original), `is`(expected))
+        assertThat(replacer.translate(original)).isEqualTo(expected)
+    }
+
+    @Test
+    fun `translator with same values should not validate`() {
+        assertFailsWith(IllegalArgumentException::class) {
+            MetricNameTranslator(mapOf(Pair("this", "that"), Pair("these", "that")))
         }
     }
 
-    describe("A translator with same values") {
-        it("should not validate") {
-            assertFailsWith(IllegalArgumentException::class) {
-                MetricNameTranslator(mapOf(Pair("this", "that"), Pair("these", "that")))
-            }
-        }
-
-        describe("A translator with multiple empty values") {
-            val translator = MetricNameTranslator(mapOf(Pair("this", ""), Pair("these", "")))
-
-            it("should validate") {
-                assertThat(translator.translate("this"), `is`(""))
-                assertThat(translator.translate("these"), `is`(""))
-            }
-        }
+    @Test
+    fun `translator with multiple empty values should validate`() {
+        val translator = MetricNameTranslator(mapOf(Pair("this", ""), Pair("these", "")))
+        assertThat(translator.translate("this")).isEqualTo("")
+        assertThat(translator.translate("these")).isEqualTo("")
     }
-})
+}
