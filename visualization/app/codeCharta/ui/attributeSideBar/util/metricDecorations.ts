@@ -5,13 +5,19 @@ export type MetricDecorations = {
 	key: string
 	title: string
 	description: string
+	hintLowValue: string
+	hintHighValue: string
+	link: string
 }
 
-export function getLegendMetric(metricKey: string, attributeDescriptors: AttributeDescriptors): MetricDecorations {
+export function getMetricDecorations(metricKey: string, attributeDescriptors: AttributeDescriptors): MetricDecorations {
 	return {
 		key: metricKey,
 		title: getMetricTitle(metricKey, attributeDescriptors),
-		description: attributeDescriptors?.[metricKey]?.description
+		description: attributeDescriptors?.[metricKey]?.description,
+		hintLowValue: attributeDescriptors?.[metricKey]?.hintLowValue,
+		hintHighValue: attributeDescriptors?.[metricKey]?.hintHighValue,
+		link: attributeDescriptors?.[metricKey]?.link
 	}
 }
 
