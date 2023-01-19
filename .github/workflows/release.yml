@@ -59,8 +59,8 @@ jobs:
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: Run building script build gh pages
-        run: sh ./script/build_gh_pages.sh
+      - name: Create Sample File for Web Demo
+        run: sh ./script/build_demo_file.sh
 
       - name: Upload Release Files to tagged release
         uses: alexellis/upload-assets@0.4.0

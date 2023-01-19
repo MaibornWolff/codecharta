@@ -9,11 +9,11 @@ Finally, it would be great if you looked at how we give and receive [feedback]({
 
 # Branching / Releasing
 
-We create Pull Requests to the `main` branch after implementing a feature or fixing a bug. There is no release or development branch. We never push on `main` directly. Please take a look at our [contributing guidelines](https://github.com/MaibornWolff/codecharta/blob/main/CONTRIBUTING.md) before you start comitting.
+We create Pull Requests to the `main` branch after implementing a feature or fixing a bug. There is no release or development branch. We never push on `main` directly. Please take a look at our [contributing guidelines](https://github.com/MaibornWolff/codecharta/blob/main/CONTRIBUTING.md) before you start committing.
 
-# Github Actions
+# GitHub Actions
 
-In Github Actions, we defined stages, which group different jobs. Inside a stage, all jobs run in parallel. There is no data persistence between stages, so we have to rebuild our application in each stage. The CI consists of the following stages:
+In GitHub Actions, we defined stages, which group different jobs. Inside a stage, all jobs run in parallel. There is no data persistence between stages, so we have to rebuild our application in each stage. The CI consists of the following stages:
 
 -   Testing (which runs on every push on an active PR)
 -   Sonar Analysis (which runs on every push on an active PR after testing to ensure code quality metrics are met)
@@ -37,7 +37,7 @@ All workflow files can be found under `.github/workflows`
 -   Publishes the new version on npm
 -   Publishes a docker container on [Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization)
 
--   Workflow: `release_gh_pages.yml`
+-   Workflow: `release.yml`
 
 # Analysis
 
@@ -115,9 +115,9 @@ This chart shows the data flow in our architecture when a new cc.json is opened.
 
 ### PlopJS
 
-In order to reduce the amount of time spent on repetitive work such as creating 5 files for a ui-component, we implemented some plop-templates that will help you with that. Just type `npm run plop` and let the magic take over.
+In order to reduce the amount of time spent on repetitive work such as creating 5 files for an ui-component, we implemented some plop-templates that will help you with that. Just type `npm run plop` and let the magic take over.
 
-Currently we support the creation of:
+Currently, we support the creation of:
 
 -   state service
 -   ui-component
