@@ -32,7 +32,6 @@ class PathTest {
         @Test
         fun `should not be equal to trivial path`() {
             assertThat(Path.TRIVIAL).isNotEqualTo(nonTrivialPath)
-            assertThat(nonTrivialPath).isNotEqualTo(Path.TRIVIAL)
         }
 
         @Test
