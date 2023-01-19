@@ -67,7 +67,7 @@ Don't import the whole codecharta project to IntelliJ when working on the analys
 -   Gradle
 -   [PicoCli]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_5_pick_analysis_cli_library.md %})
 -   JUnit
--   Hamcrest
+-   Assertj
 -   Mockito
 -   Gson
 -   Sonar-Plugins to create our own parsers

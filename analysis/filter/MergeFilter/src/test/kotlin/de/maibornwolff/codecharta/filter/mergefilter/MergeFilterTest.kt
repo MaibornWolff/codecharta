@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
@@ -11,7 +9,6 @@ import java.io.File
 import java.io.PrintStream
 
 class MergeFilterTest {
-    private val mergeFilter = MergeFilter()
     val outContent = ByteArrayOutputStream()
     val originalOut = System.out
     val errContent = ByteArrayOutputStream()
@@ -31,14 +28,14 @@ class MergeFilterTest {
         System.setErr(originalErr)
 
         // should ignore files starting with a dot
-        MatcherAssert.assertThat(outContent.toString(), Matchers.not(Matchers.containsString("ShouldNotAppear.java")))
+        assertThat(outContent.toString()).doesNotContain("ShouldNotAppear.java")
 
         // should merge all valid projects in folder
-        MatcherAssert.assertThat(outContent.toString(), Matchers.containsString(valueInFile1))
-        MatcherAssert.assertThat(outContent.toString(), Matchers.containsString(valueInFile2))
+        assertThat(outContent.toString()).contains(valueInFile1)
+        assertThat(outContent.toString()).contains(valueInFile2)
 
         // should warn about skipped files
-        MatcherAssert.assertThat(errContent.toString(), Matchers.containsString(invalidFile))
+        assertThat(errContent.toString()).contains(invalidFile)
     }
 
     @Test
@@ -51,8 +48,8 @@ class MergeFilterTest {
         val valueInFile1 = "SourceMonCsvConverterTest.java"
         val valueInFile2 = "SourceMonCsvConverter.java"
 
-        MatcherAssert.assertThat(outContent.toString(), Matchers.containsString(valueInFile1))
-        MatcherAssert.assertThat(outContent.toString(), Matchers.containsString(valueInFile2))
+        assertThat(outContent.toString()).contains(valueInFile1)
+        assertThat(outContent.toString()).contains(valueInFile2)
     }
 
     @Test
@@ -66,7 +63,7 @@ class MergeFilterTest {
         val file = File("src/test/resources/output.cc.json")
         file.deleteOnExit()
 
-        Assertions.assertTrue(file.exists())
+        assertThat(file.exists()).isTrue
     }
 
     @Test
@@ -80,6 +77,6 @@ class MergeFilterTest {
         val file = File("src/test/resources/output.cc.json.gz")
         file.deleteOnExit()
 
-        Assertions.assertTrue(file.exists())
+        assertThat(file.exists()).isTrue
     }
 }

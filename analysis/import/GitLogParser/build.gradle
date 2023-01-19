@@ -1,5 +1,4 @@
 dependencies {
-
     implementation project(':model')
     implementation project(':filter:MergeFilter')
     implementation project(':tools:InteractiveParser')
@@ -15,7 +14,6 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation project(path: ':model', configuration: 'testOutput')
-
 }
 
 test {
