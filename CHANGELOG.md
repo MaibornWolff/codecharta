@@ -7,17 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.114.0] - 2023-01-13
+
 ### Added 🚀
 
 -   Add an option to hide floor labels under the Area Metric Options. This recalculates the map. [#3175](https://github.com/MaibornWolff/codecharta/pull/3175)
 
-### Chore 👨‍💻 👩‍💻
+### Removed 🗑
 
--   Add attribute descriptors (metric descriptions) to TokeiImporter and SVNlogParser [#3176](https://github.com/MaibornWolff/codecharta/pull/3176)
+-   Camera settings for custom views generated with version 1.101.1 and earlier are now ignored. [#3196](https://github.com/MaibornWolff/codecharta/pull/3196)
 
 ### Fixed 🐞
 
 -   Reposition legend panel button again, when attribute sidebar is open [#3183](https://github.com/MaibornWolff/codecharta/pull/3183)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Add attribute descriptors (metric descriptions) to TokeiImporter and SVNlogParser [#3176](https://github.com/MaibornWolff/codecharta/pull/3176)
 
 ## [1.113.0] - 2022-12-15
 
