@@ -146,9 +146,8 @@ Now you're almost done! Simply navigate to localhost:9001 in your browser to ope
 
 ```bash
 npm i -g codecharta-analysis
-cd junit4; git log --numstat --raw --topo-order > ../junit4.git.log; cd ..
 ccsh sourcecodeparser junit4 \
-  | ccsh gitlogparser junit4.git.log --input-format GIT_LOG_NUMSTAT_RAW \
+  | ccsh gitlogparser repo-scan --repo-path junit4 \
   > junit4.cc.json
 ```
 

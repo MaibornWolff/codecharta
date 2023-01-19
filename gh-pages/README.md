@@ -1,14 +1,14 @@
 # CodeCharta Docs
 
-The CodeCharta docs use [Jekyll](https://jekyllrb.com) and the [Minimal Mistakes (MM) Theme](https://mmistakes.github.io/minimal-mistakes/). The target of the docs are users (the ones that use the ccsh and the web version) and developers (the ones that maintain and extend CodeCharta). These audiences share similar concerns. As an example most users don't need to know how to write a new importer. They could benefit from the context view however.
+The CodeCharta docs use [Jekyll](https://jekyllrb.com) and the [Minimal Mistakes (MM) Theme](https://mmistakes.github.io/minimal-mistakes/). The target of the docs are users (the ones that use the ccsh and the web version) and developers (the ones that maintain and extend CodeCharta). These audiences share similar concerns. As an example most users don't need to know how to write a new importer. They could benefit from the context view, however.
 
 ## Usage
 
-The generated docs can be viewed locally before being pushed to Github (see below). Please note that some files like the web version of CodeCharta are **generated** by `release_gh_pages.yml` with the help of the `script/build_gh_pages.sh`. They won't show up locally unless you call that script. If you run the script you should find a new folder called `gh-pages/visualization` though.
+The generated docs can be viewed locally before being pushed to GitHub (see below). Please note that some files like the web version of CodeCharta are **generated** by `release.yml` when the release pipeline runs.
 
 ### Local
 
-1. [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/) version 2.7.0 or above (check with `ruby -v`). Please be aware, that some OS come with an old Ruby version. [Rubyenv](https://github.com/rbenv/rbenv#installation) did wonders for me (you can skip these steps if you use rbenv already or have some other way to aquire ruby):
+1. [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/) version 2.7.0 or above (check with `ruby -v`). Please be aware, that some OS come with an old Ruby version. [Rubyenv](https://github.com/rbenv/rbenv#installation) did wonders for me (you can skip these steps if you use rbenv already or have some other way to acquire ruby):
     - `brew install rbenv`
     - Add `eval "$(rbenv init -)"` to the `~/.bash_profile`
     - Close terminal
@@ -24,11 +24,11 @@ The generated docs can be viewed locally before being pushed to Github (see belo
     - Now browse to http://localhost:4000/codecharta/
         - the path `/codecharta` is there because we added `baseurl` to our `_config.yml`
 
-### Github
+### GitHub
 
-Github uses Jekyll to [render static site](https://help.github.com/en/articles/about-github-pages-and-jekyll) content for Github-Pages. Content in a top-level _docs folder_ or in a _branch gh-pages_ is automatically rendered.
+GitHub uses Jekyll to [render static site](https://help.github.com/en/articles/about-github-pages-and-jekyll) content for Github-Pages. Content in a top-level _docs folder_ or in a _branch gh-pages_ is automatically rendered.
 
-Github does not support all Jekyll plugins however and only supports those it has [whitelisted](https://pages.github.com/versions/).
+GitHub does not support all Jekyll plugins however and only supports those it has [whitelisted](https://pages.github.com/versions/).
 
 ## Modify the docs
 
@@ -40,7 +40,7 @@ The `assets/img/*.drawio.*` files can be opened directly with [Draw.io](https://
 
 ## Tech
 
-Jekyll is a static site renderer written in Ruby and most notably it is directly supported by Github. By default it does not provide any look-and-feel for your sites. MM provides that theme (css, layouts, some js etc.) and also adds very nice things like search.
+Jekyll is a static site renderer written in Ruby and most notably it is directly supported by GitHub. By default, it does not provide any look-and-feel for your sites. MM provides that theme (css, layouts, some js etc.) and also adds very nice things like search.
 
 At first sight Jekyll is very simple. Basically "all" it does is copy files from your project structure to the generated folder called `_site`. So if you place an `index.html` in your project root, it'll also be in the root of `_site`. What creates value is that Jekyll can also modify the files during the copy operation, provided we tell it to:
 
@@ -48,7 +48,7 @@ At first sight Jekyll is very simple. Basically "all" it does is copy files from
 -   a [custom collection folder](https://jekyllrb.com/docs/collections/) like `_docs`
 -   or we place special [front matter header](https://jekyllrb.com/docs/front-matter/) in the **beginning** of the file
 
-The Front Matter Header in an html file:
+The Front Matter Header in a html file:
 
 ```html
 ---
@@ -79,7 +79,7 @@ MM can be modified by copying files from MM directly and changing their content.
 
 ### Markdown
 
-Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images). Also please use this format for internal links between markdown files: `[visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %})`. It has the benefit that the build will fail locally if a file cannot be found.
+Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images). Also, please use this format for internal links between markdown files: `[visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %})`. It has the benefit that the build will fail locally if a file cannot be found.
 
 ## Troubleshoot Docs Generation
 
