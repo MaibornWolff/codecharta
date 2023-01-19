@@ -8,7 +8,6 @@ dependencies {
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation project(path: ':model', configuration: 'testOutput')
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
 
