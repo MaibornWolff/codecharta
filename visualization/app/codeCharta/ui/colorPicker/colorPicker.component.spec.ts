@@ -42,7 +42,10 @@ describe("colorPicker", () => {
 		expect(screen.queryByText("isOpen: true")).toBeTruthy()
 
 		// @ts-ignore
-		ng.probe(screen.queryByRole("colorpicker")).componentInstance.onChangeComplete.emit({ $event: {}, color: { hex: "#000000" } })
+		ng.getComponent(screen.queryByRole("colorpicker")).onChangeComplete.emit({
+			$event: {},
+			color: { hex: "#000000" }
+		})
 		expect(await screen.findByText("color: #000000")).toBeTruthy()
 
 		fireEvent.click(document)
