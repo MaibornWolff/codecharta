@@ -19,9 +19,9 @@
 		"experimentalDecorators": true,
 		"moduleResolution": "node",
 		"importHelpers": true,
-		"target": "es2017",
+		"target": "es2020",
 		"module": "es2020",
-		"lib": ["es2018", "dom", "dom.iterable"]
+		"lib": ["es2020", "dom", "dom.iterable"]
 	},
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false,
