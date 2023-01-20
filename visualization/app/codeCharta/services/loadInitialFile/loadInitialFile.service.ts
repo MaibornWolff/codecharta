@@ -32,7 +32,7 @@ export class LoadInitialFileService {
 			this.tryLoadingFiles(data)
 			this.setRenderStateFromUrl()
 		} catch (error) {
-			this.tryLoadingSampleFiles(error)
+			this.tryLoadingSampleFiles(error as Error & { statusText?: string; status?: number })
 		}
 	}
 

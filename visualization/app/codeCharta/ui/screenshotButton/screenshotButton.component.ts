@@ -65,7 +65,6 @@ export class ScreenshotButtonComponent {
 		this.buildScreenShotCanvas(renderer)
 
 		renderer.domElement.toBlob(blob => {
-			// @ts-ignore -- TODO NG fixed with TS 4.4
 			navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
 		})
 	}

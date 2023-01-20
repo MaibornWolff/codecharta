@@ -6,12 +6,11 @@
 	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
 	"preset": "jest-preset-angular",
 	"transform": {
-		"\\.(m?js)$": "babel-jest",
-		"\\.ts$": "jest-preset-angular",
+		"\\.(m?js|ts)$": "jest-preset-angular",
 		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js",
 		"\\.html$": "jest-preset-angular"
 	},
-	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020))"],
+	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020|.*\\.mjs$))"],
 	"moduleNameMapper": {
 		"\\.png$": "<rootDir>/mocks/fileMock.js",
 		"\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
