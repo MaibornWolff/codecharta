@@ -1,5 +1,5 @@
 {
-	"collectCoverage": false,
+	"collectCoverage": true,
 	"rootDir": "./../",
 	"coverageDirectory": "<rootDir>/dist/coverage",
 	"collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
