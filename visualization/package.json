@@ -39,9 +39,8 @@
 	},
 	"main": "dist/webpack/index.html",
 	"browserslist": [
-		"last 2 versions",
-		"not IE 11",
-		"not IE 10"
+		"last 2 chrome version",
+		"last 2 firefox version"
 	],
 	"scripts": {
 		"start": "nw .",
