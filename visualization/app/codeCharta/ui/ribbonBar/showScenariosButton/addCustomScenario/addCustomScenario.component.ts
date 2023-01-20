@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
-import { FormControl } from "@angular/forms"
+import { UntypedFormControl } from "@angular/forms"
 import { State } from "../../../../state/angular-redux/state"
 import { ScenarioHelper, ScenarioMetricProperty } from "../scenarioHelper"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
@@ -13,7 +13,7 @@ import { getInitialScenarioMetricProperties } from "./utils/getInitialScenarioMe
 	encapsulation: ViewEncapsulation.None
 })
 export class AddCustomScenarioComponent {
-	scenarioName = new FormControl("", [customScenarioNameValidator()])
+	scenarioName = new UntypedFormControl("", [customScenarioNameValidator()])
 	scenarioNameErrorField: string | null = "Scenario name is required"
 	scenarioContent: ScenarioMetricProperty[]
 	areAnyScenarioMetricPropertiesSelected = true

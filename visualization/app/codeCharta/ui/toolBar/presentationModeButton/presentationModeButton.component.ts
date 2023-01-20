@@ -3,11 +3,11 @@ import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 import { Store } from "../../../state/angular-redux/store"
 import { setPresentationMode } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { isPresentationModeSelector } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.selector"
-import "./presentationModeButton.component.scss"
 
 @Component({
 	selector: "cc-presentation-mode-button",
 	templateUrl: "./presentationModeButton.component.html",
+	styleUrls: ["./presentationModeButton.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
 export class PresentationModeButtonComponent {

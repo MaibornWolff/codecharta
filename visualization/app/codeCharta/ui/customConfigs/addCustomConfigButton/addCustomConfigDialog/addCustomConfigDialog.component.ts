@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core"
-import { FormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
+import { UntypedFormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
 import { State } from "../../../../state/angular-redux/state"
@@ -13,7 +13,7 @@ import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from
 	encapsulation: ViewEncapsulation.None
 })
 export class AddCustomConfigDialogComponent implements OnInit {
-	customConfigName: FormControl
+	customConfigName: UntypedFormControl
 
 	constructor(
 		@Inject(State) private state: State,
@@ -23,7 +23,10 @@ export class AddCustomConfigDialogComponent implements OnInit {
 
 	ngOnInit(): void {
 		const visibleFilesBySelectionMode = visibleFilesBySelectionModeSelector(this.state.getValue())
-		this.customConfigName = new FormControl("", [Validators.required, createCustomConfigNameValidator(visibleFilesBySelectionMode)])
+		this.customConfigName = new UntypedFormControl("", [
+			Validators.required,
+			createCustomConfigNameValidator(visibleFilesBySelectionMode)
+		])
 		this.customConfigName.setValue(CustomConfigHelper.getConfigNameSuggestionByFileState(visibleFilesBySelectionMode))
 	}
 

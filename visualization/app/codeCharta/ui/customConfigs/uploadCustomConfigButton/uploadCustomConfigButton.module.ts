@@ -3,7 +3,6 @@ import { UploadCustomConfigButtonComponent } from "./uploadCustomConfigButton.co
 
 @NgModule({
 	declarations: [UploadCustomConfigButtonComponent],
-	exports: [UploadCustomConfigButtonComponent],
-	entryComponents: [UploadCustomConfigButtonComponent]
+	exports: [UploadCustomConfigButtonComponent]
 })
 export class UploadCustomConfigButtonModule {}

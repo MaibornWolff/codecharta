@@ -63,7 +63,6 @@ import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContex
 		}
 	],
 	declarations: [...dialogs],
-	entryComponents: [...dialogs],
 	bootstrap: [CodeChartaComponent]
 })
 export class AppModule {}

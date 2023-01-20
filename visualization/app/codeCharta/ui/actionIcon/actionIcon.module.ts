@@ -5,7 +5,6 @@ import { ActionIconComponent } from "./actionIcon.component"
 @NgModule({
 	imports: [CommonModule],
 	declarations: [ActionIconComponent],
-	exports: [ActionIconComponent],
-	entryComponents: [ActionIconComponent]
+	exports: [ActionIconComponent]
 })
 export class ActionIconModule {}

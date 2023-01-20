@@ -23,7 +23,6 @@ import { CustomConfigColorSchemaBySelectionMode } from "./customConfigList/custo
 		CustomConfig2ApplicableColor,
 		CustomConfigColorSchemaBySelectionMode
 	],
-	exports: [CustomConfigsComponent],
-	entryComponents: [CustomConfigListComponent]
+	exports: [CustomConfigsComponent]
 })
 export class CustomConfigsModule {}
