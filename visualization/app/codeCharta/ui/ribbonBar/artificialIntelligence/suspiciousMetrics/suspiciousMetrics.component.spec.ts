@@ -1,3 +1,4 @@
+import { SimpleChanges } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
@@ -18,7 +19,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("badge", () => {
 		it("should show initially and hide on first click, but show again when data has changed", async () => {
-			const { container, rerender } = await render(SuspiciousMetricComponent, {
+			const { container, fixture, detectChanges } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -34,14 +35,23 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			rerender({
+			fixture.componentInstance.ngOnChanges({
 				data: {
-					analyzedProgrammingLanguage: "ts",
-					unsuspiciousMetrics: ["rloc"],
-					suspiciousMetricSuggestionLinks: [],
-					untrackedMetrics: []
+					previousValue: {
+						analyzedProgrammingLanguage: "ts",
+						unsuspiciousMetrics: ["rloc", "mcc"],
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
+					},
+					currentValue: {
+						analyzedProgrammingLanguage: "ts",
+						unsuspiciousMetrics: ["rloc"],
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
+					}
 				}
-			})
+			} as unknown as SimpleChanges)
+			detectChanges()
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 		})
 
@@ -63,11 +73,13 @@ describe("SuspiciousMetricsComponent", () => {
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
 			rerender({
-				data: {
-					analyzedProgrammingLanguage: "ts",
-					unsuspiciousMetrics: ["rloc", "mcc"],
-					suspiciousMetricSuggestionLinks: [],
-					untrackedMetrics: []
+				componentProperties: {
+					data: {
+						analyzedProgrammingLanguage: "ts",
+						unsuspiciousMetrics: ["rloc", "mcc"],
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
+					}
 				}
 			})
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
