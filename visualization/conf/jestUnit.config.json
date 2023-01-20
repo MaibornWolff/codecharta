@@ -1,14 +1,15 @@
 {
-	"collectCoverage": true,
+	"collectCoverage": false,
 	"rootDir": "./../",
 	"coverageDirectory": "<rootDir>/dist/coverage",
 	"collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
 	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
+	"preset": "jest-preset-angular",
 	"transform": {
 		"\\.(m?js)$": "babel-jest",
-		"\\.(ts|tsx)$": "ts-jest",
+		"\\.ts$": "jest-preset-angular",
 		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js",
-		"\\.html$": "html-loader-jest"
+		"\\.html$": "jest-preset-angular"
 	},
 	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020))"],
 	"moduleNameMapper": {
@@ -21,13 +22,12 @@
 	"roots": ["<rootDir>/app"],
 	"moduleFileExtensions": ["js", "json", "ts", "mjs"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
-	"globals": {
-		"ts-jest": {
-			"tsconfig": "<rootDir>/tsconfig.spec.json",
-			"babelConfig": true
-		}
-	},
 	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
 	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts"],
+	"globals": {
+		"ts-jest": {
+			"tsconfig": "tsconfig.spec.json"
+		}
+	},
 	"testEnvironment": "jsdom"
 }

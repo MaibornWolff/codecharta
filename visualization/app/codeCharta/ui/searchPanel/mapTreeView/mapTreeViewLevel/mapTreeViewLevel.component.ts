@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from "@angular/core"
+import { Component, Inject, Input, OnInit, ViewEncapsulation } from "@angular/core"
 
 import { Store } from "../../../../state/angular-redux/store"
 import { CodeMapNode } from "../../../../codeCharta.model"
@@ -10,7 +10,8 @@ import { areaMetricSelector } from "../../../../state/store/dynamicSettings/area
 
 @Component({
 	selector: "cc-map-tree-view-level",
-	template: require("./mapTreeViewLevel.component.html")
+	templateUrl: "./mapTreeViewLevel.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class MapTreeViewLevelComponent implements OnInit {
 	@Input() node: CodeMapNode

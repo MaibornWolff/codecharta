@@ -1,10 +1,11 @@
-import "./changelogDialog.component.scss"
 import markdownFile from "../../../../../../CHANGELOG.md"
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 
 @Component({
-	template: require("./changelogDialog.component.html")
+	templateUrl: "./changelogDialog.component.html",
+	styleUrls: ["./changelogDialog.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class ChangelogDialogComponent {
 	changes: Record<string, string>

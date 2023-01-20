@@ -1,0 +1,91 @@
+{
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"newProjectRoot": "projects",
+	"projects": {
+		"visualization": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "sass"
+				},
+				"@schematics/angular:application": {
+					"strict": true
+				}
+			},
+			"root": "",
+			"sourceRoot": "app",
+			"prefix": "cc",
+			"architect": {
+				"build": {
+					"builder": "@angular-builders/custom-webpack:browser",
+					"options": {
+						"outputPath": "dist/visualization",
+						"index": "app/index.html",
+						"main": "app/app.module.ts",
+						"polyfills": "app/polyfills.ts",
+						"tsConfig": "tsconfig.app.json",
+						"inlineStyleLanguage": "sass",
+						"assets": ["app/assets", "app/codeCharta/assets"],
+						"styles": ["app/app.scss", "material-icons/iconfont/material-icons.css"],
+						"customWebpackConfig": {
+							"path": "conf/customWebpack.config.js"
+						},
+						"scripts": []
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "3mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "20kb"
+								}
+							],
+							"fileReplacements": [
+								{
+									"replace": "app/environments/environment.ts",
+									"with": "app/environments/environment.prod.ts"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"buildOptimizer": false,
+							"optimization": false,
+							"vendorChunk": true,
+							"extractLicenses": false,
+							"sourceMap": true,
+							"namedChunks": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-builders/custom-webpack:dev-server",
+					"configurations": {
+						"production": {
+							"browserTarget": "visualization:build:production"
+						},
+						"development": {
+							"browserTarget": "visualization:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
+				},
+				"extract-i18n": {
+					"builder": "@angular-devkit/build-angular:extract-i18n",
+					"options": {
+						"browserTarget": "visualization:build"
+					}
+				}
+			}
+		}
+	},
+	"defaultProject": "visualization"
+}

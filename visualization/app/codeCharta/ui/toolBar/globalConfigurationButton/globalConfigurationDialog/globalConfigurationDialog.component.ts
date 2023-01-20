@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 import { Store } from "../../../../state/angular-redux/store"
 import { setScreenshotToClipboardEnabled } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
@@ -14,7 +14,8 @@ import { resetCameraIfNewFileIsLoadedSelector } from "../../../../state/store/ap
 import { GlobalSettingsHelper } from "../../../../util/globalSettingsHelper"
 
 @Component({
-	template: require("./globalConfigurationDialog.component.html")
+	templateUrl: "./globalConfigurationDialog.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class GlobalConfigurationDialogComponent {
 	screenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)

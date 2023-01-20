@@ -1,5 +1,4 @@
-import { Component, Inject } from "@angular/core"
-import "./areaSettingsPanel.component.scss"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { marginSelector } from "../../../state/store/dynamicSettings/margin/margin.selector"
 import debounce from "lodash.debounce"
@@ -12,7 +11,9 @@ import { enableFloorLabelsSelector } from "../../../state/store/appSettings/enab
 
 @Component({
 	selector: "cc-area-settings-panel",
-	template: require("./areaSettingsPanel.component.html")
+	templateUrl: "./areaSettingsPanel.component.html",
+	styleUrls: ["./areaSettingsPanel.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class AreaSettingsPanelComponent {
 	static DEBOUNCE_TIME = 400

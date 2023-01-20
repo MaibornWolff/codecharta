@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { MatSelectChange } from "@angular/material/select"
 import { SharpnessMode } from "../../../../../codeCharta.model"
 import { Store } from "../../../../../state/angular-redux/store"
@@ -7,7 +7,8 @@ import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sh
 
 @Component({
 	selector: "cc-display-quality-selection",
-	template: require("./displayQualitySelection.component.html")
+	templateUrl: "./displayQualitySelection.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class DisplayQualitySelectionComponent {
 	sharpnessModes = Object.values(SharpnessMode)

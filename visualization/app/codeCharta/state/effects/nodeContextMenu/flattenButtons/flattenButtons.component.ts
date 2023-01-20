@@ -1,11 +1,12 @@
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { Store } from "../../../angular-redux/store"
 import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettings/blacklist/blacklist.actions"
 
 @Component({
 	selector: "cc-flatten-buttons",
-	template: require("./flattenButtons.component.html")
+	templateUrl: "./flattenButtons.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class FlattenButtonsComponent {
 	@Input() codeMapNode: Pick<CodeMapNode, "path" | "type" | "isFlattened">

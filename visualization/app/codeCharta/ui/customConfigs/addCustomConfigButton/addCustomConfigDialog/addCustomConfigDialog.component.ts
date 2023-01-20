@@ -1,5 +1,4 @@
-import "./addCustomDialog.component.scss"
-import { Component, Inject, OnInit } from "@angular/core"
+import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core"
 import { FormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
@@ -9,7 +8,9 @@ import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrb
 import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
 @Component({
-	template: require("./addCustomConfigDialog.component.html")
+	templateUrl: "./addCustomConfigDialog.component.html",
+	styleUrls: ["./addCustomDialog.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class AddCustomConfigDialogComponent implements OnInit {
 	customConfigName: FormControl

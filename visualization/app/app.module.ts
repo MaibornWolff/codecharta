@@ -1,7 +1,4 @@
-import "./app.scss"
-import "material-icons/iconfont/material-icons.css"
-import "zone.js" // needs to be loaded before "@angular/core"
-import { APP_INITIALIZER, NgModule, enableProdMode } from "@angular/core"
+import { APP_INITIALIZER, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { HttpClientModule } from "@angular/common/http"
@@ -28,7 +25,6 @@ import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/
 import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 import { CodeChartaComponent } from "./codeCharta/codeCharta.component"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
-import { isDevelopment } from "./codeCharta/util/envDetector"
 
 @NgModule({
 	imports: [
@@ -71,9 +67,5 @@ import { isDevelopment } from "./codeCharta/util/envDetector"
 	bootstrap: [CodeChartaComponent]
 })
 export class AppModule {}
-
-if (!isDevelopment()) {
-	enableProdMode()
-}
 
 platformBrowserDynamic().bootstrapModule(AppModule)

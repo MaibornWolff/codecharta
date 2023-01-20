@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from "@angular/core"
+import { Component, Inject, Input, OnInit, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { MapColors, CodeMapNode } from "../../../codeCharta.model"
@@ -8,7 +8,8 @@ import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/ma
 
 @Component({
 	selector: "cc-metric-delta-selected",
-	template: require("./metricDeltaSelected.component.html")
+	templateUrl: "./metricDeltaSelected.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class MetricDeltaSelectedComponent implements OnInit {
 	@Input() metricName: string

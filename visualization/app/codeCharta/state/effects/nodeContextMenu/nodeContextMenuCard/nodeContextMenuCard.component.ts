@@ -1,12 +1,13 @@
-import "./nodeContextMenuCard.component.scss"
-import { Component, Inject, OnInit } from "@angular/core"
+import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../angular-redux/store"
 import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
 import { Observable } from "rxjs"
 import { CodeMapNode } from "../../../../codeCharta.model"
 
 @Component({
-	template: require("./nodeContextMenuCard.component.html")
+	templateUrl: "./nodeContextMenuCard.component.html",
+	styleUrls: ["./nodeContextMenuCard.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class NodeContextMenuCardComponent implements OnInit {
 	codeMapNode$: Observable<CodeMapNode>

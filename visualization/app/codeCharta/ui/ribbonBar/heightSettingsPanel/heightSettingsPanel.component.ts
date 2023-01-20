@@ -1,6 +1,4 @@
-import "./heightSettingsPanel.component.scss"
-
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { amountOfTopLabelsSelector } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.selector"
 import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabled.selector"
@@ -19,7 +17,9 @@ import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.sele
 
 @Component({
 	selector: "cc-height-settings-panel",
-	template: require("./heightSettingsPanel.component.html")
+	templateUrl: "./heightSettingsPanel.component.html",
+	styleUrls: ["./heightSettingsPanel.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class HeightSettingsPanelComponent {
 	static DEBOUNCE_TIME = 400

@@ -1,11 +1,12 @@
-import "./showScenariosButton.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { ScenarioService } from "./scenario.service"
 import { ScenarioItem } from "./scenarioHelper"
 
 @Component({
 	selector: "cc-show-scenarios-button",
-	template: require("./showScenariosButton.component.html")
+	templateUrl: "./showScenariosButton.component.html",
+	styleUrls: ["./showScenariosButton.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class ShowScenariosButtonComponent {
 	scenarios: ScenarioItem[] = []

@@ -1,5 +1,4 @@
-import "./colorSettingsPanel.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { colorLabelOptions, ColorMode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
@@ -12,7 +11,9 @@ import { invertColorRange, invertDeltaColors } from "../../../state/store/appSet
 
 @Component({
 	selector: "cc-color-settings-panel",
-	template: require("./colorSettingsPanel.component.html")
+	templateUrl: "./colorSettingsPanel.component.html",
+	styleUrls: ["./colorSettingsPanel.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class ColorSettingsPanelComponent {
 	isDeltaState$ = this.store.select(isDeltaStateSelector)

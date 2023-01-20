@@ -1,10 +1,11 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { AddCustomConfigDialogComponent } from "./addCustomConfigDialog/addCustomConfigDialog.component"
 
 @Component({
 	selector: "cc-add-custom-config-button",
-	template: require("./addCustomConfigButton.component.html")
+	templateUrl: "./addCustomConfigButton.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class AddCustomConfigButtonComponent {
 	constructor(@Inject(MatDialog) private dialog: MatDialog) {}

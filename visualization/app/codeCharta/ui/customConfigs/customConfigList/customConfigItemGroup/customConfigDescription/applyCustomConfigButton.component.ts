@@ -1,5 +1,4 @@
-import "./applyCustomConfigButton.component.scss"
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
 import { CustomConfigItem } from "../../../customConfigs.component"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { Store } from "../../../../../state/angular-redux/store"
@@ -8,7 +7,9 @@ import { ThreeOrbitControlsService } from "../../../../codeMap/threeViewer/three
 
 @Component({
 	selector: "cc-apply-custom-config-button",
-	template: require("./applyCustomConfigButton.component.html")
+	templateUrl: "./applyCustomConfigButton.component.html",
+	styleUrls: ["./applyCustomConfigButton.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class ApplyCustomConfigButtonComponent {
 	@Input() customConfigItem: CustomConfigItem

@@ -1,11 +1,12 @@
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { Store } from "../../../angular-redux/store"
 import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../store/fileSettings/blacklist/blacklist.actions"
 
 @Component({
 	selector: "cc-exclude-button",
-	template: require("./excludeButton.component.html")
+	templateUrl: "./excludeButton.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class ExcludeButtonComponent {
 	@Input() codeMapNode: Pick<CodeMapNode, "path" | "type">

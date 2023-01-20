@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, SimpleChanges } from "@angular/core"
+import { Component, Inject, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
 import isEqual from "lodash.isequal"
 import { Store } from "../../../../state/angular-redux/store"
 import { defaultMapColors, setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
@@ -12,7 +12,8 @@ import { MetricSuggestionParameters } from "../selectors/util/suspiciousMetricsH
 
 @Component({
 	selector: "cc-suspicious-metrics",
-	template: require("./suspiciousMetrics.component.html")
+	templateUrl: "./suspiciousMetrics.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class SuspiciousMetricComponent implements OnChanges {
 	@Input() data: Pick<

@@ -1,5 +1,4 @@
-import "./searchBar.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import debounce from "lodash.debounce"
 import { Store } from "../../../state/angular-redux/store"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
@@ -12,7 +11,9 @@ import { blacklistSearchPattern } from "./blacklistSearchPattern.effect"
 
 @Component({
 	selector: "cc-search-bar",
-	template: require("./searchBar.component.html")
+	templateUrl: "./searchBar.component.html",
+	styleUrls: ["./searchBar.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class SearchBarComponent {
 	searchPattern$ = this.store.select(searchPatternSelector)

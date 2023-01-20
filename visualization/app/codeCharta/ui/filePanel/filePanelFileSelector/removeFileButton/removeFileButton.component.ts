@@ -1,11 +1,12 @@
-import "./removeFileButton.component.scss"
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../../state/angular-redux/store"
 import { removeFile } from "../../../../state/store/files/files.actions"
 
 @Component({
 	selector: "cc-remove-file-button",
-	template: require("./removeFileButton.component.html")
+	templateUrl: "./removeFileButton.component.html",
+	styleUrls: ["./removeFileButton.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class RemoveFileButtonComponent {
 	@Input() filename: string

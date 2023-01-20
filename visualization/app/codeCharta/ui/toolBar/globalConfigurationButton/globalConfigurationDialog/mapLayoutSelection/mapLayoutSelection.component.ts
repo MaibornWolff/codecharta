@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { MatSelectChange } from "@angular/material/select"
 import { LayoutAlgorithm } from "../../../../../codeCharta.model"
 import { Store } from "../../../../../state/angular-redux/store"
@@ -10,7 +10,8 @@ import debounce from "lodash.debounce"
 
 @Component({
 	selector: "cc-map-layout-selection",
-	template: require("./mapLayoutSelection.component.html")
+	templateUrl: "./mapLayoutSelection.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class MapLayoutSelectionComponent {
 	layoutAlgorithms = Object.values(LayoutAlgorithm)

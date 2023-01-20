@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 import { Store } from "../../../state/angular-redux/store"
 import { setPresentationMode } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
@@ -7,7 +7,8 @@ import "./presentationModeButton.component.scss"
 
 @Component({
 	selector: "cc-presentation-mode-button",
-	template: require("./presentationModeButton.component.html")
+	templateUrl: "./presentationModeButton.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class PresentationModeButtonComponent {
 	isPresentationModeEnabled$ = this.store.select(isPresentationModeSelector)

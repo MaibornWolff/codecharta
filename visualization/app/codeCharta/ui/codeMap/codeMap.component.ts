@@ -1,5 +1,4 @@
-import "./codeMap.component.scss"
-import { Component, Inject, AfterViewInit, ElementRef, OnDestroy } from "@angular/core"
+import { Component, Inject, AfterViewInit, ElementRef, OnDestroy, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
@@ -10,7 +9,9 @@ import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSide
 
 @Component({
 	selector: "cc-code-map",
-	template: require("./codeMap.component.html")
+	templateUrl: "./codeMap.component.html",
+	styleUrls: ["./codeMap.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
 	isLoadingFile$ = this.store.select(isLoadingFileSelector)

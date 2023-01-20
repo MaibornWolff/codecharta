@@ -1,9 +1,10 @@
-import { Component, EventEmitter, HostListener, Input, Output, TemplateRef, ViewChild } from "@angular/core"
+import { Component, EventEmitter, HostListener, Input, Output, TemplateRef, ViewChild, ViewEncapsulation } from "@angular/core"
 import { MatMenuTrigger, MenuPositionX } from "@angular/material/menu"
 
 @Component({
 	selector: "cc-color-picker",
-	template: require("./colorPicker.component.html")
+	templateUrl: "./colorPicker.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerComponent {
 	@Input() hexColor: string
