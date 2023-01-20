@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { GlobalConfigurationDialogComponent } from "./globalConfigurationDialog/globalConfigurationDialog.component"
 
 @Component({

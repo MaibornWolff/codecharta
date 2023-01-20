@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
-import { MatCheckboxChange } from "@angular/material/checkbox"
+import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox"
 import { map } from "rxjs"
 import { Store } from "../../../state/angular-redux/store"
 import { setAmountOfEdgePreviews } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"

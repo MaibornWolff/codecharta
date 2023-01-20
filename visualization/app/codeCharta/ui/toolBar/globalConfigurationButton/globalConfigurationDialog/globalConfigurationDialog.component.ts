@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
-import { MatSlideToggleChange } from "@angular/material/slide-toggle"
+import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle"
 import { Store } from "../../../../state/angular-redux/store"
 import { setScreenshotToClipboardEnabled } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { screenshotToClipboardEnabledSelector } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"

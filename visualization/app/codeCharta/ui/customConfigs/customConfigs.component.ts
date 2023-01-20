@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { MapColors, PrimaryMetrics } from "../../codeCharta.model"

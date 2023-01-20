@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
-import { MatSlideToggleChange } from "@angular/material/slide-toggle"
+import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle"
 import { Store } from "../../../state/angular-redux/store"
 import { setPresentationMode } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { isPresentationModeSelector } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.selector"

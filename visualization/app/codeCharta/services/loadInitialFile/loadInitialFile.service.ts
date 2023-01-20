@@ -1,5 +1,5 @@
 import { Injectable, Inject } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { HttpClient } from "@angular/common/http"
 import { NameDataPair } from "../../codeCharta.model"
 import { getCCFiles } from "../../model/files/files.helper"

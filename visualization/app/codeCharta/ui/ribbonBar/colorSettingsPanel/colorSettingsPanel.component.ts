@@ -5,7 +5,7 @@ import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.sele
 import { setColorMode } from "../../../state/store/dynamicSettings/colorMode/colorMode.actions"
 import { colorModeSelector } from "../../../state/store/dynamicSettings/colorMode/colorMode.selector"
 import { colorLabelsSelector } from "../../../state/store/appSettings/colorLabels/colorLabels.selector"
-import { MatCheckboxChange } from "@angular/material/checkbox"
+import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox"
 import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { invertColorRange, invertDeltaColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 

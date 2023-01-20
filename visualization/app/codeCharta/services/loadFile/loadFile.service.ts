@@ -1,6 +1,6 @@
 import { Injectable, Inject } from "@angular/core"
 import { tap } from "rxjs"
-import { MatDialog } from "@angular/material/dialog"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { clone } from "../../util/clone"
 import { CCFileValidationResult } from "../../util/fileValidator"
 import { setFiles, setStandardByNames } from "../../state/store/files/files.actions"

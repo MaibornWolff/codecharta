@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
-import { MatSelectChange } from "@angular/material/select"
+import { MatLegacySelectChange as MatSelectChange } from "@angular/material/legacy-select"
 import { SharpnessMode } from "../../../../../codeCharta.model"
 import { Store } from "../../../../../state/angular-redux/store"
 import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
