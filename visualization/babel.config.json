@@ -5,16 +5,9 @@
 			{
 				"targets": {
 					"node": "current"
-				},
-				"corejs": 3,
-				"useBuiltIns": "usage"
+				}
 			}
 		],
 		"@babel/preset-typescript"
-	],
-	"env": {
-		"test": {
-			"plugins": ["@babel/plugin-transform-modules-commonjs"]
-		}
-	}
+	]
 }
