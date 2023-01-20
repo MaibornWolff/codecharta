@@ -3,7 +3,6 @@ import { AddCustomConfigButtonModule } from "./addCustomConfigButton.module"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { AddCustomConfigButtonComponent } from "./addCustomConfigButton.component"
 import userEvent from "@testing-library/user-event"
-import { waitForElementToBeRemoved } from "@testing-library/dom"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { Vector3 } from "three"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
@@ -32,7 +31,7 @@ describe("addCustomConfigButtonComponent", () => {
 		await userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
 		fireEvent.click(screen.getByRole("button", { name: "ADD" }))
 
-		await waitForElementToBeRemoved(screen.getByText("Add Custom View"))
+		expect(screen.queryByText("Add Custom View")).toBe(null)
 		expect(addCustomConfigSpy).toHaveBeenCalledTimes(1)
 	})
 })

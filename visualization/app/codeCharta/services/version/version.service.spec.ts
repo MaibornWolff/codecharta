@@ -11,7 +11,7 @@ describe("versionService", () => {
 		mockedDialog = { open: jest.fn() } as unknown as MatDialog
 		mockedSetLocalStorageItem.mockReset()
 		versionService = new VersionService(mockedDialog)
-		versionService.version = "1.42.0"
+		;(versionService as any).version = "1.42.0"
 	})
 
 	describe("synchronizeLocalCodeChartaVersion", () => {

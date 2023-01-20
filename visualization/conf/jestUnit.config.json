@@ -23,7 +23,7 @@
 	"moduleFileExtensions": ["js", "json", "ts", "mjs"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
-	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts"],
+	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts", "jest-canvas-mock"],
 	"globals": {
 		"ts-jest": {
 			"tsconfig": "tsconfig.spec.json"
