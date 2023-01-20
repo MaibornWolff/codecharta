@@ -20,7 +20,7 @@
 				"build": {
 					"builder": "@angular-builders/custom-webpack:browser",
 					"options": {
-						"outputPath": "dist/visualization",
+						"outputPath": "dist/webpack",
 						"index": "app/index.html",
 						"main": "app/app.module.ts",
 						"polyfills": "app/polyfills.ts",
