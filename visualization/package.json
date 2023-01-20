@@ -109,7 +109,6 @@
 		"@angular-devkit/build-angular": "~12.2.18",
 		"@angular/cli": "~12.2.18",
 		"@angular/compiler-cli": "~12.2.0",
-		"@babel/cli": "^7.20.7",
 		"@babel/core": "^7.20.12",
 		"@babel/preset-env": "^7.20.2",
 		"@babel/preset-typescript": "^7.18.6",
