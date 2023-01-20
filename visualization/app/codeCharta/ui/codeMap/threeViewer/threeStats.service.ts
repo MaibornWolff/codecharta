@@ -1,7 +1,6 @@
 import Stats from "three/examples/jsm/libs/stats.module"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { isDevelopment } from "../../../util/envDetector"
-import { Inject, Injectable } from "@angular/core"
+import { Inject, Injectable, isDevMode } from "@angular/core"
 
 const ONE_SECOND = 1000
 export interface CustomPanel {
@@ -17,7 +16,7 @@ export class ThreeStatsService {
 	geometryMemoryPanel: CustomPanel
 	textureMemoryPanel: CustomPanel
 	prevTime: number
-	isDevelopmentMode = isDevelopment()
+	isDevelopmentMode = isDevMode()
 
 	constructor(@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService) {}
 

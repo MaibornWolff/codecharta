@@ -3,7 +3,6 @@ import { ThreeRendererService } from "./threeRenderer.service"
 import Stats from "three/examples/jsm/libs/stats.module"
 import { WebGLRenderer } from "three/src/renderers/WebGLRenderer"
 import { WebGLInfo } from "three/src/renderers/webgl/WebGLInfo"
-import * as environmentDetector from "../../../util/envDetector"
 
 describe("ThreeStatsService", () => {
 	let threeStatsService: ThreeStatsService
@@ -11,15 +10,10 @@ describe("ThreeStatsService", () => {
 	let element: HTMLCanvasElement
 
 	beforeEach(() => {
-		setDevelopmentMode(true)
 		restartSystem()
 	})
 
-	const setDevelopmentMode = (value: boolean) => {
-		jest.spyOn(environmentDetector, "isDevelopment").mockReturnValue(value)
-	}
-
-	const restartSystem = () => {
+	const restartSystem = (simulateDevelopmentMode = true) => {
 		threeRendererService = { getInfo: jest.fn(), getMemoryInfo: jest.fn() } as unknown as ThreeRendererService
 		threeRendererService.renderer = {} as WebGLRenderer
 		threeRendererService.renderer.info = { render: {}, memory: {} } as WebGLInfo
@@ -37,6 +31,7 @@ describe("ThreeStatsService", () => {
 			style: {} as CSSStyleDeclaration,
 			remove: jest.fn()
 		} as unknown as HTMLDivElement
+		threeStatsService.isDevelopmentMode = simulateDevelopmentMode
 	}
 
 	const mockPanels = (keys: string[]) => {
@@ -50,10 +45,8 @@ describe("ThreeStatsService", () => {
 
 	describe("init", () => {
 		it("should not do anything when not in development mode", () => {
-			setDevelopmentMode(false)
-			restartSystem()
+			threeStatsService.isDevelopmentMode = false
 			const generateStatPanels = jest.spyOn(threeStatsService, "generateStatPanels" as any)
-
 			threeStatsService.init(element)
 
 			expect(element.append).not.toHaveBeenCalled()
@@ -101,8 +94,7 @@ describe("ThreeStatsService", () => {
 		})
 
 		it("should not do anything when not in development mode", () => {
-			setDevelopmentMode(false)
-			restartSystem()
+			restartSystem(false)
 			const processPanel = jest.spyOn(threeStatsService, "processPanel" as any)
 
 			threeStatsService.updateStats()
@@ -142,8 +134,7 @@ describe("ThreeStatsService", () => {
 		})
 
 		it("should not do anything when not in development mode", () => {
-			setDevelopmentMode(false)
-			restartSystem()
+			restartSystem(false)
 
 			threeStatsService.resetPanels()
 
@@ -185,8 +176,7 @@ describe("ThreeStatsService", () => {
 
 	describe("destroy", () => {
 		it("should not do anything when not in development mode", () => {
-			setDevelopmentMode(false)
-			restartSystem()
+			restartSystem(false)
 
 			threeStatsService.destroy()
 
