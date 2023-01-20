@@ -73,7 +73,8 @@
 							"browserTarget": "visualization:build:production"
 						},
 						"development": {
-							"browserTarget": "visualization:build:development"
+							"browserTarget": "visualization:build:development",
+							"port": 3000
 						}
 					},
 					"defaultConfiguration": "development"
