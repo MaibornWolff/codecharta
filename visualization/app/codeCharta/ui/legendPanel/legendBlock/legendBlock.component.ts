@@ -7,5 +7,5 @@ import { MetricDecorations } from "../../attributeSideBar/util/metricDecorations
 })
 export class LegendBlockComponent {
 	@Input() metricFor: string
-	@Input() legendMetric: MetricDecorations
+	@Input() metricDecorations: MetricDecorations
 }
