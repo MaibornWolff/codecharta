@@ -17,7 +17,7 @@ describe("ViewCubeComponent", () => {
 		viewCubeMouseEventsService = { init: jest.fn() } as unknown as ViewCubeMouseEventsService
 		threeOrbitControlsService.controls = {
 			target: new Vector3(1, 2, 3)
-		} as OrbitControls
+		} as unknown as OrbitControls
 		ViewCubeComponent.prototype["initRenderer"] = jest.fn()
 		ViewCubeComponent.prototype["onAnimationFrame"] = jest.fn()
 		const elementReference = { nativeElement: {} as HTMLElement }

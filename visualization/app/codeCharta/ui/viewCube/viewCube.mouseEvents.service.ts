@@ -44,7 +44,7 @@ export class ViewCubeMouseEventsService {
 
 	private initOrbitalControl(camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		const orbitControls = oc(Three)
-		this.controls = new orbitControls(camera, renderer.domElement) as OrbitControls
+		this.controls = new orbitControls(camera, renderer.domElement) as unknown as OrbitControls
 		this.controls.enableZoom = false
 		this.controls.enableKeys = false
 		this.controls.enablePan = false

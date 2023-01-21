@@ -112,7 +112,7 @@ export class ThreeOrbitControlsService {
 
 	init(domElement: HTMLCanvasElement) {
 		const orbitControls = oc(Three)
-		this.controls = new orbitControls(this.threeCameraService.camera, domElement) as OrbitControls
+		this.controls = new orbitControls(this.threeCameraService.camera, domElement) as unknown as OrbitControls
 		this.controls.addEventListener("change", () => {
 			this.onInput(this.threeCameraService.camera)
 		})
