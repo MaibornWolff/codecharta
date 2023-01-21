@@ -7,16 +7,11 @@
 	"preset": "jest-preset-angular",
 	"transform": {
 		"\\.(m?js|ts)$": "jest-preset-angular",
-		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js",
-		"\\.html$": "jest-preset-angular"
+		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js"
 	},
 	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020|.*\\.mjs$))"],
 	"moduleNameMapper": {
-		"\\.png$": "<rootDir>/mocks/fileMock.js",
-		"\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
-		"\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js",
-		"ngx-color/chrome": "<rootDir>/node_modules/ngx-color/fesm2020/ngx-color-chrome.mjs",
-		"ngx-color": "<rootDir>/node_modules/ngx-color/fesm2020/ngx-color.mjs"
+		"\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js"
 	},
 	"roots": ["<rootDir>/app"],
 	"moduleFileExtensions": ["js", "json", "ts", "mjs"],
