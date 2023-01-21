@@ -31,7 +31,7 @@ describe("addCustomConfigButtonComponent", () => {
 		await userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
 		fireEvent.click(screen.getByRole("button", { name: "ADD" }))
 
-		waitForElementToBeRemoved(screen.queryByText("Add Custom View"))
+		await waitForElementToBeRemoved(screen.queryByText("Add Custom View"))
 		expect(addCustomConfigSpy).toHaveBeenCalledTimes(1)
 	})
 })
